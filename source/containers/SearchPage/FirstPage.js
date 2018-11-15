@@ -56,7 +56,14 @@ export default class FirstPage extends Component {
             type =>
               filter === type ? (
                 <nav key={type}>
-                  <p>Search for {(type === 'url' ? 'link' : type) + 's...'}</p>
+                  <p>
+                    Search for{' '}
+                    {(type === 'url'
+                      ? 'link'
+                      : type === 'question'
+                        ? 'subject'
+                        : type) + 's...'}
+                  </p>
                   <div
                     style={{
                       display: 'flex',
