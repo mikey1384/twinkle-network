@@ -20,6 +20,10 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
+          stars:
+            action.data.contentType === 'url'
+              ? (state.linkPage.stars || []).concat(action.data)
+              : state.linkPage.stars || [],
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
             stars:
