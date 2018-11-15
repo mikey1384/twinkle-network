@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Button from 'components/Button';
 import Loading from 'components/Loading';
 import Embedly from 'components/Embedly';
 import {
@@ -36,14 +37,22 @@ import Likers from 'components/Likers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
 import Description from './Description';
+import RewardStatus from 'components/RewardStatus';
+import XPRewardInterface from 'components/XPRewardInterface';
+import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import NotFound from 'components/NotFound';
+import { determineXpButtonDisabled } from 'helpers';
 import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
 
 class LinkPage extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
+    authLevel: PropTypes.number,
+    canDelete: PropTypes.bool,
+    canEdit: PropTypes.bool,
+    canStar: PropTypes.bool,
     deleteComment: PropTypes.func.isRequired,
     deleteDiscussion: PropTypes.func.isRequired,
     deleteLinkFromPage: PropTypes.func.isRequired,
@@ -76,7 +85,8 @@ class LinkPage extends Component {
   state = {
     confirmModalShown: false,
     likesModalShown: false,
-    notFound: false
+    notFound: false,
+    xpRewardInterfaceShown: false
   };
 
   async componentDidMount() {
@@ -162,9 +172,14 @@ class LinkPage extends Component {
         comments = [],
         likes = [],
         loadMoreCommentsButton = false,
+        stars = [],
         ...embedlyProps
       },
       attachStar,
+      authLevel,
+      canDelete,
+      canEdit,
+      canStar,
       deleteComment,
       deleteDiscussion,
       deleteLinkFromPage,
@@ -186,11 +201,19 @@ class LinkPage extends Component {
       uploadDiscussion,
       uploadReply
     } = this.props;
-    const { confirmModalShown, likesModalShown, notFound } = this.state;
+    const {
+      confirmModalShown,
+      likesModalShown,
+      notFound,
+      xpRewardInterfaceShown
+    } = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
       if (likes[i].userId === myId) userLikedThis = true;
     }
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    const userIsUploader = uploader === myId;
 
     return id ? (
       <div
@@ -224,10 +247,12 @@ class LinkPage extends Component {
             myId={myId}
             title={title}
             url={content}
+            userCanEditThis={userCanEditThis}
             description={description}
             linkId={id}
             onDelete={() => this.setState({ confirmModalShown: true })}
             onEditDone={params => editLinkPage(params)}
+            userIsUploader={userIsUploader}
           />
           <Embedly
             key={'link' + id}
@@ -236,6 +261,15 @@ class LinkPage extends Component {
             id={id}
             url={content}
             {...embedlyProps}
+          />
+          <RewardStatus
+            contentType="url"
+            onCommentEdit={editRewardComment}
+            style={{
+              fontSize: '1.4rem'
+            }}
+            stars={stars}
+            uploaderName={uploaderName}
           />
           <div
             style={{
@@ -246,15 +280,45 @@ class LinkPage extends Component {
               alignItems: 'center'
             }}
           >
-            <LikeButton
-              key={'like' + id}
-              filled
-              style={{ fontSize: '2rem' }}
-              contentType="url"
-              contentId={id}
-              onClick={likes => likeLink(likes)}
-              liked={userLikedThis}
-            />
+            <div style={{ display: 'flex' }}>
+              <LikeButton
+                key={'like' + id}
+                filled
+                style={{ fontSize: '2rem' }}
+                contentType="url"
+                contentId={id}
+                onClick={likes => likeLink(likes)}
+                liked={userLikedThis}
+              />
+              {canStar &&
+                userCanEditThis &&
+                !userIsUploader && (
+                  <Button
+                    love
+                    filled
+                    disabled={determineXpButtonDisabled({
+                      myId,
+                      xpRewardInterfaceShown,
+                      stars
+                    })}
+                    style={{
+                      marginLeft: '1rem'
+                    }}
+                    onClick={() =>
+                      this.setState({ xpRewardInterfaceShown: true })
+                    }
+                  >
+                    <Icon icon="certificate" />
+                    <span style={{ marginLeft: '0.7rem' }}>
+                      {determineXpButtonDisabled({
+                        myId,
+                        xpRewardInterfaceShown,
+                        stars
+                      }) || 'Reward'}
+                    </span>
+                  </Button>
+                )}
+            </div>
             <Likers
               key={'likes' + id}
               style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
@@ -263,6 +327,21 @@ class LinkPage extends Component {
               onLinkClick={() => this.setState({ likesModalShown: true })}
             />
           </div>
+          {xpRewardInterfaceShown && (
+            <div style={{ padding: '0 1rem' }}>
+              <XPRewardInterface
+                stars={stars}
+                contentType="url"
+                contentId={Number(id)}
+                noPadding
+                uploaderId={uploader}
+                onRewardSubmit={data => {
+                  this.setState({ xpRewardInterfaceShown: false });
+                  attachStar(data);
+                }}
+              />
+            </div>
+          )}
         </div>
         <Discussions
           className={css`
@@ -348,6 +427,10 @@ class LinkPage extends Component {
 
 export default connect(
   state => ({
+    authLevel: state.UserReducer.authLevel,
+    canDelete: state.UserReducer.canDelete,
+    canEdit: state.UserReducer.canEdit,
+    canStar: state.UserReducer.canStar,
     pageProps: state.LinkReducer.linkPage,
     myId: state.UserReducer.userId
   }),

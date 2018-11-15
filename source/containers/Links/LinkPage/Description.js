@@ -22,20 +22,19 @@ import { css } from 'emotion';
 
 class Description extends Component {
   static propTypes = {
-    authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     description: PropTypes.string,
     linkId: PropTypes.number.isRequired,
-    myId: PropTypes.number,
     onDelete: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
-    uploaderAuthLevel: PropTypes.number,
+    userCanEditThis: PropTypes.bool,
     uploaderId: PropTypes.number,
     uploaderName: PropTypes.string,
+    userIsUploader: PropTypes.bool,
     url: PropTypes.string.isRequired
   };
 
@@ -51,24 +50,20 @@ class Description extends Component {
 
   render() {
     const {
-      authLevel,
       canDelete,
       canEdit,
       linkId,
-      uploaderId,
-      myId,
       title,
       description,
-      uploaderAuthLevel,
+      userCanEditThis,
       uploaderName,
       timeStamp,
       onDelete,
-      url
+      uploaderId,
+      url,
+      userIsUploader
     } = this.props;
     const { onEdit, editedTitle, editedDescription, editedUrl } = this.state;
-    const userIsUploader = uploaderId === myId;
-    const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
     const editButtonShown = userIsUploader || userCanEditThis;
     const editMenuItems = [];
     if (userIsUploader || canEdit) {
@@ -119,7 +114,7 @@ class Description extends Component {
                   className={css`
                     width: 80%;
                   `}
-                  style={this.titleExceedsCharLimit()}
+                  style={this.titleExceedsCharLimit(editedTitle)}
                   placeholder="Enter Title..."
                   value={editedTitle}
                   onChange={text => {
@@ -133,7 +128,7 @@ class Description extends Component {
                     }
                   }}
                 />
-                {this.titleExceedsCharLimit() && (
+                {this.titleExceedsCharLimit(editedTitle) && (
                   <small style={{ color: 'red' }}>
                     {renderCharLimit({
                       contentType: 'url',
@@ -180,7 +175,7 @@ class Description extends Component {
                 className={css`
                   margin-bottom: '1rem';
                 `}
-                style={this.urlExceedsCharLimit()}
+                style={this.urlExceedsCharLimit(editedUrl)}
                 value={editedUrl}
                 onChange={text => {
                   this.setState({ editedUrl: text });
@@ -202,10 +197,10 @@ class Description extends Component {
                 }}
                 style={{
                   marginTop: '1rem',
-                  ...(this.descriptionExceedsCharLimit() || {})
+                  ...(this.descriptionExceedsCharLimit(editedDescription) || {})
                 }}
               />
-              {this.descriptionExceedsCharLimit() && (
+              {this.descriptionExceedsCharLimit(editedDescription) && (
                 <small style={{ color: 'red' }}>
                   {renderCharLimit({
                     contentType: 'url',
@@ -240,20 +235,20 @@ class Description extends Component {
   }
 
   determineEditButtonDoneStatus = () => {
-    const urlIsEmpty = stringIsEmpty(this.state.editedUrl);
-    const urlIsValid = isValidUrl(this.state.editedUrl);
-    const titleIsEmpty = stringIsEmpty(this.state.editedTitle);
-    const titleChanged = this.state.editedTitle !== this.props.title;
+    const { editedDescription, editedTitle, editedUrl } = this.state;
+    const urlIsEmpty = stringIsEmpty(editedUrl);
+    const urlIsValid = isValidUrl(editedUrl);
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== this.props.title;
     const urlChanged = this.state.editedUrl !== this.props.url;
-    const descriptionChanged =
-      this.state.editedDescription !== this.props.description;
+    const descriptionChanged = editedDescription !== this.props.description;
     if (!urlIsValid) return true;
     if (urlIsEmpty) return true;
     if (titleIsEmpty) return true;
     if (!titleChanged && !descriptionChanged && !urlChanged) return true;
-    if (this.titleExceedsCharLimit()) return true;
-    if (this.descriptionExceedsCharLimit()) return true;
-    if (this.urlExceedsCharLimit()) return true;
+    if (this.titleExceedsCharLimit(editedTitle)) return true;
+    if (this.descriptionExceedsCharLimit(editedDescription)) return true;
+    if (this.urlExceedsCharLimit(editedUrl)) return true;
     return false;
   };
 
@@ -279,33 +274,32 @@ class Description extends Component {
     }).then(() => this.setState({ onEdit: false }));
   };
 
-  descriptionExceedsCharLimit = () => {
+  descriptionExceedsCharLimit = description => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'description',
-      text: this.state.editedDescription
+      text: description
     });
   };
 
-  titleExceedsCharLimit = () => {
+  titleExceedsCharLimit = title => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'title',
-      text: this.state.editedTitle
+      text: title
     });
   };
 
-  urlExceedsCharLimit = () => {
+  urlExceedsCharLimit = url => {
     return exceedsCharLimit({
       contentType: 'url',
       inputType: 'url',
-      text: this.state.editedUrl
+      text: url
     });
   };
 }
 
 export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
   canDelete: state.UserReducer.canDelete,
   canEdit: state.UserReducer.canEdit
 }))(Description);

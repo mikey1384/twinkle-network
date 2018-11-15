@@ -7,7 +7,8 @@ const defaultState = {
   linkPage: {
     comments: [],
     discussions: [],
-    discussionsLoadMoreButton: false
+    discussionsLoadMoreButton: false,
+    stars: []
   }
 };
 
@@ -159,6 +160,11 @@ export default function linkReducer(state = defaultState, action) {
         ...state,
         linkPage: {
           ...state.linkPage,
+          stars: (state.linkPage.stars || []).map(star => ({
+            ...star,
+            rewardComment:
+              star.id === action.id ? action.text : star.rewardComment
+          })),
           comments: state.linkPage.comments.map(comment => ({
             ...comment,
             stars: comment.stars
