@@ -10,8 +10,7 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   finalizeEmoji,
-  renderCharLimit,
-  turnStringIntoQuestion
+  renderCharLimit
 } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { PanelStyle } from './Styles';
@@ -46,11 +45,11 @@ class QuestionInput extends Component {
     return (
       <div className={PanelStyle}>
         <p>
-          Ask <span style={{ color: Color.green() }}>questions</span> to friends
-          and teachers in Twinkle
+          Post a <span style={{ color: Color.green() }}>subject</span> users of
+          this website could talk about
         </p>
         <Input
-          placeholder="Ask a question (and feel free to answer your own questions)"
+          placeholder="Post a subject or ask a question for users of this website"
           value={question}
           onChange={this.onInputChange}
           style={exceedsCharLimit({
@@ -119,7 +118,7 @@ class QuestionInput extends Component {
                 disabled={submitting || this.buttonDisabled()}
                 onClick={this.onSubmit}
               >
-                Ask!
+                Post!
               </Button>
             </div>
           </div>
@@ -152,7 +151,7 @@ class QuestionInput extends Component {
     this.setState({ submitting: true });
     try {
       const data = await uploadContent({
-        title: turnStringIntoQuestion(question),
+        title: question,
         description: finalizeEmoji(description),
         dispatch
       });

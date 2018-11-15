@@ -21,6 +21,8 @@ export default function ContentLink({
   let destination = '';
   if (type === 'url') {
     destination = 'links';
+  } else if (type === 'question') {
+    destination = 'subjects';
   } else {
     destination = type + 's';
   }

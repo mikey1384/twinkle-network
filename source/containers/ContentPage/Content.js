@@ -27,7 +27,8 @@ class Content extends Component {
         url
       }
     } = this.props;
-    const type = url.split('/')[1].slice(0, -1);
+    let type = url.split('/')[1].slice(0, -1);
+    if (type === 'subject') type = 'question';
     try {
       const {
         data: { exists }

@@ -171,7 +171,11 @@ class MainFeeds extends Component {
                     for your{' '}
                     <ContentLink
                       style={{ color: Color.green() }}
-                      content={{ id: contentId, title: contentType }}
+                      content={{
+                        id: contentId,
+                        title:
+                          contentType === 'question' ? 'subject' : contentType
+                      }}
                       type={contentType}
                     />
                   </div>
@@ -306,7 +310,11 @@ function renderNotificationMessage(notification, myId) {
         break;
       case 'comment':
         action = returnCommentActionText(
-          rootType === 'question' || rootType === 'user' ? rootType : 'comment'
+          rootType === 'user'
+            ? rootType
+            : rootType === 'question'
+              ? 'subject'
+              : 'comment'
         );
         break;
       case 'discussion':
@@ -323,7 +331,9 @@ function renderNotificationMessage(notification, myId) {
         ? 'discussion topic'
         : rootType === 'user'
           ? 'profile'
-          : rootType
+          : rootType === 'question'
+            ? 'subject'
+            : rootType
   }${rootType === 'user' && !isReplyNotification ? '' : ': '}`;
   let contentTitle = isReplyNotification
     ? commentContent
@@ -373,7 +383,7 @@ function renderNotificationMessage(notification, myId) {
         : type === 'reply'
           ? 'replied to'
           : type === 'question'
-            ? 'answered'
+            ? 'responded to'
             : 'left a message on';
     return (
       <ContentLink

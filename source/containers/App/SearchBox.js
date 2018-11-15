@@ -21,7 +21,7 @@ class SearchBox extends Component {
       <div className={className} style={style}>
         <SearchInput
           innerRef={innerRef}
-          placeholder="Search Videos, Questions, Links, and More"
+          placeholder="Search Videos, Subjects, Links, and More"
           onChange={this.onContentSearch}
           value={searchText}
           onFocus={onFocus}

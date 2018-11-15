@@ -31,7 +31,7 @@ export default class QuestionModal extends Component {
               fontWeight: 'bold'
             }}
           >
-            Question
+            Subject
           </span>
         </header>
         <main>

@@ -329,7 +329,7 @@ class App extends Component {
                 <Profile history={history} location={location} match={match} />
               )}
             />
-            <Route path="/questions" component={ContentPage} />
+            <Route path="/subjects" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
             <Route path="/discussions" component={ContentPage} />
             <Route path="/playlists" component={PlaylistPage} />

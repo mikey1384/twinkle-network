@@ -10,7 +10,6 @@ import {
   exceedsCharLimit,
   finalizeEmoji,
   stringIsEmpty,
-  turnStringIntoQuestion,
   isValidUrl,
   isValidYoutubeUrl,
   renderCharLimit
@@ -105,7 +104,7 @@ export default class ContentEditor extends Component {
                     editedTitle: addEmoji(event.target.value)
                   })
                 }
-                placeholder={edit[type === 'question' ? 'question' : 'title']}
+                placeholder={edit[type === 'question' ? 'subject' : 'title']}
                 value={type === 'question' ? editedContent : editedTitle}
                 style={this.titleExceedsCharLimit(type)}
               />
@@ -247,7 +246,7 @@ export default class ContentEditor extends Component {
     const post = {
       ...this.state,
       editedComment: finalizeEmoji(editedComment),
-      editedContent: turnStringIntoQuestion(finalizeEmoji(editedContent)),
+      editedContent: finalizeEmoji(editedContent),
       editedDescription: finalizeEmoji(editedDescription),
       editedTitle: finalizeEmoji(editedTitle)
     };

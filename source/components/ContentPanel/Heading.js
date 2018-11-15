@@ -128,7 +128,7 @@ class Heading extends Component {
       rootType === 'url'
         ? 'link'
         : rootType === 'question'
-          ? 'a question'
+          ? 'a subject'
           : rootType;
     switch (type) {
       case 'video':
@@ -162,9 +162,9 @@ class Heading extends Component {
       case 'question':
         return (
           <>
-            <UsernameText user={uploader} color={Color.blue()} /> asked a{' '}
+            <UsernameText user={uploader} color={Color.blue()} /> posted a{' '}
             <ContentLink
-              content={{ id, title: 'question' }}
+              content={{ id, title: 'subject' }}
               type={type}
               style={{ color: Color.green() }}
             />{' '}

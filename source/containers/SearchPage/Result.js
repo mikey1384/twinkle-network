@@ -131,7 +131,7 @@ export default function Result({ closeSearch, type, result }) {
                     color: Color.gray()
                   }}
                 >
-                  asked by {result.uploader.username}
+                  posted by {result.uploader.username}
                 </div>
               </div>
             </div>

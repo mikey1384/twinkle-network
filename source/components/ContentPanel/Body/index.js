@@ -268,7 +268,7 @@ class Body extends Component {
                           {type === 'video' || type === 'url'
                             ? 'Comment'
                             : type === 'question'
-                              ? 'Answer'
+                              ? 'Respond'
                               : 'Reply'}
                         </span>
                         {numChildComments > 0 &&
@@ -413,7 +413,7 @@ class Body extends Component {
               type === 'comment'
                 ? 'reply'
                 : type === 'question'
-                  ? 'answer'
+                  ? 'respond'
                   : 'comment'
             }
             numPreviews={1}

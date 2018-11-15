@@ -198,7 +198,7 @@ class TargetContent extends Component {
                   <div style={{ padding: '0.5rem 1rem 1.5rem 1rem' }}>
                     <ContentLink
                       style={{ color: Color.green() }}
-                      content={{ id: rootObj.id, title: 'Question: ' }}
+                      content={{ id: rootObj.id, title: 'Subject: ' }}
                       type="question"
                     />
                     <span className="root-content">{rootObj.content}</span>

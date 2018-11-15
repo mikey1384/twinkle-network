@@ -26,7 +26,7 @@ export default function TopFilter({ applyFilter, selectedFilter, style }) {
         className={selectedFilter === 'question' ? 'active' : ''}
         onClick={() => applyFilter('question')}
       >
-        Questions
+        Subjects
       </nav>
       <nav
         className={selectedFilter === 'discussion' ? 'active' : ''}
