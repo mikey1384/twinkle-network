@@ -17,7 +17,9 @@ export default function Result({ closeSearch, type, result }) {
   return (
     <Link
       style={{ textDecoration: 'none', marginBottom: '1rem' }}
-      to={`/${type === 'url' ? 'link' : type}s/${result.id}`}
+      to={`/${
+        type === 'url' ? 'link' : type === 'question' ? 'subject' : type
+      }s/${result.id}`}
       onClick={closeSearch}
     >
       <div
