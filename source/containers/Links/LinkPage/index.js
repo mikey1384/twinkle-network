@@ -302,6 +302,7 @@ class LinkPage extends Component {
                       stars
                     })}
                     style={{
+                      fontSize: '2rem',
                       marginLeft: '1rem'
                     }}
                     onClick={() =>
