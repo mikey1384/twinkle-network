@@ -293,32 +293,31 @@ class VideoPlayer extends Component {
                 )}
               </>
             )}
-          {!onEdit &&
-            started && (
-              <ReactPlayer
-                ref={ref => {
-                  this.Player = ref;
-                }}
-                className={css`
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  z-index: 1;
-                `}
-                width="100%"
-                height="100%"
-                url={`https://www.youtube.com/watch?v=${videoCode}`}
-                playing={started}
-                controls
-                config={{
-                  youtube: { preload: true }
-                }}
-                onReady={this.onVideoReady}
-                onPlay={this.onVideoPlay}
-                onPause={this.onVideoStop}
-                onEnded={this.onVideoStop}
-              />
-            )}
+          {!onEdit && (
+            <ReactPlayer
+              ref={ref => {
+                this.Player = ref;
+              }}
+              className={css`
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+              `}
+              width="100%"
+              height="100%"
+              url={`https://www.youtube.com/watch?v=${videoCode}`}
+              playing={started}
+              controls
+              config={{
+                youtube: { preload: true }
+              }}
+              onReady={this.onVideoReady}
+              onPlay={this.onVideoPlay}
+              onPause={this.onVideoStop}
+              onEnded={this.onVideoStop}
+            />
+          )}
           {!onEdit && !minimized && started ? (
             <div
               className={css`
