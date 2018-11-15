@@ -83,7 +83,7 @@ class RewardStatus extends Component {
             {...(rewardedStars === maxStars || rewardedStars > 10
               ? { warning: true }
               : { logo: true })}
-            label="Show Previous Reward Records"
+            label="Show More Reward Records"
             filled
             style={{
               fontSize: '1.3rem',
