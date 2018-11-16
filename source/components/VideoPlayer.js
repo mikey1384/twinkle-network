@@ -351,7 +351,7 @@ class VideoPlayer extends Component {
             />
           ) : null}
         </div>
-        {xpLoaded &&
+        {(!userId || xpLoaded) &&
           isStarred &&
           (!started || xpEarned) && (
             <div
