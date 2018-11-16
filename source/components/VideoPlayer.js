@@ -367,7 +367,7 @@ class VideoPlayer extends Component {
               {!xpEarned && <Icon icon="star" />}
               {xpEarned
                 ? 'You have already earned XP from this video'
-                : ' Watch this video and get 100XP'}
+                : ' Watch this video and earn 100XP'}
             </div>
           )}
         {!xpEarned &&
