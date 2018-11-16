@@ -146,7 +146,10 @@ class VideoPlayer extends Component {
       });
     }
 
-    if (isStarred && userId && userId !== prevProps.userId) {
+    if (
+      isStarred &&
+      ((userId && userId !== prevProps.userId) || !prevProps.isStarred)
+    ) {
       try {
         const {
           data: { xpEarned }
