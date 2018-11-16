@@ -55,6 +55,7 @@ class VideoPlayer extends Component {
     started: false,
     timeWatched: 0,
     totalDuration: 0,
+    xpLoaded: false,
     xpEarned: false,
     justEarned: false,
     imageUrl: ''
@@ -96,7 +97,9 @@ class VideoPlayer extends Component {
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
         );
-        if (this.mounted) this.setState(() => ({ xpEarned: !!xpEarned }));
+        if (this.mounted) {
+          this.setState(state => ({ xpEarned: !!xpEarned, xpLoaded: true }));
+        }
       } catch (error) {
         console.error(error.response || error);
       }
@@ -131,7 +134,8 @@ class VideoPlayer extends Component {
         ...state,
         timeWatched: 0,
         xpEarned: false,
-        justEarned: false
+        justEarned: false,
+        xpLoaded: false
       }));
     }
 
@@ -150,8 +154,11 @@ class VideoPlayer extends Component {
           `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
           auth()
         );
-        if (xpEarned && this.mounted) {
-          this.setState(() => ({ xpEarned: !!xpEarned }));
+        if (this.mounted) {
+          this.setState(state => ({
+            xpEarned: !!xpEarned,
+            xpLoaded: true
+          }));
         }
       } catch (error) {
         console.error(error.response || error);
@@ -219,6 +226,7 @@ class VideoPlayer extends Component {
       timeWatched,
       totalDuration,
       xpEarned,
+      xpLoaded,
       justEarned
     } = this.state;
     const requiredViewDuration = Math.min(
@@ -340,7 +348,8 @@ class VideoPlayer extends Component {
             />
           ) : null}
         </div>
-        {isStarred &&
+        {xpLoaded &&
+          isStarred &&
           (!started || xpEarned) && (
             <div
               style={{
