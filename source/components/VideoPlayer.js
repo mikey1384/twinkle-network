@@ -346,6 +346,7 @@ class VideoPlayer extends Component {
               background: xpEarned ? Color.green() : Color.logoBlue(),
               padding: '0.5rem',
               color: '#fff',
+              fontSize: '1.5rem',
               fontWeight: 'bold',
               textAlign: 'center'
             }}
