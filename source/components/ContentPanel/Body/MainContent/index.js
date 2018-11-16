@@ -70,12 +70,9 @@ export default function MainContent({
             videoCode={type === 'video' ? contentObj.content : undefined}
           />
         )}
-        {(type === 'question' || type === 'discussion') &&
+        {type === 'question' &&
           !!contentObj.difficulty && (
-            <DifficultyBar
-              style={{ marginTop: '-0.5rem' }}
-              difficulty={contentObj.difficulty}
-            />
+            <DifficultyBar difficulty={contentObj.difficulty} />
           )}
         {type === 'video' && (
           <TagStatus
@@ -187,6 +184,13 @@ export default function MainContent({
               url={contentObj.content}
               id={contentObj.contentId}
               {...urlRelated}
+            />
+          )}
+        {type === 'discussion' &&
+          !!contentObj.difficulty && (
+            <DifficultyBar
+              style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
+              difficulty={contentObj.difficulty}
             />
           )}
         {(type === 'comment' || type === 'discussion') &&
