@@ -361,13 +361,21 @@ class VideoPlayer extends Component {
                 color: '#fff',
                 fontSize: '1.5rem',
                 fontWeight: 'bold',
-                textAlign: 'center'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
-              {!xpEarned && <Icon icon="star" />}
-              {xpEarned
-                ? 'You have already earned XP from this video'
-                : ' Watch this video and earn 100 XP'}
+              {!xpEarned && (
+                <div>
+                  <Icon icon="star" />
+                </div>
+              )}
+              <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
+                {xpEarned
+                  ? 'You have already earned XP from this video'
+                  : ' Watch this video and earn 100 XP'}
+              </div>
             </div>
           )}
         {!xpEarned &&
