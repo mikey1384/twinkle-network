@@ -15,6 +15,7 @@ import StarMark from 'components/StarMark';
 import { URL } from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ProgressBar from 'components/ProgressBar';
+import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { css } from 'emotion';
 
@@ -339,25 +340,31 @@ class VideoPlayer extends Component {
             />
           ) : null}
         </div>
-        {isStarred &&
-          !!userId && (
+        {(!started || xpEarned) && (
+          <div
+            style={{
+              background: xpEarned ? Color.green() : Color.logoBlue(),
+              padding: '0.5rem',
+              color: '#fff',
+              fontWeight: 'bold',
+              textAlign: 'center'
+            }}
+          >
+            {!xpEarned && <Icon icon="star" />}
+            {xpEarned
+              ? 'You have already earned XP from this video'
+              : ' Watch this video and get 100XP'}
+          </div>
+        )}
+        {!xpEarned &&
+          isStarred &&
+          userId &&
+          started && (
             <ProgressBar
               progress={progress}
               noBorderRadius={stretch}
-              color={
-                justEarned
-                  ? Color.green()
-                  : xpEarned
-                    ? Color.lightBlue()
-                    : Color.blue()
-              }
-              text={
-                justEarned
-                  ? 'Twinkle XP earned!'
-                  : xpEarned
-                    ? 'You have already earned this XP'
-                    : ''
-              }
+              color={justEarned ? Color.green() : Color.blue()}
+              text={justEarned ? 'Earned 100 XP!' : ''}
             />
           )}
       </ErrorBoundary>
@@ -462,8 +469,7 @@ class VideoPlayer extends Component {
         });
         if (this.mounted) {
           this.setState(() => ({
-            justEarned: true,
-            xpEarned: true
+            justEarned: true
           }));
         }
         this.rewardingXP = false;
