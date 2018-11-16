@@ -340,23 +340,24 @@ class VideoPlayer extends Component {
             />
           ) : null}
         </div>
-        {(!started || xpEarned) && (
-          <div
-            style={{
-              background: xpEarned ? Color.green() : Color.logoBlue(),
-              padding: '0.5rem',
-              color: '#fff',
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              textAlign: 'center'
-            }}
-          >
-            {!xpEarned && <Icon icon="star" />}
-            {xpEarned
-              ? 'You have already earned XP from this video'
-              : ' Watch this video and get 100XP'}
-          </div>
-        )}
+        {isStarred &&
+          (!started || xpEarned) && (
+            <div
+              style={{
+                background: xpEarned ? Color.green() : Color.logoBlue(),
+                padding: '0.5rem',
+                color: '#fff',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                textAlign: 'center'
+              }}
+            >
+              {!xpEarned && <Icon icon="star" />}
+              {xpEarned
+                ? 'You have already earned XP from this video'
+                : ' Watch this video and get 100XP'}
+            </div>
+          )}
         {!xpEarned &&
           isStarred &&
           userId &&
