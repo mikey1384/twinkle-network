@@ -44,6 +44,7 @@ class Body extends Component {
     onAddTags: PropTypes.func,
     onAddTagToContents: PropTypes.func,
     onAttachStar: PropTypes.func.isRequired,
+    onByUserStatusChange: PropTypes.func,
     onCommentSubmit: PropTypes.func.isRequired,
     onDeleteComment: PropTypes.func.isRequired,
     onDeleteContent: PropTypes.func.isRequired,
@@ -193,6 +194,7 @@ class Body extends Component {
                 byUser={!!rootObj.byUser}
                 title={rootObj.title}
                 style={{ marginBottom: '1rem' }}
+                uploader={rootObj.uploader}
                 hasHqThumb={rootObj.hasHqThumb}
                 videoId={rootId}
                 videoCode={rootObj.content}
@@ -325,10 +327,16 @@ class Body extends Component {
                 <div className="right">
                   {canStar &&
                     type === 'video' && (
-                      <StarButton
-                        isStarred={!!isStarred}
-                        onClick={this.onToggleStarred}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <StarButton
+                          byUser={!!contentObj.byUser}
+                          contentId={contentObj.id}
+                          isStarred={!!isStarred}
+                          onToggleStarred={this.onToggleStarred}
+                          onToggleByUser={this.onToggleByUser}
+                          uploader={uploader}
+                        />
+                      </div>
                     )}
                   {canEditDifficulty &&
                     (type === 'question' || type === 'discussion') && (
@@ -378,7 +386,10 @@ class Body extends Component {
               contentType={type}
               contentId={contentId}
               difficulty={
-                rootObj.difficulty || (targetObj.discussion || {}).difficulty
+                contentObj.byUser
+                  ? 5
+                  : rootObj.difficulty ||
+                    (targetObj.discussion || {}).difficulty
               }
               uploaderId={uploader.id}
               stars={stars}
@@ -391,7 +402,9 @@ class Body extends Component {
           <RewardStatus
             contentType={type}
             difficulty={
-              rootObj.difficulty || (targetObj.discussion || {}).difficulty
+              contentObj.byUser
+                ? 5
+                : rootObj.difficulty || (targetObj.discussion || {}).difficulty
             }
             onCommentEdit={onEditRewardComment}
             stars={stars}
@@ -496,13 +509,15 @@ class Body extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      contentObj: { stars, rootObj = {}, targetObj = {} },
+      contentObj: { byUser, stars, rootObj = {}, targetObj = {} },
       myId
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     return determineXpButtonDisabled({
       stars,
-      difficulty: rootObj.difficulty || (targetObj.discussion || {}).difficulty,
+      difficulty: byUser
+        ? 5
+        : rootObj.difficulty || (targetObj.discussion || {}).difficulty,
       myId,
       xpRewardInterfaceShown
     });
@@ -561,6 +576,14 @@ class Body extends Component {
     if (!commentsShown) {
       this.onExpandComments();
     }
+  };
+
+  onToggleByUser = byUser => {
+    const {
+      contentObj: { contentId },
+      onByUserStatusChange
+    } = this.props;
+    onByUserStatusChange({ byUser, contentId });
   };
 
   onToggleStarred = () => {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   attachStar,
+  changeByUserStatus,
   editVideoComment,
   editVideoPage,
   deleteVideo,
@@ -54,6 +55,7 @@ class VideoPage extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
     byUser: PropTypes.bool,
+    changeByUserStatus: PropTypes.func.isRequired,
     comments: PropTypes.array,
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
@@ -92,15 +94,13 @@ class VideoPage extends Component {
     title: PropTypes.string,
     uploadComment: PropTypes.func,
     uploadReply: PropTypes.func,
-    uploaderAuthLevel: PropTypes.number,
-    uploaderId: PropTypes.number,
-    uploaderName: PropTypes.string,
+    uploader: PropTypes.object,
     uploadQuestions: PropTypes.func.isRequired,
     uploadVideoDiscussion: PropTypes.func.isRequired,
     userId: PropTypes.number,
     videoUnavailable: PropTypes.bool,
     videoLoading: PropTypes.bool,
-    videoViews: PropTypes.string
+    views: PropTypes.number
   };
 
   constructor({
@@ -196,9 +196,7 @@ class VideoPage extends Component {
       loadMoreDiscussionsButton,
       loadMoreReplies,
       loadVideoDiscussionComments,
-      uploaderAuthLevel,
-      uploaderId,
-      uploaderName,
+      uploader,
       description,
       likeVideo,
       likeVideoComment,
@@ -209,6 +207,7 @@ class VideoPage extends Component {
       videoUnavailable,
       videoLoading,
       content,
+      changeByUserStatus,
       title,
       timeStamp,
       questions = [],
@@ -218,7 +217,7 @@ class VideoPage extends Component {
       uploadComment,
       uploadReply,
       uploadVideoDiscussion,
-      videoViews
+      views
     } = this.props;
     const {
       changingPage,
@@ -295,6 +294,7 @@ class VideoPage extends Component {
                         videoId={videoId}
                         videoCode={content}
                         title={title}
+                        uploader={uploader}
                         minimized={!watchTabActive}
                       />
                     )}
@@ -306,7 +306,7 @@ class VideoPage extends Component {
                           showQuestionsBuilder={() =>
                             this.setState({ questionsBuilderShown: true })
                           }
-                          userIsUploader={userId === uploaderId}
+                          userIsUploader={userId === uploader.id}
                           slidesToShow={1}
                           slidesToScroll={1}
                           slideIndex={currentSlide}
@@ -330,7 +330,7 @@ class VideoPage extends Component {
                           }}
                         >
                           <p>There are no questions yet.</p>
-                          {userId === uploaderId && (
+                          {userId === uploader.id && (
                             <Button
                               style={{ marginTop: '2rem', fontSize: '2rem' }}
                               success
@@ -355,6 +355,7 @@ class VideoPage extends Component {
                   }}
                 >
                   <Details
+                    byUser={byUser}
                     changingPage={changingPage}
                     isStarred={isStarred}
                     likes={likes}
@@ -365,25 +366,25 @@ class VideoPage extends Component {
                     tags={tags}
                     title={title}
                     timeStamp={timeStamp}
-                    uploaderName={uploaderName}
                     description={description}
-                    uploaderAuthLevel={uploaderAuthLevel}
-                    uploaderId={uploaderId}
+                    uploader={uploader}
                     userId={userId}
+                    changeByUserStatus={changeByUserStatus}
                     onEditStart={() => this.setState({ onEdit: true })}
                     onEditCancel={() => this.setState({ onEdit: false })}
                     onEditFinish={this.onDescriptionEditFinish}
                     onDelete={() => this.setState({ confirmModalShown: true })}
-                    videoViews={videoViews}
+                    videoViews={views}
                   />
                   <RewardStatus
                     contentType="video"
+                    difficulty={byUser ? 5 : 0}
                     onCommentEdit={editRewardComment}
                     style={{
                       fontSize: '1.4rem'
                     }}
                     stars={stars}
-                    uploaderName={uploaderName}
+                    uploaderName={uploader.username}
                   />
                 </div>
                 <Discussions
@@ -444,7 +445,7 @@ class VideoPage extends Component {
                     parent={{
                       type: 'video',
                       id: Number(videoId),
-                      uploader: { id: uploaderId }
+                      uploader
                     }}
                     style={{ paddingTop: '1rem' }}
                     userId={userId}
@@ -611,13 +612,14 @@ class VideoPage extends Component {
 export default connect(
   state => ({
     ...state.VideoReducer.videoPage,
-    byUser: !!state.VideoReducer.byUser,
+    byUser: !!state.VideoReducer.videoPage?.byUser,
     isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId
   }),
   {
     attachStar,
+    changeByUserStatus,
     editVideoComment,
     editVideoPage,
     editRewardComment,

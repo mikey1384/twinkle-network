@@ -14,6 +14,7 @@ import {
   addTags,
   addTagToContents,
   attachStar,
+  changeByUserStatus,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -41,6 +42,7 @@ class Posts extends Component {
     addTags: PropTypes.func.isRequired,
     addTagToContents: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
+    changeByUserStatus: PropTypes.func.isRequired,
     clearFeeds: PropTypes.func.isRequired,
     chatMode: PropTypes.bool.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
@@ -121,6 +123,7 @@ class Posts extends Component {
       addTags,
       addTagToContents,
       attachStar,
+      changeByUserStatus,
       contentFeedLike,
       fetchFeed,
       feedCommentDelete,
@@ -200,6 +203,7 @@ class Posts extends Component {
                     onAddTags={addTags}
                     onAddTagToContents={addTagToContents}
                     onAttachStar={attachStar}
+                    onByUserStatusChange={changeByUserStatus}
                     onCommentSubmit={data =>
                       this.uploadFeedComment({ feed, data })
                     }
@@ -395,6 +399,7 @@ export default connect(
     addTags,
     addTagToContents,
     attachStar,
+    changeByUserStatus,
     contentFeedLike,
     disableAutoscroll,
     fetchFeed,

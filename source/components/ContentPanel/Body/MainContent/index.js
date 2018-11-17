@@ -56,6 +56,7 @@ export default function MainContent({
                 ? contentObj.hasHqThumb
                 : rootObj.hasHqThumb
             }
+            uploader={contentObj.uploader || rootObj.uploader}
             videoId={type === 'video' ? contentObj.id : contentObj.rootId}
             videoCode={type === 'video' ? contentObj.content : rootObj.content}
             style={{ paddingBottom: '0.5rem' }}

@@ -390,6 +390,17 @@ export const searchContent = async({
   }
 };
 
+export const setByUser = async({ contentId, dispatch }) => {
+  try {
+    const {
+      data: { byUser }
+    } = await request.put(`${URL}/content/byUser`, { contentId }, auth());
+    return Promise.resolve(byUser);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const setDefaultSearchFilter = async({ filter, dispatch }) => {
   try {
     const { data } = await request.post(
@@ -556,10 +567,9 @@ export const sendVerificationEmail = async({ dispatch }) => {
 
 export const verifyEmail = async({ token }) => {
   try {
-    const { data: {username} } = await request.get(
-      `${URL}/user/email/verify?token=${token}`,
-      auth()
-    );
+    const {
+      data: { username }
+    } = await request.get(`${URL}/user/email/verify?token=${token}`, auth());
     return Promise.resolve(username);
   } catch (error) {
     console.error(error.response || error);

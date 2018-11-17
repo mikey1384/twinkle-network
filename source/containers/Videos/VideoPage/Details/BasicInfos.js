@@ -24,8 +24,7 @@ export default class BasicInfos extends Component {
     title: PropTypes.string.isRequired,
     titleExceedsCharLimit: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    uploaderId: PropTypes.number.isRequired,
-    uploaderName: PropTypes.string.isRequired,
+    uploader: PropTypes.object.isRequired,
     urlExceedsCharLimit: PropTypes.func.isRequired
   };
 
@@ -46,8 +45,7 @@ export default class BasicInfos extends Component {
       titleHovered,
       timeStamp,
       titleExceedsCharLimit,
-      uploaderId,
-      uploaderName,
+      uploader,
       urlExceedsCharLimit
     } = this.props;
     return (
@@ -116,8 +114,7 @@ export default class BasicInfos extends Component {
         )}
         {!onEdit && (
           <div>
-            Added by{' '}
-            <UsernameText user={{ username: uploaderName, id: uploaderId }} />{' '}
+            Added by <UsernameText user={uploader} />{' '}
             <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
           </div>
         )}

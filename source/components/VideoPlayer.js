@@ -41,6 +41,7 @@ class VideoPlayer extends Component {
     pageVisible: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
+    uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
     videoCode: PropTypes.string.isRequired,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -223,6 +224,7 @@ class VideoPlayer extends Component {
       onEdit,
       videoCode,
       style = {},
+      uploader,
       userId
     } = this.props;
     const {
@@ -250,16 +252,21 @@ class VideoPlayer extends Component {
             }}
           >
             <div>
-              This video was made by the uploader.{' '}
-              <a
-                style={{
-                  color: '#fff',
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-              >
-                {"Visit uploader's"} <span>YouTube</span> Channel
-              </a>
+              This video was made by {uploader.username}.{' '}
+              {uploader.youtubeUrl && (
+                <a
+                  style={{
+                    color: '#fff',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={uploader.youtubeUrl}
+                >
+                  {`Visit ${uploader.username}'s`} YouTube Channel
+                </a>
+              )}
             </div>
           </div>
         )}
@@ -414,7 +421,7 @@ class VideoPlayer extends Component {
             </div>
           )}
         {!xpEarned &&
-          isStarred &&
+          (isStarred || byUser) &&
           userId &&
           started && (
             <ProgressBar

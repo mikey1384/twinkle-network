@@ -25,6 +25,12 @@ export const addVideoView = params => dispatch => {
   }
 };
 
+export const changeByUserStatus = ({ contentId, byUser }) => ({
+  type: VIDEO.CHANGE_BY_USER_STATUS,
+  contentId,
+  byUser
+});
+
 export const closeAddVideoModal = () => ({
   type: VIDEO.CLOSE_MODAL
 });

@@ -27,6 +27,12 @@ export const attachStar = data => ({
   data
 });
 
+export const changeByUserStatus = ({ contentId, byUser }) => ({
+  type: FEED.CHANGE_BY_USER_STATUS,
+  contentId,
+  byUser
+});
+
 export const clearFeeds = () => ({
   type: FEED.CLEAR
 });

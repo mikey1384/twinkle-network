@@ -7,12 +7,15 @@ import StarButton from 'components/Buttons/StarButton';
 
 export default class SideButtons extends Component {
   static propTypes = {
+    byUser: PropTypes.bool.isRequired,
     canStar: PropTypes.bool.isRequired,
     isStarred: PropTypes.bool.isRequired,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
+    changeByUserStatus: PropTypes.func.isRequired,
     starVideo: PropTypes.func.isRequired,
     style: PropTypes.object,
+    uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired
@@ -24,12 +27,14 @@ export default class SideButtons extends Component {
 
   render() {
     const {
+      byUser,
       canStar,
       isStarred,
       likes,
       likeVideo,
       starVideo,
       style,
+      uploader,
       userId,
       videoId
     } = this.props;
@@ -39,18 +44,31 @@ export default class SideButtons extends Component {
         <div
           style={{
             display: 'flex',
-            overflow: 'auto',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             width: '100%'
           }}
         >
           {canStar && (
-            <StarButton
-              style={{ marginRight: '1rem' }}
-              isStarred={isStarred}
-              onClick={() => starVideo(videoId)}
-            />
+            <div
+              style={{
+                position: 'relative',
+                width: '4rem',
+                height: '4rem',
+                marginRight: '1rem'
+              }}
+            >
+              <StarButton
+                byUser={byUser}
+                contentId={Number(videoId)}
+                direction="right"
+                style={{ position: 'absolute', top: 0, left: 0 }}
+                isStarred={isStarred}
+                onToggleStarred={() => starVideo(videoId)}
+                onToggleByUser={this.onToggleByUser}
+                uploader={uploader}
+              />
+            </div>
           )}
           <LikeButton
             contentType="video"
@@ -101,4 +119,9 @@ export default class SideButtons extends Component {
       </div>
     );
   }
+
+  onToggleByUser = byUser => {
+    const { changeByUserStatus, videoId } = this.props;
+    changeByUserStatus({ byUser, contentId: videoId });
+  };
 }

@@ -4,6 +4,7 @@ import {
   addTags,
   addTagToContents,
   attachStar,
+  changeByUserStatus,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -44,6 +45,7 @@ class Stories extends Component {
     addTags: PropTypes.func.isRequired,
     addTagToContents: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
+    changeByUserStatus: PropTypes.func.isRequired,
     chatMode: PropTypes.bool,
     clearFeeds: PropTypes.func.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
@@ -161,6 +163,7 @@ class Stories extends Component {
       addTags,
       addTagToContents,
       attachStar,
+      changeByUserStatus,
       contentFeedLike,
       feedCommentDelete,
       feedCommentEdit,
@@ -249,6 +252,7 @@ class Stories extends Component {
                         onAddTags={addTags}
                         onAddTagToContents={addTagToContents}
                         onAttachStar={attachStar}
+                        onByUserStatusChange={changeByUserStatus}
                         onCommentSubmit={data =>
                           this.uploadFeedComment({ feed, data })
                         }
@@ -455,6 +459,7 @@ export default connect(
     addTags,
     addTagToContents,
     attachStar,
+    changeByUserStatus,
     clearProfiles,
     contentFeedLike,
     fetchMoreFeeds,

@@ -181,7 +181,9 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(dinosaur\))/gi, '🦖')
     .replace(/(\(palette\))/gi, '🎨')
     .replace(/(\(fox\))/gi, '🦊')
-    .replace(/(\(ghost\))/gi, '👻');
+    .replace(/(\(ghost\))/gi, '👻')
+    .replace(/(\(crayon\))/gi, '🖍️')
+    .replace(/(\(colored pencil\))/gi, '🖍️');
 }
 
 export function addEmoji(string) {

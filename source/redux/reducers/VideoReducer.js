@@ -71,6 +71,18 @@ export default function VideoReducer(state = defaultState, action) {
           }))
         }
       };
+    case VIDEO.CHANGE_BY_USER_STATUS:
+      return {
+        ...state,
+        videoPage: {
+          ...state.videoPage,
+          byUser: action.byUser
+        },
+        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
+          ...thumb,
+          byUser: thumb.id === action.contentId ? action.byUser : thumb.byUser
+        }))
+      };
     case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs;
       newVideoThumbs.splice(action.arrayIndex, 1);

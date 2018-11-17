@@ -35,6 +35,7 @@ class ContentPanel extends Component {
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
     onStarVideo: PropTypes.func,
+    onByUserStatusChange: PropTypes.func,
     onTargetCommentSubmit: PropTypes.func.isRequired
   };
 
@@ -67,6 +68,7 @@ class ContentPanel extends Component {
       onAddTags,
       onAddTagToContents,
       onAttachStar,
+      onByUserStatusChange,
       onCommentSubmit,
       onDeleteComment,
       onDeleteContent,
@@ -92,6 +94,7 @@ class ContentPanel extends Component {
           onAddTags,
           onAddTagToContents,
           onAttachStar,
+          onByUserStatusChange,
           onCommentSubmit,
           onDeleteComment,
           onDeleteContent,

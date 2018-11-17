@@ -32,6 +32,8 @@ class Details extends Component {
     addTags: PropTypes.func.isRequired,
     attachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
+    changeByUserStatus: PropTypes.func.isRequired,
+    byUser: PropTypes.bool,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     canStar: PropTypes.bool,
@@ -52,13 +54,11 @@ class Details extends Component {
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
-    uploaderAuthLevel: PropTypes.number.isRequired,
-    uploaderId: PropTypes.number.isRequired,
-    uploaderName: PropTypes.string.isRequired,
+    uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
-    videoViews: PropTypes.string.isRequired
+    videoViews: PropTypes.number.isRequired
   };
 
   constructor({ title, content, description }) {
@@ -94,16 +94,17 @@ class Details extends Component {
       addTags,
       attachStar,
       authLevel,
+      byUser,
       canDelete,
       canEdit,
       canStar,
+      changeByUserStatus,
       changingPage,
       content,
       isStarred,
       likeVideo,
-      uploaderId,
       userId,
-      uploaderName,
+      uploader,
       title,
       description,
       likes,
@@ -113,7 +114,6 @@ class Details extends Component {
       stars,
       starVideo,
       timeStamp,
-      uploaderAuthLevel,
       videoId,
       videoViews
     } = this.props;
@@ -125,9 +125,9 @@ class Details extends Component {
       titleHovered,
       xpRewardInterfaceShown
     } = this.state;
-    const userIsUploader = uploaderId === userId;
+    const userIsUploader = uploader.id === userId;
     const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+      (canEdit || canDelete) && authLevel > uploader.authLevel;
     const editButtonShown = userIsUploader || userCanEditThis;
     const editMenuItems = [];
     if (userIsUploader || canEdit) {
@@ -150,7 +150,7 @@ class Details extends Component {
           contentId={Number(videoId)}
           type="video"
           url={content}
-          uploaderId={uploaderId}
+          uploaderId={uploader.id}
           videoCode={content}
         />
         <TagStatus
@@ -211,8 +211,7 @@ class Details extends Component {
                 titleExceedsCharLimit={this.titleExceedsCharLimit}
                 titleHovered={titleHovered}
                 timeStamp={timeStamp}
-                uploaderId={uploaderId}
-                uploaderName={uploaderName}
+                uploader={uploader}
                 urlExceedsCharLimit={this.urlExceedsCharLimit}
               />
               <SideButtons
@@ -220,11 +219,14 @@ class Details extends Component {
                   display: 'flex',
                   flexDirection: 'column'
                 }}
+                byUser={byUser}
                 canStar={canStar}
+                changeByUserStatus={changeByUserStatus}
                 isStarred={isStarred}
                 likes={likes}
                 likeVideo={likeVideo}
                 starVideo={starVideo}
+                uploader={uploader}
                 userId={userId}
                 videoId={videoId}
               />
@@ -281,6 +283,7 @@ class Details extends Component {
                 <Button
                   snow
                   disabled={determineXpButtonDisabled({
+                    difficulty: byUser ? 5 : 0,
                     myId: userId,
                     xpRewardInterfaceShown,
                     stars
@@ -295,6 +298,7 @@ class Details extends Component {
                   <Icon icon="certificate" />
                   <span style={{ marginLeft: '0.7rem' }}>
                     {determineXpButtonDisabled({
+                      difficulty: byUser ? 5 : 0,
                       myId: userId,
                       xpRewardInterfaceShown,
                       stars
@@ -305,11 +309,12 @@ class Details extends Component {
           </div>
           {xpRewardInterfaceShown && (
             <XPRewardInterface
+              difficulty={byUser ? 5 : 0}
               stars={stars}
               contentType="video"
               contentId={Number(videoId)}
               noPadding
-              uploaderId={uploaderId}
+              uploaderId={uploader.id}
               onRewardSubmit={data => {
                 this.setState({ xpRewardInterfaceShown: false });
                 attachStar(data);

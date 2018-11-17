@@ -220,6 +220,18 @@ export default function FeedReducer(state = defaultState, action) {
               : feed.tags
         }))
       };
+    case FEED.CHANGE_BY_USER_STATUS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => {
+          let contentMatches =
+            feed.type === 'video' && feed.contentId === action.contentId;
+          return {
+            ...feed,
+            byUser: contentMatches ? action.byUser : feed.byUser
+          };
+        })
+      };
     case FEED.DELETE_COMMENT:
       return {
         ...state,
@@ -552,16 +564,9 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
             feed.type === 'video' && feed.contentId === action.videoId;
-          let rootVideoMatches =
-            feed.type === 'comment' &&
-            feed.rootId === action.videoId &&
-            feed.rootType === 'video';
           return {
             ...feed,
-            isStarred: contentMatches ? action.isStarred : feed.isStarred,
-            rootContentIsStarred: rootVideoMatches
-              ? action.isStarred
-              : feed.rootContentIsStarred
+            isStarred: contentMatches ? action.isStarred : feed.isStarred
           };
         })
       };
