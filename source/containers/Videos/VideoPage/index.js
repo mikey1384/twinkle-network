@@ -53,6 +53,7 @@ import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
 class VideoPage extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
+    byUser: PropTypes.bool,
     comments: PropTypes.array,
     content: PropTypes.string,
     deleteVideo: PropTypes.func.isRequired,
@@ -178,6 +179,7 @@ class VideoPage extends Component {
   render() {
     const {
       attachStar,
+      byUser,
       comments,
       discussions,
       deleteVideoComment,
@@ -286,6 +288,7 @@ class VideoPage extends Component {
                     {!questionsBuilderShown && (
                       <VideoPlayer
                         isStarred={isStarred}
+                        byUser={byUser}
                         key={videoId}
                         hasHqThumb={hasHqThumb}
                         onEdit={onEdit}
@@ -608,6 +611,7 @@ class VideoPage extends Component {
 export default connect(
   state => ({
     ...state.VideoReducer.videoPage,
+    byUser: !!state.VideoReducer.byUser,
     isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId

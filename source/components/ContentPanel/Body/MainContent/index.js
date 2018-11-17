@@ -48,6 +48,7 @@ export default function MainContent({
           <VideoPlayer
             stretch
             isStarred={!!(contentObj.isStarred || rootObj.isStarred)}
+            byUser={!!(contentObj.byUser || rootObj.byUser)}
             onEdit={isEditing}
             title={contentObj.title || rootObj.title}
             hasHqThumb={

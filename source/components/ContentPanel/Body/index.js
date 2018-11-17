@@ -190,6 +190,7 @@ class Body extends Component {
                 stretch
                 autoplay
                 isStarred={!!rootObj.isStarred}
+                byUser={!!rootObj.byUser}
                 title={rootObj.title}
                 style={{ marginBottom: '1rem' }}
                 hasHqThumb={rootObj.hasHqThumb}

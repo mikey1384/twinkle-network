@@ -28,6 +28,7 @@ const requiredDurationCap = 150;
 class VideoPlayer extends Component {
   static propTypes = {
     addVideoView: PropTypes.func.isRequired,
+    byUser: PropTypes.bool,
     chatMode: PropTypes.bool,
     emptyCurrentVideoSlot: PropTypes.func,
     fillCurrentVideoSlot: PropTypes.func,
@@ -215,6 +216,7 @@ class VideoPlayer extends Component {
 
   render() {
     const {
+      byUser,
       isStarred,
       minimized,
       stretch,
@@ -232,20 +234,35 @@ class VideoPlayer extends Component {
       xpLoaded,
       justEarned
     } = this.state;
-    const requiredViewDuration = Math.min(
-      totalDuration / denominator,
-      requiredDurationCap
-    );
-    const progress = xpEarned
-      ? 100
-      : requiredViewDuration > 0
-        ? Math.floor(
-            (Math.min(timeWatched, requiredViewDuration) * 100) /
-              requiredViewDuration
-          )
-        : 0;
     return (
       <ErrorBoundary style={style}>
+        {byUser && (
+          <div
+            style={{
+              background: Color.orange(),
+              color: '#fff',
+              padding: '0.5rem',
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div>
+              This video was made by the uploader.{' '}
+              <a
+                style={{
+                  color: '#fff',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                {"Visit uploader's"} <span>YouTube</span> Channel
+              </a>
+            </div>
+          </div>
+        )}
         <div
           className={`${css`
             user-select: none;
@@ -267,6 +284,24 @@ class VideoPlayer extends Component {
             }
           }}
         >
+          {byUser && (
+            <div
+              style={{
+                background: Color.pink(),
+                color: '#fff',
+                padding: '0.5rem',
+                fontWeight: 'bold',
+                fontSize: '1.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {
+                "This video was made by the uploader. Visit uploader's YouTube Channel"
+              }
+            </div>
+          )}
           {!minimized &&
             !started && (
               <>
@@ -383,7 +418,11 @@ class VideoPlayer extends Component {
           userId &&
           started && (
             <ProgressBar
-              progress={progress}
+              progress={this.determineProgress({
+                timeWatched,
+                totalDuration,
+                xpEarned
+              })}
               noBorderRadius={stretch}
               color={justEarned ? Color.green() : Color.blue()}
               text={justEarned ? 'Earned 100 XP!' : ''}
@@ -392,6 +431,22 @@ class VideoPlayer extends Component {
       </ErrorBoundary>
     );
   }
+
+  determineProgress = ({ timeWatched, totalDuration, xpEarned }) => {
+    const requiredViewDuration = Math.min(
+      totalDuration / denominator,
+      requiredDurationCap
+    );
+    const progress = xpEarned
+      ? 100
+      : requiredViewDuration > 0
+        ? Math.floor(
+            (Math.min(timeWatched, requiredViewDuration) * 100) /
+              requiredViewDuration
+          )
+        : 0;
+    return progress;
+  };
 
   onVideoReady = () => {
     if (this.Player.getInternalPlayer()) {
