@@ -61,7 +61,6 @@ export default class SideButtons extends Component {
               <StarButton
                 byUser={byUser}
                 contentId={Number(videoId)}
-                direction="right"
                 style={{ position: 'absolute', top: 0, left: 0 }}
                 isStarred={isStarred}
                 onToggleStarred={() => starVideo(videoId)}

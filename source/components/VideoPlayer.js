@@ -291,24 +291,6 @@ class VideoPlayer extends Component {
             }
           }}
         >
-          {byUser && (
-            <div
-              style={{
-                background: Color.pink(),
-                color: '#fff',
-                padding: '0.5rem',
-                fontWeight: 'bold',
-                fontSize: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              {
-                "This video was made by the uploader. Visit uploader's YouTube Channel"
-              }
-            </div>
-          )}
           {!minimized &&
             !started && (
               <>
