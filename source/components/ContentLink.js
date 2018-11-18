@@ -14,7 +14,7 @@ ContentLink.propTypes = {
 };
 export default function ContentLink({
   style,
-  content: { id, content, title, username },
+  content: { byUser, id, content, title, username },
   type,
   ...actions
 }) {
@@ -31,7 +31,7 @@ export default function ContentLink({
     <Link
       style={{
         fontWeight: 'bold',
-        color: Color.blue(),
+        color: type === 'video' && byUser ? Color.orange() : Color.blue(),
         ...style
       }}
       to={`/${destination}/${type === 'user' ? username : id}`}

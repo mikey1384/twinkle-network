@@ -276,6 +276,7 @@ class NavMenu extends Component {
             to={`/videos/${video.videoId}${
               arePlaylistVideos ? `?playlist=${playlistId}` : ''
             }`}
+            style={{ color: video.byUser ? Color.orange() : Color.blue() }}
           >
             {cleanString(video.title)}
           </Link>

@@ -30,6 +30,7 @@ class VideoThumb extends Component {
     to: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
     video: PropTypes.shape({
+      byUser: PropTypes.bool,
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
       isStarred: PropTypes.number,
@@ -141,6 +142,9 @@ class VideoThumb extends Component {
                   }}
                 >
                   <a
+                    style={{
+                      color: video.byUser ? Color.orange() : Color.blue()
+                    }}
                     href={`/${to}`}
                     onClick={this.onLinkClick}
                     onMouseOver={this.onMouseOver}

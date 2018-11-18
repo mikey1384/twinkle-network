@@ -242,6 +242,7 @@ class PlaylistCarousel extends Component {
           key={index}
           video={{
             id: thumb.videoId,
+            byUser: thumb.byUser,
             content: thumb.content,
             isStarred: thumb.isStarred,
             title: thumb.video_title,
