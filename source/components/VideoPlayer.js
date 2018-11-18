@@ -421,7 +421,7 @@ class VideoPlayer extends Component {
             </div>
           )}
         {!xpEarned &&
-          (isStarred || byUser) &&
+          isStarred &&
           userId &&
           started && (
             <ProgressBar
