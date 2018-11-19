@@ -30,11 +30,11 @@ class VideoThumb extends Component {
     to: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
     video: PropTypes.shape({
-      byUser: PropTypes.bool,
+      byUser: PropTypes.number,
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
       isStarred: PropTypes.number,
-      numLikes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      likes: PropTypes.array,
       title: PropTypes.string.isRequired
     }).isRequired
   };
@@ -165,11 +165,11 @@ class VideoThumb extends Component {
                   Added by <UsernameText user={user} />
                 </div>
               )}
-              {video.numLikes > 0 && (
+              {video.likes?.length > 0 && (
                 <div style={{ marginTop: '0.5rem' }}>
                   <Icon icon="thumbs-up" />
                   &nbsp;&times;&nbsp;
-                  {video.numLikes}
+                  {video.likes.length}
                 </div>
               )}
             </div>
