@@ -57,7 +57,7 @@ class Cover extends Component {
       },
       onSelectTheme,
       openDirectMessageChannel,
-      selectedTheme
+      selectedTheme = 'logoBlue'
     } = this.props;
     const {
       alertModalShown,
@@ -162,7 +162,7 @@ class Cover extends Component {
                 <>
                   <ColorSelector
                     colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
-                    twinkleXP={twinkleXP}
+                    twinkleXP={twinkleXP || 0}
                     setColor={onSelectTheme}
                     selectedColor={selectedTheme}
                     style={{
@@ -258,10 +258,10 @@ class Cover extends Component {
   onColorSelectCancel = () => {
     const {
       onSelectTheme,
-      profile: { profileTheme = 'logoBlue' }
+      profile: { profileTheme }
     } = this.props;
+    onSelectTheme(profileTheme || 'logoBlue');
     this.setState({ colorSelectorShown: false });
-    onSelectTheme(profileTheme);
   };
 
   onSetTheme = async() => {
