@@ -65,7 +65,9 @@ export default class ColorSelector extends Component {
               onMouseEnter={() => this.setState({ hovered: color })}
               onMouseLeave={() => this.setState({ hovered: undefined })}
             >
-              {twinkleXP < (requirement[color] || -1) && <Icon icon="lock" />}
+              {twinkleXP < (requirement[color] || -1) && (
+                <Icon style={{ color: '#fff' }} icon="lock" />
+              )}
             </div>
             {twinkleXP < (requirement[color] || -1) &&
               hovered === color && (
