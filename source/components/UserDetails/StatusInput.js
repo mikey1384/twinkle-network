@@ -67,6 +67,7 @@ export default function StatusInput({
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <ColorSelector
               colors={['pink', 'ivory', 'logoGreen', 'logoBlue', 'menuGray']}
+              twinkleXP={profile.twinkleXP}
               setColor={setColor}
               selectedColor={statusColor}
             />

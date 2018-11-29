@@ -1,4 +1,5 @@
 export const Color = {
+  christmas: (opacity = 1) => `rgba(51,51,51,${opacity})`,
   lightBlue: (opacity = 1) => `rgba(117,202,235,${opacity})`,
   blue: (opacity = 1) => `rgba(21,140,186,${opacity})`,
   darkBlue: (opacity = 1) => `rgba(0,60,106,${opacity})`,

@@ -1,50 +1,84 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { css } from 'emotion';
 import { Color } from 'constants/css';
+import Icon from 'components/Icon';
+import FullTextReveal from 'components/FullTextReveal';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 
-ColorSelector.propTypes = {
-  colors: PropTypes.array.isRequired,
-  setColor: PropTypes.func.isRequired,
-  selectedColor: PropTypes.string,
-  style: PropTypes.object
+const requirement = {
+  black: 35000
 };
-export default function ColorSelector({
-  colors,
-  setColor,
-  selectedColor,
-  style
-}) {
-  const highlightEffects = {
+
+export default class ColorSelector extends Component {
+  static propTypes = {
+    colors: PropTypes.array.isRequired,
+    twinkleXP: PropTypes.number.isRequired,
+    setColor: PropTypes.func.isRequired,
+    selectedColor: PropTypes.string,
+    style: PropTypes.object
+  };
+
+  highlightEffects = {
     border: `0.5rem solid #fff`,
     boxShadow: `0 0 5px #fff`
   };
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        ...style
-      }}
-    >
-      {colors.map(color => (
-        <div
-          key={color}
-          className={css`
-            width: 3rem;
-            height: 3rem;
-          `}
-          style={{
-            borderRadius: '50%',
-            background: Color[color](),
-            cursor: 'pointer',
-            ...(selectedColor !== color ? highlightEffects : {})
-          }}
-          onClick={() => setColor(color)}
-        />
-      ))}
-    </div>
-  );
+
+  state = {
+    hovered: undefined
+  };
+
+  render() {
+    const { colors, setColor, selectedColor, style, twinkleXP } = this.props;
+    const { hovered } = this.state;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          ...style
+        }}
+      >
+        {colors.map(color => (
+          <div key={color}>
+            <div
+              style={{
+                width: '3rem',
+                height: '3rem',
+                borderRadius: '50%',
+                background: Color[color](),
+                cursor:
+                  twinkleXP >= (requirement[color] || -1)
+                    ? 'pointer'
+                    : 'default',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ...(selectedColor !== color ? this.highlightEffects : {})
+              }}
+              onClick={
+                twinkleXP >= (requirement[color] || -1)
+                  ? () => setColor(color)
+                  : () => {}
+              }
+              onMouseEnter={() => this.setState({ hovered: color })}
+              onMouseLeave={() => this.setState({ hovered: undefined })}
+            >
+              {twinkleXP < (requirement[color] || -1) && <Icon icon="lock" />}
+            </div>
+            {twinkleXP < (requirement[color] || -1) &&
+              hovered === color && (
+                <FullTextReveal
+                  direction="left"
+                  style={{ color: '#000' }}
+                  text={`Requires ${addCommasToNumber(requirement[color])} XP`}
+                  show={true}
+                />
+              )}
+          </div>
+        ))}
+      </div>
+    );
+  }
 }

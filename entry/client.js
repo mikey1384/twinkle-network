@@ -22,6 +22,7 @@ import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
+import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
@@ -32,6 +33,7 @@ import { faStarHalfAlt as farStarHalfAlt } from '@fortawesome/pro-regular-svg-ic
 import { faThumbsUp } from '@fortawesome/pro-solid-svg-icons/faThumbsUp';
 import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
+import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 library.add(
@@ -50,6 +52,7 @@ library.add(
   faComments,
   faFilm,
   faHome,
+  faLock,
   faPencilAlt,
   faSearch,
   faSpinner,
@@ -60,6 +63,7 @@ library.add(
   faThumbsUp,
   faTimes,
   faTrashAlt,
+  faTree,
   faUser,
   faUsers
 );

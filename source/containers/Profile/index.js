@@ -99,8 +99,8 @@ class Profile extends Component {
               >
                 <Cover
                   profile={profile}
-                  onSelectColor={color =>
-                    this.setState({ selectedTheme: color })
+                  onSelectTheme={theme =>
+                    this.setState({ selectedTheme: theme })
                   }
                   selectedTheme={selectedTheme}
                 />

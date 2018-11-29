@@ -29,7 +29,7 @@ class Cover extends Component {
       username: PropTypes.string
     }),
     openDirectMessageChannel: PropTypes.func.isRequired,
-    onSelectColor: PropTypes.func.isRequired,
+    onSelectTheme: PropTypes.func.isRequired,
     selectedTheme: PropTypes.string.isRequired,
     uploadProfilePic: PropTypes.func,
     userId: PropTypes.number
@@ -52,8 +52,10 @@ class Cover extends Component {
         online,
         profileTheme = 'logoBlue',
         realName,
+        twinkleXP,
         username
       },
+      onSelectTheme,
       openDirectMessageChannel,
       selectedTheme
     } = this.props;
@@ -159,8 +161,9 @@ class Cover extends Component {
               id === userId && (
                 <>
                   <ColorSelector
-                    colors={['logoBlue', 'green', 'orange', 'pink']}
-                    setColor={this.onSelectColor}
+                    colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
+                    twinkleXP={twinkleXP}
+                    setColor={onSelectTheme}
                     selectedColor={selectedTheme}
                     style={{
                       width: '100%',
@@ -254,16 +257,11 @@ class Cover extends Component {
 
   onColorSelectCancel = () => {
     const {
-      onSelectColor,
+      onSelectTheme,
       profile: { profileTheme = 'logoBlue' }
     } = this.props;
     this.setState({ colorSelectorShown: false });
-    onSelectColor(profileTheme);
-  };
-
-  onSelectColor = color => {
-    const { onSelectColor } = this.props;
-    onSelectColor(color);
+    onSelectTheme(profileTheme);
   };
 
   onSetTheme = async() => {
