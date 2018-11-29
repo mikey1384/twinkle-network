@@ -70,10 +70,10 @@ export default class ColorSelector extends Component {
             {twinkleXP < (requirement[color] || -1) &&
               hovered === color && (
                 <FullTextReveal
+                  show
                   direction="left"
                   style={{ color: '#000' }}
                   text={`Requires ${addCommasToNumber(requirement[color])} XP`}
-                  show={true}
                 />
               )}
           </div>
