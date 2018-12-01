@@ -49,7 +49,7 @@ class Cover extends Component {
         rank,
         profilePicId,
         online,
-        profileTheme = 'logoBlue',
+        profileTheme,
         realName,
         twinkleXP,
         username
@@ -69,7 +69,7 @@ class Cover extends Component {
       <>
         <div
           style={{
-            ...profileThemes[selectedTheme || profileTheme],
+            ...profileThemes[selectedTheme || profileTheme || 'logoBlue'],
             ...((selectedTheme || profileTheme) === 'black' &&
             (rank <= 30 && rank > 0) &&
             moment().month() === 11
@@ -154,7 +154,7 @@ class Cover extends Component {
                 <Button
                   style={{
                     width: '100%',
-                    color: Color[selectedTheme || profileTheme]()
+                    color: Color[selectedTheme || profileTheme || 'logoBlue']()
                   }}
                   snow
                   onClick={() =>
@@ -180,7 +180,7 @@ class Cover extends Component {
                     colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
                     twinkleXP={twinkleXP || 0}
                     setColor={onSelectTheme}
-                    selectedColor={selectedTheme || profileTheme}
+                    selectedColor={selectedTheme || profileTheme || 'logoBlue'}
                     style={{
                       width: '100%',
                       height: 'auto',
