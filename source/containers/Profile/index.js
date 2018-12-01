@@ -4,13 +4,19 @@ import Cover from './Cover';
 import Body from './Body';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-import { checkValidUsername, unmountProfile } from 'redux/actions/UserActions';
+import {
+  changeProfileTheme,
+  checkValidUsername,
+  unmountProfile
+} from 'redux/actions/UserActions';
+import { setTheme } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
 class Profile extends Component {
   static propTypes = {
     checkValidUsername: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
@@ -20,12 +26,9 @@ class Profile extends Component {
     username: PropTypes.string
   };
 
-  constructor({ profile: { profileTheme } }) {
-    super();
-    this.state = {
-      selectedTheme: profileTheme || 'logoBlue'
-    };
-  }
+  state = {
+    selectedTheme: undefined
+  };
 
   componentDidMount() {
     const { checkValidUsername, match } = this.props;
@@ -103,6 +106,7 @@ class Profile extends Component {
                     this.setState({ selectedTheme: theme })
                   }
                   selectedTheme={selectedTheme}
+                  onSetTheme={this.onSetTheme}
                 />
                 <Body
                   history={history}
@@ -123,6 +127,13 @@ class Profile extends Component {
       </div>
     );
   }
+
+  onSetTheme = async() => {
+    const { changeProfileTheme, dispatch } = this.props;
+    const { selectedTheme } = this.state;
+    await setTheme({ color: selectedTheme, dispatch });
+    changeProfileTheme(selectedTheme);
+  };
 }
 
 export default connect(
@@ -131,5 +142,10 @@ export default connect(
     username: state.UserReducer.username,
     profile: state.UserReducer.profile
   }),
-  { checkValidUsername, unmountProfile }
+  dispatch => ({
+    dispatch,
+    changeProfileTheme: theme => dispatch(changeProfileTheme(theme)),
+    checkValidUsername: username => dispatch(checkValidUsername(username)),
+    unmountProfile: () => dispatch(unmountProfile())
+  })
 )(Profile);

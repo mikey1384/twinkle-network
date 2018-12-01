@@ -13,9 +13,10 @@ class Body extends Component {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     profile: PropTypes.shape({
-      id: PropTypes.number.isRequired
+      id: PropTypes.number.isRequired,
+      profileTheme: PropTypes.string
     }),
-    selectedTheme: PropTypes.string.isRequired
+    selectedTheme: PropTypes.string
   };
 
   render() {
@@ -27,6 +28,7 @@ class Body extends Component {
         params: { username }
       },
       profile,
+      profile: { profileTheme },
       selectedTheme
     } = this.props;
     return (
@@ -48,7 +50,7 @@ class Body extends Component {
               }
             `}
           />
-          <FilterBar color={selectedTheme}>
+          <FilterBar color={selectedTheme || profileTheme || 'logoBlue'}>
             <nav
               className={
                 location.pathname === `/users/${username}` ? 'active' : ''
@@ -102,7 +104,7 @@ class Body extends Component {
               location={location}
               match={match}
               profile={profile}
-              selectedTheme={selectedTheme}
+              selectedTheme={selectedTheme || profileTheme || 'logoBlue'}
             />
           </div>
         </div>

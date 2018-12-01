@@ -6,20 +6,17 @@ import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import { openDirectMessageChannel } from 'redux/actions/ChatActions';
-import {
-  changeProfileTheme,
-  uploadProfilePic
-} from 'redux/actions/UserActions';
+import { uploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
-import { setTheme } from 'helpers/requestHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 import Icon from 'components/Icon';
+import ChristmasCover from './christmas-cover.png';
+import moment from 'moment';
 
 class Cover extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     profile: PropTypes.shape({
       id: PropTypes.number.isRequired,
       online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
@@ -30,7 +27,8 @@ class Cover extends Component {
     }),
     openDirectMessageChannel: PropTypes.func.isRequired,
     onSelectTheme: PropTypes.func.isRequired,
-    selectedTheme: PropTypes.string.isRequired,
+    onSetTheme: PropTypes.func.isRequired,
+    selectedTheme: PropTypes.string,
     uploadProfilePic: PropTypes.func,
     userId: PropTypes.number
   };
@@ -48,6 +46,7 @@ class Cover extends Component {
       userId,
       profile: {
         id,
+        rank,
         profilePicId,
         online,
         profileTheme = 'logoBlue',
@@ -57,7 +56,7 @@ class Cover extends Component {
       },
       onSelectTheme,
       openDirectMessageChannel,
-      selectedTheme = 'logoBlue'
+      selectedTheme
     } = this.props;
     const {
       alertModalShown,
@@ -70,11 +69,20 @@ class Cover extends Component {
       <>
         <div
           style={{
-            ...profileThemes[profileTheme],
-            background: profileThemes[selectedTheme].background
+            ...profileThemes[selectedTheme || profileTheme],
+            ...((selectedTheme || profileTheme) === 'black' &&
+            (rank <= 30 && rank > 0) &&
+            moment().month() === 12
+              ? {
+                  color: Color.gold(),
+                  backgroundImage: `url(${ChristmasCover})`,
+                  backgroundSize: 'cover',
+                  backgroundRepeat: 'no-repeat'
+                }
+              : {})
           }}
           className={css`
-            height: 23rem;
+            height: 26rem;
             margin-top: -1rem;
             display: flex;
             justify-content: space-between;
@@ -87,13 +95,18 @@ class Cover extends Component {
         >
           <div
             className={css`
-              margin-left: 30rem;
-              color: #fff;
+              margin-left: 29rem;
               font-size: 5rem;
-              padding-top: 12rem;
+              padding-top: 15rem;
+              font-weight: bold;
               > p {
                 font-size: 2rem;
                 line-height: 1rem;
+                ${(selectedTheme || profileTheme) === 'black' &&
+                rank <= 30 &&
+                moment().month() === 12
+                  ? `color: #000;`
+                  : ''};
               }
               @media (max-width: ${mobileMaxWidth}) {
                 margin-left: 15rem;
@@ -139,7 +152,10 @@ class Cover extends Component {
                 }}
               >
                 <Button
-                  style={{ width: '100%', color: Color[selectedTheme]() }}
+                  style={{
+                    width: '100%',
+                    color: Color[selectedTheme || profileTheme]()
+                  }}
                   snow
                   onClick={() =>
                     openDirectMessageChannel(
@@ -164,7 +180,7 @@ class Cover extends Component {
                     colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
                     twinkleXP={twinkleXP || 0}
                     setColor={onSelectTheme}
-                    selectedColor={selectedTheme}
+                    selectedColor={selectedTheme || profileTheme}
                     style={{
                       width: '100%',
                       height: 'auto',
@@ -213,7 +229,7 @@ class Cover extends Component {
             width: 22rem;
             height: 22rem;
             left: 3rem;
-            top: 5rem;
+            top: 7rem;
             font-size: 2rem;
             z-index: 10;
             @media (max-width: ${mobileMaxWidth}) {
@@ -265,10 +281,9 @@ class Cover extends Component {
   };
 
   onSetTheme = async() => {
-    const { changeProfileTheme, dispatch, selectedTheme } = this.props;
-    await setTheme({ color: selectedTheme, dispatch });
-    changeProfileTheme(selectedTheme);
+    const { onSetTheme } = this.props;
     this.setState({ colorSelectorShown: false });
+    onSetTheme();
   };
 
   handlePicture = event => {
@@ -307,11 +322,8 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId
   }),
-  dispatch => ({
-    dispatch,
-    openDirectMessageChannel: (...params) =>
-      dispatch(openDirectMessageChannel(...params)),
-    uploadProfilePic: image => dispatch(uploadProfilePic(image)),
-    changeProfileTheme: theme => dispatch(changeProfileTheme(theme))
-  })
+  {
+    openDirectMessageChannel,
+    uploadProfilePic
+  }
 )(Cover);

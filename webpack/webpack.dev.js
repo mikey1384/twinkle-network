@@ -29,6 +29,17 @@ export default function devConfig(app) {
               'react-hot-loader/babel'
             ]
           }
+        },
+        {
+          test: /\.(png|jp(e*)g|svg)$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 8000
+              }
+            }
+          ]
         }
       ]
     },
