@@ -54,6 +54,7 @@ class Carousel extends Component {
     slideIndex: PropTypes.number.isRequired,
     slidesToScroll: PropTypes.number.isRequired,
     style: PropTypes.object,
+    userCanEditThis: PropTypes.bool,
     userIsUploader: PropTypes.bool
   };
 
@@ -149,7 +150,9 @@ class Carousel extends Component {
       onShowAll,
       onFinish,
       progressBar,
-      style
+      style,
+      userIsUploader,
+      userCanEditThis
     } = this.props;
     const { slidesToScroll, currentSlide, slideCount } = this.state;
     const slideFraction = (currentSlide + 1) / slideCount;
@@ -163,7 +166,7 @@ class Carousel extends Component {
         }}
         style={{ ...getSliderStyles.call(this), ...style }}
       >
-        {this.props.userIsUploader && (
+        {(userIsUploader || userCanEditThis) && (
           <a
             style={{
               position: 'absolute',

@@ -54,7 +54,9 @@ import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
 class VideoPage extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
+    authLevel: PropTypes.number.isRequired,
     byUser: PropTypes.bool,
+    canEdit: PropTypes.bool,
     changeByUserStatus: PropTypes.func.isRequired,
     comments: PropTypes.array,
     content: PropTypes.string,
@@ -178,8 +180,10 @@ class VideoPage extends Component {
 
   render() {
     const {
+      authLevel,
       attachStar,
       byUser,
+      canEdit,
       comments,
       discussions,
       deleteVideoComment,
@@ -230,6 +234,9 @@ class VideoPage extends Component {
       videoId
     } = this.state;
     const { playlist: playlistId } = queryString.parse(search);
+    const userIsUploader = uploader?.id === userId;
+    const userCanEditThis = canEdit && authLevel >= uploader?.authLevel;
+
     return (
       <ErrorBoundary
         className={css`
@@ -306,7 +313,8 @@ class VideoPage extends Component {
                           showQuestionsBuilder={() =>
                             this.setState({ questionsBuilderShown: true })
                           }
-                          userIsUploader={userId === uploader.id}
+                          userIsUploader={userIsUploader}
+                          userCanEditThis={userCanEditThis}
                           slidesToShow={1}
                           slidesToScroll={1}
                           slideIndex={currentSlide}
@@ -330,7 +338,7 @@ class VideoPage extends Component {
                           }}
                         >
                           <p>There are no questions yet.</p>
-                          {userId === uploader.id && (
+                          {(userIsUploader || userCanEditThis) && (
                             <Button
                               style={{ marginTop: '2rem', fontSize: '2rem' }}
                               success
@@ -612,6 +620,8 @@ class VideoPage extends Component {
 export default connect(
   state => ({
     ...state.VideoReducer.videoPage,
+    authLevel: state.UserReducer.authLevel,
+    canEdit: state.UserReducer.canEdit,
     byUser: !!state.VideoReducer.videoPage?.byUser,
     isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
