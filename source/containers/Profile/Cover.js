@@ -72,7 +72,7 @@ class Cover extends Component {
             ...profileThemes[selectedTheme || profileTheme],
             ...((selectedTheme || profileTheme) === 'black' &&
             (rank <= 30 && rank > 0) &&
-            moment().month() === 12
+            moment().month() === 11
               ? {
                   color: Color.gold(),
                   backgroundImage: `url(${ChristmasCover})`,
@@ -104,7 +104,7 @@ class Cover extends Component {
                 line-height: 1rem;
                 ${(selectedTheme || profileTheme) === 'black' &&
                 rank <= 30 &&
-                moment().month() === 12
+                moment().month() === 11
                   ? `color: #000;`
                   : ''};
               }
