@@ -22,6 +22,7 @@ export default class Channels extends Component {
     onChannelEnter: PropTypes.func.isRequired,
     selectedChannelId: PropTypes.number.isRequired
   };
+
   render() {
     const {
       userId,
@@ -92,13 +93,18 @@ export default class Channels extends Component {
                   overflow: 'hidden'
                 }}
               >
-                {lastMessageSender && lastMessage
-                  ? `${
+                {lastMessageSender && lastMessage ? (
+                  <>
+                    <span>{`${
                       lastMessageSender.id === userId
                         ? 'You'
                         : lastMessageSender.username
-                    }: ${lastMessage}`
-                  : '\u00a0'}
+                    }:`}</span>{' '}
+                    <span>{lastMessage.substring(0, 100)}</span>
+                  </>
+                ) : (
+                  '\u00a0'
+                )}
               </div>
             </div>
             {id !== currentChannel.id &&
