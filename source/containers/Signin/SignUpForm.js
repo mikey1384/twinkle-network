@@ -49,7 +49,7 @@ export default class SignUpForm extends Component {
               section {
                 margin-top: 1rem;
               }
-              section:first-child {
+              section:first-of-type {
                 margin-top: 0;
               }
               input {

@@ -28,7 +28,7 @@ class SortableListGroup extends Component {
             margin-bottom: -1px;
             border: 1px solid ${Color.borderGray()};
           }
-          nav:first-child {
+          nav:first-of-type {
             border-top-left-radius: ${borderRadius};
             border-top-right-radius: ${borderRadius};
           }

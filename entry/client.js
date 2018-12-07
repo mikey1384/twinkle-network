@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
-import createHistory from 'history/createBrowserHistory';
+import { ConnectedRouter } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
 import createStoreWithHistory from './store';
 import App from 'containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -68,9 +68,8 @@ library.add(
   faUsers
 );
 
-const history = createHistory();
+const history = createBrowserHistory();
 const store = createStoreWithHistory(history);
-
 ReactDOM.hydrate(
   <Provider store={store}>
     <ConnectedRouter history={history}>

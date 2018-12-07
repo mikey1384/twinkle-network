@@ -28,7 +28,7 @@ export default function RoundList({ children, style = {} }) {
             border-right: 0;
           }
         }
-        li:first-child {
+        li:first-of-type {
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};
           @media (max-width: ${mobileMaxWidth}) {

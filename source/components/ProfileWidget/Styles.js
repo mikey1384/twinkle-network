@@ -1,4 +1,4 @@
-import { css } from 'react-emotion';
+import { css } from 'emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 
 export const container = ({ heading, border, blue, darkGray }) => css`

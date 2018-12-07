@@ -1,7 +1,7 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import LINK from '../constants/Link';
 
 const API_URL = `${URL}/url`;

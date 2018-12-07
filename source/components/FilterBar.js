@@ -90,7 +90,7 @@ export default function FilterBar({
           > nav.active.alert {
             border-bottom: 3px solid ${Color.pink()}!important;
           }
-          > nav:first-child {
+          > nav:first-of-type {
             ${
               bordered ? 'border-bottom-left-radius: 5px;' : ''
             } @media (max-width: ${mobileMaxWidth}) {

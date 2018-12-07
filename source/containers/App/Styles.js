@@ -1,4 +1,4 @@
-import { css } from 'react-emotion';
+import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 
 export const siteContent = css`

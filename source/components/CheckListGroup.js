@@ -30,7 +30,7 @@ export default function CheckListGroup({
           border: 1px solid ${Color.borderGray()};
           border-top: none;
         }
-        nav:first-child {
+        nav:first-of-type {
           border: 1px solid ${Color.borderGray()};
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};

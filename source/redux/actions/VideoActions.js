@@ -1,5 +1,5 @@
 import request from 'axios';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { likePlaylistVideo } from './PlaylistActions';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';

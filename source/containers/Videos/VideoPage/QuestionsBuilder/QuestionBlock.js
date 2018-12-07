@@ -309,7 +309,7 @@ export default class QuestionBlock extends Component {
           width: 4.5rem;
           background: ${Color.inputBorderGray()};
         }
-        &:first-child {
+        &:first-of-type {
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};
           > aside {
