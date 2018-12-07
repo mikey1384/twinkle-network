@@ -6,6 +6,7 @@ import { Color } from 'constants/css';
 import Notification from 'components/Notification';
 import { connect } from 'react-redux';
 import { logout, uploadProfilePic } from 'redux/actions/UserActions';
+import { css } from 'emotion';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
@@ -53,8 +54,7 @@ class MobileMenu extends Component {
     } = this.state;
     return (
       <div
-        className="mobile"
-        css={`
+        className={`mobile ${css`
           top: 0;
           bottom: 0;
           left: 0;
@@ -63,11 +63,10 @@ class MobileMenu extends Component {
           z-index: 2000;
           background: rgba(0, 0, 0, 0.5);
           display: flex;
-        `}
+        `}`}
       >
         <div
-          className="momentum-scroll-enabled"
-          css={`
+          className={`momentum-scroll-enabled ${css`
             height: 100%;
             width: 70%;
             position: relative;
@@ -75,7 +74,7 @@ class MobileMenu extends Component {
             margin-left: ${marginLeft};
             transition: margin-left 0.5s;
             overflow-y: scroll;
-          `}
+          `}`}
         >
           <ProfileWidget
             history={history}
@@ -95,7 +94,7 @@ class MobileMenu extends Component {
           <Notification />
           {username && (
             <div
-              css={`
+              className={css`
                 background: #fff;
                 width: 100%;
                 text-align: center;
