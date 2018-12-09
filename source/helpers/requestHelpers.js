@@ -365,6 +365,15 @@ export const reorderPlaylistVideos = async({
   }
 };
 
+export const reportBug = async({ message, info }) => {
+  await request.post(`${URL}/user/error`, {
+    message,
+    info,
+    token: auth()?.headers?.authorization
+  });
+  return Promise.resolve();
+};
+
 export const searchContent = async({
   filter,
   limit,

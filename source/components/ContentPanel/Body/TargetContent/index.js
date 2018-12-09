@@ -174,16 +174,15 @@ class TargetContent extends Component {
                   </div>
                 </div>
                 <div>
-                  {discussion.description &&
-                    type === 'discussion' && (
-                      <LongText
-                        className={css`
-                          margin-top: 1rem;
-                        `}
-                      >
-                        {discussion.description}
-                      </LongText>
-                    )}
+                  {discussion.description && type === 'discussion' && (
+                    <LongText
+                      className={css`
+                        margin-top: 1rem;
+                      `}
+                    >
+                      {discussion.description}
+                    </LongText>
+                  )}
                 </div>
               </div>
             ))}
@@ -224,10 +223,10 @@ class TargetContent extends Component {
                               type === 'reply'
                                 ? 'replied'
                                 : type === 'comment'
-                                  ? 'commented'
-                                  : type === 'discussion'
-                                    ? 'responded'
-                                    : 'answered'
+                                ? 'commented'
+                                : type === 'discussion'
+                                ? 'responded'
+                                : 'answered'
                             }:`
                           }}
                           type="comment"
@@ -278,21 +277,20 @@ class TargetContent extends Component {
                       />
                     </div>
                     <div>
-                      {canStar &&
-                        userCanStarThis && (
-                          <Button
-                            love
-                            disabled={this.determineXpButtonDisabled()}
-                            onClick={() =>
-                              this.setState({ xpRewardInterfaceShown: true })
-                            }
-                          >
-                            <Icon icon="certificate" />
-                            <span style={{ marginLeft: '0.7rem' }}>
-                              {this.determineXpButtonDisabled() || 'Reward'}
-                            </span>
-                          </Button>
-                        )}
+                      {canStar && userCanStarThis && (
+                        <Button
+                          love
+                          disabled={this.determineXpButtonDisabled()}
+                          onClick={() =>
+                            this.setState({ xpRewardInterfaceShown: true })
+                          }
+                        >
+                          <Icon icon="certificate" />
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {this.determineXpButtonDisabled() || 'Reward'}
+                          </span>
+                        </Button>
+                      )}
                     </div>
                   </ErrorBoundary>
                 </div>

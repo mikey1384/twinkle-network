@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
+import { reportBug } from 'helpers/requestHelpers';
 
 export default class ErrorBoundary extends Component {
   static propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
+    userId: PropTypes.number,
+    username: PropTypes.string
   };
 
   state = { hasError: false };
 
   componentDidCatch(error, info) {
     this.setState({ hasError: true });
-    console.log(error, info);
+    reportBug({ message: error.message, info: info?.componentStack });
+    console.log(error);
   }
 
   render() {
