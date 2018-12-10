@@ -243,21 +243,16 @@ class Chat extends Component {
             className={css`
               width: 100%;
               padding: 1rem;
-              display: grid;
-              grid-template-columns: fr fr fr 10rem;
-              grid-template-areas: 'channelDetail channelDetail channelDetail newButton';
-              justify-items: stretch;
+              display: flex;
+              justify-content: space-between;
             `}
           >
             <div
               className={css`
                 grid-area: channelDetail;
-                display: grid;
-                grid-template-colums: 15rem fr;
-                grid-template-rows: fr fr;
-                grid-template-areas:
-                  '. channelName'
-                  '. channelMembers';
+                display: flex;
+                width: CALC(100% - 6rem);
+                flex-direction: column;
               `}
             >
               <span
@@ -277,6 +272,13 @@ class Chat extends Component {
                   cursor: 'default',
                   color: !channelName(channels, currentChannel) && '#7c7c7c'
                 }}
+                onClick={() =>
+                  this.setState(state => ({
+                    onTitleHover: textIsOverflown(this.channelTitle)
+                      ? !state.onTitleHover
+                      : false
+                  }))
+                }
                 onMouseOver={this.onMouseOverTitle}
                 onMouseLeave={() => this.setState({ onTitleHover: false })}
               >
@@ -287,8 +289,6 @@ class Chat extends Component {
               <FullTextReveal
                 text={channelName(channels, currentChannel) || ''}
                 show={onTitleHover}
-                width="100%"
-                style={{ top: '4rem' }}
               />
               {currentChannel.id !== 0 ? (
                 <small
@@ -308,15 +308,7 @@ class Chat extends Component {
                 <small>{'\u00a0'}</small>
               )}
             </div>
-            <Button
-              transparent
-              style={{
-                gridArea: 'newButton',
-                justifySelf: 'right',
-                alignSelf: 'center'
-              }}
-              onClick={this.onNewButtonClick}
-            >
+            <Button transparent onClick={this.onNewButtonClick}>
               +New
             </Button>
           </div>

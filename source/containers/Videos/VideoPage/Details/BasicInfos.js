@@ -105,11 +105,7 @@ export default class BasicInfos extends Component {
                 {cleanString(title)}
               </span>
             </div>
-            <FullTextReveal
-              width="100%"
-              show={titleHovered}
-              text={cleanString(title)}
-            />
+            <FullTextReveal show={titleHovered} text={cleanString(title)} />
           </div>
         )}
         {!onEdit && (

@@ -108,6 +108,13 @@ class SubjectHeader extends Component {
                       fontWeight: 'bold',
                       display: 'block'
                     }}
+                    onClick={() =>
+                      this.setState(state => ({
+                        onHover: textIsOverflown(this.headerLabel)
+                          ? !state.onHover
+                          : false
+                      }))
+                    }
                     onMouseOver={this.onMouseOver}
                     onMouseLeave={() => this.setState({ onHover: false })}
                     ref={ref => {
@@ -116,11 +123,7 @@ class SubjectHeader extends Component {
                   >
                     {subjectTitle}
                   </span>
-                  <FullTextReveal
-                    text={subjectTitle}
-                    show={onHover}
-                    width="100%"
-                  />
+                  <FullTextReveal text={subjectTitle} show={onHover} />
                   {this.renderDetails()}
                 </section>
                 <aside>
