@@ -77,7 +77,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "dotenv": "^6.1.0",
     "enzyme": "^3.8.0",
-    "eslint": "^5.8.0",
+    "eslint": "^5.11.1",
     "eslint-config-4catalyzer-react": "^0.6.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-flowtype": "^3.1.4",
