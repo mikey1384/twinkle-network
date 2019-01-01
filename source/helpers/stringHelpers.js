@@ -183,7 +183,9 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(fox\))/gi, '🦊')
     .replace(/(\(ghost\))/gi, '👻')
     .replace(/(\(crayon\))/gi, '🖍️')
-    .replace(/(\(colored pencil\))/gi, '🖍️');
+    .replace(/(\(colored pencil\))/gi, '🖍️')
+    .replace((/(\(happy\))/gi, '😄 ')
+    .replace(/(\(thank you\))/gi, '🙏');
 }
 
 export function addEmoji(string) {
