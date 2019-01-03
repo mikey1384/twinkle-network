@@ -47,16 +47,16 @@ export default function MainContent({
           (type === 'discussion' && rootType === 'video')) && (
           <VideoPlayer
             stretch
-            isStarred={!!(contentObj.isStarred || rootObj.isStarred)}
-            byUser={!!(contentObj.byUser || rootObj.byUser)}
+            isStarred={!!(rootObj.isStarred || contentObj.isStarred)}
+            byUser={!!(rootObj.byUser || contentObj.byUser)}
             onEdit={isEditing}
-            title={contentObj.title || rootObj.title}
+            title={rootObj.title || contentObj.title}
             hasHqThumb={
-              typeof contentObj.hasHqThumb === 'number'
-                ? contentObj.hasHqThumb
-                : rootObj.hasHqThumb
+              typeof rootObj.hasHqThumb === 'number'
+                ? rootObj.hasHqThumb
+                : contentObj.hasHqThumb
             }
-            uploader={contentObj.uploader || rootObj.uploader}
+            uploader={rootObj.uploader || contentObj.uploader}
             videoId={type === 'video' ? contentObj.id : contentObj.rootId}
             videoCode={type === 'video' ? contentObj.content : rootObj.content}
             style={{ paddingBottom: '0.5rem' }}
@@ -72,10 +72,9 @@ export default function MainContent({
             videoCode={type === 'video' ? contentObj.content : undefined}
           />
         )}
-        {type === 'question' &&
-          !!contentObj.difficulty && (
-            <DifficultyBar difficulty={contentObj.difficulty} />
-          )}
+        {type === 'question' && !!contentObj.difficulty && (
+          <DifficultyBar difficulty={contentObj.difficulty} />
+        )}
         {type === 'video' && (
           <TagStatus
             onAddTags={onAddTags}
@@ -153,8 +152,8 @@ export default function MainContent({
                   {!stringIsEmpty(contentObj.description)
                     ? contentObj.description
                     : type === 'video' || type === 'url'
-                      ? contentObj.title
-                      : ''}
+                    ? contentObj.title
+                    : ''}
                 </LongText>
               </div>
             </>
@@ -175,26 +174,23 @@ export default function MainContent({
             />
           )}
         </div>
-        {type === 'comment' &&
-          contentObj.rootType === 'user' && (
-            <Profile profile={contentObj.rootObj} />
-          )}
-        {!isEditing &&
-          type === 'url' && (
-            <Embedly
-              title={cleanString(contentObj.title)}
-              url={contentObj.content}
-              id={contentObj.contentId}
-              {...urlRelated}
-            />
-          )}
-        {type === 'discussion' &&
-          !!contentObj.difficulty && (
-            <DifficultyBar
-              style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
-              difficulty={contentObj.difficulty}
-            />
-          )}
+        {type === 'comment' && contentObj.rootType === 'user' && (
+          <Profile profile={contentObj.rootObj} />
+        )}
+        {!isEditing && type === 'url' && (
+          <Embedly
+            title={cleanString(contentObj.title)}
+            url={contentObj.content}
+            id={contentObj.contentId}
+            {...urlRelated}
+          />
+        )}
+        {type === 'discussion' && !!contentObj.difficulty && (
+          <DifficultyBar
+            style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
+            difficulty={contentObj.difficulty}
+          />
+        )}
         {(type === 'comment' || type === 'discussion') &&
           rootType === 'url' && (
             <Embedly
