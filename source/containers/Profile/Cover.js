@@ -13,6 +13,7 @@ import { profileThemes } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 import Icon from 'components/Icon';
 import ChristmasCover from './christmas-cover.png';
+import NewYearsCover from './newyears-cover.png';
 import moment from 'moment';
 
 class Cover extends Component {
@@ -71,12 +72,13 @@ class Cover extends Component {
           style={{
             ...profileThemes[selectedTheme || profileTheme || 'logoBlue'],
             ...((selectedTheme || profileTheme) === 'black' &&
-            (rank <= 30 && rank > 0) &&
-            moment().month() === 11
+            (rank <= 30 && rank > 0)
               ? {
                   color: Color.gold(),
-                  backgroundImage: `url(${ChristmasCover})`,
-                  backgroundSize: 'cover',
+                  backgroundImage: `url(${
+                    moment().month() === 11 ? ChristmasCover : NewYearsCover
+                  })`,
+                  backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat'
                 }
               : {})
@@ -131,17 +133,16 @@ class Cover extends Component {
               right: '1rem'
             }}
           >
-            {!colorSelectorShown &&
-              id === userId && (
-                <Button
-                  style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
-                  default
-                  filled
-                  onClick={() => this.setState({ colorSelectorShown: true })}
-                >
-                  Change Theme
-                </Button>
-              )}
+            {!colorSelectorShown && id === userId && (
+              <Button
+                style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
+                default
+                filled
+                onClick={() => this.setState({ colorSelectorShown: true })}
+              >
+                Change Theme
+              </Button>
+            )}
             {id !== userId && (
               <div
                 style={{
@@ -173,45 +174,44 @@ class Cover extends Component {
                 </Button>
               </div>
             )}
-            {colorSelectorShown &&
-              id === userId && (
-                <>
-                  <ColorSelector
-                    colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
-                    twinkleXP={twinkleXP || 0}
-                    setColor={onSelectTheme}
-                    selectedColor={selectedTheme || profileTheme || 'logoBlue'}
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      justifyContent: 'center'
-                    }}
-                  />
-                  <div
-                    style={{
-                      display: 'flex',
-                      marginTop: '1rem',
-                      justifyContent: 'flex-end'
-                    }}
+            {colorSelectorShown && id === userId && (
+              <>
+                <ColorSelector
+                  colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
+                  twinkleXP={twinkleXP || 0}
+                  setColor={onSelectTheme}
+                  selectedColor={selectedTheme || profileTheme || 'logoBlue'}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    justifyContent: 'center'
+                  }}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    marginTop: '1rem',
+                    justifyContent: 'flex-end'
+                  }}
+                >
+                  <Button
+                    style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                    snow
+                    onClick={this.onColorSelectCancel}
                   >
-                    <Button
-                      style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                      snow
-                      onClick={this.onColorSelectCancel}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      style={{ fontSize: '1.2rem' }}
-                      primary
-                      filled
-                      onClick={this.onSetTheme}
-                    >
-                      Change
-                    </Button>
-                  </div>
-                </>
-              )}
+                    Cancel
+                  </Button>
+                  <Button
+                    style={{ fontSize: '1.2rem' }}
+                    primary
+                    filled
+                    onClick={this.onSetTheme}
+                  >
+                    Change
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
           <input
             ref={ref => {

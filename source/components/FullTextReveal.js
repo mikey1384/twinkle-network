@@ -6,15 +6,13 @@ FullTextReveal.propTypes = {
   direction: PropTypes.string,
   show: PropTypes.bool,
   style: PropTypes.object,
-  text: PropTypes.string.isRequired,
-  width: PropTypes.string
+  text: PropTypes.string.isRequired
 };
 export default function FullTextReveal({
   direction = 'right',
   style,
   show,
-  text,
-  width = '500px'
+  text
 }) {
   return (
     <div style={{ position: 'relative' }}>
@@ -29,6 +27,7 @@ export default function FullTextReveal({
           right: direction === 'right' ? 'auto' : 0,
           left: direction === 'left' ? 'auto' : 0,
           minWidth: '10rem',
+          width: '100%',
           position: 'absolute',
           background: '#fff',
           boxShadow: `0 0 1px ${Color.black(0.9)}`,

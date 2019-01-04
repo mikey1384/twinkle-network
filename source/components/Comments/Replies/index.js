@@ -60,14 +60,29 @@ class Replies extends Component {
   }
 
   render() {
-    const {
+    let {
       innerRef,
-      replies,
+      replies: rawReplies,
       userId,
       comment,
       discussion,
       parent
     } = this.props;
+    let allReplies = [];
+    let dupe = {};
+    for (let reply of rawReplies) {
+      allReplies =
+        reply.replies && reply.replies.length > 0
+          ? allReplies.concat([reply, ...reply.replies])
+          : allReplies.concat(reply);
+    }
+    let replies = [];
+    for (let reply of allReplies) {
+      if (dupe[reply.id]) continue;
+      replies.push(reply);
+      dupe[reply.id] = true;
+    }
+    replies.sort((a, b) => a.id - b.id);
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (

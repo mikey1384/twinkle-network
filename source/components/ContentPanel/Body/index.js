@@ -74,6 +74,8 @@ class Body extends Component {
     xpRewardInterfaceShown: false
   };
 
+  mounted = false;
+
   async componentDidMount() {
     const {
       autoExpand,
@@ -81,30 +83,39 @@ class Body extends Component {
       commentsLoadLimit,
       contentObj: { type, contentId }
     } = this.props;
+    this.mounted = true;
     if (autoExpand) {
       const data = await loadComments({
         type: type,
         id: contentId,
         limit: commentsLoadLimit
       });
-      if (data) onShowComments(data);
-      this.setState({ commentsShown: true });
+      if (this.mounted) {
+        if (data) onShowComments(data);
+        this.setState({ commentsShown: true });
+      }
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.contentObj.id !== this.props.contentObj.id ||
-      prevProps.type !== this.props.type
-    ) {
-      this.setState({ commentsShown: false });
+    if (this.mounted) {
+      if (
+        prevProps.contentObj.id !== this.props.contentObj.id ||
+        prevProps.type !== this.props.type
+      ) {
+        this.setState({ commentsShown: false });
+      }
+      if (prevProps.contentObj.content !== this.props.contentObj.content) {
+        this.setState({ edited: true });
+      }
+      if (prevProps.myId !== this.props.myId) {
+        this.setState({ xpRewardInterfaceShown: false });
+      }
     }
-    if (prevProps.contentObj.content !== this.props.contentObj.content) {
-      this.setState({ edited: true });
-    }
-    if (prevProps.myId !== this.props.myId) {
-      this.setState({ xpRewardInterfaceShown: false });
-    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
@@ -185,32 +196,30 @@ class Body extends Component {
               title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
             />
           )}
-          {type === 'comment' &&
-            attachedVideoShown && (
-              <VideoPlayer
-                stretch
-                autoplay
-                isStarred={!!rootObj.isStarred}
-                byUser={!!rootObj.byUser}
-                title={rootObj.title}
-                style={{ marginBottom: '1rem' }}
-                uploader={rootObj.uploader}
-                hasHqThumb={rootObj.hasHqThumb}
-                videoId={rootId}
-                videoCode={rootObj.content}
-              />
-            )}
-          {type === 'comment' &&
-            (commentId || replyId || discussionId) && (
-              <TargetContent
-                targetObj={targetObj}
-                rootObj={rootObj}
-                myId={myId}
-                rootId={rootId}
-                rootType={rootType}
-                feedId={feedId}
-              />
-            )}
+          {type === 'comment' && attachedVideoShown && (
+            <VideoPlayer
+              stretch
+              autoplay
+              isStarred={!!rootObj.isStarred}
+              byUser={!!rootObj.byUser}
+              title={rootObj.title}
+              style={{ marginBottom: '1rem' }}
+              uploader={rootObj.uploader}
+              hasHqThumb={rootObj.hasHqThumb}
+              videoId={rootId}
+              videoCode={rootObj.content}
+            />
+          )}
+          {type === 'comment' && (commentId || replyId || discussionId) && (
+            <TargetContent
+              targetObj={targetObj}
+              rootObj={rootObj}
+              myId={myId}
+              rootId={rootId}
+              rootType={rootType}
+              feedId={feedId}
+            />
+          )}
           <MainContent
             contentId={contentId}
             contentObj={contentObj}
@@ -271,15 +280,14 @@ class Body extends Component {
                           {type === 'video' || type === 'url'
                             ? 'Comment'
                             : type === 'question'
-                              ? 'Respond'
-                              : 'Reply'}
+                            ? 'Respond'
+                            : 'Reply'}
                         </span>
-                        {numChildComments > 0 &&
-                          !commentsShown && (
-                            <span style={{ marginLeft: '0.5rem' }}>
-                              ({numChildComments})
-                            </span>
-                          )}
+                        {numChildComments > 0 && !commentsShown && (
+                          <span style={{ marginLeft: '0.5rem' }}>
+                            ({numChildComments})
+                          </span>
+                        )}
                       </Button>
                     </>
                   )}
@@ -306,38 +314,35 @@ class Body extends Component {
                       menuProps={this.renderEditMenuItems()}
                     />
                   )}
-                  {canStar &&
-                    userCanStarThis &&
-                    myId !== uploader.id && (
-                      <Button
-                        love
-                        disabled={this.determineXpButtonDisabled()}
-                        style={{ marginLeft: '1rem' }}
-                        onClick={() =>
-                          this.setState({ xpRewardInterfaceShown: true })
-                        }
-                      >
-                        <Icon icon="certificate" />
-                        <span style={{ marginLeft: '0.7rem' }}>
-                          {this.determineXpButtonDisabled() || 'Reward'}
-                        </span>
-                      </Button>
-                    )}
+                  {canStar && userCanStarThis && myId !== uploader.id && (
+                    <Button
+                      love
+                      disabled={this.determineXpButtonDisabled()}
+                      style={{ marginLeft: '1rem' }}
+                      onClick={() =>
+                        this.setState({ xpRewardInterfaceShown: true })
+                      }
+                    >
+                      <Icon icon="certificate" />
+                      <span style={{ marginLeft: '0.7rem' }}>
+                        {this.determineXpButtonDisabled() || 'Reward'}
+                      </span>
+                    </Button>
+                  )}
                 </div>
                 <div className="right">
-                  {canStar &&
-                    type === 'video' && (
-                      <div style={{ position: 'relative' }}>
-                        <StarButton
-                          byUser={!!contentObj.byUser}
-                          contentId={contentObj.id}
-                          isStarred={!!isStarred}
-                          onToggleStarred={this.onToggleStarred}
-                          onToggleByUser={this.onToggleByUser}
-                          uploader={uploader}
-                        />
-                      </div>
-                    )}
+                  {canStar && type === 'video' && (
+                    <div style={{ position: 'relative' }}>
+                      <StarButton
+                        byUser={!!contentObj.byUser}
+                        contentId={contentObj.id}
+                        isStarred={!!isStarred}
+                        onToggleStarred={this.onToggleStarred}
+                        onToggleByUser={this.onToggleByUser}
+                        uploader={uploader}
+                      />
+                    </div>
+                  )}
                   {canEditDifficulty &&
                     (type === 'question' || type === 'discussion') && (
                       <StarButton
@@ -366,18 +371,17 @@ class Body extends Component {
                     this.setState({ userListModalShown: true })
                   }
                 />
-                {views > 10 &&
-                  type === 'video' && (
-                    <div
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '1.7rem'
-                      }}
-                    >
-                      {views} view
-                      {`${views > 1 ? 's' : ''}`}
-                    </div>
-                  )}
+                {views > 10 && type === 'video' && (
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '1.7rem'
+                    }}
+                  >
+                    {views} view
+                    {`${views > 1 ? 's' : ''}`}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -427,8 +431,8 @@ class Body extends Component {
               type === 'comment'
                 ? 'reply'
                 : type === 'question'
-                  ? 'respond'
-                  : 'comment'
+                ? 'respond'
+                : 'comment'
             }
             numPreviews={1}
             onAttachStar={onAttachStar}

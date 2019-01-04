@@ -16,7 +16,8 @@ export default class LeaderBoardTab extends Component {
   };
 
   state = {
-    users: []
+    users: [],
+    loaded: false
   };
 
   mounted = false;
@@ -26,7 +27,7 @@ export default class LeaderBoardTab extends Component {
     try {
       const { data: users } = await request.get(`${API_URL}/leaderBoard`);
       if (this.mounted) {
-        this.setState(() => ({ users }));
+        this.setState(() => ({ users, loaded: true }));
       }
     } catch (error) {
       console.error(error.response || error);
@@ -39,10 +40,10 @@ export default class LeaderBoardTab extends Component {
 
   render() {
     const { myId } = this.props;
-    const { users } = this.state;
+    const { loaded, users } = this.state;
     return (
       <>
-        {users.length === 0 && <Loading />}
+        {loaded === false && <Loading />}
         {users.map(user => {
           const rank = !user.twinkleXP
             ? undefined
@@ -52,10 +53,10 @@ export default class LeaderBoardTab extends Component {
             rank === 1
               ? Color.gold()
               : rank === 2
-                ? Color.lightGray()
-                : rank === 3
-                  ? Color.orange()
-                  : undefined;
+              ? Color.lightGray()
+              : rank === 3
+              ? Color.orange()
+              : undefined;
           return (
             <li
               key={user.id}
