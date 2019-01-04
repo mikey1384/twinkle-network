@@ -185,6 +185,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(crayon\))/gi, '🖍️')
     .replace(/(\(colored pencil\))/gi, '🖍️')
     .replace(/(\(happy\))/gi, '😄 ')
+    .replace(/(\(vegetable\))/gi, '🥬 ')
     .replace(/(\(thank you\))/gi, '🙏');
 }
 
