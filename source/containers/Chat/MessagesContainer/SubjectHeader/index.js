@@ -226,7 +226,7 @@ class SubjectHeader extends Component {
     } = this.props;
     const isReloaded = reloader && reloader.id;
     let posterString =
-      'You can change this subject by clicking the blue "Change subject" button';
+      'You can change this subject by clicking the blue "Change Subject" button';
     if (uploader.id) {
       posterString = (
         <span>
