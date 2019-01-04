@@ -141,6 +141,7 @@ class VideoPage extends Component {
     loadVideoDiscussions(discussionsObj);
     const comments = await loadComments({ id: params.videoId, type: 'video' });
     if (comments) loadVideoComments(comments);
+    this.setState({ commentsLoaded: true });
   }
 
   async componentDidUpdate(prevProps) {
