@@ -82,6 +82,7 @@ class Replies extends Component {
       replies.push(reply);
       dupe[reply.id] = true;
     }
+    replies.sort((a, b) => a.id - b.id);
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (
