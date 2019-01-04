@@ -60,14 +60,21 @@ class Replies extends Component {
   }
 
   render() {
-    const {
+    let {
       innerRef,
-      replies,
+      replies: rawReplies,
       userId,
       comment,
       discussion,
       parent
     } = this.props;
+    let replies = [];
+    for (let reply of rawReplies) {
+      replies =
+        reply.replies && reply.replies.length > 0
+          ? replies.concat([reply, ...reply.replies])
+          : replies.concat(reply);
+    }
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (
