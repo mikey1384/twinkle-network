@@ -68,12 +68,19 @@ class Replies extends Component {
       discussion,
       parent
     } = this.props;
-    let replies = [];
+    let allReplies = [];
+    let dupe = {};
     for (let reply of rawReplies) {
-      replies =
+      allReplies =
         reply.replies && reply.replies.length > 0
-          ? replies.concat([reply, ...reply.replies])
-          : replies.concat(reply);
+          ? allReplies.concat([reply, ...reply.replies])
+          : allReplies.concat(reply);
+    }
+    let replies = [];
+    for (let reply of allReplies) {
+      if (dupe[reply.id]) continue;
+      replies.push(reply);
+      dupe[reply.id] = true;
     }
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
