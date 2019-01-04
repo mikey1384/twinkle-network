@@ -226,7 +226,7 @@ class SubjectHeader extends Component {
     } = this.props;
     const isReloaded = reloader && reloader.id;
     let posterString =
-      'You can change this subject by clicking the blue "Change the subject" button';
+      'You can change this subject by clicking the blue "Change subject" button';
     if (uploader.id) {
       posterString = (
         <span>
@@ -250,7 +250,7 @@ class SubjectHeader extends Component {
         ) : (
           <small>
             {
-              'You can change the subject by clicking the "Change the Subject" button on the right'
+              'You can change the subject by clicking the "Change Subject" button on the right'
             }
           </small>
         )}
