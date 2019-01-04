@@ -20,6 +20,8 @@ class Content extends Component {
     exists: false
   };
 
+  mounted = false;
+
   async componentDidMount() {
     const {
       match: {
@@ -27,6 +29,7 @@ class Content extends Component {
         url
       }
     } = this.props;
+    this.mounted = true;
     let type = url.split('/')[1].slice(0, -1);
     if (type === 'subject') type = 'question';
     try {
@@ -35,20 +38,24 @@ class Content extends Component {
       } = await request.get(
         `${URL}/content/check?contentId=${contentId}&type=${type}`
       );
-      this.setState({
-        loaded: true,
-        exists,
-        contentObj: {
-          contentId,
-          type
-        }
-      });
+      if (this.mounted) {
+        this.setState({
+          loaded: true,
+          exists,
+          contentObj: {
+            contentId,
+            type
+          }
+        });
+      }
     } catch (error) {
       console.error(error);
-      this.setState({
-        loaded: true,
-        exists: false
-      });
+      if (this.mounted) {
+        this.setState({
+          loaded: true,
+          exists: false
+        });
+      }
     }
   }
 
@@ -67,22 +74,30 @@ class Content extends Component {
         } = await request.get(
           `${URL}/content/check?contentId=${contentId}&type=${type}`
         );
-        this.setState({
-          loaded: true,
-          exists,
-          contentObj: {
-            contentId,
-            type
-          }
-        });
+        if (this.mounted) {
+          this.setState({
+            loaded: true,
+            exists,
+            contentObj: {
+              contentId,
+              type
+            }
+          });
+        }
       } catch (error) {
         console.error(error);
-        this.setState({
-          loaded: true,
-          exists: false
-        });
+        if (this.mounted) {
+          this.setState({
+            loaded: true,
+            exists: false
+          });
+        }
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   render() {
@@ -253,14 +268,13 @@ class Content extends Component {
             ...comment,
             content: comment.id === commentId ? editedComment : comment.content,
             replies: comment.replies
-              ? comment.replies.map(
-                  reply =>
-                    reply.id === commentId
-                      ? {
-                          ...reply,
-                          content: editedComment
-                        }
-                      : reply
+              ? comment.replies.map(reply =>
+                  reply.id === commentId
+                    ? {
+                        ...reply,
+                        content: editedComment
+                      }
+                    : reply
                 )
               : []
           })),
@@ -272,14 +286,13 @@ class Content extends Component {
                       ...state.contentObj.targetObj.comment,
                       comments: (
                         state.contentObj.targetObj.comment.comments || []
-                      ).map(
-                        comment =>
-                          comment.id === commentId
-                            ? {
-                                ...comment,
-                                content: editedComment
-                              }
-                            : comment
+                      ).map(comment =>
+                        comment.id === commentId
+                          ? {
+                              ...comment,
+                              content: editedComment
+                            }
+                          : comment
                       )
                     }
                   : undefined
