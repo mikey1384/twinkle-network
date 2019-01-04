@@ -31,84 +31,88 @@ export default class Channels extends Component {
       onChannelEnter,
       selectedChannelId
     } = this.props;
-    return channels.filter(channel => !channel.isHidden).map(channel => {
-      const {
-        lastMessageSender,
-        lastMessage,
-        id,
-        channelName,
-        numUnreads
-      } = channel;
-      return (
-        <div
-          className={css`
-            &:hover {
-              background: ${Color.wellGray()};
-            }
-          `}
-          style={{
-            width: '100%',
-            backgroundColor: id === selectedChannelId && Color.channelGray(),
-            cursor: 'pointer',
-            padding: '1rem',
-            height: '6.5rem'
-          }}
-          onClick={() => onChannelEnter(id)}
-          key={id}
-        >
+    return channels
+      .filter(channel => !channel.isHidden)
+      .map(channel => {
+        const {
+          lastMessageSender,
+          lastMessage,
+          id,
+          channelName,
+          numUnreads
+        } = channel;
+        return (
           <div
+            className={css`
+              &:hover {
+                background: ${Color.wellGray()};
+              }
+            `}
             style={{
-              display: 'flex',
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
+              width: '100%',
+              backgroundColor: id === selectedChannelId && Color.channelGray(),
+              cursor: 'pointer',
+              padding: '1rem',
+              height: '6.5rem'
             }}
+            onClick={() => onChannelEnter(id)}
+            key={id}
           >
             <div
               style={{
                 display: 'flex',
-                width: '85%',
                 height: '100%',
-                whiteSpace: 'nowrap',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}
             >
-              <div>
-                <h4
-                  style={{
-                    color: !channelName && '#7c7c7c',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    lineHeight: 'normal'
-                  }}
-                >
-                  {channelName || '(Deleted)'}
-                </h4>
-              </div>
               <div
                 style={{
-                  width: '100%',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden'
+                  display: 'flex',
+                  width: '85%',
+                  height: '100%',
+                  whiteSpace: 'nowrap',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
                 }}
               >
-                {lastMessageSender && lastMessage ? (
-                  <>
-                    <span>{`${
-                      lastMessageSender.id === userId
-                        ? 'You'
-                        : lastMessageSender.username
-                    }:`}</span>{' '}
-                    <span>{lastMessage.substring(0, 100)}</span>
-                  </>
-                ) : (
-                  '\u00a0'
-                )}
+                <div>
+                  <p
+                    style={{
+                      color: !channelName && '#7c7c7c',
+                      fontWeight: 'bold',
+                      margin: 0,
+                      padding: 0,
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      lineHeight: 'normal'
+                    }}
+                  >
+                    {channelName || '(Deleted)'}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    width: '100%',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {lastMessageSender && lastMessage ? (
+                    <>
+                      <span>{`${
+                        lastMessageSender.id === userId
+                          ? 'You'
+                          : lastMessageSender.username
+                      }:`}</span>{' '}
+                      <span>{lastMessage.substring(0, 100)}</span>
+                    </>
+                  ) : (
+                    '\u00a0'
+                  )}
+                </div>
               </div>
-            </div>
-            {id !== currentChannel.id &&
-              numUnreads > 0 && (
+              {id !== currentChannel.id && numUnreads > 0 && (
                 <div
                   style={{
                     background: Color.pink(),
@@ -125,9 +129,9 @@ export default class Channels extends Component {
                   {numUnreads}
                 </div>
               )}
+            </div>
           </div>
-        </div>
-      );
-    });
+        );
+      });
   }
 }
