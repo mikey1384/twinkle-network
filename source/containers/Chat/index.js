@@ -247,7 +247,7 @@ class Chat extends Component {
         <div
           className={css`
             height: 100%;
-            width: 100%;
+            width: CALC(100% - 30rem);
             border-left: 1px solid ${Color.borderGray()};
             padding: 0 0 1rem 1rem;
             position: relative;
