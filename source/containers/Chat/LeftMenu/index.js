@@ -20,7 +20,7 @@ const channelName = (channels, currentChannel) => {
   return null;
 };
 
-export default class ChannelContainer extends Component {
+export default class LeftMenu extends Component {
   static propTypes = {
     channels: PropTypes.array.isRequired,
     channelLoadMoreButtonShown: PropTypes.bool.isRequired,
@@ -74,9 +74,8 @@ export default class ChannelContainer extends Component {
         className={css`
           display: flex;
           flex-direction: column;
-          margin-top: 1rem;
-          height: CALC(100vh - 8rem);
-          width: 25%;
+          height: CALC(100vh - 7rem);
+          width: 30rem;
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;

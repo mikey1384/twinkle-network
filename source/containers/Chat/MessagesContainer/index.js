@@ -141,7 +141,7 @@ class MessagesContainer extends Component {
               right: '0',
               bottom: '0',
               opacity: loading && '0.3',
-              top: currentChannelId === 2 ? '6rem' : 0,
+              top: currentChannelId === 2 ? '7rem' : 0,
               overflowY: 'scroll'
             }}
             onScroll={() => {
@@ -161,6 +161,7 @@ class MessagesContainer extends Component {
               {loadMoreButton ? (
                 <div
                   style={{
+                    marginTop: '1rem',
                     marginBottom: '1rem',
                     display: 'flex',
                     justifyContent: 'center',

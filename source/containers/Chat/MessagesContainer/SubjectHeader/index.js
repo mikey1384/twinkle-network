@@ -74,13 +74,7 @@ class SubjectHeader extends Component {
           align-items: center;
           justify-content: space-between;
           width: 100%;
-          height: 5rem;
-          > section {
-            width: 85%;
-          }
-          > aside {
-            width: 14%;
-          }
+          height: 7rem;
           @media (max-width: ${mobileMaxWidth}) {
             > section {
               width: 70%;
@@ -126,16 +120,18 @@ class SubjectHeader extends Component {
                   <FullTextReveal text={subjectTitle} show={onHover} />
                   {this.renderDetails()}
                 </section>
-                <aside>
-                  <Button
-                    filled
-                    logo
-                    style={{ fontSize: '1.3rem' }}
-                    onClick={() => this.setState({ onEdit: true })}
-                  >
-                    Change Subject
-                  </Button>
-                </aside>
+                <Button
+                  filled
+                  logo
+                  style={{
+                    position: 'absolute',
+                    fontSize: '1.3rem',
+                    right: '1rem'
+                  }}
+                  onClick={() => this.setState({ onEdit: true })}
+                >
+                  Change Subject
+                </Button>
               </>
             )}
             {onEdit && (

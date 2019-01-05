@@ -10,10 +10,10 @@ import EditTitleModal from './Modals/EditTitle';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import Channels from './Channels';
+import LeftMenu from './LeftMenu';
 import Loading from 'components/Loading';
 import { GENERAL_CHAT_ID } from 'constants/database';
-import { mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 
@@ -184,7 +184,6 @@ class Chat extends Component {
           width: 100%;
           height: 100%;
           display: flex;
-          padding-left: 1rem;
           font-size: 1.5rem;
           position: relative;
           @media (max-width: ${mobileMaxWidth}) {
@@ -233,7 +232,7 @@ class Chat extends Component {
             title="Online Status"
           />
         )}
-        <Channels
+        <LeftMenu
           channels={channels}
           channelLoadMoreButtonShown={channelLoadMoreButtonShown}
           currentChannel={currentChannel}
@@ -247,11 +246,10 @@ class Chat extends Component {
         />
         <div
           className={css`
-            height: CALC(100% - 1rem);
-            margin-top: 1rem;
-            width: CALC(75% - 2rem);
-            margin-left: 1rem;
-            padding: 1rem;
+            height: 100%;
+            width: CALC(100% - 30rem);
+            border-left: 1px solid ${Color.borderGray()};
+            padding: 0 0 1rem 1rem;
             position: relative;
             background: #fff;
           `}

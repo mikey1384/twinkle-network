@@ -9,7 +9,7 @@ import {
 } from 'helpers/stringHelpers';
 import SearchDropdown from 'components/SearchDropdown';
 import Button from 'components/Button';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { Color } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
 import SubjectsModal from '../../Modals/SubjectsModal';
 import Input from 'components/Texts/Input';
@@ -56,27 +56,7 @@ class EditSubjectForm extends Component {
       searchResults
     } = this.props;
     return (
-      <div
-        className={css`
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          > form {
-            width: 85%;
-          }
-          > aside {
-            width: 14%;
-          }
-          @media (max-width: ${mobileMaxWidth}) {
-            > form {
-              width: 69%;
-            }
-            > aside {
-              width: 30%;
-            }
-          }
-        `}
-      >
+      <>
         {subjectsModalShown && (
           <SubjectsModal
             currentSubjectId={currentSubjectId}
@@ -87,53 +67,80 @@ class EditSubjectForm extends Component {
             }}
           />
         )}
-        <>
-          <form onSubmit={event => this.onEditSubmit(event)}>
-            <Input
-              autoFocus={autoFocus}
-              type="text"
-              className="form-control"
-              placeholder={edit.subject}
-              value={title}
-              onChange={this.onInputChange}
-              onKeyUp={event =>
-                this.setState({ title: addEmoji(event.target.value) })
-              }
-              onKeyDown={this.onKeyDown}
-            />
-            <small style={{ color: title.length > maxLength && 'red' }}>
-              {title.length}/{maxLength} Characters
-            </small>
-            {title.length <= maxLength && (
-              <small>
-                {' '}
-                (Press <b>Enter</b> to Apply)
-              </small>
-            )}
-          </form>
-          {searchResults.length > 0 && (
-            <SearchDropdown
-              onUpdate={this.onUpdate}
-              onUnmount={() => this.setState({ highlightedIndex: -1 })}
-              onItemClick={this.onItemClick}
-              renderItemLabel={this.renderItemLabel}
-              startingIndex={-1}
-              indexToHighlight={highlightedIndex}
-              searchResults={searchResults}
-            />
-          )}
-        </>
-        <aside>
-          <Button
-            style={{ width: '100%', fontSize: '1.4rem' }}
-            filled
-            success
-            onClick={() => this.setState({ subjectsModalShown: true })}
+        <div style={{ width: '100%' }}>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start'
+            }}
+            className={css`
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+            `}
           >
-            View Subjects
-          </Button>
-        </aside>
-      </div>
+            <div style={{ width: '100%' }}>
+              <form
+                style={{ width: '100%' }}
+                onSubmit={event => this.onEditSubmit(event)}
+              >
+                <Input
+                  autoFocus={autoFocus}
+                  type="text"
+                  className="form-control"
+                  placeholder={edit.subject}
+                  value={title}
+                  onChange={this.onInputChange}
+                  onKeyUp={event =>
+                    this.setState({ title: addEmoji(event.target.value) })
+                  }
+                  onKeyDown={this.onKeyDown}
+                />
+              </form>
+              {searchResults.length > 0 && (
+                <SearchDropdown
+                  onUpdate={this.onUpdate}
+                  onUnmount={() => this.setState({ highlightedIndex: -1 })}
+                  onItemClick={this.onItemClick}
+                  renderItemLabel={this.renderItemLabel}
+                  startingIndex={-1}
+                  indexToHighlight={highlightedIndex}
+                  searchResults={searchResults}
+                />
+              )}
+            </div>
+            <div
+              style={{
+                marginLeft: '1rem',
+                marginRight: '1rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Button
+                style={{ fontSize: '1.4rem' }}
+                filled
+                success
+                onClick={() => this.setState({ subjectsModalShown: true })}
+              >
+                View Subjects
+              </Button>
+            </div>
+          </div>
+          <small style={{ color: title.length > maxLength && 'red' }}>
+            {title.length}/{maxLength} Characters
+          </small>
+          {title.length <= maxLength && (
+            <small>
+              {' '}
+              (Press <b>Enter</b> to Apply)
+            </small>
+          )}
+        </div>
+      </>
     );
   }
 
