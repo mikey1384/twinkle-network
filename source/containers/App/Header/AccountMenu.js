@@ -51,7 +51,7 @@ function AccountMenu({
       menuProps={[
         {
           label: 'Profile',
-          onClick: () => history.push(`./${username}`)
+          onClick: () => history.push(`/${username}`)
         },
         {
           label: 'Log out',
