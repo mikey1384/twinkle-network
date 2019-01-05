@@ -188,7 +188,7 @@ class Chat extends Component {
           position: relative;
           @media (max-width: ${mobileMaxWidth}) {
             width: CALC(100vw - 1rem);
-            height: CALC(100% - 2rem);
+            height: CALC(100% - 1rem);
           }
         `}
       >
