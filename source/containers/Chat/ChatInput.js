@@ -9,7 +9,8 @@ export default class ChatInput extends Component {
     message: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     onHeightChange: PropTypes.func.isRequired,
-    onMessageSubmit: PropTypes.func.isRequired
+    onMessageSubmit: PropTypes.func.isRequired,
+    style: PropTypes.object
   };
 
   Textarea = {};
@@ -22,7 +23,7 @@ export default class ChatInput extends Component {
   }
 
   render() {
-    const { message, onChange } = this.props;
+    const { message, onChange, style } = this.props;
     return (
       <Textarea
         innerRef={ref => {
@@ -39,6 +40,7 @@ export default class ChatInput extends Component {
           }
         }}
         autoFocus
+        style={style}
       />
     );
   }

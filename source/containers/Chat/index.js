@@ -247,7 +247,7 @@ class Chat extends Component {
         <div
           className={css`
             height: 100%;
-            width: CALC(100% - 30rem);
+            width: 100%;
             border-left: 1px solid ${Color.borderGray()};
             padding: 0 0 1rem 1rem;
             position: relative;
@@ -289,6 +289,7 @@ class Chat extends Component {
           />
           {socketConnected ? (
             <ChatInput
+              style={{ width: 'CALC(100% - 1rem)' }}
               onChange={text => this.setState({ chatMessage: text })}
               message={chatMessage}
               currentChannelId={this.props.currentChannel.id}
