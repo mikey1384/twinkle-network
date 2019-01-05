@@ -81,6 +81,7 @@ export default class LeftMenu extends Component {
           -webkit-overflow-scrolling: touch;
           @media (max-width: ${mobileMaxWidth}) {
             width: 25%;
+            height: CALC(100vh - 9rem);
           }
         `}
       >
