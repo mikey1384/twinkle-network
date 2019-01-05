@@ -7,7 +7,6 @@ import FullTextReveal from 'components/FullTextReveal';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { textIsOverflown } from 'helpers';
-import { mobileMaxWidth } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 
@@ -79,10 +78,6 @@ export default class LeftMenu extends Component {
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
-          @media (max-width: ${mobileMaxWidth}) {
-            width: 30%;
-            height: CALC(100% - 1rem);
-          }
         `}
       >
         <div
