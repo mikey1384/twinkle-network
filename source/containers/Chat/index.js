@@ -252,6 +252,9 @@ class Chat extends Component {
             padding: 0 0 1rem 1rem;
             position: relative;
             background: #fff;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 75%;
+            }
           `}
         >
           {currentChannel.id !== GENERAL_CHAT_ID && (

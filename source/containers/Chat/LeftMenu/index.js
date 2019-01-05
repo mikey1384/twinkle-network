@@ -8,6 +8,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 const channelName = (channels, currentChannel) => {
@@ -78,6 +79,9 @@ export default class LeftMenu extends Component {
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 25%;
+          }
         `}
       >
         <div
