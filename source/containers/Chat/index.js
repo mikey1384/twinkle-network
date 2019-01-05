@@ -10,18 +10,11 @@ import EditTitleModal from './Modals/EditTitle';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import Button from 'components/Button';
-import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
-import FullTextReveal from 'components/FullTextReveal';
 import Loading from 'components/Loading';
-import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { GENERAL_CHAT_ID } from 'constants/database';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { textIsOverflown } from 'helpers';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { queryStringForArray } from 'helpers/stringHelpers';
-import { chatStyle, channelContainer } from './Styles';
 import { css } from 'emotion';
 
 const channelName = (channels, currentChannel) => {
@@ -42,10 +35,10 @@ class Chat extends Component {
     selectedChannelId: PropTypes.number,
     userId: PropTypes.number,
     loadMoreButton: PropTypes.bool,
+    loadMoreChannels: PropTypes.func.isRequired,
     channelLoadMoreButtonShown: PropTypes.bool,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
-    loadMoreChannels: PropTypes.func,
     submitMessage: PropTypes.func,
     username: PropTypes.string,
     profilePicId: PropTypes.number,
@@ -77,7 +70,6 @@ class Chat extends Component {
     editTitleModalShown: false,
     onTitleHover: false,
     listScrollPosition: 0,
-    channelsLoading: false,
     textAreaHeight: 0
   };
 
@@ -112,18 +104,10 @@ class Chat extends Component {
         this.setState({ currentChannelOnlineMembers: data.membersOnline });
       }
     });
-    addEvent(this.channelList, 'scroll', this.onListScroll);
   }
 
   componentDidUpdate(prevProps) {
     const { currentChannel } = this.props;
-
-    if (
-      prevProps.channels[0] !== this.props.channels[0] &&
-      currentChannel.id === this.props.channels[0].id
-    ) {
-      this.channelList.scrollTop = 0;
-    }
 
     if (prevProps.selectedChannelId !== this.props.selectedChannelId) {
       this.setState({ loading: true });
@@ -149,7 +133,6 @@ class Chat extends Component {
     socket.removeListener('chat_invitation', this.onChatInvitation);
     socket.removeListener('subject_change', this.onSubjectChange);
     socket.removeListener('change_in_members_online');
-    removeEvent(this.channelList, 'scroll', this.onScroll);
     onUnmount();
   }
 
@@ -157,6 +140,7 @@ class Chat extends Component {
     const {
       channels,
       currentChannel,
+      loadMoreChannels,
       userId,
       channelLoadMoreButtonShown,
       selectedChannelId,
@@ -170,9 +154,7 @@ class Chat extends Component {
       inviteUsersModalShown,
       userListModalShown,
       editTitleModalShown,
-      onTitleHover,
       currentChannelOnlineMembers,
-      channelsLoading,
       textAreaHeight
     } = this.state;
 
@@ -197,7 +179,20 @@ class Chat extends Component {
         ];
 
     return (
-      <div className={chatStyle}>
+      <div
+        className={css`
+          width: 100%;
+          height: 100%;
+          display: flex;
+          padding-left: 1rem;
+          font-size: 1.5rem;
+          position: relative;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: CALC(100vw - 1rem);
+            height: CALC(100% - 2rem);
+          }
+        `}
+      >
         {leaveConfirmModalShown && (
           <ConfirmModal
             title="Leave Channel"
@@ -238,116 +233,18 @@ class Chat extends Component {
             title="Online Status"
           />
         )}
-        <div className={channelContainer}>
-          <div
-            className={css`
-              width: 100%;
-              padding: 1rem;
-              display: flex;
-              justify-content: space-between;
-            `}
-          >
-            <div
-              className={css`
-                grid-area: channelDetail;
-                display: flex;
-                width: CALC(100% - 6rem);
-                flex-direction: column;
-              `}
-            >
-              <span
-                ref={ref => {
-                  this.channelTitle = ref;
-                }}
-                style={{
-                  gridArea: 'channelName',
-                  textAlign: 'center',
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  display: 'block',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal',
-                  cursor: 'default',
-                  color: !channelName(channels, currentChannel) && '#7c7c7c'
-                }}
-                onClick={() =>
-                  this.setState(state => ({
-                    onTitleHover: textIsOverflown(this.channelTitle)
-                      ? !state.onTitleHover
-                      : false
-                  }))
-                }
-                onMouseOver={this.onMouseOverTitle}
-                onMouseLeave={() => this.setState({ onTitleHover: false })}
-              >
-                {channelName(channels, currentChannel)
-                  ? channelName(channels, currentChannel)
-                  : '(Deleted)'}
-              </span>
-              <FullTextReveal
-                text={channelName(channels, currentChannel) || ''}
-                show={onTitleHover}
-              />
-              {currentChannel.id !== 0 ? (
-                <small
-                  style={{ gridArea: 'channelMembers', textAlign: 'center' }}
-                >
-                  <a
-                    style={{
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => this.setState({ userListModalShown: true })}
-                  >
-                    {this.renderNumberOfMembers()}
-                  </a>{' '}
-                  online
-                </small>
-              ) : (
-                <small>{'\u00a0'}</small>
-              )}
-            </div>
-            <Button transparent onClick={this.onNewButtonClick}>
-              +New
-            </Button>
-          </div>
-          <ChatSearchBox />
-          <div
-            style={{
-              overflow: 'scroll',
-              position: 'absolute',
-              top: '11.5rem',
-              left: 0,
-              right: 0,
-              bottom: 0
-            }}
-            ref={ref => {
-              this.channelList = ref;
-            }}
-          >
-            <Channels
-              userId={userId}
-              currentChannel={currentChannel}
-              channels={channels}
-              selectedChannelId={selectedChannelId}
-              onChannelEnter={this.onChannelEnter}
-            />
-            {channelLoadMoreButtonShown && (
-              <LoadMoreButton
-                success
-                filled
-                loading={channelsLoading}
-                onClick={this.loadMoreChannels}
-                style={{
-                  width: '100%',
-                  borderRadius: 0,
-                  border: 0
-                }}
-              />
-            )}
-          </div>
-        </div>
+        <Channels
+          channels={channels}
+          channelLoadMoreButtonShown={channelLoadMoreButtonShown}
+          currentChannel={currentChannel}
+          currentChannelOnlineMembers={currentChannelOnlineMembers}
+          loadMoreChannels={loadMoreChannels}
+          onChannelEnter={this.onChannelEnter}
+          onNewButtonClick={this.onNewButtonClick}
+          selectedChannelId={selectedChannelId}
+          showUserListModal={() => this.setState({ userListModalShown: true })}
+          userId={userId}
+        />
         <div
           className={css`
             height: CALC(100% - 1rem);
@@ -418,31 +315,6 @@ class Chat extends Component {
     );
   }
 
-  loadMoreChannels = () => {
-    const { currentChannel, channels, loadMoreChannels } = this.props;
-    const { channelsLoading } = this.state;
-    if (!channelsLoading) {
-      this.setState({ channelsLoading: true });
-      loadMoreChannels(
-        currentChannel.id,
-        queryStringForArray({
-          array: channels,
-          originVar: 'id',
-          destinationVar: 'channelIds'
-        })
-      ).then(() => this.setState({ channelsLoading: false }));
-    }
-  };
-
-  renderNumberOfMembers = () => {
-    const { currentChannel } = this.props;
-    const { currentChannelOnlineMembers } = this.state;
-    const numberOfMembers = currentChannel.members.length;
-    return `${currentChannelOnlineMembers.length || 1}${
-      numberOfMembers <= 1 ? '' : '/' + numberOfMembers
-    }`;
-  };
-
   userListDescriptionShown = user => {
     const { currentChannelOnlineMembers } = this.state;
     let result = false;
@@ -454,15 +326,6 @@ class Chat extends Component {
 
   returnUsers = ({ members: allMembers }, currentChannelOnlineMembers) => {
     return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
-  };
-
-  onListScroll = () => {
-    if (
-      this.channelList.scrollTop >=
-      (this.channelList.scrollHeight - this.channelList.offsetHeight) * 0.7
-    ) {
-      this.loadMoreChannels();
-    }
   };
 
   onMessageSubmit = message => {
@@ -657,12 +520,6 @@ class Chat extends Component {
       profilePicId
     });
     this.setState({ leaveConfirmModalShown: false });
-  };
-
-  onMouseOverTitle = () => {
-    if (textIsOverflown(this.channelTitle)) {
-      this.setState({ onTitleHover: true });
-    }
   };
 }
 
