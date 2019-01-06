@@ -3,19 +3,17 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { renderStylesToString } from 'emotion-server';
 import { StaticRouter } from 'react-router';
-import createHistory from 'history/createMemoryHistory';
 import { Provider } from 'react-redux';
 import path from 'path';
 import App from '../source/containers/App';
-import createStoreWithHistory from './store';
+import createStoreWithMiddlewares from './store';
 
 const app = express();
 if (process.env.NODE_ENV !== 'production') {
   require('../webpack/webpack.dev').default(app);
 }
 
-const history = createHistory();
-export const store = createStoreWithHistory(history);
+export const store = createStoreWithMiddlewares();
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use((req, res) => {

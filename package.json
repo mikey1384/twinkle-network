@@ -44,7 +44,6 @@
     "express": "^4.16.4",
     "file-loader": "^3.0.1",
     "greenlock-express": "^2.6.7",
-    "history": "^4.7.2",
     "isomorphic-loader": "^2.0.2",
     "loadable-components": "^2.2.3",
     "lodash-es": "^4.17.11",

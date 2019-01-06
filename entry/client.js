@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import createStoreWithHistory from './store';
+import createStoreWithMiddlewares from './store';
 import App from 'containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
@@ -67,8 +66,7 @@ library.add(
   faUsers
 );
 
-const history = createBrowserHistory();
-const store = createStoreWithHistory(history);
+const store = createStoreWithMiddlewares();
 ReactDOM.hydrate(
   <Provider store={store}>
     <BrowserRouter>
