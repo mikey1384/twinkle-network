@@ -58,37 +58,35 @@ class DropdownButton extends Component {
       ...props
     } = this.props;
     return (
-      <ErrorBoundary>
-        <div style={{ position: 'relative', ...style }}>
-          <Button
-            {...props}
+      <ErrorBoundary style={{ position: 'relative', ...style }}>
+        <Button
+          {...props}
+          style={{
+            borderRadius: noBorderRadius && 0,
+            border: noBorderRadius && 0,
+            margin: noBorderRadius && 0,
+            opacity: menuDisplayed ? 1 : opacity,
+            ...(stretch ? { width: '100%' } : {}),
+            ...buttonStyle
+          }}
+          onClick={this.onClick}
+        >
+          <Icon icon={icon} size={iconSize} />
+          {text && <span>&nbsp;&nbsp;</span>}
+          {text}
+        </Button>
+        {menuDisplayed && (
+          <DropdownList
             style={{
-              borderRadius: noBorderRadius && 0,
-              border: noBorderRadius && 0,
-              margin: noBorderRadius && 0,
-              opacity: menuDisplayed ? 1 : opacity,
-              ...(stretch ? { width: '100%' } : {}),
-              ...buttonStyle
+              textTransform: 'none',
+              minWidth: '12rem',
+              ...listStyle
             }}
-            onClick={this.onClick}
+            direction={direction}
           >
-            <Icon icon={icon} size={iconSize} />
-            {text && <span>&nbsp;&nbsp;</span>}
-            {text}
-          </Button>
-          {menuDisplayed && (
-            <DropdownList
-              style={{
-                textTransform: 'none',
-                minWidth: '12rem',
-                ...listStyle
-              }}
-              direction={direction}
-            >
-              {this.renderMenu()}
-            </DropdownList>
-          )}
-        </div>
+            {this.renderMenu()}
+          </DropdownList>
+        )}
       </ErrorBoundary>
     );
   }
