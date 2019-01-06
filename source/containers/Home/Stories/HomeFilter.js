@@ -127,7 +127,7 @@ class HomeFilter extends Component {
                 >
                   {['all', 'post'].map(type => {
                     const displayLabel =
-                      type === 'all' ? 'All Posts' : 'Discussions';
+                      type === 'all' ? 'All Posts' : 'Subjects';
                     return (
                       <nav
                         key={type}
@@ -173,15 +173,14 @@ class HomeFilter extends Component {
                       ]}
                     />
                   )}
-                  {category === 'videos' &&
-                    userId && (
-                      <Switch
-                        color={Color.green()}
-                        checked={!!hideWatched}
-                        label="Hide Watched"
-                        onChange={toggleHideWatched}
-                      />
-                    )}
+                  {category === 'videos' && userId && (
+                    <Switch
+                      color={Color.green()}
+                      checked={!!hideWatched}
+                      label="Hide Watched"
+                      onChange={toggleHideWatched}
+                    />
+                  )}
                 </div>
               )}
             </div>
