@@ -1,5 +1,4 @@
 import request from 'axios';
-import { push } from 'connected-react-router';
 import { likePlaylistVideo } from './PlaylistActions';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
@@ -45,16 +44,12 @@ export const deleteVideo = ({
       `${API_URL}?videoId=${videoId}&lastVideoId=${lastVideoId}`,
       auth()
     );
-    if (!lastVideoId) {
-      dispatch(getInitialVideos());
-      dispatch(push('/videos'));
-    } else {
-      dispatch({
-        type: VIDEO.DELETE,
-        arrayIndex,
-        data
-      });
-    }
+    dispatch({
+      type: VIDEO.DELETE,
+      arrayIndex,
+      data
+    });
+    return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);
   }

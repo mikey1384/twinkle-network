@@ -147,8 +147,10 @@ class App extends Component {
     } = this.props;
     const { navScrollPositions, scrollPosition } = this.state;
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads;
-
-    if (snapshot.navScrollPosition) {
+    if (
+      snapshot.navScrollPosition &&
+      prevProps.location.pathname !== location.pathname
+    ) {
       this.setState(state => ({
         navScrollPositions: {
           ...state.navScrollPositions,
@@ -171,7 +173,7 @@ class App extends Component {
       }
     }
 
-    if (location !== prevProps.location) {
+    if (location.pathname !== prevProps.location.pathname) {
       if (history.action === 'PUSH') {
         if (loggedIn) {
           recordUserAction({ action: 'navigation', target: location.pathname });
@@ -356,16 +358,15 @@ class App extends Component {
             <Route path="/:username" component={Redirect} />
           </Switch>
         </div>
-        {chatMode &&
-          this.props.loggedIn && (
-            <Chat
-              onUnmount={async() => {
-                await resetChat();
-                this.body.scrollTop = scrollPosition;
-                turnChatOff();
-              }}
-            />
-          )}
+        {chatMode && this.props.loggedIn && (
+          <Chat
+            onUnmount={async() => {
+              await resetChat();
+              this.body.scrollTop = scrollPosition;
+              turnChatOff();
+            }}
+          />
+        )}
       </div>
     );
   }

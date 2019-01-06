@@ -1,7 +1,6 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
-import { push } from 'connected-react-router';
 import LINK from '../constants/Link';
 
 const API_URL = `${URL}/url`;
@@ -41,7 +40,7 @@ export const deleteLink = linkId => async dispatch => {
 export const deleteLinkFromPage = linkId => async dispatch => {
   try {
     await request.delete(`${API_URL}/?linkId=${linkId}`, auth());
-    dispatch(push('/links'));
+    return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);
   }

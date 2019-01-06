@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Route } from 'react-router-dom';
-import { ConnectedRouter } from 'connected-react-router';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import createStoreWithHistory from './store';
 import App from 'containers/App';
@@ -72,9 +71,9 @@ const history = createBrowserHistory();
 const store = createStoreWithHistory(history);
 ReactDOM.hydrate(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
+    <BrowserRouter>
       <Route component={App} />
-    </ConnectedRouter>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('react-view')
 );

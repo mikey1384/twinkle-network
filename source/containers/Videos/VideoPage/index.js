@@ -11,6 +11,7 @@ import {
   deleteVideoDiscussion,
   editRewardComment,
   editVideoDiscussion,
+  getInitialVideos,
   uploadQuestions,
   likeVideo,
   likeVideoComment,
@@ -69,6 +70,7 @@ class VideoPage extends Component {
     editVideoComment: PropTypes.func.isRequired,
     editVideoDiscussion: PropTypes.func.isRequired,
     editVideoPage: PropTypes.func.isRequired,
+    getInitialVideos: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
     isStarred: PropTypes.bool,
     likes: PropTypes.array,
@@ -126,6 +128,8 @@ class VideoPage extends Component {
     };
   }
 
+  mounted = false;
+
   async componentDidMount() {
     const {
       match: { params },
@@ -133,6 +137,7 @@ class VideoPage extends Component {
       loadVideoDiscussions,
       loadVideoPage
     } = this.props;
+    this.mounted = true;
     await loadVideoPage(params.videoId);
     const discussionsObj = await loadDiscussions({
       type: 'video',
@@ -140,8 +145,10 @@ class VideoPage extends Component {
     });
     loadVideoDiscussions(discussionsObj);
     const comments = await loadComments({ id: params.videoId, type: 'video' });
-    if (comments) loadVideoComments(comments);
-    this.setState({ commentsLoaded: true });
+    if (this.mounted) {
+      if (comments) loadVideoComments(comments);
+      this.setState({ commentsLoaded: true });
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -160,24 +167,27 @@ class VideoPage extends Component {
       });
       loadVideoDiscussions(discussionsObj);
       const data = await loadComments({ id: params.videoId, type: 'video' });
-      if (data) loadVideoComments(data);
-      return this.setState({
-        changingPage: false,
-        commentsLoaded: true,
-        watchTabActive: true,
-        currentSlide: 0,
-        userAnswers: [],
-        resultModalShown: false,
-        editModalShown: false,
-        confirmModalShown: false,
-        onEdit: false,
-        questionsBuilderShown: false,
-        videoId: params.videoId
-      });
+      if (this.mounted) {
+        if (data) loadVideoComments(data);
+        return this.setState({
+          changingPage: false,
+          commentsLoaded: true,
+          watchTabActive: true,
+          currentSlide: 0,
+          userAnswers: [],
+          resultModalShown: false,
+          editModalShown: false,
+          confirmModalShown: false,
+          onEdit: false,
+          questionsBuilderShown: false,
+          videoId: params.videoId
+        });
+      }
     }
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     this.props.resetVideoPage();
   }
 
@@ -569,13 +579,18 @@ class VideoPage extends Component {
     return this.props.editVideoPage(params);
   };
 
-  onVideoDelete = () => {
+  onVideoDelete = async() => {
     const {
       match: {
         params: { videoId }
-      }
+      },
+      deleteVideo,
+      getInitialVideos,
+      history
     } = this.props;
-    this.props.deleteVideo({ videoId });
+    await deleteVideo({ videoId });
+    await getInitialVideos();
+    history.push('/videos');
   };
 
   onQuestionsSubmit = async questions => {
@@ -639,6 +654,7 @@ export default connect(
     deleteVideoComment,
     deleteVideoDiscussion,
     editVideoDiscussion,
+    getInitialVideos,
     uploadQuestions,
     likeVideo,
     likeVideoComment,

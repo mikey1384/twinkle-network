@@ -40,7 +40,6 @@ export default class Achievements extends Component {
 
   async componentDidUpdate(prevProps) {
     if (prevProps.profile.id !== this.props.profile.id) {
-      console.log('updated');
       const { results, loadMoreButton } = await loadNotableContent({
         userId: this.props.profile.id
       });
@@ -293,42 +292,41 @@ export default class Achievements extends Component {
             contentObj =>
               contentObj.type !== type || contentObj.contentId !== contentId
           )
-          .map(
-            contentObj =>
-              type === 'comment'
-                ? {
-                    ...contentObj,
-                    targetObj: contentObj.targetObj
-                      ? {
-                          ...contentObj.targetObj,
-                          comment: contentObj.targetObj.comment
-                            ? {
-                                ...contentObj.targetObj.comment,
-                                comments: contentObj.targetObj.comment.comments?.filter(
-                                  comment => comment.id !== contentId
-                                )
-                              }
-                            : undefined
+          .map(contentObj =>
+            type === 'comment'
+              ? {
+                  ...contentObj,
+                  targetObj: contentObj.targetObj
+                    ? {
+                        ...contentObj.targetObj,
+                        comment: contentObj.targetObj.comment
+                          ? {
+                              ...contentObj.targetObj.comment,
+                              comments: contentObj.targetObj.comment.comments?.filter(
+                                comment => comment.id !== contentId
+                              )
+                            }
+                          : undefined
+                      }
+                    : undefined,
+                  childComments: contentObj.childComments?.reduce(
+                    (prev, comment) => {
+                      if (comment.id === contentId) {
+                        return prev;
+                      }
+                      return prev.concat([
+                        {
+                          ...comment,
+                          replies: comment.replies?.filter(
+                            reply => reply.id !== contentId
+                          )
                         }
-                      : undefined,
-                    childComments: contentObj.childComments?.reduce(
-                      (prev, comment) => {
-                        if (comment.id === contentId) {
-                          return prev;
-                        }
-                        return prev.concat([
-                          {
-                            ...comment,
-                            replies: comment.replies?.filter(
-                              reply => reply.id !== contentId
-                            )
-                          }
-                        ]);
-                      },
-                      []
-                    )
-                  }
-                : contentObj
+                      ]);
+                    },
+                    []
+                  )
+                }
+              : contentObj
           )
       };
     });
@@ -358,14 +356,13 @@ export default class Achievements extends Component {
                               ...contentObj.targetObj.comment,
                               comments: (
                                 contentObj.targetObj.comment.comments || []
-                              ).map(
-                                comment =>
-                                  comment.id === commentId
-                                    ? {
-                                        ...comment,
-                                        content: editedComment
-                                      }
-                                    : comment
+                              ).map(comment =>
+                                comment.id === commentId
+                                  ? {
+                                      ...comment,
+                                      content: editedComment
+                                    }
+                                  : comment
                               )
                             }
                         : undefined
@@ -379,14 +376,13 @@ export default class Achievements extends Component {
                       }
                     : {
                         ...comment,
-                        replies: comment.replies?.map(
-                          reply =>
-                            reply.id === commentId
-                              ? {
-                                  ...reply,
-                                  content: editedComment
-                                }
-                              : reply
+                        replies: comment.replies?.map(reply =>
+                          reply.id === commentId
+                            ? {
+                                ...reply,
+                                content: editedComment
+                              }
+                            : reply
                         )
                       };
                 })
@@ -413,51 +409,50 @@ export default class Achievements extends Component {
                 ...data
               }
             : rootContentMatches
-              ? {
-                  ...contentObj,
-                  rootObj: {
-                    ...contentObj.rootObj,
-                    ...data
-                  }
+            ? {
+                ...contentObj,
+                rootObj: {
+                  ...contentObj.rootObj,
+                  ...data
                 }
-              : {
-                  ...contentObj,
-                  targetObj: contentObj.targetObj
-                    ? {
-                        ...contentObj.targetObj,
-                        [contentType]: contentObj.targetObj[contentType]
-                          ? contentObj.targetObj[contentType].id === contentId
-                            ? {
-                                ...contentObj.targetObj[data.type],
-                                ...data
-                              }
-                            : contentObj.targetObj[contentType]
-                          : undefined
-                      }
-                    : undefined,
-                  childComments:
-                    contentType === 'comment'
-                      ? contentObj.childComments?.map(comment => {
-                          return comment.id === contentId
-                            ? {
-                                ...comment,
-                                ...data
-                              }
-                            : {
-                                ...comment,
-                                replies: comment.replies?.map(
-                                  reply =>
-                                    reply.id === contentId
-                                      ? {
-                                          ...reply,
-                                          ...data
-                                        }
-                                      : reply
-                                )
-                              };
-                        })
-                      : contentObj.childComments
-                };
+              }
+            : {
+                ...contentObj,
+                targetObj: contentObj.targetObj
+                  ? {
+                      ...contentObj.targetObj,
+                      [contentType]: contentObj.targetObj[contentType]
+                        ? contentObj.targetObj[contentType].id === contentId
+                          ? {
+                              ...contentObj.targetObj[data.type],
+                              ...data
+                            }
+                          : contentObj.targetObj[contentType]
+                        : undefined
+                    }
+                  : undefined,
+                childComments:
+                  contentType === 'comment'
+                    ? contentObj.childComments?.map(comment => {
+                        return comment.id === contentId
+                          ? {
+                              ...comment,
+                              ...data
+                            }
+                          : {
+                              ...comment,
+                              replies: comment.replies?.map(reply =>
+                                reply.id === contentId
+                                  ? {
+                                      ...reply,
+                                      ...data
+                                    }
+                                  : reply
+                              )
+                            };
+                      })
+                    : contentObj.childComments
+              };
         })
       };
     });
@@ -551,19 +546,17 @@ export default class Achievements extends Component {
             : undefined,
           childComments:
             type === 'comment'
-              ? (contentObj.childComments || []).map(
-                  comment =>
-                    comment.id === contentId
-                      ? { ...comment, likes: likes }
-                      : {
-                          ...comment,
-                          replies: (comment.replies || []).map(
-                            reply =>
-                              reply.id === contentId
-                                ? { ...reply, likes: likes }
-                                : reply
-                          )
-                        }
+              ? (contentObj.childComments || []).map(comment =>
+                  comment.id === contentId
+                    ? { ...comment, likes: likes }
+                    : {
+                        ...comment,
+                        replies: (comment.replies || []).map(reply =>
+                          reply.id === contentId
+                            ? { ...reply, likes: likes }
+                            : reply
+                        )
+                      }
                 )
               : contentObj.childComments
         }))

@@ -210,82 +210,80 @@ class Stories extends Component {
           <InputPanel />
           <div style={{ width: '100%' }}>
             {!loaded && <Loading text="Loading Feeds..." />}
-            {loaded &&
-              storyFeeds.length === 0 && (
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '15rem'
-                  }}
-                >
-                  <h1 style={{ textAlign: 'center' }}>
-                    {username
-                      ? `Hello ${username}, be the first to post something`
-                      : 'Hi there!'}
-                  </h1>
-                </div>
-              )}
-            {loaded &&
-              storyFeeds.length > 0 && (
-                <>
-                  {numNewPosts > 0 && (
-                    <Banner
-                      gold
-                      onClick={this.fetchNewFeeds}
-                      style={{ marginBottom: '1rem' }}
-                    >
-                      Click to See {numNewPosts} new Post
-                      {numNewPosts > 1 ? 's' : ''}
-                    </Banner>
-                  )}
-                  {storyFeeds.map(feed => {
-                    return (
-                      <ContentPanel
-                        key={feed.feedId}
-                        commentsLoadLimit={5}
-                        contentObj={feed}
-                        inputAtBottom={feed.type === 'comment'}
-                        onLoadContent={fetchFeed}
-                        onAddTags={addTags}
-                        onAddTagToContents={addTagToContents}
-                        onAttachStar={attachStar}
-                        onByUserStatusChange={changeByUserStatus}
-                        onCommentSubmit={data =>
-                          this.uploadFeedComment({ feed, data })
-                        }
-                        onDeleteComment={feedCommentDelete}
-                        onDeleteContent={feedContentDelete}
-                        onEditComment={feedCommentEdit}
-                        onEditContent={feedContentEdit}
-                        onEditRewardComment={feedRewardCommentEdit}
-                        onLikeContent={contentFeedLike}
-                        onLoadMoreComments={loadMoreFeedComments}
-                        onLoadMoreReplies={loadMoreFeedReplies}
-                        onLoadTags={loadTags}
-                        onReplySubmit={data =>
-                          this.uploadFeedComment({ feed, data })
-                        }
-                        onSetDifficulty={setDifficulty}
-                        onStarVideo={feedVideoStar}
-                        onShowComments={showFeedComments}
-                        onTargetCommentSubmit={uploadTargetContentComment}
-                        userId={userId}
-                      />
-                    );
-                  })}
-                  {loadMoreButton && (
-                    <LoadMoreButton
-                      onClick={this.loadMoreFeeds}
-                      loading={loadingMore}
-                      filled
-                      info
+            {loaded && storyFeeds.length === 0 && (
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '15rem'
+                }}
+              >
+                <h1 style={{ textAlign: 'center' }}>
+                  {username
+                    ? `Hello ${username}, be the first to post something`
+                    : 'Hi there!'}
+                </h1>
+              </div>
+            )}
+            {loaded && storyFeeds.length > 0 && (
+              <>
+                {numNewPosts > 0 && (
+                  <Banner
+                    gold
+                    onClick={this.fetchNewFeeds}
+                    style={{ marginBottom: '1rem' }}
+                  >
+                    Click to See {numNewPosts} new Post
+                    {numNewPosts > 1 ? 's' : ''}
+                  </Banner>
+                )}
+                {storyFeeds.map(feed => {
+                  return (
+                    <ContentPanel
+                      key={feed.feedId}
+                      commentsLoadLimit={5}
+                      contentObj={feed}
+                      inputAtBottom={feed.type === 'comment'}
+                      onLoadContent={fetchFeed}
+                      onAddTags={addTags}
+                      onAddTagToContents={addTagToContents}
+                      onAttachStar={attachStar}
+                      onByUserStatusChange={changeByUserStatus}
+                      onCommentSubmit={data =>
+                        this.uploadFeedComment({ feed, data })
+                      }
+                      onDeleteComment={feedCommentDelete}
+                      onDeleteContent={feedContentDelete}
+                      onEditComment={feedCommentEdit}
+                      onEditContent={feedContentEdit}
+                      onEditRewardComment={feedRewardCommentEdit}
+                      onLikeContent={contentFeedLike}
+                      onLoadMoreComments={loadMoreFeedComments}
+                      onLoadMoreReplies={loadMoreFeedReplies}
+                      onLoadTags={loadTags}
+                      onReplySubmit={data =>
+                        this.uploadFeedComment({ feed, data })
+                      }
+                      onSetDifficulty={setDifficulty}
+                      onStarVideo={feedVideoStar}
+                      onShowComments={showFeedComments}
+                      onTargetCommentSubmit={uploadTargetContentComment}
+                      userId={userId}
                     />
-                  )}
-                </>
-              )}
+                  );
+                })}
+                {loadMoreButton && (
+                  <LoadMoreButton
+                    onClick={this.loadMoreFeeds}
+                    loading={loadingMore}
+                    filled
+                    info
+                  />
+                )}
+              </>
+            )}
           </div>
         </div>
       </ErrorBoundary>

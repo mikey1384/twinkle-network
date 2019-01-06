@@ -68,6 +68,7 @@ class LinkPage extends Component {
     fetchMoreDiscussions: PropTypes.func.isRequired,
     fetchMoreDiscussionComments: PropTypes.func.isRequired,
     fetchMoreDiscussionReplies: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
     likeComment: PropTypes.func.isRequired,
     likeLink: PropTypes.func.isRequired,
     loadLinkPage: PropTypes.func.isRequired,
@@ -193,6 +194,7 @@ class LinkPage extends Component {
       fetchDiscussionComments,
       fetchMoreDiscussionComments,
       fetchMoreDiscussionReplies,
+      history,
       likeComment,
       likeLink,
       myId,
@@ -290,35 +292,33 @@ class LinkPage extends Component {
                 onClick={likes => likeLink(likes)}
                 liked={userLikedThis}
               />
-              {canStar &&
-                userCanEditThis &&
-                !userIsUploader && (
-                  <Button
-                    love
-                    filled
-                    disabled={determineXpButtonDisabled({
+              {canStar && userCanEditThis && !userIsUploader && (
+                <Button
+                  love
+                  filled
+                  disabled={determineXpButtonDisabled({
+                    myId,
+                    xpRewardInterfaceShown,
+                    stars
+                  })}
+                  style={{
+                    fontSize: '2rem',
+                    marginLeft: '1rem'
+                  }}
+                  onClick={() =>
+                    this.setState({ xpRewardInterfaceShown: true })
+                  }
+                >
+                  <Icon icon="certificate" />
+                  <span style={{ marginLeft: '0.7rem' }}>
+                    {determineXpButtonDisabled({
                       myId,
                       xpRewardInterfaceShown,
                       stars
-                    })}
-                    style={{
-                      fontSize: '2rem',
-                      marginLeft: '1rem'
-                    }}
-                    onClick={() =>
-                      this.setState({ xpRewardInterfaceShown: true })
-                    }
-                  >
-                    <Icon icon="certificate" />
-                    <span style={{ marginLeft: '0.7rem' }}>
-                      {determineXpButtonDisabled({
-                        myId,
-                        xpRewardInterfaceShown,
-                        stars
-                      }) || 'Reward'}
-                    </span>
-                  </Button>
-                )}
+                    }) || 'Reward'}
+                  </span>
+                </Button>
+              )}
             </div>
             <Likers
               key={'likes' + id}
@@ -403,7 +403,10 @@ class LinkPage extends Component {
           <ConfirmModal
             key={'confirm' + id}
             title="Remove Link"
-            onConfirm={() => deleteLinkFromPage(id)}
+            onConfirm={async() => {
+              await deleteLinkFromPage(id);
+              history.push('/links');
+            }}
             onHide={() => this.setState({ confirmModalShown: false })}
           />
         )}

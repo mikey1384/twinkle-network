@@ -31,6 +31,8 @@ class People extends Component {
     userId: PropTypes.number
   };
 
+  mounted = false;
+
   body =
     typeof document !== 'undefined'
       ? document.scrollingElement || document.documentElement
@@ -49,16 +51,20 @@ class People extends Component {
 
   async componentDidMount() {
     const { fetchUsers, history, profiles } = this.props;
+    this.mounted = true;
     if (history.action === 'PUSH' || profiles.length === 0) {
       await fetchUsers();
     }
-    this.setState({ loaded: true });
-    addEvent(window, 'scroll', this.onScroll);
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
+    if (this.mounted) {
+      this.setState({ loaded: true });
+      addEvent(window, 'scroll', this.onScroll);
+      addEvent(document.getElementById('App'), 'scroll', this.onScroll);
+    }
   }
 
   componentWillUnmount() {
     const { clearUserSearch } = this.props;
+    this.mounted = false;
     clearUserSearch();
     removeEvent(window, 'scroll', this.onScroll);
     removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
