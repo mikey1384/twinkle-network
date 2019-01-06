@@ -10,6 +10,7 @@ import {
   fetchNotifications
 } from 'redux/actions/NotiActions';
 import ExecutionEnvironment from 'exenv';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import { borderRadius, Color } from 'constants/css';
@@ -59,8 +60,8 @@ class Notification extends Component {
           this.props.rewards.length > 0
             ? 'reward'
             : this.props.notifications.length > 0
-              ? 'notification'
-              : 'leaderboard',
+            ? 'notification'
+            : 'leaderboard',
         rewardTabShown: this.props.rewards.length > 0
       });
     }
@@ -79,8 +80,8 @@ class Notification extends Component {
             this.props.rewards.length > 0
               ? 'reward'
               : this.props.notifications.length > 0
-                ? 'notification'
-                : 'leaderboard',
+              ? 'notification'
+              : 'leaderboard',
           rewardTabShown: this.props.rewards.length > 0
         });
       }
@@ -114,141 +115,143 @@ class Notification extends Component {
       rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
     const { activeTab, rewardTabShown } = this.state;
     return (
-      <div
-        style={style}
-        className={`${container} ${className}`}
-        onScroll={this.handleScroll}
-      >
-        <section>
-          <div
-            className={css`
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-            `}
-          >
-            {children && children}
-          </div>
-          {loaded && (
-            <ChatFeeds
-              content={content}
+      <ErrorBoundary>
+        <div
+          style={style}
+          className={`${container} ${className}`}
+          onScroll={this.handleScroll}
+        >
+          <section>
+            <div
+              className={css`
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              `}
+            >
+              {children && children}
+            </div>
+            {loaded && (
+              <ChatFeeds
+                content={content}
+                style={{
+                  marginTop: children ? '1rem' : '0',
+                  marginBottom: '1rem'
+                }}
+                {...subject}
+              />
+            )}
+            <div
               style={{
                 marginTop: children ? '1rem' : '0',
-                marginBottom: '1rem'
-              }}
-              {...subject}
-            />
-          )}
-          <div
-            style={{
-              marginTop: children ? '1rem' : '0',
-              marginBottom: '1rem',
-              background: myId
-                ? rank > 0 &&
-                  (rank < 3
-                    ? Color.black()
-                    : rank === 3
+                marginBottom: '1rem',
+                background: myId
+                  ? rank > 0 &&
+                    (rank < 3
+                      ? Color.black()
+                      : rank === 3
                       ? Color.orange()
                       : null)
-                : Color.logoBlue()
-            }}
-            className={css`
-              width: 100%;
-              margin-bottom: 0px;
-              text-align: center;
-              padding: 1rem;
-              background: #fff;
-              border: 1px solid #eeeeee;
-              border-radius: ${borderRadius};
-              p {
-                font-weight: bold;
-                margin-bottom: 0px;
-              }
-              a {
-                font-size: 1.5rem;
-                font-weight: bold;
-              }
-            `}
-          >
-            {myId ? (
-              <p>
-                <span
-                  style={{
-                    color: rankedColor || Color.logoGreen(),
-                    fontSize: '3rem'
-                  }}
-                >
-                  {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
-                </span>{' '}
-                <span
-                  style={{
-                    color: rankedColor || Color.gold(),
-                    fontSize: '3rem'
-                  }}
-                >
-                  XP
-                </span>
-                &nbsp;&nbsp;
-                <span
-                  style={{
-                    color:
-                      rankedColor ||
-                      (rank > 0 && rank <= 10
-                        ? Color.pink()
-                        : Color.buttonGray()),
-                    fontSize: '2rem'
-                  }}
-                >
-                  {rank ? `Rank #${rank}` : 'Unranked'}
-                </span>
-              </p>
-            ) : (
-              <p style={{ fontSize: '2.5rem', color: '#fff' }}>Leaderboard</p>
-            )}
-          </div>
-          {notifications.length > 0 && (
-            <FilterBar
-              bordered
-              style={{
-                marginTop: '1rem',
-                fontSize: '1.6rem'
+                  : Color.logoBlue()
               }}
+              className={css`
+                width: 100%;
+                margin-bottom: 0px;
+                text-align: center;
+                padding: 1rem;
+                background: #fff;
+                border: 1px solid #eeeeee;
+                border-radius: ${borderRadius};
+                p {
+                  font-weight: bold;
+                  margin-bottom: 0px;
+                }
+                a {
+                  font-size: 1.5rem;
+                  font-weight: bold;
+                }
+              `}
             >
-              <nav
-                className={`${activeTab === 'notification' &&
-                  'active'} ${numNewNotis > 0 && 'alert'}`}
-                onClick={() => this.setState({ activeTab: 'notification' })}
-              >
-                Notifications
-              </nav>
-              <nav
-                className={activeTab === 'leaderboard' ? 'active' : undefined}
-                onClick={() => this.setState({ activeTab: 'leaderboard' })}
-              >
-                Leaderboard
-              </nav>
-              {rewardTabShown && (
-                <nav
-                  className={`${activeTab === 'reward' &&
-                    'active'} ${totalRewardAmount > 0 && 'alert'}`}
-                  onClick={() => this.setState({ activeTab: 'reward' })}
-                >
-                  Rewards
-                </nav>
+              {myId ? (
+                <p>
+                  <span
+                    style={{
+                      color: rankedColor || Color.logoGreen(),
+                      fontSize: '3rem'
+                    }}
+                  >
+                    {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
+                  </span>{' '}
+                  <span
+                    style={{
+                      color: rankedColor || Color.gold(),
+                      fontSize: '3rem'
+                    }}
+                  >
+                    XP
+                  </span>
+                  &nbsp;&nbsp;
+                  <span
+                    style={{
+                      color:
+                        rankedColor ||
+                        (rank > 0 && rank <= 10
+                          ? Color.pink()
+                          : Color.buttonGray()),
+                      fontSize: '2rem'
+                    }}
+                  >
+                    {rank ? `Rank #${rank}` : 'Unranked'}
+                  </span>
+                </p>
+              ) : (
+                <p style={{ fontSize: '2.5rem', color: '#fff' }}>Leaderboard</p>
               )}
-            </FilterBar>
-          )}
-          <MainFeeds
-            loadMore={loadMore}
-            activeTab={activeTab}
-            notifications={notifications}
-            rewards={rewards}
-            selectNotiTab={() => this.setState({ activeTab: 'notification' })}
-            myId={myId}
-            style={{ marginTop: loaded && '1rem' }}
-          />
-        </section>
-      </div>
+            </div>
+            {notifications.length > 0 && (
+              <FilterBar
+                bordered
+                style={{
+                  marginTop: '1rem',
+                  fontSize: '1.6rem'
+                }}
+              >
+                <nav
+                  className={`${activeTab === 'notification' &&
+                    'active'} ${numNewNotis > 0 && 'alert'}`}
+                  onClick={() => this.setState({ activeTab: 'notification' })}
+                >
+                  Notifications
+                </nav>
+                <nav
+                  className={activeTab === 'leaderboard' ? 'active' : undefined}
+                  onClick={() => this.setState({ activeTab: 'leaderboard' })}
+                >
+                  Leaderboard
+                </nav>
+                {rewardTabShown && (
+                  <nav
+                    className={`${activeTab === 'reward' &&
+                      'active'} ${totalRewardAmount > 0 && 'alert'}`}
+                    onClick={() => this.setState({ activeTab: 'reward' })}
+                  >
+                    Rewards
+                  </nav>
+                )}
+              </FilterBar>
+            )}
+            <MainFeeds
+              loadMore={loadMore}
+              activeTab={activeTab}
+              notifications={notifications}
+              rewards={rewards}
+              selectNotiTab={() => this.setState({ activeTab: 'notification' })}
+              myId={myId}
+              style={{ marginTop: loaded && '1rem' }}
+            />
+          </section>
+        </div>
+      </ErrorBoundary>
     );
   }
 
