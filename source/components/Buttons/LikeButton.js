@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { likeContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
@@ -30,32 +31,34 @@ function LikeButton({
   targetLabel
 }) {
   return (
-    <Button
-      className={className}
-      logo={(filled && liked) || !filled}
-      info={filled && !liked}
-      filled={filled || liked}
-      style={style}
-      onClick={async() => {
-        try {
-          const likes = await likeContent({
-            id: contentId,
-            type: contentType,
-            dispatch
-          });
-          onClick(likes, contentId);
-        } catch (error) {
-          return console.error(error);
-        }
-      }}
-    >
-      <Icon icon="thumbs-up" />
-      <span style={{ marginLeft: '0.7rem' }}>
-        {liked
-          ? `${targetLabel ? targetLabel + ' ' : ''}Liked!`
-          : `Like${targetLabel ? ' ' + targetLabel : ''}`}
-      </span>
-    </Button>
+    <ErrorBoundary>
+      <Button
+        className={className}
+        logo={(filled && liked) || !filled}
+        info={filled && !liked}
+        filled={filled || liked}
+        style={style}
+        onClick={async() => {
+          try {
+            const likes = await likeContent({
+              id: contentId,
+              type: contentType,
+              dispatch
+            });
+            onClick(likes, contentId);
+          } catch (error) {
+            return console.error(error);
+          }
+        }}
+      >
+        <Icon icon="thumbs-up" />
+        <span style={{ marginLeft: '0.7rem' }}>
+          {liked
+            ? `${targetLabel ? targetLabel + ' ' : ''}Liked!`
+            : `Like${targetLabel ? ' ' + targetLabel : ''}`}
+        </span>
+      </Button>
+    </ErrorBoundary>
   );
 }
 

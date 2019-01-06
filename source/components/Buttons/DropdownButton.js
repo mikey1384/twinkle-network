@@ -4,6 +4,7 @@ import onClickOutside from 'react-onclickoutside';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 
 class DropdownButton extends Component {
@@ -57,36 +58,38 @@ class DropdownButton extends Component {
       ...props
     } = this.props;
     return (
-      <div style={{ position: 'relative', ...style }}>
-        <Button
-          {...props}
-          style={{
-            borderRadius: noBorderRadius && 0,
-            border: noBorderRadius && 0,
-            margin: noBorderRadius && 0,
-            opacity: menuDisplayed ? 1 : opacity,
-            ...(stretch ? { width: '100%' } : {}),
-            ...buttonStyle
-          }}
-          onClick={this.onClick}
-        >
-          <Icon icon={icon} size={iconSize} />
-          {text && <span>&nbsp;&nbsp;</span>}
-          {text}
-        </Button>
-        {menuDisplayed && (
-          <DropdownList
+      <ErrorBoundary>
+        <div style={{ position: 'relative', ...style }}>
+          <Button
+            {...props}
             style={{
-              textTransform: 'none',
-              minWidth: '12rem',
-              ...listStyle
+              borderRadius: noBorderRadius && 0,
+              border: noBorderRadius && 0,
+              margin: noBorderRadius && 0,
+              opacity: menuDisplayed ? 1 : opacity,
+              ...(stretch ? { width: '100%' } : {}),
+              ...buttonStyle
             }}
-            direction={direction}
+            onClick={this.onClick}
           >
-            {this.renderMenu()}
-          </DropdownList>
-        )}
-      </div>
+            <Icon icon={icon} size={iconSize} />
+            {text && <span>&nbsp;&nbsp;</span>}
+            {text}
+          </Button>
+          {menuDisplayed && (
+            <DropdownList
+              style={{
+                textTransform: 'none',
+                minWidth: '12rem',
+                ...listStyle
+              }}
+              direction={direction}
+            >
+              {this.renderMenu()}
+            </DropdownList>
+          )}
+        </div>
+      </ErrorBoundary>
     );
   }
 

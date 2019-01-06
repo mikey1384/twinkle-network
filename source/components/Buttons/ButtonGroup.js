@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 export default class ButtonGroup extends Component {
   static propTypes = {
@@ -33,41 +34,43 @@ export default class ButtonGroup extends Component {
     const { style } = this.props;
     const { buttons } = this.state;
     return (
-      <div style={{ ...style, display: 'flex' }}>
-        {buttons.map((button, index) => {
-          return (
-            <Button
-              key={index}
-              style={{ marginLeft: index !== 0 && '1rem' }}
-              onMouseEnter={() =>
-                this.setState({
-                  buttons: buttons.map((b, i) => ({
-                    ...b,
-                    onHover: i === index
-                  }))
-                })
-              }
-              onMouseLeave={() =>
-                this.setState({
-                  buttons: buttons.map((b, i) => ({
-                    ...b,
-                    onHover: false
-                  }))
-                })
-              }
-              opacity={button.opacity}
-              onClick={button.onClick}
-              disabled={button.disabled}
-              filled={button.filled}
-              hoverClass={button.hoverClass || button.buttonClass}
-              onHover={button.onHover}
-              {...{ [button.buttonClass]: true }}
-            >
-              {button.label}
-            </Button>
-          );
-        })}
-      </div>
+      <ErrorBoundary>
+        <div style={{ ...style, display: 'flex' }}>
+          {buttons.map((button, index) => {
+            return (
+              <Button
+                key={index}
+                style={{ marginLeft: index !== 0 && '1rem' }}
+                onMouseEnter={() =>
+                  this.setState({
+                    buttons: buttons.map((b, i) => ({
+                      ...b,
+                      onHover: i === index
+                    }))
+                  })
+                }
+                onMouseLeave={() =>
+                  this.setState({
+                    buttons: buttons.map((b, i) => ({
+                      ...b,
+                      onHover: false
+                    }))
+                  })
+                }
+                opacity={button.opacity}
+                onClick={button.onClick}
+                disabled={button.disabled}
+                filled={button.filled}
+                hoverClass={button.hoverClass || button.buttonClass}
+                onHover={button.onHover}
+                {...{ [button.buttonClass]: true }}
+              >
+                {button.label}
+              </Button>
+            );
+          })}
+        </div>
+      </ErrorBoundary>
     );
   }
 }

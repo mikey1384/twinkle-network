@@ -4,6 +4,7 @@ import onClickOutside from 'react-onclickoutside';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { setByUser } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
@@ -35,38 +36,40 @@ class StarButton extends Component {
     } = this.props;
     const { menuShown } = this.state;
     return (
-      <div style={style}>
-        <Button
-          {...(isStarred && byUser
-            ? { gold: true }
-            : byUser
+      <ErrorBoundary>
+        <div style={style}>
+          <Button
+            {...(isStarred && byUser
+              ? { gold: true }
+              : byUser
               ? { warning: true }
               : { love: true })}
-          filled={isStarred || byUser}
-          onClick={onClick}
-        >
-          <Icon icon="star" />
-        </Button>
-        {menuShown && (
-          <DropdownList
-            direction={direction}
-            style={{
-              position: 'absolute',
-              right: 0,
-              width: '25rem'
-            }}
+            filled={isStarred || byUser}
+            onClick={onClick}
           >
-            <li onClick={this.onToggleStarred}>
-              {isStarred ? 'De-star' : 'Star'} this video
-            </li>
-            <li onClick={this.onToggleByUser}>
-              {byUser
-                ? `This video wasn't made by ${uploader.username}`
-                : `This video was made by ${uploader.username}`}
-            </li>
-          </DropdownList>
-        )}
-      </div>
+            <Icon icon="star" />
+          </Button>
+          {menuShown && (
+            <DropdownList
+              direction={direction}
+              style={{
+                position: 'absolute',
+                right: 0,
+                width: '25rem'
+              }}
+            >
+              <li onClick={this.onToggleStarred}>
+                {isStarred ? 'De-star' : 'Star'} this video
+              </li>
+              <li onClick={this.onToggleByUser}>
+                {byUser
+                  ? `This video wasn't made by ${uploader.username}`
+                  : `This video was made by ${uploader.username}`}
+              </li>
+            </DropdownList>
+          )}
+        </div>
+      </ErrorBoundary>
     );
   }
 

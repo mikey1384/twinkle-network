@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 
 LoadMoreButton.propTypes = {
@@ -18,20 +19,22 @@ export default function LoadMoreButton({
   ...props
 }) {
   return (
-    <div
-      className={css`
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `}
-    >
-      <Button disabled={loading} onClick={onClick} style={style} {...props}>
-        {loading ? 'Loading' : label || 'Load More'}
-        {loading && (
-          <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
-        )}
-      </Button>
-    </div>
+    <ErrorBoundary>
+      <div
+        className={css`
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `}
+      >
+        <Button disabled={loading} onClick={onClick} style={style} {...props}>
+          {loading ? 'Loading' : label || 'Load More'}
+          {loading && (
+            <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
+          )}
+        </Button>
+      </div>
+    </ErrorBoundary>
   );
 }

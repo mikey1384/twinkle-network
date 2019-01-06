@@ -26,6 +26,7 @@ import ProgressBar from 'components/ProgressBar';
 import { easeInOutQuad } from 'tween-functions';
 import PropTypes from 'prop-types';
 import requestAnimationFrame from 'raf';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
@@ -157,123 +158,127 @@ class Carousel extends Component {
     const { slidesToScroll, currentSlide, slideCount } = this.state;
     const slideFraction = (currentSlide + 1) / slideCount;
     return (
-      <div
-        className={`slider ${className} ${css`
-          font-size: 1.5rem;
-        `}`}
-        ref={ref => {
-          this.Slider = ref;
-        }}
-        style={{ ...getSliderStyles.call(this), ...style }}
-      >
-        {(userIsUploader || userCanEditThis) && (
-          <a
-            style={{
-              position: 'absolute',
-              cursor: 'pointer'
-            }}
-            onClick={showQuestionsBuilder}
-          >
-            Add/Edit Questions
-          </a>
-        )}
-        {progressBar && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <ButtonGroup
-              buttons={[
-                {
-                  label: 'Prev',
-                  onClick: previousSlide.bind(this),
-                  buttonClass: 'transparent',
-                  disabled: currentSlide === 0
-                },
-                {
-                  label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
-                  onClick:
-                    currentSlide + 1 === slideCount
-                      ? onFinish
-                      : nextSlide.bind(this),
-                  buttonClass:
-                    currentSlide + 1 === slideCount ? 'primary' : 'transparent'
-                }
-              ]}
-            />
-            <ProgressBar
-              progress={slideFraction * 100}
-              color={
-                currentSlide + 1 === slideCount
-                  ? Color.blue()
-                  : Color.logoBlue()
-              }
-              style={{ width: '100%' }}
-              text={`${currentSlide + 1}/${slideCount}`}
-            />
-          </div>
-        )}
+      <ErrorBoundary>
         <div
-          className="slider-frame"
+          className={`slider ${className} ${css`
+            font-size: 1.5rem;
+          `}`}
           ref={ref => {
-            this.Frame = ref;
+            this.Slider = ref;
           }}
-          style={getFrameStyles.call(this)}
-          {...getTouchEvents.call(this)}
-          {...getMouseEvents.call(this)}
-          onClick={handleClick.bind(this)}
+          style={{ ...getSliderStyles.call(this), ...style }}
         >
-          <ul
-            className="slider-list"
-            ref={ref => {
-              this.List = ref;
-            }}
-            style={getListStyles.call(this)}
-          >
-            {children}
-          </ul>
-        </div>
-        {!this.props.progressBar && [
-          <NavButton
-            left
-            key={0}
-            disabled={currentSlide === 0}
-            nextSlide={previousSlide.bind(this)}
-          />,
-          <div key={1}>
-            {slideCount > 5 &&
-            currentSlide + slidesToScroll >= slideCount &&
-            showAllButton ? (
-              <Button
-                snow
-                style={{
-                  position: 'absolute',
-                  top: '7rem',
-                  right: '-0.5rem',
-                  opacity: 0.9
-                }}
-                onClick={onShowAll}
-              >
-                Show All
-              </Button>
-            ) : (
-              <NavButton
-                disabled={currentSlide + slidesToScroll >= slideCount}
-                nextSlide={nextSlide.bind(this)}
+          {(userIsUploader || userCanEditThis) && (
+            <a
+              style={{
+                position: 'absolute',
+                cursor: 'pointer'
+              }}
+              onClick={showQuestionsBuilder}
+            >
+              Add/Edit Questions
+            </a>
+          )}
+          {progressBar && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <ButtonGroup
+                buttons={[
+                  {
+                    label: 'Prev',
+                    onClick: previousSlide.bind(this),
+                    buttonClass: 'transparent',
+                    disabled: currentSlide === 0
+                  },
+                  {
+                    label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
+                    onClick:
+                      currentSlide + 1 === slideCount
+                        ? onFinish
+                        : nextSlide.bind(this),
+                    buttonClass:
+                      currentSlide + 1 === slideCount
+                        ? 'primary'
+                        : 'transparent'
+                  }
+                ]}
               />
-            )}
+              <ProgressBar
+                progress={slideFraction * 100}
+                color={
+                  currentSlide + 1 === slideCount
+                    ? Color.blue()
+                    : Color.logoBlue()
+                }
+                style={{ width: '100%' }}
+                text={`${currentSlide + 1}/${slideCount}`}
+              />
+            </div>
+          )}
+          <div
+            className="slider-frame"
+            ref={ref => {
+              this.Frame = ref;
+            }}
+            style={getFrameStyles.call(this)}
+            {...getTouchEvents.call(this)}
+            {...getMouseEvents.call(this)}
+            onClick={handleClick.bind(this)}
+          >
+            <ul
+              className="slider-list"
+              ref={ref => {
+                this.List = ref;
+              }}
+              style={getListStyles.call(this)}
+            >
+              {children}
+            </ul>
           </div>
-        ]}
-        <style
-          type="text/css"
-          dangerouslySetInnerHTML={{ __html: getStyleTagStyles.call(this) }}
-        />
-      </div>
+          {!this.props.progressBar && [
+            <NavButton
+              left
+              key={0}
+              disabled={currentSlide === 0}
+              nextSlide={previousSlide.bind(this)}
+            />,
+            <div key={1}>
+              {slideCount > 5 &&
+              currentSlide + slidesToScroll >= slideCount &&
+              showAllButton ? (
+                <Button
+                  snow
+                  style={{
+                    position: 'absolute',
+                    top: '7rem',
+                    right: '-0.5rem',
+                    opacity: 0.9
+                  }}
+                  onClick={onShowAll}
+                >
+                  Show All
+                </Button>
+              ) : (
+                <NavButton
+                  disabled={currentSlide + slidesToScroll >= slideCount}
+                  nextSlide={nextSlide.bind(this)}
+                />
+              )}
+            </div>
+          ]}
+          <style
+            type="text/css"
+            dangerouslySetInnerHTML={{ __html: getStyleTagStyles.call(this) }}
+          />
+        </div>
+      </ErrorBoundary>
     );
   }
 
