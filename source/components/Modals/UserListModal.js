@@ -20,7 +20,7 @@ class UserListModal extends Component {
     userId: PropTypes.number,
     username: PropTypes.string,
     users: PropTypes.arrayOf(
-      PropTypes.shape({ userId: PropTypes.number.isRequired })
+      PropTypes.shape({ id: PropTypes.number.isRequired })
     ).isRequired
   };
 
@@ -37,7 +37,7 @@ class UserListModal extends Component {
     const otherUsers = users.filter(user => user.id !== userId);
     let userArray = [];
     for (let i = 0; i < users.length; i++) {
-      if (users[i].userId === userId) userArray.push(users[i]);
+      if (users[i].id === userId) userArray.push(users[i]);
     }
     return (
       <Modal small onHide={onHide}>
