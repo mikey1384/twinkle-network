@@ -35,7 +35,8 @@ class ProfilePanel extends Component {
     removeStatusMsg: PropTypes.func,
     userId: PropTypes.number,
     uploadBio: PropTypes.func,
-    uploadProfilePic: PropTypes.func
+    uploadProfilePic: PropTypes.func,
+    username: PropTypes.string
   };
 
   mounted = false;
@@ -116,7 +117,8 @@ class ProfilePanel extends Component {
       isCreator,
       openDirectMessageChannel,
       updateStatusMsg,
-      uploadBio
+      uploadBio,
+      username
     } = this.props;
     const canEdit = userId === profile.id || isCreator;
     const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
@@ -285,44 +287,41 @@ class ProfilePanel extends Component {
                   </div>
                 </div>
               )}
-              {expandable &&
-                userId !== profile.id && (
-                  <div
-                    style={{
-                      marginTop: noProfile ? '2rem' : '1rem',
-                      display: 'flex'
-                    }}
+              {expandable && userId !== profile.id && (
+                <div
+                  style={{
+                    marginTop: noProfile ? '2rem' : '1rem',
+                    display: 'flex'
+                  }}
+                >
+                  {this.renderMessagesButton()}
+                  <Button
+                    style={{ marginLeft: '0.5rem' }}
+                    success
+                    onClick={() =>
+                      openDirectMessageChannel(
+                        { id: userId, username },
+                        { id: profile.id, username: profile.username },
+                        false
+                      )
+                    }
                   >
-                    {this.renderMessagesButton()}
-                    <Button
-                      style={{ marginLeft: '0.5rem' }}
-                      success
-                      onClick={() =>
-                        openDirectMessageChannel(
-                          { userId },
-                          { id: profile.id, username: profile.username },
-                          false
-                        )
-                      }
-                    >
-                      <Icon icon="comments" />
-                      <span style={{ marginLeft: '0.7rem' }}>Talk</span>
-                    </Button>
-                  </div>
-                )}
-              {profile.lastActive &&
-                !profile.online &&
-                profile.id !== userId && (
-                  <div
-                    style={{
-                      marginTop: '1rem',
-                      fontSize: '1.5rem',
-                      color: Color.gray()
-                    }}
-                  >
-                    <p>last online {timeSince(profile.lastActive)}</p>
-                  </div>
-                )}
+                    <Icon icon="comments" />
+                    <span style={{ marginLeft: '0.7rem' }}>Talk</span>
+                  </Button>
+                </div>
+              )}
+              {profile.lastActive && !profile.online && profile.id !== userId && (
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    fontSize: '1.5rem',
+                    color: Color.gray()
+                  }}
+                >
+                  <p>last online {timeSince(profile.lastActive)}</p>
+                </div>
+              )}
             </div>
             <input
               ref={ref => {
@@ -470,14 +469,13 @@ class ProfilePanel extends Component {
           ...comment,
           content: comment.id === commentId ? editedComment : comment.content,
           replies: comment.replies
-            ? comment.replies.map(
-                reply =>
-                  reply.id === commentId
-                    ? {
-                        ...reply,
-                        content: editedComment
-                      }
-                    : reply
+            ? comment.replies.map(reply =>
+                reply.id === commentId
+                  ? {
+                      ...reply,
+                      content: editedComment
+                    }
+                  : reply
               )
             : []
         }))
@@ -531,14 +529,13 @@ class ProfilePanel extends Component {
           ...comment,
           likes: comment.id === commentId ? likes : comment.likes,
           replies: comment.replies
-            ? comment.replies.map(
-                reply =>
-                  reply.id === commentId
-                    ? {
-                        ...reply,
-                        likes
-                      }
-                    : reply
+            ? comment.replies.map(reply =>
+                reply.id === commentId
+                  ? {
+                      ...reply,
+                      likes
+                    }
+                  : reply
               )
             : []
         }))
@@ -650,7 +647,8 @@ class ProfilePanel extends Component {
 export default connect(
   state => ({
     isCreator: state.UserReducer.isCreator,
-    userId: state.UserReducer.userId
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username
   }),
   {
     removeStatusMsg,
