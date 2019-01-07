@@ -321,7 +321,7 @@ class Chat extends Component {
     const { currentChannelOnlineMembers } = this.state;
     let result = false;
     for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
-      if (user.userId === currentChannelOnlineMembers[i].userId) result = true;
+      if (user.id === currentChannelOnlineMembers[i].id) result = true;
     }
     return result;
   };
