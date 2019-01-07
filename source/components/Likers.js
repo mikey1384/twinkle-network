@@ -8,7 +8,7 @@ Likers.propTypes = {
   defaultText: PropTypes.string,
   likes: PropTypes.arrayOf(
     PropTypes.shape({
-      userId: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
       username: PropTypes.string.isRequired
     })
   ).isRequired,
@@ -37,7 +37,7 @@ export default function Likers({
     let totalLikes = 0;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if (likes[i].userId === userId) userLiked = true;
+        if (likes[i].id === userId) userLiked = true;
         totalLikes++;
       }
     }
@@ -45,14 +45,14 @@ export default function Likers({
       totalLikes--;
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => like.userId !== userId);
+          let otherLikes = likes.filter(like => like.id !== userId);
           return (
             <div>
               You and{' '}
               <UsernameText
                 color={Color.blue()}
                 user={{
-                  id: otherLikes[0].userId,
+                  id: otherLikes[0].id,
                   username: otherLikes[0].username
                 }}
               />{' '}
