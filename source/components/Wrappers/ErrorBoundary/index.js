@@ -39,6 +39,10 @@ export default class ErrorBoundary extends Component {
         </div>
       );
     }
-    return props ? <div {...props}>{children}</div> : <>{children}</>;
+    return Object.keys(props).length > 0 ? (
+      <div {...props}>{children}</div>
+    ) : (
+      <>{children}</>
+    );
   }
 }

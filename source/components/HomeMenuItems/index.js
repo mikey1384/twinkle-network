@@ -7,17 +7,13 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 HomeMenuItems.propTypes = {
   history: PropTypes.object,
-  location: PropTypes.object,
   style: PropTypes.object
 };
-export default function HomeMenuItems({ history, location, style = {} }) {
-  let username = '';
-  if (location.pathname.includes('/users/')) {
-    username = location.pathname.split('/')[2];
-  }
+
+export default function HomeMenuItems({ history, style = {} }) {
   return (
-    <ErrorBoundary>
-      <div className={`unselectable ${container}`} style={style}>
+    <div className={`unselectable ${container}`} style={style}>
+      <ErrorBoundary>
         <Route
           path="/"
           exact
@@ -41,12 +37,14 @@ export default function HomeMenuItems({ history, location, style = {} }) {
             </nav>
           )}
         />
+      </ErrorBoundary>
+      <ErrorBoundary>
         <Route
           exact
           path="/users"
           children={({ match }) => (
             <nav
-              className={match || username ? 'active' : ''}
+              className={match ? 'active' : ''}
               onClick={() => history.push('/users')}
             >
               <a href="/users" onClick={e => e.preventDefault()}>
@@ -64,7 +62,7 @@ export default function HomeMenuItems({ history, location, style = {} }) {
             </nav>
           )}
         />
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </div>
   );
 }
