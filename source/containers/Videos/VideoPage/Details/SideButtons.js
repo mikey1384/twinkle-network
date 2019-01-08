@@ -83,7 +83,7 @@ export default class SideButtons extends Component {
               let liked = false;
               if (likes) {
                 for (let i = 0; i < likes.length; i++) {
-                  if (likes[i].id === userId) liked = true;
+                  if (likes[i]?.id === userId) liked = true;
                 }
               }
               return liked;
@@ -109,7 +109,7 @@ export default class SideButtons extends Component {
             users={likes.map(like => {
               return {
                 username: like.username,
-                userId: like.userId
+                userId: like.id
               };
             })}
             description="(You)"
