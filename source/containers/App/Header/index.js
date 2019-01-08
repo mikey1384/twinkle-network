@@ -352,6 +352,7 @@ class Header extends Component {
     if (this.props.chatMode) {
       this.props.turnChatOff();
     }
+    document.getElementById('App').scrollTop = 0;
   };
 
   onLogout = () => {
