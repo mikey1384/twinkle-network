@@ -1,10 +1,10 @@
-import request from 'axios';
-import { auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
-import NOTI from '../constants/Noti';
+import request from "axios";
+import { auth, handleError } from "helpers/requestHelpers";
+import { URL } from "constants/URL";
+import NOTI from "../constants/Noti";
 
 const API_URL = `${URL}/notification`;
-const appVersion = '0.1.70';
+const appVersion = "0.1.71";
 
 export const changeSocketStatus = connected => ({
   type: NOTI.CHANGE_SOCKET_STATUS,

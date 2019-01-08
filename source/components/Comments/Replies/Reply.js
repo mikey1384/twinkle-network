@@ -109,7 +109,7 @@ class Reply extends Component {
     }
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === userId) userLikedThis = true;
+      if (likes[i].id === userId) userLikedThis = true;
     }
     return (
       <div className={commentContainer} ref={innerRef}>

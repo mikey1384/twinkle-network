@@ -506,7 +506,7 @@ class Body extends Component {
     const { myId } = this.props;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true;
+      if (likes[i].id === myId) userLikedThis = true;
     }
     return userLikedThis;
   };

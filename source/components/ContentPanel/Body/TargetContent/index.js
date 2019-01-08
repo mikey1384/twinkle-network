@@ -80,7 +80,7 @@ class TargetContent extends Component {
     if (comment && !comment.notFound) {
       uploader = comment.uploader;
       for (let i = 0; i < comment.likes.length; i++) {
-        if (comment.likes[i].userId === myId) userLikedThis = true;
+        if (comment.likes[i].id === myId) userLikedThis = true;
       }
       userIsUploader = myId === comment.uploader.id;
       userCanStarThis =

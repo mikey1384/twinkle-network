@@ -27,7 +27,6 @@ function LikeButton({
   style,
   liked,
   onClick,
-  small,
   targetLabel
 }) {
   return (

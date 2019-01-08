@@ -211,7 +211,7 @@ class LinkPage extends Component {
     } = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].userId === myId) userLikedThis = true;
+      if (likes[i].id === myId) userLikedThis = true;
     }
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploaderAuthLevel;

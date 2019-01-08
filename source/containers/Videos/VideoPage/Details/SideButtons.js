@@ -83,7 +83,7 @@ export default class SideButtons extends Component {
               let liked = false;
               if (likes) {
                 for (let i = 0; i < likes.length; i++) {
-                  if (likes[i].userId === userId) liked = true;
+                  if (likes[i].id === userId) liked = true;
                 }
               }
               return liked;
