@@ -251,61 +251,54 @@ class Details extends Component {
             descriptionExceedsCharLimit={this.descriptionExceedsCharLimit}
             determineEditButtonDoneStatus={this.determineEditButtonDoneStatus}
           />
-          {!onEdit &&
-            videoViews > 10 && (
-              <div
-                style={{
-                  padding: '1rem 0',
-                  fontSize: '2rem',
-                  fontWeight: 'bold',
-                  color: Color.darkGray()
-                }}
-              >
-                {videoViews} view
-                {`${videoViews > 1 ? 's' : ''}`}
-              </div>
-            )}
+          {!onEdit && videoViews > 10 && (
+            <div
+              style={{
+                padding: '1rem 0',
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                color: Color.darkGray()
+              }}
+            >
+              {videoViews} view
+              {`${videoViews > 1 ? 's' : ''}`}
+            </div>
+          )}
           <div style={{ display: 'flex' }}>
-            {editButtonShown &&
-              !onEdit && (
-                <DropdownButton
-                  snow
-                  style={{ marginRight: '1rem' }}
-                  direction="left"
-                  text="Edit or Delete This Video"
-                  menuProps={editMenuItems}
-                />
-              )}
-            {!onEdit &&
-              canStar &&
-              userCanEditThis &&
-              !userIsUploader && (
-                <Button
-                  snow
-                  disabled={determineXpButtonDisabled({
+            {editButtonShown && !onEdit && (
+              <DropdownButton
+                snow
+                style={{ marginRight: '1rem' }}
+                direction="left"
+                text="Edit or Delete This Video"
+                menuProps={editMenuItems}
+              />
+            )}
+            {!onEdit && canStar && userCanEditThis && !userIsUploader && (
+              <Button
+                snow
+                disabled={determineXpButtonDisabled({
+                  difficulty: byUser ? 5 : 0,
+                  myId: userId,
+                  xpRewardInterfaceShown,
+                  stars
+                })}
+                style={{
+                  color: Color.pink()
+                }}
+                onClick={() => this.setState({ xpRewardInterfaceShown: true })}
+              >
+                <Icon icon="certificate" />
+                <span style={{ marginLeft: '0.7rem' }}>
+                  {determineXpButtonDisabled({
                     difficulty: byUser ? 5 : 0,
                     myId: userId,
                     xpRewardInterfaceShown,
                     stars
-                  })}
-                  style={{
-                    color: Color.pink()
-                  }}
-                  onClick={() =>
-                    this.setState({ xpRewardInterfaceShown: true })
-                  }
-                >
-                  <Icon icon="certificate" />
-                  <span style={{ marginLeft: '0.7rem' }}>
-                    {determineXpButtonDisabled({
-                      difficulty: byUser ? 5 : 0,
-                      myId: userId,
-                      xpRewardInterfaceShown,
-                      stars
-                    }) || 'Reward'}
-                  </span>
-                </Button>
-              )}
+                  }) || 'Reward'}
+                </span>
+              </Button>
+            )}
           </div>
           {xpRewardInterfaceShown && (
             <XPRewardInterface

@@ -106,12 +106,7 @@ export default class SideButtons extends Component {
           <UserListModal
             onHide={() => this.setState({ userListModalShown: false })}
             title="People who liked this video"
-            users={likes.map(like => {
-              return {
-                username: like.username,
-                userId: like.id
-              };
-            })}
+            users={likes}
             description="(You)"
           />
         )}
