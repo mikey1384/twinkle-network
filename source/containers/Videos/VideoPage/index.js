@@ -639,7 +639,7 @@ export default connect(
     ...state.VideoReducer.videoPage,
     authLevel: state.UserReducer.authLevel,
     canEdit: state.UserReducer.canEdit,
-    byUser: !!state.VideoReducer.videoPage?.byUser,
+    byUser: !!state.VideoReducer.videoPage.byUser,
     isStarred: !!state.VideoReducer.videoPage.isStarred,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId
