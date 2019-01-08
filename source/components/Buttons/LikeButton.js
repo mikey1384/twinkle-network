@@ -14,7 +14,6 @@ LikeButton.propTypes = {
   liked: PropTypes.bool.isRequired,
   filled: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-  small: PropTypes.bool,
   style: PropTypes.object,
   targetLabel: PropTypes.string
 };
