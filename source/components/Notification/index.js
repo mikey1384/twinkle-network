@@ -213,7 +213,8 @@ class Notification extends Component {
                 bordered
                 style={{
                   marginTop: '1rem',
-                  fontSize: '1.6rem'
+                  fontSize: '1.6rem',
+                  height: '5rem'
                 }}
               >
                 <nav

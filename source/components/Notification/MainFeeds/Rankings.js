@@ -5,6 +5,7 @@ import request from 'axios';
 import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import FilterBar from 'components/FilterBar';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { URL } from 'constants/URL';
@@ -44,6 +45,19 @@ export default class Rankings extends Component {
     const { loaded, users } = this.state;
     return (
       <ErrorBoundary>
+        <FilterBar
+          bordered
+          style={{
+            marginTop: '1rem',
+            height: '4.5rem',
+            fontSize: '1.6rem'
+          }}
+        >
+          <nav className="active" onClick={() => console.log('clicked')}>
+            All Rankings
+          </nav>
+          <nav onClick={() => console.log('clicked')}>Top 30</nav>
+        </FilterBar>
         {loaded === false && <Loading />}
         {users.map(user => {
           const rank = !user.twinkleXP
