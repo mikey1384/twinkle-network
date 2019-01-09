@@ -15,7 +15,7 @@ import {
 } from 'redux/actions/NotiActions';
 import { changeUserXP } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
-import LeaderBoardTab from './LeaderBoardTab';
+import Rankings from './Rankings';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
@@ -134,7 +134,7 @@ class MainFeeds extends Component {
                 </li>
               );
             })}
-          {activeTab === 'leaderboard' && <LeaderBoardTab myId={myId} />}
+          {activeTab === 'leaderboard' && <Rankings myId={myId} />}
           {activeTab === 'reward' &&
             rewards.map(
               ({
@@ -159,8 +159,8 @@ class MainFeeds extends Component {
                           rewardAmount > 9
                             ? Color.gold()
                             : rewardAmount > 4
-                              ? Color.orange()
-                              : Color.lightBlue(),
+                            ? Color.orange()
+                            : Color.lightBlue(),
                         fontWeight: 'bold'
                       }}
                     >
@@ -292,8 +292,8 @@ function renderNotificationMessage(notification, myId) {
                   reward.rewardAmount > 9
                     ? Color.gold()
                     : reward.rewardAmount > 4
-                      ? Color.orange()
-                      : Color.lightBlue()
+                    ? Color.orange()
+                    : Color.lightBlue()
               }}
             >
               rewarded you{' '}
@@ -313,8 +313,8 @@ function renderNotificationMessage(notification, myId) {
           rootType === 'user'
             ? rootType
             : rootType === 'question'
-              ? 'subject'
-              : 'comment'
+            ? 'subject'
+            : 'comment'
         );
         break;
       case 'discussion':
@@ -328,12 +328,12 @@ function renderNotificationMessage(notification, myId) {
     isReplyNotification
       ? 'comment'
       : isDiscussionAnswerNotification
-        ? 'discussion topic'
-        : rootType === 'user'
-          ? 'profile'
-          : rootType === 'question'
-            ? 'subject'
-            : rootType
+      ? 'discussion topic'
+      : rootType === 'user'
+      ? 'profile'
+      : rootType === 'question'
+      ? 'subject'
+      : rootType
   }${rootType === 'user' && !isReplyNotification ? '' : ': '}`;
   let contentTitle = isReplyNotification
     ? commentContent
@@ -348,10 +348,10 @@ function renderNotificationMessage(notification, myId) {
     id: isReplyNotification
       ? contentId
       : type === 'discussion'
-        ? contentId
-        : isDiscussionAnswerNotification
-          ? discussionId
-          : rootId
+      ? contentId
+      : isDiscussionAnswerNotification
+      ? discussionId
+      : rootId
   };
   return (
     <div>
@@ -368,8 +368,8 @@ function renderNotificationMessage(notification, myId) {
             isReplyNotification
               ? 'comment'
               : type === 'discussion' || isDiscussionAnswerNotification
-                ? 'discussion'
-                : rootType
+              ? 'discussion'
+              : rootType
           }
         />
       )}
@@ -381,10 +381,10 @@ function renderNotificationMessage(notification, myId) {
       type === 'comment'
         ? 'commented on'
         : type === 'reply'
-          ? 'replied to'
-          : type === 'subject'
-            ? 'responded to'
-            : 'left a message on';
+        ? 'replied to'
+        : type === 'subject'
+        ? 'responded to'
+        : 'left a message on';
     return (
       <ContentLink
         style={{ color: Color.green() }}

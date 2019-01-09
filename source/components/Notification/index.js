@@ -227,7 +227,7 @@ class Notification extends Component {
                   className={activeTab === 'leaderboard' ? 'active' : undefined}
                   onClick={() => this.setState({ activeTab: 'leaderboard' })}
                 >
-                  Leaderboard
+                  Rankings
                 </nav>
                 {rewardTabShown && (
                   <nav

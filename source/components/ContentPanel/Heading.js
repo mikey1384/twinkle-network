@@ -209,7 +209,7 @@ class Heading extends Component {
       myId,
       onPlayVideoClick
     } = this.props;
-    const userLikedVideo = likes.map(like => like.userId).indexOf(myId) !== -1;
+    const userLikedVideo = likes.map(like => like.id).indexOf(myId) !== -1;
     if (!content) return null;
     if (rootType === 'video') {
       return (
