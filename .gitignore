@@ -5,7 +5,6 @@ build
 siteConfig.js
 .fuse_hidden*
 .DS_Store
-URL.js
 keys.js
 public/bundle.js
 public/vendor.js
