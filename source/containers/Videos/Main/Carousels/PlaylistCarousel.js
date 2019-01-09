@@ -248,7 +248,7 @@ class PlaylistCarousel extends Component {
             title: thumb.video_title,
             description: thumb.video_description,
             uploaderName: thumb.video_uploader,
-            numLikes: thumb.numLikes
+            likes: thumb.likes
           }}
           user={{ username: thumb.video_uploader, id: thumb.video_uploader_id }}
         />
