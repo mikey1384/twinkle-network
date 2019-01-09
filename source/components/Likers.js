@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import UsernameText from 'components/Texts/UsernameText';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 
 Likers.propTypes = {
@@ -27,9 +28,11 @@ export default function Likers({
   defaultText
 }) {
   return (
-    <div style={style} className={className}>
-      {renderLikers()}
-    </div>
+    <ErrorBoundary>
+      <div style={style} className={className}>
+        {renderLikers()}
+      </div>
+    </ErrorBoundary>
   );
 
   function renderLikers() {
