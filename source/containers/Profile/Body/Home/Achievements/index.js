@@ -80,6 +80,8 @@ export default class Achievements extends Component {
               commentsLoadLimit={5}
               contentObj={contentObj}
               userId={myId}
+              onAddTags={this.onAddTags}
+              onAddTagToContents={this.onAddTagToContents}
               onAttachStar={this.onAttachStar}
               onCommentSubmit={data =>
                 this.onCommentSubmit({
@@ -97,6 +99,7 @@ export default class Achievements extends Component {
               onLoadContent={this.onLoadContent}
               onLoadMoreComments={this.onLoadMoreComments}
               onLoadMoreReplies={this.onLoadMoreReplies}
+              onLoadTags={this.onLoadTags}
               onReplySubmit={this.onReplySubmit}
               onSetDifficulty={this.onSetDifficulty}
               onShowComments={this.onShowComments}
@@ -116,6 +119,44 @@ export default class Achievements extends Component {
       </div>
     );
   }
+
+  onAddTags = ({ type, contentId, tags }) => {
+    this.setState(state => ({
+      notables: state.notables.map(notable =>
+        notable.type === type && notable.contentId === contentId
+          ? {
+              ...notable,
+              tags: (notable.tags || []).concat(tags)
+            }
+          : notable
+      )
+    }));
+  };
+
+  onAddTagToContents = ({ contentIds, contentType, tagId, tagTitle }) => {
+    this.setState(state => ({
+      notables: state.notables.map(notable => ({
+        ...notable,
+        tags:
+          notable.type === contentType &&
+          contentIds.indexOf(notable.contentId) !== -1
+            ? (notable.tags || []).concat({ id: tagId, title: tagTitle })
+            : notable.tags
+      }))
+    }));
+  };
+
+  onLoadTags = ({ type, contentId, tags }) => {
+    this.setState(state => ({
+      notables: state.notables.map(notable => ({
+        ...notable,
+        tags:
+          notable.type === type && notable.contentId === contentId
+            ? tags
+            : notable.tags
+      }))
+    }));
+  };
 
   onShowMoreNotables = async() => {
     const { notables } = this.state;
