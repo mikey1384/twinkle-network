@@ -134,7 +134,7 @@ class MainFeeds extends Component {
                 </li>
               );
             })}
-          {activeTab === 'leaderboard' && <Rankings myId={myId} />}
+          {activeTab === 'leaderboard' && <Rankings />}
           {activeTab === 'reward' &&
             rewards.map(
               ({

@@ -6,6 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
+import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
@@ -13,9 +14,10 @@ import { URL } from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
-export default class Rankings extends Component {
+class Rankings extends Component {
   static propTypes = {
-    myId: PropTypes.number
+    myId: PropTypes.number,
+    twinkleXP: PropTypes.number
   };
 
   state = {
@@ -67,6 +69,20 @@ export default class Rankings extends Component {
             top30s,
             loaded: true,
             rankModifier
+          }));
+        }
+      } catch (error) {
+        console.error(error.response || error);
+      }
+    } else if (prevProps.twinkleXP !== this.props.twinkleXP) {
+      try {
+        const {
+          data: { all, top30s }
+        } = await request.get(`${API_URL}/leaderBoard`, auth());
+        if (this.mounted) {
+          this.setState(() => ({
+            all,
+            top30s
           }));
         }
       } catch (error) {
@@ -192,3 +208,8 @@ export default class Rankings extends Component {
     );
   }
 }
+
+export default connect(state => ({
+  myId: state.UserReducer.userId,
+  twinkleXP: state.UserReducer.twinkleXP
+}))(Rankings);
