@@ -1,5 +1,16 @@
 {
-  "presets": ["@babel/env", "@babel/react"],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "esmodules": true
+        },
+        "useBuiltIns": "usage"
+      }
+    ],
+    "@babel/react"
+  ],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-optional-chaining",
