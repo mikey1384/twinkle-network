@@ -152,7 +152,7 @@ export default class Rankings extends Component {
                 <span
                   style={{
                     fontWeight: 'bold',
-                    fontSize: '2rem',
+                    fontSize: rank < 100 ? '2rem' : '1.5rem',
                     width: '3rem',
                     marginRight: '1rem',
                     textAlign: 'center',
