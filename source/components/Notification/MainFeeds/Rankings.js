@@ -110,7 +110,7 @@ export default class Rankings extends Component {
           </FilterBar>
         )}
         {loaded === false && <Loading />}
-        {allSelected && users.length === 0 && (
+        {loaded && allSelected && users.length === 0 && (
           <div
             style={{
               background: '#fff',
