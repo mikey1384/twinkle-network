@@ -8,7 +8,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
-import { Color } from 'constants/css';
+import { Color, borderRadius } from 'constants/css';
 import { URL } from 'constants/URL';
 
 const API_URL = `${URL}/user`;
@@ -110,6 +110,19 @@ export default class Rankings extends Component {
           </FilterBar>
         )}
         {loaded === false && <Loading />}
+        {allSelected && users.length === 0 && (
+          <div
+            style={{
+              background: '#fff',
+              borderRadius,
+              padding: '1rem',
+              border: `1px solid ${Color.borderGray()}`
+            }}
+          >
+            You are not ranked. To get ranked, earn XP by watching a starred
+            video or leaving comments
+          </div>
+        )}
         {users.map(user => {
           const rank = !user.twinkleXP
             ? undefined
