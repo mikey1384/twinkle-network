@@ -7,6 +7,7 @@ import ProfilePic from 'components/ProfilePic';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { auth } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 import { URL } from 'constants/URL';
 
@@ -18,8 +19,11 @@ export default class Rankings extends Component {
   };
 
   state = {
-    users: [],
-    loaded: false
+    all: [],
+    top30s: [],
+    loaded: false,
+    allSelected: true,
+    rankModifier: 0
   };
 
   mounted = false;
@@ -27,12 +31,42 @@ export default class Rankings extends Component {
   async componentDidMount() {
     this.mounted = true;
     try {
-      const { data: users } = await request.get(`${API_URL}/leaderBoard`);
+      const {
+        data: { all, rankModifier, top30s }
+      } = await request.get(`${API_URL}/leaderBoard`, auth());
       if (this.mounted) {
-        this.setState(() => ({ users, loaded: true }));
+        this.setState(() => ({
+          allSelected: all.length > 0,
+          all,
+          top30s,
+          loaded: true,
+          rankModifier
+        }));
       }
     } catch (error) {
       console.error(error.response || error);
+    }
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.myId !== this.props.myId) {
+      this.setState({ loaded: false });
+      try {
+        const {
+          data: { all, rankModifier, top30s }
+        } = await request.get(`${API_URL}/leaderBoard`, auth());
+        if (this.mounted) {
+          this.setState(() => ({
+            allSelected: all.length > 0,
+            all,
+            top30s,
+            loaded: true,
+            rankModifier
+          }));
+        }
+      } catch (error) {
+        console.error(error.response || error);
+      }
     }
   }
 
@@ -42,28 +76,42 @@ export default class Rankings extends Component {
 
   render() {
     const { myId } = this.props;
-    const { loaded, users } = this.state;
+    const { loaded, all, top30s, allSelected, rankModifier } = this.state;
+    const users = allSelected ? all : top30s;
+    const modifier = allSelected ? rankModifier : 0;
     return (
       <ErrorBoundary>
-        <FilterBar
-          bordered
-          style={{
-            marginTop: '1rem',
-            height: '4.5rem',
-            fontSize: '1.6rem'
-          }}
-        >
-          <nav className="active" onClick={() => console.log('clicked')}>
-            All Rankings
-          </nav>
-          <nav onClick={() => console.log('clicked')}>Top 30</nav>
-        </FilterBar>
+        {myId && (
+          <FilterBar
+            bordered
+            style={{
+              marginTop: '1rem',
+              height: '4.5rem',
+              fontSize: '1.6rem'
+            }}
+          >
+            <nav
+              className={allSelected ? 'active' : ''}
+              onClick={() => this.setState({ allSelected: true })}
+            >
+              My Ranking
+            </nav>
+            <nav
+              className={allSelected ? '' : 'active'}
+              onClick={() => this.setState({ allSelected: false })}
+            >
+              Top 30
+            </nav>
+          </FilterBar>
+        )}
         {loaded === false && <Loading />}
         {users.map(user => {
           const rank = !user.twinkleXP
             ? undefined
             : users.filter(otherUser => otherUser.twinkleXP > user.twinkleXP)
-                .length + 1;
+                .length +
+              1 +
+              modifier;
           const rankColor =
             rank === 1
               ? Color.gold()
@@ -78,7 +126,8 @@ export default class Rankings extends Component {
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                background: user.id === myId ? Color.whiteGray() : undefined
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
