@@ -50,7 +50,12 @@ export default class Rankings extends Component {
 
   async componentDidUpdate(prevProps) {
     if (prevProps.myId !== this.props.myId) {
-      this.setState({ loaded: false });
+      this.setState({
+        all: [],
+        top30s: [],
+        loaded: false,
+        allSelected: true
+      });
       try {
         const {
           data: { all, rankModifier, top30s }
