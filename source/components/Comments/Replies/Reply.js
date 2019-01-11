@@ -121,26 +121,25 @@ class Reply extends Component {
               profilePicId={uploader.profilePicId}
             />
           </aside>
-          {editButtonShown &&
-            !onEdit && (
-              <div className="dropdown-wrapper">
-                <DropdownButton
-                  snow
-                  direction="left"
-                  opacity={0.8}
-                  menuProps={[
-                    {
-                      label: 'Edit',
-                      onClick: () => this.setState({ onEdit: true })
-                    },
-                    {
-                      label: 'Remove',
-                      onClick: () => this.setState({ confirmModalShown: true })
-                    }
-                  ]}
-                />
-              </div>
-            )}
+          {editButtonShown && !onEdit && (
+            <div className="dropdown-wrapper">
+              <DropdownButton
+                snow
+                direction="left"
+                opacity={0.8}
+                menuProps={[
+                  {
+                    label: 'Edit',
+                    onClick: () => this.setState({ onEdit: true })
+                  },
+                  {
+                    label: 'Remove',
+                    onClick: () => this.setState({ confirmModalShown: true })
+                  }
+                ]}
+              />
+            </div>
+          )}
           <section>
             <div>
               <UsernameText className="username" user={uploader} />{' '}
@@ -189,16 +188,26 @@ class Reply extends Component {
                       <Icon icon="comment-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>Reply</span>
                     </Button>
-                    {canStar &&
-                      userCanEditThis &&
-                      !userIsUploader && (
-                        <Button
-                          love
-                          style={{ marginLeft: '1rem' }}
-                          onClick={() =>
-                            this.setState({ xpRewardInterfaceShown: true })
-                          }
-                          disabled={determineXpButtonDisabled({
+                    {canStar && userCanEditThis && !userIsUploader && (
+                      <Button
+                        love
+                        style={{ marginLeft: '1rem' }}
+                        onClick={() =>
+                          this.setState({ xpRewardInterfaceShown: true })
+                        }
+                        disabled={determineXpButtonDisabled({
+                          difficulty:
+                            parent.difficulty ||
+                            discussion.difficulty ||
+                            (parent.rootObj || {}).difficulty,
+                          myId: userId,
+                          xpRewardInterfaceShown,
+                          stars
+                        })}
+                      >
+                        <Icon icon="certificate" />
+                        <span style={{ marginLeft: '0.7rem' }}>
+                          {determineXpButtonDisabled({
                             difficulty:
                               parent.difficulty ||
                               discussion.difficulty ||
@@ -206,22 +215,10 @@ class Reply extends Component {
                             myId: userId,
                             xpRewardInterfaceShown,
                             stars
-                          })}
-                        >
-                          <Icon icon="certificate" />
-                          <span style={{ marginLeft: '0.7rem' }}>
-                            {determineXpButtonDisabled({
-                              difficulty:
-                                parent.difficulty ||
-                                discussion.difficulty ||
-                                (parent.rootObj || {}).difficulty,
-                              myId: userId,
-                              xpRewardInterfaceShown,
-                              stars
-                            }) || 'Reward'}
-                          </span>
-                        </Button>
-                      )}
+                          }) || 'Reward'}
+                        </span>
+                      </Button>
+                    )}
                   </div>
                   <small>
                     <Likers

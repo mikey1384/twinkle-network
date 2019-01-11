@@ -383,7 +383,11 @@ class Content extends Component {
                 likes: comment.id === contentId ? likes : comment.likes,
                 replies: comment.replies.map(reply => ({
                   ...reply,
-                  likes: reply.id === contentId ? likes : reply.likes
+                  likes: reply.id === contentId ? likes : reply.likes,
+                  replies: reply.replies.map(reply => ({
+                    ...reply,
+                    likes: reply.id === contentId ? likes : reply.likes
+                  }))
                 }))
               }))
             : state.contentObj.childComments,

@@ -18,15 +18,14 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.ADD_TAGS:
       return {
         ...state,
-        [currentSection]: state[currentSection].map(
-          feed =>
-            feed.type === action.contentType &&
-            feed.contentId === action.contentId
-              ? {
-                  ...feed,
-                  tags: (feed.tags || []).concat(action.tags)
-                }
-              : feed
+        [currentSection]: state[currentSection].map(feed =>
+          feed.type === action.contentType &&
+          feed.contentId === action.contentId
+            ? {
+                ...feed,
+                tags: (feed.tags || []).concat(action.tags)
+              }
+            : feed
         )
       };
     case FEED.ADD_TAG_TO_CONTENTS:
@@ -135,20 +134,27 @@ export default function FeedReducer(state = defaultState, action) {
             : undefined,
           childComments:
             action.data.type === 'comment'
-              ? (feed.childComments || []).map(
-                  comment =>
+              ? feed.childComments?.map(comment => ({
+                  ...comment,
+                  likes:
                     comment.id === action.data.contentId
-                      ? { ...comment, likes: action.data.likes }
-                      : {
-                          ...comment,
-                          replies: (comment.replies || []).map(
-                            reply =>
-                              reply.id === action.data.contentId
-                                ? { ...reply, likes: action.data.likes }
-                                : reply
-                          )
-                        }
-                )
+                      ? action.data.likes
+                      : comment.likes,
+                  replies: comment.replies.map(reply => ({
+                    ...reply,
+                    likes:
+                      reply.id === action.data.contentId
+                        ? action.data.likes
+                        : reply.likes,
+                    replies: reply.replies.map(reply => ({
+                      ...reply,
+                      likes:
+                        reply.id === action.data.contentId
+                          ? action.data.likes
+                          : reply.likes
+                    }))
+                  }))
+                }))
               : feed.childComments
         }))
       };
@@ -167,9 +173,8 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_DETAIL:
       return {
         ...state,
-        [currentSection]: state[currentSection].map(
-          feed =>
-            feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
+        [currentSection]: state[currentSection].map(feed =>
+          feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
         )
       };
     case FEED.LOAD_MORE_REPLIES:
@@ -286,42 +291,38 @@ export default function FeedReducer(state = defaultState, action) {
               feed.type !== action.contentType ||
               feed.contentId !== action.contentId
           )
-          .map(
-            feed =>
-              action.contentType === 'comment'
-                ? {
-                    ...feed,
-                    targetObj: feed.targetObj
-                      ? {
-                          ...feed.targetObj,
-                          comment: feed.targetObj.comment
-                            ? {
-                                ...feed.targetObj.comment,
-                                comments: feed.targetObj.comment.comments?.filter(
-                                  comment => comment.id !== action.contentId
-                                )
-                              }
-                            : undefined
-                        }
-                      : undefined,
-                    childComments: feed.childComments?.reduce(
-                      (prev, comment) => {
-                        if (comment.id === action.contentId) {
-                          return prev;
-                        }
-                        return prev.concat([
-                          {
-                            ...comment,
-                            replies: comment.replies?.filter(
-                              reply => reply.id !== action.contentId
-                            )
-                          }
-                        ]);
-                      },
-                      []
-                    )
-                  }
-                : feed
+          .map(feed =>
+            action.contentType === 'comment'
+              ? {
+                  ...feed,
+                  targetObj: feed.targetObj
+                    ? {
+                        ...feed.targetObj,
+                        comment: feed.targetObj.comment
+                          ? {
+                              ...feed.targetObj.comment,
+                              comments: feed.targetObj.comment.comments?.filter(
+                                comment => comment.id !== action.contentId
+                              )
+                            }
+                          : undefined
+                      }
+                    : undefined,
+                  childComments: feed.childComments?.reduce((prev, comment) => {
+                    if (comment.id === action.contentId) {
+                      return prev;
+                    }
+                    return prev.concat([
+                      {
+                        ...comment,
+                        replies: comment.replies?.filter(
+                          reply => reply.id !== action.contentId
+                        )
+                      }
+                    ]);
+                  }, [])
+                }
+              : feed
           )
       };
     case FEED.EDIT_COMMENT:
@@ -348,14 +349,13 @@ export default function FeedReducer(state = defaultState, action) {
                               ...feed.targetObj.comment,
                               comments: (
                                 feed.targetObj.comment.comments || []
-                              ).map(
-                                comment =>
-                                  comment.id === action.commentId
-                                    ? {
-                                        ...comment,
-                                        content: action.editedComment
-                                      }
-                                    : comment
+                              ).map(comment =>
+                                comment.id === action.commentId
+                                  ? {
+                                      ...comment,
+                                      content: action.editedComment
+                                    }
+                                  : comment
                               )
                             }
                         : undefined
@@ -369,14 +369,13 @@ export default function FeedReducer(state = defaultState, action) {
                       }
                     : {
                         ...comment,
-                        replies: comment.replies?.map(
-                          reply =>
-                            reply.id === action.commentId
-                              ? {
-                                  ...reply,
-                                  content: action.editedComment
-                                }
-                              : reply
+                        replies: comment.replies?.map(reply =>
+                          reply.id === action.commentId
+                            ? {
+                                ...reply,
+                                content: action.editedComment
+                              }
+                            : reply
                         )
                       };
                 })
@@ -399,52 +398,51 @@ export default function FeedReducer(state = defaultState, action) {
                 ...action.data
               }
             : rootContentMatches
-              ? {
-                  ...feed,
-                  rootObj: {
-                    ...feed.rootObj,
-                    ...action.data
-                  }
+            ? {
+                ...feed,
+                rootObj: {
+                  ...feed.rootObj,
+                  ...action.data
                 }
-              : {
-                  ...feed,
-                  targetObj: feed.targetObj
-                    ? {
-                        ...feed.targetObj,
-                        [action.contentType]: feed.targetObj[action.contentType]
-                          ? feed.targetObj[action.contentType].id ===
-                            action.contentId
-                            ? {
-                                ...feed.targetObj[action.contentType],
-                                ...action.data
-                              }
-                            : feed.targetObj[action.contentType]
-                          : undefined
-                      }
-                    : undefined,
-                  childComments:
-                    action.contentType === 'comment'
-                      ? feed.childComments?.map(comment => {
-                          return comment.id === action.contentId
-                            ? {
-                                ...comment,
-                                ...action.data
-                              }
-                            : {
-                                ...comment,
-                                replies: comment.replies?.map(
-                                  reply =>
-                                    reply.id === action.contentId
-                                      ? {
-                                          ...reply,
-                                          ...action.data
-                                        }
-                                      : reply
-                                )
-                              };
-                        })
-                      : feed.childComments
-                };
+              }
+            : {
+                ...feed,
+                targetObj: feed.targetObj
+                  ? {
+                      ...feed.targetObj,
+                      [action.contentType]: feed.targetObj[action.contentType]
+                        ? feed.targetObj[action.contentType].id ===
+                          action.contentId
+                          ? {
+                              ...feed.targetObj[action.contentType],
+                              ...action.data
+                            }
+                          : feed.targetObj[action.contentType]
+                        : undefined
+                    }
+                  : undefined,
+                childComments:
+                  action.contentType === 'comment'
+                    ? feed.childComments?.map(comment => {
+                        return comment.id === action.contentId
+                          ? {
+                              ...comment,
+                              ...action.data
+                            }
+                          : {
+                              ...comment,
+                              replies: comment.replies?.map(reply =>
+                                reply.id === action.contentId
+                                  ? {
+                                      ...reply,
+                                      ...action.data
+                                    }
+                                  : reply
+                              )
+                            };
+                      })
+                    : feed.childComments
+              };
         })
       };
     case FEED.EDIT_REWARD_COMMENT:
