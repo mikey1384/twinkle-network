@@ -7,6 +7,7 @@ import { addCommasToNumber, stringIsEmpty } from 'helpers/stringHelpers';
 import { returnMaxStars } from 'constants/defaultValues';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Starmarks from './Starmarks';
 
 class RewardStatus extends Component {
@@ -51,7 +52,7 @@ class RewardStatus extends Component {
     rewardedStars = Math.min(rewardedStars, maxStars);
     if (!stars || stars.length === 0) return null;
     return (
-      <>
+      <ErrorBoundary>
         <div
           style={style}
           className={css`
@@ -64,10 +65,10 @@ class RewardStatus extends Component {
             background: ${rewardedStars === maxStars
               ? Color.gold()
               : rewardedStars > 10
-                ? Color.orange(0.5 + 0.01 * rewardedStars)
-                : Color.blue(
-                    0.5 + (1 / Math.min(20, maxStars * 2)) * rewardedStars
-                  )};
+              ? Color.orange(0.5 + 0.01 * rewardedStars)
+              : Color.blue(
+                  0.5 + (1 / Math.min(20, maxStars * 2)) * rewardedStars
+                )};
           `}
         >
           <Starmarks stars={rewardedStars} />
@@ -106,7 +107,7 @@ class RewardStatus extends Component {
               onEditDone={onCommentEdit}
             />
           ))}
-      </>
+      </ErrorBoundary>
     );
   }
 }
