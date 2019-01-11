@@ -21,6 +21,7 @@ class StarButton extends Component {
     style: PropTypes.object,
     uploader: PropTypes.object
   };
+
   state = {
     menuShown: false
   };
