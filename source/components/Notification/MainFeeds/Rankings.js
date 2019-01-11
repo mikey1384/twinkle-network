@@ -161,7 +161,7 @@ class Rankings extends Component {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                background: user.id === myId ? Color.whiteGray() : undefined
+                background: user.id === myId ? Color.channelGray() : undefined
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>

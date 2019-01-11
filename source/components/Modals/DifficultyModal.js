@@ -18,7 +18,7 @@ class DifficultyModal extends Component {
   constructor({ difficulty = 0 }) {
     super();
     this.state = {
-      difficulty: difficulty
+      difficulty
     };
   }
 

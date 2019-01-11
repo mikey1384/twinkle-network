@@ -34,7 +34,7 @@ class ProfileWidget extends Component {
       <ErrorBoundary>
         <div
           className={container({
-            heading: Color.headingGray(),
+            heading: Color.channelGray(),
             border: Color.borderGray(),
             blue: Color.blue(),
             darkGray: Color.darkGray()

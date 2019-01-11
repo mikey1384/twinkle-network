@@ -134,7 +134,6 @@ class Body extends Component {
         commentId,
         childComments = [],
         commentsLoadMoreButton = false,
-        isStarred,
         likes = [],
         rootId,
         rootType,
@@ -184,7 +183,7 @@ class Body extends Component {
 
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploader.authLevel;
-    const userCanStarThis = canStar && authLevel > uploader.authLevel;
+    const userCanRewardThis = canStar && authLevel > uploader.authLevel;
     const editButtonShown = myId === uploader.id || userCanEditThis;
     return (
       <ErrorBoundary>
@@ -314,7 +313,7 @@ class Body extends Component {
                       menuProps={this.renderEditMenuItems()}
                     />
                   )}
-                  {canStar && userCanStarThis && myId !== uploader.id && (
+                  {userCanRewardThis && myId !== uploader.id && (
                     <Button
                       love
                       disabled={this.determineXpButtonDisabled()}
@@ -330,26 +329,18 @@ class Body extends Component {
                     </Button>
                   )}
                 </div>
-                <div className="right">
-                  {canStar && type === 'video' && (
-                    <div style={{ position: 'relative' }}>
+                <div className="right" style={{ position: 'relative' }}>
+                  {canEditDifficulty &&
+                    (type === 'question' ||
+                      type === 'discussion' ||
+                      type === 'video') && (
                       <StarButton
                         byUser={!!contentObj.byUser}
                         contentId={contentObj.id}
-                        isStarred={!!isStarred}
+                        isStarred={!!difficulty}
                         onToggleStarred={this.onToggleStarred}
                         onToggleByUser={this.onToggleByUser}
                         uploader={uploader}
-                      />
-                    </div>
-                  )}
-                  {canEditDifficulty &&
-                    (type === 'question' || type === 'discussion') && (
-                      <StarButton
-                        isStarred={!!difficulty}
-                        onClick={() =>
-                          this.setState({ difficultyModalShown: true })
-                        }
                       />
                     )}
                 </div>
