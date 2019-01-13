@@ -98,10 +98,14 @@ export default class Achievements extends Component {
               onLikeContent={this.onLikeContent}
               onLoadContent={this.onLoadContent}
               onLoadMoreComments={this.onLoadMoreComments}
-              onLoadMoreReplies={this.onLoadMoreReplies}
+              onLoadMoreReplies={data =>
+                this.onLoadMoreReplies({ ...data, feedId: contentObj.feedId })
+              }
               onLoadRepliesOfReply={this.onLoadRepliesOfReply}
               onLoadTags={this.onLoadTags}
-              onReplySubmit={this.onReplySubmit}
+              onReplySubmit={data =>
+                this.onReplySubmit({ ...data, feedId: contentObj.feedId })
+              }
               onSetDifficulty={this.onSetDifficulty}
               onShowComments={this.onShowComments}
               onTargetCommentSubmit={this.onTargetCommentSubmit}
@@ -640,11 +644,11 @@ export default class Achievements extends Component {
     });
   };
 
-  onLoadMoreReplies = ({ data, feedId }) => {
+  onLoadMoreReplies = data => {
     this.setState(state => {
       return {
         notables: state.notables.map(contentObj => {
-          return contentObj.feedId === feedId
+          return contentObj.feedId === data.feedId
             ? {
                 ...contentObj,
                 childComments: contentObj.childComments.map(comment => {
