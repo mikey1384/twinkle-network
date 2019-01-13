@@ -28,6 +28,7 @@ import {
   clearFeeds,
   loadMoreFeedComments,
   loadMoreFeedReplies,
+  loadRepliesOfReply,
   loadTags,
   setCurrentSection,
   setDifficulty,
@@ -60,6 +61,7 @@ class Posts extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    loadRepliesOfReply: PropTypes.func.isRequired,
     loadTags: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
@@ -136,6 +138,7 @@ class Posts extends Component {
       loadMoreFeedReplies,
       loaded,
       loadMoreButton,
+      loadRepliesOfReply,
       loadTags,
       match,
       profileFeeds,
@@ -215,6 +218,7 @@ class Posts extends Component {
                     onLikeContent={contentFeedLike}
                     onLoadMoreComments={loadMoreFeedComments}
                     onLoadMoreReplies={loadMoreFeedReplies}
+                    onLoadRepliesOfReply={loadRepliesOfReply}
                     onLoadTags={loadTags}
                     onReplySubmit={data =>
                       this.uploadFeedComment({ feed, data })
@@ -227,22 +231,21 @@ class Posts extends Component {
                   />
                 );
               })}
-            {loaded &&
-              profileFeeds.length === 0 && (
-                <div
-                  style={{
-                    marginTop: '6rem',
-                    fontSize: '2.5rem',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div style={{ textAlign: 'center' }}>
-                    {this.onNoFeed(username)}
-                  </div>
+            {loaded && profileFeeds.length === 0 && (
+              <div
+                style={{
+                  marginTop: '6rem',
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
+                <div style={{ textAlign: 'center' }}>
+                  {this.onNoFeed(username)}
                 </div>
-              )}
+              </div>
+            )}
             {loadMoreButton && (
               <LoadMoreButton
                 onClick={this.loadMoreFeeds}
@@ -414,6 +417,7 @@ export default connect(
     feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
+    loadRepliesOfReply,
     loadTags,
     setCurrentSection,
     setDifficulty,

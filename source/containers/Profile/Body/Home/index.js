@@ -272,20 +272,19 @@ class Home extends Component {
                       </Button>
                     </div>
                   )}
-                {userId !== profile.id &&
-                  stringIsEmpty(statusMsg) && (
-                    <div
-                      style={{
-                        marginTop: '-1rem',
-                        width: '100%',
-                        fontSize: '2rem',
-                        display: 'flex',
-                        textAlign: 'center',
-                        alignItems: 'center'
-                      }}
-                      dangerouslySetInnerHTML={{ __html: defaultMessage }}
-                    />
-                  )}
+                {userId !== profile.id && stringIsEmpty(statusMsg) && (
+                  <div
+                    style={{
+                      marginTop: '-1rem',
+                      width: '100%',
+                      fontSize: '2rem',
+                      display: 'flex',
+                      textAlign: 'center',
+                      alignItems: 'center'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: defaultMessage }}
+                  />
+                )}
               </div>
             </div>
             <BasicInfos
@@ -339,18 +338,16 @@ class Home extends Component {
               }}
             />
           )}
-          {!stringIsEmpty(statusMsg) &&
-            !profile.twinkleXP &&
-            bioExists && (
-              <hr
-                style={{
-                  padding: '1px',
-                  background: '#fff',
-                  borderTop: `2px solid ${Color[selectedTheme](0.6)}`,
-                  borderBottom: `2px solid ${Color[selectedTheme](0.6)}`
-                }}
-              />
-            )}
+          {!stringIsEmpty(statusMsg) && !profile.twinkleXP && bioExists && (
+            <hr
+              style={{
+                padding: '1px',
+                background: '#fff',
+                borderTop: `2px solid ${Color[selectedTheme](0.6)}`,
+                borderBottom: `2px solid ${Color[selectedTheme](0.6)}`
+              }}
+            />
+          )}
           {bioExists && (
             <div
               style={{
@@ -390,25 +387,24 @@ class Home extends Component {
               />
             </div>
           )}
-          {!bioExists &&
-            profile.id === userId && (
-              <div
-                style={{
-                  width: '100%',
-                  justifyContent: 'center',
-                  display: 'flex',
-                  marginTop: '1rem'
-                }}
+          {!bioExists && profile.id === userId && (
+            <div
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                display: 'flex',
+                marginTop: '1rem'
+              }}
+            >
+              <Button
+                style={{ fontSize: '2rem' }}
+                transparent
+                onClick={() => this.setState({ bioEditModalShown: true })}
               >
-                <Button
-                  style={{ fontSize: '2rem' }}
-                  transparent
-                  onClick={() => this.setState({ bioEditModalShown: true })}
-                >
-                  Add a Bio
-                </Button>
-              </div>
-            )}
+                Add a Bio
+              </Button>
+            </div>
+          )}
         </SectionPanel>
         <Achievements
           profile={profile}
@@ -445,6 +441,7 @@ class Home extends Component {
             onEditDone={this.onEditComment}
             onLikeClick={this.onLikeComment}
             onLoadMoreReplies={this.onLoadMoreReplies}
+            onLoadRepliesOfReply={this.onLoadRepliesOfReply}
             onPreviewClick={this.onExpandComments}
             onReplySubmit={this.onReplySubmit}
             onRewardCommentEdit={this.onEditRewardComment}
@@ -519,14 +516,13 @@ class Home extends Component {
           ...comment,
           content: comment.id === commentId ? editedComment : comment.content,
           replies: comment.replies
-            ? comment.replies.map(
-                reply =>
-                  reply.id === commentId
-                    ? {
-                        ...reply,
-                        content: editedComment
-                      }
-                    : reply
+            ? comment.replies.map(reply =>
+                reply.id === commentId
+                  ? {
+                      ...reply,
+                      content: editedComment
+                    }
+                  : reply
               )
             : []
         }))
@@ -570,14 +566,13 @@ class Home extends Component {
           ...comment,
           likes: comment.id === commentId ? likes : comment.likes,
           replies: comment.replies
-            ? comment.replies.map(
-                reply =>
-                  reply.id === commentId
-                    ? {
-                        ...reply,
-                        likes
-                      }
-                    : reply
+            ? comment.replies.map(reply =>
+                reply.id === commentId
+                  ? {
+                      ...reply,
+                      likes
+                    }
+                  : reply
               )
             : []
         }))
@@ -603,6 +598,41 @@ class Home extends Component {
         loadMoreButton:
           comment.id === commentId ? loadMoreButton : comment.loadMoreButton
       }))
+    }));
+  };
+
+  onLoadRepliesOfReply = ({ replies, commentId, replyId }) => {
+    this.setState(state => ({
+      comments: state.comments.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            replies: [
+              ...comment.replies.filter(reply => reply.id <= replyId),
+              ...replies,
+              ...comment.replies.filter(reply => reply.id > replyId)
+            ]
+          };
+        }
+        let containsRootReply = false;
+        for (let reply of comment.replies) {
+          if (reply.id === replyId) {
+            containsRootReply = true;
+            break;
+          }
+        }
+        if (containsRootReply) {
+          return {
+            ...comment,
+            replies: [
+              ...comment.replies.filter(reply => reply.id <= replyId),
+              ...replies,
+              ...comment.replies.filter(reply => reply.id > replyId)
+            ]
+          };
+        }
+        return comment;
+      })
     }));
   };
 

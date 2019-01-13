@@ -4,9 +4,8 @@ import Context from '../Context';
 import withContext from 'components/Wrappers/withContext';
 import Reply from './Reply';
 import { scrollElementToCenter } from 'helpers';
+import { loadReplies } from 'helpers/requestHelpers';
 import Button from 'components/Button';
-import { URL } from 'constants/URL';
-import request from 'axios';
 
 class Replies extends Component {
   static propTypes = {
@@ -16,6 +15,7 @@ class Replies extends Component {
     discussion: PropTypes.object,
     innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
@@ -62,27 +62,13 @@ class Replies extends Component {
   render() {
     let {
       innerRef,
-      replies: rawReplies,
+      replies,
       userId,
       comment,
       discussion,
+      onLoadRepliesOfReply,
       parent
     } = this.props;
-    let allReplies = [];
-    let dupe = {};
-    for (let reply of rawReplies) {
-      allReplies =
-        reply.replies && reply.replies.length > 0
-          ? allReplies.concat([reply, ...reply.replies])
-          : allReplies.concat(reply);
-    }
-    let replies = [];
-    for (let reply of allReplies) {
-      if (dupe[reply.id]) continue;
-      replies.push(reply);
-      dupe[reply.id] = true;
-    }
-    replies.sort((a, b) => a.id - b.id);
     return (
       <div ref={ref => (this.ReplyContainer = ref)}>
         {comment.loadMoreButton && (
@@ -110,6 +96,7 @@ class Replies extends Component {
               reply={reply}
               userId={userId}
               onDelete={this.onDelete}
+              onLoadRepliesOfReply={onLoadRepliesOfReply}
               onReply={this.onReplySubmit}
             />
           );
@@ -122,11 +109,7 @@ class Replies extends Component {
     const { comment, onLoadMoreReplies, replies } = this.props;
     try {
       const lastReplyId = replies[0] ? replies[0].id : 'undefined';
-      const { data } = await request.get(
-        `${URL}/content/replies?lastReplyId=${lastReplyId}&commentId=${
-          comment.id
-        }`
-      );
+      const data = await loadReplies({ lastReplyId, commentId: comment.id });
       onLoadMoreReplies(data);
     } catch (error) {
       console.error(error.response, error);

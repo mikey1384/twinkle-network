@@ -18,6 +18,7 @@ import {
   fetchFeed,
   loadMoreFeedReplies,
   loadMoreFeedComments,
+  loadRepliesOfReply,
   loadTags,
   clearFeeds,
   setCurrentSection,
@@ -65,6 +66,7 @@ class Stories extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     loadMoreFeedComments: PropTypes.func.isRequired,
     loadMoreFeedReplies: PropTypes.func.isRequired,
+    loadRepliesOfReply: PropTypes.func.isRequired,
     loadTags: PropTypes.func.isRequired,
     numNewPosts: PropTypes.number.isRequired,
     resetNumNewPosts: PropTypes.func.isRequired,
@@ -180,6 +182,7 @@ class Stories extends Component {
       userId,
       loaded,
       loadMoreFeedComments,
+      loadRepliesOfReply,
       selectedFilter,
       setDifficulty,
       showFeedComments,
@@ -262,6 +265,7 @@ class Stories extends Component {
                       onLikeContent={contentFeedLike}
                       onLoadMoreComments={loadMoreFeedComments}
                       onLoadMoreReplies={loadMoreFeedReplies}
+                      onLoadRepliesOfReply={loadRepliesOfReply}
                       onLoadTags={loadTags}
                       onReplySubmit={data =>
                         this.uploadFeedComment({ feed, data })
@@ -472,6 +476,7 @@ export default connect(
     feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
+    loadRepliesOfReply,
     loadTags,
     clearFeeds,
     resetNumNewPosts,

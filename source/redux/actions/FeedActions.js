@@ -160,6 +160,13 @@ export const loadMoreFeedReplies = (data, feedId) => ({
   data
 });
 
+export const loadRepliesOfReply = ({ replies, commentId, replyId }) => ({
+  type: FEED.LOAD_REPLIES_OF_REPLY,
+  replies,
+  commentId,
+  replyId
+});
+
 export const loadTags = ({ type, contentId, tags }) => ({
   type: FEED.LOAD_TAGS,
   contentId,

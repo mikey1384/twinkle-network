@@ -213,6 +213,47 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         storyFeeds: action.data.concat(state.storyFeeds)
       };
+    case FEED.LOAD_REPLIES_OF_REPLY:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => ({
+          ...feed,
+          childComments: feed.childComments?.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
+                ]
+              };
+            }
+            let containsRootReply = false;
+            for (let reply of comment.replies) {
+              if (reply.id === action.replyId) {
+                containsRootReply = true;
+                break;
+              }
+            }
+            if (containsRootReply) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
+                ]
+              };
+            }
+            return comment;
+          })
+        }))
+      };
     case FEED.LOAD_TAGS:
       return {
         ...state,

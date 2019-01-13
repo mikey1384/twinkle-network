@@ -37,6 +37,7 @@ class Comments extends Component {
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onPreviewClick: PropTypes.func,
+    onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     parent: PropTypes.shape({
@@ -124,6 +125,7 @@ class Comments extends Component {
       onLikeClick,
       onLoadMoreReplies,
       onPreviewClick = () => {},
+      onLoadRepliesOfReply,
       onRewardCommentEdit,
       parent,
       style,
@@ -144,7 +146,8 @@ class Comments extends Component {
           onLikeClick,
           onLoadMoreReplies,
           onRewardCommentEdit,
-          onReplySubmit: this.onReplySubmit
+          onReplySubmit: this.onReplySubmit,
+          onLoadRepliesOfReply
         }}
       >
         <div

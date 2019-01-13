@@ -55,6 +55,7 @@ class Body extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onLoadTags: PropTypes.func,
+    onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
@@ -168,6 +169,7 @@ class Body extends Component {
       onLoadMoreComments,
       onLoadMoreReplies,
       onLoadTags,
+      onLoadRepliesOfReply,
       onReplySubmit,
       onSetDifficulty
     } = this.props;
@@ -444,6 +446,7 @@ class Body extends Component {
             }
             onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
             onPreviewClick={this.onExpandComments}
+            onLoadRepliesOfReply={onLoadRepliesOfReply}
             onReplySubmit={onReplySubmit}
             onRewardCommentEdit={onEditRewardComment}
             parent={contentObj}

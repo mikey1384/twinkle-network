@@ -99,6 +99,7 @@ export default class Achievements extends Component {
               onLoadContent={this.onLoadContent}
               onLoadMoreComments={this.onLoadMoreComments}
               onLoadMoreReplies={this.onLoadMoreReplies}
+              onLoadRepliesOfReply={this.onLoadRepliesOfReply}
               onLoadTags={this.onLoadTags}
               onReplySubmit={this.onReplySubmit}
               onSetDifficulty={this.onSetDifficulty}
@@ -658,6 +659,46 @@ export default class Achievements extends Component {
               }
             : contentObj;
         })
+      };
+    });
+  };
+
+  onLoadRepliesOfReply = ({ replies, commentId, replyId }) => {
+    this.setState(state => {
+      return {
+        notables: state.notables.map(contentObj => ({
+          ...contentObj,
+          childComments: contentObj.childComments?.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(reply => reply.id <= replyId),
+                  ...replies,
+                  ...comment.replies.filter(reply => reply.id > replyId)
+                ]
+              };
+            }
+            let containsRootReply = false;
+            for (let reply of comment.replies) {
+              if (reply.id === replyId) {
+                containsRootReply = true;
+                break;
+              }
+            }
+            if (containsRootReply) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(reply => reply.id <= replyId),
+                  ...replies,
+                  ...comment.replies.filter(reply => reply.id > replyId)
+                ]
+              };
+            }
+            return comment;
+          })
+        }))
       };
     });
   };

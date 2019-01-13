@@ -197,6 +197,20 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
+export const loadReplies = async({ lastReplyId, commentId }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/replies?${
+        lastReplyId ? `lastReplyId=${lastReplyId}&` : ''
+      }commentId=${commentId}&includeAll=true`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const loadNotableContent = async({ userId }) => {
   try {
     const {

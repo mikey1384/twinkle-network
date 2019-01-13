@@ -21,7 +21,7 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
-import { editContent } from 'helpers/requestHelpers';
+import { editContent, loadReplies } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 class Reply extends Component {
@@ -41,6 +41,7 @@ class Reply extends Component {
     onEditDone: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReply: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
     reply: PropTypes.shape({
@@ -62,7 +63,8 @@ class Reply extends Component {
     onEdit: false,
     userListModalShown: false,
     confirmModalShown: false,
-    xpRewardInterfaceShown: false
+    xpRewardInterfaceShown: false,
+    replyButtonClicked: false
   };
 
   render() {
@@ -88,6 +90,7 @@ class Reply extends Component {
       userListModalShown,
       confirmModalShown,
       clickListenerState,
+      replyButtonClicked,
       xpRewardInterfaceShown
     } = this.state;
     const userIsUploader = userId === uploader.id;
@@ -186,7 +189,18 @@ class Reply extends Component {
                       onClick={this.onReplyButtonClick}
                     >
                       <Icon icon="comment-alt" />
-                      <span style={{ marginLeft: '0.7rem' }}>Reply</span>
+                      <span style={{ marginLeft: '0.7rem' }}>
+                        {reply.numReplies > 1 &&
+                        !replyButtonClicked &&
+                        parent.type === 'comment'
+                          ? 'Replies'
+                          : 'Reply'}
+                        {reply.numReplies > 0 &&
+                        !replyButtonClicked &&
+                        parent.type === 'comment'
+                          ? ` (${reply.numReplies})`
+                          : ''}
+                      </span>
                     </Button>
                     {canStar && userCanEditThis && !userIsUploader && (
                       <Button
@@ -318,7 +332,28 @@ class Reply extends Component {
     onLikeClick({ commentId: reply.id, likes });
   };
 
-  onReplyButtonClick = () => this.ReplyInputArea.focus();
+  onReplyButtonClick = async() => {
+    const {
+      parent,
+      reply: { commentId, id, numReplies }
+    } = this.props;
+    const { replyButtonClicked } = this.state;
+    const { onLoadRepliesOfReply } = this.props;
+    this.setState({ replyButtonClicked: true });
+    this.ReplyInputArea.focus();
+    if (
+      numReplies.length > 0 &&
+      !replyButtonClicked &&
+      parent.type === 'comment'
+    ) {
+      const { replies } = await loadReplies({
+        commentId: id
+      });
+      if (replies.length > 0) {
+        onLoadRepliesOfReply({ replies, commentId, replyId: id });
+      }
+    }
+  };
 }
 
 export default connect(
