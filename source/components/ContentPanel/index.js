@@ -31,6 +31,7 @@ class ContentPanel extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onLoadTags: PropTypes.func,
+    onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
@@ -79,6 +80,7 @@ class ContentPanel extends Component {
       onLoadMoreComments,
       onLoadMoreReplies,
       onLoadTags,
+      onLoadRepliesOfReply,
       onReplySubmit,
       onSetDifficulty,
       onShowComments,
@@ -105,6 +107,7 @@ class ContentPanel extends Component {
           onLoadMoreComments,
           onLoadMoreReplies,
           onLoadTags,
+          onLoadRepliesOfReply,
           onReplySubmit,
           onSetDifficulty,
           onShowComments,
@@ -127,10 +130,10 @@ class ContentPanel extends Component {
                     ? 'replied on'
                     : 'replied to'
                   : contentObj.rootType === 'question'
-                    ? 'responded to'
-                    : contentObj.rootType === 'user'
-                      ? 'left a message to'
-                      : 'commented on'
+                  ? 'responded to'
+                  : contentObj.rootType === 'user'
+                  ? 'left a message to'
+                  : 'commented on'
               }
               onPlayVideoClick={() =>
                 this.setState({ attachedVideoShown: true })

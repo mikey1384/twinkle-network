@@ -123,6 +123,7 @@ class Content extends Component {
           onLoadContent={this.onLoadContent}
           onLoadMoreComments={this.onLoadMoreComments}
           onLoadMoreReplies={this.onLoadMoreReplies}
+          onLoadRepliesOfReply={this.onLoadRepliesOfReply}
           onReplySubmit={this.onReplySubmit}
           onSetDifficulty={this.onSetDifficulty}
           onShowComments={this.onShowComments}
@@ -383,7 +384,11 @@ class Content extends Component {
                 likes: comment.id === contentId ? likes : comment.likes,
                 replies: comment.replies.map(reply => ({
                   ...reply,
-                  likes: reply.id === contentId ? likes : reply.likes
+                  likes: reply.id === contentId ? likes : reply.likes,
+                  replies: reply.replies.map(reply => ({
+                    ...reply,
+                    likes: reply.id === contentId ? likes : reply.likes
+                  }))
                 }))
               }))
             : state.contentObj.childComments,
@@ -448,6 +453,44 @@ class Content extends Component {
           loadMoreButton:
             comment.id === commentId ? loadMoreButton : comment.loadMoreButton
         }))
+      }
+    }));
+  };
+
+  onLoadRepliesOfReply = ({ replies, commentId, replyId }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        childComments: state.contentObj.childComments.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: [
+                ...comment.replies.filter(reply => reply.id <= replyId),
+                ...replies,
+                ...comment.replies.filter(reply => reply.id > replyId)
+              ]
+            };
+          }
+          let containsRootReply = false;
+          for (let reply of comment.replies) {
+            if (reply.id === replyId) {
+              containsRootReply = true;
+              break;
+            }
+          }
+          if (containsRootReply) {
+            return {
+              ...comment,
+              replies: [
+                ...comment.replies.filter(reply => reply.id <= replyId),
+                ...replies,
+                ...comment.replies.filter(reply => reply.id > replyId)
+              ]
+            };
+          }
+          return comment;
+        })
       }
     }));
   };

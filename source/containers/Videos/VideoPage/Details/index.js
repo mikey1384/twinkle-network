@@ -187,7 +187,7 @@ class Details extends Component {
                   this.setState({ editedTitle: text });
                 }}
                 innerRef={ref => {
-                  this.thumbLabel = ref;
+                  this.title = ref;
                 }}
                 onTitleKeyUp={event => {
                   if (event.key === ' ') {
@@ -202,11 +202,13 @@ class Details extends Component {
                 onEdit={onEdit}
                 onMouseLeave={() => this.setState({ titleHovered: false })}
                 onMouseOver={this.onMouseOver}
-                onTitleHover={() =>
-                  this.setState(state => ({
-                    titleHovered: !state.titleHovered
-                  }))
-                }
+                onTitleHover={() => {
+                  if (textIsOverflown(this.title)) {
+                    this.setState(state => ({
+                      titleHovered: !state.titleHovered
+                    }));
+                  }
+                }}
                 title={title}
                 titleExceedsCharLimit={this.titleExceedsCharLimit}
                 titleHovered={titleHovered}
@@ -369,7 +371,7 @@ class Details extends Component {
   };
 
   onMouseOver = () => {
-    if (textIsOverflown(this.thumbLabel)) {
+    if (textIsOverflown(this.title)) {
       this.setState({ titleHovered: true });
     }
   };
