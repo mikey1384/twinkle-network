@@ -296,7 +296,7 @@ class Body extends Component {
                   {type === 'discussion' && (
                     <Button transparent onClick={this.onCommentButtonClick}>
                       <Icon icon="comment-alt" />
-                      <span style={{ marginLeft: '0.7rem' }}>Answer</span>
+                      <span style={{ marginLeft: '0.7rem' }}>Respond</span>
                       {!!numChildComments &&
                         numChildComments > 0 &&
                         !commentsShown && (

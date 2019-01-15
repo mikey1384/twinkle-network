@@ -85,21 +85,19 @@ class Heading extends Component {
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
           </div>
-          {type === 'comment' &&
-            rootType !== 'url' &&
-            rootType !== 'user' && (
-              <div
-                style={{
-                  width: '20%',
-                  height: '8rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end'
-                }}
-              >
-                {this.renderCornerButton()}
-              </div>
-            )}
+          {type === 'comment' && rootType !== 'url' && rootType !== 'user' && (
+            <div
+              style={{
+                width: '20%',
+                height: '8rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end'
+              }}
+            >
+              {this.renderCornerButton()}
+            </div>
+          )}
         </div>
         {questionModalShown && (
           <QuestionModal
@@ -128,8 +126,8 @@ class Heading extends Component {
       rootType === 'url'
         ? 'link'
         : rootType === 'question'
-          ? 'a subject'
-          : rootType;
+        ? 'a subject'
+        : rootType;
     switch (type) {
       case 'video':
         return (
@@ -276,7 +274,7 @@ class Heading extends Component {
           onClick={() => this.setState({ questionModalShown: true })}
         >
           <Icon icon="comment" />
-          <span style={{ marginLeft: '0.7rem' }}>Answer</span>
+          <span style={{ marginLeft: '0.7rem' }}>Respond</span>
         </Button>
       );
     }
@@ -301,8 +299,8 @@ class Heading extends Component {
               title: replyId
                 ? 'reply '
                 : rootType === 'user'
-                  ? 'message '
-                  : 'comment '
+                ? 'message '
+                : 'comment '
             }}
             type="comment"
             style={{ color: Color.green() }}
