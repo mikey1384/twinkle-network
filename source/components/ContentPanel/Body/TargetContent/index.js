@@ -224,9 +224,7 @@ class TargetContent extends Component {
                                 ? 'replied'
                                 : type === 'comment'
                                 ? 'commented'
-                                : type === 'discussion'
-                                ? 'responded'
-                                : 'answered'
+                                : 'responded'
                             }:`
                           }}
                           type="comment"
