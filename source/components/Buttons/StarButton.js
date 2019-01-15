@@ -4,6 +4,7 @@ import onClickOutside from 'react-onclickoutside';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
+import DifficultyModal from 'components/Modals/DifficultyModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { setByUser } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
@@ -16,26 +17,32 @@ class StarButton extends Component {
     dispatch: PropTypes.func.isRequired,
     isStarred: PropTypes.bool,
     onClick: PropTypes.func,
+    onSetDifficulty: PropTypes.func,
     onToggleByUser: PropTypes.func,
     onToggleStarred: PropTypes.func,
     style: PropTypes.object,
+    type: PropTypes.string.isRequired,
     uploader: PropTypes.object
   };
 
   state = {
+    difficultyModalShown: false,
     menuShown: false
   };
 
   render() {
     const {
       byUser,
+      contentId,
+      difficulty,
       direction = 'left',
       isStarred,
-      onClick = () => this.setState(state => ({ menuShown: !state.menuShown })),
+      onSetDifficulty,
       uploader,
-      style
+      style,
+      type
     } = this.props;
-    const { menuShown } = this.state;
+    const { difficultyModalShown, menuShown } = this.state;
     return (
       <ErrorBoundary>
         <div style={style}>
@@ -46,7 +53,7 @@ class StarButton extends Component {
               ? { warning: true }
               : { love: true })}
             filled={isStarred || byUser}
-            onClick={onClick}
+            onClick={this.onClick}
           >
             <Icon icon="star" />
           </Button>
@@ -70,12 +77,32 @@ class StarButton extends Component {
             </DropdownList>
           )}
         </div>
+        {difficultyModalShown && (
+          <DifficultyModal
+            type={type}
+            contentId={contentId}
+            difficulty={difficulty}
+            onSubmit={data => {
+              onSetDifficulty(data);
+              this.setState({ difficultyModalShown: false });
+            }}
+            onHide={() => this.setState({ difficultyModalShown: false })}
+          />
+        )}
       </ErrorBoundary>
     );
   }
 
   handleClickOutside = event => {
     this.setState({ menuShown: false });
+  };
+
+  onClick = () => {
+    const { type } = this.props;
+    if (type === 'video') {
+      return this.setState(state => ({ menuShown: !state.menuShown }));
+    }
+    return this.setState({ difficultyModalShown: true });
   };
 
   onToggleStarred = () => {

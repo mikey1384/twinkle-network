@@ -18,7 +18,6 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
-import DifficultyModal from 'components/Modals/DifficultyModal';
 import { determineXpButtonDisabled } from 'helpers';
 import {
   deleteContent,
@@ -65,7 +64,6 @@ class Body extends Component {
   state = {
     autoFocusWhenCommentShown: false,
     rewardExplanation: '',
-    difficultyModalShown: false,
     edited: false,
     isEditing: false,
     userListModalShown: false,
@@ -178,7 +176,6 @@ class Body extends Component {
       userListModalShown,
       confirmModalShown,
       commentsShown,
-      difficultyModalShown,
       isEditing,
       xpRewardInterfaceShown
     } = this.state;
@@ -339,9 +336,12 @@ class Body extends Component {
                       <StarButton
                         byUser={!!contentObj.byUser}
                         contentId={contentObj.id}
+                        difficulty={difficulty}
                         isStarred={!!difficulty}
+                        onSetDifficulty={onSetDifficulty}
                         onToggleStarred={this.onToggleStarred}
                         onToggleByUser={this.onToggleByUser}
+                        type={type}
                         uploader={uploader}
                       />
                     )}
@@ -454,18 +454,6 @@ class Body extends Component {
               title={`People who liked this ${type}`}
               users={likes}
               description="(You)"
-            />
-          )}
-          {difficultyModalShown && (
-            <DifficultyModal
-              type={type}
-              contentId={contentId}
-              difficulty={difficulty}
-              onSubmit={data => {
-                onSetDifficulty(data);
-                this.setState({ difficultyModalShown: false });
-              }}
-              onHide={() => this.setState({ difficultyModalShown: false })}
             />
           )}
         </div>
