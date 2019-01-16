@@ -597,18 +597,6 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         currentSection: action.section
       };
-    case FEED.STAR_VIDEO:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed => {
-          let contentMatches =
-            feed.type === 'video' && feed.contentId === action.videoId;
-          return {
-            ...feed,
-            isStarred: contentMatches ? action.isStarred : feed.isStarred
-          };
-        })
-      };
     case FEED.LOAD_COMMENTS:
       if (action.data.comments.length === 0) return state;
       return {

@@ -35,7 +35,6 @@ class ContentPanel extends Component {
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,
-    onStarVideo: PropTypes.func,
     onByUserStatusChange: PropTypes.func,
     onTargetCommentSubmit: PropTypes.func.isRequired
   };
@@ -84,7 +83,6 @@ class ContentPanel extends Component {
       onReplySubmit,
       onSetDifficulty,
       onShowComments,
-      onStarVideo,
       onTargetCommentSubmit,
       userId
     } = this.props;
@@ -111,7 +109,6 @@ class ContentPanel extends Component {
           onReplySubmit,
           onSetDifficulty,
           onShowComments,
-          onStarVideo,
           onTargetCommentSubmit
         }}
       >

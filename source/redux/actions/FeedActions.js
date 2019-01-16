@@ -72,23 +72,6 @@ export const feedRewardCommentEdit = ({ id, text }) => ({
   text
 });
 
-export const feedVideoStar = videoId => async dispatch => {
-  try {
-    const { data } = await request.put(
-      `${URL}/video/star`,
-      { videoId },
-      auth()
-    );
-    return dispatch({
-      type: FEED.STAR_VIDEO,
-      videoId,
-      isStarred: data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
 export const fetchFeed = ({ data, feedId }) => ({
   type: FEED.LOAD_DETAIL,
   feedId,

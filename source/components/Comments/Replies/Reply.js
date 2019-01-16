@@ -41,7 +41,7 @@ class Reply extends Component {
     onEditDone: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
-    onLoadRepliesOfReply: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func,
     onReply: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,
     reply: PropTypes.shape({

@@ -11,7 +11,6 @@ import {
   feedContentEdit,
   feedContentDelete,
   feedRewardCommentEdit,
-  feedVideoStar,
   fetchMoreFeeds,
   fetchNewFeeds,
   fetchFeeds,
@@ -55,7 +54,6 @@ class Stories extends Component {
     feedContentEdit: PropTypes.func.isRequired,
     feedCommentEdit: PropTypes.func.isRequired,
     feedRewardCommentEdit: PropTypes.func.isRequired,
-    feedVideoStar: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     fetchMoreFeeds: PropTypes.func.isRequired,
@@ -171,7 +169,6 @@ class Stories extends Component {
       feedCommentEdit,
       feedContentDelete,
       feedContentEdit,
-      feedVideoStar,
       feedRewardCommentEdit,
       fetchFeed,
       hideWatched,
@@ -271,7 +268,6 @@ class Stories extends Component {
                         this.uploadFeedComment({ feed, data })
                       }
                       onSetDifficulty={setDifficulty}
-                      onStarVideo={feedVideoStar}
                       onShowComments={showFeedComments}
                       onTargetCommentSubmit={uploadTargetContentComment}
                       userId={userId}
@@ -473,7 +469,6 @@ export default connect(
     feedContentEdit,
     feedCommentEdit,
     feedRewardCommentEdit,
-    feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
     loadRepliesOfReply,

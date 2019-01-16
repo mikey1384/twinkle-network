@@ -30,29 +30,28 @@ export default function Result({ closeSearch, type, result }) {
           background: '#fff'
         }}
       >
-        {type !== 'question' &&
-          type !== 'url' && (
-            <div style={{ width: '25%' }}>
-              {type === 'video' && (
-                <VideoThumbImage
-                  isStarred={!!result.isStarred}
-                  videoId={result.id}
-                  src={`https://img.youtube.com/vi/${
-                    result.content
-                  }/mqdefault.jpg`}
-                />
-              )}
-              {type === 'discussion' && (
-                <VideoThumbImage
-                  isStarred={!!(result.rootObj || {}).isStarred}
-                  videoId={(result.rootObj || {}).id}
-                  src={`https://img.youtube.com/vi/${
-                    (result.rootObj || {}).content
-                  }/mqdefault.jpg`}
-                />
-              )}
-            </div>
-          )}
+        {type !== 'question' && type !== 'url' && (
+          <div style={{ width: '25%' }}>
+            {type === 'video' && (
+              <VideoThumbImage
+                difficulty={result.difficulty}
+                videoId={result.id}
+                src={`https://img.youtube.com/vi/${
+                  result.content
+                }/mqdefault.jpg`}
+              />
+            )}
+            {type === 'discussion' && (
+              <VideoThumbImage
+                difficulty={result.rootObj?.difficulty}
+                videoId={(result.rootObj || {}).id}
+                src={`https://img.youtube.com/vi/${
+                  (result.rootObj || {}).content
+                }/mqdefault.jpg`}
+              />
+            )}
+          </div>
+        )}
         <div
           style={{
             width: type !== 'question' && type !== 'url' ? '75%' : '100%',

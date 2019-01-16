@@ -77,7 +77,7 @@ class SortableThumb extends Component {
               <VideoThumbImage
                 height="65%"
                 videoId={video.id}
-                isStarred={!!video.isStarred}
+                difficulty={video.difficulty}
                 src={`https://img.youtube.com/vi/${
                   video.content
                 }/mqdefault.jpg`}

@@ -37,7 +37,7 @@ class Comments extends Component {
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onPreviewClick: PropTypes.func,
-    onLoadRepliesOfReply: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onRewardCommentEdit: PropTypes.func.isRequired,
     parent: PropTypes.shape({

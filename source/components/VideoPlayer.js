@@ -30,11 +30,11 @@ class VideoPlayer extends Component {
     addVideoView: PropTypes.func.isRequired,
     byUser: PropTypes.bool,
     chatMode: PropTypes.bool,
+    difficulty: PropTypes.number,
     emptyCurrentVideoSlot: PropTypes.func,
     fillCurrentVideoSlot: PropTypes.func,
     hasHqThumb: PropTypes.number,
     changeUserXP: PropTypes.func,
-    isStarred: PropTypes.bool,
     minimized: PropTypes.bool,
     stretch: PropTypes.bool,
     onEdit: PropTypes.bool,
@@ -64,7 +64,7 @@ class VideoPlayer extends Component {
   };
 
   async componentDidMount() {
-    const { hasHqThumb, isStarred, userId, videoCode, videoId } = this.props;
+    const { hasHqThumb, difficulty, userId, videoCode, videoId } = this.props;
     this.mounted = true;
 
     if (videoCode && typeof hasHqThumb !== 'number') {
@@ -91,7 +91,7 @@ class VideoPlayer extends Component {
       });
     }
 
-    if (isStarred && userId) {
+    if (!!difficulty && userId) {
       try {
         const {
           data: { xpEarned }
@@ -114,7 +114,7 @@ class VideoPlayer extends Component {
       chatMode,
       currentVideoSlot,
       hasHqThumb,
-      isStarred,
+      difficulty,
       pageVisible,
       userId,
       videoCode,
@@ -149,8 +149,8 @@ class VideoPlayer extends Component {
     }
 
     if (
-      isStarred &&
-      ((userId && userId !== prevProps.userId) || !prevProps.isStarred)
+      !!difficulty &&
+      ((userId && userId !== prevProps.userId) || !prevProps.difficulty)
     ) {
       try {
         const {
@@ -181,7 +181,7 @@ class VideoPlayer extends Component {
 
     if (
       started &&
-      isStarred &&
+      !!difficulty &&
       userId &&
       pageVisible !== prevProps.pageVisible &&
       !alreadyEarned
@@ -196,7 +196,7 @@ class VideoPlayer extends Component {
 
     if (
       started &&
-      isStarred &&
+      !!difficulty &&
       chatMode !== prevProps.chatMode &&
       !alreadyEarned
     ) {
@@ -218,7 +218,7 @@ class VideoPlayer extends Component {
   render() {
     const {
       byUser,
-      isStarred,
+      difficulty,
       minimized,
       stretch,
       onEdit,
@@ -291,32 +291,31 @@ class VideoPlayer extends Component {
             }
           }}
         >
-          {!minimized &&
-            !started && (
-              <>
-                <img
-                  alt=""
-                  src={imageUrl}
-                  className={css`
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    top: 0;
-                    right: 0;
-                    left: 0;
-                    bottom: 0;
-                  `}
+          {!minimized && !started && (
+            <>
+              <img
+                alt=""
+                src={imageUrl}
+                className={css`
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  right: 0;
+                  left: 0;
+                  bottom: 0;
+                `}
+              />
+              {!!difficulty && (
+                <StarMark
+                  style={{
+                    top: '1rem',
+                    left: '1rem'
+                  }}
                 />
-                {isStarred && (
-                  <StarMark
-                    style={{
-                      top: '1rem',
-                      left: '1rem'
-                    }}
-                  />
-                )}
-              </>
-            )}
+              )}
+            </>
+          )}
           {!onEdit && (
             <ReactPlayer
               ref={ref => {
@@ -375,48 +374,43 @@ class VideoPlayer extends Component {
             />
           ) : null}
         </div>
-        {(!userId || xpLoaded) &&
-          isStarred &&
-          (!started || xpEarned) && (
-            <div
-              style={{
-                background: xpEarned ? Color.green() : Color.logoBlue(),
-                padding: '0.5rem',
-                color: '#fff',
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              {!xpEarned && (
-                <div>
-                  <Icon icon="star" />
-                </div>
-              )}
-              <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
-                {xpEarned
-                  ? 'You have already earned XP from this video'
-                  : ' Watch this video and earn 100 XP'}
+        {(!userId || xpLoaded) && !!difficulty && (!started || xpEarned) && (
+          <div
+            style={{
+              background: xpEarned ? Color.green() : Color.logoBlue(),
+              padding: '0.5rem',
+              color: '#fff',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            {!xpEarned && (
+              <div>
+                <Icon icon="star" />
               </div>
+            )}
+            <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
+              {xpEarned
+                ? 'You have already earned XP from this video'
+                : ' Watch this video and earn 100 XP'}
             </div>
-          )}
-        {!xpEarned &&
-          isStarred &&
-          userId &&
-          started && (
-            <ProgressBar
-              progress={this.determineProgress({
-                timeWatched,
-                totalDuration,
-                xpEarned
-              })}
-              noBorderRadius={stretch}
-              color={justEarned ? Color.green() : Color.blue()}
-              text={justEarned ? 'Earned 100 XP!' : ''}
-            />
-          )}
+          </div>
+        )}
+        {!xpEarned && !!difficulty && userId && started && (
+          <ProgressBar
+            progress={this.determineProgress({
+              timeWatched,
+              totalDuration,
+              xpEarned
+            })}
+            noBorderRadius={stretch}
+            color={justEarned ? Color.green() : Color.blue()}
+            text={justEarned ? 'Earned 100 XP!' : ''}
+          />
+        )}
       </ErrorBoundary>
     );
   }
@@ -429,11 +423,11 @@ class VideoPlayer extends Component {
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
-        ? Math.floor(
-            (Math.min(timeWatched, requiredViewDuration) * 100) /
-              requiredViewDuration
-          )
-        : 0;
+      ? Math.floor(
+          (Math.min(timeWatched, requiredViewDuration) * 100) /
+            requiredViewDuration
+        )
+      : 0;
     return progress;
   };
 
@@ -448,7 +442,7 @@ class VideoPlayer extends Component {
   onVideoPlay = () => {
     const {
       currentVideoSlot,
-      isStarred,
+      difficulty,
       videoId,
       userId,
       addVideoView,
@@ -470,7 +464,7 @@ class VideoPlayer extends Component {
       }
       const authorization = auth();
       const authExists = !!authorization.headers.authorization;
-      if (authExists && isStarred && !(justEarned || xpEarned)) {
+      if (authExists && !!difficulty && !(justEarned || xpEarned)) {
         try {
           request.put(
             `${VIDEO_URL}/currentlyWatching`,
@@ -506,8 +500,8 @@ class VideoPlayer extends Component {
 
   increaseProgress = async() => {
     const { justEarned, xpEarned, timeWatched, totalDuration } = this.state;
-    const { changeUserXP, isStarred, videoId } = this.props;
-    if (isStarred && !xpEarned && !justEarned && this.Player) {
+    const { changeUserXP, difficulty, videoId } = this.props;
+    if (!!difficulty && !xpEarned && !justEarned && this.Player) {
       if (this.Player.getInternalPlayer()) {
         if (this.Player.getInternalPlayer().isMuted()) {
           this.Player.getInternalPlayer().unMute();
@@ -518,7 +512,7 @@ class VideoPlayer extends Component {
       }
     }
     if (
-      isStarred &&
+      !!difficulty &&
       timeWatched >=
         Math.min(totalDuration / denominator, requiredDurationCap) &&
       !this.rewardingXP
@@ -556,7 +550,7 @@ class VideoPlayer extends Component {
           data: { currentlyWatchingAnotherVideo, success }
         } = await request.put(
           `${VIDEO_URL}/duration`,
-          { videoId, isStarred, xpEarned },
+          { videoId, difficulty, xpEarned },
           authorization
         );
         if (success) return;

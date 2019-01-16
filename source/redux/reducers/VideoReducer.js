@@ -78,10 +78,14 @@ export default function VideoReducer(state = defaultState, action) {
           ...state.videoPage,
           byUser: action.byUser
         },
-        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
-          ...thumb,
-          byUser: thumb.id === action.contentId ? action.byUser : thumb.byUser
-        }))
+        allVideoThumbs: state.allVideoThumbs.map(thumb =>
+          thumb.id === action.videoId
+            ? {
+                ...thumb,
+                byUser: action.byUser
+              }
+            : thumb
+        )
       };
     case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs;
@@ -558,19 +562,6 @@ export default function VideoReducer(state = defaultState, action) {
           })
         }
       };
-    case VIDEO.STAR:
-      return {
-        ...state,
-        videoPage: {
-          ...state.videoPage,
-          isStarred: action.isStarred
-        },
-        allVideoThumbs: state.allVideoThumbs.map(thumb => ({
-          ...thumb,
-          isStarred:
-            thumb.id === action.videoId ? action.isStarred : thumb.isStarred
-        }))
-      };
     case VIDEO.ADD_QUESTIONS:
       return {
         ...state,
@@ -605,6 +596,22 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         videoPage: defaultVideoPageState
+      };
+    case VIDEO.SET_DIFFICULTY:
+      return {
+        ...state,
+        allVideoThumbs: state.allVideoThumbs.map(thumb =>
+          thumb.id === action.videoId
+            ? {
+                ...thumb,
+                difficulty: action.difficulty
+              }
+            : thumb
+        ),
+        videoPage: {
+          ...state.videoPage,
+          difficulty: action.difficulty
+        }
       };
     case VIDEO.SET_DISCUSSION_DIFFICULTY:
       return {

@@ -22,7 +22,7 @@ import {
   addTags,
   attachStar,
   loadTags,
-  starVideo
+  setDifficulty
 } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
@@ -40,7 +40,7 @@ class Details extends Component {
     changingPage: PropTypes.bool,
     content: PropTypes.string.isRequired,
     description: PropTypes.string,
-    isStarred: PropTypes.bool,
+    difficulty: PropTypes.number,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
     loadTags: PropTypes.func.isRequired,
@@ -48,9 +48,9 @@ class Details extends Component {
     onEditCancel: PropTypes.func.isRequired,
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
+    setDifficulty: PropTypes.func.isRequired,
     tags: PropTypes.array,
     stars: PropTypes.array,
-    starVideo: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
@@ -101,7 +101,7 @@ class Details extends Component {
       changeByUserStatus,
       changingPage,
       content,
-      isStarred,
+      difficulty,
       likeVideo,
       userId,
       uploader,
@@ -110,9 +110,9 @@ class Details extends Component {
       likes,
       loadTags,
       onDelete,
+      setDifficulty,
       tags = [],
       stars,
-      starVideo,
       timeStamp,
       videoId,
       videoViews
@@ -224,10 +224,10 @@ class Details extends Component {
                 byUser={byUser}
                 canStar={canStar}
                 changeByUserStatus={changeByUserStatus}
-                isStarred={isStarred}
+                difficulty={difficulty}
                 likes={likes}
                 likeVideo={likeVideo}
-                starVideo={starVideo}
+                setDifficulty={setDifficulty}
                 uploader={uploader}
                 userId={userId}
                 videoId={videoId}
@@ -412,6 +412,6 @@ export default connect(
     addTags,
     attachStar,
     loadTags,
-    starVideo
+    setDifficulty
   }
 )(Details);

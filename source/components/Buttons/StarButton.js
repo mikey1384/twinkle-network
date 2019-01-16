@@ -13,13 +13,12 @@ class StarButton extends Component {
   static propTypes = {
     byUser: PropTypes.bool,
     contentId: PropTypes.number,
+    difficulty: PropTypes.number,
     direction: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
-    isStarred: PropTypes.bool,
     onClick: PropTypes.func,
     onSetDifficulty: PropTypes.func,
     onToggleByUser: PropTypes.func,
-    onToggleStarred: PropTypes.func,
     style: PropTypes.object,
     type: PropTypes.string.isRequired,
     uploader: PropTypes.object
@@ -36,7 +35,6 @@ class StarButton extends Component {
       contentId,
       difficulty,
       direction = 'left',
-      isStarred,
       onSetDifficulty,
       uploader,
       style,
@@ -47,12 +45,12 @@ class StarButton extends Component {
       <ErrorBoundary>
         <div style={style}>
           <Button
-            {...(isStarred && byUser
+            {...(!!difficulty && byUser
               ? { gold: true }
               : byUser
               ? { warning: true }
               : { love: true })}
-            filled={isStarred || byUser}
+            filled={!!difficulty || byUser}
             onClick={this.onClick}
           >
             <Icon icon="star" />
@@ -66,9 +64,7 @@ class StarButton extends Component {
                 width: '25rem'
               }}
             >
-              <li onClick={this.onToggleStarred}>
-                {isStarred ? 'De-star' : 'Star'} this video
-              </li>
+              <li onClick={this.onSetDifficultyClick}>Set difficulty</li>
               <li onClick={this.onToggleByUser}>
                 {byUser
                   ? `This video wasn't made by ${uploader.username}`
@@ -105,10 +101,8 @@ class StarButton extends Component {
     return this.setState({ difficultyModalShown: true });
   };
 
-  onToggleStarred = () => {
-    const { onToggleStarred } = this.props;
-    onToggleStarred();
-    this.setState({ menuShown: false });
+  onSetDifficultyClick = () => {
+    this.setState({ difficultyModalShown: true, menuShown: false });
   };
 
   onToggleByUser = async() => {

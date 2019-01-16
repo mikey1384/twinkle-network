@@ -26,7 +26,7 @@ export const addVideoView = params => dispatch => {
 
 export const changeByUserStatus = ({ contentId, byUser }) => ({
   type: VIDEO.CHANGE_BY_USER_STATUS,
-  contentId,
+  videoId: Number(contentId),
   byUser
 });
 
@@ -287,24 +287,17 @@ export const resetVideoState = () => ({
   type: VIDEO.RESET
 });
 
+export const setDifficulty = ({ contentId, difficulty }) => ({
+  type: VIDEO.SET_DIFFICULTY,
+  videoId: contentId,
+  difficulty
+});
+
 export const setDiscussionDifficulty = ({ contentId, difficulty }) => ({
   type: VIDEO.SET_DISCUSSION_DIFFICULTY,
   contentId,
   difficulty
 });
-
-export const starVideo = videoId => async dispatch => {
-  try {
-    const { data } = await request.put(`${API_URL}/star`, { videoId }, auth());
-    return dispatch({
-      type: VIDEO.STAR,
-      videoId,
-      isStarred: data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
 
 export const uploadQuestions = params => async dispatch => {
   try {

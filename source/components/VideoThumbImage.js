@@ -12,7 +12,7 @@ const API_URL = `${URL}/video`;
 class VideoThumbImage extends Component {
   static propTypes = {
     height: PropTypes.string,
-    isStarred: PropTypes.bool,
+    difficulty: PropTypes.number,
     src: PropTypes.string.isRequired,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -25,20 +25,20 @@ class VideoThumbImage extends Component {
   mounted = false;
 
   componentDidMount() {
-    const { userId, isStarred } = this.props;
+    const { userId, difficulty } = this.props;
     this.mounted = true;
-    if (isStarred && userId) {
+    if (difficulty && userId) {
       this.checkXpStatus();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { videoId, isStarred, userId } = this.props;
+    const { videoId, difficulty, userId } = this.props;
     const isNewVideo = prevProps.videoId !== videoId;
     const isDifferentUser = userId && userId !== prevProps.userId;
-    const isUnstarred = prevProps.isStarred && !isStarred;
+    const isUnstarred = prevProps.difficulty && !difficulty;
     const isLoggedOut = prevProps.userId && !userId;
-    if (isStarred) {
+    if (difficulty) {
       if (isNewVideo || isDifferentUser) {
         this.checkXpStatus();
       }
@@ -53,7 +53,7 @@ class VideoThumbImage extends Component {
   }
 
   render() {
-    const { src, height = '55%', isStarred } = this.props;
+    const { src, height = '55%', difficulty } = this.props;
     const { xpEarned } = this.state;
     return (
       <div
@@ -82,7 +82,7 @@ class VideoThumbImage extends Component {
             borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
           }}
         />
-        {isStarred && <StarMark style={{ top: 1, left: 1 }} size={3.5} />}
+        {!!difficulty && <StarMark style={{ top: 1, left: 1 }} size={3.5} />}
       </div>
     );
   }

@@ -200,7 +200,7 @@ class Heading extends Component {
     const {
       contentObj: {
         rootId,
-        rootObj: { content, likes = [], isStarred } = {},
+        rootObj: { content, likes = [], difficulty } = {},
         rootType
       },
       attachedVideoShown,
@@ -244,7 +244,7 @@ class Heading extends Component {
                     height: 85%;
                   `}
                 >
-                  {!!isStarred && (
+                  {difficulty && (
                     <StarMark style={{ top: 1, left: 1 }} size={2.5} />
                   )}
                   <span />

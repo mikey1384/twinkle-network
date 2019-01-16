@@ -72,7 +72,7 @@ export default class Playlist extends Component {
                 to={`/videos/${video.id}?playlist=${playlistId}`}
               >
                 <VideoThumbImage
-                  isStarred={!!video.isStarred}
+                  difficulty={video.difficulty}
                   videoId={video.id}
                   src={`https://img.youtube.com/vi/${
                     video.content

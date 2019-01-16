@@ -57,8 +57,7 @@ class Body extends Component {
     onLoadRepliesOfReply: PropTypes.func.isRequired,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
-    onShowComments: PropTypes.func.isRequired,
-    onStarVideo: PropTypes.func
+    onShowComments: PropTypes.func.isRequired
   };
 
   state = {
@@ -198,7 +197,7 @@ class Body extends Component {
             <VideoPlayer
               stretch
               autoplay
-              isStarred={!!rootObj.isStarred}
+              difficulty={rootObj.difficulty}
               byUser={!!rootObj.byUser}
               title={rootObj.title}
               style={{ marginBottom: '1rem' }}
@@ -337,9 +336,7 @@ class Body extends Component {
                         byUser={!!contentObj.byUser}
                         contentId={contentObj.id}
                         difficulty={difficulty}
-                        isStarred={!!difficulty}
                         onSetDifficulty={onSetDifficulty}
-                        onToggleStarred={this.onToggleStarred}
                         onToggleByUser={this.onToggleByUser}
                         type={type}
                         uploader={uploader}
@@ -570,14 +567,6 @@ class Body extends Component {
       onByUserStatusChange
     } = this.props;
     onByUserStatusChange({ byUser, contentId });
-  };
-
-  onToggleStarred = () => {
-    const {
-      contentObj: { contentId },
-      onStarVideo
-    } = this.props;
-    onStarVideo(contentId);
   };
 }
 

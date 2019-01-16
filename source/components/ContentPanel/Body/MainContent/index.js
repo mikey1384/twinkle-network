@@ -47,7 +47,7 @@ export default function MainContent({
           (type === 'discussion' && rootType === 'video')) && (
           <VideoPlayer
             stretch
-            isStarred={!!(rootObj.isStarred || contentObj.isStarred)}
+            difficulty={rootObj.difficulty || contentObj.difficulty}
             byUser={!!(rootObj.byUser || contentObj.byUser)}
             onEdit={isEditing}
             title={rootObj.title || contentObj.title}

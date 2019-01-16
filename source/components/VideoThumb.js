@@ -30,10 +30,10 @@ class VideoThumb extends Component {
     to: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
     video: PropTypes.shape({
-      byUser: PropTypes.number,
+      byUser: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
       content: PropTypes.string.isRequired,
       id: PropTypes.number.isRequired,
-      isStarred: PropTypes.number,
+      difficulty: PropTypes.number,
       likes: PropTypes.array,
       title: PropTypes.string.isRequired
     }).isRequired
@@ -96,7 +96,7 @@ class VideoThumb extends Component {
               <VideoThumbImage
                 height="65%"
                 videoId={video.id}
-                isStarred={!!video.isStarred}
+                difficulty={video.difficulty}
                 src={`https://img.youtube.com/vi/${
                   video.content
                 }/mqdefault.jpg`}

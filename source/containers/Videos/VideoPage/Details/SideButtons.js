@@ -9,11 +9,11 @@ export default class SideButtons extends Component {
   static propTypes = {
     byUser: PropTypes.bool.isRequired,
     canStar: PropTypes.bool.isRequired,
-    isStarred: PropTypes.bool.isRequired,
+    difficulty: PropTypes.number,
     likes: PropTypes.array.isRequired,
     likeVideo: PropTypes.func.isRequired,
     changeByUserStatus: PropTypes.func.isRequired,
-    starVideo: PropTypes.func.isRequired,
+    setDifficulty: PropTypes.func.isRequired,
     style: PropTypes.object,
     uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
@@ -29,10 +29,10 @@ export default class SideButtons extends Component {
     const {
       byUser,
       canStar,
-      isStarred,
+      difficulty,
       likes,
       likeVideo,
-      starVideo,
+      setDifficulty,
       style,
       uploader,
       userId,
@@ -62,8 +62,9 @@ export default class SideButtons extends Component {
                 byUser={byUser}
                 contentId={Number(videoId)}
                 style={{ position: 'absolute', top: 0, left: 0 }}
-                isStarred={isStarred}
-                onToggleStarred={() => starVideo(videoId)}
+                type="video"
+                difficulty={difficulty}
+                onSetDifficulty={setDifficulty}
                 onToggleByUser={this.onToggleByUser}
                 uploader={uploader}
               />

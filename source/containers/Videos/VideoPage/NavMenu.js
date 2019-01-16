@@ -156,42 +156,41 @@ class NavMenu extends Component {
                 })}
               </section>
             )}
-            {playlistId &&
-              playlistVideos.length > 0 && (
-                <section
-                  key={videoId + 'playlist videos'}
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    overflowWrap: 'break-word',
-                    wordBreak: 'break-word'
-                  }}
-                >
-                  <div style={{ marginBottom: '1rem' }}>
-                    <Link
-                      style={{
-                        fontSize: '2.5rem',
-                        textDecoration: 'none'
-                      }}
-                      to={`/playlists/${playlistId}`}
-                    >
-                      {cleanString(playlistTitle)}
-                    </Link>
-                  </div>
-                  {this.renderVideos({
-                    videos: playlistVideos,
-                    arePlaylistVideos: true
-                  })}
-                  {playlistVideosLoadMoreShown && (
-                    <LoadMoreButton
-                      loading={playlistVideosLoading}
-                      onClick={this.loadMorePlaylistVideos}
-                      success
-                      filled
-                      style={{ marginTop: '1.5rem', width: '100%' }}
-                    />
-                  )}
-                </section>
-              )}
+            {playlistId && playlistVideos.length > 0 && (
+              <section
+                key={videoId + 'playlist videos'}
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
+              >
+                <div style={{ marginBottom: '1rem' }}>
+                  <Link
+                    style={{
+                      fontSize: '2.5rem',
+                      textDecoration: 'none'
+                    }}
+                    to={`/playlists/${playlistId}`}
+                  >
+                    {cleanString(playlistTitle)}
+                  </Link>
+                </div>
+                {this.renderVideos({
+                  videos: playlistVideos,
+                  arePlaylistVideos: true
+                })}
+                {playlistVideosLoadMoreShown && (
+                  <LoadMoreButton
+                    loading={playlistVideosLoading}
+                    onClick={this.loadMorePlaylistVideos}
+                    success
+                    filled
+                    style={{ marginTop: '1.5rem', width: '100%' }}
+                  />
+                )}
+              </section>
+            )}
             {relatedVideos.length > 0 && (
               <section key={videoId + 'related videos'}>
                 <p>Related Videos</p>
@@ -255,7 +254,7 @@ class NavMenu extends Component {
             }`}
           >
             <VideoThumbImage
-              isStarred={!!video.isStarred}
+              difficulty={video.difficulty}
               videoId={video.videoId}
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
             />

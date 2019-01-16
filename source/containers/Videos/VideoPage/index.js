@@ -65,6 +65,7 @@ class VideoPage extends Component {
     deleteVideoComment: PropTypes.func.isRequired,
     deleteVideoDiscussion: PropTypes.func.isRequired,
     description: PropTypes.string,
+    difficulty: PropTypes.number,
     discussions: PropTypes.array,
     editRewardComment: PropTypes.func.isRequired,
     editVideoComment: PropTypes.func.isRequired,
@@ -72,7 +73,6 @@ class VideoPage extends Component {
     editVideoPage: PropTypes.func.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
     hasHqThumb: PropTypes.number,
-    isStarred: PropTypes.bool,
     likes: PropTypes.array,
     likeVideo: PropTypes.func.isRequired,
     likeVideoComment: PropTypes.func.isRequired,
@@ -201,12 +201,12 @@ class VideoPage extends Component {
       discussions,
       deleteVideoComment,
       deleteVideoDiscussion,
+      difficulty,
       editVideoComment,
       editRewardComment,
       editVideoDiscussion,
       loadMoreCommentsButton,
       hasHqThumb,
-      isStarred,
       loadMoreDiscussions,
       loadMoreDiscussionComments,
       loadMoreDiscussionReplies,
@@ -305,7 +305,7 @@ class VideoPage extends Component {
                 <div style={{ marginTop: '2rem' }}>
                   {!questionsBuilderShown && (
                     <VideoPlayer
-                      isStarred={isStarred}
+                      difficulty={difficulty}
                       byUser={byUser}
                       key={videoId}
                       hasHqThumb={hasHqThumb}
@@ -319,7 +319,7 @@ class VideoPage extends Component {
                   )}
                   {!watchTabActive && questions.length > 0 && (
                     <Carousel
-                      style={{ marginTop: isStarred && '1rem' }}
+                      style={{ marginTop: !!difficulty && '1rem' }}
                       progressBar
                       showQuestionsBuilder={() =>
                         this.setState({ questionsBuilderShown: true })
@@ -375,7 +375,7 @@ class VideoPage extends Component {
                 <Details
                   byUser={byUser}
                   changingPage={changingPage}
-                  isStarred={isStarred}
+                  difficulty={difficulty}
                   likes={likes}
                   likeVideo={likeVideo}
                   videoId={videoId}
@@ -640,7 +640,7 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canEdit: state.UserReducer.canEdit,
     byUser: !!state.VideoReducer.videoPage.byUser,
-    isStarred: !!state.VideoReducer.videoPage.isStarred,
+    difficulty: state.VideoReducer.videoPage.difficulty,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId
   }),

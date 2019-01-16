@@ -244,7 +244,7 @@ class PlaylistCarousel extends Component {
             id: thumb.videoId,
             byUser: thumb.byUser,
             content: thumb.content,
-            isStarred: thumb.isStarred,
+            difficulty: thumb.difficulty,
             title: thumb.video_title,
             description: thumb.video_description,
             uploaderName: thumb.video_uploader,

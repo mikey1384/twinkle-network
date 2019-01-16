@@ -21,7 +21,6 @@ import {
   feedContentDelete,
   feedContentEdit,
   feedRewardCommentEdit,
-  feedVideoStar,
   fetchFeed,
   fetchFeeds,
   fetchMoreFeeds,
@@ -54,7 +53,6 @@ class Posts extends Component {
     feedCommentEdit: PropTypes.func.isRequired,
     feedContentEdit: PropTypes.func.isRequired,
     feedRewardCommentEdit: PropTypes.func.isRequired,
-    feedVideoStar: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
@@ -133,7 +131,6 @@ class Posts extends Component {
       feedCommentEdit,
       feedContentEdit,
       feedRewardCommentEdit,
-      feedVideoStar,
       loadMoreFeedComments,
       loadMoreFeedReplies,
       loaded,
@@ -224,7 +221,6 @@ class Posts extends Component {
                       this.uploadFeedComment({ feed, data })
                     }
                     onSetDifficulty={setDifficulty}
-                    onStarVideo={feedVideoStar}
                     onShowComments={showFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={myId}
@@ -414,7 +410,6 @@ export default connect(
     feedCommentEdit,
     feedContentEdit,
     feedRewardCommentEdit,
-    feedVideoStar,
     loadMoreFeedComments,
     loadMoreFeedReplies,
     loadRepliesOfReply,
