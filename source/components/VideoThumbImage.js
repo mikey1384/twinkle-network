@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import StarMark from 'components/StarMark';
 import { URL } from 'constants/URL';
 import { auth } from 'helpers/requestHelpers';
 import request from 'axios';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { rewardValue } from 'constants/defaultValues';
 
 const API_URL = `${URL}/video`;
+const xp = rewardValue.star;
 
 class VideoThumbImage extends Component {
   static propTypes = {
@@ -82,7 +84,25 @@ class VideoThumbImage extends Component {
             borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
           }}
         />
-        {!!difficulty && <StarMark style={{ top: 1, left: 1 }} size={3.5} />}
+        {!!difficulty && (
+          <div
+            style={{
+              position: 'absolute',
+              padding: '0.1rem 0.5rem',
+              background:
+                difficulty === 5
+                  ? Color.gold()
+                  : difficulty === 1
+                  ? Color.logoBlue()
+                  : Color.orange(),
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: '#fff'
+            }}
+          >
+            {addCommasToNumber(difficulty * xp)} XP
+          </div>
+        )}
       </div>
     );
   }

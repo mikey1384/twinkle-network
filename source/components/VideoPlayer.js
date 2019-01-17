@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
 import { auth } from 'helpers/requestHelpers';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 import {
   addVideoView,
   fillCurrentVideoSlot,
@@ -18,13 +19,14 @@ import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { css } from 'emotion';
+import { rewardValue } from 'constants/defaultValues';
 
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
-const xp = 200;
 const intervalLength = 2000;
 const denominator = 4;
 const requiredDurationCap = 150;
+const xp = rewardValue.star;
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -405,7 +407,9 @@ class VideoPlayer extends Component {
             <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
               {xpEarned
                 ? 'You have already earned XP from this video'
-                : ` Watch this video and earn ${difficulty * xp} XP`}
+                : ` Watch this video and earn ${addCommasToNumber(
+                    difficulty * xp
+                  )} XP`}
             </div>
           </div>
         )}
@@ -418,7 +422,11 @@ class VideoPlayer extends Component {
             })}
             noBorderRadius={stretch}
             color={justEarned ? Color.green() : Color.blue()}
-            text={justEarned ? `Earned ${xp * difficulty} XP!` : ''}
+            text={
+              justEarned
+                ? `Earned ${addCommasToNumber(difficulty * xp)} XP!`
+                : ''
+            }
           />
         )}
       </ErrorBoundary>
