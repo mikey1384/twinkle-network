@@ -54,7 +54,7 @@ class Body extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onLoadTags: PropTypes.func,
-    onLoadRepliesOfReply: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired
@@ -379,12 +379,12 @@ class Body extends Component {
             <XPRewardInterface
               contentType={type}
               contentId={contentId}
-              difficulty={
-                contentObj.byUser
-                  ? 5
-                  : rootObj.difficulty ||
-                    (targetObj.discussion || {}).difficulty
-              }
+              difficulty={this.determineDifficulty({
+                contentObj,
+                rootObj,
+                rootType,
+                targetObj
+              })}
               uploaderId={uploader.id}
               stars={stars}
               onRewardSubmit={data => {
@@ -395,11 +395,12 @@ class Body extends Component {
           )}
           <RewardStatus
             contentType={type}
-            difficulty={
-              contentObj.byUser
-                ? 5
-                : rootObj.difficulty || (targetObj.discussion || {}).difficulty
-            }
+            difficulty={this.determineDifficulty({
+              contentObj,
+              rootObj,
+              rootType,
+              targetObj
+            })}
             onCommentEdit={onEditRewardComment}
             stars={stars}
             type={type}
@@ -457,6 +458,15 @@ class Body extends Component {
       </ErrorBoundary>
     );
   }
+
+  determineDifficulty = ({ contentObj, rootType, rootObj, targetObj }) => {
+    const rootDifficulty = rootType !== 'video' ? rootObj.difficulty : 0;
+    return contentObj.byUser
+      ? 5
+      : rootDifficulty ||
+          targetObj.discussion?.difficulty ||
+          (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0);
+  };
 
   renderEditMenuItems = () => {
     const {

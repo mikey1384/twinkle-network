@@ -15,7 +15,7 @@ class Replies extends Component {
     discussion: PropTypes.object,
     innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
-    onLoadRepliesOfReply: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     parent: PropTypes.object.isRequired,

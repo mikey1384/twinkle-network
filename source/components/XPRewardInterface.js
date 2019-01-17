@@ -26,7 +26,7 @@ class XPRewardInterface extends Component {
     difficulty: PropTypes.number,
     stars: PropTypes.array,
     uploaderId: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired,
+    userId: PropTypes.number,
     noPadding: PropTypes.bool
   };
 
@@ -51,8 +51,14 @@ class XPRewardInterface extends Component {
       selectedAmount,
       twinkleTabActive
     } = this.state;
-    const { contentType, difficulty, noPadding, userId } = this.props;
-    if (!userId) return null;
+    const {
+      contentType,
+      difficulty,
+      noPadding,
+      uploaderId,
+      userId
+    } = this.props;
+    if (!userId || uploaderId === userId) return null;
     return (
       <div
         style={{

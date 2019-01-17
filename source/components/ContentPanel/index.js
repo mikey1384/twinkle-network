@@ -31,7 +31,7 @@ class ContentPanel extends Component {
     onLoadMoreComments: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onLoadTags: PropTypes.func,
-    onLoadRepliesOfReply: PropTypes.func.isRequired,
+    onLoadRepliesOfReply: PropTypes.func,
     onReplySubmit: PropTypes.func.isRequired,
     onSetDifficulty: PropTypes.func,
     onShowComments: PropTypes.func.isRequired,

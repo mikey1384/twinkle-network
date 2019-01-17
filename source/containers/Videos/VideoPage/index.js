@@ -416,6 +416,7 @@ class VideoPage extends Component {
                 uploadDiscussion={uploadVideoDiscussion}
                 contentId={videoId}
                 type="video"
+                rootDifficulty={difficulty}
                 commentActions={{
                   attachStar,
                   editRewardComment,
@@ -463,6 +464,7 @@ class VideoPage extends Component {
                     onRewardCommentEdit={editRewardComment}
                     parent={{
                       type: 'video',
+                      difficulty,
                       id: Number(videoId),
                       uploader
                     }}

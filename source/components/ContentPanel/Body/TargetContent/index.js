@@ -296,9 +296,11 @@ class TargetContent extends Component {
                   <XPRewardInterface
                     contentType={'comment'}
                     contentId={comment.id}
-                    difficulty={
-                      rootObj.difficulty || (discussion || {}).difficulty
-                    }
+                    difficulty={this.determineDifficulty({
+                      rootObj,
+                      rootType,
+                      discussion
+                    })}
                     uploaderId={comment.uploader.id}
                     stars={comment.stars}
                     onRewardSubmit={data => {
@@ -308,9 +310,11 @@ class TargetContent extends Component {
                   />
                 )}
                 <RewardStatus
-                  difficulty={
-                    rootObj.difficulty || (discussion || {}).difficulty
-                  }
+                  difficulty={this.determineDifficulty({
+                    rootObj,
+                    rootType,
+                    discussion
+                  })}
                   onCommentEdit={onEditRewardComment}
                   style={{
                     marginTop:
@@ -379,6 +383,15 @@ class TargetContent extends Component {
       myId,
       xpRewardInterfaceShown
     });
+  };
+
+  determineDifficulty = ({ rootType, rootObj, discussion }) => {
+    const rootDifficulty = rootType !== 'video' ? rootObj.difficulty : 0;
+    return (
+      rootDifficulty ||
+      discussion?.difficulty ||
+      (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0)
+    );
   };
 
   onLikeClick = likes => {

@@ -55,6 +55,7 @@ class DiscussionPanel extends Component {
     onLoadMoreReplies: PropTypes.func.isRequired,
     onUploadComment: PropTypes.func.isRequired,
     onUploadReply: PropTypes.func.isRequired,
+    rootDifficulty: PropTypes.number,
     setDiscussionDifficulty: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
@@ -106,7 +107,8 @@ class DiscussionPanel extends Component {
       onUploadReply,
       setDiscussionDifficulty,
       contentId,
-      type
+      type,
+      rootDifficulty
     } = this.props;
     const {
       difficultyModalShown,
@@ -150,19 +152,17 @@ class DiscussionPanel extends Component {
                 {cleanString(title)}
               </Link>
             )}
-            {editButtonEnabled &&
-              !onEdit && (
-                <DropdownButton
-                  snow
-                  direction="left"
-                  menuProps={this.renderMenuProps()}
-                />
-              )}
-          </div>
-          {!onEdit &&
-            description && (
-              <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
+            {editButtonEnabled && !onEdit && (
+              <DropdownButton
+                snow
+                direction="left"
+                menuProps={this.renderMenuProps()}
+              />
             )}
+          </div>
+          {!onEdit && description && (
+            <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
+          )}
           {onEdit && (
             <form onSubmit={event => event.preventDefault()}>
               <Input
@@ -239,7 +239,7 @@ class DiscussionPanel extends Component {
                   autoFocus
                   commentsLoadLimit={10}
                   commentsShown={expanded}
-                  inputTypeLabel={'answer'}
+                  inputTypeLabel={'response'}
                   comments={comments}
                   loadMoreButton={loadMoreCommentsButton}
                   userId={myId}
@@ -257,8 +257,10 @@ class DiscussionPanel extends Component {
                     id,
                     rootId: contentId,
                     rootType: type,
-                    type: 'discussion',
-                    rootObj: true
+                    rootObj: {
+                      difficulty: rootDifficulty
+                    },
+                    type: 'discussion'
                   }}
                 />
               ) : (

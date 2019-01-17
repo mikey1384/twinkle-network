@@ -210,10 +210,10 @@ class Reply extends Component {
                           this.setState({ xpRewardInterfaceShown: true })
                         }
                         disabled={determineXpButtonDisabled({
-                          difficulty:
-                            parent.difficulty ||
-                            discussion.difficulty ||
-                            (parent.rootObj || {}).difficulty,
+                          difficulty: this.determineDifficulty({
+                            parent,
+                            discussion
+                          }),
                           myId: userId,
                           xpRewardInterfaceShown,
                           stars
@@ -222,10 +222,10 @@ class Reply extends Component {
                         <Icon icon="certificate" />
                         <span style={{ marginLeft: '0.7rem' }}>
                           {determineXpButtonDisabled({
-                            difficulty:
-                              parent.difficulty ||
-                              discussion.difficulty ||
-                              (parent.rootObj || {}).difficulty,
+                            difficulty: this.determineDifficulty({
+                              parent,
+                              discussion
+                            }),
                             myId: userId,
                             xpRewardInterfaceShown,
                             stars
@@ -249,11 +249,7 @@ class Reply extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={
-                  parent.difficulty ||
-                  discussion.difficulty ||
-                  (parent.rootObj || {}).difficulty
-                }
+                difficulty={this.determineDifficulty({ parent, discussion })}
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
@@ -266,11 +262,7 @@ class Reply extends Component {
             )}
             <RewardStatus
               noMarginForEditButton
-              difficulty={
-                parent.difficulty ||
-                discussion.difficulty ||
-                (parent.rootObj || {}).difficulty
-              }
+              difficulty={this.determineDifficulty({ parent, discussion })}
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.5rem',
@@ -312,6 +304,20 @@ class Reply extends Component {
       </div>
     );
   }
+
+  determineDifficulty = ({ parent, discussion }) => {
+    const rootDifficulty =
+      (parent.type !== 'video' ? parent.difficulty : 0) ||
+      (parent.rootType !== 'video' ? parent.rootObj?.difficulty : 0);
+    return (
+      rootDifficulty ||
+      discussion?.difficulty ||
+      ((parent.type === 'video' && parent.difficulty > 0) ||
+      (parent.rootType === 'video' && parent.rootObj?.difficulty > 0)
+        ? 1
+        : 0)
+    );
+  };
 
   onEditDone = async editedReply => {
     const { dispatch, onEditDone, reply } = this.props;

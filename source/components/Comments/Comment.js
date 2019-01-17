@@ -152,17 +152,16 @@ class Comment extends Component {
               profilePicId={uploader.profilePicId}
             />
           </aside>
-          {editButtonShown &&
-            !onEdit && (
-              <div className="dropdown-wrapper">
-                <DropdownButton
-                  snow
-                  direction="left"
-                  opacity={0.8}
-                  menuProps={editMenuItems}
-                />
-              </div>
-            )}
+          {editButtonShown && !onEdit && (
+            <div className="dropdown-wrapper">
+              <DropdownButton
+                snow
+                direction="left"
+                opacity={0.8}
+                menuProps={editMenuItems}
+              />
+            </div>
+          )}
           <section>
             <div>
               <UsernameText className="username" user={uploader} />{' '}
@@ -222,39 +221,37 @@ class Comment extends Component {
                           <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '1rem' }}>Reply</span>
                         </Button>
-                        {canStar &&
-                          userCanEditThis &&
-                          !userIsUploader && (
-                            <Button
-                              love
-                              style={{ marginLeft: '0.7rem' }}
-                              onClick={() =>
-                                this.setState({ xpRewardInterfaceShown: true })
-                              }
-                              disabled={determineXpButtonDisabled({
-                                difficulty:
-                                  parent.difficulty ||
-                                  (parent.rootObj || {}).difficulty ||
-                                  (targetObj.discussion || {}).difficulty,
+                        {canStar && userCanEditThis && !userIsUploader && (
+                          <Button
+                            love
+                            style={{ marginLeft: '0.7rem' }}
+                            onClick={() =>
+                              this.setState({ xpRewardInterfaceShown: true })
+                            }
+                            disabled={determineXpButtonDisabled({
+                              difficulty: this.determineDifficulty({
+                                parent,
+                                targetObj
+                              }),
+                              myId: userId,
+                              xpRewardInterfaceShown,
+                              stars
+                            })}
+                          >
+                            <Icon icon="certificate" />
+                            <span style={{ marginLeft: '0.7rem' }}>
+                              {determineXpButtonDisabled({
+                                difficulty: this.determineDifficulty({
+                                  parent,
+                                  targetObj
+                                }),
                                 myId: userId,
                                 xpRewardInterfaceShown,
                                 stars
-                              })}
-                            >
-                              <Icon icon="certificate" />
-                              <span style={{ marginLeft: '0.7rem' }}>
-                                {determineXpButtonDisabled({
-                                  difficulty:
-                                    parent.difficulty ||
-                                    (parent.rootObj || {}).difficulty ||
-                                    (targetObj.discussion || {}).difficulty,
-                                  myId: userId,
-                                  xpRewardInterfaceShown,
-                                  stars
-                                }) || 'Reward'}
-                              </span>
-                            </Button>
-                          )}
+                              }) || 'Reward'}
+                            </span>
+                          </Button>
+                        )}
                       </div>
                       <Likers
                         className="comment__likes"
@@ -271,11 +268,7 @@ class Comment extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={
-                  parent.difficulty ||
-                  (parent.rootObj || {}).difficulty ||
-                  (targetObj.discussion || {}).difficulty
-                }
+                difficulty={this.determineDifficulty({ parent, targetObj })}
                 stars={stars}
                 contentType="comment"
                 contentId={comment.id}
@@ -288,11 +281,7 @@ class Comment extends Component {
             )}
             {!isPreview && (
               <RewardStatus
-                difficulty={
-                  parent.difficulty ||
-                  (parent.rootObj || {}).difficulty ||
-                  (targetObj.discussion || {}).difficulty
-                }
+                difficulty={this.determineDifficulty({ parent, targetObj })}
                 noMarginForEditButton
                 onCommentEdit={onRewardCommentEdit}
                 style={{
@@ -351,6 +340,20 @@ class Comment extends Component {
       </div>
     );
   }
+
+  determineDifficulty = ({ parent, targetObj }) => {
+    const rootDifficulty =
+      (parent.type !== 'video' ? parent.difficulty : 0) ||
+      (parent.rootType !== 'video' ? parent.rootObj?.difficulty : 0);
+    return (
+      rootDifficulty ||
+      targetObj.discussion?.difficulty ||
+      ((parent.type === 'video' && parent.difficulty > 0) ||
+      (parent.rootType === 'video' && parent.rootObj?.difficulty > 0)
+        ? 1
+        : 0)
+    );
+  };
 
   onEditDone = async editedComment => {
     const { dispatch, comment, onEditDone } = this.props;

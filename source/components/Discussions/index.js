@@ -16,6 +16,7 @@ export default class Discussions extends Component {
     onDiscussionEditDone: PropTypes.func.isRequired,
     onDiscussionDelete: PropTypes.func.isRequired,
     onLoadDiscussionComments: PropTypes.func.isRequired,
+    rootDifficulty: PropTypes.number,
     setDiscussionDifficulty: PropTypes.func.isRequired,
     style: PropTypes.object,
     type: PropTypes.string,
@@ -44,6 +45,7 @@ export default class Discussions extends Component {
       onDiscussionEditDone,
       onDiscussionDelete,
       onLoadDiscussionComments,
+      rootDifficulty,
       setDiscussionDifficulty,
       commentActions: {
         attachStar,
@@ -87,6 +89,7 @@ export default class Discussions extends Component {
                 <DiscussionPanel
                   key={discussion.id}
                   contentId={Number(contentId)}
+                  rootDifficulty={rootDifficulty}
                   type={type}
                   {...discussion}
                 />
