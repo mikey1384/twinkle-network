@@ -21,6 +21,7 @@ import { css } from 'emotion';
 
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
+const xp = 200;
 const intervalLength = 2000;
 const denominator = 4;
 const requiredDurationCap = 150;
@@ -404,7 +405,7 @@ class VideoPlayer extends Component {
             <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
               {xpEarned
                 ? 'You have already earned XP from this video'
-                : ` Watch this video and earn ${difficulty * 100} XP`}
+                : ` Watch this video and earn ${difficulty * xp} XP`}
             </div>
           </div>
         )}
@@ -417,7 +418,7 @@ class VideoPlayer extends Component {
             })}
             noBorderRadius={stretch}
             color={justEarned ? Color.green() : Color.blue()}
-            text={justEarned ? `Earned ${100 * difficulty} XP!` : ''}
+            text={justEarned ? `Earned ${xp * difficulty} XP!` : ''}
           />
         )}
       </ErrorBoundary>
@@ -534,7 +535,7 @@ class VideoPlayer extends Component {
           action: 'watch',
           target: 'video',
           targetId: videoId,
-          amount: difficulty * 100
+          amount: difficulty * xp
         });
         if (this.mounted) {
           this.setState(() => ({
