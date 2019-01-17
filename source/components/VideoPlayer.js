@@ -377,9 +377,16 @@ class VideoPlayer extends Component {
         {(!userId || xpLoaded) && !!difficulty && (!started || xpEarned) && (
           <div
             style={{
-              background: xpEarned ? Color.green() : Color.logoBlue(),
+              background: xpEarned
+                ? Color.green()
+                : difficulty > 1
+                ? Color.black()
+                : Color.logoBlue(),
               padding: '0.5rem',
-              color: '#fff',
+              color:
+                difficulty === 5 && !xpEarned && !justEarned
+                  ? Color.gold()
+                  : '#fff',
               fontSize: '1.5rem',
               fontWeight: 'bold',
               display: 'flex',
@@ -389,13 +396,15 @@ class VideoPlayer extends Component {
           >
             {!xpEarned && (
               <div>
-                <Icon icon="star" />
+                {[...Array(difficulty)].map((elem, index) => (
+                  <Icon key={index} icon="star" />
+                ))}
               </div>
             )}
             <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
               {xpEarned
                 ? 'You have already earned XP from this video'
-                : ' Watch this video and earn 100 XP'}
+                : ` Watch this video and earn ${difficulty * 100} XP`}
             </div>
           </div>
         )}
@@ -408,7 +417,7 @@ class VideoPlayer extends Component {
             })}
             noBorderRadius={stretch}
             color={justEarned ? Color.green() : Color.blue()}
-            text={justEarned ? 'Earned 100 XP!' : ''}
+            text={justEarned ? `Earned ${100 * difficulty} XP!` : ''}
           />
         )}
       </ErrorBoundary>
@@ -525,7 +534,7 @@ class VideoPlayer extends Component {
           action: 'watch',
           target: 'video',
           targetId: videoId,
-          amount: 100
+          amount: difficulty * 100
         });
         if (this.mounted) {
           this.setState(() => ({
