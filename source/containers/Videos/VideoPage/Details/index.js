@@ -24,6 +24,7 @@ import {
   loadTags,
   setDifficulty
 } from 'redux/actions/VideoActions';
+import { setPlaylistVideosDifficulty } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 
@@ -49,6 +50,7 @@ class Details extends Component {
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
     setDifficulty: PropTypes.func.isRequired,
+    setPlaylistVideosDifficulty: PropTypes.func.isRequired,
     tags: PropTypes.array,
     stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -110,7 +112,6 @@ class Details extends Component {
       likes,
       loadTags,
       onDelete,
-      setDifficulty,
       tags = [],
       stars,
       timeStamp,
@@ -227,7 +228,7 @@ class Details extends Component {
                 difficulty={difficulty}
                 likes={likes}
                 likeVideo={likeVideo}
-                setDifficulty={setDifficulty}
+                setDifficulty={this.onSetDifficulty}
                 uploader={uploader}
                 userId={userId}
                 videoId={videoId}
@@ -376,6 +377,12 @@ class Details extends Component {
     }
   };
 
+  onSetDifficulty = params => {
+    const { setDifficulty, setPlaylistVideosDifficulty } = this.props;
+    setDifficulty(params);
+    setPlaylistVideosDifficulty(params);
+  };
+
   descriptionExceedsCharLimit = description => {
     return exceedsCharLimit({
       contentType: 'video',
@@ -412,6 +419,7 @@ export default connect(
     addTags,
     attachStar,
     loadTags,
-    setDifficulty
+    setDifficulty,
+    setPlaylistVideosDifficulty
   }
 )(Details);

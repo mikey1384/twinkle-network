@@ -146,6 +146,12 @@ export const openReorderPinnedPlaylistsModal = () => ({
   type: PLAYLIST.OPEN_REORDER_PINNED_PL_MODAL
 });
 
+export const setPlaylistVideosDifficulty = ({ contentId, difficulty }) => ({
+  type: PLAYLIST.SET_VIDEOS_DIFFICULTY,
+  videoId: Number(contentId),
+  difficulty
+});
+
 export const closeReorderPinnedPlaylistsModal = () => ({
   type: PLAYLIST.CLOSE_REORDER_PINNED_PL_MODAL
 });

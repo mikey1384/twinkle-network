@@ -600,14 +600,14 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.SET_DIFFICULTY:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb =>
-          thumb.id === action.videoId
+        allVideoThumbs: state.allVideoThumbs.map(thumb => {
+          return thumb.id === action.videoId
             ? {
                 ...thumb,
                 difficulty: action.difficulty
               }
-            : thumb
-        ),
+            : thumb;
+        }),
         videoPage: {
           ...state.videoPage,
           difficulty: action.difficulty

@@ -193,6 +193,43 @@ export default function PlaylistReducer(state = defaultState, action) {
       return {
         ...defaultState
       };
+    case PLAYLIST.SET_VIDEOS_DIFFICULTY:
+      return {
+        ...state,
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  difficulty: action.difficulty
+                }
+              : video
+          )
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  difficulty: action.difficulty
+                }
+              : video
+          )
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  difficulty: action.difficulty
+                }
+              : video
+          )
+        }))
+      };
     case PLAYLIST.SET_SEARCHED_PLAYLISTS:
       return {
         ...state,
