@@ -289,7 +289,7 @@ export const resetVideoState = () => ({
 
 export const setDifficulty = ({ contentId, difficulty }) => ({
   type: VIDEO.SET_DIFFICULTY,
-  videoId: contentId,
+  videoId: Number(contentId),
   difficulty
 });
 
