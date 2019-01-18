@@ -5,6 +5,7 @@ import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
+import AttachContentModal from './AttachContentModal';
 import {
   addEmoji,
   exceedsCharLimit,
@@ -13,17 +14,18 @@ import {
   renderCharLimit
 } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
-import { PanelStyle } from './Styles';
+import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
 
-class QuestionInput extends Component {
+class SubjectInput extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     uploadFeedContent: PropTypes.func.isRequired
   };
 
   state = {
+    attachContentModalShown: false,
     question: '',
     description: '',
     descriptionInputShown: false,
@@ -32,6 +34,7 @@ class QuestionInput extends Component {
 
   render() {
     const {
+      attachContentModalShown,
       description,
       descriptionInputShown,
       question,
@@ -45,19 +48,43 @@ class QuestionInput extends Component {
     return (
       <div className={PanelStyle}>
         <p>
-          Post a <span style={{ color: Color.green() }}>subject</span> users of
-          this website could talk about
+          Post a <span style={{ color: Color.green() }}>subject</span> Twinkle
+          users could talk about
         </p>
-        <Input
-          placeholder="Post a subject or ask a question for users of this website"
-          value={question}
-          onChange={this.onInputChange}
-          style={exceedsCharLimit({
-            inputType: 'title',
-            contentType: 'question',
-            text: question
-          })}
-        />
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <div style={{ width: '100%' }}>
+            <Input
+              placeholder="Post a subject or ask a question for Twinkle users"
+              value={question}
+              onChange={this.onInputChange}
+              style={exceedsCharLimit({
+                inputType: 'title',
+                contentType: 'question',
+                text: question
+              })}
+            />
+          </div>
+          <div style={{ marginLeft: '1rem' }}>
+            <Button
+              style={{
+                fontSize: '1.1rem',
+                lineHeight: '1.5rem',
+                padding: '0.5rem'
+              }}
+              snow
+              onClick={() => this.setState({ attachContentModalShown: true })}
+            >
+              Attach Video or Website URL
+            </Button>
+          </div>
+        </div>
         <div style={{ marginTop: '1rem' }}>
           <span
             style={{
@@ -123,6 +150,7 @@ class QuestionInput extends Component {
             </div>
           </div>
         )}
+        {attachContentModalShown && <AttachContentModal />}
       </div>
     );
   }
@@ -175,4 +203,4 @@ export default connect(
     dispatch,
     uploadFeedContent: params => dispatch(uploadFeedContent(params))
   })
-)(QuestionInput);
+)(SubjectInput);

@@ -1,11 +1,11 @@
 import React from 'react';
 import ContentInput from './ContentInput';
-import QuestionInput from './QuestionInput';
+import SubjectInput from './SubjectInput';
 
 export default function InputPanel() {
   return (
     <div>
-      <QuestionInput />
+      <SubjectInput />
       <ContentInput />
     </div>
   );
