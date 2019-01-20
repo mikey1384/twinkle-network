@@ -107,7 +107,6 @@ export default class AttachContentModal extends Component {
   };
 
   onContentUpload = data => {
-    console.log(data);
     this.setState({ section: 'confirm' });
   };
 }
