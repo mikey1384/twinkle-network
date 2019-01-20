@@ -10,25 +10,15 @@ const sectionObj = {
     title: 'Which Content Type?',
     doneShown: false
   },
-  add: {
-    title: 'Upload a New Video or Webpage',
-    doneShown: false,
-    back: 'start'
-  },
   selectVideo: {
     title: 'Select a Video',
     doneShown: true,
-    back: 'select'
+    back: 'start'
   },
   selectLink: {
     title: 'Select a Webpage',
     doneShown: true,
-    back: 'select'
-  },
-  confirm: {
-    title: 'Confirm',
-    doneShown: true,
-    back: 'add'
+    back: 'start'
   }
 };
 
