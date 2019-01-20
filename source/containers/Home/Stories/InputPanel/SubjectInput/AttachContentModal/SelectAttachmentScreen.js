@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
+import Loading from 'components/Loading';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { loadUploads, searchContent } from 'helpers/requestHelpers';
 
@@ -12,7 +13,8 @@ export default class SelectAttachmentScreen extends Component {
     searchedUploads: [],
     searchLoadMoreButton: false,
     searchText: '',
-    selectedUpload: []
+    selectedUpload: [],
+    loaded: false
   };
 
   static propTypes = {
@@ -31,13 +33,15 @@ export default class SelectAttachmentScreen extends Component {
     });
     this.setState({
       allUploads: results,
-      loadMoreButton
+      loadMoreButton,
+      loaded: true
     });
   }
 
   render() {
     const {
       allUploads,
+      loaded,
       loadMoreButton,
       searchedUploads,
       searchText,
@@ -58,6 +62,7 @@ export default class SelectAttachmentScreen extends Component {
           value={searchText}
           onChange={this.onSearchInput}
         />
+        {!loaded && <Loading />}
         <SelectUploadsForm
           type={type}
           uploads={!stringIsEmpty(searchText) ? searchedUploads : allUploads}
