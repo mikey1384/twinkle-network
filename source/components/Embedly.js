@@ -11,12 +11,13 @@ export default class Embedly extends Component {
   static propTypes = {
     small: PropTypes.bool,
     id: PropTypes.number.isRequired,
+    imageOnly: PropTypes.bool,
     noLink: PropTypes.bool,
     siteUrl: PropTypes.string,
     style: PropTypes.object,
     thumbUrl: PropTypes.string,
     title: PropTypes.string,
-    url: PropTypes.string.isRequired
+    url: PropTypes.string
   };
 
   fallbackImage = '/img/link.png';
@@ -135,7 +136,7 @@ export default class Embedly extends Component {
 
   renderInner = () => {
     const { imageUrl, description, title, site } = this.state;
-    const { small } = this.props;
+    const { imageOnly, small } = this.props;
     return (
       <>
         <section
@@ -161,18 +162,20 @@ export default class Embedly extends Component {
             alt={title}
           />
         </section>
-        <section
-          className={css`
-            width: 100%;
-            padding: 1rem;
-            ${small ? 'margin-left: 1rem;' : ''};
-            ${small ? '' : 'margin-top: 1rem;'};
-          `}
-        >
-          <h3>{title || this.props.title}</h3>
-          <p>{description}</p>
-          <p style={{ fontWeight: 'bold' }}>{site}</p>
-        </section>
+        {!imageOnly && (
+          <section
+            className={css`
+              width: 100%;
+              padding: 1rem;
+              ${small ? 'margin-left: 1rem;' : ''};
+              ${small ? '' : 'margin-top: 1rem;'};
+            `}
+          >
+            <h3>{title || this.props.title}</h3>
+            <p>{description}</p>
+            <p style={{ fontWeight: 'bold' }}>{site}</p>
+          </section>
+        )}
       </>
     );
   };

@@ -75,11 +75,15 @@ class DifficultyModal extends Component {
           </div>
         </main>
         <footer>
+          <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
           <Button primary onClick={this.onSubmit}>
             Set
-          </Button>
-          <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>

@@ -13,11 +13,11 @@ import {
 import SortableThumb from 'components/SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
-import SelectVideosForm from 'components/Forms/SelectVideosForm';
+import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import Input from 'components/Texts/Input';
 import SearchInput from 'components/Texts/SearchInput';
 import {
-  loadVideos,
+  loadUploads,
   searchContent,
   uploadPlaylist
 } from 'helpers/requestHelpers';
@@ -53,9 +53,10 @@ class AddPlaylistModal extends Component {
 
   async componentDidMount() {
     const { excludeVideoIds = [] } = this.props;
-    const { results, loadMoreButton } = await loadVideos({
+    const { results, loadMoreButton } = await loadUploads({
+      type: 'video',
       limit: 18,
-      excludeVideoIds
+      excludeContentIds: excludeVideoIds
     });
     this.setState({
       allVideos: results,
@@ -88,15 +89,7 @@ class AddPlaylistModal extends Component {
       text: description
     });
     return (
-      <Modal
-        onHide={onHide}
-        className={css`
-          .left-button {
-            margin-right: 1rem;
-          }
-        `}
-        large={section > 0}
-      >
+      <Modal onHide={onHide} large={section > 0}>
         <header>{this.renderTitle()}</header>
         <main style={{ paddingBottom: '1rem' }}>
           {section === 0 && (
@@ -170,10 +163,12 @@ class AddPlaylistModal extends Component {
                 value={searchText}
                 onChange={this.onVideoSearchInput}
               />
-              <SelectVideosForm
-                videos={!stringIsEmpty(searchText) ? searchedVideos : allVideos}
-                selectedVideos={selectedVideos}
-                loadMoreVideosButton={
+              <SelectUploadsForm
+                uploads={
+                  !stringIsEmpty(searchText) ? searchedVideos : allVideos
+                }
+                selectedUploads={selectedVideos}
+                loadMoreButton={
                   !stringIsEmpty(searchText)
                     ? searchLoadMoreButton
                     : loadMoreButton
@@ -190,7 +185,7 @@ class AddPlaylistModal extends Component {
                     )
                   }))
                 }
-                loadMoreVideos={this.loadMoreVideos}
+                loadMoreUploads={this.loadMoreVideos}
               />
             </div>
           )}
@@ -225,6 +220,23 @@ class AddPlaylistModal extends Component {
           )}
         </main>
         <footer>
+          {section === 0 ? (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              transparent
+              onClick={onHide}
+            >
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              transparent
+              onClick={this.handlePrev}
+            >
+              Prev
+            </Button>
+          )}
           {section === 2 ? (
             <Button primary disabled={isUploading} onClick={this.handleFinish}>
               Finish
@@ -243,19 +255,6 @@ class AddPlaylistModal extends Component {
               onClick={this.handleNext}
             >
               Next
-            </Button>
-          )}
-          {section === 0 ? (
-            <Button className="left-button" transparent onClick={onHide}>
-              Cancel
-            </Button>
-          ) : (
-            <Button
-              className="left-button"
-              transparent
-              onClick={this.handlePrev}
-            >
-              Prev
             </Button>
           )}
         </footer>
@@ -316,9 +315,10 @@ class AddPlaylistModal extends Component {
         searchLoadMoreButton: loadMoreButton
       }));
     } else {
-      const { results, loadMoreButton } = await loadVideos({
+      const { results, loadMoreButton } = await loadUploads({
+        type: 'video',
         limit: 18,
-        videoId: allVideos[allVideos.length - 1].id
+        contentId: allVideos[allVideos.length - 1].id
       });
       this.setState(state => ({
         allVideos: state.allVideos.concat(results),

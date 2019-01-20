@@ -72,6 +72,13 @@ class CreateNewChannelModal extends Component {
         </main>
         <footer>
           <Button
+            style={{ marginRight: '0.7rem' }}
+            transparent
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             primary
             onClick={this.onDone}
             disabled={
@@ -80,9 +87,6 @@ class CreateNewChannelModal extends Component {
             }
           >
             Create
-          </Button>
-          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>

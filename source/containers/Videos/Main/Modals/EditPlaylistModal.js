@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import { connect } from 'react-redux';
 import { changePlaylistVideos } from 'redux/actions/PlaylistActions';
 import Loading from 'components/Loading';
-import SelectVideosForm from 'components/Forms/SelectVideosForm';
+import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import SortableThumb from 'components/SortableThumb';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
@@ -15,7 +15,7 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import {
   editPlaylistVideos,
-  loadVideos,
+  loadUploads,
   loadPlaylistVideos,
   reorderPlaylistVideos,
   searchContent
@@ -55,7 +55,7 @@ class EditPlaylistModal extends Component {
     this.setState({ isLoading: true });
     const { results: modalVideos, loadMoreButton } =
       modalType === 'change'
-        ? await loadVideos({ limit: 18 })
+        ? await loadUploads({ type: 'video', limit: 18 })
         : await loadPlaylistVideos({
             playlistId,
             limit: 18
@@ -128,115 +128,112 @@ class EditPlaylistModal extends Component {
               Remove Videos
             </nav>
           </FilterBar>
-          {mainTabActive &&
-            modalType === 'change' && (
-              <SearchInput
-                placeholder="Search videos..."
-                autoFocus
-                style={{
-                  marginBottom: '2rem',
-                  width: '70%'
-                }}
-                value={searchText}
-                onChange={this.onVideoSearchInput}
-              />
-            )}
+          {mainTabActive && modalType === 'change' && (
+            <SearchInput
+              placeholder="Search videos..."
+              autoFocus
+              style={{
+                marginBottom: '2rem',
+                width: '70%'
+              }}
+              value={searchText}
+              onChange={this.onVideoSearchInput}
+            />
+          )}
           {isLoading ? (
             <Loading />
           ) : (
             <>
-              {mainTabActive &&
-                modalType === 'change' && (
-                  <SelectVideosForm
-                    loadingMore={loadingMore}
-                    videos={
-                      !stringIsEmpty(searchText) ? searchedVideos : modalVideos
-                    }
-                    selectedVideos={selectedVideos}
-                    loadMoreVideosButton={
-                      !stringIsEmpty(searchText)
-                        ? searchLoadMoreButton
-                        : loadMoreButton
-                    }
-                    onSelect={video =>
-                      this.setState(state => ({
-                        addedVideos: [video].concat(state.addedVideos)
-                      }))
-                    }
-                    onDeselect={videoId =>
-                      this.setState(state => ({
-                        addedVideos: state.addedVideos.filter(
-                          video => video.id !== videoId
-                        ),
-                        removedVideoIds: {
-                          ...state.removedVideoIds,
-                          [videoId]: true
-                        }
-                      }))
-                    }
-                    loadMoreVideos={this.loadMoreVideos}
-                  />
-                )}
-              {mainTabActive &&
-                modalType === 'reorder' && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      justifyContent: 'flex-start',
-                      width: '100%'
-                    }}
-                  >
-                    {videosToRearrange.map(video => (
-                      <SortableThumb
-                        key={video.id}
-                        video={video}
-                        onMove={({ sourceId, targetId }) => {
-                          let selected = [...videosToRearrange];
-                          const selectedVideoArray = selected.map(
-                            video => video.id
-                          );
-                          const sourceIndex = selectedVideoArray.indexOf(
-                            sourceId
-                          );
-                          const sourceVideo = selected[sourceIndex];
-                          const targetIndex = selectedVideoArray.indexOf(
-                            targetId
-                          );
-                          selected.splice(sourceIndex, 1);
-                          selected.splice(targetIndex, 0, sourceVideo);
-                          this.setState({
-                            modalVideos: selected
-                          });
-                        }}
-                      />
-                    ))}
-                    {loadMoreButton && (
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          width: '100%'
-                        }}
-                      >
-                        <LoadMoreButton
-                          style={{ fontSize: '2rem', marginTop: '1rem' }}
-                          transparent
-                          loading={loadingMore}
-                          onClick={this.loadMoreVideos}
-                        >
-                          Load More
-                        </LoadMoreButton>
-                      </div>
-                    )}
-                  </div>
-                )}
-              {!mainTabActive && (
-                <SelectVideosForm
+              {mainTabActive && modalType === 'change' && (
+                <SelectUploadsForm
                   loadingMore={loadingMore}
-                  videos={videosToRemove}
-                  loadMoreVideosButton={removeVideosLoadMoreButton}
-                  selectedVideos={selectedVideos}
+                  uploads={
+                    !stringIsEmpty(searchText) ? searchedVideos : modalVideos
+                  }
+                  selectedUploads={selectedVideos}
+                  loadMoreButton={
+                    !stringIsEmpty(searchText)
+                      ? searchLoadMoreButton
+                      : loadMoreButton
+                  }
+                  onSelect={video =>
+                    this.setState(state => ({
+                      addedVideos: [video].concat(state.addedVideos)
+                    }))
+                  }
+                  onDeselect={videoId =>
+                    this.setState(state => ({
+                      addedVideos: state.addedVideos.filter(
+                        video => video.id !== videoId
+                      ),
+                      removedVideoIds: {
+                        ...state.removedVideoIds,
+                        [videoId]: true
+                      }
+                    }))
+                  }
+                  loadMoreUploads={this.loadMoreVideos}
+                />
+              )}
+              {mainTabActive && modalType === 'reorder' && (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
+                    width: '100%'
+                  }}
+                >
+                  {videosToRearrange.map(video => (
+                    <SortableThumb
+                      key={video.id}
+                      video={video}
+                      onMove={({ sourceId, targetId }) => {
+                        let selected = [...videosToRearrange];
+                        const selectedVideoArray = selected.map(
+                          video => video.id
+                        );
+                        const sourceIndex = selectedVideoArray.indexOf(
+                          sourceId
+                        );
+                        const sourceVideo = selected[sourceIndex];
+                        const targetIndex = selectedVideoArray.indexOf(
+                          targetId
+                        );
+                        selected.splice(sourceIndex, 1);
+                        selected.splice(targetIndex, 0, sourceVideo);
+                        this.setState({
+                          modalVideos: selected
+                        });
+                      }}
+                    />
+                  ))}
+                  {loadMoreButton && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: '100%'
+                      }}
+                    >
+                      <LoadMoreButton
+                        style={{ fontSize: '2rem', marginTop: '1rem' }}
+                        transparent
+                        loading={loadingMore}
+                        onClick={this.loadMoreVideos}
+                      >
+                        Load More
+                      </LoadMoreButton>
+                    </div>
+                  )}
+                </div>
+              )}
+              {!mainTabActive && (
+                <SelectUploadsForm
+                  loadingMore={loadingMore}
+                  uploads={videosToRemove}
+                  loadMoreButton={removeVideosLoadMoreButton}
+                  selectedUploads={selectedVideos}
                   onSelect={video =>
                     this.setState(state => ({
                       addedVideos: [video].concat(state.addedVideos),
@@ -258,13 +255,20 @@ class EditPlaylistModal extends Component {
                       }
                     }))
                   }
-                  loadMoreVideos={this.loadMoreVideos}
+                  loadMoreUploads={this.loadMoreVideos}
                 />
               )}
             </>
           )}
         </main>
         <footer>
+          <Button
+            style={{ marginRight: '0.7rem' }}
+            transparent
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
           <Button
             primary
             onClick={this.handleSave}
@@ -275,9 +279,6 @@ class EditPlaylistModal extends Component {
             }
           >
             Save
-          </Button>
-          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>
@@ -383,9 +384,10 @@ class EditPlaylistModal extends Component {
 
     if (modalType === 'change') {
       const { modalVideos } = this.state;
-      const { results: videos, loadMoreButton } = await loadVideos({
+      const { results: videos, loadMoreButton } = await loadUploads({
+        type: 'video',
         limit: 18,
-        videoId: modalVideos[modalVideos.length - 1].id
+        contentId: modalVideos[modalVideos.length - 1].id
       });
       const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,

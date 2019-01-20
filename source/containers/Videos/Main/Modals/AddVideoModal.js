@@ -145,15 +145,19 @@ class AddVideoModal extends Component {
         </main>
         <footer>
           <Button
+            style={{ marginRight: '0.7rem' }}
+            transparent
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             primary
             type="submit"
             onClick={this.onSubmit}
             disabled={this.submitDisabled()}
           >
             Add
-          </Button>
-          <Button style={{ marginRight: '1rem' }} transparent onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>

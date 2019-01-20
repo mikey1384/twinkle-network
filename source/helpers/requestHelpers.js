@@ -340,15 +340,20 @@ export const loadPlaylistVideos = async({
   }
 };
 
-export const loadVideos = async({ limit, videoId, excludeVideoIds = [] }) => {
+export const loadUploads = async({
+  limit,
+  contentId,
+  excludeContentIds = [],
+  type
+}) => {
   try {
     const {
-      data: { videos: results, loadMoreButton }
+      data: { results, loadMoreButton }
     } = await request.get(
-      `${URL}/video?numberToLoad=${limit}&videoId=${videoId}${
-        excludeVideoIds.length > 0
+      `${URL}/content/uploads?numberToLoad=${limit}&type=${type}&contentId=${contentId}${
+        excludeContentIds.length > 0
           ? `&${queryStringForArray({
-              array: excludeVideoIds,
+              array: excludeContentIds,
               destinationVar: 'excludes'
             })}`
           : ''
@@ -518,6 +523,7 @@ export const uploadComment = async({
 };
 
 export const uploadContent = async({
+  attachment,
   url,
   isVideo,
   title,
@@ -527,7 +533,7 @@ export const uploadContent = async({
   try {
     const { data } = await request.post(
       `${URL}/content`,
-      { url, isVideo, title, description },
+      { attachment, url, isVideo, title, description },
       auth()
     );
     return Promise.resolve(data);

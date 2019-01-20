@@ -50,15 +50,19 @@ export default class QuestionModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            onClick={onHide}
+            style={{ marginRight: '0.7rem' }}
+          >
+            Cancel
+          </Button>
+          <Button
             disabled={answerSubmitted || stringIsEmpty(answer)}
             success={answerSubmitted}
             primary={!answerSubmitted}
             onClick={this.onSubmit}
           >
-            {answerSubmitted ? 'Answer Submitted!' : 'Submit'}
-          </Button>
-          <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
-            Cancel
+            {answerSubmitted ? 'Response Submitted!' : 'Submit'}
           </Button>
         </footer>
       </Modal>

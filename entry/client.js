@@ -19,6 +19,7 @@ import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
 import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
+import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
@@ -50,6 +51,7 @@ library.add(
   faComments,
   faFilm,
   faHome,
+  faLink,
   faLock,
   faPencilAlt,
   faSearch,

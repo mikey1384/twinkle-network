@@ -92,6 +92,8 @@ class VideoThumbImage extends Component {
               background:
                 difficulty === 5
                   ? Color.gold()
+                  : difficulty === 4
+                  ? Color.black()
                   : difficulty === 1
                   ? Color.logoBlue()
                   : Color.orange(),

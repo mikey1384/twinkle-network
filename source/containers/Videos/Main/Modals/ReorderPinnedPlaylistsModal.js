@@ -44,6 +44,13 @@ class ReorderPinnedPlaylistsModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={this.props.onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             disabled={isEqual(
               playlistIds,
               playlists.map(playlist => playlist.id)
@@ -52,13 +59,6 @@ class ReorderPinnedPlaylistsModal extends Component {
             onClick={this.onSubmit}
           >
             Done
-          </Button>
-          <Button
-            transparent
-            style={{ marginRight: '1rem' }}
-            onClick={this.props.onHide}
-          >
-            Cancel
           </Button>
         </footer>
       </Modal>

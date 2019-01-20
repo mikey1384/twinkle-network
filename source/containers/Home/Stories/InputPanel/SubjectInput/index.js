@@ -6,6 +6,7 @@ import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
 import AttachContentModal from './AttachContentModal';
+import Attachment from './Attachment';
 import {
   addEmoji,
   exceedsCharLimit,
@@ -25,6 +26,7 @@ class SubjectInput extends Component {
   };
 
   state = {
+    attachment: undefined,
     attachContentModalShown: false,
     question: '',
     description: '',
@@ -34,12 +36,14 @@ class SubjectInput extends Component {
 
   render() {
     const {
+      attachment,
       attachContentModalShown,
       description,
       descriptionInputShown,
       question,
       submitting
     } = this.state;
+
     const descriptionExceedsCharLimit = exceedsCharLimit({
       contentType: 'question',
       inputType: 'description',
@@ -49,7 +53,7 @@ class SubjectInput extends Component {
       <div className={PanelStyle}>
         <p>
           Post a <span style={{ color: Color.green() }}>subject</span> Twinkle
-          users could talk about
+          users can talk about
         </p>
         <div
           style={{
@@ -61,7 +65,7 @@ class SubjectInput extends Component {
         >
           <div style={{ width: '100%' }}>
             <Input
-              placeholder="Post a subject or ask a question for Twinkle users"
+              placeholder="A subject Twinkle users can talk about"
               value={question}
               onChange={this.onInputChange}
               style={exceedsCharLimit({
@@ -72,17 +76,25 @@ class SubjectInput extends Component {
             />
           </div>
           <div style={{ marginLeft: '1rem' }}>
-            <Button
-              style={{
-                fontSize: '1.1rem',
-                lineHeight: '1.5rem',
-                padding: '0.5rem'
-              }}
-              snow
-              onClick={() => this.setState({ attachContentModalShown: true })}
-            >
-              Attach Video or Website URL
-            </Button>
+            {attachment ? (
+              <Attachment
+                attachment={attachment}
+                onClose={() => this.setState({ attachment: undefined })}
+              />
+            ) : (
+              <Button
+                style={{
+                  color: Color.green(),
+                  fontSize: '1.1rem',
+                  lineHeight: '1.5rem',
+                  padding: '0.5rem'
+                }}
+                snow
+                onClick={() => this.setState({ attachContentModalShown: true })}
+              >
+                Attach Video or Webpage
+              </Button>
+            )}
           </div>
         </div>
         <div style={{ marginTop: '1rem' }}>
@@ -150,7 +162,17 @@ class SubjectInput extends Component {
             </div>
           </div>
         )}
-        {attachContentModalShown && <AttachContentModal />}
+        {attachContentModalShown && (
+          <AttachContentModal
+            onHide={() => this.setState({ attachContentModalShown: false })}
+            onConfirm={content =>
+              this.setState({
+                attachment: content,
+                attachContentModalShown: false
+              })
+            }
+          />
+        )}
       </div>
     );
   }
@@ -171,7 +193,7 @@ class SubjectInput extends Component {
 
   onSubmit = async event => {
     const { dispatch, uploadFeedContent } = this.props;
-    const { question, description } = this.state;
+    const { attachment, question, description } = this.state;
     event.preventDefault();
     if (stringIsEmpty(question) || question.length > charLimit.question.title) {
       return;
@@ -179,12 +201,14 @@ class SubjectInput extends Component {
     this.setState({ submitting: true });
     try {
       const data = await uploadContent({
+        attachment,
         title: question,
         description: finalizeEmoji(description),
         dispatch
       });
       uploadFeedContent(data);
       this.setState({
+        attachment: undefined,
         question: '',
         description: '',
         descriptionInputShown: false,

@@ -53,6 +53,13 @@ export default class ImageEditModal extends Component {
           </main>
           <footer>
             <Button
+              transparent
+              onClick={onHide}
+              style={{ marginRight: '0.7rem' }}
+            >
+              Cancel
+            </Button>
+            <Button
               primary
               onClick={() =>
                 onConfirm(this.Editor.getImage().toDataURL('image/jpeg', 0.7))
@@ -60,13 +67,6 @@ export default class ImageEditModal extends Component {
               disabled={processing}
             >
               Submit
-            </Button>
-            <Button
-              transparent
-              onClick={onHide}
-              style={{ marginRight: '1rem' }}
-            >
-              Cancel
             </Button>
           </footer>
         </Modal>

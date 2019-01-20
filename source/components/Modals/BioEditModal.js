@@ -119,6 +119,13 @@ export default class BioEditModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            onClick={onHide}
+            style={{ marginRight: '0.7rem' }}
+          >
+            Cancel
+          </Button>
+          <Button
             primary
             onClick={() => onSubmit({ firstLine, secondLine, thirdLine })}
             type="submit"
@@ -129,9 +136,6 @@ export default class BioEditModal extends Component {
             }
           >
             Submit
-          </Button>
-          <Button transparent onClick={onHide} style={{ marginRight: '1rem' }}>
-            Cancel
           </Button>
         </footer>
       </Modal>

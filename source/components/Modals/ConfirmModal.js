@@ -14,11 +14,11 @@ export default function ConfirmModal({ onHide, title, onConfirm }) {
       <header>{title}</header>
       <main style={{ fontSize: '3rem', paddingTop: 0 }}>Are you sure?</main>
       <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
         <Button primary onClick={() => onConfirm()}>
           Confirm
-        </Button>
-        <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
-          Cancel
         </Button>
       </footer>
     </Modal>

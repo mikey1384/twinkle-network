@@ -1,25 +1,27 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import VideoThumb from './ModalVideoThumb';
+import Selectable from './Selectable';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
-SelectVideosForm.propTypes = {
+SelectUploadsForm.propTypes = {
   loadingMore: PropTypes.bool,
-  loadMoreVideos: PropTypes.func,
-  loadMoreVideosButton: PropTypes.bool,
+  loadMoreUploads: PropTypes.func,
+  loadMoreButton: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onDeselect: PropTypes.func.isRequired,
-  selectedVideos: PropTypes.array.isRequired,
-  videos: PropTypes.array.isRequired
+  selectedUploads: PropTypes.array.isRequired,
+  type: PropTypes.string,
+  uploads: PropTypes.array.isRequired
 };
-export default function SelectVideosForm({
-  videos,
-  selectedVideos,
+export default function SelectUploadsForm({
+  uploads,
+  selectedUploads,
   loadingMore,
-  loadMoreVideosButton,
+  loadMoreButton,
   onSelect,
   onDeselect,
-  loadMoreVideos
+  loadMoreUploads,
+  type = 'video'
 }) {
   return (
     <div
@@ -30,20 +32,23 @@ export default function SelectVideosForm({
         width: '100%'
       }}
     >
-      {videos.map((video, index) => {
+      {uploads.map((upload, index) => {
         return (
-          <VideoThumb
+          <Selectable
             key={index}
-            video={video}
+            item={upload}
             selected={
-              selectedVideos.map(video => video.id).indexOf(video.id) !== -1
+              selectedUploads
+                .map(selected => selected.id)
+                .indexOf(upload.id) !== -1
             }
-            onSelect={video => onSelect(video)}
-            onDeselect={videoId => onDeselect(videoId)}
+            onSelect={upload => onSelect(upload)}
+            onDeselect={uploadId => onDeselect(uploadId)}
+            type={type}
           />
         );
       })}
-      {loadMoreVideosButton && (
+      {loadMoreButton && (
         <div
           style={{
             display: 'flex',
@@ -55,7 +60,7 @@ export default function SelectVideosForm({
             style={{ fontSize: '2rem', marginTop: '1rem' }}
             transparent
             loading={loadingMore}
-            onClick={loadMoreVideos}
+            onClick={loadMoreUploads}
           >
             Load More
           </LoadMoreButton>

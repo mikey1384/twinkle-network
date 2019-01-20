@@ -4,26 +4,24 @@ import { cleanString } from 'helpers/stringHelpers';
 import FullTextReveal from 'components/FullTextReveal';
 import { textIsOverflown } from 'helpers';
 import VideoThumbImage from 'components/VideoThumbImage';
+import Embedly from 'components/Embedly';
 import { Color } from 'constants/css';
 
-export default class VideoThumb extends Component {
+export default class Selectable extends Component {
   static propTypes = {
-    video: PropTypes.object,
+    item: PropTypes.object,
     selected: PropTypes.bool,
     onSelect: PropTypes.func,
-    onDeselect: PropTypes.func
+    onDeselect: PropTypes.func,
+    type: PropTypes.string
   };
 
-  constructor() {
-    super();
-    this.state = {
-      onTitleHover: false
-    };
-    this.onMouseOver = this.onMouseOver.bind(this);
-  }
+  state = {
+    onTitleHover: false
+  };
 
   render() {
-    const { video, selected, onSelect, onDeselect } = this.props;
+    const { item, selected, onSelect, onDeselect, type = 'video' } = this.props;
     const { onTitleHover } = this.state;
     return (
       <div
@@ -46,19 +44,23 @@ export default class VideoThumb extends Component {
           }}
           onClick={() => {
             if (selected) {
-              onDeselect(video.id);
+              onDeselect(item.id);
             } else {
-              onSelect(video);
+              onSelect(item);
             }
           }}
         >
           <div style={{ width: '100%' }}>
-            <VideoThumbImage
-              height="65%"
-              videoId={video.id}
-              difficulty={video.difficulty}
-              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-            />
+            {type === 'video' ? (
+              <VideoThumbImage
+                height="65%"
+                videoId={item.id}
+                difficulty={item.difficulty}
+                src={`https://img.youtube.com/vi/${item.content}/mqdefault.jpg`}
+              />
+            ) : (
+              <Embedly noLink imageOnly {...item} />
+            )}
           </div>
           <div
             style={{
@@ -83,11 +85,11 @@ export default class VideoThumb extends Component {
                 onMouseOver={this.onMouseOver}
                 onMouseLeave={() => this.setState({ onTitleHover: false })}
               >
-                {cleanString(video.title)}
+                {cleanString(item.title)}
               </p>
               <FullTextReveal
                 show={onTitleHover}
-                text={cleanString(video.title)}
+                text={cleanString(item.title)}
               />
             </div>
             <p
@@ -99,7 +101,7 @@ export default class VideoThumb extends Component {
                 lineHeight: 2
               }}
             >
-              {video.uploader ? video.uploader.username : video.uploaderName}
+              {item.uploader ? item.uploader.username : item.uploaderName}
             </p>
           </div>
         </div>
@@ -107,9 +109,9 @@ export default class VideoThumb extends Component {
     );
   }
 
-  onMouseOver() {
+  onMouseOver = () => {
     if (textIsOverflown(this.thumbLabel)) {
       this.setState({ onTitleHover: true });
     }
-  }
+  };
 }

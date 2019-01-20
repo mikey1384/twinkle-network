@@ -7,7 +7,7 @@ import { getMoreVideos } from 'redux/actions/VideoActions';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { loadVideos, searchContent } from 'helpers/requestHelpers';
+import { loadUploads, searchContent } from 'helpers/requestHelpers';
 
 const last = array => {
   return array[array.length - 1];
@@ -129,8 +129,9 @@ class AllVideosPanel extends Component {
     const { searchQuery } = this.state;
     const lastId = last(videos) ? last(videos).id : 0;
     const { results: loadedVideos, loadMoreButton } = stringIsEmpty(searchQuery)
-      ? await loadVideos({
-          videoId: lastId
+      ? await loadUploads({
+          type: 'video',
+          contentId: lastId
         })
       : await searchContent({
           filter: 'video',

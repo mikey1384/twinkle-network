@@ -63,14 +63,18 @@ class InviteUsersModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             primary
             onClick={this.onDone}
             disabled={selectedUsers.length === 0}
           >
             Invite
-          </Button>
-          <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>

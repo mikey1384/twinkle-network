@@ -113,16 +113,15 @@ class SelectPlaylistsToPinModal extends Component {
                   onSelect={this.onSelect}
                   listItems={this.renderListItems()}
                 />
-                {loadMoreButton &&
-                  !searchText && (
-                    <Button
-                      style={{ marginTop: '2rem', width: '100%' }}
-                      transparent
-                      onClick={() => this.loadMorePlaylists(lastPlaylistId)}
-                    >
-                      Load More
-                    </Button>
-                  )}
+                {loadMoreButton && !searchText && (
+                  <Button
+                    style={{ marginTop: '2rem', width: '100%' }}
+                    transparent
+                    onClick={() => this.loadMorePlaylists(lastPlaylistId)}
+                  >
+                    Load More
+                  </Button>
+                )}
                 {playlistsToPin.length === 0 && (
                   <div
                     style={{
@@ -165,6 +164,13 @@ class SelectPlaylistsToPinModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={this.props.onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             primary
             onClick={this.onSubmit}
             disabled={
@@ -173,13 +179,6 @@ class SelectPlaylistsToPinModal extends Component {
             }
           >
             Done
-          </Button>
-          <Button
-            transparent
-            style={{ marginRight: '1rem' }}
-            onClick={this.props.onHide}
-          >
-            Cancel
           </Button>
         </footer>
       </Modal>

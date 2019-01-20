@@ -85,14 +85,18 @@ class TagModal extends Component {
         </main>
         <footer>
           <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button
             disabled={selectedPlaylists.length === 0}
             primary
             onClick={this.onSubmit}
           >
             Done
-          </Button>
-          <Button transparent style={{ marginRight: '1rem' }} onClick={onHide}>
-            Cancel
           </Button>
         </footer>
       </Modal>

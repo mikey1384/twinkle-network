@@ -124,7 +124,7 @@ class Modal extends Component {
                 padding: 1.5rem 1.5rem 1.5rem 1.5rem;
                 display: flex;
                 align-items: center;
-                flex-direction: row-reverse;
+                justify-content: flex-end;
                 border-top: 1px solid ${Color.inputBorderGray()};
               }
               @media (max-width: ${mobileMaxWidth}) {
