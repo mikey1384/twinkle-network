@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { Color } from 'constants/css';
 import { truncateText } from 'helpers/stringHelpers';
+import { css } from 'emotion';
 
 export default class Attachment extends Component {
   static propTypes = {
@@ -41,14 +43,28 @@ export default class Attachment extends Component {
           }}
           onClick={onClose}
         />
-        <div style={{ fontSize: '1.5rem' }}>
-          {attachment.type === 'video' ? (
-            <Icon icon="film" />
-          ) : (
-            <Icon icon="link" />
-          )}
-        </div>
-        <div style={{ textAlign: 'center' }}>
+        <div
+          className={css`
+            &:hover {
+              color: ${Color.blue()};
+            }
+          `}
+          style={{ cursor: 'pointer', textAlign: 'center' }}
+          onClick={() =>
+            window.open(
+              `/${attachment.type === 'url' ? 'links' : 'videos'}/${
+                attachment.id
+              }`
+            )
+          }
+        >
+          <div style={{ fontSize: '1.5rem' }}>
+            {attachment.type === 'video' ? (
+              <Icon icon="film" />
+            ) : (
+              <Icon icon="link" />
+            )}
+          </div>
           {truncateText({ text: attachment.title, limit: 20 })}
         </div>
       </ErrorBoundary>
