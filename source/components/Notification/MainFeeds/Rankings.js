@@ -38,7 +38,7 @@ class Rankings extends Component {
       } = await request.get(`${API_URL}/leaderBoard`, auth());
       if (this.mounted) {
         this.setState(() => ({
-          allSelected: all.length > 0,
+          allSelected: !!this.props.myId && all.length > 0,
           all,
           top30s,
           loaded: true,
@@ -64,7 +64,7 @@ class Rankings extends Component {
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (this.mounted) {
           this.setState(() => ({
-            allSelected: all.length > 0,
+            allSelected: !!this.props.myId && all.length > 0,
             all,
             top30s,
             loaded: true,
