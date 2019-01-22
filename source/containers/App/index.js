@@ -29,7 +29,7 @@ import { hot } from 'react-hot-loader';
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
 });
-const Videos = loadable(() => import('containers/Videos'), {
+const WorkSection = loadable(() => import('containers/WorkSection'), {
   LoadingComponent: Loading
 });
 const Links = loadable(() => import('containers/Links'), {
@@ -51,6 +51,9 @@ const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
 });
 const Verify = loadable(() => import('containers/Verify'), {
+  LoadingComponent: Loading
+});
+const VideoPage = loadable(() => import('containers/VideoPage'), {
   LoadingComponent: Loading
 });
 import Redirect from 'containers/Redirect';
@@ -335,9 +338,10 @@ class App extends Component {
             <Route path="/comments" component={ContentPage} />
             <Route path="/discussions" component={ContentPage} />
             <Route path="/playlists" component={PlaylistPage} />
+            <Route path="/videos" component={VideoPage} />
             <Route
-              path="/videos"
-              render={({ match }) => <Videos match={match} />}
+              path="/work"
+              render={({ match }) => <WorkSection match={match} />}
             />
             <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />

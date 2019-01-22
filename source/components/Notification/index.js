@@ -40,13 +40,10 @@ class Notification extends Component {
 
   mounted = false;
 
-  constructor({ rewards }) {
-    super();
-    this.state = {
-      activeTab: 'leaderboard',
-      rewardTabShown: false
-    };
-  }
+  state = {
+    activeTab: 'rankings',
+    rewardTabShown: false
+  };
 
   async componentDidMount() {
     const { fetchNotifications } = this.props;
@@ -61,7 +58,7 @@ class Notification extends Component {
             ? 'reward'
             : this.props.notifications.length > 0
             ? 'notification'
-            : 'leaderboard',
+            : 'rankings',
         rewardTabShown: this.props.rewards.length > 0
       });
     }
@@ -71,7 +68,7 @@ class Notification extends Component {
     const { clearNotifications, fetchNotifications } = this.props;
     if (prevProps.myId !== this.props.myId) {
       if (!this.props.myId) {
-        this.setState({ activeTab: 'leaderboard' });
+        this.setState({ activeTab: 'rankings' });
         clearNotifications();
       } else {
         await fetchNotifications();
@@ -81,7 +78,7 @@ class Notification extends Component {
               ? 'reward'
               : this.props.notifications.length > 0
               ? 'notification'
-              : 'leaderboard',
+              : 'rankings',
           rewardTabShown: this.props.rewards.length > 0
         });
       }
@@ -225,8 +222,8 @@ class Notification extends Component {
                   Notifications
                 </nav>
                 <nav
-                  className={activeTab === 'leaderboard' ? 'active' : undefined}
-                  onClick={() => this.setState({ activeTab: 'leaderboard' })}
+                  className={activeTab === 'rankings' ? 'active' : undefined}
+                  onClick={() => this.setState({ activeTab: 'rankings' })}
                 >
                   Rankings
                 </nav>

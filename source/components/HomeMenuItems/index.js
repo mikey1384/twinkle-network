@@ -30,7 +30,7 @@ export default function HomeMenuItems({ history, style = {} }) {
                     justifyContent: 'center'
                   }}
                 >
-                  <Icon icon="bolt" size="1x" />
+                  <Icon icon="book" size="1x" />
                 </div>
                 <span className="homemenu__label">Stories</span>
               </a>

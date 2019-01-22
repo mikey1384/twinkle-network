@@ -22,12 +22,12 @@ export const container = css`
     }
     a {
       text-decoration: none;
-      color: ${Color.menuGray()};
+      font-weight: bold;
+      color: ${Color.gray()};
       align-items: center;
       line-height: 1;
     }
     a.active {
-      font-weight: bold;
       color: ${Color.black()};
     }
     &:hover {

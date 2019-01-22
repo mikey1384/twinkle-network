@@ -169,8 +169,8 @@ class Header extends Component {
       turnChatOff
     } = this.props;
     const isUsername =
-      pathname.split('/')[1] !== 'videos' &&
-      ['links', 'twinklexp'].indexOf(pathname.split('/')[1]) === -1 &&
+      pathname.split('/')[1] !== 'work' &&
+      ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
       pathname.length > 1;
     return (
       <nav
@@ -265,25 +265,12 @@ class Header extends Component {
                 Home
               </HeaderNav>
               <HeaderNav
-                to="/videos"
+                to="/work"
                 onClick={closeSearch}
                 className={chatLoading || searchMode ? 'desktop' : ''}
-                imgLabel="film"
+                imgLabel="bolt"
               >
-                Watch
-              </HeaderNav>
-              <HeaderNav
-                to="/links"
-                onClick={closeSearch}
-                className={`${chatLoading || searchMode ? 'desktop' : ''} ${css`
-                  @media (min-width: ${desktopMinWidth}) {
-                    margin-right: 1rem;
-                    margin-left: 2rem;
-                  }
-                `}`}
-                imgLabel="book"
-              >
-                Read
+                EARN XP
               </HeaderNav>
             </>
             <div

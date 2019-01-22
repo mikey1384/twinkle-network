@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import Main from './Main';
-import VideoPage from './VideoPage';
 import { connect } from 'react-redux';
 import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions';
 import {
@@ -11,7 +10,7 @@ import {
   resetPlaylistState
 } from 'redux/actions/PlaylistActions';
 
-class Videos extends Component {
+class WorkSection extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
@@ -39,7 +38,6 @@ class Videos extends Component {
     return (
       <div style={{ width: '100%', height: '100%' }}>
         <Route exact path={`${match.url}`} component={Main} />
-        <Route path={`${match.url}/:videoId`} component={VideoPage} />
       </div>
     );
   }
@@ -54,4 +52,4 @@ export default connect(
     resetPlaylistState,
     resetVideoState
   }
-)(Videos);
+)(WorkSection);
