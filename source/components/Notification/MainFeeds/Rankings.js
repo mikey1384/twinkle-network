@@ -102,7 +102,7 @@ class Rankings extends Component {
     const modifier = allSelected ? rankModifier : 0;
     return (
       <ErrorBoundary>
-        {myId && (
+        {!!myId && (
           <FilterBar
             bordered
             style={{

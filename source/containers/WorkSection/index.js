@@ -1,55 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import Main from './Main';
-import { connect } from 'react-redux';
-import { getInitialVideos, resetVideoState } from 'redux/actions/VideoActions';
-import {
-  getPlaylists,
-  getPinnedPlaylists,
-  resetPlaylistState
-} from 'redux/actions/PlaylistActions';
+import { Switch, Route } from 'react-router';
+import Videos from './Videos';
+import Work from './Work';
 
-class WorkSection extends Component {
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    getInitialVideos: PropTypes.func.isRequired,
-    getPlaylists: PropTypes.func.isRequired,
-    getPinnedPlaylists: PropTypes.func.isRequired,
-    resetPlaylistState: PropTypes.func.isRequired,
-    resetVideoState: PropTypes.func.isRequired
-  };
-
-  componentDidMount() {
-    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props;
-    getInitialVideos();
-    getPlaylists();
-    getPinnedPlaylists();
-  }
-
-  componentWillUnmount() {
-    const { resetPlaylistState, resetVideoState } = this.props;
-    resetPlaylistState();
-    resetVideoState();
-  }
-
+export default class WorkSection extends Component {
   render() {
-    const { match } = this.props;
     return (
-      <div style={{ width: '100%', height: '100%' }}>
-        <Route exact path={`${match.url}`} component={Main} />
-      </div>
+      <Switch>
+        <Route path="/videos" component={Videos} />
+        <Route path="/work" component={Work} />
+      </Switch>
     );
   }
 }
-
-export default connect(
-  null,
-  {
-    getPlaylists,
-    getPinnedPlaylists,
-    getInitialVideos,
-    resetPlaylistState,
-    resetVideoState
-  }
-)(WorkSection);

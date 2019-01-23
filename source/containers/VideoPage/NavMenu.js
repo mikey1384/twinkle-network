@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  loadRightMenuVideos,
-  loadMorePlaylistVideos
-} from 'redux/actions/VideoActions';
-import {
   clearNotifications,
   fetchNotifications
 } from 'redux/actions/NotiActions';
@@ -17,59 +13,58 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import FilterBar from 'components/FilterBar';
 import Notification from 'components/Notification';
+import request from 'axios';
+import { URL } from 'constants/URL';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 
 class NavMenu extends Component {
   static propTypes = {
-    loadMorePlaylistVideos: PropTypes.func.isRequired,
-    loadRightMenuVideos: PropTypes.func.isRequired,
-    nextVideos: PropTypes.array,
+    clearNotifications: PropTypes.func.isRequired,
+    fetchNotifications: PropTypes.func.isRequired,
     numNewNotis: PropTypes.number,
-    otherVideos: PropTypes.array,
     playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    playlistTitle: PropTypes.string,
-    playlistVideos: PropTypes.array,
-    playlistVideosLoadMoreShown: PropTypes.bool,
-    relatedVideos: PropTypes.array,
     totalRewardAmount: PropTypes.number,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired
   };
 
+  mounted = false;
+
   state = {
+    nextVideos: [],
+    relatedVideos: [],
+    otherVideos: [],
+    playlistVideos: [],
     rewardsExist: false,
+    playlistTitle: undefined,
     playlistVideosLoading: false,
+    playlistVideosLoadMoreShown: false,
     videoTabActive: true
   };
 
   async componentDidMount() {
-    const {
-      loadRightMenuVideos,
-      fetchNotifications,
-      videoId,
-      playlistId
-    } = this.props;
-    loadRightMenuVideos(videoId, playlistId);
+    const { fetchNotifications, videoId, playlistId } = this.props;
+    this.mounted = true;
+    this.loadRightMenuVideos(videoId, playlistId);
     await fetchNotifications();
     socket.on('new_reward', this.notifyNewReward);
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const {
       clearNotifications,
       fetchNotifications,
-      loadRightMenuVideos,
-      nextVideos,
       videoId,
       playlistId,
       totalRewardAmount
     } = this.props;
+    const { nextVideos } = this.state;
     if (!nextVideos || (videoId && prevProps.videoId !== videoId)) {
-      loadRightMenuVideos(videoId, playlistId);
+      this.loadRightMenuVideos(videoId, playlistId);
     }
-    if (prevProps.totalRewardAmount !== totalRewardAmount) {
+    if (prevProps.totalRewardAmount !== totalRewardAmount && this.mounted) {
       this.setState({ rewardsExist: totalRewardAmount > 0 });
     }
     if (prevProps.userId !== this.props.userId) {
@@ -83,22 +78,22 @@ class NavMenu extends Component {
 
   componentWillUnmount() {
     socket.removeListener('new_reward', this.notifyNewReward);
+    this.mounted = false;
   }
 
   render() {
+    const { numNewNotis, playlistId, videoId } = this.props;
     const {
-      numNewNotis,
-      nextVideos = [],
-      relatedVideos = [],
-      otherVideos = [],
-      playlistId,
-      playlistVideos = [],
+      nextVideos,
+      relatedVideos,
+      otherVideos,
       playlistTitle,
+      playlistVideos,
+      playlistVideosLoading,
       playlistVideosLoadMoreShown,
-      videoId
-    } = this.props;
-    const { rewardsExist, videoTabActive } = this.state;
-    const { playlistVideosLoading } = this.state;
+      rewardsExist,
+      videoTabActive
+    } = this.state;
     return (
       <ErrorBoundary
         className={css`
@@ -211,23 +206,44 @@ class NavMenu extends Component {
   }
 
   loadMorePlaylistVideos = async() => {
-    const {
-      loadMorePlaylistVideos,
-      playlistId,
-      playlistVideos,
-      videoId
-    } = this.props;
+    const { playlistId, playlistVideos, videoId } = this.props;
     this.setState({ playlistVideosLoading: true });
-    await loadMorePlaylistVideos(
-      videoId,
-      playlistId,
-      queryStringForArray({
-        array: playlistVideos,
-        originVar: 'videoId',
-        destinationVar: 'shownVideos'
-      })
-    );
-    this.setState({ playlistVideosLoading: false });
+    const shownVideos = queryStringForArray({
+      array: playlistVideos,
+      originVar: 'videoId',
+      destinationVar: 'shownVideos'
+    });
+    try {
+      const {
+        data: { playlistVideos, playlistVideosLoadMoreShown }
+      } = await request.get(
+        `${URL}/video/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`
+      );
+      this.setState(state => ({
+        playlistVideosLoading: false,
+        playlistVideos: state.playlistVideos.concat(playlistVideos),
+        playlistVideosLoadMoreShown
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  loadRightMenuVideos = async(videoId, playlistId) => {
+    try {
+      const { data } = await request.get(
+        `${URL}/${
+          playlistId ? 'playlist' : 'video'
+        }/rightMenu?videoId=${videoId}${
+          playlistId ? `&playlistId=${playlistId}` : ''
+        }`
+      );
+      this.setState({
+        ...data
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   notifyNewReward = async() => {
@@ -297,21 +313,12 @@ class NavMenu extends Component {
 
 export default connect(
   state => ({
-    nextVideos: state.VideoReducer.videoPage.nextVideos,
     numNewNotis: state.NotiReducer.numNewNotis,
-    relatedVideos: state.VideoReducer.videoPage.relatedVideos,
-    otherVideos: state.VideoReducer.videoPage.otherVideos,
-    playlistVideos: state.VideoReducer.videoPage.playlistVideos,
-    playlistVideosLoadMoreShown:
-      state.VideoReducer.videoPage.playlistVideosLoadMoreShown,
-    playlistTitle: state.VideoReducer.videoPage.playlistTitle,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     userId: state.UserReducer.userId
   }),
   {
     clearNotifications,
-    loadMorePlaylistVideos,
-    loadRightMenuVideos,
     fetchNotifications
   }
 )(NavMenu);

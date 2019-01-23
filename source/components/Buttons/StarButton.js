@@ -64,7 +64,7 @@ class StarButton extends Component {
                 width: '25rem'
               }}
             >
-              <li onClick={this.onSetDifficultyClick}>Set difficulty</li>
+              <li onClick={this.onSetDifficultyClick}>Set Reward Level</li>
               <li onClick={this.onToggleByUser}>
                 {byUser
                   ? `This video wasn't made by ${uploader.username}`

@@ -337,12 +337,10 @@ class App extends Component {
             <Route path="/subjects" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
             <Route path="/discussions" component={ContentPage} />
+            <Route path="/videos/:videoId" component={VideoPage} />
+            <Route path="/videos" component={WorkSection} />
+            <Route path="/work" component={WorkSection} />
             <Route path="/playlists" component={PlaylistPage} />
-            <Route path="/videos" component={VideoPage} />
-            <Route
-              path="/work"
-              render={({ match }) => <WorkSection match={match} />}
-            />
             <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />
             <Route

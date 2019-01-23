@@ -27,7 +27,9 @@ class DifficultyModal extends Component {
     const { difficulty } = this.state;
     return (
       <Modal onHide={onHide}>
-        <header>Set Difficulty</header>
+        <header>
+          Set Reward Level (consider both difficulty and importance)
+        </header>
         <main style={{ fontSize: '3rem', paddingTop: 0 }}>
           <div style={{ marginTop: '5rem', textAlign: 'center' }}>
             <div style={{ display: 'flex' }}>

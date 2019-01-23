@@ -336,7 +336,7 @@ class DiscussionPanel extends Component {
     ];
     if (canEditDifficulty) {
       menuProps.push({
-        label: 'Set Difficulty',
+        label: 'Set Reward Level',
         onClick: () => this.setState({ difficultyModalShown: true })
       });
     }

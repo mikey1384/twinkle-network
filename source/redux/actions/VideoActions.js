@@ -11,11 +11,6 @@ export const addTags = ({ tags }) => ({
   tags
 });
 
-export const attachStar = data => ({
-  type: VIDEO.ATTACH_STAR,
-  data
-});
-
 export const addVideoView = params => dispatch => {
   try {
     request.post(`${API_URL}/view`, params);
@@ -24,9 +19,9 @@ export const addVideoView = params => dispatch => {
   }
 };
 
-export const changeByUserStatus = ({ contentId, byUser }) => ({
+export const changeByUserStatusForThumbs = ({ videoId, byUser }) => ({
   type: VIDEO.CHANGE_BY_USER_STATUS,
-  videoId: Number(contentId),
+  videoId,
   byUser
 });
 
@@ -55,47 +50,10 @@ export const deleteVideo = ({
   }
 };
 
-export const deleteVideoComment = commentId => ({
-  type: VIDEO.DELETE_COMMENT,
-  commentId
+export const editVideoThumbs = params => ({
+  type: VIDEO.EDIT_THUMBS,
+  params
 });
-
-export const deleteVideoDiscussion = discussionId => ({
-  type: VIDEO.DELETE_DISCUSSION,
-  discussionId
-});
-
-export const editVideoComment = data => ({
-  type: VIDEO.EDIT_COMMENT,
-  ...data
-});
-
-export const editRewardComment = ({ id, text }) => ({
-  type: VIDEO.EDIT_REWARD_COMMENT,
-  id,
-  text
-});
-
-export const editVideoDiscussion = ({ editedDiscussion, discussionId }) => ({
-  type: VIDEO.EDIT_DISCUSSION,
-  data: editedDiscussion,
-  discussionId
-});
-
-export const editVideoPage = params => async dispatch => {
-  try {
-    const { data } = await request.post(`${API_URL}/edit/page`, params, auth());
-    if (data.success) {
-      dispatch({
-        type: VIDEO.EDIT_PAGE,
-        params
-      });
-    }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
 
 export const editVideoTitle = params => async dispatch => {
   try {
@@ -154,7 +112,7 @@ export const loadTags = ({ tags }) => ({
   tags
 });
 
-export const likeVideo = (likes, videoId) => async dispatch => {
+export const likeVideo = ({ likes, videoId }) => async dispatch => {
   dispatch({
     type: VIDEO.LIKE,
     data: likes,
@@ -162,16 +120,6 @@ export const likeVideo = (likes, videoId) => async dispatch => {
   });
   dispatch(likePlaylistVideo(likes, videoId));
 };
-
-export const likeVideoComment = ({ commentId, likes }) => ({
-  type: VIDEO.LIKE_COMMENT,
-  data: { commentId, likes }
-});
-
-export const loadMoreComments = data => ({
-  type: VIDEO.LOAD_MORE_COMMENTS,
-  ...data
-});
 
 export const loadMoreDiscussionReplies = ({
   commentId,
@@ -197,90 +145,8 @@ export const loadMoreDiscussionComments = ({ data, discussionId }) => ({
   ...data
 });
 
-export const loadVideoDiscussions = ({ results, loadMoreButton }) => ({
-  type: VIDEO.LOAD_DISCUSSIONS,
-  results,
-  loadMoreButton
-});
-
-export const loadMoreDiscussions = ({ results, loadMoreButton }) => ({
-  type: VIDEO.LOAD_MORE_DISCUSSIONS,
-  results,
-  loadMoreButton
-});
-
-export const loadMorePlaylistVideos = (
-  videoId,
-  playlistId,
-  shownVideos
-) => async dispatch => {
-  try {
-    const {
-      data: { playlistVideos, playlistVideosLoadMoreShown }
-    } = await request.get(
-      `${API_URL}/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`
-    );
-    dispatch({
-      type: VIDEO.LOAD_MORE_RIGHT_MENU_PL_VIDS,
-      playlistVideos,
-      playlistVideosLoadMoreShown
-    });
-    Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
-export const loadRightMenuVideos = (videoId, playlistId) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${URL}/${
-        playlistId ? 'playlist' : 'video'
-      }/rightMenu?videoId=${videoId}${
-        playlistId ? `&playlistId=${playlistId}` : ''
-      }`
-    );
-    dispatch({
-      type: VIDEO.LOAD_RIGHT_MENU_VIDS,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
-export const loadVideoComments = data => ({
-  type: VIDEO.LOAD_COMMENTS,
-  ...data
-});
-
-export const loadVideoDiscussionComments = ({ data, discussionId }) => ({
-  type: VIDEO.LOAD_DISCUSSION_COMMENTS,
-  discussionId,
-  ...data
-});
-
-export const loadVideoPage = (videoId, fromClientSide) => async dispatch => {
-  if (isNaN(videoId)) return dispatch({ type: VIDEO.PAGE_UNAVAILABLE });
-  try {
-    const { data } = await request.get(`${API_URL}/page?videoId=${videoId}`);
-    dispatch({
-      type: VIDEO.LOAD_PAGE,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    dispatch({ type: VIDEO.PAGE_UNAVAILABLE });
-    handleError(error, dispatch);
-  }
-};
-
 export const openAddVideoModal = () => ({
   type: VIDEO.OPEN_MODAL
-});
-
-export const resetVideoPage = () => ({
-  type: VIDEO.RESET_PAGE
 });
 
 export const resetVideoState = () => ({
@@ -299,32 +165,6 @@ export const setDiscussionDifficulty = ({ contentId, difficulty }) => ({
   difficulty
 });
 
-export const uploadQuestions = params => async dispatch => {
-  try {
-    await request.post(`${API_URL}/questions`, params, auth());
-    const questions = params.questions.map(question => {
-      return {
-        title: question.title,
-        choices: [
-          question.choice1,
-          question.choice2,
-          question.choice3,
-          question.choice4,
-          question.choice5
-        ],
-        correctChoice: question.correctChoice
-      };
-    });
-    dispatch({
-      type: VIDEO.ADD_QUESTIONS,
-      data: questions
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
 export const uploadVideo = data => ({
   type: VIDEO.UPLOAD,
   data
@@ -338,9 +178,4 @@ export const uploadComment = comment => ({
 export const uploadReply = reply => ({
   type: VIDEO.UPLOAD_REPLY,
   reply
-});
-
-export const uploadVideoDiscussion = data => ({
-  type: VIDEO.UPLOAD_DISCUSSION,
-  data
 });

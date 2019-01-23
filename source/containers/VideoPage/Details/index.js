@@ -18,12 +18,7 @@ import BasicInfos from './BasicInfos';
 import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
-import {
-  addTags,
-  attachStar,
-  loadTags,
-  setDifficulty
-} from 'redux/actions/VideoActions';
+import { addTags, loadTags, setDifficulty } from 'redux/actions/VideoActions';
 import { setPlaylistVideosDifficulty } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
@@ -417,7 +412,6 @@ export default connect(
   }),
   {
     addTags,
-    attachStar,
     loadTags,
     setDifficulty,
     setPlaylistVideosDifficulty

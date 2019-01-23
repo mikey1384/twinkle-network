@@ -12,16 +12,21 @@ import Notification from 'components/Notification';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import {
+  closeAddVideoModal,
+  getInitialVideos,
   openAddVideoModal,
-  closeAddVideoModal
+  resetVideoState
 } from 'redux/actions/VideoActions';
 import {
+  getPlaylists,
+  getPinnedPlaylists,
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModal,
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal,
   setSearchedPlaylists,
-  postPlaylist
+  postPlaylist,
+  resetPlaylistState
 } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import { main } from './Styles';
@@ -33,6 +38,9 @@ class Main extends Component {
     closeAddVideoModal: PropTypes.func.isRequired,
     closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
+    getInitialVideos: PropTypes.func.isRequired,
+    getPlaylists: PropTypes.func.isRequired,
+    getPinnedPlaylists: PropTypes.func.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
     loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
@@ -45,6 +53,8 @@ class Main extends Component {
     playlistsLoaded: PropTypes.bool.isRequired,
     playlistsToPin: PropTypes.array.isRequired,
     reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
+    resetPlaylistState: PropTypes.func.isRequired,
+    resetVideoState: PropTypes.func.isRequired,
     searchedPlaylists: PropTypes.array.isRequired,
     selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
     setSearchedPlaylists: PropTypes.func.isRequired,
@@ -59,6 +69,19 @@ class Main extends Component {
     playlistSearchQuery: '',
     isSearching: false
   };
+
+  componentDidMount() {
+    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props;
+    getInitialVideos();
+    getPlaylists();
+    getPinnedPlaylists();
+  }
+
+  componentWillUnmount() {
+    const { resetPlaylistState, resetVideoState } = this.props;
+    resetPlaylistState();
+    resetVideoState();
+  }
 
   render() {
     const {
@@ -256,10 +279,15 @@ export default connect(
       state.PlaylistReducer.selectPlaylistsToPinModalShown
   }),
   {
-    openSelectPlaylistsToPinModal,
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
+    getPlaylists,
+    getPinnedPlaylists,
+    getInitialVideos,
+    openSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
+    resetPlaylistState,
+    resetVideoState,
     setSearchedPlaylists,
     closeAddVideoModal,
     openAddVideoModal,
