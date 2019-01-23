@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import { container } from './Styles';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { Color } from 'constants/css';
 
 HomeMenuItems.propTypes = {
   history: PropTypes.object,
@@ -63,6 +64,22 @@ export default function HomeMenuItems({ history, style = {} }) {
           )}
         />
       </ErrorBoundary>
+      <div
+        style={{
+          fontSize: '1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '1.5rem',
+          color: Color.gray()
+        }}
+      >
+        <div>
+          © 2019 Twinkle Network ·{' '}
+          <Link to="/privacy" style={{ color: Color.gray() }}>
+            Privacy
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

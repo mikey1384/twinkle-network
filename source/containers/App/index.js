@@ -56,6 +56,7 @@ const Verify = loadable(() => import('containers/Verify'), {
 const VideoPage = loadable(() => import('containers/VideoPage'), {
   LoadingComponent: Loading
 });
+import Privacy from 'containers/Privacy';
 import Redirect from 'containers/Redirect';
 
 let visibilityChange;
@@ -343,6 +344,7 @@ class App extends Component {
             <Route path="/playlists" component={PlaylistPage} />
             <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />
+            <Route path="/privacy" component={Privacy} />
             <Route
               exact
               path="/"

@@ -15,12 +15,12 @@ export const container = css`
     color: ${Color.darkGray()};
     justify-content: center;
     > a {
-      padding-left: 1rem;
+      margin-left: -2rem;
       text-align: center;
       width: 100%;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       color: ${Color.darkGray()};
       text-decoration: none;
     }
