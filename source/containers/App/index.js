@@ -53,6 +53,7 @@ const SearchPage = loadable(() => import('containers/SearchPage'), {
 const Verify = loadable(() => import('containers/Verify'), {
   LoadingComponent: Loading
 });
+import Privacy from 'containers/Privacy';
 import Redirect from 'containers/Redirect';
 
 let visibilityChange;
@@ -341,6 +342,7 @@ class App extends Component {
             />
             <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />
+            <Route path="/privacy" component={Privacy} />
             <Route
               exact
               path="/"
