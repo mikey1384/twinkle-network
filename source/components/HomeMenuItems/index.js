@@ -70,12 +70,12 @@ export default function HomeMenuItems({ history, style = {} }) {
           display: 'flex',
           justifyContent: 'center',
           marginTop: '1.5rem',
-          color: Color.lightGray()
+          color: Color.gray()
         }}
       >
         <div>
           © 2019 Twinkle Network ·{' '}
-          <Link to="/privacy" style={{ color: Color.lightGray() }}>
+          <Link to="/privacy" style={{ color: Color.gray() }}>
             Privacy
           </Link>
         </div>
