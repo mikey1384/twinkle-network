@@ -44,6 +44,10 @@ export const changePlaylistVideos = ({ playlistId, playlist }) => ({
   playlist
 });
 
+export const clearVideos = () => ({
+  type: VIDEO.CLEAR
+});
+
 export const clickSafeOff = () => ({
   type: VIDEO.TURN_OFF_CLICK_SAFE
 });
@@ -209,20 +213,11 @@ export const getMorePlaylists = ({ playlists, isSearch, loadMoreButton }) => ({
   loadMoreButton
 });
 
-export const likePlaylistVideo = (data, videoId) => ({
-  type: VIDEO.LIKE_PLAYLIST_VIDEO,
-  data,
+export const likeVideo = ({ likes, videoId }) => ({
+  type: VIDEO.LIKE,
+  likes,
   videoId
 });
-
-export const likeVideo = ({ likes, videoId }) => async dispatch => {
-  dispatch({
-    type: VIDEO.LIKE,
-    data: likes,
-    videoId
-  });
-  dispatch(likePlaylistVideo(likes, videoId));
-};
 
 export const loadMorePlaylistList = playlistId => async dispatch => {
   try {
@@ -266,12 +261,6 @@ export const postPlaylist = data => ({
 export const setDifficulty = ({ videoId, difficulty }) => ({
   type: VIDEO.SET_DIFFICULTY,
   videoId,
-  difficulty
-});
-
-export const setPlaylistVideosDifficulty = ({ contentId, difficulty }) => ({
-  type: VIDEO.SET_PLAYLIST_VIDEOS_DIFFICULTY,
-  videoId: Number(contentId),
   difficulty
 });
 

@@ -12,6 +12,7 @@ import Notification from 'components/Notification';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import {
+  clearVideos,
   closeAddVideoModal,
   getInitialVideos,
   getPlaylists,
@@ -32,12 +33,15 @@ class Main extends Component {
   static propTypes = {
     addVideoModalShown: PropTypes.bool.isRequired,
     canPinPlaylists: PropTypes.bool,
+    clearVideos: PropTypes.func.isRequired,
     closeAddVideoModal: PropTypes.func.isRequired,
     closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
     getPlaylists: PropTypes.func.isRequired,
     getPinnedPlaylists: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    loaded: PropTypes.bool.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
     loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
@@ -66,10 +70,20 @@ class Main extends Component {
   };
 
   componentDidMount() {
-    const { getPlaylists, getPinnedPlaylists, getInitialVideos } = this.props;
-    getInitialVideos();
-    getPlaylists();
-    getPinnedPlaylists();
+    const {
+      clearVideos,
+      getPlaylists,
+      getPinnedPlaylists,
+      getInitialVideos,
+      history,
+      loaded
+    } = this.props;
+    if (history.action === 'PUSH' || !loaded) {
+      clearVideos();
+      getInitialVideos();
+      getPlaylists();
+      getPinnedPlaylists();
+    }
   }
 
   render() {
@@ -260,6 +274,7 @@ export default connect(
     addPlaylistModalShown: state.VideoReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
     canPinPlaylists: state.UserReducer.canPinPlaylists,
+    loaded: state.VideoReducer.loaded,
     loadMorePlaylistsButton: state.VideoReducer.loadMorePlaylistsButton,
     loadMorePlaylistsToPinButton:
       state.VideoReducer.loadMorePlaylistsToPinButton,
@@ -279,6 +294,7 @@ export default connect(
       state.VideoReducer.selectPlaylistsToPinModalShown
   }),
   {
+    clearVideos,
     closeReorderPinnedPlaylistsModal,
     closeSelectPlaylistsToPinModal,
     getPlaylists,

@@ -80,7 +80,6 @@ class Stories extends Component {
     userId: PropTypes.number
   };
 
-  clearingFeeds = false;
   scrollHeight = 0;
 
   categoryObj = {
@@ -127,9 +126,7 @@ class Stories extends Component {
     setCurrentSection('storyFeeds');
     resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
-      this.clearingFeeds = true;
       clearFeeds();
-      this.clearingFeeds = false;
       fetchFeeds();
     }
     addEvent(window, 'scroll', this.onScroll);
@@ -142,9 +139,7 @@ class Stories extends Component {
       prevProps.hideWatched !== this.props.hideWatched &&
       this.state.category === 'videos'
     ) {
-      this.clearingFeeds = true;
       clearFeeds();
-      this.clearingFeeds = false;
       fetchFeeds({
         order: 'desc',
         filter: this.categoryObj.videos.filter,
@@ -365,9 +360,7 @@ class Stories extends Component {
 
   changeCategory = category => {
     const { clearFeeds, fetchFeeds } = this.props;
-    this.clearingFeeds = true;
     clearFeeds();
-    this.clearingFeeds = false;
     fetchFeeds({
       order: 'desc',
       filter: this.categoryObj[category].filter,
@@ -387,9 +380,7 @@ class Stories extends Component {
     } = this.props;
     const { category, displayOrder, loadingMore } = this.state;
     if (category !== 'uploads' || displayOrder === 'asc') {
-      this.clearingFeeds = true;
       clearFeeds();
-      this.clearingFeeds = false;
       resetNumNewPosts();
       this.setState({ category: 'uploads' });
       return fetchFeeds();
@@ -414,9 +405,7 @@ class Stories extends Component {
     const { clearFeeds, fetchFeeds, selectedFilter } = this.props;
     const { category, displayOrder } = this.state;
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
-    this.clearingFeeds = true;
     clearFeeds();
-    this.clearingFeeds = false;
     fetchFeeds({
       order: newDisplayOrder,
       orderBy: this.categoryObj[category].orderBy,

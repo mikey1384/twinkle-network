@@ -3,12 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   changeByUserStatusForThumbs,
-  deleteVideo,
   editVideoThumbs,
-  getInitialVideos,
   likeVideo,
-  setDifficulty,
-  setPlaylistVideosDifficulty
+  setDifficulty
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -43,15 +40,12 @@ class VideoPage extends Component {
   static propTypes = {
     canEdit: PropTypes.bool,
     changeByUserStatusForThumbs: PropTypes.func.isRequired,
-    deleteVideo: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     editVideoThumbs: PropTypes.func.isRequired,
-    getInitialVideos: PropTypes.func.isRequired,
     likeVideo: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     setDifficulty: PropTypes.func.isRequired,
-    setPlaylistVideosDifficulty: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
@@ -158,8 +152,7 @@ class VideoPage extends Component {
     const {
       canEdit,
       userId,
-      location: { search },
-      setPlaylistVideosDifficulty
+      location: { search }
     } = this.props;
     const {
       changingPage,
@@ -335,7 +328,6 @@ class VideoPage extends Component {
                   onEditFinish={this.editVideoPage}
                   onDelete={() => this.setState({ confirmModalShown: true })}
                   setDifficulty={this.setDifficulty}
-                  setPlaylistVideosDifficulty={setPlaylistVideosDifficulty}
                   stars={stars}
                   tags={tags}
                   title={title}
@@ -567,12 +559,12 @@ class VideoPage extends Component {
       match: {
         params: { videoId }
       },
-      deleteVideo,
-      getInitialVideos,
       history
     } = this.props;
-    await deleteVideo({ videoId });
-    await getInitialVideos();
+    await request.delete(
+      `${URL}/video?videoId=${videoId}`,
+      auth()
+    );
     history.push('/videos');
   };
 
@@ -679,7 +671,7 @@ class VideoPage extends Component {
           content: url
         }
       }));
-      editVideoThumbs({ ...params, url });
+      editVideoThumbs({ videoId: Number(params.videoId), title: params.title, url });
     } catch (error) {
       handleError(error, dispatch);
     }
@@ -1134,11 +1126,7 @@ export default connect(
     changeByUserStatusForThumbs: params =>
       dispatch(changeByUserStatusForThumbs(params)),
     editVideoThumbs: params => dispatch(editVideoThumbs(params)),
-    deleteVideo: params => dispatch(deleteVideo(params)),
-    getInitialVideos: () => dispatch(getInitialVideos()),
     likeVideo: params => dispatch(likeVideo(params)),
-    setDifficulty: params => dispatch(setDifficulty(params)),
-    setPlaylistVideosDifficulty: params =>
-      dispatch(setPlaylistVideosDifficulty(params))
+    setDifficulty: params => dispatch(setDifficulty(params))
   })
 )(VideoPage);

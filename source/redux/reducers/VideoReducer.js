@@ -28,14 +28,47 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.CHANGE_BY_USER_STATUS:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb =>
-          thumb.id === action.videoId
+        allVideoThumbs: state.allVideoThumbs.map(video =>
+          video.id === action.videoId
             ? {
-                ...thumb,
+                ...video,
                 byUser: action.byUser
               }
-            : thumb
-        )
+            : video
+        ),
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  byUser: action.byUser
+                }
+              : video
+          )
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  byUser: action.byUser
+                }
+              : video
+          )
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  byUser: action.byUser
+                }
+              : video
+          )
+        }))
       };
     case VIDEO.CHANGE_PINNED_PLAYLISTS:
       return {
@@ -67,6 +100,8 @@ export default function VideoReducer(state = defaultState, action) {
               : playlist.playlist
         }))
       };
+    case VIDEO.CLEAR:
+      return defaultState;
     case VIDEO.CLOSE_MODAL:
       return {
         ...state,
@@ -133,19 +168,51 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.EDIT_THUMBS:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb => {
-          return {
-            ...thumb,
-            title:
-              thumb.id === action.params.videoId
-                ? action.params.title
-                : thumb.title,
-            content:
-              thumb.id === action.params.videoId
-                ? action.params.url
-                : thumb.content
-          };
-        })
+        allVideoThumbs: state.allVideoThumbs.map(video =>
+          video.id === action.params.videoId
+            ? {
+                ...video,
+                title: action.params.title,
+                content: action.params.url
+              }
+            : video
+        ),
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.params.videoId
+              ? {
+                  ...video,
+                  video_title: action.params.title,
+                  content: action.params.url
+                }
+              : video
+          )
+        })),
+        allPlaylists: state.allPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.params.videoId
+              ? {
+                  ...video,
+                  video_title: action.params.title,
+                  content: action.params.url
+                }
+              : video
+          )
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.params.videoId
+              ? {
+                  ...video,
+                  video_title: action.params.title,
+                  content: action.params.url
+                }
+              : video
+          )
+        }))
       };
     case VIDEO.EMPTY_CURRENT_VIDEO_SLOT:
       return {
@@ -160,37 +227,46 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.LIKE:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb =>
-          thumb.id === action.videoId
+        allVideoThumbs: state.allVideoThumbs.map(video => {
+          return video.id === action.videoId
             ? {
-                ...thumb,
-                numLikes: action.data.length
+                ...video,
+                likes: action.likes
               }
-            : thumb
-        )
-      };
-    case VIDEO.LIKE_PLAYLIST_VIDEO:
-      return {
-        ...state,
+            : video;
+        }),
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
-          playlist: playlist.playlist.map(video => ({
-            ...video,
-            numLikes:
-              video.videoId === action.videoId
-                ? action.data.length
-                : video.numLikes
-          }))
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  likes: action.likes
+                }
+              : video
+          )
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
-          playlist: playlist.playlist.map(video => ({
-            ...video,
-            numLikes:
-              video.videoId === action.videoId
-                ? action.data.length
-                : video.numLikes
-          }))
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  likes: action.likes
+                }
+              : video
+          )
+        })),
+        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          ...playlist,
+          playlist: playlist.playlist.map(video =>
+            video.videoId === action.videoId
+              ? {
+                  ...video,
+                  likes: action.likes
+                }
+              : video
+          )
         }))
       };
     case VIDEO.LOAD:
@@ -275,18 +351,14 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.SET_DIFFICULTY:
       return {
         ...state,
-        allVideoThumbs: state.allVideoThumbs.map(thumb => {
-          return thumb.id === action.videoId
+        allVideoThumbs: state.allVideoThumbs.map(video => {
+          return video.id === action.videoId
             ? {
-                ...thumb,
+                ...video,
                 difficulty: action.difficulty
               }
-            : thumb;
-        })
-      };
-    case VIDEO.SET_PLAYLIST_VIDEOS_DIFFICULTY:
-      return {
-        ...state,
+            : video;
+        }),
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
           playlist: playlist.playlist.map(video =>

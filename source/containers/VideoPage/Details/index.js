@@ -43,7 +43,6 @@ class Details extends Component {
     onEditFinish: PropTypes.func.isRequired,
     onEditStart: PropTypes.func.isRequired,
     setDifficulty: PropTypes.func.isRequired,
-    setPlaylistVideosDifficulty: PropTypes.func.isRequired,
     tags: PropTypes.array,
     stars: PropTypes.array,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -371,9 +370,8 @@ class Details extends Component {
   };
 
   onSetDifficulty = params => {
-    const { setDifficulty, setPlaylistVideosDifficulty } = this.props;
+    const { setDifficulty } = this.props;
     setDifficulty(params);
-    setPlaylistVideosDifficulty(params);
   };
 
   descriptionExceedsCharLimit = description => {
