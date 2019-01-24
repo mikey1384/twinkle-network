@@ -4,7 +4,7 @@ import ButtonGroup from 'components/Buttons/ButtonGroup';
 import NavButton from './NavButton';
 import Button from 'components/Button';
 import { connect } from 'react-redux';
-import { clickSafeOn, clickSafeOff } from 'redux/actions/PlaylistActions';
+import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
 import {
   getListStyles,
   getFrameStyles,
@@ -437,7 +437,7 @@ export default connect(
   state => ({
     chatMode: state.ChatReducer.chatMode,
     searchMode: state.SearchReducer.searchMode,
-    clickSafe: state.PlaylistReducer.clickSafe
+    clickSafe: state.VideoReducer.clickSafe
   }),
   { clickSafeOn, clickSafeOff }
 )(Carousel);

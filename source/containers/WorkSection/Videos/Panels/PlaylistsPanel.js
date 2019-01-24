@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../Carousels/PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { getMorePlaylists } from 'redux/actions/PlaylistActions';
+import { getMorePlaylists } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { loadPlaylists, searchContent } from 'helpers/requestHelpers';
 
@@ -12,6 +12,7 @@ class PlaylistsPanel extends Component {
   static propTypes = {
     buttonGroup: PropTypes.func,
     buttonGroupShown: PropTypes.bool,
+    innerRef: PropTypes.func,
     isSearching: PropTypes.bool,
     getMorePlaylists: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
@@ -26,6 +27,7 @@ class PlaylistsPanel extends Component {
 
   render() {
     const {
+      innerRef,
       isSearching,
       loadMoreButton,
       playlists,
@@ -40,6 +42,7 @@ class PlaylistsPanel extends Component {
     let buttonGroupElement = buttonGroupShown ? buttonGroup() : null;
     return (
       <SectionPanel
+        innerRef={innerRef}
         title={title}
         button={buttonGroupElement}
         searchPlaceholder="Search playlists"

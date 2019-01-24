@@ -19,6 +19,7 @@ class AllVideosPanel extends Component {
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     getMoreVideos: PropTypes.func.isRequired,
+    innerRef: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,
     onAddVideoClick: PropTypes.func.isRequired,
@@ -38,6 +39,7 @@ class AllVideosPanel extends Component {
 
   render() {
     const {
+      innerRef,
       loadMoreButton,
       videos: allVideos,
       title = 'All Videos',
@@ -53,6 +55,7 @@ class AllVideosPanel extends Component {
     const videos = searchQuery ? searchedVideos : allVideos;
     return (
       <SectionPanel
+        innerRef={innerRef}
         title={title}
         searchPlaceholder="Search videos"
         button={
@@ -180,7 +183,7 @@ export default connect(
     canEdit: state.UserReducer.canEdit,
     canStar: state.UserReducer.canStar,
     loaded: state.VideoReducer.loaded,
-    loadMoreButton: state.VideoReducer.loadMoreButton,
+    loadMoreButton: state.VideoReducer.loadMoreVideosButton,
     videos: state.VideoReducer.allVideoThumbs
   }),
   {

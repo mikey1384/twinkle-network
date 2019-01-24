@@ -14,22 +14,19 @@ import { searchContent } from 'helpers/requestHelpers';
 import {
   closeAddVideoModal,
   getInitialVideos,
-  openAddVideoModal,
-  resetVideoState
-} from 'redux/actions/VideoActions';
-import {
   getPlaylists,
+  openAddVideoModal,
   getPinnedPlaylists,
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModal,
   closeReorderPinnedPlaylistsModal,
   closeSelectPlaylistsToPinModal,
   setSearchedPlaylists,
-  postPlaylist,
-  resetPlaylistState
-} from 'redux/actions/PlaylistActions';
+  postPlaylist
+} from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { main } from './Styles';
+import { scrollElementToCenter } from 'helpers';
 
 class Main extends Component {
   static propTypes = {
@@ -53,8 +50,6 @@ class Main extends Component {
     playlistsLoaded: PropTypes.bool.isRequired,
     playlistsToPin: PropTypes.array.isRequired,
     reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
-    resetPlaylistState: PropTypes.func.isRequired,
-    resetVideoState: PropTypes.func.isRequired,
     searchedPlaylists: PropTypes.array.isRequired,
     selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
     setSearchedPlaylists: PropTypes.func.isRequired,
@@ -75,12 +70,6 @@ class Main extends Component {
     getInitialVideos();
     getPlaylists();
     getPinnedPlaylists();
-  }
-
-  componentWillUnmount() {
-    const { resetPlaylistState, resetVideoState } = this.props;
-    resetPlaylistState();
-    resetVideoState();
   }
 
   render() {
@@ -153,6 +142,7 @@ class Main extends Component {
           />
           <PlaylistsPanel
             key={'allplaylists'}
+            innerRef={ref => (this.AllPlaylistsPanel = ref)}
             buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
             title="All Playlists"
             loadMoreButton={
@@ -168,18 +158,27 @@ class Main extends Component {
             searchQuery={playlistSearchQuery}
           />
           <AllVideosPanel
+            innerRef={ref => (this.AllVideosPanel = ref)}
             key={'allvideos'}
             title="All Videos"
             userId={userId}
             onAddVideoClick={() => openAddVideoModal()}
           />
           {addVideoModalShown && (
-            <AddVideoModal onHide={() => closeAddVideoModal()} />
+            <AddVideoModal
+              onHide={() => closeAddVideoModal()}
+              focusVideoPanelAfterUpload={() =>
+                scrollElementToCenter(this.AllVideosPanel, 150)
+              }
+            />
           )}
           {addPlaylistModalShown && (
             <AddPlaylistModal
               postPlaylist={postPlaylist}
               onHide={() => this.setState({ addPlaylistModalShown: false })}
+              focusPlaylistPanelAfterUpload={() =>
+                scrollElementToCenter(this.AllPlaylistsPanel, 150)
+              }
             />
           )}
           {selectPlaylistsToPinModalShown && (
@@ -258,25 +257,26 @@ class Main extends Component {
 
 export default connect(
   state => ({
-    addPlaylistModalShown: state.PlaylistReducer.addPlaylistModalShown,
+    addPlaylistModalShown: state.VideoReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
     canPinPlaylists: state.UserReducer.canPinPlaylists,
-    loadMorePlaylistsButton: state.PlaylistReducer.loadMoreButton,
+    loadMorePlaylistsButton: state.VideoReducer.loadMorePlaylistsButton,
     loadMorePlaylistsToPinButton:
-      state.PlaylistReducer.loadMorePlaylistsToPinButton,
-    loadMoreSearchedPlaylistsButton: state.PlaylistReducer.searchLoadMoreButton,
-    pinnedPlaylistsLoaded: state.PlaylistReducer.pinnedPlaylistsLoaded,
-    pinnedPlaylists: state.PlaylistReducer.pinnedPlaylists,
-    playlistsToPin: state.PlaylistReducer.playlistsToPin,
-    playlistsLoaded: state.PlaylistReducer.allPlaylistsLoaded,
-    playlists: state.PlaylistReducer.allPlaylists,
-    searchedPlaylists: state.PlaylistReducer.searchedPlaylists,
+      state.VideoReducer.loadMorePlaylistsToPinButton,
+    loadMoreSearchedPlaylistsButton:
+      state.VideoReducer.loadMoreSearchedPlaylistsButton,
+    pinnedPlaylistsLoaded: state.VideoReducer.pinnedPlaylistsLoaded,
+    pinnedPlaylists: state.VideoReducer.pinnedPlaylists,
+    playlistsToPin: state.VideoReducer.playlistsToPin,
+    playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
+    playlists: state.VideoReducer.allPlaylists,
+    searchedPlaylists: state.VideoReducer.searchedPlaylists,
     reorderPinnedPlaylistsModalShown:
-      state.PlaylistReducer.reorderPinnedPlaylistsModalShown,
+      state.VideoReducer.reorderPinnedPlaylistsModalShown,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
     selectPlaylistsToPinModalShown:
-      state.PlaylistReducer.selectPlaylistsToPinModalShown
+      state.VideoReducer.selectPlaylistsToPinModalShown
   }),
   {
     closeReorderPinnedPlaylistsModal,
@@ -286,8 +286,6 @@ export default connect(
     getInitialVideos,
     openSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
-    resetPlaylistState,
-    resetVideoState,
     setSearchedPlaylists,
     closeAddVideoModal,
     openAddVideoModal,

@@ -28,7 +28,7 @@ export default class DifficultyBar extends Component {
           ...style
         }}
       >
-        <div>Difficulty: {stars}</div>
+        <div>Reward Level: {stars}</div>
         <div>Earn up to {addCommasToNumber(difficulty * 2000)} XP</div>
       </div>
     );

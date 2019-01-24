@@ -7,12 +7,8 @@ import {
   editVideoThumbs,
   getInitialVideos,
   likeVideo,
-  loadMoreDiscussionComments,
-  loadMoreDiscussionReplies,
-  loadMoreReplies,
-  setDiscussionDifficulty,
-  uploadComment,
-  uploadReply
+  setDifficulty,
+  setPlaylistVideosDifficulty
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -52,14 +48,10 @@ class VideoPage extends Component {
     editVideoThumbs: PropTypes.func.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
     likeVideo: PropTypes.func.isRequired,
-    loadMoreDiscussionComments: PropTypes.func.isRequired,
-    loadMoreDiscussionReplies: PropTypes.func.isRequired,
-    loadMoreReplies: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    setDiscussionDifficulty: PropTypes.func.isRequired,
-    uploadComment: PropTypes.func,
-    uploadReply: PropTypes.func,
+    setDifficulty: PropTypes.func.isRequired,
+    setPlaylistVideosDifficulty: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
@@ -165,14 +157,9 @@ class VideoPage extends Component {
   render() {
     const {
       canEdit,
-      loadMoreDiscussionComments,
-      loadMoreDiscussionReplies,
-      loadMoreReplies,
-      setDiscussionDifficulty,
       userId,
       location: { search },
-      uploadComment,
-      uploadReply
+      setPlaylistVideosDifficulty
     } = this.props;
     const {
       changingPage,
@@ -332,26 +319,30 @@ class VideoPage extends Component {
                 }}
               >
                 <Details
+                  addTags={this.addTags}
                   attachStar={this.attachStar}
                   byUser={!!byUser}
                   changingPage={changingPage}
                   difficulty={difficulty}
                   likes={likes}
                   likeVideo={this.likeVideo}
-                  videoId={videoId}
+                  loadTags={this.loadTags}
                   content={content}
-                  stars={stars}
-                  tags={tags}
-                  title={title}
-                  timeStamp={timeStamp}
                   description={description}
-                  uploader={uploader}
-                  userId={userId}
                   changeByUserStatus={this.changeByUserStatus}
                   onEditStart={() => this.setState({ onEdit: true })}
                   onEditCancel={() => this.setState({ onEdit: false })}
                   onEditFinish={this.editVideoPage}
                   onDelete={() => this.setState({ confirmModalShown: true })}
+                  setDifficulty={this.setDifficulty}
+                  setPlaylistVideosDifficulty={setPlaylistVideosDifficulty}
+                  stars={stars}
+                  tags={tags}
+                  title={title}
+                  timeStamp={timeStamp}
+                  uploader={uploader}
+                  userId={userId}
+                  videoId={videoId}
                   videoViews={views}
                 />
                 <RewardStatus
@@ -372,7 +363,7 @@ class VideoPage extends Component {
                 onLoadDiscussionComments={this.loadDiscussionComments}
                 onDiscussionEditDone={this.editDiscussion}
                 onDiscussionDelete={this.deleteDiscussion}
-                setDiscussionDifficulty={setDiscussionDifficulty}
+                setDiscussionDifficulty={this.setDiscussionDifficulty}
                 uploadDiscussion={this.uploadDiscussion}
                 contentId={videoId}
                 type="video"
@@ -383,10 +374,10 @@ class VideoPage extends Component {
                   onDelete: this.deleteComment,
                   onEditDone: this.editComment,
                   onLikeClick: this.likeComment,
-                  onLoadMoreComments: loadMoreDiscussionComments,
-                  onLoadMoreReplies: loadMoreDiscussionReplies,
-                  onUploadComment: uploadComment,
-                  onUploadReply: uploadReply
+                  onLoadMoreComments: this.loadMoreDiscussionComments,
+                  onLoadMoreReplies: this.loadMoreDiscussionReplies,
+                  onUploadComment: this.uploadComment,
+                  onUploadReply: this.uploadReply
                 }}
               />
               <div
@@ -415,12 +406,12 @@ class VideoPage extends Component {
                     loadMoreButton={loadMoreCommentsButton}
                     loadMoreComments={this.loadMoreComments}
                     onAttachStar={this.attachStar}
-                    onCommentSubmit={uploadComment}
+                    onCommentSubmit={this.uploadComment}
                     onDelete={this.deleteComment}
                     onEditDone={this.editComment}
                     onLikeClick={this.likeComment}
-                    onLoadMoreReplies={loadMoreReplies}
-                    onReplySubmit={uploadReply}
+                    onLoadMoreReplies={this.loadMoreReplies}
+                    onReplySubmit={this.uploadReply}
                     onRewardCommentEdit={this.editRewardComment}
                     parent={{
                       type: 'video',
@@ -465,6 +456,15 @@ class VideoPage extends Component {
       </ErrorBoundary>
     );
   }
+
+  addTags = ({ tags }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        tags: state.contentObj.tags.concat(tags)
+      }
+    }));
+  };
 
   attachStar = data => {
     this.setState(state => ({
@@ -774,39 +774,79 @@ class VideoPage extends Component {
     }));
   };
 
-  renderSlides = () => {
-    const {
-      contentObj: { questions },
-      currentSlide,
-      userAnswers
-    } = this.state;
-    return questions.map((question, index) => {
-      const filteredChoices = question.choices.filter(choice => !!choice);
-      let isCurrentSlide = index === currentSlide;
-      const listItems = filteredChoices.map((choice, index) => {
-        let isSelectedChoice = index === userAnswers[currentSlide];
-        return {
-          label: choice,
-          checked: isCurrentSlide && isSelectedChoice
-        };
-      });
-      return (
-        <div key={index}>
-          <div>
-            <h3
-              style={{ marginTop: '1rem' }}
-              dangerouslySetInnerHTML={{ __html: question.title }}
-            />
-          </div>
-          <CheckListGroup
-            inputType="radio"
-            listItems={listItems}
-            onSelect={this.onSelectChoice}
-            style={{ marginTop: '1.5rem', paddingRight: '1rem' }}
-          />
-        </div>
-      );
-    });
+  loadMoreDiscussionComments = ({
+    data: { comments, loadMoreButton },
+    discussionId
+  }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          if (discussion.id === discussionId) {
+            return {
+              ...discussion,
+              comments: discussion.comments.concat(comments),
+              loadMoreCommentsButton: loadMoreButton
+            };
+          }
+          return discussion;
+        })
+      }
+    }));
+  };
+
+  loadMoreDiscussionReplies = ({ commentId, loadMoreButton, replies }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments.map(comment => {
+              return {
+                ...comment,
+                replies:
+                  comment.id === commentId
+                    ? replies.concat(comment.replies)
+                    : comment.replies,
+                loadMoreButton:
+                  comment.id === commentId
+                    ? loadMoreButton
+                    : comment.loadMoreButton
+              };
+            })
+          };
+        })
+      }
+    }));
+  };
+
+  loadMoreReplies = ({ commentId, loadMoreButton, replies }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.map(comment => {
+          return {
+            ...comment,
+            replies:
+              comment.id === commentId
+                ? replies.concat(comment.replies)
+                : comment.replies,
+            loadMoreButton:
+              comment.id === commentId ? loadMoreButton : comment.loadMoreButton
+          };
+        })
+      }
+    }));
+  };
+
+  loadTags = ({ tags }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        tags
+      }
+    }));
   };
 
   loadVideoComments = data => {
@@ -902,6 +942,84 @@ class VideoPage extends Component {
     });
   };
 
+  renderSlides = () => {
+    const {
+      contentObj: { questions },
+      currentSlide,
+      userAnswers
+    } = this.state;
+    return questions.map((question, index) => {
+      const filteredChoices = question.choices.filter(choice => !!choice);
+      let isCurrentSlide = index === currentSlide;
+      const listItems = filteredChoices.map((choice, index) => {
+        let isSelectedChoice = index === userAnswers[currentSlide];
+        return {
+          label: choice,
+          checked: isCurrentSlide && isSelectedChoice
+        };
+      });
+      return (
+        <div key={index}>
+          <div>
+            <h3
+              style={{ marginTop: '1rem' }}
+              dangerouslySetInnerHTML={{ __html: question.title }}
+            />
+          </div>
+          <CheckListGroup
+            inputType="radio"
+            listItems={listItems}
+            onSelect={this.onSelectChoice}
+            style={{ marginTop: '1.5rem', paddingRight: '1rem' }}
+          />
+        </div>
+      );
+    });
+  };
+
+  setDifficulty = ({ contentId, difficulty }) => {
+    const { setDifficulty } = this.props;
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        difficulty
+      }
+    }));
+    setDifficulty({ videoId: Number(contentId), difficulty });
+  };
+
+  setDiscussionDifficulty = ({ contentId, difficulty }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          return discussion.id === contentId
+            ? {
+                ...discussion,
+                difficulty
+              }
+            : discussion;
+        })
+      }
+    }));
+  };
+
+  uploadComment = comment => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          comments:
+            discussion.id === comment.discussionId
+              ? [comment].concat(discussion.comments)
+              : discussion.comments
+        })),
+        comments: [comment].concat(state.contentObj.comments)
+      }
+    }));
+  };
+
   uploadDiscussion = data => {
     this.setState(state => ({
       contentObj: {
@@ -971,6 +1089,37 @@ class VideoPage extends Component {
       handleError(error, dispatch);
     }
   };
+
+  uploadReply = reply => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments.map(comment => {
+              return {
+                ...comment,
+                replies:
+                  comment.id === reply.commentId || comment.id === reply.replyId
+                    ? comment.replies.concat([reply])
+                    : comment.replies
+              };
+            })
+          };
+        }),
+        comments: state.contentObj.comments.map(comment => {
+          return {
+            ...comment,
+            replies:
+              comment.id === reply.commentId || comment.id === reply.replyId
+                ? comment.replies.concat([reply])
+                : comment.replies
+          };
+        })
+      }
+    }));
+  };
 }
 
 export default connect(
@@ -988,11 +1137,8 @@ export default connect(
     deleteVideo: params => dispatch(deleteVideo(params)),
     getInitialVideos: () => dispatch(getInitialVideos()),
     likeVideo: params => dispatch(likeVideo(params)),
-    loadMoreDiscussionComments,
-    loadMoreDiscussionReplies,
-    loadMoreReplies,
-    setDiscussionDifficulty,
-    uploadComment,
-    uploadReply
+    setDifficulty: params => dispatch(setDifficulty(params)),
+    setPlaylistVideosDifficulty: params =>
+      dispatch(setPlaylistVideosDifficulty(params))
   })
 )(VideoPage);

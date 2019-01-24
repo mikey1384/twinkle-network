@@ -8,16 +8,18 @@ export function objectify(array) {
   return result;
 }
 
-export function scrollElementToCenter(element) {
+export function scrollElementToCenter(element, adjustment = 0) {
   if (!element) return;
   let offsetTop = 0;
   const body = document
     ? document.scrollingElement || document.documentElement
     : {};
   addAllOffsetTop(element);
-  body.scrollTop = offsetTop - (body.clientHeight - element.clientHeight) / 2;
+  body.scrollTop =
+    offsetTop + adjustment - (body.clientHeight - element.clientHeight) / 2;
   document.getElementById('App').scrollTop =
-    offsetTop -
+    offsetTop +
+    adjustment -
     (document.getElementById('App').clientHeight - element.clientHeight) / 2;
   function addAllOffsetTop(element) {
     offsetTop += element.offsetTop;

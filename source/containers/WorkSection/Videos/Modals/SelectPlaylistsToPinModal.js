@@ -6,7 +6,7 @@ import CheckListGroup from 'components/CheckListGroup';
 import {
   loadMorePlaylistList,
   changePinnedPlaylists
-} from 'redux/actions/PlaylistActions';
+} from 'redux/actions/VideoActions';
 import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';

@@ -18,8 +18,6 @@ import BasicInfos from './BasicInfos';
 import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
-import { addTags, loadTags, setDifficulty } from 'redux/actions/VideoActions';
-import { setPlaylistVideosDifficulty } from 'redux/actions/PlaylistActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 
@@ -403,17 +401,9 @@ class Details extends Component {
   };
 }
 
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar
-  }),
-  {
-    addTags,
-    loadTags,
-    setDifficulty,
-    setPlaylistVideosDifficulty
-  }
-)(Details);
+export default connect(state => ({
+  authLevel: state.UserReducer.authLevel,
+  canDelete: state.UserReducer.canDelete,
+  canEdit: state.UserReducer.canEdit,
+  canStar: state.UserReducer.canStar
+}))(Details);

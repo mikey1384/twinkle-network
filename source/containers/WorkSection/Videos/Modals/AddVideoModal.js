@@ -20,6 +20,7 @@ class AddVideoModal extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
+    focusVideoPanelAfterUpload: PropTypes.func.isRequired,
     uploadVideo: PropTypes.func.isRequired,
     userId: PropTypes.number,
     username: PropTypes.string
@@ -165,7 +166,13 @@ class AddVideoModal extends Component {
   }
 
   onSubmit = async event => {
-    const { dispatch, uploadVideo, userId, username } = this.props;
+    const {
+      dispatch,
+      focusVideoPanelAfterUpload,
+      uploadVideo,
+      userId,
+      username
+    } = this.props;
     let {
       form: { url, title, description }
     } = this.state;
@@ -193,6 +200,7 @@ class AddVideoModal extends Component {
         username
       }
     });
+    focusVideoPanelAfterUpload();
   };
 
   onUrlFieldChange = text => {

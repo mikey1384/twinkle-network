@@ -42,6 +42,14 @@ class Cover extends Component {
     processing: false
   };
 
+  backgroundImageObj = {
+    black: {
+      0: NewYearsCover,
+      1: NewYearsCover,
+      11: ChristmasCover
+    }
+  };
+
   render() {
     const {
       userId,
@@ -71,12 +79,17 @@ class Cover extends Component {
         <div
           style={{
             ...profileThemes[selectedTheme || profileTheme || 'logoBlue'],
-            ...((selectedTheme || profileTheme) === 'black' &&
-            (rank <= 30 && rank > 0)
+            ...(rank <= 30 &&
+            rank > 0 &&
+            !!this.backgroundImageObj[selectedTheme || profileTheme]?.[
+              moment().month()
+            ]
               ? {
                   color: Color.gold(),
                   backgroundImage: `url(${
-                    moment().month() === 11 ? ChristmasCover : NewYearsCover
+                    this.backgroundImageObj[selectedTheme || profileTheme][
+                      moment().month()
+                    ]
                   })`,
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat'

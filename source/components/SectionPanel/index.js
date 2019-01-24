@@ -16,6 +16,7 @@ export default class SectionPanel extends Component {
     title: PropTypes.string,
     button: PropTypes.node,
     emptyMessage: PropTypes.string,
+    innerRef: PropTypes.func,
     inverted: PropTypes.bool,
     isEmpty: PropTypes.bool,
     isSearching: PropTypes.bool,
@@ -45,6 +46,7 @@ export default class SectionPanel extends Component {
     const {
       canEdit,
       headerTheme = { color: '#fff', background: Color.logoBlue() },
+      innerRef,
       inverted,
       title,
       button,
@@ -105,7 +107,7 @@ export default class SectionPanel extends Component {
           }
         `}
       >
-        <header>
+        <header ref={innerRef}>
           <div
             style={{
               gridArea: 'title',
@@ -220,6 +222,7 @@ export default class SectionPanel extends Component {
             <Body
               content={children}
               emptyMessage={emptyMessage}
+              loadMoreButtonShown={loadMoreButtonShown}
               isEmpty={isEmpty}
               isSearching={isSearching}
               searchQuery={searchQuery}

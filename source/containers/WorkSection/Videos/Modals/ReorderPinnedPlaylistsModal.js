@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import { connect } from 'react-redux';
-import { changePinnedPlaylists } from 'redux/actions/PlaylistActions';
+import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import { isEqual } from 'lodash';
 
 class ReorderPinnedPlaylistsModal extends Component {

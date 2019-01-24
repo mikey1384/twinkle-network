@@ -9,10 +9,7 @@ import EditPlaylistModal from '../Modals/EditPlaylistModal';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { addEvent } from 'helpers/listenerHelpers';
-import {
-  editPlaylistTitle,
-  deletePlaylist
-} from 'redux/actions/PlaylistActions';
+import { editPlaylistTitle, deletePlaylist } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
@@ -292,7 +289,7 @@ export default connect(
   state => ({
     canEdit: state.UserReducer.canEdit,
     canEditPlaylists: state.UserReducer.canEditPlaylists,
-    clickSafe: state.PlaylistReducer.clickSafe
+    clickSafe: state.VideoReducer.clickSafe
   }),
   {
     editPlaylistTitle,

@@ -8,6 +8,7 @@ export default class Body extends Component {
     searchQuery: PropTypes.string,
     isSearching: PropTypes.bool,
     isEmpty: PropTypes.bool,
+    loadMoreButtonShown: PropTypes.bool,
     statusMsgStyle: PropTypes.string,
     content: PropTypes.node
   };
@@ -18,17 +19,19 @@ export default class Body extends Component {
       isSearching,
       isEmpty,
       statusMsgStyle,
-      content
+      content,
+      loadMoreButtonShown
     } = this.props;
     return (
       <div>
-        {(!stringIsEmpty(searchQuery) && isSearching) || isEmpty ? (
+        {(!stringIsEmpty(searchQuery) && isSearching) ||
+        (isEmpty && !loadMoreButtonShown) ? (
           <div className={statusMsgStyle}>
             {searchQuery && isSearching
               ? 'Searching...'
               : searchQuery
-                ? 'No Results'
-                : emptyMessage}
+              ? 'No Results'
+              : emptyMessage}
           </div>
         ) : (
           content

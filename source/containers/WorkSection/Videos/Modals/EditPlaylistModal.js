@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import { connect } from 'react-redux';
-import { changePlaylistVideos } from 'redux/actions/PlaylistActions';
+import { changePlaylistVideos } from 'redux/actions/VideoActions';
 import Loading from 'components/Loading';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import SortableThumb from 'components/SortableThumb';

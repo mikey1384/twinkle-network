@@ -28,6 +28,7 @@ class AddPlaylistModal extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     excludeVideoIds: PropTypes.array,
+    focusPlaylistPanelAfterUpload: PropTypes.func,
     onHide: PropTypes.func,
     postPlaylist: PropTypes.func,
     title: PropTypes.string
@@ -289,7 +290,12 @@ class AddPlaylistModal extends Component {
   };
 
   handleFinish = async() => {
-    const { dispatch, postPlaylist, onHide } = this.props;
+    const {
+      dispatch,
+      postPlaylist,
+      onHide,
+      focusPlaylistPanelAfterUpload
+    } = this.props;
     const { title, description, selectedVideos } = this.state;
     this.setState({ isUploading: true });
     const data = await uploadPlaylist({
@@ -299,6 +305,7 @@ class AddPlaylistModal extends Component {
       selectedVideos: selectedVideos.map(video => video.id)
     });
     await postPlaylist(data);
+    focusPlaylistPanelAfterUpload?.();
     onHide();
   };
 
