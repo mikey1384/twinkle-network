@@ -4,12 +4,15 @@ import { mobileMaxWidth } from 'constants/css';
 export const container = css`
   width: 100%;
   @media (max-width: ${mobileMaxWidth}) {
+    margin-top: 0;
     display: flex;
   }
   .left {
+    margin-top: 1rem;
     width: CALC(73vw - 2rem);
     margin-left: 1rem;
     @media (max-width: ${mobileMaxWidth}) {
+      margin-top: 0;
       width: 100%;
       margin-left: 0;
       margin-right: 0;

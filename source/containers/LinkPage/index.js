@@ -219,6 +219,12 @@ class LinkPage extends Component {
 
     return id ? (
       <div
+        className={css`
+          margin-top: 1rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
+          }
+        `}
         style={{
           display: 'flex',
           flexDirection: 'column',

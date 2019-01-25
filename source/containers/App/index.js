@@ -32,9 +32,6 @@ const Home = loadable(() => import('containers/Home'), {
 const WorkSection = loadable(() => import('containers/WorkSection'), {
   LoadingComponent: Loading
 });
-const Links = loadable(() => import('containers/Links'), {
-  LoadingComponent: Loading
-});
 const Chat = loadable(() => import('containers/Chat'), {
   LoadingComponent: Loading
 });
@@ -51,6 +48,9 @@ const SearchPage = loadable(() => import('containers/SearchPage'), {
   LoadingComponent: Loading
 });
 const Verify = loadable(() => import('containers/Verify'), {
+  LoadingComponent: Loading
+});
+const LinkPage = loadable(() => import('containers/LinkPage'), {
   LoadingComponent: Loading
 });
 const VideoPage = loadable(() => import('containers/VideoPage'), {
@@ -340,9 +340,10 @@ class App extends Component {
             <Route path="/discussions" component={ContentPage} />
             <Route path="/videos/:videoId" component={VideoPage} />
             <Route path="/videos" component={WorkSection} />
+            <Route path="/links/:linkId" component={LinkPage} />
+            <Route path="/links" component={WorkSection} />
             <Route path="/work" component={WorkSection} />
             <Route path="/playlists" component={PlaylistPage} />
-            <Route path="/links" component={Links} />
             <Route path="/verify" component={Verify} />
             <Route path="/privacy" component={Privacy} />
             <Route
