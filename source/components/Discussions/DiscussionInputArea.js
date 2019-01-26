@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import TitleDescriptionForm from 'components/Texts/TitleDescriptionForm';
+import TitleDescriptionForm from 'components/Forms/TitleDescriptionForm';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { uploadDiscussion } from 'helpers/requestHelpers';
@@ -71,8 +71,8 @@ class DiscussionInputArea extends Component {
       contentId,
       type
     });
-    onUploadDiscussion(data);
     this.setState({ discussionFormShown: false });
+    onUploadDiscussion(data);
   };
 }
 

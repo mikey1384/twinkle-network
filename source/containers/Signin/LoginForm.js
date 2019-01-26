@@ -79,14 +79,6 @@ export default class LoginForm extends Component {
         </main>
         <footer>
           <Button
-            primary
-            style={{ fontSize: '2.5rem' }}
-            disabled={stringIsEmpty(username) || stringIsEmpty(password)}
-            onClick={this.onSubmit}
-          >
-            Log me in!
-          </Button>
-          <Button
             style={{
               fontSize: '1.5rem',
               marginRight: '1.5rem'
@@ -95,6 +87,14 @@ export default class LoginForm extends Component {
             onClick={showSignUpForm}
           >
             {"Wait, I don't think I have an account, yet"}
+          </Button>
+          <Button
+            primary
+            style={{ fontSize: '2.5rem' }}
+            disabled={stringIsEmpty(username) || stringIsEmpty(password)}
+            onClick={this.onSubmit}
+          >
+            Log me in!
           </Button>
         </footer>
       </>

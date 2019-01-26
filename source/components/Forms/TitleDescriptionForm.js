@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
-import Input from './Input';
+import Input from 'components/Texts/Input';
 
 export default class TitleDescriptionForm extends Component {
   static propTypes = {
@@ -115,12 +115,13 @@ export default class TitleDescriptionForm extends Component {
     event.preventDefault();
     this.setState({ submitting: true });
     try {
-      await onSubmit(finalizeEmoji(title), finalizeEmoji(description));
       this.setState({
         title: '',
         description: '',
         submitting: false
       });
+      await onSubmit(finalizeEmoji(title), finalizeEmoji(description));
+      return Promise.resolve();
     } catch (error) {
       this.setState({ submitting: false });
       console.error(error);

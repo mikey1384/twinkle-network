@@ -4,32 +4,7 @@ import { connect } from 'react-redux';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import Embedly from 'components/Embedly';
-import {
-  attachStar,
-  loadLinkPage,
-  deleteComment,
-  deleteLinkFromPage,
-  editComment,
-  deleteDiscussion,
-  editDiscussion,
-  editLinkPage,
-  editRewardComment,
-  fetchComments,
-  fetchMoreComments,
-  fetchMoreReplies,
-  fetchDiscussionComments,
-  fetchDiscussions,
-  fetchMoreDiscussions,
-  fetchMoreDiscussionComments,
-  fetchMoreDiscussionReplies,
-  likeComment,
-  likeLink,
-  resetPage,
-  setDiscussionDifficulty,
-  uploadComment,
-  uploadDiscussion,
-  uploadReply
-} from 'redux/actions/LinkActions';
+import { editLinkPage, likeLink } from 'redux/actions/LinkActions';
 import Comments from 'components/Comments';
 import Discussions from 'components/Discussions';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -40,78 +15,77 @@ import Description from './Description';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
+import request from 'axios';
+import NotFound from 'components/NotFound';
+import { URL } from 'constants/URL';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import NotFound from 'components/NotFound';
 import { determineXpButtonDisabled } from 'helpers';
-import { loadComments, loadDiscussions } from 'helpers/requestHelpers';
+import { processedURL } from 'helpers/stringHelpers';
+import {
+  auth,
+  handleError,
+  loadComments,
+  loadDiscussions
+} from 'helpers/requestHelpers';
 
 class LinkPage extends Component {
   static propTypes = {
-    attachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
     canStar: PropTypes.bool,
-    deleteComment: PropTypes.func.isRequired,
-    deleteDiscussion: PropTypes.func.isRequired,
-    deleteLinkFromPage: PropTypes.func.isRequired,
-    editComment: PropTypes.func.isRequired,
-    editDiscussion: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     editLinkPage: PropTypes.func.isRequired,
-    editRewardComment: PropTypes.func.isRequired,
-    fetchComments: PropTypes.func.isRequired,
-    fetchMoreComments: PropTypes.func.isRequired,
-    fetchMoreReplies: PropTypes.func.isRequired,
-    fetchDiscussionComments: PropTypes.func.isRequired,
-    fetchDiscussions: PropTypes.func.isRequired,
-    fetchMoreDiscussions: PropTypes.func.isRequired,
-    fetchMoreDiscussionComments: PropTypes.func.isRequired,
-    fetchMoreDiscussionReplies: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    likeComment: PropTypes.func.isRequired,
     likeLink: PropTypes.func.isRequired,
-    loadLinkPage: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    myId: PropTypes.number,
-    pageProps: PropTypes.object.isRequired,
-    resetPage: PropTypes.func.isRequired,
-    setDiscussionDifficulty: PropTypes.func.isRequired,
-    uploadComment: PropTypes.func.isRequired,
-    uploadDiscussion: PropTypes.func.isRequired,
-    uploadReply: PropTypes.func.isRequired
+    myId: PropTypes.number
   };
 
   state = {
+    notFound: false,
     confirmModalShown: false,
     likesModalShown: false,
-    notFound: false,
-    xpRewardInterfaceShown: false
+    xpRewardInterfaceShown: false,
+    contentObj: {
+      id: undefined,
+      title: undefined,
+      content: undefined,
+      description: undefined,
+      discussions: [],
+      discussionsLoadMoreButton: false,
+      timeStamp: undefined,
+      uploader: undefined,
+      uploaderAuthLevel: undefined,
+      uploaderName: undefined,
+      comments: [],
+      likes: [],
+      loadMoreCommentsButton: false,
+      stars: []
+    }
   };
 
   async componentDidMount() {
     const {
       match: {
         params: { linkId }
-      },
-      loadLinkPage,
-      fetchComments,
-      fetchDiscussions
+      }
     } = this.props;
     try {
-      await loadLinkPage(linkId);
+      await this.loadLinkPage(linkId);
       const discussionsObj = await loadDiscussions({
         type: 'url',
         contentId: linkId
       });
-      fetchDiscussions(discussionsObj);
+      this.fetchDiscussions(discussionsObj);
       const commentsObj = await loadComments({
         id: linkId,
         type: 'url',
         limit: 5
       });
-      if (commentsObj) fetchComments(commentsObj);
+      if (commentsObj) this.fetchComments(commentsObj);
     } catch (error) {
       if (error.response) {
         const { data = {} } = error.response;
@@ -126,20 +100,18 @@ class LinkPage extends Component {
   async componentDidUpdate(prevProps) {
     const {
       location,
-      loadLinkPage,
-      fetchComments,
       match: {
         params: { linkId }
       }
     } = this.props;
     if (prevProps.location.pathname !== location.pathname) {
       try {
-        await loadLinkPage(linkId);
+        await this.loadLinkPage(linkId);
         const commentsObj = await loadComments({
           id: linkId,
           type: 'url'
         });
-        if (commentsObj) fetchComments(commentsObj);
+        if (commentsObj) this.fetchComments(commentsObj);
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response;
@@ -152,62 +124,38 @@ class LinkPage extends Component {
     }
   }
 
-  componentWillUnmount() {
-    const { resetPage } = this.props;
-    resetPage();
-  }
-
   render() {
     const {
-      pageProps: {
-        id,
-        title,
-        content,
-        description,
-        discussions,
-        discussionsLoadMoreButton,
-        timeStamp,
-        uploader,
-        uploaderAuthLevel,
-        uploaderName,
-        comments = [],
-        likes = [],
-        loadMoreCommentsButton = false,
-        stars = [],
-        ...embedlyProps
-      },
-      attachStar,
       authLevel,
       canDelete,
       canEdit,
       canStar,
-      deleteComment,
-      deleteDiscussion,
-      deleteLinkFromPage,
-      editComment,
-      editDiscussion,
-      editLinkPage,
-      editRewardComment,
-      fetchMoreComments,
-      fetchMoreReplies,
-      fetchMoreDiscussions,
-      fetchDiscussionComments,
-      fetchMoreDiscussionComments,
-      fetchMoreDiscussionReplies,
+      dispatch,
       history,
-      likeComment,
-      likeLink,
-      myId,
-      setDiscussionDifficulty,
-      uploadComment,
-      uploadDiscussion,
-      uploadReply
+      myId
     } = this.props;
     const {
       confirmModalShown,
       likesModalShown,
       notFound,
-      xpRewardInterfaceShown
+      xpRewardInterfaceShown,
+      contentObj: {
+        comments,
+        content,
+        description,
+        discussions,
+        discussionsLoadMoreButton,
+        id,
+        likes,
+        loadMoreCommentsButton,
+        stars,
+        timeStamp,
+        title,
+        uploader,
+        uploaderName,
+        uploaderAuthLevel,
+        ...embedlyProps
+      }
     } = this.state;
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
@@ -259,7 +207,7 @@ class LinkPage extends Component {
             description={description}
             linkId={id}
             onDelete={() => this.setState({ confirmModalShown: true })}
-            onEditDone={params => editLinkPage(params)}
+            onEditDone={this.editLinkPage}
             userIsUploader={userIsUploader}
           />
           <Embedly
@@ -272,7 +220,7 @@ class LinkPage extends Component {
           />
           <RewardStatus
             contentType="url"
-            onCommentEdit={editRewardComment}
+            onCommentEdit={this.editRewardComment}
             style={{
               fontSize: '1.4rem'
             }}
@@ -295,7 +243,7 @@ class LinkPage extends Component {
                 style={{ fontSize: '2rem' }}
                 contentType="url"
                 contentId={id}
-                onClick={likes => likeLink(likes)}
+                onClick={this.likeLink}
                 liked={userLikedThis}
               />
               {canStar && userCanEditThis && !userIsUploader && (
@@ -344,7 +292,7 @@ class LinkPage extends Component {
                 uploaderId={uploader}
                 onRewardSubmit={data => {
                   this.setState({ xpRewardInterfaceShown: false });
-                  attachStar(data);
+                  this.attachStar(data);
                 }}
               />
             </div>
@@ -360,23 +308,23 @@ class LinkPage extends Component {
           contentId={id}
           loadMoreButton={discussionsLoadMoreButton}
           discussions={discussions}
-          onLoadMoreDiscussions={fetchMoreDiscussions}
-          onLoadDiscussionComments={fetchDiscussionComments}
-          onDiscussionEditDone={editDiscussion}
-          onDiscussionDelete={deleteDiscussion}
-          setDiscussionDifficulty={setDiscussionDifficulty}
-          uploadDiscussion={uploadDiscussion}
+          onLoadMoreDiscussions={this.fetchMoreDiscussions}
+          onLoadDiscussionComments={this.fetchDiscussionComments}
+          onDiscussionEditDone={this.editDiscussion}
+          onDiscussionDelete={this.deleteDiscussion}
+          setDiscussionDifficulty={this.setDiscussionDifficulty}
+          uploadDiscussion={this.uploadDiscussion}
           type="url"
           commentActions={{
-            attachStar,
-            editRewardComment,
-            onDelete: deleteComment,
-            onEditDone: editComment,
-            onLikeClick: likeComment,
-            onLoadMoreComments: fetchMoreDiscussionComments,
-            onLoadMoreReplies: fetchMoreDiscussionReplies,
-            onUploadComment: uploadComment,
-            onUploadReply: uploadReply
+            attachStar: this.attachStar,
+            editRewardComment: this.editRewardComment,
+            onDelete: this.deleteComment,
+            onEditDone: this.editComment,
+            onLikeClick: this.likeComment,
+            onLoadMoreComments: this.fetchMoreDiscussionComments,
+            onLoadMoreReplies: this.fetchMoreDiscussionReplies,
+            onUploadComment: this.uploadComment,
+            onUploadReply: this.uploadReply
           }}
         />
         <Comments
@@ -385,15 +333,15 @@ class LinkPage extends Component {
           inputTypeLabel="comment"
           key={'comments' + id}
           loadMoreButton={loadMoreCommentsButton}
-          loadMoreComments={fetchMoreComments}
-          onAttachStar={attachStar}
-          onCommentSubmit={uploadComment}
-          onDelete={deleteComment}
-          onEditDone={editComment}
-          onLikeClick={likeComment}
-          onLoadMoreReplies={fetchMoreReplies}
-          onReplySubmit={uploadReply}
-          onRewardCommentEdit={editRewardComment}
+          loadMoreComments={this.fetchMoreComments}
+          onAttachStar={this.attachStar}
+          onCommentSubmit={this.uploadComment}
+          onDelete={this.deleteComment}
+          onEditDone={this.editComment}
+          onLikeClick={this.likeComment}
+          onLoadMoreReplies={this.fetchMoreReplies}
+          onReplySubmit={this.uploadReply}
+          onRewardCommentEdit={this.editRewardComment}
           parent={{ type: 'url', id }}
           className={css`
             padding: 1rem;
@@ -410,8 +358,12 @@ class LinkPage extends Component {
             key={'confirm' + id}
             title="Remove Link"
             onConfirm={async() => {
-              await deleteLinkFromPage(id);
-              history.push('/links');
+              try {
+                await request.delete(`${URL}/url?linkId=${id}`, auth());
+                history.push('/links');
+              } catch (error) {
+                handleError(error, dispatch);
+              }
             }}
             onHide={() => this.setState({ confirmModalShown: false })}
           />
@@ -433,6 +385,471 @@ class LinkPage extends Component {
       <Loading text="Loading Page..." />
     );
   }
+
+  attachStar = data => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        stars:
+          data.contentType === 'url'
+            ? state.contentObj.stars?.concat(data)
+            : state.contentObj.stars || [],
+        comments: state.contentObj.comments.map(comment => ({
+          ...comment,
+          stars:
+            comment.id === data.contentId
+              ? comment.stars?.concat(data)
+              : comment.stars || [],
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            stars:
+              reply.id === data.contentId
+                ? reply.stars?.concat(data)
+                : reply.stars || []
+          }))
+        })),
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          comments: discussion.comments.map(comment => ({
+            ...comment,
+            stars:
+              comment.id === data.contentId
+                ? comment.stars?.concat(data)
+                : comment.stars || [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars:
+                reply.id === data.contentId
+                  ? reply.stars?.concat(data)
+                  : reply.stars || []
+            }))
+          }))
+        }))
+      }
+    }));
+  };
+
+  deleteComment = commentId => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.reduce((prev, comment) => {
+          if (comment.id === commentId) return prev;
+          return prev.concat([
+            {
+              ...comment,
+              replies: comment.replies.filter(reply => reply.id !== commentId)
+            }
+          ]);
+        }, []),
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments
+              ?.filter(comment => comment.id !== commentId)
+              .map(comment => ({
+                ...comment,
+                replies: comment.replies?.filter(
+                  reply => reply.id !== commentId
+                )
+              }))
+          };
+        })
+      }
+    }));
+  };
+
+  deleteDiscussion = discussionId => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.filter(
+          discussion => discussion.id !== discussionId
+        )
+      }
+    }));
+  };
+
+  editComment = ({ commentId, editedComment }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.map(comment => ({
+          ...comment,
+          content: comment.id === commentId ? editedComment : comment.content,
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            content: reply.id === commentId ? editedComment : reply.content
+          }))
+        })),
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          comments: discussion.comments.map(comment => ({
+            ...comment,
+            content: comment.id === commentId ? editedComment : comment.content,
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              content: reply.id === commentId ? editedComment : reply.content
+            }))
+          }))
+        }))
+      }
+    }));
+  };
+
+  editDiscussion = ({ editedDiscussion, discussionId }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          title:
+            discussion.id === discussionId
+              ? editedDiscussion.title
+              : discussion.title,
+          description:
+            discussion.id === discussionId
+              ? editedDiscussion.description
+              : discussion.description
+        }))
+      }
+    }));
+  };
+
+  editLinkPage = async params => {
+    const { dispatch, editLinkPage } = this.props;
+    try {
+      await request.put(`${URL}/url/page`, params, auth());
+      const {
+        linkId: id,
+        editedTitle: title,
+        editedDescription: description,
+        editedUrl: content
+      } = params;
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          content: processedURL(content),
+          title,
+          description
+        }
+      }));
+      editLinkPage({ id: Number(id), title, content: processedURL(content) });
+    } catch (error) {
+      handleError(error, dispatch);
+    }
+  };
+
+  editRewardComment = ({ id, text }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        stars: (state.contentObj.stars || []).map(star => ({
+          ...star,
+          rewardComment: star.id === id ? text : star.rewardComment
+        })),
+        comments: state.contentObj.comments.map(comment => ({
+          ...comment,
+          stars: comment.stars
+            ? comment.stars.map(star => ({
+                ...star,
+                rewardComment: star.id === id ? text : star.rewardComment
+              }))
+            : [],
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            stars: reply.stars
+              ? reply.stars.map(star => ({
+                  ...star,
+                  rewardComment: star.id === id ? text : star.rewardComment
+                }))
+              : []
+          }))
+        })),
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          comments: discussion.comments.map(comment => ({
+            ...comment,
+            stars: comment.stars
+              ? comment.stars.map(star => ({
+                  ...star,
+                  rewardComment: star.id === id ? text : star.rewardComment
+                }))
+              : [],
+            replies: comment.replies.map(reply => ({
+              ...reply,
+              stars: reply.stars
+                ? reply.stars.map(star => ({
+                    ...star,
+                    rewardComment: star.id === id ? text : star.rewardComment
+                  }))
+                : []
+            }))
+          }))
+        }))
+      }
+    }));
+  };
+
+  fetchComments = ({ comments, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: comments,
+        loadMoreCommentsButton: loadMoreButton
+      }
+    }));
+  };
+
+  fetchMoreComments = ({ comments, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.concat(comments),
+        loadMoreCommentsButton: loadMoreButton
+      }
+    }));
+  };
+
+  fetchDiscussions = ({ results, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: results,
+        discussionsLoadMoreButton: loadMoreButton
+      }
+    }));
+  };
+
+  fetchDiscussionComments = ({
+    data: { comments, loadMoreButton },
+    discussionId
+  }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          if (discussion.id === discussionId) {
+            return {
+              ...discussion,
+              comments: comments,
+              loadMoreCommentsButton: loadMoreButton
+            };
+          }
+          return discussion;
+        })
+      }
+    }));
+  };
+
+  fetchMoreDiscussions = ({ results, loadMoreButton }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.concat(results),
+        discussionsLoadMoreButton: loadMoreButton
+      }
+    }));
+  };
+
+  fetchMoreDiscussionComments = ({
+    data: { comments, loadMoreButton },
+    discussionId
+  }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          if (discussion.id === discussionId) {
+            return {
+              ...discussion,
+              comments: discussion.comments.concat(comments),
+              loadMoreCommentsButton: loadMoreButton
+            };
+          }
+          return discussion;
+        })
+      }
+    }));
+  };
+
+  fetchMoreDiscussionReplies = ({ commentId, loadMoreButton, replies }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments.map(comment => {
+              return {
+                ...comment,
+                replies:
+                  comment.id === commentId
+                    ? replies.concat(comment.replies)
+                    : comment.replies,
+                loadMoreButton:
+                  comment.id === commentId
+                    ? loadMoreButton
+                    : comment.loadMoreButton
+              };
+            })
+          };
+        })
+      }
+    }));
+  };
+
+  fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.map(comment => ({
+          ...comment,
+          replies:
+            comment.id === commentId
+              ? replies.concat(comment.replies)
+              : comment.replies,
+          loadMoreButton:
+            comment.id === commentId ? loadMoreButton : comment.loadMoreButton
+        }))
+      }
+    }));
+  };
+
+  likeComment = ({ commentId, likes }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.map(comment => {
+          return {
+            ...comment,
+            likes: comment.id === commentId ? likes : comment.likes,
+            replies: comment.replies.map(reply => {
+              return {
+                ...reply,
+                likes: reply.id === commentId ? likes : reply.likes
+              };
+            })
+          };
+        }),
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments.map(comment => {
+              return {
+                ...comment,
+                likes: comment.id === commentId ? likes : comment.likes,
+                replies: comment.replies.map(reply => {
+                  return {
+                    ...reply,
+                    likes: reply.id === commentId ? likes : reply.likes
+                  };
+                })
+              };
+            })
+          };
+        })
+      }
+    }));
+  };
+
+  likeLink = likes => {
+    const { likeLink } = this.props;
+    const {
+      contentObj: { id }
+    } = this.state;
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        likes
+      }
+    }));
+    likeLink({ likes, id });
+  };
+
+  loadLinkPage = async linkId => {
+    try {
+      const { data } = await request.get(`${URL}/url/page?linkId=${linkId}`);
+      this.setState(state => ({
+        contentObj: {
+          ...state.contentObj,
+          ...data
+        }
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  setDiscussionDifficulty = ({ contentId, difficulty }) => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: state.contentObj.discussions.map(discussion => {
+          return discussion.id === contentId
+            ? {
+                ...discussion,
+                difficulty
+              }
+            : discussion;
+        })
+      }
+    }));
+  };
+
+  uploadComment = comment => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: [comment].concat(state.contentObj.comments),
+        discussions: state.contentObj.discussions.map(discussion => ({
+          ...discussion,
+          comments:
+            discussion.id === comment.discussionId
+              ? [comment].concat(discussion.comments)
+              : discussion.comments
+        }))
+      }
+    }));
+  };
+
+  uploadDiscussion = discussion => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        discussions: [discussion].concat(state.contentObj.discussions)
+      }
+    }));
+  };
+
+  uploadReply = reply => {
+    this.setState(state => ({
+      contentObj: {
+        ...state.contentObj,
+        comments: state.contentObj.comments.map(comment => ({
+          ...comment,
+          replies:
+            comment.id === reply.replyId || comment.id === reply.commentId
+              ? comment.replies.concat([reply])
+              : comment.replies
+        })),
+        discussions: state.contentObj.discussions.map(discussion => {
+          return {
+            ...discussion,
+            comments: discussion.comments.map(comment => {
+              return {
+                ...comment,
+                replies:
+                  comment.id === reply.commentId || comment.id === reply.replyId
+                    ? comment.replies.concat([reply])
+                    : comment.replies
+              };
+            })
+          };
+        })
+      }
+    }));
+  };
 }
 
 export default connect(
@@ -444,30 +861,9 @@ export default connect(
     pageProps: state.LinkReducer.linkPage,
     myId: state.UserReducer.userId
   }),
-  {
-    attachStar,
-    loadLinkPage,
-    deleteComment,
-    deleteDiscussion,
-    deleteLinkFromPage,
-    editComment,
-    editDiscussion,
-    editLinkPage,
-    editRewardComment,
-    fetchComments,
-    fetchDiscussionComments,
-    fetchMoreComments,
-    fetchMoreReplies,
-    fetchDiscussions,
-    fetchMoreDiscussions,
-    fetchMoreDiscussionComments,
-    fetchMoreDiscussionReplies,
-    likeComment,
-    likeLink,
-    resetPage,
-    setDiscussionDifficulty,
-    uploadComment,
-    uploadReply,
-    uploadDiscussion
-  }
+  dispatch => ({
+    dispatch,
+    editLinkPage: params => dispatch(editLinkPage(params)),
+    likeLink: likes => dispatch(likeLink(likes))
+  })
 )(LinkPage);

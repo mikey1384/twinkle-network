@@ -29,8 +29,8 @@ export const Color = {
   ivory: (opacity = 1) => `rgba(273,243,160,${opacity})`,
   yellow: (opacity = 1) => `rgba(253,253,150,${opacity})`,
   pink: (opacity = 1) => `rgba(260,128,167,${opacity})`,
-  rose: (opacity = 1) => `rgba(250,128,157,${opacity})`,
   red: (opacity = 1) => `rgba(255,65,54,${opacity})`,
+  rose: (opacity = 1) => `rgba(223,0,102,${opacity})`,
   white: (opacity = 1) => `rgba(255,255,255,${opacity})`
 };
 

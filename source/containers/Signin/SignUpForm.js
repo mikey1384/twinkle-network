@@ -164,14 +164,6 @@ export default class SignUpForm extends Component {
         </main>
         <footer>
           <Button
-            primary
-            disabled={!!submitDisabled}
-            onClick={this.onSubmit}
-            style={{ fontSize: '2.5rem' }}
-          >
-            Create my account!
-          </Button>
-          <Button
             transparent
             style={{
               fontSize: '1.5rem',
@@ -180,6 +172,14 @@ export default class SignUpForm extends Component {
             onClick={showLoginForm}
           >
             Wait, I already have an account!
+          </Button>
+          <Button
+            primary
+            disabled={!!submitDisabled}
+            onClick={this.onSubmit}
+            style={{ fontSize: '2.5rem' }}
+          >
+            Create my account!
           </Button>
         </footer>
       </>
