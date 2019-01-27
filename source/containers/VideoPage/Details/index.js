@@ -252,7 +252,7 @@ class Details extends Component {
                 padding: '1rem 0',
                 fontSize: '2rem',
                 fontWeight: 'bold',
-                color: Color.darkGray()
+                color: Color.darkerGray()
               }}
             >
               {videoViews} view

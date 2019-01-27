@@ -219,7 +219,7 @@ class Notification extends Component {
                     'active'} ${numNewNotis > 0 && 'alert'}`}
                   onClick={() => this.setState({ activeTab: 'notification' })}
                 >
-                  Notifications
+                  News
                 </nav>
                 <nav
                   className={activeTab === 'rankings' ? 'active' : undefined}

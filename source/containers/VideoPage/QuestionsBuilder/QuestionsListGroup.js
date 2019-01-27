@@ -34,7 +34,7 @@ export default class QuestionsListGroup extends Component {
           alignItems: 'center'
         }}
       >
-        <h3 style={{ color: Color.darkGray() }}>Reorder Questions</h3>
+        <h3 style={{ color: Color.darkerGray() }}>Reorder Questions</h3>
         <RoundList style={{ marginTop: '2rem' }}>
           {questionIds.map((questionId, index) => (
             <QuestionsListItem

@@ -35,7 +35,7 @@ class UsernameText extends Component {
             cursor: 'pointer',
             fontWeight: 'bold',
             color: user.username
-              ? color || Color.darkGray()
+              ? color || Color.darkerGray()
               : Color.lightGray(),
             ...style
           }}
@@ -49,7 +49,7 @@ class UsernameText extends Component {
             <li onClick={() => window.open(`/users/${user.username}`)}>
               <a
                 href={`/users/${user.username}`}
-                style={{ color: Color.darkGray() }}
+                style={{ color: Color.darkerGray() }}
                 onClick={e => e.preventDefault()}
               >
                 Profile
@@ -57,7 +57,7 @@ class UsernameText extends Component {
             </li>
             {user.id !== userId && (
               <li onClick={this.onLinkClick}>
-                <a style={{ color: Color.darkGray() }}>Talk</a>
+                <a style={{ color: Color.darkerGray() }}>Talk</a>
               </li>
             )}
           </DropdownList>

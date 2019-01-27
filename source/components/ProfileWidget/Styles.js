@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 
-export const container = ({ heading, border, blue, darkGray }) => css`
+export const container = ({ heading, border, blue, darkerGray }) => css`
   display: flex;
   border: none;
   flex-direction: column;
@@ -33,7 +33,7 @@ export const container = ({ heading, border, blue, darkGray }) => css`
         font-size: 2rem;
       }
       span {
-        color: ${darkGray};
+        color: ${darkerGray};
         font-size: 1rem;
       }
     }
@@ -51,7 +51,7 @@ export const container = ({ heading, border, blue, darkGray }) => css`
     padding: 1rem;
     .login-message {
       font-size: 2rem;
-      color: ${darkGray};
+      color: ${darkerGray};
       font-weight: bold;
     }
   }

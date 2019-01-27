@@ -179,12 +179,18 @@ class Rankings extends Component {
                 >
                   {rank ? `#${rank}` : '--'}
                 </span>
-                <ProfilePic
-                  style={{ width: '6rem', height: '6rem' }}
-                  profilePicId={user.profilePicId}
-                  userId={user.id}
-                />
-                <div style={{ marginLeft: '1rem' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                  }}
+                >
+                  <ProfilePic
+                    style={{ width: '6rem', height: '6rem' }}
+                    profilePicId={user.profilePicId}
+                    userId={user.id}
+                  />
                   <UsernameText
                     color={
                       rankColor ||
@@ -192,6 +198,7 @@ class Rankings extends Component {
                     }
                     user={{ ...user, username: user.username }}
                     userId={myId}
+                    style={{ display: 'block', marginTop: '0.5rem' }}
                   />
                 </div>
               </div>

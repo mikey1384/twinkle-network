@@ -45,7 +45,7 @@ export const container = css`
   }
   .content-panel__likes {
     font-weight: bold;
-    color: ${Color.darkGray()};
+    color: ${Color.darkerGray()};
     font-size: 1.2rem;
     line-height: 1;
   }

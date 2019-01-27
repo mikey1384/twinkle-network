@@ -36,7 +36,7 @@ export default class BioEditModal extends Component {
             color: ${Color.green()};
           }
           p {
-            color: ${Color.darkGray()};
+            color: ${Color.darkerGray()};
             margin-top: 1rem;
             margin-bottom: 1rem;
           }

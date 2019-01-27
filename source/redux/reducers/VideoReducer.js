@@ -8,6 +8,7 @@ const defaultState = {
   addVideoModalShown: false,
   currentVideoSlot: null,
 
+  addPlaylistModalShown: false,
   allPlaylists: [],
   searchedPlaylists: [],
   pinnedPlaylists: [],
@@ -106,6 +107,11 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         addVideoModalShown: false
+      };
+    case VIDEO.CLOSE_PLAYLIST_MODAL:
+      return {
+        ...state,
+        addPlaylistModalShown: false
       };
     case VIDEO.CLOSE_REORDER_PINNED_PL_MODAL:
       return {
@@ -328,6 +334,11 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         addVideoModalShown: true
+      };
+    case VIDEO.OPEN_PLAYLIST_MODAL:
+      return {
+        ...state,
+        addPlaylistModalShown: true
       };
     case VIDEO.OPEN_REORDER_PINNED_PL_MODAL:
       return {

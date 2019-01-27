@@ -25,7 +25,7 @@ export default class ErrorBoundary extends Component {
       return (
         <div
           style={{
-            color: Color.darkGray(),
+            color: Color.darkerGray(),
             fontSize: '2.5rem',
             fontWeight: 'bold',
             width: '100%',

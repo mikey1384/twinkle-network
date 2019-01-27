@@ -39,7 +39,7 @@ export default function ContentLink({
       {removeLineBreaks(title)}
     </Link>
   ) : (
-    <span style={{ fontWeight: 'bold', color: Color.darkGray() }}>
+    <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>
       (Deleted)
     </span>
   );

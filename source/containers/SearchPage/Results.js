@@ -103,7 +103,7 @@ class Results extends Component {
               style={{
                 fontSize: '2.5rem',
                 fontWeight: 'bold',
-                color: Color.darkGray(),
+                color: Color.darkerGray(),
                 justifyContent: 'center',
                 height: '40vh',
                 display: 'flex',

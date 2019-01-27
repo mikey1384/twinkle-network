@@ -115,7 +115,7 @@ class TargetContent extends Component {
             justify-content: space-between;
           }
           .root-content {
-            color: ${Color.darkGray()};
+            color: ${Color.darkerGray()};
             font-weight: bold;
           }
           .timestamp {

@@ -90,7 +90,7 @@ class SearchPage extends Component {
               fontSize: '3rem',
               fontWeight: 'bold',
               padding: '1rem',
-              color: Color.darkGray()
+              color: Color.darkerGray()
             }}
           >
             {stringIsEmpty(searchText) ? (

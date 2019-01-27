@@ -65,7 +65,7 @@ export default class UserDetails extends Component {
           style={{
             fontSize: small ? '3rem' : '3.5rem',
             fontWeight: 'bold',
-            color: Color.darkGray(),
+            color: Color.darkerGray(),
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',

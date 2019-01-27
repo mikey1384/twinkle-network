@@ -79,7 +79,7 @@ export default function Result({ closeSearch, type, result }) {
               <div
                 style={{
                   marginTop: '1rem',
-                  color: Color.darkGray()
+                  color: Color.darkerGray()
                 }}
               >
                 <LongText
@@ -157,7 +157,7 @@ export default function Result({ closeSearch, type, result }) {
               <div
                 style={{
                   marginTop: '1rem',
-                  color: Color.darkGray()
+                  color: Color.darkerGray()
                 }}
               >
                 <LongText noExpand cleanString maxLines={4}>

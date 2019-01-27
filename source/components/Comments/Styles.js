@@ -56,7 +56,7 @@ export const commentContainer = css`
     font-size: 1.2rem;
     line-height: 1.5;
     font-weight: bold;
-    color: ${Color.darkGray()};
+    color: ${Color.darkerGray()};
   }
   .comment__buttons {
     display: flex;
@@ -69,7 +69,7 @@ export const commentContainer = css`
       font-size: 1.8rem;
       margin-top: 0.5rem;
       font-weight: bold;
-      color: ${Color.darkGray()};
+      color: ${Color.darkerGray()};
     }
   }
 `;

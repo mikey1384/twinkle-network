@@ -33,7 +33,7 @@ export default function Checkbox({
       {label && (
         <span
           style={{
-            color: Color.darkGray(),
+            color: Color.darkerGray(),
             cursor: textIsClickable ? 'pointer' : 'default'
           }}
           onClick={textIsClickable ? onClick : () => {}}

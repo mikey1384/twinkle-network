@@ -137,7 +137,7 @@ class NavMenu extends Component {
             }`}
             onClick={() => this.setState({ videoTabActive: false })}
           >
-            {rewardsExist ? 'Rewards' : 'Notifications'}
+            {rewardsExist ? 'Rewards' : 'News'}
           </nav>
         </FilterBar>
         {videoTabActive && (

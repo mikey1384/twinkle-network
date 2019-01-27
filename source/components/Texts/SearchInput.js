@@ -11,6 +11,7 @@ class SearchInput extends Component {
   static propTypes = {
     addonColor: PropTypes.string,
     autoFocus: PropTypes.bool,
+    borderColor: PropTypes.string,
     className: PropTypes.string,
     innerRef: PropTypes.func,
     onChange: PropTypes.func.isRequired,
@@ -42,6 +43,7 @@ class SearchInput extends Component {
     const {
       addonColor,
       autoFocus,
+      borderColor,
       className,
       innerRef,
       onChange,
@@ -69,7 +71,7 @@ class SearchInput extends Component {
           }
           input {
             height: 100%;
-            border: 1px solid ${Color.inputBorderGray()};
+            border: 1px solid ${borderColor || Color.inputBorderGray()};
             border-left: none;
           }
         `} ${className}`}

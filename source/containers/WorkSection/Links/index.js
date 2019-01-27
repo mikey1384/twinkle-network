@@ -4,10 +4,8 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
-import Notification from 'components/Notification';
 import { connect } from 'react-redux';
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
-import { container } from './Styles';
 
 class Main extends Component {
   static propTypes = {
@@ -45,34 +43,31 @@ class Main extends Component {
     const { links, loadMoreLinksButtonShown } = this.props;
     const { addLinkModalShown, loaded } = this.state;
     return (
-      <div className={container}>
-        <div className="left">
-          <SectionPanel
-            title="All Links"
-            button={
-              <Button
-                snow
-                onClick={() => this.setState({ addLinkModalShown: true })}
-              >
-                + Add Link
-              </Button>
-            }
-            emptyMessage="No Uploaded Links"
-            isEmpty={links.length === 0}
-            emptypMessage="No Links"
-            loaded={loaded}
-            loadMore={this.loadMoreLinks}
-            loadMoreButtonShown={loadMoreLinksButtonShown}
-          >
-            <LinkGroup links={links} />
-          </SectionPanel>
-        </div>
+      <div>
+        <SectionPanel
+          title="All Links"
+          button={
+            <Button
+              snow
+              onClick={() => this.setState({ addLinkModalShown: true })}
+            >
+              + Add Link
+            </Button>
+          }
+          emptyMessage="No Uploaded Links"
+          isEmpty={links.length === 0}
+          emptypMessage="No Links"
+          loaded={loaded}
+          loadMore={this.loadMoreLinks}
+          loadMoreButtonShown={loadMoreLinksButtonShown}
+        >
+          <LinkGroup links={links} />
+        </SectionPanel>
         {addLinkModalShown && (
           <AddLinkModal
             onHide={() => this.setState({ addLinkModalShown: false })}
           />
         )}
-        <Notification className="right" />
       </div>
     );
   }

@@ -29,7 +29,7 @@ export default class Selectable extends Component {
           width: '16%',
           margin: '0.3%',
           cursor: 'pointer',
-          boxShadow: `0 0 5px ${selected ? Color.gold() : Color.darkGray()}`,
+          boxShadow: `0 0 5px ${selected ? Color.gold() : Color.darkerGray()}`,
           border: selected && `0.5rem solid ${Color.gold()}`,
           background: Color.whiteGray()
         }}

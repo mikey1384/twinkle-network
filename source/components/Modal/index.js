@@ -83,7 +83,7 @@ class Modal extends Component {
               flex-direction: column;
               height: auto;
               .close {
-                color: ${Color.darkGray()};
+                color: ${Color.darkerGray()};
                 background: #fff;
                 display: flex;
                 align-items: center;
@@ -105,7 +105,7 @@ class Modal extends Component {
                 display: flex;
                 align-items: center;
                 line-height: 2rem;
-                color: ${Color.darkGray()};
+                color: ${Color.darkerGray()};
                 font-weight: bold;
                 font-size: 2rem;
                 padding: 2rem;

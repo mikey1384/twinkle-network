@@ -41,24 +41,28 @@ export const charLimit = {
 };
 export const profileThemes = {
   black: {
-    background: Color.black(),
-    color: '#fff'
+    color: Color.black(),
+    cover: Color.black()
   },
   logoBlue: {
-    background: Color.logoBlue(),
-    color: '#fff'
+    color: Color.logoBlue(),
+    cover: Color.logoBlue()
   },
   green: {
-    background: Color.green(),
-    color: '#fff'
+    color: Color.green(),
+    cover: Color.green()
   },
   orange: {
-    background: Color.orange(),
-    color: '#fff'
+    color: Color.orange(),
+    cover: Color.orange()
   },
   pink: {
-    background: Color.pink(),
-    color: '#fff'
+    color: Color.pink(),
+    cover: Color.pink()
+  },
+  rose: {
+    color: Color.rose(),
+    cover: Color.rose()
   }
 };
 export const returnMaxStars = ({ difficulty }) => {

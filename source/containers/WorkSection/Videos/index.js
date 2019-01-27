@@ -2,21 +2,21 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
 import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal';
-import Button from 'components/Button';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import AddVideoModal from './Modals/AddVideoModal';
 import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
-import Notification from 'components/Notification';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import {
   clearVideos,
+  closeAddPlaylistModal,
   closeAddVideoModal,
   getInitialVideos,
   getPlaylists,
   openAddVideoModal,
+  openAddPlaylistModal,
   getPinnedPlaylists,
   openReorderPinnedPlaylistsModal,
   openSelectPlaylistsToPinModal,
@@ -26,14 +26,15 @@ import {
   postPlaylist
 } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
-import { main } from './Styles';
 import { scrollElementToCenter } from 'helpers';
 
 class Main extends Component {
   static propTypes = {
+    addPlaylistModalShown: PropTypes.bool.isRequired,
     addVideoModalShown: PropTypes.bool.isRequired,
     canPinPlaylists: PropTypes.bool,
     clearVideos: PropTypes.func.isRequired,
+    closeAddPlaylistModal: PropTypes.func.isRequired,
     closeAddVideoModal: PropTypes.func.isRequired,
     closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
@@ -45,6 +46,7 @@ class Main extends Component {
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
     loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
     loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
+    openAddPlaylistModal: PropTypes.func.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
     openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
     openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
@@ -64,7 +66,6 @@ class Main extends Component {
   timer = null;
 
   state = {
-    addPlaylistModalShown: false,
     playlistSearchQuery: '',
     isSearching: false
   };
@@ -88,8 +89,10 @@ class Main extends Component {
 
   render() {
     const {
+      addPlaylistModalShown,
       addVideoModalShown,
       canPinPlaylists,
+      closeAddPlaylistModal,
       closeAddVideoModal,
       closeSelectPlaylistsToPinModal,
       closeReorderPinnedPlaylistsModal,
@@ -98,6 +101,7 @@ class Main extends Component {
       loadMoreSearchedPlaylistsButton,
       openSelectPlaylistsToPinModal,
       openReorderPinnedPlaylistsModal,
+      openAddPlaylistModal,
       openAddVideoModal,
       pinnedPlaylists,
       pinnedPlaylistsLoaded,
@@ -111,11 +115,7 @@ class Main extends Component {
       userId
     } = this.props;
 
-    const {
-      addPlaylistModalShown,
-      playlistSearchQuery,
-      isSearching
-    } = this.state;
+    const { playlistSearchQuery, isSearching } = this.state;
     const playlists = !stringIsEmpty(playlistSearchQuery)
       ? searchedPlaylists
       : allPlaylists;
@@ -123,7 +123,7 @@ class Main extends Component {
     const allPlaylistButtons = [
       {
         label: '+ Add Playlist',
-        onClick: () => this.setState({ addPlaylistModalShown: true }),
+        onClick: openAddPlaylistModal,
         buttonClass: 'snow'
       }
     ];
@@ -143,100 +143,77 @@ class Main extends Component {
           ]
         : [];
     return (
-      <div className={main}>
-        <div className="left">
-          <PlaylistsPanel
-            key={'pinnedPlaylists'}
-            buttonGroupShown={!!canPinPlaylists}
-            buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
-            title="Featured Playlists"
-            userId={userId}
-            playlists={pinnedPlaylists}
-            loaded={pinnedPlaylistsLoaded}
-          />
-          <PlaylistsPanel
-            key={'allplaylists'}
-            innerRef={ref => (this.AllPlaylistsPanel = ref)}
-            buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
-            title="All Playlists"
-            loadMoreButton={
-              !stringIsEmpty(playlistSearchQuery)
-                ? loadMoreSearchedPlaylistsButton
-                : loadMorePlaylistsButton
+      <div>
+        <PlaylistsPanel
+          key={'pinnedPlaylists'}
+          buttonGroupShown={!!canPinPlaylists}
+          buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
+          title="Featured Playlists"
+          userId={userId}
+          playlists={pinnedPlaylists}
+          loaded={pinnedPlaylistsLoaded}
+        />
+        <PlaylistsPanel
+          key={'allplaylists'}
+          innerRef={ref => (this.AllPlaylistsPanel = ref)}
+          buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
+          title="All Playlists"
+          loadMoreButton={
+            !stringIsEmpty(playlistSearchQuery)
+              ? loadMoreSearchedPlaylistsButton
+              : loadMorePlaylistsButton
+          }
+          userId={userId}
+          playlists={playlists}
+          loaded={playlistsLoaded}
+          isSearching={isSearching}
+          onSearch={this.onSearchPlaylist}
+          searchQuery={playlistSearchQuery}
+        />
+        <AllVideosPanel
+          innerRef={ref => (this.AllVideosPanel = ref)}
+          key={'allvideos'}
+          title="All Videos"
+          userId={userId}
+          onAddVideoClick={openAddVideoModal}
+        />
+        {addVideoModalShown && (
+          <AddVideoModal
+            onHide={closeAddVideoModal}
+            focusVideoPanelAfterUpload={() =>
+              scrollElementToCenter(this.AllVideosPanel, 150)
             }
-            userId={userId}
-            playlists={playlists}
-            loaded={playlistsLoaded}
-            isSearching={isSearching}
-            onSearch={this.onSearchPlaylist}
-            searchQuery={playlistSearchQuery}
           />
-          <AllVideosPanel
-            innerRef={ref => (this.AllVideosPanel = ref)}
-            key={'allvideos'}
-            title="All Videos"
-            userId={userId}
-            onAddVideoClick={() => openAddVideoModal()}
+        )}
+        {addPlaylistModalShown && (
+          <AddPlaylistModal
+            postPlaylist={postPlaylist}
+            onHide={closeAddPlaylistModal}
+            focusPlaylistPanelAfterUpload={() =>
+              scrollElementToCenter(this.AllPlaylistsPanel, 150)
+            }
           />
-          {addVideoModalShown && (
-            <AddVideoModal
-              onHide={() => closeAddVideoModal()}
-              focusVideoPanelAfterUpload={() =>
-                scrollElementToCenter(this.AllVideosPanel, 150)
-              }
-            />
-          )}
-          {addPlaylistModalShown && (
-            <AddPlaylistModal
-              postPlaylist={postPlaylist}
-              onHide={() => this.setState({ addPlaylistModalShown: false })}
-              focusPlaylistPanelAfterUpload={() =>
-                scrollElementToCenter(this.AllPlaylistsPanel, 150)
-              }
-            />
-          )}
-          {selectPlaylistsToPinModalShown && (
-            <SelectPlaylistsToPinModal
-              playlistsToPin={playlistsToPin}
-              pinnedPlaylists={pinnedPlaylists}
-              selectedPlaylists={pinnedPlaylists.map(playlist => {
-                return playlist.id;
-              })}
-              loadMoreButton={loadMorePlaylistsToPinButton}
-              onHide={() => closeSelectPlaylistsToPinModal()}
-            />
-          )}
-          {reorderPinnedPlaylistsModalShown && (
-            <ReorderPinnedPlaylistsModal
-              pinnedPlaylists={pinnedPlaylists}
-              playlistIds={pinnedPlaylists.map(playlist => {
-                return playlist.id;
-              })}
-              onHide={() => closeReorderPinnedPlaylistsModal()}
-            />
-          )}
-        </div>
-        <Notification className="right">
-          <Button
-            snow
-            style={{
-              fontSize: '2rem',
-              width: '99%',
-              marginTop: '0.1rem',
-              marginBottom: '1rem'
-            }}
-            onClick={() => openAddVideoModal()}
-          >
-            + Add Video
-          </Button>
-          <Button
-            snow
-            style={{ fontSize: '2rem', width: '99%' }}
-            onClick={() => this.setState({ addPlaylistModalShown: true })}
-          >
-            + Add Playlist
-          </Button>
-        </Notification>
+        )}
+        {selectPlaylistsToPinModalShown && (
+          <SelectPlaylistsToPinModal
+            playlistsToPin={playlistsToPin}
+            pinnedPlaylists={pinnedPlaylists}
+            selectedPlaylists={pinnedPlaylists.map(playlist => {
+              return playlist.id;
+            })}
+            loadMoreButton={loadMorePlaylistsToPinButton}
+            onHide={closeSelectPlaylistsToPinModal}
+          />
+        )}
+        {reorderPinnedPlaylistsModalShown && (
+          <ReorderPinnedPlaylistsModal
+            pinnedPlaylists={pinnedPlaylists}
+            playlistIds={pinnedPlaylists.map(playlist => {
+              return playlist.id;
+            })}
+            onHide={() => closeReorderPinnedPlaylistsModal()}
+          />
+        )}
       </div>
     );
   }
@@ -300,11 +277,13 @@ export default connect(
     getPlaylists,
     getPinnedPlaylists,
     getInitialVideos,
+    openAddVideoModal,
+    openAddPlaylistModal,
     openSelectPlaylistsToPinModal,
     openReorderPinnedPlaylistsModal,
     setSearchedPlaylists,
+    closeAddPlaylistModal,
     closeAddVideoModal,
-    openAddVideoModal,
     postPlaylist
   }
 )(Main);

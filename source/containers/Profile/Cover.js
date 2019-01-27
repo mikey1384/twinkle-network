@@ -78,7 +78,8 @@ class Cover extends Component {
       <>
         <div
           style={{
-            ...profileThemes[selectedTheme || profileTheme || 'logoBlue'],
+            background:
+              profileThemes[selectedTheme || profileTheme || 'logoBlue'].color,
             ...(rank <= 30 &&
             rank > 0 &&
             !!this.backgroundImageObj[selectedTheme || profileTheme]?.[
@@ -94,7 +95,7 @@ class Cover extends Component {
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat'
                 }
-              : {})
+              : { color: '#fff' })
           }}
           className={css`
             height: 26rem;

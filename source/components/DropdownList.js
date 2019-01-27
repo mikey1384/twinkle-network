@@ -44,7 +44,7 @@ export default function DropdownList({
           padding: 1rem;
           text-align: center;
           font-size: 1.5rem;
-          color: ${Color.darkGray()};
+          color: ${Color.darkerGray()};
           cursor: pointer;
           border-bottom: none !important;
           width: 100%;

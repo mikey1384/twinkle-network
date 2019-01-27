@@ -88,7 +88,7 @@ export default class Embedly extends Component {
       justify-content: center;
       align-items: center;
       width: 100%;
-      color: ${Color.darkGray()};
+      color: ${Color.darkerGray()};
       position: relative;
       overflow: hidden;
       ${!small ? 'flex-direction: column;' : ''};

@@ -28,6 +28,7 @@ class PlaylistCarousel extends Component {
     editPlaylistTitle: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
     playlist: PropTypes.array.isRequired,
+    profileTheme: PropTypes.string,
     showAllButton: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
     uploader: PropTypes.string.isRequired,
@@ -100,8 +101,10 @@ class PlaylistCarousel extends Component {
       userIsUploader,
       id,
       numPlaylistVids,
+      profileTheme,
       showAllButton
     } = this.props;
+    const themeColor = profileTheme || 'logoBlue';
     const menuProps = [
       {
         label: 'Edit Title',
@@ -139,20 +142,22 @@ class PlaylistCarousel extends Component {
             display: flex;
             align-items: center;
             padding-bottom: 0.8rem;
-            h2 {
+            p {
+              font-size: 2.2rem;
+              font-weight: bold;
               cursor: pointer;
               display: inline;
               > a {
-                color: ${Color.blue()};
+                color: ${Color.darkGray()};
                 text-decoration: none;
                 &:hover {
-                  color: ${Color.logoBlue()};
+                  color: ${Color[themeColor]()};
                 }
               }
             }
             small {
               font-size: 1.5rem;
-              color: ${Color.darkGray()};
+              color: ${Color.gray()};
             }
           `}
         >
@@ -167,11 +172,11 @@ class PlaylistCarousel extends Component {
             />
           ) : (
             <div>
-              <h2>
+              <p>
                 <Link to={`/playlists/${id}`}>{cleanString(title)}</Link>
                 &nbsp;
                 <small>by {uploader}</small>
-              </h2>
+              </p>
             </div>
           )}
           {(userIsUploader || canEditPlaylists || canEdit) && (
@@ -289,7 +294,8 @@ export default connect(
   state => ({
     canEdit: state.UserReducer.canEdit,
     canEditPlaylists: state.UserReducer.canEditPlaylists,
-    clickSafe: state.VideoReducer.clickSafe
+    clickSafe: state.VideoReducer.clickSafe,
+    profileTheme: state.UserReducer.profileTheme
   }),
   {
     editPlaylistTitle,

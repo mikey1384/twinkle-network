@@ -4,7 +4,6 @@ import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
-import { profileThemes } from 'constants/defaultValues';
 import {
   loadNotableContent,
   loadMoreNotableContents
@@ -13,7 +12,6 @@ import {
 export default class Achievements extends Component {
   static propTypes = {
     profile: PropTypes.object.isRequired,
-    selectedTheme: PropTypes.string.isRequired,
     myId: PropTypes.number
   };
 
@@ -56,18 +54,12 @@ export default class Achievements extends Component {
   render() {
     const {
       profile: { id, username },
-      myId,
-      selectedTheme
+      myId
     } = this.props;
     const { loading, loadMoreButton, notables } = this.state;
     return (
       <div>
-        <SectionPanel
-          inverted
-          headerTheme={profileThemes[selectedTheme]}
-          title="Notable Activities"
-          loaded={!loading}
-        >
+        <SectionPanel title="Notable Activities" loaded={!loading}>
           {notables.length === 0 && (
             <div
               style={{ fontSize: '2rem', textAlign: 'center' }}
@@ -120,7 +112,7 @@ export default class Achievements extends Component {
             />
           )}
         </SectionPanel>
-        <MonthlyXp headerTheme={profileThemes[selectedTheme]} userId={id} />
+        <MonthlyXp userId={id} />
       </div>
     );
   }

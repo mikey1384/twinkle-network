@@ -29,7 +29,6 @@ import {
   renderText,
   stringIsEmpty
 } from 'helpers/stringHelpers';
-import { profileThemes } from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { URL } from 'constants/URL';
 
@@ -160,9 +159,7 @@ class Home extends Component {
         `}
       >
         <SectionPanel
-          inverted
           loaded
-          headerTheme={profileThemes[selectedTheme]}
           title={greeting || 'Welcome!'}
           canEdit={id === userId}
           placeholder="Enter a message for your visitors"
@@ -406,11 +403,7 @@ class Home extends Component {
             </div>
           )}
         </SectionPanel>
-        <Achievements
-          profile={profile}
-          myId={userId}
-          selectedTheme={selectedTheme}
-        />
+        <Achievements profile={profile} myId={userId} />
         {confirmModalShown && (
           <ConfirmModal
             onConfirm={this.onRemoveStatus}
@@ -418,12 +411,7 @@ class Home extends Component {
             title={`Remove Status Message`}
           />
         )}
-        <SectionPanel
-          inverted
-          loaded
-          headerTheme={profileThemes[selectedTheme]}
-          title="Message Board"
-        >
+        <SectionPanel loaded title="Message Board">
           <Comments
             comments={comments}
             commentsLoadLimit={20}

@@ -17,7 +17,7 @@ function CloseText({ className, closeSearch, style, text = 'Tap to close' }) {
         style={{
           textTransform: 'capitalize',
           cursor: 'pointer',
-          color: Color.darkGray(),
+          color: Color.darkerGray(),
           fontSize: '1.7rem',
           lineHeight: 1,
           textDecoration: 'underline',

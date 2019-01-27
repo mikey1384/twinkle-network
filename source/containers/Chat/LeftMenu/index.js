@@ -74,7 +74,7 @@ export default class LeftMenu extends Component {
         className={css`
           display: flex;
           flex-direction: column;
-          height: CALC(100vh - 7rem);
+          height: CALC(100vh - 6rem);
           width: 30rem;
           position: relative;
           background: #fff;

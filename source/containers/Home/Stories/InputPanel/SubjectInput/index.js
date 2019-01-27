@@ -104,7 +104,7 @@ class SubjectInput extends Component {
               color:
                 question.length > charLimit.question.title
                   ? 'red'
-                  : Color.darkGray()
+                  : Color.darkerGray()
             }}
           >
             {renderCharLimit({

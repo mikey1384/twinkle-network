@@ -33,7 +33,7 @@ export default class FirstPage extends Component {
             justify-content: center;
             align-items: center;
             font-size: 3rem;
-            color: ${Color.darkGray()};
+            color: ${Color.darkerGray()};
             > nav {
               text-align: center;
               > p {

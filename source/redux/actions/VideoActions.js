@@ -56,6 +56,10 @@ export const clickSafeOn = () => ({
   type: VIDEO.TURN_ON_CLICK_SAFE
 });
 
+export const closeAddPlaylistModal = () => ({
+  type: VIDEO.CLOSE_PLAYLIST_MODAL
+});
+
 export const closeAddVideoModal = () => ({
   type: VIDEO.CLOSE_MODAL
 });
@@ -232,6 +236,10 @@ export const loadMorePlaylistList = playlistId => async dispatch => {
     handleError(error, dispatch);
   }
 };
+
+export const openAddPlaylistModal = () => ({
+  type: VIDEO.OPEN_PLAYLIST_MODAL
+});
 
 export const openAddVideoModal = () => ({
   type: VIDEO.OPEN_MODAL

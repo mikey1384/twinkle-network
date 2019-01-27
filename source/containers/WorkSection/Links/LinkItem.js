@@ -233,7 +233,7 @@ class LinkItem extends Component {
               className={css`
                 font-size: 1.3rem;
                 font-weight: bold;
-                color: ${Color.darkGray()};
+                color: ${Color.darkerGray()};
                 margin-bottom: 0.5rem;
               `}
             >

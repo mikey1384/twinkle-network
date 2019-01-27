@@ -37,7 +37,7 @@ class ProfileWidget extends Component {
             heading: Color.channelGray(),
             border: Color.borderGray(),
             blue: Color.blue(),
-            darkGray: Color.darkGray()
+            darkerGray: Color.darkerGray()
           })}
         >
           {username && (

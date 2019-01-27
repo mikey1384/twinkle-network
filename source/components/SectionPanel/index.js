@@ -6,11 +6,13 @@ import SearchInput from 'components/Texts/SearchInput';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import Loading from 'components/Loading';
+import { profileThemes } from 'constants/defaultValues';
+import { connect } from 'react-redux';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
-export default class SectionPanel extends Component {
+class SectionPanel extends Component {
   static propTypes = {
     canEdit: PropTypes.bool,
     title: PropTypes.string,
@@ -20,9 +22,9 @@ export default class SectionPanel extends Component {
     inverted: PropTypes.bool,
     isEmpty: PropTypes.bool,
     isSearching: PropTypes.bool,
-    headerTheme: PropTypes.object,
     loaded: PropTypes.bool,
     loadMore: PropTypes.func,
+    profileTheme: PropTypes.string,
     children: PropTypes.node,
     loadMoreButtonShown: PropTypes.bool,
     onEditTitle: PropTypes.func,
@@ -45,7 +47,7 @@ export default class SectionPanel extends Component {
   render() {
     const {
       canEdit,
-      headerTheme = { color: '#fff', background: Color.logoBlue() },
+      profileTheme,
       innerRef,
       inverted,
       title,
@@ -64,6 +66,7 @@ export default class SectionPanel extends Component {
       loaded
     } = this.props;
     const { loading, onEdit, editedTitle } = this.state;
+    const themeColor = profileTheme || 'logoBlue';
     return (
       <div
         className={css`
@@ -77,15 +80,13 @@ export default class SectionPanel extends Component {
             width: 100%;
             grid-template-areas: 'title search buttons';
             grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
-            background: ${inverted
-              ? headerTheme.color
-              : headerTheme.background};
-            color: ${inverted ? headerTheme.background : headerTheme.color};
+            background: #fff;
+            color: ${profileThemes[themeColor].color};
             border-top-left-radius: ${borderRadius};
             border-top-right-radius: ${borderRadius};
             padding: 1rem;
             padding-top: ${inverted ? '1.7rem' : '1rem'};
-            font-weight: ${inverted ? 'bold' : ''};
+            font-weight: bold;
             font-size: 2.5rem;
             align-items: center;
           }
@@ -201,8 +202,10 @@ export default class SectionPanel extends Component {
           </div>
           {onSearch && (
             <SearchInput
+              addonColor={profileThemes[themeColor].color}
+              borderColor={profileThemes[themeColor].color}
               style={{
-                color: Color.black(),
+                color: '#fff',
                 gridArea: 'search',
                 width: '100%',
                 justifySelf: 'center',
@@ -282,3 +285,7 @@ export default class SectionPanel extends Component {
     align-items: center;
   `;
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(SectionPanel);

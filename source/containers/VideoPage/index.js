@@ -382,7 +382,7 @@ class VideoPage extends Component {
                   style={{
                     fontWeight: 'bold',
                     fontSize: '2.5rem',
-                    color: Color.darkGray()
+                    color: Color.darkerGray()
                   }}
                 >
                   Comment on this video

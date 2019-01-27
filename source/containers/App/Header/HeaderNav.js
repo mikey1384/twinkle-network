@@ -15,6 +15,7 @@ export default class HeaderNav extends Component {
     isHome: PropTypes.bool,
     isUsername: PropTypes.bool,
     onClick: PropTypes.func,
+    pathname: PropTypes.string,
     style: PropTypes.object,
     to: PropTypes.string
   };
@@ -30,9 +31,13 @@ export default class HeaderNav extends Component {
       imgLabel,
       isHome,
       isUsername,
+      pathname,
       onClick = () => {},
       style
     } = this.props;
+    const highlighted =
+      to === '/work' &&
+      ['videos', 'links'].indexOf(pathname?.split('/')[1]) !== -1;
     return (
       <Route
         path={to}
@@ -41,7 +46,7 @@ export default class HeaderNav extends Component {
           <div className={`${className} header-nav`} style={style}>
             {to ? (
               <Link
-                className={to && match ? 'active ' : ''}
+                className={to && (match || highlighted) ? 'active ' : ''}
                 style={{
                   display: 'flex',
                   alignItems: 'center',

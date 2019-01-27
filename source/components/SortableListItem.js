@@ -54,7 +54,7 @@ class SortableListItem extends Component {
           style={{
             opacity: isDragging ? 0 : 1,
             borderTop: index === 0 && `1px solid ${Color.borderGray()}`,
-            color: Color.darkGray()
+            color: Color.darkerGray()
           }}
         >
           <section>{cleanString(item.label)}</section>

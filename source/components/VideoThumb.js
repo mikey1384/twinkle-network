@@ -71,7 +71,7 @@ class VideoThumb extends Component {
             align-items: flex-end;
             position: relative;
             font-size: 1.5rem;
-            box-shadow: 0 0 5px ${Color.darkGray()};
+            box-shadow: 0 0 5px ${Color.darkerGray()};
             background: ${Color.whiteGray()};
             border-radius: 1px;
             p {

@@ -107,7 +107,7 @@ export default class SubjectItem extends Component {
               numMsgs > 0 && <b style={{ color: Color.blue() }}>({numMsgs})</b>}
             <div>
               <UsernameText
-                color={Color.darkGray()}
+                color={Color.darkerGray()}
                 user={{
                   id: userId,
                   username: username

@@ -73,13 +73,13 @@ export default class Dropdown extends Component {
             display: block;
             nav {
               padding: 1rem;
-              color: ${Color.darkGray()};
+              color: ${Color.darkerGray()};
               &:hover {
                 background: ${Color.headingGray()};
               }
               a {
                 text-decoration: none;
-                color: ${Color.darkGray()};
+                color: ${Color.darkerGray()};
               }
             }
           `}

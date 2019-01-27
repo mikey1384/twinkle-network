@@ -110,7 +110,7 @@ export default function MainContent({
               {type === 'question' && (
                 <div className="question">
                   <span style={{ color: Color.green() }}>Subject: </span>
-                  <span style={{ color: Color.darkGray() }}>
+                  <span style={{ color: Color.darkerGray() }}>
                     {cleanString(contentObj.content)}
                   </span>
                 </div>

@@ -267,6 +267,7 @@ class Header extends Component {
               <HeaderNav
                 to="/work"
                 onClick={closeSearch}
+                pathname={pathname}
                 className={chatLoading || searchMode ? 'desktop' : ''}
                 imgLabel="bolt"
               >

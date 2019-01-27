@@ -6,7 +6,6 @@ import { loadMonthlyXp } from 'helpers/requestHelpers';
 
 export default class MonthlyXp extends Component {
   static propTypes = {
-    headerTheme: PropTypes.object.isRequired,
     userId: PropTypes.number.isRequired
   };
 
@@ -40,15 +39,9 @@ export default class MonthlyXp extends Component {
   }
 
   render() {
-    const { headerTheme } = this.props;
     const { data, loaded } = this.state;
     return (
-      <SectionPanel
-        inverted
-        headerTheme={headerTheme}
-        title="Monthly XP Growth"
-        loaded={loaded}
-      >
+      <SectionPanel title="Monthly XP Growth" loaded={loaded}>
         {data && <BarChart data={data} />}
       </SectionPanel>
     );

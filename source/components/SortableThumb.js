@@ -60,7 +60,7 @@ class SortableThumb extends Component {
             width: '16%',
             margin: '0.3%',
             cursor: 'pointer',
-            boxShadow: `0 0 5px ${Color.darkGray()}`,
+            boxShadow: `0 0 5px ${Color.darkerGray()}`,
             background: Color.whiteGray()
           }}
           className="unselectable"
