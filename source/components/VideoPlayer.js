@@ -382,8 +382,12 @@ class VideoPlayer extends Component {
             style={{
               background: xpEarned
                 ? Color.green()
-                : difficulty > 1
+                : difficulty === 5
                 ? Color.black()
+                : difficulty === 4
+                ? Color.rose()
+                : difficulty === 3
+                ? Color.pink()
                 : Color.logoBlue(),
               padding: '0.5rem',
               color:
