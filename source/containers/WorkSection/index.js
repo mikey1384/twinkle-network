@@ -27,11 +27,12 @@ const Work = loadable(() => import('./Work'), {
 
 class WorkSection extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
     openAddPlaylistModal: PropTypes.func.isRequired
   };
   render() {
-    const { openAddPlaylistModal, openAddVideoModal } = this.props;
+    const { location, openAddPlaylistModal, openAddVideoModal } = this.props;
     return (
       <div>
         <div
@@ -121,25 +122,29 @@ class WorkSection extends Component {
               }
             `}
           >
-            <Button
-              snow
-              style={{
-                fontSize: '2rem',
-                width: '99%',
-                marginTop: '0.1rem',
-                marginBottom: '1rem'
-              }}
-              onClick={openAddVideoModal}
-            >
-              + Add Video
-            </Button>
-            <Button
-              snow
-              style={{ fontSize: '2rem', width: '99%' }}
-              onClick={openAddPlaylistModal}
-            >
-              + Add Playlist
-            </Button>
+            {location.pathname === '/videos' && (
+              <>
+                <Button
+                  snow
+                  style={{
+                    fontSize: '2rem',
+                    width: '99%',
+                    marginTop: '0.1rem',
+                    marginBottom: '1rem'
+                  }}
+                  onClick={openAddVideoModal}
+                >
+                  + Add Video
+                </Button>
+                <Button
+                  snow
+                  style={{ fontSize: '2rem', width: '99%' }}
+                  onClick={openAddPlaylistModal}
+                >
+                  + Add Playlist
+                </Button>
+              </>
+            )}
           </Notification>
         </div>
         <div
