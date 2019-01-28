@@ -239,6 +239,14 @@ class VideoPlayer extends Component {
       xpLoaded,
       justEarned
     } = this.state;
+    const meterColor = xpEarned ? Color.green()
+    : difficulty === 5
+    ? Color.black()
+    : difficulty === 4
+    ? Color.rose()
+    : difficulty === 3
+    ? Color.pink()
+    : Color.logoBlue();
     return (
       <ErrorBoundary style={style}>
         {byUser && (
@@ -380,15 +388,7 @@ class VideoPlayer extends Component {
         {(!userId || xpLoaded) && !!difficulty && (!started || xpEarned) && (
           <div
             style={{
-              background: xpEarned
-                ? Color.green()
-                : difficulty === 5
-                ? Color.black()
-                : difficulty === 4
-                ? Color.rose()
-                : difficulty === 3
-                ? Color.pink()
-                : Color.logoBlue(),
+              background: meterColor,
               padding: '0.5rem',
               color:
                 difficulty === 5 && !xpEarned && !justEarned
@@ -425,7 +425,7 @@ class VideoPlayer extends Component {
               xpEarned
             })}
             noBorderRadius={stretch}
-            color={justEarned ? Color.green() : Color.blue()}
+            color={justEarned ? Color.green() : meterColor}
             text={
               justEarned
                 ? `Earned ${addCommasToNumber(difficulty * xp)} XP!`
