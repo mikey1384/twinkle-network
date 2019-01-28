@@ -160,6 +160,7 @@ class Home extends Component {
       >
         <SectionPanel
           loaded
+          customColorTheme={selectedTheme}
           title={greeting || 'Welcome!'}
           canEdit={id === userId}
           placeholder="Enter a message for your visitors"
@@ -403,7 +404,11 @@ class Home extends Component {
             </div>
           )}
         </SectionPanel>
-        <Achievements profile={profile} myId={userId} />
+        <Achievements
+          selectedTheme={selectedTheme}
+          profile={profile}
+          myId={userId}
+        />
         {confirmModalShown && (
           <ConfirmModal
             onConfirm={this.onRemoveStatus}
@@ -411,7 +416,11 @@ class Home extends Component {
             title={`Remove Status Message`}
           />
         )}
-        <SectionPanel loaded title="Message Board">
+        <SectionPanel
+          customColorTheme={selectedTheme}
+          loaded
+          title="Message Board"
+        >
           <Comments
             comments={comments}
             commentsLoadLimit={20}

@@ -12,6 +12,7 @@ import {
 export default class Achievements extends Component {
   static propTypes = {
     profile: PropTypes.object.isRequired,
+    selectedTheme: PropTypes.string,
     myId: PropTypes.number
   };
 
@@ -54,12 +55,17 @@ export default class Achievements extends Component {
   render() {
     const {
       profile: { id, username },
-      myId
+      myId,
+      selectedTheme
     } = this.props;
     const { loading, loadMoreButton, notables } = this.state;
     return (
       <div>
-        <SectionPanel title="Notable Activities" loaded={!loading}>
+        <SectionPanel
+          customColorTheme={selectedTheme}
+          title="Notable Activities"
+          loaded={!loading}
+        >
           {notables.length === 0 && (
             <div
               style={{ fontSize: '2rem', textAlign: 'center' }}
@@ -112,7 +118,7 @@ export default class Achievements extends Component {
             />
           )}
         </SectionPanel>
-        <MonthlyXp userId={id} />
+        <MonthlyXp selectedTheme={selectedTheme} userId={id} />
       </div>
     );
   }

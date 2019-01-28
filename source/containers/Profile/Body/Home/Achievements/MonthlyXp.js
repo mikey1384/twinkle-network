@@ -6,6 +6,7 @@ import { loadMonthlyXp } from 'helpers/requestHelpers';
 
 export default class MonthlyXp extends Component {
   static propTypes = {
+    selectedTheme: PropTypes.string,
     userId: PropTypes.number.isRequired
   };
 
@@ -39,9 +40,14 @@ export default class MonthlyXp extends Component {
   }
 
   render() {
+    const { selectedTheme } = this.props;
     const { data, loaded } = this.state;
     return (
-      <SectionPanel title="Monthly XP Growth" loaded={loaded}>
+      <SectionPanel
+        customColorTheme={selectedTheme}
+        title="Monthly XP Growth"
+        loaded={loaded}
+      >
         {data && <BarChart data={data} />}
       </SectionPanel>
     );

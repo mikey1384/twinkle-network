@@ -32,6 +32,7 @@ class SectionPanel extends Component {
     placeholder: PropTypes.string,
     searchPlaceholder: PropTypes.string,
     searchQuery: PropTypes.string,
+    customColorTheme: PropTypes.string,
     style: PropTypes.object
   };
 
@@ -47,6 +48,7 @@ class SectionPanel extends Component {
   render() {
     const {
       canEdit,
+      customColorTheme,
       profileTheme,
       innerRef,
       inverted,
@@ -66,7 +68,7 @@ class SectionPanel extends Component {
       loaded
     } = this.props;
     const { loading, onEdit, editedTitle } = this.state;
-    const themeColor = profileTheme || 'logoBlue';
+    const themeColor = customColorTheme || profileTheme || 'logoBlue';
     return (
       <div
         className={css`
