@@ -206,7 +206,8 @@ class NavMenu extends Component {
   }
 
   loadMorePlaylistVideos = async() => {
-    const { playlistId, playlistVideos, videoId } = this.props;
+    const { playlistId, videoId } = this.props;
+    const { playlistVideos } = this.state;
     this.setState({ playlistVideosLoading: true });
     const shownVideos = queryStringForArray({
       array: playlistVideos,
