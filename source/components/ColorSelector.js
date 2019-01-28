@@ -6,7 +6,8 @@ import FullTextReveal from 'components/FullTextReveal';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 
 const requirement = {
-  black: 35000
+  black: 35000,
+  rose: 70000
 };
 
 export default class ColorSelector extends Component {
@@ -69,15 +70,14 @@ export default class ColorSelector extends Component {
                 <Icon style={{ color: '#fff', fontSize: '1rem' }} icon="lock" />
               )}
             </div>
-            {twinkleXP < (requirement[color] || -1) &&
-              hovered === color && (
-                <FullTextReveal
-                  show
-                  direction="left"
-                  style={{ color: '#000' }}
-                  text={`Requires ${addCommasToNumber(requirement[color])} XP`}
-                />
-              )}
+            {twinkleXP < (requirement[color] || -1) && hovered === color && (
+              <FullTextReveal
+                show
+                direction="left"
+                style={{ color: '#000' }}
+                text={`Requires ${addCommasToNumber(requirement[color])} XP`}
+              />
+            )}
           </div>
         ))}
       </div>

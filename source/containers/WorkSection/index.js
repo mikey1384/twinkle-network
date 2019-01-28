@@ -96,6 +96,16 @@ class WorkSection extends Component {
               <Route path="/links" component={Links} />
               <Route path="/xp" component={Work} />
             </Switch>
+            <div
+              className={css`
+                display: none;
+                @media (max-width: ${mobileMaxWidth}) {
+                  display: block;
+                  width: 100%;
+                  height: 5rem;
+                }
+              `}
+            />
           </div>
           <Notification
             className={css`

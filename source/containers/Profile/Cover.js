@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import Icon from 'components/Icon';
 import ChristmasCover from './christmas-cover.png';
 import NewYearsCover from './newyears-cover.png';
+import ValentinesCover from './valentines-cover.png';
 import moment from 'moment';
 
 class Cover extends Component {
@@ -47,6 +48,9 @@ class Cover extends Component {
       0: NewYearsCover,
       1: NewYearsCover,
       11: ChristmasCover
+    },
+    rose: {
+      1: ValentinesCover
     }
   };
 
@@ -191,7 +195,14 @@ class Cover extends Component {
             {colorSelectorShown && id === userId && (
               <>
                 <ColorSelector
-                  colors={['logoBlue', 'green', 'orange', 'pink', 'black']}
+                  colors={[
+                    'logoBlue',
+                    'green',
+                    'orange',
+                    'pink',
+                    'rose',
+                    'black'
+                  ]}
                   twinkleXP={twinkleXP || 0}
                   setColor={onSelectTheme}
                   selectedColor={selectedTheme || profileTheme || 'logoBlue'}
