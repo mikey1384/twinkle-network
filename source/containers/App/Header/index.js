@@ -169,7 +169,7 @@ class Header extends Component {
       turnChatOff
     } = this.props;
     const isUsername =
-      pathname.split('/')[1] !== 'work' &&
+      pathname.split('/')[1] !== 'xp' &&
       ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
       pathname.length > 1;
     return (
@@ -265,7 +265,7 @@ class Header extends Component {
                 Home
               </HeaderNav>
               <HeaderNav
-                to="/work"
+                to="/xp"
                 onClick={closeSearch}
                 pathname={pathname}
                 className={chatLoading || searchMode ? 'desktop' : ''}

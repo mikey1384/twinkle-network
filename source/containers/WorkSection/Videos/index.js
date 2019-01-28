@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
-import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
-import AddVideoModal from './Modals/AddVideoModal';
-import AllVideosPanel from './Panels/AllVideosPanel';
-import PlaylistsPanel from './Panels/PlaylistsPanel';
+import AddVideoModal from '../Modals/AddVideoModal';
+import AllVideosPanel from '../Panels/AllVideosPanel';
+import PlaylistsPanel from '../Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
@@ -17,11 +15,6 @@ import {
   getPlaylists,
   openAddVideoModal,
   openAddPlaylistModal,
-  getPinnedPlaylists,
-  openReorderPinnedPlaylistsModal,
-  openSelectPlaylistsToPinModal,
-  closeReorderPinnedPlaylistsModal,
-  closeSelectPlaylistsToPinModal,
   setSearchedPlaylists,
   postPlaylist
 } from 'redux/actions/VideoActions';
@@ -32,32 +25,20 @@ class Main extends Component {
   static propTypes = {
     addPlaylistModalShown: PropTypes.bool.isRequired,
     addVideoModalShown: PropTypes.bool.isRequired,
-    canPinPlaylists: PropTypes.bool,
     clearVideos: PropTypes.func.isRequired,
     closeAddPlaylistModal: PropTypes.func.isRequired,
     closeAddVideoModal: PropTypes.func.isRequired,
-    closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
-    closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
     getInitialVideos: PropTypes.func.isRequired,
     getPlaylists: PropTypes.func.isRequired,
-    getPinnedPlaylists: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMorePlaylistsButton: PropTypes.bool.isRequired,
-    loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
     loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
     openAddPlaylistModal: PropTypes.func.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
-    openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
-    openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
-    pinnedPlaylists: PropTypes.array.isRequired,
-    pinnedPlaylistsLoaded: PropTypes.bool.isRequired,
     playlists: PropTypes.array.isRequired,
     playlistsLoaded: PropTypes.bool.isRequired,
-    playlistsToPin: PropTypes.array.isRequired,
-    reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
     searchedPlaylists: PropTypes.array.isRequired,
-    selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
     setSearchedPlaylists: PropTypes.func.isRequired,
     postPlaylist: PropTypes.func.isRequired,
     userId: PropTypes.number
@@ -74,7 +55,6 @@ class Main extends Component {
     const {
       clearVideos,
       getPlaylists,
-      getPinnedPlaylists,
       getInitialVideos,
       history,
       loaded
@@ -83,7 +63,6 @@ class Main extends Component {
       clearVideos();
       getInitialVideos();
       getPlaylists();
-      getPinnedPlaylists();
     }
   }
 
@@ -91,26 +70,15 @@ class Main extends Component {
     const {
       addPlaylistModalShown,
       addVideoModalShown,
-      canPinPlaylists,
       closeAddPlaylistModal,
       closeAddVideoModal,
-      closeSelectPlaylistsToPinModal,
-      closeReorderPinnedPlaylistsModal,
       loadMorePlaylistsButton,
-      loadMorePlaylistsToPinButton,
       loadMoreSearchedPlaylistsButton,
-      openSelectPlaylistsToPinModal,
-      openReorderPinnedPlaylistsModal,
       openAddPlaylistModal,
       openAddVideoModal,
-      pinnedPlaylists,
-      pinnedPlaylistsLoaded,
       playlists: allPlaylists = [],
       playlistsLoaded,
-      playlistsToPin,
-      reorderPinnedPlaylistsModalShown,
       searchedPlaylists,
-      selectPlaylistsToPinModalShown,
       postPlaylist,
       userId
     } = this.props;
@@ -127,36 +95,17 @@ class Main extends Component {
         buttonClass: 'snow'
       }
     ];
-    const pinnedPlaylistButtons =
-      playlists.length > 0
-        ? [
-            {
-              label: 'Select Playlists',
-              onClick: openSelectPlaylistsToPinModal,
-              buttonClass: 'snow'
-            },
-            {
-              label: 'Reorder Playlists',
-              onClick: openReorderPinnedPlaylistsModal,
-              buttonClass: 'snow'
-            }
-          ]
-        : [];
     return (
       <div>
         <PlaylistsPanel
-          key={'pinnedPlaylists'}
-          buttonGroupShown={!!canPinPlaylists}
-          buttonGroup={() => this.renderPlaylistButton(pinnedPlaylistButtons)}
-          title="Featured Playlists"
-          userId={userId}
-          playlists={pinnedPlaylists}
-          loaded={pinnedPlaylistsLoaded}
-        />
-        <PlaylistsPanel
           key={'allplaylists'}
           innerRef={ref => (this.AllPlaylistsPanel = ref)}
-          buttonGroup={() => this.renderPlaylistButton(allPlaylistButtons)}
+          buttonGroup={() => (
+            <ButtonGroup
+              style={{ marginLeft: 'auto' }}
+              buttons={allPlaylistButtons}
+            />
+          )}
           title="All Playlists"
           loadMoreButton={
             !stringIsEmpty(playlistSearchQuery)
@@ -194,26 +143,6 @@ class Main extends Component {
             }
           />
         )}
-        {selectPlaylistsToPinModalShown && (
-          <SelectPlaylistsToPinModal
-            playlistsToPin={playlistsToPin}
-            pinnedPlaylists={pinnedPlaylists}
-            selectedPlaylists={pinnedPlaylists.map(playlist => {
-              return playlist.id;
-            })}
-            loadMoreButton={loadMorePlaylistsToPinButton}
-            onHide={closeSelectPlaylistsToPinModal}
-          />
-        )}
-        {reorderPinnedPlaylistsModalShown && (
-          <ReorderPinnedPlaylistsModal
-            pinnedPlaylists={pinnedPlaylists}
-            playlistIds={pinnedPlaylists.map(playlist => {
-              return playlist.id;
-            })}
-            onHide={() => closeReorderPinnedPlaylistsModal()}
-          />
-        )}
       </div>
     );
   }
@@ -222,12 +151,6 @@ class Main extends Component {
     clearTimeout(this.timer);
     this.setState({ playlistSearchQuery: text, isSearching: true });
     this.timer = setTimeout(() => this.searchPlaylist(text), 500);
-  };
-
-  renderPlaylistButton = buttonsArray => {
-    return (
-      <ButtonGroup style={{ marginLeft: 'auto' }} buttons={buttonsArray} />
-    );
   };
 
   searchPlaylist = async text => {
@@ -250,37 +173,22 @@ export default connect(
   state => ({
     addPlaylistModalShown: state.VideoReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
-    canPinPlaylists: state.UserReducer.canPinPlaylists,
     loaded: state.VideoReducer.loaded,
     loadMorePlaylistsButton: state.VideoReducer.loadMorePlaylistsButton,
-    loadMorePlaylistsToPinButton:
-      state.VideoReducer.loadMorePlaylistsToPinButton,
     loadMoreSearchedPlaylistsButton:
       state.VideoReducer.loadMoreSearchedPlaylistsButton,
-    pinnedPlaylistsLoaded: state.VideoReducer.pinnedPlaylistsLoaded,
-    pinnedPlaylists: state.VideoReducer.pinnedPlaylists,
-    playlistsToPin: state.VideoReducer.playlistsToPin,
     playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
     playlists: state.VideoReducer.allPlaylists,
     searchedPlaylists: state.VideoReducer.searchedPlaylists,
-    reorderPinnedPlaylistsModalShown:
-      state.VideoReducer.reorderPinnedPlaylistsModalShown,
     userType: state.UserReducer.userType,
-    userId: state.UserReducer.userId,
-    selectPlaylistsToPinModalShown:
-      state.VideoReducer.selectPlaylistsToPinModalShown
+    userId: state.UserReducer.userId
   }),
   {
     clearVideos,
-    closeReorderPinnedPlaylistsModal,
-    closeSelectPlaylistsToPinModal,
     getPlaylists,
-    getPinnedPlaylists,
     getInitialVideos,
     openAddVideoModal,
     openAddPlaylistModal,
-    openSelectPlaylistsToPinModal,
-    openReorderPinnedPlaylistsModal,
     setSearchedPlaylists,
     closeAddPlaylistModal,
     closeAddVideoModal,

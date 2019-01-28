@@ -36,7 +36,7 @@ export default class HeaderNav extends Component {
       style
     } = this.props;
     const highlighted =
-      to === '/work' &&
+      to === '/xp' &&
       ['videos', 'links'].indexOf(pathname?.split('/')[1]) !== -1;
     return (
       <Route
