@@ -48,7 +48,7 @@ class StarButton extends Component {
             {...(!!difficulty && byUser
               ? { gold: true }
               : byUser
-              ? { warning: true }
+              ? { wood: true }
               : { love: true })}
             filled={!!difficulty || byUser}
             onClick={this.onClick}

@@ -29,7 +29,8 @@ Button.propTypes = {
   snow: PropTypes.bool,
   success: PropTypes.bool,
   style: PropTypes.object,
-  transparent: PropTypes.bool
+  transparent: PropTypes.bool,
+  wood: PropTypes.bool
 };
 export default function Button({
   alert,
@@ -42,6 +43,7 @@ export default function Button({
   hoverClass,
   gold,
   love,
+  danger,
   filled,
   info,
   logoGreen,
@@ -52,7 +54,7 @@ export default function Button({
   success,
   peace,
   warning,
-  danger,
+  wood,
   onMouseEnter = () => {},
   onMouseLeave = () => {},
   snow,
@@ -70,12 +72,13 @@ export default function Button({
     logoGreen: Color.logoGreen(opacity),
     ocean: Color.oceanBlue(opacity),
     success: Color.green(opacity),
-    warning: Color.orange(opacity),
-    gold: Color.gold(opacity),
     danger: Color.red(opacity),
-    snow: Color.white(opacity),
+    gold: Color.gold(opacity),
     peace: Color.logoGreen(opacity),
-    transparent: Color.black(opacity)
+    snow: Color.white(opacity),
+    transparent: Color.black(opacity),
+    warning: Color.orange(opacity),
+    wood: Color.brown(opacity)
   });
 
   let colorKey = 'default';
@@ -92,6 +95,7 @@ export default function Button({
   if (snow) colorKey = 'snow';
   if (success) colorKey = 'success';
   if (warning) colorKey = 'warning';
+  if (wood) colorKey = 'wood';
   if (onHover) colorKey = hoverClass;
   const backgroundOpacity = filled ? 1 : opacity || 0;
   const backgroundHoverOpacity = transparent ? 0 : 0.9;
@@ -115,8 +119,8 @@ export default function Button({
         color: ${filled || opacity
           ? '#fff'
           : snow
-            ? Color.black(0.7)
-            : buttonColor(textOpacity)[colorKey]};
+          ? Color.black(0.7)
+          : buttonColor(textOpacity)[colorKey]};
         background: ${snow
           ? '#fff'
           : buttonColor(
@@ -148,18 +152,18 @@ export default function Button({
           color: ${disabled && !filled
             ? buttonColor(textOpacity)[colorKey]
             : snow
-              ? Color.black()
-              : transparent
-                ? buttonColor(1)[colorKey]
-                : '#fff'};
+            ? Color.black()
+            : transparent
+            ? buttonColor(1)[colorKey]
+            : '#fff'};
           border-color: ${buttonColor(
             snow
               ? disabled
                 ? Color.black(0.1)
                 : Color.whiteGray()
               : disabled
-                ? backgroundDisabledOpacity
-                : backgroundHoverOpacity
+              ? backgroundDisabledOpacity
+              : backgroundHoverOpacity
           )[colorKey]};
           ${snow
             ? disabled
@@ -178,8 +182,8 @@ export default function Button({
             color: ${filled || opacity
               ? '#fff'
               : snow
-                ? Color.black(0.7)
-                : buttonColor(textOpacity)[colorKey]};
+              ? Color.black(0.7)
+              : buttonColor(textOpacity)[colorKey]};
             border: 1px solid
               ${snow
                 ? Color.whiteGray()
