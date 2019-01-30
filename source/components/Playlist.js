@@ -83,7 +83,7 @@ export default class Playlist extends Component {
             <div style={{ width: '60%' }}>
               <Link
                 style={{
-                  color: video.byUser ? Color.orange() : Color.blue(),
+                  color: video.byUser ? Color.brown() : Color.blue(),
                   fontSize: '2rem',
                   fontWeight: 'bold',
                   lineHeight: 1.5
