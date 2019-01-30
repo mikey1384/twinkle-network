@@ -239,20 +239,23 @@ class VideoPlayer extends Component {
       xpLoaded,
       justEarned
     } = this.state;
-    const meterColor = xpEarned ? Color.green()
-    : difficulty === 5
-    ? Color.black()
-    : difficulty === 4
-    ? Color.rose()
-    : difficulty === 3
-    ? Color.pink()
-    : Color.logoBlue();
+    const meterColor = xpEarned
+      ? Color.green()
+      : difficulty === 5
+      ? Color.gold()
+      : difficulty === 4
+      ? Color.rose()
+      : difficulty === 3
+      ? Color.orange()
+      : difficulty === 2
+      ? Color.pink()
+      : Color.logoBlue();
     return (
       <ErrorBoundary style={style}>
         {byUser && (
           <div
             style={{
-              background: Color.orange(),
+              background: Color.brown(),
               color: '#fff',
               padding: '0.5rem',
               fontWeight: 'bold',
@@ -390,10 +393,7 @@ class VideoPlayer extends Component {
             style={{
               background: meterColor,
               padding: '0.5rem',
-              color:
-                difficulty === 5 && !xpEarned && !justEarned
-                  ? Color.gold()
-                  : '#fff',
+              color: '#fff',
               fontSize: '1.5rem',
               fontWeight: 'bold',
               display: 'flex',

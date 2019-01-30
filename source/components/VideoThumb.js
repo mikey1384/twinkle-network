@@ -143,7 +143,7 @@ class VideoThumb extends Component {
                 >
                   <a
                     style={{
-                      color: video.byUser ? Color.orange() : Color.blue()
+                      color: video.byUser ? Color.brown() : Color.blue()
                     }}
                     href={`/${to}`}
                     onClick={this.onLinkClick}
