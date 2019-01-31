@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import TitleDescriptionForm from 'components/Forms/TitleDescriptionForm';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { uploadDiscussion } from 'helpers/requestHelpers';
+import { uploadSubject } from 'helpers/requestHelpers';
 import { charLimit } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 
-class DiscussionInputArea extends Component {
+class SubjectInputArea extends Component {
   static propTypes = {
-    onUploadDiscussion: PropTypes.func.isRequired,
+    onUploadSubject: PropTypes.func.isRequired,
     contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -17,11 +17,11 @@ class DiscussionInputArea extends Component {
   };
 
   state = {
-    discussionFormShown: false
+    subjectFormShown: false
   };
 
   render() {
-    const { discussionFormShown } = this.state;
+    const { subjectFormShown } = this.state;
     return (
       <div
         style={{
@@ -31,15 +31,15 @@ class DiscussionInputArea extends Component {
         }}
       >
         <div style={{ padding: '1rem' }}>
-          {discussionFormShown ? (
+          {subjectFormShown ? (
             <TitleDescriptionForm
               autoFocus
               onSubmit={this.onSubmit}
-              onClose={() => this.setState({ discussionFormShown: false })}
+              onClose={() => this.setState({ subjectFormShown: false })}
               rows={4}
-              titleMaxChar={charLimit.discussion.title}
-              descriptionMaxChar={charLimit.discussion.description}
-              titlePlaceholder="Enter discussion topic..."
+              titleMaxChar={charLimit.subject.title}
+              descriptionMaxChar={charLimit.subject.description}
+              titlePlaceholder="Enter subject topic..."
               descriptionPlaceholder="Enter details... (Optional)"
             />
           ) : (
@@ -48,11 +48,11 @@ class DiscussionInputArea extends Component {
                 logo
                 filled
                 style={{ fontSize: '2rem' }}
-                onClick={() => this.setState({ discussionFormShown: true })}
+                onClick={() => this.setState({ subjectFormShown: true })}
               >
                 <Icon icon="comment-alt" />
                 <span style={{ marginLeft: '1rem' }}>
-                  Start a New Discussion
+                  Start a New Subject
                 </span>
               </Button>
             </div>
@@ -63,20 +63,20 @@ class DiscussionInputArea extends Component {
   }
 
   onSubmit = async(title, description) => {
-    const { contentId, dispatch, onUploadDiscussion, type } = this.props;
-    const data = await uploadDiscussion({
+    const { contentId, dispatch, onUploadSubject, type } = this.props;
+    const data = await uploadSubject({
       title,
       description,
       dispatch,
       contentId,
       type
     });
-    this.setState({ discussionFormShown: false });
-    onUploadDiscussion(data);
+    this.setState({ subjectFormShown: false });
+    onUploadSubject(data);
   };
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(DiscussionInputArea);
+)(SubjectInputArea);

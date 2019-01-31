@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {cleanString} from 'helpers/stringHelpers';
+import { cleanString } from 'helpers/stringHelpers';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 
-DiscussionTopicLink.propTypes = {
-  discussion: PropTypes.object.isRequired
+SubjectLink.propTypes = {
+  subject: PropTypes.object.isRequired
 };
-export default function DiscussionTopicLink({ discussion }) {
+export default function SubjectLink({ subject }) {
   return (
     <Link
       style={{
         fontWeight: 'bold',
         color: Color.green()
       }}
-      to={`/discussions/${discussion.id}`}
+      to={`/subjects/${subject.id}`}
     >
-      {cleanString(discussion.title)}
+      {cleanString(subject.title)}
     </Link>
   );
 }

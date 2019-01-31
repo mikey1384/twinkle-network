@@ -337,7 +337,6 @@ class App extends Component {
             />
             <Route path="/subjects" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
-            <Route path="/discussions" component={ContentPage} />
             <Route path="/videos/:videoId" component={VideoPage} />
             <Route path="/videos" component={WorkSection} />
             <Route path="/links/:linkId" component={LinkPage} />

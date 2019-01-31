@@ -126,7 +126,7 @@ class Body extends Component {
         difficulty,
         feedId,
         numChildComments,
-        discussionId,
+        subjectId,
         replyId,
         title,
         commentId,
@@ -207,7 +207,7 @@ class Body extends Component {
               videoCode={rootObj.content}
             />
           )}
-          {type === 'comment' && (commentId || replyId || discussionId) && (
+          {type === 'comment' && (commentId || replyId || subjectId) && (
             <TargetContent
               targetObj={targetObj}
               rootObj={rootObj}
@@ -256,57 +256,40 @@ class Body extends Component {
             >
               <div className="buttons-bar">
                 <div className="left">
-                  {type !== 'discussion' && (
-                    <>
-                      <LikeButton
-                        contentType={type}
-                        contentId={contentId}
-                        key="likeButton"
-                        onClick={this.onLikeClick}
-                        liked={this.determineUserLikedThis(likes)}
-                        small
-                      />
-                      <Button
-                        transparent
-                        key="commentButton"
-                        style={{ marginLeft: '1rem' }}
-                        onClick={this.onCommentButtonClick}
-                      >
-                        <Icon icon="comment-alt" />
-                        <span style={{ marginLeft: '0.7rem' }}>
-                          {type === 'video' || type === 'url'
-                            ? 'Comment'
-                            : type === 'question'
-                            ? 'Respond'
-                            : 'Reply'}
-                        </span>
-                        {numChildComments > 0 && !commentsShown && (
-                          <span style={{ marginLeft: '0.5rem' }}>
-                            ({numChildComments})
-                          </span>
-                        )}
-                      </Button>
-                    </>
-                  )}
-                  {type === 'discussion' && (
-                    <Button transparent onClick={this.onCommentButtonClick}>
-                      <Icon icon="comment-alt" />
-                      <span style={{ marginLeft: '0.7rem' }}>Respond</span>
-                      {!!numChildComments &&
-                        numChildComments > 0 &&
-                        !commentsShown && (
-                          <span style={{ marginLeft: '0.5rem' }}>
-                            ({numChildComments})
-                          </span>
-                        )}
-                    </Button>
-                  )}
+                  <LikeButton
+                    contentType={type}
+                    contentId={contentId}
+                    key="likeButton"
+                    onClick={this.onLikeClick}
+                    liked={this.determineUserLikedThis(likes)}
+                    small
+                  />
+                  <Button
+                    transparent
+                    key="commentButton"
+                    style={{ marginLeft: '1rem' }}
+                    onClick={this.onCommentButtonClick}
+                  >
+                    <Icon icon="comment-alt" />
+                    <span style={{ marginLeft: '0.7rem' }}>
+                      {type === 'video' || type === 'url'
+                        ? 'Comment'
+                        : type === 'subject'
+                        ? 'Respond'
+                        : 'Reply'}
+                    </span>
+                    {numChildComments > 0 && !commentsShown && (
+                      <span style={{ marginLeft: '0.5rem' }}>
+                        ({numChildComments})
+                      </span>
+                    )}
+                  </Button>
                   {editButtonShown && (
                     <DropdownButton
                       transparent
                       direction="right"
                       style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                      size={type !== 'discussion' ? 'sm' : null}
+                      size={type !== 'subject' ? 'sm' : null}
                       text="Edit"
                       menuProps={this.renderEditMenuItems()}
                     />
@@ -329,9 +312,7 @@ class Body extends Component {
                 </div>
                 <div className="right" style={{ position: 'relative' }}>
                   {canEditDifficulty &&
-                    (type === 'question' ||
-                      type === 'discussion' ||
-                      type === 'video') && (
+                    (type === 'subject' || type === 'video') && (
                       <StarButton
                         byUser={!!contentObj.byUser}
                         contentId={contentObj.id}
@@ -421,7 +402,7 @@ class Body extends Component {
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'
-                : type === 'question'
+                : type === 'subject'
                 ? 'respond'
                 : 'comment'
             }
@@ -464,7 +445,7 @@ class Body extends Component {
     return contentObj.byUser
       ? 5
       : rootDifficulty ||
-          targetObj.discussion?.difficulty ||
+          targetObj.subject?.difficulty ||
           (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0);
   };
 
@@ -510,7 +491,7 @@ class Body extends Component {
       stars,
       difficulty: byUser
         ? 5
-        : rootObj.difficulty || (targetObj.discussion || {}).difficulty,
+        : rootObj.difficulty || targetObj.subject?.difficulty,
       myId,
       xpRewardInterfaceShown
     });

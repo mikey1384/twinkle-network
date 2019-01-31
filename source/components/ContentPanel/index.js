@@ -126,7 +126,7 @@ class ContentPanel extends Component {
                   ? contentObj.targetObj.comment.notFound
                     ? 'replied on'
                     : 'replied to'
-                  : contentObj.rootType === 'question'
+                  : contentObj.rootType === 'subject'
                   ? 'responded to'
                   : contentObj.rootType === 'user'
                   ? 'left a message to'

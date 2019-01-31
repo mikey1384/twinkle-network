@@ -6,11 +6,11 @@ import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import Textarea from 'components/Texts/Textarea';
 
-export default class QuestionModal extends Component {
+export default class SubjectModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
-    uploadAnswer: PropTypes.func.isRequired,
-    question: PropTypes.string.isRequired
+    uploadResponse: PropTypes.func.isRequired,
+    subject: PropTypes.object.isRequired
   };
 
   state = {
@@ -19,7 +19,7 @@ export default class QuestionModal extends Component {
   };
 
   render() {
-    const { onHide, question } = this.props;
+    const { onHide, subject } = this.props;
     const { answer, answerSubmitted } = this.state;
     return (
       <Modal onHide={onHide}>
@@ -31,12 +31,12 @@ export default class QuestionModal extends Component {
               fontWeight: 'bold'
             }}
           >
-            Subject
+            Submit your response
           </span>
         </header>
         <main>
           <span style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-            {question}
+            {subject.title}
           </span>
           <Textarea
             autoFocus
@@ -45,7 +45,7 @@ export default class QuestionModal extends Component {
             onKeyUp={this.handleKeyUp}
             style={{ marginTop: '3rem' }}
             minRows={4}
-            placeholder="Type your answer here..."
+            placeholder="Type your response here..."
           />
         </main>
         <footer>
@@ -76,9 +76,9 @@ export default class QuestionModal extends Component {
   };
 
   onSubmit = async() => {
-    const { onHide, parent, uploadAnswer } = this.props;
+    const { onHide, subject, uploadResponse } = this.props;
     const { answer } = this.state;
-    await uploadAnswer({ content: finalizeEmoji(answer), parent });
+    await uploadResponse({ content: finalizeEmoji(answer), subject });
     this.setState({ answerSubmitted: true });
     setTimeout(() => onHide(), 1000);
   };

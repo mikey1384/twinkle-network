@@ -541,40 +541,14 @@ export default function FeedReducer(state = defaultState, action) {
           };
         })
       };
-    case FEED.EDIT_QUESTION:
+    case FEED.EDIT_SUBJECT:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'question' && feed.contentId === action.contentId;
-          let rootContentMatches =
-            feed.rootType === 'question' && feed.rootId === action.contentId;
-          return {
-            ...feed,
-            content: contentMatches ? action.editedContent : feed.content,
-            contentDescription: contentMatches
-              ? action.editedDescription
-              : feed.description,
-            rootContentTitle: rootContentMatches
-              ? action.editedContent
-              : feed.rootContentTitle,
-            rootContent: rootContentMatches
-              ? action.editedContent
-              : feed.rootContent,
-            rootContentDescription: rootContentMatches
-              ? action.editedDescription
-              : feed.rootContentDescription
-          };
-        })
-      };
-    case FEED.EDIT_DISCUSSION:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed => {
-          let contentMatches =
-            feed.type === 'discussion' && feed.contentId === action.contentId;
-          let discussionIdMatches =
-            feed.type === 'comment' && feed.discussionId === action.contentId;
+            feed.type === 'subject' && feed.contentId === action.contentId;
+          let subjectIdMatches =
+            feed.type === 'comment' && feed.subjectId === action.contentId;
           return {
             ...feed,
             contentTitle: contentMatches
@@ -583,12 +557,12 @@ export default function FeedReducer(state = defaultState, action) {
             contentDescription: contentMatches
               ? action.editedDescription
               : feed.contentDescription,
-            discussionTitle: discussionIdMatches
+            subjectTitle: subjectIdMatches
               ? action.editedTitle
-              : feed.discussionTitle,
-            discussionDescription: discussionIdMatches
+              : feed.subjectTitle,
+            subjectDescription: subjectIdMatches
               ? action.editedDescription
-              : feed.discussionDescription
+              : feed.subjectDescription
           };
         })
       };
@@ -650,12 +624,12 @@ export default function FeedReducer(state = defaultState, action) {
                     : feed.rootObj
                   : undefined,
                 targetObj: feed.targetObj
-                  ? feed.targetObj.discussion &&
-                    feed.discussionId === action.contentId
+                  ? feed.targetObj.subject &&
+                    feed.subjectId === action.contentId
                     ? {
                         ...feed.targetObj,
-                        discussion: {
-                          ...feed.targetObj.discussion,
+                        subject: {
+                          ...feed.targetObj.subject,
                           difficulty: action.difficulty
                         }
                       }

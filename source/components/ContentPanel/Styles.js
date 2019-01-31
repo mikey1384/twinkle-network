@@ -49,7 +49,7 @@ export const container = css`
     font-size: 1.2rem;
     line-height: 1;
   }
-  .question {
+  .subject {
     font-size: 2rem;
     font-weight: bold;
     white-space: pre-wrap;

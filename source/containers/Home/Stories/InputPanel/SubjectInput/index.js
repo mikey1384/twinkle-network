@@ -28,7 +28,7 @@ class SubjectInput extends Component {
   state = {
     attachment: undefined,
     attachContentModalShown: false,
-    question: '',
+    title: '',
     description: '',
     descriptionInputShown: false,
     submitting: false
@@ -40,12 +40,12 @@ class SubjectInput extends Component {
       attachContentModalShown,
       description,
       descriptionInputShown,
-      question,
+      title,
       submitting
     } = this.state;
 
     const descriptionExceedsCharLimit = exceedsCharLimit({
-      contentType: 'question',
+      contentType: 'subject',
       inputType: 'description',
       text: description
     });
@@ -66,12 +66,12 @@ class SubjectInput extends Component {
           <div style={{ width: '100%' }}>
             <Input
               placeholder="A subject Twinkle users can talk about"
-              value={question}
+              value={title}
               onChange={this.onInputChange}
               style={exceedsCharLimit({
                 inputType: 'title',
-                contentType: 'question',
-                text: question
+                contentType: 'subject',
+                text: title
               })}
             />
           </div>
@@ -102,15 +102,15 @@ class SubjectInput extends Component {
             style={{
               fontSize: '1.2rem',
               color:
-                question.length > charLimit.question.title
+                title.length > charLimit.subject.title
                   ? 'red'
                   : Color.darkerGray()
             }}
           >
             {renderCharLimit({
               inputType: 'title',
-              contentType: 'question',
-              text: question
+              contentType: 'subject',
+              text: title
             })}
           </span>
         </div>
@@ -142,7 +142,7 @@ class SubjectInput extends Component {
             {descriptionExceedsCharLimit && (
               <small style={{ color: 'red' }}>
                 {renderCharLimit({
-                  contentType: 'question',
+                  contentType: 'subject',
                   inputType: 'description',
                   text: description
                 })}
@@ -178,38 +178,38 @@ class SubjectInput extends Component {
   }
 
   buttonDisabled = () => {
-    const { question, description } = this.state;
-    if (question.length > charLimit.question.title) return true;
-    if (description.length > charLimit.question.description) return true;
+    const { title, description } = this.state;
+    if (title.length > charLimit.subject.title) return true;
+    if (description.length > charLimit.subject.description) return true;
     return false;
   };
 
   onInputChange = text => {
     this.setState({
-      question: text,
+      title: text,
       descriptionInputShown: text.length > 0
     });
   };
 
   onSubmit = async event => {
     const { dispatch, uploadFeedContent } = this.props;
-    const { attachment, question, description } = this.state;
+    const { attachment, title, description } = this.state;
     event.preventDefault();
-    if (stringIsEmpty(question) || question.length > charLimit.question.title) {
+    if (stringIsEmpty(title) || title.length > charLimit.subject.title) {
       return;
     }
     this.setState({ submitting: true });
     try {
       const data = await uploadContent({
         attachment,
-        title: question,
+        title,
         description: finalizeEmoji(description),
         dispatch
       });
       uploadFeedContent(data);
       this.setState({
         attachment: undefined,
-        question: '',
+        title: '',
         description: '',
         descriptionInputShown: false,
         submitting: false

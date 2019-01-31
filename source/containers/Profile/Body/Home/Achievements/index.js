@@ -760,12 +760,12 @@ export default class Achievements extends Component {
                     : contentObj.rootObj
                   : undefined,
                 targetObj: contentObj.targetObj
-                  ? contentObj.targetObj.discussion &&
-                    contentObj.discussionId === contentId
+                  ? contentObj.targetObj.subject &&
+                    contentObj.subjectId === contentId
                     ? {
                         ...contentObj.targetObj,
-                        discussion: {
-                          ...contentObj.targetObj.discussion,
+                        subject: {
+                          ...contentObj.targetObj.subject,
                           difficulty
                         }
                       }

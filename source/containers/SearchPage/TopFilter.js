@@ -23,16 +23,10 @@ export default function TopFilter({ applyFilter, selectedFilter, style }) {
         Links
       </nav>
       <nav
-        className={selectedFilter === 'question' ? 'active' : ''}
-        onClick={() => applyFilter('question')}
+        className={selectedFilter === 'subject' ? 'active' : ''}
+        onClick={() => applyFilter('subject')}
       >
         Subjects
-      </nav>
-      <nav
-        className={selectedFilter === 'discussion' ? 'active' : ''}
-        onClick={() => applyFilter('discussion')}
-      >
-        Discussions
       </nav>
     </FilterBar>
   );

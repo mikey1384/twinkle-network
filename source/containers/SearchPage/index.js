@@ -107,7 +107,9 @@ class SearchPage extends Component {
             )}
             {userId && (
               <Checkbox
-                label="Default:"
+                label={`Always search for ${
+                  selectedFilter === 'url' ? 'link' : selectedFilter
+                }s first:`}
                 backgroundColor="#fff"
                 checked={selectedFilter === searchFilter}
                 onClick={this.setDefaultSearchFilter}

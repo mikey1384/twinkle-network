@@ -70,7 +70,7 @@ class Results extends Component {
       loadMoreButton,
       results
     } = this.props;
-    const availableFilters = ['video', 'url', 'question', 'discussion'].filter(
+    const availableFilters = ['video', 'url', 'subject'].filter(
       availableFilter => availableFilter !== filter
     );
     return (
@@ -97,70 +97,67 @@ class Results extends Component {
               result={result}
             />
           ))}
-        {!searching &&
-          results.length === 0 && (
-            <div
-              style={{
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                color: Color.darkerGray(),
-                justifyContent: 'center',
-                height: '40vh',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ textTransform: 'capitalize' }}>{`No ${
-                  filter === 'url' ? 'link' : filter
-                }s Found`}</p>
-                <div style={{ marginTop: '1rem', fontSize: '2rem' }}>
-                  Search with the same keyword(s) for:
-                  {availableFilters.map((availableFilter, index) => (
-                    <p style={{ textTransform: 'capitalize' }} key={index}>
-                      <a
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => changeFilter(availableFilter)}
-                      >{`${
-                        availableFilter === 'url' ? 'link' : availableFilter
-                      }s`}</a>
-                    </p>
-                  ))}
-                </div>
+        {!searching && results.length === 0 && (
+          <div
+            style={{
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              color: Color.darkerGray(),
+              justifyContent: 'center',
+              height: '40vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ textTransform: 'capitalize' }}>{`No ${
+                filter === 'url' ? 'link' : filter
+              }s Found`}</p>
+              <div style={{ marginTop: '1rem', fontSize: '2rem' }}>
+                Search with the same keyword(s) for:
+                {availableFilters.map((availableFilter, index) => (
+                  <p style={{ textTransform: 'capitalize' }} key={index}>
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => changeFilter(availableFilter)}
+                    >{`${
+                      availableFilter === 'url' ? 'link' : availableFilter
+                    }s`}</a>
+                  </p>
+                ))}
               </div>
-              <CloseText
-                text="Or tap to close"
-                style={{ marginTop: '3rem', marginBottom: '1rem' }}
-              />
             </div>
-          )}
-        {!searching &&
-          loadMoreButton && (
-            <div style={{ paddingBottom: '8rem' }}>
-              <LoadMoreButton
-                filled
-                info
-                loading={loadingMore}
-                onClick={this.loadMoreSearchResults}
-              />
-            </div>
-          )}
-        {!searching &&
-          results.length > 0 && (
             <CloseText
-              className="desktop"
-              style={{
-                position: 'fixed',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                bottom: '1rem',
-                padding: '1.5rem',
-                borderRadius: borderRadius,
-                background: Color.lightGray(0.8)
-              }}
+              text="Or tap to close"
+              style={{ marginTop: '3rem', marginBottom: '1rem' }}
             />
-          )}
+          </div>
+        )}
+        {!searching && loadMoreButton && (
+          <div style={{ paddingBottom: '8rem' }}>
+            <LoadMoreButton
+              filled
+              info
+              loading={loadingMore}
+              onClick={this.loadMoreSearchResults}
+            />
+          </div>
+        )}
+        {!searching && results.length > 0 && (
+          <CloseText
+            className="desktop"
+            style={{
+              position: 'fixed',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              bottom: '1rem',
+              padding: '1.5rem',
+              borderRadius: borderRadius,
+              background: Color.lightGray(0.8)
+            }}
+          />
+        )}
       </div>
     );
   }

@@ -46,7 +46,6 @@ export default class ContentEditor extends Component {
     const { onDismiss, style, type } = this.props;
     const {
       editedComment,
-      editedContent,
       editedDescription,
       editedTitle,
       editedUrl
@@ -104,8 +103,8 @@ export default class ContentEditor extends Component {
                     editedTitle: addEmoji(event.target.value)
                   })
                 }
-                placeholder={edit[type === 'question' ? 'subject' : 'title']}
-                value={type === 'question' ? editedContent : editedTitle}
+                placeholder={edit.title}
+                value={editedTitle}
                 style={this.titleExceedsCharLimit(type)}
               />
               <small style={this.titleExceedsCharLimit(type)}>
@@ -165,7 +164,6 @@ export default class ContentEditor extends Component {
   determineButtonDisabled = () => {
     const {
       editedComment,
-      editedContent,
       editedDescription,
       editedUrl,
       editedTitle
@@ -207,15 +205,7 @@ export default class ContentEditor extends Component {
           return true;
         }
         return false;
-      case 'question':
-        if (
-          stringIsEmpty(editedContent) ||
-          (editedContent === content && editedDescription === description)
-        ) {
-          return true;
-        }
-        return false;
-      case 'discussion':
+      case 'subject':
         if (
           stringIsEmpty(editedTitle) ||
           (editedTitle === title && editedDescription === description)
@@ -230,7 +220,7 @@ export default class ContentEditor extends Component {
 
   onInputChange = ({ text, type }) => {
     this.setState({
-      [type === 'question' ? 'editedContent' : 'editedTitle']: text
+      editedTitle: text
     });
   };
 
@@ -264,11 +254,11 @@ export default class ContentEditor extends Component {
   };
 
   titleExceedsCharLimit = type => {
-    const { editedContent, editedTitle } = this.state;
+    const { editedTitle } = this.state;
     return exceedsCharLimit({
       contentType: type,
       inputType: 'title',
-      text: type === 'question' ? editedContent : editedTitle
+      text: editedTitle
     });
   };
 
@@ -291,11 +281,11 @@ export default class ContentEditor extends Component {
   };
 
   renderTitleCharLimit = type => {
-    const { editedContent, editedTitle } = this.state;
+    const { editedTitle } = this.state;
     return renderCharLimit({
       inputType: 'title',
       contentType: type,
-      text: type === 'question' ? editedContent : editedTitle
+      text: editedTitle
     });
   };
 

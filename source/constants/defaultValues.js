@@ -10,10 +10,6 @@ export const charLimit = {
     message: 5000
   },
   comment: 10000,
-  discussion: {
-    title: 300,
-    description: 5000
-  },
   playlist: {
     title: 200,
     description: 5000
@@ -22,8 +18,8 @@ export const charLimit = {
     title: 2000,
     choice: 2000
   },
-  question: {
-    title: 200,
+  subject: {
+    title: 300,
     description: 5000
   },
   rewardComment: 5000,

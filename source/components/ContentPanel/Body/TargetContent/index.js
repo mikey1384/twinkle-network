@@ -61,7 +61,7 @@ class TargetContent extends Component {
       profilePicId,
       rootType,
       targetObj: {
-        discussion,
+        subject,
         comment,
         comment: { comments = [], stars = [] } = {},
         type
@@ -86,7 +86,7 @@ class TargetContent extends Component {
       userCanStarThis =
         !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
     } else {
-      uploader = (discussion || {}).uploader || uploader;
+      uploader = subject?.uploader || uploader;
     }
     return (
       <ErrorBoundary
@@ -134,8 +134,8 @@ class TargetContent extends Component {
         }}
       >
         <div>
-          {discussion &&
-            (discussion.notFound ? (
+          {subject &&
+            (subject.notFound ? (
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
                 <span>Subject removed / no longer available</span>
               </div>
@@ -156,31 +156,31 @@ class TargetContent extends Component {
                   >
                     <div>
                       <ContentLink
-                        content={{ id: discussion.id, title: 'Subject: ' }}
-                        type="discussion"
+                        content={{ id: subject.id, title: 'Subject: ' }}
+                        type="subject"
                         style={{ color: Color.green() }}
                       />
                     </div>
                     <div>
-                      <UsernameText user={discussion.uploader} />
+                      <UsernameText user={subject.uploader} />
                       &nbsp;
                       <span className="timestamp">
-                        ({timeSince(discussion.timeStamp)})
+                        ({timeSince(subject.timeStamp)})
                       </span>
                     </div>
                   </div>
                   <div>
-                    <span className="root-content">{discussion.title}</span>
+                    <span className="root-content">{subject.title}</span>
                   </div>
                 </div>
                 <div>
-                  {discussion.description && type === 'discussion' && (
+                  {subject.description && (
                     <LongText
                       className={css`
                         margin-top: 1rem;
                       `}
                     >
-                      {discussion.description}
+                      {subject.description}
                     </LongText>
                   )}
                 </div>
@@ -192,17 +192,7 @@ class TargetContent extends Component {
                 <span>Comment removed / no longer available</span>
               </div>
             ) : (
-              <div style={{ marginTop: discussion ? '1rem' : 0 }}>
-                {rootType === 'question' && (
-                  <div style={{ padding: '0.5rem 1rem 1.5rem 1rem' }}>
-                    <ContentLink
-                      style={{ color: Color.green() }}
-                      content={{ id: rootObj.id, title: 'Subject: ' }}
-                      type="question"
-                    />
-                    <span className="root-content">{rootObj.content}</span>
-                  </div>
-                )}
+              <div style={{ marginTop: subject ? '1rem' : 0 }}>
                 <div style={{ padding: '0 1rem' }}>
                   <div
                     style={{
@@ -299,7 +289,7 @@ class TargetContent extends Component {
                     difficulty={this.determineDifficulty({
                       rootObj,
                       rootType,
-                      discussion
+                      subject
                     })}
                     uploaderId={comment.uploader.id}
                     stars={comment.stars}
@@ -313,7 +303,7 @@ class TargetContent extends Component {
                   difficulty={this.determineDifficulty({
                     rootObj,
                     rootType,
-                    discussion
+                    subject
                   })}
                   onCommentEdit={onEditRewardComment}
                   style={{
@@ -370,26 +360,26 @@ class TargetContent extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      targetObj: { type, comment, discussion },
+      targetObj: { type, comment, subject },
       myId,
       rootObj
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     const stars =
-      type === 'comment' || type === 'reply' ? comment.stars : discussion.stars;
+      type === 'comment' || type === 'reply' ? comment.stars : subject.stars;
     return determineXpButtonDisabled({
-      difficulty: rootObj.difficulty || (discussion || {}).difficulty,
+      difficulty: rootObj.difficulty || subject?.difficulty,
       stars,
       myId,
       xpRewardInterfaceShown
     });
   };
 
-  determineDifficulty = ({ rootType, rootObj, discussion }) => {
+  determineDifficulty = ({ rootType, rootObj, subject }) => {
     const rootDifficulty = rootType !== 'video' ? rootObj.difficulty : 0;
     return (
       rootDifficulty ||
-      discussion?.difficulty ||
+      subject?.difficulty ||
       (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0)
     );
   };

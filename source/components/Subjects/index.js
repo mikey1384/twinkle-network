@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DiscussionPanel from './DiscussionPanel';
-import DiscussionInputArea from './DiscussionInputArea';
+import SubjectPanel from './SubjectPanel';
+import SubjectInputArea from './SubjectInputArea';
 import Button from 'components/Button';
 import Context from './Context';
-import { loadDiscussions } from 'helpers/requestHelpers';
+import { loadSubjects } from 'helpers/requestHelpers';
 
-export default class Discussions extends Component {
+export default class Subjects extends Component {
   static propTypes = {
     className: PropTypes.string,
     contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    discussions: PropTypes.array,
+    subjects: PropTypes.array,
     loadMoreButton: PropTypes.bool,
-    onLoadMoreDiscussions: PropTypes.func.isRequired,
-    onDiscussionEditDone: PropTypes.func.isRequired,
-    onDiscussionDelete: PropTypes.func.isRequired,
-    onLoadDiscussionComments: PropTypes.func.isRequired,
+    onLoadMoreSubjects: PropTypes.func.isRequired,
+    onSubjectEditDone: PropTypes.func.isRequired,
+    onSubjectDelete: PropTypes.func.isRequired,
+    onLoadSubjectComments: PropTypes.func.isRequired,
     rootDifficulty: PropTypes.number,
-    setDiscussionDifficulty: PropTypes.func.isRequired,
+    setSubjectDifficulty: PropTypes.func.isRequired,
     style: PropTypes.object,
     type: PropTypes.string,
-    uploadDiscussion: PropTypes.func.isRequired,
+    uploadSubject: PropTypes.func.isRequired,
     commentActions: PropTypes.shape({
       attachStar: PropTypes.func.isRequired,
       editRewardComment: PropTypes.func.isRequired,
@@ -36,17 +36,17 @@ export default class Discussions extends Component {
   render() {
     const {
       className,
-      discussions,
+      subjects,
       loadMoreButton,
       style = {},
       type,
       contentId,
-      uploadDiscussion,
-      onDiscussionEditDone,
-      onDiscussionDelete,
-      onLoadDiscussionComments,
+      uploadSubject,
+      onSubjectEditDone,
+      onSubjectDelete,
+      onLoadSubjectComments,
       rootDifficulty,
-      setDiscussionDifficulty,
+      setSubjectDifficulty,
       commentActions: {
         attachStar,
         editRewardComment,
@@ -69,29 +69,29 @@ export default class Discussions extends Component {
           onLikeClick,
           onLoadMoreComments,
           onLoadMoreReplies,
-          onDiscussionEditDone,
-          onDiscussionDelete,
-          onLoadDiscussionComments,
-          setDiscussionDifficulty,
+          onSubjectEditDone,
+          onSubjectDelete,
+          onLoadSubjectComments,
+          setSubjectDifficulty,
           onUploadComment,
           onUploadReply
         }}
       >
         <div className={className} style={style}>
-          <DiscussionInputArea
+          <SubjectInputArea
             contentId={contentId}
             type={type}
-            onUploadDiscussion={uploadDiscussion}
+            onUploadSubject={uploadSubject}
           />
           <div style={{ margin: '1rem 0' }}>
-            {discussions &&
-              discussions.map(discussion => (
-                <DiscussionPanel
-                  key={discussion.id}
+            {subjects &&
+              subjects.map(subject => (
+                <SubjectPanel
+                  key={subject.id}
                   contentId={Number(contentId)}
                   rootDifficulty={rootDifficulty}
                   type={type}
-                  {...discussion}
+                  {...subject}
                 />
               ))}
             {loadMoreButton && (
@@ -99,9 +99,9 @@ export default class Discussions extends Component {
                 style={{ width: '100%', borderRadius: 0 }}
                 filled
                 info
-                onClick={this.onLoadMoreDiscussions}
+                onClick={this.onLoadMoreSubjects}
               >
-                Load More Discussions
+                Load More Subjects
               </Button>
             )}
           </div>
@@ -110,13 +110,13 @@ export default class Discussions extends Component {
     );
   }
 
-  onLoadMoreDiscussions = async() => {
-    const { onLoadMoreDiscussions, type, contentId, discussions } = this.props;
-    const data = await loadDiscussions({
+  onLoadMoreSubjects = async() => {
+    const { onLoadMoreSubjects, type, contentId, subjects } = this.props;
+    const data = await loadSubjects({
       type,
       contentId,
-      lastDiscussionId: discussions[discussions.length - 1].id
+      lastSubjectId: subjects[subjects.length - 1].id
     });
-    onLoadMoreDiscussions(data);
+    onLoadMoreSubjects(data);
   };
 }

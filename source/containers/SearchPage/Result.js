@@ -17,9 +17,7 @@ export default function Result({ closeSearch, type, result }) {
   return (
     <Link
       style={{ textDecoration: 'none', marginBottom: '1rem' }}
-      to={`/${
-        type === 'url' ? 'link' : type === 'question' ? 'subject' : type
-      }s/${result.id}`}
+      to={`/${type === 'url' ? 'link' : type}s/${result.id}`}
       onClick={closeSearch}
     >
       <div
@@ -30,7 +28,7 @@ export default function Result({ closeSearch, type, result }) {
           background: '#fff'
         }}
       >
-        {type !== 'question' && type !== 'url' && (
+        {(result.rootObj || type === 'video') && (
           <div style={{ width: '25%' }}>
             {type === 'video' && (
               <VideoThumbImage
@@ -41,20 +39,29 @@ export default function Result({ closeSearch, type, result }) {
                 }/mqdefault.jpg`}
               />
             )}
-            {type === 'discussion' && (
+            {type === 'subject' && result.rootObj.type === 'video' && (
               <VideoThumbImage
-                difficulty={result.rootObj?.difficulty}
-                videoId={(result.rootObj || {}).id}
+                difficulty={result.rootObj.difficulty}
+                videoId={result.rootObj.id}
                 src={`https://img.youtube.com/vi/${
-                  (result.rootObj || {}).content
+                  result.rootObj.content
                 }/mqdefault.jpg`}
+              />
+            )}
+            {type === 'subject' && result.rootObj.type === 'url' && (
+              <Embedly
+                imageOnly
+                noLink
+                title={cleanString(result.rootObj.title)}
+                url={result.rootObj?.content}
+                {...result.rootObj}
               />
             )}
           </div>
         )}
         <div
           style={{
-            width: type !== 'question' && type !== 'url' ? '75%' : '100%',
+            width: type !== 'subject' && type !== 'url' ? '75%' : '100%',
             padding: '1rem',
             ...(type === 'url' ? { paddingTop: '0.5rem' } : {})
           }}
@@ -98,7 +105,7 @@ export default function Result({ closeSearch, type, result }) {
               </div>
             </>
           )}
-          {type === 'question' && (
+          {type === 'subject' && !result.rootObj && (
             <div
               style={{
                 minHeight: '8vh',
@@ -123,8 +130,18 @@ export default function Result({ closeSearch, type, result }) {
                     color: Color.green()
                   }}
                 >
-                  {result.content}
+                  {result.title}
                 </LongText>
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    color: Color.darkerGray()
+                  }}
+                >
+                  <LongText noExpand cleanString maxLines={4}>
+                    {result.description}
+                  </LongText>
+                </div>
                 <div
                   style={{
                     fontWeight: 'normal',
@@ -137,7 +154,7 @@ export default function Result({ closeSearch, type, result }) {
               </div>
             </div>
           )}
-          {type === 'discussion' && (
+          {type === 'subject' && result.rootObj && (
             <div>
               <LongText
                 noExpand
@@ -145,7 +162,7 @@ export default function Result({ closeSearch, type, result }) {
                 maxLines={4}
                 style={{
                   fontWeight: 'bold',
-                  fontSize: '2rem',
+                  fontSize: '2.5rem',
                   color: Color.green()
                 }}
               >

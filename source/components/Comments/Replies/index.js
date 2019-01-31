@@ -12,7 +12,7 @@ class Replies extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }).isRequired,
-    discussion: PropTypes.object,
+    subject: PropTypes.object,
     innerRef: PropTypes.func,
     onDelete: PropTypes.func.isRequired,
     onLoadRepliesOfReply: PropTypes.func,
@@ -65,7 +65,7 @@ class Replies extends Component {
       replies,
       userId,
       comment,
-      discussion,
+      subject,
       onLoadRepliesOfReply,
       parent
     } = this.props;
@@ -92,7 +92,7 @@ class Replies extends Component {
               key={reply.id}
               parent={parent}
               comment={comment}
-              discussion={discussion}
+              subject={subject}
               reply={reply}
               userId={userId}
               onDelete={this.onDelete}

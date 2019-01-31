@@ -22,7 +22,7 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import { Link } from 'react-router-dom';
 import { editContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
-import DiscussionTopicLink from './DiscussionTopicLink';
+import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
 
 class Comment extends Component {
@@ -195,11 +195,11 @@ class Comment extends Component {
                 />
               ) : (
                 <div>
-                  {parent.type !== 'discussion' &&
-                    !parent.discussionId &&
+                  {parent.type !== 'subject' &&
+                    !parent.subjectId &&
                     targetObj &&
-                    targetObj.discussion && (
-                      <DiscussionTopicLink discussion={targetObj.discussion} />
+                    targetObj.subject && (
+                      <SubjectLink subject={targetObj.subject} />
                     )}
                   <LongText className="comment__content">
                     {comment.content}
@@ -308,7 +308,7 @@ class Comment extends Component {
                   targetCommentId={comment.id}
                 />
                 <Replies
-                  discussion={targetObj.discussion || {}}
+                  subject={targetObj.subject || {}}
                   innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
                   Replies={this.Replies}
                   userId={userId}
@@ -347,7 +347,7 @@ class Comment extends Component {
       (parent.rootType !== 'video' ? parent.rootObj?.difficulty : 0);
     return (
       rootDifficulty ||
-      targetObj.discussion?.difficulty ||
+      targetObj.subject?.difficulty ||
       ((parent.type === 'video' && parent.difficulty > 0) ||
       (parent.rootType === 'video' && parent.rootObj?.difficulty > 0)
         ? 1

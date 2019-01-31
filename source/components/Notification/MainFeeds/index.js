@@ -34,9 +34,9 @@ class MainFeeds extends Component {
       PropTypes.shape({
         contentId: PropTypes.number,
         commentContent: PropTypes.string,
-        discussionId: PropTypes.number,
-        discussionTitle: PropTypes.string,
-        discussionUploader: PropTypes.number,
+        subjectId: PropTypes.number,
+        subjectTitle: PropTypes.string,
+        subjectUploader: PropTypes.number,
         id: PropTypes.number.isRequired,
         reward: PropTypes.object,
         rootCommentUploader: PropTypes.oneOfType([
@@ -173,8 +173,7 @@ class MainFeeds extends Component {
                       style={{ color: Color.green() }}
                       content={{
                         id: contentId,
-                        title:
-                          contentType === 'question' ? 'subject' : contentType
+                        title: contentType
                       }}
                       type={contentType}
                     />
@@ -258,7 +257,7 @@ export default connect(
 function renderNotificationMessage(notification, myId) {
   const {
     contentId,
-    discussionId,
+    subjectId,
     type,
     reward = {},
     rootType,
@@ -268,17 +267,16 @@ function renderNotificationMessage(notification, myId) {
     username,
     commentContent,
     rootCommentUploader,
-    discussionTitle,
-    discussionUploader
+    subjectTitle,
+    subjectUploader
   } = notification;
   let action = '';
   let isReplyNotification =
     commentContent && Number(rootCommentUploader) === myId;
-  let isDiscussionAnswerNotification =
-    discussionTitle && discussionUploader === myId;
+  let isSubjectResponse = subjectTitle && subjectUploader === myId;
   if (isReplyNotification) {
     action = returnCommentActionText('reply');
-  } else if (isDiscussionAnswerNotification) {
+  } else if (isSubjectResponse) {
     action = returnCommentActionText('comment');
   } else {
     switch (type) {
@@ -312,13 +310,13 @@ function renderNotificationMessage(notification, myId) {
         action = returnCommentActionText(
           rootType === 'user'
             ? rootType
-            : rootType === 'question'
+            : rootType === 'subject'
             ? 'subject'
             : 'comment'
         );
         break;
-      case 'discussion':
-        action = 'added a discussion to';
+      case 'subject':
+        action = 'added a subject to';
         break;
       default:
         break;
@@ -327,17 +325,15 @@ function renderNotificationMessage(notification, myId) {
   const target = `your ${
     isReplyNotification
       ? 'comment'
-      : isDiscussionAnswerNotification
-      ? 'discussion topic'
+      : isSubjectResponse
+      ? 'subject topic'
       : rootType === 'user'
       ? 'profile'
-      : rootType === 'question'
-      ? 'subject'
       : rootType
   }${rootType === 'user' && !isReplyNotification ? '' : ': '}`;
   let contentTitle = isReplyNotification
     ? commentContent
-    : (isDiscussionAnswerNotification ? discussionTitle : rootTitle) || '';
+    : (isSubjectResponse ? subjectTitle : rootTitle) || '';
   let title =
     contentTitle.length > 50
       ? contentTitle.substr(0, 50) + '...'
@@ -347,10 +343,10 @@ function renderNotificationMessage(notification, myId) {
     title,
     id: isReplyNotification
       ? contentId
-      : type === 'discussion'
+      : type === 'subject'
       ? contentId
-      : isDiscussionAnswerNotification
-      ? discussionId
+      : isSubjectResponse
+      ? subjectId
       : rootId
   };
   return (
@@ -367,8 +363,8 @@ function renderNotificationMessage(notification, myId) {
           type={
             isReplyNotification
               ? 'comment'
-              : type === 'discussion' || isDiscussionAnswerNotification
-              ? 'discussion'
+              : type === 'subject' || isSubjectResponse
+              ? 'subject'
               : rootType
           }
         />

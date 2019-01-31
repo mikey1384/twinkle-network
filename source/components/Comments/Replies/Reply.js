@@ -33,7 +33,7 @@ class Reply extends Component {
     comment: PropTypes.shape({
       id: PropTypes.number.isRequired
     }),
-    discussion: PropTypes.object,
+    subject: PropTypes.object,
     dispatch: PropTypes.func.isRequired,
     innerRef: PropTypes.func,
     onAttachStar: PropTypes.func.isRequired,
@@ -74,7 +74,7 @@ class Reply extends Component {
       canDelete,
       canEdit,
       canStar,
-      discussion,
+      subject,
       innerRef = () => {},
       onAttachStar,
       onDelete,
@@ -212,7 +212,7 @@ class Reply extends Component {
                         disabled={determineXpButtonDisabled({
                           difficulty: this.determineDifficulty({
                             parent,
-                            discussion
+                            subject
                           }),
                           myId: userId,
                           xpRewardInterfaceShown,
@@ -224,7 +224,7 @@ class Reply extends Component {
                           {determineXpButtonDisabled({
                             difficulty: this.determineDifficulty({
                               parent,
-                              discussion
+                              subject
                             }),
                             myId: userId,
                             xpRewardInterfaceShown,
@@ -249,7 +249,7 @@ class Reply extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={this.determineDifficulty({ parent, discussion })}
+                difficulty={this.determineDifficulty({ parent, subject })}
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
@@ -262,7 +262,7 @@ class Reply extends Component {
             )}
             <RewardStatus
               noMarginForEditButton
-              difficulty={this.determineDifficulty({ parent, discussion })}
+              difficulty={this.determineDifficulty({ parent, subject })}
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.5rem',
@@ -305,13 +305,13 @@ class Reply extends Component {
     );
   }
 
-  determineDifficulty = ({ parent, discussion }) => {
+  determineDifficulty = ({ parent, subject }) => {
     const rootDifficulty =
       (parent.type !== 'video' ? parent.difficulty : 0) ||
       (parent.rootType !== 'video' ? parent.rootObj?.difficulty : 0);
     return (
       rootDifficulty ||
-      discussion?.difficulty ||
+      subject?.difficulty ||
       ((parent.type === 'video' && parent.difficulty > 0) ||
       (parent.rootType === 'video' && parent.rootObj?.difficulty > 0)
         ? 1

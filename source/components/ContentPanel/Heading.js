@@ -8,7 +8,7 @@ import LikeButton from 'components/Buttons/LikeButton';
 import { Color } from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
-import QuestionModal from './QuestionModal';
+import SubjectModal from './SubjectModal';
 import StarMark from 'components/StarMark';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
@@ -40,21 +40,20 @@ class Heading extends Component {
   };
 
   state = {
-    questionModalShown: false
+    subjectModalShown: false
   };
 
   render() {
     const {
       contentObj: {
         uploader = {},
-        rootObj = {},
         rootType,
-        rootId,
+        targetObj: { subject = {} } = {},
         timeStamp,
         type
       }
     } = this.props;
-    const { questionModalShown } = this.state;
+    const { subjectModalShown } = this.state;
     return (
       <header className="heading">
         <ProfilePic
@@ -85,7 +84,7 @@ class Heading extends Component {
               {timeStamp ? `(${timeSince(timeStamp)})` : ''}
             </small>
           </div>
-          {type === 'comment' && rootType !== 'url' && rootType !== 'user' && (
+          {type === 'comment' && rootType !== 'user' && (
             <div
               style={{
                 width: '20%',
@@ -99,17 +98,11 @@ class Heading extends Component {
             </div>
           )}
         </div>
-        {questionModalShown && (
-          <QuestionModal
-            onHide={() => this.setState({ questionModalShown: false })}
-            question={rootObj.content}
-            uploadAnswer={this.onAnswerUpload}
-            parent={{
-              id: rootObj.id,
-              type: rootType,
-              rootId,
-              rootType
-            }}
+        {subjectModalShown && (
+          <SubjectModal
+            onHide={() => this.setState({ subjectModalShown: false })}
+            subject={subject}
+            uploadResponse={this.onResponseUpload}
           />
         )}
       </header>
@@ -125,7 +118,7 @@ class Heading extends Component {
     const contentLabel =
       rootType === 'url'
         ? 'link'
-        : rootType === 'question'
+        : rootType === 'subject'
         ? 'a subject'
         : rootType;
     switch (type) {
@@ -157,28 +150,21 @@ class Heading extends Component {
             <ContentLink content={contentObj} type={type} />{' '}
           </>
         );
-      case 'question':
-        return (
-          <>
-            <UsernameText user={uploader} color={Color.blue()} /> posted a{' '}
-            <ContentLink
-              content={{ id, title: 'subject' }}
-              type={type}
-              style={{ color: Color.green() }}
-            />{' '}
-          </>
-        );
-      case 'discussion':
+      case 'subject':
         return (
           <>
             <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
-              content={{ id, title: 'discussion' }}
+              content={{ id, title: 'subject' }}
               type={type}
               style={{ color: Color.green() }}
             />
-            &nbsp;on {contentLabel}:{' '}
-            <ContentLink content={rootObj} type={rootType} />{' '}
+            {rootObj.id && (
+              <>
+                &nbsp;on {contentLabel}:{' '}
+                <ContentLink content={rootObj} type={rootType} />{' '}
+              </>
+            )}
           </>
         );
       default:
@@ -186,11 +172,11 @@ class Heading extends Component {
     }
   };
 
-  onAnswerUpload = async({ content, parent }) => {
+  onResponseUpload = async({ content, subject }) => {
     const { dispatch, onCommentSubmit } = this.props;
     const data = await uploadComment({
       content,
-      parent,
+      parent: subject,
       dispatch
     });
     if (data) onCommentSubmit(data);
@@ -201,15 +187,16 @@ class Heading extends Component {
       contentObj: {
         rootId,
         rootObj: { content, likes = [], difficulty } = {},
-        rootType
+        rootType,
+        subjectId
       },
       attachedVideoShown,
       myId,
       onPlayVideoClick
     } = this.props;
     const userLikedVideo = likes.map(like => like.id).indexOf(myId) !== -1;
-    if (!content) return null;
     if (rootType === 'video') {
+      if (!content) return null;
       return (
         <>
           {attachedVideoShown ? (
@@ -267,11 +254,11 @@ class Heading extends Component {
           )}
         </>
       );
-    } else if (rootType === 'question') {
+    } else if (subjectId) {
       return (
         <Button
           success
-          onClick={() => this.setState({ questionModalShown: true })}
+          onClick={() => this.setState({ subjectModalShown: true })}
         >
           <Icon icon="comment" />
           <span style={{ marginLeft: '0.7rem' }}>Respond</span>

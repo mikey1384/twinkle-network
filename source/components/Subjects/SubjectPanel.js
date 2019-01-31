@@ -23,13 +23,13 @@ import Link from 'components/Link';
 import withContext from 'components/Wrappers/withContext';
 import Context from './Context';
 import {
-  deleteDiscussion,
-  editDiscussion,
+  deleteSubject,
+  editSubject,
   loadComments
 } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 
-class DiscussionPanel extends Component {
+class SubjectPanel extends Component {
   static propTypes = {
     attachStar: PropTypes.func.isRequired,
     authLevel: PropTypes.number,
@@ -42,21 +42,21 @@ class DiscussionPanel extends Component {
     dispatch: PropTypes.func.isRequired,
     editRewardComment: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
-    onLoadDiscussionComments: PropTypes.func.isRequired,
+    onLoadSubjectComments: PropTypes.func.isRequired,
     onLoadMoreComments: PropTypes.func.isRequired,
     loadMoreCommentsButton: PropTypes.bool.isRequired,
     myId: PropTypes.number,
     numComments: PropTypes.string,
     onDelete: PropTypes.func.isRequired,
-    onDiscussionDelete: PropTypes.func.isRequired,
-    onDiscussionEditDone: PropTypes.func.isRequired,
+    onSubjectDelete: PropTypes.func.isRequired,
+    onSubjectEditDone: PropTypes.func.isRequired,
     onEditDone: PropTypes.func.isRequired,
     onLikeClick: PropTypes.func.isRequired,
     onLoadMoreReplies: PropTypes.func.isRequired,
     onUploadComment: PropTypes.func.isRequired,
     onUploadReply: PropTypes.func.isRequired,
     rootDifficulty: PropTypes.number,
-    setDiscussionDifficulty: PropTypes.func.isRequired,
+    setSubjectDifficulty: PropTypes.func.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
       .isRequired,
     title: PropTypes.string.isRequired,
@@ -105,7 +105,7 @@ class DiscussionPanel extends Component {
       onLoadMoreReplies,
       onUploadComment,
       onUploadReply,
-      setDiscussionDifficulty,
+      setSubjectDifficulty,
       contentId,
       type,
       rootDifficulty
@@ -142,7 +142,7 @@ class DiscussionPanel extends Component {
           >
             {!onEdit && (
               <Link
-                to={`/discussions/${id}`}
+                to={`/subjects/${id}`}
                 style={{
                   fontSize: '2.5rem',
                   color: Color.green(),
@@ -260,7 +260,7 @@ class DiscussionPanel extends Component {
                     rootObj: {
                       difficulty: rootDifficulty
                     },
-                    type: 'discussion'
+                    type: 'subject'
                   }}
                 />
               ) : (
@@ -306,17 +306,17 @@ class DiscussionPanel extends Component {
         {confirmModalShown && (
           <ConfirmModal
             onHide={() => this.setState({ confirmModalShown: false })}
-            title="Remove Discussion"
+            title="Remove Subject"
             onConfirm={this.onDelete}
           />
         )}
         {difficultyModalShown && (
           <DifficultyModal
-            type="discussion"
+            type="subject"
             contentId={id}
             difficulty={difficulty}
             onSubmit={data => {
-              setDiscussionDifficulty(data);
+              setSubjectDifficulty(data);
               this.setState({ difficultyModalShown: false });
             }}
             onHide={() => this.setState({ difficultyModalShown: false })}
@@ -360,26 +360,26 @@ class DiscussionPanel extends Component {
 
   loadMoreComments = data => {
     const { id, onLoadMoreComments } = this.props;
-    onLoadMoreComments({ data, discussionId: id });
+    onLoadMoreComments({ data, subjectId: id });
   };
 
   onDelete = async() => {
-    const { dispatch, id, onDiscussionDelete } = this.props;
+    const { dispatch, id, onSubjectDelete } = this.props;
     try {
-      await deleteDiscussion({ discussionId: id, dispatch });
+      await deleteSubject({ subjectId: id, dispatch });
       this.setState({ confirmModalShown: false });
-      onDiscussionDelete(id);
+      onSubjectDelete(id);
     } catch (error) {
       return console.error(error);
     }
   };
 
   onExpand = async() => {
-    const { onLoadDiscussionComments, id } = this.props;
+    const { onLoadSubjectComments, id } = this.props;
     this.setState({ expanded: true });
     try {
-      const data = await loadComments({ type: 'discussion', id, limit: 10 });
-      if (data) onLoadDiscussionComments({ data, discussionId: id });
+      const data = await loadComments({ type: 'subject', id, limit: 10 });
+      if (data) onLoadSubjectComments({ data, subjectId: id });
     } catch (error) {
       console.error(error.response || error);
     }
@@ -387,14 +387,14 @@ class DiscussionPanel extends Component {
 
   onEditDone = async() => {
     const { editedTitle, editedDescription } = this.state;
-    const { id, dispatch, onDiscussionEditDone } = this.props;
-    const editedDiscussion = await editDiscussion({
-      discussionId: id,
+    const { id, dispatch, onSubjectEditDone } = this.props;
+    const editedSubject = await editSubject({
+      subjectId: id,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
       dispatch
     });
-    onDiscussionEditDone({ editedDiscussion, discussionId: id });
+    onSubjectEditDone({ editedSubject, subjectId: id });
     this.setState({
       onEdit: false,
       editDoneButtonDisabled: true
@@ -411,4 +411,4 @@ export default connect(
     canEditDifficulty: state.UserReducer.canEditDifficulty
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: DiscussionPanel, Context }));
+)(withContext({ Component: SubjectPanel, Context }));

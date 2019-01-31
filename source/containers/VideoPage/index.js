@@ -23,7 +23,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import Discussions from 'components/Discussions';
+import Subjects from 'components/Subjects';
 import RewardStatus from 'components/RewardStatus';
 import request from 'axios';
 import { URL } from 'constants/URL';
@@ -33,7 +33,7 @@ import {
   auth,
   handleError,
   loadComments,
-  loadDiscussions
+  loadSubjects
 } from 'helpers/requestHelpers';
 
 class VideoPage extends Component {
@@ -74,11 +74,11 @@ class VideoPage extends Component {
         content: undefined,
         description: undefined,
         difficulty: undefined,
-        discussions: [],
+        subjects: [],
         hasHqThumb: undefined,
         likes: [],
         loadMoreCommentsButton: false,
-        loadMoreDiscussionsButton: false,
+        loadMoreSubjectsButton: false,
         questions: [],
         tags: [],
         stars: [],
@@ -100,11 +100,11 @@ class VideoPage extends Component {
     } = this.props;
     this.mounted = true;
     await this.loadVideoPage(params.videoId);
-    const discussionsObj = await loadDiscussions({
+    const subjectsObj = await loadSubjects({
       type: 'video',
       contentId: params.videoId
     });
-    this.loadVideoDiscussions(discussionsObj);
+    this.loadVideoSubjects(subjectsObj);
     const comments = await loadComments({ id: params.videoId, type: 'video' });
     if (this.mounted) {
       if (comments) this.loadVideoComments(comments);
@@ -119,11 +119,11 @@ class VideoPage extends Component {
     if (prevProps.match.params.videoId !== params.videoId) {
       this.setState({ changingPage: true });
       await this.loadVideoPage(params.videoId);
-      const discussionsObj = await loadDiscussions({
+      const subjectsObj = await loadSubjects({
         type: 'video',
         contentId: params.videoId
       });
-      this.loadVideoDiscussions(discussionsObj);
+      this.loadVideoSubjects(subjectsObj);
       const data = await loadComments({ id: params.videoId, type: 'video' });
       if (this.mounted) {
         this.loadVideoComments(data);
@@ -171,11 +171,11 @@ class VideoPage extends Component {
         content,
         description,
         difficulty,
-        discussions,
+        subjects,
         hasHqThumb,
         likes,
         loadMoreCommentsButton,
-        loadMoreDiscussionsButton,
+        loadMoreSubjectsButton,
         questions,
         tags,
         stars,
@@ -348,15 +348,15 @@ class VideoPage extends Component {
                   uploaderName={uploader.username}
                 />
               </div>
-              <Discussions
-                loadMoreButton={loadMoreDiscussionsButton}
-                discussions={discussions}
-                onLoadMoreDiscussions={this.loadMoreDiscussions}
-                onLoadDiscussionComments={this.loadDiscussionComments}
-                onDiscussionEditDone={this.editDiscussion}
-                onDiscussionDelete={this.deleteDiscussion}
-                setDiscussionDifficulty={this.setDiscussionDifficulty}
-                uploadDiscussion={this.uploadDiscussion}
+              <Subjects
+                loadMoreButton={loadMoreSubjectsButton}
+                subjects={subjects}
+                onLoadMoreSubjects={this.loadMoreSubjects}
+                onLoadSubjectComments={this.loadSubjectComments}
+                onSubjectEditDone={this.editSubject}
+                onSubjectDelete={this.deleteSubject}
+                setSubjectDifficulty={this.setSubjectDifficulty}
+                uploadSubject={this.uploadSubject}
                 contentId={videoId}
                 type="video"
                 rootDifficulty={difficulty}
@@ -366,8 +366,8 @@ class VideoPage extends Component {
                   onDelete: this.deleteComment,
                   onEditDone: this.editComment,
                   onLikeClick: this.likeComment,
-                  onLoadMoreComments: this.loadMoreDiscussionComments,
-                  onLoadMoreReplies: this.loadMoreDiscussionReplies,
+                  onLoadMoreComments: this.loadMoreSubjectComments,
+                  onLoadMoreReplies: this.loadMoreSubjectReplies,
                   onUploadComment: this.uploadComment,
                   onUploadReply: this.uploadReply
                 }}
@@ -466,9 +466,9 @@ class VideoPage extends Component {
           data.contentType === 'video'
             ? (state.contentObj.stars || []).concat(data)
             : state.contentObj.stars || [],
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             stars:
               comment.id === data.contentId
@@ -517,10 +517,10 @@ class VideoPage extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments
+            ...subject,
+            comments: subject.comments
               ?.filter(comment => comment.id !== commentId)
               .map(comment => ({
                 ...comment,
@@ -543,12 +543,12 @@ class VideoPage extends Component {
     }));
   };
 
-  deleteDiscussion = discussionId => {
+  deleteSubject = subjectId => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.filter(
-          discussion => discussion.id !== discussionId
+        subjects: state.contentObj.subjects.filter(
+          subject => subject.id !== subjectId
         )
       }
     }));
@@ -576,9 +576,9 @@ class VideoPage extends Component {
           ...star,
           rewardComment: star.id === id ? text : star.rewardComment
         })),
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             stars: comment.stars?.map(star => ({
               ...star,
@@ -615,9 +615,9 @@ class VideoPage extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             content: comment.id === commentId ? editedComment : comment.content,
             replies: comment.replies.map(reply => ({
@@ -638,20 +638,20 @@ class VideoPage extends Component {
     }));
   };
 
-  editDiscussion = ({ editedDiscussion, discussionId }) => {
+  editSubject = ({ editedSubject, subjectId }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
           title:
-            discussion.id === discussionId
-              ? editedDiscussion.title
-              : discussion.title,
+            subject.id === subjectId
+              ? editedSubject.title
+              : subject.title,
           description:
-            discussion.id === discussionId
-              ? editedDiscussion.description
-              : discussion.description
+            subject.id === subjectId
+              ? editedSubject.description
+              : subject.description
         }))
       }
     }));
@@ -681,10 +681,10 @@ class VideoPage extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 likes: comment.id === commentId ? likes : comment.likes,
@@ -725,22 +725,22 @@ class VideoPage extends Component {
     likeVideo({ likes, videoId });
   };
 
-  loadDiscussionComments = ({
+  loadSubjectComments = ({
     data: { comments, loadMoreButton },
-    discussionId
+    subjectId
   }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          if (discussion.id === discussionId) {
+        subjects: state.contentObj.subjects.map(subject => {
+          if (subject.id === subjectId) {
             return {
-              ...discussion,
+              ...subject,
               comments: comments,
               loadMoreCommentsButton: loadMoreButton
             };
           }
-          return discussion;
+          return subject;
         })
       }
     }));
@@ -756,45 +756,45 @@ class VideoPage extends Component {
     }));
   };
 
-  loadMoreDiscussions = ({ results, loadMoreButton }) => {
+  loadMoreSubjects = ({ results, loadMoreButton }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.concat(results),
-        loadMoreDiscussionsButton: loadMoreButton
+        subjects: state.contentObj.subjects.concat(results),
+        loadMoreSubjectsButton: loadMoreButton
       }
     }));
   };
 
-  loadMoreDiscussionComments = ({
+  loadMoreSubjectComments = ({
     data: { comments, loadMoreButton },
-    discussionId
+    subjectId
   }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          if (discussion.id === discussionId) {
+        subjects: state.contentObj.subjects.map(subject => {
+          if (subject.id === subjectId) {
             return {
-              ...discussion,
-              comments: discussion.comments.concat(comments),
+              ...subject,
+              comments: subject.comments.concat(comments),
               loadMoreCommentsButton: loadMoreButton
             };
           }
-          return discussion;
+          return subject;
         })
       }
     }));
   };
 
-  loadMoreDiscussionReplies = ({ commentId, loadMoreButton, replies }) => {
+  loadMoreSubjectReplies = ({ commentId, loadMoreButton, replies }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 replies:
@@ -851,12 +851,12 @@ class VideoPage extends Component {
     }));
   };
 
-  loadVideoDiscussions = ({ results, loadMoreButton }) => {
+  loadVideoSubjects = ({ results, loadMoreButton }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: results,
-        loadMoreDiscussionsButton: loadMoreButton
+        subjects: results,
+        loadMoreSubjectsButton: loadMoreButton
       }
     }));
   };
@@ -980,17 +980,17 @@ class VideoPage extends Component {
     setDifficulty({ videoId: Number(contentId), difficulty });
   };
 
-  setDiscussionDifficulty = ({ contentId, difficulty }) => {
+  setSubjectDifficulty = ({ contentId, difficulty }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          return discussion.id === contentId
+        subjects: state.contentObj.subjects.map(subject => {
+          return subject.id === contentId
             ? {
-                ...discussion,
+                ...subject,
                 difficulty
               }
-            : discussion;
+            : subject;
         })
       }
     }));
@@ -1000,23 +1000,23 @@ class VideoPage extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
           comments:
-            discussion.id === comment.discussionId
-              ? [comment].concat(discussion.comments)
-              : discussion.comments
+            subject.id === comment.subjectId
+              ? [comment].concat(subject.comments)
+              : subject.comments
         })),
         comments: [comment].concat(state.contentObj.comments)
       }
     }));
   };
 
-  uploadDiscussion = data => {
+  uploadSubject = data => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: [data].concat(state.contentObj.discussions)
+        subjects: [data].concat(state.contentObj.subjects)
       }
     }));
   };
@@ -1086,10 +1086,10 @@ class VideoPage extends Component {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 replies:

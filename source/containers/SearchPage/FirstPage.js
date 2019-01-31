@@ -52,51 +52,38 @@ export default class FirstPage extends Component {
             }
           `}
         >
-          {['video', 'url', 'question', 'discussion'].map(
-            type =>
-              filter === type ? (
-                <nav key={type}>
-                  <p>
-                    Search for{' '}
-                    {(type === 'url'
-                      ? 'link'
-                      : type === 'question'
-                        ? 'subject'
-                        : type) + 's...'}
-                  </p>
-                  <div
+          {['video', 'url', 'subject'].map(type =>
+            filter === type ? (
+              <nav key={type}>
+                <p>Search for {(type === 'url' ? 'link' : type) + 's...'}</p>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    width: '100%'
+                  }}
+                >
+                  <Checkbox
+                    backgroundColor="#fff"
+                    label={`Always search for ${
+                      type === 'url' ? 'link' : type
+                    }s first:`}
+                    textIsClickable
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-around',
-                      width: '100%'
+                      width: 'auto',
+                      fontSize: '1.8rem',
+                      marginBottom: '0.5rem'
                     }}
-                  >
-                    <Checkbox
-                      backgroundColor="#fff"
-                      label={`Always search for ${
-                        type === 'url' ? 'link' : type
-                      }s first:`}
-                      textIsClickable
-                      style={{
-                        width: 'auto',
-                        fontSize: '1.8rem',
-                        marginBottom: '0.5rem'
-                      }}
-                      checked={filter === defaultFilter}
-                      onClick={this.setDefaultSearchFilter}
-                    />
-                  </div>
-                </nav>
-              ) : (
-                <a key={type} onClick={() => this.changeFilter(type)}>
-                  Search{' '}
-                  {(type === 'url'
-                    ? 'link'
-                    : type === 'question'
-                      ? 'subject'
-                      : type) + 's'}
-                </a>
-              )
+                    checked={filter === defaultFilter}
+                    onClick={this.setDefaultSearchFilter}
+                  />
+                </div>
+              </nav>
+            ) : (
+              <a key={type} onClick={() => this.changeFilter(type)}>
+                Search {(type === 'url' ? 'link' : type) + 's'}
+              </a>
+            )
           )}
         </div>
         <CloseText />

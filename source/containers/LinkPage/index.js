@@ -6,7 +6,7 @@ import Loading from 'components/Loading';
 import Embedly from 'components/Embedly';
 import { editLinkPage, likeLink } from 'redux/actions/LinkActions';
 import Comments from 'components/Comments';
-import Discussions from 'components/Discussions';
+import Subjects from 'components/Subjects';
 import LikeButton from 'components/Buttons/LikeButton';
 import Likers from 'components/Likers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
@@ -26,7 +26,7 @@ import {
   auth,
   handleError,
   loadComments,
-  loadDiscussions
+  loadSubjects
 } from 'helpers/requestHelpers';
 
 class LinkPage extends Component {
@@ -54,8 +54,8 @@ class LinkPage extends Component {
       title: undefined,
       content: undefined,
       description: undefined,
-      discussions: [],
-      discussionsLoadMoreButton: false,
+      subjects: [],
+      subjectLoadMoreButton: false,
       timeStamp: undefined,
       uploader: undefined,
       uploaderAuthLevel: undefined,
@@ -75,11 +75,11 @@ class LinkPage extends Component {
     } = this.props;
     try {
       await this.loadLinkPage(linkId);
-      const discussionsObj = await loadDiscussions({
+      const subjectsObj = await loadSubjects({
         type: 'url',
         contentId: linkId
       });
-      this.fetchDiscussions(discussionsObj);
+      this.fetchSubjects(subjectsObj);
       const commentsObj = await loadComments({
         id: linkId,
         type: 'url',
@@ -143,8 +143,8 @@ class LinkPage extends Component {
         comments,
         content,
         description,
-        discussions,
-        discussionsLoadMoreButton,
+        subjects,
+        subjectLoadMoreButton,
         id,
         likes,
         loadMoreCommentsButton,
@@ -298,7 +298,7 @@ class LinkPage extends Component {
             </div>
           )}
         </div>
-        <Discussions
+        <Subjects
           className={css`
             width: 60%;
             @media (max-width: ${mobileMaxWidth}) {
@@ -306,14 +306,14 @@ class LinkPage extends Component {
             }
           `}
           contentId={id}
-          loadMoreButton={discussionsLoadMoreButton}
-          discussions={discussions}
-          onLoadMoreDiscussions={this.fetchMoreDiscussions}
-          onLoadDiscussionComments={this.fetchDiscussionComments}
-          onDiscussionEditDone={this.editDiscussion}
-          onDiscussionDelete={this.deleteDiscussion}
-          setDiscussionDifficulty={this.setDiscussionDifficulty}
-          uploadDiscussion={this.uploadDiscussion}
+          loadMoreButton={subjectLoadMoreButton}
+          subjects={subjects}
+          onLoadMoreSubjects={this.fetchMoreSubjects}
+          onLoadSubjectComments={this.fetchSubjectResponses}
+          onSubjectEditDone={this.editSubject}
+          onSubjectDelete={this.deleteSubject}
+          setSubjectDifficulty={this.setSubjectDifficulty}
+          uploadSubject={this.uploadSubject}
           type="url"
           commentActions={{
             attachStar: this.attachStar,
@@ -321,8 +321,8 @@ class LinkPage extends Component {
             onDelete: this.deleteComment,
             onEditDone: this.editComment,
             onLikeClick: this.likeComment,
-            onLoadMoreComments: this.fetchMoreDiscussionComments,
-            onLoadMoreReplies: this.fetchMoreDiscussionReplies,
+            onLoadMoreComments: this.fetchMoreSubjectComments,
+            onLoadMoreReplies: this.fetchMoreSubjectReplies,
             onUploadComment: this.uploadComment,
             onUploadReply: this.uploadReply
           }}
@@ -408,9 +408,9 @@ class LinkPage extends Component {
                 : reply.stars || []
           }))
         })),
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             stars:
               comment.id === data.contentId
@@ -442,10 +442,10 @@ class LinkPage extends Component {
             }
           ]);
         }, []),
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments
+            ...subject,
+            comments: subject.comments
               ?.filter(comment => comment.id !== commentId)
               .map(comment => ({
                 ...comment,
@@ -459,12 +459,12 @@ class LinkPage extends Component {
     }));
   };
 
-  deleteDiscussion = discussionId => {
+  deleteSubject = subjectId => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.filter(
-          discussion => discussion.id !== discussionId
+        subjects: state.contentObj.subjects.filter(
+          subject => subject.id !== subjectId
         )
       }
     }));
@@ -482,9 +482,9 @@ class LinkPage extends Component {
             content: reply.id === commentId ? editedComment : reply.content
           }))
         })),
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             content: comment.id === commentId ? editedComment : comment.content,
             replies: comment.replies.map(reply => ({
@@ -497,20 +497,20 @@ class LinkPage extends Component {
     }));
   };
 
-  editDiscussion = ({ editedDiscussion, discussionId }) => {
+  editSubject = ({ editedSubject, subjectId }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
           title:
-            discussion.id === discussionId
-              ? editedDiscussion.title
-              : discussion.title,
+            subject.id === subjectId
+              ? editedSubject.title
+              : subject.title,
           description:
-            discussion.id === discussionId
-              ? editedDiscussion.description
-              : discussion.description
+            subject.id === subjectId
+              ? editedSubject.description
+              : subject.description
         }))
       }
     }));
@@ -566,9 +566,9 @@ class LinkPage extends Component {
               : []
           }))
         })),
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
-          comments: discussion.comments.map(comment => ({
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
+          comments: subject.comments.map(comment => ({
             ...comment,
             stars: comment.stars
               ? comment.stars.map(star => ({
@@ -611,76 +611,76 @@ class LinkPage extends Component {
     }));
   };
 
-  fetchDiscussions = ({ results, loadMoreButton }) => {
+  fetchSubjects = ({ results, loadMoreButton }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: results,
-        discussionsLoadMoreButton: loadMoreButton
+        subjects: results,
+        subjectLoadMoreButton: loadMoreButton
       }
     }));
   };
 
-  fetchDiscussionComments = ({
+  fetchSubjectResponses = ({
     data: { comments, loadMoreButton },
-    discussionId
+    subjectId
   }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          if (discussion.id === discussionId) {
+        subjects: state.contentObj.subjects.map(subject => {
+          if (subject.id === subjectId) {
             return {
-              ...discussion,
+              ...subject,
               comments: comments,
               loadMoreCommentsButton: loadMoreButton
             };
           }
-          return discussion;
+          return subject;
         })
       }
     }));
   };
 
-  fetchMoreDiscussions = ({ results, loadMoreButton }) => {
+  fetchMoreSubjects = ({ results, loadMoreButton }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.concat(results),
-        discussionsLoadMoreButton: loadMoreButton
+        subjects: state.contentObj.subjects.concat(results),
+        subjectLoadMoreButton: loadMoreButton
       }
     }));
   };
 
-  fetchMoreDiscussionComments = ({
+  fetchMoreSubjectComments = ({
     data: { comments, loadMoreButton },
-    discussionId
+    subjectId
   }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          if (discussion.id === discussionId) {
+        subjects: state.contentObj.subjects.map(subject => {
+          if (subject.id === subjectId) {
             return {
-              ...discussion,
-              comments: discussion.comments.concat(comments),
+              ...subject,
+              comments: subject.comments.concat(comments),
               loadMoreCommentsButton: loadMoreButton
             };
           }
-          return discussion;
+          return subject;
         })
       }
     }));
   };
 
-  fetchMoreDiscussionReplies = ({ commentId, loadMoreButton, replies }) => {
+  fetchMoreSubjectReplies = ({ commentId, loadMoreButton, replies }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 replies:
@@ -732,10 +732,10 @@ class LinkPage extends Component {
             })
           };
         }),
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 likes: comment.id === commentId ? likes : comment.likes,
@@ -781,17 +781,17 @@ class LinkPage extends Component {
     }
   };
 
-  setDiscussionDifficulty = ({ contentId, difficulty }) => {
+  setSubjectDifficulty = ({ contentId, difficulty }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: state.contentObj.discussions.map(discussion => {
-          return discussion.id === contentId
+        subjects: state.contentObj.subjects.map(subject => {
+          return subject.id === contentId
             ? {
-                ...discussion,
+                ...subject,
                 difficulty
               }
-            : discussion;
+            : subject;
         })
       }
     }));
@@ -802,22 +802,22 @@ class LinkPage extends Component {
       contentObj: {
         ...state.contentObj,
         comments: [comment].concat(state.contentObj.comments),
-        discussions: state.contentObj.discussions.map(discussion => ({
-          ...discussion,
+        subjects: state.contentObj.subjects.map(subject => ({
+          ...subject,
           comments:
-            discussion.id === comment.discussionId
-              ? [comment].concat(discussion.comments)
-              : discussion.comments
+            subject.id === comment.subjectId
+              ? [comment].concat(subject.comments)
+              : subject.comments
         }))
       }
     }));
   };
 
-  uploadDiscussion = discussion => {
+  uploadSubject = subject => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
-        discussions: [discussion].concat(state.contentObj.discussions)
+        subjects: [subject].concat(state.contentObj.subjects)
       }
     }));
   };
@@ -833,10 +833,10 @@ class LinkPage extends Component {
               ? comment.replies.concat([reply])
               : comment.replies
         })),
-        discussions: state.contentObj.discussions.map(discussion => {
+        subjects: state.contentObj.subjects.map(subject => {
           return {
-            ...discussion,
-            comments: discussion.comments.map(comment => {
+            ...subject,
+            comments: subject.comments.map(comment => {
               return {
                 ...comment,
                 replies:

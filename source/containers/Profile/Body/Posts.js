@@ -150,7 +150,7 @@ class Posts extends Component {
         <FilterBar style={{ height: '5rem' }} className="mobile">
           {[
             { key: 'all', label: 'All' },
-            { key: 'post', label: 'Discussions' },
+            { key: 'post', label: 'Subjects' },
             { key: 'video', label: 'Videos' },
             { key: 'url', label: 'Links' }
           ].map(type => {
@@ -258,7 +258,7 @@ class Posts extends Component {
             menuItems={[
               { key: 'all', label: 'All' },
               { key: 'comment', label: 'Comments' },
-              { key: 'post', label: 'Discussions' },
+              { key: 'post', label: 'Subjects' },
               { key: 'video', label: 'Videos' },
               { key: 'url', label: 'Links' }
             ]}

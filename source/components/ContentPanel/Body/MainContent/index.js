@@ -43,8 +43,7 @@ export default function MainContent({
   return (
     <ErrorBoundary>
       <div>
-        {(type === 'video' ||
-          (type === 'discussion' && rootType === 'video')) && (
+        {(type === 'video' || (type === 'subject' && rootType === 'video')) && (
           <VideoPlayer
             stretch
             difficulty={rootObj.difficulty || contentObj.difficulty}
@@ -72,9 +71,14 @@ export default function MainContent({
             videoCode={type === 'video' ? contentObj.content : undefined}
           />
         )}
-        {type === 'question' && !!contentObj.difficulty && (
-          <DifficultyBar difficulty={contentObj.difficulty} />
-        )}
+        {type === 'subject' &&
+          !!contentObj.difficulty &&
+          !contentObj.rootObj.id && (
+            <DifficultyBar
+              difficulty={contentObj.difficulty}
+              style={{ marginBottom: '-0.5rem' }}
+            />
+          )}
         {type === 'video' && (
           <TagStatus
             onAddTags={onAddTags}
@@ -107,15 +111,7 @@ export default function MainContent({
                   <LongText>{contentObj.content}</LongText>
                 </div>
               )}
-              {type === 'question' && (
-                <div className="question">
-                  <span style={{ color: Color.green() }}>Subject: </span>
-                  <span style={{ color: Color.darkerGray() }}>
-                    {cleanString(contentObj.content)}
-                  </span>
-                </div>
-              )}
-              {type === 'discussion' && (
+              {type === 'subject' && (
                 <div
                   style={{
                     whiteSpace: 'pre-wrap',
@@ -126,16 +122,22 @@ export default function MainContent({
                   <p
                     style={{
                       fontWeight: 'bold',
-                      fontSize: '2.5rem',
+                      fontSize: '2.2rem',
                       marginBottom: '1rem',
                       color: Color.green()
                     }}
                   >
                     Subject:
                   </p>
-                  <h3 style={{ marginBottom: '1rem' }}>
+                  <p
+                    style={{
+                      marginBottom: '1rem',
+                      fontWeight: 'bold',
+                      fontSize: '2.2rem'
+                    }}
+                  >
                     {cleanString(contentObj.title)}
-                  </h3>
+                  </p>
                 </div>
               )}
               <div
@@ -145,7 +147,7 @@ export default function MainContent({
                   overflowWrap: 'break-word',
                   wordBreak: 'break-word',
                   marginBottom:
-                    type === 'url' || type === 'question' ? '1rem' : '0.5rem'
+                    type === 'url' || type === 'subject' ? '1rem' : '0.5rem'
                 }}
               >
                 <LongText>
@@ -167,7 +169,7 @@ export default function MainContent({
               onDismiss={onEditDismiss}
               onEditContent={onEditContent}
               style={{
-                marginTop: (type === 'video' || type === 'discussion') && '1rem'
+                marginTop: (type === 'video' || type === 'subject') && '1rem'
               }}
               title={contentObj.title}
               type={type}
@@ -185,22 +187,23 @@ export default function MainContent({
             {...urlRelated}
           />
         )}
-        {type === 'discussion' && !!contentObj.difficulty && (
-          <DifficultyBar
-            style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
-            difficulty={contentObj.difficulty}
-          />
-        )}
-        {(type === 'comment' || type === 'discussion') &&
-          rootType === 'url' && (
-            <Embedly
-              small
-              title={cleanString(rootObj.title)}
-              url={rootObj.content}
-              id={contentObj.rootId}
-              {...urlRelated}
+        {type === 'subject' &&
+          !!contentObj.difficulty &&
+          !!contentObj.rootObj.id && (
+            <DifficultyBar
+              style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
+              difficulty={contentObj.difficulty}
             />
           )}
+        {(type === 'comment' || type === 'subject') && rootType === 'url' && (
+          <Embedly
+            small
+            title={cleanString(rootObj.title)}
+            url={rootObj.content}
+            id={contentObj.rootId}
+            {...urlRelated}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );

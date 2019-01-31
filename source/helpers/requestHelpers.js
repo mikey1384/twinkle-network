@@ -68,10 +68,10 @@ export const deleteContent = async({ id, type, dispatch }) => {
   }
 };
 
-export const deleteDiscussion = async({ discussionId, dispatch }) => {
+export const deleteSubject = async({ subjectId, dispatch }) => {
   try {
     await request.delete(
-      `${URL}/content/discussions?discussionId=${discussionId}`,
+      `${URL}/content/subjects?subjectId=${subjectId}`,
       auth()
     );
     return Promise.resolve();
@@ -112,16 +112,16 @@ export const editContent = async({
   }
 };
 
-export const editDiscussion = async({
-  discussionId,
+export const editSubject = async({
+  subjectId,
   editedTitle,
   editedDescription,
   dispatch
 }) => {
   try {
     const { data } = await request.put(
-      `${URL}/content/discussions`,
-      { discussionId, editedTitle, editedDescription },
+      `${URL}/content/subjects`,
+      { subjectId, editedTitle, editedDescription },
       auth()
     );
     return Promise.resolve(data);
@@ -243,14 +243,14 @@ export const loadMoreNotableContents = async({ userId, notables }) => {
   }
 };
 
-export const loadDiscussions = async({
+export const loadSubjects = async({
   type,
   contentId,
-  lastDiscussionId
+  lastSubjectId
 }) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/discussions?contentId=${contentId}&type=${type}&lastDiscussionId=${lastDiscussionId}`
+      `${URL}/content/subjects?contentId=${contentId}&type=${type}&lastSubjectId=${lastSubjectId}`
     );
     return Promise.resolve(data);
   } catch (error) {
@@ -542,7 +542,7 @@ export const uploadContent = async({
   }
 };
 
-export const uploadDiscussion = async({
+export const uploadSubject = async({
   type,
   contentId,
   title,
@@ -551,7 +551,7 @@ export const uploadDiscussion = async({
 }) => {
   try {
     const { data } = await request.post(
-      `${URL}/content/discussions`,
+      `${URL}/content/subjects`,
       { title, description, contentId, type },
       auth()
     );
