@@ -30,7 +30,7 @@ class NotiItem extends Component {
       case 'like':
         notificationMessage = (
           <>
-            <span style={{ color: Color.pink(), fontWeight: 'bold' }}>
+            <span style={{ color: Color.lightBlue(), fontWeight: 'bold' }}>
               likes
             </span>{' '}
             <span>your</span>{' '}
