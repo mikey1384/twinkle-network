@@ -481,6 +481,14 @@ class Body extends Component {
     return userLikedThis;
   };
 
+  determineDifficulty = ({ type, byUser, rootObj, targetObj }) => {
+    return byUser
+      ? 5
+      : rootObj.type === 'subject'
+      ? rootObj.difficulty
+      : (rootObj.difficulty > 0 ? 1 : 0) || targetObj.subject?.difficulty;
+  };
+
   determineXpButtonDisabled = () => {
     const {
       contentObj: { byUser, stars, rootObj = {}, targetObj = {} },
@@ -489,9 +497,11 @@ class Body extends Component {
     const { xpRewardInterfaceShown } = this.state;
     return determineXpButtonDisabled({
       stars,
-      difficulty: byUser
-        ? 5
-        : rootObj.difficulty || targetObj.subject?.difficulty,
+      difficulty: this.determineDifficulty({
+        byUser,
+        rootObj,
+        targetObj
+      }),
       myId,
       xpRewardInterfaceShown
     });

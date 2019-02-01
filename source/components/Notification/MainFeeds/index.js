@@ -35,7 +35,8 @@ class MainFeeds extends Component {
     selectNotiTab: PropTypes.func.isRequired,
     style: PropTypes.object,
     totalRewardAmount: PropTypes.number,
-    twinkleXP: PropTypes.number
+    twinkleXP: PropTypes.number,
+    userId: PropTypes.number
   };
 
   state = {
@@ -52,7 +53,8 @@ class MainFeeds extends Component {
       numNewNotis,
       rewards,
       style,
-      totalRewardAmount
+      totalRewardAmount,
+      userId
     } = this.props;
     const { loading } = this.state;
     const { originalTotalReward, originalTwinkleXP } = this.state;
@@ -102,6 +104,7 @@ class MainFeeds extends Component {
             </Banner>
           )}
           {activeTab === 'notification' &&
+            userId &&
             notifications.map(notification => {
               return (
                 <li className={notiFeedListItem} key={notification.id}>
@@ -222,7 +225,8 @@ export default connect(
   state => ({
     numNewNotis: state.NotiReducer.numNewNotis,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    twinkleXP: state.UserReducer.twinkleXP
+    twinkleXP: state.UserReducer.twinkleXP,
+    userId: state.UserReducer.userId
   }),
   {
     changeUserXP,
