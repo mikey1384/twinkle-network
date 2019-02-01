@@ -131,10 +131,14 @@ class MainFeeds extends Component {
                     <span
                       style={{
                         color:
-                          rewardAmount > 9
+                          rewardAmount === 25
                             ? Color.gold()
-                            : rewardAmount > 4
+                            : rewardAmount >= 10
+                            ? Color.rose()
+                            : rewardAmount >= 5
                             ? Color.orange()
+                            : rewardAmount >= 3
+                            ? Color.pink()
                             : Color.lightBlue(),
                         fontWeight: 'bold'
                       }}
