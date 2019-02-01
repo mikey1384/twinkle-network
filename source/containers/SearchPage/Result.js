@@ -132,16 +132,18 @@ export default function Result({ closeSearch, type, result }) {
                 >
                   {result.title}
                 </LongText>
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    color: Color.darkerGray()
-                  }}
-                >
-                  <LongText noExpand cleanString maxLines={4}>
-                    {result.description}
-                  </LongText>
-                </div>
+                {result.description && (
+                  <div
+                    style={{
+                      marginTop: '1rem',
+                      color: Color.darkerGray()
+                    }}
+                  >
+                    <LongText noExpand cleanString maxLines={4}>
+                      {result.description}
+                    </LongText>
+                  </div>
+                )}
                 <div
                   style={{
                     fontWeight: 'normal',
@@ -171,16 +173,18 @@ export default function Result({ closeSearch, type, result }) {
               <p style={{ color: Color.gray() }}>
                 Posted by {result.uploader.username}
               </p>
-              <div
-                style={{
-                  marginTop: '1rem',
-                  color: Color.darkerGray()
-                }}
-              >
-                <LongText noExpand cleanString maxLines={4}>
-                  {result.description}
-                </LongText>
-              </div>
+              {result.description && (
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    color: Color.darkerGray()
+                  }}
+                >
+                  <LongText noExpand cleanString maxLines={4}>
+                    {result.description}
+                  </LongText>
+                </div>
+              )}
             </div>
           )}
           {type === 'url' && (
