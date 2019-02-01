@@ -29,7 +29,7 @@ export default function ContentLink({
     <Link
       style={{
         fontWeight: 'bold',
-        color: type === 'video' && byUser ? Color.orange() : Color.blue(),
+        color: type === 'video' && byUser ? Color.brown() : Color.blue(),
         ...style
       }}
       to={`/${destination}/${type === 'user' ? username : id}`}
