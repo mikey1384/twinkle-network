@@ -6,6 +6,7 @@ import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
+import { truncateText } from 'helpers/stringHelpers';
 
 class NotiItem extends Component {
   static propTypes = {
@@ -36,7 +37,7 @@ class NotiItem extends Component {
                 id: targetObj.id,
                 title: `${
                   targetObj.type === 'url' ? 'link' : targetObj.type
-                } (${targetObj.content})`
+                } (${truncateText({ text: targetObj.content, limit: 100 })})`
               }}
             />
           </>
@@ -71,7 +72,7 @@ class NotiItem extends Component {
                 id: targetObj.id,
                 title: `${
                   targetObj.type === 'url' ? 'link' : targetObj.type
-                } (${targetObj.content})`
+                } (${truncateText({ text: targetObj.content, limit: 100 })})`
               }}
             />
           </>
@@ -108,9 +109,12 @@ class NotiItem extends Component {
                 }${
                   !isReply && targetObj.content === 'user'
                     ? ''
-                    : ` (${
-                        isReply ? targetComment.content : targetObj.content
-                      })`
+                    : ` (${truncateText({
+                        text: isReply
+                          ? targetComment.content
+                          : targetObj.content,
+                        limit: 100
+                      })})`
                 }`
               }}
             />
@@ -119,7 +123,10 @@ class NotiItem extends Component {
               type="comment"
               content={{
                 id: actionObj.id,
-                title: `"${actionObj.content}"`
+                title: `"${truncateText({
+                  text: actionObj.content,
+                  limit: 100
+                })}"`
               }}
               style={{ color: Color.green() }}
             />
@@ -134,7 +141,10 @@ class NotiItem extends Component {
               type="subject"
               content={{
                 id: actionObj.id,
-                title: `subject (${actionObj.content})`
+                title: `subject (${truncateText({
+                  text: actionObj.content,
+                  limit: 100
+                })})`
               }}
               style={{ color: Color.green() }}
             />{' '}
@@ -145,7 +155,7 @@ class NotiItem extends Component {
                 id: targetObj.id,
                 title: `${
                   targetObj.type === 'url' ? 'link' : targetObj.type
-                } (${targetObj.content})`
+                } (${truncateText({ text: targetObj.content, limit: 100 })})`
               }}
             />
           </>
