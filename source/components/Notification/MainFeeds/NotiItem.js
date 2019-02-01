@@ -30,7 +30,10 @@ class NotiItem extends Component {
       case 'like':
         notificationMessage = (
           <>
-            <span>likes your </span>
+            <span style={{ color: Color.pink(), fontWeight: 'bold' }}>
+              likes
+            </span>{' '}
+            <span>your</span>{' '}
             <ContentLink
               type={targetObj.type}
               content={{
