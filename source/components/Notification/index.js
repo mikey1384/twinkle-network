@@ -244,7 +244,6 @@ class Notification extends Component {
               notifications={notifications}
               rewards={rewards}
               selectNotiTab={() => this.setState({ activeTab: 'notification' })}
-              myId={myId}
               style={{ marginTop: loaded && '1rem' }}
             />
           </section>

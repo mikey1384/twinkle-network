@@ -1,6 +1,7 @@
 import request from 'axios';
 import { logout, openSigninModal } from 'redux/actions/UserActions';
 import { URL } from 'constants/URL';
+import { clientVersion } from 'constants/defaultValues';
 import { queryStringForArray } from 'helpers/stringHelpers';
 
 export const token = () =>
@@ -243,11 +244,7 @@ export const loadMoreNotableContents = async({ userId, notables }) => {
   }
 };
 
-export const loadSubjects = async({
-  type,
-  contentId,
-  lastSubjectId
-}) => {
+export const loadSubjects = async({ type, contentId, lastSubjectId }) => {
   try {
     const { data } = await request.get(
       `${URL}/content/subjects?contentId=${contentId}&type=${type}&lastSubjectId=${lastSubjectId}`
@@ -386,6 +383,7 @@ export const reorderPlaylistVideos = async({
 
 export const reportBug = async({ message, info }) => {
   await request.post(`${URL}/user/error`, {
+    clientVersion,
     message,
     info,
     token: auth()?.headers?.authorization

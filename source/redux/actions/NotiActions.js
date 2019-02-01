@@ -2,9 +2,9 @@ import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { URL } from 'constants/URL';
 import NOTI from '../constants/Noti';
+import { clientVersion } from 'constants/defaultValues';
 
 const API_URL = `${URL}/notification`;
-const appVersion = '0.1.80';
 
 export const changeSocketStatus = connected => ({
   type: NOTI.CHANGE_SOCKET_STATUS,
@@ -14,7 +14,7 @@ export const changeSocketStatus = connected => ({
 export const checkVersion = () => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}/version?version=${appVersion}`
+      `${API_URL}/version?version=${clientVersion}`
     );
     dispatch({
       type: NOTI.CHECK_VERSION,
@@ -61,10 +61,7 @@ export const fetchNotifications = () => async dispatch => {
 
 export const loadMoreNotifications = lastId => async dispatch => {
   try {
-    const { data } = await request.get(
-      `${API_URL}/more?lastId=${lastId}`,
-      auth()
-    );
+    const { data } = await request.get(`${API_URL}?lastId=${lastId}`, auth());
     dispatch({
       type: NOTI.LOAD_MORE,
       data

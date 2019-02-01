@@ -16,6 +16,7 @@ import {
 import { changeUserXP } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import Rankings from './Rankings';
+import NotiItem from './NotiItem';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
@@ -27,31 +28,9 @@ class MainFeeds extends Component {
     loadMore: PropTypes.object.isRequired,
     loadMoreNotifications: PropTypes.func.isRequired,
     loadMoreRewards: PropTypes.func.isRequired,
-    myId: PropTypes.number,
     numNewNotis: PropTypes.number,
     activeTab: PropTypes.string,
-    notifications: PropTypes.arrayOf(
-      PropTypes.shape({
-        contentId: PropTypes.number,
-        commentContent: PropTypes.string,
-        subjectId: PropTypes.number,
-        subjectTitle: PropTypes.string,
-        subjectUploader: PropTypes.number,
-        id: PropTypes.number.isRequired,
-        reward: PropTypes.object,
-        rootCommentUploader: PropTypes.oneOfType([
-          PropTypes.number,
-          PropTypes.string
-        ]),
-        rootTitle: PropTypes.string,
-        rootType: PropTypes.string.isRequired,
-        rootId: PropTypes.number.isRequired,
-        timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        type: PropTypes.string.isRequired,
-        userId: PropTypes.number.isRequired,
-        username: PropTypes.string.isRequired
-      })
-    ).isRequired,
+    notifications: PropTypes.array.isRequired,
     rewards: PropTypes.array,
     selectNotiTab: PropTypes.func.isRequired,
     style: PropTypes.object,
@@ -67,7 +46,6 @@ class MainFeeds extends Component {
 
   render() {
     const {
-      myId,
       loadMore,
       activeTab,
       notifications,
@@ -127,10 +105,7 @@ class MainFeeds extends Component {
             notifications.map(notification => {
               return (
                 <li className={notiFeedListItem} key={notification.id}>
-                  {renderNotificationMessage(notification, myId)}
-                  <small style={{ color: Color.gray() }}>
-                    {timeSince(notification.timeStamp)}
-                  </small>
+                  <NotiItem notification={notification} />
                 </li>
               );
             })}
@@ -253,140 +228,3 @@ export default connect(
     loadMoreRewards
   }
 )(MainFeeds);
-
-function renderNotificationMessage(notification, myId) {
-  const {
-    contentId,
-    subjectId,
-    type,
-    reward = {},
-    rootType,
-    rootTitle,
-    rootId,
-    userId,
-    username,
-    commentContent,
-    rootCommentUploader,
-    subjectTitle,
-    subjectUploader
-  } = notification;
-  let action = '';
-  let isReplyNotification =
-    commentContent && Number(rootCommentUploader) === myId;
-  let isSubjectResponse = subjectTitle && subjectUploader === myId;
-  if (isReplyNotification) {
-    action = returnCommentActionText('reply');
-  } else if (isSubjectResponse) {
-    action = returnCommentActionText('comment');
-  } else {
-    switch (type) {
-      case 'reward':
-        action = (
-          <>
-            <span
-              style={{
-                fontWeight: 'bold',
-                color:
-                  reward.rewardAmount > 9
-                    ? Color.gold()
-                    : reward.rewardAmount > 4
-                    ? Color.orange()
-                    : Color.lightBlue()
-              }}
-            >
-              rewarded you{' '}
-              {reward.rewardAmount === 1 ? 'a' : reward.rewardAmount}{' '}
-              {reward.rewardType}
-              {reward.rewardAmount > 1 ? 's' : ''}
-            </span>{' '}
-            for
-          </>
-        );
-        break;
-      case 'like':
-        action = 'likes';
-        break;
-      case 'comment':
-        action = returnCommentActionText(
-          rootType === 'user'
-            ? rootType
-            : rootType === 'subject'
-            ? 'subject'
-            : 'comment'
-        );
-        break;
-      case 'subject':
-        action = 'added a subject to';
-        break;
-      default:
-        break;
-    }
-  }
-  const target = `your ${
-    isReplyNotification
-      ? 'comment'
-      : isSubjectResponse
-      ? 'subject topic'
-      : rootType === 'user'
-      ? 'profile'
-      : rootType
-  }${rootType === 'user' && !isReplyNotification ? '' : ': '}`;
-  let contentTitle = isReplyNotification
-    ? commentContent
-    : (isSubjectResponse ? subjectTitle : rootTitle) || '';
-  let title =
-    contentTitle.length > 50
-      ? contentTitle.substr(0, 50) + '...'
-      : contentTitle;
-  if (isReplyNotification) title = `"${title}"`;
-  const content = {
-    title,
-    id: isReplyNotification
-      ? contentId
-      : type === 'subject'
-      ? contentId
-      : isSubjectResponse
-      ? subjectId
-      : rootId
-  };
-  return (
-    <div>
-      <UsernameText
-        user={{ id: userId, username: username }}
-        color={Color.blue()}
-      />
-      &nbsp;
-      {action} {target}
-      {!(rootType === 'user' && !isReplyNotification) && (
-        <ContentLink
-          content={content}
-          type={
-            isReplyNotification
-              ? 'comment'
-              : type === 'subject' || isSubjectResponse
-              ? 'subject'
-              : rootType
-          }
-        />
-      )}
-    </div>
-  );
-
-  function returnCommentActionText(type) {
-    const title =
-      type === 'comment'
-        ? 'commented on'
-        : type === 'reply'
-        ? 'replied to'
-        : type === 'subject'
-        ? 'responded to'
-        : 'left a message on';
-    return (
-      <ContentLink
-        style={{ color: Color.green() }}
-        content={{ id: contentId, title }}
-        type="comment"
-      />
-    );
-  }
-}
