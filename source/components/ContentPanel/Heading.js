@@ -221,8 +221,9 @@ class Heading extends Component {
                 onClick={onPlayVideoClick}
               >
                 <VideoThumbImage
+                  playIcon
                   difficulty={difficulty}
-                  height="8rem"
+                  height="7rem"
                   src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                 />
               </div>

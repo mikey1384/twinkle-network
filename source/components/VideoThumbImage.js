@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
+import { css } from 'emotion';
 
 const API_URL = `${URL}/video`;
 const xp = rewardValue.star;
@@ -15,6 +16,7 @@ class VideoThumbImage extends Component {
   static propTypes = {
     height: PropTypes.string,
     difficulty: PropTypes.number,
+    playIcon: PropTypes.bool,
     src: PropTypes.string.isRequired,
     userId: PropTypes.number,
     videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -55,7 +57,7 @@ class VideoThumbImage extends Component {
   }
 
   render() {
-    const { src, height = '55%', difficulty } = this.props;
+    const { src, height = '55%', difficulty, playIcon } = this.props;
     const { xpEarned } = this.state;
     return (
       <div
@@ -84,6 +86,21 @@ class VideoThumbImage extends Component {
             borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
           }}
         />
+        {playIcon && (
+          <a
+            className={css`
+              position: absolute;
+              display: block;
+              background: url('/img/play-button-image.png');
+              background-size: contain;
+              height: 3rem;
+              width: 3rem;
+              top: 50%;
+              left: 50%;
+              margin: -1.5rem 0 0 -1.5rem;
+            `}
+          />
+        )}
         {!!difficulty && (
           <div
             style={{
