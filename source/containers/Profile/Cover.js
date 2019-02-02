@@ -78,28 +78,31 @@ class Cover extends Component {
       imageUri,
       processing
     } = this.state;
+    const showCover =
+      rank <= 30 &&
+      rank > 0 &&
+      !!this.backgroundImageObj[selectedTheme || profileTheme]?.[
+        moment().month()
+      ];
+    const coverObj = showCover
+      ? {
+          color: Color.gold(),
+          backgroundImage: `url(${
+            this.backgroundImageObj[selectedTheme || profileTheme][
+              moment().month()
+            ]
+          })`,
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat'
+        }
+      : { color: '#fff' };
     return (
       <>
         <div
           style={{
             background:
               profileThemes[selectedTheme || profileTheme || 'logoBlue'].color,
-            ...(rank <= 30 &&
-            rank > 0 &&
-            !!this.backgroundImageObj[selectedTheme || profileTheme]?.[
-              moment().month()
-            ]
-              ? {
-                  color: Color.gold(),
-                  backgroundImage: `url(${
-                    this.backgroundImageObj[selectedTheme || profileTheme][
-                      moment().month()
-                    ]
-                  })`,
-                  backgroundSize: '100% 100%',
-                  backgroundRepeat: 'no-repeat'
-                }
-              : { color: '#fff' })
+            ...coverObj
           }}
           className={css`
             height: 26rem;
@@ -122,11 +125,6 @@ class Cover extends Component {
               > p {
                 font-size: 2rem;
                 line-height: 1rem;
-                ${(selectedTheme || profileTheme) === 'black' &&
-                rank <= 30 &&
-                moment().month() === 11
-                  ? `color: #000;`
-                  : ''};
               }
               @media (max-width: ${mobileMaxWidth}) {
                 margin-left: 15rem;
@@ -301,6 +299,7 @@ class Cover extends Component {
       onSelectTheme,
       profile: { profileTheme }
     } = this.props;
+    onSelectTheme('logoBlue');
     onSelectTheme(profileTheme || 'logoBlue');
     this.setState({ colorSelectorShown: false });
   };
