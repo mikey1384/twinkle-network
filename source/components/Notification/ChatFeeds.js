@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { loadChat } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { initChat } from 'redux/actions/ChatActions';
+import { profileThemes } from 'constants/defaultValues';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 
@@ -15,6 +15,7 @@ class ChatFeeds extends Component {
     content: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     initChat: PropTypes.func.isRequired,
+    profileTheme: PropTypes.string,
     reloadedBy: PropTypes.number,
     reloaderName: PropTypes.string,
     reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -25,7 +26,8 @@ class ChatFeeds extends Component {
   };
 
   render() {
-    const { content, style = {} } = this.props;
+    const { content, profileTheme, style = {} } = this.props;
+    const themeColor = profileTheme || 'logoBlue';
     return (
       <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
         <li
@@ -41,7 +43,7 @@ class ChatFeeds extends Component {
           <p
             style={{
               fontWeight: 'bold',
-              color: Color.logoBlue(),
+              color: profileThemes[themeColor].color,
               fontSize: '2rem'
             }}
           >
@@ -96,7 +98,9 @@ class ChatFeeds extends Component {
 }
 
 export default connect(
-  null,
+  state => ({
+    profileTheme: state.UserReducer.profileTheme
+  }),
   dispatch => ({
     dispatch,
     initChat: data => dispatch(initChat(data))
