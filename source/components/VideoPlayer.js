@@ -12,7 +12,6 @@ import {
 } from 'redux/actions/VideoActions';
 import { changeUserXP } from 'redux/actions/UserActions';
 import request from 'axios';
-import StarMark from 'components/StarMark';
 import { URL } from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ProgressBar from 'components/ProgressBar';
@@ -24,7 +23,8 @@ import { rewardValue } from 'constants/defaultValues';
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;
-const requiredDurationCap = twinkleXP => 60 + Math.min(twinkleXP, 120000) / 1000;
+const requiredDurationCap = twinkleXP =>
+  60 + Math.min(twinkleXP, 120000) / 1000;
 const xp = rewardValue.star;
 
 class VideoPlayer extends Component {
@@ -320,14 +320,6 @@ class VideoPlayer extends Component {
                   bottom: 0;
                 `}
               />
-              {!!difficulty && (
-                <StarMark
-                  style={{
-                    top: '1rem',
-                    left: '1rem'
-                  }}
-                />
-              )}
             </>
           )}
           {!onEdit && (
@@ -438,9 +430,11 @@ class VideoPlayer extends Component {
   }
 
   determineProgress = ({ timeWatched, totalDuration, xpEarned }) => {
-    const {twinkleXP} = this.props;
+    const { twinkleXP } = this.props;
     let requiredViewDuration =
-      totalDuration < requiredDurationCap(twinkleXP) ? totalDuration : requiredDurationCap(twinkleXP);
+      totalDuration < requiredDurationCap(twinkleXP)
+        ? totalDuration
+        : requiredDurationCap(twinkleXP);
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
@@ -533,7 +527,9 @@ class VideoPlayer extends Component {
       }
     }
     let requiredViewDuration =
-      totalDuration < requiredDurationCap(twinkleXP) ? totalDuration : requiredDurationCap(twinkleXP);
+      totalDuration < requiredDurationCap(twinkleXP)
+        ? totalDuration
+        : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&
       timeWatched >= requiredViewDuration &&

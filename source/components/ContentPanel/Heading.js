@@ -9,11 +9,10 @@ import { Color } from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import SubjectModal from './SubjectModal';
-import StarMark from 'components/StarMark';
+import VideoThumbImage from 'components/VideoThumbImage';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
 import { uploadComment } from 'helpers/requestHelpers';
-import { css } from 'emotion';
 import { connect } from 'react-redux';
 
 class Heading extends Component {
@@ -221,34 +220,11 @@ class Heading extends Component {
                 }}
                 onClick={onPlayVideoClick}
               >
-                <div
-                  className={css`
-                    background-image: url(https://img.youtube.com/vi/${content}/mqdefault.jpg);
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    position: relative;
-                    width: 100%;
-                    height: 85%;
-                  `}
-                >
-                  {difficulty && (
-                    <StarMark style={{ top: 1, left: 1 }} size={2.5} />
-                  )}
-                  <span />
-                  <a
-                    className={css`
-                      position: absolute;
-                      display: block;
-                      background: url('/img/play-button-image.png');
-                      background-size: contain;
-                      height: 3rem;
-                      width: 3rem;
-                      top: 50%;
-                      left: 50%;
-                      margin: -1.5rem 0 0 -1.5rem;
-                    `}
-                  />
-                </div>
+                <VideoThumbImage
+                  difficulty={difficulty}
+                  height="8rem"
+                  src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                />
               </div>
             )
           )}
