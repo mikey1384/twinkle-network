@@ -211,6 +211,7 @@ export default function FeedReducer(state = defaultState, action) {
     case FEED.LOAD_NEW:
       return {
         ...state,
+        selectedFilter: 'all',
         storyFeeds: action.data.concat(state.storyFeeds)
       };
     case FEED.LOAD_REPLIES_OF_REPLY:
