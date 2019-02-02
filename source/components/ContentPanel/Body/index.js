@@ -483,15 +483,17 @@ class Body extends Component {
 
   determineXpButtonDisabled = () => {
     const {
-      contentObj: { byUser, stars, rootObj = {}, targetObj = {} },
+      contentObj,
+      contentObj: { stars, rootObj = {}, rootType, targetObj = {} },
       myId
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     return determineXpButtonDisabled({
       stars,
       difficulty: this.determineDifficulty({
-        byUser,
+        contentObj,
         rootObj,
+        rootType,
         targetObj
       }),
       myId,
