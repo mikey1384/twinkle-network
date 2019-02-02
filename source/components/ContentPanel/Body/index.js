@@ -481,14 +481,6 @@ class Body extends Component {
     return userLikedThis;
   };
 
-  determineDifficulty = ({ type, byUser, rootObj, targetObj }) => {
-    return byUser
-      ? 5
-      : rootObj.type === 'subject'
-      ? rootObj.difficulty
-      : (rootObj.difficulty > 0 ? 1 : 0) || targetObj.subject?.difficulty;
-  };
-
   determineXpButtonDisabled = () => {
     const {
       contentObj: { byUser, stars, rootObj = {}, targetObj = {} },
