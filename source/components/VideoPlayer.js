@@ -433,7 +433,7 @@ class VideoPlayer extends Component {
     const { twinkleXP } = this.props;
     let requiredViewDuration =
       totalDuration < requiredDurationCap(twinkleXP)
-        ? totalDuration
+        ? (totalDuration - 3)
         : requiredDurationCap(twinkleXP);
     const progress = xpEarned
       ? 100
@@ -528,7 +528,7 @@ class VideoPlayer extends Component {
     }
     let requiredViewDuration =
       totalDuration < requiredDurationCap(twinkleXP)
-        ? totalDuration
+        ? (totalDuration - 3)
         : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&
