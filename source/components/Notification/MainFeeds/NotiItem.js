@@ -110,7 +110,7 @@ class NotiItem extends Component {
                     ? 'link'
                     : targetObj.type
                 }${
-                  !isReply && targetObj.content === 'user'
+                  !isReply && targetObj.type === 'user'
                     ? ''
                     : ` (${truncateText({
                         text: isReply
