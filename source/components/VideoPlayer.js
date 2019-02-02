@@ -24,8 +24,7 @@ import { rewardValue } from 'constants/defaultValues';
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;
-const denominator = 4;
-const requiredDurationCap = 150;
+const requiredDurationCap = 120;
 const xp = rewardValue.star;
 
 class VideoPlayer extends Component {
@@ -438,10 +437,8 @@ class VideoPlayer extends Component {
   }
 
   determineProgress = ({ timeWatched, totalDuration, xpEarned }) => {
-    const requiredViewDuration = Math.min(
-      totalDuration / denominator,
-      requiredDurationCap
-    );
+    let requiredViewDuration =
+      totalDuration < requiredDurationCap ? totalDuration : requiredDurationCap;
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
@@ -533,10 +530,11 @@ class VideoPlayer extends Component {
         }
       }
     }
+    let requiredViewDuration =
+      totalDuration < requiredDurationCap ? totalDuration : requiredDurationCap;
     if (
       !!difficulty &&
-      timeWatched >=
-        Math.min(totalDuration / denominator, requiredDurationCap) &&
+      timeWatched >= requiredViewDuration &&
       !this.rewardingXP
     ) {
       this.rewardingXP = true;
