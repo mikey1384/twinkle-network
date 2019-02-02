@@ -24,7 +24,7 @@ import { rewardValue } from 'constants/defaultValues';
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;
-const requiredDurationCap = 120;
+const requiredDurationCap = twinkleXP => 60 + Math.min(twinkleXP, 120000) / 1000;
 const xp = rewardValue.star;
 
 class VideoPlayer extends Component {
@@ -43,6 +43,7 @@ class VideoPlayer extends Component {
     pageVisible: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
+    twinkleXP: PropTypes.number.isRequired,
     uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
     videoCode: PropTypes.string.isRequired,
@@ -437,8 +438,9 @@ class VideoPlayer extends Component {
   }
 
   determineProgress = ({ timeWatched, totalDuration, xpEarned }) => {
+    const {twinkleXP} = this.props;
     let requiredViewDuration =
-      totalDuration < requiredDurationCap ? totalDuration : requiredDurationCap;
+      totalDuration < requiredDurationCap(twinkleXP) ? totalDuration : requiredDurationCap(twinkleXP);
     const progress = xpEarned
       ? 100
       : requiredViewDuration > 0
@@ -519,7 +521,7 @@ class VideoPlayer extends Component {
 
   increaseProgress = async() => {
     const { justEarned, xpEarned, timeWatched, totalDuration } = this.state;
-    const { changeUserXP, difficulty, videoId } = this.props;
+    const { changeUserXP, difficulty, twinkleXP, videoId } = this.props;
     if (!!difficulty && !xpEarned && !justEarned && this.Player) {
       if (this.Player.getInternalPlayer()) {
         if (this.Player.getInternalPlayer().isMuted()) {
@@ -531,7 +533,7 @@ class VideoPlayer extends Component {
       }
     }
     let requiredViewDuration =
-      totalDuration < requiredDurationCap ? totalDuration : requiredDurationCap;
+      totalDuration < requiredDurationCap(twinkleXP) ? totalDuration : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&
       timeWatched >= requiredViewDuration &&
@@ -593,7 +595,8 @@ export default connect(
     chatMode: state.ChatReducer.chatMode,
     userId: state.UserReducer.userId,
     pageVisible: state.ViewReducer.pageVisible,
-    currentVideoSlot: state.VideoReducer.currentVideoSlot
+    currentVideoSlot: state.VideoReducer.currentVideoSlot,
+    twinkleXP: state.UserReducer.twinkleXP
   }),
   {
     addVideoView,
