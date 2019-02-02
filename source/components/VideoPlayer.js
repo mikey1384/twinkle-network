@@ -43,7 +43,7 @@ class VideoPlayer extends Component {
     pageVisible: PropTypes.bool,
     currentVideoSlot: PropTypes.number,
     style: PropTypes.object,
-    twinkleXP: PropTypes.number.isRequired,
+    twinkleXP: PropTypes.number,
     uploader: PropTypes.object.isRequired,
     userId: PropTypes.number,
     videoCode: PropTypes.string.isRequired,

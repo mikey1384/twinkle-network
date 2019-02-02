@@ -101,6 +101,7 @@ class NotiItem extends Component {
               type={isReply ? 'comment' : targetObj.type}
               content={{
                 id: isReply ? targetComment.id : targetObj.id,
+                username: targetObj.content,
                 title: `${
                   isReply
                     ? 'comment'
