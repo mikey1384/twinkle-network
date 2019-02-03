@@ -445,8 +445,10 @@ class Body extends Component {
     return contentObj.byUser
       ? 5
       : rootDifficulty ||
-          targetObj.subject?.difficulty ||
-          (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0);
+          Math.max(
+            targetObj.subject?.difficulty || 0,
+            rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0
+          );
   };
 
   renderEditMenuItems = () => {
