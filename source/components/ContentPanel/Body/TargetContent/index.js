@@ -362,13 +362,14 @@ class TargetContent extends Component {
     const {
       targetObj: { type, comment, subject },
       myId,
-      rootObj
+      rootObj,
+      rootType
     } = this.props;
     const { xpRewardInterfaceShown } = this.state;
     const stars =
       type === 'comment' || type === 'reply' ? comment.stars : subject.stars;
     return determineXpButtonDisabled({
-      difficulty: rootObj.difficulty || subject?.difficulty,
+      difficulty: this.determineDifficulty({ rootObj, rootType, subject }),
       stars,
       myId,
       xpRewardInterfaceShown
