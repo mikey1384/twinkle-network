@@ -74,14 +74,13 @@ export default class LeftMenu extends Component {
         className={css`
           display: flex;
           flex-direction: column;
-          height: CALC(100vh - 6rem);
+          height: 100%;
           width: 30rem;
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
           @media (max-width: ${mobileMaxWidth}) {
             width: 25%;
-            height: CALC(100vh - 9rem);
           }
         `}
       >
