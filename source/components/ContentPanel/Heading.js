@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 class Heading extends Component {
   static propTypes = {
     action: PropTypes.string,
+    dispatch: PropTypes.func.isRequired,
     onCommentSubmit: PropTypes.func.isRequired,
     onLikeContent: PropTypes.func.isRequired,
     attachedVideoShown: PropTypes.bool,

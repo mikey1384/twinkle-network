@@ -31,6 +31,7 @@ class SearchPage extends Component {
     searchText: PropTypes.string.isRequired,
     selectedFilter: PropTypes.string.isRequired,
     setResults: PropTypes.func.isRequired,
+    updateDefaultSearchFilter: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 

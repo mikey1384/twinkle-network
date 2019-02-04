@@ -42,6 +42,7 @@ class VideoPage extends Component {
     changeByUserStatusForThumbs: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     editVideoThumbs: PropTypes.func.isRequired,
+    history: PropTypes.func.isRequired,
     likeVideo: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,

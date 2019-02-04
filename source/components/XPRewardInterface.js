@@ -27,7 +27,8 @@ class XPRewardInterface extends Component {
     stars: PropTypes.array,
     uploaderId: PropTypes.number.isRequired,
     userId: PropTypes.number,
-    noPadding: PropTypes.bool
+    noPadding: PropTypes.bool,
+    onRewardSubmit: PropTypes.func.isRequired
   };
 
   state = {

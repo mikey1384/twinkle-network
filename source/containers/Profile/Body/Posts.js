@@ -54,6 +54,7 @@ class Posts extends Component {
     feedContentEdit: PropTypes.func.isRequired,
     feedRewardCommentEdit: PropTypes.func.isRequired,
     fetchFeeds: PropTypes.func.isRequired,
+    fetchMoreFeeds: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     loaded: PropTypes.bool.isRequired,
     loadMoreButton: PropTypes.bool.isRequired,

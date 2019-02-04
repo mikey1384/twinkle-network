@@ -10,6 +10,7 @@ class DifficultyModal extends Component {
   static propTypes = {
     contentId: PropTypes.number.isRequired,
     difficulty: PropTypes.number,
+    dispatch: PropTypes.func.isRequired,
     onHide: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired

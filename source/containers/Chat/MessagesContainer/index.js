@@ -19,6 +19,7 @@ class MessagesContainer extends Component {
     className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
     currentChannelId: PropTypes.number.isRequired,
+    deleteMessage: PropTypes.func.isRequired,
     loadMoreButton: PropTypes.bool,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,

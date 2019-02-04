@@ -24,6 +24,7 @@ class Description extends Component {
   static propTypes = {
     canDelete: PropTypes.bool,
     canEdit: PropTypes.bool,
+    content: PropTypes.string,
     description: PropTypes.string,
     linkId: PropTypes.number.isRequired,
     onDelete: PropTypes.func.isRequired,
@@ -80,16 +81,15 @@ class Description extends Component {
     }
     return (
       <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
-        {editButtonShown &&
-          !onEdit && (
-            <DropdownButton
-              snow
-              opacity={0.8}
-              style={{ position: 'absolute', top: '1rem', right: '1rem' }}
-              direction="left"
-              menuProps={editMenuItems}
-            />
-          )}
+        {editButtonShown && !onEdit && (
+          <DropdownButton
+            snow
+            opacity={0.8}
+            style={{ position: 'absolute', top: '1rem', right: '1rem' }}
+            direction="left"
+            menuProps={editMenuItems}
+          />
+        )}
         <div
           style={{
             display: 'flex',

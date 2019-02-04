@@ -19,7 +19,8 @@ class Results extends Component {
     loadMoreButton: PropTypes.bool.isRequired,
     results: PropTypes.array.isRequired,
     searchText: PropTypes.string.isRequired,
-    setResults: PropTypes.func.isRequired
+    setResults: PropTypes.func.isRequired,
+    showMoreResults: PropTypes.func.isRequired
   };
 
   state = {

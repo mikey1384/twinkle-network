@@ -19,6 +19,7 @@ export default class UserDetails extends Component {
   static propTypes = {
     isProfilePage: PropTypes.bool,
     profile: PropTypes.object.isRequired,
+    removeStatusMsg: PropTypes.func.isRequired,
     style: PropTypes.object,
     unEditable: PropTypes.bool,
     updateStatusMsg: PropTypes.func,
@@ -90,31 +91,30 @@ export default class UserDetails extends Component {
         <p
           style={{ fontSize: small ? '1.3rem' : '1.5rem', color: Color.gray() }}
         >{`(${profile.realName})`}</p>
-        {userId === profile.id &&
-          !unEditable && (
-            <StatusInput
-              innerRef={ref => {
-                this.StatusInput = ref;
-              }}
-              profile={profile}
-              statusColor={statusColor}
-              editedStatusMsg={editedStatusMsg}
-              setColor={color => this.setState({ editedStatusColor: color })}
-              onTextChange={event => {
-                this.setState({
-                  editedStatusMsg: addEmoji(renderText(event.target.value)),
-                  ...(!event.target.value ? { editedStatusColor: '' } : {})
-                });
-              }}
-              onCancel={() =>
-                this.setState({
-                  editedStatusMsg: '',
-                  editedStatusColor: ''
-                })
-              }
-              onStatusSubmit={this.onStatusMsgSubmit}
-            />
-          )}
+        {userId === profile.id && !unEditable && (
+          <StatusInput
+            innerRef={ref => {
+              this.StatusInput = ref;
+            }}
+            profile={profile}
+            statusColor={statusColor}
+            editedStatusMsg={editedStatusMsg}
+            setColor={color => this.setState({ editedStatusColor: color })}
+            onTextChange={event => {
+              this.setState({
+                editedStatusMsg: addEmoji(renderText(event.target.value)),
+                ...(!event.target.value ? { editedStatusColor: '' } : {})
+              });
+            }}
+            onCancel={() =>
+              this.setState({
+                editedStatusMsg: '',
+                editedStatusColor: ''
+              })
+            }
+            onStatusSubmit={this.onStatusMsgSubmit}
+          />
+        )}
         {(profile.statusMsg || editedStatusMsg) && (
           <StatusMsg
             statusColor={statusColor}

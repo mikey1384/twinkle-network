@@ -15,6 +15,7 @@ import Loading from 'components/Loading';
 
 class Profile extends Component {
   static propTypes = {
+    changeProfileTheme: PropTypes.func.isRequired,
     checkValidUsername: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,

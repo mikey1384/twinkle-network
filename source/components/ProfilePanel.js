@@ -26,9 +26,11 @@ import UserDetails from 'components/UserDetails';
 
 class ProfilePanel extends Component {
   static propTypes = {
+    commentsShown: PropTypes.bool,
     expandable: PropTypes.bool,
     history: PropTypes.object,
     isCreator: PropTypes.bool,
+    isProfilePage: PropTypes.bool,
     updateStatusMsg: PropTypes.func,
     openDirectMessageChannel: PropTypes.func,
     profile: PropTypes.object,

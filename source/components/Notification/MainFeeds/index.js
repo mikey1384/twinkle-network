@@ -23,6 +23,7 @@ import { rewardValue } from 'constants/defaultValues';
 
 class MainFeeds extends Component {
   static propTypes = {
+    clearRewards: PropTypes.func.isRequired,
     changeUserXP: PropTypes.func.isRequired,
     fetchNotifications: PropTypes.func.isRequired,
     loadMore: PropTypes.object.isRequired,

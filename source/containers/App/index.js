@@ -69,6 +69,7 @@ class App extends Component {
     changePageVisibility: PropTypes.func.isRequired,
     chatNumUnreads: PropTypes.number,
     closeSigninModal: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     enableAutoscroll: PropTypes.func.isRequired,
     history: PropTypes.object,
     initChat: PropTypes.func.isRequired,

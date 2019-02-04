@@ -9,6 +9,8 @@ const API_URL = `${URL}/content`;
 
 export default class Embedly extends Component {
   static propTypes = {
+    actualDescription: PropTypes.string,
+    actualTitle: PropTypes.string,
     small: PropTypes.bool,
     id: PropTypes.number.isRequired,
     imageOnly: PropTypes.bool,

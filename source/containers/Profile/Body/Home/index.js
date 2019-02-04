@@ -46,8 +46,11 @@ class Home extends Component {
       youtubeName: PropTypes.string,
       youtubeUrl: PropTypes.string
     }).isRequired,
+    removeStatusMsg: PropTypes.func.isRequired,
     selectedTheme: PropTypes.string.isRequired,
     setGreeting: PropTypes.func.isRequired,
+    updateStatusMsg: PropTypes.func.isRequired,
+    uploadBio: PropTypes.func.isRequired,
     userId: PropTypes.number
   };
 
