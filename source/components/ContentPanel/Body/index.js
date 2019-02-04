@@ -441,14 +441,15 @@ class Body extends Component {
   }
 
   determineDifficulty = ({ contentObj, rootType, rootObj, targetObj }) => {
-    const rootDifficulty = rootType !== 'video' ? rootObj.difficulty : 0;
+    const rootDifficulty =
+      rootType !== 'video'
+        ? rootObj.difficulty
+        : rootObj.difficulty > 0
+        ? 1
+        : 0;
     return contentObj.byUser
       ? 5
-      : rootDifficulty ||
-          Math.max(
-            targetObj.subject?.difficulty || 0,
-            rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0
-          );
+      : targetObj.subject?.difficulty || rootDifficulty;
   };
 
   renderEditMenuItems = () => {

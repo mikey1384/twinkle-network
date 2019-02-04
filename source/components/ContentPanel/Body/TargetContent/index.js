@@ -376,12 +376,13 @@ class TargetContent extends Component {
   };
 
   determineDifficulty = ({ rootType, rootObj, subject }) => {
-    const rootDifficulty = rootType !== 'video' ? rootObj.difficulty : 0;
-    return (
-      rootDifficulty ||
-      subject?.difficulty ||
-      (rootType === 'video' && rootObj.difficulty > 0 ? 1 : 0)
-    );
+    const rootDifficulty =
+      rootType !== 'video'
+        ? rootObj.difficulty
+        : rootObj.difficulty > 0
+        ? 1
+        : 0;
+    return subject?.difficulty || rootDifficulty;
   };
 
   onLikeClick = likes => {

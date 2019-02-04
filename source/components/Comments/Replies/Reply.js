@@ -307,16 +307,17 @@ class Reply extends Component {
 
   determineDifficulty = ({ parent, subject }) => {
     const rootDifficulty =
-      (parent.type !== 'video' ? parent.difficulty : 0) ||
-      (parent.rootType !== 'video' ? parent.rootObj?.difficulty : 0);
-    return (
-      rootDifficulty ||
-      subject?.difficulty ||
-      ((parent.type === 'video' && parent.difficulty > 0) ||
-      (parent.rootType === 'video' && parent.rootObj?.difficulty > 0)
+      (parent.type !== 'video'
+        ? parent.difficulty
+        : parent.difficulty > 0
         ? 1
-        : 0)
-    );
+        : 0) ||
+      (parent.rootType !== 'video'
+        ? parent.rootObj?.difficulty
+        : parent.rootObj?.difficulty > 0
+        ? 1
+        : 0);
+    return subject?.difficulty || rootDifficulty;
   };
 
   onEditDone = async editedReply => {
