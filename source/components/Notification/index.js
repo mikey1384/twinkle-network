@@ -27,6 +27,7 @@ class Notification extends Component {
     currentChatSubject: PropTypes.object,
     fetchNotifications: PropTypes.func.isRequired,
     loadMore: PropTypes.object,
+    location: PropTypes.string.isRequired,
     myId: PropTypes.number,
     notifications: PropTypes.array.isRequired,
     numNewNotis: PropTypes.number,
@@ -46,7 +47,7 @@ class Notification extends Component {
   };
 
   async componentDidMount() {
-    const { fetchNotifications } = this.props;
+    const { location, fetchNotifications } = this.props;
     this.mounted = true;
     addEvent(window, 'mousemove', this.onMouseMove);
     socket.on('new_reward', this.notifyNewReward);
@@ -56,7 +57,7 @@ class Notification extends Component {
         activeTab:
           this.props.rewards.length > 0
             ? 'reward'
-            : this.props.notifications.length > 0
+            : (location === 'home' && this.props.notifications.length) > 0
             ? 'notification'
             : 'rankings',
         rewardTabShown: this.props.rewards.length > 0

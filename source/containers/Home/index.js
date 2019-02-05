@@ -74,7 +74,7 @@ class Home extends Component {
               />
             </Switch>
           </div>
-          <Notification className={Right} />
+          <Notification className={Right} location="home" />
           {imageEditModalShown && (
             <ImageEditModal
               imageUri={imageUri}

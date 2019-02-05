@@ -123,6 +123,7 @@ class WorkSection extends Component {
                   display: none;
                 }
               `}
+              location="work"
             >
               {location.pathname === '/videos' && (
                 <>

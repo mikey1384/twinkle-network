@@ -72,7 +72,8 @@ class BasicInfos extends Component {
           style={{
             color: Color[selectedTheme](),
             fontWeight: 'bold',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            fontSize: '2rem'
           }}
         >
           About {username}
@@ -87,154 +88,144 @@ class BasicInfos extends Component {
             onSubmit={this.onEditedInfoSubmit}
           />
         )}
-        {!onEdit &&
-          (email || youtubeUrl || website) && (
-            <div
-              className={css`
-                @media (max-width: ${mobileMaxWidth}) {
-                  font-size: 1.4rem;
-                }
-              `}
-              style={{ textAlign: 'center' }}
-            >
-              {email && (
-                <>
+        {!onEdit && (email || youtubeUrl || website) && (
+          <div
+            className={css`
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.4rem;
+              }
+            `}
+            style={{ textAlign: 'center' }}
+          >
+            {email && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
                   <div
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
+                      lineHeight:
+                        myId === userId && !emailVerified ? '0.5rem' : undefined
                     }}
                   >
-                    <div
-                      style={{
-                        lineHeight:
-                          myId === userId && !emailVerified
-                            ? '0.5rem'
-                            : undefined
-                      }}
+                    <a
+                      href={`mailto:${email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <a
-                        href={`mailto:${email}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {email}
-                      </a>
-                    </div>
-                    <Icon
+                      {email}
+                    </a>
+                  </div>
+                  <Icon
+                    onMouseEnter={() =>
+                      this.setState({
+                        emailCheckHighlighted:
+                          !verificationEmailSent && myId === userId
+                      })
+                    }
+                    onMouseLeave={() =>
+                      this.setState({ emailCheckHighlighted: false })
+                    }
+                    className={css`
+                      margin-left: 0.5rem;
+                    `}
+                    style={{
+                      cursor:
+                        verificationEmailSent ||
+                        myId !== userId ||
+                        emailVerified
+                          ? 'default'
+                          : 'pointer',
+                      color:
+                        emailVerified || emailCheckHighlighted
+                          ? Color[selectedTheme]()
+                          : Color.lightGray()
+                    }}
+                    icon="check-circle"
+                    onClick={
+                      myId !== userId || emailVerified
+                        ? () => {}
+                        : this.onVerifyEmail
+                    }
+                  />
+                </div>
+                {myId === userId && !emailVerified && (
+                  <div>
+                    <a
                       onMouseEnter={() =>
                         this.setState({
-                          emailCheckHighlighted:
-                            !verificationEmailSent && myId === userId
+                          emailCheckHighlighted: !verificationEmailSent
                         })
                       }
                       onMouseLeave={() =>
                         this.setState({ emailCheckHighlighted: false })
                       }
-                      className={css`
-                        margin-left: 0.5rem;
-                      `}
                       style={{
-                        cursor:
-                          verificationEmailSent ||
-                          myId !== userId ||
-                          emailVerified
-                            ? 'default'
-                            : 'pointer',
-                        color:
-                          emailVerified || emailCheckHighlighted
-                            ? Color[selectedTheme]()
-                            : Color.lightGray()
+                        textDecoration: emailCheckHighlighted
+                          ? 'underline'
+                          : undefined,
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        color: Color[selectedTheme]()
                       }}
-                      icon="check-circle"
                       onClick={
-                        myId !== userId || emailVerified
-                          ? () => {}
+                        verificationEmailSent
+                          ? this.goToEmail
                           : this.onVerifyEmail
                       }
-                    />
-                  </div>
-                  {myId === userId &&
-                    !emailVerified && (
-                      <div>
-                        <a
-                          onMouseEnter={() =>
-                            this.setState({
-                              emailCheckHighlighted: !verificationEmailSent
-                            })
-                          }
-                          onMouseLeave={() =>
-                            this.setState({ emailCheckHighlighted: false })
-                          }
-                          style={{
-                            textDecoration: emailCheckHighlighted
-                              ? 'underline'
-                              : undefined,
-                            cursor: 'pointer',
-                            fontSize: '1.2rem',
-                            color: Color[selectedTheme]()
-                          }}
-                          onClick={
-                            verificationEmailSent
-                              ? this.goToEmail
-                              : this.onVerifyEmail
-                          }
-                        >
-                          {verificationEmailSent
-                            ? 'Email has been sent. Click here to check your inbox'
-                            : 'Please verify your email'}
-                        </a>
-                      </div>
-                    )}
-                  {myId !== userId &&
-                    !emailVerified && (
-                      <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
-                        {`This user's email has not been verified, yet`}
-                      </div>
-                    )}
-                </>
-              )}
-              {youtubeUrl && (
-                <div
-                  style={{
-                    marginTop: '0.5rem'
-                  }}
-                >
-                  <div>
-                    <span>YouTube: </span>
-                    <a
-                      href={youtubeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
                     >
-                      {youtubeName || trimUrl(youtubeUrl)}
+                      {verificationEmailSent
+                        ? 'Email has been sent. Click here to check your inbox'
+                        : 'Please verify your email'}
                     </a>
                   </div>
-                </div>
-              )}
-              {website && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <span>Website: </span>
-                  <a href={website} target="_blank" rel="noopener noreferrer">
-                    {trimUrl(website)}
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        {!onEdit &&
-          myId === userId &&
-          (!email || !youtubeUrl || !website) && (
-            <div
-              style={{
-                textAlign: 'center',
-                marginTop: email || youtubeUrl ? '1rem' : 0
-              }}
-            >
-              {this.renderEditMessage({ email, youtubeUrl, website })}
-            </div>
-          )}
+                )}
+                {myId !== userId && !emailVerified && (
+                  <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
+                    {`This user's email has not been verified, yet`}
+                  </div>
+                )}
+              </>
+            )}
+            {youtubeUrl && (
+              <div
+                style={{
+                  marginTop: '0.5rem'
+                }}
+              >
+                <span>YouTube: </span>
+                <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+                  {youtubeName || trimUrl(youtubeUrl)}
+                </a>
+              </div>
+            )}
+            {website && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <span>Website: </span>
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  {trimUrl(website)}
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+        {!onEdit && myId === userId && (!email || !youtubeUrl || !website) && (
+          <div
+            style={{
+              height: '100%',
+              display: 'flex',
+              textAlign: 'center',
+              alignItems: 'center',
+              marginTop: email || youtubeUrl ? '1rem' : 0
+            }}
+          >
+            {this.renderEditMessage({ email, youtubeUrl, website })}
+          </div>
+        )}
         {myId === userId ? (
           !onEdit ? (
             <Button
