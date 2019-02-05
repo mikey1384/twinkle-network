@@ -91,7 +91,7 @@ class MobileMenu extends Component {
             location={location}
             style={{ marginTop: '1rem' }}
           />
-          <Notification />
+          <Notification location="home" />
           {username && (
             <div
               className={css`
