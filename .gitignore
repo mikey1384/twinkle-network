@@ -3,6 +3,7 @@ node_modules
 public/main.js
 build
 siteConfig.js
+.env
 .fuse_hidden*
 .DS_Store
 URL.js

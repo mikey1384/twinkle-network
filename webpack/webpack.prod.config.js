@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
+const envKeys = require('./env.config').envKeys;
 
 module.exports = {
   entry: './entry/client.js',
@@ -48,11 +49,7 @@ module.exports = {
     minimizer: [new TerserPlugin()]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    }),
+    new webpack.DefinePlugin(envKeys),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]
 };

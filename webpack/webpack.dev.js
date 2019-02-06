@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import prodCfg from './webpack.prod.config.js';
+import { envKeys } from './env.config';
 
 export default function devConfig(app) {
   const config = {
@@ -44,6 +45,7 @@ export default function devConfig(app) {
       ]
     },
     plugins: [
+      new webpack.DefinePlugin(envKeys),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin()

@@ -7,7 +7,7 @@
   "description": "Twinkle: educational social network",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_PATH=$NODE_PATH:./source PORT=3000 node .",
+    "dev": "cross-env NODE_PATH=./source node .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.config.js",
     "reload": "sudo pm2 reload index.js",
     "start": "sudo NODE_ENV=production NODE_PATH=$NODE_PATH:./source pm2 start index.js -i max",
@@ -38,6 +38,7 @@
     "babel-plugin-emotion": "^10.0.7",
     "babel-plugin-react-transform": "^3.0.0",
     "cross-env": "^5.2.0",
+    "dotenv": "^6.2.0",
     "emotion": "^10.0.7",
     "emotion-server": "^10.0.7",
     "exenv": "^1.2.2",
@@ -73,7 +74,6 @@
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
-    "dotenv": "^6.1.0",
     "enzyme": "^3.8.0",
     "eslint": "^5.13.0",
     "eslint-config-4catalyzer-react": "^0.8.2",
