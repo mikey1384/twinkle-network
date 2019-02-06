@@ -8,7 +8,7 @@ import Body from './Body';
 import Loading from 'components/Loading';
 import { container } from './Styles';
 import request from 'axios';
-import { URL } from 'constants/URL';
+const { URL } = process.env;
 
 class ContentPanel extends Component {
   static propTypes = {

@@ -10,8 +10,8 @@ import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { URL } from 'constants/URL';
 
+const { URL } = process.env;
 const API_URL = `${URL}/user`;
 
 class Rankings extends Component {

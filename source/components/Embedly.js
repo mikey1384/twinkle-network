@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 
+const { URL } = process.env;
 const API_URL = `${URL}/content`;
 
 export default class Embedly extends Component {

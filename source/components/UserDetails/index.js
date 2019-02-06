@@ -9,11 +9,12 @@ import BioEditModal from 'components/Modals/BioEditModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { URL } from 'constants/URL';
 import request from 'axios';
 import { auth } from 'helpers/requestHelpers';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
+
+const { URL } = process.env;
 
 export default class UserDetails extends Component {
   static propTypes = {

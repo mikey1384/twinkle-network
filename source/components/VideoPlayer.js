@@ -12,7 +12,6 @@ import {
 } from 'redux/actions/VideoActions';
 import { changeUserXP } from 'redux/actions/UserActions';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
@@ -20,6 +19,7 @@ import Spinner from 'components/Spinner';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
 
+const { URL } = process.env;
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;
@@ -433,7 +433,7 @@ class VideoPlayer extends Component {
     const { twinkleXP } = this.props;
     let requiredViewDuration =
       totalDuration < requiredDurationCap(twinkleXP)
-        ? (totalDuration - 3)
+        ? totalDuration - 3
         : requiredDurationCap(twinkleXP);
     const progress = xpEarned
       ? 100
@@ -528,7 +528,7 @@ class VideoPlayer extends Component {
     }
     let requiredViewDuration =
       totalDuration < requiredDurationCap(twinkleXP)
-        ? (totalDuration - 3)
+        ? totalDuration - 3
         : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&

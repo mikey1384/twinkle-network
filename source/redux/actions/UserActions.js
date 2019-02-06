@@ -1,8 +1,8 @@
 import request from 'axios';
 import { token, auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import USER from '../constants/User';
 
+const { URL } = process.env;
 const API_URL = `${URL}/user`;
 
 export const clearProfiles = () => ({

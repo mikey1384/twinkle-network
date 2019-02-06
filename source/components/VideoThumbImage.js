@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { URL } from 'constants/URL';
 import { auth } from 'helpers/requestHelpers';
 import request from 'axios';
 import { connect } from 'react-redux';
@@ -9,6 +8,7 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
 import { css } from 'emotion';
 
+const { URL } = process.env;
 const API_URL = `${URL}/video`;
 const xp = rewardValue.star;
 

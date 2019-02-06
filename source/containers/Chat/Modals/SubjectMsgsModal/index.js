@@ -4,12 +4,12 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import Message from './Message';
 import Loading from 'components/Loading';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { queryStringForArray } from 'helpers/stringHelpers';
 
+const { URL } = process.env;
 const API_URL = `${URL}/chat`;
 
 export default class SubjectMsgsModal extends Component {

@@ -1,9 +1,9 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import NOTI from '../constants/Noti';
 import { clientVersion } from 'constants/defaultValues';
 
+const { URL } = process.env;
 const API_URL = `${URL}/notification`;
 
 export const changeSocketStatus = connected => ({

@@ -17,7 +17,6 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import request from 'axios';
 import NotFound from 'components/NotFound';
-import { URL } from 'constants/URL';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
@@ -28,6 +27,8 @@ import {
   loadComments,
   loadSubjects
 } from 'helpers/requestHelpers';
+
+const { URL } = process.env;
 
 class LinkPage extends Component {
   static propTypes = {
@@ -503,10 +504,7 @@ class LinkPage extends Component {
         ...state.contentObj,
         subjects: state.contentObj.subjects.map(subject => ({
           ...subject,
-          title:
-            subject.id === subjectId
-              ? editedSubject.title
-              : subject.title,
+          title: subject.id === subjectId ? editedSubject.title : subject.title,
           description:
             subject.id === subjectId
               ? editedSubject.description

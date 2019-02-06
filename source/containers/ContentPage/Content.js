@@ -5,7 +5,8 @@ import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 import { connect } from 'react-redux';
 import request from 'axios';
-import { URL } from 'constants/URL';
+
+const { URL } = process.env;
 
 class Content extends Component {
   static propTypes = {

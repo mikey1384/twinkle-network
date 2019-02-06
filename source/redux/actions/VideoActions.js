@@ -1,7 +1,8 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import VIDEO from '../constants/Video';
+
+const { URL } = process.env;
 
 export const addVideoView = params => dispatch => {
   try {

@@ -4,7 +4,6 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import { connect } from 'react-redux';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import SubjectItem from './SubjectItem';
 import { Color } from 'constants/css';
@@ -12,6 +11,7 @@ import { queryStringForArray } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 import SubjectMsgsModal from '../SubjectMsgsModal';
 
+const { URL } = process.env;
 const API_URL = `${URL}/chat`;
 
 class SubjectsModal extends Component {

@@ -12,9 +12,9 @@ import request from 'axios';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import { connect } from 'react-redux';
 
+const { URL } = process.env;
 const API_URL = `${URL}/user`;
 
 class Comment extends Component {
@@ -112,8 +112,8 @@ class Comment extends Component {
                       star.rewardAmount >= maxRewardableStars
                         ? Color.gold()
                         : star.rewardAmount >= 5
-                          ? Color.orange()
-                          : Color.lightBlue()
+                        ? Color.orange()
+                        : Color.lightBlue()
                   }}
                 >
                   rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
@@ -147,14 +147,9 @@ class Comment extends Component {
                 )}
               </div>
             </div>
-            {editButtonShown &&
-              !onEdit && (
-                <DropdownButton
-                  snow
-                  direction="left"
-                  menuProps={editMenuItems}
-                />
-              )}
+            {editButtonShown && !onEdit && (
+              <DropdownButton snow direction="left" menuProps={editMenuItems} />
+            )}
           </div>
         </div>
       </ErrorBoundary>

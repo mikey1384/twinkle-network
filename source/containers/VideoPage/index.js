@@ -26,7 +26,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from 'components/Subjects';
 import RewardStatus from 'components/RewardStatus';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
@@ -35,6 +34,8 @@ import {
   loadComments,
   loadSubjects
 } from 'helpers/requestHelpers';
+
+const { URL } = process.env;
 
 class VideoPage extends Component {
   static propTypes = {
@@ -562,10 +563,7 @@ class VideoPage extends Component {
       },
       history
     } = this.props;
-    await request.delete(
-      `${URL}/video?videoId=${videoId}`,
-      auth()
-    );
+    await request.delete(`${URL}/video?videoId=${videoId}`, auth());
     history.push('/videos');
   };
 
@@ -645,10 +643,7 @@ class VideoPage extends Component {
         ...state.contentObj,
         subjects: state.contentObj.subjects.map(subject => ({
           ...subject,
-          title:
-            subject.id === subjectId
-              ? editedSubject.title
-              : subject.title,
+          title: subject.id === subjectId ? editedSubject.title : subject.title,
           description:
             subject.id === subjectId
               ? editedSubject.description
@@ -672,7 +667,11 @@ class VideoPage extends Component {
           content: url
         }
       }));
-      editVideoThumbs({ videoId: Number(params.videoId), title: params.title, url });
+      editVideoThumbs({
+        videoId: Number(params.videoId),
+        title: params.title,
+        url
+      });
     } catch (error) {
       handleError(error, dispatch);
     }
@@ -726,10 +725,7 @@ class VideoPage extends Component {
     likeVideo({ likes, videoId });
   };
 
-  loadSubjectComments = ({
-    data: { comments, loadMoreButton },
-    subjectId
-  }) => {
+  loadSubjectComments = ({ data: { comments, loadMoreButton }, subjectId }) => {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,

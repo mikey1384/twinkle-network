@@ -14,9 +14,10 @@ import VideoThumbImage from 'components/VideoThumbImage';
 import FilterBar from 'components/FilterBar';
 import Notification from 'components/Notification';
 import request from 'axios';
-import { URL } from 'constants/URL';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+
+const { URL } = process.env;
 
 class NavMenu extends Component {
   static propTypes = {

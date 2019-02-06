@@ -1,8 +1,8 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import LINK from '../constants/Link';
 
+const { URL } = process.env;
 const API_URL = `${URL}/url`;
 
 export const deleteLink = linkId => async dispatch => {

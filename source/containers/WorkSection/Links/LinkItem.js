@@ -13,8 +13,9 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import request from 'axios';
-import { URL } from 'constants/URL';
 const API_URL = `${URL}/content`;
+
+const { URL } = process.env;
 
 class LinkItem extends Component {
   static propTypes = {
@@ -258,14 +259,9 @@ class LinkItem extends Component {
             </div>
           </div>
           <div>
-            {!onEdit &&
-              editButtonShown && (
-                <DropdownButton
-                  snow
-                  direction="left"
-                  menuProps={editMenuItems}
-                />
-              )}
+            {!onEdit && editButtonShown && (
+              <DropdownButton snow direction="left" menuProps={editMenuItems} />
+            )}
           </div>
         </section>
         {confirmModalShown && (

@@ -16,8 +16,9 @@ import request from 'axios';
 import Icon from 'components/Icon';
 import { returnMaxStars } from 'constants/defaultValues';
 import { auth } from 'helpers/requestHelpers';
-import { URL } from 'constants/URL';
 import { connect } from 'react-redux';
+
+const { URL } = process.env;
 
 class XPRewardInterface extends Component {
   static propTypes = {

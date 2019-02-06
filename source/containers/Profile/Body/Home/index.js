@@ -30,7 +30,8 @@ import {
   stringIsEmpty
 } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { URL } from 'constants/URL';
+
+const { URL } = process.env;
 
 class Home extends Component {
   static propTypes = {
