@@ -13,8 +13,8 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { auth, handleError } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/user`;
 
 class Comment extends Component {

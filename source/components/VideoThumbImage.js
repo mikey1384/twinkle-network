@@ -7,8 +7,8 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
 import { css } from 'emotion';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/video`;
 const xp = rewardValue.star;
 

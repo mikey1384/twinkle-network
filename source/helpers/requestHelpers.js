@@ -2,8 +2,7 @@ import request from 'axios';
 import { logout, openSigninModal } from 'redux/actions/UserActions';
 import { clientVersion } from 'constants/defaultValues';
 import { queryStringForArray } from 'helpers/stringHelpers';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 export const token = () =>
   typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;

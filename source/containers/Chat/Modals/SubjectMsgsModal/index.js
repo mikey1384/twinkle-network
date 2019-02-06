@@ -8,8 +8,8 @@ import Message from './Message';
 import Loading from 'components/Loading';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/chat`;
 
 export default class SubjectMsgsModal extends Component {

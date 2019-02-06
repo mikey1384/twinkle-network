@@ -14,8 +14,7 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import request from 'axios';
 const API_URL = `${URL}/content`;
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 class LinkItem extends Component {
   static propTypes = {

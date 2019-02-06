@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import NotFound from 'components/NotFound';
 import request from 'axios';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 export default class Redirect extends Component {
   static propTypes = {

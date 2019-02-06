@@ -18,8 +18,8 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const CONTENT_URL = `${URL}/content`;
 const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;

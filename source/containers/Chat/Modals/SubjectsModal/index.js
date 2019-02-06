@@ -10,8 +10,8 @@ import { Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 import SubjectMsgsModal from '../SubjectMsgsModal';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/chat`;
 
 class SubjectsModal extends Component {

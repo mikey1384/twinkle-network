@@ -16,8 +16,7 @@ import Notification from 'components/Notification';
 import request from 'axios';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 class NavMenu extends Component {
   static propTypes = {

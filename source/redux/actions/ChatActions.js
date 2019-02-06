@@ -2,8 +2,8 @@ import request from 'axios';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { auth, handleError } from 'helpers/requestHelpers';
 import CHAT from '../constants/Chat';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/chat`;
 
 export const openNewChatTab = (user, partner) => ({

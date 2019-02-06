@@ -1,8 +1,7 @@
 import request from 'axios';
 import { auth, handleError } from 'helpers/requestHelpers';
 import FEED from '../constants/Feed';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 export const addTags = ({ type, contentId, tags }) => ({
   type: FEED.ADD_TAGS,

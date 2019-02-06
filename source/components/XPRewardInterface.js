@@ -17,8 +17,7 @@ import Icon from 'components/Icon';
 import { returnMaxStars } from 'constants/defaultValues';
 import { auth } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 class XPRewardInterface extends Component {
   static propTypes = {

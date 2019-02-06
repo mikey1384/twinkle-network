@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import request from 'axios';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/content`;
 
 export default class Embedly extends Component {

@@ -34,8 +34,7 @@ import {
   loadComments,
   loadSubjects
 } from 'helpers/requestHelpers';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 class VideoPage extends Component {
   static propTypes = {

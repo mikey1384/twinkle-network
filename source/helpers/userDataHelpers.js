@@ -1,7 +1,7 @@
 import request from 'axios';
 import { auth } from './requestHelpers';
+import URL from 'constants/URL';
 
-const { URL } = process.env;
 const API_URL = `${URL}/user`;
 
 export function recordUserAction({ action, ...rest }) {

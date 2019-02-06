@@ -13,8 +13,7 @@ import request from 'axios';
 import { auth } from 'helpers/requestHelpers';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
-
-const { URL } = process.env;
+import URL from 'constants/URL';
 
 export default class UserDetails extends Component {
   static propTypes = {
