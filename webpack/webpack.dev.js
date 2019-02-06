@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import prodCfg from './webpack.prod.config.js';
+import prodCfg from './webpack.prod.js';
 import { envKeys } from './env.config';
 
 export default function devConfig(app) {
