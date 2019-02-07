@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HomeMenuItems from 'components/HomeMenuItems';
 import ProfileWidget from 'components/ProfileWidget';
@@ -10,154 +10,150 @@ import { css } from 'emotion';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
-class MobileMenu extends Component {
-  static propTypes = {
-    chatMode: PropTypes.bool,
-    location: PropTypes.object,
-    logout: PropTypes.func.isRequired,
-    history: PropTypes.object,
-    uploadProfilePic: PropTypes.func,
-    username: PropTypes.string,
-    onClose: PropTypes.func.isRequired
-  };
+MobileMenu.propTypes = {
+  chatMode: PropTypes.bool,
+  location: PropTypes.object,
+  logout: PropTypes.func.isRequired,
+  history: PropTypes.object,
+  uploadProfilePic: PropTypes.func,
+  username: PropTypes.string,
+  onClose: PropTypes.func.isRequired
+};
 
-  state = {
-    alertModalShown: false,
+function MobileMenu({
+  chatMode,
+  location,
+  history,
+  logout,
+  username,
+  onClose,
+  uploadProfilePic
+}) {
+  const [marginLeft, setMarginLeft] = useState('-100%');
+  useEffect(() => {
+    if (marginLeft !== '-100%') {
+      onClose();
+    }
+  }, [location, chatMode]);
+  useEffect(() => {
+    setMarginLeft(0);
+  });
+  const [alertModalShown, setAlertModalShown] = useState(false);
+  const [imageEditStatus, setImageEditStatus] = useState({
     imageEditModalShown: false,
     imageUri: null,
-    marginLeft: '-100%',
     processing: false
-  };
-  componentDidMount() {
-    this.setState({ marginLeft: 0 });
-  }
+  });
+  const { imageEditModalShown, imageUri, processing } = imageEditStatus;
 
-  componentDidUpdate(prevProps) {
-    const { chatMode, location, onClose } = this.props;
-    if (location !== prevProps.location) {
-      onClose();
-    }
-    if (chatMode !== prevProps.chatMode) {
-      onClose();
-    }
-  }
-
-  render() {
-    const { location, history, logout, username, onClose } = this.props;
-    const {
-      alertModalShown,
-      imageEditModalShown,
-      imageUri,
-      marginLeft,
-      processing
-    } = this.state;
-    return (
+  return (
+    <ErrorBoundary
+      className={`mobile ${css`
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: fixed;
+        z-index: 2000;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+      `}`}
+    >
       <div
-        className={`mobile ${css`
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          position: fixed;
-          z-index: 2000;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
+        className={`momentum-scroll-enabled ${css`
+          height: 100%;
+          width: 70%;
+          position: relative;
+          background: ${Color.backgroundGray()};
+          margin-left: ${marginLeft};
+          transition: margin-left 0.5s;
+          overflow-y: scroll;
         `}`}
       >
-        <div
-          className={`momentum-scroll-enabled ${css`
-            height: 100%;
-            width: 70%;
-            position: relative;
-            background: ${Color.backgroundGray()};
-            margin-left: ${marginLeft};
-            transition: margin-left 0.5s;
-            overflow-y: scroll;
-          `}`}
-        >
-          <ProfileWidget
-            history={history}
-            showAlert={() => this.setState({ alertModalShown: true })}
-            loadImage={upload =>
-              this.setState({
-                imageEditModalShown: true,
-                imageUri: upload.target.result
-              })
-            }
-          />
-          <HomeMenuItems
-            history={history}
-            location={location}
-            style={{ marginTop: '1rem' }}
-          />
-          <Notification location="home" />
-          {username && (
-            <div
-              className={css`
-                background: #fff;
-                width: 100%;
-                text-align: center;
-                color: ${Color.red()};
-                font-size: 3rem;
-                padding: 1rem;
-              `}
-              onClick={logout}
-            >
-              Log out
-            </div>
-          )}
-        </div>
-        <div style={{ width: '30%', position: 'relative' }} onClick={onClose}>
-          <Icon
-            icon="times"
-            style={{
-              color: '#fff',
-              position: 'absolute',
-              top: '2rem',
-              right: '2rem',
-              fontSize: '4rem',
-              opacity: '0.8'
-            }}
-          />
-        </div>
-        {imageEditModalShown && (
-          <ImageEditModal
-            imageUri={imageUri}
-            onHide={() =>
-              this.setState({
-                imageUri: null,
-                imageEditModalShown: false,
-                processing: false
-              })
-            }
-            processing={processing}
-            onConfirm={this.uploadImage}
-          />
-        )}
-        {alertModalShown && (
-          <AlertModal
-            title="Image is too large (limit: 5mb)"
-            content="Please select a smaller image"
-            onHide={() => this.setState({ alertModalShown: false })}
-          />
+        <ProfileWidget
+          history={history}
+          showAlert={() => setAlertModalShown(true)}
+          loadImage={upload =>
+            setImageEditStatus({
+              ...imageEditStatus,
+              imageEditModalShown: true,
+              imageUri: upload.target.result
+            })
+          }
+        />
+        <HomeMenuItems
+          history={history}
+          location={location}
+          style={{ marginTop: '1rem' }}
+        />
+        <Notification location="home" />
+        {username && (
+          <div
+            className={css`
+              background: #fff;
+              width: 100%;
+              text-align: center;
+              color: ${Color.red()};
+              font-size: 3rem;
+              padding: 1rem;
+            `}
+            onClick={logout}
+          >
+            Log out
+          </div>
         )}
       </div>
-    );
-  }
+      <div style={{ width: '30%', position: 'relative' }} onClick={onClose}>
+        <Icon
+          icon="times"
+          style={{
+            color: '#fff',
+            position: 'absolute',
+            top: '2rem',
+            right: '2rem',
+            fontSize: '4rem',
+            opacity: '0.8'
+          }}
+        />
+      </div>
+      {imageEditModalShown && (
+        <ImageEditModal
+          imageUri={imageUri}
+          onHide={() =>
+            setImageEditStatus({
+              imageUri: null,
+              imageEditModalShown: false,
+              processing: false
+            })
+          }
+          processing={processing}
+          onConfirm={uploadImage}
+        />
+      )}
+      {alertModalShown && (
+        <AlertModal
+          title="Image is too large (limit: 5mb)"
+          content="Please select a smaller image"
+          onHide={() => setAlertModalShown(false)}
+        />
+      )}
+    </ErrorBoundary>
+  );
 
-  uploadImage = async image => {
-    const { uploadProfilePic } = this.props;
-    this.setState({
+  async function uploadImage(image) {
+    setImageEditStatus({
+      ...imageEditStatus,
       processing: true
     });
     await uploadProfilePic(image);
-    this.setState({
+    setImageEditStatus({
       imageUri: null,
       processing: false,
       imageEditModalShown: false
     });
-  };
+  }
 }
 
 export default connect(

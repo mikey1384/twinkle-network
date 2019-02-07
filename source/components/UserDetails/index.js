@@ -19,7 +19,7 @@ export default class UserDetails extends Component {
   static propTypes = {
     isProfilePage: PropTypes.bool,
     profile: PropTypes.object.isRequired,
-    removeStatusMsg: PropTypes.func.isRequired,
+    removeStatusMsg: PropTypes.func,
     style: PropTypes.object,
     unEditable: PropTypes.bool,
     updateStatusMsg: PropTypes.func,
