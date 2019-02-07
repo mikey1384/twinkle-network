@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import Context from './Context';
 import withContext from 'components/Wrappers/withContext';
 import ContentLink from 'components/ContentLink';
@@ -15,106 +15,111 @@ import Icon from 'components/Icon';
 import { uploadComment } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
-class Heading extends Component {
-  static propTypes = {
-    action: PropTypes.string,
-    dispatch: PropTypes.func.isRequired,
-    onCommentSubmit: PropTypes.func.isRequired,
-    onLikeContent: PropTypes.func.isRequired,
-    attachedVideoShown: PropTypes.bool,
-    contentObj: PropTypes.shape({
-      id: PropTypes.number,
-      commentId: PropTypes.number,
-      replyId: PropTypes.number,
-      rootObj: PropTypes.object,
-      rootId: PropTypes.number,
-      rootType: PropTypes.string,
-      targetObj: PropTypes.object,
-      timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-        .isRequired,
-      type: PropTypes.string,
-      uploader: PropTypes.object
-    }).isRequired,
-    myId: PropTypes.number,
-    onPlayVideoClick: PropTypes.func
-  };
+Heading.propTypes = {
+  action: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  onCommentSubmit: PropTypes.func.isRequired,
+  onLikeContent: PropTypes.func.isRequired,
+  attachedVideoShown: PropTypes.bool,
+  contentObj: PropTypes.shape({
+    id: PropTypes.number,
+    commentId: PropTypes.number,
+    replyId: PropTypes.number,
+    rootObj: PropTypes.object,
+    rootId: PropTypes.number,
+    rootType: PropTypes.string,
+    subjectId: PropTypes.number,
+    targetObj: PropTypes.object,
+    timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    type: PropTypes.string,
+    uploader: PropTypes.object
+  }).isRequired,
+  myId: PropTypes.number,
+  onPlayVideoClick: PropTypes.func
+};
 
-  state = {
-    subjectModalShown: false
-  };
-
-  render() {
-    const {
-      contentObj: {
-        uploader = {},
-        rootType,
-        targetObj: { subject = {} } = {},
-        timeStamp,
-        type
-      }
-    } = this.props;
-    const { subjectModalShown } = this.state;
-    return (
-      <header className="heading">
-        <ProfilePic
-          style={{ width: '6rem', height: '6rem' }}
-          userId={uploader.id}
-          profilePicId={uploader.profilePicId}
-        />
+function Heading({
+  action,
+  attachedVideoShown,
+  contentObj,
+  contentObj: {
+    commentId,
+    id,
+    replyId,
+    rootId,
+    rootObj = {},
+    rootObj: { content, difficulty, likes } = {},
+    rootType,
+    subjectId,
+    targetObj,
+    targetObj: { subject = {} } = {},
+    timeStamp,
+    type,
+    uploader = {}
+  },
+  dispatch,
+  myId,
+  onCommentSubmit,
+  onLikeContent,
+  onPlayVideoClick
+}) {
+  const [subjectModalShown, setSubjectModalShown] = useState(false);
+  return (
+    <header className="heading">
+      <ProfilePic
+        style={{ width: '6rem', height: '6rem' }}
+        userId={uploader.id}
+        profilePicId={uploader.profilePicId}
+      />
+      <div
+        style={{
+          width: '90%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginLeft: '1rem'
+        }}
+      >
         <div
           style={{
-            width: '90%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginLeft: '1rem'
+            width:
+              type === 'comment' && rootType !== 'url' && rootType !== 'user'
+                ? '78%'
+                : '100%'
           }}
         >
+          <span className="title">{renderHeading()}</span>
+          <small className="timestamp">
+            {timeStamp ? `(${timeSince(timeStamp)})` : ''}
+          </small>
+        </div>
+        {type === 'comment' && rootType !== 'user' && (
           <div
             style={{
-              width:
-                type === 'comment' && rootType !== 'url' && rootType !== 'user'
-                  ? '78%'
-                  : '100%'
+              width: '20%',
+              height: '8rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end'
             }}
           >
-            <span className="title">{this.renderHeading()}</span>
-            <small className="timestamp">
-              {timeStamp ? `(${timeSince(timeStamp)})` : ''}
-            </small>
+            {renderCornerButton()}
           </div>
-          {type === 'comment' && rootType !== 'user' && (
-            <div
-              style={{
-                width: '20%',
-                height: '8rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end'
-              }}
-            >
-              {this.renderCornerButton()}
-            </div>
-          )}
-        </div>
-        {subjectModalShown && (
-          <SubjectModal
-            onHide={() => this.setState({ subjectModalShown: false })}
-            subject={subject}
-            uploadResponse={this.onResponseUpload}
-          />
         )}
-      </header>
-    );
-  }
+      </div>
+      {subjectModalShown && (
+        <SubjectModal
+          onHide={() => setSubjectModalShown(false)}
+          subject={subject}
+          uploadResponse={onResponseUpload}
+        />
+      )}
+    </header>
+  );
 
-  renderHeading = () => {
-    const {
-      contentObj,
-      contentObj: { id, rootObj = {}, type, uploader = {}, rootType },
-      action
-    } = this.props;
+  function renderHeading() {
     const contentLabel =
       rootType === 'url'
         ? 'link'
@@ -138,7 +143,7 @@ class Heading extends Component {
               type={type}
               style={{ color: Color.green() }}
             />
-            {this.renderTargetAction()} {contentLabel}:{' '}
+            {renderTargetAction()} {contentLabel}:{' '}
             <ContentLink content={rootObj} type={rootType} />{' '}
           </>
         );
@@ -170,30 +175,18 @@ class Heading extends Component {
       default:
         return <span>Error</span>;
     }
-  };
+  }
 
-  onResponseUpload = async({ content, subject }) => {
-    const { dispatch, onCommentSubmit } = this.props;
+  async function onResponseUpload({ content, subject }) {
     const data = await uploadComment({
       content,
       parent: subject,
       dispatch
     });
     if (data) onCommentSubmit(data);
-  };
+  }
 
-  renderCornerButton = () => {
-    const {
-      contentObj: {
-        rootId,
-        rootObj: { content, likes = [], difficulty } = {},
-        rootType,
-        subjectId
-      },
-      attachedVideoShown,
-      myId,
-      onPlayVideoClick
-    } = this.props;
+  function renderCornerButton() {
     const userLikedVideo = likes.map(like => like.id).indexOf(myId) !== -1;
     if (rootType === 'video') {
       if (!content) return null;
@@ -205,7 +198,7 @@ class Heading extends Component {
               contentId={rootId}
               small
               liked={userLikedVideo}
-              onClick={this.onLikeClick}
+              onClick={onLikeClick}
             />
           ) : (
             content && (
@@ -234,21 +227,15 @@ class Heading extends Component {
       );
     } else if (subjectId) {
       return (
-        <Button
-          success
-          onClick={() => this.setState({ subjectModalShown: true })}
-        >
+        <Button success onClick={() => setSubjectModalShown(true)}>
           <Icon icon="comment" />
           <span style={{ marginLeft: '0.7rem' }}>Respond</span>
         </Button>
       );
     }
-  };
+  }
 
-  renderTargetAction = () => {
-    const {
-      contentObj: { commentId, replyId, targetObj = {}, rootType }
-    } = this.props;
+  function renderTargetAction() {
     if (targetObj.comment && !targetObj.comment.notFound) {
       return (
         <span>
@@ -275,15 +262,11 @@ class Heading extends Component {
       );
     }
     return null;
-  };
+  }
 
-  onLikeClick = likes => {
-    const {
-      contentObj: { rootId, rootType },
-      onLikeContent
-    } = this.props;
+  function onLikeClick(likes) {
     onLikeContent({ likes, contentId: rootId, type: rootType });
-  };
+  }
 }
 
 export default connect(

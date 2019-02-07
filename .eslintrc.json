@@ -15,7 +15,7 @@
     "node": true
   },
 
-  "plugins": ["standard", "promise", "react"],
+  "plugins": ["standard", "promise", "react", "react-hooks"],
 
   "extends": ["plugin:react/recommended"],
 
@@ -145,6 +145,7 @@
     ],
     "react/no-unused-prop-types": [2],
     "react/no-children-prop": [0],
+    "react-hooks/rules-of-hooks": "error",
     "rest-spread-spacing": [2, "never"],
     "semi": [2, "always"],
     "semi-spacing": [2, { "before": false, "after": true }],

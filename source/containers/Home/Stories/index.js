@@ -203,6 +203,7 @@ class Stories extends Component {
             applyFilter={this.applyFilter}
             setDisplayOrder={this.setDisplayOrder}
             toggleHideWatched={toggleHideWatched}
+            userId={userId}
           />
           <InputPanel />
           <div style={{ width: '100%' }}>

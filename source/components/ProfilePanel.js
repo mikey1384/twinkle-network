@@ -118,6 +118,7 @@ class ProfilePanel extends Component {
       expandable,
       isCreator,
       openDirectMessageChannel,
+      removeStatusMsg,
       updateStatusMsg,
       uploadBio,
       username
@@ -255,6 +256,7 @@ class ProfilePanel extends Component {
             >
               <UserDetails
                 profile={profile}
+                removeStatusMsg={removeStatusMsg}
                 updateStatusMsg={updateStatusMsg}
                 uploadBio={uploadBio}
                 userId={userId}
