@@ -528,7 +528,7 @@ class VideoPlayer extends Component {
     }
     let requiredViewDuration =
       totalDuration < requiredDurationCap(twinkleXP)
-        ? totalDuration - 3
+        ? Math.floor(totalDuration / 2) * 2 - 5
         : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&
