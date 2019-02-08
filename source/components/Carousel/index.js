@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import ExecutionEnvironment from 'exenv';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import NavButton from './NavButton';
 import Button from 'components/Button';
 import { connect } from 'react-redux';
 import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
-import { css } from 'emotion';
 import ProgressBar from 'components/ProgressBar';
 import easingTypes from 'tween-functions';
 import PropTypes from 'prop-types';
@@ -18,11 +16,6 @@ const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE';
 const DEFAULT_EASING = easingTypes.easeInOutQuad;
 const DEFAULT_DURATION = 300;
 const DEFAULT_DELAY = 0;
-
-const stackBehavior = {
-  ADDITIVE: 'ADDITIVE',
-  DESTRUCTIVE: 'DESTRUCTIVE'
-};
 
 class Carousel extends Component {
   static propTypes = {
@@ -94,16 +87,14 @@ class Carousel extends Component {
   }
 
   componentDidMount() {
-    this.setInitialDimensions();
+    this.setState({
+      frameWidth: '100%',
+      slideCount: React.Children.count(this.props.children),
+      slideWidth: this.props.initialSlideWidth || 0
+    });
     this.setDimensions();
-    bindListeners.call(this);
-
-    function bindListeners() {
-      if (ExecutionEnvironment.canUseDOM) {
-        addEvent(window, 'resize', this.onResize);
-        addEvent(document, 'readystatechange', this.onReadyStateChange);
-      }
-    }
+    addEvent(window, 'resize', this.onResize);
+    addEvent(document, 'readystatechange', this.onReadyStateChange);
   }
 
   componentDidUpdate(prevProps, slideIndex) {
@@ -124,16 +115,10 @@ class Carousel extends Component {
   }
 
   componentWillUnmount() {
-    unbindListeners.call(this);
+    removeEvent(window, 'resize', this.onResize);
+    removeEvent(document, 'readystatechange', this.onReadyStateChange);
     requestAnimationFrame.cancel(this.rafID);
     this.rafID = -1;
-
-    function unbindListeners() {
-      if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', this.onResize);
-        removeEvent(document, 'readystatechange', this.onReadyStateChange);
-      }
-    }
   }
 
   render() {
@@ -153,15 +138,14 @@ class Carousel extends Component {
     return (
       <ErrorBoundary>
         <div
-          className={`slider ${className} ${css`
-            font-size: 1.5rem;
-          `}`}
+          className={className}
           ref={ref => {
             this.Slider = ref;
           }}
           style={{
             position: 'relative',
             display: 'block',
+            fontSize: '1.5rem',
             width: this.props.width,
             height: 'auto',
             boxSizing: 'border-box',
@@ -237,10 +221,7 @@ class Carousel extends Component {
               margin: this.props.framePadding,
               padding: '5px',
               transform: 'translate3d(0, 0, 0)',
-              WebkitTransform: 'translate3d(0, 0, 0)',
-              msTransform: 'translate(0, 0)',
-              boxSizing: 'border-box',
-              MozBoxSizing: 'border-box'
+              boxSizing: 'border-box'
             }}
             onTouchStart={e => {
               this.touchObject = {
@@ -412,11 +393,30 @@ class Carousel extends Component {
     );
   }
 
-  animateSlide = (easing, duration, endValue) => {
-    this.tweenState('left', {
-      easing: easing || easingTypes[this.props.easing],
-      duration: duration || this.props.speed,
-      endValue: endValue || this.getTargetLeft()
+  animateSlide = easing => {
+    this.setState(state => {
+      const newConfig = {
+        easing: easing || easingTypes[this.props.easing] || DEFAULT_EASING,
+        duration: this.props.speed || DEFAULT_DURATION,
+        delay: DEFAULT_DELAY,
+        beginValue: state.left,
+        endValue: this.getTargetLeft(),
+        stackBehavior: DEFAULT_STACK_BEHAVIOR
+      };
+
+      let newTweenQueue = state.tweenQueue;
+      newTweenQueue.push({
+        pathHash: 'left',
+        config: newConfig,
+        initTime: Date.now() + newConfig.delay
+      });
+      if (newTweenQueue.length === 1) {
+        this.rafID = requestAnimationFrame(this.rafCb);
+      }
+      return {
+        tweenQueue: newTweenQueue,
+        left: newConfig.endValue
+      };
     });
   };
 
@@ -476,64 +476,6 @@ class Carousel extends Component {
         e.nativeEvent.stopPropagation();
       }
     }
-  };
-
-  tweenState = (
-    path,
-    {
-      easing,
-      duration,
-      delay,
-      beginValue,
-      endValue,
-      onEnd,
-      stackBehavior: configSB
-    }
-  ) => {
-    this.setState(prevState => {
-      let stateName;
-      // see comment below on pash hash
-      let pathHash;
-      if (typeof path === 'string') {
-        stateName = path;
-        pathHash = path;
-      }
-      // see the reasoning for these defaults at the top of file
-      const newConfig = {
-        easing: easing || DEFAULT_EASING,
-        duration: duration == null ? DEFAULT_DURATION : duration,
-        delay: delay == null ? DEFAULT_DELAY : delay,
-        beginValue: beginValue == null ? prevState[stateName] : beginValue,
-        endValue: endValue,
-        onEnd: onEnd,
-        stackBehavior: configSB || DEFAULT_STACK_BEHAVIOR
-      };
-
-      let newTweenQueue = prevState.tweenQueue;
-      if (newConfig.stackBehavior === stackBehavior.DESTRUCTIVE) {
-        newTweenQueue = prevState.tweenQueue.filter(
-          item => item.pathHash !== pathHash
-        );
-      }
-
-      // we store path hash, so that during value retrieval we can use hash
-      // comparison to find the path. See the kind of shitty thing you have to
-      // do when you don't have value comparison for collections?
-      newTweenQueue.push({
-        pathHash: pathHash,
-        config: newConfig,
-        initTime: Date.now() + newConfig.delay
-      });
-
-      if (newTweenQueue.length === 1) {
-        this.rafID = requestAnimationFrame(this.rafCb);
-      }
-
-      return {
-        tweenQueue: newTweenQueue,
-        [stateName]: newConfig.endValue
-      };
-    });
   };
 
   getTweeningValue = path => {
@@ -710,81 +652,33 @@ class Carousel extends Component {
     this.setDimensions();
   };
 
-  setInitialDimensions = () => {
-    var slideWidth;
-
-    slideWidth = this.props.initialSlideWidth || 0;
-    this.setState(
-      {
-        frameWidth: '100%',
-        slideCount: React.Children.count(this.props.children),
-        slideWidth: slideWidth
-      },
-      function() {
-        this.setLeft();
-      }
-    );
-  };
-
   setDimensions = () => {
-    var slideWidth;
-    var slidesToScroll;
-    var firstSlide;
-    var frame;
-    var frameWidth;
+    const { slidesToScroll } = this.props;
+    const firstSlide = this.Frame.childNodes[0].childNodes[0];
+    let slideWidth =
+      (this.Frame.offsetWidth / this.props.slidesToShow) *
+        this.props.slideWidth -
+      this.props.cellSpacing * (1 - 1 / this.props.slidesToShow);
 
-    slidesToScroll = this.props.slidesToScroll;
-    frame = this.Frame;
-    firstSlide = frame.childNodes[0].childNodes[0];
     if (firstSlide) {
       firstSlide.style.height = 'auto';
     }
 
-    if (typeof this.props.slideWidth !== 'number') {
-      slideWidth = parseInt(this.props.slideWidth, 0);
-    } else {
-      slideWidth =
-        (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
-    }
-
-    slideWidth -=
-      this.props.cellSpacing * ((100 - 100 / this.props.slidesToShow) / 100);
-    frameWidth = frame.offsetWidth;
-
-    if (this.props.slidesToScroll === 'auto') {
-      slidesToScroll = Math.floor(
-        frameWidth / (slideWidth + this.props.cellSpacing)
-      );
-    }
-    this.setState(
-      {
-        frameWidth: frameWidth,
-        slideWidth: slideWidth,
-        slidesToScroll: slidesToScroll,
-        left: this.getTargetLeft(),
-        top: 0
-      },
-      function() {
-        this.setLeft();
-      }
-    );
-  };
-
-  setLeft = () => {
     this.setState({
+      frameWidth: this.Frame.offsetWidth,
+      slideWidth: slideWidth,
+      slidesToScroll,
       left: this.getTargetLeft(),
       top: 0
     });
   };
 
   swipeDirection = (x1, x2, y1, y2) => {
-    var xDist, yDist, r, swipeAngle;
+    const xDist = x1 - x2;
+    const yDist = y1 - y2;
+    const r = Math.atan2(yDist, xDist);
 
-    xDist = x1 - x2;
-    yDist = y1 - y2;
-    r = Math.atan2(yDist, xDist);
-
-    swipeAngle = Math.round((r * 180) / Math.PI);
+    let swipeAngle = Math.round((r * 180) / Math.PI);
     if (swipeAngle < 0) {
       swipeAngle = 360 - Math.abs(swipeAngle);
     }
