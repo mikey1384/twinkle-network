@@ -160,7 +160,7 @@ class SubjectPanel extends Component {
               />
             )}
           </div>
-          {!onEdit && description && (
+          {!onEdit && !!description && (
             <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
           )}
           {onEdit && (

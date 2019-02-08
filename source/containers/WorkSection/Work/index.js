@@ -64,7 +64,13 @@ class Work extends Component {
               buttonClass: 'snow'
             }
           ]
-        : [];
+        : [
+            {
+              label: 'Select Playlists',
+              onClick: openSelectPlaylistsToPinModal,
+              buttonClass: 'snow'
+            }
+          ];
     return (
       <div>
         <PlaylistsPanel

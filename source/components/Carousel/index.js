@@ -5,25 +5,9 @@ import NavButton from './NavButton';
 import Button from 'components/Button';
 import { connect } from 'react-redux';
 import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
-import {
-  getListStyles,
-  getFrameStyles,
-  getSliderStyles,
-  getStyleTagStyles,
-  formatChildren,
-  setInitialDimensions,
-  setDimensions,
-  setExternalData
-} from './helpers/styles';
-import { nextSlide, previousSlide } from './helpers/actions';
-import {
-  getTouchEvents,
-  getMouseEvents,
-  handleClick
-} from './helpers/interfaceEvents';
 import { css } from 'emotion';
 import ProgressBar from 'components/ProgressBar';
-import { easeInOutQuad } from 'tween-functions';
+import easingTypes from 'tween-functions';
 import PropTypes from 'prop-types';
 import requestAnimationFrame from 'raf';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -31,7 +15,7 @@ import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
 const DEFAULT_STACK_BEHAVIOR = 'ADDITIVE';
-const DEFAULT_EASING = easeInOutQuad;
+const DEFAULT_EASING = easingTypes.easeInOutQuad;
 const DEFAULT_DURATION = 300;
 const DEFAULT_DELAY = 0;
 
@@ -42,10 +26,21 @@ const stackBehavior = {
 
 class Carousel extends Component {
   static propTypes = {
+    afterSlide: PropTypes.func,
+    beforeSlide: PropTypes.func,
+    cellAlign: PropTypes.string,
     chatMode: PropTypes.bool,
     children: PropTypes.array.isRequired,
+    cellSpacing: PropTypes.number,
     className: PropTypes.string,
     clickSafe: PropTypes.bool,
+    clickSafeOn: PropTypes.func,
+    clickSafeOff: PropTypes.func,
+    dragging: PropTypes.bool,
+    easing: PropTypes.string,
+    edgeEasing: PropTypes.string,
+    framePadding: PropTypes.string,
+    initialSlideWidth: PropTypes.number,
     onFinish: PropTypes.func,
     onShowAll: PropTypes.func,
     progressBar: PropTypes.bool,
@@ -54,9 +49,13 @@ class Carousel extends Component {
     showQuestionsBuilder: PropTypes.func,
     slideIndex: PropTypes.number.isRequired,
     slidesToScroll: PropTypes.number.isRequired,
+    slidesToShow: PropTypes.number,
+    slideWidth: PropTypes.number,
+    speed: PropTypes.number,
     style: PropTypes.object,
     userCanEditThis: PropTypes.bool,
-    userIsUploader: PropTypes.bool
+    userIsUploader: PropTypes.bool,
+    width: PropTypes.string
   };
 
   static defaultProps = {
@@ -64,7 +63,6 @@ class Carousel extends Component {
     beforeSlide: function() {},
     cellAlign: 'left',
     cellSpacing: 0,
-    data: function() {},
     dragging: true,
     easing: 'easeOutCirc',
     edgeEasing: 'easeOutElastic',
@@ -96,10 +94,9 @@ class Carousel extends Component {
   }
 
   componentDidMount() {
-    setInitialDimensions.call(this);
-    setDimensions.call(this);
+    this.setInitialDimensions();
+    this.setDimensions();
     bindListeners.call(this);
-    setExternalData.call(this);
 
     function bindListeners() {
       if (ExecutionEnvironment.canUseDOM) {
@@ -122,7 +119,7 @@ class Carousel extends Component {
       !searchMode &&
       (prevProps.chatMode !== chatMode || prevProps.searchMode !== searchMode)
     ) {
-      setTimeout(setDimensions.bind(this), 0);
+      setTimeout(this.setDimensions(), 0);
     }
   }
 
@@ -140,10 +137,6 @@ class Carousel extends Component {
   }
 
   render() {
-    var children =
-      React.Children.count(this.props.children) > 1
-        ? formatChildren.call(this, this.props.children)
-        : this.props.children;
     const {
       className,
       showAllButton,
@@ -166,7 +159,16 @@ class Carousel extends Component {
           ref={ref => {
             this.Slider = ref;
           }}
-          style={{ ...getSliderStyles.call(this), ...style }}
+          style={{
+            position: 'relative',
+            display: 'block',
+            width: this.props.width,
+            height: 'auto',
+            boxSizing: 'border-box',
+            MozBoxSizing: 'border-box',
+            visibility: this.state.slideWidth ? 'visible' : 'hidden',
+            ...style
+          }}
         >
           {(userIsUploader || userCanEditThis) && (
             <a
@@ -193,7 +195,7 @@ class Carousel extends Component {
                 buttons={[
                   {
                     label: 'Prev',
-                    onClick: previousSlide.bind(this),
+                    onClick: this.previousSlide,
                     buttonClass: 'transparent',
                     disabled: currentSlide === 0
                   },
@@ -202,7 +204,7 @@ class Carousel extends Component {
                     onClick:
                       currentSlide + 1 === slideCount
                         ? onFinish
-                        : nextSlide.bind(this),
+                        : this.nextSlide,
                     buttonClass:
                       currentSlide + 1 === slideCount
                         ? 'primary'
@@ -227,19 +229,151 @@ class Carousel extends Component {
             ref={ref => {
               this.Frame = ref;
             }}
-            style={getFrameStyles.call(this)}
-            {...getTouchEvents.call(this)}
-            {...getMouseEvents.call(this)}
-            onClick={handleClick.bind(this)}
+            style={{
+              position: 'relative',
+              display: 'block',
+              overflow: 'hidden',
+              height: 'auto',
+              margin: this.props.framePadding,
+              padding: '5px',
+              transform: 'translate3d(0, 0, 0)',
+              WebkitTransform: 'translate3d(0, 0, 0)',
+              msTransform: 'translate(0, 0)',
+              boxSizing: 'border-box',
+              MozBoxSizing: 'border-box'
+            }}
+            onTouchStart={e => {
+              this.touchObject = {
+                startX: e.touches[0].pageX,
+                startY: e.touches[0].pageY
+              };
+            }}
+            onTouchMove={e => {
+              var direction = this.swipeDirection(
+                this.touchObject.startX,
+                e.touches[0].pageX,
+                this.touchObject.startY,
+                e.touches[0].pageY
+              );
+
+              if (direction !== 0) {
+                e.preventDefault();
+              }
+
+              var length = Math.round(
+                Math.sqrt(
+                  Math.pow(e.touches[0].pageX - this.touchObject.startX, 2)
+                )
+              );
+
+              this.touchObject = {
+                startX: this.touchObject.startX,
+                startY: this.touchObject.startY,
+                endX: e.touches[0].pageX,
+                endY: e.touches[0].pageY,
+                length: length,
+                direction: direction
+              };
+
+              this.setState({
+                left: this.getTargetLeft(
+                  this.touchObject.length * this.touchObject.direction
+                ),
+                top: 0
+              });
+            }}
+            onTouchEnd={this.handleSwipe}
+            onTouchCancel={this.handleSwipe}
+            onMouseDown={e => {
+              if (!this.props.dragging) return;
+              this.touchObject = {
+                startX: e.clientX,
+                startY: e.clientY
+              };
+              this.setState({
+                dragging: true
+              });
+            }}
+            onMouseMove={e => {
+              if (!this.state.dragging) {
+                return;
+              }
+              var direction = this.swipeDirection(
+                this.touchObject.startX,
+                e.clientX,
+                this.touchObject.startY,
+                e.clientY
+              );
+
+              if (direction !== 0) {
+                e.preventDefault();
+              }
+
+              var length = Math.round(
+                Math.sqrt(Math.pow(e.clientX - this.touchObject.startX, 2))
+              );
+
+              this.touchObject = {
+                startX: this.touchObject.startX,
+                startY: this.touchObject.startY,
+                endX: e.clientX,
+                endY: e.clientY,
+                length: length,
+                direction: direction
+              };
+
+              this.setState({
+                left: this.getTargetLeft(
+                  this.touchObject.length * this.touchObject.direction
+                ),
+                top: 0
+              });
+            }}
+            onMouseUp={e => {
+              if (!this.state.dragging) {
+                return;
+              }
+              this.handleSwipe(e);
+            }}
+            onMouseLeave={e => {
+              if (!this.state.dragging) {
+                return;
+              }
+
+              this.handleSwipe(e);
+            }}
+            onClick={this.handleClick}
           >
             <ul
               className="slider-list"
               ref={ref => {
                 this.List = ref;
               }}
-              style={getListStyles.call(this)}
+              style={{
+                transform: `translate3d(${this.getTweeningValue(
+                  'left'
+                )}px, ${this.getTweeningValue('top')}px, 0)`,
+                position: 'relative',
+                display: 'block',
+                margin: '0px ' + (this.props.cellSpacing / 2) * -1 + 'px',
+                padding: 0,
+                height: 'auto',
+                width:
+                  this.state.slideWidth *
+                    React.Children.count(this.props.children) +
+                  this.props.cellSpacing *
+                    React.Children.count(this.props.children),
+                cursor: this.state.dragging === true ? 'pointer' : 'inherit',
+                boxSizing: 'border-box'
+              }}
             >
-              {children}
+              {React.Children.count(this.props.children) > 1
+                ? this.formatChildren({
+                    children: this.props.children,
+                    slideWidth: this.state.slideWidth,
+                    cellSpacing: this.props.cellSpacing
+                  })
+                : this.props.children}
             </ul>
           </div>
           {!this.props.progressBar && [
@@ -247,7 +381,7 @@ class Carousel extends Component {
               left
               key={0}
               disabled={currentSlide === 0}
-              nextSlide={previousSlide.bind(this)}
+              nextSlide={this.previousSlide}
             />,
             <div key={1}>
               {slideCount > 5 &&
@@ -268,19 +402,81 @@ class Carousel extends Component {
               ) : (
                 <NavButton
                   disabled={currentSlide + slidesToScroll >= slideCount}
-                  nextSlide={nextSlide.bind(this)}
+                  nextSlide={this.nextSlide}
                 />
               )}
             </div>
           ]}
-          <style
-            type="text/css"
-            dangerouslySetInnerHTML={{ __html: getStyleTagStyles.call(this) }}
-          />
         </div>
       </ErrorBoundary>
     );
   }
+
+  animateSlide = (easing, duration, endValue) => {
+    this.tweenState('left', {
+      easing: easing || easingTypes[this.props.easing],
+      duration: duration || this.props.speed,
+      endValue: endValue || this.getTargetLeft()
+    });
+  };
+
+  formatChildren = ({ children, slideWidth, cellSpacing }) =>
+    React.Children.map(children, (child, index) => (
+      <li
+        className="slider-slide"
+        style={{
+          display: 'inline-block',
+          listStyleType: 'none',
+          verticalAlign: 'top',
+          width: slideWidth,
+          height: 'auto',
+          boxSizing: 'border-box',
+          MozBoxSizing: 'border-box',
+          marginLeft: cellSpacing / 2 - 0.5,
+          marginRight: cellSpacing / 2 - 0.5,
+          marginTop: 'auto',
+          marginBottom: 'auto'
+        }}
+        key={index}
+      >
+        {child}
+      </li>
+    ));
+
+  getTargetLeft = touchOffset => {
+    var offset;
+    switch (this.props.cellAlign) {
+      case 'left':
+        offset = 0;
+        offset -= this.props.cellSpacing * this.state.currentSlide;
+        break;
+      case 'center':
+        offset = (this.state.frameWidth - this.state.slideWidth) / 2;
+        offset -= this.props.cellSpacing * this.state.currentSlide;
+        break;
+      case 'right':
+        offset = this.state.frameWidth - this.state.slideWidth;
+        offset -= this.props.cellSpacing * this.state.currentSlide;
+        break;
+      default:
+        break;
+    }
+
+    offset -= touchOffset || 0;
+
+    return (this.state.slideWidth * this.state.currentSlide - offset) * -1;
+  };
+
+  handleClick = e => {
+    if (this.props.clickSafe) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.nativeEvent) {
+        e.nativeEvent.stopPropagation();
+      }
+    }
+  };
 
   tweenState = (
     path,
@@ -390,6 +586,88 @@ class Carousel extends Component {
     return tweeningValue;
   };
 
+  goToSlide = index => {
+    if (index >= React.Children.count(this.props.children) || index < 0) {
+      return;
+    }
+
+    this.props.beforeSlide(this.state.currentSlide, index);
+
+    this.setState(
+      {
+        currentSlide: index
+      },
+      function() {
+        this.animateSlide();
+        this.props.afterSlide(index);
+      }
+    );
+  };
+
+  handleSwipe = e => {
+    if (
+      typeof this.touchObject.length !== 'undefined' &&
+      this.touchObject.length > 44
+    ) {
+      this.props.clickSafeOn();
+    } else {
+      this.props.clickSafeOff();
+    }
+    if (
+      this.touchObject.length >
+      this.state.slideWidth / this.props.slidesToShow / 5
+    ) {
+      if (this.touchObject.direction === 1) {
+        if (
+          this.state.currentSlide >=
+          React.Children.count(this.props.children) - this.props.slidesToShow
+        ) {
+          this.animateSlide(easingTypes[this.props.edgeEasing]);
+        } else {
+          this.nextSlide();
+        }
+      } else if (this.touchObject.direction === -1) {
+        if (this.state.currentSlide <= 0) {
+          this.animateSlide(easingTypes[this.props.edgeEasing]);
+        } else {
+          this.previousSlide();
+        }
+      }
+    } else {
+      this.goToSlide(this.state.currentSlide);
+    }
+
+    this.touchObject = {};
+
+    this.setState({
+      dragging: false
+    });
+  };
+
+  nextSlide = () => {
+    var childrenCount = React.Children.count(this.props.children);
+    if (this.state.currentSlide >= childrenCount - this.props.slidesToShow) {
+      return;
+    }
+
+    this.goToSlide(
+      Math.min(
+        this.state.currentSlide + this.state.slidesToScroll,
+        childrenCount - this.props.slidesToShow
+      )
+    );
+  };
+
+  previousSlide = () => {
+    if (this.state.currentSlide <= 0) {
+      return;
+    }
+
+    this.goToSlide(
+      Math.max(0, this.state.currentSlide - this.state.slidesToScroll)
+    );
+  };
+
   rafCb = () => {
     const state = this.state;
     if (state.tweenQueue.length === 0) {
@@ -424,12 +702,102 @@ class Carousel extends Component {
 
   onResize = () => {
     if (!this.props.chatMode && !this.props.searchMode) {
-      setDimensions.call(this);
+      this.setDimensions();
     }
   };
 
   onReadyStateChange = () => {
-    setDimensions.call(this);
+    this.setDimensions();
+  };
+
+  setInitialDimensions = () => {
+    var slideWidth;
+
+    slideWidth = this.props.initialSlideWidth || 0;
+    this.setState(
+      {
+        frameWidth: '100%',
+        slideCount: React.Children.count(this.props.children),
+        slideWidth: slideWidth
+      },
+      function() {
+        this.setLeft();
+      }
+    );
+  };
+
+  setDimensions = () => {
+    var slideWidth;
+    var slidesToScroll;
+    var firstSlide;
+    var frame;
+    var frameWidth;
+
+    slidesToScroll = this.props.slidesToScroll;
+    frame = this.Frame;
+    firstSlide = frame.childNodes[0].childNodes[0];
+    if (firstSlide) {
+      firstSlide.style.height = 'auto';
+    }
+
+    if (typeof this.props.slideWidth !== 'number') {
+      slideWidth = parseInt(this.props.slideWidth, 0);
+    } else {
+      slideWidth =
+        (frame.offsetWidth / this.props.slidesToShow) * this.props.slideWidth;
+    }
+
+    slideWidth -=
+      this.props.cellSpacing * ((100 - 100 / this.props.slidesToShow) / 100);
+    frameWidth = frame.offsetWidth;
+
+    if (this.props.slidesToScroll === 'auto') {
+      slidesToScroll = Math.floor(
+        frameWidth / (slideWidth + this.props.cellSpacing)
+      );
+    }
+    this.setState(
+      {
+        frameWidth: frameWidth,
+        slideWidth: slideWidth,
+        slidesToScroll: slidesToScroll,
+        left: this.getTargetLeft(),
+        top: 0
+      },
+      function() {
+        this.setLeft();
+      }
+    );
+  };
+
+  setLeft = () => {
+    this.setState({
+      left: this.getTargetLeft(),
+      top: 0
+    });
+  };
+
+  swipeDirection = (x1, x2, y1, y2) => {
+    var xDist, yDist, r, swipeAngle;
+
+    xDist = x1 - x2;
+    yDist = y1 - y2;
+    r = Math.atan2(yDist, xDist);
+
+    swipeAngle = Math.round((r * 180) / Math.PI);
+    if (swipeAngle < 0) {
+      swipeAngle = 360 - Math.abs(swipeAngle);
+    }
+    if (swipeAngle <= 45 && swipeAngle >= 0) {
+      return 1;
+    }
+    if (swipeAngle <= 360 && swipeAngle >= 315) {
+      return 1;
+    }
+    if (swipeAngle >= 135 && swipeAngle <= 225) {
+      return -1;
+    }
+    return 0;
   };
 }
 
