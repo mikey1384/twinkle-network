@@ -44,7 +44,7 @@ class PlaylistCarousel extends Component {
       ExecutionEnvironment.canUseDOM &&
       document.documentElement.clientWidth <= 991
     ) {
-      numSlides = 3;
+      numSlides = 4;
     }
     this.state = {
       onEdit: false,
