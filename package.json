@@ -38,6 +38,7 @@
     "babel-plugin-emotion": "^10.0.7",
     "babel-plugin-react-transform": "^3.0.0",
     "cross-env": "^5.2.0",
+    "d3-ease": "^1.0.5",
     "dotenv": "^6.2.0",
     "emotion": "^10.0.7",
     "emotion-server": "^10.0.7",
@@ -58,6 +59,7 @@
     "react-dnd-html5-backend": "^7.0.2",
     "react-dnd-html5-touch-backend": "^1.5.0",
     "react-dom": "^16.8.1",
+    "react-move": "^5.1.0",
     "react-onclickoutside": "^6.6.2",
     "react-player": "^1.9.3",
     "react-redux": "^6.0.0",
@@ -68,7 +70,6 @@
     "redux-thunk": "^2.1.0",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
-    "tween-functions": "^1.2.0",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.2"
   },

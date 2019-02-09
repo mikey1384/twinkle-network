@@ -259,6 +259,7 @@ class VideoPage extends Component {
                   )}
                   {!watchTabActive && questions.length > 0 && (
                     <Carousel
+                      allowDrag={false}
                       style={{ marginTop: !!difficulty && '1rem' }}
                       progressBar
                       showQuestionsBuilder={() =>
@@ -269,7 +270,6 @@ class VideoPage extends Component {
                       slidesToShow={1}
                       slidesToScroll={1}
                       slideIndex={currentSlide}
-                      dragging={false}
                       afterSlide={this.onSlide}
                       onFinish={this.onQuestionsFinish}
                     >
