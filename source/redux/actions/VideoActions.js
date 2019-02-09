@@ -38,9 +38,8 @@ export const changePinnedPlaylists = selectedPlaylists => async dispatch => {
   }
 };
 
-export const changePlaylistVideos = ({ playlistId, playlist }) => ({
+export const changePlaylistVideos = playlist => ({
   type: VIDEO.CHANGE_PLAYLIST_VIDEOS,
-  playlistId,
   playlist
 });
 

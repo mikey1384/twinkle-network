@@ -320,10 +320,7 @@ class EditPlaylistModal extends Component {
               .map(video => video.id),
             playlistId
           });
-    await changePlaylistVideos({
-      playlistId,
-      playlist
-    });
+    await changePlaylistVideos(playlist);
     onHide();
   };
 

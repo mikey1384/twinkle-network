@@ -79,27 +79,21 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.CHANGE_PLAYLIST_VIDEOS:
       return {
         ...state,
-        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
-          ...playlist,
-          playlist:
-            playlist.id === action.playlistId
-              ? action.playlist
-              : playlist.playlist
-        })),
-        allPlaylists: state.allPlaylists.map(playlist => ({
-          ...playlist,
-          playlist:
-            playlist.id === action.playlistId
-              ? action.playlist
-              : playlist.playlist
-        })),
-        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
-          ...playlist,
-          playlist:
-            playlist.id === action.playlistId
-              ? action.playlist
-              : playlist.playlist
-        }))
+        pinnedPlaylists: state.pinnedPlaylists.map(playlist =>
+          playlist.id === action.playlist.id
+            ? { ...playlist, ...action.playlist }
+            : playlist
+        ),
+        allPlaylists: state.allPlaylists.map(playlist =>
+          playlist.id === action.playlist.id
+            ? { ...playlist, ...action.playlist }
+            : playlist
+        ),
+        searchedPlaylists: state.searchedPlaylists.map(playlist =>
+          playlist.id === action.playlist.id
+            ? { ...playlist, ...action.playlist }
+            : playlist
+        )
       };
     case VIDEO.CLEAR:
       return defaultState;

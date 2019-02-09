@@ -95,9 +95,6 @@ function Carousel({
   useEffect(() => {
     setSlideCount(React.Children.count(children));
   }, [React.Children.count(children)]);
-
-  const slideFraction = (currentSlide + 1) / slideCount;
-
   return (
     <ErrorBoundary>
       <div
@@ -153,7 +150,7 @@ function Carousel({
               ]}
             />
             <ProgressBar
-              progress={slideFraction * 100}
+              progress={((currentSlide + 1) / slideCount) * 100}
               color={
                 currentSlide + 1 === slideCount
                   ? Color.blue()
@@ -208,37 +205,37 @@ function Carousel({
           onTouchEnd={handleSwipe}
           onTouchCancel={handleSwipe}
           onMouseDown={e => {
-            if (!allowDrag) return;
-            setTouchObject({
-              startX: e.clientX,
-              startY: e.clientY
-            });
-            setDragging(true);
+            if (allowDrag) {
+              setTouchObject({
+                startX: e.clientX,
+                startY: e.clientY
+              });
+              setDragging(true);
+            }
           }}
           onMouseMove={e => {
-            if (!dragging) {
-              return;
+            if (dragging) {
+              const direction = swipeDirection(
+                touchObject.startX,
+                e.clientX,
+                touchObject.startY,
+                e.clientY
+              );
+              if (direction !== 0) {
+                e.preventDefault();
+              }
+              let length = Math.round(
+                Math.sqrt(Math.pow(e.clientX - touchObject.startX, 2))
+              );
+              setTouchObject({
+                startX: touchObject.startX,
+                startY: touchObject.startY,
+                endX: e.clientX,
+                endY: e.clientY,
+                length: length,
+                direction: direction
+              });
             }
-            const direction = swipeDirection(
-              touchObject.startX,
-              e.clientX,
-              touchObject.startY,
-              e.clientY
-            );
-            if (direction !== 0) {
-              e.preventDefault();
-            }
-            let length = Math.round(
-              Math.sqrt(Math.pow(e.clientX - touchObject.startX, 2))
-            );
-            setTouchObject({
-              startX: touchObject.startX,
-              startY: touchObject.startY,
-              endX: e.clientX,
-              endY: e.clientY,
-              length: length,
-              direction: direction
-            });
           }}
           onMouseUp={e => {
             if (dragging) {
@@ -274,7 +271,8 @@ function Carousel({
                 }
               };
             }}
-            children={({ tx, ty }) => (
+          >
+            {({ tx, ty }) => (
               <ul
                 style={{
                   position: 'relative',
@@ -297,7 +295,7 @@ function Carousel({
                   : children}
               </ul>
             )}
-          />
+          </Animate>
         </div>
         {!progressBar && [
           <NavButton
@@ -370,13 +368,13 @@ function Carousel({
 
   function getTargetLeft(touchOffset, slide) {
     const target = slide || currentSlide;
-    let offset = 0 - cellSpacing * target - (touchOffset || 0);
-    let left = slideWidth * target;
+    const offset = 0 - cellSpacing * target - (touchOffset || 0);
+    const left = slideWidth * target;
     return (left - offset) * -1;
   }
 
   function getOffsetDeltas() {
-    let offset = getTargetLeft(touchObject.length * touchObject.direction);
+    const offset = getTargetLeft(touchObject.length * touchObject.direction);
     return {
       tx: [offset],
       ty: [0]

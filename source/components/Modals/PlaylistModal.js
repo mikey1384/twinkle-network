@@ -8,7 +8,7 @@ import Link from 'components/Link';
 export default class PlaylistModal extends Component {
   static propTypes = {
     onHide: PropTypes.func.isRequired,
-    onLinkClick: PropTypes.func.isRequired,
+    onLinkClick: PropTypes.func,
     playlistId: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired
   };
