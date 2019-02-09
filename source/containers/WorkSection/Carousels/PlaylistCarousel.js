@@ -284,7 +284,7 @@ class PlaylistCarousel extends Component {
   onResize = () => {
     this.setState({
       numSlides:
-        document.documentElement.clientWidth <= 991 ? 3 : this.defaultNumSlides
+        document.documentElement.clientWidth <= 991 ? 4 : this.defaultNumSlides
     });
   };
 }
