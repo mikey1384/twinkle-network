@@ -37,6 +37,7 @@ class PlaylistCarousel extends Component {
 
   defaultNumSlides = 5;
   numSlides = 5;
+  mobileNumSlides = 4;
   cellSpacing = 20;
 
   constructor() {
@@ -45,7 +46,7 @@ class PlaylistCarousel extends Component {
       ExecutionEnvironment.canUseDOM &&
       document.documentElement.clientWidth <= 991
     ) {
-      this.numSlides = 4;
+      this.numSlides = this.mobileNumSlides;
       this.cellSpacing = 10;
     }
     this.state = {
@@ -297,7 +298,7 @@ class PlaylistCarousel extends Component {
     this.setState({
       numSlides:
         document.documentElement.clientWidth <= 991
-          ? this.numSlides
+          ? this.mobileNumSlides
           : this.defaultNumSlides
     });
   };
