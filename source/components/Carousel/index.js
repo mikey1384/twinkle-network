@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import NavButton from './NavButton';
 import Button from 'components/Button';
-import { connect } from 'react-redux';
-import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
 import ProgressBar from 'components/ProgressBar';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import * as d3Ease from 'd3-ease';
+import { connect } from 'react-redux';
+import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
 import { Animate } from 'react-move';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
@@ -95,6 +95,7 @@ function Carousel({
   useEffect(() => {
     setSlideCount(React.Children.count(children));
   }, [React.Children.count(children)]);
+
   return (
     <ErrorBoundary>
       <div
@@ -106,7 +107,6 @@ function Carousel({
           width: '100%',
           height: 'auto',
           boxSizing: 'border-box',
-          MozBoxSizing: 'border-box',
           visibility: slideWidth ? 'visible' : 'hidden',
           ...style
         }}
@@ -170,7 +170,7 @@ function Carousel({
             overflowX: 'hidden',
             height: 'auto',
             margin: framePadding,
-            padding: '5px',
+            padding: '6px',
             transform: 'translate3d(0, 0, 0)',
             boxSizing: 'border-box'
           }}
@@ -194,12 +194,11 @@ function Carousel({
               Math.sqrt(Math.pow(e.touches[0].pageX - touchObject.startX, 2))
             );
             setTouchObject({
-              startX: touchObject.startX,
-              startY: touchObject.startY,
+              ...touchObject,
               endX: e.touches[0].pageX,
               endY: e.touches[0].pageY,
-              length: length,
-              direction: direction
+              length,
+              direction
             });
           }}
           onTouchEnd={handleSwipe}
@@ -228,12 +227,11 @@ function Carousel({
                 Math.sqrt(Math.pow(e.clientX - touchObject.startX, 2))
               );
               setTouchObject({
-                startX: touchObject.startX,
-                startY: touchObject.startY,
+                ...touchObject,
                 endX: e.clientX,
                 endY: e.clientY,
-                length: length,
-                direction: direction
+                length,
+                direction
               });
             }
           }}
