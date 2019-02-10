@@ -167,7 +167,7 @@ function Carousel({
           style={{
             position: 'relative',
             display: 'block',
-            overflow: 'hidden',
+            overflowX: 'hidden',
             height: 'auto',
             margin: framePadding,
             padding: '5px',
@@ -276,8 +276,9 @@ function Carousel({
               <ul
                 style={{
                   position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
                   transform: `translate3d(${tx}px, ${ty}px, 0)`,
-                  display: 'block',
                   margin: `0px ${(cellSpacing / 2) * -1}px`,
                   padding: 0,
                   height: 'auto',
@@ -337,7 +338,7 @@ function Carousel({
       <li
         className="slider-slide"
         style={{
-          display: 'inline-block',
+          display: 'block',
           listStyleType: 'none',
           verticalAlign: 'top',
           width: slideWidth,
