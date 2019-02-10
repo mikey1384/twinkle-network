@@ -13,7 +13,7 @@ import { editPlaylistTitle, deletePlaylist } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
 import Link from 'components/Link';
 
@@ -35,16 +35,17 @@ class PlaylistCarousel extends Component {
     numPlaylistVids: PropTypes.number.isRequired
   };
 
-  defaultNumSlides = 5;
+  numSlides = 5;
+  cellSpacing = 20;
 
   constructor() {
     super();
-    let numSlides = this.defaultNumSlides;
     if (
       ExecutionEnvironment.canUseDOM &&
       document.documentElement.clientWidth <= 991
     ) {
-      numSlides = 4;
+      this.numSlides = 4;
+      this.cellSpacing = 10;
     }
     this.state = {
       onEdit: false,
@@ -52,7 +53,7 @@ class PlaylistCarousel extends Component {
       reorderPLVideosModalShown: false,
       deleteConfirmModalShown: false,
       playlistModalShown: false,
-      numSlides
+      numSlides: this.numSlides
     };
   }
 
@@ -192,7 +193,7 @@ class PlaylistCarousel extends Component {
           progressBar={false}
           slidesToShow={numSlides}
           slidesToScroll={numSlides}
-          cellSpacing={20}
+          cellSpacing={this.cellSpacing}
           slideWidthMultiplier={0.99}
           showAllButton={showAllButton}
           onShowAll={() => this.setState({ playlistModalShown: true })}
@@ -238,6 +239,16 @@ class PlaylistCarousel extends Component {
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
+          className={css`
+            @media (max-width: ${mobileMaxWidth}) {
+              a {
+                font-size: 1.3rem;
+              }
+              .username {
+                font-size: 1rem;
+              }
+            }
+          `}
           to={`videos/${thumb.videoId}?playlist=${playlistId}`}
           clickSafe={clickSafe}
           key={index}
@@ -284,7 +295,9 @@ class PlaylistCarousel extends Component {
   onResize = () => {
     this.setState({
       numSlides:
-        document.documentElement.clientWidth <= 991 ? 4 : this.defaultNumSlides
+        document.documentElement.clientWidth <= 991
+          ? this.numSlides
+          : this.defaultNumSlides
     });
   };
 }

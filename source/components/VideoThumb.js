@@ -20,6 +20,7 @@ import { charLimit } from 'constants/defaultValues';
 class VideoThumb extends Component {
   static propTypes = {
     arrayIndex: PropTypes.number,
+    className: PropTypes.string,
     clickSafe: PropTypes.bool,
     deletable: PropTypes.bool,
     deleteVideo: PropTypes.func.isRequired,
@@ -47,7 +48,15 @@ class VideoThumb extends Component {
 
   render() {
     const { onEdit, confirmModalShown, onTitleHover } = this.state;
-    const { deletable, editable, video, style, to, user } = this.props;
+    const {
+      className,
+      deletable,
+      editable,
+      video,
+      style,
+      to,
+      user
+    } = this.props;
     const menuProps = [];
     if (editable) {
       menuProps.push({
@@ -64,7 +73,7 @@ class VideoThumb extends Component {
     return (
       <ErrorBoundary style={style}>
         <div
-          className={css`
+          className={`${className} ${css`
             display: flex;
             width: 100%;
             flex-direction: column;
@@ -77,7 +86,7 @@ class VideoThumb extends Component {
             p {
               font-weight: bold;
             }
-          `}
+          `}`}
         >
           {(deletable || editable) && (
             <DropdownButton
@@ -161,7 +170,7 @@ class VideoThumb extends Component {
             )}
             <div style={{ width: '100%', fontSize: '1.2rem' }}>
               {!onEdit && (
-                <div>
+                <div className="username">
                   Added by <UsernameText user={user} />
                 </div>
               )}

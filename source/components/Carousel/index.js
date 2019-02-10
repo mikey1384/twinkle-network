@@ -278,7 +278,7 @@ function Carousel({
                   position: 'relative',
                   transform: `translate3d(${tx}px, ${ty}px, 0)`,
                   display: 'block',
-                  margin: '0px ' + (cellSpacing / 2) * -1 + 'px',
+                  margin: `0px ${(cellSpacing / 2) * -1}px`,
                   padding: 0,
                   height: 'auto',
                   width: slideWidth * slideCount + cellSpacing * slideCount,
