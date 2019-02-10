@@ -35,6 +35,7 @@ class PlaylistCarousel extends Component {
     numPlaylistVids: PropTypes.number.isRequired
   };
 
+  defaultNumSlides = 5;
   numSlides = 5;
   cellSpacing = 20;
 
