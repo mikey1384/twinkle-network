@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
-import FullTextReveal from 'components/FullTextReveal';
+import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import { edit } from 'constants/placeholders';
 import { cleanString, renderCharLimit } from 'helpers/stringHelpers';

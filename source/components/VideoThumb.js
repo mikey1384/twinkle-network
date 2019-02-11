@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import UsernameText from './Texts/UsernameText';
 import { cleanString } from 'helpers/stringHelpers';
 import Link from 'components/Link';
-import FullTextReveal from 'components/FullTextReveal';
+import FullTextReveal from 'components/Texts/FullTextReveal';
 import { textIsOverflown } from 'helpers';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';

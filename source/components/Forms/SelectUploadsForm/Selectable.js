@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { cleanString } from 'helpers/stringHelpers';
-import FullTextReveal from 'components/FullTextReveal';
+import FullTextReveal from 'components/Texts/FullTextReveal';
 import { textIsOverflown } from 'helpers';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Embedly from 'components/Embedly';

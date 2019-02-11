@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
 import Icon from 'components/Icon';
-import FullTextReveal from 'components/FullTextReveal';
+import FullTextReveal from 'components/Texts/FullTextReveal';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 
 const requirement = {

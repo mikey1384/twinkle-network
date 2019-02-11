@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 import { cleanString } from 'helpers/stringHelpers';
-import FullTextReveal from 'components/FullTextReveal';
+import FullTextReveal from 'components/Texts/FullTextReveal';
 import { textIsOverflown } from 'helpers';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { Color } from 'constants/css';
