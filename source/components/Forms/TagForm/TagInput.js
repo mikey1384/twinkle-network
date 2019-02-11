@@ -55,7 +55,7 @@ export default function TagInput({
     }
   }, [loading]);
   useEffect(() => {
-    setResults(searchResults);
+    setResults(searchResults.filter(item => !selectedItems[item.id]));
   }, [searchResults]);
 
   useOutsideClick(TagInputRef, onClickOutSide);

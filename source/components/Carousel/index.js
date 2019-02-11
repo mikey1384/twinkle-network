@@ -84,7 +84,7 @@ function Carousel({
     addEvent(window, 'resize', onResize);
     addEvent(document, 'readystatechange', onReadyStateChange);
     if (!chatMode && !searchMode) {
-      renderDimensions(FrameRef.current);
+      renderDimensions(FrameRef);
     }
     return () => {
       removeEvent(window, 'resize', onResize);
@@ -433,21 +433,21 @@ function Carousel({
 
   function onResize() {
     if (!chatMode && !searchMode) {
-      renderDimensions(FrameRef.current);
+      renderDimensions(FrameRef);
     }
   }
 
   function onReadyStateChange() {
-    renderDimensions(FrameRef.current);
+    renderDimensions(FrameRef);
   }
 
-  function renderDimensions(Frame) {
-    const firstSlide = Frame.childNodes[0].childNodes[0];
+  function renderDimensions(ref) {
+    const firstSlide = ref.current.childNodes[0].childNodes[0];
     if (firstSlide) {
       firstSlide.style.height = 'auto';
     }
     setSlideWidth(
-      (Frame.offsetWidth / slidesToShow -
+      (ref.current.offsetWidth / slidesToShow -
         cellSpacing * (1 - 1 / slidesToShow)) *
         slideWidthMultiplier
     );
