@@ -26,7 +26,7 @@ export default function Dropdown({
   renderItemUrl
 }) {
   useEffect(() => {
-    onUpdate(searchResults);
+    onUpdate();
   }, [searchResults]);
 
   return (
