@@ -160,7 +160,7 @@ export default function EditSubjectForm({
 
     async function changeInput(input) {
       await onChange(input);
-      let content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
+      const content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
       for (let i = 0; i < searchResults.length; i++) {
         if (content === searchResults[i].content) {
           setExactMatchExists(true);
