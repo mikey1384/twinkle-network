@@ -13,6 +13,7 @@ import { Color } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
 import SubjectsModal from '../../Modals/SubjectsModal';
 import Input from 'components/Texts/Input';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { edit } from 'constants/placeholders';
 import { css } from 'emotion';
 
@@ -51,7 +52,7 @@ export default function EditSubjectForm({
   });
 
   return (
-    <>
+    <ErrorBoundary>
       {subjectsModalShown && (
         <SubjectsModal
           currentSubjectId={currentSubjectId}
@@ -132,7 +133,7 @@ export default function EditSubjectForm({
           </small>
         )}
       </div>
-    </>
+    </ErrorBoundary>
   );
 
   function onKeyDown(event) {

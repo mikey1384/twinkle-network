@@ -8,6 +8,7 @@ import { css } from 'emotion';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useOutsideClick } from 'helpers/hooks';
 import Loading from 'components/Loading';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 TagInput.propTypes = {
   autoFocus: PropTypes.bool,
@@ -60,41 +61,43 @@ export default function TagInput({
   useOutsideClick(TagInputRef, onClickOutSide);
 
   return (
-    <div
-      className={`${css`
-        height: 4.3rem;
-        position: relative;
-        .addon {
-          border: 1px solid ${Color.inputBorderGray()};
-          align-self: stretch;
-          padding: 0 1rem;
-          display: flex;
-          align-items: center;
-        }
-        input {
-          height: 100%;
-          border: 1px solid ${Color.inputBorderGray()};
-          border-left: none;
-        }
-      `} ${className}`}
-      ref={TagInputRef}
-      style={style}
-    >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div className="addon" style={{ background: Color.borderGray() }}>
-          <Icon icon="search" />
+    <ErrorBoundary>
+      <div
+        className={`${css`
+          height: 4.3rem;
+          position: relative;
+          .addon {
+            border: 1px solid ${Color.inputBorderGray()};
+            align-self: stretch;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+          }
+          input {
+            height: 100%;
+            border: 1px solid ${Color.inputBorderGray()};
+            border-left: none;
+          }
+        `} ${className}`}
+        ref={TagInputRef}
+        style={style}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="addon" style={{ background: Color.borderGray() }}>
+            <Icon icon="search" />
+          </div>
+          <Input
+            autoFocus={autoFocus}
+            value={value}
+            placeholder={placeholder}
+            onChange={text => onChange(text)}
+            onKeyDown={onKeyDown}
+          />
         </div>
-        <Input
-          autoFocus={autoFocus}
-          value={value}
-          placeholder={placeholder}
-          onChange={text => onChange(text)}
-          onKeyDown={onKeyDown}
-        />
+        {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
+        {renderDropdownList()}
       </div>
-      {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
-      {renderDropdownList()}
-    </div>
+    </ErrorBoundary>
   );
 
   function renderDropdownList() {

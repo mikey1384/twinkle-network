@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 
@@ -29,7 +30,7 @@ export default function Dropdown({
   }, [searchResults]);
 
   return (
-    <div
+    <ErrorBoundary
       className={css`
         position: absolute;
         top: 1rem;
@@ -90,6 +91,6 @@ export default function Dropdown({
           );
         })}
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
