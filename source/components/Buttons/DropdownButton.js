@@ -1,64 +1,60 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import onClickOutside from 'react-onclickoutside';
+import React, { useRef, useState } from 'react';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { useOutsideClick } from 'helpers/hooks';
 import { css } from 'emotion';
 
-class DropdownButton extends Component {
-  static propTypes = {
-    buttonStyle: PropTypes.object,
-    icon: PropTypes.string,
-    iconSize: PropTypes.string,
-    direction: PropTypes.string,
-    onButtonClick: PropTypes.func,
-    onOutsideClick: PropTypes.func,
-    listStyle: PropTypes.object,
-    menuProps: PropTypes.arrayOf(
-      PropTypes.shape({
-        label: PropTypes.string,
-        onClick: PropTypes.func
-      })
-    ),
-    noBorderRadius: PropTypes.bool,
-    opacity: PropTypes.number,
-    stretch: PropTypes.bool,
-    style: PropTypes.object,
-    text: PropTypes.any
-  };
+DropdownButton.propTypes = {
+  buttonStyle: PropTypes.object,
+  icon: PropTypes.string,
+  iconSize: PropTypes.string,
+  direction: PropTypes.string,
+  onButtonClick: PropTypes.func,
+  onOutsideClick: PropTypes.func,
+  listStyle: PropTypes.object,
+  menuProps: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      onClick: PropTypes.func
+    })
+  ),
+  noBorderRadius: PropTypes.bool,
+  opacity: PropTypes.number,
+  stretch: PropTypes.bool,
+  style: PropTypes.object,
+  text: PropTypes.any
+};
 
-  handleClickOutside = event => {
-    const { onOutsideClick } = this.props;
-    const { menuDisplayed } = this.state;
+export default function DropdownButton({
+  buttonStyle = {},
+  direction,
+  opacity = 1,
+  style,
+  icon = 'pencil-alt',
+  iconSize = '1x',
+  listStyle = {},
+  menuProps,
+  noBorderRadius,
+  onButtonClick,
+  onOutsideClick,
+  text = '',
+  stretch,
+  ...props
+}) {
+  const [menuDisplayed, setMenuDisplayed] = useState(false);
+  const ButtonRef = useRef();
+  useOutsideClick(ButtonRef, () => {
     if (menuDisplayed && typeof onOutsideClick === 'function') {
       onOutsideClick();
     }
-    this.setState({ menuDisplayed: false });
-  };
-
-  state = {
-    menuDisplayed: false
-  };
-
-  render() {
-    const { menuDisplayed } = this.state;
-    const {
-      buttonStyle = {},
-      direction,
-      opacity = 1,
-      style,
-      icon = 'pencil-alt',
-      iconSize = '1x',
-      listStyle = {},
-      noBorderRadius,
-      text = '',
-      stretch,
-      ...props
-    } = this.props;
-    return (
-      <ErrorBoundary style={{ position: 'relative', ...style }}>
+    setMenuDisplayed(false);
+  });
+  return (
+    <ErrorBoundary style={{ position: 'relative', ...style }}>
+      <div ref={ButtonRef}>
         <Button
           {...props}
           style={{
@@ -69,7 +65,7 @@ class DropdownButton extends Component {
             ...(stretch ? { width: '100%' } : {}),
             ...buttonStyle
           }}
-          onClick={this.onClick}
+          onClick={onClick}
         >
           <Icon icon={icon} size={iconSize} />
           {text && <span>&nbsp;&nbsp;</span>}
@@ -84,24 +80,21 @@ class DropdownButton extends Component {
             }}
             direction={direction}
           >
-            {this.renderMenu()}
+            {renderMenu()}
           </DropdownList>
         )}
-      </ErrorBoundary>
-    );
-  }
+      </div>
+    </ErrorBoundary>
+  );
 
-  onClick = () => {
-    const { menuDisplayed } = this.state;
-    const { onButtonClick } = this.props;
+  function onClick() {
     if (typeof onButtonClick === 'function') {
       onButtonClick(menuDisplayed);
     }
-    this.setState(state => ({ menuDisplayed: !state.menuDisplayed }));
-  };
+    setMenuDisplayed(!menuDisplayed);
+  }
 
-  renderMenu = () => {
-    const { menuProps } = this.props;
+  function renderMenu() {
     return menuProps.map((prop, index) => {
       if (prop.separator) {
         return <hr key={index} />;
@@ -122,7 +115,7 @@ class DropdownButton extends Component {
               : ''
           }
           onClick={
-            prop.disabled ? () => {} : () => this.handleMenuClick(prop.onClick)
+            prop.disabled ? () => {} : () => handleMenuClick(prop.onClick)
           }
           key={index}
         >
@@ -130,12 +123,10 @@ class DropdownButton extends Component {
         </li>
       );
     });
-  };
+  }
 
-  handleMenuClick = action => {
+  function handleMenuClick(action) {
     action();
-    this.setState({ menuDisplayed: false });
-  };
+    setMenuDisplayed(false);
+  }
 }
-
-export default onClickOutside(DropdownButton);

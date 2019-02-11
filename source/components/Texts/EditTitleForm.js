@@ -1,72 +1,66 @@
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import onClickOutside from 'react-onclickoutside';
 import Input from './Input';
+import { useOutsideClick } from 'helpers/hooks';
 import { cleanString, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 import { edit } from 'constants/placeholders';
 
-class EditTitleForm extends Component {
-  static propTypes = {
-    autoFocus: PropTypes.bool,
-    maxLength: PropTypes.number,
-    onClickOutSide: PropTypes.func.isRequired,
-    onEditSubmit: PropTypes.func.isRequired,
-    style: PropTypes.object,
-    title: PropTypes.string.isRequired
-  };
+EditTitleForm.propTypes = {
+  autoFocus: PropTypes.bool,
+  maxLength: PropTypes.number,
+  onClickOutSide: PropTypes.func.isRequired,
+  onEditSubmit: PropTypes.func.isRequired,
+  style: PropTypes.object,
+  title: PropTypes.string.isRequired
+};
 
-  handleClickOutside = event => {
-    this.props.onClickOutSide();
-  };
+export default function EditTitleForm({
+  autoFocus,
+  maxLength = 100,
+  onClickOutSide,
+  style,
+  ...props
+}) {
+  const [title, setTitle] = useState(cleanString(props.title));
+  const FormRef = useRef();
+  useOutsideClick(FormRef, onClickOutSide);
 
-  constructor(props) {
-    super();
-    this.state = {
-      title: cleanString(props.title)
-    };
-  }
+  return (
+    <form
+      ref={FormRef}
+      style={style}
+      onSubmit={event => onEditSubmit(event, title)}
+    >
+      <Input
+        style={{ width: '100%', color: title.length > maxLength && 'red' }}
+        autoFocus={autoFocus}
+        type="text"
+        placeholder={edit.title}
+        value={title}
+        onChange={text => setTitle(text)}
+        onKeyUp={event => setTitle(addEmoji(event.target.value))}
+      />
+      <div>
+        <small
+          style={{
+            color: title.length > maxLength && 'red',
+            fontSize: '1.3rem',
+            lineHeight: '2rem'
+          }}
+        >
+          {title.length}/{maxLength} Characters
+        </small>
+      </div>
+    </form>
+  );
 
-  render() {
-    const { title } = this.state;
-    const { style, autoFocus, maxLength = 100 } = this.props;
-    return (
-      <form style={style} onSubmit={event => this.onEditSubmit(event, title)}>
-        <Input
-          style={{ width: '100%', color: title.length > maxLength && 'red' }}
-          autoFocus={autoFocus}
-          type="text"
-          placeholder={edit.title}
-          value={title}
-          onChange={text => this.setState({ title: text })}
-          onKeyUp={event =>
-            this.setState({ title: addEmoji(event.target.value) })
-          }
-        />
-        <div>
-          <small
-            style={{
-              color: title.length > maxLength && 'red',
-              fontSize: '1.3rem',
-              lineHeight: '2rem'
-            }}
-          >
-            {title.length}/{maxLength} Characters
-          </small>
-        </div>
-      </form>
-    );
-  }
-
-  onEditSubmit = (event, title) => {
-    const { onEditSubmit, onClickOutSide, maxLength = 100 } = this.props;
+  function onEditSubmit(event, title) {
     event.preventDefault();
     if (title && title.length > maxLength) return;
-    if (title && title !== this.props.title) {
-      onEditSubmit(finalizeEmoji(title));
+    if (title && title !== props.title) {
+      props.onEditSubmit(finalizeEmoji(title));
     } else {
       onClickOutSide();
     }
-  };
+  }
 }
-
-export default onClickOutside(EditTitleForm);

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
@@ -7,6 +7,7 @@ import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
 import AttachContentModal from './AttachContentModal';
 import Attachment from './Attachment';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   addEmoji,
   exceedsCharLimit,
@@ -19,186 +20,171 @@ import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
 
-class SubjectInput extends Component {
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    uploadFeedContent: PropTypes.func.isRequired
-  };
+SubjectInput.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  uploadFeedContent: PropTypes.func.isRequired
+};
 
-  state = {
-    attachment: undefined,
-    attachContentModalShown: false,
-    title: '',
-    description: '',
-    descriptionInputShown: false,
-    submitting: false
-  };
+function SubjectInput({ dispatch, uploadFeedContent }) {
+  const [attachment, setAttachment] = useState(undefined);
+  const [attachContentModalShown, setAttachContentModalShown] = useState(false);
+  const [details, setDetails] = useState({ title: '', description: '' });
+  const { title, description } = details;
+  const [descriptionInputShown, setDescriptionInputShown] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  render() {
-    const {
-      attachment,
-      attachContentModalShown,
-      description,
-      descriptionInputShown,
-      title,
-      submitting
-    } = this.state;
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    contentType: 'subject',
+    inputType: 'description',
+    text: description
+  });
 
-    const descriptionExceedsCharLimit = exceedsCharLimit({
-      contentType: 'subject',
-      inputType: 'description',
-      text: description
-    });
-    return (
-      <div className={PanelStyle}>
-        <p>
-          Post a <span style={{ color: Color.green() }}>subject</span> Twinkle
-          users can talk about
-        </p>
-        <div
-          style={{
-            display: 'flex',
-            width: '100%',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div style={{ width: '100%' }}>
-            <Input
-              placeholder="A subject Twinkle users can talk about"
-              value={title}
-              onChange={this.onInputChange}
-              style={exceedsCharLimit({
-                inputType: 'title',
-                contentType: 'subject',
-                text: title
-              })}
-            />
-          </div>
-          <div style={{ marginLeft: '1rem' }}>
-            {attachment ? (
-              <Attachment
-                attachment={attachment}
-                onClose={() => this.setState({ attachment: undefined })}
-              />
-            ) : (
-              <Button
-                style={{
-                  color: Color.green(),
-                  fontSize: '1.1rem',
-                  lineHeight: '1.5rem',
-                  padding: '0.5rem'
-                }}
-                snow
-                onClick={() => this.setState({ attachContentModalShown: true })}
-              >
-                Attach Video or Webpage
-              </Button>
-            )}
-          </div>
-        </div>
-        <div style={{ marginTop: '1rem' }}>
-          <span
-            style={{
-              fontSize: '1.2rem',
-              color:
-                title.length > charLimit.subject.title
-                  ? 'red'
-                  : Color.darkerGray()
-            }}
-          >
-            {renderCharLimit({
+  return (
+    <ErrorBoundary className={PanelStyle}>
+      <p>
+        Post a <span style={{ color: Color.green() }}>subject</span> Twinkle
+        users can talk about
+      </p>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
+        <div style={{ width: '100%' }}>
+          <Input
+            placeholder="A subject Twinkle users can talk about"
+            value={title}
+            onChange={onInputChange}
+            style={exceedsCharLimit({
               inputType: 'title',
               contentType: 'subject',
               text: title
             })}
-          </span>
+          />
         </div>
-        {descriptionInputShown && (
-          <div style={{ position: 'relative' }}>
-            <Textarea
-              type="text"
-              style={{
-                marginTop: '1rem',
-                ...(descriptionExceedsCharLimit || null)
-              }}
-              value={description}
-              minRows={4}
-              placeholder="Enter Description (Optional, you don't need to write this)"
-              onChange={event =>
-                this.setState({ description: addEmoji(event.target.value) })
-              }
-              onKeyUp={event => {
-                if (event.key === ' ') {
-                  this.setState({
-                    form: {
-                      ...this.state.form,
-                      description: addEmoji(event.target.value)
-                    }
-                  });
-                }
-              }}
+        <div style={{ marginLeft: '1rem' }}>
+          {attachment ? (
+            <Attachment
+              attachment={attachment}
+              onClose={() => setAttachment(undefined)}
             />
-            {descriptionExceedsCharLimit && (
-              <small style={{ color: 'red' }}>
-                {renderCharLimit({
-                  contentType: 'subject',
-                  inputType: 'description',
-                  text: description
-                })}
-              </small>
-            )}
-            <div className="button-container">
-              <Button
-                filled
-                success
-                type="submit"
-                style={{ marginTop: '1rem' }}
-                disabled={submitting || this.buttonDisabled()}
-                onClick={this.onSubmit}
-              >
-                Post!
-              </Button>
-            </div>
-          </div>
-        )}
-        {attachContentModalShown && (
-          <AttachContentModal
-            onHide={() => this.setState({ attachContentModalShown: false })}
-            onConfirm={content =>
-              this.setState({
-                attachment: content,
-                attachContentModalShown: false
+          ) : (
+            <Button
+              style={{
+                color: Color.green(),
+                fontSize: '1.1rem',
+                lineHeight: '1.5rem',
+                padding: '0.5rem'
+              }}
+              snow
+              onClick={() => setAttachContentModalShown(true)}
+            >
+              Attach Video or Webpage
+            </Button>
+          )}
+        </div>
+      </div>
+      <div style={{ marginTop: '1rem' }}>
+        <span
+          style={{
+            fontSize: '1.2rem',
+            color:
+              title.length > charLimit.subject.title
+                ? 'red'
+                : Color.darkerGray()
+          }}
+        >
+          {renderCharLimit({
+            inputType: 'title',
+            contentType: 'subject',
+            text: title
+          })}
+        </span>
+      </div>
+      {descriptionInputShown && (
+        <div style={{ position: 'relative' }}>
+          <Textarea
+            type="text"
+            style={{
+              marginTop: '1rem',
+              ...(descriptionExceedsCharLimit || null)
+            }}
+            value={description}
+            minRows={4}
+            placeholder="Enter Description (Optional, you don't need to write this)"
+            onChange={event =>
+              setDetails({
+                ...details,
+                description: addEmoji(event.target.value)
               })
             }
+            onKeyUp={event => {
+              if (event.key === ' ') {
+                setDetails({
+                  ...details,
+                  description: addEmoji(event.target.value)
+                });
+              }
+            }}
           />
-        )}
-      </div>
-    );
-  }
+          {descriptionExceedsCharLimit && (
+            <small style={{ color: 'red' }}>
+              {renderCharLimit({
+                contentType: 'subject',
+                inputType: 'description',
+                text: description
+              })}
+            </small>
+          )}
+          <div className="button-container">
+            <Button
+              filled
+              success
+              type="submit"
+              style={{ marginTop: '1rem' }}
+              disabled={submitting || buttonDisabled()}
+              onClick={onSubmit}
+            >
+              Post!
+            </Button>
+          </div>
+        </div>
+      )}
+      {attachContentModalShown && (
+        <AttachContentModal
+          onHide={() => setAttachContentModalShown(false)}
+          onConfirm={content => {
+            setAttachment(content);
+            setAttachContentModalShown(false);
+          }}
+        />
+      )}
+    </ErrorBoundary>
+  );
 
-  buttonDisabled = () => {
-    const { title, description } = this.state;
+  function buttonDisabled() {
     if (title.length > charLimit.subject.title) return true;
     if (description.length > charLimit.subject.description) return true;
     return false;
-  };
+  }
 
-  onInputChange = text => {
-    this.setState({
-      title: text,
-      descriptionInputShown: text.length > 0
+  function onInputChange(text) {
+    setDetails({
+      ...details,
+      title: text
     });
-  };
+    setDescriptionInputShown(!!text.length);
+  }
 
-  onSubmit = async event => {
-    const { dispatch, uploadFeedContent } = this.props;
-    const { attachment, title, description } = this.state;
+  async function onSubmit(event) {
     event.preventDefault();
     if (stringIsEmpty(title) || title.length > charLimit.subject.title) {
       return;
     }
-    this.setState({ submitting: true });
+    setSubmitting(true);
     try {
       const data = await uploadContent({
         attachment,
@@ -207,18 +193,15 @@ class SubjectInput extends Component {
         dispatch
       });
       uploadFeedContent(data);
-      this.setState({
-        attachment: undefined,
-        title: '',
-        description: '',
-        descriptionInputShown: false,
-        submitting: false
-      });
+      setAttachment(undefined);
+      setDetails({ title: '', description: '' });
+      setDescriptionInputShown(false);
+      setSubmitting(false);
     } catch (error) {
-      this.setState({ submitting: false });
+      setSubmitting(false);
       console.error(error);
     }
-  };
+  }
 }
 
 export default connect(

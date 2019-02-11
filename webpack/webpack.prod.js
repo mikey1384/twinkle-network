@@ -19,7 +19,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: [/node_modules/, /react-onclickoutside/],
+        exclude: [/node_modules/],
         loader: 'babel-loader'
       },
       {

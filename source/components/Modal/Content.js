@@ -1,37 +1,23 @@
-import React, { Component } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import onClickOutside from 'react-onclickoutside';
 import Icon from 'components/Icon';
+import { useOutsideClick } from 'helpers/hooks';
 
-class Content extends Component {
-  static propTypes = {
-    onHide: PropTypes.func,
-    className: PropTypes.string,
-    children: PropTypes.node
-  };
+Content.propTypes = {
+  onHide: PropTypes.func,
+  className: PropTypes.string,
+  children: PropTypes.node
+};
 
-  state = {
-    innerClicked: false
-  };
-
-  handleClickOutside = event => {
-    if (this.state.innerClicked) return this.setState({ innerClicked: false });
-    this.props.onHide?.();
-  };
-  render() {
-    return (
-      <div
-        onMouseDown={() => this.setState({ innerClicked: true })}
-        onMouseUp={() => this.setState({ innerClicked: false })}
-        className={this.props.className}
-      >
-        <button className="close" onClick={this.props.onHide}>
-          <Icon icon="times" />
-        </button>
-        {this.props.children}
-      </div>
-    );
-  }
+export default function Content({ children, className, onHide }) {
+  const ContentRef = useRef();
+  useOutsideClick(ContentRef, () => onHide?.());
+  return (
+    <div className={className} ref={ContentRef}>
+      <button className="close" onClick={onHide}>
+        <Icon icon="times" />
+      </button>
+      {children}
+    </div>
+  );
 }
-
-export default onClickOutside(Content);

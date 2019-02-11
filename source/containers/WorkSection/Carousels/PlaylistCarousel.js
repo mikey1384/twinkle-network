@@ -181,7 +181,7 @@ class PlaylistCarousel extends Component {
               </p>
             </div>
           )}
-          {(userIsUploader || canEditPlaylists || canEdit) && (
+          {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
             <DropdownButton
               snow
               style={{ position: 'absolute', right: 0 }}

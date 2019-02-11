@@ -60,7 +60,6 @@
     "react-dnd-html5-touch-backend": "^1.5.0",
     "react-dom": "^16.8.1",
     "react-move": "^5.1.0",
-    "react-onclickoutside": "^6.6.2",
     "react-player": "^1.9.3",
     "react-redux": "^6.0.0",
     "react-router": "^4.3.1",

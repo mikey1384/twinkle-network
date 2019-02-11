@@ -1,137 +1,125 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import SearchDropdown from '../SearchDropdown';
-import onClickOutside from 'react-onclickoutside';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import Input from './Input';
 import Icon from 'components/Icon';
+import { useOutsideClick } from 'helpers/hooks';
 
-class SearchInput extends Component {
-  static propTypes = {
-    addonColor: PropTypes.string,
-    autoFocus: PropTypes.bool,
-    borderColor: PropTypes.string,
-    className: PropTypes.string,
-    innerRef: PropTypes.func,
-    onChange: PropTypes.func.isRequired,
-    onClear: PropTypes.func,
-    onClickOutSide: PropTypes.func,
-    onFocus: PropTypes.func,
-    onSelect: PropTypes.func,
-    placeholder: PropTypes.string,
-    renderItemLabel: PropTypes.func,
-    renderItemUrl: PropTypes.func,
-    searchResults: PropTypes.array,
-    style: PropTypes.object,
-    value: PropTypes.string
-  };
+SearchInput.propTypes = {
+  addonColor: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  borderColor: PropTypes.string,
+  className: PropTypes.string,
+  innerRef: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
+  onClear: PropTypes.func,
+  onClickOutSide: PropTypes.func,
+  onFocus: PropTypes.func,
+  onSelect: PropTypes.func,
+  placeholder: PropTypes.string,
+  renderItemLabel: PropTypes.func,
+  renderItemUrl: PropTypes.func,
+  searchResults: PropTypes.array,
+  style: PropTypes.object,
+  value: PropTypes.string
+};
 
-  static defaultProps = { searchResults: [] };
+export default function SearchInput({
+  onClickOutSide,
+  searchResults = [],
+  addonColor,
+  autoFocus,
+  borderColor,
+  className,
+  innerRef,
+  onChange,
+  placeholder,
+  onClear,
+  onFocus,
+  onSelect,
+  renderItemLabel,
+  renderItemUrl,
+  style,
+  value
+}) {
+  const [indexToHighlight, setIndexToHighlight] = useState(0);
+  const SearchInputRef = useRef();
+  useOutsideClick(SearchInputRef, () => onClickOutSide?.());
 
-  handleClickOutside = event => {
-    this.props.onClickOutSide ? this.props.onClickOutSide() : null;
-  };
-
-  state = {
-    indexToHighlight: 0
-  };
-
-  timer = null;
-
-  render() {
-    const {
-      addonColor,
-      autoFocus,
-      borderColor,
-      className,
-      innerRef,
-      onChange,
-      placeholder,
-      onFocus,
-      style,
-      value
-    } = this.props;
-    return (
-      <div
-        className={`${css`
+  return (
+    <div
+      className={`${css`
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 4.3rem;
+        position: relative;
+        z-index: 1000;
+        .addon {
+          border: 1px solid ${addonColor || Color.inputBorderGray()};
+          align-self: stretch;
+          padding: 0 1rem;
           display: flex;
           align-items: center;
-          width: 100%;
-          height: 4.3rem;
-          position: relative;
-          z-index: 1000;
-          .addon {
-            border: 1px solid ${addonColor || Color.inputBorderGray()};
-            align-self: stretch;
-            padding: 0 1rem;
-            display: flex;
-            align-items: center;
-            font-size: 1.5rem;
-          }
-          input {
-            height: 100%;
-            border: 1px solid ${borderColor || Color.inputBorderGray()};
-            border-left: none;
-          }
-        `} ${className}`}
-        style={style}
+          font-size: 1.5rem;
+        }
+        input {
+          height: 100%;
+          border: 1px solid ${borderColor || Color.inputBorderGray()};
+          border-left: none;
+        }
+      `} ${className}`}
+      ref={SearchInputRef}
+      style={style}
+    >
+      <div
+        className="addon"
+        style={{ backgroundColor: addonColor || Color.borderGray() }}
       >
-        <div
-          className="addon"
-          style={{ backgroundColor: addonColor || Color.borderGray() }}
-        >
-          <Icon icon="search" />
-        </div>
-        <Input
-          autoFocus={autoFocus}
-          inputRef={innerRef ? ref => innerRef(ref) : () => {}}
-          onFocus={onFocus && onFocus}
-          placeholder={placeholder}
-          value={value}
-          onChange={text => onChange(text)}
-          onKeyDown={this.onKeyDown}
-        />
-        {this.renderDropdownList()}
+        <Icon icon="search" />
       </div>
-    );
-  }
+      <Input
+        autoFocus={autoFocus}
+        inputRef={innerRef ? ref => innerRef(ref) : () => {}}
+        onFocus={onFocus && onFocus}
+        placeholder={placeholder}
+        value={value}
+        onChange={text => onChange(text)}
+        onKeyDown={onKeyDown}
+      />
+      {renderDropdownList()}
+    </div>
+  );
 
-  renderDropdownList = () => {
-    const {
-      searchResults,
-      renderItemLabel,
-      renderItemUrl,
-      onSelect
-    } = this.props;
+  function renderDropdownList() {
     return searchResults.length > 0 ? (
       <SearchDropdown
         searchResults={searchResults}
-        onUpdate={() => this.setState({ indexToHighlight: 0 })}
-        onUnmount={() => this.setState({ indexToHighlight: 0 })}
-        indexToHighlight={this.state.indexToHighlight}
+        onUpdate={() => setIndexToHighlight(0)}
+        onUnmount={() => setIndexToHighlight(0)}
+        indexToHighlight={indexToHighlight}
         onItemClick={item => onSelect(item)}
         renderItemLabel={renderItemLabel}
         renderItemUrl={renderItemUrl}
       />
     ) : null;
-  };
+  }
 
-  onKeyDown = event => {
-    const { indexToHighlight } = this.state;
-    const { searchResults, onSelect, onClear } = this.props;
+  function onKeyDown(event) {
     let index = indexToHighlight;
     if (searchResults.length > 0) {
       if (event.keyCode === 40) {
         event.preventDefault();
         let highlightIndex = Math.min(++index, searchResults.length - 1);
-        this.setState({ indexToHighlight: highlightIndex });
+        setIndexToHighlight(highlightIndex);
       }
 
       if (event.keyCode === 38) {
         event.preventDefault();
         let highlightIndex = Math.max(--index, 0);
-        this.setState({ indexToHighlight: highlightIndex });
+        setIndexToHighlight(highlightIndex);
       }
 
       if (event.keyCode === 13) {
@@ -141,10 +129,8 @@ class SearchInput extends Component {
       }
 
       if (event.keyCode === 9) {
-        if (onClear) onClear();
+        onClear?.();
       }
     }
-  };
+  }
 }
-
-export default onClickOutside(SearchInput);

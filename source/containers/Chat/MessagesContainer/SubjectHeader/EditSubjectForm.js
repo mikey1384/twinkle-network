@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import onClickOutside from 'react-onclickoutside';
+import React, { useRef, useState } from 'react';
 import {
   cleanString,
   addEmoji,
   finalizeEmoji,
   trimWhiteSpaces
 } from 'helpers/stringHelpers';
+import { useOutsideClick } from 'helpers/hooks';
 import SearchDropdown from 'components/SearchDropdown';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
@@ -16,209 +16,172 @@ import Input from 'components/Texts/Input';
 import { edit } from 'constants/placeholders';
 import { css } from 'emotion';
 
-class EditSubjectForm extends Component {
-  static propTypes = {
-    autoFocus: PropTypes.bool,
-    currentSubjectId: PropTypes.number,
-    maxLength: PropTypes.number,
-    onChange: PropTypes.func.isRequired,
-    onClickOutSide: PropTypes.func.isRequired,
-    onEditSubmit: PropTypes.func.isRequired,
-    reloadChatSubject: PropTypes.func,
-    searchResults: PropTypes.array,
-    title: PropTypes.string.isRequired
-  };
+EditSubjectForm.propTypes = {
+  autoFocus: PropTypes.bool,
+  currentSubjectId: PropTypes.number,
+  maxLength: PropTypes.number,
+  onChange: PropTypes.func.isRequired,
+  onClickOutSide: PropTypes.func.isRequired,
+  onEditSubmit: PropTypes.func.isRequired,
+  reloadChatSubject: PropTypes.func,
+  searchResults: PropTypes.array,
+  title: PropTypes.string.isRequired
+};
 
-  timer = null;
+let timer = null;
 
-  handleClickOutside = event => {
-    const { subjectsModalShown } = this.state;
-    if (!subjectsModalShown) this.props.onClickOutSide();
-  };
+export default function EditSubjectForm({
+  autoFocus,
+  currentSubjectId,
+  reloadChatSubject,
+  maxLength = 100,
+  searchResults,
+  onChange,
+  onClickOutSide,
+  ...props
+}) {
+  const [exactMatchExists, setExactMatchExists] = useState(false);
+  const [title, setTitle] = useState(cleanString(props.title));
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [readyForSubmit, setReadyForSubmit] = useState(false);
+  const [subjectsModalShown, setSubjectsModalShown] = useState(false);
+  const EditSubjectFormRef = useRef();
+  useOutsideClick(EditSubjectFormRef, () => {
+    if (!subjectsModalShown) onClickOutSide();
+  });
 
-  constructor(props) {
-    super();
-    this.state = {
-      title: cleanString(props.title),
-      highlightedIndex: -1,
-      readyForSubmit: false,
-      subjectsModalShown: false
-    };
-  }
-
-  render() {
-    const { title, highlightedIndex, subjectsModalShown } = this.state;
-    const {
-      currentSubjectId,
-      reloadChatSubject,
-      autoFocus,
-      maxLength = 100,
-      searchResults
-    } = this.props;
-    return (
-      <>
-        {subjectsModalShown && (
-          <SubjectsModal
-            currentSubjectId={currentSubjectId}
-            onHide={() => this.setState({ subjectsModalShown: false })}
-            selectSubject={subjectId => {
-              reloadChatSubject(subjectId);
-              this.setState({ subjectsModalShown: false });
-            }}
-          />
-        )}
-        <div style={{ width: '100%' }}>
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start'
-            }}
-            className={css`
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: flex-start;
-            `}
-          >
-            <div style={{ width: '100%' }}>
-              <form
-                style={{ width: '100%' }}
-                onSubmit={event => this.onEditSubmit(event)}
-              >
-                <Input
-                  autoFocus={autoFocus}
-                  type="text"
-                  className="form-control"
-                  placeholder={edit.subject}
-                  value={title}
-                  onChange={this.onInputChange}
-                  onKeyUp={event =>
-                    this.setState({ title: addEmoji(event.target.value) })
-                  }
-                  onKeyDown={this.onKeyDown}
-                />
-              </form>
+  return (
+    <>
+      {subjectsModalShown && (
+        <SubjectsModal
+          currentSubjectId={currentSubjectId}
+          onHide={() => setSubjectsModalShown(false)}
+          selectSubject={subjectId => {
+            reloadChatSubject(subjectId);
+            setSubjectsModalShown(false);
+          }}
+        />
+      )}
+      <div ref={EditSubjectFormRef} style={{ width: '100%' }}>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }}
+          className={css`
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+          `}
+        >
+          <div style={{ width: '100%' }}>
+            <form
+              style={{ width: '100%', position: 'relative' }}
+              onSubmit={onEditSubmit}
+            >
+              <Input
+                autoFocus={autoFocus}
+                type="text"
+                placeholder={edit.subject}
+                value={title}
+                onChange={onInputChange}
+                onKeyUp={event => setTitle(addEmoji(event.target.value))}
+                onKeyDown={onKeyDown}
+              />
               {searchResults.length > 0 && (
                 <SearchDropdown
-                  onUpdate={this.onUpdate}
-                  onUnmount={() => this.setState({ highlightedIndex: -1 })}
-                  onItemClick={this.onItemClick}
-                  renderItemLabel={this.renderItemLabel}
+                  onUpdate={onUpdate}
+                  onItemClick={onItemClick}
+                  renderItemLabel={renderItemLabel}
                   startingIndex={-1}
+                  style={{ width: '100%' }}
                   indexToHighlight={highlightedIndex}
                   searchResults={searchResults}
                 />
               )}
-            </div>
-            <div
-              style={{
-                marginLeft: '1rem',
-                marginRight: '1rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <Button
-                style={{ fontSize: '1.4rem' }}
-                filled
-                success
-                onClick={() => this.setState({ subjectsModalShown: true })}
-              >
-                View Subjects
-              </Button>
-            </div>
+            </form>
           </div>
-          <small style={{ color: title.length > maxLength && 'red' }}>
-            {title.length}/{maxLength} Characters
-          </small>
-          {title.length <= maxLength && (
-            <small>
-              {' '}
-              (Press <b>Enter</b> to Apply)
-            </small>
-          )}
+          <div
+            style={{
+              marginLeft: '1rem',
+              marginRight: '1rem',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <Button
+              style={{ fontSize: '1.4rem' }}
+              filled
+              success
+              onClick={() => setSubjectsModalShown(true)}
+            >
+              View Subjects
+            </Button>
+          </div>
         </div>
-      </>
-    );
-  }
+        <small style={{ color: title.length > maxLength && 'red' }}>
+          {title.length}/{maxLength} Characters
+        </small>
+        {title.length <= maxLength && (
+          <small>
+            {' '}
+            (Press <b>Enter</b> to Apply)
+          </small>
+        )}
+      </div>
+    </>
+  );
 
-  onKeyDown = event => {
-    const { searchResults } = this.props;
-    const { highlightedIndex } = this.state;
+  function onKeyDown(event) {
     let index = highlightedIndex;
-    if (searchResults.length > 0) {
+    if (searchResults.length > 0 && !exactMatchExists) {
       if (event.keyCode === 40) {
         event.preventDefault();
-        this.setState({
-          highlightedIndex: Math.min(++index, searchResults.length - 1)
-        });
+        setHighlightedIndex(Math.min(++index, searchResults.length - 1));
       }
-
       if (event.keyCode === 38) {
         event.preventDefault();
-        this.setState({ highlightedIndex: Math.max(--index, -1) });
+        setHighlightedIndex(Math.max(--index, -1));
       }
     }
-  };
+  }
 
-  onInputChange = text => {
-    const { onChange } = this.props;
-    clearTimeout(this.timer);
-    this.setState({ title: text, readyForSubmit: false });
-    this.timer = setTimeout(
-      () =>
-        onChange(text).then(() => {
-          const { searchResults } = this.props;
-          const { title } = this.state;
-          let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : '';
-          let exactMatchExists = false;
-          let matchIndex;
-          for (let i = 0; i < searchResults.length; i++) {
-            if (text === searchResults[i].content) {
-              exactMatchExists = true;
-              matchIndex = i;
-              break;
-            }
-          }
-          this.setState({
-            highlightedIndex: exactMatchExists ? matchIndex : -1,
-            readyForSubmit: true
-          });
-        }),
-      200
-    );
-  };
+  function onInputChange(text) {
+    clearTimeout(timer);
+    setTitle(text);
+    setReadyForSubmit(false);
+    async function changeInput(input) {
+      await onChange(input);
+      let content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
+      for (let i = 0; i < searchResults.length; i++) {
+        if (content === searchResults[i].content) {
+          setExactMatchExists(true);
+          setHighlightedIndex(i);
+          break;
+        }
+      }
+      setReadyForSubmit(true);
+    }
+    setHighlightedIndex(-1);
+    setExactMatchExists(false);
+    timer = setTimeout(() => changeInput(text), 200);
+  }
 
-  onUpdate = () => {
-    const { searchResults } = this.props;
-    const { title } = this.state;
+  function onUpdate(searchResults) {
     let text = title ? `${title[0].toUpperCase()}${title.slice(1)}` : '';
-    let exactMatchExists = false;
-    let matchIndex;
     for (let i = 0; i < searchResults.length; i++) {
       if (text === searchResults[i].content) {
-        exactMatchExists = true;
-        matchIndex = i;
-        break;
+        setExactMatchExists(true);
+        return setHighlightedIndex(i);
       }
     }
-    this.setState({
-      highlightedIndex: exactMatchExists ? matchIndex : -1
-    });
-  };
+    setHighlightedIndex(-1);
+  }
 
-  onEditSubmit = event => {
-    const {
-      onEditSubmit,
-      onClickOutSide,
-      maxLength = 100,
-      reloadChatSubject,
-      searchResults,
-      currentSubjectId
-    } = this.props;
-    const { title, highlightedIndex, readyForSubmit } = this.state;
+  function onEditSubmit(event) {
     event.preventDefault();
     if (!readyForSubmit) return;
     if (highlightedIndex > -1) {
@@ -231,22 +194,21 @@ class EditSubjectForm extends Component {
     if (
       title &&
       trimWhiteSpaces(`${title[0].toUpperCase()}${title.slice(1)}`) !==
-        this.props.title
+        props.title
     ) {
-      onEditSubmit(finalizeEmoji(title));
+      props.onEditSubmit(finalizeEmoji(title));
     } else {
       onClickOutSide();
     }
-  };
+  }
 
-  onItemClick = item => {
-    const { currentSubjectId, reloadChatSubject, onClickOutSide } = this.props;
+  function onItemClick(item) {
     const { id: subjectId } = item;
     if (subjectId === currentSubjectId) return onClickOutSide();
     return reloadChatSubject(subjectId);
-  };
+  }
 
-  renderItemLabel = item => {
+  function renderItemLabel(item) {
     return (
       <div>
         <div
@@ -256,7 +218,7 @@ class EditSubjectForm extends Component {
           }}
         >
           {cleanString(item.content)}
-          <span style={{ color: Color.blue }}>
+          <span style={{ color: Color.blue() }}>
             {Number(item.numMsgs) > 0 && ` (${item.numMsgs})`}
           </span>
         </div>
@@ -267,7 +229,5 @@ class EditSubjectForm extends Component {
         </div>
       </div>
     );
-  };
+  }
 }
-
-export default onClickOutside(EditSubjectForm);

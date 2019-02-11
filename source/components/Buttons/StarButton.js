@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
+import { useOutsideClick } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import onClickOutside from 'react-onclickoutside';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
@@ -9,111 +9,104 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { setByUser } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
-class StarButton extends Component {
-  static propTypes = {
-    byUser: PropTypes.bool,
-    contentId: PropTypes.number,
-    difficulty: PropTypes.number,
-    direction: PropTypes.string,
-    dispatch: PropTypes.func.isRequired,
-    onClick: PropTypes.func,
-    onSetDifficulty: PropTypes.func,
-    onToggleByUser: PropTypes.func,
-    style: PropTypes.object,
-    type: PropTypes.string.isRequired,
-    uploader: PropTypes.object
-  };
+StarButton.propTypes = {
+  byUser: PropTypes.bool,
+  contentId: PropTypes.number,
+  difficulty: PropTypes.number,
+  direction: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
+  onSetDifficulty: PropTypes.func,
+  onToggleByUser: PropTypes.func,
+  style: PropTypes.object,
+  type: PropTypes.string.isRequired,
+  uploader: PropTypes.object
+};
 
-  state = {
-    difficultyModalShown: false,
-    menuShown: false
-  };
+function StarButton({
+  byUser,
+  contentId,
+  difficulty,
+  direction = 'left',
+  dispatch,
+  onSetDifficulty,
+  onToggleByUser,
+  uploader,
+  style,
+  type
+}) {
+  const [difficultyModalShown, setDifficultyModalShown] = useState(false);
+  const [menuShown, setMenuShown] = useState(false);
+  const StarButtonRef = useRef();
+  useOutsideClick(StarButtonRef, () => setMenuShown(false));
 
-  render() {
-    const {
-      byUser,
-      contentId,
-      difficulty,
-      direction = 'left',
-      onSetDifficulty,
-      uploader,
-      style,
-      type
-    } = this.props;
-    const { difficultyModalShown, menuShown } = this.state;
-    return (
-      <ErrorBoundary>
-        <div style={style}>
-          <Button
-            {...(!!difficulty && byUser
-              ? { gold: true }
-              : byUser
-              ? { wood: true }
-              : { love: true })}
-            filled={!!difficulty || byUser}
-            onClick={this.onClick}
-          >
-            <Icon icon="star" />
-          </Button>
-          {menuShown && (
-            <DropdownList
-              direction={direction}
-              style={{
-                position: 'absolute',
-                right: 0,
-                width: '25rem'
-              }}
-            >
-              <li onClick={this.onSetDifficultyClick}>Set Reward Level</li>
-              <li onClick={this.onToggleByUser}>
-                {byUser
-                  ? `This video wasn't made by ${uploader.username}`
-                  : `This video was made by ${uploader.username}`}
-              </li>
-            </DropdownList>
-          )}
-        </div>
-        {difficultyModalShown && (
-          <DifficultyModal
-            type={type}
-            contentId={contentId}
-            difficulty={difficulty}
-            onSubmit={data => {
-              onSetDifficulty(data);
-              this.setState({ difficultyModalShown: false });
+  return (
+    <ErrorBoundary>
+      <div ref={StarButtonRef} style={style}>
+        <Button
+          {...(!!difficulty && byUser
+            ? { gold: true }
+            : byUser
+            ? { wood: true }
+            : { love: true })}
+          filled={!!difficulty || byUser}
+          onClick={onClick}
+        >
+          <Icon icon="star" />
+        </Button>
+        {menuShown && (
+          <DropdownList
+            direction={direction}
+            style={{
+              position: 'absolute',
+              right: 0,
+              width: '25rem'
             }}
-            onHide={() => this.setState({ difficultyModalShown: false })}
-          />
+          >
+            <li onClick={showDifficultyModal}>Set Reward Level</li>
+            <li onClick={toggleByUser}>
+              {byUser
+                ? `This video wasn't made by ${uploader.username}`
+                : `This video was made by ${uploader.username}`}
+            </li>
+          </DropdownList>
         )}
-      </ErrorBoundary>
-    );
+      </div>
+      {difficultyModalShown && (
+        <DifficultyModal
+          type={type}
+          contentId={contentId}
+          difficulty={difficulty}
+          onSubmit={data => {
+            onSetDifficulty(data);
+            setDifficultyModalShown(false);
+          }}
+          onHide={() => setDifficultyModalShown(false)}
+        />
+      )}
+    </ErrorBoundary>
+  );
+
+  function onClick() {
+    if (type === 'video') {
+      return setMenuShown(!menuShown);
+    }
+    return setDifficultyModalShown(true);
   }
 
-  handleClickOutside = event => {
-    this.setState({ menuShown: false });
-  };
+  function showDifficultyModal() {
+    setDifficultyModalShown(true);
+    setMenuShown(false);
+  }
 
-  onClick = () => {
-    const { type } = this.props;
-    if (type === 'video') {
-      return this.setState(state => ({ menuShown: !state.menuShown }));
-    }
-    return this.setState({ difficultyModalShown: true });
-  };
-
-  onSetDifficultyClick = () => {
-    this.setState({ difficultyModalShown: true, menuShown: false });
-  };
-
-  onToggleByUser = async() => {
-    const { contentId, dispatch, onToggleByUser } = this.props;
+  async function toggleByUser() {
     const byUser = await setByUser({ contentId, dispatch });
     onToggleByUser(byUser);
-    this.setState({ menuShown: false });
-  };
+    setMenuShown(false);
+  }
 }
 
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(onClickOutside(StarButton));
+)(StarButton);

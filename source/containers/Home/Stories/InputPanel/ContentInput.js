@@ -22,6 +22,7 @@ import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 class ContentInput extends Component {
   static propTypes = {
@@ -58,7 +59,7 @@ class ContentInput extends Component {
       titleFieldShown
     } = this.state;
     return (
-      <div className={PanelStyle}>
+      <ErrorBoundary className={PanelStyle}>
         <p>Share interesting videos or web links</p>
         {urlError && (
           <Banner love style={{ marginBottom: '1rem' }}>
@@ -201,7 +202,7 @@ class ContentInput extends Component {
             </div>
           )}
         </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 

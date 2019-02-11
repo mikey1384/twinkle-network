@@ -1,19 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { renderText } from 'helpers/stringHelpers';
 
-export default class Input extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    hasError: PropTypes.bool,
-    inputRef: PropTypes.func,
-    onChange: PropTypes.func.isRequired
-  };
-  render() {
-    const { className, hasError, inputRef, onChange, ...props } = this.props;
-    return (
+Input.propTypes = {
+  className: PropTypes.string,
+  hasError: PropTypes.bool,
+  inputRef: PropTypes.func,
+  onChange: PropTypes.func.isRequired
+};
+export default function Input({
+  className,
+  hasError,
+  inputRef,
+  onChange,
+  ...props
+}) {
+  return (
+    <ErrorBoundary>
       <input
         {...props}
         className={`${css`
@@ -36,6 +42,6 @@ export default class Input extends Component {
         ref={inputRef}
         onChange={event => onChange(renderText(event.target.value))}
       />
-    );
-  }
+    </ErrorBoundary>
+  );
 }
