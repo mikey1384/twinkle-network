@@ -432,7 +432,6 @@ class Home extends Component {
             inputAreaInnerRef={ref => (this.CommentInputArea = ref)}
             inputTypeLabel={`message to ${username}`}
             loadMoreButton={commentsLoadMoreButton}
-            loadMoreComments={this.onLoadMoreComments}
             noInput={id === userId}
             numPreviews={1}
             onAttachStar={this.onAttachStar}
@@ -440,6 +439,7 @@ class Home extends Component {
             onDelete={this.onDeleteComment}
             onEditDone={this.onEditComment}
             onLikeClick={this.onLikeComment}
+            onLoadMoreComments={this.onLoadMoreComments}
             onLoadMoreReplies={this.onLoadMoreReplies}
             onLoadRepliesOfReply={this.onLoadRepliesOfReply}
             onPreviewClick={this.onExpandComments}

@@ -397,12 +397,12 @@ class VideoPage extends Component {
                     }}
                     inputTypeLabel={'comment'}
                     loadMoreButton={loadMoreCommentsButton}
-                    loadMoreComments={this.loadMoreComments}
                     onAttachStar={this.attachStar}
                     onCommentSubmit={this.uploadComment}
                     onDelete={this.deleteComment}
                     onEditDone={this.editComment}
                     onLikeClick={this.likeComment}
+                    onLoadMoreComments={this.loadMoreComments}
                     onLoadMoreReplies={this.loadMoreReplies}
                     onReplySubmit={this.uploadReply}
                     onRewardCommentEdit={this.editRewardComment}

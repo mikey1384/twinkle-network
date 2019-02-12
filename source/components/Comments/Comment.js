@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import withContext from 'components/Wrappers/withContext';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Context from './Context';
 import { timeSince } from 'helpers/timeStampHelpers';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -25,361 +24,328 @@ import { connect } from 'react-redux';
 import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
 
-class Comment extends Component {
-  static propTypes = {
-    onAttachStar: PropTypes.func.isRequired,
-    authLevel: PropTypes.number,
-    canDelete: PropTypes.bool,
-    canEdit: PropTypes.bool,
-    canStar: PropTypes.bool,
-    comment: PropTypes.shape({
-      content: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-      likes: PropTypes.array.isRequired,
-      profilePicId: PropTypes.number,
-      replies: PropTypes.array,
-      replyId: PropTypes.number,
-      stars: PropTypes.array,
-      targetObj: PropTypes.object,
-      targetUserName: PropTypes.string,
-      targetUserId: PropTypes.number,
-      timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-        .isRequired,
-      uploader: PropTypes.object.isRequired
-    }).isRequired,
-    dispatch: PropTypes.func.isRequired,
-    innerRef: PropTypes.func,
-    isPreview: PropTypes.bool,
-    onEditDone: PropTypes.func.isRequired,
-    onLoadMoreReplies: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onRewardCommentEdit: PropTypes.func.isRequired,
-    onReplySubmit: PropTypes.func.isRequired,
-    parent: PropTypes.object,
-    userId: PropTypes.number
-  };
+Comment.propTypes = {
+  authLevel: PropTypes.number,
+  canDelete: PropTypes.bool,
+  canEdit: PropTypes.bool,
+  canStar: PropTypes.bool,
+  comment: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    likes: PropTypes.array.isRequired,
+    profilePicId: PropTypes.number,
+    replies: PropTypes.array,
+    replyId: PropTypes.number,
+    stars: PropTypes.array,
+    targetObj: PropTypes.object,
+    targetUserName: PropTypes.string,
+    targetUserId: PropTypes.number,
+    timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+      .isRequired,
+    uploader: PropTypes.object.isRequired
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  innerRef: PropTypes.func,
+  isPreview: PropTypes.bool,
+  parent: PropTypes.object,
+  userId: PropTypes.number
+};
 
-  Replies = {};
+function Comment({
+  authLevel,
+  canDelete,
+  canEdit,
+  canStar,
+  comment,
+  dispatch,
+  innerRef,
+  isPreview,
+  userId,
+  parent,
+  comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
+}) {
+  const {
+    onAttachStar,
+    onDelete,
+    onEditDone,
+    onLikeClick,
+    onLoadMoreReplies,
+    onReplySubmit,
+    onRewardCommentEdit
+  } = useContext(Context);
+  const [onEdit, setOnEdit] = useState(false);
+  const [userListModalShown, setUserListModalShown] = useState(false);
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [prevReplies, setPrevReplies] = useState(replies);
+  const [replying, setReplying] = useState(false);
 
-  state = {
-    onEdit: false,
-    replying: false,
-    userListModalShown: false,
-    confirmModalShown: false,
-    xpRewardInterfaceShown: false
-  };
+  const ReplyInputAreaRef = useRef();
+  const ReplyRefs = {};
 
-  componentDidUpdate(prevProps) {
-    const {
-      comment: { replies = [] }
-    } = this.props;
-    const { replying } = this.state;
-    if (
-      replying &&
-      prevProps.comment.replies &&
-      replies.length > prevProps.comment.replies.length
-    ) {
-      this.setState({ replying: false });
-      scrollElementToCenter(this.Replies[replies[replies.length - 1].id]);
+  useEffect(() => {
+    if (replying && replies.length > prevReplies.length) {
+      setReplying(false);
+      scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
     }
+    setPrevReplies(replies);
+  }, [replies]);
+
+  const userIsUploader = uploader.id === userId;
+  const userCanEditThis =
+    (canEdit || canDelete) && authLevel > uploader.authLevel;
+  const editButtonShown = userIsUploader || userCanEditThis;
+  const editMenuItems = [];
+  if (userIsUploader || canEdit) {
+    editMenuItems.push({
+      label: 'Edit',
+      onClick: () => setOnEdit(true)
+    });
+  }
+  if (userIsUploader || canDelete) {
+    editMenuItems.push({
+      label: 'Remove',
+      onClick: () => setConfirmModalShown(true)
+    });
+  }
+  let userLikedThis = false;
+  for (let i = 0; i < likes.length; i++) {
+    if (likes[i].id === userId) userLikedThis = true;
   }
 
-  render() {
-    const {
-      onEdit,
-      userListModalShown,
-      confirmModalShown,
-      xpRewardInterfaceShown
-    } = this.state;
-    const {
-      authLevel,
-      canDelete,
-      canEdit,
-      canStar,
-      comment,
-      comment: {
-        replies = [],
-        targetObj = {},
-        likes = [],
-        stars = [],
-        uploader
-      },
-      innerRef,
-      isPreview,
-      onAttachStar,
-      onLoadMoreReplies,
-      onDelete,
-      onRewardCommentEdit,
-      userId,
-      parent
-    } = this.props;
-    const userIsUploader = uploader.id === userId;
-    const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploader.authLevel;
-    const editButtonShown = userIsUploader || userCanEditThis;
-    const editMenuItems = [];
-    if (userIsUploader || canEdit) {
-      editMenuItems.push({
-        label: 'Edit',
-        onClick: () => this.setState({ onEdit: true })
-      });
-    }
-    if (userIsUploader || canDelete) {
-      editMenuItems.push({
-        label: 'Remove',
-        onClick: () => this.setState({ confirmModalShown: true })
-      });
-    }
-    let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].id === userId) userLikedThis = true;
-    }
-    return (
-      <div
-        style={isPreview ? { cursor: 'pointer' } : {}}
-        className={commentContainer}
-        ref={ref => {
-          this.Comment = ref;
-          innerRef(ref);
-        }}
-      >
-        <div className="content-wrapper">
-          <aside>
-            <ProfilePic
-              style={{ height: '5rem', width: '5rem' }}
-              userId={uploader.id}
-              profilePicId={uploader.profilePicId}
+  return (
+    <div
+      style={isPreview ? { cursor: 'pointer' } : {}}
+      className={commentContainer}
+      ref={innerRef}
+    >
+      <div className="content-wrapper">
+        <aside>
+          <ProfilePic
+            style={{ height: '5rem', width: '5rem' }}
+            userId={uploader.id}
+            profilePicId={uploader.profilePicId}
+          />
+        </aside>
+        {editButtonShown && !onEdit && (
+          <div className="dropdown-wrapper">
+            <DropdownButton
+              snow
+              direction="left"
+              opacity={0.8}
+              menuProps={editMenuItems}
             />
-          </aside>
-          {editButtonShown && !onEdit && (
-            <div className="dropdown-wrapper">
-              <DropdownButton
-                snow
-                direction="left"
-                opacity={0.8}
-                menuProps={editMenuItems}
+          </div>
+        )}
+        <section>
+          <div>
+            <UsernameText className="username" user={uploader} />{' '}
+            <small className="timestamp">
+              <Link to={`/comments/${comment.id}`}>
+                {parent.type === 'user' ? 'messag' : 'comment'}
+                ed {timeSince(comment.timeStamp)}
+              </Link>
+            </small>
+          </div>
+          <div>
+            {comment.targetUserId &&
+              !!comment.replyId &&
+              comment.replyId !== parent.id && (
+                <span className="to">
+                  to:{' '}
+                  <UsernameText
+                    user={{
+                      username: comment.targetUserName,
+                      id: comment.targetUserId
+                    }}
+                  />
+                </span>
+              )}
+            {onEdit ? (
+              <EditTextArea
+                autoFocus
+                text={comment.content}
+                onCancel={() => setOnEdit(false)}
+                onEditDone={editDone}
               />
-            </div>
-          )}
-          <section>
-            <div>
-              <UsernameText className="username" user={uploader} />{' '}
-              <small className="timestamp">
-                <Link to={`/comments/${comment.id}`}>
-                  {parent.type === 'user' ? 'messag' : 'comment'}
-                  ed {timeSince(comment.timeStamp)}
-                </Link>
-              </small>
-            </div>
-            <div>
-              {comment.targetUserId &&
-                !!comment.replyId &&
-                comment.replyId !== parent.id && (
-                  <span className="to">
-                    to:{' '}
-                    <UsernameText
-                      user={{
-                        username: comment.targetUserName,
-                        id: comment.targetUserId
-                      }}
-                    />
-                  </span>
-                )}
-              {onEdit ? (
-                <EditTextArea
-                  autoFocus
-                  text={comment.content}
-                  onCancel={() => this.setState({ onEdit: false })}
-                  onEditDone={this.onEditDone}
-                />
-              ) : (
-                <div>
-                  {parent.type !== 'subject' &&
-                    !parent.subjectId &&
-                    targetObj &&
-                    targetObj.subject && (
-                      <SubjectLink subject={targetObj.subject} />
-                    )}
-                  <LongText className="comment__content">
-                    {comment.content}
-                  </LongText>
-                  {!isPreview && (
-                    <>
-                      <div className="comment__buttons">
-                        <LikeButton
-                          contentType="comment"
-                          contentId={comment.id}
-                          onClick={this.onLikeClick}
-                          liked={userLikedThis}
-                        />
+            ) : (
+              <div>
+                {parent.type !== 'subject' &&
+                  !parent.subjectId &&
+                  targetObj &&
+                  targetObj.subject && (
+                    <SubjectLink subject={targetObj.subject} />
+                  )}
+                <LongText className="comment__content">
+                  {comment.content}
+                </LongText>
+                {!isPreview && (
+                  <>
+                    <div className="comment__buttons">
+                      <LikeButton
+                        contentType="comment"
+                        contentId={comment.id}
+                        onClick={likeClick}
+                        liked={userLikedThis}
+                      />
+                      <Button
+                        transparent
+                        style={{ marginLeft: '1rem' }}
+                        onClick={onReplyButtonClick}
+                      >
+                        <Icon icon="comment-alt" />
+                        <span style={{ marginLeft: '1rem' }}>Reply</span>
+                      </Button>
+                      {canStar && userCanEditThis && !userIsUploader && (
                         <Button
-                          transparent
-                          style={{ marginLeft: '1rem' }}
-                          onClick={this.onReplyButtonClick}
+                          love
+                          style={{ marginLeft: '0.7rem' }}
+                          onClick={() => setXpRewardInterfaceShown(true)}
+                          disabled={determineXpButtonDisabled({
+                            difficulty: determineDifficulty({
+                              parent,
+                              targetObj
+                            }),
+                            myId: userId,
+                            xpRewardInterfaceShown,
+                            stars
+                          })}
                         >
-                          <Icon icon="comment-alt" />
-                          <span style={{ marginLeft: '1rem' }}>Reply</span>
-                        </Button>
-                        {canStar && userCanEditThis && !userIsUploader && (
-                          <Button
-                            love
-                            style={{ marginLeft: '0.7rem' }}
-                            onClick={() =>
-                              this.setState({ xpRewardInterfaceShown: true })
-                            }
-                            disabled={determineXpButtonDisabled({
-                              difficulty: this.determineDifficulty({
+                          <Icon icon="certificate" />
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {determineXpButtonDisabled({
+                              difficulty: determineDifficulty({
                                 parent,
                                 targetObj
                               }),
                               myId: userId,
                               xpRewardInterfaceShown,
                               stars
-                            })}
-                          >
-                            <Icon icon="certificate" />
-                            <span style={{ marginLeft: '0.7rem' }}>
-                              {determineXpButtonDisabled({
-                                difficulty: this.determineDifficulty({
-                                  parent,
-                                  targetObj
-                                }),
-                                myId: userId,
-                                xpRewardInterfaceShown,
-                                stars
-                              }) || 'Reward'}
-                            </span>
-                          </Button>
-                        )}
-                      </div>
-                      <Likers
-                        className="comment__likes"
-                        userId={userId}
-                        likes={comment.likes}
-                        onLinkClick={() =>
-                          this.setState({ userListModalShown: true })
-                        }
-                      />
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-            {xpRewardInterfaceShown && (
-              <XPRewardInterface
-                difficulty={this.determineDifficulty({ parent, targetObj })}
-                stars={stars}
-                contentType="comment"
-                contentId={comment.id}
-                uploaderId={uploader.id}
-                onRewardSubmit={data => {
-                  this.setState({ xpRewardInterfaceShown: false });
-                  onAttachStar(data);
-                }}
-              />
+                            }) || 'Reward'}
+                          </span>
+                        </Button>
+                      )}
+                    </div>
+                    <Likers
+                      className="comment__likes"
+                      userId={userId}
+                      likes={comment.likes}
+                      onLinkClick={() => setUserListModalShown(true)}
+                    />
+                  </>
+                )}
+              </div>
             )}
-            {!isPreview && (
-              <RewardStatus
-                difficulty={this.determineDifficulty({ parent, targetObj })}
-                noMarginForEditButton
-                onCommentEdit={onRewardCommentEdit}
+          </div>
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              difficulty={determineDifficulty({ parent, targetObj })}
+              stars={stars}
+              contentType="comment"
+              contentId={comment.id}
+              uploaderId={uploader.id}
+              onRewardSubmit={data => {
+                setXpRewardInterfaceShown(false);
+                onAttachStar(data);
+              }}
+            />
+          )}
+          {!isPreview && (
+            <RewardStatus
+              difficulty={determineDifficulty({ parent, targetObj })}
+              noMarginForEditButton
+              onCommentEdit={onRewardCommentEdit}
+              style={{
+                fontSize: '1.5rem',
+                marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
+              }}
+              stars={stars}
+              uploaderName={uploader.username}
+            />
+          )}
+          {!isPreview && (
+            <>
+              <ReplyInputArea
+                innerRef={ReplyInputAreaRef}
                 style={{
-                  fontSize: '1.5rem',
-                  marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
+                  marginTop:
+                    stars.length > 0 || comment.likes.length > 0
+                      ? '0.5rem'
+                      : '1rem'
                 }}
-                stars={stars}
-                uploaderName={uploader.username}
+                onSubmit={submitReply}
+                numReplies={replies.length}
+                rootCommentId={comment.commentId}
+                targetCommentId={comment.id}
               />
-            )}
-            {!isPreview && (
-              <>
-                <ReplyInputArea
-                  innerRef={ref => (this.ReplyInputArea = ref)}
-                  style={{
-                    marginTop:
-                      stars.length > 0 || comment.likes.length > 0
-                        ? '0.5rem'
-                        : '1rem'
-                  }}
-                  onSubmit={this.onReplySubmit}
-                  numReplies={replies.length}
-                  rootCommentId={comment.commentId}
-                  targetCommentId={comment.id}
-                />
-                <Replies
-                  subject={targetObj.subject || {}}
-                  innerRef={({ ref, replyId }) => (this.Replies[replyId] = ref)}
-                  Replies={this.Replies}
-                  userId={userId}
-                  replies={replies}
-                  comment={comment}
-                  parent={parent}
-                  onLoadMoreReplies={onLoadMoreReplies}
-                  onReplySubmit={this.onReplySubmit}
-                />
-              </>
-            )}
-          </section>
-        </div>
-        {userListModalShown && (
-          <UserListModal
-            onHide={() => this.setState({ userListModalShown: false })}
-            title="People who liked this comment"
-            users={comment.likes}
-            description="(You)"
-          />
-        )}
-        {confirmModalShown && (
-          <ConfirmModal
-            onHide={() => this.setState({ confirmModalShown: false })}
-            title="Remove Comment"
-            onConfirm={() => onDelete(comment.id)}
-          />
-        )}
+              <Replies
+                subject={targetObj.subject || {}}
+                userId={userId}
+                replies={replies}
+                comment={comment}
+                parent={parent}
+                onLoadMoreReplies={onLoadMoreReplies}
+                onReplySubmit={onReplySubmit}
+                ReplyRefs={ReplyRefs}
+              />
+            </>
+          )}
+        </section>
       </div>
-    );
+      {userListModalShown && (
+        <UserListModal
+          onHide={() => setUserListModalShown(false)}
+          title="People who liked this comment"
+          users={comment.likes}
+          description="(You)"
+        />
+      )}
+      {confirmModalShown && (
+        <ConfirmModal
+          onHide={() => setConfirmModalShown(false)}
+          title="Remove Comment"
+          onConfirm={() => onDelete(comment.id)}
+        />
+      )}
+    </div>
+  );
+
+  function determineDifficulty({ parent, targetObj }) {
+    const rootDifficulty =
+      (parent.type === 'video'
+        ? parent.difficulty > 0
+          ? 1
+          : 0
+        : parent.difficulty) ||
+      (parent.rootType === 'video'
+        ? parent.rootObj?.difficulty > 0
+          ? 1
+          : 0
+        : parent.rootObj?.difficulty);
+    return targetObj.subject?.difficulty || rootDifficulty;
   }
 
-  determineDifficulty = ({ parent, targetObj }) => {
-    const rootDifficulty =
-      (parent.type !== 'video'
-        ? parent.difficulty
-        : parent.difficulty > 0
-        ? 1
-        : 0) ||
-      (parent.rootType !== 'video'
-        ? parent.rootObj?.difficulty
-        : parent.rootObj?.difficulty > 0
-        ? 1
-        : 0);
-    return targetObj.subject?.difficulty || rootDifficulty;
-  };
-
-  onEditDone = async editedComment => {
-    const { dispatch, comment, onEditDone } = this.props;
+  async function editDone(editedComment) {
     await editContent({
       params: { editedComment, contentId: comment.id, type: 'comment' },
       dispatch
     });
     onEditDone({ editedComment, commentId: comment.id });
-    this.setState({ onEdit: false });
-  };
+    setOnEdit(false);
+  }
 
-  onLikeClick = likes => {
-    const { comment, onLikeClick } = this.props;
+  function likeClick(likes) {
     onLikeClick({ commentId: comment.id, likes });
-  };
+  }
 
-  onReplyButtonClick = () => {
-    this.ReplyInputArea.focus();
-  };
+  function onReplyButtonClick() {
+    ReplyInputAreaRef.current.focus();
+  }
 
-  onReplySubmit = async reply => {
-    const { onReplySubmit } = this.props;
-    this.setState({ replying: true });
+  async function submitReply(reply) {
+    setReplying(true);
     await onReplySubmit(reply);
-  };
+  }
 }
 
 export default connect(
@@ -390,4 +356,4 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: Comment, Context }));
+)(Comment);

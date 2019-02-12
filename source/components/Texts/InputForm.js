@@ -15,7 +15,7 @@ export default class InputForm extends Component {
   static propTypes = {
     autoFocus: PropTypes.bool,
     formGroupStyle: PropTypes.object,
-    innerRef: PropTypes.func,
+    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
     onSubmit: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
     rows: PropTypes.number,

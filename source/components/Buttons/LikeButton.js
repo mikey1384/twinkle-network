@@ -17,6 +17,7 @@ LikeButton.propTypes = {
   style: PropTypes.object,
   targetLabel: PropTypes.string
 };
+
 function LikeButton({
   className,
   contentId,

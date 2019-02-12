@@ -1,112 +1,106 @@
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Context from '../Context';
-import withContext from 'components/Wrappers/withContext';
 import Reply from './Reply';
 import { scrollElementToCenter } from 'helpers';
 import { loadReplies } from 'helpers/requestHelpers';
 import Button from 'components/Button';
 
-class Replies extends Component {
-  static propTypes = {
-    comment: PropTypes.shape({
-      id: PropTypes.number.isRequired
-    }).isRequired,
-    subject: PropTypes.object,
-    innerRef: PropTypes.func,
-    onDelete: PropTypes.func.isRequired,
-    onLoadRepliesOfReply: PropTypes.func,
-    onReplySubmit: PropTypes.func.isRequired,
-    onLoadMoreReplies: PropTypes.func.isRequired,
-    parent: PropTypes.object.isRequired,
-    replies: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        userId: PropTypes.number.isRequired
-      })
-    ).isRequired,
-    Replies: PropTypes.object,
-    userId: PropTypes.number
-  };
+Replies.propTypes = {
+  comment: PropTypes.shape({
+    id: PropTypes.number.isRequired
+  }).isRequired,
+  subject: PropTypes.object,
+  parent: PropTypes.object.isRequired,
+  replies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired
+    })
+  ).isRequired,
+  ReplyRefs: PropTypes.object,
+  userId: PropTypes.number
+};
 
-  state = {
-    deleting: false,
-    replying: false
-  };
+export default function Replies({
+  replies,
+  userId,
+  comment,
+  subject,
+  parent,
+  ReplyRefs
+}) {
+  const {
+    onDelete,
+    onLoadMoreReplies,
+    onLoadRepliesOfReply,
+    onReplySubmit
+  } = useContext(Context);
+  const [deleting, setDeleting] = useState(false);
+  const [replying, setReplying] = useState(false);
+  const [prevReplies, setPrevReplies] = useState(replies);
+  const ContainerRef = useRef();
 
-  componentDidUpdate(prevProps) {
-    const { deleting, replying } = this.state;
-    const { replies, Replies } = this.props;
-    if (replies.length < prevProps.replies.length) {
+  useEffect(() => {
+    if (replies.length < prevReplies.length) {
       if (deleting) {
-        this.setState({ deleting: false });
+        setDeleting(false);
         if (replies.length === 0) {
-          return scrollElementToCenter(this.ReplyContainer);
+          return scrollElementToCenter(ContainerRef.current);
         }
         if (
           replies[replies.length - 1].id !==
-          prevProps.replies[prevProps.replies.length - 1].id
+          prevReplies[prevReplies.length - 1].id
         ) {
-          scrollElementToCenter(Replies[replies[replies.length - 1].id]);
+          scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
         }
       }
     }
-    if (replies.length > prevProps.replies.length) {
+    if (replies.length > prevReplies.length) {
       if (replying) {
-        this.setState({ replying: false });
-        scrollElementToCenter(Replies[replies[replies.length - 1].id]);
+        setReplying(false);
+        scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
       }
     }
-  }
+    setPrevReplies(replies);
+  }, [replies]);
 
-  render() {
-    let {
-      innerRef,
-      replies,
-      userId,
-      comment,
-      subject,
-      onLoadRepliesOfReply,
-      parent
-    } = this.props;
-    return (
-      <div ref={ref => (this.ReplyContainer = ref)}>
-        {comment.loadMoreButton && (
-          <Button
-            style={{
-              marginTop: '0.5rem',
-              width: '100%'
-            }}
-            filled
-            info
-            onClick={this.loadMoreReplies}
-          >
-            Load More
-          </Button>
-        )}
-        {replies.map((reply, index) => {
-          return (
-            <Reply
-              index={index}
-              innerRef={ref => innerRef({ ref, replyId: reply.id })}
-              key={reply.id}
-              parent={parent}
-              comment={comment}
-              subject={subject}
-              reply={reply}
-              userId={userId}
-              onDelete={this.onDelete}
-              onLoadRepliesOfReply={onLoadRepliesOfReply}
-              onReply={this.onReplySubmit}
-            />
-          );
-        })}
-      </div>
-    );
-  }
+  return (
+    <div ref={ContainerRef}>
+      {comment.loadMoreButton && (
+        <Button
+          style={{
+            marginTop: '0.5rem',
+            width: '100%'
+          }}
+          filled
+          info
+          onClick={loadMoreReplies}
+        >
+          Load More
+        </Button>
+      )}
+      {replies.map((reply, index) => {
+        return (
+          <Reply
+            index={index}
+            innerRef={ref => (ReplyRefs[reply.id] = ref)}
+            key={reply.id}
+            parent={parent}
+            comment={comment}
+            subject={subject}
+            reply={reply}
+            userId={userId}
+            deleteReply={deleteReply}
+            loadRepliesOfReply={onLoadRepliesOfReply}
+            submitReply={submitReply}
+          />
+        );
+      })}
+    </div>
+  );
 
-  loadMoreReplies = async() => {
-    const { comment, onLoadMoreReplies, replies } = this.props;
+  async function loadMoreReplies() {
     try {
       const lastReplyId = replies[0] ? replies[0].id : 'undefined';
       const data = await loadReplies({ lastReplyId, commentId: comment.id });
@@ -114,19 +108,15 @@ class Replies extends Component {
     } catch (error) {
       console.error(error.response, error);
     }
-  };
+  }
 
-  onDelete = replyId => {
-    const { onDelete } = this.props;
-    this.setState({ deleting: true });
+  function deleteReply(replyId) {
+    setDeleting(true);
     onDelete(replyId);
-  };
+  }
 
-  onReplySubmit = params => {
-    const { onReplySubmit } = this.props;
-    this.setState({ replying: true });
+  function submitReply(params) {
+    setReplying(true);
     onReplySubmit(params);
-  };
+  }
 }
-
-export default withContext({ Component: Replies, Context });

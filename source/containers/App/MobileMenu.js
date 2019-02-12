@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HomeMenuItems from 'components/HomeMenuItems';
 import ProfileWidget from 'components/ProfileWidget';
-import { Color } from 'constants/css';
 import Notification from 'components/Notification';
-import { connect } from 'react-redux';
-import { logout, uploadProfilePic } from 'redux/actions/UserActions';
-import { css } from 'emotion';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { Color } from 'constants/css';
+import { connect } from 'react-redux';
+import { logout, uploadProfilePic } from 'redux/actions/UserActions';
+import { css } from 'emotion';
 
 MobileMenu.propTypes = {
   chatMode: PropTypes.bool,

@@ -333,12 +333,12 @@ class LinkPage extends Component {
           inputTypeLabel="comment"
           key={'comments' + id}
           loadMoreButton={loadMoreCommentsButton}
-          loadMoreComments={this.fetchMoreComments}
           onAttachStar={this.attachStar}
           onCommentSubmit={this.uploadComment}
           onDelete={this.deleteComment}
           onEditDone={this.editComment}
           onLikeClick={this.likeComment}
+          onLoadMoreComments={this.fetchMoreComments}
           onLoadMoreReplies={this.fetchMoreReplies}
           onReplySubmit={this.uploadReply}
           onRewardCommentEdit={this.editRewardComment}

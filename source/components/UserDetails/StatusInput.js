@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
 import ColorSelector from 'components/ColorSelector';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers';
@@ -12,7 +13,7 @@ StatusInput.propTypes = {
   profile: PropTypes.object.isRequired,
   statusColor: PropTypes.string,
   editedStatusMsg: PropTypes.string,
-  innerRef: PropTypes.func.isRequired,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   onCancel: PropTypes.func.isRequired,
   onStatusSubmit: PropTypes.func.isRequired,
   onTextChange: PropTypes.func.isRequired,
@@ -30,7 +31,7 @@ export default function StatusInput({
   setColor
 }) {
   return (
-    <>
+    <ErrorBoundary>
       <Textarea
         autoFocus={autoFocus}
         className={css`
@@ -107,6 +108,6 @@ export default function StatusInput({
           </div>
         </div>
       )}
-    </>
+    </ErrorBoundary>
   );
 }

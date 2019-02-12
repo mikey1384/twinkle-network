@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import withContext from 'components/Wrappers/withContext';
 import Context from '../Context';
-import { timeSince } from 'helpers/timeStampHelpers';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTextArea from 'components/Texts/EditTextArea';
+import Icon from 'components/Icon';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
 import UsernameText from 'components/Texts/UsernameText';
@@ -13,109 +12,103 @@ import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
 import ReplyInputArea from './ReplyInputArea';
-import { determineXpButtonDisabled } from 'helpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
-import { commentContainer } from '../Styles';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
-import Icon from 'components/Icon';
-import { Link } from 'react-router-dom';
-import { editContent, loadReplies } from 'helpers/requestHelpers';
+import { commentContainer } from '../Styles';
 import { connect } from 'react-redux';
+import { determineXpButtonDisabled } from 'helpers';
+import { editContent, loadReplies } from 'helpers/requestHelpers';
+import { Link } from 'react-router-dom';
+import { timeSince } from 'helpers/timeStampHelpers';
 
-class Reply extends Component {
-  static propTypes = {
-    authLevel: PropTypes.number,
-    canDelete: PropTypes.bool,
-    canEdit: PropTypes.bool,
-    canStar: PropTypes.bool,
-    comment: PropTypes.shape({
-      id: PropTypes.number.isRequired
-    }),
-    subject: PropTypes.object,
-    dispatch: PropTypes.func.isRequired,
-    innerRef: PropTypes.func,
-    onAttachStar: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onEditDone: PropTypes.func.isRequired,
-    onRewardCommentEdit: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
-    onLoadRepliesOfReply: PropTypes.func,
-    onReply: PropTypes.func.isRequired,
-    parent: PropTypes.object.isRequired,
-    reply: PropTypes.shape({
-      content: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-      likes: PropTypes.array,
-      originType: PropTypes.string,
-      profilePicId: PropTypes.number,
-      targetUserId: PropTypes.number,
-      targetUserName: PropTypes.string,
-      timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-      uploader: PropTypes.object.isRequired
-    }),
-    userId: PropTypes.number
-  };
+Reply.propTypes = {
+  authLevel: PropTypes.number,
+  canDelete: PropTypes.bool,
+  canEdit: PropTypes.bool,
+  canStar: PropTypes.bool,
+  comment: PropTypes.shape({
+    id: PropTypes.number.isRequired
+  }),
+  subject: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
+  innerRef: PropTypes.func,
+  deleteReply: PropTypes.func.isRequired,
+  loadRepliesOfReply: PropTypes.func.isRequired,
+  parent: PropTypes.object.isRequired,
+  reply: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    likes: PropTypes.array,
+    originType: PropTypes.string,
+    profilePicId: PropTypes.number,
+    targetUserId: PropTypes.number,
+    targetUserName: PropTypes.string,
+    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    uploader: PropTypes.object.isRequired
+  }),
+  submitReply: PropTypes.func.isRequired,
+  userId: PropTypes.number
+};
 
-  state = {
-    onEdit: false,
-    userListModalShown: false,
-    confirmModalShown: false,
-    xpRewardInterfaceShown: false,
-    replyButtonClicked: false
-  };
+function Reply({
+  comment,
+  authLevel,
+  canDelete,
+  canEdit,
+  canStar,
+  dispatch,
+  innerRef = () => {},
+  deleteReply,
+  loadRepliesOfReply,
+  parent,
+  reply,
+  reply: { commentId, id, numReplies, likes = [], stars = [], uploader },
+  submitReply,
+  subject,
+  userId
+}) {
+  const {
+    onAttachStar,
+    onEditDone,
+    onLikeClick,
+    onRewardCommentEdit
+  } = useContext(Context);
+  const [onEdit, setOnEdit] = useState(false);
+  const [userListModalShown, setUserListModalShown] = useState(false);
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [replyButtonClicked, setReplyButtonClicked] = useState(false);
+  const ReplyInputAreaRef = useRef();
 
-  render() {
-    const {
-      comment,
-      authLevel,
-      canDelete,
-      canEdit,
-      canStar,
-      subject,
-      innerRef = () => {},
-      onAttachStar,
-      onDelete,
-      onRewardCommentEdit,
-      onReply,
-      parent,
-      reply,
-      reply: { likes = [], stars = [], uploader },
-      userId
-    } = this.props;
-    const {
-      onEdit,
-      userListModalShown,
-      confirmModalShown,
-      clickListenerState,
-      replyButtonClicked,
-      xpRewardInterfaceShown
-    } = this.state;
-    const userIsUploader = userId === uploader.id;
-    const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploader.authLevel;
-    const editButtonShown = userIsUploader || userCanEditThis;
-    const editMenuItems = [];
-    if (userIsUploader || canEdit) {
-      editMenuItems.push({
-        label: 'Edit',
-        onClick: () => this.setState({ onEdit: true })
-      });
-    }
-    if (userIsUploader || canDelete) {
-      editMenuItems.push({
-        label: 'Remove',
-        onClick: () => this.setState({ confirmModalShown: true })
-      });
-    }
-    let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].id === userId) userLikedThis = true;
-    }
-    return (
-      <div className={commentContainer} ref={innerRef}>
+  const userIsUploader = userId === uploader.id;
+  const userCanEditThis =
+    (canEdit || canDelete) && authLevel > uploader.authLevel;
+  const editButtonShown = userIsUploader || userCanEditThis;
+  const editMenuItems = [];
+
+  if (userIsUploader || canEdit) {
+    editMenuItems.push({
+      label: 'Edit',
+      onClick: () => setOnEdit(true)
+    });
+  }
+  if (userIsUploader || canDelete) {
+    editMenuItems.push({
+      label: 'Remove',
+      onClick: () => setConfirmModalShown(true)
+    });
+  }
+  let userLikedThis = false;
+  for (let i = 0; i < likes.length; i++) {
+    if (likes[i].id === userId) userLikedThis = true;
+  }
+
+  return (
+    <ErrorBoundary>
+      <div className={commentContainer} ref={ref => innerRef(ref)}>
         <div className="content-wrapper">
           <aside>
             <ProfilePic
@@ -133,11 +126,11 @@ class Reply extends Component {
                 menuProps={[
                   {
                     label: 'Edit',
-                    onClick: () => this.setState({ onEdit: true })
+                    onClick: () => setOnEdit(true)
                   },
                   {
                     label: 'Remove',
-                    onClick: () => this.setState({ confirmModalShown: true })
+                    onClick: () => setConfirmModalShown(true)
                   }
                 ]}
               />
@@ -153,7 +146,7 @@ class Reply extends Component {
               </small>
             </div>
             <div>
-              {((reply.targetObj || {}).comment || {}).uploader &&
+              {reply.targetObj?.comment?.uploader &&
                 !!reply.replyId &&
                 reply.replyId !== comment.id && (
                   <ErrorBoundary>
@@ -167,8 +160,8 @@ class Reply extends Component {
                 <EditTextArea
                   autoFocus
                   text={reply.content}
-                  onCancel={() => this.setState({ onEdit: false })}
-                  onEditDone={this.onEditDone}
+                  onCancel={() => setOnEdit(false)}
+                  onEditDone={editDone}
                 />
               ) : (
                 <div>
@@ -179,14 +172,14 @@ class Reply extends Component {
                     <LikeButton
                       contentId={reply.id}
                       contentType="comment"
-                      onClick={this.onLikeClick}
+                      onClick={likeClick}
                       liked={userLikedThis}
                       small
                     />
                     <Button
                       transparent
                       style={{ marginLeft: '1rem' }}
-                      onClick={this.onReplyButtonClick}
+                      onClick={replyButtonClick}
                     >
                       <Icon icon="comment-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>
@@ -206,11 +199,9 @@ class Reply extends Component {
                       <Button
                         love
                         style={{ marginLeft: '1rem' }}
-                        onClick={() =>
-                          this.setState({ xpRewardInterfaceShown: true })
-                        }
+                        onClick={() => setXpRewardInterfaceShown(true)}
                         disabled={determineXpButtonDisabled({
-                          difficulty: this.determineDifficulty({
+                          difficulty: determineDifficulty({
                             parent,
                             subject
                           }),
@@ -222,7 +213,7 @@ class Reply extends Component {
                         <Icon icon="certificate" />
                         <span style={{ marginLeft: '0.7rem' }}>
                           {determineXpButtonDisabled({
-                            difficulty: this.determineDifficulty({
+                            difficulty: determineDifficulty({
                               parent,
                               subject
                             }),
@@ -239,9 +230,7 @@ class Reply extends Component {
                       className="comment__likes"
                       userId={userId}
                       likes={reply.likes}
-                      onLinkClick={() =>
-                        this.setState({ userListModalShown: true })
-                      }
+                      onLinkClick={() => setUserListModalShown(true)}
                     />
                   </small>
                 </div>
@@ -249,20 +238,20 @@ class Reply extends Component {
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={this.determineDifficulty({ parent, subject })}
+                difficulty={determineDifficulty({ parent, subject })}
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
-                  this.setState({ xpRewardInterfaceShown: false });
+                  setXpRewardInterfaceShown(false);
                   onAttachStar(data);
                 }}
               />
             )}
             <RewardStatus
               noMarginForEditButton
-              difficulty={this.determineDifficulty({ parent, subject })}
+              difficulty={determineDifficulty({ parent, subject })}
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.5rem',
@@ -272,15 +261,12 @@ class Reply extends Component {
               uploaderName={uploader.username}
             />
             <ReplyInputArea
-              innerRef={ref => {
-                this.ReplyInputArea = ref;
-              }}
+              innerRef={ReplyInputAreaRef}
               style={{
                 marginTop:
                   stars.length > 0 || reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
-              onSubmit={onReply}
-              clickListenerState={clickListenerState}
+              onSubmit={submitReply}
               rootCommentId={reply.commentId}
               targetCommentId={reply.id}
             />
@@ -288,7 +274,7 @@ class Reply extends Component {
         </div>
         {userListModalShown && (
           <UserListModal
-            onHide={() => this.setState({ userListModalShown: false })}
+            onHide={() => setUserListModalShown(false)}
             title="People who liked this reply"
             users={reply.likes}
             description="(You)"
@@ -296,32 +282,31 @@ class Reply extends Component {
         )}
         {confirmModalShown && (
           <ConfirmModal
-            onHide={() => this.setState({ confirmModalShown: false })}
+            onHide={() => setConfirmModalShown(false)}
             title="Remove Reply"
-            onConfirm={() => onDelete(reply.id)}
+            onConfirm={() => deleteReply(reply.id)}
           />
         )}
       </div>
-    );
+    </ErrorBoundary>
+  );
+
+  function determineDifficulty({ parent, subject }) {
+    const rootDifficulty =
+      (parent.type === 'video'
+        ? parent.difficulty > 0
+          ? 1
+          : 0
+        : parent.difficulty) ||
+      (parent.rootType === 'video'
+        ? parent.rootObj?.difficulty > 0
+          ? 1
+          : 0
+        : parent.rootObj?.difficulty);
+    return subject?.difficulty || rootDifficulty;
   }
 
-  determineDifficulty = ({ parent, subject }) => {
-    const rootDifficulty =
-      (parent.type !== 'video'
-        ? parent.difficulty
-        : parent.difficulty > 0
-        ? 1
-        : 0) ||
-      (parent.rootType !== 'video'
-        ? parent.rootObj?.difficulty
-        : parent.rootObj?.difficulty > 0
-        ? 1
-        : 0);
-    return subject?.difficulty || rootDifficulty;
-  };
-
-  onEditDone = async editedReply => {
-    const { dispatch, onEditDone, reply } = this.props;
+  async function editDone(editedReply) {
     await editContent({
       params: {
         editedComment: editedReply,
@@ -331,23 +316,16 @@ class Reply extends Component {
       dispatch
     });
     onEditDone({ editedComment: editedReply, commentId: reply.id });
-    this.setState({ onEdit: false });
-  };
+    setOnEdit(false);
+  }
 
-  onLikeClick = likes => {
-    const { reply, onLikeClick } = this.props;
+  function likeClick(likes) {
     onLikeClick({ commentId: reply.id, likes });
-  };
+  }
 
-  onReplyButtonClick = async() => {
-    const {
-      parent,
-      reply: { commentId, id, numReplies }
-    } = this.props;
-    const { replyButtonClicked } = this.state;
-    const { onLoadRepliesOfReply } = this.props;
-    this.setState({ replyButtonClicked: true });
-    this.ReplyInputArea.focus();
+  async function replyButtonClick() {
+    setReplyButtonClicked(true);
+    ReplyInputAreaRef.current.focus();
     if (
       numReplies.length > 0 &&
       !replyButtonClicked &&
@@ -357,10 +335,10 @@ class Reply extends Component {
         commentId: id
       });
       if (replies.length > 0) {
-        onLoadRepliesOfReply({ replies, commentId, replyId: id });
+        loadRepliesOfReply({ replies, commentId, replyId: id });
       }
     }
-  };
+  }
 }
 
 export default connect(
@@ -371,4 +349,4 @@ export default connect(
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: Reply, Context }));
+)(Reply);

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Context from './Context';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
@@ -14,208 +14,209 @@ import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
-class Comments extends Component {
-  static propTypes = {
-    autoExpand: PropTypes.bool,
-    autoFocus: PropTypes.bool,
-    numPreviews: PropTypes.number,
-    className: PropTypes.string,
-    commentsShown: PropTypes.bool,
-    comments: PropTypes.array.isRequired,
-    commentsLoadLimit: PropTypes.number,
-    dispatch: PropTypes.func.isRequired,
-    inputAreaInnerRef: PropTypes.func,
-    inputAtBottom: PropTypes.bool,
-    inputTypeLabel: PropTypes.string,
-    loadMoreButton: PropTypes.bool.isRequired,
-    loadMoreComments: PropTypes.func.isRequired,
-    noInput: PropTypes.bool,
-    onAttachStar: PropTypes.func.isRequired,
-    onCommentSubmit: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onEditDone: PropTypes.func.isRequired,
-    onLikeClick: PropTypes.func.isRequired,
-    onLoadMoreReplies: PropTypes.func.isRequired,
-    onPreviewClick: PropTypes.func,
-    onLoadRepliesOfReply: PropTypes.func,
-    onReplySubmit: PropTypes.func.isRequired,
-    onRewardCommentEdit: PropTypes.func.isRequired,
-    parent: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      type: PropTypes.string.isRequired
-    }).isRequired,
-    style: PropTypes.object,
-    userId: PropTypes.number
-  };
+Comments.propTypes = {
+  autoExpand: PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  numPreviews: PropTypes.number,
+  className: PropTypes.string,
+  commentsShown: PropTypes.bool,
+  comments: PropTypes.array.isRequired,
+  commentsLoadLimit: PropTypes.number,
+  dispatch: PropTypes.func.isRequired,
+  inputAreaInnerRef: PropTypes.func,
+  inputAtBottom: PropTypes.bool,
+  inputTypeLabel: PropTypes.string,
+  loadMoreButton: PropTypes.bool.isRequired,
+  noInput: PropTypes.bool,
+  onAttachStar: PropTypes.func.isRequired,
+  onCommentSubmit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEditDone: PropTypes.func.isRequired,
+  onLikeClick: PropTypes.func.isRequired,
+  onLoadMoreComments: PropTypes.func.isRequired,
+  onLoadMoreReplies: PropTypes.func.isRequired,
+  onPreviewClick: PropTypes.func,
+  onLoadRepliesOfReply: PropTypes.func,
+  onReplySubmit: PropTypes.func.isRequired,
+  onRewardCommentEdit: PropTypes.func.isRequired,
+  parent: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired
+  }).isRequired,
+  style: PropTypes.object,
+  userId: PropTypes.number
+};
 
-  state = {
-    deleting: false,
-    isLoading: false,
-    commentSubmitted: false
-  };
+function Comments({
+  autoFocus,
+  autoExpand,
+  comments = [],
+  commentsLoadLimit,
+  commentsShown,
+  className,
+  dispatch,
+  inputAreaInnerRef,
+  inputAtBottom,
+  inputTypeLabel,
+  loadMoreButton,
+  noInput,
+  numPreviews,
+  onAttachStar,
+  onCommentSubmit,
+  onDelete,
+  onEditDone,
+  onLikeClick,
+  onLoadRepliesOfReply,
+  onLoadMoreComments,
+  onLoadMoreReplies,
+  onPreviewClick = () => {},
+  onReplySubmit,
+  onRewardCommentEdit,
+  parent,
+  style,
+  userId
+}) {
+  const [deleting, setDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [commentSubmitted, setCommentSubmitted] = useState(false);
+  const [prevComments, setPrevComments] = useState(comments);
 
-  Comments = {};
+  const ContainerRef = useRef();
+  const CommentInputAreaRef = useRef();
+  const CommentRefs = {};
 
-  componentDidUpdate(prevProps) {
-    const { commentSubmitted, deleting } = this.state;
-    const {
-      autoFocus,
-      autoExpand,
-      comments,
-      commentsShown,
-      inputAtBottom
-    } = this.props;
-    if (prevProps.comments.length > comments.length && deleting) {
-      this.setState({ deleting: false });
+  useEffect(() => {
+    if (comments.length < prevComments.length && deleting) {
+      setDeleting(false);
       if (comments.length === 0) {
-        return scrollElementToCenter(this.Container);
+        return scrollElementToCenter(ContainerRef.current);
       }
       if (
         comments[comments.length - 1].id !==
-        prevProps.comments[prevProps.comments.length - 1].id
+        prevComments[prevComments.length - 1].id
       ) {
-        scrollElementToCenter(this.Comments[comments[comments.length - 1].id]);
+        scrollElementToCenter(CommentRefs[comments[comments.length - 1].id]);
       }
     }
     if (
       inputAtBottom &&
       commentSubmitted &&
-      comments.length > prevProps.comments.length &&
-      (prevProps.comments.length === 0 ||
+      comments.length > prevComments.length &&
+      (prevComments.length === 0 ||
         comments[comments.length - 1].id >
-          prevProps.comments[prevProps.comments.length - 1].id)
+          prevComments[prevComments.length - 1].id)
     ) {
-      this.setState({ commentSubmitted: false });
-      scrollElementToCenter(this.Comments[comments[comments.length - 1].id]);
+      setCommentSubmitted(false);
+      scrollElementToCenter(CommentRefs[comments[comments.length - 1].id]);
     }
     if (
       !inputAtBottom &&
       commentSubmitted &&
-      comments.length > prevProps.comments.length &&
-      (prevProps.comments.length === 0 ||
-        comments[0].id > prevProps.comments[0].id)
+      comments.length > prevComments.length &&
+      (prevComments.length === 0 || comments[0].id > prevComments[0].id)
     ) {
-      this.setState({ commentSubmitted: false });
-      scrollElementToCenter(this.Comments[comments[0].id]);
+      setCommentSubmitted(false);
+      scrollElementToCenter(CommentRefs[comments[0].id]);
     }
+    setPrevComments(comments);
+  }, [comments]);
 
-    if (
-      !autoExpand &&
-      !prevProps.commentsShown &&
-      !commentSubmitted &&
-      autoFocus &&
-      commentsShown
-    ) {
-      scrollElementToCenter(this.CommentInputArea);
+  useEffect(() => {
+    if (!autoExpand && !commentSubmitted && autoFocus && commentsShown) {
+      scrollElementToCenter(CommentInputAreaRef.current);
     }
-  }
+  }, [commentsShown]);
 
-  render() {
-    const {
-      autoExpand,
-      className,
-      comments = [],
-      commentsShown,
-      inputAtBottom,
-      loadMoreButton,
-      noInput,
-      numPreviews,
-      onAttachStar,
-      onEditDone,
-      onLikeClick,
-      onLoadMoreReplies,
-      onPreviewClick = () => {},
-      onLoadRepliesOfReply,
-      onRewardCommentEdit,
-      parent,
-      style,
-      userId
-    } = this.props;
-    let previewComments = [];
-    if (numPreviews > 0 && !autoExpand && !commentsShown) {
-      previewComments = comments.filter(
-        (comment, index) => index < numPreviews
-      );
-    }
-    return (
-      <Context.Provider
-        value={{
-          onAttachStar,
-          onDelete: this.onDelete,
-          onEditDone,
-          onLikeClick,
-          onLoadMoreReplies,
-          onRewardCommentEdit,
-          onReplySubmit: this.onReplySubmit,
-          onLoadRepliesOfReply
-        }}
-      >
-        <div
-          className={`${
-            previewComments.length > 0
-              ? css`
+  const previewComments =
+    numPreviews > 0 && !autoExpand && !commentsShown
+      ? comments.filter((comment, index) => index < numPreviews)
+      : [];
+
+  return (
+    <Context.Provider
+      value={{
+        onAttachStar,
+        onDelete: deleteComment,
+        onEditDone,
+        onLikeClick,
+        onLoadMoreReplies,
+        onRewardCommentEdit,
+        onReplySubmit: submitReply,
+        onLoadRepliesOfReply
+      }}
+    >
+      <div
+        className={`${
+          previewComments.length > 0
+            ? css`
+                &:hover {
+                  background: ${Color.headingGray()};
+                }
+                @media (max-width: ${mobileMaxWidth}) {
                   &:hover {
-                    background: ${Color.headingGray()};
+                    background: #fff;
                   }
-                  @media (max-width: ${mobileMaxWidth}) {
-                    &:hover {
-                      background: #fff;
-                    }
-                  }
-                `
-              : ''
-          } ${className}`}
-          style={{
-            ...style
-          }}
-          ref={ref => {
-            this.Container = ref;
-          }}
-          onClick={previewComments.length > 0 ? onPreviewClick : () => {}}
-        >
-          {!inputAtBottom &&
-            !noInput &&
-            (commentsShown || autoExpand) &&
-            this.renderInputArea()}
-          {(commentsShown || autoExpand || numPreviews > 0) && (
-            <div
-              style={{
-                width: '100%'
-              }}
-            >
-              {inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
-              {(previewComments.length > 0 ? previewComments : comments).map(
-                (comment, index) => (
-                  <Comment
-                    isPreview={previewComments.length > 0}
-                    index={index}
-                    innerRef={ref => {
-                      this.Comments[comment.id] = ref;
-                    }}
-                    parent={parent}
-                    comment={comment}
-                    key={comment.id}
-                    userId={userId}
-                  />
-                )
-              )}
-              {!inputAtBottom && loadMoreButton && this.renderLoadMoreButton()}
-            </div>
-          )}
-          {inputAtBottom &&
-            !noInput &&
-            (commentsShown || autoExpand) &&
-            this.renderInputArea({
-              marginTop: comments.length > 0 ? '1rem' : 0
-            })}
-        </div>
-      </Context.Provider>
-    );
+                }
+              `
+            : ''
+        } ${className}`}
+        style={style}
+        ref={ContainerRef}
+        onClick={previewComments.length > 0 ? onPreviewClick : () => {}}
+      >
+        {!inputAtBottom &&
+          !noInput &&
+          (commentsShown || autoExpand) &&
+          renderInputArea()}
+        {(commentsShown || autoExpand || numPreviews > 0) && (
+          <div
+            style={{
+              width: '100%'
+            }}
+          >
+            {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+            {(previewComments.length > 0 ? previewComments : comments).map(
+              (comment, index) => (
+                <Comment
+                  isPreview={previewComments.length > 0}
+                  index={index}
+                  innerRef={ref => {
+                    CommentRefs[comment.id] = ref;
+                  }}
+                  parent={parent}
+                  comment={comment}
+                  key={comment.id}
+                  userId={userId}
+                />
+              )
+            )}
+            {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+          </div>
+        )}
+        {inputAtBottom &&
+          !noInput &&
+          (commentsShown || autoExpand) &&
+          renderInputArea({
+            marginTop: comments.length > 0 ? '1rem' : 0
+          })}
+      </div>
+    </Context.Provider>
+  );
+
+  async function submitComment({ content, rootCommentId, targetCommentId }) {
+    setCommentSubmitted(true);
+    const data = await uploadComment({
+      content,
+      parent,
+      rootCommentId,
+      targetCommentId,
+      dispatch
+    });
+    onCommentSubmit(data);
   }
 
-  onCommentSubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { dispatch, onCommentSubmit, parent } = this.props;
-    this.setState({ commentSubmitted: true });
+  async function submitReply({ content, rootCommentId, targetCommentId }) {
+    setCommentSubmitted(true);
     const data = await uploadComment({
       content,
       parent,
@@ -223,28 +224,12 @@ class Comments extends Component {
       targetCommentId,
       dispatch
     });
-    if (data) onCommentSubmit(data);
-  };
+    onReplySubmit(data);
+  }
 
-  onReplySubmit = async({ content, rootCommentId, targetCommentId }) => {
-    const { dispatch, onReplySubmit, parent } = this.props;
-    this.setState({ commentSubmitted: true });
-    const data = await uploadComment({
-      content,
-      parent,
-      rootCommentId,
-      targetCommentId,
-      dispatch
-    });
-    if (data) onReplySubmit(data);
-  };
-
-  loadMoreComments = async() => {
-    const { isLoading } = this.state;
-    const { commentsLoadLimit, inputAtBottom } = this.props;
+  async function loadMoreComments() {
     if (!isLoading) {
-      const { comments, parent, loadMoreComments } = this.props;
-      this.setState({ isLoading: true });
+      setIsLoading(true);
       const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1;
       const lastCommentId = comments[lastCommentLocation]
         ? comments[lastCommentLocation].id
@@ -256,46 +241,42 @@ class Comments extends Component {
           lastCommentId,
           limit: commentsLoadLimit
         });
-        if (data) loadMoreComments(data);
-        this.setState({ isLoading: false });
+        if (data) onLoadMoreComments(data);
+        setIsLoading(false);
       } catch (error) {
         console.error(error.response || error);
       }
     }
-  };
+  }
 
-  onDelete = async commentId => {
-    const { dispatch, onDelete } = this.props;
-    this.setState({ deleting: true });
+  async function deleteComment(commentId) {
+    setDeleting(true);
     await deleteContent({ id: commentId, type: 'comment', dispatch });
     onDelete(commentId);
-  };
+  }
 
-  renderInputArea = style => {
-    const { autoFocus, inputAreaInnerRef, inputTypeLabel, parent } = this.props;
+  function renderInputArea(style) {
     return (
       <CommentInputArea
         autoFocus={autoFocus}
-        InputFormRef={ref => (this.CommentInputArea = ref)}
+        InputFormRef={CommentInputAreaRef}
         innerRef={inputAreaInnerRef}
         style={style}
         inputTypeLabel={inputTypeLabel}
-        onSubmit={this.onCommentSubmit}
+        onSubmit={submitComment}
         rootCommentId={parent.type === 'comment' ? parent.commentId : null}
         targetCommentId={parent.type === 'comment' ? parent.id : null}
       />
     );
-  };
+  }
 
-  renderLoadMoreButton = () => {
-    const { isLoading } = this.state;
-    const { inputAtBottom } = this.props;
+  function renderLoadMoreButton() {
     return (
       <Button
         filled
         info
         disabled={isLoading}
-        onClick={this.loadMoreComments}
+        onClick={loadMoreComments}
         style={{
           width: '100%',
           display: 'flex',
@@ -306,7 +287,7 @@ class Comments extends Component {
         Load More
       </Button>
     );
-  };
+  }
 }
 
 export default connect(

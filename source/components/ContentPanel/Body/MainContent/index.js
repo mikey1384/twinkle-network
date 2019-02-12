@@ -26,6 +26,7 @@ MainContent.propTypes = {
   rootType: PropTypes.string,
   type: PropTypes.string.isRequired
 };
+
 export default function MainContent({
   contentObj,
   contentId,

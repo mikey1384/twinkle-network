@@ -248,11 +248,11 @@ class SubjectPanel extends Component {
                   onDelete={onDelete}
                   onEditDone={onEditDone}
                   onLikeClick={onLikeClick}
+                  onLoadMoreComments={this.loadMoreComments}
                   onLoadMoreReplies={onLoadMoreReplies}
                   onReplySubmit={onUploadReply}
                   onRewardCommentEdit={editRewardComment}
                   contentId={id}
-                  loadMoreComments={this.loadMoreComments}
                   parent={{
                     id,
                     rootId: contentId,

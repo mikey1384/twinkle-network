@@ -12,10 +12,6 @@ import { Animate } from 'react-move';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
-const DEFAULT_DURATION = 300;
-const DEFAULT_EASING = 'easeCircleOut';
-const DEFAULT_EDGE_EASING = 'easeElasticOut';
-
 Carousel.propTypes = {
   afterSlide: PropTypes.func,
   allowDrag: PropTypes.bool,
@@ -71,6 +67,9 @@ function Carousel({
   userCanEditThis,
   userIsUploader
 }) {
+  const DEFAULT_DURATION = 300;
+  const DEFAULT_EASING = 'easeCircleOut';
+  const DEFAULT_EDGE_EASING = 'easeElasticOut';
   const [left, setLeft] = useState(0);
   const [easing, setEasing] = useState(DEFAULT_EASING);
   const [currentSlide, setCurrentSlide] = useState(slideIndex);

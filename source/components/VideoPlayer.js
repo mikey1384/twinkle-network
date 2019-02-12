@@ -432,8 +432,8 @@ class VideoPlayer extends Component {
   determineProgress = ({ timeWatched, totalDuration, xpEarned }) => {
     const { twinkleXP } = this.props;
     let requiredViewDuration =
-      totalDuration < requiredDurationCap(twinkleXP)
-        ? Math.floor(totalDuration / 2) * 2 - 5
+      totalDuration < requiredDurationCap(twinkleXP) + 10
+        ? Math.floor(totalDuration / 2) * 2 - 20
         : requiredDurationCap(twinkleXP);
     const progress = xpEarned
       ? 100
@@ -527,8 +527,8 @@ class VideoPlayer extends Component {
       }
     }
     let requiredViewDuration =
-      totalDuration < requiredDurationCap(twinkleXP)
-        ? Math.floor(totalDuration / 2) * 2 - 5
+      totalDuration < requiredDurationCap(twinkleXP) + 10
+        ? Math.floor(totalDuration / 2) * 2 - 20
         : requiredDurationCap(twinkleXP);
     if (
       !!difficulty &&

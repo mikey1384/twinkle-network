@@ -11,6 +11,7 @@ LoadMoreButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   loading: PropTypes.bool
 };
+
 export default function LoadMoreButton({
   label,
   onClick,

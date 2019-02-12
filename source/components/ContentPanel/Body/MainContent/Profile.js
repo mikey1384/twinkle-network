@@ -11,6 +11,7 @@ Profile.propTypes = {
   profile: PropTypes.object.isRequired,
   userId: PropTypes.number
 };
+
 function Profile({ profile, userId }) {
   return (
     <div

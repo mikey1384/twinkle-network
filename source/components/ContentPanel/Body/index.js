@@ -396,9 +396,6 @@ class Body extends Component {
             inputAreaInnerRef={ref => (this.CommentInputArea = ref)}
             inputAtBottom={inputAtBottom}
             loadMoreButton={commentsLoadMoreButton}
-            loadMoreComments={data =>
-              onLoadMoreComments({ data, contentType: type, feedId })
-            }
             inputTypeLabel={
               type === 'comment'
                 ? 'reply'
@@ -413,6 +410,9 @@ class Body extends Component {
             onEditDone={onEditComment}
             onLikeClick={({ commentId, likes }) =>
               onLikeContent({ likes, contentId: commentId, type: 'comment' })
+            }
+            onLoadMoreComments={data =>
+              onLoadMoreComments({ data, contentType: type, feedId })
             }
             onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
             onPreviewClick={this.onExpandComments}
