@@ -68,16 +68,16 @@ export default function ContentPanel({
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     onMount();
-  });
-  async function onMount() {
-    if (!loaded && !newPost) {
-      setLoaded(true);
-      const { data } = await request.get(
-        `${URL}/content?contentId=${contentId}&type=${type}`
-      );
-      onLoadContent({ data, feedId });
+    async function onMount() {
+      if (!loaded && !newPost) {
+        setLoaded(true);
+        const { data } = await request.get(
+          `${URL}/content?contentId=${contentId}&type=${type}`
+        );
+        onLoadContent({ data, feedId });
+      }
     }
-  }
+  }, []);
   const [videoShown, setVideoShown] = useState(false);
 
   return (

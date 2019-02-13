@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 
 FullTextReveal.propTypes = {
@@ -15,7 +16,7 @@ export default function FullTextReveal({
   text
 }) {
   return (
-    <div style={{ position: 'relative' }}>
+    <ErrorBoundary style={{ position: 'relative' }}>
       <div
         style={{
           float: 'left',
@@ -33,11 +34,13 @@ export default function FullTextReveal({
           boxShadow: `0 0 1px ${Color.black(0.9)}`,
           fontWeight: 'normal',
           lineHeight: 1.5,
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
           ...style
         }}
       >
         {text}
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }

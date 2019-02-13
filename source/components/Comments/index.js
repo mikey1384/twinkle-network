@@ -23,7 +23,7 @@ Comments.propTypes = {
   comments: PropTypes.array.isRequired,
   commentsLoadLimit: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
-  inputAreaInnerRef: PropTypes.func,
+  inputAreaInnerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   inputAtBottom: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
   loadMoreButton: PropTypes.bool.isRequired,

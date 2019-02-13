@@ -6,7 +6,7 @@ CommentInputArea.propTypes = {
   autoFocus: PropTypes.bool,
   clickListenerState: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
-  innerRef: PropTypes.func,
+  innerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   InputFormRef: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
   rootCommentId: PropTypes.number,

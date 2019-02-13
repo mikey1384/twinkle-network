@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
@@ -15,170 +15,165 @@ import {
   renderCharLimit
 } from 'helpers/stringHelpers';
 
-export default class ContentEditor extends Component {
-  static propTypes = {
-    comment: PropTypes.string,
-    content: PropTypes.string,
-    contentId: PropTypes.number.isRequired,
-    description: PropTypes.string,
-    onDismiss: PropTypes.func.isRequired,
-    onEditContent: PropTypes.func.isRequired,
-    style: PropTypes.object,
-    title: PropTypes.string,
-    type: PropTypes.string.isRequired
-  };
+ContentEditor.propTypes = {
+  comment: PropTypes.string,
+  content: PropTypes.string,
+  contentId: PropTypes.number.isRequired,
+  description: PropTypes.string,
+  onDismiss: PropTypes.func.isRequired,
+  onEditContent: PropTypes.func.isRequired,
+  style: PropTypes.object,
+  title: PropTypes.string,
+  type: PropTypes.string.isRequired
+};
 
-  constructor({ comment, description, title, type, content }) {
-    super();
-    this.state = {
-      editedContent: content || '',
-      editedComment: comment || '',
-      editedDescription: description || '',
-      editedTitle: title || '',
-      editedUrl:
-        type === 'video'
-          ? `https://www.youtube.com/watch?v=${content}`
-          : content
-    };
-  }
+export default function ContentEditor({
+  comment,
+  content,
+  contentId,
+  description,
+  onDismiss,
+  onEditContent,
+  style,
+  title,
+  type
+}) {
+  const [editForm, setEditForm] = useState({
+    editedContent: content || '',
+    editedComment: comment || '',
+    editedDescription: description || '',
+    editedTitle: title || '',
+    editedUrl:
+      type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
+  });
+  const {
+    editedContent,
+    editedComment,
+    editedDescription,
+    editedTitle,
+    editedUrl
+  } = editForm;
+  const urlError =
+    !stringIsEmpty(editedUrl) &&
+    !(type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl));
 
-  render() {
-    const { onDismiss, style, type } = this.props;
-    const {
-      editedComment,
-      editedDescription,
-      editedTitle,
-      editedUrl
-    } = this.state;
-    const urlError =
-      !stringIsEmpty(editedUrl) &&
-      !(type === 'video'
-        ? isValidYoutubeUrl(editedUrl)
-        : isValidUrl(editedUrl));
-    return (
-      <div
-        style={style}
-        className={css`
-          small {
-            font-size: 1.3rem;
-            line-height: 2.5rem;
-          }
-        `}
-      >
-        <form onSubmit={this.onSubmit}>
-          {(type === 'video' || type === 'url') && (
-            <div
-              className={css`
-                margin-bottom: 1rem;
-              `}
-            >
-              <Input
-                autoFocus
-                hasError={urlError}
-                onChange={text => {
-                  this.setState({
-                    editedUrl: text
-                  });
-                }}
-                placeholder={edit[type]}
-                value={editedUrl}
-                style={this.urlExceedsCharLimit(type)}
-              />
-              {(this.urlExceedsCharLimit(type) || urlError) && (
-                <small style={{ color: 'red', lineHeight: 0.5 }}>
-                  {this.urlExceedsCharLimit(type)
-                    ? this.renderUrlCharLimit(type)
-                    : 'Please check the url'}
-                </small>
-              )}
-            </div>
-          )}
-          {type !== 'comment' && (
-            <>
-              <Input
-                autoFocus
-                onChange={text => this.onInputChange({ type, text })}
-                onKeyUp={event =>
-                  this.setState({
-                    editedTitle: addEmoji(event.target.value)
-                  })
-                }
-                placeholder={edit.title}
-                value={editedTitle}
-                style={this.titleExceedsCharLimit(type)}
-              />
-              <small style={this.titleExceedsCharLimit(type)}>
-                {this.renderTitleCharLimit(type)}
-              </small>
-            </>
-          )}
-          <div style={{ position: 'relative', marginTop: '1rem' }}>
-            <Textarea
-              autoFocus={type === 'comment'}
-              minRows={4}
-              onChange={event => {
-                const { value } = event.target;
-                this.setState(state => ({
-                  [type === 'comment'
-                    ? 'editedComment'
-                    : 'editedDescription']: value
-                }));
-              }}
-              placeholder={edit[type === 'comment' ? 'comment' : 'description']}
-              value={type === 'comment' ? editedComment : editedDescription}
-              style={this.descriptionExceedsCharLimit(type)}
+  return (
+    <div
+      style={style}
+      className={css`
+        small {
+          font-size: 1.3rem;
+          line-height: 2.5rem;
+        }
+      `}
+    >
+      <form onSubmit={onSubmit}>
+        {(type === 'video' || type === 'url') && (
+          <div
+            className={css`
+              margin-bottom: 1rem;
+            `}
+          >
+            <Input
+              autoFocus
+              hasError={urlError}
+              onChange={text =>
+                setEditForm({
+                  ...editForm,
+                  editedUrl: text
+                })
+              }
+              placeholder={edit[type]}
+              value={editedUrl}
+              style={urlExceedsCharLimit(type)}
             />
-            {this.descriptionExceedsCharLimit(type) && (
-              <small style={{ color: 'red' }}>
-                {this.renderDescriptionCharLimit(type)}
+            {(urlExceedsCharLimit(type) || urlError) && (
+              <small style={{ color: 'red', lineHeight: 0.5 }}>
+                {urlExceedsCharLimit(type)
+                  ? renderUrlCharLimit(type)
+                  : 'Please check the url'}
               </small>
             )}
           </div>
-          <div
-            style={{
-              marginTop: '1rem',
-              display: 'flex',
-              flexDirection: 'row-reverse'
+        )}
+        {type !== 'comment' && (
+          <>
+            <Input
+              autoFocus
+              onChange={text =>
+                setEditForm({
+                  ...editForm,
+                  editedTitle: text
+                })
+              }
+              onKeyUp={event =>
+                setEditForm({
+                  ...editForm,
+                  editedTitle: addEmoji(event.target.value)
+                })
+              }
+              placeholder={edit.title}
+              value={editedTitle}
+              style={titleExceedsCharLimit(type)}
+            />
+            <small style={titleExceedsCharLimit(type)}>
+              {renderTitleCharLimit(type)}
+            </small>
+          </>
+        )}
+        <div style={{ position: 'relative', marginTop: '1rem' }}>
+          <Textarea
+            autoFocus={type === 'comment'}
+            minRows={4}
+            onChange={event => {
+              const { value } = event.target;
+              setEditForm({
+                ...editForm,
+                [type === 'comment'
+                  ? 'editedComment'
+                  : 'editedDescription']: value
+              });
             }}
+            placeholder={edit[type === 'comment' ? 'comment' : 'description']}
+            value={type === 'comment' ? editedComment : editedDescription}
+            style={descriptionExceedsCharLimit(type)}
+          />
+          {descriptionExceedsCharLimit(type) && (
+            <small style={{ color: 'red' }}>
+              {renderDescriptionCharLimit(type)}
+            </small>
+          )}
+        </div>
+        <div
+          style={{
+            marginTop: '1rem',
+            display: 'flex',
+            flexDirection: 'row-reverse'
+          }}
+        >
+          <Button primary type="submit" disabled={determineButtonDisabled()}>
+            Done
+          </Button>
+          <Button
+            transparent
+            style={{ marginRight: '1rem' }}
+            onClick={onDismiss}
           >
-            <Button
-              primary
-              type="submit"
-              disabled={this.determineButtonDisabled()}
-            >
-              Done
-            </Button>
-            <Button
-              transparent
-              style={{ marginRight: '1rem' }}
-              onClick={onDismiss}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </div>
-    );
-  }
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
 
-  determineButtonDisabled = () => {
-    const {
-      editedComment,
-      editedDescription,
-      editedUrl,
-      editedTitle
-    } = this.state;
-    const { comment, content, description, title, type } = this.props;
+  function determineButtonDisabled() {
     const contentUrl =
       type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content;
     const isValid =
       type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl);
-    if (this.titleExceedsCharLimit(type)) return true;
-    if (this.descriptionExceedsCharLimit(type)) return true;
-    if (
-      (type === 'vidoe' || type === 'url') &&
-      this.urlExceedsCharLimit(type)
-    ) {
+    if (titleExceedsCharLimit(type)) return true;
+    if (descriptionExceedsCharLimit(type)) return true;
+    if ((type === 'vidoe' || type === 'url') && urlExceedsCharLimit(type)) {
       return true;
     }
 
@@ -216,25 +211,12 @@ export default class ContentEditor extends Component {
       default:
         return true;
     }
-  };
+  }
 
-  onInputChange = ({ text, type }) => {
-    this.setState({
-      editedTitle: text
-    });
-  };
-
-  onSubmit = async event => {
+  async function onSubmit(event) {
     event.preventDefault();
-    const { contentId, onDismiss, onEditContent, type } = this.props;
-    const {
-      editedComment,
-      editedContent,
-      editedDescription,
-      editedTitle
-    } = this.state;
     const post = {
-      ...this.state,
+      ...editForm,
       editedComment: finalizeEmoji(editedComment),
       editedContent: finalizeEmoji(editedContent),
       editedDescription: finalizeEmoji(editedDescription),
@@ -242,59 +224,53 @@ export default class ContentEditor extends Component {
     };
     await onEditContent({ ...post, contentId, type });
     onDismiss();
-  };
+  }
 
-  descriptionExceedsCharLimit = type => {
-    const { editedComment, editedDescription } = this.state;
+  function descriptionExceedsCharLimit(type) {
     return exceedsCharLimit({
       contentType: type,
       inputType: 'description',
       text: type === 'comment' ? editedComment : editedDescription
     });
-  };
+  }
 
-  titleExceedsCharLimit = type => {
-    const { editedTitle } = this.state;
+  function titleExceedsCharLimit(type) {
     return exceedsCharLimit({
       contentType: type,
       inputType: 'title',
       text: editedTitle
     });
-  };
+  }
 
-  urlExceedsCharLimit = type => {
-    const { editedUrl } = this.state;
+  function urlExceedsCharLimit(type) {
     return exceedsCharLimit({
       contentType: type,
       inputType: 'url',
       text: editedUrl
     });
-  };
+  }
 
-  renderDescriptionCharLimit = type => {
-    const { editedComment, editedDescription } = this.state;
+  function renderDescriptionCharLimit(type) {
     return renderCharLimit({
       inputType: 'description',
       contentType: type,
       text: type === 'comment' ? editedComment : editedDescription
     });
-  };
+  }
 
-  renderTitleCharLimit = type => {
-    const { editedTitle } = this.state;
+  function renderTitleCharLimit(type) {
     return renderCharLimit({
       inputType: 'title',
       contentType: type,
       text: editedTitle
     });
-  };
+  }
 
-  renderUrlCharLimit = type => {
-    const { editedUrl } = this.state;
+  function renderUrlCharLimit(type) {
     return renderCharLimit({
       inputType: 'url',
       contentType: type,
       text: editedUrl
     });
-  };
+  }
 }

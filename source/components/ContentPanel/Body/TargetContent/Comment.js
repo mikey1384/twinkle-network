@@ -6,6 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { editContent, deleteContent } from 'helpers/requestHelpers';
@@ -38,7 +39,7 @@ function Comment({
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   return (
-    <div
+    <ErrorBoundary
       style={{
         display: 'flex',
         width: '100%',
@@ -123,7 +124,7 @@ function Comment({
           onConfirm={deleteComment}
         />
       )}
-    </div>
+    </ErrorBoundary>
   );
 
   async function deleteComment() {
