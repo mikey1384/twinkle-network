@@ -58,6 +58,12 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
             placeholder="A subject Twinkle users can talk about"
             value={title}
             onChange={onInputChange}
+            onKeyUp={event => {
+              setDetails({
+                ...details,
+                title: addEmoji(event.target.value)
+              });
+            }}
             style={exceedsCharLimit({
               inputType: 'title',
               contentType: 'subject',

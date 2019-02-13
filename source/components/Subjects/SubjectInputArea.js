@@ -51,9 +51,7 @@ class SubjectInputArea extends Component {
                 onClick={() => this.setState({ subjectFormShown: true })}
               >
                 <Icon icon="comment-alt" />
-                <span style={{ marginLeft: '1rem' }}>
-                  Start a New Subject
-                </span>
+                <span style={{ marginLeft: '1rem' }}>Start a New Subject</span>
               </Button>
             </div>
           )}
