@@ -68,6 +68,8 @@ class VideoPage extends Component {
       onEdit: false,
       questionsBuilderShown: false,
       videoId,
+      videoLoading: true,
+      videoUnavailable: false,
       contentObj: {
         authLevel: undefined,
         byUser: undefined,
@@ -86,8 +88,6 @@ class VideoPage extends Component {
         timeStamp: undefined,
         title: undefined,
         uploader: undefined,
-        videoLoading: true,
-        videoUnavailable: false,
         views: undefined
       }
     };
@@ -118,7 +118,11 @@ class VideoPage extends Component {
       match: { params }
     } = this.props;
     if (prevProps.match.params.videoId !== params.videoId) {
-      this.setState({ changingPage: true });
+      this.setState({
+        changingPage: true,
+        videoLoading: true,
+        videoUnavailable: false
+      });
       await this.loadVideoPage(params.videoId);
       const subjectsObj = await loadSubjects({
         type: 'video',
@@ -165,6 +169,8 @@ class VideoPage extends Component {
       currentSlide,
       onEdit,
       videoId,
+      videoLoading,
+      videoUnavailable,
       contentObj: {
         authLevel,
         byUser,
@@ -183,8 +189,6 @@ class VideoPage extends Component {
         timeStamp,
         title,
         uploader,
-        videoLoading,
-        videoUnavailable,
         views
       }
     } = this.state;
@@ -858,33 +862,25 @@ class VideoPage extends Component {
   };
 
   loadVideoPage = async videoId => {
-    if (isNaN(videoId)) {
-      return this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          videoUnavailable: true
-        }
-      }));
-    }
     try {
       const { data } = await request.get(
         `${URL}/video/page?videoId=${videoId}`
       );
+      if (data.notFound) {
+        return this.setState({ videoLoading: false, videoUnavailable: true });
+      }
       this.setState(state => ({
+        videoLoading: false,
         contentObj: {
           ...state.contentObj,
           ...data,
-          videoLoading: false,
           comments: []
         }
       }));
     } catch (error) {
       console.error(error);
       this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          videoUnavailable: true
-        }
+        videoUnavailable: true
       }));
     }
   };

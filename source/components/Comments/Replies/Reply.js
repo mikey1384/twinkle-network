@@ -35,7 +35,7 @@ Reply.propTypes = {
   dispatch: PropTypes.func.isRequired,
   innerRef: PropTypes.func,
   deleteReply: PropTypes.func.isRequired,
-  loadRepliesOfReply: PropTypes.func.isRequired,
+  loadRepliesOfReply: PropTypes.func,
   parent: PropTypes.object.isRequired,
   reply: PropTypes.shape({
     content: PropTypes.string.isRequired,
