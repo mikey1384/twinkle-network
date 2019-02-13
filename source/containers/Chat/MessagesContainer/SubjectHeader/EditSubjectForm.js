@@ -30,7 +30,6 @@ EditSubjectForm.propTypes = {
 };
 
 let timer = null;
-
 export default function EditSubjectForm({
   autoFocus,
   currentSubjectId,
