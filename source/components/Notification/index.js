@@ -47,7 +47,7 @@ class Notification extends Component {
   };
 
   async componentDidMount() {
-    const { location, fetchNotifications } = this.props;
+    const { location, fetchNotifications, numNewNotis } = this.props;
     this.mounted = true;
     addEvent(window, 'mousemove', this.onMouseMove);
     socket.on('new_reward', this.notifyNewReward);
@@ -57,7 +57,8 @@ class Notification extends Component {
         activeTab:
           this.props.rewards.length > 0
             ? 'reward'
-            : (location === 'home' && this.props.notifications.length) > 0
+            : (location === 'home' && this.props.notifications.length > 0) ||
+              numNewNotis > 0
             ? 'notification'
             : 'rankings',
         rewardTabShown: this.props.rewards.length > 0
@@ -66,7 +67,12 @@ class Notification extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    const { clearNotifications, fetchNotifications } = this.props;
+    const {
+      location,
+      clearNotifications,
+      fetchNotifications,
+      numNewNotis
+    } = this.props;
     if (prevProps.myId !== this.props.myId) {
       if (!this.props.myId) {
         this.setState({ activeTab: 'rankings' });
@@ -77,7 +83,8 @@ class Notification extends Component {
           activeTab:
             this.props.rewards.length > 0
               ? 'reward'
-              : this.props.notifications.length > 0
+              : (location === 'home' && this.props.notifications.length > 0) ||
+                numNewNotis > 0
               ? 'notification'
               : 'rankings',
           rewardTabShown: this.props.rewards.length > 0
