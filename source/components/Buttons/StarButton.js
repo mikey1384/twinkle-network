@@ -77,8 +77,8 @@ function StarButton({
           type={type}
           contentId={contentId}
           difficulty={difficulty}
-          onSubmit={data => {
-            onSetDifficulty(data);
+          onSubmit={async data => {
+            await onSetDifficulty(data);
             setDifficultyModalShown(false);
           }}
           onHide={() => setDifficultyModalShown(false)}
