@@ -47,7 +47,7 @@ function StarButton({
           {...(!!difficulty && byUser
             ? { gold: true }
             : byUser
-            ? { wood: true }
+            ? { warning: true }
             : { love: true })}
           filled={!!difficulty || byUser}
           onClick={onClick}
