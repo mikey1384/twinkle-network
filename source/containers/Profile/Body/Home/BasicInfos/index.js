@@ -12,6 +12,7 @@ import {
   sendVerificationEmail
 } from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
+import moment from 'moment';
 import { setProfileInfo } from 'redux/actions/UserActions';
 
 class BasicInfos extends Component {
@@ -97,6 +98,9 @@ class BasicInfos extends Component {
             `}
             style={{ textAlign: 'center' }}
           >
+            <div style={{ marginBottom: '0.5rem' }}>
+              Member since {moment.unix(joinDate).format('LL')}
+            </div>
             {email && (
               <>
                 <div
@@ -242,11 +246,10 @@ class BasicInfos extends Component {
         ) : (
           <div
             style={{
-              marginTop: email || youtubeUrl ? '1.5rem' : 0,
+              marginTop: email || youtubeUrl ? '1rem' : 0,
               textAlign: 'center'
             }}
           >
-            <div>Became a member {timeSince(joinDate)}</div>
             <div>Was last active {timeSince(lastActive)}</div>
           </div>
         )}
