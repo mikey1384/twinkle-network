@@ -1,22 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Playlist from 'components/Playlist';
 import Link from 'components/Link';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
-export default class PlaylistModal extends Component {
-  static propTypes = {
-    onHide: PropTypes.func.isRequired,
-    onLinkClick: PropTypes.func,
-    playlistId: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired
-  };
+PlaylistModal.propTypes = {
+  onHide: PropTypes.func.isRequired,
+  onLinkClick: PropTypes.func,
+  playlistId: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired
+};
 
-  render() {
-    const { onHide, onLinkClick, playlistId, title } = this.props;
-    return (
-      <Modal onHide={onHide}>
+export default function PlaylistModal({
+  onHide,
+  onLinkClick,
+  playlistId,
+  title
+}) {
+  return (
+    <Modal onHide={onHide}>
+      <ErrorBoundary>
         <header>
           <Link style={{ fontSize: '2.5rem' }} to={`/playlists/${playlistId}`}>
             {title}
@@ -30,7 +35,7 @@ export default class PlaylistModal extends Component {
             Close
           </Button>
         </footer>
-      </Modal>
-    );
-  }
+      </ErrorBoundary>
+    </Modal>
+  );
 }

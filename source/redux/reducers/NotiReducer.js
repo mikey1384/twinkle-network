@@ -78,7 +78,7 @@ export default function NotiReducer(state = defaultState, action) {
         notifications: state.notifications.concat(action.data.notifications),
         loadMore: {
           ...state.loadMore,
-          notifications: action.data.loadMore
+          ...action.data.loadMore
         }
       };
     case NOTI.LOAD_MORE_REWARDS:

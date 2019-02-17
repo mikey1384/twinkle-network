@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { setDifficulty } from 'helpers/requestHelpers';
 
-class DifficultyModal extends Component {
-  static propTypes = {
-    contentId: PropTypes.number.isRequired,
-    difficulty: PropTypes.number,
-    dispatch: PropTypes.func.isRequired,
-    onHide: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    type: PropTypes.string.isRequired
-  };
+DifficultyModal.propTypes = {
+  contentId: PropTypes.number.isRequired,
+  difficulty: PropTypes.number,
+  dispatch: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired
+};
 
-  constructor({ difficulty = 0 }) {
-    super();
-    this.state = {
-      difficulty
-    };
-  }
-
-  render() {
-    const { onHide } = this.props;
-    const { difficulty } = this.state;
-    return (
-      <Modal onHide={onHide}>
+function DifficultyModal({
+  contentId,
+  dispatch,
+  difficulty: initialDifficulty = 0,
+  onSubmit,
+  type,
+  onHide
+}) {
+  const [difficulty, setDisplayDifficulty] = useState(initialDifficulty);
+  return (
+    <Modal onHide={onHide}>
+      <ErrorBoundary>
         <header>
           Set Reward Level (consider both difficulty and importance)
         </header>
@@ -38,31 +38,31 @@ class DifficultyModal extends Component {
                 key={0}
                 icon={difficulty > 0 ? 'star' : ['far', 'star']}
                 style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ difficulty: 1 })}
+                onClick={() => setDisplayDifficulty(1)}
               />
               <Icon
                 key={1}
                 icon={difficulty > 1 ? 'star' : ['far', 'star']}
                 style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ difficulty: 2 })}
+                onClick={() => setDisplayDifficulty(2)}
               />
               <Icon
                 key={2}
                 icon={difficulty > 2 ? 'star' : ['far', 'star']}
                 style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ difficulty: 3 })}
+                onClick={() => setDisplayDifficulty(3)}
               />
               <Icon
                 key={3}
                 icon={difficulty > 3 ? 'star' : ['far', 'star']}
                 style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ difficulty: 4 })}
+                onClick={() => setDisplayDifficulty(4)}
               />
               <Icon
                 key={4}
                 icon={difficulty > 4 ? 'star' : ['far', 'star']}
                 style={{ cursor: 'pointer' }}
-                onClick={() => this.setState({ difficulty: 5 })}
+                onClick={() => setDisplayDifficulty(5)}
               />
             </div>
             <a
@@ -71,7 +71,7 @@ class DifficultyModal extends Component {
                 fontSize: '1.5rem',
                 userSelect: 'none'
               }}
-              onClick={() => this.setState({ difficulty: 0 })}
+              onClick={() => setDisplayDifficulty(0)}
             >
               Clear
             </a>
@@ -85,20 +85,18 @@ class DifficultyModal extends Component {
           >
             Cancel
           </Button>
-          <Button primary onClick={this.onSubmit}>
+          <Button primary onClick={submit}>
             Set
           </Button>
         </footer>
-      </Modal>
-    );
-  }
+      </ErrorBoundary>
+    </Modal>
+  );
 
-  onSubmit = async() => {
-    const { dispatch, contentId, onSubmit, type } = this.props;
-    const { difficulty } = this.state;
+  async function submit() {
     await setDifficulty({ contentId, type, difficulty, dispatch });
     onSubmit({ contentId, difficulty, type });
-  };
+  }
 }
 
 export default connect(
