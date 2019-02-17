@@ -245,7 +245,6 @@ class App extends Component {
           }
         `}
       >
-        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
         {mobileMenuShown && (
           <MobileMenu
             chatMode={chatMode}
@@ -372,6 +371,7 @@ class App extends Component {
             }}
           />
         )}
+        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
       </div>
     );
   }

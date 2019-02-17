@@ -13,6 +13,7 @@ SelectUploadsForm.propTypes = {
   type: PropTypes.string,
   uploads: PropTypes.array.isRequired
 };
+
 export default function SelectUploadsForm({
   uploads,
   selectedUploads,
@@ -42,8 +43,8 @@ export default function SelectUploadsForm({
                 .map(selected => selected.id)
                 .indexOf(upload.id) !== -1
             }
-            onSelect={upload => onSelect(upload)}
-            onDeselect={uploadId => onDeselect(uploadId)}
+            onSelect={onSelect}
+            onDeselect={onDeselect}
             type={type}
           />
         );

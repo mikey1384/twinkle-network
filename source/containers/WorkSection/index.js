@@ -30,10 +30,16 @@ class WorkSection extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     openAddVideoModal: PropTypes.func.isRequired,
-    openAddPlaylistModal: PropTypes.func.isRequired
+    openAddPlaylistModal: PropTypes.func.isRequired,
+    userId: PropTypes.number
   };
   render() {
-    const { location, openAddPlaylistModal, openAddVideoModal } = this.props;
+    const {
+      location,
+      openAddPlaylistModal,
+      openAddVideoModal,
+      userId
+    } = this.props;
     return (
       <ErrorBoundary>
         <div>
@@ -125,7 +131,7 @@ class WorkSection extends Component {
               `}
               location="work"
             >
-              {location.pathname === '/videos' && (
+              {location.pathname === '/videos' && userId && (
                 <>
                   <Button
                     snow
@@ -196,6 +202,8 @@ class WorkSection extends Component {
 }
 
 export default connect(
-  null,
+  state => ({
+    userId: state.UserReducer.userId
+  }),
   { openAddPlaylistModal, openAddVideoModal }
 )(WorkSection);

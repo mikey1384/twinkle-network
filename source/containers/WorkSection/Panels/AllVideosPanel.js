@@ -44,7 +44,8 @@ class AllVideosPanel extends Component {
       videos: allVideos,
       title = 'All Videos',
       loaded,
-      onAddVideoClick
+      onAddVideoClick,
+      userId
     } = this.props;
     const {
       searchQuery,
@@ -60,6 +61,7 @@ class AllVideosPanel extends Component {
         searchPlaceholder="Search videos"
         button={
           <Button
+            disabled={!userId}
             snow
             style={{ marginLeft: 'auto' }}
             onClick={() => onAddVideoClick()}

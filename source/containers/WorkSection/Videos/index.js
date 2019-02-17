@@ -92,7 +92,8 @@ class Main extends Component {
       {
         label: '+ Add Playlist',
         onClick: openAddPlaylistModal,
-        buttonClass: 'snow'
+        buttonClass: 'snow',
+        disabled: !userId
       }
     ];
     return (

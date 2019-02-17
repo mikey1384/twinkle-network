@@ -149,13 +149,7 @@ export default function Button({
             : buttonColor(
                 disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
               )[colorKey]};
-          color: ${disabled && !filled
-            ? buttonColor(textOpacity)[colorKey]
-            : snow
-            ? Color.black()
-            : transparent
-            ? buttonColor(1)[colorKey]
-            : '#fff'};
+          color: ${renderHoverColor()};
           border-color: ${buttonColor(
             snow
               ? disabled
@@ -208,4 +202,23 @@ export default function Button({
       {children}
     </button>
   );
+
+  function renderHoverColor() {
+    if (disabled) {
+      if (snow) {
+        return Color.black(0.7);
+      }
+      if (!filled) {
+        return buttonColor(textOpacity)[colorKey];
+      }
+    } else {
+      if (snow) {
+        return Color.black();
+      }
+      if (transparent) {
+        return buttonColor(1)[colorKey];
+      }
+    }
+    return '#fff';
+  }
 }
