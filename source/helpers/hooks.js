@@ -1,19 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { addEvent, removeEvent } from './listenerHelpers';
 
 export function useOutsideClick(ref, callback) {
+  const [insideClicked, setInsideClicked] = useState(false);
   useEffect(() => {
-    const listener = event => {
+    function uPlistener(event) {
+      if (insideClicked) return setInsideClicked(false);
       if (!ref.current || ref.current.contains(event.target)) {
         return;
       }
       callback();
-    };
-    addEvent(document, 'mouseup', listener);
-    addEvent(document, 'touchend', listener);
+    }
+    function downListener(event) {
+      if (ref.current?.contains(event.target)) {
+        setInsideClicked(true);
+      }
+    }
+    addEvent(document, 'mousedown', downListener);
+    addEvent(document, 'mouseup', uPlistener);
+    addEvent(document, 'touchend', uPlistener);
     return () => {
-      removeEvent(document, 'mouseup', listener);
-      removeEvent(document, 'touchend', listener);
+      removeEvent(document, 'mousedown', downListener);
+      removeEvent(document, 'mouseup', uPlistener);
+      removeEvent(document, 'touchend', uPlistener);
     };
   });
 }
