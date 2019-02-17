@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { timeSince } from 'helpers/timeStampHelpers';
-import { Color } from 'constants/css';
 import ContentLink from 'components/ContentLink';
 import UsernameText from 'components/Texts/UsernameText';
 import RoundList from 'components/RoundList';
 import Banner from 'components/Banner';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import Rankings from './Rankings';
+import NotiItem from './NotiItem';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   clearRewards,
   fetchNotifications,
   loadMoreNotifications,
   loadMoreRewards
 } from 'redux/actions/NotiActions';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { Color } from 'constants/css';
 import { changeUserXP } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
-import Rankings from './Rankings';
-import NotiItem from './NotiItem';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
@@ -61,7 +62,7 @@ function MainFeeds({
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
 
   return (
-    <div style={style}>
+    <ErrorBoundary style={style}>
       <RoundList style={{ marginTop: 0 }}>
         {numNewNotis > 0 && (
           <Banner
@@ -176,7 +177,7 @@ function MainFeeds({
           onClick={onLoadMore}
         />
       )}
-    </div>
+    </ErrorBoundary>
   );
 
   async function onCollectReward() {
