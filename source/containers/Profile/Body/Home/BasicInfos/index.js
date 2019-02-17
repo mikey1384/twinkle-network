@@ -79,6 +79,9 @@ class BasicInfos extends Component {
         >
           About {username}
         </div>
+        <div style={{ marginBottom: '0.5rem' }}>
+          Member since {moment.unix(joinDate).format('LL')}
+        </div>
         {onEdit && (
           <InfoEditForm
             email={email}
@@ -98,9 +101,6 @@ class BasicInfos extends Component {
             `}
             style={{ textAlign: 'center' }}
           >
-            <div style={{ marginBottom: '0.5rem' }}>
-              Member since {moment.unix(joinDate).format('LL')}
-            </div>
             {email && (
               <>
                 <div
