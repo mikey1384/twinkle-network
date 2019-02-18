@@ -322,7 +322,7 @@ class VideoPlayer extends Component {
               />
             </>
           )}
-          {!onEdit && (
+          {!onEdit && (process.env.NODE_ENV === 'production' || started) && (
             <ReactPlayer
               ref={ref => {
                 this.Player = ref;
