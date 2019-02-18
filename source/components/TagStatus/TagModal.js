@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -8,103 +8,89 @@ import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
 import { hashify } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 
-class TagModal extends Component {
-  static propTypes = {
-    currentPlaylists: PropTypes.array.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
-    onHide: PropTypes.func.isRequired,
-    videoId: PropTypes.number.isRequired,
-    onAddPlaylist: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired
-  };
+TagModal.propTypes = {
+  currentPlaylists: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  onHide: PropTypes.func.isRequired,
+  videoId: PropTypes.number.isRequired,
+  onAddPlaylist: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
+};
 
-  state = {
-    addPlaylistModalShown: false,
-    notFoundMessageShown: false,
-    searchText: '',
-    searchResults: [],
-    selectedPlaylists: []
-  };
-
-  render() {
-    const { currentPlaylists, title, onHide, videoId } = this.props;
-    const {
-      addPlaylistModalShown,
-      notFoundMessageShown,
-      searchResults,
-      searchText,
-      selectedPlaylists
-    } = this.state;
-    return (
-      <Modal onHide={onHide}>
-        <header>{title}</header>
-        <main>
-          <TagForm
-            title="Search Playlists"
-            itemLabel="title"
-            searchResults={searchResults}
-            filter={result => currentPlaylists.indexOf(result.id) === -1}
-            onSearch={this.onSearchPlaylists}
-            onClear={this.onClearSearchResults}
-            onAddItem={playlist =>
-              this.setState(state => ({
-                addPlaylistModalShown: false,
-                selectedPlaylists: state.selectedPlaylists.concat([playlist])
-              }))
-            }
-            onNotFound={({ messageShown }) =>
-              this.setState({ notFoundMessageShown: messageShown })
-            }
-            onRemoveItem={this.onRemovePlaylist}
-            onSubmit={selectedPlaylists.length > 0 && this.onSubmit}
-            renderDropdownLabel={item => <span>{item.title}</span>}
-            renderTagLabel={label => hashify(label)}
-            searchPlaceholder="Search for playlists here..."
-            selectedItems={selectedPlaylists}
-          >
-            {notFoundMessageShown && (
-              <div style={{ marginTop: '0.5rem' }}>
-                No playlists were found.{' '}
-                <a
-                  onClick={() => this.setState({ addPlaylistModalShown: true })}
-                >
-                  Create a new playlist
-                </a>
-              </div>
-            )}
-          </TagForm>
-          {addPlaylistModalShown && (
-            <AddPlaylistModal
-              excludeVideoIds={[videoId]}
-              postPlaylist={this.onAddPlaylist}
-              onHide={() => this.setState({ addPlaylistModalShown: false })}
-              title={searchText}
-            />
+function TagModal({
+  currentPlaylists,
+  dispatch,
+  title,
+  onAddPlaylist,
+  onHide,
+  onSubmit,
+  videoId
+}) {
+  const [addPlaylistModalShown, setAddPlaylistModalShown] = useState(false);
+  const [notFoundMessageShown, setNotFoundMessageShown] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  return (
+    <Modal onHide={onHide}>
+      <header>{title}</header>
+      <main>
+        <TagForm
+          title="Search Playlists"
+          itemLabel="title"
+          searchResults={searchResults}
+          filter={result => currentPlaylists.indexOf(result.id) === -1}
+          onSearch={onSearchPlaylists}
+          onClear={onClearSearchResults}
+          onAddItem={playlist => {
+            setAddPlaylistModalShown(false);
+            setSelectedPlaylists(selectedPlaylists.concat([playlist]));
+          }}
+          onNotFound={({ messageShown }) =>
+            setNotFoundMessageShown(messageShown)
+          }
+          onRemoveItem={onRemovePlaylist}
+          onSubmit={selectedPlaylists.length > 0 && submit}
+          renderDropdownLabel={item => <span>{item.title}</span>}
+          renderTagLabel={label => hashify(label)}
+          searchPlaceholder="Search for playlists here..."
+          selectedItems={selectedPlaylists}
+        >
+          {notFoundMessageShown && (
+            <div style={{ marginTop: '0.5rem' }}>
+              No playlists were found.{' '}
+              <a onClick={() => setAddPlaylistModalShown(true)}>
+                Create a new playlist
+              </a>
+            </div>
           )}
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={selectedPlaylists.length === 0}
-            primary
-            onClick={this.onSubmit}
-          >
-            Done
-          </Button>
-        </footer>
-      </Modal>
-    );
-  }
+        </TagForm>
+        {addPlaylistModalShown && (
+          <AddPlaylistModal
+            excludeVideoIds={[videoId]}
+            postPlaylist={addPlaylist}
+            onHide={() => setAddPlaylistModalShown(false)}
+            title={searchText}
+          />
+        )}
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          disabled={selectedPlaylists.length === 0}
+          primary
+          onClick={submit}
+        >
+          Done
+        </Button>
+      </footer>
+    </Modal>
+  );
 
-  onAddPlaylist = playlist => {
-    const { onAddPlaylist, videoId } = this.props;
+  function addPlaylist(playlist) {
     onAddPlaylist({
       videoIds: playlist?.playlist
         ?.map(video => video.videoId)
@@ -112,45 +98,40 @@ class TagModal extends Component {
       playlistId: playlist.id,
       playlistTitle: playlist.title
     });
-    this.setState(state => ({
-      addPlaylistModalShown: false,
-      notFoundMessageShown: false,
-      selectedPlaylists: state.selectedPlaylists.concat([playlist])
-    }));
-  };
+    setAddPlaylistModalShown(false);
+    setNotFoundMessageShown(false);
+    setSelectedPlaylists(selectedPlaylists.concat([playlist]));
+  }
 
-  onClearSearchResults = () => {
-    this.setState({ searchResults: [] });
-  };
+  function onClearSearchResults() {
+    setSearchResults([]);
+  }
 
-  onRemovePlaylist = playlistId => {
-    this.setState(state => ({
-      selectedPlaylists: state.selectedPlaylists.filter(
-        playlist => playlist.id !== playlistId
-      )
-    }));
-  };
+  function onRemovePlaylist(playlistId) {
+    setSelectedPlaylists(
+      selectedPlaylists.filter(playlist => playlist.id !== playlistId)
+    );
+  }
 
-  onSubmit = async() => {
-    const { dispatch, onSubmit, videoId } = this.props;
-    const { selectedPlaylists } = this.state;
+  async function submit() {
     await addVideoToPlaylists({
       dispatch,
       videoId,
       playlistIds: selectedPlaylists.map(playlist => playlist.id)
     });
-    this.setState({ searchText: '' });
+    setSearchText('');
     onSubmit(selectedPlaylists);
-  };
+  }
 
-  onSearchPlaylists = async text => {
+  async function onSearchPlaylists(text) {
     const { results } = await searchContent({
       filter: 'playlist',
       searchText: text,
       limit: 5
     });
-    this.setState({ searchText: text, searchResults: results });
-  };
+    setSearchText(text);
+    setSearchResults(results);
+  }
 }
 
 export default connect(

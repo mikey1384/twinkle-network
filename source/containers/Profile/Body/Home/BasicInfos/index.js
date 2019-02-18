@@ -234,7 +234,8 @@ class BasicInfos extends Component {
           !onEdit ? (
             <Button
               style={{
-                marginTop: !email || !youtubeUrl || !website ? 0 : '1rem'
+                marginTop: !email || !youtubeUrl || !website ? 0 : '1rem',
+                marginBottom: '0.5rem'
               }}
               transparent
               onClick={() => this.setState({ onEdit: true })}

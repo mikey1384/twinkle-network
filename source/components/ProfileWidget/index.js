@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -9,121 +9,118 @@ import { connect } from 'react-redux';
 import { container } from './Styles';
 import { Color } from 'constants/css';
 
-class ProfileWidget extends Component {
-  static propTypes = {
-    history: PropTypes.object,
-    loadImage: PropTypes.func,
-    openSigninModal: PropTypes.func,
-    profilePicId: PropTypes.number,
-    realName: PropTypes.string,
-    showAlert: PropTypes.func,
-    userId: PropTypes.number,
-    username: PropTypes.string
-  };
+ProfileWidget.propTypes = {
+  history: PropTypes.object,
+  loadImage: PropTypes.func,
+  openSigninModal: PropTypes.func,
+  profilePicId: PropTypes.number,
+  realName: PropTypes.string,
+  showAlert: PropTypes.func,
+  userId: PropTypes.number,
+  username: PropTypes.string
+};
 
-  render() {
-    const {
-      history,
-      openSigninModal,
-      userId,
-      username,
-      profilePicId,
-      realName
-    } = this.props;
-    return (
-      <ErrorBoundary>
-        <div
-          className={container({
-            heading: Color.channelGray(),
-            border: Color.borderGray(),
-            blue: Color.blue(),
-            darkerGray: Color.darkerGray()
-          })}
-        >
-          {username && (
-            <div className="heading">
-              <ProfilePic
-                className="widget__profile-pic"
-                style={{
-                  cursor: userId ? 'pointer' : 'default'
-                }}
-                userId={userId}
-                profilePicId={profilePicId}
-                onClick={() => {
-                  if (userId) history.push(`/users/${username}`);
-                }}
-              />
-              <div className="names">
-                <Link to={`/users/${username}`}>{username}</Link>
-                {realName && (
-                  <div>
-                    <span>({realName})</span>
-                  </div>
-                )}
-              </div>
+function ProfileWidget({
+  history,
+  loadImage,
+  openSigninModal,
+  profilePicId,
+  realName,
+  showAlert,
+  userId,
+  username
+}) {
+  const FileInputRef = useRef();
+  return (
+    <ErrorBoundary>
+      <div
+        className={container({
+          heading: Color.channelGray(),
+          border: Color.borderGray(),
+          blue: Color.blue(),
+          darkerGray: Color.darkerGray()
+        })}
+      >
+        {username && (
+          <div className="heading">
+            <ProfilePic
+              className="widget__profile-pic"
+              style={{
+                cursor: userId ? 'pointer' : 'default'
+              }}
+              userId={userId}
+              profilePicId={profilePicId}
+              onClick={() => {
+                if (userId) history.push(`/users/${username}`);
+              }}
+            />
+            <div className="names">
+              <Link to={`/users/${username}`}>{username}</Link>
+              {realName && (
+                <div>
+                  <span>({realName})</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        <div className="details">
+          {userId && (
+            <div>
+              <Button
+                style={{ width: '100%' }}
+                transparent
+                onClick={() => history.push(`/users/${username}`)}
+              >
+                View Profile
+              </Button>
+              <Button
+                style={{ width: '100%' }}
+                transparent
+                onClick={() => FileInputRef.current.click()}
+              >
+                Change Picture
+              </Button>
             </div>
           )}
-          <div className="details">
-            {userId && (
-              <div>
-                <Button
-                  style={{ width: '100%' }}
-                  transparent
-                  onClick={() => history.push(`/users/${username}`)}
-                >
-                  View Profile
-                </Button>
-                <Button
-                  style={{ width: '100%' }}
-                  transparent
-                  onClick={() => this.fileInput.click()}
-                >
-                  Change Picture
-                </Button>
-              </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            {!userId && (
+              <>
+                <div className="login-message">Log in</div>
+                <div className="login-message">to access all features</div>
+              </>
             )}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}
-            >
-              {!userId && (
-                <>
-                  <div className="login-message">Log in</div>
-                  <div className="login-message">to access all features</div>
-                </>
-              )}
-              {!userId && (
-                <Button
-                  success
-                  filled
-                  style={{ marginTop: '1rem' }}
-                  onClick={openSigninModal}
-                >
-                  Tap here!
-                </Button>
-              )}
-            </div>
-            <input
-              ref={ref => {
-                this.fileInput = ref;
-              }}
-              style={{ display: 'none' }}
-              type="file"
-              onChange={this.handlePicture}
-              accept="image/*"
-            />
+            {!userId && (
+              <Button
+                success
+                filled
+                style={{ marginTop: '1rem' }}
+                onClick={openSigninModal}
+              >
+                Tap here!
+              </Button>
+            )}
           </div>
+          <input
+            ref={FileInputRef}
+            style={{ display: 'none' }}
+            type="file"
+            onChange={handlePicture}
+            accept="image/*"
+          />
         </div>
-      </ErrorBoundary>
-    );
-  }
+      </div>
+    </ErrorBoundary>
+  );
 
-  handlePicture = event => {
-    const { loadImage, showAlert } = this.props;
+  function handlePicture(event) {
     const reader = new FileReader();
     const maxSize = 5000;
     const file = event.target.files[0];
@@ -133,7 +130,7 @@ class ProfileWidget extends Component {
     reader.onload = loadImage;
     reader.readAsDataURL(file);
     event.target.value = null;
-  };
+  }
 }
 
 export default connect(

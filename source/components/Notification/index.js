@@ -17,7 +17,7 @@ import { socket } from 'constants/io';
 import { css } from 'emotion';
 
 Notification.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   className: PropTypes.string,
   clearNotifications: PropTypes.func.isRequired,
   currentChatSubject: PropTypes.object,

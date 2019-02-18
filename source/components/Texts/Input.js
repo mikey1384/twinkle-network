@@ -8,7 +8,7 @@ import { renderText } from 'helpers/stringHelpers';
 Input.propTypes = {
   className: PropTypes.string,
   hasError: PropTypes.bool,
-  inputRef: PropTypes.func,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   onChange: PropTypes.func.isRequired
 };
 export default function Input({

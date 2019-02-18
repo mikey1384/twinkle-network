@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 
 ChangePicture.propTypes = {
-  shown: PropTypes.bool.isRequired
+  shown: PropTypes.bool
 };
 
 export default function ChangePicture({ shown }) {
