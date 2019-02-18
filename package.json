@@ -90,9 +90,7 @@
     "react-test-renderer": "^16.8.1",
     "react-transform-hmr": "^1.0.4",
     "regenerator-runtime": "^0.13.1",
-    "supertest": "^3.4.2",
     "terser-webpack-plugin": "^1.2.2",
-    "webpack-cli": "^3.2.3",
     "webpack-dev-middleware": "^3.5.2",
     "webpack-hot-middleware": "^2.24.3"
   },
