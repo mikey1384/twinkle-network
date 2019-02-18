@@ -47,7 +47,9 @@ export default function MainContent({
         {(type === 'video' || (type === 'subject' && rootType === 'video')) && (
           <VideoPlayer
             stretch
-            difficulty={rootObj.difficulty || contentObj.difficulty}
+            difficulty={
+              type === 'subject' ? rootObj.difficulty : contentObj.difficulty
+            }
             byUser={!!(rootObj.byUser || contentObj.byUser)}
             onEdit={isEditing}
             title={rootObj.title || contentObj.title}
