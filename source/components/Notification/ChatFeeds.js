@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
@@ -10,81 +10,95 @@ import { profileThemes } from 'constants/defaultValues';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 
-class ChatFeeds extends Component {
-  static propTypes = {
-    content: PropTypes.string,
-    dispatch: PropTypes.func.isRequired,
-    initChat: PropTypes.func.isRequired,
-    profileTheme: PropTypes.string,
-    reloadedBy: PropTypes.number,
-    reloaderName: PropTypes.string,
-    reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    style: PropTypes.object,
-    timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    userId: PropTypes.number,
-    username: PropTypes.string
-  };
+ChatFeeds.propTypes = {
+  content: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  initChat: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
+  reloadedBy: PropTypes.number,
+  reloaderName: PropTypes.string,
+  reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  style: PropTypes.object,
+  timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userId: PropTypes.number,
+  username: PropTypes.string
+};
 
-  render() {
-    const { content, profileTheme, style = {} } = this.props;
-    const themeColor = profileTheme || 'logoBlue';
-    return (
-      <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
-        <li
+let timer = null;
+
+function ChatFeeds({
+  content,
+  dispatch,
+  initChat,
+  profileTheme,
+  reloadedBy,
+  reloaderName,
+  reloadTimeStamp,
+  style = {},
+  timeStamp,
+  userId,
+  username
+}) {
+  const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
+  const [timeSinceReload, setTimeSinceReload] = useState(
+    timeSince(reloadTimeStamp)
+  );
+  useEffect(() => {
+    timer = setInterval(countBySeconds, 1000);
+    function countBySeconds() {
+      setTimeSincePost(timeSince(timeStamp));
+      setTimeSinceReload(timeSince(reloadTimeStamp));
+    }
+    return () => clearInterval(timer);
+  }, [timeStamp, reloadTimeStamp]);
+  const themeColor = profileTheme || 'logoBlue';
+  return (
+    <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
+      <li
+        style={{
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <p
           style={{
-            whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word',
-            wordBreak: 'break-word',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            fontWeight: 'bold',
+            color: profileThemes[themeColor].color,
+            fontSize: '2rem'
           }}
         >
-          <p
-            style={{
-              fontWeight: 'bold',
-              color: profileThemes[themeColor].color,
-              fontSize: '2rem'
-            }}
-          >
-            {content}
-          </p>
-          {this.renderDetails()}
-          <Button success onClick={this.initChat}>
-            <Icon icon="comments" />
-            <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
-          </Button>
-        </li>
-      </RoundList>
-    );
-  }
+          {content}
+        </p>
+        {renderDetails()}
+        <Button success onClick={initChatFromThis}>
+          <Icon icon="comments" />
+          <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
+        </Button>
+      </li>
+    </RoundList>
+  );
 
-  initChat = async() => {
-    const { dispatch, initChat } = this.props;
+  async function initChatFromThis() {
     const data = await loadChat({ dispatch, channelId: 2 });
     initChat(data);
-  };
+  }
 
-  renderDetails = () => {
-    const {
-      userId,
-      username,
-      timeStamp,
-      reloadedBy,
-      reloaderName,
-      reloadTimeStamp
-    } = this.props;
+  function renderDetails() {
     const posterString = (
       <>
         Started by <UsernameText user={{ id: userId, username }} />
-        {timeStamp ? ` ${timeSince(timeStamp)}` : ''}
+        {timeStamp ? ` ${timeSincePost}` : ''}
       </>
     );
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
         <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
-        {reloadTimeStamp ? ` ${timeSince(reloadTimeStamp)}` : ''}
+        {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
       </div>
     );
 
@@ -94,7 +108,7 @@ class ChatFeeds extends Component {
         {reloadedBy && reloaderString}
       </div>
     );
-  };
+  }
 }
 
 export default connect(

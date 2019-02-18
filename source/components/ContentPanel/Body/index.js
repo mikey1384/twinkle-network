@@ -125,6 +125,7 @@ function Body({
   const CommentInputAreaRef = useRef();
 
   useEffect(() => {
+    let mounted = true;
     if (autoExpand && !commentsShown) {
       loadInitialComments();
     }
@@ -135,9 +136,12 @@ function Body({
         id: contentId,
         limit: commentsLoadLimit
       });
-      onShowComments(data);
-      setCommentsShown(true);
+      if (mounted) {
+        onShowComments(data);
+        setCommentsShown(true);
+      }
     }
+    return () => (mounted = false);
   }, []);
 
   useEffect(() => {

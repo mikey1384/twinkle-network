@@ -28,24 +28,28 @@ function Rankings({ myId, twinkleXP }) {
   const [prevId, setPrevId] = useState(twinkleXP);
 
   useEffect(() => {
+    let mounted = true;
     loadRankings();
     async function loadRankings() {
       try {
         const {
           data: { all, rankModifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
-        if (myId !== prevId) {
-          setAllSelected(!!myId && all.length > 0);
+        if (mounted) {
+          if (myId !== prevId) {
+            setAllSelected(!!myId && all.length > 0);
+          }
+          setAll(all);
+          setTop30s(top30s);
+          setLoaded(true);
+          setRankModifier(rankModifier);
+          setPrevId(myId);
         }
-        setAll(all);
-        setTop30s(top30s);
-        setLoaded(true);
-        setRankModifier(rankModifier);
-        setPrevId(myId);
       } catch (error) {
         console.error(error.response || error);
       }
     }
+    return () => (mounted = false);
   }, [myId, twinkleXP]);
 
   const users = allSelected ? all : top30s;

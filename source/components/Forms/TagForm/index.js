@@ -55,7 +55,10 @@ export default function TagForm({
   }, [searchResults]);
 
   useEffect(() => {
-    return () => onClear();
+    return () => {
+      clearTimeout(timer);
+      onClear();
+    };
   }, []);
 
   const filteredResults = searchResults.filter(filter);

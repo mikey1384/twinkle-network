@@ -57,17 +57,23 @@ function AddPlaylistModal({
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
+    let mounted = true;
     async function loadVideos() {
       const { results, loadMoreButton } = await loadUploads({
         type: 'video',
         limit: 18,
         excludeContentIds: excludeVideoIds
       });
-      setAllVideos(results);
-      setLoadMoreButton(loadMoreButton);
+      if (mounted) {
+        setAllVideos(results);
+        setLoadMoreButton(loadMoreButton);
+      }
     }
     loadVideos();
-    return () => (timer = null);
+    return () => {
+      clearTimeout(timer);
+      mounted = false;
+    };
   }, []);
   const titleExceedsCharLimit = exceedsCharLimit({
     contentType: 'playlist',
