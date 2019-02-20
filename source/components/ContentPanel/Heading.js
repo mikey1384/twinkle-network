@@ -160,13 +160,13 @@ function Heading({
           <>
             <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
-              content={{ id, title: 'subject' }}
+              content={{ id, title: 'subject ' }}
               type={type}
               style={{ color: Color.green() }}
             />
             {rootObj.id && (
               <>
-                &nbsp;on {contentLabel}:{' '}
+                on {contentLabel}:{' '}
                 <ContentLink content={rootObj} type={rootType} />{' '}
               </>
             )}
