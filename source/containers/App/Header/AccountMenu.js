@@ -15,6 +15,7 @@ AccountMenu.propTypes = {
   title: PropTypes.string,
   username: PropTypes.string
 };
+
 function AccountMenu({
   buttonStyle = {},
   className,

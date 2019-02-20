@@ -10,7 +10,7 @@ class SearchBox extends Component {
     className: PropTypes.string,
     changeSearch: PropTypes.func.isRequired,
     onFocus: PropTypes.func.isRequired,
-    innerRef: PropTypes.func,
+    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
     searchText: PropTypes.string.isRequired,
     style: PropTypes.object
   };

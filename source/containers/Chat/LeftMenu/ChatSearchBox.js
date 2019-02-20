@@ -1,5 +1,5 @@
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SearchInput from 'components/Texts/SearchInput';
 import { stringIsEmpty } from 'helpers/stringHelpers';
@@ -10,71 +10,70 @@ import {
   openNewChatTab
 } from 'redux/actions/ChatActions';
 
-class ChatSearchBox extends Component {
-  static propTypes = {
-    clearSearchResults: PropTypes.func.isRequired,
-    enterChannelWithId: PropTypes.func.isRequired,
-    openNewChatTab: PropTypes.func.isRequired,
-    searchChat: PropTypes.func.isRequired,
-    searchResults: PropTypes.array.isRequired,
-    userId: PropTypes.number,
-    username: PropTypes.string
-  };
+ChatSearchBox.propTypes = {
+  clearSearchResults: PropTypes.func.isRequired,
+  enterChannelWithId: PropTypes.func.isRequired,
+  openNewChatTab: PropTypes.func.isRequired,
+  searchChat: PropTypes.func.isRequired,
+  searchResults: PropTypes.array.isRequired,
+  userId: PropTypes.number,
+  username: PropTypes.string
+};
 
-  timer = null;
+function ChatSearchBox({
+  clearSearchResults,
+  enterChannelWithId,
+  openNewChatTab,
+  searchChat,
+  searchResults,
+  userId,
+  username
+}) {
+  const [searchText, setSearchText] = useState('');
+  const timerRef = useRef(null);
 
-  state = {
-    searchText: ''
-  };
+  useEffect(() => {
+    return function cleanUp() {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
 
-  render() {
-    const { searchResults, clearSearchResults } = this.props;
-    const { searchText } = this.state;
-    return (
-      <div style={{ padding: '0 1rem', zIndex: 5 }}>
-        <SearchInput
-          placeholder="Search for channels / users"
-          onChange={this.onChatSearch}
-          value={searchText}
-          searchResults={searchResults}
-          renderItemLabel={item =>
-            !item.primary || (item.primary && item.twoPeople) ? (
-              <span>
-                {item.label}{' '}
-                {item.subLabel && <small>{`(${item.subLabel})`}</small>}
-              </span>
-            ) : (
-              <span>{item.label}</span>
-            )
-          }
-          onClickOutSide={() => {
-            this.setState({ searchText: '' });
-            clearSearchResults();
-          }}
-          onSelect={this.onSelect}
-        />
-      </div>
-    );
-  }
+  return (
+    <div style={{ padding: '0 1rem', zIndex: 5 }}>
+      <SearchInput
+        placeholder="Search for channels / users"
+        onChange={onChatSearch}
+        value={searchText}
+        searchResults={searchResults}
+        renderItemLabel={item =>
+          !item.primary || (item.primary && item.twoPeople) ? (
+            <span>
+              {item.label}{' '}
+              {item.subLabel && <small>{`(${item.subLabel})`}</small>}
+            </span>
+          ) : (
+            <span>{item.label}</span>
+          )
+        }
+        onClickOutSide={() => {
+          setSearchText('');
+          clearSearchResults();
+        }}
+        onSelect={onSelect}
+      />
+    </div>
+  );
 
-  onChatSearch = text => {
-    const { searchChat, clearSearchResults } = this.props;
-    clearTimeout(this.timer);
-    this.setState({ searchText: text });
+  function onChatSearch(text) {
+    clearTimeout(timerRef.current);
+    setSearchText(text);
     if (stringIsEmpty(text) || text.length < 2) {
       return clearSearchResults();
     }
-    this.timer = setTimeout(() => searchChat(text), 300);
-  };
+    timerRef.current = setTimeout(() => searchChat(text), 300);
+  }
 
-  onSelect = item => {
-    const {
-      enterChannelWithId,
-      clearSearchResults,
-      userId,
-      username,
-      openNewChatTab
-    } = this.props;
+  function onSelect(item) {
     if (item.primary || !!item.channelId) {
       enterChannelWithId(item.channelId, true);
     } else {
@@ -83,9 +82,9 @@ class ChatSearchBox extends Component {
         { username: item.label, id: item.id }
       );
     }
-    this.setState({ searchText: '' });
+    setSearchText('');
     clearSearchResults();
-  };
+  }
 }
 
 export default connect(

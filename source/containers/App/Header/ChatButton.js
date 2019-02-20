@@ -9,6 +9,7 @@ ChatButton.propTypes = {
   numUnreads: PropTypes.number,
   onClick: PropTypes.func.isRequired
 };
+
 export default function ChatButton({
   onClick,
   chatMode,

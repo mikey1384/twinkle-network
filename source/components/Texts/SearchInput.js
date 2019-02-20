@@ -12,7 +12,7 @@ SearchInput.propTypes = {
   autoFocus: PropTypes.bool,
   borderColor: PropTypes.string,
   className: PropTypes.string,
-  innerRef: PropTypes.func,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   onChange: PropTypes.func.isRequired,
   onClear: PropTypes.func,
   onClickOutSide: PropTypes.func,
@@ -33,7 +33,7 @@ export default function SearchInput({
   autoFocus,
   borderColor,
   className,
-  innerRef,
+  innerRef = () => {},
   onChange,
   placeholder,
   onClear,
@@ -82,7 +82,7 @@ export default function SearchInput({
       </div>
       <Input
         autoFocus={autoFocus}
-        inputRef={innerRef ? ref => innerRef(ref) : () => {}}
+        inputRef={innerRef}
         onFocus={onFocus && onFocus}
         placeholder={placeholder}
         value={value}

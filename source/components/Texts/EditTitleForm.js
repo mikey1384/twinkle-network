@@ -7,6 +7,7 @@ import { edit } from 'constants/placeholders';
 
 EditTitleForm.propTypes = {
   autoFocus: PropTypes.bool,
+  inputStyle: PropTypes.object,
   maxLength: PropTypes.number,
   onClickOutSide: PropTypes.func.isRequired,
   onEditSubmit: PropTypes.func.isRequired,
@@ -19,6 +20,7 @@ export default function EditTitleForm({
   maxLength = 100,
   onClickOutSide,
   style,
+  inputStyle,
   ...props
 }) {
   const [title, setTitle] = useState(cleanString(props.title));
@@ -27,12 +29,16 @@ export default function EditTitleForm({
 
   return (
     <form
-      ref={FormRef}
       style={style}
+      ref={FormRef}
       onSubmit={event => onEditSubmit(event, title)}
     >
       <Input
-        style={{ width: '100%', color: title.length > maxLength && 'red' }}
+        style={{
+          width: '100%',
+          color: title.length > maxLength && 'red',
+          ...inputStyle
+        }}
         autoFocus={autoFocus}
         type="text"
         placeholder={edit.title}
