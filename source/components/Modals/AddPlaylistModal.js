@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
@@ -23,8 +23,6 @@ import {
 } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-
-let timer = null;
 
 AddPlaylistModal.propTypes = {
   dispatch: PropTypes.func,
@@ -55,6 +53,7 @@ function AddPlaylistModal({
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const timerRef = useRef();
 
   useEffect(() => {
     let mounted = true;
@@ -71,7 +70,7 @@ function AddPlaylistModal({
     }
     loadVideos();
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timerRef.current);
       mounted = false;
     };
   }, []);
@@ -309,9 +308,9 @@ function AddPlaylistModal({
   }
 
   function onVideoSearchInput(text) {
-    clearTimeout(timer);
+    clearTimeout(timerRef.current);
     setSearchText(text);
-    timer = setTimeout(() => searchVideo(text), 300);
+    timerRef.current = setTimeout(() => searchVideo(text), 300);
   }
 
   async function searchVideo(text) {

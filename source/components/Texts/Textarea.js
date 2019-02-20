@@ -8,6 +8,7 @@ Textarea.propTypes = {
   className: PropTypes.string,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
 };
+
 export default function Textarea({ className, innerRef, ...props }) {
   return (
     <TextareaAutosize

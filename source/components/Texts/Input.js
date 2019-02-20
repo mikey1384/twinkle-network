@@ -11,6 +11,7 @@ Input.propTypes = {
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   onChange: PropTypes.func.isRequired
 };
+
 export default function Input({
   className,
   hasError,

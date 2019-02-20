@@ -9,6 +9,7 @@ FullTextReveal.propTypes = {
   style: PropTypes.object,
   text: PropTypes.string.isRequired
 };
+
 export default function FullTextReveal({
   direction = 'right',
   style,

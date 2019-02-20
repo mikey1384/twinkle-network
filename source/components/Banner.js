@@ -17,6 +17,7 @@ Banner.propTypes = {
   warning: PropTypes.bool,
   onClick: PropTypes.func
 };
+
 export default function Banner({
   children,
   danger,

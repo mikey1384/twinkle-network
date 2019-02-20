@@ -12,6 +12,7 @@ ContentLink.propTypes = {
   style: PropTypes.object,
   type: PropTypes.string
 };
+
 export default function ContentLink({
   style,
   content: { byUser, id, content, title, username },

@@ -12,6 +12,7 @@ FilterBar.propTypes = {
   innerRef: PropTypes.func,
   style: PropTypes.object
 };
+
 export default function FilterBar({
   color = 'blue',
   bordered,

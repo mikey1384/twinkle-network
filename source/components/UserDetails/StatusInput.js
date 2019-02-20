@@ -19,6 +19,7 @@ StatusInput.propTypes = {
   onTextChange: PropTypes.func.isRequired,
   setColor: PropTypes.func.isRequired
 };
+
 export default function StatusInput({
   autoFocus,
   profile,

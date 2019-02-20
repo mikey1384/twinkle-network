@@ -10,6 +10,7 @@ DropdownList.propTypes = {
   direction: PropTypes.string,
   style: PropTypes.object
 };
+
 export default function DropdownList({
   children,
   className,

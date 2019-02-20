@@ -1,85 +1,79 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 
-class UsernameText extends Component {
-  static propTypes = {
-    chatMode: PropTypes.bool,
-    className: PropTypes.string,
-    color: PropTypes.string,
-    style: PropTypes.object,
-    openDirectMessageChannel: PropTypes.func.isRequired,
-    user: PropTypes.object,
-    userId: PropTypes.number,
-    username: PropTypes.string
-  };
+UsernameText.propTypes = {
+  chatMode: PropTypes.bool,
+  className: PropTypes.string,
+  color: PropTypes.string,
+  style: PropTypes.object,
+  openDirectMessageChannel: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  userId: PropTypes.number,
+  username: PropTypes.string
+};
 
-  state = {
-    menuShown: false
-  };
-
-  render() {
-    const { user = {}, userId, color, className, style = {} } = this.props;
-    const { menuShown } = this.state;
-    return (
-      <div
-        style={{ display: 'inline', position: 'relative' }}
-        onMouseLeave={() => this.setState({ menuShown: false })}
+function UsernameText({
+  chatMode,
+  className,
+  color,
+  openDirectMessageChannel,
+  style = {},
+  user = {},
+  userId,
+  username
+}) {
+  const [menuShown, setMenuShown] = useState(false);
+  return (
+    <div
+      style={{ display: 'inline', position: 'relative' }}
+      onMouseLeave={() => setMenuShown(false)}
+    >
+      <span
+        className={className}
+        style={{
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          color: user.username
+            ? color || Color.darkerGray()
+            : Color.lightGray(),
+          ...style
+        }}
+        onClick={onUsernameClick}
+        onMouseEnter={onMouseEnter}
       >
-        <span
-          className={className}
-          style={{
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            color: user.username
-              ? color || Color.darkerGray()
-              : Color.lightGray(),
-            ...style
-          }}
-          onClick={this.onUsernameClick}
-          onMouseEnter={this.onMouseEnter}
-        >
-          {user.username || '(Deleted)'}
-        </span>
-        {menuShown && (
-          <DropdownList style={{ width: '100%' }}>
-            <li onClick={() => window.open(`/users/${user.username}`)}>
-              <a
-                href={`/users/${user.username}`}
-                style={{ color: Color.darkerGray() }}
-                onClick={e => e.preventDefault()}
-              >
-                Profile
-              </a>
+        {user.username || '(Deleted)'}
+      </span>
+      {menuShown && (
+        <DropdownList style={{ width: '100%' }}>
+          <li onClick={() => window.open(`/users/${user.username}`)}>
+            <a
+              href={`/users/${user.username}`}
+              style={{ color: Color.darkerGray() }}
+              onClick={e => e.preventDefault()}
+            >
+              Profile
+            </a>
+          </li>
+          {user.id !== userId && (
+            <li onClick={onLinkClick}>
+              <a style={{ color: Color.darkerGray() }}>Talk</a>
             </li>
-            {user.id !== userId && (
-              <li onClick={this.onLinkClick}>
-                <a style={{ color: Color.darkerGray() }}>Talk</a>
-              </li>
-            )}
-          </DropdownList>
-        )}
-      </div>
-    );
+          )}
+        </DropdownList>
+      )}
+    </div>
+  );
+
+  function onMouseEnter() {
+    if (user.username) setMenuShown(true);
   }
 
-  onMouseEnter = () => {
-    const { user } = this.props;
-    if (user.username) this.setState({ menuShown: true });
-  };
-
-  onLinkClick = () => {
-    const {
-      openDirectMessageChannel,
-      user,
-      userId,
-      username,
-      chatMode
-    } = this.props;
-    this.setState({ menuShown: false });
+  function onLinkClick() {
+    setMenuShown(false);
     if (user.id !== userId) {
       openDirectMessageChannel(
         { id: userId, username },
@@ -87,16 +81,13 @@ class UsernameText extends Component {
         chatMode
       );
     }
-  };
+  }
 
-  onUsernameClick = () => {
-    const { user } = this.props;
+  function onUsernameClick() {
     if (user.username) {
-      this.setState(state => ({
-        menuShown: !state.menuShown
-      }));
+      setMenuShown(!menuShown);
     }
-  };
+  }
 }
 
 export default connect(

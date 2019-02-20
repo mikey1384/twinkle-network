@@ -29,7 +29,6 @@ EditSubjectForm.propTypes = {
   title: PropTypes.string.isRequired
 };
 
-let timer = null;
 export default function EditSubjectForm({
   autoFocus,
   currentSubjectId,
@@ -46,6 +45,7 @@ export default function EditSubjectForm({
   const [readyForSubmit, setReadyForSubmit] = useState(false);
   const [subjectsModalShown, setSubjectsModalShown] = useState(false);
   const EditSubjectFormRef = useRef();
+  const timerRef = useRef();
   useOutsideClick(EditSubjectFormRef, () => {
     if (!subjectsModalShown) onClickOutSide();
   });
@@ -150,12 +150,12 @@ export default function EditSubjectForm({
   }
 
   function onInputChange(text) {
-    clearTimeout(timer);
+    clearTimeout(timerRef.current);
     setTitle(text);
     setReadyForSubmit(false);
     setHighlightedIndex(-1);
     setExactMatchExists(false);
-    timer = setTimeout(() => changeInput(text), 200);
+    timerRef.current = setTimeout(() => changeInput(text), 200);
 
     async function changeInput(input) {
       await onChange(input);

@@ -24,7 +24,7 @@ export default function Selectable({
   type = 'video'
 }) {
   const [onTitleHover, setOnTitleHover] = useState(false);
-  const ThumbLableRef = useRef();
+  const ThumbLabelRef = useRef();
 
   return (
     <ErrorBoundary
@@ -74,7 +74,7 @@ export default function Selectable({
         >
           <div>
             <p
-              ref={ThumbLableRef}
+              ref={ThumbLabelRef}
               style={{
                 marginTop: '1rem',
                 fontWeight: 'bold',
@@ -110,7 +110,7 @@ export default function Selectable({
   );
 
   function onMouseOver() {
-    if (textIsOverflown(ThumbLableRef.current)) {
+    if (textIsOverflown(ThumbLabelRef.current)) {
       setOnTitleHover(true);
     }
   }

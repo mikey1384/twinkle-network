@@ -18,6 +18,7 @@ Likers.propTypes = {
   target: PropTypes.string,
   userId: PropTypes.number
 };
+
 export default function Likers({
   likes,
   target,

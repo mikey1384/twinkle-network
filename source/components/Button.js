@@ -32,6 +32,7 @@ Button.propTypes = {
   transparent: PropTypes.bool,
   wood: PropTypes.bool
 };
+
 export default function Button({
   alert,
   className,

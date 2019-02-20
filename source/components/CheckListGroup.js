@@ -14,6 +14,7 @@ CheckListGroup.propTypes = {
   onSelect: PropTypes.func.isRequired,
   style: PropTypes.object
 };
+
 export default function CheckListGroup({
   listItems,
   inputType,

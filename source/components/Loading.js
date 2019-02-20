@@ -9,6 +9,7 @@ Loading.propTypes = {
   style: PropTypes.object,
   text: PropTypes.string
 };
+
 export default function Loading({
   className,
   text = '',

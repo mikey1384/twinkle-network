@@ -1,111 +1,80 @@
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 
-export default class LongText extends Component {
-  static propTypes = {
-    children: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    cleanString: PropTypes.bool,
-    maxLines: PropTypes.number,
-    style: PropTypes.object,
-    noExpand: PropTypes.bool
-  };
+LongText.propTypes = {
+  children: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  cleanString: PropTypes.bool,
+  maxLines: PropTypes.number,
+  style: PropTypes.object,
+  noExpand: PropTypes.bool
+};
 
-  mounted = false;
+export default function LongText({
+  style,
+  className,
+  cleanString,
+  children = '',
+  maxLines = 10,
+  noExpand
+}) {
+  const [text, setText] = useState('');
+  const [more, setMore] = useState(false);
+  const [fullText, setFullText] = useState(false);
+  const ContainerRef = useRef();
+  const TextRef = useRef();
 
-  state = {
-    text: '',
-    more: false,
-    fullText: false
-  };
+  useEffect(() => {
+    setText('');
+    setMore(false);
+    setFullText(false);
+    truncateText(children || '');
+  }, [children]);
 
-  componentDidMount() {
-    const { children } = this.props;
-    this.mounted = true;
-    this.truncateText(children || '');
-  }
-
-  componentDidUpdate(prevProps) {
-    const { children } = this.props;
-    if (prevProps.children !== children && this.mounted) {
-      this.setState({
-        text: '',
-        more: false,
-        fullText: false
-      });
-      this.truncateText(children || '');
-    }
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  render() {
-    const {
-      style,
-      className,
-      cleanString,
-      children = '',
-      noExpand
-    } = this.props;
-    const { text, more, fullText } = this.state;
-    return (
-      <div
-        ref={ref => {
-          this.Container = ref;
-        }}
-        style={style}
-        className={className}
-      >
-        <p
-          ref={ref => {
-            this.Text = ref;
-          }}
-        >
-          {fullText ? (
+  return (
+    <div ref={ContainerRef} style={style} className={className}>
+      <p ref={TextRef}>
+        {fullText ? (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: limitBrs(
+                cleanString ? children : processedStringWithURL(children)
+              )
+            }}
+          />
+        ) : (
+          <>
             <span
               dangerouslySetInnerHTML={{
                 __html: limitBrs(
-                  cleanString ? children : processedStringWithURL(children)
+                  cleanString ? text : processedStringWithURL(text)
                 )
               }}
             />
-          ) : (
-            <>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: limitBrs(
-                    cleanString ? text : processedStringWithURL(text)
-                  )
-                }}
-              />
-              {more && (
-                <>
-                  {'... '}
-                  {!noExpand && (
-                    <a
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => this.setState({ fullText: true })}
-                    >
-                      Read More
-                    </a>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </p>
-      </div>
-    );
-  }
+            {more && (
+              <>
+                {'... '}
+                {!noExpand && (
+                  <a
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setFullText(true)}
+                  >
+                    Read More
+                  </a>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </p>
+    </div>
+  );
 
-  truncateText = originalText => {
-    const { maxLines = 10 } = this.props;
-    const maxWidth = this.Text.clientWidth;
+  function truncateText(originalText) {
+    const maxWidth = TextRef.current.clientWidth;
     const canvas = document.createElement('canvas').getContext('2d');
-    const computedStyle = window.getComputedStyle(this.Container);
+    const computedStyle = window.getComputedStyle(ContainerRef.current);
     const font = `${computedStyle['font-weight']} ${
       computedStyle['font-style']
     } ${computedStyle['font-size']} ${computedStyle['font-family']}`;
@@ -133,9 +102,11 @@ export default class LongText extends Component {
           trimmedText += remainingText;
           more = false;
         }
-        return this.setState({ text: trimmedText, more });
+        setText(trimmedText);
+        setMore(more);
+        return;
       }
     }
-    this.setState({ text: trimmedText + line || line });
-  };
+    setText(trimmedText + line || line);
+  }
 }

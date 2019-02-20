@@ -25,7 +25,7 @@ export default class StartScreen extends Component {
         </Button>
         <Button
           style={{ fontSize: '2rem', marginLeft: '1rem' }}
-          warning
+          love
           onClick={() => navigateTo('selectLink')}
         >
           Webpage

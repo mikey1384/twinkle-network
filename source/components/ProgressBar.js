@@ -11,6 +11,7 @@ ProgressBar.propTypes = {
   style: PropTypes.object,
   text: PropTypes.string
 };
+
 export default function ProgressBar({
   color = Color.blue(),
   noBorderRadius,

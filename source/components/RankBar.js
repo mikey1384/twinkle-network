@@ -8,6 +8,7 @@ RankBar.propTypes = {
   profile: PropTypes.object.isRequired,
   style: PropTypes.object
 };
+
 export default function RankBar({ profile, style }) {
   const rankColor =
     profile.rank === 1 ? Color.gold() : profile.rank <= 3 ? '#fff' : undefined;
@@ -27,8 +28,8 @@ export default function RankBar({ profile, style }) {
             profile.rank < 3
               ? Color.black(1 - (profile.rank - 1) / 10)
               : profile.rank === 3
-                ? Color.orange()
-                : Color.whiteGray()
+              ? Color.orange()
+              : Color.whiteGray()
           };
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;

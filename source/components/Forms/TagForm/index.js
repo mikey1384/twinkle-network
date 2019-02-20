@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
 import Tag from './Tag';
@@ -28,8 +28,6 @@ TagForm.propTypes = {
   title: PropTypes.string
 };
 
-let timer = null;
-
 export default function TagForm({
   children,
   filter,
@@ -49,6 +47,7 @@ export default function TagForm({
 }) {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const timerRef = useRef();
 
   useEffect(() => {
     setLoading(false);
@@ -56,7 +55,7 @@ export default function TagForm({
 
   useEffect(() => {
     return () => {
-      clearTimeout(timer);
+      clearTimeout(timerRef.current);
       onClear();
     };
   }, []);
@@ -121,7 +120,7 @@ export default function TagForm({
   }
 
   function onItemSearch(text) {
-    clearTimeout(timer);
+    clearTimeout(timerRef.current);
     setLoading(false);
     setSearchText(text);
     if (stringIsEmpty(text) || text.length < 2) {
@@ -129,7 +128,7 @@ export default function TagForm({
       return onClear();
     }
     setLoading(true);
-    timer = setTimeout(() => onSearch(text), 300);
+    timerRef.current = setTimeout(() => onSearch(text), 300);
   }
 
   function addItem(item) {

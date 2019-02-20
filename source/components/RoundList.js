@@ -7,6 +7,7 @@ RoundList.propTypes = {
   children: PropTypes.node.isRequired,
   style: PropTypes.object
 };
+
 export default function RoundList({ children, style = {} }) {
   return (
     <ul

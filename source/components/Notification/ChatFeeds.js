@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
@@ -24,8 +24,6 @@ ChatFeeds.propTypes = {
   username: PropTypes.string
 };
 
-let timer = null;
-
 function ChatFeeds({
   content,
   dispatch,
@@ -43,13 +41,14 @@ function ChatFeeds({
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
   );
+  const timerRef = useRef();
   useEffect(() => {
-    timer = setInterval(countBySeconds, 1000);
+    timerRef.current = setInterval(countBySeconds, 1000);
     function countBySeconds() {
       setTimeSincePost(timeSince(timeStamp));
       setTimeSinceReload(timeSince(reloadTimeStamp));
     }
-    return () => clearInterval(timer);
+    return () => clearInterval(timerRef.current);
   }, [timeStamp, reloadTimeStamp]);
   const themeColor = profileTheme || 'logoBlue';
   return (

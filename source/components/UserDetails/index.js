@@ -1,227 +1,210 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import StatusInput from './StatusInput';
-import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import BioEditModal from 'components/Modals/BioEditModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { css } from 'emotion';
-import { Color } from 'constants/css';
 import request from 'axios';
-import { auth } from 'helpers/requestHelpers';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
+import { auth } from 'helpers/requestHelpers';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
+import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import URL from 'constants/URL';
 
-export default class UserDetails extends Component {
-  static propTypes = {
-    isProfilePage: PropTypes.bool,
-    profile: PropTypes.object.isRequired,
-    removeStatusMsg: PropTypes.func,
-    style: PropTypes.object,
-    unEditable: PropTypes.bool,
-    updateStatusMsg: PropTypes.func,
-    uploadBio: PropTypes.func,
-    userId: PropTypes.number,
-    small: PropTypes.bool
-  };
+UserDetails.propTypes = {
+  isProfilePage: PropTypes.bool,
+  profile: PropTypes.object.isRequired,
+  removeStatusMsg: PropTypes.func,
+  style: PropTypes.object,
+  unEditable: PropTypes.bool,
+  updateStatusMsg: PropTypes.func,
+  uploadBio: PropTypes.func,
+  userId: PropTypes.number,
+  small: PropTypes.bool
+};
 
-  state = {
-    bioEditModalShown: false,
-    confirmModalShown: false,
-    editedStatusMsg: '',
-    editedStatusColor: ''
-  };
+export default function UserDetails({
+  isProfilePage,
+  profile,
+  removeStatusMsg,
+  small,
+  style = {},
+  unEditable,
+  updateStatusMsg,
+  uploadBio,
+  userId
+}) {
+  const [bioEditModalShown, setBioEditModalShown] = useState(false);
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [editedStatusMsg, setEditedStatusMsg] = useState('');
+  const [editedStatusColor, setEditedStatusColor] = useState('');
+  const StatusInputRef = useRef();
+  const statusColor = editedStatusColor || profile.statusColor || 'logoBlue';
+  const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
+  const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
-  render() {
-    const {
-      isProfilePage,
-      profile,
-      small,
-      style = {},
-      unEditable,
-      userId
-    } = this.props;
-    const {
-      bioEditModalShown,
-      confirmModalShown,
-      editedStatusColor,
-      editedStatusMsg
-    } = this.state;
-    const statusColor = editedStatusColor || profile.statusColor || 'logoBlue';
-    const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
-    const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
-    return (
-      <div
+  return (
+    <ErrorBoundary
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        ...style
+      }}
+    >
+      <Link
+        to={isProfilePage ? null : `/users/${profile.username}`}
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          ...style
+          fontSize: small ? '3rem' : '3.5rem',
+          fontWeight: 'bold',
+          color: Color.darkerGray(),
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          lineHeight: 'normal',
+          textDecoration: 'none'
         }}
+        className={
+          isProfilePage
+            ? ''
+            : css`
+                transition: color 0.2s;
+                &:hover {
+                  color: ${Color[
+                    profile.profileTheme || 'logoBlue'
+                  ]()}!important;
+                }
+              `
+        }
       >
-        <Link
-          to={isProfilePage ? null : `/users/${profile.username}`}
-          style={{
-            fontSize: small ? '3rem' : '3.5rem',
-            fontWeight: 'bold',
-            color: Color.darkerGray(),
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            lineHeight: 'normal',
-            textDecoration: 'none'
+        {profile.username}
+      </Link>
+      <p
+        style={{ fontSize: small ? '1.3rem' : '1.5rem', color: Color.gray() }}
+      >{`(${profile.realName})`}</p>
+      {userId === profile.id && !unEditable && (
+        <StatusInput
+          innerRef={StatusInputRef}
+          profile={profile}
+          statusColor={statusColor}
+          editedStatusMsg={editedStatusMsg}
+          setColor={setEditedStatusColor}
+          onTextChange={event => {
+            setEditedStatusMsg(addEmoji(renderText(event.target.value)));
+            if (!event.target.value) {
+              setEditedStatusColor('');
+            }
           }}
-          className={
-            isProfilePage
-              ? ''
-              : css`
-                  transition: color 0.2s;
-                  &:hover {
-                    color: ${Color[
-                      profile.profileTheme || 'logoBlue'
-                    ]()}!important;
-                  }
-                `
-          }
-        >
-          {profile.username}
-        </Link>
-        <p
-          style={{ fontSize: small ? '1.3rem' : '1.5rem', color: Color.gray() }}
-        >{`(${profile.realName})`}</p>
-        {userId === profile.id && !unEditable && (
-          <StatusInput
-            innerRef={ref => {
-              this.StatusInput = ref;
+          onCancel={() => {
+            setEditedStatusMsg('');
+            setEditedStatusColor('');
+          }}
+          onStatusSubmit={onStatusMsgSubmit}
+        />
+      )}
+      {(profile.statusMsg || editedStatusMsg) && (
+        <StatusMsg
+          statusColor={statusColor}
+          statusMsg={editedStatusMsg || profile.statusMsg}
+        />
+      )}
+      {profile.statusMsg &&
+        !editedStatusMsg &&
+        userId === profile.id &&
+        !unEditable && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginTop: '0.5rem'
             }}
-            profile={profile}
-            statusColor={statusColor}
-            editedStatusMsg={editedStatusMsg}
-            setColor={color => this.setState({ editedStatusColor: color })}
-            onTextChange={event => {
-              this.setState({
-                editedStatusMsg: addEmoji(renderText(event.target.value)),
-                ...(!event.target.value ? { editedStatusColor: '' } : {})
-              });
-            }}
-            onCancel={() =>
-              this.setState({
-                editedStatusMsg: '',
-                editedStatusColor: ''
-              })
-            }
-            onStatusSubmit={this.onStatusMsgSubmit}
-          />
-        )}
-        {(profile.statusMsg || editedStatusMsg) && (
-          <StatusMsg
-            statusColor={statusColor}
-            statusMsg={editedStatusMsg || profile.statusMsg}
-          />
-        )}
-        {profile.statusMsg &&
-          !editedStatusMsg &&
-          userId === profile.id &&
-          !unEditable && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginTop: '0.5rem'
+          >
+            <Button
+              transparent
+              onClick={() => {
+                setEditedStatusMsg(profile.statusMsg);
+                StatusInputRef.current.focus();
               }}
             >
-              <Button
-                transparent
-                onClick={() => {
-                  this.setState({ editedStatusMsg: profile.statusMsg });
-                  this.StatusInput.focus();
-                }}
-              >
-                <Icon icon="pencil-alt" />
-                <span style={{ marginLeft: '0.7rem' }}>Change</span>
-              </Button>
-              <Button
-                transparent
-                style={{ marginLeft: '1rem' }}
-                onClick={() => this.setState({ confirmModalShown: true })}
-              >
-                <Icon icon="trash-alt" />
-                <span style={{ marginLeft: '0.7rem' }}>Remove</span>
-              </Button>
-            </div>
-          )}
-        {!noProfile && (
-          <Bio
-            small={small}
-            firstRow={profileFirstRow}
-            secondRow={profileSecondRow}
-            thirdRow={profileThirdRow}
-          />
-        )}
-        {noProfile &&
-          (userId === profile.id && !unEditable ? (
-            <div style={{ padding: '4rem 1rem 3rem 1rem' }}>
-              <a
-                style={{
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  fontSize: '2rem'
-                }}
-                onClick={() => this.setState({ bioEditModalShown: true })}
-              >
-                Introduce yourself!
-              </a>
-            </div>
-          ) : (
-            <div
-              style={{
-                height: '6rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start'
-              }}
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '0.7rem' }}>Change</span>
+            </Button>
+            <Button
+              transparent
+              style={{ marginLeft: '1rem' }}
+              onClick={() => setConfirmModalShown(true)}
             >
-              <span>
-                {profile.username} {`does not have a bio, yet`}
-              </span>
-            </div>
-          ))}
-        {bioEditModalShown && (
-          <BioEditModal
-            firstLine={profileFirstRow}
-            secondLine={profileSecondRow}
-            thirdLine={profileThirdRow}
-            onSubmit={this.uploadBio}
-            onHide={() =>
-              this.setState({
-                bioEditModalShown: false
-              })
-            }
-          />
+              <Icon icon="trash-alt" />
+              <span style={{ marginLeft: '0.7rem' }}>Remove</span>
+            </Button>
+          </div>
         )}
-        {confirmModalShown && (
-          <ConfirmModal
-            onConfirm={this.onRemoveStatus}
-            onHide={() => this.setState({ confirmModalShown: false })}
-            title={`Remove Status Message`}
-          />
-        )}
-      </div>
-    );
-  }
+      {!noProfile && (
+        <Bio
+          small={small}
+          firstRow={profileFirstRow}
+          secondRow={profileSecondRow}
+          thirdRow={profileThirdRow}
+        />
+      )}
+      {noProfile &&
+        (userId === profile.id && !unEditable ? (
+          <div style={{ padding: '4rem 1rem 3rem 1rem' }}>
+            <a
+              style={{
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '2rem'
+              }}
+              onClick={() => setBioEditModalShown(true)}
+            >
+              Introduce yourself!
+            </a>
+          </div>
+        ) : (
+          <div
+            style={{
+              height: '6rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start'
+            }}
+          >
+            <span>
+              {profile.username} {`does not have a bio, yet`}
+            </span>
+          </div>
+        ))}
+      {bioEditModalShown && (
+        <BioEditModal
+          firstLine={profileFirstRow}
+          secondLine={profileSecondRow}
+          thirdLine={profileThirdRow}
+          onSubmit={handleUploadBio}
+          onHide={() => setBioEditModalShown(false)}
+        />
+      )}
+      {confirmModalShown && (
+        <ConfirmModal
+          onConfirm={onRemoveStatus}
+          onHide={() => setConfirmModalShown(false)}
+          title={`Remove Status Message`}
+        />
+      )}
+    </ErrorBoundary>
+  );
 
-  onRemoveStatus = async() => {
-    const { removeStatusMsg, userId } = this.props;
+  async function onRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());
     removeStatusMsg(userId);
-    this.setState({ confirmModalShown: false });
-  };
+    setConfirmModalShown(false);
+  }
 
-  onStatusMsgSubmit = async() => {
-    const { updateStatusMsg, profile } = this.props;
-    const { editedStatusMsg, editedStatusColor } = this.state;
+  async function onStatusMsgSubmit() {
     const statusMsg = finalizeEmoji(editedStatusMsg);
     const statusColor = editedStatusColor || profile.statusColor;
     const { data } = await request.post(
@@ -232,17 +215,15 @@ export default class UserDetails extends Component {
       },
       auth()
     );
-    this.setState({ editedStatusColor: '', editedStatusMsg: '' });
+    setEditedStatusColor('');
+    setEditedStatusMsg('');
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
-  };
+  }
 
-  uploadBio = async params => {
-    const { profile, uploadBio } = this.props;
+  async function handleUploadBio(params) {
     if (typeof uploadBio === 'function') {
       await uploadBio({ ...params, profileId: profile.id });
-      this.setState({
-        bioEditModalShown: false
-      });
+      setBioEditModalShown(false);
     }
-  };
+  }
 }

@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import request from 'axios';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -7,138 +7,113 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/content`;
 
-export default class Embedly extends Component {
-  static propTypes = {
-    actualDescription: PropTypes.string,
-    actualTitle: PropTypes.string,
-    small: PropTypes.bool,
-    id: PropTypes.number.isRequired,
-    imageOnly: PropTypes.bool,
-    noLink: PropTypes.bool,
-    siteUrl: PropTypes.string,
-    style: PropTypes.object,
-    thumbUrl: PropTypes.string,
-    title: PropTypes.string,
-    url: PropTypes.string
-  };
+Embedly.propTypes = {
+  actualDescription: PropTypes.string,
+  actualTitle: PropTypes.string,
+  small: PropTypes.bool,
+  id: PropTypes.number.isRequired,
+  imageOnly: PropTypes.bool,
+  noLink: PropTypes.bool,
+  siteUrl: PropTypes.string,
+  style: PropTypes.object,
+  thumbUrl: PropTypes.string,
+  title: PropTypes.string,
+  url: PropTypes.string
+};
 
-  fallbackImage = '/img/link.png';
+export default function Embedly({
+  thumbUrl,
+  actualTitle,
+  actualDescription,
+  id,
+  imageOnly,
+  noLink,
+  siteUrl,
+  small,
+  style,
+  url,
+  ...props
+}) {
+  const [imageUrl, setImageUrl] = useState(
+    thumbUrl ? thumbUrl.replace('http://', 'https://') : '/img/link.png'
+  );
+  const [title, setTitle] = useState(actualTitle);
+  const [description, setDescription] = useState(actualDescription);
+  const [site, setSite] = useState(siteUrl);
+  const [prevUrl, setPrevUrl] = useState(url);
+  const fallbackImage = '/img/link.png';
+  const contentCss = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: ${Color.darkerGray()};
+    position: relative;
+    overflow: hidden;
+    ${!small ? 'flex-direction: column;' : ''};
+  `;
 
-  constructor({ thumbUrl, actualTitle, actualDescription, siteUrl }) {
-    super();
-    this.state = {
-      imageUrl: thumbUrl
-        ? thumbUrl.replace('http://', 'https://')
-        : '/img/link.png',
-      title: actualTitle,
-      description: actualDescription,
-      site: siteUrl
-    };
-  }
-
-  async componentDidMount() {
-    this.mounted = true;
-    const { id, siteUrl, url } = this.props;
-    if (url && !siteUrl) {
+  useEffect(() => {
+    let mounted = true;
+    if (url && (!siteUrl || url !== prevUrl)) {
+      fetchUrlData();
+    }
+    async function fetchUrlData() {
       try {
         const {
           data: { image, title, description, site }
         } = await request.put(`${API_URL}/embed`, { url, linkId: id });
-        if (this.mounted) {
-          this.setState({
-            imageUrl: image.url.replace('http://', 'https://'),
-            title,
-            description,
-            site
-          });
+        if (mounted) {
+          setImageUrl(image.url.replace('http://', 'https://'));
+          setTitle(title);
+          setDescription(description);
+          setSite(site);
+          setPrevUrl(url);
         }
       } catch (error) {
         console.error(error.response || error);
       }
     }
-  }
+    return () => (mounted = false);
+  }, [url]);
 
-  async componentDidUpdate(prevProps) {
-    const { id, url } = this.props;
-    if (url && prevProps.url !== url) {
-      try {
-        const {
-          data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, linkId: id });
-        if (this.mounted) {
-          this.setState({
-            imageUrl: image.url.replace('http://', 'https://'),
-            title,
-            description,
-            site
-          });
+  return (
+    <div
+      className={css`
+        width: 100%;
+        > a {
+          text-decoration: none;
         }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+        h3 {
+          font-size: 1.9rem;
+        }
+        p {
+          font-size: 1.5rem;
+          margin-top: 1rem;
+        }
+      `}
+      style={style}
+    >
+      {noLink ? (
+        <div className={contentCss}>{renderInner()}</div>
+      ) : (
+        <a
+          className={contentCss}
+          target="_blank"
+          rel="noopener noreferrer"
+          href={url}
+        >
+          {renderInner()}
+        </a>
+      )}
+    </div>
+  );
+
+  function onImageLoadError() {
+    setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
   }
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  render() {
-    const { noLink, small, style, url } = this.props;
-    const contentCss = css`
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      color: ${Color.darkerGray()};
-      position: relative;
-      overflow: hidden;
-      ${!small ? 'flex-direction: column;' : ''};
-    `;
-    return (
-      <div
-        className={css`
-          width: 100%;
-          > a {
-            text-decoration: none;
-          }
-          h3 {
-            font-size: 1.9rem;
-          }
-          p {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-          }
-        `}
-        style={style}
-      >
-        {noLink ? (
-          <div className={contentCss}>{this.renderInner()}</div>
-        ) : (
-          <a
-            className={contentCss}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={url}
-          >
-            {this.renderInner()}
-          </a>
-        )}
-      </div>
-    );
-  }
-
-  onImageLoadError = () => {
-    const { thumbUrl } = this.props;
-    this.setState(state => ({
-      imageUrl:
-        !thumbUrl || state.imageUrl === thumbUrl ? this.fallbackImage : thumbUrl
-    }));
-  };
-
-  renderInner = () => {
-    const { imageUrl, description, title, site } = this.state;
-    const { imageOnly, small } = this.props;
+  function renderInner() {
     return (
       <>
         <section
@@ -160,7 +135,7 @@ export default class Embedly extends Component {
               object-fit: cover;
             `}
             src={imageUrl}
-            onError={this.onImageLoadError}
+            onError={onImageLoadError}
             alt={title}
           />
         </section>
@@ -173,12 +148,12 @@ export default class Embedly extends Component {
               ${small ? '' : 'margin-top: 1rem;'};
             `}
           >
-            <h3>{title || this.props.title}</h3>
+            <h3>{title || props.title}</h3>
             <p>{description}</p>
             <p style={{ fontWeight: 'bold' }}>{site}</p>
           </section>
         )}
       </>
     );
-  };
+  }
 }

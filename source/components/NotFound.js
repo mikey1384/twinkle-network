@@ -6,6 +6,7 @@ NotFound.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string
 };
+
 export default function NotFound({ title, text }) {
   return (
     <div
