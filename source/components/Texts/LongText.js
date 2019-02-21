@@ -30,7 +30,7 @@ export default function LongText({
     setMore(false);
     setFullText(false);
     truncateText(children || '');
-  }, [children]);
+  }, [children, ContainerRef.current?.clientWidth]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
