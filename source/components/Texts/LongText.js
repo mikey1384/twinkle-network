@@ -24,7 +24,7 @@ function LongText({
   noExpand,
   searchMode
 }) {
-  const [text, setText] = useState('');
+  const [text, setText] = useState(processedStringWithURL(children));
   const [more, setMore] = useState(false);
   const [fullText, setFullText] = useState(false);
   const ContainerRef = useRef();
