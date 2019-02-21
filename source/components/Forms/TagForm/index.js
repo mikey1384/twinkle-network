@@ -47,7 +47,7 @@ export default function TagForm({
 }) {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const timerRef = useRef();
+  const timerRef = useRef(null);
 
   useEffect(() => {
     setLoading(false);

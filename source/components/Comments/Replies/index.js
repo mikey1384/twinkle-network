@@ -39,7 +39,7 @@ export default function Replies({
   const [deleting, setDeleting] = useState(false);
   const [replying, setReplying] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
-  const ContainerRef = useRef();
+  const ContainerRef = useRef(null);
 
   useEffect(() => {
     if (replies.length < prevReplies.length) {

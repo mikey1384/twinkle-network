@@ -61,8 +61,8 @@ function ProfilePanel({
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [mouseEnteredProfile, setMouseEnteredProfile] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
-  const CommentInputAreaRef = useRef();
-  const FileInputRef = useRef();
+  const CommentInputAreaRef = useRef(null);
+  const FileInputRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;

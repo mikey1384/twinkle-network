@@ -27,8 +27,8 @@ function LongText({
   const [text, setText] = useState('');
   const [more, setMore] = useState(false);
   const [fullText, setFullText] = useState(false);
-  const ContainerRef = useRef();
-  const TextRef = useRef();
+  const ContainerRef = useRef(null);
+  const TextRef = useRef(null);
 
   useEffect(() => {
     setText('');

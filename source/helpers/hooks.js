@@ -1,5 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from './listenerHelpers';
+
+export function useInterval(callback, interval, tracked) {
+  const timerRef = useRef(null);
+  useEffect(() => {
+    timerRef.current = setInterval(callback, 1000);
+    return () => clearInterval(timerRef.current);
+  }, tracked);
+}
 
 export function useOutsideClick(ref, callback) {
   const [insideClicked, setInsideClicked] = useState(false);

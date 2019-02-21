@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   cleanString,
   addEmoji,
@@ -44,11 +44,26 @@ export default function EditSubjectForm({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [readyForSubmit, setReadyForSubmit] = useState(false);
   const [subjectsModalShown, setSubjectsModalShown] = useState(false);
-  const EditSubjectFormRef = useRef();
-  const timerRef = useRef();
+  const EditSubjectFormRef = useRef(null);
+  const timerRef = useRef(null);
   useOutsideClick(EditSubjectFormRef, () => {
     if (!subjectsModalShown) onClickOutSide();
   });
+
+  useEffect(() => {
+    changeInput(title);
+    async function changeInput(input) {
+      await onChange(input);
+      const content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
+      for (let i = 0; i < searchResults.length; i++) {
+        if (content === searchResults[i].content) {
+          setExactMatchExists(true);
+          break;
+        }
+      }
+      setReadyForSubmit(true);
+    }
+  }, [title]);
 
   return (
     <ErrorBoundary>
@@ -155,20 +170,6 @@ export default function EditSubjectForm({
     setReadyForSubmit(false);
     setHighlightedIndex(-1);
     setExactMatchExists(false);
-    timerRef.current = setTimeout(() => changeInput(text), 200);
-
-    async function changeInput(input) {
-      await onChange(input);
-      const content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
-      for (let i = 0; i < searchResults.length; i++) {
-        if (content === searchResults[i].content) {
-          setExactMatchExists(true);
-          setHighlightedIndex(i);
-          break;
-        }
-      }
-      setReadyForSubmit(true);
-    }
   }
 
   function onUpdate() {

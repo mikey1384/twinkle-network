@@ -43,7 +43,7 @@ export default function UserDetails({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedStatusMsg, setEditedStatusMsg] = useState('');
   const [editedStatusColor, setEditedStatusColor] = useState('');
-  const StatusInputRef = useRef();
+  const StatusInputRef = useRef(null);
   const statusColor = editedStatusColor || profile.statusColor || 'logoBlue';
   const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
   const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;

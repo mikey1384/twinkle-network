@@ -37,7 +37,7 @@ function StarButton({
 }) {
   const [difficultyModalShown, setDifficultyModalShown] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
-  const StarButtonRef = useRef();
+  const StarButtonRef = useRef(null);
   useOutsideClick(StarButtonRef, () => setMenuShown(false));
 
   return (

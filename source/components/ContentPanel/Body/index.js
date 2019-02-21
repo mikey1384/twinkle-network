@@ -122,7 +122,7 @@ function Body({
   const [commentsShown, setCommentsShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const CommentInputAreaRef = useRef();
+  const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;

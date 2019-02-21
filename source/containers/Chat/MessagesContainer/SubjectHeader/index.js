@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useInterval } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import { cleanString } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
+import FullTextReveal from 'components/Texts/FullTextReveal';
+import UsernameText from 'components/Texts/UsernameText';
+import EditSubjectForm from './EditSubjectForm';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { cleanString } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 import {
   clearSubjectSearchResults,
@@ -13,10 +18,6 @@ import {
   searchChatSubject
 } from 'redux/actions/ChatActions';
 import { textIsOverflown } from 'helpers';
-import FullTextReveal from 'components/Texts/FullTextReveal';
-import UsernameText from 'components/Texts/UsernameText';
-import EditSubjectForm from './EditSubjectForm';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
@@ -60,19 +61,39 @@ function SubjectHeader({
   const [loaded, setLoaded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
-  const HeaderLabelRef = useRef();
+  const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
+  const [timeSinceReload, setTimeSinceReload] = useState(
+    timeSince(reloadTimeStamp)
+  );
+  const HeaderLabelRef = useRef(null);
+  const subjectTitle = cleanString(content);
+
   useEffect(() => {
     socket.on('subject_change', onSubjectChange);
     if (!loaded) {
       initialLoad();
     }
+    async function initialLoad() {
+      await loadChatSubject();
+      setLoaded(true);
+    }
     () => socket.removeListener('subject_change', onSubjectChange);
   });
-  async function initialLoad() {
-    await loadChatSubject();
-    setLoaded(true);
-  }
-  const subjectTitle = cleanString(content);
+
+  useEffect(() => {
+    setTimeSincePost(timeSince(timeStamp));
+    setTimeSinceReload(timeSince(reloadTimeStamp));
+  }, [timeStamp, reloadTimeStamp]);
+
+  useInterval(
+    () => {
+      setTimeSincePost(timeSince(timeStamp));
+      setTimeSinceReload(timeSince(reloadTimeStamp));
+    },
+    1000,
+    [timeStamp, reloadTimeStamp]
+  );
+
   return (
     <ErrorBoundary
       className={css`
@@ -216,16 +237,15 @@ function SubjectHeader({
     if (uploader.id) {
       posterString = (
         <span>
-          Started by <UsernameText user={uploader} /> {timeSince(timeStamp)}
+          Started by <UsernameText user={uploader} /> {timeSincePost}
         </span>
       );
     }
     if (isReloaded) {
       posterString = (
         <span>
-          Brought back by <UsernameText user={reloader} />{' '}
-          {timeSince(reloadTimeStamp)} (started by{' '}
-          {<UsernameText user={uploader} />})
+          Brought back by <UsernameText user={reloader} /> {timeSinceReload}{' '}
+          (started by {<UsernameText user={uploader} />})
         </span>
       );
     }

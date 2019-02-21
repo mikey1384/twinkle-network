@@ -62,7 +62,7 @@ function SectionPanel({
   const [onEdit, setOnEdit] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const themeColor = customColorTheme || profileTheme || 'logoBlue';
-  const TitleInputRef = useRef();
+  const TitleInputRef = useRef(null);
   useOutsideClick(TitleInputRef, () => {
     setOnEdit(false);
     setEditedTitle(title);

@@ -67,7 +67,7 @@ function TargetContent({
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [replyInputShown, setReplyInputShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const InputFormRef = useRef();
+  const InputFormRef = useRef(null);
 
   let userLikedThis = false;
   let userIsUploader;

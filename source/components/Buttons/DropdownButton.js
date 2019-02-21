@@ -45,7 +45,7 @@ export default function DropdownButton({
   ...props
 }) {
   const [menuDisplayed, setMenuDisplayed] = useState(false);
-  const ButtonRef = useRef();
+  const ButtonRef = useRef(null);
   useOutsideClick(ButtonRef, () => {
     if (menuDisplayed && typeof onOutsideClick === 'function') {
       onOutsideClick();

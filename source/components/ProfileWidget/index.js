@@ -30,7 +30,7 @@ function ProfileWidget({
   userId,
   username
 }) {
-  const FileInputRef = useRef();
+  const FileInputRef = useRef(null);
   return (
     <ErrorBoundary>
       <div

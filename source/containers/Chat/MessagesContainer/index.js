@@ -63,10 +63,8 @@ class MessagesContainer extends Component {
 
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
     const { userId } = this.props;
-    const prevMessages = prevProps.messages.filter(message => !message.deleted);
-    const currentMessages = this.props.messages.filter(
-      message => !message.deleted
-    );
+    const prevMessages = prevProps.messages;
+    const currentMessages = this.props.messages;
     const switchedChannel =
       prevProps.currentChannelId !== this.props.currentChannelId;
     const newMessageArrived =
@@ -268,7 +266,7 @@ class MessagesContainer extends Component {
     return messages.map((message, index) => {
       let { isNotification } = message;
       let messageStyle = isNotification ? { color: Color.gray() } : null;
-      return message.deleted ? null : (
+      return (
         <Message
           key={message.id || 'newMessage' + index}
           onDelete={this.onShowDeleteModal}

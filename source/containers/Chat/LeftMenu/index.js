@@ -40,8 +40,8 @@ export default function LeftMenu({
   const [onTitleHover, setOnTitleHover] = useState(false);
   const [channelsObj, setChannelsObj] = useState({});
   const [prevChannels, setPrevChannels] = useState(channels);
-  const ChannelListRef = useRef();
-  const ChannelTitleRef = useRef();
+  const ChannelListRef = useRef(null);
+  const ChannelTitleRef = useRef(null);
 
   useEffect(() => {
     setChannelsObj(

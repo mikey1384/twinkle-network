@@ -56,7 +56,7 @@ function VideoThumb({
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
-  const ThumbLabelRef = useRef();
+  const ThumbLabelRef = useRef(null);
   const menuProps = [];
   if (editable) {
     menuProps.push({

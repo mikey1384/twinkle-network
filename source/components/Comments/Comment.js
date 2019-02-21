@@ -80,7 +80,7 @@ function Comment({
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
 
-  const ReplyInputAreaRef = useRef();
+  const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
 
   useEffect(() => {

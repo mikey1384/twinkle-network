@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { useInterval } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
+import RoundList from 'components/RoundList';
+import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { loadChat } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { initChat } from 'redux/actions/ChatActions';
 import { profileThemes } from 'constants/defaultValues';
-import RoundList from 'components/RoundList';
-import Icon from 'components/Icon';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
@@ -41,15 +42,14 @@ function ChatFeeds({
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
   );
-  const timerRef = useRef();
-  useEffect(() => {
-    timerRef.current = setInterval(countBySeconds, 1000);
-    function countBySeconds() {
+  useInterval(
+    () => {
       setTimeSincePost(timeSince(timeStamp));
       setTimeSinceReload(timeSince(reloadTimeStamp));
-    }
-    return () => clearInterval(timerRef.current);
-  }, [timeStamp, reloadTimeStamp]);
+    },
+    1000,
+    [timeStamp, reloadTimeStamp]
+  );
   const themeColor = profileTheme || 'logoBlue';
   return (
     <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>

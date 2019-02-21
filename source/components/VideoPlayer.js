@@ -76,8 +76,8 @@ function VideoPlayer({
   const [justEarned, setJustEarned] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [progress, setProgress] = useState(0);
-  const PlayerRef = useRef();
-  const timerRef = useRef();
+  const PlayerRef = useRef(null);
+  const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
   const totalDurationRef = useRef(0);
   const mounted = useRef(true);

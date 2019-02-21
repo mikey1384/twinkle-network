@@ -1,41 +1,66 @@
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import moment from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
-import { connect } from 'react-redux';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { processedStringWithURL } from 'helpers/stringHelpers';
 import EditTextArea from 'components/Texts/EditTextArea';
-import { editMessage, saveMessage } from 'redux/actions/ChatActions';
 import Button from 'components/Button';
+import { connect } from 'react-redux';
+import { processedStringWithURL } from 'helpers/stringHelpers';
+import { editMessage, saveMessage } from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
 
-class Message extends Component {
-  static propTypes = {
-    authLevel: PropTypes.number,
-    canDelete: PropTypes.bool,
-    canEdit: PropTypes.bool,
-    message: PropTypes.object,
-    style: PropTypes.object,
-    myId: PropTypes.number,
-    onDelete: PropTypes.func,
-    onEditDone: PropTypes.func,
-    saveMessage: PropTypes.func,
-    showSubjectMsgsModal: PropTypes.func,
-    index: PropTypes.number,
-    isLastMsg: PropTypes.bool,
-    setScrollToBottom: PropTypes.func,
-    socketConnected: PropTypes.bool
-  };
+Message.propTypes = {
+  authLevel: PropTypes.number,
+  canDelete: PropTypes.bool,
+  canEdit: PropTypes.bool,
+  message: PropTypes.object,
+  style: PropTypes.object,
+  myId: PropTypes.number,
+  onDelete: PropTypes.func,
+  onEditDone: PropTypes.func,
+  saveMessage: PropTypes.func,
+  showSubjectMsgsModal: PropTypes.func,
+  index: PropTypes.number,
+  isLastMsg: PropTypes.bool,
+  setScrollToBottom: PropTypes.func,
+  socketConnected: PropTypes.bool
+};
 
-  state = {
-    onEdit: false,
-    subjectMsgsModalShown: false
-  };
+function Message({
+  authLevel,
+  canDelete,
+  canEdit,
+  index,
+  isLastMsg,
+  message,
+  message: {
+    id: messageId,
+    userId,
+    profilePicId,
+    username,
+    timeStamp,
+    content,
+    subjectId,
+    isReloadedSubject,
+    isSubject,
+    numMsgs,
+    uploaderAuthLevel
+  },
+  myId,
+  onDelete,
+  onEditDone,
+  saveMessage,
+  setScrollToBottom,
+  showSubjectMsgsModal,
+  socketConnected,
+  style
+}) {
+  const [onEdit, setOnEdit] = useState(false);
+  const [editPadding, setEditPadding] = useState(false);
 
-  componentDidMount() {
-    const { message, myId, saveMessage, index } = this.props;
+  useEffect(() => {
     if (
       !message.id &&
       message.userId === myId &&
@@ -44,165 +69,126 @@ class Message extends Component {
     ) {
       saveMessage({ ...message, content: message.content }, index);
     }
+  }, []);
+  useEffect(() => {
+    if (isLastMsg) {
+      setTimeout(() => setScrollToBottom(), 0);
+    }
+  }, [editPadding]);
+  const userIsUploader = myId === userId;
+  const userCanEditThis =
+    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+  const editButtonShown = userIsUploader || userCanEditThis;
+  const editMenuItems = [];
+  if (userIsUploader || canEdit) {
+    editMenuItems.push({
+      label: 'Edit',
+      onClick: () => {
+        setOnEdit(true);
+        setEditPadding(false);
+      }
+    });
   }
-
-  render() {
-    const {
-      authLevel,
-      canDelete,
-      canEdit,
-      message: {
-        id: messageId,
-        userId,
-        profilePicId,
-        username,
-        timeStamp,
-        content,
-        subjectId,
-        isReloadedSubject,
-        numMsgs,
-        uploaderAuthLevel
-      },
-      isLastMsg,
-      onDelete,
-      style,
-      socketConnected,
-      showSubjectMsgsModal,
-      myId,
-      setScrollToBottom
-    } = this.props;
-    const { editPadding } = this.state;
-    const userIsUploader = myId === userId;
-    const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
-    const editButtonShown = userIsUploader || userCanEditThis;
-    const editMenuItems = [];
-    if (userIsUploader || canEdit) {
-      editMenuItems.push({
-        label: 'Edit',
-        onClick: () =>
-          this.setState({ onEdit: true, editPadding: false }, () => {
-            if (isLastMsg) {
-              setTimeout(() => setScrollToBottom(), 0);
-            }
-          })
-      });
-    }
-    if (userIsUploader || canDelete) {
-      editMenuItems.push({
-        label: 'Remove',
-        onClick: () => {
-          this.setState({ editPadding: false });
-          onDelete(messageId);
-        }
-      });
-    }
-    const { onEdit } = this.state;
-    return (
-      <>
-        <div className={MessageStyle.container}>
-          <ProfilePic
-            className={MessageStyle.profilePic}
-            userId={userId}
-            profilePicId={profilePicId}
-          />
-          <div className={MessageStyle.contentWrapper}>
-            <div>
-              <UsernameText
-                style={MessageStyle.usernameText}
-                user={{
-                  id: userId,
-                  username: username
+  if (userIsUploader || canDelete) {
+    editMenuItems.push({
+      label: 'Remove',
+      onClick: () => {
+        setEditPadding(false);
+        onDelete(messageId);
+      }
+    });
+  }
+  return (
+    <>
+      <div className={MessageStyle.container}>
+        <ProfilePic
+          className={MessageStyle.profilePic}
+          userId={userId}
+          profilePicId={profilePicId}
+        />
+        <div className={MessageStyle.contentWrapper}>
+          <div>
+            <UsernameText
+              style={MessageStyle.usernameText}
+              user={{
+                id: userId,
+                username: username
+              }}
+            />{' '}
+            <span className={MessageStyle.timeStamp}>
+              {moment.unix(timeStamp).format('LLL')}
+            </span>
+          </div>
+          <div>
+            {onEdit ? (
+              <EditTextArea
+                autoFocus
+                disabled={!socketConnected}
+                rows={2}
+                text={content}
+                onCancel={() => {
+                  setOnEdit(false);
+                  setEditPadding(false);
                 }}
-              />{' '}
-              <span className={MessageStyle.timeStamp}>
-                {moment.unix(timeStamp).format('LLL')}
-              </span>
-            </div>
-            <div>
-              {onEdit ? (
-                <EditTextArea
-                  autoFocus
-                  disabled={!socketConnected}
-                  rows={2}
-                  text={content}
-                  onCancel={() =>
-                    this.setState({ onEdit: false, editPadding: false })
-                  }
-                  onEditDone={this.onEditDone}
-                />
-              ) : (
-                <div>
-                  <div className={MessageStyle.messageWrapper}>
-                    {this.renderPrefix()}
-                    <span
-                      style={style}
-                      dangerouslySetInnerHTML={{
-                        __html: processedStringWithURL(content)
-                      }}
-                    />
-                  </div>
-                  {!!messageId &&
-                    !isReloadedSubject &&
-                    editButtonShown &&
-                    !onEdit && (
-                      <DropdownButton
-                        snow
-                        style={{ position: 'absolute', top: 0, right: '5px' }}
-                        direction="left"
-                        opacity={0.8}
-                        onButtonClick={menuDisplayed => {
-                          this.setState(
-                            {
-                              editPadding: !menuDisplayed && isLastMsg
-                            },
-                            () => (isLastMsg ? setScrollToBottom() : null)
-                          );
-                        }}
-                        onOutsideClick={() => {
-                          this.setState({
-                            editPadding: false
-                          });
-                        }}
-                        menuProps={editMenuItems}
-                      />
-                    )}
-                  {!!isReloadedSubject &&
-                    !!numMsgs &&
-                    numMsgs > 0 && (
-                      <div className={MessageStyle.relatedConversationsButton}>
-                        <Button
-                          filled
-                          success
-                          onClick={() =>
-                            showSubjectMsgsModal({ subjectId, content })
-                          }
-                        >
-                          Show related conversations
-                        </Button>
-                      </div>
-                    )}
+                onEditDone={handleEditDone}
+              />
+            ) : (
+              <div>
+                <div className={MessageStyle.messageWrapper}>
+                  {renderPrefix()}
+                  <span
+                    style={style}
+                    dangerouslySetInnerHTML={{
+                      __html: processedStringWithURL(content)
+                    }}
+                  />
                 </div>
-              )}
-              {editPadding && <div style={{ height: '10rem' }} />}
-            </div>
+                {!!messageId &&
+                  !isReloadedSubject &&
+                  editButtonShown &&
+                  !onEdit && (
+                    <DropdownButton
+                      snow
+                      style={{ position: 'absolute', top: 0, right: '5px' }}
+                      direction="left"
+                      opacity={0.8}
+                      onButtonClick={menuDisplayed => {
+                        setEditPadding(!menuDisplayed && isLastMsg);
+                      }}
+                      onOutsideClick={() => {
+                        setEditPadding(false);
+                      }}
+                      menuProps={editMenuItems}
+                    />
+                  )}
+                {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
+                  <div className={MessageStyle.relatedConversationsButton}>
+                    <Button
+                      filled
+                      success
+                      onClick={() =>
+                        showSubjectMsgsModal({ subjectId, content })
+                      }
+                    >
+                      Show related conversations
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            {editPadding && <div style={{ height: '10rem' }} />}
           </div>
         </div>
-      </>
-    );
+      </div>
+    </>
+  );
+
+  async function handleEditDone(editedMessage) {
+    await onEditDone({ editedMessage, messageId: message.id });
+    setOnEdit(false);
   }
 
-  onEditDone = editedMessage => {
-    const { onEditDone, message } = this.props;
-    onEditDone({ editedMessage, messageId: message.id }).then(() =>
-      this.setState({ onEdit: false, editPadding: false })
-    );
-  };
-
-  renderPrefix = () => {
-    const {
-      message: { isSubject, isReloadedSubject }
-    } = this.props;
+  function renderPrefix() {
     let prefix = '';
     if (isSubject) {
       prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>;
@@ -215,7 +201,7 @@ class Message extends Component {
       );
     }
     return prefix;
-  };
+  }
 }
 
 export default connect(

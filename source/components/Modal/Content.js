@@ -10,7 +10,7 @@ Content.propTypes = {
 };
 
 export default function Content({ children, className, onHide }) {
-  const ContentRef = useRef();
+  const ContentRef = useRef(null);
   useOutsideClick(ContentRef, () => onHide?.());
   return (
     <div className={className} ref={ContentRef}>

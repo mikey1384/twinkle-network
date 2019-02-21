@@ -81,8 +81,8 @@ function Comments({
   const [commentSubmitted, setCommentSubmitted] = useState(false);
   const [prevComments, setPrevComments] = useState(comments);
 
-  const ContainerRef = useRef();
-  const CommentInputAreaRef = useRef();
+  const ContainerRef = useRef(null);
+  const CommentInputAreaRef = useRef(null);
   const CommentRefs = {};
 
   useEffect(() => {

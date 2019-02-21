@@ -14,6 +14,7 @@ Message.propTypes = {
   isReloadedSubject: PropTypes.number,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
+
 export default function Message({
   content,
   userId,

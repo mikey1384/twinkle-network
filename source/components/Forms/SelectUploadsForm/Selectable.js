@@ -24,7 +24,7 @@ export default function Selectable({
   type = 'video'
 }) {
   const [onTitleHover, setOnTitleHover] = useState(false);
-  const ThumbLabelRef = useRef();
+  const ThumbLabelRef = useRef(null);
 
   return (
     <ErrorBoundary

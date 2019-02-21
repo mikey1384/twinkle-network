@@ -53,7 +53,7 @@ function AddPlaylistModal({
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const timerRef = useRef();
+  const timerRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;

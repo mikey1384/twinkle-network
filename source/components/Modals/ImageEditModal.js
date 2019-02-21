@@ -20,7 +20,7 @@ export default function ImageEditModal({
   processing
 }) {
   const [imageScale, setImageScale] = useState(1);
-  const EditorRef = useRef();
+  const EditorRef = useRef(null);
   return (
     <Modal onHide={onHide}>
       <ErrorBoundary>

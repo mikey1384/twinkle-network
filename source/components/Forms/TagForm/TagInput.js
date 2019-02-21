@@ -43,7 +43,7 @@ export default function TagInput({
 }) {
   const [results, setResults] = useState(searchResults);
   const [indexToHighlight, setIndexToHighlight] = useState(0);
-  const TagInputRef = useRef();
+  const TagInputRef = useRef(null);
   useEffect(() => {
     if (!loading) {
       const shown =

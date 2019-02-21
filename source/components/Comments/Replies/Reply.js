@@ -81,7 +81,7 @@ function Reply({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [replyButtonClicked, setReplyButtonClicked] = useState(false);
-  const ReplyInputAreaRef = useRef();
+  const ReplyInputAreaRef = useRef(null);
 
   const userIsUploader = userId === uploader.id;
   const userCanEditThis =

@@ -110,7 +110,7 @@ function SubjectPanel({
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
-  const CommentsRef = useRef();
+  const CommentsRef = useRef(null);
   useEffect(() => {
     const titleIsEmpty = stringIsEmpty(editedTitle);
     const titleChanged = editedTitle !== title;
