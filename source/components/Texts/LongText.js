@@ -27,13 +27,14 @@ function LongText({
   const [text, setText] = useState('');
   const [more, setMore] = useState(false);
   const [fullText, setFullText] = useState(false);
-  const ContainerRef = useRef(null);
-  const TextRef = useRef(null);
+  const ContainerRef = useRef();
+  const TextRef = useRef();
 
   useEffect(() => {
-    setText('');
     setMore(false);
-    truncateText(children || '');
+    if (!chatMode && !searchMode) {
+      truncateText(children || '');
+    }
   }, [children, ContainerRef.current?.clientWidth, chatMode, searchMode]);
 
   useEffect(() => {
