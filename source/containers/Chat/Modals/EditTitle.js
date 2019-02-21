@@ -1,62 +1,49 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import { edit } from 'constants/placeholders';
 
-export default class editTitleModal extends Component {
-  static propTypes = {
-    onDone: PropTypes.func.isRequired,
-    onHide: PropTypes.func.isRequired,
-    title: PropTypes.string
-  };
+EditTitleModal.propTypes = {
+  onDone: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+  title: PropTypes.string
+};
 
-  constructor(props) {
-    super();
-    this.state = {
-      title: props.title
-    };
-  }
+export default function EditTitleModal({ onDone, onHide, ...props }) {
+  const [title, setTitle] = useState(props.title);
 
-  render() {
-    const { onHide, onDone } = this.props;
-    const { title } = this.state;
-    return (
-      <Modal onHide={onHide}>
-        <header>Edit Channel Title</header>
-        <main>
-          <form
-            style={{ width: '50%' }}
-            onSubmit={event => this.onSubmit(event, title)}
-          >
-            <Input
-              autoFocus
-              type="text"
-              placeholder={edit.title}
-              value={title}
-              onChange={text => this.setState({ title: text })}
-            />
-          </form>
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button primary onClick={() => onDone(title)}>
-            Done
-          </Button>
-        </footer>
-      </Modal>
-    );
-  }
+  return (
+    <Modal onHide={onHide}>
+      <header>Edit Channel Name</header>
+      <main>
+        <form
+          style={{ width: '50%' }}
+          onSubmit={event => onSubmit(event, title)}
+        >
+          <Input
+            autoFocus
+            type="text"
+            placeholder={edit.title}
+            value={title}
+            onChange={setTitle}
+          />
+        </form>
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button primary onClick={() => onDone(title)}>
+          Done
+        </Button>
+      </footer>
+    </Modal>
+  );
 
-  onSubmit(event, title) {
+  function onSubmit(event, title) {
     event.preventDefault();
-    this.props.onDone(title);
+    onDone(title);
   }
 }

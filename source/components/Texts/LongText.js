@@ -25,21 +25,21 @@ function LongText({
   searchMode
 }) {
   const [text, setText] = useState(processedStringWithURL(children));
-  const [more, setMore] = useState(false);
   const [fullText, setFullText] = useState(false);
+  const [more, setMore] = useState(false);
   const ContainerRef = useRef(null);
   const TextRef = useRef(null);
 
   useEffect(() => {
+    setFullText(false);
     setMore(false);
+  }, [children]);
+
+  useEffect(() => {
     if (!chatMode && !searchMode) {
       truncateText(children || '');
     }
   }, [children, ContainerRef.current?.clientWidth, chatMode, searchMode]);
-
-  useEffect(() => {
-    setFullText(false);
-  }, [children]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>

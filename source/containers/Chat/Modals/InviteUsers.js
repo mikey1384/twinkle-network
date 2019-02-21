@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
@@ -10,101 +10,82 @@ import {
   inviteUsersToChannel
 } from 'redux/actions/ChatActions';
 
-class InviteUsersModal extends Component {
-  static propTypes = {
-    clearSearchResults: PropTypes.func.isRequired,
-    currentChannel: PropTypes.object.isRequired,
-    inviteUsersToChannel: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired,
-    onHide: PropTypes.func.isRequired,
-    searchResults: PropTypes.array.isRequired,
-    searchUserToInvite: PropTypes.func.isRequired
-  };
+InviteUsersModal.propTypes = {
+  clearSearchResults: PropTypes.func.isRequired,
+  currentChannel: PropTypes.object.isRequired,
+  inviteUsersToChannel: PropTypes.func.isRequired,
+  onDone: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+  searchResults: PropTypes.array.isRequired,
+  searchUserToInvite: PropTypes.func.isRequired
+};
 
-  state = {
-    selectedUsers: []
-  };
+function InviteUsersModal({
+  clearSearchResults,
+  inviteUsersToChannel,
+  searchUserToInvite,
+  searchResults,
+  onDone,
+  onHide,
+  currentChannel
+}) {
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const currentMembersUID = currentChannel.members.map(member => member.userId);
 
-  render() {
-    const {
-      clearSearchResults,
-      searchUserToInvite,
-      searchResults,
-      onHide,
-      currentChannel
-    } = this.props;
-    const { selectedUsers } = this.state;
-    const currentMembersUID = currentChannel.members.map(
-      member => member.userId
-    );
-    return (
-      <Modal onHide={onHide}>
-        <header>Invite people to this channel</header>
-        <main>
-          <TagForm
-            title="People"
-            itemLabel="username"
-            searchResults={searchResults}
-            filter={result => currentMembersUID.indexOf(result.id) === -1}
-            onSearch={searchUserToInvite}
-            onClear={clearSearchResults}
-            onAddItem={this.onAddUser}
-            onRemoveItem={this.onRemoveUser}
-            onSubmit={selectedUsers.length > 0 && this.onDone}
-            renderDropdownLabel={item => (
-              <span>
-                {item.username}{' '}
-                {item.realName && <small>{`(${item.realName})`}</small>}
-              </span>
-            )}
-            searchPlaceholder="Search for people you want to chat with"
-            selectedItems={selectedUsers}
-          />
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            primary
-            onClick={this.onDone}
-            disabled={selectedUsers.length === 0}
-          >
-            Invite
-          </Button>
-        </footer>
-      </Modal>
-    );
+  return (
+    <Modal onHide={onHide}>
+      <header>Invite people to this channel</header>
+      <main>
+        <TagForm
+          title="People"
+          itemLabel="username"
+          searchResults={searchResults}
+          filter={result => currentMembersUID.indexOf(result.id) === -1}
+          onSearch={searchUserToInvite}
+          onClear={clearSearchResults}
+          onAddItem={onAddUser}
+          onRemoveItem={onRemoveUser}
+          onSubmit={selectedUsers.length > 0 && handleDone}
+          renderDropdownLabel={item => (
+            <span>
+              {item.username}{' '}
+              {item.realName && <small>{`(${item.realName})`}</small>}
+            </span>
+          )}
+          searchPlaceholder="Search for people you want to chat with"
+          selectedItems={selectedUsers}
+        />
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          primary
+          onClick={handleDone}
+          disabled={selectedUsers.length === 0}
+        >
+          Invite
+        </Button>
+      </footer>
+    </Modal>
+  );
+
+  function onAddUser(user) {
+    setSelectedUsers(selectedUsers.concat([user]));
   }
 
-  onAddUser = user => {
-    const { selectedUsers } = this.state;
-    this.setState({
-      selectedUsers: selectedUsers.concat([user])
-    });
-  };
+  function onRemoveUser(userId) {
+    setSelectedUsers(selectedUsers.filter(user => user.id !== userId));
+  }
 
-  onRemoveUser = userId => {
-    this.setState(state => ({
-      selectedUsers: state.selectedUsers.filter(
-        selectedUser => selectedUser.id !== userId
-      )
-    }));
-  };
-
-  onDone = async() => {
-    const { inviteUsersToChannel, currentChannel, onDone } = this.props;
-    const { selectedUsers } = this.state;
+  async function handleDone() {
     const message = await inviteUsersToChannel({
       selectedUsers,
       channelId: currentChannel.id
     });
     onDone(selectedUsers.map(user => user.id), message);
-  };
+  }
 }
 
 export default connect(
