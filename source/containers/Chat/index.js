@@ -1,7 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import MessagesContainer from './MessagesContainer';
-import { connect } from 'react-redux';
 import * as ChatActions from 'redux/actions/ChatActions';
 import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
@@ -16,6 +15,7 @@ import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 const channelName = (channels, currentChannel) => {
   for (let i = 0; i < channels.length; i++) {
@@ -26,52 +26,50 @@ const channelName = (channels, currentChannel) => {
   return null;
 };
 
-class Chat extends Component {
-  static propTypes = {
-    onUnmount: PropTypes.func.isRequired,
-    notifyThatMemberLeftChannel: PropTypes.func,
-    currentChannel: PropTypes.object,
-    channels: PropTypes.array.isRequired,
-    selectedChannelId: PropTypes.number,
-    userId: PropTypes.number,
-    loadMoreButton: PropTypes.bool,
-    loadMoreChannels: PropTypes.func.isRequired,
-    channelLoadMoreButtonShown: PropTypes.bool,
-    messages: PropTypes.array,
-    loadMoreMessages: PropTypes.func,
-    submitMessage: PropTypes.func,
-    username: PropTypes.string,
-    profilePicId: PropTypes.number,
-    sendFirstDirectMessage: PropTypes.func,
-    partnerId: PropTypes.number,
-    enterChannelWithId: PropTypes.func,
-    enterEmptyChat: PropTypes.func,
-    createNewChannel: PropTypes.func,
-    receiveMessage: PropTypes.func,
-    receiveMessageOnDifferentChannel: PropTypes.func,
-    receiveFirstMsg: PropTypes.func,
-    socketConnected: PropTypes.bool,
-    editChannelTitle: PropTypes.func,
-    hideChat: PropTypes.func,
-    leaveChannel: PropTypes.func,
-    openDirectMessageChannel: PropTypes.func,
-    pageVisible: PropTypes.bool,
-    subjectId: PropTypes.number
-  };
+Chat.propTypes = {
+  onUnmount: PropTypes.func.isRequired,
+  notifyThatMemberLeftChannel: PropTypes.func,
+  currentChannel: PropTypes.object,
+  channels: PropTypes.array.isRequired,
+  selectedChannelId: PropTypes.number,
+  userId: PropTypes.number,
+  loadMoreButton: PropTypes.bool,
+  loadMoreChannels: PropTypes.func.isRequired,
+  channelLoadMoreButtonShown: PropTypes.bool,
+  messages: PropTypes.array,
+  loadMoreMessages: PropTypes.func,
+  submitMessage: PropTypes.func,
+  username: PropTypes.string,
+  profilePicId: PropTypes.number,
+  sendFirstDirectMessage: PropTypes.func,
+  partnerId: PropTypes.number,
+  enterChannelWithId: PropTypes.func,
+  enterEmptyChat: PropTypes.func,
+  createNewChannel: PropTypes.func,
+  receiveMessage: PropTypes.func,
+  receiveMessageOnDifferentChannel: PropTypes.func,
+  receiveFirstMsg: PropTypes.func,
+  socketConnected: PropTypes.bool,
+  editChannelTitle: PropTypes.func,
+  hideChat: PropTypes.func,
+  leaveChannel: PropTypes.func,
+  openDirectMessageChannel: PropTypes.func,
+  pageVisible: PropTypes.bool,
+  subjectId: PropTypes.number
+};
 
-  state = {
-    chatMessage: '',
-    loading: false,
-    currentChannelOnlineMembers: [],
-    leaveConfirmModalShown: false,
-    createNewChannelModalShown: false,
-    inviteUsersModalShown: false,
-    userListModalShown: false,
-    editTitleModalShown: false,
-    onTitleHover: false,
-    listScrollPosition: 0,
-    textAreaHeight: 0
-  };
+function Chat() {
+  const [chatMessage, setChatMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [currentChannelOnlineMembers, setCurrentChannelOnlineMembers] = useState([]);
+  const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
+  const [createNewChannelModalShown, setCreateNewChannelModalShown] = useState(false);
+  const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
+  const [userListModalShown, setUserListModalShown] = useState(false);
+  const [editTitleModalShown, setEditTitleModalShown] = useState(false);
+  const [onTitleHover, setOnTitleHover] = useState(false);
+  const [listScrollPosition, setListScrollPosition] = useState(0);
+  const [textAreaHeight, setTextAreaHeight] = useState(0);
 
   componentDidMount() {
     this.mounted = true;
