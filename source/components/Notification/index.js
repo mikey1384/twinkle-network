@@ -67,9 +67,11 @@ function Notification({
       setActiveTab('rankings');
     } else {
       setActiveTab(
-        rewards.length > 0
+        activeTab === 'reward' || rewards.length > 0
           ? 'reward'
-          : (location === 'home' && notifications.length > 0) || numNewNotis > 0
+          : activeTab === 'notification' ||
+            (location === 'home' && notifications.length > 0) ||
+            numNewNotis > 0
           ? 'notification'
           : 'rankings'
       );
