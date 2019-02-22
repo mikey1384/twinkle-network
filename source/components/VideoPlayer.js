@@ -84,6 +84,15 @@ function VideoPlayer({
   const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      onVideoStop();
+      clearInterval(timerRef.current);
+      mounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     if (videoCode && typeof hasHqThumb !== 'number') {
       fetchVideoThumb();
     } else {
@@ -170,14 +179,6 @@ function VideoPlayer({
       }
     }
   }, [pageVisible, chatMode]);
-
-  useEffect(() => {
-    return function cleanUp() {
-      onVideoStop();
-      clearInterval(timerRef.current);
-      mounted.current = false;
-    };
-  }, []);
 
   const meterColor = xpEarned
     ? Color.green()

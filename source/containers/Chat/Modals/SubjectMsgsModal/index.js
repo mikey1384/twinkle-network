@@ -24,6 +24,7 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
   const [messages, setMessages] = useState([]);
   const mounted = useRef(true);
   useEffect(() => {
+    mounted.current = true;
     loadMessages();
     async function loadMessages() {
       try {

@@ -126,6 +126,7 @@ function Body({
   const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
+    mounted.current = true;
     if (autoExpand && !commentsShown) {
       loadInitialComments();
     }

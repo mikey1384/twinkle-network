@@ -41,6 +41,7 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
   const mounted = useRef(true);
 
   useEffect(() => {
+    mounted.current = true;
     loadSubjects();
     async function loadSubjects() {
       try {

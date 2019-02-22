@@ -33,6 +33,7 @@ function TagStatus({
   const mounted = useRef(true);
 
   useEffect(() => {
+    mounted.current = true;
     loadTags();
     async function loadTags() {
       const tags = await fetchPlaylistsContaining({ videoId: contentId });

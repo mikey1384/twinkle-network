@@ -27,6 +27,7 @@ export default function AlreadyPosted({
   const [existingContent, setExistingContent] = useState({});
   const mounted = useRef(true);
   useEffect(() => {
+    mounted.current = true;
     checkExists();
     async function checkExists() {
       const { content } = await checkIfContentExists({

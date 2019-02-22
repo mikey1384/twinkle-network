@@ -98,6 +98,23 @@ function Chat({
   const mounted = useRef(true);
 
   useEffect(() => {
+    mounted.current = true;
+    setChannelsObj(
+      channels.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [curr.id]: curr
+        }),
+        {}
+      )
+    );
+    return () => {
+      mounted.current = false;
+      onUnmount();
+    };
+  }, []);
+
+  useEffect(() => {
     socket.on('receive_message', onReceiveMessage);
     socket.on('subject_change', onSubjectChange);
     socket.on('chat_invitation', onChatInvitation);
@@ -151,22 +168,6 @@ function Chat({
       }
     });
   }, [selectedChannelId]);
-
-  useEffect(() => {
-    setChannelsObj(
-      channels.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr.id]: curr
-        }),
-        {}
-      )
-    );
-    return () => {
-      mounted.current = false;
-      onUnmount();
-    };
-  }, []);
 
   let menuProps = currentChannel.twoPeople
     ? [{ label: 'Hide Chat', onClick: onHideChat }]

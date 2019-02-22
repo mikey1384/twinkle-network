@@ -49,6 +49,13 @@ function XPRewardInterface({
     setSelectedAmount(0);
   }, [difficulty]);
 
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  });
+
   if (!userId || uploaderId === userId) return null;
   return (
     <div

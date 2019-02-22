@@ -66,6 +66,7 @@ function ProfilePanel({
   const mounted = useRef(true);
 
   useEffect(() => {
+    mounted.current = true;
     handleLoadComments();
     async function handleLoadComments() {
       try {

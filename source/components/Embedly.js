@@ -56,6 +56,7 @@ export default function Embedly({
   `;
 
   useEffect(() => {
+    mounted.current = true;
     if (url && (!siteUrl || url !== prevUrl)) {
       fetchUrlData();
     }

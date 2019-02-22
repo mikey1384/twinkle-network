@@ -29,6 +29,7 @@ function Rankings({ myId, twinkleXP }) {
   const mounted = useRef(true);
 
   useEffect(() => {
+    mounted.current = true;
     loadRankings();
     async function loadRankings() {
       try {

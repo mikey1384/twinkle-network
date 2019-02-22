@@ -57,6 +57,8 @@ function AddPlaylistModal({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    mounted.current = true;
+    loadVideos();
     async function loadVideos() {
       const { results, loadMoreButton } = await loadUploads({
         type: 'video',
@@ -68,7 +70,6 @@ function AddPlaylistModal({
         setLoadMoreButton(loadMoreButton);
       }
     }
-    loadVideos();
     return function cleanUp() {
       clearTimeout(timerRef.current);
       mounted.current = false;

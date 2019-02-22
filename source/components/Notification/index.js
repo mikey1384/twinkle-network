@@ -68,15 +68,15 @@ function Notification({
     if (!myId) {
       setActiveTab('rankings');
     } else {
-      setActiveTab(
+      const tab =
         activeTab === 'reward' || rewards.length > 0
           ? 'reward'
           : activeTab === 'notification' ||
             (location === 'home' && notifications.length > 0) ||
             numNewNotis > 0
           ? 'notification'
-          : 'rankings'
-      );
+          : 'rankings';
+      setActiveTab(tab);
     }
     setRewardTabShown(rewards.length > 0);
   }, [myId, notifications]);

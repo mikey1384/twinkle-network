@@ -32,6 +32,7 @@ function VideoThumbImage({
   const [xpEarned, setXpEarned] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
+    mounted.current = true;
     checkXpStatus();
     async function checkXpStatus() {
       const authorization = auth();
