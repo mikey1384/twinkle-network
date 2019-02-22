@@ -186,7 +186,7 @@ function People({
       !chatMode &&
       !searchMode &&
       profiles.length > 0 &&
-      searchedProfiles.length === 0 &&
+      stringIsEmpty(searchText) &&
       scrollHeightRef.current !== 0
     ) {
       scrollPositionRef.current = {
