@@ -55,6 +55,16 @@ function People({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    init();
+    async function init() {
+      if (history.action === 'PUSH' || profiles.length === 0) {
+        await fetchUsers();
+        setLoaded(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (loading) {
       loadMoreProfiles();
     }
@@ -62,17 +72,9 @@ function People({
 
   useEffect(() => {
     mounted.current = true;
-    init();
     if (mounted.current) {
       addEvent(window, 'scroll', onScroll);
       addEvent(document.getElementById('App'), 'scroll', onScroll);
-    }
-
-    async function init() {
-      if (history.action === 'PUSH' || profiles.length === 0) {
-        await fetchUsers();
-        setLoaded(true);
-      }
     }
 
     function onScroll() {
