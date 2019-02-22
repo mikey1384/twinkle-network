@@ -9,6 +9,7 @@ import { mobileMaxWidth } from 'constants/css';
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired
 };
+
 export default function ContentPage({ match }) {
   return (
     <div

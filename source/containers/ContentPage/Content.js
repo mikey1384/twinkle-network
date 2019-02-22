@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ContentPanel from 'components/ContentPanel';
 import NotFound from 'components/NotFound';
@@ -29,9 +29,40 @@ function Content({
     loaded: false,
     exists: false
   });
+  const mounted = useRef(null);
   useEffect(() => {
+    mounted.current = true;
     loadContent();
+    async function loadContent() {
+      try {
+        const {
+          data: { exists }
+        } = await request.get(
+          `${URL}/content/check?contentId=${contentId}&type=${type}`
+        );
+        if (mounted.current) {
+          setContentStatus({
+            loaded: true,
+            exists
+          });
+          setContentObj({
+            contentId,
+            type
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        setContentStatus({
+          loaded: true,
+          exists: false
+        });
+      }
+    }
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [contentId, url]);
+
   return (
     <ErrorBoundary>
       {loaded ? (
@@ -68,30 +99,6 @@ function Content({
       )}
     </ErrorBoundary>
   );
-
-  async function loadContent() {
-    try {
-      const {
-        data: { exists }
-      } = await request.get(
-        `${URL}/content/check?contentId=${contentId}&type=${type}`
-      );
-      setContentStatus({
-        loaded: true,
-        exists
-      });
-      setContentObj({
-        contentId,
-        type
-      });
-    } catch (error) {
-      console.error(error);
-      setContentStatus({
-        loaded: true,
-        exists: false
-      });
-    }
-  }
 
   function onAttachStar(data) {
     setContentObj({

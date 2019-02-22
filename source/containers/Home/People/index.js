@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
@@ -16,186 +16,181 @@ import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
-class People extends Component {
-  static propTypes = {
-    chatMode: PropTypes.bool.isRequired,
-    clearUserSearch: PropTypes.func.isRequired,
-    fetchMoreUsers: PropTypes.func.isRequired,
-    fetchUsers: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    loadMoreButton: PropTypes.bool,
-    profiles: PropTypes.array.isRequired,
-    searchedProfiles: PropTypes.array.isRequired,
-    searchMode: PropTypes.bool.isRequired,
-    searchUsers: PropTypes.func.isRequired,
-    userId: PropTypes.number
-  };
+People.propTypes = {
+  chatMode: PropTypes.bool.isRequired,
+  clearUserSearch: PropTypes.func.isRequired,
+  fetchMoreUsers: PropTypes.func.isRequired,
+  fetchUsers: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  loadMoreButton: PropTypes.bool,
+  profiles: PropTypes.array.isRequired,
+  searchedProfiles: PropTypes.array.isRequired,
+  searchMode: PropTypes.bool.isRequired,
+  searchUsers: PropTypes.func.isRequired,
+  userId: PropTypes.number
+};
 
-  mounted = false;
+function People({
+  chatMode,
+  clearUserSearch,
+  fetchUsers,
+  fetchMoreUsers,
+  history,
+  loadMoreButton,
+  profiles,
+  userId,
+  searchedProfiles,
+  searchMode,
+  searchUsers
+}) {
+  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [searching, setSearching] = useState(false);
 
-  body =
-    typeof document !== 'undefined'
-      ? document.scrollingElement || document.documentElement
-      : {};
+  const mounted = useRef(true);
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
+  const scrollHeightRef = useRef(0);
+  const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
+  const timerRef = useRef(null);
 
-  scrollHeight = 0;
-
-  timer = null;
-
-  state = {
-    searchText: '',
-    loading: false,
-    loaded: false,
-    searching: false
-  };
-
-  async componentDidMount() {
-    const { fetchUsers, history, profiles } = this.props;
-    this.mounted = true;
-    if (history.action === 'PUSH' || profiles.length === 0) {
-      await fetchUsers();
+  useEffect(() => {
+    if (loading) {
+      loadMoreProfiles();
     }
-    if (this.mounted) {
-      this.setState({ loaded: true });
-      addEvent(window, 'scroll', this.onScroll);
-      addEvent(document.getElementById('App'), 'scroll', this.onScroll);
+  }, [loading]);
+
+  useEffect(() => {
+    mounted.current = true;
+    init();
+    if (mounted.current) {
+      addEvent(window, 'scroll', onScroll);
+      addEvent(document.getElementById('App'), 'scroll', onScroll);
     }
-  }
 
-  componentWillUnmount() {
-    const { clearUserSearch } = this.props;
-    this.mounted = false;
-    clearUserSearch();
-    removeEvent(window, 'scroll', this.onScroll);
-    removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
-  }
+    async function init() {
+      if (history.action === 'PUSH' || profiles.length === 0) {
+        await fetchUsers();
+        setLoaded(true);
+      }
+    }
 
-  render() {
-    const { loadMoreButton, userId, profiles, searchedProfiles } = this.props;
-    const { loading, loaded, searching, searchText } = this.state;
-    return (
-      <div style={{ height: '100%' }}>
-        <SearchInput
-          className={css`
-            @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 1rem;
-            }
-          `}
-          style={{ zIndex: 0 }}
-          addonColor={Color.gold()}
-          placeholder="Search for users"
-          onChange={this.onPeopleSearch}
-          value={searchText}
-        />
-        <div
-          style={{
-            marginTop: '1rem',
-            marginBottom: '1rem',
-            position: 'relative',
-            minHeight: '30%',
-            width: '100%'
-          }}
-        >
-          {!loaded &&
-            profiles.length === 0 && <Loading text="Loading Users..." />}
-          {loaded &&
-            !searching &&
-            profiles.map(profile => (
-              <ProfilePanel
-                expandable
-                key={profile.id}
-                userId={userId}
-                profile={profile}
-              />
-            ))}
-          {searching &&
-            searchedProfiles.map(profile => (
-              <ProfilePanel
-                expandable
-                key={profile.id}
-                userId={userId}
-                profile={profile}
-              />
-            ))}
-          {!searching &&
-            loaded &&
-            loadMoreButton && (
-              <LoadMoreButton
-                filled
-                info
-                onClick={this.loadMoreProfiles}
-                loading={loading}
-              />
-            )}
-        </div>
+    function onScroll() {
+      if (
+        document.getElementById('App').scrollHeight > scrollHeightRef.current ||
+        BodyRef.current.scrollTop > scrollHeightRef.current
+      ) {
+        scrollHeightRef.current = Math.max(
+          document.getElementById('App').scrollHeight,
+          BodyRef.current.scrollTop
+        );
+      }
+      if (
+        !chatMode &&
+        !searchMode &&
+        profiles.length > 0 &&
+        scrollHeightRef.current !== 0
+      ) {
+        scrollPositionRef.current = {
+          desktop: document.getElementById('App').scrollTop,
+          mobile: BodyRef.current.scrollTop
+        };
+        if (
+          (scrollPositionRef.current.desktop >=
+            scrollHeightRef.current - window.innerHeight - 1000 ||
+            scrollPositionRef.current.mobile >=
+              scrollHeightRef.current - window.innerHeight - 1000) &&
+          loadMoreButton
+        ) {
+          setLoading(true);
+        }
+      }
+    }
+
+    return function cleanUp() {
+      mounted.current = false;
+      clearUserSearch();
+      removeEvent(window, 'scroll', onScroll);
+      removeEvent(document.getElementById('App'), 'scroll', onScroll);
+    };
+  }, [profiles]);
+
+  return (
+    <div style={{ height: '100%' }}>
+      <SearchInput
+        className={css`
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 1rem;
+          }
+        `}
+        style={{ zIndex: 0 }}
+        addonColor={Color.gold()}
+        placeholder="Search for users"
+        onChange={onPeopleSearch}
+        value={searchText}
+      />
+      <div
+        style={{
+          marginTop: '1rem',
+          marginBottom: '1rem',
+          position: 'relative',
+          minHeight: '30%',
+          width: '100%'
+        }}
+      >
+        {!loaded && <Loading text="Loading Users..." />}
+        {loaded &&
+          !searching &&
+          profiles.map(profile => (
+            <ProfilePanel
+              expandable
+              key={profile.id}
+              userId={userId}
+              profile={profile}
+            />
+          ))}
+        {searching &&
+          searchedProfiles.map(profile => (
+            <ProfilePanel
+              expandable
+              key={profile.id}
+              userId={userId}
+              profile={profile}
+            />
+          ))}
+        {!searching && loaded && loadMoreButton && (
+          <LoadMoreButton
+            filled
+            info
+            onClick={loadMoreProfiles}
+            loading={loading}
+          />
+        )}
       </div>
+    </div>
+  );
+
+  async function loadMoreProfiles() {
+    setLoading(true);
+    await fetchMoreUsers(
+      queryStringForArray({
+        array: profiles,
+        originVar: 'id',
+        destinationVar: 'shownUsers'
+      })
     );
+    setLoading(false);
   }
 
-  loadMoreProfiles = async() => {
-    const { fetchMoreUsers, profiles } = this.props;
-    const { loading } = this.state;
-    if (!loading) {
-      this.setState({ loading: true });
-      await fetchMoreUsers(
-        queryStringForArray({
-          array: profiles,
-          originVar: 'id',
-          destinationVar: 'shownUsers'
-        })
-      );
-      this.setState({ loading: false });
-    }
-  };
-
-  onPeopleSearch = text => {
-    const { searchUsers, clearUserSearch } = this.props;
-    clearTimeout(this.timer);
-    this.setState({ searchText: text, searching: !stringIsEmpty(text) });
+  function onPeopleSearch(text) {
+    clearTimeout(timerRef.current);
+    setSearchText(text);
+    setSearching(!stringIsEmpty(text));
     if (stringIsEmpty(text)) {
       return clearUserSearch();
     }
-    this.timer = setTimeout(() => searchUsers(text), 300);
-  };
-
-  onScroll = () => {
-    const { chatMode, loadMoreButton, profiles, searchMode } = this.props;
-    if (
-      document.getElementById('App').scrollHeight > this.scrollHeight ||
-      this.body.scrollTop > this.scrollHeight
-    ) {
-      this.scrollHeight = Math.max(
-        document.getElementById('App').scrollHeight,
-        this.body.scrollTop
-      );
-    }
-    if (
-      !chatMode &&
-      !searchMode &&
-      profiles.length > 0 &&
-      this.scrollHeight !== 0
-    ) {
-      this.setState(
-        {
-          scrollPosition: {
-            desktop: document.getElementById('App').scrollTop,
-            mobile: this.body.scrollTop
-          }
-        },
-        () => {
-          if (
-            (this.state.scrollPosition.desktop >=
-              this.scrollHeight - window.innerHeight - 1000 ||
-              this.state.scrollPosition.mobile >=
-                this.scrollHeight - window.innerHeight - 1000) &&
-            loadMoreButton
-          ) {
-            this.loadMoreProfiles();
-          }
-        }
-      );
-    }
-  };
+    timerRef.current = setTimeout(() => searchUsers(text), 300);
+  }
 }
 
 export default connect(
