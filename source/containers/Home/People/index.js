@@ -71,7 +71,7 @@ function People({
   }, [loading]);
 
   useEffect(() => {
-    if (searchedProfiles) {
+    if (searchedProfiles.length > 0) {
       setSearching(false);
     }
   }, [searchedProfiles]);
@@ -89,7 +89,7 @@ function People({
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-  }, [chatMode, profiles, searchMode, searchedProfiles]);
+  }, [chatMode, profiles, searchMode, searchText]);
 
   return (
     <div style={{ height: '100%' }}>
