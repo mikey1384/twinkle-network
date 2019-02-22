@@ -89,7 +89,7 @@ function People({
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-  }, [chatMode, profiles, searchMode]);
+  }, [chatMode, profiles, searchMode, searchText]);
 
   return (
     <div style={{ height: '100%' }}>
