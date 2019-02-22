@@ -89,7 +89,7 @@ function People({
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-  }, [chatMode, profiles, searchMode, searchText]);
+  }, [chatMode, profiles, searchMode, searchedProfiles]);
 
   return (
     <div style={{ height: '100%' }}>
@@ -186,7 +186,7 @@ function People({
       !chatMode &&
       !searchMode &&
       profiles.length > 0 &&
-      stringIsEmpty(searchText) &&
+      searchedProfiles.length === 0 &&
       scrollHeightRef.current !== 0
     ) {
       scrollPositionRef.current = {
