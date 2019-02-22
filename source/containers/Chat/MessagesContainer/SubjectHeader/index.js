@@ -66,6 +66,7 @@ function SubjectHeader({
     timeSince(reloadTimeStamp)
   );
   const HeaderLabelRef = useRef(null);
+  const mounted = useRef(true);
   const subjectTitle = cleanString(content);
 
   useEffect(() => {
@@ -75,9 +76,14 @@ function SubjectHeader({
     }
     async function initialLoad() {
       await loadChatSubject();
-      setLoaded(true);
+      if (mounted.current) {
+        setLoaded(true);
+      }
     }
-    () => socket.removeListener('subject_change', onSubjectChange);
+    return function cleanUp() {
+      mounted.current = false;
+      socket.removeListener('subject_change', onSubjectChange);
+    };
   });
 
   useEffect(() => {

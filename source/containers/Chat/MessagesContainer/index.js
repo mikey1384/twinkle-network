@@ -23,7 +23,8 @@ class MessagesContainer extends Component {
     loadMoreButton: PropTypes.bool,
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    onLoadingDone: PropTypes.func
   };
 
   state = {
@@ -46,6 +47,7 @@ class MessagesContainer extends Component {
   messagesContainer = {};
 
   componentDidMount() {
+    const { onLoadingDone } = this.props;
     this.setScrollToBottom();
     this.setState({
       fillerHeight:
@@ -54,7 +56,10 @@ class MessagesContainer extends Component {
           : 0
     });
     this.setScrollToBottom();
-    setTimeout(() => this.setScrollToBottom(), 300);
+    setTimeout(() => {
+      this.setScrollToBottom();
+      onLoadingDone();
+    }, 300);
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -62,7 +67,7 @@ class MessagesContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
-    const { userId } = this.props;
+    const { onLoadingDone, userId } = this.props;
     const prevMessages = prevProps.messages;
     const currentMessages = this.props.messages;
     const switchedChannel =
@@ -82,7 +87,10 @@ class MessagesContainer extends Component {
             : 0
       });
       this.setScrollToBottom();
-      return setTimeout(() => this.setScrollToBottom(), 300);
+      return setTimeout(() => {
+        this.setScrollToBottom();
+        onLoadingDone();
+      }, 300);
     }
     if (messageDeleted) {
       return this.setState({

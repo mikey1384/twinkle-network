@@ -17,68 +17,109 @@ import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 
-const channelName = (channels, currentChannel) => {
-  for (let i = 0; i < channels.length; i++) {
-    if (channels[i].id === currentChannel.id) {
-      return channels[i].channelName;
-    }
-  }
-  return null;
-};
-
 Chat.propTypes = {
-  onUnmount: PropTypes.func.isRequired,
-  notifyThatMemberLeftChannel: PropTypes.func,
-  currentChannel: PropTypes.object,
-  channels: PropTypes.array.isRequired,
-  selectedChannelId: PropTypes.number,
-  userId: PropTypes.number,
-  loadMoreButton: PropTypes.bool,
-  loadMoreChannels: PropTypes.func.isRequired,
   channelLoadMoreButtonShown: PropTypes.bool,
-  messages: PropTypes.array,
-  loadMoreMessages: PropTypes.func,
-  submitMessage: PropTypes.func,
-  username: PropTypes.string,
-  profilePicId: PropTypes.number,
-  sendFirstDirectMessage: PropTypes.func,
-  partnerId: PropTypes.number,
+  channels: PropTypes.array.isRequired,
+  createNewChannel: PropTypes.func,
+  currentChannel: PropTypes.object,
+  editChannelTitle: PropTypes.func,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
-  createNewChannel: PropTypes.func,
+  hideChat: PropTypes.func,
+  leaveChannel: PropTypes.func,
+  loadMoreButton: PropTypes.bool,
+  loadMoreChannels: PropTypes.func.isRequired,
+  loadMoreMessages: PropTypes.func,
+  messages: PropTypes.array,
+  notifyThatMemberLeftChannel: PropTypes.func,
+  onUnmount: PropTypes.func.isRequired,
+  openDirectMessageChannel: PropTypes.func,
+  pageVisible: PropTypes.bool,
+  profilePicId: PropTypes.number,
+  partnerId: PropTypes.number,
   receiveMessage: PropTypes.func,
   receiveMessageOnDifferentChannel: PropTypes.func,
   receiveFirstMsg: PropTypes.func,
+  selectedChannelId: PropTypes.number,
+  sendFirstDirectMessage: PropTypes.func,
   socketConnected: PropTypes.bool,
-  editChannelTitle: PropTypes.func,
-  hideChat: PropTypes.func,
-  leaveChannel: PropTypes.func,
-  openDirectMessageChannel: PropTypes.func,
-  pageVisible: PropTypes.bool,
-  subjectId: PropTypes.number
+  submitMessage: PropTypes.func,
+  subjectId: PropTypes.number,
+  userId: PropTypes.number,
+  username: PropTypes.string
 };
 
-function Chat() {
+function Chat({
+  channels,
+  channelLoadMoreButtonShown,
+  currentChannel,
+  createNewChannel,
+  editChannelTitle,
+  enterChannelWithId,
+  enterEmptyChat,
+  hideChat,
+  leaveChannel,
+  loadMoreButton,
+  loadMoreChannels,
+  loadMoreMessages,
+  messages,
+  notifyThatMemberLeftChannel,
+  onUnmount,
+  openDirectMessageChannel,
+  pageVisible,
+  partnerId,
+  profilePicId,
+  receiveFirstMsg,
+  receiveMessage,
+  receiveMessageOnDifferentChannel,
+  selectedChannelId,
+  sendFirstDirectMessage,
+  socketConnected,
+  subjectId,
+  submitMessage,
+  userId,
+  username
+}) {
+  const [channelsObj, setChannelsObj] = useState({});
   const [chatMessage, setChatMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentChannelOnlineMembers, setCurrentChannelOnlineMembers] = useState([]);
+  const [
+    currentChannelOnlineMembers,
+    setCurrentChannelOnlineMembers
+  ] = useState([]);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
-  const [createNewChannelModalShown, setCreateNewChannelModalShown] = useState(false);
+  const [createNewChannelModalShown, setCreateNewChannelModalShown] = useState(
+    false
+  );
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
-  const [onTitleHover, setOnTitleHover] = useState(false);
-  const [listScrollPosition, setListScrollPosition] = useState(0);
   const [textAreaHeight, setTextAreaHeight] = useState(0);
+  const mounted = useRef(true);
 
-  componentDidMount() {
-    this.mounted = true;
-    const { notifyThatMemberLeftChannel, currentChannel } = this.props;
-    socket.on('receive_message', this.onReceiveMessage);
-    socket.on('subject_change', this.onSubjectChange);
-    socket.on('chat_invitation', this.onChatInvitation);
-    socket.on('change_in_members_online', data => {
-      let forCurrentChannel = data.channelId === this.props.currentChannel.id;
+  useEffect(() => {
+    socket.on('receive_message', onReceiveMessage);
+    socket.on('subject_change', onSubjectChange);
+    socket.on('chat_invitation', onChatInvitation);
+    socket.on('change_in_members_online', onChangeMembersOnline);
+
+    function onReceiveMessage(message, channel) {
+      let messageIsForCurrentChannel = message.channelId === currentChannel.id;
+      let senderIsNotTheUser = message.userId !== userId;
+      if (messageIsForCurrentChannel && senderIsNotTheUser) {
+        receiveMessage({ message, pageVisible });
+      }
+      if (!messageIsForCurrentChannel) {
+        receiveMessageOnDifferentChannel({
+          message,
+          channel,
+          senderIsNotTheUser
+        });
+      }
+    }
+
+    function onChangeMembersOnline(data) {
+      let forCurrentChannel = data.channelId === currentChannel.id;
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const { userId, username, profilePicId } = data.leftChannel;
@@ -89,258 +130,217 @@ function Chat() {
             profilePicId
           });
         }
-        if (this.mounted) {
-          this.setState({
-            currentChannelOnlineMembers: data.membersOnline
-          });
-        }
+        setCurrentChannelOnlineMembers(data.membersOnline);
       }
-    });
-    socket.emit('check_online_members', currentChannel.id, (err, data) => {
+    }
+
+    return function cleanUp() {
+      socket.removeListener('receive_message', onReceiveMessage);
+      socket.removeListener('chat_invitation', onChatInvitation);
+      socket.removeListener('subject_change', onSubjectChange);
+      socket.removeListener('change_in_members_online', onChangeMembersOnline);
+    };
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    socket.emit('check_online_members', selectedChannelId, (err, data) => {
       if (err) console.error(err);
-      if (this.mounted) {
-        this.setState({ currentChannelOnlineMembers: data.membersOnline });
+      if (mounted.current) {
+        setCurrentChannelOnlineMembers(data.membersOnline);
       }
     });
-  }
+  }, [selectedChannelId]);
 
-  componentDidUpdate(prevProps) {
-    const { currentChannel } = this.props;
+  useEffect(() => {
+    setChannelsObj(
+      channels.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [curr.id]: curr
+        }),
+        {}
+      )
+    );
+    return () => {
+      mounted.current = false;
+      onUnmount();
+    };
+  }, []);
 
-    if (prevProps.selectedChannelId !== this.props.selectedChannelId) {
-      this.setState({ loading: true });
-    }
-
-    if (prevProps.currentChannel.id !== currentChannel.id) {
-      socket.emit('check_online_members', currentChannel.id, (err, data) => {
-        if (err) console.error(err);
-        if (this.mounted) {
-          this.setState({
-            currentChannelOnlineMembers: data.membersOnline,
-            loading: false
-          });
+  let menuProps = currentChannel.twoPeople
+    ? [{ label: 'Hide Chat', onClick: onHideChat }]
+    : [
+        {
+          label: 'Invite People',
+          onClick: () => setInviteUsersModalShown(true)
+        },
+        {
+          label: 'Edit Channel Name',
+          onClick: () => setEditTitleModalShown(true)
+        },
+        {
+          separator: true
+        },
+        {
+          label: 'Leave Channel',
+          onClick: () => setLeaveConfirmModalShown(true)
         }
-      });
-    }
-  }
+      ];
 
-  componentWillUnmount() {
-    this.mounted = false;
-    const { onUnmount } = this.props;
-    socket.removeListener('receive_message', this.onReceiveMessage);
-    socket.removeListener('chat_invitation', this.onChatInvitation);
-    socket.removeListener('subject_change', this.onSubjectChange);
-    socket.removeListener('change_in_members_online');
-    onUnmount();
-  }
-
-  render() {
-    const {
-      channels,
-      currentChannel,
-      loadMoreChannels,
-      userId,
-      channelLoadMoreButtonShown,
-      selectedChannelId,
-      socketConnected
-    } = this.props;
-    const {
-      chatMessage,
-      loading,
-      leaveConfirmModalShown,
-      createNewChannelModalShown,
-      inviteUsersModalShown,
-      userListModalShown,
-      editTitleModalShown,
-      currentChannelOnlineMembers,
-      textAreaHeight
-    } = this.state;
-
-    let menuProps = currentChannel.twoPeople
-      ? [{ label: 'Hide Chat', onClick: this.onHideChat }]
-      : [
-          {
-            label: 'Invite People',
-            onClick: () => this.setState({ inviteUsersModalShown: true })
-          },
-          {
-            label: 'Edit Channel Name',
-            onClick: () => this.setState({ editTitleModalShown: true })
-          },
-          {
-            separator: true
-          },
-          {
-            label: 'Leave Channel',
-            onClick: () => this.setState({ leaveConfirmModalShown: true })
-          }
-        ];
-
-    return (
+  return (
+    <div
+      className={css`
+        width: 100%;
+        height: 100%;
+        display: flex;
+        font-size: 1.5rem;
+        position: relative;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 100vw;
+          height: CALC(100% - 1rem);
+        }
+      `}
+    >
+      {leaveConfirmModalShown && (
+        <ConfirmModal
+          title="Leave Channel"
+          onHide={() => setLeaveConfirmModalShown(false)}
+          onConfirm={onLeaveChannel}
+        />
+      )}
+      {createNewChannelModalShown && (
+        <CreateNewChannelModal
+          userId={userId}
+          onHide={() => setCreateNewChannelModalShown(false)}
+          onDone={onCreateNewChannel}
+        />
+      )}
+      {inviteUsersModalShown && (
+        <InviteUsersModal
+          onHide={() => setInviteUsersModalShown(false)}
+          currentChannel={currentChannel}
+          onDone={onInviteUsersDone}
+        />
+      )}
+      {editTitleModalShown && (
+        <EditTitleModal
+          title={channelName(currentChannel)}
+          onHide={() => setEditTitleModalShown(false)}
+          onDone={onEditTitleDone}
+        />
+      )}
+      {userListModalShown && (
+        <UserListModal
+          onHide={() => setUserListModalShown(false)}
+          users={returnUsers(currentChannel, currentChannelOnlineMembers)}
+          descriptionShown={userListDescriptionShown}
+          description="(online)"
+          title="Online Status"
+        />
+      )}
+      <LeftMenu
+        channels={channels}
+        channelLoadMoreButtonShown={channelLoadMoreButtonShown}
+        currentChannel={currentChannel}
+        currentChannelOnlineMembers={currentChannelOnlineMembers}
+        loadMoreChannels={loadMoreChannels}
+        onChannelEnter={onChannelEnter}
+        onNewButtonClick={onNewButtonClick}
+        selectedChannelId={selectedChannelId}
+        showUserListModal={() => setUserListModalShown(true)}
+        userId={userId}
+      />
       <div
         className={css`
-          width: 100%;
           height: 100%;
-          display: flex;
-          font-size: 1.5rem;
+          width: CALC(100% - 30rem);
+          border-left: 1px solid ${Color.borderGray()};
+          padding: 0 0 1rem 1rem;
           position: relative;
+          background: #fff;
           @media (max-width: ${mobileMaxWidth}) {
-            width: 100vw;
-            height: CALC(100% - 1rem);
+            width: 75%;
           }
         `}
       >
-        {leaveConfirmModalShown && (
-          <ConfirmModal
-            title="Leave Channel"
-            onHide={() => this.setState({ leaveConfirmModalShown: false })}
-            onConfirm={this.onLeaveChannel}
+        {currentChannel.id !== GENERAL_CHAT_ID && (
+          <DropdownButton
+            snow
+            style={{
+              position: 'absolute',
+              zIndex: 10,
+              top: '1rem',
+              right: '1rem'
+            }}
+            direction="left"
+            icon="bars"
+            text="Menu"
+            menuProps={menuProps}
           />
         )}
-        {createNewChannelModalShown && (
-          <CreateNewChannelModal
-            userId={userId}
-            onHide={() => this.setState({ createNewChannelModalShown: false })}
-            onDone={this.onCreateNewChannel}
-          />
-        )}
-        {inviteUsersModalShown && (
-          <InviteUsersModal
-            onHide={() => this.setState({ inviteUsersModalShown: false })}
-            currentChannel={currentChannel}
-            onDone={this.onInviteUsersDone}
-          />
-        )}
-        {editTitleModalShown && (
-          <EditTitleModal
-            title={channelName(channels, currentChannel)}
-            onHide={() => this.setState({ editTitleModalShown: false })}
-            onDone={this.onEditTitleDone}
-          />
-        )}
-        {userListModalShown && (
-          <UserListModal
-            onHide={() => this.setState({ userListModalShown: false })}
-            users={this.returnUsers(
-              currentChannel,
-              currentChannelOnlineMembers
-            )}
-            descriptionShown={this.userListDescriptionShown}
-            description="(online)"
-            title="Online Status"
-          />
-        )}
-        <LeftMenu
-          channels={channels}
-          channelLoadMoreButtonShown={channelLoadMoreButtonShown}
-          currentChannel={currentChannel}
-          currentChannelOnlineMembers={currentChannelOnlineMembers}
-          loadMoreChannels={loadMoreChannels}
-          onChannelEnter={this.onChannelEnter}
-          onNewButtonClick={this.onNewButtonClick}
-          selectedChannelId={selectedChannelId}
-          showUserListModal={() => this.setState({ userListModalShown: true })}
-          userId={userId}
-        />
-        <div
+        <MessagesContainer
           className={css`
-            height: 100%;
-            width: CALC(100% - 30rem);
-            border-left: 1px solid ${Color.borderGray()};
-            padding: 0 0 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: CALC(
+              100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
+            );
             position: relative;
-            background: #fff;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 75%;
-            }
+            -webkit-overflow-scrolling: touch;
           `}
-        >
-          {currentChannel.id !== GENERAL_CHAT_ID && (
-            <DropdownButton
-              snow
-              style={{
-                position: 'absolute',
-                zIndex: 10,
-                top: '1rem',
-                right: '1rem'
-              }}
-              direction="left"
-              icon="bars"
-              text="Menu"
-              menuProps={menuProps}
-            />
-          )}
-          <MessagesContainer
-            className={css`
-              display: flex;
-              flex-direction: column;
-              width: 100%;
-              height: CALC(
-                100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
-              );
-              position: relative;
-              -webkit-overflow-scrolling: touch;
-            `}
-            loading={loading}
-            currentChannelId={this.props.currentChannel.id}
-            loadMoreButton={this.props.loadMoreButton}
-            messages={this.props.messages}
-            userId={this.props.userId}
-            loadMoreMessages={this.props.loadMoreMessages}
+          loading={loading}
+          currentChannelId={currentChannel.id}
+          loadMoreButton={loadMoreButton}
+          messages={messages}
+          userId={userId}
+          loadMoreMessages={loadMoreMessages}
+          onLoadingDone={() => setLoading(false)}
+        />
+        {socketConnected ? (
+          <ChatInput
+            style={{ width: 'CALC(100% - 1rem)' }}
+            onChange={setChatMessage}
+            message={chatMessage}
+            currentChannelId={currentChannel.id}
+            onMessageSubmit={onMessageSubmit}
+            onHeightChange={height => {
+              if (height !== textAreaHeight) {
+                setTextAreaHeight(height > 46 ? height : 0);
+              }
+            }}
           />
-          {socketConnected ? (
-            <ChatInput
-              style={{ width: 'CALC(100% - 1rem)' }}
-              onChange={text => this.setState({ chatMessage: text })}
-              message={chatMessage}
-              currentChannelId={this.props.currentChannel.id}
-              onMessageSubmit={this.onMessageSubmit}
-              onHeightChange={height => {
-                if (height !== this.state.textAreaHeight) {
-                  this.setState({ textAreaHeight: height > 46 ? height : 0 });
-                }
-              }}
+        ) : (
+          <div>
+            <Loading
+              style={{ height: '2.2rem' }}
+              innerStyle={{ fontSize: '2rem' }}
+              text="Socket disconnected. Reconnecting..."
             />
-          ) : (
-            <div>
-              <Loading
-                style={{ height: '2.2rem' }}
-                innerStyle={{ fontSize: '2rem' }}
-                text="Socket disconnected. Reconnecting..."
-              />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    );
+    </div>
+  );
+
+  function channelName(currentChannel) {
+    return channelsObj[currentChannel.id]?.channelName;
   }
 
-  userListDescriptionShown = user => {
-    const { currentChannelOnlineMembers } = this.state;
-    let result = false;
+  function userListDescriptionShown(user) {
     for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
-      if (user.id === currentChannelOnlineMembers[i].id) result = true;
+      if (user.id === currentChannelOnlineMembers[i].id) return true;
     }
-    return result;
-  };
+    return false;
+  }
 
-  returnUsers = ({ members: allMembers }, currentChannelOnlineMembers) => {
+  function returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
     return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
-  };
+  }
 
-  onMessageSubmit = message => {
-    const {
-      submitMessage,
-      userId,
-      username,
-      profilePicId,
-      currentChannel,
-      channels,
-      sendFirstDirectMessage,
-      partnerId,
-      subjectId
-    } = this.props;
-    this.setState({ textAreaHeight: 0 });
+  async function onMessageSubmit(message) {
+    setTextAreaHeight(0);
     let isFirstDirectMessage = currentChannel.id === 0;
     if (isFirstDirectMessage) {
       return sendFirstDirectMessage({ message, userId, partnerId }).then(
@@ -350,8 +350,7 @@ function Chat() {
         }
       );
     }
-
-    let params = {
+    const params = {
       userId,
       username,
       profilePicId,
@@ -371,74 +370,41 @@ function Chat() {
         },
         numUnreads: 1
       }));
-    submitMessage(params).then(message =>
-      socket.emit('new_chat_message', message, channel)
-    );
-  };
+    try {
+      const newMessage = await submitMessage(params);
+      socket.emit('new_chat_message', newMessage, channel);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-  onNewButtonClick = () => {
-    this.setState({ createNewChannelModalShown: true });
-  };
+  function onNewButtonClick() {
+    setCreateNewChannelModalShown(true);
+  }
 
-  onChannelEnter = id => {
-    const { enterChannelWithId, enterEmptyChat } = this.props;
+  function onChannelEnter(id) {
     if (id === 0) {
-      this.setState({ currentChannelOnlineMembers: [] });
+      setCurrentChannelOnlineMembers([]);
       return enterEmptyChat();
     }
     enterChannelWithId(id);
-  };
+  }
 
-  onCreateNewChannel = async params => {
-    const {
-      createNewChannel,
-      username,
-      userId,
-      openDirectMessageChannel
-    } = this.props;
+  async function onCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
       await openDirectMessageChannel({ username, id: userId }, partner, true);
-      return this.setState({ createNewChannelModalShown: false });
+      return setCreateNewChannelModalShown(false);
     }
 
     const data = await createNewChannel(params);
     const users = params.selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', data.message.channelId);
     socket.emit('send_group_chat_invitation', users, data);
-    this.setState({ createNewChannelModalShown: false });
-  };
+    setCreateNewChannelModalShown(false);
+  }
 
-  onReceiveMessage = (message, channel) => {
-    const {
-      pageVisible,
-      receiveMessage,
-      receiveMessageOnDifferentChannel,
-      currentChannel,
-      userId
-    } = this.props;
-    let messageIsForCurrentChannel = message.channelId === currentChannel.id;
-    let senderIsNotTheUser = message.userId !== userId;
-    if (messageIsForCurrentChannel && senderIsNotTheUser) {
-      receiveMessage({ message, pageVisible });
-    }
-    if (!messageIsForCurrentChannel) {
-      receiveMessageOnDifferentChannel({
-        message,
-        channel,
-        senderIsNotTheUser
-      });
-    }
-  };
-
-  onSubjectChange = ({ message }) => {
-    const {
-      pageVisible,
-      receiveMessage,
-      receiveMessageOnDifferentChannel,
-      currentChannel,
-      userId
-    } = this.props;
+  function onSubjectChange({ message }) {
     let messageIsForCurrentChannel = message.channelId === currentChannel.id;
     let senderIsNotTheUser = message.userId !== userId;
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
@@ -464,10 +430,9 @@ function Chat() {
         ]
       });
     }
-  };
+  }
 
-  onChatInvitation = data => {
-    const { receiveFirstMsg, currentChannel, pageVisible, userId } = this.props;
+  function onChatInvitation(data) {
     let duplicate = false;
     if (currentChannel.id === 0) {
       if (
@@ -480,9 +445,9 @@ function Chat() {
     }
     receiveFirstMsg({ data, duplicate, pageVisible });
     socket.emit('join_chat_channel', data.channelId);
-  };
+  }
 
-  onInviteUsersDone = (users, message) => {
+  function onInviteUsersDone(users, message) {
     socket.emit('new_chat_message', {
       ...message,
       channelId: message.channelId
@@ -490,28 +455,19 @@ function Chat() {
     socket.emit('send_group_chat_invitation', users, {
       message: { ...message, messageId: message.id }
     });
-    this.setState({ inviteUsersModalShown: false });
-  };
+    setInviteUsersModalShown(false);
+  }
 
-  onEditTitleDone = async title => {
-    const { editChannelTitle, currentChannel } = this.props;
+  async function onEditTitleDone(title) {
     await editChannelTitle({ title, channelId: currentChannel.id });
-    this.setState({ editTitleModalShown: false });
-  };
+    setEditTitleModalShown(false);
+  }
 
-  onHideChat = () => {
-    const { hideChat, currentChannel } = this.props;
+  function onHideChat() {
     hideChat(currentChannel.id);
-  };
+  }
 
-  onLeaveChannel = () => {
-    const {
-      leaveChannel,
-      currentChannel,
-      userId,
-      username,
-      profilePicId
-    } = this.props;
+  function onLeaveChannel() {
     leaveChannel(currentChannel.id);
     socket.emit('leave_chat_channel', {
       channelId: currentChannel.id,
@@ -519,8 +475,8 @@ function Chat() {
       username,
       profilePicId
     });
-    this.setState({ leaveConfirmModalShown: false });
-  };
+    setLeaveConfirmModalShown(false);
+  }
 }
 
 export default connect(

@@ -13,7 +13,6 @@ EditTitleModal.propTypes = {
 
 export default function EditTitleModal({ onDone, onHide, ...props }) {
   const [title, setTitle] = useState(props.title);
-
   return (
     <Modal onHide={onHide}>
       <header>Edit Channel Name</header>
