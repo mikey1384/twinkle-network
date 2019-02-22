@@ -111,6 +111,7 @@ function SubjectPanel({
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
   const CommentsRef = useRef(null);
+
   useEffect(() => {
     const titleIsEmpty = stringIsEmpty(editedTitle);
     const titleChanged = editedTitle !== title;
@@ -119,6 +120,7 @@ function SubjectPanel({
       titleIsEmpty || (!titleChanged && !descriptionChanged);
     setEditDoneButtonDisabled(editDoneButtonDisabled);
   }, [editedTitle, editedDescription]);
+
   return (
     <div
       style={{

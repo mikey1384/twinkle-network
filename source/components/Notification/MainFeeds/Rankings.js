@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import request from 'axios';
@@ -26,16 +26,16 @@ function Rankings({ myId, twinkleXP }) {
   const [allSelected, setAllSelected] = useState(false);
   const [rankModifier, setRankModifier] = useState(0);
   const [prevId, setPrevId] = useState(twinkleXP);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    let mounted = true;
     loadRankings();
     async function loadRankings() {
       try {
         const {
           data: { all, rankModifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
-        if (mounted) {
+        if (mounted.current) {
           if (myId !== prevId) {
             setAllSelected(!!myId && all.length > 0);
           }
@@ -49,7 +49,9 @@ function Rankings({ myId, twinkleXP }) {
         console.error(error.response || error);
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [myId, twinkleXP]);
 
   const users = allSelected ? all : top30s;

@@ -31,7 +31,9 @@ export default function TitleDescriptionForm({
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
-    return () => setSubmitting(false);
+    return function cleanUp() {
+      setSubmitting(false);
+    };
   }, []);
 
   return (

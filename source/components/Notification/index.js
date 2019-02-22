@@ -51,6 +51,8 @@ function Notification({
   totalRewardAmount,
   twinkleXP
 }) {
+  const rankedColor =
+    rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
 
@@ -81,13 +83,11 @@ function Notification({
 
   useEffect(() => {
     socket.on('new_reward', fetchNotifications);
-    return () => {
+    return function cleanUp() {
       socket.removeListener('new_reward', fetchNotifications);
     };
   });
 
-  const rankedColor =
-    rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
   return (
     <ErrorBoundary>
       <div style={style} className={`${container} ${className}`}>

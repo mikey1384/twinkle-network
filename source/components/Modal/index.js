@@ -29,7 +29,9 @@ function Modal({
 }) {
   useEffect(() => {
     hideMobileNavbar();
-    return () => showMobileNavbar();
+    return function cleanUp() {
+      showMobileNavbar();
+    };
   }, []);
   const modalWidth = {
     default: '50%',

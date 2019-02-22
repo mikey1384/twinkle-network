@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Context from './Context';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Heading from './Heading';
@@ -66,8 +66,8 @@ export default function ContentPanel({
   userId
 }) {
   const [loaded, setLoaded] = useState(false);
+  const mounted = useRef(true);
   useEffect(() => {
-    let mounted = true;
     onMount();
     async function onMount() {
       if (!loaded && !newPost) {
@@ -75,12 +75,14 @@ export default function ContentPanel({
         const { data } = await request.get(
           `${URL}/content?contentId=${contentId}&type=${type}`
         );
-        if (mounted) {
+        if (mounted.current) {
           onLoadContent({ data, feedId });
         }
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, []);
   const [videoShown, setVideoShown] = useState(false);
 

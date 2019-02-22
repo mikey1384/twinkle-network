@@ -67,6 +67,7 @@ function SectionPanel({
     setOnEdit(false);
     setEditedTitle(title);
   });
+
   return (
     <div
       className={css`

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import { css } from 'emotion';
@@ -41,6 +41,8 @@ export default function Embedly({
   const [description, setDescription] = useState(actualDescription);
   const [site, setSite] = useState(siteUrl);
   const [prevUrl, setPrevUrl] = useState(url);
+  const mounted = useRef(true);
+
   const fallbackImage = '/img/link.png';
   const contentCss = css`
     display: flex;
@@ -54,7 +56,6 @@ export default function Embedly({
   `;
 
   useEffect(() => {
-    let mounted = true;
     if (url && (!siteUrl || url !== prevUrl)) {
       fetchUrlData();
     }
@@ -63,7 +64,7 @@ export default function Embedly({
         const {
           data: { image, title, description, site }
         } = await request.put(`${API_URL}/embed`, { url, linkId: id });
-        if (mounted) {
+        if (mounted.current) {
           setImageUrl(image.url.replace('http://', 'https://'));
           setTitle(title);
           setDescription(description);
@@ -74,7 +75,9 @@ export default function Embedly({
         console.error(error.response || error);
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [url]);
 
   return (

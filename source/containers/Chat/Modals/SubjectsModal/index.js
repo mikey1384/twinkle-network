@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -38,6 +38,7 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
     subjectId: null,
     title: ''
   });
+  const mounted = useRef(true);
 
   useEffect(() => {
     loadSubjects();
@@ -46,13 +47,18 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
         const {
           data: { mySubjects, allSubjects }
         } = await request.get(`${API_URL}/chatSubject/modal?userId=${userId}`);
-        setMySubjects(mySubjects);
-        setAllSubjects(allSubjects);
-        setLoaded(true);
+        if (mounted.current) {
+          setMySubjects(mySubjects);
+          setAllSubjects(allSubjects);
+          setLoaded(true);
+        }
       } catch (error) {
         console.error(error.response || error);
       }
     }
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, []);
 
   return (
@@ -98,7 +104,6 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
               <LoadMoreButton
                 filled
                 info
-                style={{ marginTop: '1rem' }}
                 loading={mySubjects.loading}
                 onClick={() => loadMoreSubjects(true)}
               />
@@ -106,7 +111,13 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
           </div>
         )}
         {loaded && (
-          <div style={{ margin: '1rem 0', width: '100%' }}>
+          <div
+            style={{
+              margin: '1rem 0',
+              marginTop: mySubjects.subjects.length > 0 ? '3rem' : '1rem',
+              width: '100%'
+            }}
+          >
             <h3
               style={{
                 color: Color.green()
@@ -135,7 +146,6 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
           <LoadMoreButton
             filled
             info
-            style={{ marginTop: '1em' }}
             loading={allSubjects.loading}
             onClick={() => loadMoreSubjects(false)}
           />

@@ -29,6 +29,7 @@ function ProfilePic({
 }) {
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `https://s3.ap-northeast-2.amazonaws.com/twinkle-seoul/pictures/${userId}/${profilePicId}.jpg`;
+
   return (
     <div
       className={className}

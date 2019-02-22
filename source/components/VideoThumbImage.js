@@ -52,7 +52,9 @@ function VideoThumbImage({
         setXpEarned(false);
       }
     }
-    return () => (mounted.current = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [videoId, difficulty, userId]);
 
   return (

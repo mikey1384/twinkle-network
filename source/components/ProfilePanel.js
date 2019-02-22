@@ -63,9 +63,9 @@ function ProfilePanel({
   const [alertModalShown, setAlertModalShown] = useState(false);
   const CommentInputAreaRef = useRef(null);
   const FileInputRef = useRef(null);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    let mounted = true;
     handleLoadComments();
     async function handleLoadComments() {
       try {
@@ -74,14 +74,16 @@ function ProfilePanel({
           type: 'user',
           limit: 1
         });
-        if (mounted) {
+        if (mounted.current) {
           setComments(comments);
         }
       } catch (error) {
         console.error(error);
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [profile.id]);
   const canEdit = userId === profile.id || isCreator;
   const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;

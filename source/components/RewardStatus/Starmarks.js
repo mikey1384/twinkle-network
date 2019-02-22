@@ -37,5 +37,6 @@ export default function Starmarks({ stars }) {
       )
     );
   }
+
   return <div>{starMarks}</div>;
 }

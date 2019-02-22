@@ -32,6 +32,7 @@ function TagModal({
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+
   return (
     <Modal onHide={onHide}>
       <header>{title}</header>

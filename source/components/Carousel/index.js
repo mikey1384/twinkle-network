@@ -85,7 +85,7 @@ function Carousel({
     if (!chatMode && !searchMode) {
       renderDimensions(FrameRef);
     }
-    return () => {
+    return function cleanUp() {
       removeEvent(window, 'resize', onResize);
       removeEvent(document, 'readystatechange', onReadyStateChange);
     };

@@ -52,6 +52,7 @@ export default function DropdownButton({
     }
     setMenuDisplayed(false);
   });
+
   return (
     <ErrorBoundary style={{ position: 'relative', ...style }}>
       <div ref={ButtonRef}>

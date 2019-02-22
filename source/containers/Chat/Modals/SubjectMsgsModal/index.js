@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -22,6 +22,7 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
   const [loading, setLoading] = useState(false);
   const [loadMoreButtonShown, setLoadMoreButtonShown] = useState(false);
   const [messages, setMessages] = useState([]);
+  const mounted = useRef(true);
   useEffect(() => {
     loadMessages();
     async function loadMessages() {
@@ -31,12 +32,17 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
         } = await request.get(
           `${API_URL}/chatSubject/messages?subjectId=${subjectId}`
         );
-        setMessages(messages);
-        setLoadMoreButtonShown(loadMoreButtonShown);
+        if (mounted.current) {
+          setMessages(messages);
+          setLoadMoreButtonShown(loadMoreButtonShown);
+        }
       } catch (error) {
         console.error(error.response || error);
       }
     }
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, []);
 
   return (

@@ -38,6 +38,7 @@ export default function EditTextArea({
     contentType: 'comment',
     text: editedText
   });
+
   return (
     <div style={{ lineHeight: 1 }}>
       <Textarea

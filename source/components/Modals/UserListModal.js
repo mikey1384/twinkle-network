@@ -39,6 +39,7 @@ function UserListModal({
   for (let i = 0; i < users.length; i++) {
     if (users[i].id === userId) userArray.push(users[i]);
   }
+
   return (
     <Modal small onHide={onHide}>
       <header>{title}</header>

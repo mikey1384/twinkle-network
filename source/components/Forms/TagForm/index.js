@@ -54,7 +54,7 @@ export default function TagForm({
   }, [searchResults]);
 
   useEffect(() => {
-    return () => {
+    return function cleanUp() {
       clearTimeout(timerRef.current);
       onClear();
     };

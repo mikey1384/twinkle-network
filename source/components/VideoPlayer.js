@@ -171,8 +171,8 @@ function VideoPlayer({
     }
   }, [pageVisible, chatMode]);
 
-  useEffect(function cleanUp() {
-    return () => {
+  useEffect(() => {
+    return function cleanUp() {
       onVideoStop();
       clearInterval(timerRef.current);
       mounted.current = false;

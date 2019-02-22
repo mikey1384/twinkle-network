@@ -27,6 +27,7 @@ function UsernameText({
   username
 }) {
   const [menuShown, setMenuShown] = useState(false);
+
   return (
     <div
       style={{ display: 'inline', position: 'relative' }}

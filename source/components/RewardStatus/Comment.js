@@ -49,6 +49,7 @@ function Comment({
       onClick: () => setOnEdit(true)
     });
   }
+
   return (
     <ErrorBoundary>
       <div

@@ -12,6 +12,7 @@ RankBar.propTypes = {
 export default function RankBar({ profile, style }) {
   const rankColor =
     profile.rank === 1 ? Color.gold() : profile.rank <= 3 ? '#fff' : undefined;
+
   return (
     <div
       style={style}

@@ -8,6 +8,7 @@ ConfirmModal.propTypes = {
   title: PropTypes.string.isRequired,
   onConfirm: PropTypes.func.isRequired
 };
+
 export default function ConfirmModal({ onHide, title, onConfirm }) {
   return (
     <Modal onHide={onHide}>

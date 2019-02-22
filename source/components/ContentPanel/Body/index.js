@@ -122,10 +122,10 @@ function Body({
   const [commentsShown, setCommentsShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
-    let mounted = true;
     if (autoExpand && !commentsShown) {
       loadInitialComments();
     }
@@ -136,12 +136,14 @@ function Body({
         id: contentId,
         limit: commentsLoadLimit
       });
-      if (mounted) {
+      if (mounted.current) {
         onShowComments(data);
         setCommentsShown(true);
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, []);
 
   useEffect(() => {

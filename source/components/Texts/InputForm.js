@@ -38,6 +38,7 @@ export default function InputForm({
     contentType: 'comment',
     text
   });
+
   return (
     <div style={style} className={className}>
       <div

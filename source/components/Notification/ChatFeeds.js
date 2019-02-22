@@ -38,6 +38,7 @@ function ChatFeeds({
   userId,
   username
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
@@ -50,7 +51,7 @@ function ChatFeeds({
     1000,
     [timeStamp, reloadTimeStamp]
   );
-  const themeColor = profileTheme || 'logoBlue';
+
   return (
     <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
       <li

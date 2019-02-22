@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
@@ -25,8 +25,8 @@ export default function AlreadyPosted({
   videoCode
 }) {
   const [existingContent, setExistingContent] = useState({});
+  const mounted = useRef(true);
   useEffect(() => {
-    let mounted = true;
     checkExists();
     async function checkExists() {
       const { content } = await checkIfContentExists({
@@ -34,11 +34,13 @@ export default function AlreadyPosted({
         url,
         videoCode
       });
-      if (mounted) {
+      if (mounted.current) {
         setExistingContent(content);
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [url]);
 
   return !changingPage &&

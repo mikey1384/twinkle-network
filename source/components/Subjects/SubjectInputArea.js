@@ -17,6 +17,7 @@ SubjectInputArea.propTypes = {
 
 function SubjectInputArea({ contentId, dispatch, onUploadSubject, type }) {
   const [subjectFormShown, setSubjectFormShown] = useState(false);
+
   return (
     <div
       style={{

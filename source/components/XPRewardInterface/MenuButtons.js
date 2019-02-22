@@ -89,6 +89,7 @@ export default function MenuButtons({
       </Button>
     );
   }
+
   return buttons.length > 0 ? (
     buttons
   ) : (

@@ -70,6 +70,7 @@ function VideoThumb({
       onClick: onDeleteClick
     });
   }
+
   return (
     <ErrorBoundary style={style}>
       <div

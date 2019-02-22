@@ -6,6 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTextArea from 'components/Texts/EditTextArea';
 import Button from 'components/Button';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { editMessage, saveMessage } from 'redux/actions/ChatActions';
@@ -99,7 +100,7 @@ function Message({
     });
   }
   return (
-    <>
+    <ErrorBoundary>
       <div className={MessageStyle.container}>
         <ProfilePic
           className={MessageStyle.profilePic}
@@ -180,7 +181,7 @@ function Message({
           </div>
         </div>
       </div>
-    </>
+    </ErrorBoundary>
   );
 
   async function handleEditDone(editedMessage) {

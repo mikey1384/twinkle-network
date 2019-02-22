@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import TagModal from './TagModal';
@@ -30,17 +30,19 @@ function TagStatus({
   const [shownPlaylistId, setShownPlaylistId] = useState();
   const [shownPlaylistTitle, setShownPlaylistTitle] = useState('');
   const [tagModalShown, setTagModalShown] = useState(false);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    let mounted = true;
     loadTags();
     async function loadTags() {
       const tags = await fetchPlaylistsContaining({ videoId: contentId });
-      if (mounted) {
+      if (mounted.current) {
         onLoadTags({ tags, contentId, type: 'video' });
       }
     }
-    return () => (mounted = false);
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [contentId]);
 
   return (

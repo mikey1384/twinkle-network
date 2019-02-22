@@ -42,6 +42,7 @@ function RewardStatus({
   let rewardedStars = stars.reduce((prev, star) => prev + star.rewardAmount, 0);
   rewardedStars = Math.min(rewardedStars, maxStars);
   if (!stars || stars.length === 0) return null;
+
   return (
     <ErrorBoundary>
       <div
