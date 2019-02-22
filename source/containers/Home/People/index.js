@@ -114,7 +114,7 @@ function People({
           width: '100%'
         }}
       >
-        {(!loaded || searching) && (
+        {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
         {loaded &&
