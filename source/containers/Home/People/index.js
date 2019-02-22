@@ -71,9 +71,7 @@ function People({
   }, [loading]);
 
   useEffect(() => {
-    if (searchedProfiles.length > 0) {
-      setSearching(false);
-    }
+    setSearching(false);
   }, [searchedProfiles]);
 
   useEffect(() => {
@@ -114,7 +112,7 @@ function People({
           width: '100%'
         }}
       >
-        {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
+        {(!loaded || searching) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
         {loaded &&
