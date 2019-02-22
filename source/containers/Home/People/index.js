@@ -55,11 +55,26 @@ function People({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    mounted.current = true;
+    addEvent(window, 'scroll', onScroll);
+    addEvent(document.getElementById('App'), 'scroll', onScroll);
+
+    return function cleanUp() {
+      mounted.current = false;
+      clearUserSearch();
+      removeEvent(window, 'scroll', onScroll);
+      removeEvent(document.getElementById('App'), 'scroll', onScroll);
+    };
+  }, [chatMode, profiles, searchMode, searchText]);
+
+  useEffect(() => {
     init();
     async function init() {
       if (history.action === 'PUSH' || profiles.length === 0) {
         await fetchUsers();
-        setLoaded(true);
+        if (mounted.current) {
+          setLoaded(true);
+        }
       }
     }
   }, []);
@@ -75,21 +90,6 @@ function People({
       setSearching(false);
     }
   }, [searchedProfiles]);
-
-  useEffect(() => {
-    mounted.current = true;
-    if (mounted.current) {
-      addEvent(window, 'scroll', onScroll);
-      addEvent(document.getElementById('App'), 'scroll', onScroll);
-    }
-
-    return function cleanUp() {
-      mounted.current = false;
-      clearUserSearch();
-      removeEvent(window, 'scroll', onScroll);
-      removeEvent(document.getElementById('App'), 'scroll', onScroll);
-    };
-  }, [chatMode, profiles, searchMode, searchText]);
 
   return (
     <div style={{ height: '100%' }}>
@@ -158,7 +158,9 @@ function People({
         destinationVar: 'shownUsers'
       })
     );
-    setLoading(false);
+    if (mounted.current) {
+      setLoading(false);
+    }
   }
 
   function onPeopleSearch(text) {
