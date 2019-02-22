@@ -71,42 +71,16 @@ function People({
   }, [loading]);
 
   useEffect(() => {
+    if (searchedProfiles) {
+      setSearching(false);
+    }
+  }, [searchedProfiles]);
+
+  useEffect(() => {
     mounted.current = true;
     if (mounted.current) {
       addEvent(window, 'scroll', onScroll);
       addEvent(document.getElementById('App'), 'scroll', onScroll);
-    }
-
-    function onScroll() {
-      if (
-        document.getElementById('App').scrollHeight > scrollHeightRef.current ||
-        BodyRef.current.scrollTop > scrollHeightRef.current
-      ) {
-        scrollHeightRef.current = Math.max(
-          document.getElementById('App').scrollHeight,
-          BodyRef.current.scrollTop
-        );
-      }
-      if (
-        !chatMode &&
-        !searchMode &&
-        profiles.length > 0 &&
-        scrollHeightRef.current !== 0
-      ) {
-        scrollPositionRef.current = {
-          desktop: document.getElementById('App').scrollTop,
-          mobile: BodyRef.current.scrollTop
-        };
-        if (
-          (scrollPositionRef.current.desktop >=
-            scrollHeightRef.current - window.innerHeight - 1000 ||
-            scrollPositionRef.current.mobile >=
-              scrollHeightRef.current - window.innerHeight - 1000) &&
-          loadMoreButton
-        ) {
-          setLoading(true);
-        }
-      }
     }
 
     return function cleanUp() {
@@ -140,9 +114,11 @@ function People({
           width: '100%'
         }}
       >
-        {!loaded && <Loading text="Loading Users..." />}
+        {(!loaded || searching) && (
+          <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
+        )}
         {loaded &&
-          !searching &&
+          stringIsEmpty(searchText) &&
           profiles.map(profile => (
             <ProfilePanel
               expandable
@@ -151,7 +127,8 @@ function People({
               profile={profile}
             />
           ))}
-        {searching &&
+        {!stringIsEmpty(searchText) &&
+          !searching &&
           searchedProfiles.map(profile => (
             <ProfilePanel
               expandable
@@ -160,7 +137,7 @@ function People({
               profile={profile}
             />
           ))}
-        {!searching && loaded && loadMoreButton && (
+        {stringIsEmpty(searchText) && loaded && loadMoreButton && (
           <LoadMoreButton
             filled
             info
@@ -187,11 +164,45 @@ function People({
   function onPeopleSearch(text) {
     clearTimeout(timerRef.current);
     setSearchText(text);
-    setSearching(!stringIsEmpty(text));
     if (stringIsEmpty(text)) {
       return clearUserSearch();
+    } else {
+      setSearching(true);
     }
     timerRef.current = setTimeout(() => searchUsers(text), 300);
+  }
+
+  function onScroll() {
+    if (
+      document.getElementById('App').scrollHeight > scrollHeightRef.current ||
+      BodyRef.current.scrollTop > scrollHeightRef.current
+    ) {
+      scrollHeightRef.current = Math.max(
+        document.getElementById('App').scrollHeight,
+        BodyRef.current.scrollTop
+      );
+    }
+    if (
+      !chatMode &&
+      !searchMode &&
+      profiles.length > 0 &&
+      stringIsEmpty(searchText) &&
+      scrollHeightRef.current !== 0
+    ) {
+      scrollPositionRef.current = {
+        desktop: document.getElementById('App').scrollTop,
+        mobile: BodyRef.current.scrollTop
+      };
+      if (
+        (scrollPositionRef.current.desktop >=
+          scrollHeightRef.current - window.innerHeight - 1000 ||
+          scrollPositionRef.current.mobile >=
+            scrollHeightRef.current - window.innerHeight - 1000) &&
+        loadMoreButton
+      ) {
+        setLoading(true);
+      }
+    }
   }
 }
 
