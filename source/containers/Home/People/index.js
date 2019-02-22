@@ -115,7 +115,7 @@ function People({
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-  }, [profiles]);
+  }, [chatMode, profiles, searchMode]);
 
   return (
     <div style={{ height: '100%' }}>
