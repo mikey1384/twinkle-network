@@ -249,6 +249,7 @@ function VideoPlayer({
             <img
               alt=""
               src={imageUrl}
+              onTouchStart={() => setPlayerShown(true)}
               onMouseEnter={() => setPlayerShown(true)}
               className={css`
                 position: absolute;
