@@ -69,7 +69,7 @@ export default function SelectUploadsForm({
           );
         })
       )}
-      {loadMoreButton && (
+      {loadMoreButton && !loading && (
         <div
           style={{
             display: 'flex',
