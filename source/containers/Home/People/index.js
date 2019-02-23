@@ -85,12 +85,6 @@ function People({
     }
   }, [loading]);
 
-  useEffect(() => {
-    if (searchedProfiles.length > 0) {
-      setSearching(false);
-    }
-  }, [searchedProfiles]);
-
   return (
     <div style={{ height: '100%' }}>
       <SearchInput
@@ -137,6 +131,21 @@ function People({
               profile={profile}
             />
           ))}
+        {!stringIsEmpty(searchText) &&
+          !searching &&
+          searchedProfiles.length === 0 && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '15rem',
+                fontSize: '2.8rem'
+              }}
+            >
+              No Users Found
+            </div>
+          )}
         {stringIsEmpty(searchText) && loaded && loadMoreButton && (
           <LoadMoreButton
             filled
@@ -168,10 +177,13 @@ function People({
     setSearchText(text);
     if (stringIsEmpty(text)) {
       return clearUserSearch();
-    } else {
-      setSearching(true);
     }
-    timerRef.current = setTimeout(() => searchUsers(text), 300);
+    setSearching(true);
+    timerRef.current = setTimeout(() => handleSearch(text), 300);
+    async function handleSearch(text) {
+      await searchUsers(text);
+      setSearching(false);
+    }
   }
 
   function onScroll() {

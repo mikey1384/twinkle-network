@@ -498,7 +498,10 @@ function Body({
   async function onLikeClick(likes) {
     onLikeContent({ likes, type, contentId });
     if (!commentsShown) {
-      onExpandComments();
+      await onExpandComments();
+      if (Number(numChildComments) === 0) {
+        CommentInputAreaRef.current.focus();
+      }
     }
   }
 

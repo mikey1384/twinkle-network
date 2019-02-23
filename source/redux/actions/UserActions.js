@@ -137,6 +137,7 @@ export const searchUsers = query => async dispatch => {
       type: USER.SEARCH,
       users
     });
+    return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);
   }
