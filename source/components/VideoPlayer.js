@@ -76,6 +76,7 @@ function VideoPlayer({
   const [justEarned, setJustEarned] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [progress, setProgress] = useState(0);
+  const [playerShown, setPlayerShown] = useState(false);
   const PlayerRef = useRef(null);
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
@@ -248,6 +249,7 @@ function VideoPlayer({
             <img
               alt=""
               src={imageUrl}
+              onMouseEnter={() => setPlayerShown(true)}
               className={css`
                 position: absolute;
                 width: 100%;
@@ -260,7 +262,7 @@ function VideoPlayer({
             />
           </>
         )}
-        {!onEdit && (process.env.NODE_ENV === 'production' || started) && (
+        {!onEdit && (playerShown || started) && (
           <ReactPlayer
             ref={PlayerRef}
             className={css`
