@@ -376,6 +376,7 @@ function VideoPlayer({
         fillCurrentVideoSlot(watchCodeRef.current);
       }
       if (userId) {
+        clearInterval(timerRef.current);
         timerRef.current = setInterval(increaseProgress, intervalLength);
       }
     }
