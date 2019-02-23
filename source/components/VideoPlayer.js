@@ -80,6 +80,7 @@ function VideoPlayer({
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
   const totalDurationRef = useRef(0);
+  const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
   const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
 
@@ -161,12 +162,10 @@ function VideoPlayer({
 
   useEffect(() => {
     const userWatchingMultipleVideo =
-      currentVideoSlot && currentVideoSlot !== Number(videoId);
+      currentVideoSlot && currentVideoSlot !== watchCodeRef.current;
     if (started && userWatchingMultipleVideo) {
       onVideoStop();
-      if (PlayerRef.current.getInternalPlayer()) {
-        PlayerRef.current.getInternalPlayer().pauseVideo();
-      }
+      PlayerRef.current.getInternalPlayer()?.pauseVideo();
     }
   }, [currentVideoSlot]);
 
@@ -174,9 +173,7 @@ function VideoPlayer({
     const alreadyEarned = xpEarned || justEarned;
     if (started && !!difficulty && userId && !alreadyEarned) {
       onVideoStop();
-      if (PlayerRef.current.getInternalPlayer()) {
-        PlayerRef.current.getInternalPlayer().pauseVideo();
-      }
+      PlayerRef.current.getInternalPlayer()?.pauseVideo();
     }
   }, [pageVisible, chatMode]);
 
@@ -362,11 +359,9 @@ function VideoPlayer({
   );
 
   function onVideoReady() {
-    if (PlayerRef.current.getInternalPlayer()) {
-      totalDurationRef.current = PlayerRef.current
-        .getInternalPlayer()
-        .getDuration();
-    }
+    totalDurationRef.current = PlayerRef.current
+      .getInternalPlayer()
+      ?.getDuration();
   }
 
   function onVideoPlay() {
@@ -378,39 +373,19 @@ function VideoPlayer({
         addVideoView({ videoId, userId });
       }
       if (!currentVideoSlot) {
-        fillCurrentVideoSlot(Number(videoId));
-        if (userId) {
-          let id = setInterval(increaseProgress, intervalLength);
-          timerRef.current = id;
-        }
+        fillCurrentVideoSlot(watchCodeRef.current);
       }
-      const authorization = auth();
-      const authExists = !!authorization.headers.authorization;
-      if (authExists && !!difficulty && !(justEarned || xpEarned)) {
-        try {
-          request.put(
-            `${VIDEO_URL}/currentlyWatching`,
-            { videoId },
-            authorization
-          );
-        } catch (error) {
-          console.error(error.response || error);
-        }
+      if (userId) {
+        timerRef.current = setInterval(increaseProgress, intervalLength);
       }
     }
-  }
-
-  function onVideoStop() {
-    setPlaying(false);
-    clearInterval(timerRef.current);
-    emptyCurrentVideoSlot();
     const authorization = auth();
     const authExists = !!authorization.headers.authorization;
-    if (authExists) {
+    if (authExists && !!difficulty && !(justEarned || xpEarned)) {
       try {
         request.put(
           `${VIDEO_URL}/currentlyWatching`,
-          { videoId: null },
+          { watchCode: watchCodeRef.current },
           authorization
         );
       } catch (error) {
@@ -419,15 +394,19 @@ function VideoPlayer({
     }
   }
 
+  function onVideoStop() {
+    setPlaying(false);
+    clearInterval(timerRef.current);
+    emptyCurrentVideoSlot();
+  }
+
   async function increaseProgress() {
     if (!!difficulty && !xpEarned && !justEarned) {
-      if (PlayerRef.current.getInternalPlayer()) {
-        if (PlayerRef.current.getInternalPlayer().isMuted()) {
-          PlayerRef.current.getInternalPlayer().unMute();
-        }
-        if (PlayerRef.current.getInternalPlayer().getVolume() < 30) {
-          PlayerRef.current.getInternalPlayer().setVolume(30);
-        }
+      if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
+        PlayerRef.current.getInternalPlayer()?.unMute();
+      }
+      if (PlayerRef.current.getInternalPlayer()?.getVolume() < 30) {
+        PlayerRef.current.getInternalPlayer()?.setVolume(30);
       }
     }
     let requiredViewDuration =
@@ -480,14 +459,22 @@ function VideoPlayer({
           data: { currentlyWatchingAnotherVideo, success }
         } = await request.put(
           `${VIDEO_URL}/duration`,
-          { videoId, difficulty, xpEarned },
+          {
+            videoId,
+            difficulty,
+            xpEarned,
+            watchCode: watchCodeRef.current
+          },
           authorization
         );
         if (success) return;
-        if (currentlyWatchingAnotherVideo) {
-          if (PlayerRef.current.getInternalPlayer()) {
-            PlayerRef.current.getInternalPlayer().pauseVideo();
-          }
+        if (
+          currentlyWatchingAnotherVideo &&
+          !xpEarned &&
+          !!difficulty &&
+          !justEarned
+        ) {
+          PlayerRef.current.getInternalPlayer()?.pauseVideo();
         }
       } catch (error) {
         console.error(error.response || error);

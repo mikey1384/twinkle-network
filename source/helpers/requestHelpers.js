@@ -487,7 +487,7 @@ export const uploadProfileInfo = async({
     );
     return Promise.resolve(data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return handleError(error, dispatch);
   }
 };
