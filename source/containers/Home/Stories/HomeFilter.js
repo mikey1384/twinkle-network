@@ -36,6 +36,7 @@ HomeFilter.propTypes = {
   userId: PropTypes.number,
   toggleHideWatched: PropTypes.func.isRequired
 };
+
 export default function HomeFilter({
   applyFilter,
   category,

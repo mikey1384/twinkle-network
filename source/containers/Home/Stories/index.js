@@ -1,5 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useInfiniteScroll } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import {
   addTags,
   addTagToContents,
@@ -33,97 +34,127 @@ import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import { connect } from 'react-redux';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadNewFeeds } from 'helpers/requestHelpers';
 import HomeFilter from './HomeFilter';
 
-class Stories extends Component {
-  static propTypes = {
-    addTags: PropTypes.func.isRequired,
-    addTagToContents: PropTypes.func.isRequired,
-    attachStar: PropTypes.func.isRequired,
-    changeByUserStatus: PropTypes.func.isRequired,
-    chatMode: PropTypes.bool,
-    clearFeeds: PropTypes.func.isRequired,
-    clearProfiles: PropTypes.func.isRequired,
-    contentFeedLike: PropTypes.func.isRequired,
-    feedCommentDelete: PropTypes.func.isRequired,
-    feedContentDelete: PropTypes.func.isRequired,
-    feedContentEdit: PropTypes.func.isRequired,
-    feedCommentEdit: PropTypes.func.isRequired,
-    feedRewardCommentEdit: PropTypes.func.isRequired,
-    fetchFeed: PropTypes.func.isRequired,
-    fetchFeeds: PropTypes.func.isRequired,
-    fetchMoreFeeds: PropTypes.func.isRequired,
-    fetchNewFeeds: PropTypes.func.isRequired,
-    hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    history: PropTypes.object.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    loadMoreButton: PropTypes.bool.isRequired,
-    loadMoreFeedComments: PropTypes.func.isRequired,
-    loadMoreFeedReplies: PropTypes.func.isRequired,
-    loadRepliesOfReply: PropTypes.func.isRequired,
-    loadTags: PropTypes.func.isRequired,
-    numNewPosts: PropTypes.number.isRequired,
-    resetNumNewPosts: PropTypes.func.isRequired,
-    searchMode: PropTypes.bool.isRequired,
-    selectedFilter: PropTypes.string.isRequired,
-    setCurrentSection: PropTypes.func.isRequired,
-    setDifficulty: PropTypes.func,
-    showFeedComments: PropTypes.func.isRequired,
-    storyFeeds: PropTypes.array.isRequired,
-    toggleHideWatched: PropTypes.func.isRequired,
-    username: PropTypes.string,
-    uploadFeedComment: PropTypes.func.isRequired,
-    uploadTargetContentComment: PropTypes.func.isRequired,
-    userId: PropTypes.number
-  };
+const categoryObj = {
+  uploads: {
+    filter: 'all',
+    orderBy: 'lastInteraction'
+  },
+  challenges: {
+    filter: 'post',
+    orderBy: 'difficulty'
+  },
+  responses: {
+    filter: 'comment',
+    orderBy: 'totalStars'
+  },
+  videos: {
+    filter: 'video',
+    orderBy: 'totalViewDuration'
+  }
+};
 
-  scrollHeight = 0;
+Stories.propTypes = {
+  addTags: PropTypes.func.isRequired,
+  addTagToContents: PropTypes.func.isRequired,
+  attachStar: PropTypes.func.isRequired,
+  changeByUserStatus: PropTypes.func.isRequired,
+  chatMode: PropTypes.bool,
+  clearFeeds: PropTypes.func.isRequired,
+  clearProfiles: PropTypes.func.isRequired,
+  contentFeedLike: PropTypes.func.isRequired,
+  feedCommentDelete: PropTypes.func.isRequired,
+  feedContentDelete: PropTypes.func.isRequired,
+  feedContentEdit: PropTypes.func.isRequired,
+  feedCommentEdit: PropTypes.func.isRequired,
+  feedRewardCommentEdit: PropTypes.func.isRequired,
+  fetchFeed: PropTypes.func.isRequired,
+  fetchFeeds: PropTypes.func.isRequired,
+  fetchMoreFeeds: PropTypes.func.isRequired,
+  fetchNewFeeds: PropTypes.func.isRequired,
+  hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  history: PropTypes.object.isRequired,
+  loaded: PropTypes.bool.isRequired,
+  loadMoreButton: PropTypes.bool.isRequired,
+  loadMoreFeedComments: PropTypes.func.isRequired,
+  loadMoreFeedReplies: PropTypes.func.isRequired,
+  loadRepliesOfReply: PropTypes.func.isRequired,
+  loadTags: PropTypes.func.isRequired,
+  numNewPosts: PropTypes.number.isRequired,
+  resetNumNewPosts: PropTypes.func.isRequired,
+  searchMode: PropTypes.bool.isRequired,
+  selectedFilter: PropTypes.string.isRequired,
+  setCurrentSection: PropTypes.func.isRequired,
+  setDifficulty: PropTypes.func,
+  showFeedComments: PropTypes.func.isRequired,
+  storyFeeds: PropTypes.array.isRequired,
+  toggleHideWatched: PropTypes.func.isRequired,
+  username: PropTypes.string,
+  uploadFeedComment: PropTypes.func.isRequired,
+  uploadTargetContentComment: PropTypes.func.isRequired,
+  userId: PropTypes.number
+};
 
-  categoryObj = {
-    uploads: {
-      filter: 'all',
-      orderBy: 'lastInteraction'
-    },
-    challenges: {
-      filter: 'post',
-      orderBy: 'difficulty'
-    },
-    responses: {
-      filter: 'comment',
-      orderBy: 'totalStars'
-    },
-    videos: {
-      filter: 'video',
-      orderBy: 'totalViewDuration'
-    }
-  };
+function Stories({
+  addTags,
+  addTagToContents,
+  attachStar,
+  chatMode,
+  changeByUserStatus,
+  clearFeeds,
+  clearProfiles,
+  contentFeedLike,
+  feedCommentDelete,
+  feedCommentEdit,
+  feedContentDelete,
+  feedContentEdit,
+  feedRewardCommentEdit,
+  fetchFeed,
+  fetchFeeds,
+  fetchMoreFeeds,
+  fetchNewFeeds,
+  hideWatched,
+  history,
+  loaded,
+  loadMoreFeedComments,
+  loadRepliesOfReply,
+  loadMoreButton,
+  loadMoreFeedReplies,
+  loadTags,
+  numNewPosts,
+  resetNumNewPosts,
+  searchMode,
+  selectedFilter,
+  setCurrentSection,
+  setDifficulty,
+  showFeedComments,
+  storyFeeds = [],
+  toggleHideWatched,
+  uploadFeedComment,
+  uploadTargetContentComment,
+  userId,
+  username
+}) {
+  const [category, setCategory] = useState('uploads');
+  const [displayOrder, setDisplayOrder] = useState('desc');
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
+  const ContainerRef = useRef(null);
 
-  state = {
-    category: 'uploads',
-    displayOrder: 'desc',
-    loadingMore: false
-  };
+  const [setScrollHeight] = useInfiniteScroll({
+    scrollable: !chatMode && !searchMode && storyFeeds.length > 0,
+    loadable: loadMoreButton,
+    loading: loadingMore,
+    onScrollToBottom: () => setLoadingMore(true),
+    onLoad: loadMoreFeeds
+  });
 
-  body =
-    typeof document !== 'undefined'
-      ? document.scrollingElement || document.documentElement
-      : {};
-
-  async componentDidMount() {
-    let {
-      history,
-      clearFeeds,
-      clearProfiles,
-      fetchFeeds,
-      loaded,
-      resetNumNewPosts,
-      setCurrentSection
-    } = this.props;
+  useEffect(() => {
     clearProfiles();
     setCurrentSection('storyFeeds');
     resetNumNewPosts();
@@ -131,265 +162,166 @@ class Stories extends Component {
       clearFeeds();
       fetchFeeds();
     }
-    addEvent(window, 'scroll', this.onScroll);
-    addEvent(document.getElementById('App'), 'scroll', this.onScroll);
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    const { clearFeeds, fetchFeeds } = this.props;
-    if (
-      prevProps.hideWatched !== this.props.hideWatched &&
-      this.state.category === 'videos'
-    ) {
+  useEffect(() => {
+    if (category === 'videos') {
       clearFeeds();
       fetchFeeds({
         order: 'desc',
-        filter: this.categoryObj.videos.filter,
-        orderBy: this.categoryObj.videos.orderBy
+        filter: categoryObj.videos.filter,
+        orderBy: categoryObj.videos.orderBy
       });
     }
-  }
+  }, [hideWatched]);
 
-  componentWillUnmount() {
-    removeEvent(window, 'scroll', this.onScroll);
-    removeEvent(document.getElementById('App'), 'scroll', this.onScroll);
-  }
-
-  render() {
-    const {
-      addTags,
-      addTagToContents,
-      attachStar,
-      changeByUserStatus,
-      contentFeedLike,
-      feedCommentDelete,
-      feedCommentEdit,
-      feedContentDelete,
-      feedContentEdit,
-      feedRewardCommentEdit,
-      fetchFeed,
-      hideWatched,
-      loadMoreButton,
-      loadMoreFeedReplies,
-      loadTags,
-      numNewPosts,
-      userId,
-      loaded,
-      loadMoreFeedComments,
-      loadRepliesOfReply,
-      selectedFilter,
-      setDifficulty,
-      showFeedComments,
-      storyFeeds,
-      toggleHideWatched,
-      uploadTargetContentComment,
-      username
-    } = this.props;
-    const { category, displayOrder, loadingMore } = this.state;
-    return (
-      <ErrorBoundary>
-        <div
-          ref={ref => {
-            this.Container = ref;
-          }}
-          style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
-        >
-          <HomeFilter
-            category={category}
-            changeCategory={this.changeCategory}
-            displayOrder={displayOrder}
-            hideWatched={hideWatched}
-            selectedFilter={selectedFilter}
-            applyFilter={this.applyFilter}
-            setDisplayOrder={this.setDisplayOrder}
-            toggleHideWatched={toggleHideWatched}
-            userId={userId}
-          />
-          <InputPanel />
-          <div style={{ width: '100%' }}>
-            {!loaded && <Loading text="Loading Feeds..." />}
-            {loaded && storyFeeds.length === 0 && (
-              <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '15rem'
-                }}
-              >
-                <h1 style={{ textAlign: 'center' }}>
-                  {username
-                    ? `Hello ${username}, be the first to post something`
-                    : 'Hi there!'}
-                </h1>
-              </div>
-            )}
-            {loaded && storyFeeds.length > 0 && (
-              <>
-                {numNewPosts > 0 && (
-                  <Banner
-                    gold
-                    onClick={this.fetchNewFeeds}
-                    style={{ marginBottom: '1rem' }}
-                  >
-                    Click to See {numNewPosts} new Post
-                    {numNewPosts > 1 ? 's' : ''}
-                  </Banner>
-                )}
-                {storyFeeds.map(feed => {
-                  return (
-                    <ContentPanel
-                      key={feed.feedId}
-                      commentsLoadLimit={5}
-                      contentObj={feed}
-                      inputAtBottom={feed.type === 'comment'}
-                      onLoadContent={fetchFeed}
-                      onAddTags={addTags}
-                      onAddTagToContents={addTagToContents}
-                      onAttachStar={attachStar}
-                      onByUserStatusChange={changeByUserStatus}
-                      onCommentSubmit={data =>
-                        this.uploadFeedComment({ feed, data })
-                      }
-                      onDeleteComment={feedCommentDelete}
-                      onDeleteContent={feedContentDelete}
-                      onEditComment={feedCommentEdit}
-                      onEditContent={feedContentEdit}
-                      onEditRewardComment={feedRewardCommentEdit}
-                      onLikeContent={contentFeedLike}
-                      onLoadMoreComments={loadMoreFeedComments}
-                      onLoadMoreReplies={loadMoreFeedReplies}
-                      onLoadRepliesOfReply={loadRepliesOfReply}
-                      onLoadTags={loadTags}
-                      onReplySubmit={data =>
-                        this.uploadFeedComment({ feed, data })
-                      }
-                      onSetDifficulty={setDifficulty}
-                      onShowComments={showFeedComments}
-                      onTargetCommentSubmit={uploadTargetContentComment}
-                      userId={userId}
-                    />
-                  );
-                })}
-                {loadMoreButton && (
-                  <LoadMoreButton
-                    onClick={this.loadMoreFeeds}
-                    loading={loadingMore}
-                    filled
-                    info
+  return (
+    <ErrorBoundary>
+      <div
+        ref={ContainerRef}
+        style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
+      >
+        <HomeFilter
+          category={category}
+          changeCategory={changeCategory}
+          displayOrder={displayOrder}
+          hideWatched={hideWatched}
+          selectedFilter={selectedFilter}
+          applyFilter={applyFilter}
+          setDisplayOrder={handleDisplayOrder}
+          toggleHideWatched={toggleHideWatched}
+          userId={userId}
+        />
+        <InputPanel />
+        <div style={{ width: '100%' }}>
+          {!loaded && <Loading text="Loading Feeds..." />}
+          {loaded && storyFeeds.length === 0 && (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '15rem'
+              }}
+            >
+              <h1 style={{ textAlign: 'center' }}>
+                {username
+                  ? `Hello ${username}, be the first to post something`
+                  : 'Hi there!'}
+              </h1>
+            </div>
+          )}
+          {loaded && storyFeeds.length > 0 && (
+            <>
+              {numNewPosts > 0 && (
+                <Banner
+                  gold
+                  onClick={handleFetchNewFeeds}
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Click to See {numNewPosts} new Post
+                  {numNewPosts > 1 ? 's' : ''}
+                </Banner>
+              )}
+              {storyFeeds.map(feed => {
+                return (
+                  <ContentPanel
+                    key={feed.feedId}
+                    commentsLoadLimit={5}
+                    contentObj={feed}
+                    inputAtBottom={feed.type === 'comment'}
+                    onLoadContent={fetchFeed}
+                    onAddTags={addTags}
+                    onAddTagToContents={addTagToContents}
+                    onAttachStar={attachStar}
+                    onByUserStatusChange={changeByUserStatus}
+                    onCommentSubmit={data =>
+                      handleUploadFeedComment({ feed, data })
+                    }
+                    onDeleteComment={feedCommentDelete}
+                    onDeleteContent={feedContentDelete}
+                    onEditComment={feedCommentEdit}
+                    onEditContent={feedContentEdit}
+                    onEditRewardComment={feedRewardCommentEdit}
+                    onLikeContent={contentFeedLike}
+                    onLoadMoreComments={loadMoreFeedComments}
+                    onLoadMoreReplies={loadMoreFeedReplies}
+                    onLoadRepliesOfReply={loadRepliesOfReply}
+                    onLoadTags={loadTags}
+                    onReplySubmit={data =>
+                      handleUploadFeedComment({ feed, data })
+                    }
+                    onSetDifficulty={setDifficulty}
+                    onShowComments={showFeedComments}
+                    onTargetCommentSubmit={uploadTargetContentComment}
+                    userId={userId}
                   />
-                )}
-              </>
-            )}
-          </div>
+                );
+              })}
+              {loadMoreButton && (
+                <LoadMoreButton
+                  onClick={() => setLoadingMore(true)}
+                  loading={loadingMore}
+                  filled
+                  info
+                />
+              )}
+            </>
+          )}
         </div>
-      </ErrorBoundary>
-    );
-  }
+      </div>
+    </ErrorBoundary>
+  );
 
-  applyFilter = filter => {
-    const { fetchFeeds, selectedFilter, clearFeeds } = this.props;
+  function applyFilter(filter) {
     if (filter === selectedFilter) return;
     clearFeeds();
     fetchFeeds({ filter });
-    this.setState({ displayOrder: 'desc' });
-  };
+    setDisplayOrder('desc');
+    setScrollHeight(0);
+  }
 
-  loadMoreFeeds = async() => {
-    const { storyFeeds, fetchMoreFeeds, selectedFilter } = this.props;
-    const { category, displayOrder, loadingMore } = this.state;
-    if (!loadingMore) {
-      this.setState({ loadingMore: true });
-      try {
-        await fetchMoreFeeds({
-          order: displayOrder,
-          orderBy: this.categoryObj[category].orderBy,
-          shownFeeds: queryStringForArray({
-            array: storyFeeds,
-            originVar: 'feedId',
-            destinationVar: 'shownFeeds'
-          }),
-          filter:
-            category === 'uploads'
-              ? selectedFilter
-              : this.categoryObj[category].filter
-        });
-        this.setState({ loadingMore: false });
-      } catch (error) {
-        console.error(error);
-      }
+  async function loadMoreFeeds() {
+    try {
+      await fetchMoreFeeds({
+        order: displayOrder,
+        orderBy: categoryObj[category].orderBy,
+        shownFeeds: queryStringForArray({
+          array: storyFeeds,
+          originVar: 'feedId',
+          destinationVar: 'shownFeeds'
+        }),
+        filter:
+          category === 'uploads' ? selectedFilter : categoryObj[category].filter
+      });
+      setLoadingMore(false);
+    } catch (error) {
+      console.error(error);
     }
-  };
+  }
 
-  onScroll = () => {
-    const { chatMode, searchMode, storyFeeds, loadMoreButton } = this.props;
-    if (
-      document.getElementById('App').scrollHeight > this.scrollHeight ||
-      this.body.scrollTop > this.scrollHeight
-    ) {
-      this.scrollHeight = Math.max(
-        document.getElementById('App').scrollHeight,
-        this.body.scrollTop
-      );
-    }
-    if (
-      !searchMode &&
-      !chatMode &&
-      storyFeeds.length > 0 &&
-      this.scrollHeight !== 0
-    ) {
-      this.setState(
-        {
-          scrollPosition: {
-            desktop: document.getElementById('App').scrollTop,
-            mobile: this.body.scrollTop
-          }
-        },
-        () => {
-          if (
-            (this.state.scrollPosition.desktop >=
-              this.scrollHeight - window.innerHeight - 400 ||
-              this.state.scrollPosition.mobile >=
-                this.scrollHeight - window.innerHeight - 400) &&
-            loadMoreButton
-          ) {
-            this.loadMoreFeeds();
-          }
-        }
-      );
-    }
-  };
-
-  changeCategory = category => {
-    const { clearFeeds, fetchFeeds } = this.props;
+  function changeCategory(category) {
     clearFeeds();
     fetchFeeds({
       order: 'desc',
-      filter: this.categoryObj[category].filter,
-      orderBy: this.categoryObj[category].orderBy
+      filter: categoryObj[category].filter,
+      orderBy: categoryObj[category].orderBy
     });
-    this.setState({ displayOrder: 'desc', category });
-    this.scrollHeight = 0;
-  };
+    setDisplayOrder('desc');
+    setCategory(category);
+    setScrollHeight(0);
+  }
 
-  fetchNewFeeds = async() => {
-    const {
-      clearFeeds,
-      fetchFeeds,
-      storyFeeds = [],
-      resetNumNewPosts,
-      fetchNewFeeds
-    } = this.props;
-    const { category, displayOrder, loadingMore } = this.state;
+  async function handleFetchNewFeeds() {
     if (category !== 'uploads' || displayOrder === 'asc') {
       clearFeeds();
       resetNumNewPosts();
-      this.setState({ category: 'uploads' });
+      setCategory('uploads');
       return fetchFeeds();
     }
-    if (!loadingMore) {
-      this.setState({ loadingMore: true });
+    if (!loadingNewFeeds) {
+      setLoadingNewFeeds(true);
       resetNumNewPosts();
       const data = await loadNewFeeds({
         lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
@@ -400,35 +332,30 @@ class Stories extends Component {
         })
       });
       if (data) fetchNewFeeds(data);
-      this.setState({ loadingMore: false });
+      setLoadingNewFeeds(false);
     }
-  };
+  }
 
-  setDisplayOrder = () => {
-    const { clearFeeds, fetchFeeds, selectedFilter } = this.props;
-    const { category, displayOrder } = this.state;
+  function handleDisplayOrder() {
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
     clearFeeds();
     fetchFeeds({
       order: newDisplayOrder,
-      orderBy: this.categoryObj[category].orderBy,
+      orderBy: categoryObj[category].orderBy,
       filter:
-        category === 'uploads'
-          ? selectedFilter
-          : this.categoryObj[category].filter
+        category === 'uploads' ? selectedFilter : categoryObj[category].filter
     });
-    this.setState({ displayOrder: newDisplayOrder });
-    this.scrollHeight = 0;
-  };
+    setDisplayOrder(newDisplayOrder);
+    setScrollHeight(0);
+  }
 
-  uploadFeedComment = ({ feed, data }) => {
-    const { uploadFeedComment } = this.props;
+  function handleUploadFeedComment({ feed, data }) {
     uploadFeedComment({
       data,
       type: feed.type,
       contentId: feed.contentId
     });
-  };
+  }
 }
 
 export default connect(

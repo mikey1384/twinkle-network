@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Textarea from 'components/Texts/Textarea';
@@ -24,216 +24,181 @@ import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
-class ContentInput extends Component {
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    uploadFeedContent: PropTypes.func.isRequired
-  };
+ContentInput.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  uploadFeedContent: PropTypes.func.isRequired
+};
 
-  checkContentExistsTimer = null;
-  showHelperMessageTimer = null;
+function ContentInput({ dispatch, uploadFeedContent }) {
+  const [alreadyPosted, setAlreadyPosted] = useState(false);
+  const [descriptionFieldShown, setDescriptionFieldShown] = useState(false);
+  const [titleFieldShown, setTitleFieldShown] = useState(false);
+  const [form, setForm] = useState({
+    url: '',
+    isVideo: false,
+    title: '',
+    description: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [urlHelper, setUrlHelper] = useState('');
+  const [urlError, setUrlError] = useState('');
+  const UrlFieldRef = useRef(null);
+  const checkContentExistsTimerRef = useRef(null);
+  const showHelperMessageTimerRef = useRef(null);
 
-  state = {
-    alreadyPosted: undefined,
-    descriptionFieldShown: false,
-    titleFieldShown: false,
-    form: {
-      url: '',
-      isVideo: false,
-      title: '',
-      description: ''
-    },
-    submitting: false,
-    urlHelper: '',
-    urlError: ''
-  };
-
-  render() {
-    const {
-      alreadyPosted,
-      form,
-      urlError,
-      urlHelper,
-      descriptionFieldShown,
-      submitting,
-      titleFieldShown
-    } = this.state;
-    return (
-      <ErrorBoundary className={PanelStyle}>
-        <p>Share interesting videos or web links</p>
-        {urlError && (
-          <Banner love style={{ marginBottom: '1rem' }}>
-            {urlError}
-          </Banner>
-        )}
-        <Input
-          inputRef={ref => {
-            this.UrlField = ref;
+  return (
+    <ErrorBoundary className={PanelStyle}>
+      <p>Share interesting videos or web links</p>
+      {urlError && (
+        <Banner love style={{ marginBottom: '1rem' }}>
+          {urlError}
+        </Banner>
+      )}
+      <Input
+        inputRef={UrlFieldRef}
+        style={errorInUrlField()}
+        value={form.url}
+        onChange={onUrlFieldChange}
+        placeholder="Copy the URL address of a website or a YouTube video and paste it here"
+        type="text"
+      />
+      {alreadyPosted && (
+        <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
+          This content has{' '}
+          <Link
+            style={{ fontWeight: 'bold' }}
+            to={`/${alreadyPosted.type === 'url' ? 'link' : 'video'}s/${
+              alreadyPosted.id
+            }`}
+          >
+            already been posted before
+          </Link>
+        </div>
+      )}
+      <Checkbox
+        label={'YouTube Video:'}
+        onClick={() => {
+          setForm({
+            ...form,
+            isVideo: !form.isVideo
+          });
+          setUrlError('');
+        }}
+        style={{ marginTop: '1rem' }}
+        checked={form.isVideo}
+      />
+      {!stringIsEmpty(urlHelper) && (
+        <span
+          style={{
+            fontSize: '1.7rem',
+            marginTop: '1rem',
+            display: 'block'
           }}
-          style={this.errorInUrlField()}
-          value={form.url}
-          onChange={this.onUrlFieldChange}
-          placeholder="Copy the URL address of a website or a YouTube video and paste it here"
-          type="text"
-        />
-        {alreadyPosted && (
-          <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
-            This content has{' '}
-            <Link
-              style={{ fontWeight: 'bold' }}
-              to={`/${alreadyPosted.type === 'url' ? 'link' : 'video'}s/${
-                alreadyPosted.id
-              }`}
-            >
-              already been posted before
-            </Link>
-          </div>
-        )}
-        <Checkbox
-          label={'YouTube Video:'}
-          onClick={() => {
-            this.setState({
-              form: {
-                ...form,
-                isVideo: !form.isVideo
-              },
-              urlError: null
-            });
+          className={css`
+            > a {
+              font-weight: bold;
+            }
+          `}
+          dangerouslySetInnerHTML={{
+            __html: processedStringWithURL(urlHelper)
           }}
-          style={{ marginTop: '1rem' }}
-          checked={form.isVideo}
         />
-        {!stringIsEmpty(urlHelper) && (
-          <span
-            style={{
-              fontSize: '1.7rem',
-              marginTop: '1rem',
-              display: 'block'
-            }}
-            className={css`
-              > a {
-                font-weight: bold;
-              }
-            `}
-            dangerouslySetInnerHTML={{
-              __html: processedStringWithURL(urlHelper)
-            }}
-          />
-        )}
-        <div style={{ marginTop: '0.5rem' }}>
-          <div style={{ position: 'relative' }}>
-            {titleFieldShown && (
-              <>
-                <Input
-                  value={form.title}
-                  onChange={text =>
-                    this.setState({ form: { ...form, title: text } })
+      )}
+      <div style={{ marginTop: '0.5rem' }}>
+        <div style={{ position: 'relative' }}>
+          {titleFieldShown && (
+            <>
+              <Input
+                value={form.title}
+                onChange={text => setForm({ ...form, title: text })}
+                placeholder="Enter Title Here"
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    setForm({
+                      ...form,
+                      title: addEmoji(event.target.value)
+                    });
                   }
-                  placeholder="Enter Title Here"
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        form: {
-                          ...this.state.form,
-                          title: addEmoji(event.target.value)
-                        }
-                      });
-                    }
-                  }}
-                  style={{
-                    marginTop: '0.5rem',
-                    ...this.titleExceedsCharLimit()
-                  }}
-                  type="text"
-                />
-                {this.titleExceedsCharLimit() && (
-                  <small style={{ color: 'red' }}>
-                    {this.renderTitleCharLimit()}
-                  </small>
-                )}
-              </>
-            )}
-            {descriptionFieldShown && (
-              <>
-                <Textarea
-                  value={form.description}
-                  minRows={4}
-                  placeholder="Enter Description (Optional, you don't need to write this)"
-                  onChange={event =>
-                    this.setState({
-                      form: { ...form, description: event.target.value }
-                    })
-                  }
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      this.setState({
-                        form: {
-                          ...this.state.form,
-                          description: addEmoji(event.target.value)
-                        }
-                      });
-                    }
-                  }}
-                  style={{
-                    marginTop: '1rem',
-                    ...(this.descriptionExceedsCharLimit() || {})
-                  }}
-                />
-                {this.descriptionExceedsCharLimit() && (
-                  <small style={{ color: 'red' }}>
-                    {this.renderDescriptionCharLimit()}
-                  </small>
-                )}
-              </>
-            )}
-          </div>
+                }}
+                style={{
+                  marginTop: '0.5rem',
+                  ...titleExceedsCharLimit()
+                }}
+                type="text"
+              />
+              {titleExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>{renderTitleCharLimit()}</small>
+              )}
+            </>
+          )}
           {descriptionFieldShown && (
-            <div className="button-container">
-              <Button
-                type="submit"
-                filled
-                success
-                style={{ marginTop: '1rem' }}
-                disabled={submitting || this.buttonDisabled()}
-                onClick={this.onSubmit}
-              >
-                Share!
-              </Button>
-            </div>
+            <>
+              <Textarea
+                value={form.description}
+                minRows={4}
+                placeholder="Enter Description (Optional, you don't need to write this)"
+                onChange={event =>
+                  setForm({ ...form, description: event.target.value })
+                }
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    setForm({
+                      ...form,
+                      description: addEmoji(event.target.value)
+                    });
+                  }
+                }}
+                style={{
+                  marginTop: '1rem',
+                  ...(descriptionExceedsCharLimit() || {})
+                }}
+              />
+              {descriptionExceedsCharLimit() && (
+                <small style={{ color: 'red' }}>
+                  {renderDescriptionCharLimit()}
+                </small>
+              )}
+            </>
           )}
         </div>
-      </ErrorBoundary>
-    );
+        {descriptionFieldShown && (
+          <div className="button-container">
+            <Button
+              type="submit"
+              filled
+              success
+              style={{ marginTop: '1rem' }}
+              disabled={submitting || buttonDisabled()}
+              onClick={onSubmit}
+            >
+              Share!
+            </Button>
+          </div>
+        )}
+      </div>
+    </ErrorBoundary>
+  );
+
+  function buttonDisabled() {
+    const { url, title } = form;
+    if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
+    if (errorInUrlField()) return true;
+    if (titleExceedsCharLimit()) return true;
+    if (descriptionExceedsCharLimit()) return true;
+    return false;
   }
 
-  buttonDisabled = () => {
-    const {
-      form: { url, title }
-    } = this.state;
-    let result = false;
-    if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
-    if (this.errorInUrlField()) result = true;
-    if (this.titleExceedsCharLimit()) result = true;
-    if (this.descriptionExceedsCharLimit()) result = true;
-    return result;
-  };
-
-  errorInUrlField = () => {
-    const {
-      form: { isVideo, url },
-      urlError
-    } = this.state;
+  function errorInUrlField() {
+    const { isVideo, url } = form;
     if (urlError) return { borderColor: 'red', color: 'red' };
     return exceedsCharLimit({
       inputType: 'url',
       contentType: isVideo ? 'video' : 'url',
       text: url
     });
-  };
+  }
 
-  onSubmit = async event => {
-    const { form } = this.state;
-    const { dispatch, uploadFeedContent } = this.props;
+  async function onSubmit(event) {
     const { url, isVideo } = form;
     let urlError;
     event.preventDefault();
@@ -242,11 +207,11 @@ class ContentInput extends Component {
       urlError = 'That is not a valid YouTube url';
     }
     if (urlError) {
-      this.setState({ urlError });
-      this.UrlField.focus();
-      return scrollElementToCenter(this.UrlField);
+      setUrlError(urlError);
+      UrlFieldRef.current.focus();
+      return scrollElementToCenter(UrlFieldRef.current);
     }
-    this.setState({ submitting: true });
+    setSubmitting(true);
     try {
       const data = await uploadContent({
         ...form,
@@ -254,121 +219,102 @@ class ContentInput extends Component {
         description: finalizeEmoji(form.description),
         dispatch
       });
-      this.setState({
-        alreadyPosted: false,
-        titleFieldShown: false,
-        descriptionFieldShown: false,
-        form: {
-          url: '',
-          isVideo: false,
-          title: '',
-          description: ''
-        },
-        submitting: false,
-        urlHelper: '',
-        urlError: ''
+      setAlreadyPosted(false);
+      setTitleFieldShown(false);
+      setDescriptionFieldShown(false);
+      setForm({
+        url: '',
+        isVideo: false,
+        title: '',
+        description: ''
       });
+      setSubmitting(false);
+      setUrlHelper('');
+      setUrlError('');
       uploadFeedContent(data);
       document.getElementById('App').scrollTop = 0;
     } catch (error) {
-      this.setState({ submitting: false });
+      setSubmitting(false);
       console.error(error);
     }
-  };
+  }
 
-  onUrlFieldChange = url => {
-    clearTimeout(this.checkContentExistsTimer);
-    clearTimeout(this.showHelperMessageTimer);
+  function onUrlFieldChange(url) {
+    clearTimeout(checkContentExistsTimerRef.current);
+    clearTimeout(showHelperMessageTimerRef.current);
     const urlIsValid = isValidUrl(url);
-    this.setState(state => ({
-      alreadyPosted: false,
-      form: {
-        ...state.form,
-        url,
-        isVideo: isValidYoutubeUrl(url)
-      },
-      titleFieldShown: urlIsValid,
-      descriptionFieldShown: urlIsValid,
-      urlError: '',
-      urlHelper: ''
-    }));
+    setAlreadyPosted(false);
+    setForm({
+      ...form,
+      url,
+      title: !urlIsValid && !stringIsEmpty(url) ? url : form.title,
+      isVideo: isValidYoutubeUrl(url)
+    });
+
+    setTitleFieldShown(urlIsValid);
+    setDescriptionFieldShown(urlIsValid);
+    setUrlError('');
+    setUrlHelper('');
     if (urlIsValid) {
-      this.checkContentExistsTimer = setTimeout(
-        () => this.checkIfContentExists(url),
+      checkContentExistsTimerRef.current = setTimeout(
+        () => handleCheckIfContentExists(url),
         300
       );
     }
-    this.showHelperMessageTimer = setTimeout(
-      () =>
-        this.setState(state => ({
-          urlHelper:
-            urlIsValid || stringIsEmpty(url)
-              ? ''
-              : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`,
-          titleFieldShown: !stringIsEmpty(url),
-          form: {
-            ...state.form,
-            title: !urlIsValid && !stringIsEmpty(url) ? url : state.form.title
-          }
-        })),
-      300
-    );
-  };
+    showHelperMessageTimerRef.current = setTimeout(() => {
+      setUrlHelper(
+        urlIsValid || stringIsEmpty(url)
+          ? ''
+          : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`
+      );
+      setTitleFieldShown(!stringIsEmpty(url));
+    }, 300);
+  }
 
-  checkIfContentExists = async url => {
+  async function handleCheckIfContentExists(url) {
     const isVideo = isValidYoutubeUrl(url);
     const { exists, content } = await checkIfContentExists({
       url,
       type: isVideo ? 'video' : 'url'
     });
-    return this.setState({
-      alreadyPosted: exists ? content : undefined
-    });
-  };
+    return setAlreadyPosted(exists ? content : false);
+  }
 
-  renderDescriptionCharLimit = () => {
-    const {
-      form: { isVideo, description }
-    } = this.state;
+  function renderDescriptionCharLimit() {
+    const { isVideo, description } = form;
     return renderCharLimit({
       inputType: 'description',
       contentType: isVideo ? 'video' : 'url',
       text: description
     });
-  };
+  }
 
-  renderTitleCharLimit = () => {
-    const {
-      form: { isVideo, title }
-    } = this.state;
+  function renderTitleCharLimit() {
+    const { isVideo, title } = form;
     return renderCharLimit({
       inputType: 'title',
       contentType: isVideo ? 'video' : 'url',
       text: title
     });
-  };
+  }
 
-  descriptionExceedsCharLimit = () => {
-    const {
-      form: { isVideo, description }
-    } = this.state;
+  function descriptionExceedsCharLimit() {
+    const { isVideo, description } = form;
     return exceedsCharLimit({
       inputType: 'description',
       contentType: isVideo ? 'video' : 'url',
       text: description
     });
-  };
+  }
 
-  titleExceedsCharLimit = () => {
-    const {
-      form: { isVideo, title }
-    } = this.state;
+  function titleExceedsCharLimit() {
+    const { isVideo, title } = form;
     return exceedsCharLimit({
       inputType: 'title',
       contentType: isVideo ? 'video' : 'url',
       text: title
     });
-  };
+  }
 }
 
 export default connect(

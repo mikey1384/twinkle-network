@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useInfiniteScroll } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
@@ -11,7 +12,6 @@ import {
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -44,26 +44,31 @@ function People({
   searchUsers
 }) {
   const [searchText, setSearchText] = useState('');
-  const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const mounted = useRef(true);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  const scrollHeightRef = useRef(0);
-  const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
   const timerRef = useRef(null);
+
+  useInfiniteScroll({
+    scrollable:
+      !chatMode &&
+      !searchMode &&
+      profiles.length > 0 &&
+      stringIsEmpty(searchText),
+    loadable: loadMoreButton,
+    loading,
+    onScrollToBottom: () => setLoading(true),
+    onLoad: loadMoreProfiles
+  });
 
   useEffect(() => {
     mounted.current = true;
-    addEvent(window, 'scroll', onScroll);
-    addEvent(document.getElementById('App'), 'scroll', onScroll);
 
     return function cleanUp() {
       mounted.current = false;
       clearUserSearch();
-      removeEvent(window, 'scroll', onScroll);
-      removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
   }, [chatMode, profiles, searchMode, searchText]);
 
@@ -72,18 +77,12 @@ function People({
     async function init() {
       if (history.action === 'PUSH' || profiles.length === 0) {
         await fetchUsers();
-        if (mounted.current) {
-          setLoaded(true);
-        }
+      }
+      if (mounted.current) {
+        setLoaded(true);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    if (loading) {
-      loadMoreProfiles();
-    }
-  }, [loading]);
+  }, [history.action]);
 
   return (
     <div style={{ height: '100%' }}>
@@ -150,7 +149,7 @@ function People({
           <LoadMoreButton
             filled
             info
-            onClick={loadMoreProfiles}
+            onClick={() => setLoading(true)}
             loading={loading}
           />
         )}
@@ -159,7 +158,6 @@ function People({
   );
 
   async function loadMoreProfiles() {
-    setLoading(true);
     await fetchMoreUsers(
       queryStringForArray({
         array: profiles,
@@ -183,39 +181,6 @@ function People({
     async function handleSearch(text) {
       await searchUsers(text);
       setSearching(false);
-    }
-  }
-
-  function onScroll() {
-    if (
-      document.getElementById('App').scrollHeight > scrollHeightRef.current ||
-      BodyRef.current.scrollTop > scrollHeightRef.current
-    ) {
-      scrollHeightRef.current = Math.max(
-        document.getElementById('App').scrollHeight,
-        BodyRef.current.scrollTop
-      );
-    }
-    if (
-      !chatMode &&
-      !searchMode &&
-      profiles.length > 0 &&
-      stringIsEmpty(searchText) &&
-      scrollHeightRef.current !== 0
-    ) {
-      scrollPositionRef.current = {
-        desktop: document.getElementById('App').scrollTop,
-        mobile: BodyRef.current.scrollTop
-      };
-      if (
-        (scrollPositionRef.current.desktop >=
-          scrollHeightRef.current - window.innerHeight - 1000 ||
-          scrollPositionRef.current.mobile >=
-            scrollHeightRef.current - window.innerHeight - 1000) &&
-        loadMoreButton
-      ) {
-        setLoading(true);
-      }
     }
   }
 }
