@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { loadUploads, searchContent } from 'helpers/requestHelpers';
 
@@ -36,7 +37,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
   }, []);
 
   return (
-    <div style={{ width: '100%' }}>
+    <ErrorBoundary style={{ width: '100%' }}>
       <SearchInput
         placeholder="Search..."
         autoFocus
@@ -65,7 +66,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
         }}
         loadMoreUploads={loadMoreUploads}
       />
-    </div>
+    </ErrorBoundary>
   );
 
   async function loadMoreUploads() {
