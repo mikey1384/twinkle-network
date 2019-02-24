@@ -47,6 +47,7 @@ SubjectPanel.propTypes = {
   myId: PropTypes.number,
   numComments: PropTypes.string,
   onDelete: PropTypes.func.isRequired,
+  onEditDone: PropTypes.func.isRequired,
   onSubjectDelete: PropTypes.func.isRequired,
   onSubjectEditDone: PropTypes.func.isRequired,
   onLikeClick: PropTypes.func.isRequired,
@@ -89,6 +90,7 @@ function SubjectPanel({
   onLikeClick,
   onLoadMoreComments,
   onDelete,
+  onEditDone,
   onLoadMoreReplies,
   onLoadSubjectComments,
   onSubjectDelete,
@@ -212,7 +214,7 @@ function SubjectPanel({
                 style={{
                   fontSize: '1.8rem'
                 }}
-                onClick={onEditDone}
+                onClick={handleEditDone}
                 disabled={editDoneButtonDisabled}
               >
                 Done
@@ -356,7 +358,7 @@ function SubjectPanel({
     }
   }
 
-  async function onEditDone() {
+  async function handleEditDone() {
     const editedSubject = await editSubject({
       subjectId: id,
       editedTitle: finalizeEmoji(editedTitle),
