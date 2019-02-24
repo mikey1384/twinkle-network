@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 LongText.propTypes = {
   chatMode: PropTypes.bool,
-  children: PropTypes.string.isRequired,
+  children: PropTypes.string,
   className: PropTypes.string,
   cleanString: PropTypes.bool,
   maxLines: PropTypes.number,
@@ -19,12 +19,12 @@ function LongText({
   style,
   className,
   cleanString,
-  children = '',
+  children,
   maxLines = 10,
   noExpand,
   searchMode
 }) {
-  const [text, setText] = useState(processedStringWithURL(children));
+  const [text, setText] = useState(processedStringWithURL(children || ''));
   const [fullText, setFullText] = useState(false);
   const [more, setMore] = useState(false);
   const ContainerRef = useRef(null);
@@ -48,7 +48,7 @@ function LongText({
           <span
             dangerouslySetInnerHTML={{
               __html: limitBrs(
-                cleanString ? children : processedStringWithURL(children)
+                cleanString ? children : processedStringWithURL(children || '')
               )
             }}
           />

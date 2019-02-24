@@ -13,6 +13,7 @@ Result.propTypes = {
   type: PropTypes.string.isRequired,
   result: PropTypes.object.isRequired
 };
+
 export default function Result({ closeSearch, type, result }) {
   return (
     <Link
