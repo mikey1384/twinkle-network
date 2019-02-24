@@ -471,7 +471,9 @@ function Body({
     if (!commentsShown) {
       await onExpandComments();
     }
-    CommentInputAreaRef.current.focus();
+    if (!/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
+      CommentInputAreaRef.current.focus();
+    }
     scrollElementToCenter(CommentInputAreaRef.current);
   }
 
@@ -499,7 +501,10 @@ function Body({
     onLikeContent({ likes, type, contentId });
     if (!commentsShown) {
       await onExpandComments();
-      if (Number(numChildComments) === 0) {
+      if (
+        Number(numChildComments) === 0 &&
+        !/iPad|iPhone|iPod/g.test(navigator.userAgent)
+      ) {
         CommentInputAreaRef.current.focus();
       }
     }
