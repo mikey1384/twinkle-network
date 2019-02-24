@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import Notification from 'components/Notification';
@@ -19,100 +19,80 @@ const Stories = loadable(() => import('./Stories'), {
   LoadingComponent: Loading
 });
 
-class Home extends Component {
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    uploadProfilePic: PropTypes.func.isRequired
-  };
+Home.propTypes = {
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  uploadProfilePic: PropTypes.func.isRequired
+};
 
-  state = {
-    alertModalShown: false,
-    imageEditModalShown: false,
-    imageUri: null,
-    processing: false
-  };
+function Home({ history, location, uploadProfilePic }) {
+  const [alertModalShown, setAlertModalShown] = useState(false);
+  const [imageEditModalShown, setImageEditModalShown] = useState(false);
+  const [imageUri, setImageUri] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
-  render() {
-    const { history, location } = this.props;
-    const {
-      alertModalShown,
-      imageEditModalShown,
-      imageUri,
-      processing
-    } = this.state;
-    return (
-      <ErrorBoundary>
-        <div className={container}>
-          <div className={Left}>
-            <ProfileWidget
-              history={history}
-              showAlert={() => this.setState({ alertModalShown: true })}
-              loadImage={upload =>
-                this.setState({
-                  imageEditModalShown: true,
-                  imageUri: upload.target.result
-                })
-              }
-            />
-            <HomeMenuItems
-              style={{ marginTop: '1rem' }}
-              history={history}
-              location={location}
-            />
-          </div>
-          <div className={Center}>
-            <Switch>
-              <Route
-                path="/users"
-                render={({ history }) => <People history={history} />}
-              />
-              <Route
-                exact
-                path="/"
-                render={({ history }) => <Stories history={history} />}
-              />
-            </Switch>
-          </div>
-          <Notification className={Right} location="home" />
-          {imageEditModalShown && (
-            <ImageEditModal
-              imageUri={imageUri}
-              onHide={() =>
-                this.setState({
-                  imageUri: null,
-                  imageEditModalShown: false,
-                  processing: false
-                })
-              }
-              processing={processing}
-              onConfirm={this.uploadImage}
-            />
-          )}
-          {alertModalShown && (
-            <AlertModal
-              title="Image is too large (limit: 5mb)"
-              content="Please select a smaller image"
-              onHide={() => this.setState({ alertModalShown: false })}
-            />
-          )}
+  return (
+    <ErrorBoundary>
+      <div className={container}>
+        <div className={Left}>
+          <ProfileWidget
+            history={history}
+            showAlert={() => setAlertModalShown(true)}
+            loadImage={upload => {
+              setImageEditModalShown(true);
+              setImageUri(upload.target.result);
+            }}
+          />
+          <HomeMenuItems
+            style={{ marginTop: '1rem' }}
+            history={history}
+            location={location}
+          />
         </div>
-      </ErrorBoundary>
-    );
-  }
+        <div className={Center}>
+          <Switch>
+            <Route
+              path="/users"
+              render={({ history }) => <People history={history} />}
+            />
+            <Route
+              exact
+              path="/"
+              render={({ history }) => <Stories history={history} />}
+            />
+          </Switch>
+        </div>
+        <Notification className={Right} location="home" />
+        {imageEditModalShown && (
+          <ImageEditModal
+            imageUri={imageUri}
+            onHide={() => {
+              setImageUri(null);
+              setImageEditModalShown(false);
+              setProcessing(false);
+            }}
+            processing={processing}
+            onConfirm={uploadImage}
+          />
+        )}
+        {alertModalShown && (
+          <AlertModal
+            title="Image is too large (limit: 5mb)"
+            content="Please select a smaller image"
+            onHide={() => setAlertModalShown(false)}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
+  );
 
-  uploadImage = async image => {
-    const { uploadProfilePic } = this.props;
-    this.setState({
-      processing: true
-    });
+  async function uploadImage(image) {
+    setProcessing(true);
     await uploadProfilePic(image);
-    this.setState({
-      imageUri: null,
-      processing: false,
-      imageEditModalShown: false
-    });
-  };
+    setImageUri(null);
+    setProcessing(false);
+    setImageEditModalShown(false);
+  }
 }
 
 export default connect(

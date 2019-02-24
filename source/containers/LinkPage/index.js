@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
@@ -28,363 +28,310 @@ import {
   loadSubjects
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
+import { useContentObj } from '../../helpers/hooks';
 
-class LinkPage extends Component {
-  static propTypes = {
-    authLevel: PropTypes.number,
-    canDelete: PropTypes.bool,
-    canEdit: PropTypes.bool,
-    canStar: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
-    editLinkPage: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    likeLink: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    match: PropTypes.object.isRequired,
-    myId: PropTypes.number
-  };
+LinkPage.propTypes = {
+  authLevel: PropTypes.number,
+  canDelete: PropTypes.bool,
+  canEdit: PropTypes.bool,
+  canStar: PropTypes.bool,
+  dispatch: PropTypes.func.isRequired,
+  editLinkPage: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  likeLink: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  myId: PropTypes.number
+};
 
-  state = {
-    notFound: false,
-    confirmModalShown: false,
-    likesModalShown: false,
-    xpRewardInterfaceShown: false,
-    contentObj: {
-      id: undefined,
-      title: undefined,
-      content: undefined,
-      description: undefined,
-      subjects: [],
-      subjectLoadMoreButton: false,
-      timeStamp: undefined,
-      uploader: undefined,
-      uploaderAuthLevel: undefined,
-      uploaderName: undefined,
-      comments: [],
-      likes: [],
-      loadMoreCommentsButton: false,
-      stars: []
-    }
-  };
-
-  async componentDidMount() {
-    const {
-      match: {
-        params: { linkId }
-      }
-    } = this.props;
-    try {
-      await this.loadLinkPage(linkId);
-      const subjectsObj = await loadSubjects({
-        type: 'url',
-        contentId: linkId
-      });
-      this.fetchSubjects(subjectsObj);
-      const commentsObj = await loadComments({
-        id: linkId,
-        type: 'url',
-        limit: 5
-      });
-      if (commentsObj) this.fetchComments(commentsObj);
-    } catch (error) {
-      if (error.response) {
-        const { data = {} } = error.response;
-        if (data.notFound) {
-          this.setState({ notFound: true });
-        }
-      }
-      console.error(error.response || error);
-    }
+function LinkPage({
+  location,
+  match: {
+    params: { linkId },
+    authLevel,
+    canDelete,
+    canEdit,
+    canStar,
+    dispatch,
+    history,
+    myId
   }
+}) {
+  const [notFound, setNotFound] = useState(false);
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [likesModalShown, setLikesModalShown] = useState(false);
+  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const { contentObj, setContentObj, onLoadSubjects } = useContentObj({});
 
-  async componentDidUpdate(prevProps) {
-    const {
-      location,
-      match: {
-        params: { linkId }
-      }
-    } = this.props;
-    if (prevProps.location.pathname !== location.pathname) {
+  useEffect(() => {
+    async function initLinkPage() {
       try {
-        await this.loadLinkPage(linkId);
+        await loadLinkPage(linkId);
+        const subjectsObj = await loadSubjects({
+          type: 'url',
+          contentId: linkId
+        });
+        onLoadSubjects(subjectsObj);
         const commentsObj = await loadComments({
           id: linkId,
-          type: 'url'
+          type: 'url',
+          limit: 5
         });
-        if (commentsObj) this.fetchComments(commentsObj);
+        if (commentsObj) onLoadComments(commentsObj);
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response;
           if (data.notFound) {
-            this.setState({ notFound: true });
+            setNotFound(true);
           }
         }
         console.error(error.response || error);
       }
     }
+  }, [location.pathname]);
+
+  const {
+    comments,
+    content,
+    description,
+    subjects,
+    subjectLoadMoreButton,
+    id,
+    likes,
+    loadMoreCommentsButton,
+    stars,
+    timeStamp,
+    title,
+    uploader,
+    uploaderName,
+    uploaderAuthLevel,
+    ...embedlyProps
+  } = contentObj;
+  let userLikedThis = false;
+  for (let i = 0; i < likes.length; i++) {
+    if (likes[i].id === myId) userLikedThis = true;
   }
+  const userCanEditThis =
+    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+  const userIsUploader = uploader === myId;
 
-  render() {
-    const {
-      authLevel,
-      canDelete,
-      canEdit,
-      canStar,
-      dispatch,
-      history,
-      myId
-    } = this.props;
-    const {
-      confirmModalShown,
-      likesModalShown,
-      notFound,
-      xpRewardInterfaceShown,
-      contentObj: {
-        comments,
-        content,
-        description,
-        subjects,
-        subjectLoadMoreButton,
-        id,
-        likes,
-        loadMoreCommentsButton,
-        stars,
-        timeStamp,
-        title,
-        uploader,
-        uploaderName,
-        uploaderAuthLevel,
-        ...embedlyProps
-      }
-    } = this.state;
-    let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].id === myId) userLikedThis = true;
-    }
-    const userCanEditThis =
-      (canEdit || canDelete) && authLevel > uploaderAuthLevel;
-    const userIsUploader = uploader === myId;
-
-    return id ? (
+  return id ? (
+    <div
+      className={css`
+        margin-top: 1rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: 0;
+        }
+      `}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        fontSize: '1.7rem',
+        paddingBottom: '10rem'
+      }}
+    >
       <div
         className={css`
-          margin-top: 1rem;
+          width: 60%;
+          background-color: #fff;
+          padding-bottom: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
-            margin-top: 0;
+            width: 100%;
           }
         `}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          fontSize: '1.7rem',
-          paddingBottom: '10rem'
-        }}
       >
+        <Description
+          key={'description' + id}
+          content={content}
+          uploaderAuthLevel={uploaderAuthLevel}
+          uploaderId={uploader}
+          uploaderName={uploaderName}
+          timeStamp={timeStamp}
+          myId={myId}
+          title={title}
+          url={content}
+          userCanEditThis={userCanEditThis}
+          description={description}
+          linkId={id}
+          onDelete={() => this.setState({ confirmModalShown: true })}
+          onEditDone={this.editLinkPage}
+          userIsUploader={userIsUploader}
+        />
+        <Embedly
+          key={'link' + id}
+          title={title}
+          style={{ marginTop: '2rem' }}
+          id={id}
+          url={content}
+          {...embedlyProps}
+        />
+        <RewardStatus
+          contentType="url"
+          onCommentEdit={this.editRewardComment}
+          style={{
+            fontSize: '1.4rem'
+          }}
+          stars={stars}
+          uploaderName={uploaderName}
+        />
         <div
-          className={css`
-            width: 60%;
-            background-color: #fff;
-            padding-bottom: 1rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-            }
-          `}
+          style={{
+            paddingTop: '1.5rem',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
         >
-          <Description
-            key={'description' + id}
-            content={content}
-            uploaderAuthLevel={uploaderAuthLevel}
-            uploaderId={uploader}
-            uploaderName={uploaderName}
-            timeStamp={timeStamp}
-            myId={myId}
-            title={title}
-            url={content}
-            userCanEditThis={userCanEditThis}
-            description={description}
-            linkId={id}
-            onDelete={() => this.setState({ confirmModalShown: true })}
-            onEditDone={this.editLinkPage}
-            userIsUploader={userIsUploader}
-          />
-          <Embedly
-            key={'link' + id}
-            title={title}
-            style={{ marginTop: '2rem' }}
-            id={id}
-            url={content}
-            {...embedlyProps}
-          />
-          <RewardStatus
-            contentType="url"
-            onCommentEdit={this.editRewardComment}
-            style={{
-              fontSize: '1.4rem'
-            }}
-            stars={stars}
-            uploaderName={uploaderName}
-          />
-          <div
-            style={{
-              paddingTop: '1.5rem',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}
-          >
-            <div style={{ display: 'flex' }}>
-              <LikeButton
-                key={'like' + id}
+          <div style={{ display: 'flex' }}>
+            <LikeButton
+              key={'like' + id}
+              filled
+              style={{ fontSize: '2rem' }}
+              contentType="url"
+              contentId={id}
+              onClick={this.likeLink}
+              liked={userLikedThis}
+            />
+            {canStar && userCanEditThis && !userIsUploader && (
+              <Button
+                love
                 filled
-                style={{ fontSize: '2rem' }}
-                contentType="url"
-                contentId={id}
-                onClick={this.likeLink}
-                liked={userLikedThis}
-              />
-              {canStar && userCanEditThis && !userIsUploader && (
-                <Button
-                  love
-                  filled
-                  disabled={determineXpButtonDisabled({
+                disabled={determineXpButtonDisabled({
+                  myId,
+                  xpRewardInterfaceShown,
+                  stars
+                })}
+                style={{
+                  fontSize: '2rem',
+                  marginLeft: '1rem'
+                }}
+                onClick={() => this.setState({ xpRewardInterfaceShown: true })}
+              >
+                <Icon icon="certificate" />
+                <span style={{ marginLeft: '0.7rem' }}>
+                  {determineXpButtonDisabled({
                     myId,
                     xpRewardInterfaceShown,
                     stars
-                  })}
-                  style={{
-                    fontSize: '2rem',
-                    marginLeft: '1rem'
-                  }}
-                  onClick={() =>
-                    this.setState({ xpRewardInterfaceShown: true })
-                  }
-                >
-                  <Icon icon="certificate" />
-                  <span style={{ marginLeft: '0.7rem' }}>
-                    {determineXpButtonDisabled({
-                      myId,
-                      xpRewardInterfaceShown,
-                      stars
-                    }) || 'Reward'}
-                  </span>
-                </Button>
-              )}
-            </div>
-            <Likers
-              key={'likes' + id}
-              style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
-              likes={likes}
-              userId={myId}
-              onLinkClick={() => this.setState({ likesModalShown: true })}
+                  }) || 'Reward'}
+                </span>
+              </Button>
+            )}
+          </div>
+          <Likers
+            key={'likes' + id}
+            style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
+            likes={likes}
+            userId={myId}
+            onLinkClick={() => this.setState({ likesModalShown: true })}
+          />
+        </div>
+        {xpRewardInterfaceShown && (
+          <div style={{ padding: '0 1rem' }}>
+            <XPRewardInterface
+              stars={stars}
+              contentType="url"
+              contentId={Number(id)}
+              noPadding
+              uploaderId={uploader}
+              onRewardSubmit={data => {
+                this.setState({ xpRewardInterfaceShown: false });
+                this.attachStar(data);
+              }}
             />
           </div>
-          {xpRewardInterfaceShown && (
-            <div style={{ padding: '0 1rem' }}>
-              <XPRewardInterface
-                stars={stars}
-                contentType="url"
-                contentId={Number(id)}
-                noPadding
-                uploaderId={uploader}
-                onRewardSubmit={data => {
-                  this.setState({ xpRewardInterfaceShown: false });
-                  this.attachStar(data);
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <Subjects
-          className={css`
-            width: 60%;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-            }
-          `}
-          contentId={id}
-          loadMoreButton={subjectLoadMoreButton}
-          subjects={subjects}
-          onLoadMoreSubjects={this.fetchMoreSubjects}
-          onLoadSubjectComments={this.fetchSubjectResponses}
-          onSubjectEditDone={this.editSubject}
-          onSubjectDelete={this.deleteSubject}
-          setSubjectDifficulty={this.setSubjectDifficulty}
-          uploadSubject={this.uploadSubject}
-          type="url"
-          commentActions={{
-            attachStar: this.attachStar,
-            editRewardComment: this.editRewardComment,
-            onDelete: this.deleteComment,
-            onEditDone: this.editComment,
-            onLikeClick: this.likeComment,
-            onLoadMoreComments: this.fetchMoreSubjectComments,
-            onLoadMoreReplies: this.fetchMoreSubjectReplies,
-            onUploadComment: this.uploadComment,
-            onUploadReply: this.uploadReply
-          }}
-        />
-        <Comments
-          autoExpand
-          comments={comments}
-          inputTypeLabel="comment"
-          key={'comments' + id}
-          loadMoreButton={loadMoreCommentsButton}
-          onAttachStar={this.attachStar}
-          onCommentSubmit={this.uploadComment}
-          onDelete={this.deleteComment}
-          onEditDone={this.editComment}
-          onLikeClick={this.likeComment}
-          onLoadMoreComments={this.fetchMoreComments}
-          onLoadMoreReplies={this.fetchMoreReplies}
-          onReplySubmit={this.uploadReply}
-          onRewardCommentEdit={this.editRewardComment}
-          parent={{ type: 'url', id }}
-          className={css`
-            padding: 1rem;
-            width: 60%;
-            background: #fff;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-            }
-          `}
-          userId={myId}
-        />
-        {confirmModalShown && (
-          <ConfirmModal
-            key={'confirm' + id}
-            title="Remove Link"
-            onConfirm={async() => {
-              try {
-                await request.delete(`${URL}/url?linkId=${id}`, auth());
-                history.push('/links');
-              } catch (error) {
-                handleError(error, dispatch);
-              }
-            }}
-            onHide={() => this.setState({ confirmModalShown: false })}
-          />
-        )}
-        {likesModalShown && (
-          <UserListModal
-            key={'userlist' + id}
-            users={likes}
-            userId={myId}
-            title="People who liked this"
-            description="(You)"
-            onHide={() => this.setState({ likesModalShown: false })}
-          />
         )}
       </div>
-    ) : notFound ? (
-      <NotFound />
-    ) : (
-      <Loading text="Loading Page..." />
-    );
-  }
+      <Subjects
+        className={css`
+          width: 60%;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+        contentId={id}
+        loadMoreButton={subjectLoadMoreButton}
+        subjects={subjects}
+        onLoadMoreSubjects={this.fetchMoreSubjects}
+        onLoadSubjectComments={this.fetchSubjectResponses}
+        onSubjectEditDone={this.editSubject}
+        onSubjectDelete={this.deleteSubject}
+        setSubjectDifficulty={this.setSubjectDifficulty}
+        uploadSubject={this.uploadSubject}
+        type="url"
+        commentActions={{
+          attachStar: this.attachStar,
+          editRewardComment: this.editRewardComment,
+          onDelete: this.deleteComment,
+          onEditDone: this.editComment,
+          onLikeClick: this.likeComment,
+          onLoadMoreComments: this.fetchMoreSubjectComments,
+          onLoadMoreReplies: this.fetchMoreSubjectReplies,
+          onUploadComment: this.uploadComment,
+          onUploadReply: this.uploadReply
+        }}
+      />
+      <Comments
+        autoExpand
+        comments={comments}
+        inputTypeLabel="comment"
+        key={'comments' + id}
+        loadMoreButton={loadMoreCommentsButton}
+        onAttachStar={this.attachStar}
+        onCommentSubmit={this.uploadComment}
+        onDelete={this.deleteComment}
+        onEditDone={this.editComment}
+        onLikeClick={this.likeComment}
+        onLoadMoreComments={this.fetchMoreComments}
+        onLoadMoreReplies={this.fetchMoreReplies}
+        onReplySubmit={this.uploadReply}
+        onRewardCommentEdit={this.editRewardComment}
+        parent={{ type: 'url', id }}
+        className={css`
+          padding: 1rem;
+          width: 60%;
+          background: #fff;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+        userId={myId}
+      />
+      {confirmModalShown && (
+        <ConfirmModal
+          key={'confirm' + id}
+          title="Remove Link"
+          onConfirm={async() => {
+            try {
+              await request.delete(`${URL}/url?linkId=${id}`, auth());
+              history.push('/links');
+            } catch (error) {
+              handleError(error, dispatch);
+            }
+          }}
+          onHide={() => this.setState({ confirmModalShown: false })}
+        />
+      )}
+      {likesModalShown && (
+        <UserListModal
+          key={'userlist' + id}
+          users={likes}
+          userId={myId}
+          title="People who liked this"
+          description="(You)"
+          onHide={() => this.setState({ likesModalShown: false })}
+        />
+      )}
+    </div>
+  ) : notFound ? (
+    <NotFound />
+  ) : (
+    <Loading text="Loading Page..." />
+  );
 
   attachStar = data => {
     this.setState(state => ({
@@ -588,7 +535,7 @@ class LinkPage extends Component {
     }));
   };
 
-  fetchComments = ({ comments, loadMoreButton }) => {
+  function onLoadComments({ comments, loadMoreButton }) {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -596,7 +543,7 @@ class LinkPage extends Component {
         loadMoreCommentsButton: loadMoreButton
       }
     }));
-  };
+  }
 
   fetchMoreComments = ({ comments, loadMoreButton }) => {
     this.setState(state => ({
@@ -608,7 +555,7 @@ class LinkPage extends Component {
     }));
   };
 
-  fetchSubjects = ({ results, loadMoreButton }) => {
+  function onLoadSubjects({ results, loadMoreButton }) {
     this.setState(state => ({
       contentObj: {
         ...state.contentObj,
@@ -616,7 +563,7 @@ class LinkPage extends Component {
         subjectLoadMoreButton: loadMoreButton
       }
     }));
-  };
+  }
 
   fetchSubjectResponses = ({
     data: { comments, loadMoreButton },
