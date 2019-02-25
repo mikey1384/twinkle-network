@@ -326,11 +326,7 @@ function Reply({
   async function replyButtonClick() {
     setReplyButtonClicked(true);
     ReplyInputAreaRef.current.focus();
-    if (
-      numReplies.length > 0 &&
-      !replyButtonClicked &&
-      parent.type === 'comment'
-    ) {
+    if (numReplies > 0 && !replyButtonClicked && parent.type === 'comment') {
       const { replies } = await loadReplies({
         commentId: id
       });

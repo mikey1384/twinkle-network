@@ -1,31 +1,57 @@
 import { useState } from 'react';
 
 export default function useContentObj(props) {
-  const [contentObj, setContentObj] = useState(props);
+  const [contentObj, setContentObj] = useState({
+    stars: [],
+    childComments: [],
+    likes: [],
+    subjects: [],
+    commentsLoadMoreButton: false,
+    subjectsLoadMoreButton: false,
+    ...props
+  });
+
   function onAttachStar(data) {
     setContentObj({
       ...contentObj,
       stars:
         data.contentId === contentObj.contentId &&
         data.contentType === contentObj.type
-          ? contentObj.stars?.concat(data)
+          ? (contentObj.stars || []).concat(data)
           : contentObj.stars || [],
       childComments: contentObj.childComments?.map(comment => {
         return {
           ...comment,
           stars:
             comment.id === data.contentId && data.contentType === 'comment'
-              ? comment.stars?.concat(data)
+              ? (comment.stars || []).concat(data)
               : comment.stars || [],
           replies: comment.replies.map(reply => ({
             ...reply,
             stars:
               reply.id === data.contentId && data.contentType === 'comment'
-                ? reply.stars?.concat(data)
+                ? (reply.stars || []).concat(data)
                 : reply.stars || []
           }))
         };
       }),
+      subjects: contentObj.subjects?.map(subject => ({
+        ...subject,
+        comments: subject.comments.map(comment => ({
+          ...comment,
+          stars:
+            comment.id === data.contentId
+              ? comment.stars?.concat(data)
+              : comment.stars || [],
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            stars:
+              reply.id === data.contentId
+                ? reply.stars?.concat(data)
+                : reply.stars || []
+          }))
+        }))
+      })),
       targetObj: contentObj.targetObj
         ? {
             ...contentObj.targetObj,
@@ -35,7 +61,7 @@ export default function useContentObj(props) {
                   stars:
                     contentObj.targetObj.comment.id === data.contentId &&
                     data.contentType === 'comment'
-                      ? contentObj.targetObj.comment.stars?.concat(data)
+                      ? (contentObj.targetObj.comment.stars || []).concat(data)
                       : contentObj.targetObj.comment.stars
                 }
               : undefined
@@ -44,47 +70,43 @@ export default function useContentObj(props) {
     });
   }
 
-  function onCommentSubmit(data) {
+  function onUploadComment(data) {
     const { type } = contentObj;
     setContentObj({
       ...contentObj,
       childComments:
         type === 'comment'
-          ? contentObj.childComments?.concat([data])
-          : [data].concat(contentObj.childComments)
-    });
-  }
-
-  function onReplySubmit(data) {
-    setContentObj({
-      ...contentObj,
-      childComments: contentObj.childComments.map(comment => {
-        let match = false;
-        let commentId = data.replyId || data.commentId;
-        if (comment.id === commentId) {
-          match = true;
-        } else {
-          for (let reply of comment.replies || []) {
-            if (reply.id === commentId) {
-              match = true;
-              break;
+          ? (contentObj.childComments || []).concat([data])
+          : [data].concat(contentObj.childComments),
+      subjects: contentObj.subjects?.map(subject =>
+        subject.id === data.subjectId
+          ? {
+              ...subject,
+              comments: [data].concat(subject.comments)
             }
-          }
-        }
-        return {
-          ...comment,
-          replies: match ? comment.replies.concat([data]) : comment.replies
-        };
-      })
+          : subject
+      )
     });
   }
 
   function onDeleteComment(commentId) {
-    const comments = contentObj.childComments?.filter(
-      comment => comment.id !== commentId
-    );
     setContentObj({
       ...contentObj,
+      childComments: contentObj.childComments
+        ?.filter(comment => comment.id !== commentId)
+        .map(comment => ({
+          ...comment,
+          replies: comment.replies?.filter(reply => reply.id !== commentId)
+        })),
+      subjects: contentObj.subjects?.map(subject => ({
+        ...subject,
+        comments: subject.comments
+          ?.filter(comment => comment.id !== commentId)
+          .map(comment => ({
+            ...comment,
+            replies: comment.replies?.filter(reply => reply.id !== commentId)
+          }))
+      })),
       targetObj: contentObj.targetObj
         ? {
             ...contentObj.targetObj,
@@ -97,11 +119,14 @@ export default function useContentObj(props) {
                 }
               : undefined
           }
-        : undefined,
-      childComments: comments.map(comment => ({
-        ...comment,
-        replies: comment.replies?.filter(reply => reply.id !== commentId)
-      }))
+        : undefined
+    });
+  }
+
+  function onDeleteSubject(subjectId) {
+    setContentObj({
+      ...contentObj,
+      subjects: contentObj.subjects?.filter(subject => subject.id !== subjectId)
     });
   }
 
@@ -138,7 +163,22 @@ export default function useContentObj(props) {
                 }
               : undefined
           }
-        : undefined
+        : undefined,
+      subjects: contentObj.subjects?.map(subject => ({
+        ...subject,
+        comments: subject.comments?.map(comment => ({
+          ...comment,
+          content: comment.id === commentId ? editedComment : comment.content,
+          replies: comment.replies?.map(reply =>
+            reply.id === commentId
+              ? {
+                  ...reply,
+                  content: editedComment
+                }
+              : reply
+          )
+        }))
+      }))
     });
   }
 
@@ -163,6 +203,27 @@ export default function useContentObj(props) {
           }))
         }))
       })),
+      subjects: contentObj.subjects?.map(subject => ({
+        ...subject,
+        comments: subject.comments.map(comment => ({
+          ...comment,
+          stars: comment.stars
+            ? comment.stars.map(star => ({
+                ...star,
+                rewardComment: star.id === id ? text : star.rewardComment
+              }))
+            : [],
+          replies: comment.replies.map(reply => ({
+            ...reply,
+            stars: reply.stars
+              ? reply.stars.map(star => ({
+                  ...star,
+                  rewardComment: star.id === id ? text : star.rewardComment
+                }))
+              : []
+          }))
+        }))
+      })),
       targetObj: contentObj.targetObj
         ? {
             ...contentObj.targetObj,
@@ -184,6 +245,55 @@ export default function useContentObj(props) {
     setContentObj({
       ...contentObj,
       ...data
+    });
+  }
+
+  function onEditSubject({ editedSubject, subjectId }) {
+    setContentObj({
+      ...contentObj,
+      subjects: contentObj.subjects?.map(subject => ({
+        ...subject,
+        title: subject.id === subjectId ? editedSubject.title : subject.title,
+        description:
+          subject.id === subjectId
+            ? editedSubject.description
+            : subject.description
+      }))
+    });
+  }
+
+  function onLikeComment({ commentId, likes }) {
+    setContentObj({
+      ...contentObj,
+      childComments: contentObj.childComments.map(comment => {
+        return {
+          ...comment,
+          likes: comment.id === commentId ? likes : comment.likes,
+          replies: comment.replies.map(reply => {
+            return {
+              ...reply,
+              likes: reply.id === commentId ? likes : reply.likes
+            };
+          })
+        };
+      }),
+      subjects: contentObj.subjects.map(subject => {
+        return {
+          ...subject,
+          comments: subject.comments.map(comment => {
+            return {
+              ...comment,
+              likes: comment.id === commentId ? likes : comment.likes,
+              replies: comment.replies.map(reply => {
+                return {
+                  ...reply,
+                  likes: reply.id === commentId ? likes : reply.likes
+                };
+              })
+            };
+          })
+        };
+      })
     });
   }
 
@@ -235,8 +345,24 @@ export default function useContentObj(props) {
     });
   }
 
+  function onLoadComments({ comments, loadMoreButton }) {
+    setContentObj({
+      ...contentObj,
+      childComments: comments,
+      commentsLoadMoreButton: loadMoreButton
+    });
+  }
+
   function onLoadContent({ data }) {
     setContentObj({ ...contentObj, ...data });
+  }
+
+  function onLoadSubjects({ results, loadMoreButton }) {
+    setContentObj({
+      ...contentObj,
+      subjects: results,
+      subjectsLoadMoreButton: loadMoreButton
+    });
   }
 
   function onLoadMoreComments({ data: { comments, loadMoreButton } }) {
@@ -245,8 +371,8 @@ export default function useContentObj(props) {
       ...contentObj,
       childComments:
         type === 'comment'
-          ? comments.concat(contentObj.childComments)
-          : contentObj.childComments.concat(comments),
+          ? (comments || []).concat(contentObj.childComments)
+          : (contentObj.childComments || []).concat(comments),
       commentsLoadMoreButton: loadMoreButton
     });
   }
@@ -258,11 +384,62 @@ export default function useContentObj(props) {
         ...comment,
         replies:
           comment.id === commentId
-            ? replies.concat(comment.replies)
+            ? (replies || []).concat(comment.replies)
             : comment.replies,
         loadMoreButton:
           comment.id === commentId ? loadMoreButton : comment.loadMoreButton
       }))
+    });
+  }
+
+  function onLoadMoreSubjects({ results, loadMoreButton }) {
+    setContentObj({
+      ...contentObj,
+      subjects: (contentObj.subjects || []).concat(results),
+      subjectsLoadMoreButton: loadMoreButton
+    });
+  }
+
+  function onLoadMoreSubjectComments({
+    data: { comments, loadMoreButton },
+    subjectId
+  }) {
+    setContentObj({
+      ...contentObj,
+      subjects: contentObj.subjects.map(subject => {
+        if (subject.id === subjectId) {
+          return {
+            ...subject,
+            comments: subject.comments.concat(comments),
+            loadMoreCommentsButton: loadMoreButton
+          };
+        }
+        return subject;
+      })
+    });
+  }
+
+  function onLoadMoreSubjectReplies({ commentId, loadMoreButton, replies }) {
+    setContentObj({
+      ...contentObj,
+      subjects: contentObj.subjects.map(subject => {
+        return {
+          ...subject,
+          comments: subject.comments.map(comment => {
+            return {
+              ...comment,
+              replies:
+                comment.id === commentId
+                  ? replies.concat(comment.replies)
+                  : comment.replies,
+              loadMoreButton:
+                comment.id === commentId
+                  ? loadMoreButton
+                  : comment.loadMoreButton
+            };
+          })
+        };
+      })
     });
   }
 
@@ -309,13 +486,37 @@ export default function useContentObj(props) {
     });
   }
 
-  function onShowComments({ comments, loadMoreButton }) {
+  function onSetSubjectDifficulty({ contentId, difficulty }) {
     setContentObj({
       ...contentObj,
-      childComments: comments,
-      commentsLoadMoreButton: loadMoreButton
+      subjects: contentObj.subjects?.map(subject => {
+        return subject.id === contentId
+          ? {
+              ...subject,
+              difficulty
+            }
+          : subject;
+      })
     });
-    return Promise.resolve();
+  }
+
+  function onLoadSubjectComments({
+    data: { comments, loadMoreButton },
+    subjectId
+  }) {
+    setContentObj({
+      ...contentObj,
+      subjects: contentObj.subjects?.map(subject => {
+        if (subject.id === subjectId) {
+          return {
+            ...subject,
+            comments: comments,
+            loadMoreCommentsButton: loadMoreButton
+          };
+        }
+        return subject;
+      })
+    });
   }
 
   function onTargetCommentSubmit(data) {
@@ -330,23 +531,78 @@ export default function useContentObj(props) {
       }
     });
   }
+
+  function onUploadSubject(subject) {
+    setContentObj({
+      ...contentObj,
+      subjects: [subject].concat(contentObj.subjects)
+    });
+  }
+
+  function onUploadReply(data) {
+    setContentObj({
+      ...contentObj,
+      childComments: contentObj.childComments.map(comment => {
+        let match = false;
+        let commentId = data.replyId || data.commentId;
+        if (comment.id === commentId) {
+          match = true;
+        } else {
+          for (let reply of comment.replies || []) {
+            if (reply.id === commentId) {
+              match = true;
+              break;
+            }
+          }
+        }
+        return {
+          ...comment,
+          replies: match ? comment.replies.concat([data]) : comment.replies
+        };
+      }),
+      subjects: contentObj.subjects.map(subject => {
+        return {
+          ...subject,
+          comments: subject.comments.map(comment =>
+            comment.id === data.commentId || comment.id === data.replyId
+              ? {
+                  ...comment,
+                  replies: comment.replies.concat([data])
+                }
+              : comment
+          )
+        };
+      })
+    });
+  }
+
   return {
     contentObj,
     setContentObj,
     onAttachStar,
-    onCommentSubmit,
-    onReplySubmit,
     onDeleteComment,
+    onDeleteSubject,
     onEditComment,
-    onEditRewardComment,
     onEditContent,
+    onEditRewardComment,
+    onEditSubject,
+    onLikeComment,
     onLikeContent,
+    onLoadComments,
     onLoadContent,
+    onLoadSubjects,
     onLoadMoreComments,
     onLoadMoreReplies,
+    onLoadMoreSubjects,
+    onLoadMoreSubjectComments,
+    onLoadMoreSubjectReplies,
     onLoadRepliesOfReply,
-    onShowComments,
+    onLoadSubjectComments,
     onSetDifficulty,
-    onTargetCommentSubmit
+    onSetSubjectDifficulty,
+    onTargetCommentSubmit,
+    onUploadComment,
+    onUploadReply,
+    onUploadSubject
   };
 }

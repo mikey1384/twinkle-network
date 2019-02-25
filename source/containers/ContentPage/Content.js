@@ -29,20 +29,20 @@ function Content({
     contentObj,
     setContentObj,
     onAttachStar,
-    onCommentSubmit,
-    onReplySubmit,
     onDeleteComment,
     onEditComment,
     onEditRewardComment,
     onEditContent,
     onLikeContent,
+    onLoadComments,
     onLoadContent,
     onLoadMoreComments,
     onLoadMoreReplies,
     onLoadRepliesOfReply,
-    onShowComments,
     onSetDifficulty,
-    onTargetCommentSubmit
+    onTargetCommentSubmit,
+    onUploadComment,
+    onUploadReply
   } = useContentObj({ contentId, type });
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,
@@ -94,7 +94,7 @@ function Content({
             contentObj={contentObj}
             userId={userId}
             onAttachStar={onAttachStar}
-            onCommentSubmit={onCommentSubmit}
+            onCommentSubmit={onUploadComment}
             onDeleteComment={onDeleteComment}
             onDeleteContent={() => history.push('/')}
             onEditComment={onEditComment}
@@ -105,9 +105,9 @@ function Content({
             onLoadMoreComments={onLoadMoreComments}
             onLoadMoreReplies={onLoadMoreReplies}
             onLoadRepliesOfReply={onLoadRepliesOfReply}
-            onReplySubmit={onReplySubmit}
+            onReplySubmit={onUploadReply}
             onSetDifficulty={onSetDifficulty}
-            onShowComments={onShowComments}
+            onShowComments={onLoadComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
           />
         ) : (

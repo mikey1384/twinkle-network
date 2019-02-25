@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useContentObj } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import Embedly from 'components/Embedly';
-import { editLinkPage, likeLink } from 'redux/actions/LinkActions';
 import Comments from 'components/Comments';
 import Subjects from 'components/Subjects';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -17,6 +16,8 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import request from 'axios';
 import NotFound from 'components/NotFound';
+import { editLinkPage, likeLink } from 'redux/actions/LinkActions';
+import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
@@ -28,7 +29,6 @@ import {
   loadSubjects
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
-import { useContentObj } from '../../helpers/hooks';
 
 LinkPage.propTypes = {
   authLevel: PropTypes.number,
@@ -53,31 +53,64 @@ function LinkPage({
     canEdit,
     canStar,
     dispatch,
-    history,
-    myId
-  }
+    history
+  },
+  myId
 }) {
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const { contentObj, setContentObj, onLoadSubjects } = useContentObj({});
+  const {
+    contentObj,
+    setContentObj,
+    onAttachStar,
+    onDeleteComment,
+    onDeleteSubject,
+    onEditComment,
+    onEditRewardComment,
+    onEditSubject,
+    onLikeComment,
+    onLoadContent,
+    onLoadSubjectComments,
+    onLoadMoreComments,
+    onLoadMoreReplies,
+    onLoadMoreSubjects,
+    onLoadMoreSubjectComments,
+    onLoadMoreSubjectReplies,
+    onSetSubjectDifficulty,
+    onUploadComment,
+    onUploadReply,
+    onUploadSubject
+  } = useContentObj({
+    type: 'url',
+    contentId: Number(linkId)
+  });
 
   useEffect(() => {
+    initLinkPage();
     async function initLinkPage() {
       try {
-        await loadLinkPage(linkId);
+        const { data } = await request.get(`${URL}/url/page?linkId=${linkId}`);
         const subjectsObj = await loadSubjects({
           type: 'url',
           contentId: linkId
         });
-        onLoadSubjects(subjectsObj);
+        const { results, loadMoreButton } = subjectsObj;
         const commentsObj = await loadComments({
           id: linkId,
           type: 'url',
           limit: 5
         });
-        if (commentsObj) onLoadComments(commentsObj);
+        onLoadContent({
+          data: {
+            ...data,
+            childComments: commentsObj?.comments || [],
+            commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
+            subjects: results,
+            subjectsLoadMoreButton: loadMoreButton
+          }
+        });
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response;
@@ -91,14 +124,14 @@ function LinkPage({
   }, [location.pathname]);
 
   const {
-    comments,
+    childComments,
+    commentsLoadMoreButton,
     content,
     description,
-    subjects,
-    subjectLoadMoreButton,
     id,
     likes,
-    loadMoreCommentsButton,
+    subjects,
+    subjectsLoadMoreButton,
     stars,
     timeStamp,
     title,
@@ -156,8 +189,8 @@ function LinkPage({
           userCanEditThis={userCanEditThis}
           description={description}
           linkId={id}
-          onDelete={() => this.setState({ confirmModalShown: true })}
-          onEditDone={this.editLinkPage}
+          onDelete={() => setConfirmModalShown(true)}
+          onEditDone={handleEditLinkPage}
           userIsUploader={userIsUploader}
         />
         <Embedly
@@ -170,7 +203,7 @@ function LinkPage({
         />
         <RewardStatus
           contentType="url"
-          onCommentEdit={this.editRewardComment}
+          onCommentEdit={onEditRewardComment}
           style={{
             fontSize: '1.4rem'
           }}
@@ -193,7 +226,7 @@ function LinkPage({
               style={{ fontSize: '2rem' }}
               contentType="url"
               contentId={id}
-              onClick={this.likeLink}
+              onClick={handleLikeLink}
               liked={userLikedThis}
             />
             {canStar && userCanEditThis && !userIsUploader && (
@@ -209,7 +242,7 @@ function LinkPage({
                   fontSize: '2rem',
                   marginLeft: '1rem'
                 }}
-                onClick={() => this.setState({ xpRewardInterfaceShown: true })}
+                onClick={() => setXpRewardInterfaceShown(true)}
               >
                 <Icon icon="certificate" />
                 <span style={{ marginLeft: '0.7rem' }}>
@@ -227,7 +260,7 @@ function LinkPage({
             style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
             likes={likes}
             userId={myId}
-            onLinkClick={() => this.setState({ likesModalShown: true })}
+            onLinkClick={() => setLikesModalShown(true)}
           />
         </div>
         {xpRewardInterfaceShown && (
@@ -239,8 +272,8 @@ function LinkPage({
               noPadding
               uploaderId={uploader}
               onRewardSubmit={data => {
-                this.setState({ xpRewardInterfaceShown: false });
-                this.attachStar(data);
+                setXpRewardInterfaceShown(false);
+                onAttachStar(data);
               }}
             />
           </div>
@@ -254,42 +287,42 @@ function LinkPage({
           }
         `}
         contentId={id}
-        loadMoreButton={subjectLoadMoreButton}
+        loadMoreButton={subjectsLoadMoreButton}
         subjects={subjects}
-        onLoadMoreSubjects={this.fetchMoreSubjects}
-        onLoadSubjectComments={this.fetchSubjectResponses}
-        onSubjectEditDone={this.editSubject}
-        onSubjectDelete={this.deleteSubject}
-        setSubjectDifficulty={this.setSubjectDifficulty}
-        uploadSubject={this.uploadSubject}
+        onLoadMoreSubjects={onLoadMoreSubjects}
+        onLoadSubjectComments={onLoadSubjectComments}
+        onSubjectEditDone={onEditSubject}
+        onSubjectDelete={onDeleteSubject}
+        setSubjectDifficulty={onSetSubjectDifficulty}
+        uploadSubject={onUploadSubject}
         type="url"
         commentActions={{
-          attachStar: this.attachStar,
-          editRewardComment: this.editRewardComment,
-          onDelete: this.deleteComment,
-          onEditDone: this.editComment,
-          onLikeClick: this.likeComment,
-          onLoadMoreComments: this.fetchMoreSubjectComments,
-          onLoadMoreReplies: this.fetchMoreSubjectReplies,
-          onUploadComment: this.uploadComment,
-          onUploadReply: this.uploadReply
+          attachStar: onAttachStar,
+          editRewardComment: onEditRewardComment,
+          onDelete: onDeleteComment,
+          onEditDone: onEditComment,
+          onLikeClick: onLikeComment,
+          onLoadMoreComments: onLoadMoreSubjectComments,
+          onLoadMoreReplies: onLoadMoreSubjectReplies,
+          onUploadComment,
+          onUploadReply
         }}
       />
       <Comments
         autoExpand
-        comments={comments}
+        comments={childComments}
         inputTypeLabel="comment"
         key={'comments' + id}
-        loadMoreButton={loadMoreCommentsButton}
-        onAttachStar={this.attachStar}
-        onCommentSubmit={this.uploadComment}
-        onDelete={this.deleteComment}
-        onEditDone={this.editComment}
-        onLikeClick={this.likeComment}
-        onLoadMoreComments={this.fetchMoreComments}
-        onLoadMoreReplies={this.fetchMoreReplies}
-        onReplySubmit={this.uploadReply}
-        onRewardCommentEdit={this.editRewardComment}
+        loadMoreButton={commentsLoadMoreButton}
+        onAttachStar={onAttachStar}
+        onCommentSubmit={onUploadComment}
+        onDelete={onDeleteComment}
+        onEditDone={onEditComment}
+        onLikeClick={onLikeComment}
+        onLoadMoreComments={onLoadMoreComments}
+        onLoadMoreReplies={onLoadMoreReplies}
+        onReplySubmit={onUploadReply}
+        onRewardCommentEdit={onEditRewardComment}
         parent={{ type: 'url', id }}
         className={css`
           padding: 1rem;
@@ -313,7 +346,7 @@ function LinkPage({
               handleError(error, dispatch);
             }
           }}
-          onHide={() => this.setState({ confirmModalShown: false })}
+          onHide={() => setConfirmModalShown(false)}
         />
       )}
       {likesModalShown && (
@@ -323,7 +356,7 @@ function LinkPage({
           userId={myId}
           title="People who liked this"
           description="(You)"
-          onHide={() => this.setState({ likesModalShown: false })}
+          onHide={() => setLikesModalShown(false)}
         />
       )}
     </div>
@@ -333,135 +366,7 @@ function LinkPage({
     <Loading text="Loading Page..." />
   );
 
-  attachStar = data => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        stars:
-          data.contentType === 'url'
-            ? state.contentObj.stars?.concat(data)
-            : state.contentObj.stars || [],
-        comments: state.contentObj.comments.map(comment => ({
-          ...comment,
-          stars:
-            comment.id === data.contentId
-              ? comment.stars?.concat(data)
-              : comment.stars || [],
-          replies: comment.replies.map(reply => ({
-            ...reply,
-            stars:
-              reply.id === data.contentId
-                ? reply.stars?.concat(data)
-                : reply.stars || []
-          }))
-        })),
-        subjects: state.contentObj.subjects.map(subject => ({
-          ...subject,
-          comments: subject.comments.map(comment => ({
-            ...comment,
-            stars:
-              comment.id === data.contentId
-                ? comment.stars?.concat(data)
-                : comment.stars || [],
-            replies: comment.replies.map(reply => ({
-              ...reply,
-              stars:
-                reply.id === data.contentId
-                  ? reply.stars?.concat(data)
-                  : reply.stars || []
-            }))
-          }))
-        }))
-      }
-    }));
-  };
-
-  deleteComment = commentId => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.reduce((prev, comment) => {
-          if (comment.id === commentId) return prev;
-          return prev.concat([
-            {
-              ...comment,
-              replies: comment.replies.filter(reply => reply.id !== commentId)
-            }
-          ]);
-        }, []),
-        subjects: state.contentObj.subjects.map(subject => {
-          return {
-            ...subject,
-            comments: subject.comments
-              ?.filter(comment => comment.id !== commentId)
-              .map(comment => ({
-                ...comment,
-                replies: comment.replies?.filter(
-                  reply => reply.id !== commentId
-                )
-              }))
-          };
-        })
-      }
-    }));
-  };
-
-  deleteSubject = subjectId => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.filter(
-          subject => subject.id !== subjectId
-        )
-      }
-    }));
-  };
-
-  editComment = ({ commentId, editedComment }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.map(comment => ({
-          ...comment,
-          content: comment.id === commentId ? editedComment : comment.content,
-          replies: comment.replies.map(reply => ({
-            ...reply,
-            content: reply.id === commentId ? editedComment : reply.content
-          }))
-        })),
-        subjects: state.contentObj.subjects.map(subject => ({
-          ...subject,
-          comments: subject.comments.map(comment => ({
-            ...comment,
-            content: comment.id === commentId ? editedComment : comment.content,
-            replies: comment.replies.map(reply => ({
-              ...reply,
-              content: reply.id === commentId ? editedComment : reply.content
-            }))
-          }))
-        }))
-      }
-    }));
-  };
-
-  editSubject = ({ editedSubject, subjectId }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.map(subject => ({
-          ...subject,
-          title: subject.id === subjectId ? editedSubject.title : subject.title,
-          description:
-            subject.id === subjectId
-              ? editedSubject.description
-              : subject.description
-        }))
-      }
-    }));
-  };
-
-  editLinkPage = async params => {
-    const { dispatch, editLinkPage } = this.props;
+  async function handleEditLinkPage(params) {
     try {
       await request.put(`${URL}/url/page`, params, auth());
       const {
@@ -470,330 +375,25 @@ function LinkPage({
         editedDescription: description,
         editedUrl: content
       } = params;
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          content: processedURL(content),
-          title,
-          description
-        }
-      }));
+      setContentObj({
+        ...contentObj,
+        content: processedURL(content),
+        title,
+        description
+      });
       editLinkPage({ id: Number(id), title, content: processedURL(content) });
     } catch (error) {
       handleError(error, dispatch);
     }
-  };
-
-  editRewardComment = ({ id, text }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        stars: (state.contentObj.stars || []).map(star => ({
-          ...star,
-          rewardComment: star.id === id ? text : star.rewardComment
-        })),
-        comments: state.contentObj.comments.map(comment => ({
-          ...comment,
-          stars: comment.stars
-            ? comment.stars.map(star => ({
-                ...star,
-                rewardComment: star.id === id ? text : star.rewardComment
-              }))
-            : [],
-          replies: comment.replies.map(reply => ({
-            ...reply,
-            stars: reply.stars
-              ? reply.stars.map(star => ({
-                  ...star,
-                  rewardComment: star.id === id ? text : star.rewardComment
-                }))
-              : []
-          }))
-        })),
-        subjects: state.contentObj.subjects.map(subject => ({
-          ...subject,
-          comments: subject.comments.map(comment => ({
-            ...comment,
-            stars: comment.stars
-              ? comment.stars.map(star => ({
-                  ...star,
-                  rewardComment: star.id === id ? text : star.rewardComment
-                }))
-              : [],
-            replies: comment.replies.map(reply => ({
-              ...reply,
-              stars: reply.stars
-                ? reply.stars.map(star => ({
-                    ...star,
-                    rewardComment: star.id === id ? text : star.rewardComment
-                  }))
-                : []
-            }))
-          }))
-        }))
-      }
-    }));
-  };
-
-  function onLoadComments({ comments, loadMoreButton }) {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: comments,
-        loadMoreCommentsButton: loadMoreButton
-      }
-    }));
   }
 
-  fetchMoreComments = ({ comments, loadMoreButton }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.concat(comments),
-        loadMoreCommentsButton: loadMoreButton
-      }
-    }));
-  };
-
-  function onLoadSubjects({ results, loadMoreButton }) {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: results,
-        subjectLoadMoreButton: loadMoreButton
-      }
-    }));
+  function handleLikeLink(likes) {
+    setContentObj({
+      ...contentObj,
+      likes
+    });
+    likeLink({ likes, id: contentObj.contentId });
   }
-
-  fetchSubjectResponses = ({
-    data: { comments, loadMoreButton },
-    subjectId
-  }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.map(subject => {
-          if (subject.id === subjectId) {
-            return {
-              ...subject,
-              comments: comments,
-              loadMoreCommentsButton: loadMoreButton
-            };
-          }
-          return subject;
-        })
-      }
-    }));
-  };
-
-  fetchMoreSubjects = ({ results, loadMoreButton }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.concat(results),
-        subjectLoadMoreButton: loadMoreButton
-      }
-    }));
-  };
-
-  fetchMoreSubjectComments = ({
-    data: { comments, loadMoreButton },
-    subjectId
-  }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.map(subject => {
-          if (subject.id === subjectId) {
-            return {
-              ...subject,
-              comments: subject.comments.concat(comments),
-              loadMoreCommentsButton: loadMoreButton
-            };
-          }
-          return subject;
-        })
-      }
-    }));
-  };
-
-  fetchMoreSubjectReplies = ({ commentId, loadMoreButton, replies }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.map(subject => {
-          return {
-            ...subject,
-            comments: subject.comments.map(comment => {
-              return {
-                ...comment,
-                replies:
-                  comment.id === commentId
-                    ? replies.concat(comment.replies)
-                    : comment.replies,
-                loadMoreButton:
-                  comment.id === commentId
-                    ? loadMoreButton
-                    : comment.loadMoreButton
-              };
-            })
-          };
-        })
-      }
-    }));
-  };
-
-  fetchMoreReplies = ({ commentId, loadMoreButton, replies }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.map(comment => ({
-          ...comment,
-          replies:
-            comment.id === commentId
-              ? replies.concat(comment.replies)
-              : comment.replies,
-          loadMoreButton:
-            comment.id === commentId ? loadMoreButton : comment.loadMoreButton
-        }))
-      }
-    }));
-  };
-
-  likeComment = ({ commentId, likes }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.map(comment => {
-          return {
-            ...comment,
-            likes: comment.id === commentId ? likes : comment.likes,
-            replies: comment.replies.map(reply => {
-              return {
-                ...reply,
-                likes: reply.id === commentId ? likes : reply.likes
-              };
-            })
-          };
-        }),
-        subjects: state.contentObj.subjects.map(subject => {
-          return {
-            ...subject,
-            comments: subject.comments.map(comment => {
-              return {
-                ...comment,
-                likes: comment.id === commentId ? likes : comment.likes,
-                replies: comment.replies.map(reply => {
-                  return {
-                    ...reply,
-                    likes: reply.id === commentId ? likes : reply.likes
-                  };
-                })
-              };
-            })
-          };
-        })
-      }
-    }));
-  };
-
-  likeLink = likes => {
-    const { likeLink } = this.props;
-    const {
-      contentObj: { id }
-    } = this.state;
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        likes
-      }
-    }));
-    likeLink({ likes, id });
-  };
-
-  loadLinkPage = async linkId => {
-    try {
-      const { data } = await request.get(`${URL}/url/page?linkId=${linkId}`);
-      this.setState(state => ({
-        contentObj: {
-          ...state.contentObj,
-          ...data
-        }
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  setSubjectDifficulty = ({ contentId, difficulty }) => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: state.contentObj.subjects.map(subject => {
-          return subject.id === contentId
-            ? {
-                ...subject,
-                difficulty
-              }
-            : subject;
-        })
-      }
-    }));
-  };
-
-  uploadComment = comment => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: [comment].concat(state.contentObj.comments),
-        subjects: state.contentObj.subjects.map(subject => ({
-          ...subject,
-          comments:
-            subject.id === comment.subjectId
-              ? [comment].concat(subject.comments)
-              : subject.comments
-        }))
-      }
-    }));
-  };
-
-  uploadSubject = subject => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        subjects: [subject].concat(state.contentObj.subjects)
-      }
-    }));
-  };
-
-  uploadReply = reply => {
-    this.setState(state => ({
-      contentObj: {
-        ...state.contentObj,
-        comments: state.contentObj.comments.map(comment => ({
-          ...comment,
-          replies:
-            comment.id === reply.replyId || comment.id === reply.commentId
-              ? comment.replies.concat([reply])
-              : comment.replies
-        })),
-        subjects: state.contentObj.subjects.map(subject => {
-          return {
-            ...subject,
-            comments: subject.comments.map(comment => {
-              return {
-                ...comment,
-                replies:
-                  comment.id === reply.commentId || comment.id === reply.replyId
-                    ? comment.replies.concat([reply])
-                    : comment.replies
-              };
-            })
-          };
-        })
-      }
-    }));
-  };
 }
 
 export default connect(

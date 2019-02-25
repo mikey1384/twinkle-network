@@ -72,7 +72,7 @@ function Message({
     }
   }, []);
   useEffect(() => {
-    if (isLastMsg) {
+    if (isLastMsg && message.userId === myId) {
       setTimeout(() => setScrollToBottom(), 0);
     }
   }, [editPadding]);
