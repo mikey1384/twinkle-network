@@ -96,19 +96,18 @@ function LinkPage({
           type: 'url',
           contentId: linkId
         });
-        const { results, loadMoreButton } = subjectsObj;
         const commentsObj = await loadComments({
           id: linkId,
           type: 'url',
           limit: 5
         });
         onLoadContent({
-          data: {
+          content: {
             ...data,
             childComments: commentsObj?.comments || [],
             commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
-            subjects: results,
-            subjectsLoadMoreButton: loadMoreButton
+            subjects: subjectsObj?.results || [],
+            subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
           }
         });
       } catch (error) {

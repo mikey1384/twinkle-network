@@ -99,6 +99,7 @@ function Message({
       }
     });
   }
+
   return (
     <ErrorBoundary>
       <div className={MessageStyle.container}>

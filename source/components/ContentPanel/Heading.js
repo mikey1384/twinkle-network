@@ -187,7 +187,7 @@ function Heading({
   }
 
   function renderCornerButton() {
-    const userLikedVideo = likes.map(like => like.id).indexOf(myId) !== -1;
+    const userLikedVideo = likes?.map(like => like.id).indexOf(myId) !== -1;
     if (rootType === 'video') {
       if (!content) return null;
       return (

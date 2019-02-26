@@ -48,7 +48,9 @@ export default class MonthlyXp extends Component {
         title="Monthly XP Growth"
         loaded={loaded}
       >
-        {data && <BarChart data={data} />}
+        {data && (
+          <BarChart bars={data?.bars || []} topValue={data?.topValue || 1} />
+        )}
       </SectionPanel>
     );
   }

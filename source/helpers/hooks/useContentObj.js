@@ -353,8 +353,8 @@ export default function useContentObj(props) {
     });
   }
 
-  function onLoadContent({ data }) {
-    setContentObj({ ...contentObj, ...data });
+  function onLoadContent({ content }) {
+    setContentObj({ ...contentObj, ...content });
   }
 
   function onLoadSubjects({ results, loadMoreButton }) {

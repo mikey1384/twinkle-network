@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
@@ -9,283 +9,368 @@ import {
   loadMoreNotableContents
 } from 'helpers/requestHelpers';
 
-export default class Achievements extends Component {
-  static propTypes = {
-    profile: PropTypes.object.isRequired,
-    selectedTheme: PropTypes.string,
-    myId: PropTypes.number
-  };
+Achievements.propTypes = {
+  profile: PropTypes.object.isRequired,
+  selectedTheme: PropTypes.string,
+  myId: PropTypes.number
+};
 
-  mounted = false;
+export default function Achievements({
+  profile,
+  profile: { id, username },
+  myId,
+  selectedTheme
+}) {
+  const [loading, setLoading] = useState(true);
+  const [loadMoreButton, setLoadMoreButton] = useState(false);
+  const [state, dispatch] = useReducer(reducer, { notables: [] });
+  const { notables } = state;
+  const mounted = useRef(true);
 
-  state = {
-    loading: true,
-    notables: [],
-    loadMoreButton: false
-  };
-
-  async componentDidMount() {
-    const {
-      profile: { id }
-    } = this.props;
-    this.mounted = true;
-    const { results, loadMoreButton } = await loadNotableContent({
-      userId: id
-    });
-    if (this.mounted) {
-      this.setState({ notables: results, loadMoreButton, loading: false });
-    }
-  }
-
-  async componentDidUpdate(prevProps) {
-    if (prevProps.profile.id !== this.props.profile.id) {
+  useEffect(() => {
+    mounted.current = true;
+    initNotables();
+    async function initNotables() {
       const { results, loadMoreButton } = await loadNotableContent({
-        userId: this.props.profile.id
+        userId: id
       });
-      if (this.mounted) {
-        this.setState({ notables: results, loadMoreButton, loading: false });
+      if (mounted.current) {
+        dispatch({ type: 'LOAD', notables: results });
+        setLoadMoreButton(loadMoreButton);
+        setLoading(false);
       }
     }
-  }
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, [profile.id]);
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  render() {
-    const {
-      profile: { id, username },
-      myId,
-      selectedTheme
-    } = this.props;
-    const { loading, loadMoreButton, notables } = this.state;
-    return (
-      <div>
-        <SectionPanel
-          customColorTheme={selectedTheme}
-          title="Notable Activities"
-          loaded={!loading}
-        >
-          {notables.length === 0 && (
-            <div
-              style={{ fontSize: '2rem', textAlign: 'center' }}
-            >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
-          )}
-          {notables.map(contentObj => (
-            <ContentPanel
-              key={contentObj.feedId}
-              inputAtBottom={contentObj.type === 'comment'}
-              commentsLoadLimit={5}
-              contentObj={contentObj}
-              userId={myId}
-              onAddTags={this.onAddTags}
-              onAddTagToContents={this.onAddTagToContents}
-              onAttachStar={this.onAttachStar}
-              onCommentSubmit={data =>
-                this.onCommentSubmit({
-                  contentId: contentObj.contentId,
-                  contentType: contentObj.type,
-                  comment: data
-                })
-              }
-              onDeleteComment={this.onDeleteComment}
-              onDeleteContent={this.onDeleteContent}
-              onEditComment={this.onEditComment}
-              onEditContent={this.onEditContent}
-              onEditRewardComment={this.onEditRewardComment}
-              onLikeContent={this.onLikeContent}
-              onLoadContent={this.onLoadContent}
-              onLoadMoreComments={this.onLoadMoreComments}
-              onLoadMoreReplies={data =>
-                this.onLoadMoreReplies({ ...data, feedId: contentObj.feedId })
-              }
-              onLoadRepliesOfReply={this.onLoadRepliesOfReply}
-              onLoadTags={this.onLoadTags}
-              onReplySubmit={data =>
-                this.onReplySubmit({ ...data, feedId: contentObj.feedId })
-              }
-              onSetDifficulty={this.onSetDifficulty}
-              onShowComments={this.onShowComments}
-              onTargetCommentSubmit={this.onTargetCommentSubmit}
-            />
-          ))}
-          {loadMoreButton && (
-            <LoadMoreButton
-              style={{ fontSize: '1.7rem' }}
-              label="Show More"
-              transparent
-              onClick={this.onShowMoreNotables}
-            />
-          )}
-        </SectionPanel>
-        <MonthlyXp selectedTheme={selectedTheme} userId={id} />
-      </div>
-    );
-  }
-
-  onAddTags = ({ type, contentId, tags }) => {
-    this.setState(state => ({
-      notables: state.notables.map(notable =>
-        notable.type === type && notable.contentId === contentId
-          ? {
-              ...notable,
-              tags: (notable.tags || []).concat(tags)
+  return (
+    <div>
+      <SectionPanel
+        customColorTheme={selectedTheme}
+        title="Notable Activities"
+        loaded={!loading}
+      >
+        {notables.length === 0 && (
+          <div
+            style={{ fontSize: '2rem', textAlign: 'center' }}
+          >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
+        )}
+        {notables.map(contentObj => (
+          <ContentPanel
+            key={contentObj.feedId}
+            inputAtBottom={contentObj.type === 'comment'}
+            commentsLoadLimit={5}
+            contentObj={contentObj}
+            userId={myId}
+            onAddTags={onAddTags}
+            onAddTagToContents={onAddTagToContents}
+            onAttachStar={onAttachStar}
+            onCommentSubmit={data =>
+              onCommentSubmit({
+                contentId: contentObj.contentId,
+                contentType: contentObj.type,
+                comment: data
+              })
             }
-          : notable
-      )
-    }));
-  };
+            onDeleteComment={onDeleteComment}
+            onDeleteContent={onDeleteContent}
+            onEditComment={onEditComment}
+            onEditContent={onEditContent}
+            onEditRewardComment={onEditRewardComment}
+            onLikeContent={onLikeContent}
+            onLoadContent={onLoadContent}
+            onLoadMoreComments={onLoadMoreComments}
+            onLoadMoreReplies={data =>
+              onLoadMoreReplies({ ...data, feedId: contentObj.feedId })
+            }
+            onLoadRepliesOfReply={onLoadRepliesOfReply}
+            onLoadTags={onLoadTags}
+            onReplySubmit={data =>
+              onReplySubmit({ ...data, feedId: contentObj.feedId })
+            }
+            onSetDifficulty={onSetDifficulty}
+            onShowComments={onShowComments}
+            onTargetCommentSubmit={onTargetCommentSubmit}
+          />
+        ))}
+        {loadMoreButton && (
+          <LoadMoreButton
+            style={{ fontSize: '1.7rem' }}
+            label="Show More"
+            transparent
+            onClick={onShowMoreNotables}
+          />
+        )}
+      </SectionPanel>
+      <MonthlyXp selectedTheme={selectedTheme} userId={id} />
+    </div>
+  );
 
-  onAddTagToContents = ({ contentIds, contentType, tagId, tagTitle }) => {
-    this.setState(state => ({
-      notables: state.notables.map(notable => ({
-        ...notable,
-        tags:
-          notable.type === contentType &&
-          contentIds.indexOf(notable.contentId) !== -1
-            ? (notable.tags || []).concat({ id: tagId, title: tagTitle })
-            : notable.tags
-      }))
-    }));
-  };
+  function onAddTags({ type, contentId, tags }) {
+    dispatch({ type: 'ADD_TAGS', contentId, tags, contentType: type });
+  }
 
-  onLoadTags = ({ type, contentId, tags }) => {
-    this.setState(state => ({
-      notables: state.notables.map(notable => ({
-        ...notable,
-        tags:
-          notable.type === type && notable.contentId === contentId
-            ? tags
-            : notable.tags
-      }))
-    }));
-  };
+  function onAddTagToContents({ contentIds, contentType, tagId, tagTitle }) {
+    dispatch({
+      type: 'ADD_TAG_TO_CONTENTS',
+      contentIds,
+      contentType,
+      tagId,
+      tagTitle
+    });
+  }
 
-  onShowMoreNotables = async() => {
-    const { notables } = this.state;
-    const { profile } = this.props;
+  function onLoadTags({ type, contentId, tags }) {
+    dispatch({
+      type: 'LOAD_TAGS',
+      contentType: type,
+      contentId,
+      tags
+    });
+  }
+
+  async function onShowMoreNotables() {
     const { results, loadMoreButton } = await loadMoreNotableContents({
       userId: profile.id,
       notables
     });
-    this.setState(state => ({
-      notables: state.notables.concat(results),
+    dispatch({
+      type: 'LOAD_MORE',
+      notables: results
+    });
+    setLoadMoreButton(loadMoreButton);
+  }
+
+  async function onAttachStar(data) {
+    dispatch({
+      type: 'ATTACH_STAR',
+      data
+    });
+  }
+
+  function onCommentSubmit({ contentType, contentId, comment }) {
+    const commentId = comment.replyId || comment.commentId;
+    dispatch({
+      type: 'UPLOAD_COMMENT',
+      contentType,
+      contentId,
+      comment,
+      commentId
+    });
+  }
+
+  function onDeleteComment(commentId) {
+    dispatch({
+      type: 'DELETE_COMMENT',
+      commentId
+    });
+  }
+
+  function onDeleteContent({ contentId, type }) {
+    dispatch({
+      type: 'DELETE_CONTENT',
+      contentId,
+      contentType: type
+    });
+  }
+
+  function onEditComment({ editedComment, commentId }) {
+    dispatch({
+      type: 'EDIT_COMMENT',
+      commentId,
+      editedComment
+    });
+  }
+
+  function onEditContent({ contentId, contentType, data }) {
+    dispatch({
+      type: 'EDIT_CONTENT',
+      contentId,
+      contentType,
+      data
+    });
+  }
+
+  function onEditRewardComment({ id, text }) {
+    dispatch({
+      type: 'EDIT_REWARD_COMMENT',
+      id,
+      text
+    });
+  }
+
+  function onLikeContent({ likes, type, contentId }) {
+    dispatch({
+      type: 'LIKE_CONTENT',
+      likes,
+      contentType: type,
+      contentId
+    });
+  }
+
+  async function onLoadContent({ content, feedId }) {
+    dispatch({
+      type: 'LOAD_CONTENT',
+      content,
+      feedId
+    });
+  }
+
+  function onLoadMoreComments({
+    data: { comments, loadMoreButton },
+    contentType,
+    feedId
+  }) {
+    dispatch({
+      type: 'LOAD_MORE_COMMENTS',
+      comments,
+      contentType,
+      feedId,
       loadMoreButton
-    }));
-  };
+    });
+  }
 
-  onAttachStar = async data => {
-    this.setState(state => ({
-      notables: state.notables.map(contentObj => {
-        return contentObj.contentId === data.contentId
-          ? {
-              ...contentObj,
-              stars:
-                data.contentType === contentObj.type
-                  ? contentObj.stars
-                    ? contentObj.stars.concat(data)
-                    : [data]
-                  : contentObj.stars || [],
-              childComments: contentObj.childComments?.map(comment => {
-                return {
-                  ...comment,
-                  stars:
-                    comment.id === data.contentId &&
-                    data.contentType === 'comment'
-                      ? (comment.stars || []).concat(data)
-                      : comment.stars || [],
-                  replies: comment.replies.map(reply => ({
-                    ...reply,
-                    stars:
-                      reply.id === data.contentId &&
-                      data.contentType === 'comment'
-                        ? (reply.stars || []).concat(data)
-                        : reply.stars || []
-                  }))
-                };
-              }),
-              targetObj: contentObj.targetObj
-                ? {
-                    ...contentObj.targetObj,
-                    comment: contentObj.targetObj.comment
-                      ? {
-                          ...contentObj.targetObj.comment,
-                          stars:
-                            contentObj.targetObj.comment.id ===
-                              data.contentId && data.contentType === 'comment'
-                              ? (
-                                  contentObj.targetObj.comment.stars || []
-                                ).concat(data)
-                              : contentObj.targetObj.comment.stars
-                        }
-                      : undefined
-                  }
-                : undefined
-            }
-          : contentObj;
-      })
-    }));
-  };
+  function onLoadMoreReplies(data) {
+    dispatch({
+      type: 'LOAD_MORE_REPLIES',
+      data
+    });
+  }
 
-  onCommentSubmit = ({ contentType, contentId, comment }) => {
-    this.setState(state => {
-      const commentId = comment.replyId || comment.commentId;
+  function onLoadRepliesOfReply({ replies, commentId, replyId }) {
+    dispatch({
+      type: 'LOAD_REPLIES_OF_REPLY',
+      replies,
+      commentId,
+      replyId
+    });
+  }
+
+  function onReplySubmit(data) {
+    const commentId = data.replyId || data.commentId;
+    dispatch({
+      type: 'UPLOAD_REPLY',
+      commentId,
+      data
+    });
+  }
+
+  function onSetDifficulty({ type, contentId, difficulty }) {
+    dispatch({
+      type: 'SET_DIFFICULTY',
+      contentType: type,
+      contentId,
+      difficulty
+    });
+  }
+
+  function onShowComments(data, feedId) {
+    dispatch({
+      type: 'LOAD_COMMENTS',
+      data,
+      feedId
+    });
+  }
+
+  function onTargetCommentSubmit(data, feedId) {
+    dispatch({
+      type: 'UPLOAD_TARGET_COMMENT',
+      data,
+      feedId
+    });
+  }
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD_TAGS':
+      return {
+        notables: state.notables.map(notable =>
+          notable.type === action.contentType &&
+          notable.contentId === action.contentId
+            ? {
+                ...notable,
+                tags: (notable.tags || []).concat(action.tags)
+              }
+            : notable
+        )
+      };
+    case 'ADD_TAG_TO_CONTENTS':
+      return {
+        notables: state.notables.map(notable => ({
+          ...notable,
+          tags:
+            notable.type === action.contentType &&
+            action.contentIds.indexOf(notable.contentId) !== -1
+              ? (notable.tags || []).concat({
+                  id: action.tagId,
+                  title: action.tagTitle
+                })
+              : notable.tags
+        }))
+      };
+    case 'ATTACH_STAR':
       return {
         notables: state.notables.map(contentObj => {
-          if (
-            (contentObj.type === 'comment' && contentObj.id === commentId) ||
-            (contentObj.type !== 'comment' &&
-              !commentId &&
-              contentObj.type === contentType &&
-              contentObj.id === contentId)
-          ) {
-            return {
-              ...contentObj,
-              childComments:
-                contentObj.type === 'comment'
-                  ? (contentObj.childComments || []).concat([comment])
-                  : [comment].concat(contentObj.childComments || [])
-            };
-          } else {
-            return {
-              ...contentObj,
-              childComments: (contentObj.childComments || []).map(
-                childComment => {
-                  let match = false;
-                  if (childComment.id === commentId) {
-                    match = true;
-                  } else {
-                    for (let reply of childComment.replies || []) {
-                      if (reply.id === commentId) {
-                        match = true;
-                        break;
-                      }
-                    }
-                  }
+          return contentObj.contentId === action.data.contentId
+            ? {
+                ...contentObj,
+                stars:
+                  action.data.contentType === contentObj.type
+                    ? contentObj.stars
+                      ? contentObj.stars.concat(action.data)
+                      : [action.data]
+                    : contentObj.stars || [],
+                childComments: contentObj.childComments?.map(comment => {
                   return {
-                    ...childComment,
-                    replies: match
-                      ? childComment.replies.concat([comment])
-                      : childComment.replies
+                    ...comment,
+                    stars:
+                      comment.id === action.data.contentId &&
+                      action.data.contentType === 'comment'
+                        ? (comment.stars || []).concat(action.data)
+                        : comment.stars || [],
+                    replies: comment.replies.map(reply => ({
+                      ...reply,
+                      stars:
+                        reply.id === action.data.contentId &&
+                        action.data.contentType === 'comment'
+                          ? (reply.stars || []).concat(action.data)
+                          : reply.stars || []
+                    }))
                   };
-                }
-              )
-            };
-          }
+                }),
+                targetObj: contentObj.targetObj
+                  ? {
+                      ...contentObj.targetObj,
+                      comment: contentObj.targetObj.comment
+                        ? {
+                            ...contentObj.targetObj.comment,
+                            stars:
+                              contentObj.targetObj.comment.id ===
+                                action.data.contentId &&
+                              action.data.contentType === 'comment'
+                                ? (
+                                    contentObj.targetObj.comment.stars || []
+                                  ).concat(action.data)
+                                : contentObj.targetObj.comment.stars
+                          }
+                        : undefined
+                    }
+                  : undefined
+              }
+            : contentObj;
         })
       };
-    });
-  };
-
-  onDeleteComment = commentId => {
-    this.setState(state => {
+    case 'DELETE_COMMENT':
       return {
         notables: state.notables.reduce((prev, contentObj) => {
           if (
             contentObj.type === 'comment' &&
-            (contentObj.contentId === commentId ||
-              contentObj.commentId === commentId ||
-              contentObj.replyId === commentId)
+            (contentObj.contentId === action.commentId ||
+              contentObj.commentId === action.commentId ||
+              contentObj.replyId === action.commentId)
           ) {
             return prev;
           }
@@ -299,7 +384,7 @@ export default class Achievements extends Component {
                       ? {
                           ...contentObj.targetObj.comment,
                           comments: contentObj.targetObj.comment.comments?.filter(
-                            comment => comment.id !== commentId
+                            comment => comment.id !== action.commentId
                           )
                         }
                       : undefined
@@ -307,14 +392,14 @@ export default class Achievements extends Component {
                 : undefined,
               childComments: contentObj.childComments?.reduce(
                 (prev, comment) => {
-                  if (comment.id === commentId) {
+                  if (comment.id === action.commentId) {
                     return prev;
                   }
                   return prev.concat([
                     {
                       ...comment,
                       replies: comment.replies?.filter(
-                        reply => reply.id !== commentId
+                        reply => reply.id !== action.commentId
                       )
                     }
                   ]);
@@ -325,19 +410,16 @@ export default class Achievements extends Component {
           ]);
         }, [])
       };
-    });
-  };
-
-  onDeleteContent = ({ contentId, type }) => {
-    this.setState(state => {
+    case 'DELETE_CONTENT':
       return {
         notables: state.notables
           .filter(
             contentObj =>
-              contentObj.type !== type || contentObj.contentId !== contentId
+              contentObj.type !== action.contentType ||
+              contentObj.contentId !== action.contentId
           )
           .map(contentObj =>
-            type === 'comment'
+            action.contentType === 'comment'
               ? {
                   ...contentObj,
                   targetObj: contentObj.targetObj
@@ -347,7 +429,7 @@ export default class Achievements extends Component {
                           ? {
                               ...contentObj.targetObj.comment,
                               comments: contentObj.targetObj.comment.comments?.filter(
-                                comment => comment.id !== contentId
+                                comment => comment.id !== action.contentId
                               )
                             }
                           : undefined
@@ -355,14 +437,14 @@ export default class Achievements extends Component {
                     : undefined,
                   childComments: contentObj.childComments?.reduce(
                     (prev, comment) => {
-                      if (comment.id === contentId) {
+                      if (comment.id === action.contentId) {
                         return prev;
                       }
                       return prev.concat([
                         {
                           ...comment,
                           replies: comment.replies?.filter(
-                            reply => reply.id !== contentId
+                            reply => reply.id !== action.contentId
                           )
                         }
                       ]);
@@ -373,17 +455,14 @@ export default class Achievements extends Component {
               : contentObj
           )
       };
-    });
-  };
-
-  onEditComment = ({ editedComment, commentId }) => {
-    this.setState(state => {
+    case 'EDIT_COMMENT':
       return {
         notables: state.notables.map(contentObj => {
-          return contentObj.id === commentId && contentObj.type === 'comment'
+          return contentObj.id === action.commentId &&
+            contentObj.type === 'comment'
             ? {
                 ...contentObj,
-                content: editedComment
+                content: action.editedComment
               }
             : {
                 ...contentObj,
@@ -391,20 +470,20 @@ export default class Achievements extends Component {
                   ? {
                       ...contentObj.targetObj,
                       comment: contentObj.targetObj.comment
-                        ? contentObj.targetObj.comment.id === commentId
+                        ? contentObj.targetObj.comment.id === action.commentId
                           ? {
                               ...contentObj.targetObj.comment,
-                              content: editedComment
+                              content: action.editedComment
                             }
                           : {
                               ...contentObj.targetObj.comment,
                               comments: (
                                 contentObj.targetObj.comment.comments || []
                               ).map(comment =>
-                                comment.id === commentId
+                                comment.id === action.commentId
                                   ? {
                                       ...comment,
-                                      content: editedComment
+                                      content: action.editedComment
                                     }
                                   : comment
                               )
@@ -413,18 +492,18 @@ export default class Achievements extends Component {
                     }
                   : undefined,
                 childComments: contentObj.childComments?.map(comment => {
-                  return comment.id === commentId
+                  return comment.id === action.commentId
                     ? {
                         ...comment,
-                        content: editedComment
+                        content: action.editedComment
                       }
                     : {
                         ...comment,
                         replies: comment.replies?.map(reply =>
-                          reply.id === commentId
+                          reply.id === action.commentId
                             ? {
                                 ...reply,
-                                content: editedComment
+                                content: action.editedComment
                               }
                             : reply
                         )
@@ -433,31 +512,26 @@ export default class Achievements extends Component {
               };
         })
       };
-    });
-  };
-
-  onEditContent = ({ contentId, contentType, data }) => {
-    this.setState(state => {
+    case 'EDIT_CONTENT':
       return {
-        ...state,
         notables: state.notables.map(contentObj => {
           const contentMatches =
-            contentObj.type === contentType &&
-            contentObj.contentId === contentId;
+            contentObj.type === action.contentType &&
+            contentObj.contentId === action.contentId;
           const rootContentMatches =
-            contentObj.rootType === contentType &&
-            contentObj.rootId === contentId;
+            contentObj.rootType === action.contentType &&
+            contentObj.rootId === action.contentId;
           return contentMatches
             ? {
                 ...contentObj,
-                ...data
+                ...action.data
               }
             : rootContentMatches
             ? {
                 ...contentObj,
                 rootObj: {
                   ...contentObj.rootObj,
-                  ...data
+                  ...action.data
                 }
               }
             : {
@@ -465,31 +539,34 @@ export default class Achievements extends Component {
                 targetObj: contentObj.targetObj
                   ? {
                       ...contentObj.targetObj,
-                      [contentType]: contentObj.targetObj[contentType]
-                        ? contentObj.targetObj[contentType].id === contentId
+                      [action.contentType]: contentObj.targetObj[
+                        action.contentType
+                      ]
+                        ? contentObj.targetObj[action.contentType].id ===
+                          action.contentId
                           ? {
-                              ...contentObj.targetObj[data.type],
-                              ...data
+                              ...contentObj.targetObj[action.data.type],
+                              ...action.data
                             }
-                          : contentObj.targetObj[contentType]
+                          : contentObj.targetObj[action.contentType]
                         : undefined
                     }
                   : undefined,
                 childComments:
-                  contentType === 'comment'
+                  action.contentType === 'comment'
                     ? contentObj.childComments?.map(comment => {
-                        return comment.id === contentId
+                        return comment.id === action.contentId
                           ? {
                               ...comment,
-                              ...data
+                              ...action.data
                             }
                           : {
                               ...comment,
                               replies: comment.replies?.map(reply =>
-                                reply.id === contentId
+                                reply.id === action.contentId
                                   ? {
                                       ...reply,
-                                      ...data
+                                      ...action.data
                                     }
                                   : reply
                               )
@@ -499,11 +576,7 @@ export default class Achievements extends Component {
               };
         })
       };
-    });
-  };
-
-  onEditRewardComment = ({ id, text }) => {
-    this.setState(state => {
+    case 'EDIT_REWARD_COMMENT':
       return {
         notables: state.notables.map(contentObj => {
           return {
@@ -511,7 +584,8 @@ export default class Achievements extends Component {
             stars: contentObj.stars
               ? contentObj.stars.map(star => ({
                   ...star,
-                  rewardComment: star.id === id ? text : star.rewardComment
+                  rewardComment:
+                    star.id === action.id ? action.text : star.rewardComment
                 }))
               : [],
             childComments: (contentObj.childComments || []).map(comment => ({
@@ -519,7 +593,8 @@ export default class Achievements extends Component {
               stars: comment.stars
                 ? comment.stars.map(star => ({
                     ...star,
-                    rewardComment: star.id === id ? text : star.rewardComment
+                    rewardComment:
+                      star.id === action.id ? action.text : star.rewardComment
                   }))
                 : [],
               replies: (comment.replies || []).map(reply => ({
@@ -527,7 +602,8 @@ export default class Achievements extends Component {
                 stars: reply.stars
                   ? reply.stars.map(star => ({
                       ...star,
-                      rewardComment: star.id === id ? text : star.rewardComment
+                      rewardComment:
+                        star.id === action.id ? action.text : star.rewardComment
                     }))
                   : []
               }))
@@ -542,7 +618,9 @@ export default class Achievements extends Component {
                           ? contentObj.targetObj.comment.stars.map(star => ({
                               ...star,
                               rewardComment:
-                                star.id === id ? text : star.rewardComment
+                                star.id === action.id
+                                  ? action.text
+                                  : star.rewardComment
                             }))
                           : []
                       }
@@ -552,25 +630,22 @@ export default class Achievements extends Component {
           };
         })
       };
-    });
-  };
-
-  onLikeContent = ({ likes, type, contentId }) => {
-    this.setState(state => {
+    case 'LIKE_CONTENT':
       return {
         notables: state.notables.map(contentObj => ({
           ...contentObj,
           likes:
-            contentObj.type === type && contentObj.id === contentId
-              ? likes
+            contentObj.type === action.contentType &&
+            contentObj.id === action.contentId
+              ? action.likes
               : contentObj.likes,
           rootObj: contentObj.rootObj
             ? {
                 ...contentObj.rootObj,
                 likes:
-                  contentObj.rootType === type &&
-                  contentObj.rootId === contentId
-                    ? likes
+                  contentObj.rootType === action.contentType &&
+                  contentObj.rootId === action.contentId
+                    ? action.likes
                     : contentObj.rootObj.likes
               }
             : undefined,
@@ -579,25 +654,25 @@ export default class Achievements extends Component {
                 ...contentObj.targetObj,
                 comment:
                   contentObj.targetObj.comment &&
-                  contentObj.targetObj.comment.id === contentId &&
-                  type === 'comment'
+                  contentObj.targetObj.comment.id === action.contentId &&
+                  action.contentType === 'comment'
                     ? {
                         ...contentObj.targetObj.comment,
-                        likes
+                        likes: action.likes
                       }
                     : contentObj.targetObj.comment
               }
             : undefined,
           childComments:
-            type === 'comment'
+            action.contentType === 'comment'
               ? (contentObj.childComments || []).map(comment =>
-                  comment.id === contentId
-                    ? { ...comment, likes: likes }
+                  comment.id === action.contentId
+                    ? { ...comment, likes: action.likes }
                     : {
                         ...comment,
                         replies: (comment.replies || []).map(reply =>
-                          reply.id === contentId
-                            ? { ...reply, likes: likes }
+                          reply.id === action.contentId
+                            ? { ...reply, likes: action.likes }
                             : reply
                         )
                       }
@@ -605,56 +680,60 @@ export default class Achievements extends Component {
               : contentObj.childComments
         }))
       };
-    });
-  };
-
-  onLoadContent = async({ data }) => {
-    this.setState(state => ({
-      notables: state.notables.map(contentObj => {
-        return contentObj.contentId === data.id
-          ? { ...contentObj, ...data }
-          : contentObj;
-      })
-    }));
-  };
-
-  onLoadMoreComments = ({
-    data: { comments, loadMoreButton },
-    contentType,
-    feedId
-  }) => {
-    this.setState(state => {
+    case 'LOAD':
+      return { notables: action.notables };
+    case 'LOAD_COMMENTS':
+      return {
+        notables:
+          action.data.comments.length === 0
+            ? state.notables
+            : state.notables.map(contentObj => {
+                return contentObj.feedId === action.feedId
+                  ? {
+                      ...contentObj,
+                      commentsLoadMoreButton: action.data.loadMoreButton,
+                      childComments: action.data.comments
+                    }
+                  : contentObj;
+              })
+      };
+    case 'LOAD_CONTENT':
       return {
         notables: state.notables.map(contentObj => {
-          let match = contentObj.feedId === feedId;
-          return match
+          return contentObj.feedId === action.feedId
+            ? { ...contentObj, ...action.content }
+            : contentObj;
+        })
+      };
+    case 'LOAD_MORE':
+      return { notables: state.notables.concat(action.notables) };
+    case 'LOAD_MORE_COMMENTS':
+      return {
+        notables: state.notables.map(contentObj => {
+          return contentObj.feedId === action.feedId
             ? {
                 ...contentObj,
-                commentsLoadMoreButton: loadMoreButton,
+                commentsLoadMoreButton: action.loadMoreButton,
                 childComments:
-                  contentType === 'comment'
-                    ? comments.concat(contentObj.childComments || [])
-                    : (contentObj.childComments || []).concat(comments)
+                  action.contentType === 'comment'
+                    ? action.comments.concat(contentObj.childComments || [])
+                    : (contentObj.childComments || []).concat(action.comments)
               }
             : contentObj;
         })
       };
-    });
-  };
-
-  onLoadMoreReplies = data => {
-    this.setState(state => {
+    case 'LOAD_MORE_REPLIES':
       return {
         notables: state.notables.map(contentObj => {
-          return contentObj.feedId === data.feedId
+          return contentObj.feedId === action.data.feedId
             ? {
                 ...contentObj,
                 childComments: contentObj.childComments.map(comment => {
-                  return comment.id === data.commentId
+                  return comment.id === action.data.commentId
                     ? {
                         ...comment,
-                        replies: data.replies.concat(comment.replies),
-                        loadMoreButton: data.loadMoreButton
+                        replies: action.data.replies.concat(comment.replies),
+                        loadMoreButton: action.data.loadMoreButton
                       }
                     : comment;
                 })
@@ -662,28 +741,26 @@ export default class Achievements extends Component {
             : contentObj;
         })
       };
-    });
-  };
-
-  onLoadRepliesOfReply = ({ replies, commentId, replyId }) => {
-    this.setState(state => {
+    case 'LOAD_REPLIES_OF_REPLY':
       return {
         notables: state.notables.map(contentObj => ({
           ...contentObj,
           childComments: contentObj.childComments?.map(comment => {
-            if (comment.id === commentId) {
+            if (comment.id === action.commentId) {
               return {
                 ...comment,
                 replies: [
-                  ...comment.replies.filter(reply => reply.id <= replyId),
-                  ...replies,
-                  ...comment.replies.filter(reply => reply.id > replyId)
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
                 ]
               };
             }
             let containsRootReply = false;
             for (let reply of comment.replies) {
-              if (reply.id === replyId) {
+              if (reply.id === action.replyId) {
                 containsRootReply = true;
                 break;
               }
@@ -692,9 +769,11 @@ export default class Achievements extends Component {
               return {
                 ...comment,
                 replies: [
-                  ...comment.replies.filter(reply => reply.id <= replyId),
-                  ...replies,
-                  ...comment.replies.filter(reply => reply.id > replyId)
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
                 ]
               };
             }
@@ -702,24 +781,111 @@ export default class Achievements extends Component {
           })
         }))
       };
-    });
-  };
-
-  onReplySubmit = data => {
-    this.setState(state => {
-      let commentId = data.replyId || data.commentId;
+    case 'LOAD_TAGS':
+      return {
+        notables: state.notables.map(notable => ({
+          ...notable,
+          tags:
+            notable.type === action.contentType &&
+            notable.contentId === action.contentId
+              ? action.tags
+              : notable.tags
+        }))
+      };
+    case 'SET_DIFFICULTY':
       return {
         notables: state.notables.map(contentObj => {
-          return contentObj.feedId === data.feedId
+          return contentObj.type === action.contentType &&
+            contentObj.id === action.contentId
+            ? {
+                ...contentObj,
+                difficulty: action.difficulty
+              }
+            : {
+                ...contentObj,
+                rootObj: contentObj.rootObj
+                  ? contentObj.rootType === action.contentType &&
+                    contentObj.rootId === action.contentId
+                    ? {
+                        ...contentObj.rootObj,
+                        difficulty: action.difficulty
+                      }
+                    : contentObj.rootObj
+                  : undefined,
+                targetObj: contentObj.targetObj
+                  ? contentObj.targetObj.subject &&
+                    contentObj.subjectId === action.contentId
+                    ? {
+                        ...contentObj.targetObj,
+                        subject: {
+                          ...contentObj.targetObj.subject,
+                          difficulty: action.difficulty
+                        }
+                      }
+                    : contentObj.targetObj
+                  : undefined
+              };
+        })
+      };
+    case 'UPLOAD_COMMENT':
+      return {
+        notables: state.notables.map(contentObj => {
+          if (
+            (contentObj.type === 'comment' &&
+              contentObj.id === action.commentId) ||
+            (contentObj.type !== 'comment' &&
+              !action.commentId &&
+              contentObj.type === action.contentType &&
+              contentObj.id === action.contentId)
+          ) {
+            return {
+              ...contentObj,
+              childComments:
+                contentObj.type === 'comment'
+                  ? (contentObj.childComments || []).concat([action.comment])
+                  : [action.comment].concat(contentObj.childComments || [])
+            };
+          } else {
+            return {
+              ...contentObj,
+              childComments: (contentObj.childComments || []).map(
+                childComment => {
+                  let match = false;
+                  if (childComment.id === action.commentId) {
+                    match = true;
+                  } else {
+                    for (let reply of childComment.replies || []) {
+                      if (reply.id === action.commentId) {
+                        match = true;
+                        break;
+                      }
+                    }
+                  }
+                  return {
+                    ...childComment,
+                    replies: match
+                      ? childComment.replies.concat([action.comment])
+                      : childComment.replies
+                  };
+                }
+              )
+            };
+          }
+        })
+      };
+    case 'UPLOAD_REPLY':
+      return {
+        notables: state.notables.map(contentObj => {
+          return contentObj.feedId === action.data.feedId
             ? {
                 ...contentObj,
                 childComments: contentObj.childComments.map(comment => {
                   let match = false;
-                  if (comment.id === commentId) {
+                  if (comment.id === action.commentId) {
                     match = true;
                   } else {
                     for (let reply of comment.replies || []) {
-                      if (reply.id === commentId) {
+                      if (reply.id === action.commentId) {
                         match = true;
                         break;
                       }
@@ -728,7 +894,7 @@ export default class Achievements extends Component {
                   return {
                     ...comment,
                     replies: match
-                      ? comment.replies.concat([data])
+                      ? comment.replies.concat([action.data])
                       : comment.replies
                   };
                 })
@@ -736,76 +902,18 @@ export default class Achievements extends Component {
             : contentObj;
         })
       };
-    });
-  };
-
-  onSetDifficulty = ({ type, contentId, difficulty }) => {
-    this.setState(state => {
-      return {
-        notables: state.notables.map(contentObj => {
-          return contentObj.type === type && contentObj.id === contentId
-            ? {
-                ...contentObj,
-                difficulty
-              }
-            : {
-                ...contentObj,
-                rootObj: contentObj.rootObj
-                  ? contentObj.rootType === type &&
-                    contentObj.rootId === contentId
-                    ? {
-                        ...contentObj.rootObj,
-                        difficulty
-                      }
-                    : contentObj.rootObj
-                  : undefined,
-                targetObj: contentObj.targetObj
-                  ? contentObj.targetObj.subject &&
-                    contentObj.subjectId === contentId
-                    ? {
-                        ...contentObj.targetObj,
-                        subject: {
-                          ...contentObj.targetObj.subject,
-                          difficulty
-                        }
-                      }
-                    : contentObj.targetObj
-                  : undefined
-              };
-        })
-      };
-    });
-  };
-  onShowComments = (data, feedId) => {
-    this.setState(state => {
-      if (data.comments.length === 0) return state;
-      return {
-        notables: state.notables.map(contentObj => {
-          return contentObj.feedId === feedId
-            ? {
-                ...contentObj,
-                commentsLoadMoreButton: data.loadMoreButton,
-                childComments: data.comments
-              }
-            : contentObj;
-        })
-      };
-    });
-  };
-
-  onTargetCommentSubmit = (data, feedId) => {
-    this.setState(state => {
+    case 'UPLOAD_TARGET_COMMENT':
       return {
         notables: state.notables.map(contentObj => {
           return {
             ...contentObj,
             targetObj:
-              contentObj.feedId === feedId
+              contentObj.feedId === action.feedId
                 ? {
                     ...contentObj.targetObj,
                     comment: {
                       ...contentObj.targetObj.comment,
-                      comments: [data].concat(
+                      comments: [action.data].concat(
                         contentObj.targetObj.comment.comments || []
                       )
                     }
@@ -814,6 +922,7 @@ export default class Achievements extends Component {
           };
         })
       };
-    });
-  };
+    default:
+      throw new Error();
+  }
 }

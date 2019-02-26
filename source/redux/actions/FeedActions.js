@@ -72,10 +72,10 @@ export const feedRewardCommentEdit = ({ id, text }) => ({
   text
 });
 
-export const fetchFeed = ({ data, feedId }) => ({
+export const fetchFeed = ({ content, feedId }) => ({
   type: FEED.LOAD_DETAIL,
   feedId,
-  data
+  data: content
 });
 
 export const fetchFeeds = ({

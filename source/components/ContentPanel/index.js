@@ -68,6 +68,7 @@ export default function ContentPanel({
   const [loaded, setLoaded] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
+    mounted.current = true;
     onMount();
     async function onMount() {
       if (!loaded && !newPost) {
@@ -76,7 +77,7 @@ export default function ContentPanel({
           `${URL}/content?contentId=${contentId}&type=${type}`
         );
         if (mounted.current) {
-          onLoadContent({ data, feedId });
+          onLoadContent({ content: data, feedId });
         }
       }
     }
@@ -85,7 +86,6 @@ export default function ContentPanel({
     };
   }, []);
   const [videoShown, setVideoShown] = useState(false);
-
   return (
     <Context.Provider
       value={{
