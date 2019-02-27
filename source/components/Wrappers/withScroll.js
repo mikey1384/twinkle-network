@@ -6,7 +6,7 @@ export default function withScroll(WrappedComponent) {
   return class ScrollContainer extends Component {
     static propTypes = {
       chatMode: PropTypes.bool.isRequired,
-      history: PropTypes.object.isRequired,
+      history: PropTypes.object,
       location: PropTypes.object.isRequired,
       loggedIn: PropTypes.bool.isRequired,
       searchMode: PropTypes.bool.isRequired
