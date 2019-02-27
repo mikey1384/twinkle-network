@@ -40,25 +40,6 @@ import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import HomeFilter from './HomeFilter';
 
-const categoryObj = {
-  uploads: {
-    filter: 'all',
-    orderBy: 'lastInteraction'
-  },
-  challenges: {
-    filter: 'post',
-    orderBy: 'difficulty'
-  },
-  responses: {
-    filter: 'comment',
-    orderBy: 'totalStars'
-  },
-  videos: {
-    filter: 'video',
-    orderBy: 'totalViewDuration'
-  }
-};
-
 Stories.propTypes = {
   addTags: PropTypes.func.isRequired,
   addTagToContents: PropTypes.func.isRequired,
@@ -97,6 +78,25 @@ Stories.propTypes = {
   uploadFeedComment: PropTypes.func.isRequired,
   uploadTargetContentComment: PropTypes.func.isRequired,
   userId: PropTypes.number
+};
+
+const categoryObj = {
+  uploads: {
+    filter: 'all',
+    orderBy: 'lastInteraction'
+  },
+  challenges: {
+    filter: 'post',
+    orderBy: 'difficulty'
+  },
+  responses: {
+    filter: 'comment',
+    orderBy: 'totalStars'
+  },
+  videos: {
+    filter: 'video',
+    orderBy: 'totalViewDuration'
+  }
 };
 
 function Stories({
@@ -289,10 +289,14 @@ function Stories({
 
   async function applyFilter(filter) {
     if (filter === selectedFilterRef.current) return;
+    categoryRef.current = 'uploads';
     selectedFilterRef.current = filter;
     clearFeeds();
     const { data, filter: newFilter } = await loadFeeds({ filter });
-    if (selectedFilterRef.current === newFilter) {
+    if (
+      selectedFilterRef.current === newFilter &&
+      categoryRef.current === 'uploads'
+    ) {
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -322,15 +326,19 @@ function Stories({
 
   async function changeCategory(category) {
     clearFeeds();
+    selectedFilterRef.current = categoryObj[category].filter;
+    categoryRef.current = category;
     const { filter, data } = await loadFeeds({
       order: 'desc',
       filter: categoryObj[category].filter,
       orderBy: categoryObj[category].orderBy
     });
-    if (filter === categoryObj[category].filter) {
+    if (
+      filter === selectedFilterRef.current &&
+      categoryRef.current === category
+    ) {
       fetchFeeds(data);
       setDisplayOrder('desc');
-      categoryRef.current = category;
       setScrollHeight(0);
     }
   }
