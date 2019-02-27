@@ -2,7 +2,6 @@ import FEED from '../constants/Feed';
 
 const defaultState = {
   currentSection: 'storyFeeds',
-  selectedFilter: 'all',
   scrollLocked: false,
   storyFeeds: [],
   profileFeeds: [],
@@ -166,7 +165,6 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: action.data,
-        selectedFilter: action.filter || state.selectedFilter,
         [`${currentSection}LoadMoreButton`]: loadMoreButton,
         loaded: true
       };
@@ -205,13 +203,11 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: state[currentSection].concat(action.data),
-        selectedFilter: action.filter || state.selectedFilter,
         [`${currentSection}LoadMoreButton`]: loadMoreButton
       };
     case FEED.LOAD_NEW:
       return {
         ...state,
-        selectedFilter: 'all',
         storyFeeds: action.data.concat(state.storyFeeds)
       };
     case FEED.LOAD_REPLIES_OF_REPLY:

@@ -13,14 +13,6 @@ export const hideMobileNavbar = () => ({
   type: VIEW.HIDE_MOBILE_NAVBAR
 });
 
-export const disableAutoscroll = () => ({
-  type: VIEW.DISABLE_AUTOSCROLL
-});
-
-export const enableAutoscroll = () => ({
-  type: VIEW.ENABLE_AUTOSCROLL
-});
-
 export const showMobileNavbar = () => ({
   type: VIEW.SHOW_MOBILE_NAVBAR
 });

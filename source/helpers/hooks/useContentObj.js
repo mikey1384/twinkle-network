@@ -262,6 +262,10 @@ export default function useContentObj(props) {
     });
   }
 
+  function onInitContent({ content }) {
+    setContentObj({ ...contentObj, ...content });
+  }
+
   function onLikeComment({ commentId, likes }) {
     setContentObj({
       ...contentObj,
@@ -351,10 +355,6 @@ export default function useContentObj(props) {
       childComments: comments,
       commentsLoadMoreButton: loadMoreButton
     });
-  }
-
-  function onLoadContent({ content }) {
-    setContentObj({ ...contentObj, ...content });
   }
 
   function onLoadSubjects({ results, loadMoreButton }) {
@@ -586,10 +586,10 @@ export default function useContentObj(props) {
     onEditContent,
     onEditRewardComment,
     onEditSubject,
+    onInitContent,
     onLikeComment,
     onLikeContent,
     onLoadComments,
-    onLoadContent,
     onLoadSubjects,
     onLoadMoreComments,
     onLoadMoreReplies,

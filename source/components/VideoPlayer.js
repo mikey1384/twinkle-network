@@ -68,7 +68,6 @@ function VideoPlayer({
   videoCode,
   videoId
 }) {
-  const [rewardingXP, setRewardingXP] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [xpLoaded, setXpLoaded] = useState(false);
@@ -83,6 +82,7 @@ function VideoPlayer({
   const totalDurationRef = useRef(0);
   const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
+  const rewardingXP = useRef(false);
   const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
@@ -420,9 +420,9 @@ function VideoPlayer({
     if (
       !!difficulty &&
       timeWatchedRef.current >= requiredViewDuration &&
-      !rewardingXP
+      !rewardingXP.current
     ) {
-      setRewardingXP(true);
+      rewardingXP.current = true;
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth());
         await changeUserXP({
@@ -433,7 +433,7 @@ function VideoPlayer({
           amount: difficulty * xp
         });
         setJustEarned(true);
-        setRewardingXP(false);
+        rewardingXP.current = false;
       } catch (error) {
         console.error(error.response || error);
       }

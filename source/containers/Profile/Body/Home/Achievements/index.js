@@ -4,6 +4,7 @@ import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   loadNotableContent,
   loadMoreNotableContents
@@ -46,7 +47,7 @@ export default function Achievements({
   }, [profile.id]);
 
   return (
-    <div>
+    <ErrorBoundary>
       <SectionPanel
         customColorTheme={selectedTheme}
         title="Notable Activities"
@@ -80,7 +81,7 @@ export default function Achievements({
             onEditContent={onEditContent}
             onEditRewardComment={onEditRewardComment}
             onLikeContent={onLikeContent}
-            onLoadContent={onLoadContent}
+            onInitContent={onInitContent}
             onLoadMoreComments={onLoadMoreComments}
             onLoadMoreReplies={data =>
               onLoadMoreReplies({ ...data, feedId: contentObj.feedId })
@@ -105,7 +106,7 @@ export default function Achievements({
         )}
       </SectionPanel>
       <MonthlyXp selectedTheme={selectedTheme} userId={id} />
-    </div>
+    </ErrorBoundary>
   );
 
   function onAddTags({ type, contentId, tags }) {
@@ -210,9 +211,9 @@ export default function Achievements({
     });
   }
 
-  async function onLoadContent({ content, feedId }) {
+  async function onInitContent({ content, feedId }) {
     dispatch({
-      type: 'LOAD_CONTENT',
+      type: 'INIT_CONTENT',
       content,
       feedId
     });
@@ -630,6 +631,14 @@ function reducer(state, action) {
           };
         })
       };
+    case 'INIT_CONTENT':
+      return {
+        notables: state.notables.map(contentObj => {
+          return contentObj.feedId === action.feedId
+            ? { ...contentObj, ...action.content }
+            : contentObj;
+        })
+      };
     case 'LIKE_CONTENT':
       return {
         notables: state.notables.map(contentObj => ({
@@ -696,14 +705,6 @@ function reducer(state, action) {
                     }
                   : contentObj;
               })
-      };
-    case 'LOAD_CONTENT':
-      return {
-        notables: state.notables.map(contentObj => {
-          return contentObj.feedId === action.feedId
-            ? { ...contentObj, ...action.content }
-            : contentObj;
-        })
       };
     case 'LOAD_MORE':
       return { notables: state.notables.concat(action.notables) };

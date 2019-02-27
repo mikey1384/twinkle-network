@@ -37,7 +37,7 @@ import { connect } from 'react-redux';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { loadNewFeeds } from 'helpers/requestHelpers';
+import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import HomeFilter from './HomeFilter';
 
 const categoryObj = {
@@ -88,7 +88,6 @@ Stories.propTypes = {
   numNewPosts: PropTypes.number.isRequired,
   resetNumNewPosts: PropTypes.func.isRequired,
   searchMode: PropTypes.bool.isRequired,
-  selectedFilter: PropTypes.string.isRequired,
   setCurrentSection: PropTypes.func.isRequired,
   setDifficulty: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
@@ -129,7 +128,6 @@ function Stories({
   numNewPosts,
   resetNumNewPosts,
   searchMode,
-  selectedFilter,
   setCurrentSection,
   setDifficulty,
   showFeedComments,
@@ -140,11 +138,12 @@ function Stories({
   userId,
   username
 }) {
-  const [category, setCategory] = useState('uploads');
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const ContainerRef = useRef(null);
+  const categoryRef = useRef('uploads');
+  const selectedFilterRef = useRef('all');
 
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: !chatMode && !searchMode && storyFeeds.length > 0,
@@ -159,19 +158,33 @@ function Stories({
     setCurrentSection('storyFeeds');
     resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
+      init();
+    }
+    async function init() {
       clearFeeds();
-      fetchFeeds();
+      try {
+        const { data } = await loadFeeds();
+        fetchFeeds(data);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }, []);
 
   useEffect(() => {
-    if (category === 'videos') {
+    if (categoryRef.current === 'videos') {
       clearFeeds();
-      fetchFeeds({
+      filterVideos();
+    }
+    async function filterVideos() {
+      const { data } = await loadFeeds({
         order: 'desc',
         filter: categoryObj.videos.filter,
         orderBy: categoryObj.videos.orderBy
       });
+      if (categoryRef.current === 'videos') {
+        fetchFeeds(data);
+      }
     }
   }, [hideWatched]);
 
@@ -182,11 +195,11 @@ function Stories({
         style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
       >
         <HomeFilter
-          category={category}
+          category={categoryRef.current}
           changeCategory={changeCategory}
           displayOrder={displayOrder}
           hideWatched={hideWatched}
-          selectedFilter={selectedFilter}
+          selectedFilter={selectedFilterRef.current}
           applyFilter={applyFilter}
           setDisplayOrder={handleDisplayOrder}
           toggleHideWatched={toggleHideWatched}
@@ -231,7 +244,7 @@ function Stories({
                     commentsLoadLimit={5}
                     contentObj={feed}
                     inputAtBottom={feed.type === 'comment'}
-                    onLoadContent={fetchFeed}
+                    onInitContent={fetchFeed}
                     onAddTags={addTags}
                     onAddTagToContents={addTagToContents}
                     onAttachStar={attachStar}
@@ -274,26 +287,32 @@ function Stories({
     </ErrorBoundary>
   );
 
-  function applyFilter(filter) {
-    if (filter === selectedFilter) return;
+  async function applyFilter(filter) {
+    if (filter === selectedFilterRef.current) return;
+    selectedFilterRef.current = filter;
     clearFeeds();
-    fetchFeeds({ filter });
-    setDisplayOrder('desc');
-    setScrollHeight(0);
+    const { data, filter: newFilter } = await loadFeeds({ filter });
+    if (selectedFilterRef.current === newFilter) {
+      fetchFeeds(data);
+      setDisplayOrder('desc');
+      setScrollHeight(0);
+    }
   }
 
   async function loadMoreFeeds() {
     try {
       await fetchMoreFeeds({
         order: displayOrder,
-        orderBy: categoryObj[category].orderBy,
+        orderBy: categoryObj[categoryRef.current].orderBy,
         shownFeeds: queryStringForArray({
           array: storyFeeds,
           originVar: 'feedId',
           destinationVar: 'shownFeeds'
         }),
         filter:
-          category === 'uploads' ? selectedFilter : categoryObj[category].filter
+          categoryRef.current === 'uploads'
+            ? selectedFilterRef.current
+            : categoryObj[categoryRef.current].filter
       });
       setLoadingMore(false);
     } catch (error) {
@@ -301,24 +320,31 @@ function Stories({
     }
   }
 
-  function changeCategory(category) {
+  async function changeCategory(category) {
     clearFeeds();
-    fetchFeeds({
+    const { filter, data } = await loadFeeds({
       order: 'desc',
       filter: categoryObj[category].filter,
       orderBy: categoryObj[category].orderBy
     });
-    setDisplayOrder('desc');
-    setCategory(category);
-    setScrollHeight(0);
+    if (filter === categoryObj[category].filter) {
+      fetchFeeds(data);
+      setDisplayOrder('desc');
+      categoryRef.current = category;
+      setScrollHeight(0);
+    }
   }
 
   async function handleFetchNewFeeds() {
-    if (category !== 'uploads' || displayOrder === 'asc') {
+    if (categoryRef.current !== 'uploads' || displayOrder === 'asc') {
       clearFeeds();
       resetNumNewPosts();
-      setCategory('uploads');
-      return fetchFeeds();
+      categoryRef.current = 'uploads';
+      const { data, filter } = await loadFeeds();
+      if (filter === categoryObj.uploads.filter) {
+        fetchFeeds(data);
+      }
+      return;
     }
     if (!loadingNewFeeds) {
       setLoadingNewFeeds(true);
@@ -336,17 +362,23 @@ function Stories({
     }
   }
 
-  function handleDisplayOrder() {
+  async function handleDisplayOrder() {
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
     clearFeeds();
-    fetchFeeds({
+    const initialFilter =
+      categoryRef.current === 'uploads'
+        ? selectedFilterRef.current
+        : categoryObj[categoryRef.current].filter;
+    const { data, filter } = await loadFeeds({
       order: newDisplayOrder,
-      orderBy: categoryObj[category].orderBy,
-      filter:
-        category === 'uploads' ? selectedFilter : categoryObj[category].filter
+      orderBy: categoryObj[categoryRef.current].orderBy,
+      filter: initialFilter
     });
-    setDisplayOrder(newDisplayOrder);
-    setScrollHeight(0);
+    if (filter === initialFilter) {
+      fetchFeeds(data);
+      setDisplayOrder(newDisplayOrder);
+      setScrollHeight(0);
+    }
   }
 
   function handleUploadFeedComment({ feed, data }) {
@@ -367,7 +399,6 @@ export default connect(
     numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    selectedFilter: state.FeedReducer.selectedFilter,
     chatMode: state.ChatReducer.chatMode,
     noFeeds: state.FeedReducer.noFeeds,
     searchMode: state.SearchReducer.searchMode

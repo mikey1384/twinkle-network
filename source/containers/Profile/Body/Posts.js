@@ -5,7 +5,6 @@ import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
 import SideMenu from './SideMenu';
-import { disableAutoscroll } from 'redux/actions/ViewActions';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
@@ -46,7 +45,6 @@ class Posts extends Component {
     clearFeeds: PropTypes.func.isRequired,
     chatMode: PropTypes.bool.isRequired,
     contentFeedLike: PropTypes.func.isRequired,
-    disableAutoscroll: PropTypes.func.isRequired,
     fetchFeed: PropTypes.func.isRequired,
     feedCommentDelete: PropTypes.func.isRequired,
     feedContentDelete: PropTypes.func.isRequired,
@@ -200,7 +198,7 @@ class Posts extends Component {
                     commentsLoadLimit={5}
                     contentObj={feed}
                     inputAtBottom={feed.type === 'comment'}
-                    onLoadContent={fetchFeed}
+                    onInitContent={fetchFeed}
                     onAddTags={addTags}
                     onAddTagToContents={addTagToContents}
                     onAttachStar={attachStar}
@@ -320,8 +318,7 @@ class Posts extends Component {
   };
 
   onClickPostsMenu = ({ item }) => {
-    const { disableAutoscroll, history, username } = this.props;
-    disableAutoscroll();
+    const { history, username } = this.props;
     history.push(
       `/users/${username}/${item === 'url' ? 'link' : item}${
         item === 'all' ? '' : 's'
@@ -401,7 +398,6 @@ export default connect(
     attachStar,
     changeByUserStatus,
     contentFeedLike,
-    disableAutoscroll,
     fetchFeed,
     fetchFeeds,
     fetchMoreFeeds,

@@ -24,8 +24,8 @@ ContentPanel.propTypes = {
   onEditComment: PropTypes.func.isRequired,
   onEditContent: PropTypes.func.isRequired,
   onEditRewardComment: PropTypes.func.isRequired,
+  onInitContent: PropTypes.func.isRequired,
   onLikeContent: PropTypes.func.isRequired,
-  onLoadContent: PropTypes.func,
   onLoadMoreComments: PropTypes.func.isRequired,
   onLoadMoreReplies: PropTypes.func.isRequired,
   onLoadTags: PropTypes.func,
@@ -53,8 +53,8 @@ export default function ContentPanel({
   onEditComment,
   onEditContent,
   onEditRewardComment,
+  onInitContent,
   onLikeContent,
-  onLoadContent,
   onLoadMoreComments,
   onLoadMoreReplies,
   onLoadTags,
@@ -77,7 +77,7 @@ export default function ContentPanel({
           `${URL}/content?contentId=${contentId}&type=${type}`
         );
         if (mounted.current) {
-          onLoadContent({ content: data, feedId });
+          onInitContent({ content: data, feedId });
         }
       }
     }

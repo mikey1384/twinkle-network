@@ -198,6 +198,24 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
+export const loadFeeds = async({
+  filter = 'all',
+  order = 'desc',
+  orderBy = 'lastInteraction',
+  username
+} = {}) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`,
+      auth()
+    );
+    return Promise.resolve({ data, filter });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const loadReplies = async({ lastReplyId, commentId }) => {
   try {
     const { data } = await request.get(

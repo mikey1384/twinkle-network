@@ -78,27 +78,10 @@ export const fetchFeed = ({ content, feedId }) => ({
   data: content
 });
 
-export const fetchFeeds = ({
-  filter = 'all',
-  order = 'desc',
-  orderBy = 'lastInteraction',
-  username
-} = {}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`,
-      auth()
-    );
-    dispatch({
-      type: FEED.LOAD,
-      data,
-      filter
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const fetchFeeds = data => ({
+  type: FEED.LOAD,
+  data
+});
 
 export const fetchNewFeeds = data => ({
   type: FEED.LOAD_NEW,

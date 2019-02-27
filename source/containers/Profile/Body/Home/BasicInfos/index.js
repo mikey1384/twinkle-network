@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -15,257 +15,239 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { setProfileInfo } from 'redux/actions/UserActions';
 
-class BasicInfos extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    dispatch: PropTypes.func.isRequired,
-    email: PropTypes.string,
-    emailVerified: PropTypes.bool,
-    joinDate: PropTypes.string,
-    lastActive: PropTypes.string,
-    myId: PropTypes.number,
-    selectedTheme: PropTypes.string.isRequired,
-    userId: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
-    website: PropTypes.string,
-    youtubeName: PropTypes.string,
-    youtubeUrl: PropTypes.string,
-    setProfileInfo: PropTypes.func.isRequired,
-    style: PropTypes.object
-  };
+BasicInfos.propTypes = {
+  className: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  email: PropTypes.string,
+  emailVerified: PropTypes.bool,
+  joinDate: PropTypes.string,
+  lastActive: PropTypes.string,
+  myId: PropTypes.number,
+  selectedTheme: PropTypes.string.isRequired,
+  userId: PropTypes.number.isRequired,
+  username: PropTypes.string.isRequired,
+  website: PropTypes.string,
+  youtubeName: PropTypes.string,
+  youtubeUrl: PropTypes.string,
+  setProfileInfo: PropTypes.func.isRequired,
+  style: PropTypes.object
+};
 
-  mounted = false;
+function BasicInfos({
+  className,
+  dispatch,
+  email,
+  emailVerified,
+  joinDate,
+  lastActive,
+  myId,
+  selectedTheme,
+  setProfileInfo,
+  userId,
+  username,
+  website,
+  youtubeName,
+  youtubeUrl,
+  style
+}) {
+  const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
+  const [onEdit, setOnEdit] = useState(false);
+  const [verificationEmailSent, setVerificationEmailSent] = useState(false);
+  const mounted = useRef(true);
 
-  state = {
-    emailCheckHighlighted: false,
-    onEdit: false,
-    verificationEmailSent: false
-  };
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  });
 
-  componentDidMount() {
-    this.mounted = true;
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-  }
-
-  render() {
-    const {
-      className,
-      email,
-      emailVerified,
-      joinDate,
-      lastActive,
-      myId,
-      selectedTheme,
-      userId,
-      username,
-      website,
-      youtubeName,
-      youtubeUrl,
-      style
-    } = this.props;
-    const { emailCheckHighlighted, onEdit, verificationEmailSent } = this.state;
-    return (
-      <div className={className} style={style}>
+  return (
+    <div className={className} style={style}>
+      <div
+        style={{
+          color: Color[selectedTheme](),
+          fontWeight: 'bold',
+          marginBottom: '1rem',
+          fontSize: '2rem'
+        }}
+      >
+        About {username}
+      </div>
+      <div style={{ marginBottom: '0.5rem' }}>
+        Member since {moment.unix(joinDate).format('LL')}
+      </div>
+      {onEdit && (
+        <InfoEditForm
+          email={email}
+          youtubeUrl={youtubeUrl}
+          youtubeName={youtubeName}
+          website={website}
+          onCancel={() => setOnEdit(false)}
+          onSubmit={onEditedInfoSubmit}
+        />
+      )}
+      {!onEdit && (email || youtubeUrl || website) && (
         <div
-          style={{
-            color: Color[selectedTheme](),
-            fontWeight: 'bold',
-            marginBottom: '1rem',
-            fontSize: '2rem'
-          }}
+          className={css`
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 1.4rem;
+            }
+          `}
+          style={{ textAlign: 'center' }}
         >
-          About {username}
-        </div>
-        <div style={{ marginBottom: '0.5rem' }}>
-          Member since {moment.unix(joinDate).format('LL')}
-        </div>
-        {onEdit && (
-          <InfoEditForm
-            email={email}
-            youtubeUrl={youtubeUrl}
-            youtubeName={youtubeName}
-            website={website}
-            onCancel={() => this.setState({ onEdit: false })}
-            onSubmit={this.onEditedInfoSubmit}
-          />
-        )}
-        {!onEdit && (email || youtubeUrl || website) && (
-          <div
-            className={css`
-              @media (max-width: ${mobileMaxWidth}) {
-                font-size: 1.4rem;
-              }
-            `}
-            style={{ textAlign: 'center' }}
-          >
-            {email && (
-              <>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <div
-                    style={{
-                      lineHeight:
-                        myId === userId && !emailVerified ? '0.5rem' : undefined
-                    }}
-                  >
-                    <a
-                      href={`mailto:${email}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {email}
-                    </a>
-                  </div>
-                  <Icon
-                    onMouseEnter={() =>
-                      this.setState({
-                        emailCheckHighlighted:
-                          !verificationEmailSent && myId === userId
-                      })
-                    }
-                    onMouseLeave={() =>
-                      this.setState({ emailCheckHighlighted: false })
-                    }
-                    className={css`
-                      margin-left: 0.5rem;
-                    `}
-                    style={{
-                      cursor:
-                        verificationEmailSent ||
-                        myId !== userId ||
-                        emailVerified
-                          ? 'default'
-                          : 'pointer',
-                      color:
-                        emailVerified || emailCheckHighlighted
-                          ? Color[selectedTheme]()
-                          : Color.lightGray()
-                    }}
-                    icon="check-circle"
-                    onClick={
-                      myId !== userId || emailVerified
-                        ? () => {}
-                        : this.onVerifyEmail
-                    }
-                  />
-                </div>
-                {myId === userId && !emailVerified && (
-                  <div>
-                    <a
-                      onMouseEnter={() =>
-                        this.setState({
-                          emailCheckHighlighted: !verificationEmailSent
-                        })
-                      }
-                      onMouseLeave={() =>
-                        this.setState({ emailCheckHighlighted: false })
-                      }
-                      style={{
-                        textDecoration: emailCheckHighlighted
-                          ? 'underline'
-                          : undefined,
-                        cursor: 'pointer',
-                        fontSize: '1.2rem',
-                        color: Color[selectedTheme]()
-                      }}
-                      onClick={
-                        verificationEmailSent
-                          ? this.goToEmail
-                          : this.onVerifyEmail
-                      }
-                    >
-                      {verificationEmailSent
-                        ? 'Email has been sent. Click here to check your inbox'
-                        : 'Please verify your email'}
-                    </a>
-                  </div>
-                )}
-                {myId !== userId && !emailVerified && (
-                  <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
-                    {`This user's email has not been verified, yet`}
-                  </div>
-                )}
-              </>
-            )}
-            {youtubeUrl && (
+          {email && (
+            <>
               <div
                 style={{
-                  marginTop: '0.5rem'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                <span>YouTube: </span>
-                <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
-                  {youtubeName || trimUrl(youtubeUrl)}
-                </a>
+                <div
+                  style={{
+                    lineHeight:
+                      myId === userId && !emailVerified ? '0.5rem' : undefined
+                  }}
+                >
+                  <a
+                    href={`mailto:${email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {email}
+                  </a>
+                </div>
+                <Icon
+                  onMouseEnter={() =>
+                    setEmailCheckHighlighted(
+                      !verificationEmailSent && myId === userId
+                    )
+                  }
+                  onMouseLeave={() => setEmailCheckHighlighted(false)}
+                  className={css`
+                    margin-left: 0.5rem;
+                  `}
+                  style={{
+                    cursor:
+                      verificationEmailSent || myId !== userId || emailVerified
+                        ? 'default'
+                        : 'pointer',
+                    color:
+                      emailVerified || emailCheckHighlighted
+                        ? Color[selectedTheme]()
+                        : Color.lightGray()
+                  }}
+                  icon="check-circle"
+                  onClick={
+                    myId !== userId || emailVerified ? () => {} : onVerifyEmail
+                  }
+                />
               </div>
-            )}
-            {website && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <span>Website: </span>
-                <a href={website} target="_blank" rel="noopener noreferrer">
-                  {trimUrl(website)}
-                </a>
-              </div>
-            )}
-          </div>
-        )}
-        {!onEdit && myId === userId && (!email || !youtubeUrl || !website) && (
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              textAlign: 'center',
-              alignItems: 'center',
-              marginTop: email || youtubeUrl ? '1rem' : 0
-            }}
-          >
-            {this.renderEditMessage({ email, youtubeUrl, website })}
-          </div>
-        )}
-        {myId === userId ? (
-          !onEdit ? (
-            <Button
+              {myId === userId && !emailVerified && (
+                <div>
+                  <a
+                    onMouseEnter={() =>
+                      setEmailCheckHighlighted(!verificationEmailSent)
+                    }
+                    onMouseLeave={() => setEmailCheckHighlighted(false)}
+                    style={{
+                      textDecoration: emailCheckHighlighted
+                        ? 'underline'
+                        : undefined,
+                      cursor: 'pointer',
+                      fontSize: '1.2rem',
+                      color: Color[selectedTheme]()
+                    }}
+                    onClick={verificationEmailSent ? goToEmail : onVerifyEmail}
+                  >
+                    {verificationEmailSent
+                      ? 'Email has been sent. Click here to check your inbox'
+                      : 'Please verify your email'}
+                  </a>
+                </div>
+              )}
+              {myId !== userId && !emailVerified && (
+                <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
+                  {`This user's email has not been verified, yet`}
+                </div>
+              )}
+            </>
+          )}
+          {youtubeUrl && (
+            <div
               style={{
-                marginTop: !email || !youtubeUrl || !website ? 0 : '1rem',
-                marginBottom: '0.5rem'
+                marginTop: '0.5rem'
               }}
-              transparent
-              onClick={() => this.setState({ onEdit: true })}
             >
-              <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '0.7rem' }}>Edit</span>
-            </Button>
-          ) : null
-        ) : (
-          <div
+              <span>YouTube: </span>
+              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+                {youtubeName || trimUrl(youtubeUrl)}
+              </a>
+            </div>
+          )}
+          {website && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <span>Website: </span>
+              <a href={website} target="_blank" rel="noopener noreferrer">
+                {trimUrl(website)}
+              </a>
+            </div>
+          )}
+        </div>
+      )}
+      {!onEdit && myId === userId && (!email || !youtubeUrl || !website) && (
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            textAlign: 'center',
+            alignItems: 'center',
+            marginTop: email || youtubeUrl ? '1rem' : 0
+          }}
+        >
+          {renderEditMessage({ email, youtubeUrl, website })}
+        </div>
+      )}
+      {myId === userId ? (
+        !onEdit ? (
+          <Button
             style={{
-              marginTop: email || youtubeUrl ? '1rem' : 0,
-              textAlign: 'center'
+              marginTop: !email || !youtubeUrl || !website ? 0 : '1rem',
+              marginBottom: '0.5rem'
             }}
+            transparent
+            onClick={() => setOnEdit(true)}
           >
-            <div>Was last active {timeSince(lastActive)}</div>
-          </div>
-        )}
-      </div>
-    );
-  }
+            <Icon icon="pencil-alt" />
+            <span style={{ marginLeft: '0.7rem' }}>Edit</span>
+          </Button>
+        ) : null
+      ) : (
+        <div
+          style={{
+            marginTop: email || youtubeUrl ? '1rem' : 0,
+            textAlign: 'center'
+          }}
+        >
+          <div>Was last active {timeSince(lastActive)}</div>
+        </div>
+      )}
+    </div>
+  );
 
-  goToEmail = () => {
-    const { email } = this.props;
+  function goToEmail() {
     const emailProvider = 'http://www.' + email.split('@')[1];
     window.location = emailProvider;
-  };
+  }
 
-  onEditedInfoSubmit = async({ email, website, youtubeName, youtubeUrl }) => {
-    const { dispatch, setProfileInfo } = this.props;
+  async function onEditedInfoSubmit({
+    email,
+    website,
+    youtubeName,
+    youtubeUrl
+  }) {
     const data = await uploadProfileInfo({
       dispatch,
       email,
@@ -274,21 +256,18 @@ class BasicInfos extends Component {
       youtubeUrl
     });
     setProfileInfo(data);
-    if (this.mounted) {
-      this.setState({ onEdit: false });
+    if (mounted.current) {
+      setOnEdit(false);
     }
-  };
+  }
 
-  onVerifyEmail = () => {
-    const { dispatch } = this.props;
+  function onVerifyEmail() {
     sendVerificationEmail({ dispatch });
-    this.setState({
-      emailCheckHighlighted: false,
-      verificationEmailSent: true
-    });
-  };
+    setEmailCheckHighlighted(false);
+    setVerificationEmailSent(true);
+  }
 
-  renderEditMessage = ({ email, youtubeUrl, website }) => {
+  function renderEditMessage({ email, youtubeUrl, website }) {
     const unfilledItems = [
       { label: 'email', value: email },
       { label: 'YouTube', value: youtubeUrl },
@@ -304,7 +283,7 @@ class BasicInfos extends Component {
     return `Add your ${emptyItemsString} address${
       emptyItemsArray.length > 1 ? 'es' : ''
     } by tapping the "Edit" button below`;
-  };
+  }
 }
 
 export default connect(

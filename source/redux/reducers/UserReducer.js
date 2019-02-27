@@ -9,6 +9,7 @@ const defaultState = {
   canEditPlaylists: false,
   canPinPlaylists: false,
   isCreator: false,
+  loggedIn: false,
   profile: {},
   profiles: [],
   searchedProfiles: [],
@@ -104,6 +105,7 @@ export default function UserReducer(state = defaultState, action) {
         canEditPlaylists: false,
         canPinPlaylists: false,
         isCreator: false,
+        loggedIn: false,
         profile: state.profile,
         profiles: state.profiles,
         searchedProfiles: state.searchedProfiles

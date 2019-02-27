@@ -33,9 +33,9 @@ function Content({
     onEditComment,
     onEditRewardComment,
     onEditContent,
+    onInitContent,
     onLikeContent,
     onLoadComments,
-    onLoadContent,
     onLoadMoreComments,
     onLoadMoreReplies,
     onLoadRepliesOfReply,
@@ -101,7 +101,7 @@ function Content({
             onEditContent={onEditContent}
             onEditRewardComment={onEditRewardComment}
             onLikeContent={onLikeContent}
-            onLoadContent={onLoadContent}
+            onInitContent={onInitContent}
             onLoadMoreComments={onLoadMoreComments}
             onLoadMoreReplies={onLoadMoreReplies}
             onLoadRepliesOfReply={onLoadRepliesOfReply}

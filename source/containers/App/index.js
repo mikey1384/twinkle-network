@@ -1,31 +1,30 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import loadable from 'loadable-components';
+import MobileMenu from './MobileMenu';
+import withScroll from 'components/Wrappers/withScroll';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
 import { loadChat } from 'helpers/requestHelpers';
-import {
-  changePageVisibility,
-  enableAutoscroll
-} from 'redux/actions/ViewActions';
+import { changePageVisibility } from 'redux/actions/ViewActions';
 import {
   initSession,
   openSigninModal,
   closeSigninModal
 } from 'redux/actions/UserActions';
-import { addEvent } from 'helpers/listenerHelpers';
-import { recordUserAction } from 'helpers/userDataHelpers';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { siteContent } from './Styles';
-import MobileMenu from './MobileMenu';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
+import Privacy from 'containers/Privacy';
+import Redirect from 'containers/Redirect';
 const Home = loadable(() => import('containers/Home'), {
   LoadingComponent: Loading
 });
@@ -56,352 +55,249 @@ const LinkPage = loadable(() => import('containers/LinkPage'), {
 const VideoPage = loadable(() => import('containers/VideoPage'), {
   LoadingComponent: Loading
 });
-import Privacy from 'containers/Privacy';
-import Redirect from 'containers/Redirect';
 
-let visibilityChange;
-let hidden;
+App.propTypes = {
+  changePageVisibility: PropTypes.func.isRequired,
+  chatMode: PropTypes.bool,
+  chatNumUnreads: PropTypes.number,
+  closeSigninModal: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object,
+  initChat: PropTypes.func.isRequired,
+  initSession: PropTypes.func.isRequired,
+  location: PropTypes.object,
+  loggedIn: PropTypes.bool,
+  numNewNotis: PropTypes.number,
+  numNewPosts: PropTypes.number,
+  resetChat: PropTypes.func.isRequired,
+  scrollPosition: PropTypes.number.isRequired,
+  searchMode: PropTypes.bool,
+  searchText: PropTypes.string,
+  signinModalShown: PropTypes.bool,
+  turnChatOff: PropTypes.func.isRequired,
+  username: PropTypes.string
+};
 
-class App extends Component {
-  static propTypes = {
-    autoscrollDisabled: PropTypes.bool.isRequired,
-    chatMode: PropTypes.bool,
-    changePageVisibility: PropTypes.func.isRequired,
-    chatNumUnreads: PropTypes.number,
-    closeSigninModal: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    enableAutoscroll: PropTypes.func.isRequired,
-    history: PropTypes.object,
-    initChat: PropTypes.func.isRequired,
-    initSession: PropTypes.func.isRequired,
-    location: PropTypes.object,
-    loggedIn: PropTypes.bool,
-    numNewNotis: PropTypes.number,
-    numNewPosts: PropTypes.number,
-    resetChat: PropTypes.func.isRequired,
-    searchMode: PropTypes.bool,
-    searchText: PropTypes.string,
-    signinModalShown: PropTypes.bool,
-    turnChatOff: PropTypes.func.isRequired,
-    username: PropTypes.string
-  };
+function App({
+  changePageVisibility,
+  chatMode,
+  chatNumUnreads,
+  closeSigninModal,
+  dispatch,
+  initChat,
+  initSession,
+  location,
+  loggedIn,
+  numNewNotis,
+  numNewPosts,
+  history,
+  resetChat,
+  scrollPosition,
+  searchMode,
+  searchText,
+  signinModalShown,
+  turnChatOff,
+  username
+}) {
+  const [chatLoading, setChatLoading] = useState(false);
+  const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
+  const [mobileMenuShown, setMobileMenuShown] = useState(false);
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
+  const SearchBoxRef = useRef(null);
+  const visibilityChangeRef = useRef(null);
+  const hiddenRef = useRef(null);
 
-  state = {
-    chatLoading: false,
-    scrollPosition: 0,
-    updateNoticeShown: false,
-    mobileMenuShown: false,
-    navScrollPositions: {}
-  };
-
-  body =
-    typeof document !== 'undefined'
-      ? document.scrollingElement || document.documentElement
-      : {};
-
-  componentDidMount() {
-    const { initSession, location, history } = this.props;
-    if (typeof document.hidden !== 'undefined') {
-      hidden = 'hidden';
-      visibilityChange = 'visibilitychange';
-    } else if (typeof document.msHidden !== 'undefined') {
-      hidden = 'msHidden';
-      visibilityChange = 'msvisibilitychange';
-    } else if (typeof document.webkitHidden !== 'undefined') {
-      hidden = 'webkitHidden';
-      visibilityChange = 'webkitvisibilitychange';
-    }
+  useEffect(() => {
     initSession(location.pathname);
-    addEvent(document, visibilityChange, this.handleVisibilityChange);
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
-  }
+  }, []);
 
-  getSnapshotBeforeUpdate(prevProps) {
-    if (
-      (!this.props.searchMode && !prevProps.chatMode && this.props.chatMode) ||
-      (!prevProps.searchMode && this.props.searchMode)
-    ) {
-      return {
-        scrollPosition: this.body.scrollTop
-      };
+  useEffect(() => {
+    if (typeof document.hidden !== 'undefined') {
+      hiddenRef.current = 'hidden';
+      visibilityChangeRef.current = 'visibilitychange';
+    } else if (typeof document.msHidden !== 'undefined') {
+      hiddenRef.current = 'msHidden';
+      visibilityChangeRef.current = 'msvisibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      hiddenRef.current = 'webkitHidden';
+      visibilityChangeRef.current = 'webkitvisibilitychange';
     }
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      return {
-        navScrollPosition: {
-          [prevProps.location.pathname]: document.getElementById('App')
-            .scrollTop
-        }
-      };
+    addEvent(document, visibilityChangeRef.current, handleVisibilityChange);
+    function handleVisibilityChange() {
+      changePageVisibility(!document[hiddenRef.current]);
     }
-    return {};
-  }
+    return function cleanUp() {
+      removeEvent(
+        document,
+        visibilityChangeRef.current,
+        handleVisibilityChange
+      );
+    };
+  });
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const {
-      autoscrollDisabled,
-      chatNumUnreads,
-      enableAutoscroll,
-      numNewNotis,
-      numNewPosts,
-      history,
-      location,
-      loggedIn
-    } = this.props;
-    const { navScrollPositions, scrollPosition } = this.state;
+  useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads;
-    if (
-      snapshot.navScrollPosition &&
-      prevProps.location.pathname !== location.pathname
-    ) {
-      this.setState(state => ({
-        navScrollPositions: {
-          ...state.navScrollPositions,
-          ...snapshot.navScrollPosition
+    document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
+  }, [numNewNotis, numNewPosts, chatMode, chatNumUnreads]);
+
+  return (
+    <div
+      className={css`
+        height: CALC(100% - 6rem);
+        width: 100%;
+        @media (max-width: ${mobileMaxWidth}) {
+          height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
         }
-      }));
-    }
-
-    if (snapshot.scrollPosition) {
-      this.setState(state => ({
-        scrollPosition: snapshot.scrollPosition
-      }));
-    }
-
-    if (prevProps.searchMode && !this.props.searchMode) {
-      if (location !== prevProps.location) {
-        this.setState({ scrollPosition: 0 });
-      } else {
-        this.body.scrollTop = scrollPosition;
-      }
-    }
-
-    if (location.pathname !== prevProps.location.pathname) {
-      if (history.action === 'PUSH') {
-        if (loggedIn) {
-          recordUserAction({ action: 'navigation', target: location.pathname });
-        }
-        if (autoscrollDisabled) {
-          enableAutoscroll();
-        } else {
-          this.body.scrollTop = 0;
-          document.getElementById('App').scrollTop = 0;
-        }
-      } else {
-        setTimeout(
-          () =>
-            (document.getElementById('App').scrollTop =
-              navScrollPositions[location.pathname]),
-          0
-        );
-      }
-    }
-
-    if (
-      this.props.numNewPosts !== prevProps.numNewPosts ||
-      this.props.chatNumUnreads !== prevProps.chatNumUnreads ||
-      this.props.numNewNotis !== prevProps.numNewNotis
-    ) {
-      document.title = `${
-        newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''
-      }Twinkle`;
-    }
-
-    if (this.props.chatMode !== prevProps.chatMode) {
-      document.title = `${
-        newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''
-      }Twinkle`;
-    }
-  }
-
-  render() {
-    const {
-      chatMode,
-      closeSigninModal,
-      location,
-      history,
-      searchMode,
-      signinModalShown,
-      searchText,
-      turnChatOff,
-      username,
-      resetChat
-    } = this.props;
-    const {
-      chatLoading,
-      mobileMenuShown,
-      scrollPosition,
-      updateNoticeShown
-    } = this.state;
-    return (
-      <div
-        className={css`
-          height: CALC(100% - 6rem);
-          width: 100%;
-          @media (max-width: ${mobileMaxWidth}) {
-            height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
-          }
-        `}
-      >
-        {mobileMenuShown && (
-          <MobileMenu
-            chatMode={chatMode}
-            location={location}
-            history={history}
-            username={username}
-            onClose={() => this.setState({ mobileMenuShown: false })}
-          />
-        )}
-        {updateNoticeShown && (
-          <div
-            className={css`
-              position: fixed;
-              width: 80%;
-              left: 10%;
-              top: 2rem;
-              z-index: 2000;
-              background: ${Color.blue()};
-              color: #fff;
-              padding: 1rem;
-              text-align: center;
-              font-size: 2rem;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-                left: 0;
-              }
-            `}
-          >
-            <p>
-              The website has been updated. Click the button below to apply the
-              update.
-            </p>
-            <p style={{ fontSize: '1.3em' }}>
-              {
-                "Warning: Update is mandatory. Some features will not work properly if you don't update!"
-              }
-            </p>
-            <Button
-              gold
-              filled
-              style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
-              onClick={() => window.location.reload()}
-            >
-              Update!
-            </Button>
-          </div>
-        )}
-        <Header
+      `}
+    >
+      {mobileMenuShown && (
+        <MobileMenu
           chatMode={chatMode}
-          chatLoading={chatLoading}
+          location={location}
           history={history}
-          onChatButtonClick={this.onChatButtonClick}
-          turnChatOff={turnChatOff}
-          searchBoxRef={ref => (this.SearchBox = ref)}
-          showUpdateNotice={match =>
-            this.setState({ updateNoticeShown: !match })
-          }
-          onMobileMenuOpen={() => this.setState({ mobileMenuShown: true })}
+          username={username}
+          onClose={() => setMobileMenuShown(false)}
         />
-        {searchMode && (
-          <div
-            className={`${css`
-              margin-top: 6rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: 0;
-              }
-            `} ${chatMode ? 'hidden' : ''}`}
-          >
-            <SearchPage
-              searchText={searchText}
-              onSearchBoxFocus={
-                this.SearchBox ? () => this.SearchBox.focus() : () => {}
-              }
-            />
-          </div>
-        )}
+      )}
+      {updateNoticeShown && (
         <div
-          id="App"
-          className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
+          className={css`
+            position: fixed;
+            width: 80%;
+            left: 10%;
+            top: 2rem;
+            z-index: 2000;
+            background: ${Color.blue()};
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+              left: 0;
+            }
+          `}
         >
-          <Switch>
-            <Route
-              path="/users/:username"
-              render={({ history, location, match }) => (
-                <Profile history={history} location={location} match={match} />
-              )}
-            />
-            <Route path="/subjects" component={ContentPage} />
-            <Route path="/comments" component={ContentPage} />
-            <Route path="/videos/:videoId" component={VideoPage} />
-            <Route path="/videos" component={WorkSection} />
-            <Route path="/links/:linkId" component={LinkPage} />
-            <Route path="/links" component={WorkSection} />
-            <Route path="/xp" component={WorkSection} />
-            <Route path="/playlists" component={PlaylistPage} />
-            <Route path="/verify" component={Verify} />
-            <Route path="/privacy" component={Privacy} />
-            <Route
-              exact
-              path="/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route
-              exact
-              path="/users/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route path="/:username" component={Redirect} />
-          </Switch>
+          <p>
+            The website has been updated. Click the button below to apply the
+            update.
+          </p>
+          <p style={{ fontSize: '1.3em' }}>
+            {
+              "Warning: Update is mandatory. Some features will not work properly if you don't update!"
+            }
+          </p>
+          <Button
+            gold
+            filled
+            style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
+            onClick={() => window.location.reload()}
+          >
+            Update!
+          </Button>
         </div>
-        {chatMode && this.props.loggedIn && (
-          <Chat
-            onUnmount={async() => {
-              await resetChat();
-              this.body.scrollTop = scrollPosition;
-              turnChatOff();
-            }}
+      )}
+      <Header
+        chatMode={chatMode}
+        chatLoading={chatLoading}
+        history={history}
+        onChatButtonClick={onChatButtonClick}
+        turnChatOff={turnChatOff}
+        searchBoxRef={SearchBoxRef}
+        showUpdateNotice={match => setUpdateNoticeShown(!match)}
+        onMobileMenuOpen={() => setMobileMenuShown(true)}
+      />
+      {searchMode && (
+        <div
+          className={`${css`
+            margin-top: 6rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-top: 0;
+            }
+          `} ${chatMode ? 'hidden' : ''}`}
+        >
+          <SearchPage
+            searchText={searchText}
+            onSearchBoxFocus={() => SearchBoxRef.current.focus()}
           />
-        )}
-        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+        </div>
+      )}
+      <div
+        id="App"
+        className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
+      >
+        <Switch>
+          <Route
+            path="/users/:username"
+            render={({ history, location, match }) => (
+              <Profile history={history} location={location} match={match} />
+            )}
+          />
+          <Route path="/subjects" component={ContentPage} />
+          <Route path="/comments" component={ContentPage} />
+          <Route path="/videos/:videoId" component={VideoPage} />
+          <Route path="/videos" component={WorkSection} />
+          <Route path="/links/:linkId" component={LinkPage} />
+          <Route path="/links" component={WorkSection} />
+          <Route path="/xp" component={WorkSection} />
+          <Route path="/playlists" component={PlaylistPage} />
+          <Route path="/verify" component={Verify} />
+          <Route path="/privacy" component={Privacy} />
+          <Route
+            exact
+            path="/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route
+            exact
+            path="/users/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route path="/:username" component={Redirect} />
+        </Switch>
       </div>
-    );
+      {chatMode && loggedIn && (
+        <Chat
+          onUnmount={async() => {
+            await resetChat();
+            BodyRef.current.scrollTop = scrollPosition;
+            turnChatOff();
+          }}
+        />
+      )}
+      {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+    </div>
+  );
+
+  async function onChatButtonClick() {
+    setChatLoading(true);
+    try {
+      await (chatMode ? turnChatOff() : handleInitChat());
+    } catch (error) {
+      setChatLoading(false);
+    }
+    setChatLoading(false);
   }
 
-  handleVisibilityChange = () => {
-    const { changePageVisibility } = this.props;
-    changePageVisibility(!document[hidden]);
-  };
-
-  onChatButtonClick = async() => {
-    const { chatMode, turnChatOff } = this.props;
-    this.setState({ chatLoading: true });
-    try {
-      await (chatMode ? turnChatOff() : this.initChat());
-    } catch (error) {
-      this.setState({ chatLoading: false });
-    }
-    this.setState({ chatLoading: false });
-  };
-
-  initChat = async() => {
-    const { dispatch, initChat } = this.props;
+  async function handleInitChat() {
     const data = await loadChat({ dispatch });
     initChat(data);
-  };
+  }
 }
 
 export default connect(
   state => ({
-    autoscrollDisabled: state.ViewReducer.autoscrollDisabled,
     loggedIn: state.UserReducer.loggedIn,
     numNewPosts: state.NotiReducer.numNewPosts,
     numNewNotis: state.NotiReducer.numNewNotis,
@@ -415,7 +311,6 @@ export default connect(
   dispatch => ({
     dispatch,
     closeSigninModal: () => dispatch(closeSigninModal()),
-    enableAutoscroll: () => dispatch(enableAutoscroll()),
     openSigninModal: () => dispatch(openSigninModal()),
     initSession: pathname => dispatch(initSession(pathname)),
     turnChatOff: () => dispatch(turnChatOff()),
@@ -423,4 +318,4 @@ export default connect(
     resetChat: () => dispatch(resetChat()),
     changePageVisibility: visible => dispatch(changePageVisibility(visible))
   })
-)(hot(module)(App));
+)(hot(module)(withScroll(App)));

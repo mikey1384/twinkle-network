@@ -70,8 +70,8 @@ function LinkPage({
     onEditComment,
     onEditRewardComment,
     onEditSubject,
+    onInitContent,
     onLikeComment,
-    onLoadContent,
     onLoadSubjectComments,
     onLoadMoreComments,
     onLoadMoreReplies,
@@ -101,7 +101,7 @@ function LinkPage({
           type: 'url',
           limit: 5
         });
-        onLoadContent({
+        onInitContent({
           content: {
             ...data,
             childComments: commentsObj?.comments || [],
