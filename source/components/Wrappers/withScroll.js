@@ -7,7 +7,7 @@ export default function withScroll(WrappedComponent) {
     static propTypes = {
       chatMode: PropTypes.bool.isRequired,
       history: PropTypes.object,
-      location: PropTypes.object.isRequired,
+      location: PropTypes.object,
       loggedIn: PropTypes.bool.isRequired,
       searchMode: PropTypes.bool.isRequired
     };
