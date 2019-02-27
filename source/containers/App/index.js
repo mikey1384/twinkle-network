@@ -102,7 +102,11 @@ function App({
   const [chatLoading, setChatLoading] = useState(false);
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
+  const BodyRef = useRef(
+    typeof document !== 'undefined'
+      ? document.scrollingElement || document.documentElement
+      : {}
+  );
   const SearchBoxRef = useRef(null);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
