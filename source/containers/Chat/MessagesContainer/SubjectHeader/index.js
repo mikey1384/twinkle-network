@@ -70,6 +70,7 @@ function SubjectHeader({
   const subjectTitle = cleanString(content);
 
   useEffect(() => {
+    mounted.current = true;
     socket.on('subject_change', onSubjectChange);
     if (!loaded) {
       initialLoad();

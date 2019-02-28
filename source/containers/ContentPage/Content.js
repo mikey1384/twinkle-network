@@ -51,8 +51,8 @@ function Content({
   const mounted = useRef(null);
   useEffect(() => {
     mounted.current = true;
-    loadContent();
-    async function loadContent() {
+    initContent();
+    async function initContent() {
       try {
         const {
           data: { exists }
