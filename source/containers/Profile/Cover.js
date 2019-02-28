@@ -78,9 +78,7 @@ function Cover({
     ? {
         color: Color.gold(),
         backgroundImage: `url(${
-          this.backgroundImageObj[selectedTheme || profileTheme][
-            moment().month()
-          ]
+          backgroundImageObj[selectedTheme || profileTheme][moment().month()]
         })`,
         backgroundSize: '100% 100%',
         backgroundRepeat: 'no-repeat'
