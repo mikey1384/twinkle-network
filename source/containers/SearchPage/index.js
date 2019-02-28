@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { searchPage } from './Styles';
 import TopFilter from './TopFilter';
@@ -19,150 +19,143 @@ import { connect } from 'react-redux';
 import { css } from 'emotion';
 import CloseText from './CloseText';
 
-class SearchPage extends Component {
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    changeFilter: PropTypes.func.isRequired,
-    closeSearch: PropTypes.func.isRequired,
-    onSearchBoxFocus: PropTypes.func.isRequired,
-    recordSearchScroll: PropTypes.func.isRequired,
-    searchFilter: PropTypes.string,
-    searchScrollPosition: PropTypes.number,
-    searchText: PropTypes.string.isRequired,
-    selectedFilter: PropTypes.string.isRequired,
-    setResults: PropTypes.func.isRequired,
-    updateDefaultSearchFilter: PropTypes.func.isRequired,
-    userId: PropTypes.number
-  };
+SearchPage.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  changeFilter: PropTypes.func.isRequired,
+  closeSearch: PropTypes.func.isRequired,
+  onSearchBoxFocus: PropTypes.func.isRequired,
+  recordSearchScroll: PropTypes.func.isRequired,
+  searchFilter: PropTypes.string,
+  searchScrollPosition: PropTypes.number,
+  searchText: PropTypes.string.isRequired,
+  selectedFilter: PropTypes.string.isRequired,
+  setResults: PropTypes.func.isRequired,
+  updateDefaultSearchFilter: PropTypes.func.isRequired,
+  userId: PropTypes.number
+};
 
-  componentDidMount() {
-    const {
-      selectedFilter,
-      searchFilter,
-      changeFilter,
-      searchScrollPosition
-    } = this.props;
+function SearchPage({
+  changeFilter,
+  closeSearch,
+  dispatch,
+  onSearchBoxFocus,
+  recordSearchScroll,
+  searchFilter,
+  searchScrollPosition,
+  searchText,
+  selectedFilter,
+  setResults,
+  updateDefaultSearchFilter,
+  userId
+}) {
+  const [prevSearchText, setPrevSearchText] = useState(searchText);
+  const SearchPageRef = useRef(null);
+  useEffect(() => {
     if (!selectedFilter) changeFilter(searchFilter || 'video');
     setTimeout(() => {
-      this.SearchPage.scrollTop = searchScrollPosition;
+      if (SearchPageRef.current) {
+        SearchPageRef.current.scrollTop = searchScrollPosition;
+      }
     }, 10);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { searchText, setResults } = this.props;
     if (
-      !stringIsEmpty(prevProps.searchText) &&
-      prevProps.searchText.length >= 2 &&
+      !stringIsEmpty(prevSearchText) &&
+      prevSearchText.length >= 2 &&
       (stringIsEmpty(searchText) || searchText.length < 2)
     ) {
       setResults({ results: [], loadMoreButton: false });
     }
-  }
+    setPrevSearchText(searchText);
 
-  componentWillUnmount() {
-    const { recordSearchScroll } = this.props;
-    recordSearchScroll(this.SearchPage.scrollTop);
-  }
+    return function onUnmount() {
+      recordSearchScroll(SearchPageRef.current.scrollTop);
+    };
+  }, [searchText]);
 
-  render() {
-    const {
-      changeFilter,
-      closeSearch,
-      onSearchBoxFocus,
-      selectedFilter,
-      searchFilter,
-      searchText,
-      userId
-    } = this.props;
-    return (
-      <div ref={ref => (this.SearchPage = ref)} className={searchPage}>
+  return (
+    <div ref={SearchPageRef} className={searchPage}>
+      <div
+        className={css`
+          width: 80%;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+            margin: 0 1rem 0 1rem;
+          }
+        `}
+      >
+        <CloseText className="desktop" />
         <div
-          className={css`
-            width: 80%;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-              margin: 0 1rem 0 1rem;
-            }
-          `}
+          style={{
+            fontSize: '3rem',
+            fontWeight: 'bold',
+            padding: '1rem',
+            color: Color.darkerGray()
+          }}
         >
-          <CloseText className="desktop" />
-          <div
-            style={{
-              fontSize: '3rem',
-              fontWeight: 'bold',
-              padding: '1rem',
-              color: Color.darkerGray()
-            }}
-          >
-            {stringIsEmpty(searchText) ? (
-              <div style={{ textTransform: 'capitalize' }}>
-                {this.renderHelperText()}
-              </div>
-            ) : (
-              <span>
-                <span style={{ textTransform: 'capitalize' }}>
-                  {selectedFilter === 'url' ? 'link' : selectedFilter}
-                </span>
-                : {`"${searchText}"`}
-              </span>
-            )}
-            {userId && (
-              <Checkbox
-                label={`Always search for ${
-                  selectedFilter === 'url' ? 'link' : selectedFilter
-                }s first:`}
-                backgroundColor="#fff"
-                checked={selectedFilter === searchFilter}
-                onClick={this.setDefaultSearchFilter}
-              />
-            )}
-          </div>
-          <TopFilter
-            applyFilter={changeFilter}
-            selectedFilter={selectedFilter}
-          />
           {stringIsEmpty(searchText) ? (
-            <FirstPage
-              changeFilter={changeFilter}
-              defaultFilter={searchFilter}
-              filter={selectedFilter}
-              setDefaultSearchFilter={this.setDefaultSearchFilter}
-              onSearchBoxFocus={onSearchBoxFocus}
-            />
+            <div style={{ textTransform: 'capitalize' }}>
+              {renderHelperText()}
+            </div>
           ) : (
-            <Results
-              changeFilter={changeFilter}
-              closeSearch={closeSearch}
-              searchText={searchText}
-              filter={selectedFilter}
+            <span>
+              <span style={{ textTransform: 'capitalize' }}>
+                {selectedFilter === 'url' ? 'link' : selectedFilter}
+              </span>
+              : {`"${searchText}"`}
+            </span>
+          )}
+          {userId && (
+            <Checkbox
+              label={`Always search for ${
+                selectedFilter === 'url' ? 'link' : selectedFilter
+              }s first:`}
+              backgroundColor="#fff"
+              checked={selectedFilter === searchFilter}
+              onClick={handleSetDefaultSearchFilter}
             />
           )}
         </div>
+        <TopFilter
+          applyFilter={handleChangeFilter}
+          selectedFilter={selectedFilter}
+        />
+        {stringIsEmpty(searchText) ? (
+          <FirstPage
+            changeFilter={handleChangeFilter}
+            defaultFilter={searchFilter}
+            filter={selectedFilter}
+            setDefaultSearchFilter={handleSetDefaultSearchFilter}
+          />
+        ) : (
+          <Results
+            changeFilter={handleChangeFilter}
+            closeSearch={closeSearch}
+            searchText={searchText}
+            filter={selectedFilter}
+          />
+        )}
       </div>
-    );
+    </div>
+  );
+
+  function handleChangeFilter(filter) {
+    changeFilter(filter);
+    onSearchBoxFocus();
   }
 
-  renderHelperText = () => {
-    const { selectedFilter } = this.props;
+  function renderHelperText() {
     if (selectedFilter === 'all') return 'Search all content type...';
     if (selectedFilter === 'url') return 'Search links...';
     return `Search ${selectedFilter}s...`;
-  };
+  }
 
-  setDefaultSearchFilter = async() => {
-    const {
-      dispatch,
-      searchFilter,
-      selectedFilter,
-      updateDefaultSearchFilter
-    } = this.props;
+  async function handleSetDefaultSearchFilter() {
     if (selectedFilter === searchFilter) return;
     await setDefaultSearchFilter({
       filter: selectedFilter,
       dispatch
     });
     updateDefaultSearchFilter(selectedFilter);
-  };
+  }
 }
 
 export default connect(

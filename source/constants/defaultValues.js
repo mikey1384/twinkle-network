@@ -37,6 +37,7 @@ export const charLimit = {
     url: 300
   }
 };
+
 export const profileThemes = {
   black: {
     color: Color.black(),
@@ -63,6 +64,7 @@ export const profileThemes = {
     cover: Color.rose()
   }
 };
+
 export const returnMaxStars = ({ difficulty }) => {
   let maxStars = 5;
   if (difficulty > 0) {

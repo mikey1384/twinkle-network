@@ -10,6 +10,7 @@ CloseText.propTypes = {
   style: PropTypes.object,
   text: PropTypes.string
 };
+
 function CloseText({ className, closeSearch, style, text = 'Tap to close' }) {
   return (
     <div className={className} style={{ textAlign: 'center' }}>

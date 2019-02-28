@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import Result from './Result';
@@ -11,24 +11,21 @@ import { css } from 'emotion';
 import CloseText from './CloseText';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
-class Results extends Component {
-  static propTypes = {
-    changeFilter: PropTypes.func.isRequired,
-    closeSearch: PropTypes.func.isRequired,
-    filter: PropTypes.string.isRequired,
-    loadMoreButton: PropTypes.bool.isRequired,
-    results: PropTypes.array.isRequired,
-    searchText: PropTypes.string.isRequired,
-    setResults: PropTypes.func.isRequired,
-    showMoreResults: PropTypes.func.isRequired
-  };
+Results.propTypes = {
+  changeFilter: PropTypes.func.isRequired,
+  closeSearch: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
+  loadMoreButton: PropTypes.bool.isRequired,
+  results: PropTypes.array.isRequired,
+  searchText: PropTypes.string.isRequired,
+  setResults: PropTypes.func.isRequired,
+  showMoreResults: PropTypes.func.isRequired
+};
 
-  state = {
-    searching: false,
-    loadingMore: false
-  };
-
-  timer = null;
+function Results() {
+  const [searching, setSearching] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const timerRef = useRef(null);
 
   componentDidMount() {
     const { filter, results, searchText } = this.props;

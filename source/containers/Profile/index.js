@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import Cover from './Cover';
 import Body from './Body';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import {
@@ -59,7 +60,7 @@ function Profile({
   }, [match.params.username, profile, userId]);
 
   return (
-    <div style={{ minHeight: '10rem' }}>
+    <ErrorBoundary style={{ minHeight: '10rem' }}>
       {!unavailable ? (
         <>
           {!profile.id && <Loading text="Loading Profile..." />}
@@ -101,7 +102,7 @@ function Profile({
           text={!userId ? 'Please Log In or Sign Up' : ''}
         />
       )}
-    </div>
+    </ErrorBoundary>
   );
 
   async function onSetTheme() {
