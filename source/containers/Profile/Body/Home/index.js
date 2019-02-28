@@ -118,6 +118,8 @@ function Home({
         if (mounted.current) {
           onInitContent({
             content: {
+              id: userId,
+              type: 'user',
               childComments: comments,
               commentsLoadMoreButton: loadMoreButton
             }
@@ -413,7 +415,7 @@ function Home({
           onDelete={onDeleteComment}
           onEditDone={onEditComment}
           onLikeClick={onLikeComment}
-          onLoadMoreComments={onLoadMoreComments}
+          onLoadMoreComments={data => onLoadMoreComments({ data })}
           onLoadMoreReplies={onLoadMoreReplies}
           onLoadRepliesOfReply={onLoadRepliesOfReply}
           onPreviewClick={onLoadComments}

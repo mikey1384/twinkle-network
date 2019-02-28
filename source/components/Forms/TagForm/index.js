@@ -121,7 +121,6 @@ export default function TagForm({
 
   function onItemSearch(text) {
     clearTimeout(timerRef.current);
-    setLoading(false);
     setSearchText(text);
     if (stringIsEmpty(text) || text.length < 2) {
       onNotFound?.({ messageShown: false });
