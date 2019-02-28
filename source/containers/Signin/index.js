@@ -17,12 +17,13 @@ class Signin extends Component {
   constructor() {
     super();
     this.state = {
+      available: false,
       currentPage: 'main'
     };
   }
 
   render() {
-    const { currentPage } = this.state;
+    const { available, currentPage } = this.state;
     const { dispatch, onHide } = this.props;
     return (
       <Modal show onHide={onHide}>
@@ -46,11 +47,25 @@ class Signin extends Component {
               {...bindActionCreators(UserActions, dispatch)}
             />
           )}
-          {currentPage === 'signUp' && (
+          {currentPage === 'signUp' && available && (
             <SignUpForm
               showLoginForm={() => this.setState({ currentPage: 'login' })}
               {...bindActionCreators(UserActions, dispatch)}
             />
+          )}
+          {currentPage === 'signUp' && !available && (
+            <div
+              style={{
+                fontSize: '3rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%'
+              }}
+            >
+              Sorry, signing up through the website is currently unavailable.
+              Ask your teacher for assistence
+            </div>
           )}
         </>
       </Modal>
