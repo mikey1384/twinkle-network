@@ -365,7 +365,8 @@ export default function useContentObj(props) {
     });
   }
 
-  function onLoadMoreComments({ data: { comments, loadMoreButton } }) {
+  function onLoadMoreComments(data) {
+    const { comments, loadMoreButton } = data.data ? data.data : data;
     const { type } = contentObj;
     setContentObj({
       ...contentObj,

@@ -415,7 +415,7 @@ function Home({
           onDelete={onDeleteComment}
           onEditDone={onEditComment}
           onLikeClick={onLikeComment}
-          onLoadMoreComments={data => onLoadMoreComments({ data })}
+          onLoadMoreComments={onLoadMoreComments}
           onLoadMoreReplies={onLoadMoreReplies}
           onLoadRepliesOfReply={onLoadRepliesOfReply}
           onPreviewClick={onLoadComments}
