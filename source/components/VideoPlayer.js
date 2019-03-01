@@ -370,7 +370,6 @@ function VideoPlayer({
   }
 
   function onVideoPlay() {
-    console.log(rewardAmountRef.current);
     setStarted(true);
     if (!playing) {
       setPlaying(true);
