@@ -7,6 +7,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ChristmasCover from './christmas-cover.png';
+import MarchCover from './march-cover.png';
 import NewYearsCover from './newyears-cover.png';
 import ValentinesCover from './valentines-cover.png';
 import moment from 'moment';
@@ -43,6 +44,9 @@ const backgroundImageObj = {
   },
   rose: {
     1: ValentinesCover
+  },
+  logoBlue: {
+    2: MarchCover
   }
 };
 
@@ -76,7 +80,10 @@ function Cover({
     !!backgroundImageObj[selectedTheme || profileTheme]?.[moment().month()];
   const coverObj = showCover
     ? {
-        color: Color.gold(),
+        color:
+          (selectedTheme || profileTheme) === ('black' || 'rose')
+            ? Color.gold()
+            : '#fff',
         backgroundImage: `url(${
           backgroundImageObj[selectedTheme || profileTheme][moment().month()]
         })`,
