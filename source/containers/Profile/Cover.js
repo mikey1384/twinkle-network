@@ -81,7 +81,7 @@ function Cover({
   const coverObj = showCover
     ? {
         color:
-          (selectedTheme || profileTheme) === ('black' || 'rose')
+          ['black', 'rose'].indexOf(selectedTheme || profileTheme) !== -1
             ? Color.gold()
             : '#fff',
         backgroundImage: `url(${
