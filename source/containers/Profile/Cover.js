@@ -6,11 +6,6 @@ import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
-import ChristmasCover from './christmas-cover.png';
-import MarchFirstCover from './march-first-cover.png';
-import MarchCover from './march-cover.png';
-import NewYearsCover from './newyears-cover.png';
-import ValentinesCover from './valentines-cover.png';
 import moment from 'moment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { openDirectMessageChannel } from 'redux/actions/ChatActions';
@@ -36,6 +31,12 @@ Cover.propTypes = {
   uploadProfilePic: PropTypes.func,
   userId: PropTypes.number
 };
+
+const ChristmasCover = '/img/christmas-cover.png';
+const MarchFirstCover = '/img/march-first-cover.png';
+const MarchCover = '/img/march-cover.png';
+const NewYearsCover = '/img/newyears-cover.png';
+const ValentinesCover = '/img/valentines-cover.png';
 
 const backgroundImageObj = {
   black: {
@@ -70,40 +71,40 @@ function Cover({
   uploadProfilePic,
   selectedTheme
 }) {
+  const showCover =
+    rank <= 30 &&
+    rank > 0 &&
+    !!backgroundImageObj[selectedTheme || profileTheme]?.[moment().month()];
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
   const [processing, setProcessing] = useState(false);
   const FileInputRef = useRef(null);
+
   useEffect(() => {
-    onSelectTheme('white');
-    setTimeout(() => onSelectTheme(profileTheme || 'logoBlue'), 0);
+    onSelectTheme(profileTheme || 'logoBlue');
   }, []);
-  const showCover =
-    rank <= 30 &&
-    rank > 0 &&
-    !!backgroundImageObj[selectedTheme || profileTheme]?.[moment().month()];
-  const coverObj = showCover
-    ? {
-        color:
-          ['black', 'rose'].indexOf(selectedTheme || profileTheme) !== -1
-            ? Color.gold()
-            : '#fff',
-        backgroundImage: `url(${
-          backgroundImageObj[selectedTheme || profileTheme][moment().month()]
-        })`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat'
-      }
-    : { color: '#fff' };
   return (
     <ErrorBoundary>
       <div
         style={{
-          background:
-            profileThemes[selectedTheme || profileTheme || 'logoBlue'].color,
-          ...coverObj
+          color:
+            showCover &&
+            ['black', 'rose'].indexOf(selectedTheme || profileTheme) !== -1
+              ? Color.gold()
+              : '#fff',
+          backgroundImage: showCover
+            ? `url(${
+                backgroundImageObj[selectedTheme || profileTheme][
+                  moment().month()
+                ]
+              })`
+            : undefined,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 100%',
+          backgroundColor:
+            profileThemes[selectedTheme || profileTheme || 'logoBlue'].color
         }}
         className={css`
           height: 26rem;
@@ -287,8 +288,7 @@ function Cover({
   );
 
   function onColorSelectCancel() {
-    onSelectTheme('white');
-    setTimeout(() => onSelectTheme(profileTheme || 'logoBlue'), 0);
+    onSelectTheme(profileTheme || 'logoBlue');
     setColorSelectorShown(false);
   }
 
