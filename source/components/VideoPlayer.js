@@ -150,6 +150,10 @@ function VideoPlayer({
   }, [onEdit]);
 
   useEffect(() => {
+    clearInterval(timerRef.current);
+  }, [justEarned]);
+
+  useEffect(() => {
     if (!userId) {
       timeWatchedRef.current = 0;
       setXpEarned(false);
@@ -420,9 +424,10 @@ function VideoPlayer({
         ? Math.floor(totalDurationRef.current / 2) * 2 - 20
         : requiredDurationCap;
     if (
-      !!difficulty &&
+      rewardAmountRef.current &&
       timeWatchedRef.current >= requiredViewDuration &&
-      !rewardingXP.current
+      !rewardingXP.current &&
+      (!justEarned || xpEarned)
     ) {
       rewardingXP.current = true;
       try {
