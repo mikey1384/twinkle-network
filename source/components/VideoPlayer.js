@@ -84,6 +84,7 @@ function VideoPlayer({
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
   const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
+  const rewardAmountRef = useRef(difficulty * xp);
 
   useEffect(() => {
     mounted.current = true;
@@ -95,6 +96,7 @@ function VideoPlayer({
   }, []);
 
   useEffect(() => {
+    rewardAmountRef.current = difficulty * xp;
     if (videoCode && typeof hasHqThumb !== 'number') {
       fetchVideoThumb();
     } else {
@@ -368,6 +370,7 @@ function VideoPlayer({
   }
 
   function onVideoPlay() {
+    console.log(rewardAmountRef.current);
     setStarted(true);
     if (!playing) {
       setPlaying(true);
@@ -430,7 +433,7 @@ function VideoPlayer({
           action: 'watch',
           target: 'video',
           targetId: videoId,
-          amount: difficulty * xp
+          amount: rewardAmountRef.current
         });
         setJustEarned(true);
         rewardingXP.current = false;
