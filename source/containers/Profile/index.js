@@ -80,7 +80,7 @@ function Profile({
               <Cover
                 profile={profile}
                 onSelectTheme={theme => {
-                  setSelectedTheme(theme);
+                  setSelectedTheme('white');
                   setTimeout(() => setSelectedTheme(theme), 0);
                 }}
                 selectedTheme={selectedTheme}

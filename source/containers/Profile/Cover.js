@@ -7,6 +7,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ChristmasCover from './christmas-cover.png';
+import MarchFirstCover from './march-first-cover.png';
 import MarchCover from './march-cover.png';
 import NewYearsCover from './newyears-cover.png';
 import ValentinesCover from './valentines-cover.png';
@@ -40,6 +41,7 @@ const backgroundImageObj = {
   black: {
     0: NewYearsCover,
     1: NewYearsCover,
+    2: MarchFirstCover,
     11: ChristmasCover
   },
   rose: {
