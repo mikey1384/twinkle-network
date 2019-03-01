@@ -283,8 +283,8 @@ function Cover({
   );
 
   function onColorSelectCancel() {
-    onSelectTheme('logoBlue');
-    onSelectTheme(profileTheme || 'logoBlue');
+    onSelectTheme('white');
+    setTimeout(() => onSelectTheme(profileTheme || 'logoBlue'), 0);
     setColorSelectorShown(false);
   }
 
