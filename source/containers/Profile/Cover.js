@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import ColorSelector from 'components/ColorSelector';
@@ -76,6 +76,10 @@ function Cover({
   const [imageUri, setImageUri] = useState(null);
   const [processing, setProcessing] = useState(false);
   const FileInputRef = useRef(null);
+  useEffect(() => {
+    onSelectTheme('white');
+    setTimeout(() => onSelectTheme(profileTheme || 'logoBlue'), 0);
+  }, []);
   const showCover =
     rank <= 30 &&
     rank > 0 &&
