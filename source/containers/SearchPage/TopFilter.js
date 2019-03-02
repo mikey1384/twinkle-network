@@ -7,6 +7,7 @@ TopFilter.propTypes = {
   style: PropTypes.object,
   selectedFilter: PropTypes.string.isRequired
 };
+
 export default function TopFilter({ applyFilter, selectedFilter, style }) {
   return (
     <FilterBar style={style} bordered>
