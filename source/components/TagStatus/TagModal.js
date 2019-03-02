@@ -32,6 +32,7 @@ function TagModal({
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const [disabled, setDisabled] = useState(false);
 
   return (
     <Modal onHide={onHide}>
@@ -52,7 +53,7 @@ function TagModal({
             setNotFoundMessageShown(messageShown)
           }
           onRemoveItem={onRemovePlaylist}
-          onSubmit={selectedPlaylists.length > 0 && submit}
+          onSubmit={selectedPlaylists.length > 0 && handleSubmit}
           renderDropdownLabel={item => <span>{item.title}</span>}
           renderTagLabel={label => hashify(label)}
           searchPlaceholder="Search for playlists here..."
@@ -81,9 +82,9 @@ function TagModal({
           Cancel
         </Button>
         <Button
-          disabled={selectedPlaylists.length === 0}
+          disabled={disabled || selectedPlaylists.length === 0}
           primary
-          onClick={submit}
+          onClick={handleSubmit}
         >
           Done
         </Button>
@@ -114,7 +115,8 @@ function TagModal({
     );
   }
 
-  async function submit() {
+  async function handleSubmit() {
+    setDisabled(true);
     await addVideoToPlaylists({
       dispatch,
       videoId,
