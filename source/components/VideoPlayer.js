@@ -83,8 +83,8 @@ function VideoPlayer({
   const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
-  const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
   const rewardAmountRef = useRef(difficulty * xp);
+  const requiredDurationCap = 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
     mounted.current = true;
