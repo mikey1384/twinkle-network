@@ -86,7 +86,7 @@ function DifficultyModal({
           >
             Cancel
           </Button>
-          <Button disalbed={disabled} primary onClick={submit}>
+          <Button disabled={disabled} primary onClick={submit}>
             Set
           </Button>
         </footer>
