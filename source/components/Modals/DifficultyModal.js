@@ -24,6 +24,7 @@ function DifficultyModal({
   type,
   onHide
 }) {
+  const [disabled, setDisabled] = useState(false);
   const [difficulty, setDisplayDifficulty] = useState(initialDifficulty);
   return (
     <Modal onHide={onHide}>
@@ -85,7 +86,7 @@ function DifficultyModal({
           >
             Cancel
           </Button>
-          <Button primary onClick={submit}>
+          <Button disabled={disabled} primary onClick={submit}>
             Set
           </Button>
         </footer>
@@ -94,6 +95,7 @@ function DifficultyModal({
   );
 
   async function submit() {
+    setDisabled(true);
     await setDifficulty({ contentId, type, difficulty, dispatch });
     onSubmit({ contentId, difficulty, type });
   }
