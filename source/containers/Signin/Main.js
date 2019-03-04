@@ -6,6 +6,7 @@ Main.propTypes = {
   showLoginForm: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired
 };
+
 export default function Main({ showLoginForm, showSignUpForm }) {
   return (
     <main>
