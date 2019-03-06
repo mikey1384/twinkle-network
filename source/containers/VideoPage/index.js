@@ -61,7 +61,7 @@ function VideoPage({
   likeVideo,
   location: { search },
   match: {
-    params: { videoId }
+    params: { videoId: initialVideoId }
   },
   setDifficulty,
   userId
@@ -74,10 +74,12 @@ function VideoPage({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [questionsBuilderShown, setQuestionsBuilderShown] = useState(false);
+  const [videoId, setVideoId] = useState(initialVideoId);
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoUnavailable, setVideoUnavailable] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
+  const videoIdRef = useRef(initialVideoId);
   const {
     contentObj,
     contentObj: {
@@ -129,20 +131,22 @@ function VideoPage({
 
   useEffect(() => {
     mounted.current = true;
+    setVideoId(initialVideoId);
+    videoIdRef.current = initialVideoId;
     setChangingPage(true);
     loadVideoPage();
     setChangingPage(false);
     async function loadVideoPage() {
       try {
         const { data } = await request.get(
-          `${URL}/video/page?videoId=${videoId}`
+          `${URL}/video/page?videoId=${videoIdRef.current}`
         );
         const subjectsObj = await loadSubjects({
           type: 'video',
-          contentId: videoId
+          contentId: videoIdRef.current
         });
         const commentsObj = await loadComments({
-          id: videoId,
+          id: videoIdRef.current,
           type: 'video'
         });
         if (mounted.current) {
@@ -150,6 +154,7 @@ function VideoPage({
           onInitContent({
             content: {
               ...data,
+              contentId: Number(videoIdRef.current),
               childComments: commentsObj?.comments || [],
               commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
               subjects: subjectsObj?.results || [],
@@ -167,11 +172,10 @@ function VideoPage({
         console.error(error.response || error);
       }
     }
-
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [videoId]);
+  }, [initialVideoId]);
 
   const { playlist: playlistId } = queryString.parse(search);
   const userIsUploader = uploader?.id === userId;
