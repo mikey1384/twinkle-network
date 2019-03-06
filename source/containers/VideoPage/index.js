@@ -157,8 +157,6 @@ function VideoPage({
         });
         if (mounted.current) {
           setVideoId(initialVideoId);
-          setVideoLoading(false);
-          setChangingPage(false);
           onInitContent({
             content: {
               ...data,
@@ -170,6 +168,8 @@ function VideoPage({
               subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
             }
           });
+          setChangingPage(false);
+          setVideoLoading(false);
         }
       } catch (error) {
         console.error(error.response || error);
