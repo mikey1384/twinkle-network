@@ -21,10 +21,7 @@ import NavMenu from './NavMenu';
 import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import {
-  fetchedVideoCodeFromURL,
-  stringIsEmpty
-} from 'helpers/stringHelpers';
+import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from 'components/Subjects';
@@ -134,10 +131,10 @@ function VideoPage({
 
   useEffect(() => {
     mounted.current = true;
-    setVideoId(initialVideoId);
     videoIdRef.current = initialVideoId;
     setChangingPage(true);
     loadVideoPage();
+    setVideoId(initialVideoId);
     setChangingPage(false);
     async function loadVideoPage() {
       try {
