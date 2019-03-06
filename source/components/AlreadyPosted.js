@@ -25,11 +25,13 @@ export default function AlreadyPosted({
   videoCode
 }) {
   const [existingContent, setExistingContent] = useState({});
+  const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     checkExists();
     async function checkExists() {
+      setLoading(true);
       const { content } = await checkIfContentExists({
         type,
         url,
@@ -37,15 +39,16 @@ export default function AlreadyPosted({
       });
       if (mounted.current) {
         setExistingContent(content);
+        setLoading(false);
       }
     }
     return function cleanUp() {
       mounted.current = false;
     };
   }, [url]);
-
   return !changingPage &&
     existingContent.id &&
+    !loading &&
     existingContent.id !== contentId ? (
     <div
       style={{

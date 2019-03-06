@@ -43,8 +43,7 @@ Details.propTypes = {
   setDifficulty: PropTypes.func.isRequired,
   tags: PropTypes.array,
   stars: PropTypes.array,
-  timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
+  timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   title: PropTypes.string.isRequired,
   uploader: PropTypes.object.isRequired,
   userId: PropTypes.number,

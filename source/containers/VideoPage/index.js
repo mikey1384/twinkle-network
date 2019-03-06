@@ -134,7 +134,6 @@ function VideoPage({
     videoIdRef.current = initialVideoId;
     setChangingPage(true);
     loadVideoPage();
-    setChangingPage(false);
     async function loadVideoPage() {
       try {
         const { data } = await request.get(
@@ -154,6 +153,7 @@ function VideoPage({
         if (mounted.current) {
           setVideoId(initialVideoId);
           setVideoLoading(false);
+          setChangingPage(false);
           onInitContent({
             content: {
               ...data,
@@ -180,7 +180,6 @@ function VideoPage({
       mounted.current = false;
     };
   }, [initialVideoId]);
-
   const { playlist: playlistId } = queryString.parse(search);
   const userIsUploader = uploader?.id === userId;
   const userCanEditThis = canEdit && authLevel >= uploader?.authLevel;
