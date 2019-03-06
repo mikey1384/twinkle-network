@@ -34,10 +34,12 @@ function TagStatus({
 
   useEffect(() => {
     mounted.current = true;
-    loadTags();
+    if (onLoadTags) {
+      loadTags();
+    }
     async function loadTags() {
       const tags = await fetchPlaylistsContaining({ videoId: contentId });
-      if (mounted.current && onLoadTags) {
+      if (mounted.current) {
         onLoadTags({ tags, contentId, type: 'video' });
       }
     }
