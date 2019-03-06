@@ -131,12 +131,18 @@ function VideoPage({
   useEffect(() => {
     mounted.current = true;
     setChangingPage(true);
+    setVideoUnavailable(false);
     loadVideoPage();
     async function loadVideoPage() {
       try {
         const { data } = await request.get(
           `${URL}/video/page?videoId=${initialVideoId}`
         );
+        if (data.notFound) {
+          setVideoLoading(false);
+          setVideoUnavailable(true);
+          return;
+        }
         const subjectsObj = await loadSubjects({
           type: 'video',
           contentId: initialVideoId
@@ -165,12 +171,6 @@ function VideoPage({
           });
         }
       } catch (error) {
-        if (error.response) {
-          const { data = {} } = error.response;
-          if (data.notFound) {
-            setVideoUnavailable(true);
-          }
-        }
         console.error(error.response || error);
       }
     }
