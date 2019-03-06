@@ -131,6 +131,7 @@ function VideoPage({
   useEffect(() => {
     mounted.current = true;
     setChangingPage(true);
+    setVideoLoading(true);
     setVideoUnavailable(false);
     loadVideoPage();
     async function loadVideoPage() {
