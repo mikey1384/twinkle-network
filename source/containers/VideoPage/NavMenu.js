@@ -226,13 +226,16 @@ function NavMenu({
     });
     try {
       const {
-        data: { playlistVideos, playlistVideosLoadMoreShown }
+        data: {
+          playlistVideos: newPlaylistVideos,
+          playlistVideosLoadMoreShown: shown
+        }
       } = await request.get(
         `${URL}/video/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`
       );
       setPlaylistVideosLoading(false);
-      setPlaylistVideos(playlistVideos.concat(playlistVideos));
-      setPlaylistVideosLoadMoreShown(playlistVideosLoadMoreShown);
+      setPlaylistVideos(playlistVideos.concat(newPlaylistVideos));
+      setPlaylistVideosLoadMoreShown(shown);
     } catch (error) {
       console.error(error);
     }
