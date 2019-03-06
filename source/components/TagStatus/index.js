@@ -11,7 +11,7 @@ import { Color } from 'constants/css';
 TagStatus.propTypes = {
   onAddTags: PropTypes.func.isRequired,
   onAddTagToContents: PropTypes.func,
-  onLoadTags: PropTypes.func.isRequired,
+  onLoadTags: PropTypes.func,
   canEditPlaylists: PropTypes.bool,
   contentId: PropTypes.number.isRequired,
   style: PropTypes.object,
@@ -37,7 +37,7 @@ function TagStatus({
     loadTags();
     async function loadTags() {
       const tags = await fetchPlaylistsContaining({ videoId: contentId });
-      if (mounted.current) {
+      if (mounted.current && onLoadTags) {
         onLoadTags({ tags, contentId, type: 'video' });
       }
     }

@@ -21,7 +21,10 @@ import NavMenu from './NavMenu';
 import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
+import {
+  fetchedVideoCodeFromURL,
+  stringIsEmpty
+} from 'helpers/stringHelpers';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from 'components/Subjects';
@@ -31,6 +34,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
   auth,
+  fetchPlaylistsContaining,
   handleError,
   loadComments,
   loadSubjects
@@ -118,7 +122,6 @@ function VideoPage({
     onLoadMoreSubjects,
     onLoadMoreSubjectComments,
     onLoadMoreSubjectReplies,
-    onLoadTags,
     onSetDifficulty,
     onSetSubjectDifficulty,
     onUploadComment,
@@ -149,11 +152,15 @@ function VideoPage({
           id: videoIdRef.current,
           type: 'video'
         });
+        const tags = await fetchPlaylistsContaining({
+          videoId: videoIdRef.current
+        });
         if (mounted.current) {
           setVideoLoading(false);
           onInitContent({
             content: {
               ...data,
+              tags,
               contentId: Number(videoIdRef.current),
               childComments: commentsObj?.comments || [],
               commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
@@ -301,7 +308,6 @@ function VideoPage({
                 difficulty={difficulty}
                 likes={likes}
                 likeVideo={handleLikeVideo}
-                loadTags={onLoadTags}
                 content={content}
                 description={description}
                 changeByUserStatus={handleChangeByUserStatus}

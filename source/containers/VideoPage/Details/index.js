@@ -36,7 +36,6 @@ Details.propTypes = {
   difficulty: PropTypes.number,
   likes: PropTypes.array.isRequired,
   likeVideo: PropTypes.func.isRequired,
-  loadTags: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onEditCancel: PropTypes.func.isRequired,
   onEditFinish: PropTypes.func.isRequired,
@@ -71,7 +70,6 @@ function Details({
   title,
   description,
   likes,
-  loadTags,
   onDelete,
   onEditCancel,
   onEditStart,
@@ -99,7 +97,7 @@ function Details({
     setEditedUrl(`https://www.youtube.com/watch?v=${content}`);
     setEditedDescription(description);
     setXpRewardInterfaceShown(false);
-  }, [videoId]);
+  }, [title, description, content]);
 
   const userIsUploader = uploader.id === userId;
   const userCanEditThis =
@@ -132,7 +130,6 @@ function Details({
       <TagStatus
         style={{ fontSize: '1.5rem' }}
         onAddTags={addTags}
-        onLoadTags={loadTags}
         tags={tags}
         contentId={Number(videoId)}
       />
