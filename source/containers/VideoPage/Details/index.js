@@ -99,7 +99,7 @@ function Details({
     setEditedUrl(`https://www.youtube.com/watch?v=${content}`);
     setEditedDescription(description);
     setXpRewardInterfaceShown(false);
-  }, [title, description, content]);
+  }, [videoId]);
 
   const userIsUploader = uploader.id === userId;
   const userCanEditThis =
