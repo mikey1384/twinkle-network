@@ -80,7 +80,6 @@ function VideoPage({
   const [videoUnavailable, setVideoUnavailable] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
-  const videoIdRef = useRef(initialVideoId);
   const {
     contentObj,
     contentObj: {
@@ -131,24 +130,23 @@ function VideoPage({
 
   useEffect(() => {
     mounted.current = true;
-    videoIdRef.current = initialVideoId;
     setChangingPage(true);
     loadVideoPage();
     async function loadVideoPage() {
       try {
         const { data } = await request.get(
-          `${URL}/video/page?videoId=${videoIdRef.current}`
+          `${URL}/video/page?videoId=${initialVideoId}`
         );
         const subjectsObj = await loadSubjects({
           type: 'video',
-          contentId: videoIdRef.current
+          contentId: initialVideoId
         });
         const commentsObj = await loadComments({
-          id: videoIdRef.current,
+          id: initialVideoId,
           type: 'video'
         });
         const tags = await fetchPlaylistsContaining({
-          videoId: videoIdRef.current
+          videoId: initialVideoId
         });
         if (mounted.current) {
           setVideoId(initialVideoId);
@@ -158,7 +156,7 @@ function VideoPage({
             content: {
               ...data,
               tags,
-              contentId: Number(videoIdRef.current),
+              contentId: Number(initialVideoId),
               childComments: commentsObj?.comments || [],
               commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
               subjects: subjectsObj?.results || [],
