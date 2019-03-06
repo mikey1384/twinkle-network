@@ -134,7 +134,6 @@ function VideoPage({
     videoIdRef.current = initialVideoId;
     setChangingPage(true);
     loadVideoPage();
-    setVideoId(initialVideoId);
     setChangingPage(false);
     async function loadVideoPage() {
       try {
@@ -153,6 +152,7 @@ function VideoPage({
           videoId: videoIdRef.current
         });
         if (mounted.current) {
+          setVideoId(initialVideoId);
           setVideoLoading(false);
           onInitContent({
             content: {
