@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -18,197 +18,207 @@ import { socket } from 'constants/io';
 import { css } from 'emotion';
 import URL from 'constants/URL';
 
-class NavMenu extends Component {
-  static propTypes = {
-    clearNotifications: PropTypes.func.isRequired,
-    fetchNotifications: PropTypes.func.isRequired,
-    numNewNotis: PropTypes.number,
-    playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    totalRewardAmount: PropTypes.number,
-    userId: PropTypes.number,
-    videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired
-  };
+NavMenu.propTypes = {
+  clearNotifications: PropTypes.func.isRequired,
+  fetchNotifications: PropTypes.func.isRequired,
+  numNewNotis: PropTypes.number,
+  playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  totalRewardAmount: PropTypes.number,
+  userId: PropTypes.number,
+  videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+};
 
-  mounted = false;
+function NavMenu({
+  clearNotifications,
+  fetchNotifications,
+  numNewNotis,
+  playlistId,
+  totalRewardAmount,
+  userId,
+  videoId
+}) {
+  const [nextVideos, setNextVideos] = useState([]);
+  const [relatedVideos, setRelatedVideos] = useState([]);
+  const [otherVideos, setOtherVideos] = useState([]);
+  const [playlistVideos, setPlaylistVideos] = useState([]);
+  const [rewardsExist, setRewardsExist] = useState(false);
+  const [playlistTitle, setPlaylistTitle] = useState();
+  const [playlistVideosLoading, setPlaylistVideosLoading] = useState(false);
+  const [
+    playlistVideosLoadMoreShown,
+    setPlaylistVideosLoadMoreShown
+  ] = useState(false);
+  const [videoTabActive, setVideoTabActive] = useState(true);
+  const mounted = useRef(true);
 
-  state = {
-    nextVideos: [],
-    relatedVideos: [],
-    otherVideos: [],
-    playlistVideos: [],
-    rewardsExist: false,
-    playlistTitle: undefined,
-    playlistVideosLoading: false,
-    playlistVideosLoadMoreShown: false,
-    videoTabActive: true
-  };
-
-  async componentDidMount() {
-    const { fetchNotifications, videoId, playlistId } = this.props;
-    this.mounted = true;
-    this.loadRightMenuVideos(videoId, playlistId);
-    await fetchNotifications();
-    socket.on('new_reward', this.notifyNewReward);
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      clearNotifications,
-      fetchNotifications,
-      videoId,
-      playlistId,
-      totalRewardAmount
-    } = this.props;
-    const { nextVideos } = this.state;
-    if (!nextVideos || (videoId && prevProps.videoId !== videoId)) {
-      this.loadRightMenuVideos(videoId, playlistId);
-    }
-    if (prevProps.totalRewardAmount !== totalRewardAmount && this.mounted) {
-      this.setState({ rewardsExist: totalRewardAmount > 0 });
-    }
-    if (prevProps.userId !== this.props.userId) {
-      if (!this.props.userId) {
-        clearNotifications();
-      } else {
-        fetchNotifications();
+  useEffect(() => {
+    mounted.current = true;
+    socket.on('new_reward', fetchNotifications);
+    loadRightMenuVideos();
+    async function loadRightMenuVideos() {
+      try {
+        const { data } = await request.get(
+          `${URL}/${
+            playlistId ? 'playlist' : 'video'
+          }/rightMenu?videoId=${videoId}${
+            playlistId ? `&playlistId=${playlistId}` : ''
+          }`
+        );
+        if (mounted.current) {
+          if (data.playlistTitle) {
+            setPlaylistTitle(data.playlistTitle);
+          }
+          if (data.nextVideos) {
+            setNextVideos(data.nextVideos);
+          }
+          if (data.relatedVideos) {
+            setRelatedVideos(data.relatedVideos);
+          }
+          if (data.playlistVideos) {
+            setPlaylistVideos(data.playlistVideos);
+          }
+          if (data.playlistVideosLoadMoreShown) {
+            setPlaylistVideosLoadMoreShown(data.playlistVideosLoadMoreShown);
+          }
+          if (data.otherVideos) {
+            setOtherVideos(data.otherVideos);
+          }
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
-  }
 
-  componentWillUnmount() {
-    socket.removeListener('new_reward', this.notifyNewReward);
-    this.mounted = false;
-  }
+    return function cleanUp() {
+      socket.removeListener('new_reward', fetchNotifications);
+      mounted.current = false;
+    };
+  }, [videoId]);
 
-  render() {
-    const { numNewNotis, playlistId, videoId } = this.props;
-    const {
-      nextVideos,
-      relatedVideos,
-      otherVideos,
-      playlistTitle,
-      playlistVideos,
-      playlistVideosLoading,
-      playlistVideosLoadMoreShown,
-      rewardsExist,
-      videoTabActive
-    } = this.state;
-    return (
-      <ErrorBoundary
-        className={css`
-          width: CALC(30% - 2rem);
-          font-size: 2rem;
-          margin-right: 1rem;
-          > section {
-            padding: 1rem;
-            background: #fff;
+  useEffect(() => {
+    setRewardsExist(totalRewardAmount > 0);
+  }, [totalRewardAmount]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchNotifications();
+    } else {
+      clearNotifications();
+    }
+  }, [userId]);
+
+  return (
+    <ErrorBoundary
+      className={css`
+        width: CALC(30% - 2rem);
+        font-size: 2rem;
+        margin-right: 1rem;
+        > section {
+          padding: 1rem;
+          background: #fff;
+          margin-bottom: 1rem;
+          p {
             margin-bottom: 1rem;
-            p {
-              margin-bottom: 1rem;
-              font-size: 2.5rem;
-              font-weight: bold;
-            }
-            a {
-              font-size: 1.7rem;
-              font-weight: bold;
-              line-height: 1.7rem;
-            }
+            font-size: 2.5rem;
+            font-weight: bold;
           }
-          @media (max-width: ${mobileMaxWidth}) {
-            width: 100%;
+          a {
+            font-size: 1.7rem;
+            font-weight: bold;
+            line-height: 1.7rem;
+          }
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
+          margin: 0;
+          section {
             margin: 0;
-            section {
-              margin: 0;
-            }
           }
-        `}
-      >
-        <FilterBar className="desktop">
-          <nav
-            className={videoTabActive ? 'active' : ''}
-            onClick={() => this.setState({ videoTabActive: true })}
-          >
-            Videos
-          </nav>
-          <nav
-            className={`${!videoTabActive ? 'active' : ''} ${
-              rewardsExist || numNewNotis > 0 ? 'alert' : ''
-            }`}
-            onClick={() => this.setState({ videoTabActive: false })}
-          >
-            {rewardsExist ? 'Rewards' : 'News'}
-          </nav>
-        </FilterBar>
-        {videoTabActive && (
-          <>
-            {nextVideos.length > 0 && (
-              <section key={videoId + 'up next'}>
-                <p>Up Next</p>
-                {this.renderVideos({
-                  videos: nextVideos,
-                  arePlaylistVideos: playlistId && playlistVideos.length > 0
-                })}
-              </section>
-            )}
-            {playlistId && playlistVideos.length > 0 && (
-              <section
-                key={videoId + 'playlist videos'}
-                style={{
-                  whiteSpace: 'pre-wrap',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word'
-                }}
-              >
-                <div style={{ marginBottom: '1rem' }}>
-                  <Link
-                    style={{
-                      fontSize: '2.5rem',
-                      textDecoration: 'none'
-                    }}
-                    to={`/playlists/${playlistId}`}
-                  >
-                    {cleanString(playlistTitle)}
-                  </Link>
-                </div>
-                {this.renderVideos({
-                  videos: playlistVideos,
-                  arePlaylistVideos: true
-                })}
-                {playlistVideosLoadMoreShown && (
-                  <LoadMoreButton
-                    loading={playlistVideosLoading}
-                    onClick={this.loadMorePlaylistVideos}
-                    success
-                    filled
-                    style={{ marginTop: '1.5rem', width: '100%' }}
-                  />
-                )}
-              </section>
-            )}
-            {relatedVideos.length > 0 && (
-              <section key={videoId + 'related videos'}>
-                <p>Related Videos</p>
-                {this.renderVideos({ videos: relatedVideos })}
-              </section>
-            )}
-            {otherVideos.length > 0 && (
-              <section key={videoId + 'new videos'}>
-                <p>New Videos</p>
-                {this.renderVideos({ videos: otherVideos })}
-              </section>
-            )}
-          </>
-        )}
-        {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
-      </ErrorBoundary>
-    );
-  }
+        }
+      `}
+    >
+      <FilterBar className="desktop">
+        <nav
+          className={videoTabActive ? 'active' : ''}
+          onClick={() => setVideoTabActive(true)}
+        >
+          Videos
+        </nav>
+        <nav
+          className={`${!videoTabActive ? 'active' : ''} ${
+            rewardsExist || numNewNotis > 0 ? 'alert' : ''
+          }`}
+          onClick={() => setVideoTabActive(false)}
+        >
+          {rewardsExist ? 'Rewards' : 'News'}
+        </nav>
+      </FilterBar>
+      {videoTabActive && (
+        <>
+          {nextVideos.length > 0 && (
+            <section key={videoId + 'up next'}>
+              <p>Up Next</p>
+              {renderVideos({
+                videos: nextVideos,
+                arePlaylistVideos: playlistId && playlistVideos.length > 0
+              })}
+            </section>
+          )}
+          {playlistId && playlistVideos.length > 0 && (
+            <section
+              key={videoId + 'playlist videos'}
+              style={{
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'break-word',
+                wordBreak: 'break-word'
+              }}
+            >
+              <div style={{ marginBottom: '1rem' }}>
+                <Link
+                  style={{
+                    fontSize: '2.5rem',
+                    textDecoration: 'none'
+                  }}
+                  to={`/playlists/${playlistId}`}
+                >
+                  {cleanString(playlistTitle)}
+                </Link>
+              </div>
+              {renderVideos({
+                videos: playlistVideos,
+                arePlaylistVideos: true
+              })}
+              {playlistVideosLoadMoreShown && (
+                <LoadMoreButton
+                  loading={playlistVideosLoading}
+                  onClick={loadMorePlaylistVideos}
+                  success
+                  filled
+                  style={{ marginTop: '1.5rem', width: '100%' }}
+                />
+              )}
+            </section>
+          )}
+          {relatedVideos.length > 0 && (
+            <section key={videoId + 'related videos'}>
+              <p>Related Videos</p>
+              {renderVideos({ videos: relatedVideos })}
+            </section>
+          )}
+          {otherVideos.length > 0 && (
+            <section key={videoId + 'new videos'}>
+              <p>New Videos</p>
+              {renderVideos({ videos: otherVideos })}
+            </section>
+          )}
+        </>
+      )}
+      {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
+    </ErrorBoundary>
+  );
 
-  loadMorePlaylistVideos = async() => {
-    const { playlistId, videoId } = this.props;
-    const { playlistVideos } = this.state;
-    this.setState({ playlistVideosLoading: true });
+  async function loadMorePlaylistVideos() {
+    setPlaylistVideosLoading(true);
     const shownVideos = queryStringForArray({
       array: playlistVideos,
       originVar: 'videoId',
@@ -220,40 +230,15 @@ class NavMenu extends Component {
       } = await request.get(
         `${URL}/video/more/playlistVideos?videoId=${videoId}&playlistId=${playlistId}&${shownVideos}`
       );
-      this.setState(state => ({
-        playlistVideosLoading: false,
-        playlistVideos: state.playlistVideos.concat(playlistVideos),
-        playlistVideosLoadMoreShown
-      }));
+      setPlaylistVideosLoading(false);
+      setPlaylistVideos(playlistVideos.concat(playlistVideos));
+      setPlaylistVideosLoadMoreShown(playlistVideosLoadMoreShown);
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
-  loadRightMenuVideos = async(videoId, playlistId) => {
-    try {
-      const { data } = await request.get(
-        `${URL}/${
-          playlistId ? 'playlist' : 'video'
-        }/rightMenu?videoId=${videoId}${
-          playlistId ? `&playlistId=${playlistId}` : ''
-        }`
-      );
-      this.setState({
-        ...data
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  notifyNewReward = async() => {
-    const { fetchNotifications } = this.props;
-    fetchNotifications();
-  };
-
-  renderVideos = ({ videos, arePlaylistVideos }) => {
-    const { playlistId } = this.props;
+  function renderVideos({ videos, arePlaylistVideos }) {
     return videos.map((video, index) => (
       <div
         key={video.id}
@@ -309,7 +294,7 @@ class NavMenu extends Component {
         </div>
       </div>
     ));
-  };
+  }
 }
 
 export default connect(

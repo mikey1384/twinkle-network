@@ -8,6 +8,7 @@ PageTab.propTypes = {
   questions: PropTypes.array.isRequired,
   watchTabActive: PropTypes.bool.isRequired
 };
+
 export default function PageTab({
   watchTabActive,
   onWatchTabClick,
