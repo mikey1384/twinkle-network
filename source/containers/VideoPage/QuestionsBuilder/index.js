@@ -1,5 +1,5 @@
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import QuestionBlock from './QuestionBlock';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -11,310 +11,308 @@ import { css } from 'emotion';
 import HTML5Backend from 'react-dnd-html5-touch-backend';
 import { DragDropContext } from 'react-dnd';
 
-class QuestionsBuilder extends Component {
-  static propTypes = {
-    onHide: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    questions: PropTypes.array.isRequired,
-    title: PropTypes.string.isRequired,
-    videoCode: PropTypes.string.isRequired
-  };
+const Styles = {
+  Player: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  `,
+  leftSection: css`
+    width: 40%;
+    height: auto;
+    max-height: 100%;
+    padding: 1rem;
+    overflow-y: scroll;
+    padding-right: 2rem;
+  `,
+  rightSection: css`
+    width: 60%;
+    height: auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  `,
+  videoContainer: css`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+  `,
+  videoInterface: css`
+    padding: 0 3rem;
+    margin-top: 2rem;
+  `
+};
 
-  state = {
-    reorderModeOn: false,
-    questions: {},
-    questionIds: []
-  };
+QuestionsBuilder.propTypes = {
+  onHide: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  questions: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  videoCode: PropTypes.string.isRequired
+};
 
-  Questions = [];
+function QuestionsBuilder({
+  onHide,
+  onSubmit,
+  questions: initialQuestions,
+  title,
+  videoCode
+}) {
+  const [reorderModeOn, setReorderModeOn] = useState(false);
+  const [questions, setQuestions] = useState({});
+  const [questionIds, setQuestionIds] = useState([]);
+  const LeftMenuRef = useRef(null);
+  const QuestionBlocksRef = useRef(null);
+  const QuestionsRef = useRef([]);
 
-  componentDidMount() {
-    const { questions } = this.props;
-    this.setState({
-      questions:
-        questions.length !== 0
-          ? this.formatQuestions(questions)
-          : this.newQuestion(0),
-      questionIds:
-        questions.length > 0 ? questions.map((question, index) => index) : [0]
+  useEffect(() => {
+    setQuestions(
+      initialQuestions.length !== 0
+        ? formatQuestions(initialQuestions)
+        : newQuestion(0)
+    );
+    setQuestionIds(
+      initialQuestions.length > 0
+        ? initialQuestions.map((question, index) => index)
+        : [0]
+    );
+  }, []);
+
+  return (
+    <Modal large onHide={onHide}>
+      <header>{title}</header>
+      <main
+        style={{
+          flexDirection: 'row',
+          justifyContent: reorderModeOn ? 'center' : 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          height: 'CALC(100vh - 21rem)'
+        }}
+      >
+        <section
+          className={Styles.leftSection}
+          ref={LeftMenuRef}
+          style={{
+            width: reorderModeOn && '80%'
+          }}
+        >
+          {reorderModeOn ? (
+            <QuestionsListGroup
+              questions={questions}
+              questionIds={questionIds}
+              onMove={onQuestionsRearrange}
+              onReorderDone={questionIds => {
+                setQuestionIds(questionIds);
+                setReorderModeOn(false);
+              }}
+              onReorderCancel={() => setReorderModeOn(false)}
+            />
+          ) : questionIds.length > 0 ? (
+            <div ref={QuestionBlocksRef}>
+              {questionIds.map((questionId, index) => {
+                const question = questions[questionId];
+                return (
+                  <QuestionBlock
+                    {...question}
+                    key={index}
+                    id={Number(questionId)}
+                    hideErrorMsg={id => {
+                      setQuestions({
+                        ...questions,
+                        [id]: {
+                          ...questions[id],
+                          errorMessage: ''
+                        }
+                      });
+                    }}
+                    questionIndex={index}
+                    errorMessage={question.errorMessage}
+                    innerRef={ref => {
+                      QuestionsRef.current[questionId] = ref;
+                    }}
+                    onSelectChoice={onSelectChoice}
+                    onRearrange={onChoicesRearrange}
+                    onRemove={onRemoveQuestion}
+                    onUndoRemove={onUndoRemove}
+                    onEditStart={questionId => {
+                      setQuestions({
+                        ...questions,
+                        [questionId]: {
+                          ...questions[questionId],
+                          onEdit: true
+                        }
+                      });
+                    }}
+                    onEditCancel={questionId => {
+                      setQuestions({
+                        ...questions,
+                        [questionId]: {
+                          ...questions[questionId],
+                          errorMessage: '',
+                          onEdit: false
+                        }
+                      });
+                    }}
+                    onEditDone={onChoiceEditDone}
+                  />
+                );
+              })}
+            </div>
+          ) : null}
+        </section>
+        {!reorderModeOn && (
+          <section className={Styles.rightSection}>
+            <div className={Styles.videoContainer}>
+              <ReactPlayer
+                url={`https://www.youtube.com/watch?v=${videoCode}`}
+                controls
+                width="100%"
+              />
+              <div className={Styles.videoInterface}>
+                <ButtonGroup
+                  buttons={[
+                    {
+                      label: '+ Add',
+                      filled: true,
+                      onClick: onAddQuestion,
+                      buttonClass: 'success'
+                    },
+                    {
+                      label: 'Reorder',
+                      filled: true,
+                      onClick: () => setReorderModeOn(true),
+                      buttonClass: 'info'
+                    },
+                    {
+                      label: 'Reset',
+                      filled: true,
+                      onClick: onReset,
+                      buttonClass: 'warning'
+                    }
+                  ]}
+                />
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Button
+                    primary
+                    filled
+                    onClick={handleSubmit}
+                    style={{ fontSize: '2rem' }}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+    </Modal>
+  );
+
+  function onAddQuestion() {
+    setQuestions({
+      ...questions,
+      ...newQuestion(Object.keys(questions).length)
+    });
+    setQuestionIds(questionIds.concat(Object.keys(questions).length));
+    setTimeout(() => {
+      LeftMenuRef.current.scrollTop = QuestionBlocksRef.current.offsetHeight;
+    }, 0);
+  }
+
+  function onRemoveQuestion(questionId) {
+    setQuestions({
+      ...questions,
+      [questionId]: {
+        ...questions[questionId],
+        errorMessage: '',
+        deleted: true
+      }
     });
   }
 
-  render() {
-    const { reorderModeOn, questions, questionIds } = this.state;
-    const { title, videoCode } = this.props;
-    return (
-      <Modal large onHide={this.props.onHide}>
-        <header>{title}</header>
-        <main
-          style={{
-            flexDirection: 'row',
-            justifyContent: reorderModeOn ? 'center' : 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            height: 'CALC(100vh - 21rem)'
-          }}
-        >
-          <section
-            className={this.Styles.leftSection}
-            ref={ref => {
-              this.LeftMenu = ref;
-            }}
-            style={{
-              width: reorderModeOn && '80%'
-            }}
-          >
-            {reorderModeOn ? (
-              <QuestionsListGroup
-                questions={questions}
-                questionIds={questionIds}
-                onMove={this.onQuestionsRearrange}
-                onReorderDone={questionIds =>
-                  this.setState({ questionIds, reorderModeOn: false })
-                }
-                onReorderCancel={() => this.setState({ reorderModeOn: false })}
-              />
-            ) : questionIds.length > 0 ? (
-              <div
-                ref={ref => {
-                  this.QuestionBlocks = ref;
-                }}
-              >
-                {questionIds.map((questionId, index) => {
-                  const question = questions[questionId];
-                  return (
-                    <QuestionBlock
-                      {...question}
-                      key={index}
-                      id={Number(questionId)}
-                      hideErrorMsg={id =>
-                        this.setState(state => ({
-                          questions: {
-                            ...state.questions,
-                            [id]: {
-                              ...state.questions[id],
-                              errorMessage: ''
-                            }
-                          }
-                        }))
-                      }
-                      questionIndex={index}
-                      errorMessage={question.errorMessage}
-                      innerRef={ref => {
-                        this.Questions[questionId] = ref;
-                      }}
-                      onSelectChoice={this.onSelectChoice}
-                      onRearrange={this.onChoicesRearrange}
-                      onRemove={this.onRemoveQuestion}
-                      onUndoRemove={this.onUndoRemove}
-                      onEditStart={questionId => {
-                        this.setState(state => ({
-                          questions: {
-                            ...state.questions,
-                            [questionId]: {
-                              ...state.questions[questionId],
-                              onEdit: true
-                            }
-                          }
-                        }));
-                      }}
-                      onEditCancel={questionId => {
-                        this.setState(state => ({
-                          questions: {
-                            ...state.questions,
-                            [questionId]: {
-                              ...state.questions[questionId],
-                              onEdit: false
-                            }
-                          }
-                        }));
-                      }}
-                      onEditDone={this.onChoiceEditDone}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-          </section>
-          {!reorderModeOn && (
-            <section className={this.Styles.rightSection}>
-              <div className={this.Styles.videoContainer}>
-                <ReactPlayer
-                  url={`https://www.youtube.com/watch?v=${videoCode}`}
-                  controls
-                  width="100%"
-                />
-                <div className={this.Styles.videoInterface}>
-                  <ButtonGroup
-                    buttons={[
-                      {
-                        label: '+ Add',
-                        filled: true,
-                        onClick: this.onAddQuestion,
-                        buttonClass: 'success'
-                      },
-                      {
-                        label: 'Reorder',
-                        filled: true,
-                        onClick: () =>
-                          this.setState({
-                            reorderModeOn: true,
-                            interfaceMarginTop: 0
-                          }),
-                        buttonClass: 'info'
-                      },
-                      {
-                        label: 'Reset',
-                        filled: true,
-                        onClick: this.onReset,
-                        buttonClass: 'warning'
-                      }
-                    ]}
-                  />
-                  <div
-                    style={{
-                      marginTop: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <Button
-                      primary
-                      filled
-                      onClick={this.onSubmit}
-                      style={{ fontSize: '2rem' }}
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-        </main>
-      </Modal>
-    );
+  function onUndoRemove(questionId) {
+    setQuestions({
+      ...questions,
+      [questionId]: {
+        ...questions[questionId],
+        deleted: false
+      }
+    });
   }
 
-  onAddQuestion = () => {
-    this.setState(
-      state => {
-        return {
-          questions: {
-            ...state.questions,
-            ...this.newQuestion(Object.keys(state.questions).length)
-          },
-          questionIds: state.questionIds.concat(
-            Object.keys(state.questions).length
-          )
-        };
-      },
-      () => {
-        setTimeout(() => {
-          this.LeftMenu.scrollTop = this.QuestionBlocks.offsetHeight;
-        }, 0);
+  function onChoiceEditDone({ id, choices, choiceIds, editedQuestionTitle }) {
+    setQuestions({
+      ...questions,
+      [id]: {
+        ...questions[id],
+        errorMessage: '',
+        choices: choiceIds.map(choiceId => choices[choiceId]),
+        title: editedQuestionTitle,
+        onEdit: false
       }
-    );
-  };
+    });
+  }
 
-  onRemoveQuestion = questionId => {
-    this.setState(state => ({
-      questions: {
-        ...state.questions,
-        [questionId]: {
-          ...state.questions[questionId],
-          deleted: true
-        }
-      }
-    }));
-  };
-
-  onUndoRemove = questionId => {
-    this.setState(state => ({
-      questions: {
-        ...state.questions,
-        [questionId]: {
-          ...state.questions[questionId],
-          deleted: false
-        }
-      }
-    }));
-  };
-
-  onChoiceEditDone = ({ id, choices, choiceIds, editedQuestionTitle }) => {
-    this.setState(state => ({
-      questions: {
-        ...state.questions,
-        [id]: {
-          ...state.questions[id],
-          choices: choiceIds.map(choiceId => choices[choiceId]),
-          title: editedQuestionTitle,
-          onEdit: false
-        }
-      }
-    }));
-  };
-
-  onQuestionsRearrange = ({ sourceId, targetId }) => {
-    const newQuestionOrder = [...this.state.questionIds];
+  function onQuestionsRearrange({ sourceId, targetId }) {
+    const newQuestionOrder = [...questionIds];
     const sourceIndex = newQuestionOrder.indexOf(sourceId);
     const targetIndex = newQuestionOrder.indexOf(targetId);
     newQuestionOrder.splice(sourceIndex, 1);
     newQuestionOrder.splice(targetIndex, 0, sourceId);
-    this.setState({
-      questionIds: newQuestionOrder
-    });
-  };
+    setQuestionIds(newQuestionOrder);
+  }
 
-  onSelectChoice = ({ questionId, choiceId }) => {
-    this.setState(state => ({
-      questions: {
-        ...state.questions,
-        [questionId]: {
-          ...state.questions[questionId],
-          errorMessage: '',
-          choices: state.questions[questionId].choices.map(choice => ({
-            ...choice,
-            checked: choice.id === choiceId
-          }))
-        }
+  function onSelectChoice({ questionId, choiceId }) {
+    setQuestions({
+      ...questions,
+      [questionId]: {
+        ...questions[questionId],
+        errorMessage: '',
+        choices: questions[questionId].choices.map(choice => ({
+          ...choice,
+          checked: choice.id === choiceId
+        }))
       }
-    }));
-  };
-
-  onChoicesRearrange = ({ questionIndex, choiceIds, choices }) => {
-    this.setState(state => ({
-      questions: {
-        ...state.questions,
-        [state.questionIds[questionIndex]]: {
-          ...state.questions[state.questionIds[questionIndex]],
-          choices: choiceIds.map(choiceId => choices[choiceId])
-        }
-      }
-    }));
-  };
-
-  onReset = () => {
-    const { questions } = this.props;
-    this.setState({
-      questions:
-        questions.length === 0
-          ? this.newQuestion(0)
-          : this.formatQuestions(questions),
-      questionIds:
-        questions.length > 0 ? questions.map((question, index) => index) : [0]
     });
-  };
+  }
 
-  onSubmit = () => {
-    const { questions, questionIds } = this.state;
-    const { onSubmit } = this.props;
+  function onChoicesRearrange({ questionIndex, choiceIds, choices }) {
+    setQuestions({
+      ...questions,
+      [questionIds[questionIndex]]: {
+        ...questions[questionIds[questionIndex]],
+        choices: choiceIds.map(choiceId => choices[choiceId])
+      }
+    });
+  }
+
+  function onReset() {
+    setQuestions(
+      questions.length === 0 ? newQuestion(0) : formatQuestions(questions)
+    );
+    setQuestionIds(
+      questions.length > 0 ? questions.map((question, index) => index) : [0]
+    );
+  }
+
+  function handleSubmit() {
     let errorObj = {
       questionId: null,
       message: '',
       onEdit: true
     };
-    const errorDictionary = {
+    const errorHash = {
       notDone: {
         message: 'Please click the "done" button below',
         onEdit: true
@@ -332,34 +330,34 @@ class QuestionsBuilder extends Component {
         onEdit: false
       }
     };
+
     for (let i = 0; i < questionIds.length; i++) {
       if (!questions[i].deleted) {
         if (errorInQuestion(questions[i])) {
           errorObj = {
             questionId: i,
-            message: errorDictionary[errorInQuestion(questions[i])].message,
-            onEdit: errorDictionary[errorInQuestion(questions[i])].onEdit
+            message: errorHash[errorInQuestion(questions[i])].message,
+            onEdit: errorHash[errorInQuestion(questions[i])].onEdit
           };
           break;
         }
       }
     }
+
     if (typeof errorObj.questionId === 'number') {
-      return this.setState(
-        state => ({
-          questions: {
-            ...state.questions,
-            [errorObj.questionId]: {
-              ...state.questions[errorObj.questionId],
-              onEdit: errorObj.onEdit,
-              errorMessage: errorObj.message
-            }
-          }
-        }),
-        () => {
-          this.Questions[errorObj.questionId].scrollIntoView();
+      setQuestions({
+        ...questions,
+        [errorObj.questionId]: {
+          ...questions[errorObj.questionId],
+          onEdit: errorObj.onEdit,
+          errorMessage: errorObj.message
         }
+      });
+      setTimeout(
+        () => QuestionsRef.current[errorObj.questionId].scrollIntoView(),
+        0
       );
+      return;
     }
 
     const finishedQuestions = questionIds
@@ -384,9 +382,9 @@ class QuestionsBuilder extends Component {
       }
       return 'invalidChoice';
     }
-  };
+  }
 
-  formatQuestions = questions => {
+  function formatQuestions(questions) {
     let questionsObject = {};
     questions.forEach((question, index) => {
       questionsObject[index] = {
@@ -404,78 +402,45 @@ class QuestionsBuilder extends Component {
       };
     });
     return questionsObject;
-  };
+  }
 
-  newQuestion = questionId => ({
-    [questionId]: {
-      title: '',
-      onEdit: true,
-      choices: [
-        {
-          label: '',
-          checked: false,
-          id: 0
-        },
-        {
-          label: '',
-          checked: false,
-          id: 1
-        },
-        {
-          label: '',
-          checked: false,
-          id: 2
-        },
-        {
-          label: '',
-          checked: false,
-          id: 3
-        },
-        {
-          label: '',
-          checked: false,
-          id: 4
-        }
-      ],
-      errorMessage: '',
-      deleted: false
-    }
-  });
-
-  Styles = {
-    Player: css`
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    `,
-    leftSection: css`
-      width: 40%;
-      height: auto;
-      max-height: 100%;
-      padding: 1rem;
-      overflow-y: scroll;
-      padding-right: 2rem;
-    `,
-    rightSection: css`
-      width: 60%;
-      height: auto;
-      padding: 1rem;
-      display: flex;
-      justify-content: flex-end;
-    `,
-    videoContainer: css`
-      display: flex;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      align-items: center;
-    `,
-    videoInterface: css`
-      padding: 0 3rem;
-      margin-top: 2rem;
-    `
-  };
+  function newQuestion(questionId) {
+    return {
+      [questionId]: {
+        title: '',
+        onEdit: true,
+        choices: [
+          {
+            label: '',
+            checked: false,
+            id: 0
+          },
+          {
+            label: '',
+            checked: false,
+            id: 1
+          },
+          {
+            label: '',
+            checked: false,
+            id: 2
+          },
+          {
+            label: '',
+            checked: false,
+            id: 3
+          },
+          {
+            label: '',
+            checked: false,
+            id: 4
+          }
+        ],
+        errorMessage: '',
+        deleted: false
+      }
+    };
+  }
 }
 
 export default DragDropContext(HTML5Backend)(QuestionsBuilder);

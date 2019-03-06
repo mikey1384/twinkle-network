@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { DragSource, DropTarget } from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
@@ -34,6 +34,7 @@ QuestionsListItem.propTypes = {
   item: PropTypes.object,
   questionId: PropTypes.number
 };
+
 function QuestionsListItem({
   connectDragSource,
   connectDropTarget,

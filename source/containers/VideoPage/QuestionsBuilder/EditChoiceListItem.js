@@ -10,6 +10,7 @@ EditChoiceListItem.propTypes = {
   placeholder: PropTypes.string,
   text: PropTypes.string
 };
+
 export default function EditChoiceListItem({
   checked,
   choiceId,

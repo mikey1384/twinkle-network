@@ -245,10 +245,10 @@ function SubjectPanel({
                 contentId={id}
                 parent={{
                   id,
-                  rootId: contentId,
-                  rootType: type,
                   rootObj: {
-                    difficulty: rootDifficulty
+                    id: contentId,
+                    difficulty: rootDifficulty,
+                    type
                   },
                   type: 'subject'
                 }}

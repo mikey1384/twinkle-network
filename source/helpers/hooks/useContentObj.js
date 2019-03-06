@@ -11,6 +11,13 @@ export default function useContentObj(props) {
     ...props
   });
 
+  function onAddTags({ tags }) {
+    setContentObj({
+      ...contentObj,
+      tags: contentObj.tags.concat(tags)
+    });
+  }
+
   function onAttachStar(data) {
     setContentObj({
       ...contentObj,
@@ -365,6 +372,13 @@ export default function useContentObj(props) {
     });
   }
 
+  function onLoadTags({ tags }) {
+    setContentObj({
+      ...contentObj,
+      tags
+    });
+  }
+
   function onLoadMoreComments(data) {
     const { comments, loadMoreButton } = data.data ? data.data : data;
     const { type } = contentObj;
@@ -580,6 +594,7 @@ export default function useContentObj(props) {
   return {
     contentObj,
     setContentObj,
+    onAddTags,
     onAttachStar,
     onDeleteComment,
     onDeleteSubject,
@@ -599,6 +614,7 @@ export default function useContentObj(props) {
     onLoadMoreSubjectReplies,
     onLoadRepliesOfReply,
     onLoadSubjectComments,
+    onLoadTags,
     onSetDifficulty,
     onSetSubjectDifficulty,
     onTargetCommentSubmit,
