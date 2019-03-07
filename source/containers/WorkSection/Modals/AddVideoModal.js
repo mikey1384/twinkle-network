@@ -39,6 +39,7 @@ function AddVideoModal({
     title: '',
     description: ''
   });
+  const [disabled, setDisabled] = useState(false);
   const { url, title, description } = form;
   const UrlFieldRef = useRef(null);
   const titleExceedsCharLimit = exceedsCharLimit({
@@ -156,6 +157,7 @@ function AddVideoModal({
       setUrlError('That is not a valid YouTube url');
       return UrlFieldRef.current.focus();
     }
+    setDisabled(true);
     const data = await uploadContent({
       url,
       isVideo: true,
@@ -181,6 +183,7 @@ function AddVideoModal({
   }
 
   function submitDisabled() {
+    if (disabled) return true;
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
     if (urlHasError()) return true;
     if (
