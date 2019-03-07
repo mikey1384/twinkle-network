@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import PlaylistCarousel from '../Carousels/PlaylistCarousel';
+import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { getMorePlaylists } from 'redux/actions/VideoActions';

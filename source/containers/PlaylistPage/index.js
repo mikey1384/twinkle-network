@@ -9,6 +9,7 @@ import { mobileMaxWidth } from 'constants/css';
 Playlists.propTypes = {
   match: PropTypes.object.isRequired
 };
+
 export default function Playlists({ match }) {
   return (
     <div

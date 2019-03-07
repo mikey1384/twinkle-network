@@ -6,6 +6,7 @@ import { css } from 'emotion';
 LinkGroup.propTypes = {
   links: PropTypes.array.isRequired
 };
+
 export default function LinkGroup({ links }) {
   return (
     <div

@@ -1,5 +1,5 @@
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -16,179 +16,151 @@ import {
   renderCharLimit
 } from 'helpers/stringHelpers';
 
-class AddVideoModal extends Component {
-  static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    onHide: PropTypes.func.isRequired,
-    focusVideoPanelAfterUpload: PropTypes.func.isRequired,
-    uploadVideo: PropTypes.func.isRequired,
-    userId: PropTypes.number,
-    username: PropTypes.string
-  };
+AddVideoModal.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+  focusVideoPanelAfterUpload: PropTypes.func.isRequired,
+  uploadVideo: PropTypes.func.isRequired,
+  userId: PropTypes.number,
+  username: PropTypes.string
+};
 
-  state = {
-    urlError: null,
-    form: {
-      url: '',
-      title: '',
-      description: ''
-    }
-  };
+function AddVideoModal({
+  dispatch,
+  focusVideoPanelAfterUpload,
+  onHide,
+  uploadVideo,
+  userId,
+  username
+}) {
+  const [urlError, setUrlError] = useState('');
+  const [form, setForm] = useState({
+    url: '',
+    title: '',
+    description: ''
+  });
+  const { url, title, description } = form;
+  const UrlFieldRef = useRef(null);
+  const titleExceedsCharLimit = exceedsCharLimit({
+    inputType: 'title',
+    contentType: 'video',
+    text: title
+  });
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    inputType: 'description',
+    contentType: 'video',
+    text: description
+  });
 
-  render() {
-    const { onHide } = this.props;
-    const {
-      urlError,
-      form,
-      form: { title, description }
-    } = this.state;
-    const titleExceedsCharLimit = exceedsCharLimit({
-      inputType: 'title',
-      contentType: 'video',
-      text: title
-    });
-    const descriptionExceedsCharLimit = exceedsCharLimit({
-      inputType: 'description',
-      contentType: 'video',
-      text: description
-    });
-    return (
-      <Modal onHide={onHide}>
-        <header>Add Videos</header>
-        <main>
-          <form style={{ width: '100%' }}>
-            <section>
-              <Input
-                ref={ref => {
-                  this.UrlField = ref;
+  return (
+    <Modal onHide={onHide}>
+      <header>Add Videos</header>
+      <main>
+        <form style={{ width: '100%' }}>
+          <section>
+            <Input
+              inputRef={UrlFieldRef}
+              value={form.url}
+              onChange={handleUrlFieldChange}
+              placeholder="Paste video's YouTube url here"
+              type="text"
+              style={urlHasError()}
+            />
+            {urlError && (
+              <span
+                style={{
+                  color: 'red',
+                  lineHeight: '3rem',
+                  marginBottom: '0px'
                 }}
-                value={form.url}
-                onChange={this.onUrlFieldChange}
-                placeholder="Paste video's YouTube url here"
-                type="text"
-                style={this.urlHasError()}
-              />
-              {urlError && (
-                <span
-                  style={{
-                    color: 'red',
-                    lineHeight: '3rem',
-                    marginBottom: '0px'
-                  }}
-                >
-                  {urlError}
-                </span>
-              )}
-            </section>
-            <section style={{ marginTop: '1rem' }}>
-              <Input
-                value={form.title}
-                onChange={text =>
-                  this.setState({ form: { ...form, title: text } })
+              >
+                {urlError}
+              </span>
+            )}
+          </section>
+          <section style={{ marginTop: '1rem' }}>
+            <Input
+              value={form.title}
+              onChange={text => setForm({ ...form, title: text })}
+              placeholder="Enter Title"
+              type="text"
+              onKeyUp={event => {
+                if (event.key === ' ') {
+                  setForm({
+                    ...form,
+                    title: addEmoji(event.target.value)
+                  });
                 }
-                placeholder="Enter Title"
-                type="text"
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      form: {
-                        ...form,
-                        title: addEmoji(event.target.value)
-                      }
-                    });
-                  }
-                }}
-                style={titleExceedsCharLimit}
-              />
-              {titleExceedsCharLimit && (
-                <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'video',
-                    inputType: 'title',
-                    text: title
-                  })}
-                </small>
-              )}
-            </section>
-            <section style={{ marginTop: '1rem', position: 'relative' }}>
-              <Textarea
-                value={form.description}
-                minRows={4}
-                placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event =>
-                  this.setState({
-                    form: { ...form, description: event.target.value }
-                  })
+              }}
+              style={titleExceedsCharLimit}
+            />
+            {titleExceedsCharLimit && (
+              <small style={{ color: 'red' }}>
+                {renderCharLimit({
+                  contentType: 'video',
+                  inputType: 'title',
+                  text: title
+                })}
+              </small>
+            )}
+          </section>
+          <section style={{ marginTop: '1rem', position: 'relative' }}>
+            <Textarea
+              value={form.description}
+              minRows={4}
+              placeholder="Enter Description (Optional, you don't need to write this)"
+              onChange={event =>
+                setForm({ ...form, description: event.target.value })
+              }
+              onKeyUp={event => {
+                if (event.key === ' ') {
+                  setForm({
+                    ...form,
+                    description: addEmoji(event.target.value)
+                  });
                 }
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    this.setState({
-                      form: {
-                        ...form,
-                        description: addEmoji(event.target.value)
-                      }
-                    });
-                  }
-                }}
-                style={descriptionExceedsCharLimit}
-              />
-              {descriptionExceedsCharLimit && (
-                <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'video',
-                    inputType: 'description',
-                    text: description
-                  })}
-                </small>
-              )}
-            </section>
-          </form>
-        </main>
-        <footer>
-          <Button
-            style={{ marginRight: '0.7rem' }}
-            transparent
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            primary
-            type="submit"
-            onClick={this.onSubmit}
-            disabled={this.submitDisabled()}
-          >
-            Add
-          </Button>
-        </footer>
-      </Modal>
-    );
-  }
+              }}
+              style={descriptionExceedsCharLimit}
+            />
+            {descriptionExceedsCharLimit && (
+              <small style={{ color: 'red' }}>
+                {renderCharLimit({
+                  contentType: 'video',
+                  inputType: 'description',
+                  text: description
+                })}
+              </small>
+            )}
+          </section>
+        </form>
+      </main>
+      <footer>
+        <Button style={{ marginRight: '0.7rem' }} transparent onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          primary
+          type="submit"
+          onClick={handleSubmit}
+          disabled={submitDisabled()}
+        >
+          Add
+        </Button>
+      </footer>
+    </Modal>
+  );
 
-  onSubmit = async event => {
-    const {
-      dispatch,
-      focusVideoPanelAfterUpload,
-      uploadVideo,
-      userId,
-      username
-    } = this.props;
-    let {
-      form: { url, title, description }
-    } = this.state;
-
+  async function handleSubmit(event) {
     event.preventDefault();
     if (!isValidYoutubeUrl(url)) {
-      this.setState({ urlError: 'That is not a valid YouTube url' });
-      return this.UrlField._rootDOMNode.focus();
+      setUrlError('That is not a valid YouTube url');
+      return UrlFieldRef.current.focus();
     }
-    title = finalizeEmoji(title);
-    description = finalizeEmoji(description);
     const data = await uploadContent({
       url,
       isVideo: true,
-      title,
-      description,
+      title: finalizeEmoji(title),
+      description: finalizeEmoji(description),
       dispatch
     });
     uploadVideo({
@@ -201,22 +173,16 @@ class AddVideoModal extends Component {
       }
     });
     focusVideoPanelAfterUpload();
-  };
+  }
 
-  onUrlFieldChange = text => {
-    const { form } = this.state;
-    this.setState({
-      form: { ...form, url: text },
-      urlError: null
-    });
-  };
+  function handleUrlFieldChange(text) {
+    setForm({ ...form, url: text });
+    setUrlError('');
+  }
 
-  submitDisabled = () => {
-    const {
-      form: { url, description, title }
-    } = this.state;
+  function submitDisabled() {
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
-    if (this.urlHasError()) return true;
+    if (urlHasError()) return true;
     if (
       exceedsCharLimit({
         inputType: 'description',
@@ -227,20 +193,16 @@ class AddVideoModal extends Component {
       return true;
     }
     return false;
-  };
+  }
 
-  urlHasError = () => {
-    const {
-      form: { url },
-      urlError
-    } = this.state;
+  function urlHasError() {
     if (urlError) return { color: 'red', borderColor: 'red' };
     return exceedsCharLimit({
       contentType: 'video',
       inputType: 'url',
       text: url
     });
-  };
+  }
 }
 
 export default connect(
