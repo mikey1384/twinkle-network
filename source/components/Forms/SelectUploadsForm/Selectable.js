@@ -72,7 +72,10 @@ export default function Selectable({
             padding: '0 1rem'
           }}
         >
-          <div>
+          <div
+            onMouseOver={onMouseOver}
+            onMouseLeave={() => setOnTitleHover(false)}
+          >
             <p
               ref={ThumbLabelRef}
               style={{
@@ -83,8 +86,6 @@ export default function Selectable({
                 overflow: 'hidden',
                 lineHeight: 'normal'
               }}
-              onMouseOver={onMouseOver}
-              onMouseLeave={() => setOnTitleHover(false)}
             >
               {cleanString(item.title)}
             </p>

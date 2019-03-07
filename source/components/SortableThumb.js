@@ -83,7 +83,10 @@ function SortableThumb({
               padding: '0 1rem'
             }}
           >
-            <div>
+            <div
+              onMouseOver={onMouseOver}
+              onMouseLeave={() => setOnTitleHover(false)}
+            >
               <p
                 ref={ThumbLabelRef}
                 style={{
@@ -94,8 +97,6 @@ function SortableThumb({
                   overflow: 'hidden',
                   lineHeight: 'normal'
                 }}
-                onMouseOver={onMouseOver}
-                onMouseLeave={() => setOnTitleHover(false)}
               >
                 {cleanString(video.title)}
               </p>
