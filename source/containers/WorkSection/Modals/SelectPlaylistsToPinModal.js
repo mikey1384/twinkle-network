@@ -43,6 +43,7 @@ function SelectPlaylistsToPinModal({
   const [pinnedPlaylistsObject, setPinnedPlaylistsObject] = useState({});
   const [searchedPlaylistsObject, setSearchedPlaylistsObject] = useState({});
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -168,7 +169,8 @@ function SelectPlaylistsToPinModal({
           onClick={handleSubmit}
           disabled={
             isEqual(selectedPlaylists, initialSelectedPlaylists) ||
-            selectedPlaylists.length > 5
+            selectedPlaylists.length > 5 ||
+            disabled
           }
         >
           Done
@@ -220,6 +222,7 @@ function SelectPlaylistsToPinModal({
   }
 
   async function handleSubmit() {
+    setDisabled(true);
     await changePinnedPlaylists(selectedPlaylists);
     onHide();
   }
