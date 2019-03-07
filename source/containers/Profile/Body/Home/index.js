@@ -242,7 +242,7 @@ function Home({
                     <Button
                       transparent
                       style={{ marginLeft: '0.5rem' }}
-                      onClick={() => this.setState({ confirmModalShown: true })}
+                      onClick={() => setConfirmModalShown(true)}
                     >
                       <Icon icon="trash-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>Remove</span>

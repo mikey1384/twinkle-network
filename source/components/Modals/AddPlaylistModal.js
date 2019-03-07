@@ -71,7 +71,6 @@ function AddPlaylistModal({
       }
     }
     return function cleanUp() {
-      clearTimeout(timerRef.current);
       mounted.current = false;
     };
   }, []);

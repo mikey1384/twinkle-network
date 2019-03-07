@@ -1,5 +1,5 @@
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import CheckListGroup from 'components/CheckListGroup';
@@ -10,239 +10,221 @@ import {
 import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
+import Loading from 'components/Loading';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 
-class SelectPlaylistsToPinModal extends Component {
-  static propTypes = {
-    changePinnedPlaylists: PropTypes.func.isRequired,
-    loadMoreButton: PropTypes.bool.isRequired,
-    loadMorePlaylist: PropTypes.func.isRequired,
-    onHide: PropTypes.func.isRequired,
-    playlistsToPin: PropTypes.array.isRequired,
-    pinnedPlaylists: PropTypes.array.isRequired,
-    selectedPlaylists: PropTypes.array.isRequired
+SelectPlaylistsToPinModal.propTypes = {
+  changePinnedPlaylists: PropTypes.func.isRequired,
+  loadMoreButton: PropTypes.bool.isRequired,
+  loadMorePlaylist: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+  playlistsToPin: PropTypes.array.isRequired,
+  pinnedPlaylists: PropTypes.array.isRequired,
+  selectedPlaylists: PropTypes.array.isRequired
+};
+
+function SelectPlaylistsToPinModal({
+  changePinnedPlaylists,
+  loadMoreButton,
+  loadMorePlaylist,
+  onHide,
+  pinnedPlaylists,
+  playlistsToPin,
+  selectedPlaylists: initialSelectedPlaylists
+}) {
+  const [selectTabActive, setSelectTabActive] = useState(true);
+  const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const [searchedPlaylists, setSearchedPlaylists] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [playlistsToPinObject, setPlaylistsToPinObject] = useState({});
+  const [pinnedPlaylistsObject, setPinnedPlaylistsObject] = useState({});
+  const [searchedPlaylistsObject, setSearchedPlaylistsObject] = useState({});
+  const [loading, setLoading] = useState(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    setSelectedPlaylists(initialSelectedPlaylists);
+    setPinnedPlaylistsObject(
+      pinnedPlaylists.reduce(
+        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+        {}
+      )
+    );
+  }, []);
+  useEffect(() => {
+    setPlaylistsToPinObject(
+      playlistsToPin.reduce(
+        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+        {}
+      )
+    );
+  }, [playlistsToPin]);
+  const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
+  const playlistObjects = {
+    ...pinnedPlaylistsObject,
+    ...playlistsToPinObject,
+    ...searchedPlaylistsObject
   };
-
-  timer = null;
-
-  state = {
-    selectTabActive: true,
-    selectedPlaylists: [],
-    searchedPlaylists: [],
-    searchText: '',
-    playlistObjects: {}
-  };
-
-  componentDidMount() {
-    const { pinnedPlaylists, playlistsToPin, selectedPlaylists } = this.props;
-    this.setState({
-      selectedPlaylists,
-      playlistObjects: {
-        ...pinnedPlaylists.reduce(
-          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-          {}
-        ),
-        ...playlistsToPin.reduce(
-          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-          {}
-        )
-      }
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.playlistsToPin !== this.props.playlistsToPin) {
-      this.setState(state => ({
-        playlistObjects: {
-          ...state.playlistObjects,
-          ...this.props.playlistsToPin.reduce(
-            (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-            {}
-          )
-        }
-      }));
-    }
-  }
-
-  render() {
-    const {
-      playlistObjects,
-      searchText,
-      selectedPlaylists,
-      selectTabActive
-    } = this.state;
-    const { loadMoreButton, playlistsToPin } = this.props;
-    const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
-    return (
-      <Modal onHide={this.props.onHide}>
-        <header>Select up to 5 playlists</header>
-        <main style={{ paddingTop: 0 }}>
-          {selectedPlaylists.length > 5 && (
-            <Banner love>Please limit your selection to 5 playlists</Banner>
-          )}
-          <FilterBar>
-            <nav
-              className={selectTabActive ? 'active' : ''}
-              onClick={() => this.setState({ selectTabActive: true })}
-              style={{ cursor: 'pointer' }}
-            >
-              Select
-            </nav>
-            <nav
-              className={selectTabActive ? '' : 'active'}
-              onClick={() => this.setState({ selectTabActive: false })}
-              style={{ cursor: 'pointer' }}
-            >
-              Selected
-            </nav>
-          </FilterBar>
-          <div style={{ marginTop: '1rem', width: '100%' }}>
-            {selectTabActive && (
-              <>
-                <SearchInput
-                  autoFocus
-                  placeholder="Search for playlists to pin"
-                  value={searchText}
-                  onChange={this.onPlaylistSearchInput}
-                />
+  return (
+    <Modal onHide={onHide}>
+      <header>Select up to 5 playlists</header>
+      <main style={{ paddingTop: 0 }}>
+        {selectedPlaylists.length > 5 && (
+          <Banner love>Please limit your selection to 5 playlists</Banner>
+        )}
+        <FilterBar>
+          <nav
+            className={selectTabActive ? 'active' : ''}
+            onClick={() => setSelectTabActive(true)}
+            style={{ cursor: 'pointer' }}
+          >
+            Select
+          </nav>
+          <nav
+            className={selectTabActive ? '' : 'active'}
+            onClick={() => setSelectTabActive(false)}
+            style={{ cursor: 'pointer' }}
+          >
+            Selected
+          </nav>
+        </FilterBar>
+        <div style={{ marginTop: '1rem', width: '100%' }}>
+          {selectTabActive && (
+            <>
+              <SearchInput
+                autoFocus
+                placeholder="Search for playlists to pin"
+                value={searchText}
+                onChange={handlePlaylistSearchInput}
+              />
+              {loading ? (
+                <Loading />
+              ) : (
                 <CheckListGroup
                   style={{ marginTop: '1rem' }}
                   inputType="checkbox"
-                  onSelect={this.onSelect}
-                  listItems={this.renderListItems()}
+                  onSelect={handleSelect}
+                  listItems={renderListItems()}
                 />
-                {loadMoreButton && !searchText && (
-                  <Button
-                    style={{ marginTop: '2rem', width: '100%' }}
-                    transparent
-                    onClick={() => this.loadMorePlaylists(lastPlaylistId)}
-                  >
-                    Load More
-                  </Button>
-                )}
-                {playlistsToPin.length === 0 && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      height: '8rem',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <h3>No Playlists</h3>
-                  </div>
-                )}
-              </>
-            )}
-            {!selectTabActive && (
-              <>
-                <CheckListGroup
-                  inputType="checkbox"
-                  onSelect={this.onDeselect}
-                  listItems={selectedPlaylists.map(playlistId => ({
-                    label: playlistObjects[playlistId],
-                    checked: true
-                  }))}
-                />
-                {selectedPlaylists.length === 0 && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      height: '8rem',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <h3>No Playlist Selected</h3>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={this.props.onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            primary
-            onClick={this.onSubmit}
-            disabled={
-              isEqual(selectedPlaylists, this.props.selectedPlaylists) ||
-              selectedPlaylists.length > 5
-            }
-          >
-            Done
-          </Button>
-        </footer>
-      </Modal>
-    );
+              )}
+              {loadMoreButton && !searchText && (
+                <Button
+                  style={{ marginTop: '2rem', width: '100%' }}
+                  transparent
+                  onClick={() => loadMorePlaylist(lastPlaylistId)}
+                >
+                  Load More
+                </Button>
+              )}
+              {playlistsToPin.length === 0 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '8rem',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <h3>No Playlists</h3>
+                </div>
+              )}
+            </>
+          )}
+          {!selectTabActive && (
+            <>
+              <CheckListGroup
+                inputType="checkbox"
+                onSelect={handleDeselect}
+                listItems={selectedPlaylists.map(playlistId => ({
+                  label: playlistObjects[playlistId],
+                  checked: true
+                }))}
+              />
+              {selectedPlaylists.length === 0 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '8rem',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <h3>No Playlist Selected</h3>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          primary
+          onClick={handleSubmit}
+          disabled={
+            isEqual(selectedPlaylists, initialSelectedPlaylists) ||
+            selectedPlaylists.length > 5
+          }
+        >
+          Done
+        </Button>
+      </footer>
+    </Modal>
+  );
+
+  function handlePlaylistSearchInput(text) {
+    setSearchText(text);
+    setSearchedPlaylists([]);
+    if (stringIsEmpty(text)) return;
+    setLoading(true);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => handlePlaylistSearch(text), 300);
   }
 
-  loadMorePlaylists = lastPlaylistId => {
-    this.props.loadMorePlaylist(lastPlaylistId);
-  };
-
-  onPlaylistSearchInput = text => {
-    this.setState({ searchText: text, searchedPlaylists: [] });
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => this.onPlaylistSearch(text), 300);
-  };
-
-  onPlaylistSearch = async text => {
+  async function handlePlaylistSearch(text) {
     const { results } = await searchContent({
       filter: 'playlist',
       searchText: text
     });
-    this.setState(state => ({
-      searchedPlaylists: results,
-      playlistObjects: {
-        ...state.playlistObjects,
-        ...results.reduce(
-          (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-          {}
-        )
-      }
-    }));
-  };
+    setSearchedPlaylists(results);
+    setSearchedPlaylistsObject(
+      results.reduce(
+        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+        {}
+      )
+    );
+    setLoading(false);
+  }
 
-  onSelect = index => {
-    const { searchText, searchedPlaylists } = this.state;
-    const { playlistsToPin } = this.props;
+  function handleSelect(index) {
     const playlists = searchText ? searchedPlaylists : playlistsToPin;
     let playlistId = playlists[index].id;
-    this.setState(state => ({
-      selectedPlaylists:
-        state.selectedPlaylists.indexOf(playlistId) === -1
-          ? [playlistId].concat(state.selectedPlaylists)
-          : state.selectedPlaylists.filter(id => id !== playlistId)
-    }));
-  };
+    setSelectedPlaylists(
+      selectedPlaylists.indexOf(playlistId) === -1
+        ? [playlistId].concat(selectedPlaylists)
+        : selectedPlaylists.filter(id => id !== playlistId)
+    );
+  }
 
-  onDeselect = index => {
-    const { selectedPlaylists } = this.state;
+  function handleDeselect(index) {
     let playlistIndex = 0;
     const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
       return playlistIndex++ !== index;
     });
-    this.setState({ selectedPlaylists: newSelectedPlaylists });
-  };
+    setSelectedPlaylists(newSelectedPlaylists);
+  }
 
-  onSubmit = () => {
-    const { changePinnedPlaylists, onHide } = this.props;
-    const { selectedPlaylists } = this.state;
-    return changePinnedPlaylists(selectedPlaylists).then(() => onHide());
-  };
+  async function handleSubmit() {
+    await changePinnedPlaylists(selectedPlaylists);
+    onHide();
+  }
 
-  renderListItems = () => {
-    const { playlistsToPin } = this.props;
-    const { searchText, searchedPlaylists, selectedPlaylists } = this.state;
+  function renderListItems() {
     const playlists = searchText ? searchedPlaylists : playlistsToPin;
     return playlists.map(playlist => {
       return {
@@ -250,7 +232,7 @@ class SelectPlaylistsToPinModal extends Component {
         checked: selectedPlaylists.indexOf(playlist.id) !== -1
       };
     });
-  };
+  }
 }
 
 export default connect(

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import SearchInput from 'components/Texts/SearchInput';
@@ -31,12 +31,6 @@ function ChatSearchBox({
 }) {
   const [searchText, setSearchText] = useState('');
   const timerRef = useRef(null);
-
-  useEffect(() => {
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-    };
-  }, []);
 
   return (
     <div style={{ padding: '0 1rem', zIndex: 5 }}>

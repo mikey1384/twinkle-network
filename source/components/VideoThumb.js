@@ -138,7 +138,11 @@ function VideoThumb({
               />
             </div>
           ) : (
-            <div style={{ width: '100%' }}>
+            <div
+              onMouseOver={onMouseOver}
+              onMouseLeave={() => setOnTitleHover(false)}
+              style={{ width: '100%' }}
+            >
               <p
                 ref={ThumbLabelRef}
                 style={{
@@ -154,8 +158,6 @@ function VideoThumb({
                   }}
                   href={`/${to}`}
                   onClick={onLinkClick}
-                  onMouseOver={onMouseOver}
-                  onMouseLeave={() => setOnTitleHover(false)}
                 >
                   {cleanString(video.title)}
                 </a>

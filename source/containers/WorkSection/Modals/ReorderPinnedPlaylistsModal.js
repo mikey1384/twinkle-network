@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
@@ -7,80 +7,69 @@ import { connect } from 'react-redux';
 import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import { isEqual } from 'lodash';
 
-class ReorderPinnedPlaylistsModal extends Component {
-  static propTypes = {
-    pinnedPlaylists: PropTypes.array.isRequired,
-    playlistIds: PropTypes.array.isRequired,
-    onHide: PropTypes.func.isRequired,
-    changePinnedPlaylists: PropTypes.func.isRequired
-  };
+ReorderPinnedPlaylistsModal.propTypes = {
+  pinnedPlaylists: PropTypes.array.isRequired,
+  playlistIds: PropTypes.array.isRequired,
+  onHide: PropTypes.func.isRequired,
+  changePinnedPlaylists: PropTypes.func.isRequired
+};
 
-  constructor(props) {
-    super();
-    this.state = {
-      playlists: props.pinnedPlaylists,
-      playlistIds: props.playlistIds
-    };
-  }
-
-  render() {
-    const { playlists, playlistIds } = this.state;
-    const listItems = playlistIds.reduce((result, playlistId) => {
-      for (let i = 0; i < playlists.length; i++) {
-        if (playlists[i].id === playlistId) {
-          result.push({
-            label: playlists[i].title,
-            id: playlistId
-          });
-        }
+function ReorderPinnedPlaylistsModal({
+  changePinnedPlaylists,
+  onHide,
+  pinnedPlaylists: playlists,
+  playlistIds: initialPlaylistIds
+}) {
+  const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
+  const listItems = playlistIds.reduce((result, playlistId) => {
+    for (let i = 0; i < playlists.length; i++) {
+      if (playlists[i].id === playlistId) {
+        result.push({
+          label: playlists[i].title,
+          id: playlistId
+        });
       }
-      return result;
-    }, []);
-    return (
-      <Modal onHide={this.props.onHide}>
-        <header>Reorder Pinned Playlists</header>
-        <main>
-          <SortableListGroup listItems={listItems} onMove={this.onMove} />
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={this.props.onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={isEqual(
-              playlistIds,
-              playlists.map(playlist => playlist.id)
-            )}
-            primary
-            onClick={this.onSubmit}
-          >
-            Done
-          </Button>
-        </footer>
-      </Modal>
-    );
-  }
+    }
+    return result;
+  }, []);
 
-  onMove = ({ sourceId, targetId }) => {
-    const { playlistIds } = this.state;
+  return (
+    <Modal onHide={onHide}>
+      <header>Reorder Pinned Playlists</header>
+      <main>
+        <SortableListGroup listItems={listItems} onMove={handleMove} />
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          disabled={isEqual(
+            playlistIds,
+            playlists.map(playlist => playlist.id)
+          )}
+          primary
+          onClick={handleSubmit}
+        >
+          Done
+        </Button>
+      </footer>
+    </Modal>
+  );
+
+  function handleMove({ sourceId, targetId }) {
     const sourceIndex = playlistIds.indexOf(sourceId);
     const targetIndex = playlistIds.indexOf(targetId);
-    playlistIds.splice(sourceIndex, 1);
-    playlistIds.splice(targetIndex, 0, sourceId);
-    this.setState({
-      playlistIds
-    });
-  };
+    const newPlaylistIds = [...playlistIds];
+    newPlaylistIds.splice(sourceIndex, 1);
+    newPlaylistIds.splice(targetIndex, 0, sourceId);
+    setPlaylistIds(newPlaylistIds);
+  }
 
-  onSubmit = () => {
-    const { changePinnedPlaylists, onHide } = this.props;
-    const { playlistIds } = this.state;
-    return changePinnedPlaylists(playlistIds).then(() => onHide());
-  };
+  async function handleSubmit() {
+    await changePinnedPlaylists(playlistIds);
+    onHide();
+  }
 }
 
 export default connect(

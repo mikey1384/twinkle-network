@@ -1,6 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import ExecutionEnvironment from 'exenv';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -8,7 +7,7 @@ import EditTitleForm from 'components/Texts/EditTitleForm';
 import EditPlaylistModal from './Modals/EditPlaylistModal';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { addEvent } from 'helpers/listenerHelpers';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { editPlaylistTitle, deletePlaylist } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
@@ -17,226 +16,201 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
 import Link from 'components/Link';
 
-class PlaylistCarousel extends Component {
-  static propTypes = {
-    arrayIndex: PropTypes.number.isRequired,
-    canEdit: PropTypes.bool,
-    canEditPlaylists: PropTypes.bool,
-    clickSafe: PropTypes.bool.isRequired,
-    deletePlaylist: PropTypes.func.isRequired,
-    userIsUploader: PropTypes.bool,
-    editPlaylistTitle: PropTypes.func.isRequired,
-    id: PropTypes.number.isRequired,
-    playlist: PropTypes.array.isRequired,
-    profileTheme: PropTypes.string,
-    showAllButton: PropTypes.bool.isRequired,
-    title: PropTypes.string.isRequired,
-    uploader: PropTypes.string.isRequired,
-    numPlaylistVids: PropTypes.number.isRequired
-  };
+PlaylistCarousel.propTypes = {
+  arrayIndex: PropTypes.number.isRequired,
+  canEdit: PropTypes.bool,
+  canEditPlaylists: PropTypes.bool,
+  clickSafe: PropTypes.bool.isRequired,
+  deletePlaylist: PropTypes.func.isRequired,
+  userIsUploader: PropTypes.bool,
+  editPlaylistTitle: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  playlist: PropTypes.array.isRequired,
+  profileTheme: PropTypes.string,
+  showAllButton: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  uploader: PropTypes.string.isRequired,
+  numPlaylistVids: PropTypes.number.isRequired
+};
 
-  defaultNumSlides = 5;
-  numSlides = 5;
-  mobileNumSlides = 4;
-  cellSpacing = 12;
+const defaultNumSlides = 5;
+const mobileNumSlides = 4;
+const cellSpacing = 12;
 
-  constructor() {
-    super();
-    if (
-      ExecutionEnvironment.canUseDOM &&
+function PlaylistCarousel({
+  arrayIndex,
+  canEdit,
+  canEditPlaylists,
+  clickSafe,
+  deletePlaylist,
+  editPlaylistTitle,
+  id: playlistId,
+  numPlaylistVids,
+  playlist,
+  profileTheme,
+  showAllButton,
+  title,
+  uploader,
+  userIsUploader
+}) {
+  const [onEdit, setOnEdit] = useState(false);
+  const [changePLVideosModalShown, setChangePLVideosModalShown] = useState(
+    false
+  );
+  const [reorderPLVideosModalShown, setReorderPLVideosModalShown] = useState(
+    false
+  );
+  const [deleteConfirmModalShown, setDeleteConfirmModalShown] = useState(false);
+  const [playlistModalShown, setPlaylistModalShown] = useState(false);
+  const [numSlides, setNumSlides] = useState(
+    typeof document !== 'undefined' &&
       document.documentElement.clientWidth <= 991
-    ) {
-      this.numSlides = this.mobileNumSlides;
+      ? mobileNumSlides
+      : defaultNumSlides
+  );
+
+  useEffect(() => {
+    addEvent(window, 'resize', onResize);
+
+    function onResize() {
+      setNumSlides(
+        document.documentElement.clientWidth <= 991
+          ? mobileNumSlides
+          : defaultNumSlides
+      );
     }
-    this.state = {
-      onEdit: false,
-      changePLVideosModalShown: false,
-      reorderPLVideosModalShown: false,
-      deleteConfirmModalShown: false,
-      playlistModalShown: false,
-      numSlides: this.numSlides
+
+    return function cleanUp() {
+      removeEvent(window, 'resize', onResize);
     };
-  }
+  });
 
-  componentDidMount() {
-    this.mounted = true;
-    addEvent(window, 'resize', this.onResize);
-  }
-
-  componentWillUnmount() {
-    unbindListeners.call(this);
-    this.mounted = false;
-    function unbindListeners() {
-      if (ExecutionEnvironment.canUseDOM) {
-        removeEvent(window, 'resize', this.onResize);
-      }
-
-      function removeEvent(elem, type, eventHandle) {
-        if (elem === null || typeof elem === 'undefined') {
-          return;
+  return (
+    <div
+      className={css`
+        margin-bottom: 1.5rem;
+        &:last-child {
+          margin-bottom: 0;
         }
-        if (elem.removeEventListener) {
-          elem.removeEventListener(type, eventHandle, false);
-        } else if (elem.detachEvent) {
-          elem.detachEvent('on' + type, eventHandle);
-        } else {
-          elem['on' + type] = null;
-        }
-      }
-    }
-  }
-
-  render() {
-    const {
-      onEdit,
-      changePLVideosModalShown,
-      reorderPLVideosModalShown,
-      deleteConfirmModalShown,
-      playlistModalShown,
-      numSlides
-    } = this.state;
-    const {
-      canEdit,
-      canEditPlaylists,
-      title,
-      uploader,
-      userIsUploader,
-      id,
-      numPlaylistVids,
-      profileTheme,
-      showAllButton
-    } = this.props;
-    const themeColor = profileTheme || 'logoBlue';
-    const menuProps = [
-      {
-        label: 'Edit Title',
-        onClick: this.onEditTitle
-      },
-      {
-        label: 'Change Videos',
-        onClick: () => this.setState({ changePLVideosModalShown: true })
-      },
-      {
-        label: 'Reorder Videos',
-        onClick: () => this.setState({ reorderPLVideosModalShown: true })
-      },
-      {
-        separator: true
-      },
-      {
-        label: 'Remove Playlist',
-        onClick: this.onDeleteClick
-      }
-    ];
-
-    return (
+      `}
+    >
       <div
         className={css`
-          margin-bottom: 1.5rem;
-          &:last-child {
-            margin-bottom: 0;
+          position: relative;
+          display: flex;
+          align-items: center;
+          padding-bottom: 0.8rem;
+          p {
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline;
+            > a {
+              color: ${Color.darkGray()};
+              text-decoration: none;
+              &:hover {
+                color: ${Color[profileTheme || 'logoBlue']()};
+              }
+            }
+          }
+          small {
+            font-size: 1.5rem;
+            color: ${Color.gray()};
           }
         `}
       >
-        <div
-          className={css`
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding-bottom: 0.8rem;
-            p {
-              font-size: 2.2rem;
-              font-weight: bold;
-              cursor: pointer;
-              display: inline;
-              > a {
-                color: ${Color.darkGray()};
-                text-decoration: none;
-                &:hover {
-                  color: ${Color[themeColor]()};
-                }
+        {onEdit ? (
+          <EditTitleForm
+            autoFocus
+            maxLength={charLimit.playlist.title}
+            style={{ width: '90%' }}
+            title={title}
+            onEditSubmit={handleEditedTitleSubmit}
+            onClickOutSide={() => setOnEdit(false)}
+          />
+        ) : (
+          <div>
+            <p>
+              <Link to={`/playlists/${playlistId}`}>{cleanString(title)}</Link>
+              &nbsp;
+              <small>by {uploader}</small>
+            </p>
+          </div>
+        )}
+        {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
+          <DropdownButton
+            snow
+            style={{ position: 'absolute', right: 0 }}
+            direction="left"
+            menuProps={[
+              {
+                label: 'Edit Title',
+                onClick: () => setOnEdit(true)
+              },
+              {
+                label: 'Change Videos',
+                onClick: () => setChangePLVideosModalShown(true)
+              },
+              {
+                label: 'Reorder Videos',
+                onClick: () => setReorderPLVideosModalShown(true)
+              },
+              {
+                separator: true
+              },
+              {
+                label: 'Remove Playlist',
+                onClick: () => setDeleteConfirmModalShown(true)
               }
-            }
-            small {
-              font-size: 1.5rem;
-              color: ${Color.gray()};
-            }
-          `}
-        >
-          {onEdit ? (
-            <EditTitleForm
-              autoFocus
-              maxLength={charLimit.playlist.title}
-              style={{ width: '90%' }}
-              title={title}
-              onEditSubmit={this.onEditedTitleSubmit}
-              onClickOutSide={this.onEditTitleCancel}
-            />
-          ) : (
-            <div>
-              <p>
-                <Link to={`/playlists/${id}`}>{cleanString(title)}</Link>
-                &nbsp;
-                <small>by {uploader}</small>
-              </p>
-            </div>
-          )}
-          {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
-            <DropdownButton
-              snow
-              style={{ position: 'absolute', right: 0 }}
-              direction="left"
-              menuProps={menuProps}
-            />
-          )}
-        </div>
-        <Carousel
-          progressBar={false}
-          slidesToShow={numSlides}
-          slidesToScroll={numSlides}
-          cellSpacing={this.cellSpacing}
-          slideWidthMultiplier={0.99}
-          showAllButton={showAllButton}
-          onShowAll={() => this.setState({ playlistModalShown: true })}
-        >
-          {this.renderThumbs()}
-        </Carousel>
-        {playlistModalShown && (
-          <PlaylistModal
-            title={cleanString(title)}
-            onHide={() => this.setState({ playlistModalShown: false })}
-            playlistId={id}
-          />
-        )}
-        {changePLVideosModalShown && (
-          <EditPlaylistModal
-            modalType="change"
-            numPlaylistVids={numPlaylistVids}
-            playlistId={id}
-            onHide={() => this.setState({ changePLVideosModalShown: false })}
-          />
-        )}
-        {reorderPLVideosModalShown && (
-          <EditPlaylistModal
-            modalType="reorder"
-            numPlaylistVids={numPlaylistVids}
-            playlistId={id}
-            onHide={() => this.setState({ reorderPLVideosModalShown: false })}
-          />
-        )}
-        {deleteConfirmModalShown && (
-          <ConfirmModal
-            title="Remove Playlist"
-            onConfirm={this.onDeleteConfirm}
-            onHide={() => this.setState({ deleteConfirmModalShown: false })}
+            ]}
           />
         )}
       </div>
-    );
-  }
+      <Carousel
+        progressBar={false}
+        slidesToShow={numSlides}
+        slidesToScroll={numSlides}
+        cellSpacing={cellSpacing}
+        slideWidthMultiplier={0.99}
+        showAllButton={showAllButton}
+        onShowAll={() => setPlaylistModalShown(true)}
+      >
+        {renderThumbs()}
+      </Carousel>
+      {playlistModalShown && (
+        <PlaylistModal
+          title={cleanString(title)}
+          onHide={() => setPlaylistModalShown(false)}
+          playlistId={playlistId}
+        />
+      )}
+      {changePLVideosModalShown && (
+        <EditPlaylistModal
+          modalType="change"
+          numPlaylistVids={numPlaylistVids}
+          playlistId={playlistId}
+          onHide={() => setChangePLVideosModalShown(false)}
+        />
+      )}
+      {reorderPLVideosModalShown && (
+        <EditPlaylistModal
+          modalType="reorder"
+          numPlaylistVids={numPlaylistVids}
+          playlistId={playlistId}
+          onHide={() => setReorderPLVideosModalShown(false)}
+        />
+      )}
+      {deleteConfirmModalShown && (
+        <ConfirmModal
+          title="Remove Playlist"
+          onConfirm={handleDeleteConfirm}
+          onHide={() => setDeleteConfirmModalShown(false)}
+        />
+      )}
+    </div>
+  );
 
-  renderThumbs = () => {
-    const { playlist, clickSafe, id: playlistId } = this.props;
+  function renderThumbs() {
     return playlist.map((thumb, index) => {
       return (
         <VideoThumb
@@ -267,40 +241,17 @@ class PlaylistCarousel extends Component {
         />
       );
     });
-  };
+  }
 
-  onEditTitle = () => {
-    this.setState({ onEdit: true });
-  };
-
-  onEditedTitleSubmit = async title => {
-    const { editPlaylistTitle, id: playlistId, arrayIndex } = this.props;
+  async function handleEditedTitleSubmit(title) {
     await editPlaylistTitle({ title, playlistId }, arrayIndex);
-    this.setState({ onEdit: false });
-  };
+    setOnEdit(false);
+  }
 
-  onEditTitleCancel = () => {
-    this.setState({ onEdit: false });
-  };
-
-  onDeleteClick = () => {
-    this.setState({ deleteConfirmModalShown: true });
-  };
-
-  onDeleteConfirm = async() => {
-    const { deletePlaylist, id } = this.props;
-    this.setState({ deleteConfirmModalShown: false });
-    deletePlaylist(id);
-  };
-
-  onResize = () => {
-    this.setState({
-      numSlides:
-        document.documentElement.clientWidth <= 991
-          ? this.mobileNumSlides
-          : this.defaultNumSlides
-    });
-  };
+  async function handleDeleteConfirm() {
+    setDeleteConfirmModalShown(false);
+    deletePlaylist(playlistId);
+  }
 }
 
 export default connect(

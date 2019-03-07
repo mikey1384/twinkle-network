@@ -40,12 +40,6 @@ function Results({
   const timerRef = useRef(null);
 
   useEffect(() => {
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
     if (!stringIsEmpty(searchText) && searchText.length > 1) {
       if (firstRun && results.length === 0) {
         setResults({ filter, results: [], loadMoreButton: false });

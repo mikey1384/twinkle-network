@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
 import Button from 'components/Button';
@@ -34,12 +34,6 @@ export default function InfoEditForm({
   const [youtubeError, setYoutubeError] = useState('');
   const [editedYoutubeName, setEditedYoutubeName] = useState(youtubeName || '');
   const timerRef = useRef(null);
-
-  useEffect(() => {
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-    };
-  }, []);
 
   return (
     <div>

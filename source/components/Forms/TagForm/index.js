@@ -53,13 +53,6 @@ export default function TagForm({
     setLoading(false);
   }, [searchResults]);
 
-  useEffect(() => {
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-      onClear();
-    };
-  }, []);
-
   const filteredResults = searchResults.filter(filter);
 
   return (

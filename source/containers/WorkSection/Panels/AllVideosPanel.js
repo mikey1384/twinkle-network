@@ -1,139 +1,126 @@
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import VideoThumb from 'components/VideoThumb';
 import { connect } from 'react-redux';
 import { getMoreVideos } from 'redux/actions/VideoActions';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
+import { last } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { loadUploads, searchContent } from 'helpers/requestHelpers';
 
-const last = array => {
-  return array[array.length - 1];
+AllVideosPanel.propTypes = {
+  authLevel: PropTypes.number,
+  canDelete: PropTypes.bool,
+  canEdit: PropTypes.bool,
+  getMoreVideos: PropTypes.func.isRequired,
+  innerRef: PropTypes.func.isRequired,
+  loaded: PropTypes.bool.isRequired,
+  loadMoreButton: PropTypes.bool.isRequired,
+  onAddVideoClick: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  userId: PropTypes.number,
+  videos: PropTypes.array.isRequired
 };
 
-class AllVideosPanel extends Component {
-  static propTypes = {
-    authLevel: PropTypes.number,
-    canDelete: PropTypes.bool,
-    canEdit: PropTypes.bool,
-    getMoreVideos: PropTypes.func.isRequired,
-    innerRef: PropTypes.func.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    loadMoreButton: PropTypes.bool.isRequired,
-    onAddVideoClick: PropTypes.func.isRequired,
-    title: PropTypes.string.isRequired,
-    userId: PropTypes.number,
-    videos: PropTypes.array.isRequired
-  };
+function AllVideosPanel({
+  authLevel,
+  canDelete,
+  canEdit,
+  getMoreVideos,
+  innerRef,
+  loadMoreButton,
+  loaded,
+  onAddVideoClick,
+  title = 'All Videos',
+  videos: allVideos,
+  userId
+}) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchedVideos, setSearchedVideos] = useState([]);
+  const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const timerRef = useRef(null);
+  const videos = searchQuery ? searchedVideos : allVideos;
 
-  timer = null;
-
-  state = {
-    searchQuery: '',
-    searchedVideos: [],
-    searchLoadMoreButton: false,
-    isSearching: false
-  };
-
-  render() {
-    const {
-      innerRef,
-      loadMoreButton,
-      videos: allVideos,
-      title = 'All Videos',
-      loaded,
-      onAddVideoClick,
-      userId
-    } = this.props;
-    const {
-      searchQuery,
-      searchedVideos,
-      isSearching,
-      searchLoadMoreButton
-    } = this.state;
-    const videos = searchQuery ? searchedVideos : allVideos;
-    return (
-      <SectionPanel
-        innerRef={innerRef}
-        title={title}
-        searchPlaceholder="Search videos"
-        button={
-          <Button
-            disabled={!userId}
-            snow
-            style={{ marginLeft: 'auto' }}
-            onClick={() => onAddVideoClick()}
-          >
-            + Add Video
-          </Button>
-        }
-        emptyMessage="No Videos"
-        isEmpty={videos.length === 0}
-        loaded={loaded}
-        loadMoreButtonShown={
-          !isSearching &&
-          (stringIsEmpty(searchQuery) ? loadMoreButton : searchLoadMoreButton)
-        }
-        loadMore={this.loadMoreVideos}
-        onSearch={this.onVideoSearch}
-        searchQuery={searchQuery}
-        isSearching={isSearching}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-around'
-          }}
+  return (
+    <SectionPanel
+      innerRef={innerRef}
+      title={title}
+      searchPlaceholder="Search videos"
+      button={
+        <Button
+          disabled={!userId}
+          snow
+          style={{ marginLeft: 'auto' }}
+          onClick={() => onAddVideoClick()}
         >
-          {videos.map((video, index) => {
-            return (
-              <VideoThumb
-                to={`videos/${video.id}`}
-                style={{
-                  width: '22%',
-                  marginTop: '1rem',
-                  marginBottom: '1rem'
-                }}
-                key={video.id}
-                arrayIndex={index}
-                editable={this.determineEditable(video)}
-                deletable={this.determineDeletable(video)}
-                video={video}
-                user={video.uploader}
-                lastVideoId={last(videos) ? last(videos).id : 0}
-              />
-            );
-          })}
-        </div>
-      </SectionPanel>
-    );
-  }
+          + Add Video
+        </Button>
+      }
+      emptyMessage="No Videos"
+      isEmpty={videos.length === 0}
+      loaded={loaded}
+      loadMoreButtonShown={
+        !isSearching &&
+        (stringIsEmpty(searchQuery) ? loadMoreButton : searchLoadMoreButton)
+      }
+      loadMore={handleLoadMoreVideos}
+      onSearch={handleVideoSearch}
+      searchQuery={searchQuery}
+      isSearching={isSearching}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-around'
+        }}
+      >
+        {videos.map((video, index) => {
+          return (
+            <VideoThumb
+              to={`videos/${video.id}`}
+              style={{
+                width: '22%',
+                marginTop: '1rem',
+                marginBottom: '1rem'
+              }}
+              key={video.id}
+              arrayIndex={index}
+              editable={determineEditable(video)}
+              deletable={determineDeletable(video)}
+              video={video}
+              user={video.uploader}
+              lastVideoId={last(videos) ? last(videos).id : 0}
+            />
+          );
+        })}
+      </div>
+    </SectionPanel>
+  );
 
-  determineDeletable = video => {
-    const { authLevel, canDelete, userId } = this.props;
+  function determineDeletable(video) {
     const userIsUploader = video.uploader.id === userId;
     const userCanDeleteThis = canDelete && authLevel > video.uploader.authLevel;
     return userIsUploader || userCanDeleteThis;
-  };
+  }
 
-  determineEditable = video => {
-    const { authLevel, canEdit, userId } = this.props;
+  function determineEditable(video) {
     const userIsUploader = video.uploader.id === userId;
     const userCanEditThis = canEdit && authLevel > video.uploader.authLevel;
     return userIsUploader || userCanEditThis;
-  };
+  }
 
-  loadMoreVideos = async() => {
-    const { videos, getMoreVideos } = this.props;
-    const { searchedVideos } = this.state;
-    const { searchQuery } = this.state;
-    const lastId = last(videos) ? last(videos).id : 0;
-    const { results: loadedVideos, loadMoreButton } = stringIsEmpty(searchQuery)
+  async function handleLoadMoreVideos() {
+    const lastId = last(allVideos) ? last(allVideos).id : 0;
+    const {
+      results: loadedVideos,
+      loadMoreButton: loadMoreShown
+    } = stringIsEmpty(searchQuery)
       ? await loadUploads({
           type: 'video',
           contentId: lastId
@@ -146,36 +133,35 @@ class AllVideosPanel extends Component {
     if (stringIsEmpty(searchQuery)) {
       return getMoreVideos({
         videos: loadedVideos,
-        loadMoreButton
+        loadMoreButton: loadMoreShown
       });
     }
-    this.setState(state => ({
-      searchedVideos: state.searchedVideos.concat(loadedVideos),
-      searchLoadMoreButton: loadMoreButton
-    }));
-  };
+    setSearchedVideos(searchedVideos.concat(loadedVideos));
+    setSearchLoadMoreButton(loadMoreShown);
+  }
 
-  onVideoSearch = text => {
-    clearTimeout(this.timer);
-    this.setState({ searchQuery: text, isSearching: true });
-    this.timer = setTimeout(() => this.searchVideo(text), 300);
-  };
+  function handleVideoSearch(text) {
+    clearTimeout(timerRef.current);
+    setSearchQuery(text);
+    setIsSearching(true);
+    timerRef.current = setTimeout(() => searchVideo(text), 300);
+  }
 
-  searchVideo = async text => {
+  async function searchVideo(text) {
     if (stringIsEmpty(text) || text.length < 3) {
-      return this.setState({ searchedVideos: [], isSearching: false });
+      setSearchedVideos([]);
+      setIsSearching(false);
+      return;
     }
-    const { results, loadMoreButton } = await searchContent({
+    const { results, loadMoreButton: loadMoreShown } = await searchContent({
       filter: 'video',
       limit: 12,
       searchText: text
     });
-    this.setState({
-      searchedVideos: results,
-      isSearching: false,
-      searchLoadMoreButton: loadMoreButton
-    });
-  };
+    setSearchedVideos(results);
+    setIsSearching(false);
+    setSearchLoadMoreButton(loadMoreShown);
+  }
 }
 
 export default connect(
