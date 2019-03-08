@@ -113,7 +113,7 @@ export default function TagForm({
     onClear();
     if (stringIsEmpty(text) || text.length < 2) {
       onNotFound?.({ messageShown: false });
-      return;
+      return setLoading(false);
     }
     setLoading(true);
     timerRef.current = setTimeout(async() => {
