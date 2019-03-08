@@ -2,6 +2,7 @@ import request from 'axios';
 import { logout, openSigninModal } from 'redux/actions/UserActions';
 import { clientVersion } from 'constants/defaultValues';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import StackTrace from 'stacktrace-js';
 import URL from 'constants/URL';
 
 export const token = () =>
@@ -399,11 +400,11 @@ export const reorderPlaylistVideos = async({
   }
 };
 
-export const reportBug = async({ message, info }) => {
-  await request.post(`${URL}/user/error`, {
+export const reportBug = async error => {
+  const errorStack = await StackTrace.fromError(error);
+  await StackTrace.report(errorStack[0], `${URL}/user/error`, {
     clientVersion,
-    message,
-    info,
+    message: error.message,
     token: auth()?.headers?.authorization
   });
   return Promise.resolve();

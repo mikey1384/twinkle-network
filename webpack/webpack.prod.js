@@ -6,6 +6,7 @@ const envKeys = require('./env.config').envKeys;
 module.exports = {
   entry: './entry/client.js',
   mode: 'production',
+  devtool: 'hidden-source-map',
   resolve: {
     modules: ['node_modules', 'source'],
     extensions: ['.js', '.jsx']
@@ -46,7 +47,11 @@ module.exports = {
         }
       }
     },
-    minimizer: [new TerserPlugin()]
+    minimizer: [
+      new TerserPlugin({
+        sourceMap: true
+      })
+    ]
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
