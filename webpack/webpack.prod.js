@@ -6,7 +6,7 @@ const envKeys = require('./env.config').envKeys;
 module.exports = {
   entry: './entry/client.js',
   mode: 'production',
-  devtool: 'hidden-source-map',
+  devtool: 'source-map',
   resolve: {
     modules: ['node_modules', 'source'],
     extensions: ['.js', '.jsx']
