@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+import Loading from 'components/Loading';
 import {
   exceedsCharLimit,
   stringIsEmpty,
@@ -41,6 +42,7 @@ function AddPlaylistModal({
   postPlaylist,
   title: initialTitle = ''
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [section, setSection] = useState(0);
   const [title, setTitle] = useState(
@@ -157,24 +159,30 @@ function AddPlaylistModal({
               value={searchText}
               onChange={onVideoSearchInput}
             />
-            <SelectUploadsForm
-              uploads={!stringIsEmpty(searchText) ? searchedVideos : allVideos}
-              selectedUploads={selectedVideos}
-              loadMoreButton={
-                !stringIsEmpty(searchText)
-                  ? searchLoadMoreButton
-                  : loadMoreButton
-              }
-              onSelect={video =>
-                setSelectedVideos(selectedVideos.concat([video]))
-              }
-              onDeselect={videoId =>
-                setSelectedVideos(
-                  selectedVideos.filter(video => video.id !== videoId)
-                )
-              }
-              loadMoreUploads={loadMoreVideos}
-            />
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <SelectUploadsForm
+                uploads={
+                  !stringIsEmpty(searchText) ? searchedVideos : allVideos
+                }
+                selectedUploads={selectedVideos}
+                loadMoreButton={
+                  !stringIsEmpty(searchText)
+                    ? searchLoadMoreButton
+                    : loadMoreButton
+                }
+                onSelect={video =>
+                  setSelectedVideos(selectedVideos.concat([video]))
+                }
+                onDeselect={videoId =>
+                  setSelectedVideos(
+                    selectedVideos.filter(video => video.id !== videoId)
+                  )
+                }
+                loadMoreUploads={loadMoreVideos}
+              />
+            )}
           </div>
         )}
         {section === 2 && (
@@ -310,6 +318,7 @@ function AddPlaylistModal({
   function onVideoSearchInput(text) {
     clearTimeout(timerRef.current);
     setSearchText(text);
+    setIsLoading(true);
     timerRef.current = setTimeout(() => searchVideo(text), 300);
   }
 
@@ -320,6 +329,7 @@ function AddPlaylistModal({
     });
     setSearchedVideos(searchedVideos);
     setSearchLoadMoreButton(loadMoreButton);
+    setIsLoading(false);
   }
 }
 
