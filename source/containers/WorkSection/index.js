@@ -28,6 +28,7 @@ const Work = loadable(() => import('./Work'), {
 
 WorkSection.propTypes = {
   location: PropTypes.object.isRequired,
+  mobileNavbarShown: PropTypes.bool.isRequired,
   openAddVideoModal: PropTypes.func.isRequired,
   openAddPlaylistModal: PropTypes.func.isRequired,
   userId: PropTypes.number
@@ -35,6 +36,7 @@ WorkSection.propTypes = {
 
 function WorkSection({
   location,
+  mobileNavbarShown,
   openAddPlaylistModal,
   openAddVideoModal,
   userId
@@ -156,6 +158,7 @@ function WorkSection({
           </Notification>
         </div>
         <div
+          style={{ display: mobileNavbarShown ? '' : 'none' }}
           className={css`
             display: none;
             > a {
@@ -201,7 +204,8 @@ function WorkSection({
 
 export default connect(
   state => ({
-    userId: state.UserReducer.userId
+    userId: state.UserReducer.userId,
+    mobileNavbarShown: state.ViewReducer.mobileNavbarShown
   }),
   { openAddPlaylistModal, openAddVideoModal }
 )(WorkSection);
