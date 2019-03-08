@@ -318,6 +318,7 @@ function AddPlaylistModal({
   function onVideoSearchInput(text) {
     clearTimeout(timerRef.current);
     setSearchText(text);
+    if (stringIsEmpty(text)) return setIsLoading(false);
     setIsLoading(true);
     timerRef.current = setTimeout(() => searchVideo(text), 300);
   }
