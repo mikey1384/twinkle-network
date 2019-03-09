@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import AddVideoModal from './Modals/AddVideoModal';
@@ -64,9 +65,11 @@ function Videos({
   setSearchedPlaylists,
   userId
 }) {
-  const [playlistSearchQuery, setPlaylistSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const timerRef = useRef(null);
+  const { handleSearch, searching, searchText } = useSearch({
+    onSearch: searchPlaylist,
+    onClear: () =>
+      setSearchedPlaylists({ playlists: [], loadMoreButton: false })
+  });
   const AllPlaylistsPanelRef = useRef(null);
   const AllVideosPanelRef = useRef(null);
 
@@ -78,7 +81,7 @@ function Videos({
     }
   }, []);
 
-  const playlists = !stringIsEmpty(playlistSearchQuery)
+  const playlists = !stringIsEmpty(searchText)
     ? searchedPlaylists
     : allPlaylists;
 
@@ -102,16 +105,16 @@ function Videos({
         )}
         title="All Playlists"
         loadMoreButton={
-          !stringIsEmpty(playlistSearchQuery)
+          !stringIsEmpty(searchText)
             ? loadMoreSearchedPlaylistsButton
             : loadMorePlaylistsButton
         }
         userId={userId}
         playlists={playlists}
         loaded={playlistsLoaded}
-        isSearching={isSearching}
-        onSearch={handleSearchPlaylist}
-        searchQuery={playlistSearchQuery}
+        isSearching={searching}
+        onSearch={handleSearch}
+        searchQuery={searchText}
       />
       <AllVideosPanel
         innerRef={AllVideosPanelRef}
@@ -140,25 +143,13 @@ function Videos({
     </div>
   );
 
-  function handleSearchPlaylist(text) {
-    clearTimeout(timerRef.current);
-    setPlaylistSearchQuery(text);
-    setIsSearching(true);
-    timerRef.current = setTimeout(() => searchPlaylist(text), 500);
-  }
-
   async function searchPlaylist(text) {
-    if (stringIsEmpty(text) || text.length < 3) {
-      setSearchedPlaylists({ playlists: [], loadMoreButton: false });
-      return setIsSearching(false);
-    }
     const { results, loadMoreButton } = await searchContent({
       filter: 'playlist',
       searchText: text,
       limit: 3
     });
     setSearchedPlaylists({ playlists: results, loadMoreButton });
-    setIsSearching(false);
   }
 }
 

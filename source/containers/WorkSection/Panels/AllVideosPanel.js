@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import VideoThumb from 'components/VideoThumb';
@@ -15,7 +16,7 @@ AllVideosPanel.propTypes = {
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
   getMoreVideos: PropTypes.func.isRequired,
-  innerRef: PropTypes.func.isRequired,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   onAddVideoClick: PropTypes.func.isRequired,
@@ -37,12 +38,13 @@ function AllVideosPanel({
   videos: allVideos,
   userId
 }) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [searchedVideos, setSearchedVideos] = useState([]);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const timerRef = useRef(null);
-  const videos = searchQuery ? searchedVideos : allVideos;
+  const { handleSearch, searching, searchText } = useSearch({
+    onSearch: searchVideo,
+    onClear: () => setSearchedVideos([])
+  });
+  const videos = searchText ? searchedVideos : allVideos;
 
   return (
     <SectionPanel
@@ -63,13 +65,13 @@ function AllVideosPanel({
       isEmpty={videos.length === 0}
       loaded={loaded}
       loadMoreButtonShown={
-        !isSearching &&
-        (stringIsEmpty(searchQuery) ? loadMoreButton : searchLoadMoreButton)
+        !searching &&
+        (stringIsEmpty(searchText) ? loadMoreButton : searchLoadMoreButton)
       }
       loadMore={handleLoadMoreVideos}
-      onSearch={handleVideoSearch}
-      searchQuery={searchQuery}
-      isSearching={isSearching}
+      onSearch={handleSearch}
+      searchQuery={searchText}
+      isSearching={searching}
     >
       <div
         style={{
@@ -120,17 +122,17 @@ function AllVideosPanel({
     const {
       results: loadedVideos,
       loadMoreButton: loadMoreShown
-    } = stringIsEmpty(searchQuery)
+    } = stringIsEmpty(searchText)
       ? await loadUploads({
           type: 'video',
           contentId: lastId
         })
       : await searchContent({
           filter: 'video',
-          searchText: searchQuery,
+          searchText,
           shownResults: searchedVideos
         });
-    if (stringIsEmpty(searchQuery)) {
+    if (stringIsEmpty(searchText)) {
       return getMoreVideos({
         videos: loadedVideos,
         loadMoreButton: loadMoreShown
@@ -140,26 +142,13 @@ function AllVideosPanel({
     setSearchLoadMoreButton(loadMoreShown);
   }
 
-  function handleVideoSearch(text) {
-    clearTimeout(timerRef.current);
-    setSearchQuery(text);
-    setIsSearching(true);
-    timerRef.current = setTimeout(() => searchVideo(text), 300);
-  }
-
   async function searchVideo(text) {
-    if (stringIsEmpty(text) || text.length < 3) {
-      setSearchedVideos([]);
-      setIsSearching(false);
-      return;
-    }
     const { results, loadMoreButton: loadMoreShown } = await searchContent({
       filter: 'video',
       limit: 12,
       searchText: text
     });
     setSearchedVideos(results);
-    setIsSearching(false);
     setSearchLoadMoreButton(loadMoreShown);
   }
 }

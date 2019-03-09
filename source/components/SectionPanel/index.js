@@ -18,7 +18,7 @@ SectionPanel.propTypes = {
   title: PropTypes.string,
   button: PropTypes.node,
   emptyMessage: PropTypes.string,
-  innerRef: PropTypes.func,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   inverted: PropTypes.bool,
   isEmpty: PropTypes.bool,
   isSearching: PropTypes.bool,

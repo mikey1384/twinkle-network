@@ -11,7 +11,7 @@ import { loadPlaylists, searchContent } from 'helpers/requestHelpers';
 PlaylistsPanel.propTypes = {
   buttonGroup: PropTypes.func,
   buttonGroupShown: PropTypes.bool,
-  innerRef: PropTypes.func,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   isSearching: PropTypes.bool,
   getMorePlaylists: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -53,11 +54,13 @@ function EditPlaylistModal({
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [mainTabActive, setMainTabActive] = useState(true);
-  const [searchText, setSearchText] = useState('');
   const [openedRemoveVideosTab, setOpenedRemoveVideosTab] = useState(false);
+  const { handleSearch, searching, searchText } = useSearch({
+    onSearch: handleSearchVideo,
+    onClear: () => setSearchedVideos([])
+  });
   const originalPlaylistVideos = useRef([]);
   const mounted = useRef(true);
-  const timerRef = useRef(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -140,10 +143,10 @@ function EditPlaylistModal({
               width: '70%'
             }}
             value={searchText}
-            onChange={handleVideoSearchInput}
+            onChange={handleSearch}
           />
         )}
-        {isLoading ? (
+        {isLoading || searching ? (
           <Loading />
         ) : (
           <>
@@ -421,13 +424,6 @@ function EditPlaylistModal({
     );
     setLoadingMore(false);
     setLoadMoreButton(reorderLoadMoreButton);
-  }
-
-  function handleVideoSearchInput(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    setIsLoading(true);
-    timerRef.current = setTimeout(() => handleSearchVideo(text), 300);
   }
 
   async function openRemoveVideosTab() {

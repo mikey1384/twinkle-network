@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -11,7 +12,6 @@ import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
-import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -38,13 +38,14 @@ function SelectPlaylistsToPinModal({
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [searchedPlaylists, setSearchedPlaylists] = useState([]);
-  const [searchText, setSearchText] = useState('');
   const [playlistsToPinObject, setPlaylistsToPinObject] = useState({});
   const [pinnedPlaylistsObject, setPinnedPlaylistsObject] = useState({});
   const [searchedPlaylistsObject, setSearchedPlaylistsObject] = useState({});
-  const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const timerRef = useRef(null);
+  const { handleSearch, searchText, searching } = useSearch({
+    onSearch: handlePlaylistSearch,
+    onClear: () => setSearchedPlaylists([])
+  });
 
   useEffect(() => {
     setSelectedPlaylists(initialSelectedPlaylists);
@@ -99,9 +100,9 @@ function SelectPlaylistsToPinModal({
                 autoFocus
                 placeholder="Search for playlists to pin"
                 value={searchText}
-                onChange={handlePlaylistSearchInput}
+                onChange={handleSearch}
               />
-              {loading ? (
+              {searching ? (
                 <Loading />
               ) : (
                 <CheckListGroup
@@ -179,15 +180,6 @@ function SelectPlaylistsToPinModal({
     </Modal>
   );
 
-  function handlePlaylistSearchInput(text) {
-    setSearchText(text);
-    setSearchedPlaylists([]);
-    if (stringIsEmpty(text)) return;
-    setLoading(true);
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => handlePlaylistSearch(text), 300);
-  }
-
   async function handlePlaylistSearch(text) {
     const { results } = await searchContent({
       filter: 'playlist',
@@ -200,7 +192,6 @@ function SelectPlaylistsToPinModal({
         {}
       )
     );
-    setLoading(false);
   }
 
   function handleSelect(index) {
