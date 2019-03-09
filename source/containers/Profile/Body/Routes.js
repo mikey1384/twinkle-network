@@ -35,6 +35,7 @@ export default function Routes({
               match={match}
               username={profile.username}
               location={location}
+              selectedTheme={selectedTheme}
             />
           );
         }}

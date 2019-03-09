@@ -65,9 +65,10 @@ Posts.propTypes = {
   myId: PropTypes.number,
   profileFeeds: PropTypes.array.isRequired,
   searchMode: PropTypes.bool.isRequired,
-  showFeedComments: PropTypes.func.isRequired,
+  selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
   setDifficulty: PropTypes.func,
+  showFeedComments: PropTypes.func.isRequired,
   uploadTargetContentComment: PropTypes.func.isRequired,
   uploadFeedComment: PropTypes.func.isRequired
 };
@@ -111,6 +112,7 @@ function Posts({
   myId,
   profileFeeds,
   searchMode,
+  selectedTheme,
   setCurrentSection,
   showFeedComments,
   uploadFeedComment,
@@ -144,7 +146,11 @@ function Posts({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <FilterBar style={{ height: '5rem' }} className="mobile">
+      <FilterBar
+        color={selectedTheme || 'logoBlue'}
+        style={{ height: '5rem' }}
+        className="mobile"
+      >
         {[
           { key: 'all', label: 'All' },
           { key: 'post', label: 'Subjects' },
