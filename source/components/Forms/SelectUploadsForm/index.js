@@ -52,10 +52,10 @@ export default function SelectUploadsForm({
           No Results
         </div>
       ) : (
-        uploads.map((upload, index) => {
+        uploads.map(upload => {
           return (
             <Selectable
-              key={index}
+              key={upload.id}
               item={upload}
               selected={
                 selectedUploads

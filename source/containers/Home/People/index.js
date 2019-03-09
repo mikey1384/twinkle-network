@@ -49,7 +49,6 @@ function People({
     onSearch: searchUsers,
     onClear: clearUserSearch
   });
-
   const mounted = useRef(true);
 
   useInfiniteScroll({

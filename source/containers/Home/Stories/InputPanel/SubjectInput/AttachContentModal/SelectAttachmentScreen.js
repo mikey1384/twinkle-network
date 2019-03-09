@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
@@ -17,11 +18,12 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchedUploads, setSearchedUploads] = useState([]);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [selectedUpload, setSelectedUpload] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [searching, setSearching] = useState(false);
-  const timerRef = useRef(null);
+  const { handleSearch, searching, searchText } = useSearch({
+    onSearch,
+    onClear: () => setSearchedUploads([])
+  });
 
   useEffect(() => {
     initScreen();
@@ -46,7 +48,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
           width: '50%'
         }}
         value={searchText}
-        onChange={onSearchInput}
+        onChange={handleSearch}
       />
       <SelectUploadsForm
         loading={!loaded || (!stringIsEmpty(searchText) && searching)}
@@ -89,20 +91,12 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
     }
   }
 
-  function onSearchInput(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    setSearching(true);
-    setSearchedUploads([]);
-    timerRef.current = setTimeout(() => search(text), 300);
-    async function search(text) {
-      const { results: searchedUploads, loadMoreButton } = await searchContent({
-        filter: type,
-        searchText: text
-      });
-      setSearching(false);
-      setSearchedUploads(searchedUploads);
-      setSearchLoadMoreButton(loadMoreButton);
-    }
+  async function onSearch(text) {
+    const { results: searchedUploads, loadMoreButton } = await searchContent({
+      filter: type,
+      searchText: text
+    });
+    setSearchedUploads(searchedUploads);
+    setSearchLoadMoreButton(loadMoreButton);
   }
 }
