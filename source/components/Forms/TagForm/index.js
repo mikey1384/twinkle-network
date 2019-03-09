@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
 import Tag from './Tag';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { stringIsEmpty } from 'helpers/stringHelpers';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
@@ -45,9 +45,11 @@ export default function TagForm({
   searchPlaceholder,
   title
 }) {
-  const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const timerRef = useRef(null);
+  const { handleSearch, loading, searchText, setSearchText } = useSearch({
+    onSearch,
+    onEmptyQuery: () => onNotFound?.({ messageShown: false }),
+    onClear
+  });
   const filteredResults = searchResults.filter(filter);
 
   return (
@@ -67,7 +69,7 @@ export default function TagForm({
             autoFocus
             loading={loading}
             value={searchText}
-            onChange={onItemSearch}
+            onChange={handleSearch}
             onClickOutSide={() => {
               setSearchText('');
               onClear();
@@ -105,21 +107,6 @@ export default function TagForm({
         })}
       </div>
     ) : null;
-  }
-
-  function onItemSearch(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    onClear();
-    if (stringIsEmpty(text) || text.length < 2) {
-      onNotFound?.({ messageShown: false });
-      return setLoading(false);
-    }
-    setLoading(true);
-    timerRef.current = setTimeout(async() => {
-      await onSearch(text);
-      setLoading(false);
-    }, 300);
   }
 
   function addItem(item) {

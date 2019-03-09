@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { stringIsEmpty } from 'helpers/stringHelpers';
+import { connect } from 'react-redux';
 import {
   searchChat,
   clearChatSearchResults,
@@ -29,14 +30,16 @@ function ChatSearchBox({
   userId,
   username
 }) {
-  const [searchText, setSearchText] = useState('');
-  const timerRef = useRef(null);
+  const { handleSearch, loading, searchText, setSearchText } = useSearch({
+    onSearch: searchChat,
+    onClear: clearSearchResults
+  });
 
   return (
     <div style={{ padding: '0 1rem', zIndex: 5 }}>
       <SearchInput
         placeholder="Search for channels / users"
-        onChange={onChatSearch}
+        onChange={handleSearch}
         value={searchText}
         searchResults={searchResults}
         renderItemLabel={item =>
@@ -55,17 +58,9 @@ function ChatSearchBox({
         }}
         onSelect={onSelect}
       />
+      {loading && <Loading style={{ height: '7rem' }} />}
     </div>
   );
-
-  function onChatSearch(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    if (stringIsEmpty(text) || text.length < 2) {
-      return clearSearchResults();
-    }
-    timerRef.current = setTimeout(() => searchChat(text), 300);
-  }
 
   function onSelect(item) {
     if (item.primary || !!item.channelId) {

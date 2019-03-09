@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
@@ -42,7 +43,6 @@ function AddPlaylistModal({
   postPlaylist,
   title: initialTitle = ''
 }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [section, setSection] = useState(0);
   const [title, setTitle] = useState(
@@ -54,9 +54,11 @@ function AddPlaylistModal({
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const { handleSearch, loading, searchText } = useSearch({
+    onSearch: searchVideo,
+    onClear: () => setSearchedVideos([])
+  });
   const mounted = useRef(true);
-  const timerRef = useRef(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -157,9 +159,9 @@ function AddPlaylistModal({
                 width: '50%'
               }}
               value={searchText}
-              onChange={onVideoSearchInput}
+              onChange={handleSearch}
             />
-            {isLoading ? (
+            {loading ? (
               <Loading />
             ) : (
               <SelectUploadsForm
@@ -315,14 +317,6 @@ function AddPlaylistModal({
     }
   }
 
-  function onVideoSearchInput(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    if (stringIsEmpty(text)) return setIsLoading(false);
-    setIsLoading(true);
-    timerRef.current = setTimeout(() => searchVideo(text), 300);
-  }
-
   async function searchVideo(text) {
     const { results: searchedVideos, loadMoreButton } = await searchContent({
       filter: 'video',
@@ -330,7 +324,6 @@ function AddPlaylistModal({
     });
     setSearchedVideos(searchedVideos);
     setSearchLoadMoreButton(loadMoreButton);
-    setIsLoading(false);
   }
 }
 

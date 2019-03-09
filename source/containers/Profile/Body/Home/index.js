@@ -395,36 +395,38 @@ function Home({
           title={`Remove Status Message`}
         />
       )}
-      <SectionPanel
-        customColorTheme={selectedTheme}
-        loaded
-        title="Message Board"
-      >
-        <Comments
-          comments={childComments}
-          commentsLoadLimit={20}
-          commentsShown={true}
-          contentId={id}
-          inputAreaInnerRef={CommentInputAreaRef}
-          inputTypeLabel={`message to ${username}`}
-          loadMoreButton={commentsLoadMoreButton}
-          noInput={id === userId}
-          numPreviews={1}
-          onAttachStar={onAttachStar}
-          onCommentSubmit={onUploadComment}
-          onDelete={onDeleteComment}
-          onEditDone={onEditComment}
-          onLikeClick={onLikeComment}
-          onLoadMoreComments={onLoadMoreComments}
-          onLoadMoreReplies={onLoadMoreReplies}
-          onLoadRepliesOfReply={onLoadRepliesOfReply}
-          onPreviewClick={onLoadComments}
-          onReplySubmit={onUploadReply}
-          onRewardCommentEdit={onEditRewardComment}
-          parent={{ ...profile, type: 'user' }}
-          userId={userId}
-        />
-      </SectionPanel>
+      {(userId !== profile.id || childComments.length > 0) && (
+        <SectionPanel
+          customColorTheme={selectedTheme}
+          loaded
+          title="Message Board"
+        >
+          <Comments
+            comments={childComments}
+            commentsLoadLimit={20}
+            commentsShown={true}
+            contentId={id}
+            inputAreaInnerRef={CommentInputAreaRef}
+            inputTypeLabel={`message to ${username}`}
+            loadMoreButton={commentsLoadMoreButton}
+            noInput={id === userId}
+            numPreviews={1}
+            onAttachStar={onAttachStar}
+            onCommentSubmit={onUploadComment}
+            onDelete={onDeleteComment}
+            onEditDone={onEditComment}
+            onLikeClick={onLikeComment}
+            onLoadMoreComments={onLoadMoreComments}
+            onLoadMoreReplies={onLoadMoreReplies}
+            onLoadRepliesOfReply={onLoadRepliesOfReply}
+            onPreviewClick={onLoadComments}
+            onReplySubmit={onUploadReply}
+            onRewardCommentEdit={onEditRewardComment}
+            parent={{ ...profile, type: 'user' }}
+            userId={userId}
+          />
+        </SectionPanel>
+      )}
       {bioEditModalShown && (
         <BioEditModal
           firstLine={profileFirstRow}

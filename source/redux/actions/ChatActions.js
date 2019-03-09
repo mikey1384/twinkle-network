@@ -352,6 +352,7 @@ export const searchChat = text => async dispatch => {
       type: CHAT.SEARCH,
       data
     });
+    return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);
   }

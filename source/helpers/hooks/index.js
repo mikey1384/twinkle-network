@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
-
+import { stringIsEmpty } from '../stringHelpers';
 export { default as useContentObj } from './useContentObj';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
+
 export function useInterval(callback, interval, tracked) {
   const timerRef = useRef(null);
   useEffect(() => {
@@ -37,4 +38,27 @@ export function useOutsideClick(ref, callback) {
       removeEvent(document, 'touchend', uPlistener);
     };
   });
+}
+
+export function useSearch({ onSearch, onEmptyQuery, onClear }) {
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const timerRef = useRef(null);
+
+  function handleSearch(text) {
+    clearTimeout(timerRef.current);
+    setSearchText(text);
+    onClear?.();
+    if (stringIsEmpty(text) || text.length < 2) {
+      onEmptyQuery?.();
+      return setLoading(false);
+    }
+    setLoading(true);
+    timerRef.current = setTimeout(async() => {
+      await onSearch(text);
+      setLoading(false);
+    }, 300);
+  }
+
+  return { handleSearch, loading, searchText, setSearchText };
 }

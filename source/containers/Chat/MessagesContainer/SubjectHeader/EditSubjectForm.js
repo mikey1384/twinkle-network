@@ -51,7 +51,7 @@ export default function EditSubjectForm({
   });
 
   useEffect(() => {
-    changeInput(title);
+    timerRef.current = setTimeout(() => changeInput(title), 300);
     async function changeInput(input) {
       await onChange(input);
       const content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
