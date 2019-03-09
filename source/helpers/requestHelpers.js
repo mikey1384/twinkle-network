@@ -402,7 +402,7 @@ export const reorderPlaylistVideos = async({
 
 export const reportBug = async({ error, info }) => {
   const errorStack = await StackTrace.fromError(error);
-  await StackTrace.report(errorStack[0], `${URL}/user/error`, {
+  await StackTrace.report(errorStack, `${URL}/user/error`, {
     clientVersion,
     message: error.message,
     info: info?.componentStack,

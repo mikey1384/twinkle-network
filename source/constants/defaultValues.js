@@ -4,7 +4,7 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.3';
+export const clientVersion = '0.2.4';
 
 export const charLimit = {
   chat: {
