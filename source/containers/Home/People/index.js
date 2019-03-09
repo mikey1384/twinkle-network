@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll } from 'helpers/hooks';
+import { useInfiniteScroll, useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
@@ -43,13 +43,14 @@ function People({
   searchMode,
   searchUsers
 }) {
-  const [searchText, setSearchText] = useState('');
   const [loaded, setLoaded] = useState(false);
-  const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { handleSearch, searching, searchText } = useSearch({
+    onSearch: searchUsers,
+    onClear: clearUserSearch
+  });
 
   const mounted = useRef(true);
-  const timerRef = useRef(null);
 
   useInfiniteScroll({
     scrollable:
@@ -95,7 +96,7 @@ function People({
         style={{ zIndex: 0 }}
         addonColor={Color.gold()}
         placeholder="Search for users"
-        onChange={onPeopleSearch}
+        onChange={handleSearch}
         value={searchText}
       />
       <div
@@ -167,20 +168,6 @@ function People({
     );
     if (mounted.current) {
       setLoading(false);
-    }
-  }
-
-  function onPeopleSearch(text) {
-    clearTimeout(timerRef.current);
-    setSearchText(text);
-    if (stringIsEmpty(text)) {
-      return clearUserSearch();
-    }
-    setSearching(true);
-    timerRef.current = setTimeout(() => handleSearch(text), 300);
-    async function handleSearch(text) {
-      await searchUsers(text);
-      setSearching(false);
     }
   }
 }

@@ -54,7 +54,7 @@ function AddPlaylistModal({
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
-  const { handleSearch, loading, searchText } = useSearch({
+  const { handleSearch, searching, searchText } = useSearch({
     onSearch: searchVideo,
     onClear: () => setSearchedVideos([])
   });
@@ -161,7 +161,7 @@ function AddPlaylistModal({
               value={searchText}
               onChange={handleSearch}
             />
-            {loading ? (
+            {searching ? (
               <Loading />
             ) : (
               <SelectUploadsForm

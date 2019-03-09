@@ -30,7 +30,7 @@ function ChatSearchBox({
   userId,
   username
 }) {
-  const { handleSearch, loading, searchText, setSearchText } = useSearch({
+  const { handleSearch, searching, searchText, setSearchText } = useSearch({
     onSearch: searchChat,
     onClear: clearSearchResults
   });
@@ -58,7 +58,7 @@ function ChatSearchBox({
         }}
         onSelect={onSelect}
       />
-      {loading && <Loading style={{ height: '7rem' }} />}
+      {searching && <Loading style={{ height: '7rem' }} />}
     </div>
   );
 

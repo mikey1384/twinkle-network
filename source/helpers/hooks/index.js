@@ -41,7 +41,7 @@ export function useOutsideClick(ref, callback) {
 }
 
 export function useSearch({ onSearch, onEmptyQuery, onClear }) {
-  const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
   const timerRef = useRef(null);
 
@@ -49,16 +49,16 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
     clearTimeout(timerRef.current);
     setSearchText(text);
     onClear?.();
-    if (stringIsEmpty(text) || text.length < 2) {
+    if (stringIsEmpty(text)) {
       onEmptyQuery?.();
-      return setLoading(false);
+      return setSearching(false);
     }
-    setLoading(true);
+    setSearching(true);
     timerRef.current = setTimeout(async() => {
       await onSearch(text);
-      setLoading(false);
+      setSearching(false);
     }, 300);
   }
 
-  return { handleSearch, loading, searchText, setSearchText };
+  return { handleSearch, searching, searchText, setSearchText };
 }

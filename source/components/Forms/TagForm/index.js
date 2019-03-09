@@ -45,7 +45,7 @@ export default function TagForm({
   searchPlaceholder,
   title
 }) {
-  const { handleSearch, loading, searchText, setSearchText } = useSearch({
+  const { handleSearch, searching, searchText, setSearchText } = useSearch({
     onSearch,
     onEmptyQuery: () => onNotFound?.({ messageShown: false }),
     onClear
@@ -67,7 +67,7 @@ export default function TagForm({
           <TagInput
             style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
             autoFocus
-            loading={loading}
+            loading={searching}
             value={searchText}
             onChange={handleSearch}
             onClickOutSide={() => {
