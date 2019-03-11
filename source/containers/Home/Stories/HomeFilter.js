@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import DropdownButton from 'components/Buttons/DropdownButton';
-import { Color } from 'constants/css';
 import { PropTypes } from 'prop-types';
+import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { connect } from 'react-redux';
+import { css } from 'emotion';
 
 const categoryObj = {
   uploads: {
@@ -18,7 +19,7 @@ const categoryObj = {
     asc: 'Easy to Hard'
   },
   responses: {
-    label: 'Top Responses'
+    label: 'Top Comments'
   },
   videos: {
     label: 'Starred Videos'
@@ -31,18 +32,20 @@ HomeFilter.propTypes = {
   changeCategory: PropTypes.func.isRequired,
   displayOrder: PropTypes.string.isRequired,
   hideWatched: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+  profileTheme: PropTypes.string,
   setDisplayOrder: PropTypes.func.isRequired,
   selectedFilter: PropTypes.string.isRequired,
   userId: PropTypes.number,
   toggleHideWatched: PropTypes.func.isRequired
 };
 
-export default function HomeFilter({
+function HomeFilter({
   applyFilter,
   category,
   changeCategory,
   displayOrder,
   hideWatched,
+  profileTheme,
   selectedFilter,
   setDisplayOrder,
   toggleHideWatched,
@@ -50,12 +53,21 @@ export default function HomeFilter({
 }) {
   const [activeTab, setActiveTab] = useState();
   useEffect(() => setActiveTab(category), [category]);
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <ErrorBoundary>
       <FilterBar
+        inverted
+        color={themeColor}
         bordered
+        className={css`
+          position: -webkit-sticky;
+        `}
         style={{
-          height: '5.5rem',
+          position: 'sticky',
+          top: '0',
+          zIndex: 1000,
+          height: '3.5rem',
           fontSize: '1.6rem'
         }}
       >
@@ -63,7 +75,10 @@ export default function HomeFilter({
           <nav
             key={elem}
             className={activeTab === elem ? 'active' : ''}
-            onClick={() => changeCategory(elem)}
+            onClick={() => {
+              document.getElementById('App').scrollTop = 0;
+              changeCategory(elem);
+            }}
           >
             {categoryObj[elem].label}
           </nav>
@@ -90,6 +105,7 @@ export default function HomeFilter({
           >
             {category === 'uploads' && (
               <FilterBar
+                color={themeColor}
                 bordered
                 style={{
                   height: '5rem',
@@ -164,7 +180,6 @@ export default function HomeFilter({
                 )}
                 {category === 'videos' && userId && (
                   <SwitchButton
-                    color={Color.green()}
                     checked={!!hideWatched}
                     label="Hide Watched"
                     onChange={toggleHideWatched}
@@ -178,3 +193,7 @@ export default function HomeFilter({
     </ErrorBoundary>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(HomeFilter);

@@ -1,108 +1,110 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import ChallengesPanel from './Panels/ChallengesPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
-import ReorderPinnedPlaylistsModal from './Modals/ReorderPinnedPlaylistsModal';
+import ReorderFeaturedPlaylists from './Modals/ReorderFeaturedPlaylists';
+import { loadFeaturedContents } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import {
-  closeReorderPinnedPlaylistsModal,
+  closeReorderFeaturedPlaylists,
   closeSelectPlaylistsToPinModal,
   getPinnedPlaylists,
-  openReorderPinnedPlaylistsModal,
+  openReorderFeaturedPlaylists,
   openSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
 
 Work.propTypes = {
   canPinPlaylists: PropTypes.bool,
-  closeReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
+  closeReorderFeaturedPlaylists: PropTypes.func.isRequired,
   closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   getPinnedPlaylists: PropTypes.func.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
-  openReorderPinnedPlaylistsModal: PropTypes.func.isRequired,
+  openReorderFeaturedPlaylists: PropTypes.func.isRequired,
   openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
-  playlists: PropTypes.array.isRequired,
+  featuredPlaylists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
-  reorderPinnedPlaylistsModalShown: PropTypes.bool.isRequired,
+  reorderFeaturedPlaylistsShown: PropTypes.bool.isRequired,
   selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
   userId: PropTypes.number
 };
 
 function Work({
   canPinPlaylists,
-  closeReorderPinnedPlaylistsModal,
+  closeReorderFeaturedPlaylists,
   closeSelectPlaylistsToPinModal,
   getPinnedPlaylists,
   loadMorePlaylistsToPinButton,
-  openReorderPinnedPlaylistsModal,
+  openReorderFeaturedPlaylists,
   openSelectPlaylistsToPinModal,
-  playlists,
+  featuredPlaylists,
   playlistsLoaded,
   playlistsToPin,
-  reorderPinnedPlaylistsModalShown,
+  reorderFeaturedPlaylistsShown,
   selectPlaylistsToPinModalShown,
   userId
 }) {
+  const [featuredChallenges, setFeaturedChallenges] = useState([]);
+  const [challengesLoaded, setChallengesLoaded] = useState(false);
   useEffect(() => {
-    getPinnedPlaylists();
+    init();
+    async function init() {
+      const { challenges, playlists } = await loadFeaturedContents();
+      setFeaturedChallenges(challenges);
+      setChallengesLoaded(true);
+      getPinnedPlaylists(playlists);
+    }
   }, []);
 
-  const pinnedPlaylistButtons =
-    playlists.length > 0
-      ? [
-          {
-            label: 'Select Playlists',
-            onClick: openSelectPlaylistsToPinModal,
-            buttonClass: 'snow'
-          },
-          {
-            label: 'Reorder Playlists',
-            onClick: openReorderPinnedPlaylistsModal,
-            buttonClass: 'snow'
-          }
-        ]
-      : [
-          {
-            label: 'Select Playlists',
-            onClick: openSelectPlaylistsToPinModal,
-            buttonClass: 'snow'
-          }
-        ];
+  const menuButtons = [
+    {
+      label: 'Select Playlists',
+      onClick: openSelectPlaylistsToPinModal,
+      buttonClass: 'snow'
+    }
+  ];
+  if (featuredPlaylists.length > 0) {
+    menuButtons.push({
+      label: 'Reorder Playlists',
+      onClick: openReorderFeaturedPlaylists,
+      buttonClass: 'snow'
+    });
+  }
+
   return (
     <div>
+      <ChallengesPanel
+        challenges={featuredChallenges}
+        loaded={challengesLoaded}
+      />
       <PlaylistsPanel
-        key={'pinnedPlaylists'}
         buttonGroupShown={!!canPinPlaylists}
         buttonGroup={() => (
-          <ButtonGroup
-            style={{ marginLeft: 'auto' }}
-            buttons={pinnedPlaylistButtons}
-          />
+          <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
         )}
         title="Featured Playlists"
         userId={userId}
-        playlists={playlists}
+        playlists={featuredPlaylists}
         loaded={playlistsLoaded}
       />
       {selectPlaylistsToPinModalShown && (
         <SelectPlaylistsToPinModal
           playlistsToPin={playlistsToPin}
-          pinnedPlaylists={playlists}
-          selectedPlaylists={playlists.map(playlist => {
+          pinnedPlaylists={featuredPlaylists}
+          selectedPlaylists={featuredPlaylists.map(playlist => {
             return playlist.id;
           })}
           loadMoreButton={loadMorePlaylistsToPinButton}
           onHide={closeSelectPlaylistsToPinModal}
         />
       )}
-      {reorderPinnedPlaylistsModalShown && (
-        <ReorderPinnedPlaylistsModal
-          pinnedPlaylists={playlists}
-          playlistIds={playlists.map(playlist => {
-            return playlist.id;
-          })}
-          onHide={closeReorderPinnedPlaylistsModal}
+      {reorderFeaturedPlaylistsShown && (
+        <ReorderFeaturedPlaylists
+          pinnedPlaylists={featuredPlaylists}
+          playlistIds={featuredPlaylists.map(playlist => playlist.id)}
+          onHide={closeReorderFeaturedPlaylists}
         />
       )}
     </div>
@@ -114,20 +116,20 @@ export default connect(
     canPinPlaylists: state.UserReducer.canPinPlaylists,
     loadMorePlaylistsToPinButton:
       state.VideoReducer.loadMorePlaylistsToPinButton,
-    playlists: state.VideoReducer.pinnedPlaylists,
+    featuredPlaylists: state.VideoReducer.pinnedPlaylists,
     playlistsLoaded: state.VideoReducer.pinnedPlaylistsLoaded,
     playlistsToPin: state.VideoReducer.playlistsToPin,
-    reorderPinnedPlaylistsModalShown:
-      state.VideoReducer.reorderPinnedPlaylistsModalShown,
+    reorderFeaturedPlaylistsShown:
+      state.VideoReducer.reorderFeaturedPlaylistsShown,
     selectPlaylistsToPinModalShown:
       state.VideoReducer.selectPlaylistsToPinModalShown,
     userId: state.UserReducer.userId
   }),
   {
-    closeReorderPinnedPlaylistsModal,
+    closeReorderFeaturedPlaylists,
     closeSelectPlaylistsToPinModal,
     getPinnedPlaylists,
-    openReorderPinnedPlaylistsModal,
+    openReorderFeaturedPlaylists,
     openSelectPlaylistsToPinModal
   }
 )(Work);

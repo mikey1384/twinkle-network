@@ -172,7 +172,7 @@ function VideoPlayer({
       currentVideoSlot && currentVideoSlot !== watchCodeRef.current;
     if (started && userWatchingMultipleVideo) {
       onVideoStop();
-      PlayerRef.current.getInternalPlayer()?.pauseVideo();
+      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
   }, [currentVideoSlot]);
 
@@ -180,7 +180,7 @@ function VideoPlayer({
     const alreadyEarned = xpEarned || justEarned;
     if (started && !!difficulty && userId && !alreadyEarned) {
       onVideoStop();
-      PlayerRef.current.getInternalPlayer()?.pauseVideo();
+      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
   }, [pageVisible, chatMode]);
 
@@ -485,7 +485,7 @@ function VideoPlayer({
           !!difficulty &&
           !justEarned
         ) {
-          PlayerRef.current.getInternalPlayer()?.pauseVideo();
+          PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
         }
       } catch (error) {
         console.error(error.response || error);

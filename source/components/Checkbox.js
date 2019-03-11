@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
@@ -8,18 +9,21 @@ Checkbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   style: PropTypes.object,
   textIsClickable: PropTypes.bool
 };
 
-export default function Checkbox({
+function Checkbox({
   backgroundColor = Color.wellGray(),
   checked,
   label,
   onClick,
+  profileTheme,
   style,
   textIsClickable
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <div
       style={{
@@ -54,7 +58,7 @@ export default function Checkbox({
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          background: checked ? Color.logoBlue() : backgroundColor
+          background: checked ? Color[themeColor]() : backgroundColor
         }}
       >
         {checked && (
@@ -77,3 +81,7 @@ export default function Checkbox({
     </div>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(Checkbox);

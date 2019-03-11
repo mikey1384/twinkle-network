@@ -1,22 +1,26 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import FilterBar from 'components/FilterBar';
+import { connect } from 'react-redux';
 
 PageTab.propTypes = {
   onQuestionTabClick: PropTypes.func.isRequired,
   onWatchTabClick: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   questions: PropTypes.array.isRequired,
   watchTabActive: PropTypes.bool.isRequired
 };
 
-export default function PageTab({
+function PageTab({
   watchTabActive,
   onWatchTabClick,
   onQuestionTabClick,
+  profileTheme,
   questions
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
-    <FilterBar>
+    <FilterBar color={themeColor}>
       <nav className={watchTabActive ? 'active' : ''} onClick={onWatchTabClick}>
         Video
       </nav>
@@ -29,3 +33,7 @@ export default function PageTab({
     </FilterBar>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(PageTab);

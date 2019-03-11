@@ -113,7 +113,7 @@ export default function Channels({
             {id !== currentChannel.id && numUnreads > 0 && (
               <div
                 style={{
-                  background: Color.pink(),
+                  background: Color.rose(),
                   display: 'flex',
                   color: '#fff',
                   fontWeight: 'bold',

@@ -199,6 +199,16 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
+export const loadFeaturedContents = async() => {
+  try {
+    const { data } = await request.get(`${URL}/content/featured`);
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const loadFeeds = async({
   filter = 'all',
   order = 'desc',
@@ -555,6 +565,24 @@ export const uploadContent = async({
       auth()
     );
     return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
+export const uploadFeaturedPlaylists = async({
+  dispatch,
+  selectedPlaylists
+}) => {
+  try {
+    const {
+      data: { playlists }
+    } = await request.post(
+      `${URL}/playlist/pinned`,
+      { selectedPlaylists },
+      auth()
+    );
+    return Promise.resolve(playlists);
   } catch (error) {
     return handleError(error, dispatch);
   }

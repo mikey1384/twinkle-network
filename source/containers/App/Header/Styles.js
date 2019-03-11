@@ -11,7 +11,7 @@ export const container = css`
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
-  height: 6rem;
+  height: 5rem;
 
   .header-nav {
     display: flex;

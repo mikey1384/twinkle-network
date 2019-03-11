@@ -34,7 +34,8 @@ ContentPanel.propTypes = {
   onSetDifficulty: PropTypes.func,
   onShowComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
-  onTargetCommentSubmit: PropTypes.func.isRequired
+  onTargetCommentSubmit: PropTypes.func.isRequired,
+  style: PropTypes.object
 };
 
 export default function ContentPanel({
@@ -63,6 +64,7 @@ export default function ContentPanel({
   onSetDifficulty,
   onShowComments,
   onTargetCommentSubmit,
+  style = {},
   userId
 }) {
   const [loaded, setLoaded] = useState(false);
@@ -113,7 +115,7 @@ export default function ContentPanel({
     >
       <ErrorBoundary
         className={container}
-        style={{ height: !contentObj.loaded && '15rem' }}
+        style={{ height: !contentObj.loaded && '15rem', ...style }}
       >
         {!contentObj.loaded && <Loading />}
         {contentObj.loaded && (

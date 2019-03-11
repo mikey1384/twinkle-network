@@ -13,6 +13,7 @@ SearchInput.propTypes = {
   borderColor: PropTypes.string,
   className: PropTypes.string,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  inputHeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange: PropTypes.func.isRequired,
   onClear: PropTypes.func,
   onClickOutSide: PropTypes.func,
@@ -34,6 +35,7 @@ export default function SearchInput({
   borderColor,
   className,
   innerRef = () => {},
+  inputHeight,
   onChange,
   placeholder,
   onClear,
@@ -58,8 +60,9 @@ export default function SearchInput({
         position: relative;
         z-index: 1000;
         .addon {
-          border: 1px solid ${addonColor || Color.inputBorderGray()};
-          align-self: stretch;
+          height: 100%;
+          border: 1px solid
+            ${addonColor ? Color[addonColor]() : Color.inputBorderGray()};
           padding: 0 1rem;
           display: flex;
           align-items: center;
@@ -67,7 +70,8 @@ export default function SearchInput({
         }
         input {
           height: 100%;
-          border: 1px solid ${borderColor || Color.inputBorderGray()};
+          border: 1px solid
+            ${borderColor ? Color[borderColor]() : Color.inputBorderGray()};
           border-left: none;
         }
       `} ${className}`}
@@ -76,11 +80,18 @@ export default function SearchInput({
     >
       <div
         className="addon"
-        style={{ backgroundColor: addonColor || Color.borderGray() }}
+        style={{
+          height: inputHeight,
+          backgroundColor: addonColor
+            ? Color[addonColor]()
+            : Color.borderGray(),
+          color: addonColor ? '#fff' : ''
+        }}
       >
         <Icon icon="search" />
       </div>
       <Input
+        style={{ height: inputHeight }}
         autoFocus={autoFocus}
         inputRef={innerRef}
         onFocus={onFocus && onFocus}

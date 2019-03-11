@@ -54,6 +54,7 @@ function UserListModal({
               <li
                 key={user.id}
                 style={{
+                  background: '#fff',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'

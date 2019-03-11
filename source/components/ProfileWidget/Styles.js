@@ -1,7 +1,7 @@
 import { css } from 'emotion';
-import { borderRadius, mobileMaxWidth } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
-export const container = ({ heading, border, blue, darkerGray }) => css`
+export const container = ({ heading, headingHovered }) => css`
   display: flex;
   border: none;
   flex-direction: column;
@@ -12,7 +12,7 @@ export const container = ({ heading, border, blue, darkerGray }) => css`
   }
   .heading {
     padding: 1rem;
-    border: 1px solid ${border};
+    border: 1px solid ${Color.borderGray()};
     border-bottom: none;
     border-radius: ${borderRadius};
     border-bottom-left-radius: 0;
@@ -24,18 +24,23 @@ export const container = ({ heading, border, blue, darkerGray }) => css`
     justify-content: flex-start;
     .names {
       width: CALC(100% - 8rem);
+      color: #fff;
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
       a {
-        color: ${blue};
+        color: #fff;
         font-weight: bold;
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
       span {
-        color: ${darkerGray};
-        font-size: 1rem;
+        color: #fff;
+        font-size: 1.2rem;
       }
+    }
+    &:hover {
+      transition: background 0.5s;
+      background: ${headingHovered};
     }
   }
   .widget__profile-pic {
@@ -44,20 +49,22 @@ export const container = ({ heading, border, blue, darkerGray }) => css`
   }
   .details {
     font-size: 1.3rem;
-    border: 1px solid ${border};
+    border: 1px solid ${Color.borderGray()};
     border-bottom-left-radius: ${borderRadius};
     border-bottom-right-radius: ${borderRadius};
     background: #fff;
     padding: 1rem;
     .login-message {
       font-size: 2rem;
-      color: ${darkerGray};
+      color: ${Color.darkerGray()};
       font-weight: bold;
     }
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;
     .heading {
+      border: 0;
+      border-radius: 0;
       justify-content: center;
       .names {
         text-align: center;

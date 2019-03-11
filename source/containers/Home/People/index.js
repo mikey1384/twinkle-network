@@ -14,7 +14,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 
 People.propTypes = {
   chatMode: PropTypes.bool.isRequired,
@@ -24,6 +24,7 @@ People.propTypes = {
   history: PropTypes.object.isRequired,
   loadMoreButton: PropTypes.bool,
   profiles: PropTypes.array.isRequired,
+  profileTheme: PropTypes.string,
   searchedProfiles: PropTypes.array.isRequired,
   searchMode: PropTypes.bool.isRequired,
   searchUsers: PropTypes.func.isRequired,
@@ -38,6 +39,7 @@ function People({
   history,
   loadMoreButton,
   profiles,
+  profileTheme,
   userId,
   searchedProfiles,
   searchMode,
@@ -50,6 +52,7 @@ function People({
     onClear: clearUserSearch
   });
   const mounted = useRef(true);
+  const themeColor = profileTheme || 'logoBlue';
 
   useInfiniteScroll({
     scrollable:
@@ -93,8 +96,9 @@ function People({
           }
         `}
         style={{ zIndex: 0 }}
-        addonColor={Color.gold()}
-        placeholder="Search for users"
+        addonColor={themeColor}
+        borderColor={themeColor}
+        placeholder="Search Users"
         onChange={handleSearch}
         value={searchText}
       />
@@ -176,6 +180,7 @@ export default connect(
     chatMode: state.ChatReducer.chatMode,
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
+    profileTheme: state.UserReducer.profileTheme,
     searchMode: state.SearchReducer.searchMode,
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId

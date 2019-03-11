@@ -19,7 +19,7 @@ const defaultState = {
   loadMorePlaylistsToPinButton: false,
   loadMoreSearchedPlaylistsButton: false,
   playlistsToPin: [],
-  reorderPinnedPlaylistsModalShown: false,
+  reorderFeaturedPlaylistsShown: false,
   clickSafe: true
 };
 
@@ -110,7 +110,7 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.CLOSE_REORDER_PINNED_PL_MODAL:
       return {
         ...state,
-        reorderPinnedPlaylistsModalShown: false
+        reorderFeaturedPlaylistsShown: false
       };
     case VIDEO.CLOSE_SELECT_PL_TO_PIN_MODAL:
       return {
@@ -279,10 +279,10 @@ export default function VideoReducer(state = defaultState, action) {
         loadMoreVideosButton: action.loadMoreButton,
         allVideosLoaded: !action.loadMoreButton
       };
-    case VIDEO.LOAD_PINNED_PLAYLISTS:
+    case VIDEO.LOAD_FEATURED_PLAYLISTS:
       return {
         ...state,
-        pinnedPlaylists: action.data.playlists,
+        pinnedPlaylists: action.playlists,
         pinnedPlaylistsLoaded: true
       };
     case VIDEO.LOAD_PLAYLISTS:
@@ -337,7 +337,7 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.OPEN_REORDER_PINNED_PL_MODAL:
       return {
         ...state,
-        reorderPinnedPlaylistsModalShown: true
+        reorderFeaturedPlaylistsShown: true
       };
     case VIDEO.OPEN_SELECT_PL_TO_PIN_MODAL:
       if (action.data.result.length > 10) {

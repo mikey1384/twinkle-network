@@ -109,6 +109,7 @@ function PlaylistCarousel({
               color: ${Color.darkGray()};
               text-decoration: none;
               &:hover {
+                transition: color 0.3s;
                 color: ${Color[profileTheme || 'logoBlue']()};
               }
             }

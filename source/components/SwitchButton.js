@@ -2,21 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { connect } from 'react-redux';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 SwitchButton.propTypes = {
   color: PropTypes.string,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string
 };
 
-export default function SwitchButton({
-  checked,
-  label,
-  onChange,
-  color = Color.oceanBlue()
-}) {
+function SwitchButton({ color, checked, label, onChange, profileTheme }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <ErrorBoundary
       style={{
@@ -41,7 +39,7 @@ export default function SwitchButton({
         <input
           className={css`
             &:checked + span {
-              background-color: ${color};
+              background-color: ${color || Color[themeColor]()};
             }
             &:checked + span:before {
               transform: translateX(26px);
@@ -79,3 +77,7 @@ export default function SwitchButton({
     </ErrorBoundary>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(SwitchButton);

@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
+import { uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import { isEqual } from 'lodash';
 
-ReorderPinnedPlaylistsModal.propTypes = {
+ReorderFeaturedPlaylists.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   pinnedPlaylists: PropTypes.array.isRequired,
   playlistIds: PropTypes.array.isRequired,
   onHide: PropTypes.func.isRequired,
   changePinnedPlaylists: PropTypes.func.isRequired
 };
 
-function ReorderPinnedPlaylistsModal({
+function ReorderFeaturedPlaylists({
   changePinnedPlaylists,
+  dispatch,
   onHide,
   pinnedPlaylists: playlists,
   playlistIds: initialPlaylistIds
@@ -67,12 +70,20 @@ function ReorderPinnedPlaylistsModal({
   }
 
   async function handleSubmit() {
-    await changePinnedPlaylists(playlistIds);
+    const newSelectedPlaylists = await uploadFeaturedPlaylists({
+      dispatch,
+      selectedPlaylists: playlistIds
+    });
+    changePinnedPlaylists(newSelectedPlaylists);
     onHide();
   }
 }
 
 export default connect(
   null,
-  { changePinnedPlaylists }
-)(ReorderPinnedPlaylistsModal);
+  dispatch => ({
+    dispatch,
+    changePinnedPlaylists: selectedPlaylists =>
+      dispatch(changePinnedPlaylists(selectedPlaylists))
+  })
+)(ReorderFeaturedPlaylists);

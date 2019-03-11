@@ -9,7 +9,8 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { loadChat } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { initChat } from 'redux/actions/ChatActions';
-import { profileThemes } from 'constants/defaultValues';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
@@ -53,7 +54,13 @@ function ChatFeeds({
   );
 
   return (
-    <RoundList style={{ textAlign: 'center', marginTop: '0', ...style }}>
+    <RoundList
+      style={{
+        textAlign: 'center',
+        marginTop: '0',
+        ...style
+      }}
+    >
       <li
         style={{
           whiteSpace: 'pre-wrap',
@@ -63,18 +70,25 @@ function ChatFeeds({
           flexDirection: 'column',
           alignItems: 'center'
         }}
+        className={css`
+          background: ${Color[themeColor](0.6)};
+          &:hover {
+            transition: background 0.5s;
+            background: ${Color[themeColor]()};
+          }
+        `}
       >
         <p
           style={{
             fontWeight: 'bold',
-            color: profileThemes[themeColor].color,
+            color: '#fff',
             fontSize: '2rem'
           }}
         >
           {content}
         </p>
-        {renderDetails()}
-        <Button success onClick={initChatFromThis}>
+        <span style={{ color: '#fff' }}>{renderDetails()}</span>
+        <Button snow onClick={initChatFromThis}>
           <Icon icon="comments" />
           <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
         </Button>
@@ -90,14 +104,17 @@ function ChatFeeds({
   function renderDetails() {
     const posterString = (
       <>
-        Started by <UsernameText user={{ id: userId, username }} />
+        Started by <UsernameText color="#fff" user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSincePost}` : ''}
       </>
     );
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
-        <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
+        <UsernameText
+          color="#fff"
+          user={{ id: reloadedBy, username: reloaderName }}
+        />
         {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
       </div>
     );

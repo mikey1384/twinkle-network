@@ -239,7 +239,7 @@ function Header({
             <HeaderNav
               className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
               alert={numNewNotis > 0 || totalRewardAmount > 0}
-              alertColor={Color.pink()}
+              alertColor={Color.gold()}
               imgLabel="user"
               onClick={onMobileMenuOpen}
             />
@@ -303,7 +303,7 @@ function Header({
           >
             <a
               style={{
-                color: numChatUnreads > 0 && Color.pink()
+                color: numChatUnreads > 0 && Color.gold()
               }}
             >
               <Icon icon="comments" />

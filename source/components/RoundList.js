@@ -8,7 +8,7 @@ RoundList.propTypes = {
   style: PropTypes.object
 };
 
-export default function RoundList({ children, style = {} }) {
+export default function RoundList({ children, style }) {
   return (
     <ul
       className={css`
@@ -20,7 +20,6 @@ export default function RoundList({ children, style = {} }) {
         font-size: 1.5rem;
         li {
           width: 100%;
-          background: #fff;
           padding: 1.5rem;
           border: 1px solid ${Color.borderGray()};
           margin-bottom: -1px;

@@ -63,57 +63,64 @@ function MainFeeds({
 
   return (
     <ErrorBoundary style={style}>
+      {numNewNotis > 0 && (
+        <Banner
+          gold
+          style={{ marginBottom: '1rem' }}
+          onClick={onNewNotiAlertClick}
+        >
+          Tap to See {numNewNotis} New Notification
+          {numNewNotis > 1 ? 's' : ''}
+        </Banner>
+      )}
+      {activeTab === 'reward' && (
+        <Banner
+          gold={totalRewardAmount > 0}
+          success={totalRewardAmount === 0}
+          style={{ marginBottom: '1rem' }}
+          onClick={totalRewardAmount > 0 ? onCollectReward : null}
+        >
+          {totalRewardAmount > 0 && (
+            <>
+              <p>Tap to collect all your rewards</p>
+              <p>
+                ({totalRewardAmount} Twinkles x {rewardValue.star} XP/Twinkle ={' '}
+                {addCommasToNumber(totalRewardAmount * rewardValue.star)} XP)
+              </p>
+            </>
+          )}
+          {totalRewardAmount === 0 && (
+            <>
+              <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
+              <p>
+                Your XP went up from {addCommasToNumber(originalTwinkleXP)} to{' '}
+                {addCommasToNumber(
+                  originalTwinkleXP + originalTotalReward * rewardValue.star
+                )}
+              </p>
+            </>
+          )}
+        </Banner>
+      )}
+      {notifications.length > 0 && (
+        <RoundList style={{ marginTop: 0, marginBottom: '1rem' }}>
+          {activeTab === 'notification' &&
+            userId &&
+            notifications.map(notification => {
+              return (
+                <li
+                  style={{ background: '#fff' }}
+                  className={notiFeedListItem}
+                  key={notification.id}
+                >
+                  <NotiItem notification={notification} />
+                </li>
+              );
+            })}
+        </RoundList>
+      )}
+      {activeTab === 'rankings' && <Rankings />}
       <RoundList style={{ marginTop: 0 }}>
-        {numNewNotis > 0 && (
-          <Banner
-            love
-            style={{ marginBottom: '1rem' }}
-            onClick={onNewNotiAlertClick}
-          >
-            Tap to See {numNewNotis} New Notification
-            {numNewNotis > 1 ? 's' : ''}
-          </Banner>
-        )}
-        {activeTab === 'reward' && (
-          <Banner
-            love={totalRewardAmount > 0}
-            success={totalRewardAmount === 0}
-            style={{ marginBottom: '1rem' }}
-            onClick={totalRewardAmount > 0 ? onCollectReward : null}
-          >
-            {totalRewardAmount > 0 && (
-              <>
-                <p>Tap to collect all your rewards</p>
-                <p>
-                  ({totalRewardAmount} Twinkles x {rewardValue.star} XP/Twinkle
-                  = {addCommasToNumber(totalRewardAmount * rewardValue.star)}{' '}
-                  XP)
-                </p>
-              </>
-            )}
-            {totalRewardAmount === 0 && (
-              <>
-                <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
-                <p>
-                  Your XP went up from {addCommasToNumber(originalTwinkleXP)} to{' '}
-                  {addCommasToNumber(
-                    originalTwinkleXP + originalTotalReward * rewardValue.star
-                  )}
-                </p>
-              </>
-            )}
-          </Banner>
-        )}
-        {activeTab === 'notification' &&
-          userId &&
-          notifications.map(notification => {
-            return (
-              <li className={notiFeedListItem} key={notification.id}>
-                <NotiItem notification={notification} />
-              </li>
-            );
-          })}
-        {activeTab === 'rankings' && <Rankings />}
         {activeTab === 'reward' &&
           rewards.map(
             ({
@@ -126,7 +133,11 @@ function MainFeeds({
               rewarderUsername,
               timeStamp
             }) => (
-              <li className={notiFeedListItem} key={id}>
+              <li
+                style={{ background: '#fff' }}
+                className={notiFeedListItem}
+                key={id}
+              >
                 <div>
                   <UsernameText
                     user={{ id: rewarderId, username: rewarderUsername }}

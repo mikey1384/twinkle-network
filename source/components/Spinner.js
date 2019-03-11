@@ -1,7 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Color } from 'constants/css';
+import { connect } from 'react-redux';
 import { css } from 'emotion';
 
-export default function Spinner() {
+Spinner.propTypes = {
+  profileTheme: PropTypes.string
+};
+
+function Spinner({ profileTheme }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <div
       className={css`
@@ -43,7 +51,7 @@ export default function Spinner() {
             stroke-dasharray: 187;
             stroke-dashoffset: 0;
             transform-origin: center;
-            stroke: #3498db;
+            stroke: ${Color[themeColor]()};
             animation: loading-dash 1.4s ease-in-out infinite;
           `}
           fill="none"
@@ -56,3 +64,7 @@ export default function Spinner() {
     </div>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(Spinner);

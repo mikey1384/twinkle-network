@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import Result from './Result';
+import ContentListItem from 'components/ContentListItem';
 import { setResults, showMoreResults } from 'redux/actions/SearchActions';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
@@ -45,27 +45,31 @@ function Results({
         setResults({ filter, results: [], loadMoreButton: false });
       }
       setFirstRun(false);
-      if (
-        (firstRun && results.length === 0) ||
-        searchText !== prevSearchText ||
-        filter !== prevFilter
-      ) {
+      if ((firstRun && results.length === 0) || searchText !== prevSearchText) {
         clearTimeout(timerRef.current);
         setSearching(true);
         timerRef.current = setTimeout(handleSearchContent, 500);
       }
       setPrevSearchText(searchText);
-      setPrevFilter(filter);
     }
-    async function handleSearchContent() {
-      const data = await searchContent({
-        filter,
-        searchText
-      });
-      if (data) setResults({ filter, ...data });
-      return setSearching(false);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (filter !== prevFilter) {
+      setSearching(true);
+      handleSearchContent();
     }
-  }, [searchText, filter]);
+    setPrevFilter(filter);
+  }, [filter]);
+
+  async function handleSearchContent() {
+    const data = await searchContent({
+      filter,
+      searchText
+    });
+    setResults({ filter, ...data });
+    return setSearching(false);
+  }
 
   const availableFilters = ['video', 'url', 'subject'].filter(
     availableFilter => availableFilter !== filter
@@ -88,11 +92,11 @@ function Results({
       {!searching &&
         searchText.length > 1 &&
         results.map(result => (
-          <Result
+          <ContentListItem
             key={result.id}
-            closeSearch={closeSearch}
+            onClick={closeSearch}
             type={filter}
-            result={result}
+            contentObj={result}
           />
         ))}
       {!searching && results.length === 0 && (

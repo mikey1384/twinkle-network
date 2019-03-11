@@ -137,8 +137,9 @@ function SearchPage({
     </div>
   );
 
-  function handleChangeFilter(filter) {
-    changeFilter(filter);
+  function handleChangeFilter(nextFilter) {
+    setResults({ results: [], loadMoreButton: false });
+    changeFilter(nextFilter);
     onSearchBoxFocus();
   }
 

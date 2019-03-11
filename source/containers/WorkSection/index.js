@@ -56,7 +56,8 @@ function WorkSection({
         >
           <WorkMenuItems
             className={css`
-              height: CALC(100vh - 22rem);
+              top: CALC(50vh - 11rem);
+              height: auto;
               width: 19rem;
               display: flex;
               position: fixed;
@@ -123,14 +124,14 @@ function WorkSection({
               overflow-y: scroll;
               -webkit-overflow-scrolling: touch;
               right: 1rem;
-              top: 6rem;
+              top: 5rem;
               bottom: 0;
               position: absolute;
               @media (max-width: ${mobileMaxWidth}) {
                 display: none;
               }
             `}
-            location="work"
+            location={location.pathname.substring(1)}
           >
             {location.pathname === '/videos' && userId && (
               <>
@@ -148,7 +149,11 @@ function WorkSection({
                 </Button>
                 <Button
                   snow
-                  style={{ fontSize: '2rem', width: '99%' }}
+                  style={{
+                    fontSize: '2rem',
+                    width: '99%',
+                    marginBottom: '1rem'
+                  }}
                   onClick={openAddPlaylistModal}
                 >
                   + Add Playlist

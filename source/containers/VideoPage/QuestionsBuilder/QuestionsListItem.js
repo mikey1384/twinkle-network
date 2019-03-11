@@ -46,6 +46,7 @@ function QuestionsListItem({
     connectDropTarget(
       <li
         style={{
+          background: '#fff',
           opacity: isDragging ? 0 : 1,
           color: (!item.title || item.deleted) && '#999',
           display: 'flex',

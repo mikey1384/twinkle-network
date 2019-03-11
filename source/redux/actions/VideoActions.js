@@ -17,26 +17,10 @@ export const changeByUserStatusForThumbs = ({ videoId, byUser }) => ({
   byUser
 });
 
-export const changePinnedPlaylists = selectedPlaylists => async dispatch => {
-  try {
-    const {
-      data: { playlists }
-    } = await request.post(
-      `${URL}/playlist/pinned`,
-      { selectedPlaylists },
-      auth()
-    );
-    if (playlists) {
-      dispatch({
-        type: VIDEO.CHANGE_PINNED_PLAYLISTS,
-        data: playlists
-      });
-    }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const changePinnedPlaylists = playlists => ({
+  type: VIDEO.CHANGE_PINNED_PLAYLISTS,
+  data: playlists
+});
 
 export const changePlaylistVideos = playlist => ({
   type: VIDEO.CHANGE_PLAYLIST_VIDEOS,
@@ -63,7 +47,7 @@ export const closeAddVideoModal = () => ({
   type: VIDEO.CLOSE_MODAL
 });
 
-export const closeReorderPinnedPlaylistsModal = () => ({
+export const closeReorderFeaturedPlaylists = () => ({
   type: VIDEO.CLOSE_REORDER_PINNED_PL_MODAL
 });
 
@@ -182,17 +166,10 @@ export const getMoreVideos = ({ videos, loadMoreButton }) => ({
   videos
 });
 
-export const getPinnedPlaylists = () => async dispatch => {
-  try {
-    const { data } = await request.get(`${URL}/playlist/pinned`);
-    dispatch({
-      type: VIDEO.LOAD_PINNED_PLAYLISTS,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const getPinnedPlaylists = playlists => ({
+  type: VIDEO.LOAD_FEATURED_PLAYLISTS,
+  playlists
+});
 
 export const getPlaylists = () => async dispatch => {
   try {
@@ -244,7 +221,7 @@ export const openAddVideoModal = () => ({
   type: VIDEO.OPEN_MODAL
 });
 
-export const openReorderPinnedPlaylistsModal = () => ({
+export const openReorderFeaturedPlaylists = () => ({
   type: VIDEO.OPEN_REORDER_PINNED_PL_MODAL
 });
 

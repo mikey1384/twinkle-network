@@ -12,27 +12,31 @@ import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
-import { searchContent } from 'helpers/requestHelpers';
+import { searchContent, uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 
 SelectPlaylistsToPinModal.propTypes = {
   changePinnedPlaylists: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   loadMorePlaylist: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   pinnedPlaylists: PropTypes.array.isRequired,
+  profileTheme: PropTypes.string,
   selectedPlaylists: PropTypes.array.isRequired
 };
 
 function SelectPlaylistsToPinModal({
   changePinnedPlaylists,
+  dispatch,
   loadMoreButton,
   loadMorePlaylist,
   onHide,
   pinnedPlaylists,
   playlistsToPin,
+  profileTheme,
   selectedPlaylists: initialSelectedPlaylists
 }) {
   const [selectTabActive, setSelectTabActive] = useState(true);
@@ -46,6 +50,7 @@ function SelectPlaylistsToPinModal({
     onSearch: handlePlaylistSearch,
     onClear: () => setSearchedPlaylists([])
   });
+  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     setSelectedPlaylists(initialSelectedPlaylists);
@@ -77,7 +82,7 @@ function SelectPlaylistsToPinModal({
         {selectedPlaylists.length > 5 && (
           <Banner love>Please limit your selection to 5 playlists</Banner>
         )}
-        <FilterBar>
+        <FilterBar color={themeColor}>
           <nav
             className={selectTabActive ? 'active' : ''}
             onClick={() => setSelectTabActive(true)}
@@ -214,7 +219,11 @@ function SelectPlaylistsToPinModal({
 
   async function handleSubmit() {
     setDisabled(true);
-    await changePinnedPlaylists(selectedPlaylists);
+    const newFeaturedPlaylists = await uploadFeaturedPlaylists({
+      dispatch,
+      selectedPlaylists
+    });
+    changePinnedPlaylists(newFeaturedPlaylists);
     onHide();
   }
 
@@ -230,9 +239,14 @@ function SelectPlaylistsToPinModal({
 }
 
 export default connect(
-  null,
-  {
-    loadMorePlaylist: loadMorePlaylistList,
-    changePinnedPlaylists
-  }
+  state => ({
+    profileTheme: state.UserReducer.profileTheme
+  }),
+  dispatch => ({
+    dispatch,
+    loadMorePlaylist: lastPlaylistId =>
+      dispatch(loadMorePlaylistList(lastPlaylistId)),
+    changePinnedPlaylists: selectedPlaylists =>
+      dispatch(changePinnedPlaylists(selectedPlaylists))
+  })
 )(SelectPlaylistsToPinModal);

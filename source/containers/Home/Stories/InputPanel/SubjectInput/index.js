@@ -22,17 +22,18 @@ import { uploadContent } from 'helpers/requestHelpers';
 
 SubjectInput.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   uploadFeedContent: PropTypes.func.isRequired
 };
 
-function SubjectInput({ dispatch, uploadFeedContent }) {
+function SubjectInput({ dispatch, profileTheme, uploadFeedContent }) {
   const [attachment, setAttachment] = useState(undefined);
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const [details, setDetails] = useState({ title: '', description: '' });
   const { title, description } = details;
   const [descriptionInputShown, setDescriptionInputShown] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  const themeColor = profileTheme || 'logoBlue';
   const descriptionExceedsCharLimit = exceedsCharLimit({
     contentType: 'subject',
     inputType: 'description',
@@ -42,8 +43,8 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
   return (
     <ErrorBoundary className={PanelStyle}>
       <p>
-        Post a <span style={{ color: Color.green() }}>subject</span> Twinkle
-        users can talk about
+        Post a <span style={{ color: Color[themeColor]() }}>subject</span>{' '}
+        Twinkle users can talk about
       </p>
       <div
         style={{
@@ -80,7 +81,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
           ) : (
             <Button
               style={{
-                color: Color.green(),
+                color: Color[themeColor](),
                 fontSize: '1.1rem',
                 lineHeight: '1.5rem',
                 padding: '0.5rem'
@@ -211,7 +212,9 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
 }
 
 export default connect(
-  null,
+  state => ({
+    profileTheme: state.UserReducer.profileTheme
+  }),
   dispatch => ({
     dispatch,
     uploadFeedContent: params => dispatch(uploadFeedContent(params))

@@ -175,8 +175,8 @@ function SectionPanel({
         </div>
         {onSearch && (
           <SearchInput
-            addonColor={profileThemes[themeColor].color}
-            borderColor={profileThemes[themeColor].color}
+            addonColor={themeColor}
+            borderColor={themeColor}
             style={{
               color: '#fff',
               gridArea: 'search',

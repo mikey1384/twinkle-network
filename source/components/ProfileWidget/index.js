@@ -4,7 +4,6 @@ import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { openSigninModal } from 'redux/actions/UserActions';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { container } from './Styles';
 import { Color } from 'constants/css';
@@ -14,6 +13,7 @@ ProfileWidget.propTypes = {
   loadImage: PropTypes.func,
   openSigninModal: PropTypes.func,
   profilePicId: PropTypes.number,
+  profileTheme: PropTypes.string,
   realName: PropTypes.string,
   showAlert: PropTypes.func,
   userId: PropTypes.number,
@@ -25,21 +25,23 @@ function ProfileWidget({
   loadImage,
   openSigninModal,
   profilePicId,
+  profileTheme,
   realName,
   showAlert,
   userId,
   username
 }) {
   const FileInputRef = useRef(null);
+  const themeColor = profileTheme || 'logoBlue';
 
   return (
     <ErrorBoundary>
       <div
+        style={{ cursor: 'pointer' }}
+        onClick={() => history.push(`/users/${username}`)}
         className={container({
-          heading: Color.channelGray(),
-          border: Color.borderGray(),
-          blue: Color.blue(),
-          darkerGray: Color.darkerGray()
+          heading: Color[themeColor](0.6),
+          headingHovered: Color[themeColor](1)
         })}
       >
         {username && (
@@ -56,7 +58,7 @@ function ProfileWidget({
               }}
             />
             <div className="names">
-              <Link to={`/users/${username}`}>{username}</Link>
+              <a>{username}</a>
               {realName && (
                 <div>
                   <span>({realName})</span>

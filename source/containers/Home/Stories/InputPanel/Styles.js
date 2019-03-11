@@ -13,7 +13,7 @@ export const PanelStyle = css`
   }
   > p {
     font-family: sans-serif, verdana;
-    color: ${Color.darkerGray()};
+    color: ${Color.darkGray()};
     margin-bottom: 1rem;
     font-size: 2rem;
     font-weight: bold;

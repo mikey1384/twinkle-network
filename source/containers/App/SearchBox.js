@@ -25,6 +25,7 @@ function SearchBox({
   return (
     <div className={className} style={style}>
       <SearchInput
+        inputHeight="80%"
         innerRef={innerRef}
         placeholder="Search Videos, Subjects, Links, and More"
         onChange={changeSearch}

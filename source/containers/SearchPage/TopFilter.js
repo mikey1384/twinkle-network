@@ -1,16 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FilterBar from 'components/FilterBar';
+import { connect } from 'react-redux';
 
 TopFilter.propTypes = {
   applyFilter: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   style: PropTypes.object,
   selectedFilter: PropTypes.string.isRequired
 };
 
-export default function TopFilter({ applyFilter, selectedFilter, style }) {
+function TopFilter({ applyFilter, profileTheme, selectedFilter, style }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
-    <FilterBar style={style} bordered>
+    <FilterBar color={themeColor} style={style} bordered>
       <nav
         className={selectedFilter === 'video' ? 'active' : ''}
         onClick={() => applyFilter('video')}
@@ -32,3 +35,7 @@ export default function TopFilter({ applyFilter, selectedFilter, style }) {
     </FilterBar>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(TopFilter);
