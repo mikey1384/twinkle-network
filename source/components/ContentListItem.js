@@ -66,7 +66,7 @@ function ContentListItem({
             : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
         }
       >
-        <div style={{ padding: '1rem 1rem 0 1rem' }}>
+        <div style={{ padding: '1rem' }}>
           <div
             style={{
               display: 'flex',
@@ -77,7 +77,11 @@ function ContentListItem({
           >
             {type === 'video' && (
               <div
-                style={{ display: 'flex', alignItems: 'center', width: '25%' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '25%'
+                }}
               >
                 <VideoThumbImage
                   difficulty={contentObj.difficulty}
@@ -115,6 +119,7 @@ function ContentListItem({
                   <div
                     style={{
                       marginTop: '1rem',
+                      marginLeft: '1rem',
                       color: Color.darkerGray()
                     }}
                   >
@@ -220,21 +225,20 @@ function ContentListItem({
             )}
           </div>
         </div>
-        <div
-          style={{
-            marginLeft: '-1px',
-            marginRight: '-1px',
-            paddingTop: '1rem',
-            paddingBottom: !!contentObj.difficulty && '1rem'
-          }}
-        >
-          {!!contentObj.difficulty && type === 'subject' && (
+        {!!contentObj.difficulty && type === 'subject' && (
+          <div
+            style={{
+              marginLeft: '-1px',
+              marginRight: '-1px',
+              paddingBottom: !!contentObj.difficulty && '1rem'
+            }}
+          >
             <DifficultyBar
               style={{ fontSize: '1.3rem' }}
               difficulty={contentObj.difficulty}
             />
-          )}
-        </div>
+          </div>
+        )}
       </Link>
     </div>
   );
