@@ -199,7 +199,9 @@ function App({
               "Warning: Update is mandatory. Some features will not work properly if you don't update!"
             }
           </p>
-          {updateDetail && <p>{updateDetail}</p>}
+          {updateDetail && (
+            <p style={{ color: Color.gold() }}>{updateDetail}</p>
+          )}
           <Button
             gold
             filled
