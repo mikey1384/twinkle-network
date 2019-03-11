@@ -1,9 +1,9 @@
 import { returnMaxStars } from 'constants/defaultValues';
 
-export function objectify(array) {
+export function objectify(array, id = 'id') {
   const result = {};
   for (let elem of array) {
-    result[elem.id] = elem;
+    result[elem[id]] = elem;
   }
   return result;
 }

@@ -11,7 +11,6 @@ const defaultState = {
 };
 
 export default function FeedReducer(state = defaultState, action) {
-  let loadMoreButton = false;
   const { currentSection } = state;
   switch (action.type) {
     case FEED.ADD_TAGS:
@@ -158,15 +157,17 @@ export default function FeedReducer(state = defaultState, action) {
         }))
       };
     case FEED.LOAD:
-      if (action.data.length > 20) {
-        action.data.pop();
-        loadMoreButton = true;
-      }
       return {
         ...state,
-        [currentSection]: action.data,
-        [`${currentSection}LoadMoreButton`]: loadMoreButton,
+        [currentSection]: action.feeds,
+        [`${currentSection}LoadMoreButton`]: action.loadMoreButton,
         loaded: true
+      };
+    case FEED.LOAD_MORE:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].concat(action.feeds),
+        [`${currentSection}LoadMoreButton`]: action.loadMoreButton
       };
     case FEED.LOAD_DETAIL:
       return {
@@ -194,16 +195,6 @@ export default function FeedReducer(state = defaultState, action) {
               }
             : feed;
         })
-      };
-    case FEED.LOAD_MORE:
-      if (action.data.length > 20) {
-        action.data.pop();
-        loadMoreButton = true;
-      }
-      return {
-        ...state,
-        [currentSection]: state[currentSection].concat(action.data),
-        [`${currentSection}LoadMoreButton`]: loadMoreButton
       };
     case FEED.LOAD_NEW:
       return {

@@ -6,8 +6,7 @@ import Heading from './Heading';
 import Body from './Body';
 import Loading from 'components/Loading';
 import { container } from './Styles';
-import request from 'axios';
-import URL from 'constants/URL';
+import { loadContent } from 'helpers/requestHelpers';
 
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
@@ -75,11 +74,11 @@ export default function ContentPanel({
     async function onMount() {
       if (!loaded && !newPost) {
         setLoaded(true);
-        const { data } = await request.get(
-          `${URL}/content?contentId=${contentId}&type=${type}`
-        );
         if (mounted.current) {
-          onInitContent({ content: data, feedId });
+          onInitContent({
+            content: await loadContent({ contentId, type }),
+            feedId
+          });
         }
       }
     }

@@ -78,9 +78,10 @@ export const fetchFeed = ({ content, feedId }) => ({
   data: content
 });
 
-export const fetchFeeds = data => ({
+export const fetchFeeds = ({ feeds, loadMoreButton }) => ({
   type: FEED.LOAD,
-  data
+  feeds,
+  loadMoreButton
 });
 
 export const fetchNewFeeds = data => ({
@@ -96,7 +97,9 @@ export const fetchMoreFeeds = ({
   username
 }) => async dispatch => {
   try {
-    const { data } = await request.get(
+    const {
+      data: { feeds, loadMoreButton }
+    } = await request.get(
       `${URL}/content/feeds?filter=${filter}&username=${username}${
         shownFeeds ? `&${shownFeeds}` : ''
       }&order=${order}&orderBy=${orderBy}`,
@@ -104,7 +107,8 @@ export const fetchMoreFeeds = ({
     );
     dispatch({
       type: FEED.LOAD_MORE,
-      data,
+      feeds,
+      loadMoreButton,
       filter
     });
     return Promise.resolve();

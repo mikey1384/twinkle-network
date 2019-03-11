@@ -8,45 +8,52 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 
 ChallengesPanel.propTypes = {
+  canPinPlaylists: PropTypes.bool,
   challenges: PropTypes.array.isRequired,
   loaded: PropTypes.bool,
+  onSelectedChallengesSubmit: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
-function ChallengesPanel({ challenges, loaded, userId }) {
-  const [selectFeaturedChallengesShown, setSelectFeaturedChallenges] = useState(
-    false
-  );
+function ChallengesPanel({
+  canPinPlaylists,
+  challenges,
+  loaded,
+  onSelectedChallengesSubmit,
+  userId
+}) {
+  const [modalShown, setModalShown] = useState(false);
+
   return (
     <ErrorBoundary>
       <SectionPanel
         title="Featured Subjects"
         button={
-          userId ? (
+          userId && canPinPlaylists ? (
             <Button
               snow
               style={{ marginLeft: 'auto' }}
-              onClick={() => setSelectFeaturedChallenges(true)}
+              onClick={() => setModalShown(true)}
             >
               Select Subjects
             </Button>
           ) : null
         }
-        isEmpty={false}
+        isEmpty={challenges.length === 0}
+        emptyMessage="No featured subjects for now..."
         loaded={loaded}
       >
         {challenges.map(challenge => (
-          <ContentListItem
-            key={challenge.id}
-            onClick={() => console.log('nothign')}
-            type={challenge.type}
-            contentObj={challenge}
-          />
+          <ContentListItem key={challenge.id} contentObj={challenge} />
         ))}
       </SectionPanel>
-      {selectFeaturedChallengesShown && (
+      {modalShown && (
         <SelectFeaturedChallenges
-          onHide={() => setSelectFeaturedChallenges(false)}
+          onHide={() => setModalShown(false)}
+          onSubmit={selectedChallenges => {
+            onSelectedChallengesSubmit(selectedChallenges);
+            setModalShown(false);
+          }}
         />
       )}
     </ErrorBoundary>
@@ -54,5 +61,6 @@ function ChallengesPanel({ challenges, loaded, userId }) {
 }
 
 export default connect(state => ({
+  canPinPlaylists: state.UserReducer.canPinPlaylists,
   userId: state.UserReducer.userId
 }))(ChallengesPanel);

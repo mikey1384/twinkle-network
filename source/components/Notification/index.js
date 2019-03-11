@@ -115,8 +115,6 @@ function Notification({
               color={themeColor}
               bordered
               style={{
-                marginTop:
-                  (location === 'home' || location === 'videos') && '1rem',
                 fontSize: '1.6rem',
                 height: '5rem'
               }}

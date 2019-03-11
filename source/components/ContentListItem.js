@@ -14,21 +14,31 @@ ContentListItem.propTypes = {
   contentObj: PropTypes.object.isRequired,
   onClick: PropTypes.func,
   profileTheme: PropTypes.string,
-  type: PropTypes.string.isRequired
+  selectable: PropTypes.bool,
+  selected: PropTypes.bool,
+  style: PropTypes.object
 };
 
 function ContentListItem({
   onClick = () => {},
-  type,
   contentObj,
-  profileTheme
+  contentObj: { type },
+  profileTheme,
+  selectable,
+  selected,
+  style
 }) {
   const themeColor = profileTheme || 'logoBlue';
   return (
     <div
+      onClick={onClick}
       style={{
+        cursor: 'pointer',
         borderRadius,
-        marginBottom: '1rem'
+        marginBottom: '1rem',
+        boxShadow: selected ? `0 0 5px ${Color[themeColor]()}` : null,
+        border: selected ? `0.5rem solid ${Color[themeColor]()}` : null,
+        ...style
       }}
       className={css`
         border: 1px solid;
@@ -39,21 +49,24 @@ function ContentListItem({
         }
         &:hover {
           .label {
-            color: ${Color[themeColor]()};
+            color: ${selectable ? '' : Color[themeColor]()};
             transition: color 0.3s;
           }
-          box-shadow: 0 0 5px ${Color[themeColor](0.8)};
-          border-color: ${Color[themeColor](0.8)};
+          box-shadow: ${selectable ? '' : `0 0 5px ${Color[themeColor](0.8)}`};
+          border-color: ${selectable ? '' : Color[themeColor](0.8)};
           transition: box-shadow 0.3s, border-color 0.3s;
         }
       `}
     >
-      <div style={{ padding: '1rem 1rem 0 1rem' }}>
-        <Link
-          style={{ textDecoration: 'none' }}
-          to={`/${type === 'url' ? 'link' : type}s/${contentObj.id}`}
-          onClick={onClick}
-        >
+      <Link
+        style={{ textDecoration: 'none' }}
+        to={
+          selectable
+            ? ''
+            : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
+        }
+      >
+        <div style={{ padding: '1rem 1rem 0 1rem' }}>
           <div
             style={{
               display: 'flex',
@@ -206,23 +219,23 @@ function ContentListItem({
               </div>
             )}
           </div>
-        </Link>
-      </div>
-      <div
-        style={{
-          marginLeft: '-1px',
-          marginRight: '-1px',
-          paddingTop: '1rem',
-          paddingBottom: !!contentObj.difficulty && '1rem'
-        }}
-      >
-        {!!contentObj.difficulty && type === 'subject' && (
-          <DifficultyBar
-            style={{ fontSize: '1.3rem' }}
-            difficulty={contentObj.difficulty}
-          />
-        )}
-      </div>
+        </div>
+        <div
+          style={{
+            marginLeft: '-1px',
+            marginRight: '-1px',
+            paddingTop: '1rem',
+            paddingBottom: !!contentObj.difficulty && '1rem'
+          }}
+        >
+          {!!contentObj.difficulty && type === 'subject' && (
+            <DifficultyBar
+              style={{ fontSize: '1.3rem' }}
+              difficulty={contentObj.difficulty}
+            />
+          )}
+        </div>
+      </Link>
     </div>
   );
 }

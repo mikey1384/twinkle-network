@@ -95,7 +95,6 @@ function Results({
           <ContentListItem
             key={result.id}
             onClick={closeSearch}
-            type={filter}
             contentObj={result}
           />
         ))}

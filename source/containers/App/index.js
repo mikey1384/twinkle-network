@@ -21,6 +21,7 @@ import {
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { updateDetail } from 'constants/defaultValues';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import Privacy from 'containers/Privacy';
@@ -198,6 +199,7 @@ function App({
               "Warning: Update is mandatory. Some features will not work properly if you don't update!"
             }
           </p>
+          {updateDetail && <p>{updateDetail}</p>}
           <Button
             gold
             filled

@@ -78,6 +78,9 @@ function Work({
       <ChallengesPanel
         challenges={featuredChallenges}
         loaded={challengesLoaded}
+        onSelectedChallengesSubmit={selectedChallenges =>
+          setFeaturedChallenges(selectedChallenges)
+        }
       />
       <PlaylistsPanel
         buttonGroupShown={!!canPinPlaylists}

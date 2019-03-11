@@ -211,6 +211,7 @@ function SectionPanel({
               display: flex;
               justify-content: center;
               align-items: center;
+              color: ${Color.darkerGray()};
             `}
           />
         ) : (

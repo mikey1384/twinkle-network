@@ -185,6 +185,18 @@ export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
   }
 };
 
+export const loadContent = async({ contentId, type }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content?contentId=${contentId}&type=${type}`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const loadComments = async({ id, type, lastCommentId, limit }) => {
   try {
     const {
@@ -211,30 +223,20 @@ export const loadFeaturedContents = async() => {
 
 export const loadFeeds = async({
   filter = 'all',
+  limit = 20,
   order = 'desc',
   orderBy = 'lastInteraction',
-  username
+  username,
+  shownFeeds
 } = {}) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}`,
+      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&limit=${limit}${
+        shownFeeds ? `&${shownFeeds}` : ''
+      }`,
       auth()
     );
     return Promise.resolve({ data, filter });
-  } catch (error) {
-    console.error(error.response || error);
-    return Promise.reject(error);
-  }
-};
-
-export const loadReplies = async({ lastReplyId, commentId }) => {
-  try {
-    const { data } = await request.get(
-      `${URL}/content/replies?${
-        lastReplyId ? `lastReplyId=${lastReplyId}&` : ''
-      }commentId=${commentId}&includeAll=true`
-    );
-    return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -267,6 +269,20 @@ export const loadMoreNotableContents = async({ userId, notables }) => {
       )}`
     );
     return Promise.resolve({ results, loadMoreButton });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const loadReplies = async({ lastReplyId, commentId }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/replies?${
+        lastReplyId ? `lastReplyId=${lastReplyId}&` : ''
+      }commentId=${commentId}&includeAll=true`
+    );
+    return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -565,6 +581,19 @@ export const uploadContent = async({
       auth()
     );
     return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
+export const uploadFeaturedChallenges = async({ dispatch, selected }) => {
+  try {
+    const challenges = await request.post(
+      `${URL}/content/featured`,
+      { selectedChallenges: selected },
+      auth()
+    );
+    return Promise.resolve(challenges);
   } catch (error) {
     return handleError(error, dispatch);
   }
