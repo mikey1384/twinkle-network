@@ -4,8 +4,9 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.5';
-export const updateDetail = 'Homepage Theme Update';
+export const clientVersion = '0.2.6';
+export const updateDetail =
+  'Homepage has been redesigned, and Featured Subjects are now available on the Earn XP tab!';
 
 export const charLimit = {
   chat: {
