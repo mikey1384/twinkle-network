@@ -160,7 +160,7 @@ function ContentListItem({
                         style={{
                           marginTop: '1rem',
                           width: '100%',
-                          textAlign: 'center',
+                          textAlign: 'left',
                           color: Color.darkerGray()
                         }}
                       >
