@@ -152,7 +152,7 @@ function App({
   return (
     <div
       className={css`
-        height: CALC(100% - 6rem);
+        height: CALC(100% - 5rem);
         width: 100%;
         @media (max-width: ${mobileMaxWidth}) {
           height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
@@ -223,7 +223,7 @@ function App({
       {searchMode && (
         <div
           className={`${css`
-            margin-top: 6rem;
+            margin-top: 5rem;
             @media (max-width: ${mobileMaxWidth}) {
               margin-top: 0;
             }

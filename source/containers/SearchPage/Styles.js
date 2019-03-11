@@ -6,7 +6,7 @@ export const searchPage = css`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: CALC(100vh - 6rem);
+  height: CALC(100vh - 5rem);
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   @media (max-width: ${mobileMaxWidth}) {

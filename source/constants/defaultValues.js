@@ -4,7 +4,7 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.6';
+export const clientVersion = '0.2.7';
 export const updateDetail =
   'Homepage has been redesigned, and Featured Subjects are now available on the Earn XP tab!';
 
@@ -24,7 +24,7 @@ export const charLimit = {
   },
   subject: {
     title: 300,
-    description: 5000
+    description: 20000
   },
   rewardComment: 5000,
   statusMsg: 500,

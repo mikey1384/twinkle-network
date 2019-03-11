@@ -181,7 +181,6 @@ function MainFeeds({
         (activeTab === 'reward' && loadMore.rewards)) && (
         <LoadMoreButton
           loading={loading}
-          style={{ marginTop: '1rem' }}
           info
           filled
           stretch

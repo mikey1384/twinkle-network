@@ -108,7 +108,7 @@ export default function LeftMenu({
           className={css`
             grid-area: channelDetail;
             display: flex;
-            width: CALC(100% - 6rem);
+            width: CALC(100% - 5rem);
             flex-direction: column;
           `}
         >
