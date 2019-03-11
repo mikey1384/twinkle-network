@@ -24,6 +24,7 @@ SelectFeaturedChallengesModal.propTypes = {
 
 function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
   const [loadMoreButton, setLoadMoreButton] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [challengeObjs, setChallengeObjs] = useState({});
   const [challenges, setChallenges] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -84,6 +85,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
           <LoadMoreButton
             style={{ fontSize: '2rem' }}
             transparent
+            loading={loadingMore}
             onClick={handleLoadMore}
           />
         )}
@@ -100,6 +102,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
   );
 
   async function handleLoadMore() {
+    setLoadingMore(true);
     const {
       data: { feeds, loadMoreButton: loadMoreShown }
     } = await loadFeeds({
@@ -126,6 +129,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
     setChallenges(
       challenges.concat(challengesArray.map(challenge => challenge.id))
     );
+    setLoadingMore(false);
     setLoadMoreButton(loadMoreShown);
   }
 
