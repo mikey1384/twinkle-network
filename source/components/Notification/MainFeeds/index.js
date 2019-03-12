@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import UsernameText from 'components/Texts/UsernameText';
@@ -10,6 +10,7 @@ import NotiItem from './NotiItem';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   clearRewards,
+  changeRankingsLoadedStatus,
   fetchNotifications,
   loadMoreNotifications,
   loadMoreRewards
@@ -24,6 +25,7 @@ import { rewardValue } from 'constants/defaultValues';
 
 MainFeeds.propTypes = {
   clearRewards: PropTypes.func.isRequired,
+  changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeUserXP: PropTypes.func.isRequired,
   fetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object.isRequired,
@@ -43,6 +45,7 @@ MainFeeds.propTypes = {
 function MainFeeds({
   activeTab,
   changeUserXP,
+  changeRankingsLoadedStatus,
   clearRewards,
   fetchNotifications,
   loadMore,
@@ -60,6 +63,9 @@ function MainFeeds({
   const [loading, setLoading] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
+  useEffect(() => {
+    changeRankingsLoadedStatus(false);
+  }, [userId]);
 
   return (
     <ErrorBoundary style={style}>
@@ -224,6 +230,7 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
+    changeRankingsLoadedStatus,
     changeUserXP,
     clearRewards,
     fetchNotifications,

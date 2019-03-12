@@ -12,17 +12,13 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
 import { css } from 'emotion';
-import {
-  changeRankingsLoadedStatus,
-  getRanks
-} from 'redux/actions/NotiActions';
+import { getRanks } from 'redux/actions/NotiActions';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
 Rankings.propTypes = {
   all: PropTypes.array.isRequired,
-  changeRankingsLoadedStatus: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   myId: PropTypes.number,
   rank: PropTypes.number,
@@ -34,7 +30,6 @@ Rankings.propTypes = {
 
 function Rankings({
   all,
-  changeRankingsLoadedStatus,
   loaded,
   getRanks,
   myId,
@@ -43,7 +38,6 @@ function Rankings({
   top30s,
   twinkleXP
 }) {
-  const [prevId, setPrevId] = useState(null);
   const [allSelected, setAllSelected] = useState(true);
   const mounted = useRef(true);
   const rankedColor =
@@ -51,14 +45,10 @@ function Rankings({
 
   useEffect(() => {
     mounted.current = true;
-    if (myId !== prevId) {
-      changeRankingsLoadedStatus(false);
-    }
     if (!myId) {
       setAllSelected(false);
     }
     loadRankings();
-    setPrevId(myId);
     async function loadRankings() {
       try {
         const {
@@ -272,7 +262,6 @@ export default connect(
     loaded: state.NotiReducer.rankingsLoaded
   }),
   {
-    changeRankingsLoadedStatus,
     getRanks
   }
 )(Rankings);
