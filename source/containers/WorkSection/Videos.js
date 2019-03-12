@@ -9,7 +9,6 @@ import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import {
-  clearVideos,
   closeAddPlaylistModal,
   closeAddVideoModal,
   getInitialVideos,
@@ -25,7 +24,6 @@ import { scrollElementToCenter } from 'helpers';
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
   addVideoModalShown: PropTypes.bool.isRequired,
-  clearVideos: PropTypes.func.isRequired,
   closeAddPlaylistModal: PropTypes.func.isRequired,
   closeAddVideoModal: PropTypes.func.isRequired,
   getInitialVideos: PropTypes.func.isRequired,
@@ -47,7 +45,6 @@ Videos.propTypes = {
 function Videos({
   addPlaylistModalShown,
   addVideoModalShown,
-  clearVideos,
   closeAddPlaylistModal,
   closeAddVideoModal,
   getPlaylists,
@@ -75,7 +72,6 @@ function Videos({
 
   useEffect(() => {
     if (history.action === 'PUSH' || !loaded) {
-      clearVideos();
       getInitialVideos();
       getPlaylists();
     }
@@ -168,7 +164,6 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
-    clearVideos,
     getPlaylists,
     getInitialVideos,
     openAddVideoModal,

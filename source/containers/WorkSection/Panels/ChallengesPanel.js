@@ -1,27 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedChallenges from '../Modals/SelectFeaturedChallenges';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { loadFeaturedChallenges } from 'helpers/requestHelpers';
+import { getFeaturedChallenges } from 'redux/actions/ChallengeActions';
 import { connect } from 'react-redux';
 
 ChallengesPanel.propTypes = {
   canPinPlaylists: PropTypes.bool,
-  challenges: PropTypes.array.isRequired,
+  featuredChallenges: PropTypes.array.isRequired,
+  getFeaturedChallenges: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   loaded: PropTypes.bool,
-  onSelectedChallengesSubmit: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
 function ChallengesPanel({
   canPinPlaylists,
-  challenges,
+  featuredChallenges,
+  getFeaturedChallenges,
+  history,
   loaded,
-  onSelectedChallengesSubmit,
   userId
 }) {
+  useEffect(() => {
+    init();
+    async function init() {
+      if (history.action === 'PUSH' || !loaded) {
+        const challenges = await loadFeaturedChallenges();
+        getFeaturedChallenges(challenges);
+      }
+    }
+  }, []);
   const [modalShown, setModalShown] = useState(false);
 
   return (
@@ -39,11 +52,11 @@ function ChallengesPanel({
             </Button>
           ) : null
         }
-        isEmpty={challenges.length === 0}
+        isEmpty={featuredChallenges.length === 0}
         emptyMessage="No featured subjects for now..."
         loaded={loaded}
       >
-        {challenges.map(challenge => (
+        {featuredChallenges.map(challenge => (
           <ContentListItem key={challenge.id} contentObj={challenge} />
         ))}
       </SectionPanel>
@@ -51,7 +64,7 @@ function ChallengesPanel({
         <SelectFeaturedChallenges
           onHide={() => setModalShown(false)}
           onSubmit={selectedChallenges => {
-            onSelectedChallengesSubmit(selectedChallenges);
+            getFeaturedChallenges(selectedChallenges);
             setModalShown(false);
           }}
         />
@@ -60,7 +73,12 @@ function ChallengesPanel({
   );
 }
 
-export default connect(state => ({
-  canPinPlaylists: state.UserReducer.canPinPlaylists,
-  userId: state.UserReducer.userId
-}))(ChallengesPanel);
+export default connect(
+  state => ({
+    canPinPlaylists: state.UserReducer.canPinPlaylists,
+    loaded: state.ChallengeReducer.featuredChallengesLoaded,
+    featuredChallenges: state.ChallengeReducer.featuredChallenges,
+    userId: state.UserReducer.userId
+  }),
+  { getFeaturedChallenges }
+)(ChallengesPanel);
