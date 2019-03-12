@@ -17,6 +17,7 @@ import {
   resetChat
 } from 'redux/actions/ChatActions';
 import {
+  changeRankingsLoadedStatus,
   changeSocketStatus,
   checkVersion,
   notifyChatSubjectChange,
@@ -34,6 +35,7 @@ import { container, logo } from './Styles';
 Header.propTypes = {
   chatLoading: PropTypes.bool,
   chatMode: PropTypes.bool,
+  changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   checkVersion: PropTypes.func,
   history: PropTypes.object.isRequired,
@@ -66,6 +68,7 @@ Header.propTypes = {
 };
 
 function Header({
+  changeRankingsLoadedStatus,
   chatLoading,
   chatMode,
   changeSocketStatus,
@@ -149,6 +152,7 @@ function Header({
   });
 
   useEffect(() => {
+    changeRankingsLoadedStatus(false);
     if (userId) {
       socket.connect();
       socket.emit('bind_uid_to_socket', userId, username);
@@ -364,6 +368,7 @@ export default connect(
     versionMatch: state.NotiReducer.versionMatch
   }),
   {
+    changeRankingsLoadedStatus,
     changeSocketStatus,
     checkVersion,
     getNumberOfUnreadMessages,
