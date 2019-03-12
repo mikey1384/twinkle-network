@@ -72,20 +72,21 @@ function SubjectHeader({
   useEffect(() => {
     mounted.current = true;
     socket.on('subject_change', onSubjectChange);
-    if (!loaded) {
-      initialLoad();
-    }
+    return function cleanUp() {
+      mounted.current = false;
+      socket.removeListener('subject_change', onSubjectChange);
+    };
+  });
+
+  useEffect(() => {
+    initialLoad();
     async function initialLoad() {
       await loadChatSubject();
       if (mounted.current) {
         setLoaded(true);
       }
     }
-    return function cleanUp() {
-      mounted.current = false;
-      socket.removeListener('subject_change', onSubjectChange);
-    };
-  });
+  }, []);
 
   useEffect(() => {
     setTimeSincePost(timeSince(timeStamp));
