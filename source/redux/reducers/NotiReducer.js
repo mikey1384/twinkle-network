@@ -21,6 +21,11 @@ const defaultState = {
 
 export default function NotiReducer(state = defaultState, action) {
   switch (action.type) {
+    case NOTI.CHANGE_RANKINGS_LOADED:
+      return {
+        ...state,
+        rankingsLoaded: action.loaded
+      };
     case NOTI.CHANGE_SOCKET_STATUS:
       return {
         ...state,

@@ -33,6 +33,11 @@ export const clearNotifications = () => ({
   type: NOTI.CLEAR
 });
 
+export const changeRankingsLoadedStatus = loaded => ({
+  type: NOTI.CHANGE_RANKINGS_LOADED,
+  loaded
+});
+
 export const fetchNotifications = () => async dispatch => {
   try {
     if (auth().headers.authorization === null) {
