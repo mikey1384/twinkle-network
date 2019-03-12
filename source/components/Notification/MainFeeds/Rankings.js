@@ -53,8 +53,8 @@ function Rankings({
           data: { all, rankModifier: modifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
-          if (myId !== prevId) {
-            setAllSelected(!!myId && all.length > 0);
+          if (myId !== prevId && !myId) {
+            setAllSelected(false);
           }
           getRanks({ all, top30s, rankModifier: modifier });
           setPrevId(myId);
