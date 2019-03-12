@@ -173,80 +173,82 @@ function Rankings({
           or leaving comments
         </div>
       )}
-      <RoundList style={{ marginTop: 0 }}>
-        {users.map(user => {
-          const rank = !user.twinkleXP
-            ? undefined
-            : users.filter(otherUser => otherUser.twinkleXP > user.twinkleXP)
-                .length +
-              1 +
-              modifier;
-          const rankColor =
-            rank === 1
-              ? Color.gold()
-              : rank === 2
-              ? Color.lightGray()
-              : rank === 3
-              ? Color.orange()
-              : undefined;
-          return (
-            <li
-              key={user.id}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                background: user.id === myId ? Color.channelGray() : '#fff'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: rank < 100 ? '2rem' : '1.5rem',
-                    width: '3rem',
-                    marginRight: '1rem',
-                    textAlign: 'center',
-                    color:
-                      rankColor ||
-                      (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
-                  }}
-                >
-                  {rank ? `#${rank}` : '--'}
-                </span>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                  }}
-                >
-                  <ProfilePic
-                    style={{ width: '6rem', height: '6rem' }}
-                    profilePicId={user.profilePicId}
-                    userId={user.id}
-                  />
-                  <UsernameText
-                    color={
-                      rankColor ||
-                      (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
-                    }
-                    user={{ ...user, username: user.username }}
-                    userId={myId}
-                    style={{ display: 'block', marginTop: '0.5rem' }}
-                  />
+      {loaded && (
+        <RoundList style={{ marginTop: 0 }}>
+          {users.map(user => {
+            const rank = !user.twinkleXP
+              ? undefined
+              : users.filter(otherUser => otherUser.twinkleXP > user.twinkleXP)
+                  .length +
+                1 +
+                modifier;
+            const rankColor =
+              rank === 1
+                ? Color.gold()
+                : rank === 2
+                ? Color.lightGray()
+                : rank === 3
+                ? Color.orange()
+                : undefined;
+            return (
+              <li
+                key={user.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background: user.id === myId ? Color.channelGray() : '#fff'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: rank < 100 ? '2rem' : '1.5rem',
+                      width: '3rem',
+                      marginRight: '1rem',
+                      textAlign: 'center',
+                      color:
+                        rankColor ||
+                        (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+                    }}
+                  >
+                    {rank ? `#${rank}` : '--'}
+                  </span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <ProfilePic
+                      style={{ width: '6rem', height: '6rem' }}
+                      profilePicId={user.profilePicId}
+                      userId={user.id}
+                    />
+                    <UsernameText
+                      color={
+                        rankColor ||
+                        (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+                      }
+                      user={{ ...user, username: user.username }}
+                      userId={myId}
+                      style={{ display: 'block', marginTop: '0.5rem' }}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div style={{ fontWeight: 'bold' }}>
-                <span style={{ color: Color.logoGreen() }}>
-                  {addCommasToNumber(user.twinkleXP || 0)}
-                </span>{' '}
-                <span style={{ color: Color.gold() }}>XP</span>
-              </div>
-            </li>
-          );
-        })}
-      </RoundList>
+                <div style={{ fontWeight: 'bold' }}>
+                  <span style={{ color: Color.logoGreen() }}>
+                    {addCommasToNumber(user.twinkleXP || 0)}
+                  </span>{' '}
+                  <span style={{ color: Color.gold() }}>XP</span>
+                </div>
+              </li>
+            );
+          })}
+        </RoundList>
+      )}
     </ErrorBoundary>
   );
 }
