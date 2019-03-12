@@ -94,7 +94,7 @@ function Rankings({
         </FilterBar>
       )}
       {!loaded && <Loading />}
-      {loaded && allSelected && (
+      {loaded && allSelected && !!myId && (
         <div
           style={{
             marginTop: '1rem',
