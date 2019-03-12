@@ -11,6 +11,9 @@ const defaultState = {
   },
   numNewNotis: 0,
   numNewPosts: 0,
+  rankingsLoaded: false,
+  allRanks: [],
+  top30s: [],
   socketConnected: false,
   totalRewardAmount: 0
 };
@@ -36,16 +39,7 @@ export default function NotiReducer(state = defaultState, action) {
         }
       };
     case NOTI.CLEAR:
-      return {
-        ...state,
-        notifications: [],
-        rewards: [],
-        totalRewardAmount: 0,
-        loadMore: {
-          notifications: false,
-          rewards: false
-        }
-      };
+      return defaultState;
     case NOTI.CLEAR_REWARDS:
       return {
         ...state,
@@ -71,6 +65,13 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         ...action.data,
         numNewNotis: 0
+      };
+    case NOTI.LOAD_RANKS:
+      return {
+        ...state,
+        allRanks: action.all,
+        top30s: action.top30s,
+        rankingsLoaded: true
       };
     case NOTI.LOAD_MORE:
       return {

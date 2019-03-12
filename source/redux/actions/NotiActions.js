@@ -59,6 +59,12 @@ export const fetchNotifications = () => async dispatch => {
   }
 };
 
+export const getRanks = ({ all, top30s }) => ({
+  type: NOTI.LOAD_RANKS,
+  all,
+  top30s
+});
+
 export const loadMoreNotifications = lastId => async dispatch => {
   try {
     const { data } = await request.get(`${API_URL}?lastId=${lastId}`, auth());

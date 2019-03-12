@@ -12,20 +12,22 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
 import { css } from 'emotion';
+import { getRanks } from 'redux/actions/NotiActions';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
 Rankings.propTypes = {
+  loaded: PropTypes.bool,
   myId: PropTypes.number,
   rank: PropTypes.number,
+  getRanks: PropTypes.func.isRequired,
+  all: PropTypes.array.isRequired,
+  top30s: PropTypes.array.isRequired,
   twinkleXP: PropTypes.number
 };
 
-function Rankings({ myId, rank, twinkleXP }) {
-  const [all, setAll] = useState([]);
-  const [top30s, setTop30s] = useState([]);
-  const [loaded, setLoaded] = useState(false);
+function Rankings({ all, loaded, getRanks, myId, rank, top30s, twinkleXP }) {
   const [allSelected, setAllSelected] = useState(false);
   const [rankModifier, setRankModifier] = useState(0);
   const [prevId, setPrevId] = useState(twinkleXP);
@@ -45,9 +47,7 @@ function Rankings({ myId, rank, twinkleXP }) {
           if (myId !== prevId) {
             setAllSelected(!!myId && all.length > 0);
           }
-          setAll(all);
-          setTop30s(top30s);
-          setLoaded(true);
+          getRanks({ all, top30s });
           setRankModifier(rankModifier);
           setPrevId(myId);
         }
@@ -86,7 +86,7 @@ function Rankings({ myId, rank, twinkleXP }) {
           </nav>
         </FilterBar>
       )}
-      {loaded === false && <Loading />}
+      {!loaded && <Loading />}
       {allSelected && (
         <div
           style={{
@@ -244,8 +244,16 @@ function Rankings({ myId, rank, twinkleXP }) {
   );
 }
 
-export default connect(state => ({
-  myId: state.UserReducer.userId,
-  rank: state.UserReducer.rank,
-  twinkleXP: state.UserReducer.twinkleXP
-}))(Rankings);
+export default connect(
+  state => ({
+    all: state.NotiReducer.allRanks,
+    myId: state.UserReducer.userId,
+    rank: state.UserReducer.rank,
+    top30s: state.NotiReducer.top30s,
+    twinkleXP: state.UserReducer.twinkleXP,
+    loaded: state.NotiReducer.rankingsLoaded
+  }),
+  {
+    getRanks
+  }
+)(Rankings);
