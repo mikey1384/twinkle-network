@@ -15,6 +15,7 @@ const defaultState = {
   allRanks: [],
   top30s: [],
   socketConnected: false,
+  rankModifier: 0,
   totalRewardAmount: 0
 };
 
@@ -71,6 +72,7 @@ export default function NotiReducer(state = defaultState, action) {
         ...state,
         allRanks: action.all,
         top30s: action.top30s,
+        rankModifier: action.rankModifier,
         rankingsLoaded: true
       };
     case NOTI.LOAD_MORE:

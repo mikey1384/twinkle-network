@@ -59,10 +59,11 @@ export const fetchNotifications = () => async dispatch => {
   }
 };
 
-export const getRanks = ({ all, top30s }) => ({
+export const getRanks = ({ all, top30s, rankModifier }) => ({
   type: NOTI.LOAD_RANKS,
   all,
-  top30s
+  top30s,
+  rankModifier
 });
 
 export const loadMoreNotifications = lastId => async dispatch => {

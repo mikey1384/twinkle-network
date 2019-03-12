@@ -18,18 +18,27 @@ import URL from 'constants/URL';
 const API_URL = `${URL}/user`;
 
 Rankings.propTypes = {
+  all: PropTypes.array.isRequired,
   loaded: PropTypes.bool,
   myId: PropTypes.number,
   rank: PropTypes.number,
   getRanks: PropTypes.func.isRequired,
-  all: PropTypes.array.isRequired,
+  rankModifier: PropTypes.number.isRequired,
   top30s: PropTypes.array.isRequired,
   twinkleXP: PropTypes.number
 };
 
-function Rankings({ all, loaded, getRanks, myId, rank, top30s, twinkleXP }) {
+function Rankings({
+  all,
+  loaded,
+  getRanks,
+  myId,
+  rank,
+  rankModifier,
+  top30s,
+  twinkleXP
+}) {
   const [allSelected, setAllSelected] = useState(true);
-  const [rankModifier, setRankModifier] = useState(0);
   const [prevId, setPrevId] = useState(myId);
   const mounted = useRef(true);
   const rankedColor =
@@ -41,14 +50,13 @@ function Rankings({ all, loaded, getRanks, myId, rank, top30s, twinkleXP }) {
     async function loadRankings() {
       try {
         const {
-          data: { all, rankModifier, top30s }
+          data: { all, rankModifier: modifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
           if (myId !== prevId) {
             setAllSelected(!!myId && all.length > 0);
           }
-          getRanks({ all, top30s });
-          setRankModifier(rankModifier);
+          getRanks({ all, top30s, rankModifier: modifier });
           setPrevId(myId);
         }
       } catch (error) {
@@ -249,6 +257,7 @@ export default connect(
     all: state.NotiReducer.allRanks,
     myId: state.UserReducer.userId,
     rank: state.UserReducer.rank,
+    rankModifier: state.NotiReducer.rankModifier,
     top30s: state.NotiReducer.top30s,
     twinkleXP: state.UserReducer.twinkleXP,
     loaded: state.NotiReducer.rankingsLoaded
