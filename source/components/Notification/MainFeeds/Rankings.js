@@ -45,7 +45,7 @@ function Rankings({
 
   useEffect(() => {
     mounted.current = true;
-    setAllSelected(!!myId);
+    setAllSelected(loaded && !!myId);
     loadRankings();
     async function loadRankings() {
       try {
