@@ -39,13 +39,13 @@ function Rankings({
   twinkleXP
 }) {
   const [allSelected, setAllSelected] = useState(true);
-  const [prevId, setPrevId] = useState(myId);
   const mounted = useRef(true);
   const rankedColor =
     rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
 
   useEffect(() => {
     mounted.current = true;
+    setAllSelected(!!myId);
     loadRankings();
     async function loadRankings() {
       try {
@@ -53,11 +53,7 @@ function Rankings({
           data: { all, rankModifier: modifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
-          if (myId !== prevId && !myId) {
-            setAllSelected(false);
-          }
           getRanks({ all, top30s, rankModifier: modifier });
-          setPrevId(myId);
         }
       } catch (error) {
         console.error(error.response || error);
