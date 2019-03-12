@@ -70,6 +70,10 @@ function SubjectHeader({
   const subjectTitle = cleanString(content);
 
   useEffect(() => {
+    function onSubjectChange({ subject }) {
+      changeChatSubject(subject);
+    }
+
     mounted.current = true;
     socket.on('subject_change', onSubjectChange);
     return function cleanUp() {
@@ -198,10 +202,6 @@ function SubjectHeader({
     if (textIsOverflown(HeaderLabelRef.current)) {
       setOnHover(true);
     }
-  }
-
-  function onSubjectChange({ subject }) {
-    changeChatSubject(subject);
   }
 
   async function onReloadChatSubject(subjectId) {
