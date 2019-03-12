@@ -3,7 +3,7 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 
 export const container = css`
   z-index: 500;
-  font-family: sans-serif, verdana;
+  font-family: sans-serif, Arial, Helvetica;
   font-size: 1.5rem;
   background: #fff;
   display: flex;
@@ -117,7 +117,7 @@ export const logo = {
   inner: css`
     font-size: 2rem;
     font-weight: bold;
-    font-family: sans-serif, verdana;
+    font-family: sans-serif, Arial, Helvetica;
     position: absolute;
     top: 0;
     left: 0;

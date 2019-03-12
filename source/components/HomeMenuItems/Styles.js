@@ -4,7 +4,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 export const container = css`
   display: flex;
   font-size: 2rem;
-  font-family: sans-serif, verdana;
+  font-family: sans-serif, Arial, Helvetica;
   padding-left: 0;
   flex-direction: column;
   > nav {

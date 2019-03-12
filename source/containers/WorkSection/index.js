@@ -64,7 +64,7 @@ function WorkSection({
               justify-content: center;
               flex-direction: column;
               font-size: 2rem;
-              font-family: sans-serif, verdana;
+              font-family: sans-serif, Arial, Helvetica;
               > a {
                 padding: 1.5rem;
                 cursor: pointer;

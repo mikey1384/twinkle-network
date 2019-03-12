@@ -111,7 +111,7 @@ export default function Button({
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: sans-serif, verdana;
+        font-family: sans-serif, Arial, Helvetica;
         text-transform: uppercase;
         font-weight: bold;
         line-height: 1;
