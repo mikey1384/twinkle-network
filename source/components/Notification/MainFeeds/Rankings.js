@@ -160,7 +160,7 @@ function Rankings({
           }
         </div>
       )}
-      {loaded && allSelected && users.length === 0 && (
+      {loaded && allSelected && users.length === 0 && !!myId && (
         <div
           style={{
             background: '#fff',
