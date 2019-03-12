@@ -62,7 +62,7 @@ function Rankings({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [myId, twinkleXP]);
+  }, [loaded, myId, twinkleXP]);
 
   const users = allSelected ? all : top30s;
   const modifier = allSelected ? rankModifier : 0;
