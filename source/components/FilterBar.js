@@ -28,12 +28,13 @@ function FilterBar({
   style
 }) {
   const themeColor = color || profileTheme || 'logoBlue';
+  const selectedOpacity = inverted ? 0.6 : 1;
   return (
     <div
       style={style}
       ref={innerRef}
       className={`${css`
-        background: ${inverted ? Color[themeColor](0.6) : '#fff'};
+        background: ${inverted ? Color[themeColor](0.3) : '#fff'};
         height: 6rem;
         margin-bottom: 1rem;
         ${
@@ -85,17 +86,19 @@ function FilterBar({
             }
           }
           > nav.active {
-            background: ${inverted ? Color[themeColor]() : ''};
+            background: ${inverted ? Color[themeColor](selectedOpacity) : ''};
             border-bottom: ${
-              inverted ? '' : `3px solid ${Color[themeColor]()}`
+              inverted ? '' : `3px solid ${Color[themeColor](selectedOpacity)}`
             };
-            color: ${inverted ? '#fff' : Color[themeColor]()};
+            color: ${inverted ? '#fff' : Color[themeColor](selectedOpacity)};
             > a {
-              color: ${inverted ? '#fff' : Color[themeColor]()};
+              color: ${inverted ? '#fff' : Color[themeColor](selectedOpacity)};
             }
             @media (max-width: ${mobileMaxWidth}) {
               border-bottom: ${
-                inverted ? '' : `4px solid ${Color[themeColor]()}`
+                inverted
+                  ? ''
+                  : `4px solid ${Color[themeColor](selectedOpacity)}`
               };
             }
           }
@@ -121,17 +124,17 @@ function FilterBar({
           }
           > nav:hover {
             transition: border-bottom 0.5s, background 0.5s;
-            background: ${inverted ? Color[themeColor]() : ''};
-            color: ${inverted ? '#fff' : Color[themeColor]()};
+            background: ${inverted ? Color[themeColor](selectedOpacity) : ''};
+            color: ${inverted ? '#fff' : Color[themeColor](selectedOpacity)};
             border-bottom: ${
-              inverted ? '' : `3px solid ${Color[themeColor]()}`
+              inverted ? '' : `3px solid ${Color[themeColor](selectedOpacity)}`
             };
             &.alert {
               color: ${Color.gold()}!important;
               border-bottom: 3px solid ${Color.gold()}!important;
             }
             > a {
-              color: ${inverted ? '#fff' : Color[themeColor]()};
+              color: ${inverted ? '#fff' : Color[themeColor](selectedOpacity)};
               transition: color 0.5s, font-weight 0.5s;
               font-weight: bold;
             }

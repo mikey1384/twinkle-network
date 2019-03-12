@@ -5,7 +5,6 @@ import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import Input from 'components/Texts/Input';
-import { Color } from 'constants/css';
 import { scrollElementToCenter } from 'helpers';
 import {
   exceedsCharLimit,
@@ -27,11 +26,10 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 ContentInput.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string,
   uploadFeedContent: PropTypes.func.isRequired
 };
 
-function ContentInput({ dispatch, profileTheme, uploadFeedContent }) {
+function ContentInput({ dispatch, uploadFeedContent }) {
   const [alreadyPosted, setAlreadyPosted] = useState(false);
   const [descriptionFieldShown, setDescriptionFieldShown] = useState(false);
   const [titleFieldShown, setTitleFieldShown] = useState(false);
@@ -47,15 +45,10 @@ function ContentInput({ dispatch, profileTheme, uploadFeedContent }) {
   const UrlFieldRef = useRef(null);
   const checkContentExistsTimerRef = useRef(null);
   const showHelperMessageTimerRef = useRef(null);
-  const themeColor = profileTheme || 'logoBlue';
 
   return (
     <ErrorBoundary className={PanelStyle}>
-      <p>
-        Share interesting{' '}
-        <span style={{ color: Color[themeColor]() }}>videos</span> or{' '}
-        <span style={{ color: Color[themeColor]() }}>webpages</span>
-      </p>
+      <p>Share interesting videos or webpages</p>
       {urlError && (
         <Banner love style={{ marginBottom: '1rem' }}>
           {urlError}

@@ -64,7 +64,7 @@ export default function HomeFilter({
           position: 'sticky',
           top: '0',
           zIndex: 1000,
-          height: '3.5rem',
+          height: '3rem',
           fontSize: '1.6rem'
         }}
       >
