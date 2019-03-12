@@ -45,7 +45,6 @@ function Rankings({
 
   useEffect(() => {
     mounted.current = true;
-    setAllSelected(loaded && !!myId);
     loadRankings();
     async function loadRankings() {
       try {
@@ -54,6 +53,7 @@ function Rankings({
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
           getRanks({ all, top30s, rankModifier: modifier });
+          setAllSelected(!!myId);
         }
       } catch (error) {
         console.error(error.response || error);
@@ -62,7 +62,7 @@ function Rankings({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [loaded, myId, twinkleXP]);
+  }, [myId, twinkleXP]);
 
   const users = allSelected ? all : top30s;
   const modifier = allSelected ? rankModifier : 0;
