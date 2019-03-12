@@ -93,6 +93,7 @@
     "react-transform-hmr": "^1.0.4",
     "regenerator-runtime": "^0.13.1",
     "terser-webpack-plugin": "^1.2.3",
+    "webpack-cli": "^3.2.3",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-hot-middleware": "^2.24.3"
   },
