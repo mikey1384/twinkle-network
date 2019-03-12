@@ -28,7 +28,7 @@ function FilterBar({
   style
 }) {
   const themeColor = color || profileTheme || 'logoBlue';
-  const selectedOpacity = inverted ? 0.6 : 1;
+  const selectedOpacity = 1;
   return (
     <div
       style={style}

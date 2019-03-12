@@ -4,7 +4,6 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { css } from 'emotion';
 
 const categoryObj = {
   uploads: {
@@ -57,13 +56,7 @@ export default function HomeFilter({
       <FilterBar
         inverted
         bordered
-        className={css`
-          position: -webkit-sticky;
-        `}
         style={{
-          position: 'sticky',
-          top: '0',
-          zIndex: 1000,
           height: '3rem',
           fontSize: '1.6rem'
         }}
