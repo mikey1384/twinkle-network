@@ -4,7 +4,6 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 
 const categoryObj = {
@@ -39,7 +38,7 @@ HomeFilter.propTypes = {
   toggleHideWatched: PropTypes.func.isRequired
 };
 
-function HomeFilter({
+export default function HomeFilter({
   applyFilter,
   category,
   changeCategory,
@@ -53,12 +52,10 @@ function HomeFilter({
 }) {
   const [activeTab, setActiveTab] = useState();
   useEffect(() => setActiveTab(category), [category]);
-  const themeColor = profileTheme || 'logoBlue';
   return (
     <ErrorBoundary>
       <FilterBar
         inverted
-        color={themeColor}
         bordered
         className={css`
           position: -webkit-sticky;
@@ -105,7 +102,6 @@ function HomeFilter({
           >
             {category === 'uploads' && (
               <FilterBar
-                color={themeColor}
                 bordered
                 style={{
                   height: '5rem',
@@ -193,7 +189,3 @@ function HomeFilter({
     </ErrorBoundary>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(HomeFilter);

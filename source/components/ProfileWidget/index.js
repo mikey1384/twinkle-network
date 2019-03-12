@@ -40,8 +40,8 @@ function ProfileWidget({
         style={{ cursor: 'pointer' }}
         onClick={() => history.push(`/users/${username}`)}
         className={container({
-          heading: Color[themeColor](0.6),
-          headingHovered: Color[themeColor](1)
+          username: Color[themeColor](0.6),
+          usernameHovered: Color[themeColor]()
         })}
       >
         {username && (

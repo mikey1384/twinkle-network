@@ -25,7 +25,6 @@ Notification.propTypes = {
   myId: PropTypes.number,
   numNewNotis: PropTypes.number,
   notifications: PropTypes.array,
-  profileTheme: PropTypes.string,
   rewards: PropTypes.array,
   rank: PropTypes.number,
   style: PropTypes.object,
@@ -44,7 +43,6 @@ function Notification({
   myId,
   numNewNotis,
   notifications,
-  profileTheme,
   rewards,
   rank,
   style,
@@ -53,7 +51,6 @@ function Notification({
 }) {
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
-  const themeColor = profileTheme || 'logoBlue';
   useEffect(() => {
     if (myId) {
       fetchNotifications();
@@ -112,7 +109,6 @@ function Notification({
           )}
           {notifications.length > 0 && (
             <FilterBar
-              color={themeColor}
               bordered
               style={{
                 fontSize: '1.6rem',
@@ -166,7 +162,6 @@ export default connect(
     loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,
     numNewNotis: state.NotiReducer.numNewNotis,
-    profileTheme: state.UserReducer.profileTheme,
     rank: state.UserReducer.rank,
     rewards: state.NotiReducer.rewards,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,

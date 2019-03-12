@@ -18,12 +18,11 @@ const API_URL = `${URL}/user`;
 
 Rankings.propTypes = {
   myId: PropTypes.number,
-  profileTheme: PropTypes.string,
   rank: PropTypes.number,
   twinkleXP: PropTypes.number
 };
 
-function Rankings({ myId, profileTheme, rank, twinkleXP }) {
+function Rankings({ myId, rank, twinkleXP }) {
   const [all, setAll] = useState([]);
   const [top30s, setTop30s] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -31,7 +30,6 @@ function Rankings({ myId, profileTheme, rank, twinkleXP }) {
   const [rankModifier, setRankModifier] = useState(0);
   const [prevId, setPrevId] = useState(twinkleXP);
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
   const rankedColor =
     rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
 
@@ -68,7 +66,6 @@ function Rankings({ myId, profileTheme, rank, twinkleXP }) {
     <ErrorBoundary>
       {!!myId && (
         <FilterBar
-          color={themeColor}
           bordered
           style={{
             height: '4.5rem',
@@ -249,7 +246,6 @@ function Rankings({ myId, profileTheme, rank, twinkleXP }) {
 
 export default connect(state => ({
   myId: state.UserReducer.userId,
-  profileTheme: state.UserReducer.profileTheme,
   rank: state.UserReducer.rank,
   twinkleXP: state.UserReducer.twinkleXP
 }))(Rankings);

@@ -74,6 +74,7 @@ function Cover({
   const showCover =
     rank <= 30 &&
     rank > 0 &&
+    twinkleXP &&
     !!backgroundImageObj[selectedTheme || profileTheme]?.[moment().month()];
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);

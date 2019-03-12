@@ -16,7 +16,6 @@ ChatFeeds.propTypes = {
   content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   initChat: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string,
   reloadedBy: PropTypes.number,
   reloaderName: PropTypes.string,
   reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -30,7 +29,6 @@ function ChatFeeds({
   content,
   dispatch,
   initChat,
-  profileTheme,
   reloadedBy,
   reloaderName,
   reloadTimeStamp,
@@ -39,7 +37,6 @@ function ChatFeeds({
   userId,
   username
 }) {
-  const themeColor = profileTheme || 'logoBlue';
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
@@ -71,23 +68,23 @@ function ChatFeeds({
           alignItems: 'center'
         }}
         className={css`
-          background: ${Color[themeColor](0.6)};
+          background: #fff;
           &:hover {
             transition: background 0.5s;
-            background: ${Color[themeColor]()};
+            background: ${Color.channelGray()};
           }
         `}
       >
         <p
           style={{
             fontWeight: 'bold',
-            color: '#fff',
-            fontSize: '2rem'
+            fontSize: '2rem',
+            color: Color.darkerGray()
           }}
         >
           {content}
         </p>
-        <span style={{ color: '#fff' }}>{renderDetails()}</span>
+        <span style={{ color: Color.darkerGray() }}>{renderDetails()}</span>
         <Button snow onClick={initChatFromThis}>
           <Icon icon="comments" />
           <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
@@ -104,7 +101,7 @@ function ChatFeeds({
   function renderDetails() {
     const posterString = (
       <>
-        Started by <UsernameText color="#fff" user={{ id: userId, username }} />
+        Started by <UsernameText user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSincePost}` : ''}
       </>
     );
@@ -129,9 +126,7 @@ function ChatFeeds({
 }
 
 export default connect(
-  state => ({
-    profileTheme: state.UserReducer.profileTheme
-  }),
+  null,
   dispatch => ({
     dispatch,
     initChat: data => dispatch(initChat(data))

@@ -24,7 +24,6 @@ SelectPlaylistsToPinModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   pinnedPlaylists: PropTypes.array.isRequired,
-  profileTheme: PropTypes.string,
   selectedPlaylists: PropTypes.array.isRequired
 };
 
@@ -36,7 +35,6 @@ function SelectPlaylistsToPinModal({
   onHide,
   pinnedPlaylists,
   playlistsToPin,
-  profileTheme,
   selectedPlaylists: initialSelectedPlaylists
 }) {
   const [selectTabActive, setSelectTabActive] = useState(true);
@@ -50,7 +48,6 @@ function SelectPlaylistsToPinModal({
     onSearch: handlePlaylistSearch,
     onClear: () => setSearchedPlaylists([])
   });
-  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     setSelectedPlaylists(initialSelectedPlaylists);
@@ -82,7 +79,7 @@ function SelectPlaylistsToPinModal({
         {selectedPlaylists.length > 5 && (
           <Banner love>Please limit your selection to 5 playlists</Banner>
         )}
-        <FilterBar color={themeColor}>
+        <FilterBar>
           <nav
             className={selectTabActive ? 'active' : ''}
             onClick={() => setSelectTabActive(true)}
@@ -239,9 +236,7 @@ function SelectPlaylistsToPinModal({
 }
 
 export default connect(
-  state => ({
-    profileTheme: state.UserReducer.profileTheme
-  }),
+  null,
   dispatch => ({
     dispatch,
     loadMorePlaylist: lastPlaylistId =>

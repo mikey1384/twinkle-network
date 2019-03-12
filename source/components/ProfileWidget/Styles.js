@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
-export const container = ({ heading, headingHovered }) => css`
+export const container = ({ username, usernameHovered }) => css`
   display: flex;
   border: none;
   flex-direction: column;
@@ -18,29 +18,28 @@ export const container = ({ heading, headingHovered }) => css`
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     display: flex;
-    background: ${heading};
+    background: #fff;
     width: 100%;
     align-items: center;
     justify-content: flex-start;
     .names {
       width: CALC(100% - 8rem);
-      color: #fff;
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
       a {
-        color: #fff;
+        color: ${Color.darkerGray()};
         font-weight: bold;
         font-size: 2.2rem;
       }
       span {
-        color: #fff;
+        color: ${Color.darkerGray()};
         font-size: 1.2rem;
       }
     }
     &:hover {
       transition: background 0.5s;
-      background: ${headingHovered};
+      background: ${Color.channelGray()};
     }
   }
   .widget__profile-pic {

@@ -147,7 +147,7 @@ function Posts({
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <FilterBar
-        color={selectedTheme || 'logoBlue'}
+        color={selectedTheme}
         style={{ height: '5rem' }}
         className="mobile"
       >

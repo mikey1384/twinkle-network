@@ -28,8 +28,7 @@ EditPlaylistModal.propTypes = {
   modalType: PropTypes.string.isRequired,
   numPlaylistVids: PropTypes.number.isRequired,
   onHide: PropTypes.func.isRequired,
-  playlistId: PropTypes.number.isRequired,
-  profileTheme: PropTypes.string
+  playlistId: PropTypes.number.isRequired
 };
 
 function EditPlaylistModal({
@@ -38,8 +37,7 @@ function EditPlaylistModal({
   modalType,
   numPlaylistVids,
   onHide,
-  playlistId,
-  profileTheme
+  playlistId
 }) {
   const [addedVideos, setAddedVideos] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -63,7 +61,6 @@ function EditPlaylistModal({
   });
   const originalPlaylistVideos = useRef([]);
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     mounted.current = true;
@@ -118,10 +115,7 @@ function EditPlaylistModal({
         {modalType === 'change' ? 'Change Playlist Videos' : 'Reorder Videos'}
       </header>
       <main>
-        <FilterBar
-          color={themeColor}
-          style={{ marginBottom: '2rem', fontWeight: 'bold' }}
-        >
+        <FilterBar style={{ marginBottom: '2rem', fontWeight: 'bold' }}>
           <nav
             className={mainTabActive ? 'active' : ''}
             onClick={() => {
@@ -484,9 +478,7 @@ function EditPlaylistModal({
 }
 
 export default connect(
-  state => ({
-    profileTheme: state.UserReducer.profileTheme
-  }),
+  null,
   dispatch => ({
     dispatch,
     changePlaylistVideos: params => dispatch(changePlaylistVideos(params))

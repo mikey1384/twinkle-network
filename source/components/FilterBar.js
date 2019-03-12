@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 FilterBar.propTypes = {
   children: PropTypes.node,
@@ -11,25 +12,28 @@ FilterBar.propTypes = {
   dropdownButton: PropTypes.node,
   innerRef: PropTypes.func,
   inverted: PropTypes.bool,
+  profileTheme: PropTypes.string,
   style: PropTypes.object
 };
 
-export default function FilterBar({
-  color = 'blue',
+function FilterBar({
+  color,
   bordered,
   className,
   children,
   innerRef,
   inverted,
   dropdownButton,
+  profileTheme,
   style
 }) {
+  const themeColor = color || profileTheme || 'logoBlue';
   return (
     <div
       style={style}
       ref={innerRef}
       className={`${css`
-        background: ${inverted ? Color[color](0.6) : '#fff'};
+        background: ${inverted ? Color[themeColor](0.6) : '#fff'};
         height: 6rem;
         margin-bottom: 1rem;
         ${
@@ -81,14 +85,18 @@ export default function FilterBar({
             }
           }
           > nav.active {
-            background: ${inverted ? Color[color]() : ''};
-            border-bottom: ${inverted ? '' : `3px solid ${Color[color]()}`};
-            color: ${inverted ? '#fff' : Color[color]()};
+            background: ${inverted ? Color[themeColor]() : ''};
+            border-bottom: ${
+              inverted ? '' : `3px solid ${Color[themeColor]()}`
+            };
+            color: ${inverted ? '#fff' : Color[themeColor]()};
             > a {
-              color: ${inverted ? '#fff' : Color[color]()};
+              color: ${inverted ? '#fff' : Color[themeColor]()};
             }
             @media (max-width: ${mobileMaxWidth}) {
-              border-bottom: ${inverted ? '' : `4px solid ${Color[color]()}`};
+              border-bottom: ${
+                inverted ? '' : `4px solid ${Color[themeColor]()}`
+              };
             }
           }
           > nav.active.alert {
@@ -113,15 +121,17 @@ export default function FilterBar({
           }
           > nav:hover {
             transition: border-bottom 0.5s, background 0.5s;
-            background: ${inverted ? Color[color]() : ''};
-            color: ${inverted ? '#fff' : Color[color]()};
-            border-bottom: ${inverted ? '' : `3px solid ${Color[color]()}`};
+            background: ${inverted ? Color[themeColor]() : ''};
+            color: ${inverted ? '#fff' : Color[themeColor]()};
+            border-bottom: ${
+              inverted ? '' : `3px solid ${Color[themeColor]()}`
+            };
             &.alert {
               color: ${Color.gold()}!important;
               border-bottom: 3px solid ${Color.gold()}!important;
             }
             > a {
-              color: ${inverted ? '#fff' : Color[color]()};
+              color: ${inverted ? '#fff' : Color[themeColor]()};
               transition: color 0.5s, font-weight 0.5s;
               font-weight: bold;
             }
@@ -141,3 +151,7 @@ export default function FilterBar({
     </div>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(FilterBar);

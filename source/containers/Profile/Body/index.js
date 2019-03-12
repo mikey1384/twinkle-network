@@ -11,8 +11,7 @@ Body.propTypes = {
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    profileTheme: PropTypes.string
+    id: PropTypes.number.isRequired
   }),
   selectedTheme: PropTypes.string
 };
@@ -25,7 +24,6 @@ export default function Body({
     params: { username }
   },
   profile,
-  profile: { profileTheme },
   selectedTheme
 }) {
   return (
@@ -42,7 +40,7 @@ export default function Body({
             }
           `}
         />
-        <FilterBar color={selectedTheme || profileTheme || 'logoBlue'}>
+        <FilterBar color={selectedTheme}>
           <nav
             className={
               location.pathname === `/users/${username}` ? 'active' : ''
@@ -94,7 +92,7 @@ export default function Body({
             location={location}
             match={match}
             profile={profile}
-            selectedTheme={selectedTheme || profileTheme || 'logoBlue'}
+            selectedTheme={selectedTheme}
           />
         </div>
       </div>

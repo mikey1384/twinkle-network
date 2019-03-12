@@ -23,7 +23,6 @@ NavMenu.propTypes = {
   fetchNotifications: PropTypes.func.isRequired,
   numNewNotis: PropTypes.number,
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  profileTheme: PropTypes.string,
   totalRewardAmount: PropTypes.number,
   userId: PropTypes.number,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
@@ -34,7 +33,6 @@ function NavMenu({
   fetchNotifications,
   numNewNotis,
   playlistId,
-  profileTheme,
   totalRewardAmount,
   userId,
   videoId
@@ -52,7 +50,6 @@ function NavMenu({
   ] = useState(false);
   const [videoTabActive, setVideoTabActive] = useState(true);
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     mounted.current = true;
@@ -140,7 +137,7 @@ function NavMenu({
         }
       `}
     >
-      <FilterBar color={themeColor} className="desktop">
+      <FilterBar className="desktop">
         <nav
           className={videoTabActive ? 'active' : ''}
           onClick={() => setVideoTabActive(true)}
@@ -306,7 +303,6 @@ function NavMenu({
 export default connect(
   state => ({
     numNewNotis: state.NotiReducer.numNewNotis,
-    profileTheme: state.UserReducer.profileTheme,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     userId: state.UserReducer.userId
   }),

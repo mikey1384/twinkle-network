@@ -4,9 +4,8 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.7';
-export const updateDetail =
-  'Homepage has been redesigned, and Featured Subjects are now available on the Earn XP tab!';
+export const clientVersion = '0.2.8';
+export const updateDetail = 'Is this better, Soul?';
 
 export const charLimit = {
   chat: {

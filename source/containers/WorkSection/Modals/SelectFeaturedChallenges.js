@@ -30,6 +30,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
   const [selected, setSelected] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const initialSelected = useRef([]);
+
   useEffect(() => {
     init();
     async function init() {
