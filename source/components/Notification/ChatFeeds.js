@@ -108,10 +108,7 @@ function ChatFeeds({
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
         Brought back by{' '}
-        <UsernameText
-          color="#fff"
-          user={{ id: reloadedBy, username: reloaderName }}
-        />
+        <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
         {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
       </div>
     );
