@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ChallengesPanel from './Panels/ChallengesPanel';
-import PlaylistsPanel from './Panels/PlaylistsPanel';
+import PlaylistsPanel from './PlaylistsPanel';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
-import SelectPlaylistsToPinModal from './Modals/SelectPlaylistsToPinModal';
-import ReorderFeaturedPlaylists from './Modals/ReorderFeaturedPlaylists';
-import { loadFeaturedContents } from 'helpers/requestHelpers';
+import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
+import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
+import { loadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import {
   closeReorderFeaturedPlaylists,
@@ -15,15 +15,16 @@ import {
   openSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
 
-Work.propTypes = {
+FeaturedPlaylistsPanel.propTypes = {
   canPinPlaylists: PropTypes.bool,
   closeReorderFeaturedPlaylists: PropTypes.func.isRequired,
   closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
+  featuredPlaylists: PropTypes.array.isRequired,
   getPinnedPlaylists: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
   openReorderFeaturedPlaylists: PropTypes.func.isRequired,
   openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
-  featuredPlaylists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   reorderFeaturedPlaylistsShown: PropTypes.bool.isRequired,
@@ -31,30 +32,29 @@ Work.propTypes = {
   userId: PropTypes.number
 };
 
-function Work({
+function FeaturedPlaylistsPanel({
   canPinPlaylists,
   closeReorderFeaturedPlaylists,
   closeSelectPlaylistsToPinModal,
+  featuredPlaylists,
   getPinnedPlaylists,
+  history,
   loadMorePlaylistsToPinButton,
   openReorderFeaturedPlaylists,
   openSelectPlaylistsToPinModal,
-  featuredPlaylists,
   playlistsLoaded,
   playlistsToPin,
   reorderFeaturedPlaylistsShown,
   selectPlaylistsToPinModalShown,
   userId
 }) {
-  const [featuredChallenges, setFeaturedChallenges] = useState([]);
-  const [challengesLoaded, setChallengesLoaded] = useState(false);
   useEffect(() => {
     init();
     async function init() {
-      const { challenges, playlists } = await loadFeaturedContents();
-      setFeaturedChallenges(challenges);
-      setChallengesLoaded(true);
-      getPinnedPlaylists(playlists);
+      if (history.action === 'PUSH' || !playlistsLoaded) {
+        const playlists = await loadFeaturedPlaylists();
+        getPinnedPlaylists(playlists);
+      }
     }
   }, []);
 
@@ -74,14 +74,7 @@ function Work({
   }
 
   return (
-    <div>
-      <ChallengesPanel
-        challenges={featuredChallenges}
-        loaded={challengesLoaded}
-        onSelectedChallengesSubmit={selectedChallenges =>
-          setFeaturedChallenges(selectedChallenges)
-        }
-      />
+    <ErrorBoundary>
       <PlaylistsPanel
         buttonGroupShown={!!canPinPlaylists}
         buttonGroup={() => (
@@ -110,7 +103,7 @@ function Work({
           onHide={closeReorderFeaturedPlaylists}
         />
       )}
-    </div>
+    </ErrorBoundary>
   );
 }
 
@@ -135,4 +128,4 @@ export default connect(
     openReorderFeaturedPlaylists,
     openSelectPlaylistsToPinModal
   }
-)(Work);
+)(FeaturedPlaylistsPanel);

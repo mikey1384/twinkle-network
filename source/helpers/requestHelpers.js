@@ -211,9 +211,19 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
-export const loadFeaturedContents = async() => {
+export const loadFeaturedChallenges = async() => {
   try {
-    const { data } = await request.get(`${URL}/content/featured`);
+    const { data } = await request.get(`${URL}/content/featured/challenges`);
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const loadFeaturedPlaylists = async() => {
+  try {
+    const { data } = await request.get(`${URL}/content/featured/playlists`);
     return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);

@@ -35,7 +35,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
     init();
     async function init() {
       const { data: selectedIds } = await request.get(
-        `${URL}/content/featured/ids`
+        `${URL}/content/featured/challenges/ids`
       );
       setSelected(selectedIds);
       initialSelected.current = selectedIds;

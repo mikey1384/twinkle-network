@@ -22,7 +22,7 @@ const Videos = loadable(() => import('./Videos'), {
 const Links = loadable(() => import('./Links'), {
   LoadingComponent: Loading
 });
-const Work = loadable(() => import('./Work'), {
+const Featured = loadable(() => import('./Featured'), {
   LoadingComponent: Loading
 });
 
@@ -105,7 +105,7 @@ function WorkSection({
             <Switch>
               <Route path="/videos" component={Videos} />
               <Route path="/links" component={Links} />
-              <Route path="/xp" component={Work} />
+              <Route path="/xp" component={Featured} />
             </Switch>
             <div
               className={css`
