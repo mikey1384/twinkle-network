@@ -28,9 +28,9 @@ Rankings.propTypes = {
 };
 
 function Rankings({ all, loaded, getRanks, myId, rank, top30s, twinkleXP }) {
-  const [allSelected, setAllSelected] = useState(false);
+  const [allSelected, setAllSelected] = useState(true);
   const [rankModifier, setRankModifier] = useState(0);
-  const [prevId, setPrevId] = useState(twinkleXP);
+  const [prevId, setPrevId] = useState(myId);
   const mounted = useRef(true);
   const rankedColor =
     rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
@@ -87,7 +87,7 @@ function Rankings({ all, loaded, getRanks, myId, rank, top30s, twinkleXP }) {
         </FilterBar>
       )}
       {!loaded && <Loading />}
-      {allSelected && (
+      {loaded && allSelected && (
         <div
           style={{
             marginTop: '1rem',
