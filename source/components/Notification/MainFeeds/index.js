@@ -178,15 +178,16 @@ function MainFeeds({
           )}
       </RoundList>
       {((activeTab === 'notification' && loadMore.notifications) ||
-        (activeTab === 'reward' && loadMore.rewards)) && (
-        <LoadMoreButton
-          loading={loading}
-          info
-          filled
-          stretch
-          onClick={onLoadMore}
-        />
-      )}
+        (activeTab === 'reward' && loadMore.rewards)) &&
+        !!userId && (
+          <LoadMoreButton
+            loading={loading}
+            info
+            filled
+            stretch
+            onClick={onLoadMore}
+          />
+        )}
     </ErrorBoundary>
   );
 
