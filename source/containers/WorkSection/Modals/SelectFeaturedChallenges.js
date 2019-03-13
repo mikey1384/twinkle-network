@@ -4,8 +4,6 @@ import Button from 'components/Button';
 import Modal from 'components/Modal';
 import ContentListItem from 'components/ContentListItem';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
-import request from 'axios';
-import URL from 'constants/URL';
 import Loading from 'components/Loading';
 import { objectify } from 'helpers';
 import { loadUploads, uploadFeaturedChallenges } from 'helpers/requestHelpers';
@@ -14,24 +12,29 @@ import { connect } from 'react-redux';
 SelectFeaturedChallengesModal.propTypes = {
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  selectedChallenges: PropTypes.array.isRequired
 };
 
-function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
+function SelectFeaturedChallengesModal({
+  dispatch,
+  selectedChallenges,
+  onHide,
+  onSubmit
+}) {
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [challengeObjs, setChallengeObjs] = useState({});
   const [challenges, setChallenges] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const initialSelected = useRef([]);
 
   useEffect(() => {
     init();
     async function init() {
-      const { data: selectedIds } = await request.get(
-        `${URL}/content/featured/challenges/ids`
-      );
+      const selectedIds = selectedChallenges.map(({ id }) => id);
       setSelected(selectedIds);
       initialSelected.current = selectedIds;
       const {
@@ -39,9 +42,13 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
         loadMoreButton: loadMoreShown
       } = await loadUploads({
         limit: 10,
-        type: 'subject'
+        type: 'subject',
+        includeRoot: true
       });
-      setChallengeObjs(objectify(challengesArray));
+      setChallengeObjs({
+        ...objectify(challengesArray),
+        ...objectify(selectedChallenges)
+      });
       setChallenges(challengesArray.map(challenge => challenge.id));
       setLoadMoreButton(loadMoreShown);
       setLoaded(true);
@@ -83,7 +90,11 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel
         </Button>
-        <Button disabled={selected.length > 5} primary onClick={handleSubmit}>
+        <Button
+          disabled={selected.length > 5 || submitting}
+          primary
+          onClick={handleSubmit}
+        >
           {selected.length > 5 ? 'Cannot select more than 5' : 'Done'}
         </Button>
       </footer>
@@ -98,6 +109,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
     } = await loadUploads({
       limit: 10,
       type: 'subject',
+      includeRoot: true,
       excludeContentIds: challenges.map(challengeId => challengeId)
     });
     setChallengeObjs({
@@ -112,6 +124,7 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
   }
 
   async function handleSubmit() {
+    setSubmitting(true);
     await uploadFeaturedChallenges({ dispatch, selected });
     const selectedReversed = [...selected];
     selectedReversed.reverse();

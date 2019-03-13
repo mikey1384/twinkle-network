@@ -62,6 +62,7 @@ function ChallengesPanel({
       </SectionPanel>
       {modalShown && (
         <SelectFeaturedChallenges
+          selectedChallenges={featuredChallenges}
           onHide={() => setModalShown(false)}
           onSubmit={selectedChallenges => {
             getFeaturedChallenges(selectedChallenges);

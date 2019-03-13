@@ -395,6 +395,7 @@ export const loadPlaylistVideos = async({
 export const loadUploads = async({
   limit,
   contentId,
+  includeRoot,
   excludeContentIds = [],
   type
 }) => {
@@ -409,7 +410,7 @@ export const loadUploads = async({
               destinationVar: 'excludes'
             })}`
           : ''
-      }`
+      }${includeRoot ? '&includeRoot=true' : ''}`
     );
     return Promise.resolve({ results, loadMoreButton });
   } catch (error) {
