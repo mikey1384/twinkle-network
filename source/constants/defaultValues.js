@@ -4,8 +4,9 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.11';
-export const updateDetail = 'Is this better, Soul?';
+export const clientVersion = '0.2.12';
+export const updateDetail =
+  'I am so sorry guys, there was a serious bug and I had to fix it right now';
 
 export const charLimit = {
   chat: {

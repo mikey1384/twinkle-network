@@ -69,7 +69,7 @@ function SelectFeaturedChallengesModal({
               contentObj={challengeObjs[challengeId]}
               onClick={() =>
                 selected.indexOf(challengeId) === -1
-                  ? setSelected(selected.concat(challengeId))
+                  ? setSelected([challengeId].concat(selected))
                   : setSelected(selected.filter(id => id !== challengeId))
               }
             />
@@ -126,9 +126,7 @@ function SelectFeaturedChallengesModal({
   async function handleSubmit() {
     setSubmitting(true);
     await uploadFeaturedChallenges({ dispatch, selected });
-    const selectedReversed = [...selected];
-    selectedReversed.reverse();
-    onSubmit(selectedReversed.map(selectedId => challengeObjs[selectedId]));
+    onSubmit(selected.map(selectedId => challengeObjs[selectedId]));
   }
 }
 

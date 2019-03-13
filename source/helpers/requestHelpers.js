@@ -600,7 +600,7 @@ export const uploadContent = async({
 export const uploadFeaturedChallenges = async({ dispatch, selected }) => {
   try {
     const challenges = await request.post(
-      `${URL}/content/featured`,
+      `${URL}/content/featured/challenges`,
       { selectedChallenges: selected },
       auth()
     );
