@@ -36,8 +36,8 @@ function ContentListItem({
         cursor: 'pointer',
         borderRadius,
         marginBottom: '1rem',
-        boxShadow: selected ? `0 0 5px ${Color[themeColor]()}` : null,
-        border: selected ? `0.5rem solid ${Color[themeColor]()}` : null,
+        boxShadow: selected ? `0 0 5px ${Color[themeColor](0.8)}` : null,
+        border: selected ? `0.5rem solid ${Color[themeColor](0.8)}` : null,
         ...style
       }}
       className={css`

@@ -4,10 +4,7 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '0.2.12';
-export const updateDetail =
-  'I am so sorry guys, there was a serious bug and I had to fix it right now';
-
+export const clientVersion = '0.2.13';
 export const charLimit = {
   chat: {
     subject: 200,

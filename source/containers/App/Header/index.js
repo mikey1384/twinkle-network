@@ -112,6 +112,16 @@ function Header({
     socket.on('new_story_post', increaseNumNewPosts);
     socket.on('new_notification', increaseNumNewNotis);
 
+    return function cleanUp() {
+      socket.removeListener('chat_invitation', onChatInvitation);
+      socket.removeListener('connect', onConnect);
+      socket.removeListener('disconnect', onDisconnect);
+      socket.removeListener('new_story_post', increaseNumNewPosts);
+      socket.removeListener('new_notification', increaseNumNewNotis);
+      socket.removeListener('receive_message', onReceiveMessage);
+      socket.removeListener('subject_change', onSubjectChange);
+    };
+
     function onChatInvitation(data) {
       socket.emit('join_chat_channel', data.channelId);
       if (!chatMode) increaseNumberOfUnreadMessages();
@@ -140,16 +150,6 @@ function Header({
     function onSubjectChange({ subject }) {
       notifyChatSubjectChange(subject);
     }
-
-    return function cleanUp() {
-      socket.removeListener('chat_invitation', onChatInvitation);
-      socket.removeListener('connect', onConnect);
-      socket.removeListener('disconnect', onDisconnect);
-      socket.removeListener('new_story_post', increaseNumNewPosts);
-      socket.removeListener('new_notification', increaseNumNewNotis);
-      socket.removeListener('receive_message', onReceiveMessage);
-      socket.removeListener('subject_change', onSubjectChange);
-    };
   });
 
   useEffect(() => {

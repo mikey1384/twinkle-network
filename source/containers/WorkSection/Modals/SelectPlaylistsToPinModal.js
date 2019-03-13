@@ -124,16 +124,18 @@ function SelectPlaylistsToPinModal({
                 </Button>
               )}
               {playlistsToPin.length === 0 && (
-                <div
+                <p
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    height: '8rem',
+                    height: '10rem',
+                    fontWeight: 'bold',
+                    fontSize: '2.5rem',
                     justifyContent: 'center'
                   }}
                 >
-                  <h3>No Playlists</h3>
-                </div>
+                  No Playlists
+                </p>
               )}
             </>
           )}
@@ -148,16 +150,18 @@ function SelectPlaylistsToPinModal({
                 }))}
               />
               {selectedPlaylists.length === 0 && (
-                <div
+                <p
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    height: '8rem',
+                    height: '10rem',
+                    fontWeight: 'bold',
+                    fontSize: '2.5rem',
                     justifyContent: 'center'
                   }}
                 >
-                  <h3>No Playlist Selected</h3>
-                </div>
+                  No Playlists Selected
+                </p>
               )}
             </>
           )}

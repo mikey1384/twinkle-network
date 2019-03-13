@@ -21,7 +21,6 @@ import {
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { updateDetail } from 'constants/defaultValues';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import Privacy from 'containers/Privacy';
@@ -76,6 +75,7 @@ App.propTypes = {
   searchText: PropTypes.string,
   signinModalShown: PropTypes.bool,
   turnChatOff: PropTypes.func.isRequired,
+  updateDetail: PropTypes.string,
   username: PropTypes.string
 };
 
@@ -98,6 +98,7 @@ function App({
   searchText,
   signinModalShown,
   turnChatOff,
+  updateDetail,
   username
 }) {
   const [chatLoading, setChatLoading] = useState(false);
@@ -314,6 +315,7 @@ export default connect(
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
+    updateDetail: state.NotiReducer.updateDetail,
     username: state.UserReducer.username
   }),
   dispatch => ({

@@ -16,7 +16,8 @@ const defaultState = {
   top30s: [],
   socketConnected: false,
   rankModifier: 0,
-  totalRewardAmount: 0
+  totalRewardAmount: 0,
+  updateDetail: ''
 };
 
 export default function NotiReducer(state = defaultState, action) {
@@ -34,7 +35,8 @@ export default function NotiReducer(state = defaultState, action) {
     case NOTI.CHECK_VERSION:
       return {
         ...state,
-        versionMatch: action.data.match
+        versionMatch: action.data.match,
+        updateDetail: action.data.updateDetail
       };
     case NOTI.CHAT_SUBJECT_CHANGE:
       return {
