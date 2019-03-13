@@ -7,7 +7,7 @@ import AllVideosPanel from './Panels/AllVideosPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { searchContent } from 'helpers/requestHelpers';
+import { loadUploads, searchContent } from 'helpers/requestHelpers';
 import {
   closeAddPlaylistModal,
   closeAddVideoModal,
@@ -71,9 +71,16 @@ function Videos({
   const AllVideosPanelRef = useRef(null);
 
   useEffect(() => {
-    if (history.action === 'PUSH' || !loaded) {
-      getInitialVideos();
-      getPlaylists();
+    init();
+
+    async function init() {
+      if (history.action === 'PUSH' || !loaded) {
+        getPlaylists();
+        const { results: videos, loadMoreButton } = await loadUploads({
+          type: 'video'
+        });
+        getInitialVideos({ videos, loadMoreButton });
+      }
     }
   }, []);
 

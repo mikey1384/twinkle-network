@@ -8,12 +8,7 @@ import request from 'axios';
 import URL from 'constants/URL';
 import Loading from 'components/Loading';
 import { objectify } from 'helpers';
-import {
-  loadContent,
-  loadFeeds,
-  uploadFeaturedChallenges
-} from 'helpers/requestHelpers';
-import { queryStringForArray } from 'helpers/stringHelpers';
+import { loadUploads, uploadFeaturedChallenges } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 SelectFeaturedChallengesModal.propTypes = {
@@ -40,19 +35,12 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
       setSelected(selectedIds);
       initialSelected.current = selectedIds;
       const {
-        data: { feeds, loadMoreButton: loadMoreShown }
-      } = await loadFeeds({
-        filter: 'post',
-        limit: 10
+        results: challengesArray,
+        loadMoreButton: loadMoreShown
+      } = await loadUploads({
+        limit: 10,
+        type: 'subject'
       });
-      const challengesArray = [];
-      for (let feed of feeds) {
-        const challenge = await loadContent({
-          contentId: feed.contentId,
-          type: feed.type
-        });
-        challengesArray.push({ ...feed, ...challenge });
-      }
       setChallengeObjs(objectify(challengesArray));
       setChallenges(challengesArray.map(challenge => challenge.id));
       setLoadMoreButton(loadMoreShown);
@@ -95,8 +83,8 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel
         </Button>
-        <Button primary onClick={handleSubmit}>
-          Done
+        <Button disabled={selected.length > 5} primary onClick={handleSubmit}>
+          {selected.length > 5 ? 'Cannot select more than 5' : 'Done'}
         </Button>
       </footer>
     </Modal>
@@ -105,24 +93,13 @@ function SelectFeaturedChallengesModal({ dispatch, onHide, onSubmit }) {
   async function handleLoadMore() {
     setLoadingMore(true);
     const {
-      data: { feeds, loadMoreButton: loadMoreShown }
-    } = await loadFeeds({
-      filter: 'post',
+      results: challengesArray,
+      loadMoreButton: loadMoreShown
+    } = await loadUploads({
       limit: 10,
-      shownFeeds: queryStringForArray({
-        array: challenges.map(challengeId => challengeObjs[challengeId]),
-        originVar: 'feedId',
-        destinationVar: 'shownFeeds'
-      })
+      type: 'subject',
+      excludeContentIds: challenges.map(challengeId => challengeId)
     });
-    const challengesArray = [];
-    for (let feed of feeds) {
-      const challenge = await loadContent({
-        contentId: feed.contentId,
-        type: feed.type
-      });
-      challengesArray.push({ ...feed, ...challenge });
-    }
     setChallengeObjs({
       ...challengeObjs,
       ...objectify(challengesArray)

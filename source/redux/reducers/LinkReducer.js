@@ -6,7 +6,6 @@ const defaultState = {
 };
 
 export default function linkReducer(state = defaultState, action) {
-  let loadMoreLinksButtonShown = false;
   switch (action.type) {
     case LINK.DELETE:
       return {
@@ -34,26 +33,6 @@ export default function linkReducer(state = defaultState, action) {
             : link
         )
       };
-    case LINK.LOAD:
-      if (action.links.length > 20) {
-        loadMoreLinksButtonShown = true;
-        action.links.pop();
-      }
-      return {
-        ...state,
-        links: action.links,
-        loadMoreLinksButtonShown
-      };
-    case LINK.LOAD_MORE:
-      if (action.links.length > 20) {
-        loadMoreLinksButtonShown = true;
-        action.links.pop();
-      }
-      return {
-        ...state,
-        links: state.links.concat(action.links),
-        loadMoreLinksButtonShown
-      };
     case LINK.LIKE:
       return {
         ...state,
@@ -62,6 +41,33 @@ export default function linkReducer(state = defaultState, action) {
             ? {
                 ...link,
                 likes: action.likes
+              }
+            : link
+        )
+      };
+    case LINK.LOAD:
+      return {
+        ...state,
+        links: action.links,
+        loadMoreLinksButtonShown: action.loadMoreButton
+      };
+    case LINK.LOAD_MORE:
+      return {
+        ...state,
+        links: state.links.concat(action.links),
+        loadMoreLinksButtonShown: action.loadMoreButton
+      };
+    case LINK.UPDATE_NUM_COMMENTS:
+      return {
+        ...state,
+        links: state.links.map(link =>
+          action.id === link.id
+            ? {
+                ...link,
+                numComments:
+                  action.updateType === 'increase'
+                    ? link.numComments + 1
+                    : link.numComments - 1
               }
             : link
         )

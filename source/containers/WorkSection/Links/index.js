@@ -4,6 +4,7 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
+import { loadUploads } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
 
@@ -25,13 +26,24 @@ function Main({
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const [loaded, setLoaded] = useState(!!links.length);
   const mounted = useRef(true);
+  const lastId = useRef(null);
+
+  useEffect(() => {
+    if (links.length > 0) {
+      lastId.current = links[links.length - 1].id;
+    }
+  }, [links]);
 
   useEffect(() => {
     mounted.current = true;
     init();
     async function init() {
       if (!loaded || history.action === 'PUSH') {
-        await fetchLinks();
+        const { results: links, loadMoreButton } = await loadUploads({
+          type: 'url',
+          numberToLoad: 20
+        });
+        fetchLinks({ links, loadMoreButton });
         if (mounted.current) setLoaded(true);
       }
     }
@@ -65,9 +77,13 @@ function Main({
     </div>
   );
 
-  function handleLoadMoreLinks() {
-    const lastId = links[links.length - 1].id;
-    return fetchMoreLinks(lastId);
+  async function handleLoadMoreLinks() {
+    const { results: links, loadMoreButton } = await loadUploads({
+      type: 'url',
+      numberToLoad: 20,
+      contentId: lastId.current
+    });
+    return fetchMoreLinks({ links, loadMoreButton });
   }
 }
 

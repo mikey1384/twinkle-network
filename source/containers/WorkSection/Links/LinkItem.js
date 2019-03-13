@@ -27,11 +27,8 @@ LinkItem.propTypes = {
     title: PropTypes.string.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired,
-    uploaderName: PropTypes.string.isRequired,
-    uploader: PropTypes.number.isRequired,
-    likes: PropTypes.array.isRequired,
-    numComments: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-      .isRequired
+    uploader: PropTypes.object.isRequired,
+    likes: PropTypes.array.isRequired
   }).isRequired,
   userId: PropTypes.number
 };
@@ -42,17 +39,16 @@ const fallbackImage = '/img/link.png';
 function LinkItem({
   link: {
     id,
+    numComments,
     content,
     likes,
-    numComments,
     siteUrl,
     thumbUrl,
     title,
     timeStamp,
-    uploaderName,
-    uploader,
-    uploaderAuthLevel
+    uploader
   },
+  link,
   authLevel,
   canEdit,
   canDelete,
@@ -94,9 +90,9 @@ function LinkItem({
     };
   }, [content]);
 
-  const userIsUploader = userId === uploader;
+  const userIsUploader = userId === uploader.id;
   const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+    (canEdit || canDelete) && authLevel > uploader.authLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
@@ -189,8 +185,7 @@ function LinkItem({
               }}
             >
               Uploaded {`${timeSince(timeStamp)} `}
-              by{' '}
-              <UsernameText user={{ username: uploaderName, id: uploader }} />
+              by <UsernameText user={uploader} />
             </div>
           </div>
           <div

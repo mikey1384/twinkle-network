@@ -8,7 +8,7 @@ export function objectify(array, id = 'id') {
   return result;
 }
 
-export function scrollElementToCenter(element, adjustment = 0) {
+export function scrollElementToCenter(element, adjustment = -50) {
   if (!element) return;
   let offsetTop = 0;
   const body = document

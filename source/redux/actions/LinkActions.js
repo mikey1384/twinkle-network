@@ -37,36 +37,28 @@ export const editTitle = params => async dispatch => {
   }
 };
 
-export const fetchLinks = () => async dispatch => {
-  try {
-    const { data } = await request.get(API_URL);
-    dispatch({
-      type: LINK.LOAD,
-      links: data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const fetchLinks = ({ links, loadMoreButton }) => ({
+  type: LINK.LOAD,
+  links,
+  loadMoreButton
+});
 
-export const fetchMoreLinks = linkId => async dispatch => {
-  try {
-    const { data } = await request.get(`${API_URL}?linkId=${linkId}`);
-    dispatch({
-      type: LINK.LOAD_MORE,
-      links: data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const fetchMoreLinks = ({ links, loadMoreButton }) => ({
+  type: LINK.LOAD_MORE,
+  links,
+  loadMoreButton
+});
 
 export const likeLink = ({ id, likes }) => ({
   type: LINK.LIKE,
   id,
   likes
+});
+
+export const updateNumComments = ({ id, updateType }) => ({
+  type: LINK.UPDATE_NUM_COMMENTS,
+  id,
+  updateType
 });
 
 export const uploadLink = ({ url, title, description }) => async dispatch => {

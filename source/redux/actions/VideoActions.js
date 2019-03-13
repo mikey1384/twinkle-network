@@ -139,21 +139,12 @@ export const fillCurrentVideoSlot = videoId => ({
   videoId
 });
 
-export const getInitialVideos = () => async dispatch => {
-  try {
-    const {
-      data: { videos, loadMoreButton }
-    } = await request.get(`${URL}/video`);
-    dispatch({
-      type: VIDEO.LOAD,
-      initialRun: true,
-      loadMoreButton,
-      videos
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const getInitialVideos = ({ loadMoreButton, videos }) => ({
+  type: VIDEO.LOAD,
+  initialRun: true,
+  loadMoreButton,
+  videos
+});
 
 export const getMoreVideos = ({ videos, loadMoreButton }) => ({
   type: VIDEO.LOAD,

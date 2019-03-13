@@ -5,6 +5,7 @@ const types = {
   LIKE: 'LIKE',
   LOAD: 'LOAD',
   LOAD_MORE: 'LOAD_MORE',
+  UPDATE_NUM_COMMENTS: 'UPDATE_NUM_COMMENTS',
   UPLOAD: 'UPLOAD'
 };
 

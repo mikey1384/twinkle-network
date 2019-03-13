@@ -16,7 +16,11 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import request from 'axios';
 import NotFound from 'components/NotFound';
-import { editLinkPage, likeLink } from 'redux/actions/LinkActions';
+import {
+  editLinkPage,
+  likeLink,
+  updateNumComments
+} from 'redux/actions/LinkActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
@@ -41,10 +45,12 @@ LinkPage.propTypes = {
   likeLink: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  myId: PropTypes.number
+  myId: PropTypes.number,
+  updateNumComments: PropTypes.func.isRequired
 };
 
 function LinkPage({
+  likeLink,
   location,
   match: {
     params: { linkId },
@@ -55,7 +61,8 @@ function LinkPage({
     dispatch,
     history
   },
-  myId
+  myId,
+  updateNumComments
 }) {
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -298,13 +305,13 @@ function LinkPage({
         commentActions={{
           attachStar: onAttachStar,
           editRewardComment: onEditRewardComment,
-          onDelete: onDeleteComment,
+          onDelete: handleDeleteComment,
           onEditDone: onEditComment,
           onLikeClick: onLikeComment,
           onLoadMoreComments: onLoadMoreSubjectComments,
           onLoadMoreReplies: onLoadMoreSubjectReplies,
-          onUploadComment,
-          onUploadReply
+          onUploadComment: handleUploadComment,
+          onUploadReply: handleUploadReply
         }}
       />
       <Comments
@@ -314,13 +321,13 @@ function LinkPage({
         key={'comments' + id}
         loadMoreButton={commentsLoadMoreButton}
         onAttachStar={onAttachStar}
-        onCommentSubmit={onUploadComment}
-        onDelete={onDeleteComment}
+        onCommentSubmit={handleUploadComment}
+        onDelete={handleDeleteComment}
         onEditDone={onEditComment}
         onLikeClick={onLikeComment}
         onLoadMoreComments={onLoadMoreComments}
         onLoadMoreReplies={onLoadMoreReplies}
-        onReplySubmit={onUploadReply}
+        onReplySubmit={handleUploadReply}
         onRewardCommentEdit={onEditRewardComment}
         parent={{ type: 'url', id }}
         className={css`
@@ -365,6 +372,14 @@ function LinkPage({
     <Loading text="Loading Page..." />
   );
 
+  function handleDeleteComment(data) {
+    onDeleteComment(data);
+    updateNumComments({
+      id,
+      updateType: 'decrease'
+    });
+  }
+
   async function handleEditLinkPage(params) {
     try {
       await request.put(`${URL}/url/page`, params, auth());
@@ -391,7 +406,23 @@ function LinkPage({
       ...contentObj,
       likes
     });
-    likeLink({ likes, id: contentObj.contentId });
+    likeLink({ likes, id });
+  }
+
+  function handleUploadComment(data) {
+    onUploadComment(data);
+    updateNumComments({
+      id,
+      updateType: 'increase'
+    });
+  }
+
+  function handleUploadReply(data) {
+    onUploadReply(data);
+    updateNumComments({
+      id,
+      updateType: 'increase'
+    });
   }
 }
 
@@ -407,6 +438,7 @@ export default connect(
   dispatch => ({
     dispatch,
     editLinkPage: params => dispatch(editLinkPage(params)),
-    likeLink: likes => dispatch(likeLink(likes))
+    likeLink: likes => dispatch(likeLink(likes)),
+    updateNumComments: params => dispatch(updateNumComments(params))
   })
 )(LinkPage);

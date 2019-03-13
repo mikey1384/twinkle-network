@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import AccountMenu from './AccountMenu';
@@ -101,6 +101,7 @@ function Header({
   username,
   versionMatch
 }) {
+  const [prevPathname, setPrevPathname] = useState();
   const prevUserIdRef = useRef(userId);
   useEffect(() => {
     socket.on('connect', onConnect);
@@ -150,6 +151,12 @@ function Header({
       socket.removeListener('subject_change', onSubjectChange);
     };
   });
+
+  useEffect(() => {
+    return function() {
+      setPrevPathname(pathname);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     changeRankingsLoadedStatus(false);
@@ -274,11 +281,10 @@ function Header({
               to="/xp"
               onClick={closeSearch}
               pathname={pathname}
-              className={chatLoading || searchMode ? 'desktop' : ''}
+              className={chatLoading || searchMode ? 'hidden' : 'mobile'}
               imgLabel="bolt"
-            >
-              EARN XP
-            </HeaderNav>
+            />
+            {renderWorkNav()}
           </>
           <div
             className={!searchMode || chatLoading ? 'desktop' : ''}
@@ -349,6 +355,65 @@ function Header({
     recordUserAction({ action: 'logout' });
     logout();
     resetChat();
+  }
+
+  function renderWorkNav() {
+    if (
+      !prevPathname ||
+      ['xp', 'links', 'videos'].indexOf(pathname.split('/')[1]) === -1
+    ) {
+      return (
+        <HeaderNav
+          to="/xp"
+          onClick={closeSearch}
+          pathname={pathname}
+          className="desktop"
+          imgLabel="bolt"
+        >
+          EARN XP
+        </HeaderNav>
+      );
+    }
+
+    if (['links'].indexOf(prevPathname.split('/')[1]) !== -1) {
+      return (
+        <HeaderNav
+          to="/links"
+          onClick={closeSearch}
+          pathname={pathname}
+          className="desktop"
+          imgLabel="book"
+        >
+          READ
+        </HeaderNav>
+      );
+    }
+
+    if (['videos'].indexOf(prevPathname.split('/')[1]) !== -1) {
+      return (
+        <HeaderNav
+          to="/videos"
+          onClick={closeSearch}
+          pathname={pathname}
+          className="desktop"
+          imgLabel="film"
+        >
+          WATCH
+        </HeaderNav>
+      );
+    }
+
+    return (
+      <HeaderNav
+        to="/xp"
+        onClick={closeSearch}
+        pathname={pathname}
+        className="desktop"
+        imgLabel="bolt"
+      >
+        EARN XP
+      </HeaderNav>
+    );
   }
 }
 
