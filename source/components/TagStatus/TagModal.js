@@ -70,7 +70,7 @@ function TagModal({
         </TagForm>
         {addPlaylistModalShown && (
           <AddPlaylistModal
-            excludeVideoIds={[videoId]}
+            existingVideoIds={[videoId]}
             postPlaylist={addPlaylist}
             onHide={() => setAddPlaylistModalShown(false)}
             title={searchText}

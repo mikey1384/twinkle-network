@@ -13,12 +13,14 @@ SelectUploadsForm.propTypes = {
   onDeselect: PropTypes.func.isRequired,
   selectedUploads: PropTypes.array.isRequired,
   type: PropTypes.string,
-  uploads: PropTypes.array.isRequired
+  uploads: PropTypes.array.isRequired,
+  contentObjs: PropTypes.object.isRequired
 };
 
 export default function SelectUploadsForm({
   uploads,
   selectedUploads,
+  contentObjs,
   loading,
   loadingMore,
   loadMoreButton,
@@ -52,16 +54,12 @@ export default function SelectUploadsForm({
           No Results
         </div>
       ) : (
-        uploads.map(upload => {
+        uploads.map(uploadId => {
           return (
             <Selectable
-              key={upload.id}
-              item={upload}
-              selected={
-                selectedUploads
-                  .map(selected => selected.id)
-                  .indexOf(upload.id) !== -1
-              }
+              key={uploadId}
+              item={contentObjs[uploadId]}
+              selected={selectedUploads.indexOf(uploadId) !== -1}
               onSelect={onSelect}
               onDeselect={onDeselect}
               type={type}

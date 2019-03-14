@@ -23,12 +23,13 @@ import {
   searchContent,
   uploadPlaylist
 } from 'helpers/requestHelpers';
+import { objectify } from 'helpers';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 
 AddPlaylistModal.propTypes = {
   dispatch: PropTypes.func,
-  excludeVideoIds: PropTypes.array,
+  existingVideoIds: PropTypes.array,
   focusPlaylistPanelAfterUpload: PropTypes.func,
   onHide: PropTypes.func,
   postPlaylist: PropTypes.func,
@@ -37,7 +38,7 @@ AddPlaylistModal.propTypes = {
 
 function AddPlaylistModal({
   dispatch,
-  excludeVideoIds = [],
+  existingVideoIds = [],
   focusPlaylistPanelAfterUpload,
   onHide,
   postPlaylist,
@@ -52,25 +53,29 @@ function AddPlaylistModal({
   const [allVideos, setAllVideos] = useState([]);
   const [searchedVideos, setSearchedVideos] = useState([]);
   const [selectedVideos, setSelectedVideos] = useState([]);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: searchVideo,
     onClear: () => setSearchedVideos([])
   });
+  const playlistVideoObjects = useRef({});
   const mounted = useRef(true);
 
   useEffect(() => {
     mounted.current = true;
     loadVideos();
     async function loadVideos() {
-      const { results, loadMoreButton } = await loadUploads({
+      const { results: loadedVideos, loadMoreButton } = await loadUploads({
         type: 'video',
         limit: 18,
-        excludeContentIds: excludeVideoIds
+        excludeContentIds: existingVideoIds
       });
       if (mounted.current) {
-        setAllVideos(results);
+        setSelectedVideos(existingVideoIds);
+        setAllVideos(loadedVideos.map(video => video.id));
+        playlistVideoObjects.current = objectify(loadedVideos);
         setLoadMoreButton(loadMoreButton);
       }
     }
@@ -165,21 +170,27 @@ function AddPlaylistModal({
               <Loading />
             ) : (
               <SelectUploadsForm
+                contentObjs={playlistVideoObjects.current}
                 uploads={
                   !stringIsEmpty(searchText) ? searchedVideos : allVideos
                 }
                 selectedUploads={selectedVideos}
+                loadingMore={loadingMore}
                 loadMoreButton={
                   !stringIsEmpty(searchText)
                     ? searchLoadMoreButton
                     : loadMoreButton
                 }
-                onSelect={video =>
-                  setSelectedVideos(selectedVideos.concat([video]))
+                onSelect={selectedVideoId =>
+                  setSelectedVideos(selectedVideos =>
+                    selectedVideos.concat([selectedVideoId])
+                  )
                 }
-                onDeselect={videoId =>
+                onDeselect={deselectedVideoId =>
                   setSelectedVideos(
-                    selectedVideos.filter(video => video.id !== videoId)
+                    selectedVideos.filter(
+                      videoId => videoId !== deselectedVideoId
+                    )
                   )
                 }
                 loadMoreUploads={loadMoreVideos}
@@ -196,18 +207,16 @@ function AddPlaylistModal({
               width: '100%'
             }}
           >
-            {selectedVideos.map(video => (
+            {selectedVideos.map(videoId => (
               <SortableThumb
-                key={video.id}
-                video={video}
+                key={videoId}
+                video={playlistVideoObjects.current[videoId]}
                 onMove={({ sourceId, targetId }) => {
                   let selected = [...selectedVideos];
-                  const selectedVideoArray = selected.map(video => video.id);
-                  const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                  const sourceVideo = selected[sourceIndex];
-                  const targetIndex = selectedVideoArray.indexOf(targetId);
+                  const sourceIndex = selected.indexOf(sourceId);
+                  const targetIndex = selected.indexOf(targetId);
                   selected.splice(sourceIndex, 1);
-                  selected.splice(targetIndex, 0, sourceVideo);
+                  selected.splice(targetIndex, 0, sourceId);
                   setSelectedVideos(selected);
                 }}
               />
@@ -287,7 +296,7 @@ function AddPlaylistModal({
         dispatch,
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),
-        selectedVideos: selectedVideos.map(video => video.id)
+        selectedVideos
       });
       await postPlaylist(data);
       focusPlaylistPanelAfterUpload?.();
@@ -299,30 +308,48 @@ function AddPlaylistModal({
 
   async function loadMoreVideos() {
     if (!stringIsEmpty(searchText)) {
-      const { results, loadMoreButton } = await searchContent({
+      const { results: loadedVideos, loadMoreButton } = await searchContent({
         filter: 'video',
         searchText,
-        shownResults: searchedVideos
+        shownResults: searchedVideos.map(
+          videoId => playlistVideoObjects.current[videoId]
+        )
       });
-      setSearchedVideos(searchedVideos.concat(results));
+      playlistVideoObjects.current = {
+        ...playlistVideoObjects.current,
+        ...objectify(loadedVideos)
+      };
+      setSearchedVideos(
+        searchedVideos.concat(loadedVideos.map(video => video.id))
+      );
+      setLoadingMore(false);
       setSearchLoadMoreButton(loadMoreButton);
     } else {
-      const { results, loadMoreButton } = await loadUploads({
+      const { results: loadedVideos, loadMoreButton } = await loadUploads({
         type: 'video',
         limit: 18,
-        contentId: allVideos[allVideos.length - 1].id
+        contentId: allVideos[allVideos.length - 1]
       });
-      setAllVideos(allVideos.concat(results));
+      playlistVideoObjects.current = {
+        ...playlistVideoObjects.current,
+        ...objectify(loadedVideos)
+      };
+      setAllVideos(allVideos.concat(loadedVideos.map(video => video.id)));
+      setLoadingMore(false);
       setLoadMoreButton(loadMoreButton);
     }
   }
 
   async function searchVideo(text) {
-    const { results: searchedVideos, loadMoreButton } = await searchContent({
+    const { results: searchResults, loadMoreButton } = await searchContent({
       filter: 'video',
       searchText: text
     });
-    setSearchedVideos(searchedVideos);
+    playlistVideoObjects.current = {
+      ...playlistVideoObjects.current,
+      ...objectify(searchResults)
+    };
+    setSearchedVideos(searchResults.map(video => video.id));
     setSearchLoadMoreButton(loadMoreButton);
   }
 }

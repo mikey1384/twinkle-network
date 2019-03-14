@@ -55,7 +55,7 @@ function Selectable({
           if (selected) {
             onDeselect(item.id);
           } else {
-            onSelect(item);
+            onSelect(item.id);
           }
         }}
       >

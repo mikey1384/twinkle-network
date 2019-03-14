@@ -13,6 +13,7 @@ import HTML5Backend from 'react-dnd-html5-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { objectify } from 'helpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import {
   editPlaylistVideos,
@@ -43,7 +44,7 @@ function EditPlaylistModal({
   const [loadingMore, setLoadingMore] = useState(false);
   const [modalVideos, setModalVideos] = useState([]);
   const [searchedVideos, setSearchedVideos] = useState([]);
-  const [videosToRemove, setVideosToRemove] = useState([]);
+  const [loadedOrSearchedVideos, setLoadedOrSearchedVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [removedVideoIds, setRemovedVideoIds] = useState({});
@@ -59,7 +60,8 @@ function EditPlaylistModal({
     onSearch: handleSearchVideo,
     onClear: () => setSearchedVideos([])
   });
-  const originalPlaylistVideos = useRef([]);
+  const playlistVideoObjects = useRef({});
+  const initialSelectedVideos = useRef([]);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -79,36 +81,22 @@ function EditPlaylistModal({
           playlistId,
           targetVideos: modalVids
         });
-        originalPlaylistVideos.current = results;
+        initialSelectedVideos.current = results.map(video => video.id);
       } else {
-        originalPlaylistVideos.current = modalVids;
+        initialSelectedVideos.current = modalVids.map(video => video.id);
       }
-      setModalVideos(modalVids);
+      playlistVideoObjects.current = objectify(modalVids);
+      setModalVideos(modalVids.map(video => video.id));
+      setSelectedVideos(initialSelectedVideos.current);
       setLoadMoreButton(loadMoreShown);
       setIsLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    setSelectedVideos(
-      addedVideos.concat(
-        originalPlaylistVideos.current.filter(
-          video => !removedVideoIds[video.id]
-        )
-      )
-    );
-  }, [
-    originalPlaylistVideos.current,
-    addedVideos,
-    removedVideoIds,
-    videosToRemove
-  ]);
-
   const videosToRearrange = modalVideos.filter(
-    video =>
-      !removedVideoIds[video.id] ||
-      addedVideos.map(video => video.id).indexOf(video.id) !== -1
+    videoId => !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
   );
+
   return (
     <Modal large onHide={onHide}>
       <header>
@@ -152,6 +140,7 @@ function EditPlaylistModal({
           <>
             {mainTabActive && modalType === 'change' && (
               <SelectUploadsForm
+                contentObjs={playlistVideoObjects.current}
                 loadingMore={loadingMore}
                 uploads={
                   !stringIsEmpty(searchText) ? searchedVideos : modalVideos
@@ -162,33 +151,41 @@ function EditPlaylistModal({
                     ? searchLoadMoreButton
                     : loadMoreButton
                 }
-                onSelect={video => {
-                  setAddedVideos([video].concat(addedVideos));
+                onSelect={selectedVideoId => {
+                  setAddedVideos(addedVideos =>
+                    [selectedVideoId].concat(addedVideos)
+                  );
+                  setSelectedVideos(selectedVideos =>
+                    [selectedVideoId].concat(selectedVideos)
+                  );
                   if (!stringIsEmpty(searchText)) {
-                    setVideosToRemove(
-                      [video].concat(
-                        videosToRemove.filter(
-                          videoToRemove => videoToRemove.id !== video.id
+                    setLoadedOrSearchedVideos(loadedOrSearchedVideo =>
+                      [selectedVideoId].concat(
+                        loadedOrSearchedVideo.filter(
+                          videoId => videoId !== selectedVideoId
                         )
                       )
                     );
-                    setModalVideos(
-                      [video].concat(
+                    setModalVideos(modalVideos =>
+                      [selectedVideoId].concat(
                         modalVideos.filter(
-                          modalVideo => modalVideo.id !== video.id
+                          videoId => videoId !== selectedVideoId
                         )
                       )
                     );
                   }
                 }}
-                onDeselect={videoId => {
-                  setAddedVideos(
-                    addedVideos.filter(video => video.id !== videoId)
+                onDeselect={deselectedId => {
+                  setAddedVideos(addedVideos =>
+                    addedVideos.filter(videoId => videoId !== deselectedId)
                   );
-                  setRemovedVideoIds({
+                  setSelectedVideos(selectedVideos =>
+                    selectedVideos.filter(videoId => videoId !== deselectedId)
+                  );
+                  setRemovedVideoIds(removedVideoIds => ({
                     ...removedVideoIds,
-                    [videoId]: true
-                  });
+                    [deselectedId]: true
+                  }));
                 }}
                 loadMoreUploads={handleLoadMoreVideos}
               />
@@ -202,20 +199,16 @@ function EditPlaylistModal({
                   width: '100%'
                 }}
               >
-                {videosToRearrange.map(video => (
+                {videosToRearrange.map(videoId => (
                   <SortableThumb
-                    key={video.id}
-                    video={video}
+                    key={videoId}
+                    video={playlistVideoObjects.current[videoId]}
                     onMove={({ sourceId, targetId }) => {
                       let selected = [...videosToRearrange];
-                      const selectedVideoArray = selected.map(
-                        video => video.id
-                      );
-                      const sourceIndex = selectedVideoArray.indexOf(sourceId);
-                      const sourceVideo = selected[sourceIndex];
-                      const targetIndex = selectedVideoArray.indexOf(targetId);
+                      const sourceIndex = selected.indexOf(sourceId);
+                      const targetIndex = selected.indexOf(targetId);
                       selected.splice(sourceIndex, 1);
-                      selected.splice(targetIndex, 0, sourceVideo);
+                      selected.splice(targetIndex, 0, sourceId);
                       setModalVideos(selected);
                     }}
                   />
@@ -242,28 +235,37 @@ function EditPlaylistModal({
             )}
             {!mainTabActive && (
               <SelectUploadsForm
+                contentObjs={playlistVideoObjects.current}
                 loadingMore={loadingMore}
-                uploads={videosToRemove}
+                uploads={loadedOrSearchedVideos}
                 loadMoreButton={removeVideosLoadMoreButton}
                 selectedUploads={selectedVideos}
-                onSelect={video => {
-                  setAddedVideos([video].concat(addedVideos));
-                  setModalVideos(
-                    [video].concat(
+                onSelect={selectedVideoId => {
+                  setAddedVideos(addedVideos =>
+                    [selectedVideoId].concat(addedVideos)
+                  );
+                  setSelectedVideos(selectedVideos =>
+                    [selectedVideoId].concat(selectedVideos)
+                  );
+                  setModalVideos(modalVideos =>
+                    [selectedVideoId].concat(
                       modalVideos.filter(
-                        modalVideo => modalVideo.id !== video.id
+                        modalVideoId => modalVideoId !== selectedVideoId
                       )
                     )
                   );
                 }}
-                onDeselect={videoId => {
-                  setAddedVideos(
-                    addedVideos.filter(video => video.id !== videoId)
+                onDeselect={deselectedId => {
+                  setAddedVideos(addedVideos =>
+                    addedVideos.filter(videoId => videoId !== deselectedId)
                   );
-                  setRemovedVideoIds({
+                  setSelectedVideos(selectedVideos =>
+                    selectedVideos.filter(videoId => videoId !== deselectedId)
+                  );
+                  setRemovedVideoIds(removedVideoIds => ({
                     ...removedVideoIds,
-                    [videoId]: true
-                  });
+                    [deselectedId]: true
+                  }));
                 }}
                 loadMoreUploads={handleLoadMoreVideos}
               />
@@ -295,23 +297,18 @@ function EditPlaylistModal({
     const playlist =
       modalType === 'change'
         ? await editPlaylistVideos({
-            addedVideoIds: addedVideos.map(video => video.id),
+            addedVideoIds: addedVideos,
             dispatch,
             removedVideoIds,
             playlistId
           })
         : await reorderPlaylistVideos({
             dispatch,
-            originalVideoIds: originalPlaylistVideos.current.map(
-              video => video.id
+            originalVideoIds: initialSelectedVideos.current,
+            reorderedVideoIds: modalVideos.filter(
+              videoId =>
+                !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
             ),
-            reorderedVideoIds: modalVideos
-              .filter(
-                video =>
-                  !removedVideoIds[video.id] ||
-                  addedVideos.map(video => video.id).indexOf(video.id) !== -1
-              )
-              .map(video => video.id),
             playlistId
           });
     await changePlaylistVideos(playlist);
@@ -327,20 +324,30 @@ function EditPlaylistModal({
       } = await loadPlaylistVideos({
         playlistId,
         limit: 18,
-        shownVideos: videosToRemove
+        shownVideos: loadedVideos.map(
+          videoId => playlistVideoObjects.current[videoId]
+        )
       });
+      playlistVideoObjects.current = {
+        ...playlistVideoObjects.current,
+        ...objectify(loadedVideos)
+      };
       for (let video of loadedVideos) {
+        initialSelectedVideos.current = initialSelectedVideos.current
+          .filter(videoId => videoId !== video.id)
+          .concat(video.id);
         if (
-          originalPlaylistVideos.current
-            .map(originalVideo => originalVideo.id)
-            .indexOf(video.id) === -1
+          selectedVideos.indexOf(video.id) === -1 &&
+          !removedVideoIds[video.id]
         ) {
-          originalPlaylistVideos.current.push(video);
+          setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
         }
       }
-      setLoadingMore(false);
-      setVideosToRemove(videosToRemove.concat(loadedVideos));
+      setLoadedOrSearchedVideos(loadedOrSearchedVideos =>
+        loadedOrSearchedVideos.concat(loadedVideos.map(video => video.id))
+      );
       setRemoveVideosLoadMoreButton(removeVidsLoadMoreButton);
+      setLoadingMore(false);
       if (modalType !== 'change') {
         setLoadMoreButton(loadMoreButton && removeVidsLoadMoreButton);
       }
@@ -349,7 +356,7 @@ function EditPlaylistModal({
 
     if (!stringIsEmpty(searchText)) {
       const {
-        results,
+        results: loadedVideos,
         loadMoreButton: searchContentLoadMoreButton
       } = await searchContent({
         filter: 'video',
@@ -358,25 +365,28 @@ function EditPlaylistModal({
       });
       const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,
-        targetVideos: results
+        targetVideos: loadedVideos
       });
-      setLoadingMore(false);
-      setSearchedVideos(searchedVideos.concat(results));
-      setSearchLoadMoreButton(searchContentLoadMoreButton);
-      originalPlaylistVideos.current.push(
-        playlistVideos.filter(
-          video =>
-            originalPlaylistVideos.current
-              .map(video => video.id)
-              .indexOf(video.id) === -1
+      playlistVideoObjects.current = {
+        ...playlistVideoObjects.current,
+        ...objectify(loadedVideos)
+      };
+      setSearchedVideos(searchedVideos.concat(loadedVideos));
+      setSelectedVideos(selectedVideos =>
+        selectedVideos.concat(
+          playlistVideos
+            .map(video => video.id)
+            .filter(id => selectedVideos.indexOf(id) === -1)
         )
       );
+      setLoadingMore(false);
+      setSearchLoadMoreButton(searchContentLoadMoreButton);
       return;
     }
 
     if (modalType === 'change') {
       const {
-        results: videos,
+        results: loadedVideos,
         loadMoreButton: changeLoadMoreButton
       } = await loadUploads({
         type: 'video',
@@ -385,41 +395,58 @@ function EditPlaylistModal({
       });
       const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,
-        targetVideos: videos
+        targetVideos: loadedVideos
       });
-      setLoadingMore(false);
+      playlistVideoObjects.current = {
+        ...playlistVideoObjects.current,
+        ...objectify(loadedVideos)
+      };
       setModalVideos(
         modalVideos.concat(
-          videos.filter(
-            video =>
-              modalVideos.map(modalVideo => modalVideo.id).indexOf(video.id) ===
-              -1
-          )
+          loadedVideos
+            .map(video => video.id)
+            .filter(videoId => modalVideos.indexOf(videoId) === -1)
         )
       );
-      originalPlaylistVideos.current.push(playlistVideos);
+      setSelectedVideos(selectedVideos =>
+        selectedVideos.concat(
+          playlistVideos
+            .map(video => video.id)
+            .filter(id => selectedVideos.indexOf(id) === -1)
+        )
+      );
+      setLoadingMore(false);
       setLoadMoreButton(changeLoadMoreButton);
       return;
     }
 
     const {
-      results: videos,
+      results: loadedVideos,
       loadMoreButton: reorderLoadMoreButton
     } = await loadPlaylistVideos({
       playlistId,
-      shownVideos: originalPlaylistVideos.current,
+      shownVideos: selectedVideos.map(
+        videoId => playlistVideoObjects.current[videoId]
+      ),
       limit: 18
     });
-    originalPlaylistVideos.current = originalPlaylistVideos.current.concat(
-      videos
-    );
+    playlistVideoObjects.current = {
+      ...playlistVideoObjects.current,
+      ...objectify(loadedVideos)
+    };
+    for (let video of loadedVideos) {
+      initialSelectedVideos.current = initialSelectedVideos.current
+        .filter(videoId => videoId !== video.id)
+        .concat(video.id);
+      setSelectedVideos(selectedVideos =>
+        selectedVideos.filter(videoId => videoId !== video.id).concat(video.id)
+      );
+    }
     setModalVideos(
       modalVideos.concat(
-        videos.filter(
-          video =>
-            modalVideos.map(modalVideo => modalVideo.id).indexOf(video.id) ===
-            -1
-        )
+        loadedVideos
+          .map(video => video.id)
+          .filter(videoId => modalVideos.indexOf(videoId) === -1)
       )
     );
     setLoadingMore(false);
@@ -436,41 +463,49 @@ function EditPlaylistModal({
     setLoadingMore(false);
     setMainTabActive(false);
     setIsLoading(true);
-    const { results: videos, loadMoreButton } = await loadPlaylistVideos({
+    const { results: loadedVideos, loadMoreButton } = await loadPlaylistVideos({
       playlistId,
       limit: 18
     });
-    for (let video of videos) {
+    playlistVideoObjects.current = {
+      ...playlistVideoObjects.current,
+      ...objectify(loadedVideos)
+    };
+    for (let video of loadedVideos) {
       if (
-        originalPlaylistVideos.current
-          .map(video => video.id)
-          .indexOf(video.id) === -1
+        selectedVideos.indexOf(video.id) === -1 &&
+        !removedVideoIds[video.id]
       ) {
-        originalPlaylistVideos.current.push(video);
+        setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
       }
     }
-    setVideosToRemove(videosToRemove.concat(videos));
+    setLoadedOrSearchedVideos(setLoadedOrSearchedVideos =>
+      setLoadedOrSearchedVideos.concat(loadedVideos.map(video => video.id))
+    );
     setRemoveVideosLoadMoreButton(loadMoreButton);
     setIsLoading(false);
   }
 
   async function handleSearchVideo(text) {
-    const { results: searchedVideos, loadMoreButton } = await searchContent({
+    const { results: searchResults, loadMoreButton } = await searchContent({
       filter: 'video',
       searchText: text
     });
     const { results: playlistVideos } = await loadPlaylistVideos({
       playlistId,
-      targetVideos: searchedVideos
+      targetVideos: searchResults
     });
-    setSearchedVideos(searchedVideos);
+    playlistVideoObjects.current = {
+      ...playlistVideoObjects.current,
+      ...objectify(searchResults)
+    };
+    setSearchedVideos(searchResults.map(video => video.id));
     setSearchLoadMoreButton(loadMoreButton);
-    originalPlaylistVideos.current.push(
-      playlistVideos.filter(
-        video =>
-          originalPlaylistVideos.current
-            .map(video => video.id)
-            .indexOf(video.id) === -1
+    setSelectedVideos(selectedVideos =>
+      selectedVideos.concat(
+        playlistVideos
+          .map(video => video.id)
+          .filter(id => selectedVideos.indexOf(id) === -1)
       )
     );
     setIsLoading(false);
