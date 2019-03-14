@@ -39,12 +39,14 @@ function Rankings({
   twinkleXP
 }) {
   const [allSelected, setAllSelected] = useState(true);
+  const userChangedTab = useRef(false);
   const mounted = useRef(true);
   const rankedColor =
     rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
 
   useEffect(() => {
     mounted.current = true;
+    userChangedTab.current = false;
     if (!myId) {
       setAllSelected(false);
     }
@@ -56,7 +58,9 @@ function Rankings({
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
           getRanks({ all, top30s, rankModifier: modifier });
-          setAllSelected(!!myId);
+          if (!userChangedTab.current) {
+            setAllSelected(!!myId);
+          }
         }
       } catch (error) {
         console.error(error.response || error);
@@ -81,13 +85,19 @@ function Rankings({
         >
           <nav
             className={allSelected ? 'active' : ''}
-            onClick={() => setAllSelected(true)}
+            onClick={() => {
+              userChangedTab.current = true;
+              setAllSelected(true);
+            }}
           >
             My Ranking
           </nav>
           <nav
             className={allSelected ? '' : 'active'}
-            onClick={() => setAllSelected(false)}
+            onClick={() => {
+              userChangedTab.current = true;
+              setAllSelected(false);
+            }}
           >
             Top 30
           </nav>

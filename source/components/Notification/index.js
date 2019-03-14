@@ -131,7 +131,10 @@ function Notification({
               </nav>
               <nav
                 className={activeTab === 'rankings' ? 'active' : undefined}
-                onClick={() => setActiveTab('rankings')}
+                onClick={() => {
+                  userChangedTab.current = true;
+                  setActiveTab('rankings');
+                }}
               >
                 Rankings
               </nav>
