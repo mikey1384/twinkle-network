@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MainFeeds from './MainFeeds';
@@ -51,7 +51,9 @@ function Notification({
 }) {
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
+  const userChangedTab = useRef(false);
   useEffect(() => {
+    userChangedTab.current = false;
     if (myId) {
       fetchNotifications();
     } else {
@@ -61,18 +63,20 @@ function Notification({
   }, [myId]);
 
   useEffect(() => {
-    if (!myId) {
-      setActiveTab('rankings');
-    } else {
-      const tab =
-        activeTab === 'reward' || rewards.length > 0
-          ? 'reward'
-          : activeTab === 'notification' ||
-            (location === 'home' && notifications.length > 0) ||
-            numNewNotis > 0
-          ? 'notification'
-          : 'rankings';
-      setActiveTab(tab);
+    if (!userChangedTab.current) {
+      if (!myId) {
+        setActiveTab('rankings');
+      } else {
+        const tab =
+          activeTab === 'reward' || rewards.length > 0
+            ? 'reward'
+            : activeTab === 'notification' ||
+              (location === 'home' && notifications.length > 0) ||
+              numNewNotis > 0
+            ? 'notification'
+            : 'rankings';
+        setActiveTab(tab);
+      }
     }
     setRewardTabShown(rewards.length > 0);
   }, [myId, notifications]);
@@ -118,7 +122,10 @@ function Notification({
               <nav
                 className={`${activeTab === 'notification' &&
                   'active'} ${numNewNotis > 0 && 'alert'}`}
-                onClick={() => setActiveTab('notification')}
+                onClick={() => {
+                  userChangedTab.current = true;
+                  setActiveTab('notification');
+                }}
               >
                 News
               </nav>
@@ -132,7 +139,10 @@ function Notification({
                 <nav
                   className={`${activeTab === 'reward' &&
                     'active'} ${totalRewardAmount > 0 && 'alert'}`}
-                  onClick={() => setActiveTab('reward')}
+                  onClick={() => {
+                    userChangedTab.current = true;
+                    setActiveTab('reward');
+                  }}
                 >
                   Rewards
                 </nav>
