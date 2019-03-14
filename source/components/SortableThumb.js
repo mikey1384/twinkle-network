@@ -58,7 +58,6 @@ function SortableThumb({
           boxShadow: `0 0 5px ${Color.darkerGray()}`,
           background: Color.whiteGray()
         }}
-        className="unselectable"
       >
         <div
           style={{
