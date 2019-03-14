@@ -73,7 +73,6 @@ function AddPlaylistModal({
         excludeContentIds: existingVideoIds
       });
       if (mounted.current) {
-        setSelectedVideos(existingVideoIds);
         setAllVideos(loadedVideos.map(video => video.id));
         playlistVideoObjects.current = objectify(loadedVideos);
         setLoadMoreButton(loadMoreButton);
@@ -183,7 +182,7 @@ function AddPlaylistModal({
                 }
                 onSelect={selectedVideoId =>
                   setSelectedVideos(selectedVideos =>
-                    selectedVideos.concat([selectedVideoId])
+                    selectedVideos.concat(selectedVideoId)
                   )
                 }
                 onDeselect={deselectedVideoId =>
@@ -307,6 +306,7 @@ function AddPlaylistModal({
   }
 
   async function loadMoreVideos() {
+    setLoadingMore(true);
     if (!stringIsEmpty(searchText)) {
       const { results: loadedVideos, loadMoreButton } = await searchContent({
         filter: 'video',

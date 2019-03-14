@@ -21,6 +21,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [selectedUpload, setSelectedUpload] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const mounted = useRef(true);
   const contentObjs = useRef({});
   const { handleSearch, searching, searchText } = useSearch({
@@ -60,6 +61,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
       <SelectUploadsForm
         contentObjs={contentObjs.current}
         loading={!loaded || (!stringIsEmpty(searchText) && searching)}
+        loadingMore={loadingMore}
         type={type}
         uploads={!stringIsEmpty(searchText) ? searchedUploads : allUploads}
         selectedUploads={selectedUpload}
@@ -80,6 +82,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
   );
 
   async function loadMoreUploads() {
+    setLoadingMore(true);
     if (!stringIsEmpty(searchText)) {
       const { results, loadMoreButton } = await searchContent({
         filter: type,
@@ -95,6 +98,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
       setSearchedUploads(searchedUploads =>
         searchedUploads.concat(results.map(result => result.id))
       );
+      setLoadingMore(false);
       setSearchLoadMoreButton(loadMoreButton);
     } else {
       const { results, loadMoreButton } = await loadUploads({
@@ -109,6 +113,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
       setAllUploads(allUploads =>
         allUploads.concat(results.map(result => result.id))
       );
+      setLoadingMore(false);
       setLoadMoreButton(loadMoreButton);
     }
   }
