@@ -44,6 +44,7 @@ function AddPlaylistModal({
   postPlaylist,
   title: initialTitle = ''
 }) {
+  const [loaded, setLoaded] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [section, setSection] = useState(0);
   const [title, setTitle] = useState(
@@ -76,6 +77,7 @@ function AddPlaylistModal({
         playlistVideoObjects.current = objectify(loadedVideos);
         setAllVideos(loadedVideos.map(video => video.id));
         setLoadMoreButton(loadMoreButton);
+        setLoaded(true);
       }
     }
     return function cleanUp() {
@@ -97,130 +99,135 @@ function AddPlaylistModal({
     <Modal onHide={onHide} large={section > 0}>
       <header>{renderTitle()}</header>
       <main style={{ paddingBottom: '1rem' }}>
-        {section === 0 && (
-          <form
-            className={css`
-              width: 100%;
-            `}
-            onSubmit={event => event.preventDefault()}
-          >
-            <section>
-              <Input
-                autoFocus
-                placeholder="Enter Playlist Title"
-                value={title}
-                onChange={text => setTitle(text)}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    setTitle(addEmoji(event.target.value));
-                  }
-                }}
-                style={titleExceedsCharLimit}
-              />
-              {titleExceedsCharLimit && (
-                <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                  {renderCharLimit({
-                    contentType: 'playlist',
-                    inputType: 'title',
-                    text: title
-                  })}
-                </small>
-              )}
-            </section>
-            <section style={{ marginTop: '1.5rem' }}>
-              <Textarea
-                name="description"
-                placeholder="Enter Description (Optional)"
-                minRows={4}
-                value={description}
-                onChange={event => setDescription(event.target.value)}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    setDescription(addEmoji(event.target.value));
-                  }
-                }}
-                style={descriptionExceedsCharLimit}
-              />
-              {descriptionExceedsCharLimit && (
-                <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                  {renderCharLimit({
-                    contentType: 'playlist',
-                    inputType: 'description',
-                    text: description
-                  })}
-                </small>
-              )}
-            </section>
-          </form>
-        )}
-        {section === 1 && (
-          <div style={{ width: '100%' }}>
-            <SearchInput
-              placeholder="Search videos..."
-              autoFocus
-              style={{
-                marginBottom: '2em',
-                width: '50%'
-              }}
-              value={searchText}
-              onChange={handleSearch}
-            />
-            {searching ? (
-              <Loading />
-            ) : (
-              <SelectUploadsForm
-                contentObjs={playlistVideoObjects.current}
-                uploads={
-                  !stringIsEmpty(searchText) ? searchedVideos : allVideos
-                }
-                selectedUploads={selectedVideos}
-                loadingMore={loadingMore}
-                loadMoreButton={
-                  !stringIsEmpty(searchText)
-                    ? searchLoadMoreButton
-                    : loadMoreButton
-                }
-                onSelect={selectedVideoId =>
-                  setSelectedVideos(selectedVideos =>
-                    selectedVideos.concat(selectedVideoId)
-                  )
-                }
-                onDeselect={deselectedVideoId =>
-                  setSelectedVideos(
-                    selectedVideos.filter(
-                      videoId => videoId !== deselectedVideoId
-                    )
-                  )
-                }
-                loadMoreUploads={loadMoreVideos}
-              />
+        {!loaded && <Loading />}
+        {loaded && (
+          <>
+            {section === 0 && (
+              <form
+                className={css`
+                  width: 100%;
+                `}
+                onSubmit={event => event.preventDefault()}
+              >
+                <section>
+                  <Input
+                    autoFocus
+                    placeholder="Enter Playlist Title"
+                    value={title}
+                    onChange={text => setTitle(text)}
+                    onKeyUp={event => {
+                      if (event.key === ' ') {
+                        setTitle(addEmoji(event.target.value));
+                      }
+                    }}
+                    style={titleExceedsCharLimit}
+                  />
+                  {titleExceedsCharLimit && (
+                    <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                      {renderCharLimit({
+                        contentType: 'playlist',
+                        inputType: 'title',
+                        text: title
+                      })}
+                    </small>
+                  )}
+                </section>
+                <section style={{ marginTop: '1.5rem' }}>
+                  <Textarea
+                    name="description"
+                    placeholder="Enter Description (Optional)"
+                    minRows={4}
+                    value={description}
+                    onChange={event => setDescription(event.target.value)}
+                    onKeyUp={event => {
+                      if (event.key === ' ') {
+                        setDescription(addEmoji(event.target.value));
+                      }
+                    }}
+                    style={descriptionExceedsCharLimit}
+                  />
+                  {descriptionExceedsCharLimit && (
+                    <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                      {renderCharLimit({
+                        contentType: 'playlist',
+                        inputType: 'description',
+                        text: description
+                      })}
+                    </small>
+                  )}
+                </section>
+              </form>
             )}
-          </div>
-        )}
-        {section === 2 && (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              width: '100%'
-            }}
-          >
-            {selectedVideos.map(videoId => (
-              <SortableThumb
-                key={videoId}
-                video={playlistVideoObjects.current[videoId]}
-                onMove={({ sourceId, targetId }) => {
-                  let selected = [...selectedVideos];
-                  const sourceIndex = selected.indexOf(sourceId);
-                  const targetIndex = selected.indexOf(targetId);
-                  selected.splice(sourceIndex, 1);
-                  selected.splice(targetIndex, 0, sourceId);
-                  setSelectedVideos(selected);
+            {section === 1 && (
+              <div style={{ width: '100%' }}>
+                <SearchInput
+                  placeholder="Search videos..."
+                  autoFocus
+                  style={{
+                    marginBottom: '2em',
+                    width: '50%'
+                  }}
+                  value={searchText}
+                  onChange={handleSearch}
+                />
+                {searching ? (
+                  <Loading />
+                ) : (
+                  <SelectUploadsForm
+                    contentObjs={playlistVideoObjects.current}
+                    uploads={
+                      !stringIsEmpty(searchText) ? searchedVideos : allVideos
+                    }
+                    selectedUploads={selectedVideos}
+                    loadingMore={loadingMore}
+                    loadMoreButton={
+                      !stringIsEmpty(searchText)
+                        ? searchLoadMoreButton
+                        : loadMoreButton
+                    }
+                    onSelect={selectedVideoId =>
+                      setSelectedVideos(selectedVideos =>
+                        selectedVideos.concat(selectedVideoId)
+                      )
+                    }
+                    onDeselect={deselectedVideoId =>
+                      setSelectedVideos(
+                        selectedVideos.filter(
+                          videoId => videoId !== deselectedVideoId
+                        )
+                      )
+                    }
+                    loadMoreUploads={loadMoreVideos}
+                  />
+                )}
+              </div>
+            )}
+            {section === 2 && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'flex-start',
+                  width: '100%'
                 }}
-              />
-            ))}
-          </div>
+              >
+                {selectedVideos.map(videoId => (
+                  <SortableThumb
+                    key={videoId}
+                    video={playlistVideoObjects.current[videoId]}
+                    onMove={({ sourceId, targetId }) => {
+                      let selected = [...selectedVideos];
+                      const sourceIndex = selected.indexOf(sourceId);
+                      const targetIndex = selected.indexOf(targetId);
+                      selected.splice(sourceIndex, 1);
+                      selected.splice(targetIndex, 0, sourceId);
+                      setSelectedVideos(selected);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </main>
       <footer>
