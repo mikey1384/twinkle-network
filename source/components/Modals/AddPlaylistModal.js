@@ -73,8 +73,8 @@ function AddPlaylistModal({
         excludeContentIds: existingVideoIds
       });
       if (mounted.current) {
-        setAllVideos(loadedVideos.map(video => video.id));
         playlistVideoObjects.current = objectify(loadedVideos);
+        setAllVideos(loadedVideos.map(video => video.id));
         setLoadMoreButton(loadMoreButton);
       }
     }
