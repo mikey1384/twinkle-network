@@ -225,7 +225,6 @@ function AddPlaylistModal({
             ))}
           </div>
         )}
-        )
       </main>
       <footer>
         {section === 0 ? (
