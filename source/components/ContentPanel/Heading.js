@@ -49,11 +49,9 @@ function Heading({
     replyId,
     rootId,
     rootObj = {},
-    rootObj: { content, difficulty, likes } = {},
     rootType,
     subjectId,
     targetObj = {},
-    targetObj: { subject = {} } = {},
     timeStamp,
     type,
     uploader = {}
@@ -112,7 +110,7 @@ function Heading({
       {subjectModalShown && (
         <SubjectModal
           onHide={() => setSubjectModalShown(false)}
-          subject={subject}
+          subject={targetObj?.subject}
           uploadResponse={onResponseUpload}
         />
       )}
@@ -187,9 +185,10 @@ function Heading({
   }
 
   function renderCornerButton() {
-    const userLikedVideo = likes?.map(like => like.id).indexOf(myId) !== -1;
+    const userLikedVideo =
+      rootObj?.likes?.map(like => like.id).indexOf(myId) !== -1;
     if (rootType === 'video') {
-      if (!content) return null;
+      if (!rootObj?.content) return null;
       return (
         <>
           {attachedVideoShown ? (
@@ -201,7 +200,7 @@ function Heading({
               onClick={onLikeClick}
             />
           ) : (
-            content && (
+            rootObj?.content && (
               <div
                 style={{
                   cursor: 'pointer',
@@ -216,9 +215,11 @@ function Heading({
               >
                 <VideoThumbImage
                   playIcon
-                  difficulty={difficulty}
+                  difficulty={rootObj?.difficulty}
                   height="7rem"
-                  src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                  src={`https://img.youtube.com/vi/${
+                    rootObj?.content
+                  }/mqdefault.jpg`}
                 />
               </div>
             )
