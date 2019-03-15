@@ -52,7 +52,7 @@ function Heading({
     rootObj: { content, difficulty, likes } = {},
     rootType,
     subjectId,
-    targetObj,
+    targetObj = {},
     targetObj: { subject = {} } = {},
     timeStamp,
     type,
@@ -236,7 +236,7 @@ function Heading({
   }
 
   function renderTargetAction() {
-    if (targetObj.comment && !targetObj.comment.notFound) {
+    if (targetObj?.comment && !targetObj?.comment.notFound) {
       return (
         <span>
           {' '}
