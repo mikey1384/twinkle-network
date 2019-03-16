@@ -361,6 +361,7 @@ function Body({
           })}
           onCommentEdit={onEditRewardComment}
           stars={stars}
+          style={{ marginLeft: '-1px', marginRight: '-1px' }}
           type={type}
         />
         <Comments
