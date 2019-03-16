@@ -34,7 +34,8 @@ export default function HeaderNav({
   style
 }) {
   const highlighted =
-    to === '/xp' && ['videos', 'links'].indexOf(pathname?.split('/')[1]) !== -1;
+    ['/xp', '/videos', '/links'].indexOf(to) !== -1 &&
+    ['xp', 'videos', 'links'].indexOf(pathname?.split('/')[1]) !== -1;
   return (
     <Route
       path={to}

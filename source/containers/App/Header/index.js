@@ -153,10 +153,11 @@ function Header({
   });
 
   useEffect(() => {
-    return function() {
-      setPrevPathname(pathname);
+    socket.connect();
+    return function cleanUp() {
+      socket.disconnect();
     };
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     socket.disconnect();
@@ -177,11 +178,10 @@ function Header({
   }, [userId]);
 
   useEffect(() => {
-    socket.connect();
-    return function cleanUp() {
-      socket.disconnect();
+    return function() {
+      setPrevPathname(pathname);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     showUpdateNotice(versionMatch);
