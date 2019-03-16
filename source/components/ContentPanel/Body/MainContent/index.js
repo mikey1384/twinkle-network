@@ -79,7 +79,11 @@ export default function MainContent({
           !contentObj.rootObj.id && (
             <DifficultyBar
               difficulty={contentObj.difficulty}
-              style={{ marginBottom: '-0.5rem' }}
+              style={{
+                marginBottom: '-0.5rem',
+                marginLeft: '-1px',
+                marginRight: '-1px'
+              }}
             />
           )}
         {type === 'video' && (
@@ -194,7 +198,11 @@ export default function MainContent({
           !!contentObj.difficulty &&
           !!contentObj.rootObj.id && (
             <DifficultyBar
-              style={{ marginBottom: rootType === 'url' ? '-0.5rem' : 0 }}
+              style={{
+                marginBottom: rootType === 'url' ? '-0.5rem' : 0,
+                marginLeft: '-1px',
+                marginRight: '-1px'
+              }}
               difficulty={contentObj.difficulty}
             />
           )}
