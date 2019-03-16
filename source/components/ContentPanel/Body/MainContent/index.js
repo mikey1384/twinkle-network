@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
-import { Color } from 'constants/css';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
 import VideoPlayer from 'components/VideoPlayer';
@@ -11,6 +9,9 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
+import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 MainContent.propTypes = {
   contentObj: PropTypes.object,
@@ -79,10 +80,16 @@ export default function MainContent({
           !contentObj.rootObj.id && (
             <DifficultyBar
               difficulty={contentObj.difficulty}
+              className={css`
+                margin-left: -1px;
+                margin-right: -1px;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-left: 0px;
+                  margin-right: 0px;
+                }
+              `}
               style={{
-                marginBottom: '-0.5rem',
-                marginLeft: '-1px',
-                marginRight: '-1px'
+                marginBottom: '-0.5rem'
               }}
             />
           )}
@@ -198,10 +205,16 @@ export default function MainContent({
           !!contentObj.difficulty &&
           !!contentObj.rootObj.id && (
             <DifficultyBar
+              className={css`
+                margin-left: -1px;
+                margin-right: -1px;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-left: 0px;
+                  margin-right: 0px;
+                }
+              `}
               style={{
-                marginBottom: rootType === 'url' ? '-0.5rem' : 0,
-                marginLeft: '-1px',
-                marginRight: '-1px'
+                marginBottom: rootType === 'url' ? '-0.5rem' : 0
               }}
               difficulty={contentObj.difficulty}
             />

@@ -11,6 +11,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Starmarks from './Starmarks';
 
 RewardStatus.propTypes = {
+  className: PropTypes.string,
   difficulty: PropTypes.number,
   userId: PropTypes.number,
   noMarginForEditButton: PropTypes.bool,
@@ -20,6 +21,7 @@ RewardStatus.propTypes = {
 };
 
 function RewardStatus({
+  className,
   difficulty,
   noMarginForEditButton,
   onCommentEdit,
@@ -47,7 +49,7 @@ function RewardStatus({
     <ErrorBoundary>
       <div
         style={style}
-        className={css`
+        className={`${className} ${css`
           font-size: 1.6rem;
           padding: 0.4rem 1rem 0.2rem 1rem;
           color: #fff;
@@ -61,7 +63,7 @@ function RewardStatus({
             : Color.blue(
                 0.5 + (1 / Math.min(20, maxStars * 2)) * rewardedStars
               )};
-        `}
+        `}`}
       >
         <Starmarks stars={rewardedStars} />
         <div style={{ fontSize: '1.5rem' }}>

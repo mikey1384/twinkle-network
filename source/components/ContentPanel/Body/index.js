@@ -6,7 +6,6 @@ import LikeButton from 'components/Buttons/LikeButton';
 import StarButton from 'components/Buttons/StarButton';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
-import { connect } from 'react-redux';
 import UserListModal from 'components/Modals/UserListModal';
 import VideoPlayer from 'components/VideoPlayer';
 import Comments from 'components/Comments';
@@ -18,6 +17,9 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
+import { connect } from 'react-redux';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import {
   deleteContent,
@@ -361,7 +363,14 @@ function Body({
           })}
           onCommentEdit={onEditRewardComment}
           stars={stars}
-          style={{ marginLeft: '-1px', marginRight: '-1px' }}
+          className={css`
+            margin-left: -1px;
+            margin-right: -1px;
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-left: 0px;
+              margin-right: 0px;
+            }
+          `}
           type={type}
         />
         <Comments

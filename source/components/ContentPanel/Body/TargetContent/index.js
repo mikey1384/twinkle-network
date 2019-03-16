@@ -17,7 +17,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
 import DifficultyBar from 'components/DifficultyBar';
 import { connect } from 'react-redux';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled } from 'helpers';
 import { uploadComment } from 'helpers/requestHelpers';
@@ -134,10 +134,16 @@ function TargetContent({
       <div>
         {subject?.difficulty && (
           <DifficultyBar
+            className={css`
+              margin-left: -1px;
+              margin-right: -1px;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-left: 0px;
+                margin-right: 0px;
+              }
+            `}
             style={{
-              fontSize: '1.3rem',
-              marginLeft: '-1px',
-              marginRight: '-1px'
+              fontSize: '1.3rem'
             }}
             difficulty={subject.difficulty}
           />

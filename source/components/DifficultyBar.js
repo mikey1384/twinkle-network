@@ -5,11 +5,12 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 
 DifficultyBar.propTypes = {
+  className: PropTypes.string,
   difficulty: PropTypes.number.isRequired,
   style: PropTypes.object
 };
 
-export default function DifficultyBar({ difficulty, style }) {
+export default function DifficultyBar({ className, difficulty, style }) {
   const stars = [];
   for (let i = 0; i < difficulty; i++) {
     stars.push(<Icon key={i} icon="star" style={{ marginLeft: '0.2rem' }} />);
@@ -26,6 +27,7 @@ export default function DifficultyBar({ difficulty, style }) {
       : Color.logoBlue();
   return (
     <div
+      className={className}
       style={{
         background: barColor,
         color: '#fff',
