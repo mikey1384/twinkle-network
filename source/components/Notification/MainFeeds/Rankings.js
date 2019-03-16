@@ -183,7 +183,7 @@ function Rankings({
           or leaving comments
         </div>
       )}
-      {loaded && (
+      {loaded && users.length > 0 && (
         <RoundList style={{ marginTop: 0 }}>
           {users.map(user => {
             const rank = !user.twinkleXP

@@ -159,9 +159,10 @@ function Header({
   }, [pathname]);
 
   useEffect(() => {
+    socket.disconnect();
+    socket.connect();
     changeRankingsLoadedStatus(false);
     if (userId) {
-      socket.connect();
       socket.emit('bind_uid_to_socket', userId, username);
       socket.emit('enter_my_notification_channel', userId);
       if (!chatMode) {
@@ -171,10 +172,16 @@ function Header({
       if (prevUserIdRef.current) {
         socket.emit('leave_my_notification_channel', prevUserIdRef.current);
       }
-      socket.disconnect();
     }
     prevUserIdRef.current = userId;
   }, [userId]);
+
+  useEffect(() => {
+    socket.connect();
+    return function cleanUp() {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     showUpdateNotice(versionMatch);

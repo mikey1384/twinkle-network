@@ -102,27 +102,25 @@ function MainFeeds({
           )}
         </Banner>
       )}
-      {notifications.length > 0 && (
+      {userId && activeTab === 'notification' && notifications.length > 0 && (
         <RoundList style={{ marginTop: 0, marginBottom: '1rem' }}>
-          {activeTab === 'notification' &&
-            userId &&
-            notifications.map(notification => {
-              return (
-                <li
-                  style={{ background: '#fff' }}
-                  className={notiFeedListItem}
-                  key={notification.id}
-                >
-                  <NotiItem notification={notification} />
-                </li>
-              );
-            })}
+          {notifications.map(notification => {
+            return (
+              <li
+                style={{ background: '#fff' }}
+                className={notiFeedListItem}
+                key={notification.id}
+              >
+                <NotiItem notification={notification} />
+              </li>
+            );
+          })}
         </RoundList>
       )}
       {activeTab === 'rankings' && <Rankings />}
-      <RoundList style={{ marginTop: 0 }}>
-        {activeTab === 'reward' &&
-          rewards.map(
+      {activeTab === 'reward' && rewards.length > 0 && (
+        <RoundList style={{ marginTop: 0 }}>
+          {rewards.map(
             ({
               id,
               contentId,
@@ -176,7 +174,8 @@ function MainFeeds({
               </li>
             )
           )}
-      </RoundList>
+        </RoundList>
+      )}
       {((activeTab === 'notification' && loadMore.notifications) ||
         (activeTab === 'reward' && loadMore.rewards)) &&
         !!userId && (
