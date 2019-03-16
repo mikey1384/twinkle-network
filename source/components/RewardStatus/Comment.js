@@ -154,16 +154,12 @@ function Comment({
 
   async function submitEdit(editedComment) {
     try {
-      const {
-        data: { success }
-      } = await request.put(
+      await request.put(
         `${API_URL}/reward`,
         { editedComment, contentId: star.id },
         auth()
       );
-      if (success) {
-        onEditDone({ id: star.id, text: editedComment });
-      }
+      onEditDone({ id: star.id, text: editedComment });
       setOnEdit(false);
     } catch (error) {
       handleError(error);
