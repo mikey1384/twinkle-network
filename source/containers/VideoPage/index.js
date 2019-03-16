@@ -276,8 +276,7 @@ function VideoPage({
                     {(userIsUploader || userCanEditThis) && (
                       <Button
                         style={{ marginTop: '2rem', fontSize: '2rem' }}
-                        success
-                        filled
+                        snow
                         onClick={() => setQuestionsBuilderShown(true)}
                       >
                         Add Questions

@@ -15,6 +15,7 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
+import DifficultyBar from 'components/DifficultyBar';
 import { connect } from 'react-redux';
 import { borderRadius, Color } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -131,6 +132,16 @@ function TargetContent({
       }}
     >
       <div>
+        {subject?.difficulty && (
+          <DifficultyBar
+            style={{
+              fontSize: '1.3rem',
+              marginLeft: '-1px',
+              marginRight: '-1px'
+            }}
+            difficulty={subject.difficulty}
+          />
+        )}
         {subject &&
           (subject.notFound ? (
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
