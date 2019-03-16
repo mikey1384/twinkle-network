@@ -195,6 +195,7 @@ export const loadMorePlaylistList = playlistId => async dispatch => {
       type: VIDEO.LOAD_MORE_PL_LIST,
       data
     });
+    return Promise.resolve();
   } catch (error) {
     handleError(error, dispatch);
   }

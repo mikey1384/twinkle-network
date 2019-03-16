@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
@@ -6,8 +7,14 @@ import ContentListItem from 'components/ContentListItem';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import FilterBar from 'components/FilterBar';
+import SearchInput from 'components/Texts/SearchInput';
 import { objectify } from 'helpers';
-import { loadUploads, uploadFeaturedChallenges } from 'helpers/requestHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import {
+  loadUploads,
+  searchContent,
+  uploadFeaturedChallenges
+} from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 SelectFeaturedChallengesModal.propTypes = {
@@ -24,6 +31,7 @@ function SelectFeaturedChallengesModal({
   onSubmit
 }) {
   const [loadMoreButton, setLoadMoreButton] = useState(false);
+  const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [challengeObjs, setChallengeObjs] = useState({});
   const [challenges, setChallenges] = useState([]);
@@ -31,6 +39,11 @@ function SelectFeaturedChallengesModal({
   const [loaded, setLoaded] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectTabActive, setSelectTabActive] = useState(true);
+  const [searchedChallenges, setSearchedChallenges] = useState([]);
+  const { handleSearch, searchText, searching } = useSearch({
+    onSearch: handleChallengeSearch,
+    onClear: () => setSearchedChallenges([])
+  });
 
   useEffect(() => {
     init();
@@ -55,6 +68,13 @@ function SelectFeaturedChallengesModal({
     }
   }, []);
 
+  const displayedChallenges = stringIsEmpty(searchText)
+    ? challenges
+    : searchedChallenges;
+  const displayedLoadMoreButton = stringIsEmpty(searchText)
+    ? loadMoreButton
+    : searchLoadMoreButton;
+
   return (
     <Modal large onHide={onHide}>
       <header>Select Featured Subjects</header>
@@ -73,10 +93,21 @@ function SelectFeaturedChallengesModal({
             Selected
           </nav>
         </FilterBar>
+        {selectTabActive && (
+          <SearchInput
+            autoFocus
+            placeholder="Search for playlists to pin"
+            value={searchText}
+            onChange={handleSearch}
+            style={{ marginBottom: '1.5rem' }}
+          />
+        )}
         {loaded ? (
           <>
             {selectTabActive &&
-              (challenges.length === 0 ? (
+              (searching ? (
+                <Loading />
+              ) : displayedChallenges.length === 0 ? (
                 <p
                   style={{
                     display: 'flex',
@@ -87,10 +118,10 @@ function SelectFeaturedChallengesModal({
                     justifyContent: 'center'
                   }}
                 >
-                  No Subjects
+                  No Subjects{stringIsEmpty(searchText) ? '' : ' Found'}
                 </p>
               ) : (
-                challenges.map(challengeId => (
+                displayedChallenges.map(challengeId => (
                   <ContentListItem
                     selectable
                     selected={selected.indexOf(challengeId) !== -1}
@@ -139,7 +170,7 @@ function SelectFeaturedChallengesModal({
         ) : (
           <Loading />
         )}
-        {loadMoreButton && selectTabActive && (
+        {!searching && displayedLoadMoreButton && selectTabActive && (
           <LoadMoreButton
             style={{ fontSize: '2rem' }}
             transparent
@@ -163,26 +194,57 @@ function SelectFeaturedChallengesModal({
     </Modal>
   );
 
+  async function handleChallengeSearch(text) {
+    const { loadMoreButton: loadMoreShown, results } = await searchContent({
+      limit: 10,
+      filter: 'subject',
+      searchText: text
+    });
+    setChallengeObjs(challengeObjs => ({
+      ...challengeObjs,
+      ...objectify(results)
+    }));
+    setSearchedChallenges(results.map(result => result.id));
+    setSearchLoadMoreButton(loadMoreShown);
+  }
+
   async function handleLoadMore() {
     setLoadingMore(true);
+    const options = stringIsEmpty(searchText)
+      ? {
+          limit: 10,
+          type: 'subject',
+          includeRoot: true,
+          excludeContentIds: challenges
+        }
+      : {
+          limit: 10,
+          filter: 'subject',
+          searchText,
+          shownResults: searchedChallenges.map(
+            challengeId => challengeObjs[challengeId]
+          )
+        };
+    const method = stringIsEmpty(searchText) ? loadUploads : searchContent;
     const {
       results: challengesArray,
       loadMoreButton: loadMoreShown
-    } = await loadUploads({
-      limit: 10,
-      type: 'subject',
-      includeRoot: true,
-      excludeContentIds: challenges.map(challengeId => challengeId)
-    });
+    } = await method(options);
     setChallengeObjs({
       ...challengeObjs,
       ...objectify(challengesArray)
     });
-    setChallenges(
+    const setChallengesMethod = stringIsEmpty(searchText)
+      ? setChallenges
+      : setSearchedChallenges;
+    setChallengesMethod(challenges =>
       challenges.concat(challengesArray.map(challenge => challenge.id))
     );
     setLoadingMore(false);
-    setLoadMoreButton(loadMoreShown);
+    const setLoadMoreButtonMethod = stringIsEmpty(searchText)
+      ? setLoadMoreButton
+      : setSearchLoadMoreButton;
+    setLoadMoreButtonMethod(loadMoreShown);
   }
 
   async function handleSubmit() {

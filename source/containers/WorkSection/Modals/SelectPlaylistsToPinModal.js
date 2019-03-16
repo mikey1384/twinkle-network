@@ -12,6 +12,7 @@ import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent, uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -43,7 +44,9 @@ function SelectPlaylistsToPinModal({
   const [playlistsToPinObject, setPlaylistsToPinObject] = useState({});
   const [pinnedPlaylistsObject, setPinnedPlaylistsObject] = useState({});
   const [searchedPlaylistsObject, setSearchedPlaylistsObject] = useState({});
+  const [loadingMore, setLoadingMore] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const { handleSearch, searchText, searching } = useSearch({
     onSearch: handlePlaylistSearch,
     onClear: () => setSearchedPlaylists([])
@@ -72,6 +75,11 @@ function SelectPlaylistsToPinModal({
     ...playlistsToPinObject,
     ...searchedPlaylistsObject
   };
+
+  const displayedLoadMoreButton = stringIsEmpty(searchText)
+    ? loadMoreButton
+    : searchLoadMoreButton;
+
   return (
     <Modal onHide={onHide}>
       <header>Select up to 5 playlists</header>
@@ -114,11 +122,12 @@ function SelectPlaylistsToPinModal({
                   listItems={renderListItems()}
                 />
               )}
-              {loadMoreButton && !searchText && (
+              {displayedLoadMoreButton && (
                 <Button
                   style={{ marginTop: '2rem', width: '100%' }}
                   transparent
-                  onClick={() => loadMorePlaylist(lastPlaylistId)}
+                  onClick={() => handleLoadMore(lastPlaylistId)}
+                  disabled={loadingMore}
                 >
                   Load More
                 </Button>
@@ -186,18 +195,46 @@ function SelectPlaylistsToPinModal({
     </Modal>
   );
 
+  async function handleLoadMore(lastPlaylistId) {
+    setLoadingMore(true);
+    if (stringIsEmpty(searchText)) {
+      await loadMorePlaylist(lastPlaylistId);
+      return setLoadingMore(false);
+    }
+    const { loadMoreButton: loadMoreShown, results } = await searchContent({
+      limit: 10,
+      filter: 'playlist',
+      searchText,
+      shownResults: searchedPlaylists
+    });
+    setSearchedPlaylistsObject(searchedPlaylistsObject => ({
+      ...searchedPlaylistsObject,
+      ...results.reduce(
+        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+        {}
+      )
+    }));
+    setSearchedPlaylists(searchedPlaylists =>
+      searchedPlaylists.concat(results)
+    );
+    setLoadingMore(false);
+    setSearchLoadMoreButton(loadMoreShown);
+  }
+
   async function handlePlaylistSearch(text) {
-    const { results } = await searchContent({
+    const { loadMoreButton: loadMoreShown, results } = await searchContent({
+      limit: 10,
       filter: 'playlist',
       searchText: text
     });
-    setSearchedPlaylists(results);
     setSearchedPlaylistsObject(
       results.reduce(
         (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
         {}
       )
     );
+    setSearchedPlaylists(results);
+    setSearchLoadMoreButton(loadMoreShown);
   }
 
   function handleSelect(index) {
