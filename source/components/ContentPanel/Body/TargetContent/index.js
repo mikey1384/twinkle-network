@@ -310,18 +310,26 @@ function TargetContent({
                 />
               )}
               <RewardStatus
-                difficulty={determineDifficulty({
-                  rootObj,
-                  rootType,
-                  subject
-                })}
-                onCommentEdit={onEditRewardComment}
+                className={css`
+                  margin-left: -1px;
+                  margin-right: -1px;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    margin-left: 0px;
+                    margin-right: 0px;
+                  }
+                `}
                 style={{
                   marginTop:
                     comment.likes.length > 0 || xpRewardInterfaceShown
                       ? '0.5rem'
                       : '1rem'
                 }}
+                difficulty={determineDifficulty({
+                  rootObj,
+                  rootType,
+                  subject
+                })}
+                onCommentEdit={onEditRewardComment}
                 stars={comment.stars}
                 uploaderName={uploader.username}
               />
