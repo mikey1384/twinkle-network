@@ -40,7 +40,7 @@ function Profile({
   userId,
   username
 }) {
-  const [selectedTheme, setSelectedTheme] = useState();
+  const [selectedTheme, setSelectedTheme] = useState('logoBlue');
 
   useEffect(() => {
     init();
@@ -56,7 +56,7 @@ function Profile({
     if (match.params.username === 'undefined' && userId && unavailable) {
       history.push(`/${username}`);
     }
-    setSelectedTheme(profile.profileTheme || 'logoBlue');
+    setSelectedTheme(profile?.profileTheme || 'logoBlue');
   }, [match.params.username, profile, userId]);
 
   return (
