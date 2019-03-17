@@ -139,6 +139,7 @@ function Home({
   const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
   const usernameColor = Color[selectedTheme]();
   let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
+
   return (
     <div
       className={css`
@@ -315,13 +316,15 @@ function Home({
             }}
           />
         )}
-        {!stringIsEmpty(statusMsg) && !profile.twinkleXP && bioExists && (
+        {!profile.twinkleXP && bioExists && (
           <hr
             style={{
               padding: '1px',
               background: '#fff',
-              borderTop: `2px solid ${Color[selectedTheme](0.6)}`,
-              borderBottom: `2px solid ${Color[selectedTheme](0.6)}`
+              borderTop: `2px solid ${Color[selectedTheme || 'logoBlue'](0.6)}`,
+              borderBottom: `2px solid ${Color[selectedTheme || 'logoBlue'](
+                0.6
+              )}`
             }}
           />
         )}
