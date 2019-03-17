@@ -132,7 +132,7 @@ function TargetContent({
       }}
     >
       <div>
-        {subject?.difficulty && (
+        {!!subject?.difficulty && (
           <DifficultyBar
             className={css`
               margin-left: -1px;
