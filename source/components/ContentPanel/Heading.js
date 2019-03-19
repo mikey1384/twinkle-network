@@ -228,7 +228,7 @@ function Heading({
       );
     } else if (subjectId) {
       return (
-        <Button success onClick={() => setSubjectModalShown(true)}>
+        <Button color="green" onClick={() => setSubjectModalShown(true)}>
           <Icon icon="comment" />
           <span style={{ marginLeft: '0.7rem' }}>Respond</span>
         </Button>

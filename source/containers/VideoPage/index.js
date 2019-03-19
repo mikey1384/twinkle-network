@@ -276,7 +276,8 @@ function VideoPage({
                     {(userIsUploader || userCanEditThis) && (
                       <Button
                         style={{ marginTop: '2rem', fontSize: '2rem' }}
-                        snow
+                        skeuomorph
+                        color="darkerGray"
                         onClick={() => setQuestionsBuilderShown(true)}
                       >
                         Add Questions

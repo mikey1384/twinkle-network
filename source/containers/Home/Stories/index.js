@@ -276,8 +276,8 @@ function Stories({
                 <LoadMoreButton
                   onClick={() => setLoadingMore(true)}
                   loading={loadingMore}
+                  color="lightBlue"
                   filled
-                  info
                 />
               )}
             </>

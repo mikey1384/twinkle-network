@@ -46,7 +46,7 @@ function Profile({ profile, userId }) {
           </Link>
           {profile.youtubeUrl && (
             <Button
-              danger
+              color="red"
               transparent
               style={{ padding: '0.5rem', marginTop: '1rem' }}
               onClick={() => window.open(profile.youtubeUrl)}
@@ -56,7 +56,7 @@ function Profile({ profile, userId }) {
           )}
           {profile.website && (
             <Button
-              primary
+              color="blue"
               transparent
               style={{ padding: '0.5rem' }}
               onClick={() => window.open(profile.website)}

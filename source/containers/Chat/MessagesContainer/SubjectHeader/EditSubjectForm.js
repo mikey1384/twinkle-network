@@ -94,7 +94,11 @@ export default function EditSubjectForm({
         >
           <div style={{ width: '100%' }}>
             <form
-              style={{ width: '100%', position: 'relative' }}
+              style={{
+                width: '100%',
+                position: 'relative',
+                marginTop: '1.5rem'
+              }}
               onSubmit={onEditSubmit}
             >
               <Input
@@ -121,6 +125,7 @@ export default function EditSubjectForm({
           </div>
           <div
             style={{
+              marginTop: '1.7rem',
               marginLeft: '1rem',
               marginRight: '1rem',
               display: 'flex',
@@ -130,7 +135,7 @@ export default function EditSubjectForm({
             <Button
               style={{ fontSize: '1.4rem' }}
               filled
-              success
+              color="green"
               onClick={() => setSubjectsModalShown(true)}
             >
               View Subjects

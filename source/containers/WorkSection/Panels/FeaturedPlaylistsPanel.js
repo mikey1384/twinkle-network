@@ -62,14 +62,16 @@ function FeaturedPlaylistsPanel({
     {
       label: 'Select Playlists',
       onClick: openSelectPlaylistsToPinModal,
-      buttonClass: 'snow'
+      skeuomorph: true,
+      color: 'darkerGray'
     }
   ];
   if (featuredPlaylists.length > 0) {
     menuButtons.push({
       label: 'Reorder Playlists',
       onClick: openReorderFeaturedPlaylists,
-      buttonClass: 'snow'
+      skeuomorph: true,
+      color: 'darkerGray'
     });
   }
 

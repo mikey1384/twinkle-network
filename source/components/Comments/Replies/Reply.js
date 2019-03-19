@@ -120,7 +120,8 @@ function Reply({
           {editButtonShown && !onEdit && (
             <div className="dropdown-wrapper">
               <DropdownButton
-                snow
+                skeuomorph
+                color="darkerGray"
                 direction="left"
                 opacity={0.8}
                 menuProps={[
@@ -197,7 +198,7 @@ function Reply({
                     </Button>
                     {canStar && userCanEditThis && !userIsUploader && (
                       <Button
-                        love
+                        color="pink"
                         style={{ marginLeft: '1rem' }}
                         onClick={() => setXpRewardInterfaceShown(true)}
                         disabled={determineXpButtonDisabled({

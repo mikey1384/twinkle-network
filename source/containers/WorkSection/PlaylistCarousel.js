@@ -140,7 +140,8 @@ function PlaylistCarousel({
         )}
         {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
           <DropdownButton
-            snow
+            skeuomorph
+            color="darkerGray"
             style={{ position: 'absolute', right: 0 }}
             direction="left"
             menuProps={[

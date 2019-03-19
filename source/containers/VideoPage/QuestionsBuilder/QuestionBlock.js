@@ -131,7 +131,7 @@ export default function QuestionBlock({
       }}
     >
       <Banner
-        danger
+        color="red"
         innerRef={innerRef}
         style={{
           width: '100%',
@@ -167,12 +167,16 @@ export default function QuestionBlock({
         </div>
         <div>
           {!onEdit && !deleted && (
-            <Button love filled onClick={() => onRemove(id)}>
+            <Button color="pink" filled onClick={() => onRemove(id)}>
               Remove
             </Button>
           )}
           {deleted && (
-            <Button snow onClick={() => onUndoRemove(id)}>
+            <Button
+              skeuomorph
+              color="darkerGray"
+              onClick={() => onUndoRemove(id)}
+            >
               Undo
             </Button>
           )}
@@ -230,7 +234,7 @@ export default function QuestionBlock({
               Cancel
             </Button>
             <Button
-              primary
+              color="blue"
               style={{ marginLeft: '1rem' }}
               onClick={handleEditDone}
             >

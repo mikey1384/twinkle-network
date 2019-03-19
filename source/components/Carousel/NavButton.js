@@ -21,7 +21,8 @@ export default function NavButton({ disabled, nextSlide, left }) {
           top: 7rem;
           ${left ? 'left: -0.5rem;' : 'right: -0.5rem;'};
         `}
-        snow
+        skeuomorph
+        color="darkerGray"
         onClick={handleClick}
       >
         <Icon icon={left ? 'chevron-left' : 'chevron-right'} />

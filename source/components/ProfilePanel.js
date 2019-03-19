@@ -189,7 +189,7 @@ function ProfilePanel({
               }}
             >
               <Button
-                warning
+                color="orange"
                 transparent
                 style={{
                   color: mouseEnteredProfile && Color.orange(),
@@ -202,7 +202,7 @@ function ProfilePanel({
             </div>
             {profile.youtubeUrl && (
               <Button
-                danger
+                color="red"
                 transparent
                 style={{ padding: '0.5rem' }}
                 onClick={() => window.open(profile.youtubeUrl)}
@@ -212,7 +212,7 @@ function ProfilePanel({
             )}
             {profile.website && (
               <Button
-                primary
+                color="blue"
                 transparent
                 style={{ padding: '0.5rem' }}
                 onClick={() => window.open(profile.website)}
@@ -275,7 +275,7 @@ function ProfilePanel({
                 {renderMessagesButton()}
                 <Button
                   style={{ marginLeft: '0.5rem' }}
-                  success
+                  color="green"
                   onClick={() =>
                     openDirectMessageChannel(
                       { id: userId, username },
@@ -549,7 +549,7 @@ function ProfilePanel({
       <Button
         {...props}
         disabled={commentsShown && id === userId}
-        logo
+        color="logoBlue"
         onClick={onMessagesButtonClick}
       >
         <Icon icon="comment-alt" />

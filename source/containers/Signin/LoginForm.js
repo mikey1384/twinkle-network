@@ -18,7 +18,7 @@ export default function LoginForm({ login, showSignUpForm }) {
 
   return (
     <ErrorBoundary>
-      {errorMessage && <Banner love>{errorMessage}</Banner>}
+      {errorMessage && <Banner color="pink">{errorMessage}</Banner>}
       <main>
         <div style={{ width: '100%' }}>
           <div>
@@ -77,7 +77,7 @@ export default function LoginForm({ login, showSignUpForm }) {
           {"Wait, I don't think I have an account, yet"}
         </Button>
         <Button
-          primary
+          color="blue"
           style={{ fontSize: '2.5rem' }}
           disabled={stringIsEmpty(username) || stringIsEmpty(password)}
           onClick={onSubmit}

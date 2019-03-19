@@ -65,7 +65,7 @@ function MainFeeds({
     <ErrorBoundary style={style}>
       {numNewNotis > 0 && (
         <Banner
-          gold
+          color="gold"
           style={{ marginBottom: '1rem' }}
           onClick={onNewNotiAlertClick}
         >
@@ -75,8 +75,7 @@ function MainFeeds({
       )}
       {activeTab === 'reward' && (
         <Banner
-          gold={totalRewardAmount > 0}
-          success={totalRewardAmount === 0}
+          color={totalRewardAmount > 0 ? 'gold' : 'green'}
           style={{ marginBottom: '1rem' }}
           onClick={totalRewardAmount > 0 ? onCollectReward : null}
         >
@@ -181,7 +180,7 @@ function MainFeeds({
         !!userId && (
           <LoadMoreButton
             loading={loading}
-            info
+            color="lightBlue"
             filled
             stretch
             onClick={onLoadMore}

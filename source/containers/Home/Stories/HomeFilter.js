@@ -103,7 +103,8 @@ export default function HomeFilter({
                 }}
                 dropdownButton={
                   <DropdownButton
-                    snow
+                    skeuomorph
+                    color="darkerGray"
                     direction="left"
                     icon="caret-down"
                     text={categoryObj[category][displayOrder]}
@@ -149,7 +150,8 @@ export default function HomeFilter({
               >
                 {category === 'challenges' && (
                   <DropdownButton
-                    snow
+                    skeuomorph
+                    color="darkerGray"
                     direction="left"
                     icon="caret-down"
                     text={categoryObj[category][displayOrder]}

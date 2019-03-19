@@ -16,13 +16,8 @@ export default function ButtonGroup({ buttons, style }) {
           <Button
             key={index}
             style={{ marginLeft: index !== 0 && '1rem' }}
-            opacity={button.opacity}
-            onClick={button.onClick}
-            disabled={button.disabled}
-            filled={button.filled}
-            hoverClass={button.hoverClass || button.buttonClass}
-            onHover={button.onHover}
-            {...{ [button.buttonClass]: true }}
+            {...button}
+            hoverColor={button.hoverColor || button.color}
           >
             {button.label}
           </Button>

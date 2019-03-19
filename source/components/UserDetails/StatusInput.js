@@ -89,11 +89,16 @@ export default function StatusInput({
               justifyContent: 'center'
             }}
           >
-            <Button snow onClick={onCancel} style={{ fontSize: '1rem' }}>
+            <Button
+              skeuomorph
+              color="darkerGray"
+              onClick={onCancel}
+              style={{ fontSize: '1rem' }}
+            >
               Cancel
             </Button>
             <Button
-              primary
+              color="blue"
               filled
               disabled={
                 !!exceedsCharLimit({

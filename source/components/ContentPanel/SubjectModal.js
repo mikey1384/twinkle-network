@@ -48,8 +48,7 @@ export default function SubjectModal({ onHide, subject, uploadResponse }) {
         </Button>
         <Button
           disabled={responseSubmitted || stringIsEmpty(response)}
-          success={responseSubmitted}
-          primary={!responseSubmitted}
+          color={responseSubmitted ? 'green' : 'blue'}
           onClick={onSubmit}
         >
           {responseSubmitted ? 'Response Submitted!' : 'Submit'}

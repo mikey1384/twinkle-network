@@ -177,7 +177,7 @@ class MessagesContainer extends Component {
                 >
                   <Button
                     filled
-                    info
+                    color="lightBlue"
                     disabled={loadMoreButtonLock}
                     onClick={this.onLoadMoreButtonClick}
                   >
@@ -213,7 +213,7 @@ class MessagesContainer extends Component {
             {newUnseenMessage && (
               <Button
                 filled
-                warning
+                color="orange"
                 onClick={() => {
                   this.setState({ newUnseenMessage: false });
                   const content = this.content;

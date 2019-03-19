@@ -74,7 +74,7 @@ function UserListModal({
                 {userId && user.id !== userId && (
                   <div>
                     <Button
-                      logo
+                      color="logoBlue"
                       filled
                       style={{ fontSize: '1.3rem' }}
                       onClick={() => onTalkClick(user)}

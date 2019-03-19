@@ -113,7 +113,7 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           onClick={() => onSubmit({ firstLine, secondLine, thirdLine })}
           type="submit"
           disabled={

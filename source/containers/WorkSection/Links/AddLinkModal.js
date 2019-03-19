@@ -35,9 +35,7 @@ function AddLinkModal({ onHide, uploadLink }) {
       <header>Add Links</header>
       <main>
         {urlError && (
-          <Banner style={{ marginBottom: '1rem' }} love>
-            {urlError}
-          </Banner>
+          <Banner style={{ marginBottom: '1rem' }}>{urlError}</Banner>
         )}
         <Input
           inputRef={UrlFieldRef}
@@ -106,7 +104,7 @@ function AddLinkModal({ onHide, uploadLink }) {
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           type="submit"
           onClick={handleSubmit}
           disabled={submitDisabled()}

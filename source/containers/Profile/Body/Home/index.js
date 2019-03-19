@@ -341,7 +341,8 @@ function Home({
                 direction="left"
                 opacity={0.7}
                 style={{ right: 0, top: '1rem', position: 'absolute' }}
-                snow
+                skeuomorph
+                color="darkerGray"
                 menuProps={[
                   {
                     label: 'Edit',

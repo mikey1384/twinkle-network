@@ -100,7 +100,8 @@ function Videos({
               {
                 label: '+ Add Playlist',
                 onClick: openAddPlaylistModal,
-                buttonClass: 'snow',
+                skeuomorph: true,
+                color: 'darkerGray',
                 disabled: !userId
               }
             ]}

@@ -54,6 +54,7 @@ SubjectPanel.propTypes = {
   onLoadMoreReplies: PropTypes.func.isRequired,
   onUploadComment: PropTypes.func.isRequired,
   onUploadReply: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   rootDifficulty: PropTypes.number,
   setSubjectDifficulty: PropTypes.func.isRequired,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -85,6 +86,7 @@ function SubjectPanel({
   timeStamp,
   numComments,
   myId,
+  profileTheme,
   comments,
   loadMoreCommentsButton,
   onLikeClick,
@@ -112,6 +114,7 @@ function SubjectPanel({
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
+  const themeColor = profileTheme || 'logoBlue';
   const CommentsRef = useRef(null);
 
   useEffect(() => {
@@ -154,7 +157,8 @@ function SubjectPanel({
           )}
           {editButtonEnabled && !onEdit && (
             <DropdownButton
-              snow
+              skeuomorph
+              color="darkerGray"
               direction="left"
               menuProps={renderMenuProps()}
             />
@@ -210,7 +214,7 @@ function SubjectPanel({
                 Cancel
               </Button>
               <Button
-                primary
+                color="blue"
                 style={{
                   fontSize: '1.8rem'
                 }}
@@ -264,13 +268,13 @@ function SubjectPanel({
               >
                 <Button
                   filled
-                  success
+                  color={themeColor}
                   style={{ fontSize: '2rem' }}
                   onClick={onExpand}
                 >
                   <Icon icon="comment-alt" />
                   <span style={{ marginLeft: '1rem' }}>
-                    Answer
+                    Respond
                     {numComments && numComments > 0 ? ` (${numComments})` : ''}
                   </span>
                 </Button>
@@ -377,7 +381,8 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    canEditDifficulty: state.UserReducer.canEditDifficulty
+    canEditDifficulty: state.UserReducer.canEditDifficulty,
+    profileTheme: state.UserReducer.profileTheme
   }),
   dispatch => ({ dispatch })
 )(withContext({ Component: SubjectPanel, Context }));

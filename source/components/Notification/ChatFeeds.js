@@ -85,7 +85,7 @@ function ChatFeeds({
           {content}
         </p>
         <span style={{ color: Color.darkerGray() }}>{renderDetails()}</span>
-        <Button snow onClick={initChatFromThis}>
+        <Button skeuomorph color="darkerGray" onClick={initChatFromThis}>
           <Icon icon="comments" />
           <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
         </Button>

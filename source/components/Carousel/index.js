@@ -136,15 +136,15 @@ function Carousel({
                 {
                   label: 'Prev',
                   onClick: previousSlide,
-                  buttonClass: 'transparent',
+                  transparent: true,
                   disabled: currentSlide === 0
                 },
                 {
                   label: currentSlide + 1 === slideCount ? 'Finish' : 'Next',
                   onClick:
                     currentSlide + 1 === slideCount ? onFinish : nextSlide,
-                  buttonClass:
-                    currentSlide + 1 === slideCount ? 'primary' : 'transparent'
+                  color: currentSlide + 1 === slideCount ? 'blue' : 'black',
+                  transparent: currentSlide + 1 !== slideCount
                 }
               ]}
             />
@@ -306,7 +306,8 @@ function Carousel({
             currentSlide + slidesToScroll >= slideCount &&
             showAllButton ? (
               <Button
-                snow
+                skeuomorph
+                color="darkerGray"
                 style={{
                   position: 'absolute',
                   top: '7rem',

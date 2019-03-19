@@ -58,7 +58,11 @@ function Main({
       <SectionPanel
         title="All Links"
         button={
-          <Button snow onClick={() => setAddLinkModalShown(true)}>
+          <Button
+            skeuomorph
+            color="darkerGray"
+            onClick={() => setAddLinkModalShown(true)}
+          >
             + Add Link
           </Button>
         }

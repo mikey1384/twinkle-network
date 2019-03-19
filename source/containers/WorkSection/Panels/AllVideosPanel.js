@@ -54,7 +54,8 @@ function AllVideosPanel({
       button={
         <Button
           disabled={!userId}
-          snow
+          skeuomorph
+          color="darkerGray"
           style={{ marginLeft: 'auto' }}
           onClick={() => onAddVideoClick()}
         >

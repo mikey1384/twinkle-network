@@ -279,7 +279,7 @@ function TargetContent({
                   <div>
                     {canStar && userCanStarThis && (
                       <Button
-                        love
+                        color="pink"
                         disabled={xpButtonDisabled()}
                         onClick={() => setXpRewardInterfaceShown(true)}
                       >

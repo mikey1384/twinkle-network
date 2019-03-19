@@ -106,7 +106,7 @@ export default function Playlist({
           style={{ marginTop: '1.5em' }}
           loading={loading}
           filled
-          info
+          color="lightBlue"
           onClick={onLoadMoreVideos}
         />
       )}

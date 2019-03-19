@@ -151,7 +151,11 @@ export default function ContentEditor({
             flexDirection: 'row-reverse'
           }}
         >
-          <Button primary type="submit" disabled={determineButtonDisabled()}>
+          <Button
+            color="blue"
+            type="submit"
+            disabled={determineButtonDisabled()}
+          >
             Done
           </Button>
           <Button

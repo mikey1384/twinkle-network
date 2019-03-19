@@ -136,7 +136,8 @@ function WorkSection({
             {location.pathname === '/videos' && userId && (
               <>
                 <Button
-                  snow
+                  skeuomorph
+                  color="darkerGray"
                   style={{
                     fontSize: '2rem',
                     width: '99%',
@@ -148,7 +149,8 @@ function WorkSection({
                   + Add Video
                 </Button>
                 <Button
-                  snow
+                  skeuomorph
+                  color="darkerGray"
                   style={{
                     fontSize: '2rem',
                     width: '99%',

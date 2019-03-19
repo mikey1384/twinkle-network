@@ -11,14 +11,14 @@ export default function Main({ showLoginForm, showSignUpForm }) {
   return (
     <main>
       <Button
-        success
+        color="logoBlue"
         style={{ display: 'block', fontSize: '2.5rem', padding: '1rem' }}
         onClick={showLoginForm}
       >
         Yes, I have an account
       </Button>
       <Button
-        warning
+        color="pink"
         style={{ marginTop: '1.5rem', fontSize: '2rem', padding: '1rem' }}
         onClick={showSignUpForm}
       >

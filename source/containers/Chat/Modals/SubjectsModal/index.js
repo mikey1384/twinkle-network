@@ -104,7 +104,7 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
             {mySubjects.loadMoreButton && (
               <LoadMoreButton
                 filled
-                info
+                color="lightBlue"
                 loading={mySubjects.loading}
                 onClick={() => loadMoreSubjects(true)}
               />
@@ -146,7 +146,7 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
         {allSubjects.loadMoreButton && (
           <LoadMoreButton
             filled
-            info
+            color="lightBlue"
             loading={allSubjects.loading}
             onClick={() => loadMoreSubjects(false)}
           />

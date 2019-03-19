@@ -70,7 +70,7 @@ export default function AttachContentModal({ onConfirm, onHide }) {
         {section !== 'start' && (
           <Button
             disabled={!selected}
-            primary
+            color="blue"
             style={{ marginLeft: '0.7rem' }}
             onClick={() => onConfirm(selected)}
           >

@@ -61,7 +61,7 @@ function InviteUsersModal({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           onClick={handleDone}
           disabled={selectedUsers.length === 0}
         >

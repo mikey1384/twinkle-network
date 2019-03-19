@@ -51,7 +51,7 @@ function ReorderFeaturedPlaylists({
             playlistIds,
             playlists.map(playlist => playlist.id)
           )}
-          primary
+          color="blue"
           onClick={handleSubmit}
         >
           Done

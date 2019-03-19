@@ -98,7 +98,7 @@ export default function Subjects({
             <Button
               style={{ width: '100%', borderRadius: 0 }}
               filled
-              info
+              color="lightBlue"
               onClick={loadMoreSubjects}
             >
               Load More Subjects

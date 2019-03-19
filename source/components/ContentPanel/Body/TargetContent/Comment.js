@@ -56,7 +56,8 @@ function Comment({
           }}
         >
           <DropdownButton
-            snow
+            skeuomorph
+            color="darkerGray"
             direction="left"
             style={{ position: 'absolute' }}
             opacity={0.8}

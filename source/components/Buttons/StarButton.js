@@ -15,7 +15,6 @@ StarButton.propTypes = {
   difficulty: PropTypes.number,
   direction: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
-  onClick: PropTypes.func,
   onSetDifficulty: PropTypes.func,
   onToggleByUser: PropTypes.func,
   style: PropTypes.object,
@@ -44,11 +43,7 @@ function StarButton({
     <ErrorBoundary>
       <div ref={StarButtonRef} style={style}>
         <Button
-          {...(!!difficulty && byUser
-            ? { gold: true }
-            : byUser
-            ? { warning: true }
-            : { love: true })}
+          color={!!difficulty && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
           filled={!!difficulty || byUser}
           onClick={onClick}
         >

@@ -35,7 +35,7 @@ export default function EditTitleModal({ onDone, onHide, ...props }) {
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel
         </Button>
-        <Button primary onClick={() => onDone(title)}>
+        <Button color="blue" onClick={() => onDone(title)}>
           Done
         </Button>
       </footer>

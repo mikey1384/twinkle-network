@@ -70,7 +70,7 @@ export default function EditTextArea({
         }}
       >
         <Button
-          primary
+          color="blue"
           onClick={onSubmit}
           disabled={
             (!allowEmptyText && stringIsEmpty(editedText)) ||

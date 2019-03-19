@@ -54,8 +54,8 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
       <main>
         {loadMoreButtonShown && (
           <LoadMoreButton
+            color="lightBlue"
             filled
-            info
             onClick={onLoadMoreButtonClick}
             loading={loading}
           />

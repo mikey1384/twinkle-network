@@ -231,7 +231,8 @@ function Details({
         <div style={{ display: 'flex' }}>
           {editButtonShown && !onEdit && (
             <DropdownButton
-              snow
+              skeuomorph
+              color="darkerGray"
               style={{ marginRight: '1rem' }}
               direction="left"
               text="Edit or Delete This Video"
@@ -240,16 +241,14 @@ function Details({
           )}
           {!onEdit && canStar && userCanEditThis && !userIsUploader && (
             <Button
-              snow
+              skeuomorph
+              color="pink"
               disabled={determineXpButtonDisabled({
                 difficulty: byUser ? 5 : 0,
                 myId: userId,
                 xpRewardInterfaceShown,
                 stars
               })}
-              style={{
-                color: Color.pink()
-              }}
               onClick={() => setXpRewardInterfaceShown(true)}
             >
               <Icon icon="certificate" />

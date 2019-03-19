@@ -192,7 +192,7 @@ function NavMenu({
                 <LoadMoreButton
                   loading={playlistVideosLoading}
                   onClick={loadMorePlaylistVideos}
-                  success
+                  color="green"
                   filled
                   style={{ marginTop: '1.5rem', width: '100%' }}
                 />

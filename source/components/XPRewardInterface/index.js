@@ -128,7 +128,7 @@ function XPRewardInterface({
         }}
       >
         <Button
-          love
+          color="pink"
           filled
           disabled={
             exceedsCharLimit({

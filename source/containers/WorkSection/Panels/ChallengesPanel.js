@@ -44,7 +44,8 @@ function ChallengesPanel({
         button={
           userId && canPinPlaylists ? (
             <Button
-              snow
+              skeuomorph
+              color="darkerGray"
               style={{ marginLeft: 'auto' }}
               onClick={() => setModalShown(true)}
             >

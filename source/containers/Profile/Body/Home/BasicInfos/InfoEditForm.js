@@ -81,7 +81,7 @@ export default function InfoEditForm({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           disabled={emailError || websiteError || youtubeError || noChange()}
           style={{ marginLeft: '0.5rem' }}
           onClick={() =>

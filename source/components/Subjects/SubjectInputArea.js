@@ -12,12 +12,19 @@ SubjectInputArea.propTypes = {
   contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
   dispatch: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string,
   type: PropTypes.string.isRequired
 };
 
-function SubjectInputArea({ contentId, dispatch, onUploadSubject, type }) {
+function SubjectInputArea({
+  contentId,
+  dispatch,
+  onUploadSubject,
+  profileTheme,
+  type
+}) {
   const [subjectFormShown, setSubjectFormShown] = useState(false);
-
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <div
       style={{
@@ -41,8 +48,8 @@ function SubjectInputArea({ contentId, dispatch, onUploadSubject, type }) {
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              logo
-              filled
+              skeuomorph
+              color={themeColor}
               style={{ fontSize: '2rem' }}
               onClick={() => setSubjectFormShown(true)}
             >
@@ -69,6 +76,8 @@ function SubjectInputArea({ contentId, dispatch, onUploadSubject, type }) {
 }
 
 export default connect(
-  null,
+  state => ({
+    profileTheme: state.UserReducer.profileTheme
+  }),
   dispatch => ({ dispatch })
 )(SubjectInputArea);

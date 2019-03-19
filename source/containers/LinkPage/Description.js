@@ -77,7 +77,8 @@ function Description({
     <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
       {editButtonShown && !onEdit && (
         <DropdownButton
-          snow
+          skeuomorph
+          color="darkerGray"
           opacity={0.8}
           style={{ position: 'absolute', top: '1rem', right: '1rem' }}
           direction="left"
@@ -208,7 +209,7 @@ function Description({
                 Cancel
               </Button>
               <Button
-                primary
+                color="blue"
                 disabled={determineEditButtonDoneStatus()}
                 onClick={onEditFinish}
               >

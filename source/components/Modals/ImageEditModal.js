@@ -57,7 +57,7 @@ export default function ImageEditModal({
             Cancel
           </Button>
           <Button
-            primary
+            color="blue"
             onClick={() =>
               onConfirm(
                 EditorRef.current.getImage().toDataURL('image/jpeg', 0.7)

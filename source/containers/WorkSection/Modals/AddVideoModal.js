@@ -140,7 +140,7 @@ function AddVideoModal({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           type="submit"
           onClick={handleSubmit}
           disabled={submitDisabled()}

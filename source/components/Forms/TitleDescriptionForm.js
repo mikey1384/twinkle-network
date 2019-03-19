@@ -91,7 +91,7 @@ export default function TitleDescriptionForm({
             Cancel
           </Button>
           <Button
-            primary
+            color="blue"
             style={{ fontSize: '1.7rem' }}
             onClick={submitThis}
             disabled={

@@ -139,7 +139,7 @@ function Results({
         <div style={{ paddingBottom: '8rem' }}>
           <LoadMoreButton
             filled
-            info
+            color="lightBlue"
             loading={loadingMore}
             onClick={loadMoreSearchResults}
           />

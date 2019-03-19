@@ -278,7 +278,7 @@ function EditPlaylistModal({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           onClick={handleSave}
           disabled={
             (Object.keys(removedVideoIds).length === numPlaylistVids &&

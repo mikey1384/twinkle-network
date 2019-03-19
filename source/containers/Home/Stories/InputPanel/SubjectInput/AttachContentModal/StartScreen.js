@@ -16,14 +16,14 @@ export default function StartScreen({ navigateTo }) {
     >
       <Button
         style={{ fontSize: '2rem' }}
-        logo
+        color="logoBlue"
         onClick={() => navigateTo('selectVideo')}
       >
         Video
       </Button>
       <Button
         style={{ fontSize: '2rem', marginLeft: '1rem' }}
-        love
+        color="pink"
         onClick={() => navigateTo('selectLink')}
       >
         Webpage

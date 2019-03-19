@@ -14,7 +14,7 @@ export default function AlertModal({ onHide, title, content }) {
       <header>{title}</header>
       <main>{content}</main>
       <footer>
-        <Button primary onClick={onHide}>
+        <Button color="blue" onClick={onHide}>
           OK
         </Button>
       </footer>

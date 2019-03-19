@@ -218,7 +218,12 @@ function LinkItem({
         </div>
         <div>
           {!onEdit && editButtonShown && (
-            <DropdownButton snow direction="left" menuProps={editMenuItems} />
+            <DropdownButton
+              skeuomorph
+              color="darkerGray"
+              direction="left"
+              menuProps={editMenuItems}
+            />
           )}
         </div>
       </section>

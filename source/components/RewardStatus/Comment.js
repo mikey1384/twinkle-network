@@ -145,7 +145,12 @@ function Comment({
             </div>
           </div>
           {editButtonShown && !onEdit && (
-            <DropdownButton snow direction="left" menuProps={editMenuItems} />
+            <DropdownButton
+              skeuomorph
+              color="darkerGray"
+              direction="left"
+              menuProps={editMenuItems}
+            />
           )}
         </div>
       </div>

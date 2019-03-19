@@ -33,8 +33,7 @@ function LikeButton({
     <ErrorBoundary>
       <Button
         className={className}
-        logo={(filled && liked) || !filled}
-        info={filled && !liked}
+        color={(filled && liked) || !filled ? 'logoBlue' : 'lightBlue'}
         filled={filled || liked}
         style={style}
         onClick={async() => {

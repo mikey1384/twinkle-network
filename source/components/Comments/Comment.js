@@ -130,7 +130,8 @@ function Comment({
         {editButtonShown && !onEdit && (
           <div className="dropdown-wrapper">
             <DropdownButton
-              snow
+              skeuomorph
+              color="darkerGray"
               direction="left"
               opacity={0.8}
               menuProps={editMenuItems}
@@ -198,7 +199,7 @@ function Comment({
                       </Button>
                       {canStar && userCanEditThis && !userIsUploader && (
                         <Button
-                          love
+                          color="pink"
                           style={{ marginLeft: '0.7rem' }}
                           onClick={() => setXpRewardInterfaceShown(true)}
                           disabled={determineXpButtonDisabled({

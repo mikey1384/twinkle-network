@@ -75,9 +75,11 @@ function RewardStatus({
       </div>
       {loaded < stars.length && (
         <LoadMoreButton
-          {...(rewardedStars === maxStars || rewardedStars > 10
-            ? { warning: true }
-            : { logo: true })}
+          color={
+            rewardedStars === maxStars || rewardedStars > 10
+              ? 'orange'
+              : 'lightBlue'
+          }
           label="Show More Reward Records"
           filled
           style={{

@@ -74,7 +74,7 @@ export default function Replies({
             width: '100%'
           }}
           filled
-          info
+          color="lightBlue"
           onClick={loadMoreReplies}
         >
           Load More

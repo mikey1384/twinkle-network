@@ -245,8 +245,8 @@ function Posts({
             <LoadMoreButton
               onClick={loadMoreFeeds}
               loading={loading}
+              color="lightBlue"
               filled
-              info
             />
           )}
         </div>

@@ -79,7 +79,7 @@ export default function InputForm({
           <Button
             style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
             filled
-            success
+            color="green"
             disabled={
               submitting || stringIsEmpty(text) || commentExceedsCharLimit
             }

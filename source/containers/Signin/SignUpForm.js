@@ -31,7 +31,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
 
   return (
     <ErrorBoundary>
-      {errorMessage && <Banner love>{errorMessage}</Banner>}
+      {errorMessage && <Banner>{errorMessage}</Banner>}
       <main>
         <div
           className={css`
@@ -172,7 +172,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
           Wait, I already have an account!
         </Button>
         <Button
-          primary
+          color="blue"
           disabled={!!submitDisabled}
           onClick={onSubmit}
           style={{ fontSize: '2.5rem' }}

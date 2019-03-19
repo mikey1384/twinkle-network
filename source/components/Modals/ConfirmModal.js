@@ -18,7 +18,7 @@ export default function ConfirmModal({ onHide, title, onConfirm }) {
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel
         </Button>
-        <Button primary onClick={() => onConfirm()}>
+        <Button color="blue" onClick={() => onConfirm()}>
           Confirm
         </Button>
       </footer>

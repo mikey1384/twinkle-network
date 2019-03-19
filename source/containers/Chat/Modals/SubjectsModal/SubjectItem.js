@@ -42,7 +42,7 @@ export default function SubjectItem({
   let buttons = [];
   if (numMsgs > 0) {
     buttons.push({
-      buttonClass: 'logo',
+      color: 'logoBlue',
       opacity: 0.5,
       onClick: showMsgsModal,
       label: 'View',
@@ -51,7 +51,7 @@ export default function SubjectItem({
   }
   if (currentSubjectId !== id) {
     buttons.push({
-      buttonClass: 'success',
+      color: 'green',
       opacity: 0.5,
       onClick: selectSubject,
       label: 'Select',

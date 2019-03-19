@@ -279,7 +279,7 @@ function Body({
                 )}
                 {userCanRewardThis && myId !== uploader.id && (
                   <Button
-                    love
+                    color="pink"
                     disabled={xpButtonDisabled()}
                     style={{ marginLeft: '1rem' }}
                     onClick={() => setXpRewardInterfaceShown(true)}

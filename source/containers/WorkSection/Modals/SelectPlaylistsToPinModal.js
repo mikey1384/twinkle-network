@@ -85,7 +85,7 @@ function SelectPlaylistsToPinModal({
       <header>Select up to 5 playlists</header>
       <main style={{ paddingTop: 0 }}>
         {selectedPlaylists.length > 5 && (
-          <Banner love>Please limit your selection to 5 playlists</Banner>
+          <Banner>Please limit your selection to 5 playlists</Banner>
         )}
         <FilterBar>
           <nav
@@ -181,7 +181,7 @@ function SelectPlaylistsToPinModal({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           onClick={handleSubmit}
           disabled={
             isEqual(selectedPlaylists, initialSelectedPlaylists) ||

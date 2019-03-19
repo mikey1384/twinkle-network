@@ -274,7 +274,7 @@ function Comments({
     return (
       <Button
         filled
-        info
+        color="lightBlue"
         disabled={isLoading}
         onClick={loadMoreComments}
         style={{

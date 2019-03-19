@@ -267,7 +267,7 @@ function Chat({
       >
         {currentChannel.id !== GENERAL_CHAT_ID && (
           <DropdownButton
-            snow
+            color="darkerGray"
             style={{
               position: 'absolute',
               zIndex: 10,

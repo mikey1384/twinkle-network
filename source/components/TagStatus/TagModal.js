@@ -83,7 +83,7 @@ function TagModal({
         </Button>
         <Button
           disabled={disabled || selectedPlaylists.length === 0}
-          primary
+          color="blue"
           onClick={handleSubmit}
         >
           Done

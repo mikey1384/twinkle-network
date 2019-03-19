@@ -179,19 +179,19 @@ function QuestionsBuilder({
                       label: '+ Add',
                       filled: true,
                       onClick: onAddQuestion,
-                      buttonClass: 'success'
+                      color: 'green'
                     },
                     {
                       label: 'Reorder',
                       filled: true,
                       onClick: () => setReorderModeOn(true),
-                      buttonClass: 'info'
+                      color: 'lightBlue'
                     },
                     {
                       label: 'Reset',
                       filled: true,
                       onClick: onReset,
-                      buttonClass: 'warning'
+                      color: 'orange'
                     }
                   ]}
                 />
@@ -203,7 +203,7 @@ function QuestionsBuilder({
                   }}
                 >
                   <Button
-                    primary
+                    color="blue"
                     filled
                     onClick={handleSubmit}
                     style={{ fontSize: '2rem' }}
@@ -299,10 +299,14 @@ function QuestionsBuilder({
 
   function onReset() {
     setQuestions(
-      questions.length === 0 ? newQuestion(0) : formatQuestions(questions)
+      initialQuestions.length === 0
+        ? newQuestion(0)
+        : formatQuestions(initialQuestions)
     );
     setQuestionIds(
-      questions.length > 0 ? questions.map((question, index) => index) : [0]
+      initialQuestions.length > 0
+        ? initialQuestions.map((question, index) => index)
+        : [0]
     );
   }
 

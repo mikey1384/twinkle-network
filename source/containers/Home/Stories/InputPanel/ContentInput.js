@@ -50,7 +50,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
     <ErrorBoundary className={PanelStyle}>
       <p>Share interesting videos or webpages</p>
       {urlError && (
-        <Banner love style={{ marginBottom: '1rem' }}>
+        <Banner color="pink" style={{ marginBottom: '1rem' }}>
           {urlError}
         </Banner>
       )}
@@ -166,7 +166,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
             <Button
               type="submit"
               filled
-              success
+              color="green"
               style={{ marginTop: '1rem' }}
               disabled={submitting || buttonDisabled()}
               onClick={onSubmit}

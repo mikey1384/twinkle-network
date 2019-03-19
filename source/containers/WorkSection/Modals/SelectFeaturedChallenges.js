@@ -185,7 +185,7 @@ function SelectFeaturedChallengesModal({
         </Button>
         <Button
           disabled={selected.length > 5 || submitting}
-          primary
+          color="blue"
           onClick={handleSubmit}
         >
           {selected.length > 5 ? 'Cannot select more than 5' : 'Done'}

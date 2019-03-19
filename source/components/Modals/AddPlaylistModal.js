@@ -245,12 +245,12 @@ function AddPlaylistModal({
           </Button>
         )}
         {section === 2 ? (
-          <Button primary disabled={isUploading} onClick={handleFinish}>
+          <Button color="blue" disabled={isUploading} onClick={handleFinish}>
             Finish
           </Button>
         ) : (
           <Button
-            primary
+            color="blue"
             type="submit"
             disabled={
               (section === 0 &&

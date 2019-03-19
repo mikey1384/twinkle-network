@@ -204,7 +204,7 @@ function App({
             <p style={{ color: Color.gold() }}>{updateDetail}</p>
           )}
           <Button
-            gold
+            color="gold"
             filled
             style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
             onClick={() => window.location.reload()}

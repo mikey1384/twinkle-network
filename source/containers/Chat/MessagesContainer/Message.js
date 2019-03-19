@@ -150,7 +150,8 @@ function Message({
                   editButtonShown &&
                   !onEdit && (
                     <DropdownButton
-                      snow
+                      skeuomorph
+                      color="darkerGray"
                       style={{ position: 'absolute', top: 0, right: '5px' }}
                       direction="left"
                       opacity={0.8}
@@ -167,7 +168,7 @@ function Message({
                   <div className={MessageStyle.relatedConversationsButton}>
                     <Button
                       filled
-                      success
+                      color="logoBlue"
                       onClick={() =>
                         showSubjectMsgsModal({ subjectId, content })
                       }

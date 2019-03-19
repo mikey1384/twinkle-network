@@ -237,7 +237,7 @@ function LinkPage({
             />
             {canStar && userCanEditThis && !userIsUploader && (
               <Button
-                love
+                color="pink"
                 filled
                 disabled={determineXpButtonDisabled({
                   myId,

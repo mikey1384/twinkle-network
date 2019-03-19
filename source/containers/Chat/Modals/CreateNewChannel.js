@@ -71,7 +71,7 @@ function CreateNewChannelModal({
           Cancel
         </Button>
         <Button
-          primary
+          color="blue"
           onClick={handleDone}
           disabled={
             (selectedUsers.length > 1 && !channelName) ||

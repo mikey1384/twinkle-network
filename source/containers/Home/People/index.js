@@ -152,7 +152,7 @@ function People({
         {stringIsEmpty(searchText) && loaded && loadMoreButton && (
           <LoadMoreButton
             filled
-            info
+            color="lightBlue"
             onClick={() => setLoading(true)}
             loading={loading}
           />

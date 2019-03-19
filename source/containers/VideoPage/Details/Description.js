@@ -68,7 +68,7 @@ export default function Description({
               Cancel
             </Button>
             <Button
-              primary
+              color="blue"
               disabled={determineEditButtonDoneStatus()}
               onClick={onEditFinish}
               style={{ fontSize: '1.7rem' }}

@@ -38,7 +38,7 @@ function ProfileWidget({
     <ErrorBoundary>
       <div
         style={{ cursor: 'pointer' }}
-        onClick={() => history.push(`/users/${username}`)}
+        onClick={() => (username ? history.push(`/users/${username}`) : null)}
         className={container({
           username: Color[themeColor](0.6),
           usernameHovered: Color[themeColor]()
@@ -102,8 +102,8 @@ function ProfileWidget({
             )}
             {!userId && (
               <Button
-                success
                 filled
+                color="green"
                 style={{ marginTop: '1rem' }}
                 onClick={openSigninModal}
               >

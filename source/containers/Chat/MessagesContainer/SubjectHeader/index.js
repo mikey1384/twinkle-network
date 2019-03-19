@@ -157,11 +157,12 @@ function SubjectHeader({
                 {renderDetails()}
               </section>
               <Button
+                color="logoBlue"
                 filled
-                logo
                 style={{
                   position: 'absolute',
                   fontSize: '1.3rem',
+                  top: '1.3rem',
                   right: '1rem'
                 }}
                 onClick={() => setOnEdit(true)}

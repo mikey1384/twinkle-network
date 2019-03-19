@@ -184,7 +184,7 @@ export default function LeftMenu({
         />
         {channelLoadMoreButtonShown && (
           <LoadMoreButton
-            success
+            color="green"
             filled
             loading={channelsLoading}
             onClick={handleLoadMoreChannels}

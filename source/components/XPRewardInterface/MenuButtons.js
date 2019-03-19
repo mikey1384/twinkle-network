@@ -48,14 +48,14 @@ export default function MenuButtons({
     buttons.push(
       <Button
         key={i * multiplier}
-        info={
+        color={
           !(i === maxRewardableStars && maxRewardableStars < 5) &&
           i * multiplier < 5
-        }
-        warning={i * multiplier >= 5 && i * multiplier < 25}
-        gold={
-          (i === maxRewardableStars && maxRewardableStars < 5) ||
-          i * multiplier >= 25
+            ? 'lightBlue'
+            : (i === maxRewardableStars && maxRewardableStars < 5) ||
+              i * multiplier >= 25
+            ? 'gold'
+            : 'orange'
         }
         style={{
           justifyContent: 'flex-start',
@@ -76,7 +76,7 @@ export default function MenuButtons({
   if (twinkleTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
     buttons.push(
       <Button
-        warning
+        color="orange"
         key={5}
         onClick={() => setTwinkleTabActive(false)}
         style={{

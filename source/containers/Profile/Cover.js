@@ -187,7 +187,8 @@ function Cover({
                   width: '100%',
                   color: Color[selectedTheme || profileTheme || 'logoBlue']()
                 }}
-                snow
+                skeuomorph
+                color="darkerGray"
                 onClick={() =>
                   openDirectMessageChannel({ userId }, { id, username }, false)
                 }
@@ -229,14 +230,15 @@ function Cover({
               >
                 <Button
                   style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                  snow
+                  skeuomorph
+                  color="darkerGray"
                   onClick={onColorSelectCancel}
                 >
                   Cancel
                 </Button>
                 <Button
                   style={{ fontSize: '1.2rem' }}
-                  primary
+                  color="blue"
                   filled
                   onClick={handleSetTheme}
                 >

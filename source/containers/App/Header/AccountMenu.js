@@ -65,7 +65,7 @@ function AccountMenu({
       className={className}
       onClick={openSigninModal}
       style={{ marginLeft: '1rem', ...buttonStyle }}
-      success
+      color="green"
       filled
     >
       <div

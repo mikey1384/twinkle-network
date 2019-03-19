@@ -51,7 +51,7 @@ export default function QuestionsListGroup({
         >
           Cancel
         </Button>
-        <Button primary onClick={handleReorderDone}>
+        <Button color="blue" onClick={handleReorderDone}>
           Done
         </Button>
       </div>

@@ -80,7 +80,8 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                 lineHeight: '1.5rem',
                 padding: '0.5rem'
               }}
-              snow
+              skeuomorph
+              color="darkerGray"
               onClick={() => setAttachContentModalShown(true)}
             >
               Attach Video or Webpage
@@ -143,7 +144,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
           <div className="button-container">
             <Button
               filled
-              success
+              color="green"
               type="submit"
               style={{ marginTop: '1rem' }}
               disabled={submitting || buttonDisabled()}
