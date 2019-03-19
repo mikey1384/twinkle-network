@@ -104,17 +104,34 @@ function ProfilePanel({
       <div
         className={css`
           background: ${Color[profile.profileTheme || 'logoBlue']()};
-          height: 2.5rem;
+          min-height: 2.5rem;
           border-top-right-radius: ${borderRadius};
           border-top-left-radius: ${borderRadius};
           border-bottom: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
             border-left: none;
             border-right: none;
           }
         `}
-      />
+        style={{ padding: profile.userType ? '0.5rem' : undefined }}
+      >
+        {profile.userType && (
+          <div
+            style={{
+              fontSize: '2.2rem',
+              color: '#fff'
+            }}
+          >
+            {profile.userType.includes('teacher')
+              ? 'teacher'
+              : profile.userType}
+          </div>
+        )}
+      </div>
       <div
         className={css`
             background: #fff;

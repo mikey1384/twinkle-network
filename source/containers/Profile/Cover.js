@@ -63,7 +63,8 @@ function Cover({
     profileTheme,
     realName,
     twinkleXP,
-    username
+    username,
+    userType
   },
   onSelectTheme,
   onSetTheme,
@@ -140,6 +141,16 @@ function Cover({
           `}
         >
           {username}
+          {userType ? (
+            <>
+              {' '}
+              <span style={{ fontSize: '2.5rem' }}>
+                {`[${userType.includes('teacher') ? 'teacher' : userType}]`}
+              </span>
+            </>
+          ) : (
+            ''
+          )}
           <p>({realName})</p>
         </div>
         <div
