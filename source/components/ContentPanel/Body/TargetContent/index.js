@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import Context from '../../Context';
 import withContext from 'components/Wrappers/withContext';
 import UsernameText from 'components/Texts/UsernameText';

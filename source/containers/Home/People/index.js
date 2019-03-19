@@ -73,7 +73,7 @@ function People({
       mounted.current = false;
       clearUserSearch();
     };
-  }, [chatMode, profiles, searchMode, searchText]);
+  }, [searchText]);
 
   useEffect(() => {
     init();
