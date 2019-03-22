@@ -48,7 +48,7 @@ function SubjectInputArea({
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              skeuomorph
+              skeuomorphic
               color={themeColor}
               style={{ fontSize: '2rem' }}
               onClick={() => setSubjectFormShown(true)}

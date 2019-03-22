@@ -100,7 +100,7 @@ function Videos({
               {
                 label: '+ Add Playlist',
                 onClick: openAddPlaylistModal,
-                skeuomorph: true,
+                skeuomorphic: true,
                 color: 'darkerGray',
                 disabled: !userId
               }

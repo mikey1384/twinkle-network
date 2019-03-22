@@ -146,7 +146,7 @@ function Comment({
           </div>
           {editButtonShown && !onEdit && (
             <DropdownButton
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               direction="left"
               menuProps={editMenuItems}

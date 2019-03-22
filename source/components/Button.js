@@ -16,7 +16,7 @@ Button.propTypes = {
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
   opacity: PropTypes.number,
-  skeuomorph: PropTypes.bool,
+  skeuomorphic: PropTypes.bool,
   style: PropTypes.object,
   transparent: PropTypes.bool
 };
@@ -34,14 +34,14 @@ export default function Button({
   stretch,
   onMouseEnter = () => {},
   onMouseLeave = () => {},
-  skeuomorph,
+  skeuomorphic,
   style = {},
   transparent
 }) {
   const colorKey = onHover ? hoverColor : color;
-  const backgroundOpacity = filled ? 1 : skeuomorph ? 0.5 : opacity || 0;
+  const backgroundOpacity = filled ? 1 : skeuomorphic ? 0.5 : opacity || 0;
   const backgroundHoverOpacity = transparent ? 0 : 0.9;
-  const backgroundDisabledOpacity = filled || skeuomorph ? 0.2 : 0;
+  const backgroundDisabledOpacity = filled || skeuomorphic ? 0.2 : 0;
   const textOpacity = disabled ? 0.2 : transparent ? 0.5 : 1;
   const ButtonRef = useRef(null);
 
@@ -60,7 +60,7 @@ export default function Button({
         font-size: 1.5rem;
         padding: 1rem;
         color: ${filled || opacity ? '#fff' : Color[colorKey](textOpacity)};
-        background: ${skeuomorph
+        background: ${skeuomorphic
           ? '#fff'
           : Color[colorKey](
               disabled ? backgroundDisabledOpacity : backgroundOpacity
@@ -71,15 +71,15 @@ export default function Button({
           )};
         border-radius: ${borderRadius};
         transition: background 0.2s;
-        ${skeuomorph
+        ${skeuomorphic
           ? disabled
             ? 'opacity: 0.5;'
             : `box-shadow: 0 0 1px ${Color[colorKey](0.5)};`
           : ''} &:focus {
-          outline: ${(transparent || disabled || skeuomorph) && 0};
+          outline: ${(transparent || disabled || skeuomorphic) && 0};
         }
         &:hover {
-          background: ${skeuomorph
+          background: ${skeuomorphic
             ? '#fff'
             : Color[colorKey](
                 disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
@@ -88,7 +88,7 @@ export default function Button({
           border-color: ${Color[colorKey](
             disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
           )};
-          ${skeuomorph
+          ${skeuomorphic
             ? disabled
               ? ''
               : `box-shadow: 0 0 3px ${Color[colorKey]()};`
@@ -97,7 +97,7 @@ export default function Button({
         @media (max-width: ${mobileMaxWidth}) {
           font-size: 1.3rem;
           &:hover {
-            background: ${skeuomorph
+            background: ${skeuomorphic
               ? '#fff'
               : Color[colorKey](
                   disabled ? backgroundDisabledOpacity : backgroundOpacity
@@ -129,7 +129,7 @@ export default function Button({
       if (!filled) {
         return Color[colorKey](textOpacity);
       }
-    } else if (skeuomorph || transparent) {
+    } else if (skeuomorphic || transparent) {
       return Color[colorKey]();
     }
     return '#fff';

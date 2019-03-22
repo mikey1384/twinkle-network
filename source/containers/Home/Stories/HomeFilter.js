@@ -103,7 +103,7 @@ export default function HomeFilter({
                 }}
                 dropdownButton={
                   <DropdownButton
-                    skeuomorph
+                    skeuomorphic
                     color="darkerGray"
                     direction="left"
                     icon="caret-down"
@@ -150,7 +150,7 @@ export default function HomeFilter({
               >
                 {category === 'challenges' && (
                   <DropdownButton
-                    skeuomorph
+                    skeuomorphic
                     color="darkerGray"
                     direction="left"
                     icon="caret-down"

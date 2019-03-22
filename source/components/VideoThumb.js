@@ -96,7 +96,7 @@ function VideoThumb({
               zIndex: '1'
             }}
             direction="left"
-            skeuomorph
+            skeuomorphic
             color="darkerGray"
             noBorderRadius
             menuProps={menuProps}

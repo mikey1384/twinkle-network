@@ -157,7 +157,7 @@ function SubjectPanel({
           )}
           {editButtonEnabled && !onEdit && (
             <DropdownButton
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               direction="left"
               menuProps={renderMenuProps()}

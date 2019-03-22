@@ -62,7 +62,7 @@ function FeaturedPlaylistsPanel({
     {
       label: 'Select Playlists',
       onClick: openSelectPlaylistsToPinModal,
-      skeuomorph: true,
+      skeuomorphic: true,
       color: 'darkerGray'
     }
   ];
@@ -70,7 +70,7 @@ function FeaturedPlaylistsPanel({
     menuButtons.push({
       label: 'Reorder Playlists',
       onClick: openReorderFeaturedPlaylists,
-      skeuomorph: true,
+      skeuomorphic: true,
       color: 'darkerGray'
     });
   }

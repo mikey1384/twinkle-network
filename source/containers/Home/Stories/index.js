@@ -229,7 +229,7 @@ function Stories({
             <>
               {numNewPosts > 0 && (
                 <Banner
-                  gold
+                  color="gold"
                   onClick={handleFetchNewFeeds}
                   style={{ marginBottom: '1rem' }}
                 >

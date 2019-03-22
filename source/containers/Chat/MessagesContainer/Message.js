@@ -150,7 +150,7 @@ function Message({
                   editButtonShown &&
                   !onEdit && (
                     <DropdownButton
-                      skeuomorph
+                      skeuomorphic
                       color="darkerGray"
                       style={{ position: 'absolute', top: 0, right: '5px' }}
                       direction="left"

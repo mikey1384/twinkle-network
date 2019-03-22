@@ -56,7 +56,7 @@ function Comment({
           }}
         >
           <DropdownButton
-            skeuomorph
+            skeuomorphic
             color="darkerGray"
             direction="left"
             style={{ position: 'absolute' }}

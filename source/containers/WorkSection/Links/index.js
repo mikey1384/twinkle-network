@@ -59,7 +59,7 @@ function Main({
         title="All Links"
         button={
           <Button
-            skeuomorph
+            skeuomorphic
             color="darkerGray"
             onClick={() => setAddLinkModalShown(true)}
           >

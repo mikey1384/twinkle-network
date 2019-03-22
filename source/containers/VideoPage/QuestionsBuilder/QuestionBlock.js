@@ -173,7 +173,7 @@ export default function QuestionBlock({
           )}
           {deleted && (
             <Button
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               onClick={() => onUndoRemove(id)}
             >

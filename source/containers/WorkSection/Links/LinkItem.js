@@ -219,7 +219,7 @@ function LinkItem({
         <div>
           {!onEdit && editButtonShown && (
             <DropdownButton
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               direction="left"
               menuProps={editMenuItems}

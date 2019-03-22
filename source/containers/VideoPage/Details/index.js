@@ -231,7 +231,7 @@ function Details({
         <div style={{ display: 'flex' }}>
           {editButtonShown && !onEdit && (
             <DropdownButton
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               style={{ marginRight: '1rem' }}
               direction="left"
@@ -241,7 +241,7 @@ function Details({
           )}
           {!onEdit && canStar && userCanEditThis && !userIsUploader && (
             <Button
-              skeuomorph
+              skeuomorphic
               color="pink"
               disabled={determineXpButtonDisabled({
                 difficulty: byUser ? 5 : 0,

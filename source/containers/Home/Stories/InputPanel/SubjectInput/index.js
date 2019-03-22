@@ -80,7 +80,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                 lineHeight: '1.5rem',
                 padding: '0.5rem'
               }}
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               onClick={() => setAttachContentModalShown(true)}
             >

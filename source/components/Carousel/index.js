@@ -306,7 +306,7 @@ function Carousel({
             currentSlide + slidesToScroll >= slideCount &&
             showAllButton ? (
               <Button
-                skeuomorph
+                skeuomorphic
                 color="darkerGray"
                 style={{
                   position: 'absolute',

@@ -341,7 +341,7 @@ function Home({
                 direction="left"
                 opacity={0.7}
                 style={{ right: 0, top: '1rem', position: 'absolute' }}
-                skeuomorph
+                skeuomorphic
                 color="darkerGray"
                 menuProps={[
                   {

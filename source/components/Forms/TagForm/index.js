@@ -25,6 +25,7 @@ TagForm.propTypes = {
   onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   renderDropdownLabel: PropTypes.func.isRequired,
   renderTagLabel: PropTypes.func,
+  subTitle: PropTypes.string,
   title: PropTypes.string
 };
 
@@ -43,6 +44,7 @@ export default function TagForm({
   renderDropdownLabel,
   renderTagLabel,
   searchPlaceholder,
+  subTitle,
   title
 }) {
   const { handleSearch, searching, searchText, setSearchText } = useSearch({
@@ -63,6 +65,7 @@ export default function TagForm({
       >
         <div style={{ width: '100%' }}>
           {title && <h3>{title}</h3>}
+          {subTitle && <span>{subTitle}</span>}
           {renderTags()}
           <TagInput
             style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}

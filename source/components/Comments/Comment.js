@@ -130,7 +130,7 @@ function Comment({
         {editButtonShown && !onEdit && (
           <div className="dropdown-wrapper">
             <DropdownButton
-              skeuomorph
+              skeuomorphic
               color="darkerGray"
               direction="left"
               opacity={0.8}

@@ -21,7 +21,7 @@ export default function NavButton({ disabled, nextSlide, left }) {
           top: 7rem;
           ${left ? 'left: -0.5rem;' : 'right: -0.5rem;'};
         `}
-        skeuomorph
+        skeuomorphic
         color="darkerGray"
         onClick={handleClick}
       >
