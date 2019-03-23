@@ -165,7 +165,7 @@ export const signup = params => async dispatch => {
     });
   } catch (error) {
     console.error(error.response || error);
-    return Promise.reject(error.response || error);
+    return Promise.reject(error.response?.data || error);
   }
 };
 
