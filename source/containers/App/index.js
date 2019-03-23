@@ -31,9 +31,6 @@ const Home = loadable(() => import('containers/Home'), {
 const WorkSection = loadable(() => import('containers/WorkSection'), {
   LoadingComponent: Loading
 });
-const Courses = loadable(() => import('containers/Courses'), {
-  LoadingComponent: Loading
-});
 const Chat = loadable(() => import('containers/Chat'), {
   LoadingComponent: Loading
 });
@@ -252,7 +249,6 @@ function App({
               <Profile history={history} location={location} match={match} />
             )}
           />
-          <Route path="/learn" component={Courses} />
           <Route path="/subjects" component={ContentPage} />
           <Route path="/comments" component={ContentPage} />
           <Route path="/videos/:videoId" component={VideoPage} />
@@ -280,7 +276,15 @@ function App({
           <Route path="/:username" component={Redirect} />
         </Switch>
       </div>
-      {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
+      {chatMode && loggedIn && (
+        <Chat
+          onUnmount={async() => {
+            await resetChat();
+            BodyRef.current.scrollTop = scrollPosition;
+            turnChatOff();
+          }}
+        />
+      )}
       {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
     </div>
   );
@@ -293,12 +297,6 @@ function App({
       setChatLoading(false);
     }
     setChatLoading(false);
-  }
-
-  async function handleChatUnmount() {
-    await resetChat();
-    BodyRef.current.scrollTop = scrollPosition;
-    turnChatOff();
   }
 
   async function handleInitChat() {

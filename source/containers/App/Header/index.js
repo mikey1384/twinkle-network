@@ -189,7 +189,7 @@ function Header({
 
   const isUsername =
     pathname.split('/')[1] !== 'xp' &&
-    ['links', 'videos', 'learn'].indexOf(pathname.split('/')[1]) === -1 &&
+    ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
     pathname.length > 1;
 
   return (
@@ -292,16 +292,6 @@ function Header({
               imgLabel="bolt"
             />
             {renderWorkNav()}
-            <HeaderNav
-              to="/learn"
-              style={{ marginLeft: '2rem' }}
-              onClick={closeSearch}
-              pathname={pathname}
-              className="desktop"
-              imgLabel="lightbulb"
-            >
-              LEARN
-            </HeaderNav>
           </>
           <div
             className={!searchMode || chatLoading ? 'desktop' : ''}
