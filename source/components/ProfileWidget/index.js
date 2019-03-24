@@ -91,7 +91,8 @@ function ProfileWidget({
               display: 'flex',
               justifyContent: 'center',
               flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              textAlign: 'center'
             }}
           >
             {!userId && (
