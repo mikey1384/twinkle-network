@@ -36,7 +36,7 @@ function ContentListItem({
     <div
       onTouchStart={() => setMouseEntered(true)}
       onMouseEnter={() => setMouseEntered(true)}
-      onClick={onClick}
+      onClick={expandable ? (mouseEntered ? onClick : () => null) : onClick}
       style={{
         cursor: 'pointer',
         borderRadius,

@@ -242,6 +242,7 @@ function ContentPanel({
               >
                 <Embedly
                   small
+                  noLink={!urlMouseEntered}
                   title={cleanString(contentObj.rootObj.title)}
                   url={contentObj.rootObj.content}
                   id={contentObj.rootId}
@@ -269,7 +270,9 @@ function ContentPanel({
                 }
               `}
               onClick={() =>
-                window.open(`/users/${contentObj.rootObj.username}`)
+                profileMouseEntered
+                  ? window.open(`/users/${contentObj.rootObj.username}`)
+                  : null
               }
             >
               <Profile profile={contentObj.rootObj} />
