@@ -187,7 +187,8 @@ function ContentPanel({
                 boxShadow:
                   contentObj.targetObj?.subject ||
                   contentObj.rootType === 'video' ||
-                  contentObj.rootType === 'url'
+                  contentObj.rootType === 'url' ||
+                  contentObj.rootType === 'user'
                     ? `0 4px 10px -3px ${Color.black(0.8)}`
                     : ''
               }}
