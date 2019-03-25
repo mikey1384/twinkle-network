@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
@@ -31,8 +31,10 @@ function ContentListItem({
   style
 }) {
   const themeColor = profileTheme || 'logoBlue';
+  const [mouseEntered, setMouseEntered] = useState(false);
   return (
     <div
+      onMouseEnter={() => setMouseEntered(true)}
       onClick={onClick}
       style={{
         cursor: 'pointer',
@@ -48,14 +50,13 @@ function ContentListItem({
           color: ${expandable ? Color.darkerGray() : Color.darkGray()};
           transition: color 1s;
         }
-        margin-top: ${expandable ? '-2rem' : ''};
+        margin-top: ${expandable ? (mouseEntered ? '-0.5rem' : '-2rem') : ''};
         transition: background 0.5s, border 0.5s, margin-top 0.5s;
         &:hover {
           border-color: ${Color.darkerBorderGray()};
           .label {
             color: ${expandable ? Color.darkGray() : Color.darkerGray()};
           }
-          margin-top: ${expandable ? '-0.5rem' : ''};
           background: ${expandable ? '#fff' : Color.highlightGray()};
         }
       `}

@@ -71,6 +71,7 @@ function TargetContent({
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [replyInputShown, setReplyInputShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [mouseEntered, setMouseEntered] = useState(false);
   const InputFormRef = useRef(null);
 
   let userLikedThis = false;
@@ -89,6 +90,7 @@ function TargetContent({
 
   return (
     <ErrorBoundary
+      onMouseEnter={() => setMouseEntered(true)}
       className={`${className} ${css`
         font-size: 1.6rem;
         white-space: pre-wrap;
@@ -97,7 +99,7 @@ function TargetContent({
         border-radius: ${borderRadius};
         border: 1px solid ${Color.darkerBorderGray()};
         padding: 2rem 0 1rem 0;
-        margin-top: -2rem;
+        margin-top: ${mouseEntered ? '-0.5rem' : '-2rem'};
         line-height: 1.5;
         background: ${Color.whiteGray()};
         transition: background 0.5s, margin-top 0.5s;
@@ -116,7 +118,6 @@ function TargetContent({
           font-size: 1.2rem;
         }
         &:hover {
-          margin-top: -0.5rem;
           background: #fff;
         }
       `}`}

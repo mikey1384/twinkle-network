@@ -77,6 +77,8 @@ function ContentPanel({
   userId
 }) {
   const [loaded, setLoaded] = useState(false);
+  const [urlMouseEntered, setUrlMouseEntered] = useState(false);
+  const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -224,15 +226,15 @@ function ContentPanel({
           {(type === 'comment' || type === 'subject') &&
             contentObj.rootType === 'url' && (
               <div
+                onMouseEnter={() => setUrlMouseEntered(true)}
                 className={css`
                   padding: 1rem;
                   background: ${Color.whiteGray()};
-                  margin-top: -2rem;
+                  margin-top: ${urlMouseEntered ? '-0.5rem' : '-2rem'};
                   border: 1px solid ${Color.borderGray()};
                   border-radius: ${borderRadius};
                   transition: margin-top 0.5s, background 0.5s;
                   &:hover {
-                    margin-top: -0.5rem;
                     background: #fff;
                   }
                 `}
@@ -251,16 +253,16 @@ function ContentPanel({
             )}
           {type === 'comment' && contentObj.rootType === 'user' && (
             <div
+              onMouseEnter={() => setProfileMouseEntered(true)}
               className={css`
                 cursor: pointer;
                 background: ${Color.whiteGray()};
-                margin-top: -2rem;
+                margin-top: ${profileMouseEntered ? '-0.5rem' : '-2rem'};
                 border: 1px solid ${Color.borderGray()};
                 border-radius: ${borderRadius};
                 transition: margin-top 0.5s, background 0.5s;
                 padding-bottom: 1rem;
                 &:hover {
-                  margin-top: -0.5rem;
                   background: #fff;
                 }
               `}
