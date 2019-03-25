@@ -59,7 +59,11 @@ function Profile({ profile, userId }) {
       {!!profile.twinkleXP && (
         <RankBar
           profile={profile}
-          style={{ borderRadius: 0, borderLeft: 'none', borderRight: 'none' }}
+          style={{
+            borderLeft: 'none',
+            borderRight: 'none',
+            borderRadius: 0
+          }}
         />
       )}
     </div>

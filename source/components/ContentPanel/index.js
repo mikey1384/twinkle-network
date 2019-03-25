@@ -127,8 +127,6 @@ function ContentPanel({
         <div
           style={{
             height: !contentObj.loaded && '15rem',
-            borderLeft:
-              isThreaded && `0.7rem solid ${Color.darkerBorderGray()}`,
             position: 'relative',
             ...style
           }}
@@ -137,9 +135,6 @@ function ContentPanel({
             style={{
               position: 'relative',
               zIndex: 3,
-              borderTopLeftRadius: isThreaded ? 0 : '',
-              borderBottomLeftRadius: isThreaded ? 0 : '',
-              borderLeft: isThreaded ? 0 : '',
               boxShadow: isThreaded ? `0 4px 10px -3px ${Color.black(0.8)}` : ''
             }}
             className={container}
@@ -181,9 +176,6 @@ function ContentPanel({
               style={{
                 position: 'relative',
                 zIndex: 2,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                borderLeft: 0,
                 boxShadow:
                   contentObj.targetObj?.subject ||
                   contentObj.rootType === 'video' ||
@@ -205,9 +197,6 @@ function ContentPanel({
                 style={{
                   zIndex: 1,
                   position: 'relative',
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  borderLeft: 0,
                   boxShadow:
                     contentObj.rootType === 'video' ||
                     contentObj.rootType === 'url'
@@ -225,10 +214,7 @@ function ContentPanel({
           {type === 'comment' && contentObj.rootType === 'video' && (
             <ContentListItem
               style={{
-                position: 'relative',
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                borderLeft: 0
+                position: 'relative'
               }}
               expandable
               onClick={() => window.open(`/videos/${contentObj.rootObj.id}`)}
@@ -239,12 +225,11 @@ function ContentPanel({
             contentObj.rootType === 'url' && (
               <div
                 className={css`
+                  padding: 1rem;
                   background: ${Color.whiteGray()};
                   margin-top: -2rem;
-                  border-top: 1px solid ${Color.borderGray()};
-                  border-right: 1px solid ${Color.borderGray()};
-                  border-bottom: 1px solid ${Color.borderGray()};
-                  border-bottom-right-radius: ${borderRadius};
+                  border: 1px solid ${Color.borderGray()};
+                  border-radius: ${borderRadius};
                   transition: margin-top 0.5s, background 0.5s;
                   &:hover {
                     margin-top: -0.5rem;
@@ -270,11 +255,10 @@ function ContentPanel({
                 cursor: pointer;
                 background: ${Color.whiteGray()};
                 margin-top: -2rem;
-                border-top: 1px solid ${Color.borderGray()};
-                border-right: 1px solid ${Color.borderGray()};
-                border-bottom: 1px solid ${Color.borderGray()};
-                border-bottom-right-radius: ${borderRadius};
+                border: 1px solid ${Color.borderGray()};
+                border-radius: ${borderRadius};
                 transition: margin-top 0.5s, background 0.5s;
+                padding-bottom: 1rem;
                 &:hover {
                   margin-top: -0.5rem;
                   background: #fff;
