@@ -12,7 +12,7 @@ import Profile from './Profile';
 import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
-import { Color, borderRadius } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
 import { loadContent } from 'helpers/requestHelpers';
 
@@ -238,11 +238,13 @@ function ContentPanel({
                   &:hover {
                     background: #fff;
                   }
+                  @media (max-width: ${mobileMaxWidth}) {
+                    margin-top: -0.5rem;
+                  }
                 `}
               >
                 <Embedly
                   small
-                  noLink={!urlMouseEntered}
                   title={cleanString(contentObj.rootObj.title)}
                   url={contentObj.rootObj.content}
                   id={contentObj.rootId}
@@ -268,11 +270,12 @@ function ContentPanel({
                 &:hover {
                   background: #fff;
                 }
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-top: -0.5rem;
+                }
               `}
               onClick={() =>
-                profileMouseEntered
-                  ? window.open(`/users/${contentObj.rootObj.username}`)
-                  : null
+                window.open(`/users/${contentObj.rootObj.username}`)
               }
             >
               <Profile profile={contentObj.rootObj} />

@@ -7,7 +7,7 @@ import Embedly from 'components/Embedly';
 import DifficultyBar from 'components/DifficultyBar';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
-import { Color, borderRadius } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 ContentListItem.propTypes = {
@@ -36,7 +36,7 @@ function ContentListItem({
     <div
       onTouchStart={() => setMouseEntered(true)}
       onMouseEnter={() => setMouseEntered(true)}
-      onClick={expandable ? (mouseEntered ? onClick : () => null) : onClick}
+      onClick={onClick}
       style={{
         cursor: 'pointer',
         borderRadius,
@@ -59,6 +59,9 @@ function ContentListItem({
             color: ${expandable ? Color.darkGray() : Color.darkerGray()};
           }
           background: ${expandable ? '#fff' : Color.highlightGray()};
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: -0.5rem;
         }
       `}
     >
