@@ -179,6 +179,7 @@ function MainFeeds({
         (activeTab === 'reward' && loadMore.rewards)) &&
         !!userId && (
           <LoadMoreButton
+            style={{ marginTop: '1rem' }}
             loading={loading}
             color="lightBlue"
             filled

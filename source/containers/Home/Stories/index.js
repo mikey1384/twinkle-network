@@ -275,6 +275,7 @@ function Stories({
               })}
               {loadMoreButton && (
                 <LoadMoreButton
+                  style={{ marginBottom: '1rem' }}
                   onClick={() => setLoadingMore(true)}
                   loading={loadingMore}
                   color="lightBlue"
