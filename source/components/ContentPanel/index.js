@@ -79,6 +79,7 @@ function ContentPanel({
   const [loaded, setLoaded] = useState(false);
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
+  const [videoShown, setVideoShown] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -98,7 +99,6 @@ function ContentPanel({
       mounted.current = false;
     };
   }, []);
-  const [videoShown, setVideoShown] = useState(false);
   const isThreaded = !!contentObj.targetObj;
   return (
     <Context.Provider
@@ -226,6 +226,7 @@ function ContentPanel({
           {(type === 'comment' || type === 'subject') &&
             contentObj.rootType === 'url' && (
               <div
+                onMouseDown={() => setUrlMouseEntered(true)}
                 onMouseEnter={() => setUrlMouseEntered(true)}
                 className={css`
                   padding: 1rem;
@@ -235,6 +236,7 @@ function ContentPanel({
                   border-radius: ${borderRadius};
                   transition: margin-top 0.5s, background 0.5s;
                   &:hover {
+                    margin-top: -0.5rem;
                     background: #fff;
                   }
                 `}
@@ -253,6 +255,7 @@ function ContentPanel({
             )}
           {type === 'comment' && contentObj.rootType === 'user' && (
             <div
+              onMouseDown={() => setProfileMouseEntered(true)}
               onMouseEnter={() => setProfileMouseEntered(true)}
               className={css`
                 cursor: pointer;
@@ -263,6 +266,7 @@ function ContentPanel({
                 transition: margin-top 0.5s, background 0.5s;
                 padding-bottom: 1rem;
                 &:hover {
+                  margin-top: -0.5rem;
                   background: #fff;
                 }
               `}
