@@ -151,12 +151,15 @@ function SelectFeaturedChallengesModal({
                   No Subjects Selected
                 </p>
               ) : (
-                selected.map(selectedId => (
+                selected.map((selectedId, index) => (
                   <ContentListItem
                     selectable
                     selected={selected.indexOf(selectedId) !== -1}
                     key={selectedId}
-                    style={{ width: '100%' }}
+                    style={{
+                      width: '100%',
+                      marginBottom: index !== selected.length - 1 ? '1rem' : 0
+                    }}
                     contentObj={challengeObjs[selectedId]}
                     onClick={() =>
                       selected.indexOf(selectedId) === -1
