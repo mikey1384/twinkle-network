@@ -34,7 +34,7 @@ function ContentListItem({
   const [mouseEntered, setMouseEntered] = useState(false);
   return (
     <div
-      onMouseDown={() => setMouseEntered(true)}
+      onTouchStart={() => setMouseEntered(true)}
       onMouseEnter={() => setMouseEntered(true)}
       onClick={onClick}
       style={{
@@ -58,7 +58,6 @@ function ContentListItem({
           .label {
             color: ${expandable ? Color.darkGray() : Color.darkerGray()};
           }
-          margin-top: -0.5rem;
           background: ${expandable ? '#fff' : Color.highlightGray()};
         }
       `}

@@ -90,7 +90,7 @@ function TargetContent({
 
   return (
     <ErrorBoundary
-      onMouseDown={() => setMouseEntered(true)}
+      onTouchStart={() => setMouseEntered(true)}
       onMouseEnter={() => setMouseEntered(true)}
       className={`${className} ${css`
         font-size: 1.6rem;
@@ -119,7 +119,6 @@ function TargetContent({
           font-size: 1.2rem;
         }
         &:hover {
-          margin-top: -0.5rem;
           background: #fff;
         }
       `}`}

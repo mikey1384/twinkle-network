@@ -226,7 +226,7 @@ function ContentPanel({
           {(type === 'comment' || type === 'subject') &&
             contentObj.rootType === 'url' && (
               <div
-                onMouseDown={() => setUrlMouseEntered(true)}
+                onTouchStart={() => setUrlMouseEntered(true)}
                 onMouseEnter={() => setUrlMouseEntered(true)}
                 className={css`
                   padding: 1rem;
@@ -236,7 +236,6 @@ function ContentPanel({
                   border-radius: ${borderRadius};
                   transition: margin-top 0.5s, background 0.5s;
                   &:hover {
-                    margin-top: -0.5rem;
                     background: #fff;
                   }
                 `}
@@ -255,7 +254,7 @@ function ContentPanel({
             )}
           {type === 'comment' && contentObj.rootType === 'user' && (
             <div
-              onMouseDown={() => setProfileMouseEntered(true)}
+              onTouchStart={() => setProfileMouseEntered(true)}
               onMouseEnter={() => setProfileMouseEntered(true)}
               className={css`
                 cursor: pointer;
@@ -266,7 +265,6 @@ function ContentPanel({
                 transition: margin-top 0.5s, background 0.5s;
                 padding-bottom: 1rem;
                 &:hover {
-                  margin-top: -0.5rem;
                   background: #fff;
                 }
               `}
