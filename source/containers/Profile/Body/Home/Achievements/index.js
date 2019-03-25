@@ -58,10 +58,10 @@ export default function Achievements({
             style={{ fontSize: '2rem', textAlign: 'center' }}
           >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
         )}
-        {notables.map(contentObj => (
+        {notables.map((contentObj, index) => (
           <ContentPanel
             key={contentObj.feedId}
-            style={{ marginBottom: '1rem' }}
+            style={{ marginBottom: '1rem', zIndex: notables.length - index }}
             inputAtBottom={contentObj.type === 'comment'}
             commentsLoadLimit={5}
             contentObj={contentObj}
