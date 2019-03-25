@@ -18,7 +18,7 @@ export default function StatusMsg({
   return (
     <div
       className={css`
-        background: ${Color[statusColor]()};
+        background: ${Color[statusColor]?.() || Color.logoBlue()};
         color: ${statusColor === 'ivory' ? Color.black() : '#fff'};
         font-size: 1.7rem;
         padding: 1rem;
