@@ -223,21 +223,6 @@ function App({
         showUpdateNotice={match => setUpdateNoticeShown(!match)}
         onMobileMenuOpen={() => setMobileMenuShown(true)}
       />
-      {searchMode && (
-        <div
-          className={`${css`
-            margin-top: 5rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
-            }
-          `} ${chatMode ? 'hidden' : ''}`}
-        >
-          <SearchPage
-            searchText={searchText}
-            onSearchBoxFocus={() => SearchBoxRef.current.focus()}
-          />
-        </div>
-      )}
       <div
         id="App"
         className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
@@ -276,6 +261,21 @@ function App({
           <Route path="/:username" component={Redirect} />
         </Switch>
       </div>
+      {searchMode && (
+        <div
+          className={`${css`
+            margin-top: 5rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-top: 0;
+            }
+          `} ${chatMode ? 'hidden' : ''}`}
+        >
+          <SearchPage
+            searchText={searchText}
+            onSearchBoxFocus={() => SearchBoxRef.current.focus()}
+          />
+        </div>
+      )}
       {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
       {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
     </div>
