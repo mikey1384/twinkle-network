@@ -24,7 +24,7 @@ export default function Input({
       <input
         {...props}
         className={`${css`
-          border: 1px solid ${Color.inputBorderGray()};
+          border: 1px solid ${Color.darkerBorderGray()};
           width: 100%;
           line-height: 2rem;
           font-size: 1.7rem;

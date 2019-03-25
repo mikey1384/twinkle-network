@@ -58,7 +58,11 @@ function ChallengesPanel({
         loaded={loaded}
       >
         {featuredChallenges.map(challenge => (
-          <ContentListItem key={challenge.id} contentObj={challenge} />
+          <ContentListItem
+            key={challenge.id}
+            style={{ marginBottom: '1rem' }}
+            contentObj={challenge}
+          />
         ))}
       </SectionPanel>
       {modalShown && (

@@ -176,7 +176,7 @@ function App({
             width: 80%;
             left: 10%;
             top: 2rem;
-            z-index: 2000;
+            z-index: 1000;
             background: ${Color.blue()};
             color: #fff;
             padding: 1rem;
@@ -276,15 +276,7 @@ function App({
           <Route path="/:username" component={Redirect} />
         </Switch>
       </div>
-      {chatMode && loggedIn && (
-        <Chat
-          onUnmount={async() => {
-            await resetChat();
-            BodyRef.current.scrollTop = scrollPosition;
-            turnChatOff();
-          }}
-        />
-      )}
+      {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
       {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
     </div>
   );
@@ -297,6 +289,12 @@ function App({
       setChatLoading(false);
     }
     setChatLoading(false);
+  }
+
+  async function handleChatUnmount() {
+    await resetChat();
+    BodyRef.current.scrollTop = scrollPosition;
+    turnChatOff();
   }
 
   async function handleInitChat() {

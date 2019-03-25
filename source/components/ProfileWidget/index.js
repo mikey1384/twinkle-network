@@ -6,7 +6,8 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { openSigninModal } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { container } from './Styles';
-import { Color } from 'constants/css';
+import { borderRadius, Color } from 'constants/css';
+import { css } from 'emotion';
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -38,14 +39,18 @@ function ProfileWidget({
     <ErrorBoundary>
       <div
         style={{ cursor: 'pointer' }}
-        onClick={() => (username ? history.push(`/users/${username}`) : null)}
         className={container({
           username: Color[themeColor](0.6),
           usernameHovered: Color[themeColor]()
         })}
       >
         {username && (
-          <div className="heading">
+          <div
+            className="heading"
+            onClick={() =>
+              username ? history.push(`/users/${username}`) : null
+            }
+          >
             <ProfilePic
               className="widget__profile-pic"
               style={{
@@ -67,7 +72,12 @@ function ProfileWidget({
             </div>
           </div>
         )}
-        <div className="details">
+        <div
+          className={`details ${css`
+            border-top-right-radius: ${username ? '' : borderRadius};
+            border-top-left-radius: ${username ? '' : borderRadius};
+          `}`}
+        >
           {userId && (
             <div>
               <Button

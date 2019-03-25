@@ -126,7 +126,7 @@ function SelectFeaturedChallengesModal({
                     selectable
                     selected={selected.indexOf(challengeId) !== -1}
                     key={challengeId}
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', marginBottom: '1rem' }}
                     contentObj={challengeObjs[challengeId]}
                     onClick={() =>
                       selected.indexOf(challengeId) === -1

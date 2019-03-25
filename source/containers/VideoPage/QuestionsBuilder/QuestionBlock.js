@@ -45,7 +45,7 @@ const Styles = {
         align-items: center;
         justify-content: center;
         width: 4.5rem;
-        background: ${Color.inputBorderGray()};
+        background: ${Color.darkerBorderGray()};
       }
       &:first-of-type {
         border-top-left-radius: ${borderRadius};

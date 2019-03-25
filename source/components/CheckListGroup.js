@@ -58,7 +58,7 @@ export default function CheckListGroup({
               width: 100%;
               cursor: pointer;
               &:hover {
-                background: ${Color.headingGray()};
+                background: ${Color.highlightGray()};
               }
             `}
             onClick={() => onSelect(index)}
@@ -68,7 +68,7 @@ export default function CheckListGroup({
               className={css`
                 height: 4.3rem;
                 width: 4.3rem;
-                background: ${Color.inputBorderGray()};
+                background: ${Color.checkboxAreaGray()};
                 display: flex;
                 align-items: center;
                 justify-content: center;

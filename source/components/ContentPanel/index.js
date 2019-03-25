@@ -5,6 +5,14 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Heading from './Heading';
 import Body from './Body';
 import Loading from 'components/Loading';
+import ContentListItem from 'components/ContentListItem';
+import TargetContent from './TargetContent';
+import Embedly from 'components/Embedly';
+import Profile from './Profile';
+import { css } from 'emotion';
+import { cleanString } from 'helpers/stringHelpers';
+import { connect } from 'react-redux';
+import { Color, borderRadius } from 'constants/css';
 import { container } from './Styles';
 import { loadContent } from 'helpers/requestHelpers';
 
@@ -12,6 +20,7 @@ ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
   contentObj: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
   inputAtBottom: PropTypes.bool,
   userId: PropTypes.number,
   onAddTags: PropTypes.func,
@@ -37,11 +46,12 @@ ContentPanel.propTypes = {
   style: PropTypes.object
 };
 
-export default function ContentPanel({
+function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentObj,
   contentObj: { contentId, feedId, newPost, type },
+  dispatch,
   inputAtBottom,
   onAddTags,
   onAddTagToContents,
@@ -87,6 +97,7 @@ export default function ContentPanel({
     };
   }, []);
   const [videoShown, setVideoShown] = useState(false);
+  const isThreaded = !!contentObj.targetObj;
   return (
     <Context.Provider
       value={{
@@ -112,42 +123,176 @@ export default function ContentPanel({
         onTargetCommentSubmit
       }}
     >
-      <ErrorBoundary
-        className={container}
-        style={{ height: !contentObj.loaded && '15rem', ...style }}
-      >
-        {!contentObj.loaded && <Loading />}
-        {contentObj.loaded && (
-          <Heading
-            contentObj={contentObj}
-            myId={userId}
-            action={
-              contentObj.commentId
-                ? contentObj.targetObj.comment.notFound
-                  ? 'replied on'
-                  : 'replied to'
-                : contentObj.rootType === 'subject'
-                ? 'responded to'
-                : contentObj.rootType === 'user'
-                ? 'left a message to'
-                : 'commented on'
-            }
-            onPlayVideoClick={() => setVideoShown(true)}
-            attachedVideoShown={videoShown}
-          />
-        )}
-        <div className="body">
-          {contentObj.loaded && (
-            <Body
-              autoExpand={autoExpand}
-              contentObj={contentObj}
-              inputAtBottom={inputAtBottom}
-              attachedVideoShown={videoShown}
-              myId={userId}
+      <ErrorBoundary>
+        <div
+          style={{
+            height: !contentObj.loaded && '15rem',
+            borderLeft:
+              isThreaded && `0.7rem solid ${Color.darkerBorderGray()}`,
+            position: 'relative',
+            ...style
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 3,
+              borderTopLeftRadius: isThreaded ? 0 : '',
+              borderBottomLeftRadius: isThreaded ? 0 : '',
+              borderLeft: isThreaded ? 0 : '',
+              boxShadow: isThreaded ? `0 4px 10px -3px ${Color.black(0.8)}` : ''
+            }}
+            className={container}
+          >
+            {!contentObj.loaded && <Loading />}
+            {contentObj.loaded && (
+              <>
+                <Heading
+                  contentObj={contentObj}
+                  myId={userId}
+                  action={
+                    contentObj.commentId
+                      ? contentObj.targetObj.comment.notFound
+                        ? 'replied on'
+                        : 'replied to'
+                      : contentObj.rootType === 'subject'
+                      ? 'responded to'
+                      : contentObj.rootType === 'user'
+                      ? 'left a message to'
+                      : 'commented on'
+                  }
+                  onPlayVideoClick={() => setVideoShown(true)}
+                  attachedVideoShown={videoShown}
+                />
+                <div className="body">
+                  <Body
+                    autoExpand={autoExpand}
+                    contentObj={contentObj}
+                    inputAtBottom={inputAtBottom}
+                    attachedVideoShown={videoShown}
+                    myId={userId}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          {contentObj.loaded && contentObj.targetObj?.comment && (
+            <TargetContent
+              style={{
+                position: 'relative',
+                zIndex: 2,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                borderLeft: 0,
+                boxShadow:
+                  contentObj.targetObj?.subject ||
+                  contentObj.rootType === 'video' ||
+                  contentObj.rootType === 'url'
+                    ? `0 4px 10px -3px ${Color.black(0.8)}`
+                    : ''
+              }}
+              targetObj={contentObj.targetObj}
+              rootObj={contentObj.rootObj}
+              rootId={contentObj.rootId}
+              rootType={contentObj.rootType}
+              feedId={feedId}
             />
+          )}
+          {contentObj.loaded && contentObj.targetObj?.subject && (
+            <div>
+              <ContentListItem
+                style={{
+                  zIndex: 1,
+                  position: 'relative',
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                  borderLeft: 0,
+                  boxShadow:
+                    contentObj.rootType === 'video' ||
+                    contentObj.rootType === 'url'
+                      ? `0 4px 10px -3px ${Color.black(0.8)}`
+                      : ''
+                }}
+                expandable
+                onClick={() =>
+                  window.open(`/subjects/${contentObj.targetObj.subject.id}`)
+                }
+                contentObj={contentObj.targetObj.subject}
+              />
+            </div>
+          )}
+          {type === 'comment' && contentObj.rootType === 'video' && (
+            <ContentListItem
+              style={{
+                position: 'relative',
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                borderLeft: 0
+              }}
+              expandable
+              onClick={() => window.open(`/videos/${contentObj.rootObj.id}`)}
+              contentObj={contentObj.rootObj}
+            />
+          )}
+          {(type === 'comment' || type === 'subject') &&
+            contentObj.rootType === 'url' && (
+              <div
+                className={css`
+                  background: ${Color.whiteGray()};
+                  margin-top: -2rem;
+                  border-top: 1px solid ${Color.borderGray()};
+                  border-right: 1px solid ${Color.borderGray()};
+                  border-bottom: 1px solid ${Color.borderGray()};
+                  border-bottom-right-radius: ${borderRadius};
+                  transition: margin-top 0.5s, background 0.5s;
+                  &:hover {
+                    margin-top: -0.5rem;
+                    background: #fff;
+                  }
+                `}
+              >
+                <Embedly
+                  small
+                  title={cleanString(contentObj.rootObj.title)}
+                  url={contentObj.rootObj.content}
+                  id={contentObj.rootId}
+                  thumbUrl={contentObj.rootObj.thumbUrl}
+                  actualTitle={contentObj.rootObj.actualTitle}
+                  actualDescription={contentObj.rootObj.actualDescription}
+                  siteUrl={contentObj.rootObj.siteUrl}
+                />
+              </div>
+            )}
+          {type === 'comment' && contentObj.rootType === 'user' && (
+            <div
+              className={css`
+                cursor: pointer;
+                background: ${Color.whiteGray()};
+                margin-top: -2rem;
+                border-top: 1px solid ${Color.borderGray()};
+                border-right: 1px solid ${Color.borderGray()};
+                border-bottom: 1px solid ${Color.borderGray()};
+                border-bottom-right-radius: ${borderRadius};
+                transition: margin-top 0.5s, background 0.5s;
+                &:hover {
+                  margin-top: -0.5rem;
+                  background: #fff;
+                }
+              `}
+              onClick={() =>
+                window.open(`/users/${contentObj.rootObj.username}`)
+              }
+            >
+              <Profile profile={contentObj.rootObj} />
+            </div>
           )}
         </div>
       </ErrorBoundary>
     </Context.Provider>
   );
 }
+
+export default connect(
+  null,
+  dispatch => ({ dispatch })
+)(ContentPanel);

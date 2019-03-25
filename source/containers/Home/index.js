@@ -28,7 +28,7 @@ Home.propTypes = {
 function Home({ history, location, uploadProfilePic }) {
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
-  const [imageUri, setImageUri] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
   const [processing, setProcessing] = useState(false);
 
   return (

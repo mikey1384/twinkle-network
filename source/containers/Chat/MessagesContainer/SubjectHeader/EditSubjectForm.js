@@ -142,15 +142,17 @@ export default function EditSubjectForm({
             </Button>
           </div>
         </div>
-        <small style={{ color: title.length > maxLength && 'red' }}>
-          {title.length}/{maxLength} Characters
-        </small>
-        {title.length <= maxLength && (
-          <small>
-            {' '}
-            (Press <b>Enter</b> to Apply)
+        <div style={{ background: '#fff' }}>
+          <small style={{ color: title.length > maxLength && 'red' }}>
+            {title.length}/{maxLength} Characters
           </small>
-        )}
+          {title.length <= maxLength && (
+            <small>
+              {' '}
+              (Press <b>Enter</b> to Apply)
+            </small>
+          )}
+        </div>
       </div>
     </ErrorBoundary>
   );

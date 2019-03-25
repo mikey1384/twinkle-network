@@ -2,12 +2,13 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 
 export const container = css`
-  z-index: 500;
+  z-index: 300;
+  position: relative;
   font-family: sans-serif, Arial, Helvetica;
   font-size: 1.5rem;
   background: #fff;
   display: flex;
-  box-shadow: 0 3px 3px -3px ${Color.menuGray()};
+  box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
@@ -18,7 +19,7 @@ export const container = css`
     align-items: center;
     justify-content: center;
     .chat {
-      color: ${Color.menuGray()};
+      color: ${Color.gray()};
     }
     a {
       text-decoration: none;
@@ -55,7 +56,7 @@ export const container = css`
       &:hover {
         > a {
           > svg {
-            color: ${Color.menuGray()};
+            color: ${Color.gray()};
           }
         }
       }
@@ -109,6 +110,7 @@ export const container = css`
 
 export const logo = {
   outer: `desktop ${css`
+    cursor: pointer;
     position: relative;
     margin-left: 1rem;
     width: 10rem;
@@ -118,17 +120,8 @@ export const logo = {
     font-size: 2rem;
     font-weight: bold;
     font-family: sans-serif, Arial, Helvetica;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    text-decoration: none;
     line-height: 0.9;
-    color: ${Color.menuGray()};
+    color: ${Color.gray()};
     > .logo {
       line-height: 1;
     }

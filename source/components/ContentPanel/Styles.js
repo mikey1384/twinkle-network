@@ -4,25 +4,25 @@ import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 export const container = css`
   background: #fff;
   width: 100%;
-  margin-bottom: 1rem;
   border: 1px solid ${Color.borderGray()};
   border-radius: ${borderRadius};
-  position: relative;
+  position: static;
   &:last-child {
     margin-bottom: 0;
   }
   .heading {
     user-select: none;
-    padding: 0 1rem;
+    padding: 1rem;
     display: flex;
     align-items: center;
     width: 100%;
-    min-height: 10rem;
     justify-content: space-between;
   }
   .body {
     font-size: 1.6rem;
     padding: 0;
+    position: static;
+    z-index: 10;
     .bottom-interface {
       padding: 0 1rem 0 1rem;
       display: flex;

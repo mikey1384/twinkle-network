@@ -58,11 +58,11 @@ export default function SearchInput({
         width: 100%;
         height: 4.3rem;
         position: relative;
-        z-index: 1000;
+        z-index: 400;
         .addon {
           height: 100%;
           border: 1px solid
-            ${addonColor ? Color[addonColor]() : Color.inputBorderGray()};
+            ${addonColor ? Color[addonColor]() : Color.darkerBorderGray()};
           padding: 0 1rem;
           display: flex;
           align-items: center;
@@ -71,7 +71,7 @@ export default function SearchInput({
         input {
           height: 100%;
           border: 1px solid
-            ${borderColor ? Color[borderColor]() : Color.inputBorderGray()};
+            ${borderColor ? Color[borderColor]() : Color.darkerBorderGray()};
           border-left: none;
         }
       `} ${className}`}

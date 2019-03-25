@@ -134,25 +134,24 @@ function ProfilePanel({
       </div>
       <div
         className={css`
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            border: #e7e7e7 1px solid;
-              ${
-                profile.twinkleXP
-                  ? 'border-bottom: none;'
-                  : `
+          background: #fff;
+          display: flex;
+          flex-direction: column;
+          padding: 1rem;
+          border: ${Color.borderGray()} 1px solid;
+          ${profile.twinkleXP
+            ? 'border-bottom: none;'
+            : `
                 border-bottom-left-radius: ${borderRadius};
                 border-bottom-right-radius: ${borderRadius};
-              `
-              }
-            @media (max-width: ${mobileMaxWidth}) {
-              border-radius: 0;
-              border-left: none;
-              border-right: none;
-            }
-          `}
+              `};
+          border-top: none;
+          @media (max-width: ${mobileMaxWidth}) {
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+          }
+        `}
       >
         <div style={{ display: 'flex', height: '100%', marginTop: '1rem' }}>
           <div

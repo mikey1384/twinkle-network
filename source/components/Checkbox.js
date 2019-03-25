@@ -15,7 +15,7 @@ Checkbox.propTypes = {
 };
 
 function Checkbox({
-  backgroundColor = Color.wellGray(),
+  backgroundColor = Color.backgroundGray(),
   checked,
   label,
   onClick,

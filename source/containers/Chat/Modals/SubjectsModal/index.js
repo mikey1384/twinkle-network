@@ -69,6 +69,7 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
         {!loaded && <Loading />}
         {msgsModal.shown && (
           <SubjectMsgsModal
+            modalOverModal
             subjectId={msgsModal.subjectId}
             subjectTitle={msgsModal.title}
             onHide={() =>

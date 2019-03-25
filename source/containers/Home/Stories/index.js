@@ -190,10 +190,7 @@ function Stories({
 
   return (
     <ErrorBoundary>
-      <div
-        ref={ContainerRef}
-        style={{ position: 'relative', width: '100%', paddingBottom: '1rem' }}
-      >
+      <div ref={ContainerRef}>
         <HomeFilter
           category={categoryRef.current}
           changeCategory={changeCategory}
@@ -237,10 +234,14 @@ function Stories({
                   {numNewPosts > 1 ? 's' : ''}
                 </Banner>
               )}
-              {storyFeeds.map(feed => {
+              {storyFeeds.map((feed, index) => {
                 return (
                   <ContentPanel
                     key={feed.feedId}
+                    style={{
+                      marginBottom: '1rem',
+                      zIndex: storyFeeds.length - index
+                    }}
                     commentsLoadLimit={5}
                     contentObj={feed}
                     inputAtBottom={feed.type === 'comment'}

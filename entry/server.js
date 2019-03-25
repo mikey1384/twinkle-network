@@ -59,6 +59,7 @@ app.use((req, res) => {
         </head>
         <body>
           <div id="react-view">${ReactView}</div>
+          <div id="modal"></div>
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(store.getState())}
           </script>

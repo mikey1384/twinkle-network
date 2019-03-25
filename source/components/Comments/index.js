@@ -150,7 +150,7 @@ function Comments({
           previewComments.length > 0
             ? css`
                 &:hover {
-                  background: ${Color.headingGray()};
+                  background: ${Color.highlightGray()};
                 }
                 @media (max-width: ${mobileMaxWidth}) {
                   &:hover {

@@ -6,7 +6,7 @@ export const container = ({ username, usernameHovered }) => css`
   border: none;
   flex-direction: column;
   width: 100%;
-  z-index: 1000;
+  z-index: 400;
   a {
     text-decoration: none;
   }
@@ -39,7 +39,7 @@ export const container = ({ username, usernameHovered }) => css`
     }
     &:hover {
       transition: background 0.5s;
-      background: ${Color.channelGray()};
+      background: ${Color.highlightGray()};
     }
   }
   .widget__profile-pic {
@@ -77,6 +77,9 @@ export const container = ({ username, usernameHovered }) => css`
       }
     }
     .details {
+      border: 0;
+      border-bottom: 1px solid ${Color.borderGray()};
+      border-radius: 0;
       text-align: center;
       font-size: 3rem;
       .login-message {

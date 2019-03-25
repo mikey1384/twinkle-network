@@ -51,7 +51,7 @@ export default function Dropdown({
             padding: 1rem;
             color: ${Color.darkerGray()};
             &:hover {
-              background: ${Color.headingGray()};
+              background: ${Color.highlightGray()};
             }
             a {
               text-decoration: none;
@@ -63,7 +63,7 @@ export default function Dropdown({
         {searchResults.map((item, index) => {
           let itemStyle =
             index === indexToHighlight
-              ? { background: Color.headingGray() }
+              ? { background: Color.highlightGray() }
               : {};
           const href = renderItemUrl ? { href: renderItemUrl(item) } : {};
           return (

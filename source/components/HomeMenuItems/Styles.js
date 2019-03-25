@@ -47,6 +47,8 @@ export const container = css`
     font-size: 3rem;
     padding: 1rem 0;
     background: #fff;
+    border-top: 1px solid ${Color.borderGray()};
+    border-bottom: 1px solid ${Color.borderGray()};
     > nav {
       a {
         justify-content: center;

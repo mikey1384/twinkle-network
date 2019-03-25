@@ -4,7 +4,6 @@ import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import Link from 'components/Link';
-import Button from 'components/Button';
 import { connect } from 'react-redux';
 
 Profile.propTypes = {
@@ -44,32 +43,16 @@ function Profile({ profile, userId }) {
               large
             />
           </Link>
-          {profile.youtubeUrl && (
-            <Button
-              color="red"
-              transparent
-              style={{ padding: '0.5rem', marginTop: '1rem' }}
-              onClick={() => window.open(profile.youtubeUrl)}
-            >
-              Visit YouTube
-            </Button>
-          )}
-          {profile.website && (
-            <Button
-              color="blue"
-              transparent
-              style={{ padding: '0.5rem' }}
-              onClick={() => window.open(profile.website)}
-            >
-              Visit Website
-            </Button>
-          )}
         </div>
         <UserDetails
           small
           unEditable
           profile={profile}
-          style={{ width: 'CALC(100% - 18rem)', marginLeft: '1rem' }}
+          style={{
+            width: 'CALC(100% - 18rem)',
+            marginLeft: '1rem',
+            fontSize: '1.5rem'
+          }}
           userId={userId}
         />
       </div>

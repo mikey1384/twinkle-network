@@ -94,6 +94,7 @@ function Results({
         results.map(result => (
           <ContentListItem
             key={result.id}
+            style={{ marginBottom: '1rem' }}
             onClick={closeSearch}
             contentObj={result}
           />

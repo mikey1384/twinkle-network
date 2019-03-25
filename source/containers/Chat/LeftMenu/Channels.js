@@ -43,12 +43,12 @@ export default function Channels({
         <div
           className={css`
             &:hover {
-              background: ${Color.wellGray()};
+              background: ${Color.checkboxAreaGray()};
             }
           `}
           style={{
             width: '100%',
-            backgroundColor: id === selectedChannelId && Color.channelGray(),
+            backgroundColor: id === selectedChannelId && Color.highlightGray(),
             cursor: 'pointer',
             padding: '1rem',
             height: '6.5rem'

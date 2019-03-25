@@ -57,7 +57,7 @@ function SortableListItem({
         }}
       >
         <section>{cleanString(item.label)}</section>
-        <Icon icon="align-justify" style={{ color: Color.menuGray() }} />
+        <Icon icon="align-justify" style={{ color: Color.darkerBorderGray() }} />
       </nav>
     )
   );

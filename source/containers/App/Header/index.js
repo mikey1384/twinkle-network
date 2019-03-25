@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Link from 'components/Link';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
 import Icon from 'components/Icon';
@@ -215,41 +214,45 @@ function Header({
             to="/"
             children={({ match }) => {
               return (
-                <Link onClick={closeSearch} to="/">
-                  <div className={logo.outer}>
-                    <div
-                      onClick={onLogoClick}
-                      className={`${logo.inner} ${
-                        isUsername || match.isExact ? 'active' : ''
-                      }`}
+                <div
+                  className={logo.outer}
+                  onClick={() => {
+                    history.push('/');
+                    closeSearch();
+                  }}
+                >
+                  <div
+                    onClick={onLogoClick}
+                    className={`${logo.inner} ${
+                      isUsername || match.isExact ? 'active' : ''
+                    }`}
+                  >
+                    <span
+                      style={
+                        numNewPosts > 0
+                          ? {
+                              color: Color.gold()
+                            }
+                          : {}
+                      }
+                      className="logo logo-twin"
                     >
-                      <span
-                        style={
-                          numNewPosts > 0
-                            ? {
-                                color: Color.gold()
-                              }
-                            : {}
-                        }
-                        className="logo logo-twin"
-                      >
-                        Twin
-                      </span>
-                      <span
-                        style={
-                          numNewPosts > 0
-                            ? {
-                                color: Color.gold()
-                              }
-                            : {}
-                        }
-                        className="logo logo-kle"
-                      >
-                        kle
-                      </span>
-                    </div>
+                      Twin
+                    </span>
+                    <span
+                      style={
+                        numNewPosts > 0
+                          ? {
+                              color: Color.gold()
+                            }
+                          : {}
+                      }
+                      className="logo logo-kle"
+                    >
+                      kle
+                    </span>
                   </div>
-                </Link>
+                </div>
               );
             }}
           />

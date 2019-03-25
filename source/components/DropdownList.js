@@ -35,7 +35,7 @@ export default function DropdownList({
           list-style: none;
           position: absolute;
           background: #fff;
-          box-shadow: 1px 1px 2px ${Color.black(0.49)};
+          box-shadow: 1px 1px 2px ${Color.black(0.6)};
           font-weight: normal !important;
           line-height: 1.5;
           li {
@@ -52,7 +52,7 @@ export default function DropdownList({
             border-bottom: none !important;
             width: 100%;
             &:hover {
-              background: ${Color.headingGray()};
+              background: ${Color.highlightGray()};
             }
             a {
               text-decoration: none;

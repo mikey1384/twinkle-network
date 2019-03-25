@@ -145,7 +145,6 @@ function FilterBar({
           border-radius: 0;
           border-left: none;
           border-right: none;
-          border-top: none;
         }
       `} ${className}`}
     >

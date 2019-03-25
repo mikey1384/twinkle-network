@@ -56,7 +56,7 @@ function MobileMenu({
         left: 0;
         right: 0;
         position: fixed;
-        z-index: 2000;
+        z-index: 500;
         background: rgba(0, 0, 0, 0.5);
         display: flex;
       `}`}

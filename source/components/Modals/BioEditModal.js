@@ -35,7 +35,7 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
         }
         small {
           font-size: 1.3rem;
-          color: ${Color.buttonGray()};
+          color: ${Color.subtitleGray()};
         }
       `}
     >

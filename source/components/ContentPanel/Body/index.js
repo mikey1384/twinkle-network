@@ -10,7 +10,6 @@ import UserListModal from 'components/Modals/UserListModal';
 import VideoPlayer from 'components/VideoPlayer';
 import Comments from 'components/Comments';
 import MainContent from './MainContent';
-import TargetContent from './TargetContent';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import XPRewardInterface from 'components/XPRewardInterface';
@@ -169,13 +168,6 @@ function Body({
   return (
     <ErrorBoundary>
       <div>
-        {confirmModalShown && (
-          <ConfirmModal
-            onConfirm={deleteThisContent}
-            onHide={() => setConfirmModalShown(false)}
-            title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-          />
-        )}
         {type === 'comment' && attachedVideoShown && (
           <VideoPlayer
             stretch
@@ -188,16 +180,6 @@ function Body({
             hasHqThumb={rootObj.hasHqThumb}
             videoId={rootId}
             videoCode={rootObj.content}
-          />
-        )}
-        {type === 'comment' && (commentId || replyId || subjectId) && (
-          <TargetContent
-            targetObj={targetObj}
-            rootObj={rootObj}
-            myId={myId}
-            rootId={rootId}
-            rootType={rootType}
-            feedId={feedId}
           />
         )}
         <MainContent
@@ -423,6 +405,13 @@ function Body({
           />
         )}
       </div>
+      {confirmModalShown && (
+        <ConfirmModal
+          onConfirm={deleteThisContent}
+          onHide={() => setConfirmModalShown(false)}
+          title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+        />
+      )}
     </ErrorBoundary>
   );
 

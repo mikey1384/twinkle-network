@@ -12,6 +12,7 @@ import { css } from 'emotion';
 
 ContentListItem.propTypes = {
   contentObj: PropTypes.object.isRequired,
+  expandable: PropTypes.bool,
   onClick: PropTypes.func,
   profileTheme: PropTypes.string,
   selectable: PropTypes.bool,
@@ -23,6 +24,7 @@ function ContentListItem({
   onClick = () => {},
   contentObj,
   contentObj: { type },
+  expandable,
   profileTheme,
   selectable,
   selected,
@@ -35,33 +37,33 @@ function ContentListItem({
       style={{
         cursor: 'pointer',
         borderRadius,
-        marginBottom: '1rem',
         boxShadow: selected ? `0 0 5px ${Color[themeColor](0.8)}` : null,
         border: selected ? `0.5rem solid ${Color[themeColor](0.8)}` : null,
         ...style
       }}
       className={css`
-        border: 1px solid;
-        border-color: ${Color.borderGray()};
-        background: #fff;
+        border: 1px solid ${Color.borderGray()};
+        background: ${expandable ? Color.whiteGray() : '#fff'};
         .label {
-          color: ${Color.darkGray()};
+          color: ${expandable ? Color.darkerGray() : Color.darkGray()};
+          transition: color 1s;
         }
+        margin-top: ${expandable ? '-2rem' : ''};
+        transition: background 0.5s, border 0.5s, margin-top 0.5s;
         &:hover {
+          border-color: ${Color.darkerBorderGray()};
           .label {
-            color: ${selectable ? '' : Color[themeColor]()};
-            transition: color 0.3s;
+            color: ${expandable ? Color.darkGray() : Color.darkerGray()};
           }
-          box-shadow: ${selectable ? '' : `0 0 5px ${Color[themeColor](0.8)}`};
-          border-color: ${selectable ? '' : Color[themeColor](0.8)};
-          transition: box-shadow 0.3s, border-color 0.3s;
+          margin-top: ${expandable ? '-0.5rem' : ''};
+          background: ${expandable ? '#fff' : Color.highlightGray()};
         }
       `}
     >
       <Link
         style={{ textDecoration: 'none' }}
         to={
-          selectable
+          expandable || selectable
             ? ''
             : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
         }

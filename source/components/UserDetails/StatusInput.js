@@ -74,7 +74,7 @@ export default function StatusInput({
                 'ivory',
                 'logoGreen',
                 'logoBlue',
-                'menuGray',
+                'subtitleGray',
                 'black'
               ]}
               twinkleXP={profile.twinkleXP || 0}

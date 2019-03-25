@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -10,6 +11,7 @@ Modal.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
   hideMobileNavbar: PropTypes.func.isRequired,
+  modalOverModal: PropTypes.bool,
   showMobileNavbar: PropTypes.func.isRequired,
   onHide: PropTypes.func,
   small: PropTypes.bool,
@@ -21,6 +23,7 @@ function Modal({
   className,
   children,
   hideMobileNavbar,
+  modalOverModal,
   onHide,
   small,
   large,
@@ -44,11 +47,11 @@ function Modal({
     large: '10%'
   };
   const widthKey = small ? 'small' : large ? 'large' : 'default';
-  return (
+  const Modal = (
     <div
       className={`${css`
         position: fixed;
-        z-index: 2500;
+        z-index: 500;
         top: 0;
         right: 0;
         left: 0;
@@ -58,7 +61,7 @@ function Modal({
       <div
         className={css`
           position: absolute;
-          z-index: 2500;
+          z-index: 500;
           top: 0;
           right: 0;
           left: 0;
@@ -128,7 +131,7 @@ function Modal({
               display: flex;
               align-items: center;
               justify-content: flex-end;
-              border-top: 1px solid ${Color.inputBorderGray()};
+              border-top: 1px solid ${Color.borderGray()};
             }
             @media (max-width: ${mobileMaxWidth}) {
               width: 100% !important;
@@ -142,6 +145,9 @@ function Modal({
       </div>
     </div>
   );
+  return modalOverModal
+    ? Modal
+    : createPortal(Modal, document.getElementById('modal'));
 }
 
 export default connect(

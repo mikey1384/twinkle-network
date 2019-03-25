@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Context from '../../Context';
+import Context from '../Context';
 import withContext from 'components/Wrappers/withContext';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
@@ -15,7 +15,6 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
-import DifficultyBar from 'components/DifficultyBar';
 import { connect } from 'react-redux';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -26,6 +25,7 @@ import { css } from 'emotion';
 TargetContent.propTypes = {
   authLevel: PropTypes.number,
   canStar: PropTypes.bool,
+  className: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   feedId: PropTypes.number,
   myId: PropTypes.number,
@@ -38,6 +38,7 @@ TargetContent.propTypes = {
   profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
+  style: PropTypes.object,
   targetObj: PropTypes.object,
   username: PropTypes.string
 };
@@ -45,6 +46,7 @@ TargetContent.propTypes = {
 function TargetContent({
   authLevel,
   canStar,
+  className,
   dispatch,
   feedId,
   myId,
@@ -57,10 +59,11 @@ function TargetContent({
   rootObj,
   profilePicId,
   rootType,
+  style,
   targetObj: {
-    subject,
     comment,
     comment: { comments = [], stars = [] } = {},
+    subject,
     type
   },
   username
@@ -82,26 +85,22 @@ function TargetContent({
     userIsUploader = myId === comment.uploader.id;
     userCanStarThis =
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
-  } else {
-    uploader = subject?.uploader || uploader;
   }
 
   return (
     <ErrorBoundary
-      className={css`
+      className={`${className} ${css`
         font-size: 1.6rem;
         white-space: pre-wrap;
         overflow-wrap: break-word;
         word-break: break-word;
         border-radius: ${borderRadius};
-        border-top: 1px solid ${Color.inputBorderGray()};
-        border-bottom: 1px solid ${Color.inputBorderGray()};
-        padding-top: 1rem;
-        padding-right: 0;
-        padding-left: 0;
-        background: ${Color.wellGray()};
-        margin-bottom: 2rem;
+        border: 1px solid ${Color.darkerBorderGray()};
+        padding: 2rem 0 1rem 0;
+        margin-top: -2rem;
         line-height: 1.5;
+        background: ${Color.whiteGray()};
+        transition: background 0.5s, margin-top 0.5s;
         .buttons {
           margin-top: 2rem;
           display: flex;
@@ -112,101 +111,25 @@ function TargetContent({
           display: flex;
           justify-content: space-between;
         }
-        .root-content {
-          color: ${Color.darkerGray()};
-          font-weight: bold;
-        }
         .timestamp {
           color: ${Color.gray()};
           font-size: 1.2rem;
         }
-      `}
-      style={{
-        paddingBottom:
-          stars &&
-          stars.length > 0 &&
-          !replyInputShown &&
-          !xpRewardInterfaceShown
-            ? 0
-            : '1rem'
-      }}
+        &:hover {
+          margin-top: -0.5rem;
+          background: #fff;
+        }
+      `}`}
+      style={style}
     >
       <div>
-        {!!subject?.difficulty && (
-          <DifficultyBar
-            className={css`
-              margin-left: -1px;
-              margin-right: -1px;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-left: 0px;
-                margin-right: 0px;
-              }
-            `}
-            style={{
-              fontSize: '1.3rem'
-            }}
-            difficulty={subject.difficulty}
-          />
-        )}
-        {subject &&
-          (subject.notFound ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <span>Subject removed / no longer available</span>
-            </div>
-          ) : (
-            <div style={{ padding: '0.5rem 1rem' }}>
-              <div
-                className={css`
-                  display: flex;
-                  flex-direction: column;
-                `}
-              >
-                <div
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <div>
-                    <ContentLink
-                      content={{ id: subject.id, title: 'Subject: ' }}
-                      type="subject"
-                      style={{ color: Color.green() }}
-                    />
-                  </div>
-                  <div>
-                    <UsernameText user={subject.uploader} />
-                    &nbsp;
-                    <span className="timestamp">
-                      ({timeSince(subject.timeStamp)})
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="root-content">{subject.title}</span>
-                </div>
-              </div>
-              <div>
-                {subject.description && (
-                  <LongText
-                    className={css`
-                      margin-top: 1rem;
-                    `}
-                  >
-                    {subject.description}
-                  </LongText>
-                )}
-              </div>
-            </div>
-          ))}
         {comment &&
           (comment.notFound ? (
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
               <span>Comment removed / no longer available</span>
             </div>
           ) : (
-            <div style={{ marginTop: subject ? '1rem' : 0 }}>
+            <div style={{ marginTop: 0 }}>
               <div style={{ padding: '0 1rem' }}>
                 <div
                   style={{
@@ -270,7 +193,12 @@ function TargetContent({
                       </Button>
                     </div>
                     <Likers
-                      className="content-panel__likes"
+                      className={css`
+                        font-weight: bold;
+                        color: ${Color.darkerGray()};
+                        font-size: 1.2rem;
+                        line-height: 1;
+                      `}
                       userId={myId}
                       likes={comment.likes}
                       onLinkClick={() => setUserListModalShown(true)}
@@ -376,11 +304,9 @@ function TargetContent({
   );
 
   function xpButtonDisabled() {
-    const stars =
-      type === 'comment' || type === 'reply' ? comment.stars : subject.stars;
     return determineXpButtonDisabled({
       difficulty: determineDifficulty({ rootObj, rootType, subject }),
-      stars,
+      stars: comment.stars,
       myId,
       xpRewardInterfaceShown
     });
@@ -393,7 +319,7 @@ function TargetContent({
           ? 1
           : 0
         : rootObj.difficulty;
-    return subject?.difficulty || rootDifficulty;
+    return rootDifficulty;
   }
 
   function onLikeClick(likes) {
@@ -424,6 +350,7 @@ export default connect(
   state => ({
     authLevel: state.UserReducer.authLevel,
     canStar: state.UserReducer.canStar,
+    myId: state.UserReducer.userId,
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId
   }),

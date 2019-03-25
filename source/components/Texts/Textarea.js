@@ -20,7 +20,7 @@ export default function Textarea({ className, innerRef, ...props }) {
         position: relative;
         font-size: 1.6rem;
         padding: 1rem;
-        border: 1px solid ${Color.inputBorderGray()};
+        border: 1px solid ${Color.darkerBorderGray()};
         &:focus {
           outline: none;
           border: 1px solid ${Color.logoBlue()};

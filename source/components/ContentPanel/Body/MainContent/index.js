@@ -4,7 +4,6 @@ import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
 import VideoPlayer from 'components/VideoPlayer';
 import ContentEditor from '../ContentEditor';
-import Profile from './Profile';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from 'components/AlreadyPosted';
@@ -190,9 +189,6 @@ export default function MainContent({
             />
           )}
         </div>
-        {type === 'comment' && contentObj.rootType === 'user' && (
-          <Profile profile={contentObj.rootObj} />
-        )}
         {!isEditing && type === 'url' && (
           <Embedly
             title={cleanString(contentObj.title)}
@@ -219,15 +215,6 @@ export default function MainContent({
               difficulty={contentObj.difficulty}
             />
           )}
-        {(type === 'comment' || type === 'subject') && rootType === 'url' && (
-          <Embedly
-            small
-            title={cleanString(rootObj.title)}
-            url={rootObj.content}
-            id={contentObj.rootId}
-            {...urlRelated}
-          />
-        )}
       </div>
     </ErrorBoundary>
   );

@@ -71,7 +71,7 @@ function ChatFeeds({
           background: #fff;
           &:hover {
             transition: background 0.5s;
-            background: ${Color.channelGray()};
+            background: ${Color.highlightGray()};
           }
         `}
       >

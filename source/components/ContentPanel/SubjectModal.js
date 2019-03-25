@@ -29,9 +29,16 @@ export default function SubjectModal({ onHide, subject, uploadResponse }) {
         </span>
       </header>
       <main>
-        <span style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+        <span
+          style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem'
+          }}
+        >
           {subject.title}
         </span>
+        <p style={{ width: '100%' }}>{subject.description}</p>
         <Textarea
           autoFocus
           value={response}

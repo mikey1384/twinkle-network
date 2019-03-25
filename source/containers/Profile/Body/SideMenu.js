@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 
-LeftMenu.propTypes = {
+SideMenu.propTypes = {
   className: PropTypes.string,
   menuItems: PropTypes.array.isRequired,
   onMenuClick: PropTypes.func.isRequired,
@@ -11,7 +11,7 @@ LeftMenu.propTypes = {
   style: PropTypes.object
 };
 
-export default function LeftMenu({
+export default function SideMenu({
   className,
   onMenuClick,
   menuItems,
@@ -35,7 +35,7 @@ export default function LeftMenu({
             padding: 1rem;
             font-size: 2rem;
             font-weight: bold;
-            color: ${Color.buttonGray()};
+            color: ${Color.darkGray()};
             &:hover {
               color: ${Color.black()};
             }

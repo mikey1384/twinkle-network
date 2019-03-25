@@ -1,18 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import Context from './Context';
 import withContext from 'components/Wrappers/withContext';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
-import LikeButton from 'components/Buttons/LikeButton';
 import { Color } from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
-import Button from 'components/Button';
-import SubjectModal from './SubjectModal';
-import VideoThumbImage from 'components/VideoThumbImage';
 import UsernameText from 'components/Texts/UsernameText';
-import Icon from 'components/Icon';
-import { uploadComment } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 Heading.propTypes = {
@@ -62,7 +56,6 @@ function Heading({
   onLikeContent,
   onPlayVideoClick
 }) {
-  const [subjectModalShown, setSubjectModalShown] = useState(false);
   return (
     <header className="heading">
       <ProfilePic
@@ -82,10 +75,7 @@ function Heading({
       >
         <div
           style={{
-            width:
-              type === 'comment' && rootType !== 'url' && rootType !== 'user'
-                ? '78%'
-                : '100%'
+            width: '100%'
           }}
         >
           <span className="title">{renderHeading()}</span>
@@ -93,27 +83,7 @@ function Heading({
             {timeStamp ? `(${timeSince(timeStamp)})` : ''}
           </small>
         </div>
-        {type === 'comment' && rootType !== 'user' && (
-          <div
-            style={{
-              width: '20%',
-              height: '8rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end'
-            }}
-          >
-            {renderCornerButton()}
-          </div>
-        )}
       </div>
-      {subjectModalShown && (
-        <SubjectModal
-          onHide={() => setSubjectModalShown(false)}
-          subject={targetObj?.subject}
-          uploadResponse={onResponseUpload}
-        />
-      )}
     </header>
   );
 
@@ -175,67 +145,6 @@ function Heading({
     }
   }
 
-  async function onResponseUpload({ content, subject }) {
-    const data = await uploadComment({
-      content,
-      parent: subject,
-      dispatch
-    });
-    if (data) onCommentSubmit(data);
-  }
-
-  function renderCornerButton() {
-    const userLikedVideo =
-      rootObj?.likes?.map(like => like.id).indexOf(myId) !== -1;
-    if (rootType === 'video') {
-      if (!rootObj?.content) return null;
-      return (
-        <>
-          {attachedVideoShown ? (
-            <LikeButton
-              contentType="video"
-              contentId={rootId}
-              small
-              liked={userLikedVideo}
-              onClick={onLikeClick}
-            />
-          ) : (
-            rootObj?.content && (
-              <div
-                style={{
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  color: Color.blue(),
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}
-                onClick={onPlayVideoClick}
-              >
-                <VideoThumbImage
-                  playIcon
-                  difficulty={rootObj?.difficulty}
-                  height="7rem"
-                  src={`https://img.youtube.com/vi/${
-                    rootObj?.content
-                  }/mqdefault.jpg`}
-                />
-              </div>
-            )
-          )}
-        </>
-      );
-    } else if (subjectId) {
-      return (
-        <Button color="green" onClick={() => setSubjectModalShown(true)}>
-          <Icon icon="comment" />
-          <span style={{ marginLeft: '0.7rem' }}>Respond</span>
-        </Button>
-      );
-    }
-  }
-
   function renderTargetAction() {
     if (targetObj?.comment && !targetObj?.comment.notFound) {
       return (
@@ -263,10 +172,6 @@ function Heading({
       );
     }
     return null;
-  }
-
-  function onLikeClick(likes) {
-    onLikeContent({ likes, contentId: rootId, type: rootType });
   }
 }
 

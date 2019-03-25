@@ -24,7 +24,7 @@ export default function RankBar({ profile, style }) {
           text-align: center;
           border-bottom-left-radius: ${borderRadius};
           border-bottom-right-radius: ${borderRadius};
-          ${profile.rank > 3 ? `border: 1px solid #e7e7e7;` : ''}
+          ${profile.rank > 3 ? `border: 1px solid ${Color.borderGray()};` : ''}
           background: ${
             profile.rank < 3
               ? Color.black(1 - (profile.rank - 1) / 10)
@@ -44,7 +44,7 @@ export default function RankBar({ profile, style }) {
           style={{
             color:
               rankColor ||
-              (profile.rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+              (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
           }}
         >
           Rank
@@ -53,7 +53,7 @@ export default function RankBar({ profile, style }) {
           style={{
             color:
               rankColor ||
-              (profile.rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+              (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
           }}
         >
           #{profile.rank}
@@ -62,7 +62,7 @@ export default function RankBar({ profile, style }) {
           style={{
             color:
               rankColor ||
-              (profile.rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+              (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
           }}
         >
           with
@@ -73,7 +73,7 @@ export default function RankBar({ profile, style }) {
           style={{
             color:
               rankColor ||
-              (profile.rank <= 10 ? Color.logoGreen() : Color.buttonGray())
+              (profile.rank <= 10 ? Color.logoGreen() : Color.darkGray())
           }}
         >
           {addCommasToNumber(profile.twinkleXP)}
@@ -82,7 +82,7 @@ export default function RankBar({ profile, style }) {
           style={{
             color:
               rankColor ||
-              (profile.rank <= 10 ? Color.gold() : Color.buttonGray())
+              (profile.rank <= 10 ? Color.gold() : Color.darkGray())
           }}
         >
           XP
@@ -93,9 +93,7 @@ export default function RankBar({ profile, style }) {
               fontSize: '1.7rem',
               color:
                 rankColor ||
-                (profile.xpThisMonth >= 1000
-                  ? Color.pink()
-                  : Color.buttonGray())
+                (profile.xpThisMonth >= 1000 ? Color.pink() : Color.darkGray())
             }}
           >
             {' '}

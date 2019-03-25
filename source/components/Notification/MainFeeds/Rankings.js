@@ -124,7 +124,7 @@ function Rankings({
             margin-bottom: 0px;
             text-align: center;
             padding: 1rem;
-            border: 1px solid #eeeeee;
+            border: 1px solid ${Color.borderGray()};
             border-radius: ${borderRadius};
             p {
               font-weight: bold;
@@ -158,9 +158,7 @@ function Rankings({
                 style={{
                   color:
                     rankedColor ||
-                    (rank > 0 && rank <= 10
-                      ? Color.pink()
-                      : Color.buttonGray()),
+                    (rank > 0 && rank <= 10 ? Color.pink() : Color.gray()),
                   fontSize: '2rem'
                 }}
               >
@@ -207,7 +205,10 @@ function Rankings({
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  background: user.id === myId ? Color.channelGray() : '#fff'
+                  background:
+                    user.id === myId && rank > 3
+                      ? Color.highlightGray()
+                      : '#fff'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -220,7 +221,7 @@ function Rankings({
                       textAlign: 'center',
                       color:
                         rankColor ||
-                        (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+                        (rank <= 10 ? Color.logoBlue() : Color.darkGray())
                     }}
                   >
                     {rank ? `#${rank}` : '--'}
@@ -240,7 +241,7 @@ function Rankings({
                     <UsernameText
                       color={
                         rankColor ||
-                        (rank <= 10 ? Color.logoBlue() : Color.buttonGray())
+                        (rank <= 10 ? Color.logoBlue() : Color.darkGray())
                       }
                       user={{ ...user, username: user.username }}
                       userId={myId}

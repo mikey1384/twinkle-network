@@ -67,7 +67,7 @@ export default function TagInput({
           height: 4.3rem;
           position: relative;
           .addon {
-            border: 1px solid ${Color.inputBorderGray()};
+            border: 1px solid ${Color.darkerBorderGray()};
             align-self: stretch;
             padding: 0 1rem;
             display: flex;
@@ -75,7 +75,7 @@ export default function TagInput({
           }
           input {
             height: 100%;
-            border: 1px solid ${Color.inputBorderGray()};
+            border: 1px solid ${Color.darkerBorderGray()};
             border-left: none;
           }
         `} ${className}`}

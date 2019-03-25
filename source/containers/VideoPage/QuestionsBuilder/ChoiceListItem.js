@@ -77,7 +77,10 @@ function ChoiceListItem({
         <main>
           <section>
             <div style={{ width: '10%' }}>
-              <Icon icon="align-justify" style={{ color: Color.menuGray() }} />
+              <Icon
+                icon="align-justify"
+                style={{ color: Color.borderGray() }}
+              />
             </div>
             <div
               style={{

@@ -102,7 +102,7 @@ function MainFeeds({
         </Banner>
       )}
       {userId && activeTab === 'notification' && notifications.length > 0 && (
-        <RoundList style={{ marginTop: 0, marginBottom: '1rem' }}>
+        <RoundList style={{ marginTop: 0 }}>
           {notifications.map(notification => {
             return (
               <li

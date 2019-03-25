@@ -61,6 +61,7 @@ export default function Achievements({
         {notables.map(contentObj => (
           <ContentPanel
             key={contentObj.feedId}
+            style={{ marginBottom: '1rem' }}
             inputAtBottom={contentObj.type === 'comment'}
             commentsLoadLimit={5}
             contentObj={contentObj}

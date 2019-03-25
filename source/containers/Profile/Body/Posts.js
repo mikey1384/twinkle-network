@@ -193,10 +193,14 @@ function Posts({
           )}
           {loaded &&
             profileFeeds.length > 0 &&
-            profileFeeds.map(feed => {
+            profileFeeds.map((feed, index) => {
               return (
                 <ContentPanel
                   key={feed.feedId}
+                  style={{
+                    marginBottom: '1rem',
+                    zIndex: profileFeeds.length - index
+                  }}
                   commentsLoadLimit={5}
                   contentObj={feed}
                   inputAtBottom={feed.type === 'comment'}
