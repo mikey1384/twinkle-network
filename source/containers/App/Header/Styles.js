@@ -2,7 +2,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 
 export const container = css`
-  z-index: 300;
+  z-index: 30000;
   position: relative;
   font-family: sans-serif, Arial, Helvetica;
   font-size: 1.5rem;

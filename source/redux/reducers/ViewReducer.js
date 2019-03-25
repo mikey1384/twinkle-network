@@ -12,16 +12,6 @@ export default function ViewReducer(state = defaultState, action) {
         ...state,
         pageVisible: action.visible
       };
-    case VIEW.HIDE_MOBILE_NAVBAR:
-      return {
-        ...state,
-        mobileNavbarShown: false
-      };
-    case VIEW.SHOW_MOBILE_NAVBAR:
-      return {
-        ...state,
-        mobileNavbarShown: true
-      };
     default:
       return state;
   }

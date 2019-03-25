@@ -1,41 +1,29 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
-import { hideMobileNavbar, showMobileNavbar } from 'redux/actions/ViewActions';
 import Content from './Content';
-import { connect } from 'react-redux';
 
 Modal.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
-  hideMobileNavbar: PropTypes.func.isRequired,
   modalOverModal: PropTypes.bool,
-  showMobileNavbar: PropTypes.func.isRequired,
   onHide: PropTypes.func,
   small: PropTypes.bool,
   large: PropTypes.bool,
   style: PropTypes.object
 };
 
-function Modal({
+export default function Modal({
   className,
   children,
-  hideMobileNavbar,
   modalOverModal,
   onHide,
   small,
   large,
-  showMobileNavbar,
   style
 }) {
-  useEffect(() => {
-    hideMobileNavbar();
-    return function cleanUp() {
-      showMobileNavbar();
-    };
-  }, []);
   const modalWidth = {
     default: '50%',
     small: '26%',
@@ -51,7 +39,7 @@ function Modal({
     <div
       className={`${css`
         position: fixed;
-        z-index: 500;
+        z-index: 50000;
         top: 0;
         right: 0;
         left: 0;
@@ -149,8 +137,3 @@ function Modal({
     ? Modal
     : createPortal(Modal, document.getElementById('modal'));
 }
-
-export default connect(
-  null,
-  { hideMobileNavbar, showMobileNavbar }
-)(Modal);
