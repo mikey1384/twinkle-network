@@ -63,8 +63,8 @@ function Profile({ profile, userId }) {
             borderLeft: 'none',
             borderRight: 'none',
             borderRadius: 0,
-            marginLeft: profile.rank < 4 ? '-1px' : '',
-            marginRight: profile.rank < 4 ? '-1px' : ''
+            marginLeft: !!profile.rank && profile.rank < 4 ? '-1px' : '',
+            marginRight: !!profile.rank && profile.rank < 4 ? '-1px' : ''
           }}
         />
       )}

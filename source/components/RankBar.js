@@ -11,7 +11,13 @@ RankBar.propTypes = {
 
 export default function RankBar({ profile, style }) {
   const rankColor =
-    profile.rank === 1 ? Color.gold() : profile.rank <= 3 ? '#fff' : undefined;
+    profile.rank === 1
+      ? Color.gold()
+      : profile.rank === 2
+      ? '#fff'
+      : profile.rank === 3
+      ? Color.orange()
+      : undefined;
 
   return (
     <div
@@ -26,8 +32,8 @@ export default function RankBar({ profile, style }) {
           border-bottom-right-radius: ${borderRadius};
           ${profile.rank > 3 ? `border: 1px solid ${Color.borderGray()};` : ''}
           background: ${
-            profile.rank < 3
-              ? Color.black(1 - (profile.rank - 1) / 10)
+            profile.rank < 4
+              ? Color.black()
               : profile.rank === 3
               ? Color.orange()
               : Color.whiteGray()

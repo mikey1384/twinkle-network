@@ -12,7 +12,13 @@ MyRank.propTypes = {
 
 export default function MyRank({ myId, rank, twinkleXP }) {
   const rankedColor =
-    rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
+    rank === 1
+      ? Color.gold()
+      : rank === 2
+      ? '#fff'
+      : rank === 3
+      ? Color.orange()
+      : undefined;
   return (
     <div
       style={{
@@ -20,10 +26,8 @@ export default function MyRank({ myId, rank, twinkleXP }) {
         marginBottom: myId ? '1rem' : 0,
         background: myId
           ? rank > 0
-            ? rank < 3
+            ? rank < 4
               ? Color.black()
-              : rank === 3
-              ? Color.orange()
               : '#fff'
             : '#fff'
           : null
@@ -33,7 +37,9 @@ export default function MyRank({ myId, rank, twinkleXP }) {
         margin-bottom: 0px;
         text-align: center;
         padding: 1rem;
-        border: 1px solid ${Color.borderGray()};
+        border: ${rank > 0 && rank < 4
+          ? ''
+          : `1px solid ${Color.borderGray()}`};
         border-radius: ${borderRadius};
         p {
           font-weight: bold;

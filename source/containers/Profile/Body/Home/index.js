@@ -308,8 +308,10 @@ function Home({
             profile={profile}
             style={{
               display: 'block',
-              marginLeft: '-1rem',
-              marginRight: '-1rem',
+              marginLeft:
+                !!profile.rank && profile.rank < 4 ? '-11px' : '-10px',
+              marginRight:
+                !!profile.rank && profile.rank < 4 ? '-11px' : '-10px',
               borderRadius: 0,
               borderRight: 0,
               borderLeft: 0
