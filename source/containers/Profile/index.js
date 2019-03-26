@@ -49,7 +49,7 @@ function Profile({
       await checkValidUsername(match.params.username);
       setLoading(false);
     }
-  }, []);
+  }, [match.params.username]);
 
   useEffect(() => {
     if (match.params.username === 'undefined' && userId && unavailable) {
