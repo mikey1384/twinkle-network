@@ -321,7 +321,7 @@ function TargetContent({
           ? 1
           : 0
         : rootObj.difficulty;
-    return rootDifficulty;
+    return subject?.difficulty || rootDifficulty;
   }
 
   function onLikeClick(likes) {
