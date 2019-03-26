@@ -335,13 +335,13 @@ function Stories({
     setLoadingFeeds(true);
     changeCategory(newCategory);
     changeSubFilter(categoryObj[newCategory].filter);
-    const { filter, data } = await loadFeeds({
+    const { filter: loadedFilter, data } = await loadFeeds({
       order: 'desc',
       filter: categoryObj[newCategory].filter,
       orderBy: categoryObj[newCategory].orderBy
     });
     if (
-      filter === categoryObj[categoryRef.current].filter &&
+      loadedFilter === categoryObj[categoryRef.current].filter &&
       categoryRef.current === newCategory
     ) {
       fetchFeeds(data);
