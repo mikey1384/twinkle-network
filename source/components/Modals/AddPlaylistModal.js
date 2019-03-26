@@ -31,6 +31,7 @@ AddPlaylistModal.propTypes = {
   dispatch: PropTypes.func,
   existingVideoIds: PropTypes.array,
   focusPlaylistPanelAfterUpload: PropTypes.func,
+  modalOverModal: PropTypes.bool,
   onHide: PropTypes.func,
   postPlaylist: PropTypes.func,
   title: PropTypes.string
@@ -42,6 +43,7 @@ function AddPlaylistModal({
   focusPlaylistPanelAfterUpload,
   onHide,
   postPlaylist,
+  modalOverModal,
   title: initialTitle = ''
 }) {
   const [loaded, setLoaded] = useState(false);
@@ -96,7 +98,7 @@ function AddPlaylistModal({
   });
 
   return (
-    <Modal onHide={onHide} large={section > 0}>
+    <Modal modalOverModal={modalOverModal} onHide={onHide} large={section > 0}>
       <header>{renderTitle()}</header>
       <main style={{ paddingBottom: '1rem' }}>
         {section === 0 && (
