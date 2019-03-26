@@ -385,6 +385,7 @@ function Stories({
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
     const initialFilter =
       category === 'uploads' ? subFilter : categoryObj[category].filter;
+    setLoadingFeeds(true);
     const { data, filter } = await loadFeeds({
       order: newDisplayOrder,
       orderBy: categoryObj[category].orderBy,
@@ -395,6 +396,7 @@ function Stories({
       setDisplayOrder(newDisplayOrder);
       setScrollHeight(0);
     }
+    setLoadingFeeds(false);
   }
 
   function handleUploadFeedComment({ feed, data }) {
