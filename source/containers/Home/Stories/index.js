@@ -395,8 +395,8 @@ function Stories({
       fetchFeeds(data);
       setDisplayOrder(newDisplayOrder);
       setScrollHeight(0);
+      setLoadingFeeds(false);
     }
-    setLoadingFeeds(false);
   }
 
   function handleUploadFeedComment({ feed, data }) {

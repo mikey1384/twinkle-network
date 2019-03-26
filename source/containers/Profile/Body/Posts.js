@@ -302,8 +302,8 @@ function Posts({
     if (loadedFilter === selectedFilter.current) {
       fetchFeeds(data);
       setScrollHeight(0);
+      setLoadingFeeds(false);
     }
-    setLoadingFeeds(false);
   }
 
   function onClickPostsMenu({ item }) {
