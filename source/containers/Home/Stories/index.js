@@ -144,6 +144,7 @@ function Stories({
   username
 }) {
   const [displayOrder, setDisplayOrder] = useState('desc');
+  const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const categoryRef = useRef(null);
@@ -163,6 +164,7 @@ function Stories({
       init();
     }
     async function init() {
+      setLoadingFeeds(true);
       categoryRef.current = 'uploads';
       changeCategory('uploads');
       changeSubFilter('all');
@@ -170,6 +172,7 @@ function Stories({
       try {
         const { data } = await loadFeeds();
         fetchFeeds(data);
+        setLoadingFeeds(false);
       } catch (error) {
         console.error(error);
       }
@@ -208,7 +211,7 @@ function Stories({
         />
         <InputPanel />
         <div style={{ width: '100%' }}>
-          {!loaded && <Loading text="Loading Feeds..." />}
+          {loadingFeeds && <Loading text="Loading Feeds..." />}
           {loaded && storyFeeds.length === 0 && (
             <div
               style={{
@@ -226,7 +229,7 @@ function Stories({
               </h1>
             </div>
           )}
-          {loaded && storyFeeds.length > 0 && (
+          {loaded && !loadingFeeds && storyFeeds.length > 0 && (
             <>
               {numNewPosts > 0 && (
                 <Banner
@@ -295,6 +298,7 @@ function Stories({
 
   async function applyFilter(filter) {
     if (filter === subFilter) return;
+    setLoadingFeeds(true);
     categoryRef.current = 'uploads';
     changeCategory('uploads');
     changeSubFilter(filter);
@@ -304,6 +308,7 @@ function Stories({
       setDisplayOrder('desc');
       setScrollHeight(0);
     }
+    setLoadingFeeds(false);
   }
 
   async function loadMoreFeeds() {
@@ -326,6 +331,7 @@ function Stories({
   }
 
   async function handleChangeCategory(newCategory) {
+    setLoadingFeeds(true);
     categoryRef.current = newCategory;
     changeCategory(newCategory);
     changeSubFilter(categoryObj[newCategory].filter);
@@ -342,6 +348,7 @@ function Stories({
       setDisplayOrder('desc');
       setScrollHeight(0);
     }
+    setLoadingFeeds(false);
   }
 
   async function handleFetchNewFeeds() {
