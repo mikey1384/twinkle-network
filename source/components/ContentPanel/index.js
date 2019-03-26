@@ -83,7 +83,9 @@ function ContentPanel({
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    onMount();
+    if (!contentObj.loaded) {
+      onMount();
+    }
     async function onMount() {
       if (!loaded && !newPost) {
         setLoaded(true);
@@ -98,7 +100,7 @@ function ContentPanel({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, []);
+  }, [contentObj]);
   const isThreaded = !!contentObj.targetObj;
   return (
     <Context.Provider

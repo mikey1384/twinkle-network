@@ -6,6 +6,8 @@ import {
   addTagToContents,
   attachStar,
   changeByUserStatus,
+  changeCategory,
+  changeSubFilter,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -27,7 +29,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
-import { clearProfiles, toggleHideWatched } from 'redux/actions/UserActions';
+import { toggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
@@ -44,10 +46,12 @@ Stories.propTypes = {
   addTags: PropTypes.func.isRequired,
   addTagToContents: PropTypes.func.isRequired,
   attachStar: PropTypes.func.isRequired,
+  category: PropTypes.string.isRequired,
+  changeCategory: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
+  changeSubFilter: PropTypes.func.isRequired,
   chatMode: PropTypes.bool,
   clearFeeds: PropTypes.func.isRequired,
-  clearProfiles: PropTypes.func.isRequired,
   contentFeedLike: PropTypes.func.isRequired,
   feedCommentDelete: PropTypes.func.isRequired,
   feedContentDelete: PropTypes.func.isRequired,
@@ -73,6 +77,7 @@ Stories.propTypes = {
   setDifficulty: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
   storyFeeds: PropTypes.array.isRequired,
+  subFilter: PropTypes.string.isRequired,
   toggleHideWatched: PropTypes.func.isRequired,
   username: PropTypes.string,
   uploadFeedComment: PropTypes.func.isRequired,
@@ -103,10 +108,12 @@ function Stories({
   addTags,
   addTagToContents,
   attachStar,
+  category,
   chatMode,
   changeByUserStatus,
+  changeCategory,
+  changeSubFilter,
   clearFeeds,
-  clearProfiles,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -132,6 +139,7 @@ function Stories({
   setDifficulty,
   showFeedComments,
   storyFeeds = [],
+  subFilter,
   toggleHideWatched,
   uploadFeedComment,
   uploadTargetContentComment,
@@ -142,8 +150,6 @@ function Stories({
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const ContainerRef = useRef(null);
-  const categoryRef = useRef('uploads');
-  const selectedFilterRef = useRef('all');
 
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: !chatMode && !searchMode && storyFeeds.length > 0,
@@ -154,13 +160,14 @@ function Stories({
   });
 
   useEffect(() => {
-    clearProfiles();
     setCurrentSection('storyFeeds');
-    resetNumNewPosts();
     if (history.action === 'PUSH' || !loaded) {
       init();
     }
     async function init() {
+      changeCategory('uploads');
+      changeSubFilter('all');
+      resetNumNewPosts();
       clearFeeds();
       try {
         const { data } = await loadFeeds();
@@ -172,7 +179,7 @@ function Stories({
   }, []);
 
   useEffect(() => {
-    if (categoryRef.current === 'videos') {
+    if (category === 'videos') {
       clearFeeds();
       filterVideos();
     }
@@ -182,7 +189,7 @@ function Stories({
         filter: categoryObj.videos.filter,
         orderBy: categoryObj.videos.orderBy
       });
-      if (categoryRef.current === 'videos') {
+      if (category === 'videos') {
         fetchFeeds(data);
       }
     }
@@ -192,11 +199,11 @@ function Stories({
     <ErrorBoundary>
       <div ref={ContainerRef}>
         <HomeFilter
-          category={categoryRef.current}
-          changeCategory={changeCategory}
+          category={category}
+          changeCategory={handleChangeCategory}
           displayOrder={displayOrder}
           hideWatched={hideWatched}
-          selectedFilter={selectedFilterRef.current}
+          selectedFilter={subFilter}
           applyFilter={applyFilter}
           setDisplayOrder={handleDisplayOrder}
           toggleHideWatched={toggleHideWatched}
@@ -290,15 +297,12 @@ function Stories({
   );
 
   async function applyFilter(filter) {
-    if (filter === selectedFilterRef.current) return;
-    categoryRef.current = 'uploads';
-    selectedFilterRef.current = filter;
+    if (filter === subFilter) return;
+    changeCategory('uploads');
+    changeSubFilter(filter);
     clearFeeds();
     const { data, filter: newFilter } = await loadFeeds({ filter });
-    if (
-      selectedFilterRef.current === newFilter &&
-      categoryRef.current === 'uploads'
-    ) {
+    if (filter === newFilter && category === 'uploads') {
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -309,16 +313,14 @@ function Stories({
     try {
       await fetchMoreFeeds({
         order: displayOrder,
-        orderBy: categoryObj[categoryRef.current].orderBy,
+        orderBy: categoryObj[category].orderBy,
         shownFeeds: queryStringForArray({
           array: storyFeeds,
           originVar: 'feedId',
           destinationVar: 'shownFeeds'
         }),
         filter:
-          categoryRef.current === 'uploads'
-            ? selectedFilterRef.current
-            : categoryObj[categoryRef.current].filter
+          category === 'uploads' ? subFilter : categoryObj[category].filter
       });
       setLoadingMore(false);
     } catch (error) {
@@ -326,19 +328,16 @@ function Stories({
     }
   }
 
-  async function changeCategory(category) {
+  async function handleChangeCategory(newCategory) {
     clearFeeds();
-    selectedFilterRef.current = categoryObj[category].filter;
-    categoryRef.current = category;
+    changeCategory(newCategory);
+    changeSubFilter(categoryObj[newCategory].filter);
     const { filter, data } = await loadFeeds({
       order: 'desc',
-      filter: categoryObj[category].filter,
-      orderBy: categoryObj[category].orderBy
+      filter: categoryObj[newCategory].filter,
+      orderBy: categoryObj[newCategory].orderBy
     });
-    if (
-      filter === selectedFilterRef.current &&
-      categoryRef.current === category
-    ) {
+    if (filter === categoryObj[newCategory].filter) {
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -346,10 +345,10 @@ function Stories({
   }
 
   async function handleFetchNewFeeds() {
-    if (categoryRef.current !== 'uploads' || displayOrder === 'asc') {
+    if (category !== 'uploads' || displayOrder === 'asc') {
       clearFeeds();
       resetNumNewPosts();
-      categoryRef.current = 'uploads';
+      changeCategory('uploads');
       const { data, filter } = await loadFeeds();
       if (filter === categoryObj.uploads.filter) {
         fetchFeeds(data);
@@ -376,12 +375,10 @@ function Stories({
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
     clearFeeds();
     const initialFilter =
-      categoryRef.current === 'uploads'
-        ? selectedFilterRef.current
-        : categoryObj[categoryRef.current].filter;
+      category === 'uploads' ? subFilter : categoryObj[category].filter;
     const { data, filter } = await loadFeeds({
       order: newDisplayOrder,
-      orderBy: categoryObj[categoryRef.current].orderBy,
+      orderBy: categoryObj[category].orderBy,
       filter: initialFilter
     });
     if (filter === initialFilter) {
@@ -402,6 +399,7 @@ function Stories({
 
 export default connect(
   state => ({
+    category: state.FeedReducer.category,
     hideWatched: state.UserReducer.hideWatched,
     loadMoreButton: state.FeedReducer.storyFeedsLoadMoreButton,
     storyFeeds: state.FeedReducer.storyFeeds,
@@ -411,14 +409,16 @@ export default connect(
     username: state.UserReducer.username,
     chatMode: state.ChatReducer.chatMode,
     noFeeds: state.FeedReducer.noFeeds,
-    searchMode: state.SearchReducer.searchMode
+    searchMode: state.SearchReducer.searchMode,
+    subFilter: state.FeedReducer.subFilter
   }),
   {
     addTags,
     addTagToContents,
     attachStar,
     changeByUserStatus,
-    clearProfiles,
+    changeCategory,
+    changeSubFilter,
     contentFeedLike,
     fetchMoreFeeds,
     fetchFeed,

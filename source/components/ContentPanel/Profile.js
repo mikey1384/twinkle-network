@@ -62,7 +62,9 @@ function Profile({ profile, userId }) {
           style={{
             borderLeft: 'none',
             borderRight: 'none',
-            borderRadius: 0
+            borderRadius: 0,
+            marginLeft: profile.rank < 4 ? '-1px' : '',
+            marginRight: profile.rank < 4 ? '-1px' : ''
           }}
         />
       )}

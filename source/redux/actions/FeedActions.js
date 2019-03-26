@@ -33,6 +33,16 @@ export const changeByUserStatus = ({ contentId, byUser }) => ({
   byUser
 });
 
+export const changeCategory = category => ({
+  type: FEED.CHANGE_CATEGORY,
+  category
+});
+
+export const changeSubFilter = filter => ({
+  type: FEED.CHANGE_SUB_FILTER,
+  filter
+});
+
 export const clearFeeds = () => ({
   type: FEED.CLEAR
 });

@@ -2,12 +2,14 @@ import FEED from '../constants/Feed';
 
 const defaultState = {
   currentSection: 'storyFeeds',
+  category: 'uploads',
   scrollLocked: false,
   storyFeeds: [],
   profileFeeds: [],
   loaded: false,
   profileFeedsLoadMoreButton: false,
-  storyFeedsLoadMoreButton: false
+  storyFeedsLoadMoreButton: false,
+  subFilter: 'all'
 };
 
 export default function FeedReducer(state = defaultState, action) {
@@ -156,104 +158,6 @@ export default function FeedReducer(state = defaultState, action) {
               : feed.childComments
         }))
       };
-    case FEED.LOAD:
-      return {
-        ...state,
-        [currentSection]: action.feeds,
-        [`${currentSection}LoadMoreButton`]: action.loadMoreButton,
-        loaded: true
-      };
-    case FEED.LOAD_MORE:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].concat(action.feeds),
-        [`${currentSection}LoadMoreButton`]: action.loadMoreButton
-      };
-    case FEED.LOAD_DETAIL:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed =>
-          feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
-        )
-      };
-    case FEED.LOAD_MORE_REPLIES:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed => {
-          return feed.feedId === action.feedId
-            ? {
-                ...feed,
-                childComments: feed.childComments.map(comment => {
-                  return comment.id === action.data.commentId
-                    ? {
-                        ...comment,
-                        replies: action.data.replies.concat(comment.replies),
-                        loadMoreButton: action.data.loadMoreButton
-                      }
-                    : comment;
-                })
-              }
-            : feed;
-        })
-      };
-    case FEED.LOAD_NEW:
-      return {
-        ...state,
-        storyFeeds: action.data.concat(state.storyFeeds)
-      };
-    case FEED.LOAD_REPLIES_OF_REPLY:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed => ({
-          ...feed,
-          childComments: feed.childComments?.map(comment => {
-            if (comment.id === commentId) {
-              return {
-                ...comment,
-                replies: [
-                  ...comment.replies.filter(
-                    reply => reply.id <= action.replyId
-                  ),
-                  ...action.replies,
-                  ...comment.replies.filter(reply => reply.id > action.replyId)
-                ]
-              };
-            }
-            let containsRootReply = false;
-            for (let reply of comment.replies) {
-              if (reply.id === action.replyId) {
-                containsRootReply = true;
-                break;
-              }
-            }
-            if (containsRootReply) {
-              return {
-                ...comment,
-                replies: [
-                  ...comment.replies.filter(
-                    reply => reply.id <= action.replyId
-                  ),
-                  ...action.replies,
-                  ...comment.replies.filter(reply => reply.id > action.replyId)
-                ]
-              };
-            }
-            return comment;
-          })
-        }))
-      };
-    case FEED.LOAD_TAGS:
-      return {
-        ...state,
-        [currentSection]: state[currentSection].map(feed => ({
-          ...feed,
-          tags:
-            feed.type === action.contentType &&
-            feed.contentId === action.contentId
-              ? action.tags
-              : feed.tags
-        }))
-      };
     case FEED.CHANGE_BY_USER_STATUS:
       return {
         ...state,
@@ -265,6 +169,16 @@ export default function FeedReducer(state = defaultState, action) {
             byUser: contentMatches ? action.byUser : feed.byUser
           };
         })
+      };
+    case FEED.CHANGE_CATEGORY:
+      return {
+        ...state,
+        category: action.category
+      };
+    case FEED.CHANGE_SUB_FILTER:
+      return {
+        ...state,
+        subFilter: action.filter
       };
     case FEED.DELETE_COMMENT:
       return {
@@ -558,6 +472,104 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         currentSection: action.section
+      };
+    case FEED.LOAD:
+      return {
+        ...state,
+        [currentSection]: action.feeds,
+        [`${currentSection}LoadMoreButton`]: action.loadMoreButton,
+        loaded: true
+      };
+    case FEED.LOAD_MORE:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].concat(action.feeds),
+        [`${currentSection}LoadMoreButton`]: action.loadMoreButton
+      };
+    case FEED.LOAD_DETAIL:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed =>
+          feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
+        )
+      };
+    case FEED.LOAD_MORE_REPLIES:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => {
+          return feed.feedId === action.feedId
+            ? {
+                ...feed,
+                childComments: feed.childComments.map(comment => {
+                  return comment.id === action.data.commentId
+                    ? {
+                        ...comment,
+                        replies: action.data.replies.concat(comment.replies),
+                        loadMoreButton: action.data.loadMoreButton
+                      }
+                    : comment;
+                })
+              }
+            : feed;
+        })
+      };
+    case FEED.LOAD_NEW:
+      return {
+        ...state,
+        storyFeeds: action.data.concat(state.storyFeeds)
+      };
+    case FEED.LOAD_REPLIES_OF_REPLY:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => ({
+          ...feed,
+          childComments: feed.childComments?.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
+                ]
+              };
+            }
+            let containsRootReply = false;
+            for (let reply of comment.replies) {
+              if (reply.id === action.replyId) {
+                containsRootReply = true;
+                break;
+              }
+            }
+            if (containsRootReply) {
+              return {
+                ...comment,
+                replies: [
+                  ...comment.replies.filter(
+                    reply => reply.id <= action.replyId
+                  ),
+                  ...action.replies,
+                  ...comment.replies.filter(reply => reply.id > action.replyId)
+                ]
+              };
+            }
+            return comment;
+          })
+        }))
+      };
+    case FEED.LOAD_TAGS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => ({
+          ...feed,
+          tags:
+            feed.type === action.contentType &&
+            feed.contentId === action.contentId
+              ? action.tags
+              : feed.tags
+        }))
       };
     case FEED.LOAD_COMMENTS:
       if (action.data.comments.length === 0) return state;

@@ -7,8 +7,7 @@ import { css } from 'emotion';
 import { connect } from 'react-redux';
 import {
   changeProfileTheme,
-  checkValidUsername,
-  unmountProfile
+  checkValidUsername
 } from 'redux/actions/UserActions';
 import { setTheme } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
@@ -22,7 +21,6 @@ Profile.propTypes = {
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
-  unmountProfile: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
 };
@@ -36,20 +34,21 @@ function Profile({
   match,
   profile,
   profile: { unavailable },
-  unmountProfile,
   userId,
   username
 }) {
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    init();
-    async function init() {
-      await checkValidUsername(match.params.username);
+    if (history.action === 'PUSH' || !profile.id) {
+      init();
     }
-    return function cleanUp() {
-      unmountProfile();
-    };
+    async function init() {
+      setLoading(true);
+      await checkValidUsername(match.params.username);
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -63,8 +62,8 @@ function Profile({
     <ErrorBoundary style={{ minHeight: '10rem' }}>
       {!unavailable ? (
         <>
-          {!profile.id && <Loading text="Loading Profile..." />}
-          {profile.id && (
+          {loading && <Loading text="Loading Profile..." />}
+          {!loading && profile.id && (
             <div
               className={css`
                 a {
@@ -119,7 +118,6 @@ export default connect(
   dispatch => ({
     dispatch,
     changeProfileTheme: theme => dispatch(changeProfileTheme(theme)),
-    checkValidUsername: username => dispatch(checkValidUsername(username)),
-    unmountProfile: () => dispatch(unmountProfile())
+    checkValidUsername: username => dispatch(checkValidUsername(username))
   })
 )(Profile);

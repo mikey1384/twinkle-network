@@ -42,7 +42,6 @@ Posts.propTypes = {
   addTagToContents: PropTypes.func.isRequired,
   attachStar: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
-  clearFeeds: PropTypes.func.isRequired,
   chatMode: PropTypes.bool.isRequired,
   contentFeedLike: PropTypes.func.isRequired,
   fetchFeed: PropTypes.func.isRequired,
@@ -87,7 +86,6 @@ function Posts({
   attachStar,
   changeByUserStatus,
   chatMode,
-  clearFeeds,
   contentFeedLike,
   feedCommentDelete,
   feedContentDelete,
@@ -120,6 +118,7 @@ function Posts({
   setDifficulty
 }) {
   const [loading, setLoading] = useState(false);
+  const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
   const selectedFilter = useRef('all');
 
@@ -140,8 +139,9 @@ function Posts({
   }, []);
 
   useEffect(() => {
-    clearFeeds();
-    loadTab(match.params.section);
+    if (history.action === 'PUSH' || profileFeeds.length === 0) {
+      loadTab(match.params.section);
+    }
   }, [location]);
 
   return (
@@ -182,21 +182,21 @@ function Posts({
         <div
           className={css`
             width: CALC(100% - 25rem);
-            margin-bottom: 1rem;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
             }
           `}
         >
-          {!loaded && (
-            <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
-          )}
+          {!loaded ||
+            (loadingFeeds && (
+              <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
+            ))}
           {loaded &&
             profileFeeds.length > 0 &&
             profileFeeds.map((feed, index) => {
               return (
                 <ContentPanel
-                  key={feed.feedId}
+                  key={filterTable[match.params.section] + feed.feedId}
                   style={{
                     marginBottom: '1rem',
                     zIndex: profileFeeds.length - index
@@ -293,6 +293,7 @@ function Posts({
 
   async function loadTab(tabName) {
     selectedFilter.current = filterTable[tabName];
+    setLoadingFeeds(true);
     const { data, filter } = await loadFeeds({
       username,
       filter: filterTable[tabName]
@@ -301,6 +302,7 @@ function Posts({
       fetchFeeds(data);
       setScrollHeight(0);
     }
+    setLoadingFeeds(false);
   }
 
   function onClickPostsMenu({ item }) {
