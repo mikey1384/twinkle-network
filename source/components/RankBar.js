@@ -5,11 +5,12 @@ import { borderRadius, mobileMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
 
 RankBar.propTypes = {
+  className: PropTypes.string,
   profile: PropTypes.object.isRequired,
   style: PropTypes.object
 };
 
-export default function RankBar({ profile, style }) {
+export default function RankBar({ className, profile, style }) {
   const rankColor =
     profile.rank === 1
       ? Color.gold()
@@ -22,7 +23,7 @@ export default function RankBar({ profile, style }) {
   return (
     <div
       style={style}
-      className={css`
+      className={`${className} ${css`
           padding: 1.5rem 0;
           font-size: 2rem;
           color: ${rankColor};
@@ -33,11 +34,13 @@ export default function RankBar({ profile, style }) {
           ${profile.rank > 3 ? `border: 1px solid ${Color.borderGray()};` : ''}
           background: ${profile.rank < 4 ? Color.black() : '#fff'};
           @media (max-width: ${mobileMaxWidth}) {
+            margin-left: 0;
+            margin-right: 0;
             border-radius: 0;
             border-left: none;
             border-right: none;
           }
-        `}
+        `}`}
     >
       <span>
         <span

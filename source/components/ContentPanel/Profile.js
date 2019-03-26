@@ -5,6 +5,7 @@ import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import Link from 'components/Link';
 import { connect } from 'react-redux';
+import { css } from 'emotion';
 
 Profile.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -59,12 +60,14 @@ function Profile({ profile, userId }) {
       {!!profile.twinkleXP && (
         <RankBar
           profile={profile}
+          className={css`
+            margin-left: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
+            margin-right: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
+          `}
           style={{
             borderLeft: 'none',
             borderRight: 'none',
-            borderRadius: 0,
-            marginLeft: !!profile.rank && profile.rank < 4 ? '-1px' : '',
-            marginRight: !!profile.rank && profile.rank < 4 ? '-1px' : ''
+            borderRadius: 0
           }}
         />
       )}
