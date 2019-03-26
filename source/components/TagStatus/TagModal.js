@@ -71,6 +71,7 @@ function TagModal({
         </TagForm>
         {addPlaylistModalShown && (
           <AddPlaylistModal
+            modalOverModal
             existingVideoIds={[videoId]}
             postPlaylist={addPlaylist}
             onHide={() => setAddPlaylistModalShown(false)}
