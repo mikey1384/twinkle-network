@@ -306,12 +306,16 @@ function Home({
         {profile.twinkleXP > 0 && (
           <RankBar
             profile={profile}
+            className={css`
+              margin-left: ${!!profile.rank && profile.rank < 4
+                ? '-11px'
+                : '-10px'};
+              margin-right: ${!!profile.rank && profile.rank < 4
+                ? '-11px'
+                : '-10px'};
+            `}
             style={{
               display: 'block',
-              marginLeft:
-                !!profile.rank && profile.rank < 4 ? '-11px' : '-10px',
-              marginRight:
-                !!profile.rank && profile.rank < 4 ? '-11px' : '-10px',
               borderRadius: 0,
               borderRight: 0,
               borderLeft: 0
