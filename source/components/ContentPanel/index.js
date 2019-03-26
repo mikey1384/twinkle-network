@@ -272,6 +272,8 @@ function ContentPanel({
                   background: #fff;
                 }
                 @media (max-width: ${mobileMaxWidth}) {
+                  border-left: 0;
+                  border-right: 0;
                   margin-top: -0.5rem;
                 }
               `}
