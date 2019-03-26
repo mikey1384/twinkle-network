@@ -331,8 +331,8 @@ function Stories({
   }
 
   async function handleChangeCategory(newCategory) {
-    setLoadingFeeds(true);
     categoryRef.current = newCategory;
+    setLoadingFeeds(true);
     changeCategory(newCategory);
     changeSubFilter(categoryObj[newCategory].filter);
     const { filter, data } = await loadFeeds({
@@ -341,7 +341,7 @@ function Stories({
       orderBy: categoryObj[newCategory].orderBy
     });
     if (
-      filter === categoryObj[newCategory].filter &&
+      filter === categoryObj[categoryRef.current].filter &&
       categoryRef.current === newCategory
     ) {
       fetchFeeds(data);
