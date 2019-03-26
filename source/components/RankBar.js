@@ -31,13 +31,7 @@ export default function RankBar({ profile, style }) {
           border-bottom-left-radius: ${borderRadius};
           border-bottom-right-radius: ${borderRadius};
           ${profile.rank > 3 ? `border: 1px solid ${Color.borderGray()};` : ''}
-          background: ${
-            profile.rank < 4
-              ? Color.black()
-              : profile.rank === 3
-              ? Color.orange()
-              : Color.whiteGray()
-          };
+          background: ${profile.rank < 4 ? Color.black() : '#fff'};
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
             border-left: none;

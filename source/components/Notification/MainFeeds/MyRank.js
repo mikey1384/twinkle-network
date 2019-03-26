@@ -73,7 +73,7 @@ export default function MyRank({ myId, rank, twinkleXP }) {
             style={{
               color:
                 rankedColor ||
-                (rank > 0 && rank <= 10 ? Color.pink() : Color.gray()),
+                (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray()),
               fontSize: '2rem'
             }}
           >
