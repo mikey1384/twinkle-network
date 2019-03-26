@@ -247,6 +247,7 @@ function Posts({
           )}
           {loadMoreButton && (
             <LoadMoreButton
+              style={{ marginBottom: '1rem' }}
               onClick={loadMoreFeeds}
               loading={loading}
               color="lightBlue"
