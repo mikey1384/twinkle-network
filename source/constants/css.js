@@ -21,6 +21,7 @@ export const Color = {
   brown: (opacity = 1) => `rgba(139,69,19,${opacity})`,
   brownOrange: (opacity = 1) => `rgba(240,163,78,${opacity})`,
   orange: (opacity = 1) => `rgba(255,150,30,${opacity})`,
+  bronze: (opacity = 1) => `rgba(255,190,130,${opacity})`,
   gold: (opacity = 1) => `rgba(255,210,0,${opacity})`,
   ivory: (opacity = 1) => `rgba(273,243,160,${opacity})`,
   yellow: (opacity = 1) => `rgba(253,253,150,${opacity})`,

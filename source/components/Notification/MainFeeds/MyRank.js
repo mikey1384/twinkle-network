@@ -17,7 +17,7 @@ export default function MyRank({ myId, rank, twinkleXP }) {
       : rank === 2
       ? '#fff'
       : rank === 3
-      ? Color.orange()
+      ? Color.bronze()
       : undefined;
   return (
     <div

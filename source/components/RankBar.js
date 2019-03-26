@@ -17,7 +17,7 @@ export default function RankBar({ className, profile, style }) {
       : profile.rank === 2
       ? '#fff'
       : profile.rank === 3
-      ? Color.orange()
+      ? Color.bronze()
       : undefined;
 
   return (
