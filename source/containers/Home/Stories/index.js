@@ -212,7 +212,7 @@ function Stories({
         <InputPanel />
         <div style={{ width: '100%' }}>
           {loadingFeeds && <Loading text="Loading Feeds..." />}
-          {loaded && storyFeeds.length === 0 && (
+          {loaded && storyFeeds.length === 0 && !loadingFeeds && (
             <div
               style={{
                 width: '100%',
