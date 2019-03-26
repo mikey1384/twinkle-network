@@ -92,13 +92,6 @@ export default function FeedReducer(state = defaultState, action) {
           };
         })
       };
-    case FEED.CLEAR:
-      return {
-        ...state,
-        [currentSection]: [],
-        [`${currentSection}LoadMoreButton`]: false,
-        loaded: false
-      };
     case FEED.LIKE_CONTENT:
       return {
         ...state,

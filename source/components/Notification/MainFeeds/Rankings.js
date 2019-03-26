@@ -7,11 +7,11 @@ import ProfilePic from 'components/ProfilePic';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import RoundList from 'components/RoundList';
+import MyRank from './MyRank';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { css } from 'emotion';
 import { getRanks } from 'redux/actions/NotiActions';
 import URL from 'constants/URL';
 
@@ -41,8 +41,6 @@ function Rankings({
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
-  const rankedColor =
-    rank === 1 ? Color.gold() : rank !== 0 && rank <= 3 ? '#fff' : undefined;
 
   useEffect(() => {
     mounted.current = true;
@@ -105,68 +103,7 @@ function Rankings({
       )}
       {!loaded && <Loading />}
       {loaded && allSelected && !!myId && (
-        <div
-          style={{
-            marginTop: '1rem',
-            marginBottom: myId ? '1rem' : 0,
-            background: myId
-              ? rank > 0
-                ? rank < 3
-                  ? Color.black()
-                  : rank === 3
-                  ? Color.orange()
-                  : '#fff'
-                : '#fff'
-              : null
-          }}
-          className={css`
-            width: 100%;
-            margin-bottom: 0px;
-            text-align: center;
-            padding: 1rem;
-            border: 1px solid ${Color.borderGray()};
-            border-radius: ${borderRadius};
-            p {
-              font-weight: bold;
-            }
-            a {
-              font-size: 1.5rem;
-              font-weight: bold;
-            }
-          `}
-        >
-          {
-            <p>
-              <span
-                style={{
-                  color: rankedColor || Color.logoGreen(),
-                  fontSize: '3rem'
-                }}
-              >
-                {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
-              </span>{' '}
-              <span
-                style={{
-                  color: rankedColor || Color.gold(),
-                  fontSize: '3rem'
-                }}
-              >
-                XP
-              </span>
-              &nbsp;&nbsp;
-              <span
-                style={{
-                  color:
-                    rankedColor ||
-                    (rank > 0 && rank <= 10 ? Color.pink() : Color.gray()),
-                  fontSize: '2rem'
-                }}
-              >
-                {rank ? `Rank #${rank}` : 'Unranked'}
-              </span>
-            </p>
-          }
-        </div>
+        <MyRank myId={myId} rank={rank} twinkleXP={twinkleXP} />
       )}
       {loaded && allSelected && users.length === 0 && !!myId && (
         <div

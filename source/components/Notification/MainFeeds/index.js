@@ -7,6 +7,7 @@ import Banner from 'components/Banner';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Rankings from './Rankings';
 import NotiItem from './NotiItem';
+import MyRank from './MyRank';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   clearRewards,
@@ -32,6 +33,7 @@ MainFeeds.propTypes = {
   numNewNotis: PropTypes.number,
   activeTab: PropTypes.string,
   notifications: PropTypes.array.isRequired,
+  rank: PropTypes.number,
   rewards: PropTypes.array,
   selectNotiTab: PropTypes.func.isRequired,
   style: PropTypes.object,
@@ -50,6 +52,7 @@ function MainFeeds({
   loadMoreRewards,
   notifications,
   numNewNotis,
+  rank,
   rewards,
   selectNotiTab,
   style,
@@ -92,7 +95,7 @@ function MainFeeds({
             <>
               <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
               <p>
-                Your XP went up from {addCommasToNumber(originalTwinkleXP)} to{' '}
+                Your XP: {addCommasToNumber(originalTwinkleXP)} {'=>'}{' '}
                 {addCommasToNumber(
                   originalTwinkleXP + originalTotalReward * rewardValue.star
                 )}
@@ -100,6 +103,9 @@ function MainFeeds({
             </>
           )}
         </Banner>
+      )}
+      {activeTab === 'reward' && !!userId && (
+        <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
       )}
       {userId && activeTab === 'notification' && notifications.length > 0 && (
         <RoundList style={{ marginTop: 0 }}>
@@ -219,6 +225,7 @@ export default connect(
   state => ({
     numNewNotis: state.NotiReducer.numNewNotis,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
+    rank: state.UserReducer.rank,
     twinkleXP: state.UserReducer.twinkleXP,
     userId: state.UserReducer.userId
   }),

@@ -43,10 +43,6 @@ export const changeSubFilter = filter => ({
   filter
 });
 
-export const clearFeeds = () => ({
-  type: FEED.CLEAR
-});
-
 export const contentFeedLike = ({ likes, contentId, type }) => ({
   type: FEED.LIKE_CONTENT,
   data: { contentId, type, likes }
