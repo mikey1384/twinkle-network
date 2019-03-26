@@ -294,11 +294,11 @@ function Posts({
   async function loadTab(tabName) {
     selectedFilter.current = filterTable[tabName];
     setLoadingFeeds(true);
-    const { data, filter } = await loadFeeds({
+    const { data, filter: loadedFilter } = await loadFeeds({
       username,
       filter: filterTable[tabName]
     });
-    if (filter === selectedFilter.current) {
+    if (loadedFilter === selectedFilter.current) {
       fetchFeeds(data);
       setScrollHeight(0);
     }
