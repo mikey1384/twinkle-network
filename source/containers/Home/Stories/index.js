@@ -22,7 +22,6 @@ import {
   loadMoreFeedComments,
   loadRepliesOfReply,
   loadTags,
-  clearFeeds,
   setCurrentSection,
   setDifficulty,
   showFeedComments,
@@ -51,7 +50,6 @@ Stories.propTypes = {
   changeByUserStatus: PropTypes.func.isRequired,
   changeSubFilter: PropTypes.func.isRequired,
   chatMode: PropTypes.bool,
-  clearFeeds: PropTypes.func.isRequired,
   contentFeedLike: PropTypes.func.isRequired,
   feedCommentDelete: PropTypes.func.isRequired,
   feedContentDelete: PropTypes.func.isRequired,
@@ -113,7 +111,6 @@ function Stories({
   changeByUserStatus,
   changeCategory,
   changeSubFilter,
-  clearFeeds,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -170,7 +167,6 @@ function Stories({
       changeCategory('uploads');
       changeSubFilter('all');
       resetNumNewPosts();
-      clearFeeds();
       try {
         const { data } = await loadFeeds();
         fetchFeeds(data);
@@ -182,7 +178,6 @@ function Stories({
 
   useEffect(() => {
     if (category === 'videos') {
-      clearFeeds();
       filterVideos();
     }
     async function filterVideos() {
@@ -246,7 +241,7 @@ function Stories({
               {storyFeeds.map((feed, index) => {
                 return (
                   <ContentPanel
-                    key={feed.feedId}
+                    key={category + subFilter + feed.feedId}
                     style={{
                       marginBottom: '1rem',
                       zIndex: storyFeeds.length - index
@@ -303,7 +298,6 @@ function Stories({
     categoryRef.current = 'uploads';
     changeCategory('uploads');
     changeSubFilter(filter);
-    clearFeeds();
     const { data, filter: newFilter } = await loadFeeds({ filter });
     if (filter === newFilter && categoryRef.current === 'uploads') {
       fetchFeeds(data);
@@ -332,7 +326,6 @@ function Stories({
   }
 
   async function handleChangeCategory(newCategory) {
-    clearFeeds();
     categoryRef.current = newCategory;
     changeCategory(newCategory);
     changeSubFilter(categoryObj[newCategory].filter);
@@ -353,7 +346,6 @@ function Stories({
 
   async function handleFetchNewFeeds() {
     if (category !== 'uploads' || displayOrder === 'asc') {
-      clearFeeds();
       resetNumNewPosts();
       categoryRef.current = 'uploads';
       changeCategory('uploads');
@@ -384,7 +376,6 @@ function Stories({
 
   async function handleDisplayOrder() {
     const newDisplayOrder = displayOrder === 'desc' ? 'asc' : 'desc';
-    clearFeeds();
     const initialFilter =
       category === 'uploads' ? subFilter : categoryObj[category].filter;
     const { data, filter } = await loadFeeds({
@@ -444,7 +435,6 @@ export default connect(
     loadMoreFeedReplies,
     loadRepliesOfReply,
     loadTags,
-    clearFeeds,
     resetNumNewPosts,
     setCurrentSection,
     setDifficulty,

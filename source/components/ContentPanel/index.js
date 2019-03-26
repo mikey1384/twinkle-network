@@ -76,25 +76,24 @@ function ContentPanel({
   style = {},
   userId
 }) {
-  const [loaded, setLoaded] = useState(false);
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const [videoShown, setVideoShown] = useState(false);
+  const loading = useRef(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    if (!contentObj.loaded) {
+    if (!contentObj.loaded && !loading.current) {
       onMount();
     }
     async function onMount() {
-      if (!loaded && !newPost) {
-        setLoaded(true);
-        if (mounted.current) {
-          onInitContent({
-            content: await loadContent({ contentId, type }),
-            feedId
-          });
-        }
+      if (!newPost && mounted.current) {
+        loading.current = true;
+        onInitContent({
+          content: await loadContent({ contentId, type }),
+          feedId
+        });
+        loading.current = false;
       }
     }
     return function cleanUp() {
