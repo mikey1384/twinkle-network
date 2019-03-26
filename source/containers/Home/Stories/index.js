@@ -307,8 +307,8 @@ function Stories({
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
+      setLoadingFeeds(false);
     }
-    setLoadingFeeds(false);
   }
 
   async function loadMoreFeeds() {
@@ -347,8 +347,8 @@ function Stories({
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
+      setLoadingFeeds(false);
     }
-    setLoadingFeeds(false);
   }
 
   async function handleFetchNewFeeds() {
