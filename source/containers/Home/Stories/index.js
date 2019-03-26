@@ -149,6 +149,7 @@ function Stories({
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
+  const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
 
   const [setScrollHeight] = useInfiniteScroll({
@@ -165,6 +166,7 @@ function Stories({
       init();
     }
     async function init() {
+      categoryRef.current = 'uploads';
       changeCategory('uploads');
       changeSubFilter('all');
       resetNumNewPosts();
@@ -298,11 +300,12 @@ function Stories({
 
   async function applyFilter(filter) {
     if (filter === subFilter) return;
+    categoryRef.current = 'uploads';
     changeCategory('uploads');
     changeSubFilter(filter);
     clearFeeds();
     const { data, filter: newFilter } = await loadFeeds({ filter });
-    if (filter === newFilter && category === 'uploads') {
+    if (filter === newFilter && categoryRef.current === 'uploads') {
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -330,6 +333,7 @@ function Stories({
 
   async function handleChangeCategory(newCategory) {
     clearFeeds();
+    categoryRef.current = newCategory;
     changeCategory(newCategory);
     changeSubFilter(categoryObj[newCategory].filter);
     const { filter, data } = await loadFeeds({
@@ -337,7 +341,10 @@ function Stories({
       filter: categoryObj[newCategory].filter,
       orderBy: categoryObj[newCategory].orderBy
     });
-    if (filter === categoryObj[newCategory].filter) {
+    if (
+      filter === categoryObj[newCategory].filter &&
+      categoryRef.current === newCategory
+    ) {
       fetchFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -348,9 +355,13 @@ function Stories({
     if (category !== 'uploads' || displayOrder === 'asc') {
       clearFeeds();
       resetNumNewPosts();
+      categoryRef.current = 'uploads';
       changeCategory('uploads');
       const { data, filter } = await loadFeeds();
-      if (filter === categoryObj.uploads.filter) {
+      if (
+        filter === categoryObj.uploads.filter &&
+        categoryRef.current === 'uploads'
+      ) {
         fetchFeeds(data);
       }
       return;
