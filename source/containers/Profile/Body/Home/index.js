@@ -313,6 +313,10 @@ function Home({
               margin-right: ${!!profile.rank && profile.rank < 4
                 ? '-11px'
                 : '-10px'};
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-left: -1rem;
+                margin-right: -1rem;
+              }
             `}
             style={{
               display: 'block',
