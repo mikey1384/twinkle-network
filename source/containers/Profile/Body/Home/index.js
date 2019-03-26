@@ -314,8 +314,8 @@ function Home({
                 ? '-11px'
                 : '-10px'};
               @media (max-width: ${mobileMaxWidth}) {
-                margin-left: -1rem !important;
-                margin-right: -1rem !important;
+                margin-left: -1rem;
+                margin-right: -1rem;
               }
             `}
             style={{

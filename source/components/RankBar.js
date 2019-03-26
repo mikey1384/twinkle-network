@@ -23,7 +23,7 @@ export default function RankBar({ className, profile, style }) {
   return (
     <div
       style={style}
-      className={`${className} ${css`
+      className={`${css`
           padding: 1.5rem 0;
           font-size: 2rem;
           color: ${rankColor};
@@ -40,7 +40,7 @@ export default function RankBar({ className, profile, style }) {
             border-left: none;
             border-right: none;
           }
-        `}`}
+        `} ${className}`}
     >
       <span>
         <span
