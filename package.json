@@ -38,6 +38,7 @@
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "babel-plugin-emotion": "^10.0.9",
     "babel-plugin-react-transform": "^3.0.0",
+    "brotli-webpack-plugin": "^1.1.0",
     "cross-env": "^5.2.0",
     "d3-ease": "^1.0.5",
     "dotenv": "^7.0.0",
