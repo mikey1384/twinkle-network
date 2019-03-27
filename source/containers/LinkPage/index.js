@@ -53,16 +53,16 @@ LinkPage.propTypes = {
 };
 
 function LinkPage({
+  authLevel,
+  canDelete,
+  canEdit,
+  canStar,
+  dispatch,
+  history,
   likeLink,
   location,
   match: {
-    params: { linkId },
-    authLevel,
-    canDelete,
-    canEdit,
-    canStar,
-    dispatch,
-    history
+    params: { linkId }
   },
   myId,
   updateNumComments
