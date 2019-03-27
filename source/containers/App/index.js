@@ -8,9 +8,6 @@ import SigninModal from 'containers/Signin';
 import loadable from 'loadable-components';
 import MobileMenu from './MobileMenu';
 import withScroll from 'components/Wrappers/withScroll';
-import Home from 'containers/Home';
-import WorkSection from 'containers/WorkSection';
-import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
@@ -26,6 +23,15 @@ import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
+const Home = loadable(() => import('containers/Home'), {
+  LoadingComponent: Loading
+});
+const Profile = loadable(() => import('containers/Profile'), {
+  LoadingComponent: Loading
+});
+const WorkSection = loadable(() => import('containers/WorkSection'), {
+  LoadingComponent: Loading
+});
 const Redirect = loadable(() => import('containers/Redirect'), {
   LoadingComponent: Loading
 });
