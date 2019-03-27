@@ -316,7 +316,7 @@ function TargetContent({
 
   function determineDifficulty({ rootType, rootObj, subject }) {
     const rootDifficulty =
-      rootType === 'video'
+      rootType === 'video' || rootType === 'url'
         ? rootObj.difficulty > 0
           ? 1
           : 0

@@ -27,7 +27,6 @@ function Content({
   const type = url.split('/')[1].slice(0, -1);
   const {
     contentObj,
-    setContentObj,
     onAttachStar,
     onDeleteComment,
     onEditComment,
@@ -64,9 +63,11 @@ function Content({
             loaded: true,
             exists
           });
-          setContentObj({
-            contentId,
-            type
+          onInitContent({
+            content: {
+              contentId,
+              type
+            }
           });
         }
       } catch (error) {

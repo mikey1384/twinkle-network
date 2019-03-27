@@ -417,7 +417,7 @@ function Body({
 
   function determineDifficulty({ contentObj, rootType, rootObj, targetObj }) {
     const rootDifficulty =
-      rootType === 'video'
+      rootType === 'video' || rootType === 'url'
         ? rootObj.difficulty > 0
           ? 1
           : 0

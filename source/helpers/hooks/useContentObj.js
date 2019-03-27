@@ -14,6 +14,10 @@ export default function useContentObj(props) {
     ...props
   });
 
+  function onInitContent({ content }) {
+    setContentObj({ ...initialState, ...content });
+  }
+
   function onAddTags({ tags }) {
     setContentObj(contentObj => ({
       ...contentObj,
@@ -270,10 +274,6 @@ export default function useContentObj(props) {
             : subject.description
       }))
     }));
-  }
-
-  function onInitContent({ content }) {
-    setContentObj({ ...initialState, ...content });
   }
 
   function onLikeComment({ commentId, likes }) {

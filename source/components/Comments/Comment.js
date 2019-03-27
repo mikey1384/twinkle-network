@@ -314,18 +314,26 @@ function Comment({
   );
 
   function determineDifficulty({ parent, targetObj }) {
-    const rootDifficulty =
-      (parent.type === 'video'
-        ? parent.difficulty > 0
-          ? 1
-          : 0
-        : parent.difficulty) ||
-      (parent.rootType === 'video'
-        ? parent.rootObj?.difficulty > 0
-          ? 1
-          : 0
-        : parent.rootObj?.difficulty);
-    return targetObj.subject?.difficulty || rootDifficulty;
+    if (parent.type === 'subject' && parent.difficulty > 0) {
+      return parent.difficulty;
+    }
+    if (parent.type === 'video' || parent.type === 'url') {
+      if (targetObj.subject?.difficulty) {
+        return targetObj.subject?.difficulty;
+      }
+      if (parent.difficulty > 0) {
+        return 1;
+      }
+    }
+    if (parent.rootType === 'video' || parent.rootType === 'url') {
+      if (targetObj.subject?.difficulty) {
+        return targetObj.subject?.difficulty;
+      }
+      if (parent.rootObj?.difficulty > 0) {
+        return 1;
+      }
+    }
+    return 0;
   }
 
   async function editDone(editedComment) {
