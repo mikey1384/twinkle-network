@@ -1,25 +1,28 @@
 import { useState } from 'react';
 
 export default function useContentObj(props) {
-  const [contentObj, setContentObj] = useState({
+  const initialState = {
     stars: [],
     childComments: [],
     likes: [],
     subjects: [],
     commentsLoadMoreButton: false,
-    subjectsLoadMoreButton: false,
+    subjectsLoadMoreButton: false
+  };
+  const [contentObj, setContentObj] = useState({
+    ...initialState,
     ...props
   });
 
   function onAddTags({ tags }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       tags: contentObj.tags.concat(tags)
-    });
+    }));
   }
 
   function onAttachStar(data) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       stars:
         data.contentId === contentObj.contentId &&
@@ -74,12 +77,12 @@ export default function useContentObj(props) {
               : undefined
           }
         : undefined
-    });
+    }));
   }
 
   function onUploadComment(data) {
     const { type } = contentObj;
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments:
         type === 'comment'
@@ -93,11 +96,11 @@ export default function useContentObj(props) {
             }
           : subject
       )
-    });
+    }));
   }
 
   function onDeleteComment(commentId) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments
         ?.filter(comment => comment.id !== commentId)
@@ -127,18 +130,18 @@ export default function useContentObj(props) {
               : undefined
           }
         : undefined
-    });
+    }));
   }
 
   function onDeleteSubject(subjectId) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects?.filter(subject => subject.id !== subjectId)
-    });
+    }));
   }
 
   function onEditComment({ editedComment, commentId }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments.map(comment => ({
         ...comment,
@@ -186,11 +189,11 @@ export default function useContentObj(props) {
           )
         }))
       }))
-    });
+    }));
   }
 
   function onEditRewardComment({ id, text }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       stars: contentObj.stars?.map(star => ({
         ...star,
@@ -245,18 +248,18 @@ export default function useContentObj(props) {
               : undefined
           }
         : undefined
-    });
+    }));
   }
 
   function onEditContent({ data }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       ...data
-    });
+    }));
   }
 
   function onEditSubject({ editedSubject, subjectId }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects?.map(subject => ({
         ...subject,
@@ -266,15 +269,15 @@ export default function useContentObj(props) {
             ? editedSubject.description
             : subject.description
       }))
-    });
+    }));
   }
 
   function onInitContent({ content }) {
-    setContentObj({ ...contentObj, ...content });
+    setContentObj({ ...initialState, ...content });
   }
 
   function onLikeComment({ commentId, likes }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments.map(comment => {
         return {
@@ -305,11 +308,11 @@ export default function useContentObj(props) {
           })
         };
       })
-    });
+    }));
   }
 
   function onLikeContent({ likes, type, contentId }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       likes:
         contentObj.id === contentId && contentObj.type === type
@@ -353,47 +356,47 @@ export default function useContentObj(props) {
               : undefined
           }
         : undefined
-    });
+    }));
   }
 
   function onLoadComments({ comments, loadMoreButton }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: comments,
       commentsLoadMoreButton: loadMoreButton
-    });
+    }));
   }
 
   function onLoadSubjects({ results, loadMoreButton }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: results,
       subjectsLoadMoreButton: loadMoreButton
-    });
+    }));
   }
 
   function onLoadTags({ tags }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       tags
-    });
+    }));
   }
 
   function onLoadMoreComments(data) {
     const { comments, loadMoreButton } = data.data ? data.data : data;
     const { type } = contentObj;
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments:
         type === 'comment'
           ? (comments || []).concat(contentObj.childComments)
           : (contentObj.childComments || []).concat(comments),
       commentsLoadMoreButton: loadMoreButton
-    });
+    }));
   }
 
   function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments.map(comment => ({
         ...comment,
@@ -404,22 +407,22 @@ export default function useContentObj(props) {
         loadMoreButton:
           comment.id === commentId ? loadMoreButton : comment.loadMoreButton
       }))
-    });
+    }));
   }
 
   function onLoadMoreSubjects({ results, loadMoreButton }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: (contentObj.subjects || []).concat(results),
       subjectsLoadMoreButton: loadMoreButton
-    });
+    }));
   }
 
   function onLoadMoreSubjectComments({
     data: { comments, loadMoreButton },
     subjectId
   }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects.map(subject => {
         if (subject.id === subjectId) {
@@ -431,11 +434,11 @@ export default function useContentObj(props) {
         }
         return subject;
       })
-    });
+    }));
   }
 
   function onLoadMoreSubjectReplies({ commentId, loadMoreButton, replies }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects.map(subject => {
         return {
@@ -455,11 +458,11 @@ export default function useContentObj(props) {
           })
         };
       })
-    });
+    }));
   }
 
   function onLoadRepliesOfReply({ replies, commentId, replyId }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments.map(comment => {
         if (comment.id === commentId) {
@@ -491,18 +494,18 @@ export default function useContentObj(props) {
         }
         return comment;
       })
-    });
+    }));
   }
 
   function onSetDifficulty({ difficulty }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       difficulty
-    });
+    }));
   }
 
   function onSetSubjectDifficulty({ contentId, difficulty }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects?.map(subject => {
         return subject.id === contentId
@@ -512,14 +515,14 @@ export default function useContentObj(props) {
             }
           : subject;
       })
-    });
+    }));
   }
 
   function onLoadSubjectComments({
     data: { comments, loadMoreButton },
     subjectId
   }) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects?.map(subject => {
         if (subject.id === subjectId) {
@@ -531,11 +534,11 @@ export default function useContentObj(props) {
         }
         return subject;
       })
-    });
+    }));
   }
 
   function onTargetCommentSubmit(data) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       targetObj: {
         ...contentObj.targetObj,
@@ -544,18 +547,18 @@ export default function useContentObj(props) {
           comments: [data].concat(contentObj.targetObj.comment.comments || [])
         }
       }
-    });
+    }));
   }
 
   function onUploadSubject(subject) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       subjects: [subject].concat(contentObj.subjects)
-    });
+    }));
   }
 
   function onUploadReply(data) {
-    setContentObj({
+    setContentObj(contentObj => ({
       ...contentObj,
       childComments: contentObj.childComments.map(comment => {
         let match = false;
@@ -588,7 +591,7 @@ export default function useContentObj(props) {
           )
         };
       })
-    });
+    }));
   }
 
   return {

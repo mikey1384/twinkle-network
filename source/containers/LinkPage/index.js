@@ -71,6 +71,7 @@ function LinkPage({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {
     contentObj,
     setContentObj,
@@ -98,6 +99,7 @@ function LinkPage({
   });
 
   useEffect(() => {
+    setLoading(true);
     initLinkPage();
     async function initLinkPage() {
       try {
@@ -114,12 +116,15 @@ function LinkPage({
         onInitContent({
           content: {
             ...data,
+            contentId: Number(linkId),
+            type: 'url',
             childComments: commentsObj?.comments || [],
             commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
             subjects: subjectsObj?.results || [],
             subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
           }
         });
+        setLoading(false);
       } catch (error) {
         if (error.response) {
           const { data = {} } = error.response;
@@ -157,7 +162,7 @@ function LinkPage({
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const userIsUploader = uploader === myId;
 
-  return id ? (
+  return id && !loading ? (
     <div
       className={css`
         margin-top: 1rem;
