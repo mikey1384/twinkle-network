@@ -41,10 +41,10 @@ function SelectPlaylistsToPinModal({
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [searchedPlaylists, setSearchedPlaylists] = useState([]);
-  const [playlistsToPinObject, setPlaylistsToPinObject] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
+  const playlistsToPinObjectRef = useRef({});
   const pinnedPlaylistsObjectRef = useRef({});
   const searchedPlaylistsObjectRef = useRef({});
   const { handleSearch, searchText, searching } = useSearch({
@@ -59,17 +59,15 @@ function SelectPlaylistsToPinModal({
     setSelectedPlaylists(initialSelectedPlaylists);
   }, []);
   useEffect(() => {
-    setPlaylistsToPinObject(
-      playlistsToPin.reduce(
-        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-        {}
-      )
+    playlistsToPinObjectRef.current = playlistsToPin.reduce(
+      (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+      {}
     );
   }, [playlistsToPin]);
 
   const playlistObjects = {
     ...pinnedPlaylistsObjectRef.current,
-    ...playlistsToPinObject,
+    ...playlistsToPinObjectRef.current,
     ...searchedPlaylistsObjectRef.current
   };
   const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
