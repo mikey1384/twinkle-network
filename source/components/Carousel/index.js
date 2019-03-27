@@ -342,7 +342,6 @@ function Carousel({
   function formatChildren({ children, slideWidth, cellSpacing }) {
     return React.Children.map(children, (child, index) => (
       <li
-        className="slider-slide"
         style={{
           display: 'inline-block',
           listStyleType: 'none',
@@ -467,9 +466,9 @@ function Carousel({
     const xDist = x1 - x2;
     const yDist = y1 - y2;
     const r = Math.atan2(yDist, xDist);
+    const maxAngle = 5;
 
     let swipeAngle = Math.round((r * 180) / Math.PI);
-    const maxAngle = 15;
     if (swipeAngle < 0) {
       swipeAngle = 360 - Math.abs(swipeAngle);
     }
