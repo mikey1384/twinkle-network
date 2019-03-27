@@ -8,6 +8,13 @@ import { connect } from 'react-redux';
 import { container } from './Styles';
 import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const WelcomeMessage = loadable(() => import('./WelcomeMessage'), {
+  LoadingComponent: () => (
+    <Loading innerStyle={{ fontSize: '2rem' }} text="Loading the Website" />
+  )
+});
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -96,32 +103,7 @@ function ProfileWidget({
               </Button>
             </div>
           )}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center'
-            }}
-          >
-            {!userId && (
-              <>
-                <div className="login-message">Log in</div>
-                <div className="login-message">to access all features</div>
-              </>
-            )}
-            {!userId && (
-              <Button
-                filled
-                color="green"
-                style={{ marginTop: '1rem' }}
-                onClick={openSigninModal}
-              >
-                Tap here!
-              </Button>
-            )}
-          </div>
+          <WelcomeMessage userId={userId} openSigninModal={openSigninModal} />
           <input
             ref={FileInputRef}
             style={{ display: 'none' }}
