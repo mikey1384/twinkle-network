@@ -29,15 +29,13 @@ import {
 } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
+import Bio from 'components/Bio';
 import Loading from 'components/Loading';
 import loadable from 'loadable-components';
 const BasicInfos = loadable(() => import('./BasicInfos'), {
   LoadingComponent: Loading
 });
 const Achievements = loadable(() => import('./Achievements'), {
-  LoadingComponent: Loading
-});
-const Bio = loadable(() => import('components/Texts/Bio'), {
   LoadingComponent: Loading
 });
 

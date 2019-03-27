@@ -7,6 +7,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Featured from './Featured';
+import Notification from 'components/Notification';
 import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -15,9 +16,6 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
-const Notification = loadable(() => import('components/Notification'), {
-  LoadingComponent: Loading
-});
 const WorkMenuItems = loadable(() => import('./WorkMenuItems'), {
   LoadingComponent: Loading
 });
