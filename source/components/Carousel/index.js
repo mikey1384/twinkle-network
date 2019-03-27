@@ -466,7 +466,7 @@ function Carousel({
     const xDist = x1 - x2;
     const yDist = y1 - y2;
     const r = Math.atan2(yDist, xDist);
-    const maxAngle = 5;
+    const maxAngle = 10;
 
     let swipeAngle = Math.round((r * 180) / Math.PI);
     if (swipeAngle < 0) {
