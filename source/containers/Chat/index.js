@@ -8,19 +8,14 @@ import EditTitleModal from './Modals/EditTitle';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
+import LeftMenu from './LeftMenu';
+import MessagesContainer from './MessagesContainer';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-const LeftMenu = loadable(() => import('./LeftMenu'), {
-  LoadingComponent: Loading
-});
-const MessagesContainer = loadable(() => import('./MessagesContainer'), {
-  LoadingComponent: Loading
-});
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
