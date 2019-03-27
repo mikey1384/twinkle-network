@@ -34,16 +34,9 @@ import {
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const Details = loadable(() => import('./Details'), {
-  LoadingComponent: Loading
-});
-const NavMenu = loadable(() => import('./NavMenu'), {
-  LoadingComponent: Loading
-});
-const PageTab = loadable(() => import('./PageTab'), {
-  LoadingComponent: Loading
-});
+import Details from './Details';
+import NavMenu from './NavMenu';
+import PageTab from './PageTab';
 
 VideoPage.propTypes = {
   authLevel: PropTypes.number,

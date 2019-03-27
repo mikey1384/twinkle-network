@@ -14,20 +14,10 @@ import {
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
-import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const TopFilter = loadable(() => import('./TopFilter'), {
-  LoadingComponent: Loading
-});
-const FirstPage = loadable(() => import('./FirstPage'), {
-  LoadingComponent: Loading
-});
-const Results = loadable(() => import('./Results'), {
-  LoadingComponent: Loading
-});
-const CloseText = loadable(() => import('./CloseText'), {
-  LoadingComponent: Loading
-});
+import TopFilter from './TopFilter';
+import FirstPage from './FirstPage';
+import Results from './Results';
+import CloseText from './CloseText';
 
 SearchPage.propTypes = {
   dispatch: PropTypes.func.isRequired,

@@ -4,11 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import NotFound from 'components/NotFound';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const Content = loadable(() => import('./Content'), {
-  LoadingComponent: Loading
-});
+import Content from './Content';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired

@@ -32,10 +32,7 @@ import {
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const Description = loadable(() => import('./Description'), {
-  LoadingComponent: Loading
-});
+import Description from './Description';
 
 LinkPage.propTypes = {
   authLevel: PropTypes.number,
