@@ -6,6 +6,7 @@ import loadable from 'loadable-components';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import Featured from './Featured';
 import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -24,9 +25,6 @@ const Videos = loadable(() => import('./Videos'), {
   LoadingComponent: Loading
 });
 const Links = loadable(() => import('./Links'), {
-  LoadingComponent: Loading
-});
-const Featured = loadable(() => import('./Featured'), {
   LoadingComponent: Loading
 });
 

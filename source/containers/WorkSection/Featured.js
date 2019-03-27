@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ChallengesPanel from './Panels/ChallengesPanel';
-import FeaturedPlaylistsPanel from './Panels/FeaturedPlaylistsPanel';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const ChallengesPanel = loadable(() => import('./Panels/ChallengesPanel'), {
+  LoadingComponent: Loading
+});
+const FeaturedPlaylistsPanel = loadable(
+  () => import('./Panels/FeaturedPlaylistsPanel'),
+  {
+    LoadingComponent: Loading
+  }
+);
 
 Featured.propTypes = {
   history: PropTypes.object.isRequired
