@@ -78,6 +78,7 @@ function Carousel({
   const [slideCount, setSlideCount] = useState(React.Children.count(children));
   const [touchObject, setTouchObject] = useState({});
   const FrameRef = useRef(null);
+  const scrollYRef = useRef(null);
 
   useEffect(() => {
     addEvent(window, 'resize', onResize);
@@ -180,6 +181,11 @@ function Carousel({
             });
           }}
           onTouchMove={e => {
+            if (!scrollYRef.current) {
+              scrollYRef.current = (
+                document.scrollingElement || document.documentElement
+              ).scrollTop;
+            }
             const direction = swipeDirection(
               touchObject.startX,
               e.touches[0].pageX,
@@ -188,8 +194,11 @@ function Carousel({
             );
             if (direction !== 0) {
               e.preventDefault();
+              if (scrollYRef.current) {
+                window.scroll(0, scrollYRef.current);
+              }
             }
-            var length = Math.round(
+            const length = Math.round(
               Math.sqrt(Math.pow(e.touches[0].pageX - touchObject.startX, 2))
             );
             setTouchObject({
@@ -415,6 +424,7 @@ function Carousel({
     }
     setTouchObject({});
     setDragging(false);
+    scrollYRef.current = null;
   }
 
   function nextSlide() {
@@ -462,13 +472,13 @@ function Carousel({
     if (swipeAngle < 0) {
       swipeAngle = 360 - Math.abs(swipeAngle);
     }
-    if (swipeAngle <= 45 && swipeAngle >= 0) {
+    if (swipeAngle >= 0 && swipeAngle <= 15) {
       return 1;
     }
-    if (swipeAngle <= 360 && swipeAngle >= 315) {
+    if (swipeAngle <= 360 && swipeAngle >= 345) {
       return 1;
     }
-    if (swipeAngle >= 135 && swipeAngle <= 225) {
+    if (swipeAngle >= 165 && swipeAngle <= 195) {
       return -1;
     }
     return 0;
