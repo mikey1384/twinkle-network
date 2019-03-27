@@ -12,7 +12,7 @@ import Loading from 'components/Loading';
 import loadable from 'loadable-components';
 const WelcomeMessage = loadable(() => import('./WelcomeMessage'), {
   LoadingComponent: () => (
-    <Loading innerStyle={{ fontSize: '2rem' }} text="Loading the Website" />
+    <Loading innerStyle={{ fontSize: '2rem' }} text="Loading Twinkle Network" />
   )
 });
 
