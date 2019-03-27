@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
 import NotFound from 'components/NotFound';
-import Content from './Content';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const Content = loadable(() => import('./Content'), {
+  LoadingComponent: Loading
+});
 
 Playlists.propTypes = {
   match: PropTypes.object.isRequired

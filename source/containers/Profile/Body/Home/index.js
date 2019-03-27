@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useContentObj } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
-import Bio from 'components/Texts/Bio';
-import BasicInfos from './BasicInfos';
 import Comments from 'components/Comments';
 import StatusMsg from 'components/UserDetails/StatusMsg';
 import StatusInput from 'components/UserDetails/StatusInput';
@@ -13,7 +11,6 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import BioEditModal from 'components/Modals/BioEditModal';
-import Achievements from './Achievements';
 import DropDownButton from 'components/Buttons/DropdownButton';
 import { css } from 'emotion';
 import {
@@ -32,6 +29,17 @@ import {
 } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const BasicInfos = loadable(() => import('./BasicInfos'), {
+  LoadingComponent: Loading
+});
+const Achievements = loadable(() => import('./Achievements'), {
+  LoadingComponent: Loading
+});
+const Bio = loadable(() => import('components/Texts/Bio'), {
+  LoadingComponent: Loading
+});
 
 Home.propTypes = {
   dispatch: PropTypes.func.isRequired,

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
 import Home from './Home';
 import Posts from './Posts';
-import { Switch, Route } from 'react-router-dom';
 
 Routes.propTypes = {
   history: PropTypes.object.isRequired,

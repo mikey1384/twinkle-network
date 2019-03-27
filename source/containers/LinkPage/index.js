@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useContentObj } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
 import Embedly from 'components/Embedly';
 import Comments from 'components/Comments';
 import Subjects from 'components/Subjects';
@@ -10,7 +9,6 @@ import LikeButton from 'components/Buttons/LikeButton';
 import Likers from 'components/Likers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
-import Description from './Description';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
@@ -33,6 +31,11 @@ import {
   loadSubjects
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const Description = loadable(() => import('./Description'), {
+  LoadingComponent: Loading
+});
 
 LinkPage.propTypes = {
   authLevel: PropTypes.number,
@@ -344,14 +347,7 @@ function LinkPage({
         <ConfirmModal
           key={'confirm' + id}
           title="Remove Link"
-          onConfirm={async() => {
-            try {
-              await request.delete(`${URL}/url?linkId=${id}`, auth());
-              history.push('/links');
-            } catch (error) {
-              handleError(error, dispatch);
-            }
-          }}
+          onConfirm={handleDeleteLink}
           onHide={() => setConfirmModalShown(false)}
         />
       )}
@@ -371,6 +367,15 @@ function LinkPage({
   ) : (
     <Loading text="Loading Page..." />
   );
+
+  async function handleDeleteLink() {
+    try {
+      await request.delete(`${URL}/url?linkId=${id}`, auth());
+      history.push('/links');
+    } catch (error) {
+      handleError(error, dispatch);
+    }
+  }
 
   function handleDeleteComment(data) {
     onDeleteComment(data);

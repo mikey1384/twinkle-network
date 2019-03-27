@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
-import Notification from 'components/Notification';
-import ProfileWidget from 'components/ProfileWidget';
-import HomeMenuItems from 'components/HomeMenuItems';
-import { container, Left, Center, Right } from './Styles';
 import Loading from 'components/Loading';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import AlertModal from 'components/Modals/AlertModal';
-import { uploadProfilePic } from 'redux/actions/UserActions';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { uploadProfilePic } from 'redux/actions/UserActions';
+import { Route, Switch } from 'react-router-dom';
+import { container, Left, Center, Right } from './Styles';
 import loadable from 'loadable-components';
+const ProfileWidget = loadable(() => import('components/ProfileWidget'), {
+  LoadingComponent: Loading
+});
+const HomeMenuItems = loadable(() => import('components/HomeMenuItems'), {
+  LoadingComponent: Loading
+});
+const Notification = loadable(() => import('components/Notification'), {
+  LoadingComponent: Loading
+});
 const People = loadable(() => import('./People'), {
   LoadingComponent: Loading
 });

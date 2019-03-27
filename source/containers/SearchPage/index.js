@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { searchPage } from './Styles';
-import TopFilter from './TopFilter';
-import FirstPage from './FirstPage';
 import Checkbox from 'components/Checkbox';
-import Results from './Results';
+import { searchPage } from './Styles';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -17,7 +14,20 @@ import {
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
-import CloseText from './CloseText';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const TopFilter = loadable(() => import('./TopFilter'), {
+  LoadingComponent: Loading
+});
+const FirstPage = loadable(() => import('./FirstPage'), {
+  LoadingComponent: Loading
+});
+const Results = loadable(() => import('./Results'), {
+  LoadingComponent: Loading
+});
+const CloseText = loadable(() => import('./CloseText'), {
+  LoadingComponent: Loading
+});
 
 SearchPage.propTypes = {
   dispatch: PropTypes.func.isRequired,

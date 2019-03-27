@@ -4,8 +4,6 @@ import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
 import loadable from 'loadable-components';
 import Button from 'components/Button';
-import Notification from 'components/Notification';
-import WorkMenuItems from './WorkMenuItems';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { NavLink } from 'react-router-dom';
@@ -16,6 +14,12 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
+const Notification = loadable(() => import('components/Notification'), {
+  LoadingComponent: Loading
+});
+const WorkMenuItems = loadable(() => import('./WorkMenuItems'), {
+  LoadingComponent: Loading
+});
 const Videos = loadable(() => import('./Videos'), {
   LoadingComponent: Loading
 });

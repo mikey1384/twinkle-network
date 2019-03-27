@@ -8,6 +8,17 @@ import SigninModal from 'containers/Signin';
 import loadable from 'loadable-components';
 import MobileMenu from './MobileMenu';
 import withScroll from 'components/Wrappers/withScroll';
+import Privacy from 'containers/Privacy';
+import Redirect from 'containers/Redirect';
+import Home from 'containers/Home';
+import WorkSection from 'containers/WorkSection';
+import ContentPage from 'containers/ContentPage';
+import PlaylistPage from 'containers/PlaylistPage';
+import Chat from 'containers/Chat';
+import Profile from 'containers/Profile';
+import SearchPage from 'containers/SearchPage';
+import LinkPage from 'containers/LinkPage';
+import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
@@ -23,36 +34,7 @@ import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
-import Privacy from 'containers/Privacy';
-import Redirect from 'containers/Redirect';
-const Home = loadable(() => import('containers/Home'), {
-  LoadingComponent: Loading
-});
-const WorkSection = loadable(() => import('containers/WorkSection'), {
-  LoadingComponent: Loading
-});
-const Chat = loadable(() => import('containers/Chat'), {
-  LoadingComponent: Loading
-});
-const ContentPage = loadable(() => import('containers/ContentPage'), {
-  LoadingComponent: Loading
-});
-const PlaylistPage = loadable(() => import('containers/PlaylistPage'), {
-  loadingComponent: Loading
-});
-const Profile = loadable(() => import('containers/Profile'), {
-  loadingComponent: Loading
-});
-const SearchPage = loadable(() => import('containers/SearchPage'), {
-  LoadingComponent: Loading
-});
 const Verify = loadable(() => import('containers/Verify'), {
-  LoadingComponent: Loading
-});
-const LinkPage = loadable(() => import('containers/LinkPage'), {
-  LoadingComponent: Loading
-});
-const VideoPage = loadable(() => import('containers/VideoPage'), {
   LoadingComponent: Loading
 });
 

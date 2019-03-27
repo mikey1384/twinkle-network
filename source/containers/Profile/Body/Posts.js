@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Loading from 'components/Loading';
-import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
-import SideMenu from './SideMenu';
+import ContentPanel from 'components/ContentPanel';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { useInfiniteScroll } from 'helpers/hooks';
@@ -35,6 +33,11 @@ import {
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
 import { connect } from 'react-redux';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const SideMenu = loadable(() => import('./SideMenu'), {
+  LoadingComponent: Loading
+});
 
 Posts.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -143,7 +146,9 @@ function Posts({
     }
   }, [location]);
 
-  return (
+  return !loaded ? (
+    <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
+  ) : (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <FilterBar
         color={selectedTheme}
@@ -178,82 +183,81 @@ function Posts({
           }
         `}
       >
-        <div
-          className={css`
-            width: CALC(100% - 25rem);
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-            }
-          `}
-        >
-          {!loaded ||
-            (loadingFeeds && (
-              <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
-            ))}
-          {loaded &&
-            profileFeeds.length > 0 &&
-            profileFeeds.map((feed, index) => {
-              return (
-                <ContentPanel
-                  key={filterTable[match.params.section] + feed.feedId}
-                  style={{
-                    marginBottom: '1rem',
-                    zIndex: profileFeeds.length - index
-                  }}
-                  commentsLoadLimit={5}
-                  contentObj={feed}
-                  inputAtBottom={feed.type === 'comment'}
-                  onInitContent={fetchFeed}
-                  onAddTags={addTags}
-                  onAddTagToContents={addTagToContents}
-                  onAttachStar={attachStar}
-                  onByUserStatusChange={changeByUserStatus}
-                  onCommentSubmit={data =>
-                    handleUploadFeedComment({ feed, data })
-                  }
-                  onDeleteComment={feedCommentDelete}
-                  onDeleteContent={feedContentDelete}
-                  onEditComment={feedCommentEdit}
-                  onEditContent={feedContentEdit}
-                  onEditRewardComment={feedRewardCommentEdit}
-                  onLikeContent={contentFeedLike}
-                  onLoadMoreComments={loadMoreFeedComments}
-                  onLoadMoreReplies={loadMoreFeedReplies}
-                  onLoadRepliesOfReply={loadRepliesOfReply}
-                  onLoadTags={loadTags}
-                  onReplySubmit={data =>
-                    handleUploadFeedComment({ feed, data })
-                  }
-                  onSetDifficulty={setDifficulty}
-                  onShowComments={showFeedComments}
-                  onTargetCommentSubmit={uploadTargetContentComment}
-                  userId={myId}
-                />
-              );
-            })}
-          {loaded && profileFeeds.length === 0 && (
-            <div
-              style={{
-                marginTop: '6rem',
-                fontSize: '2.5rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>{onNoFeed(username)}</div>
-            </div>
-          )}
-          {loadMoreButton && (
-            <LoadMoreButton
-              style={{ marginBottom: '1rem' }}
-              onClick={loadMoreFeeds}
-              loading={loading}
-              color="lightBlue"
-              filled
-            />
-          )}
-        </div>
+        {loadingFeeds ? (
+          <Loading style={{ width: 'CALC(100% - 25rem)' }} text="Loading..." />
+        ) : (
+          <div
+            className={css`
+              width: CALC(100% - 25rem);
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+              }
+            `}
+          >
+            {profileFeeds.length > 0 &&
+              profileFeeds.map((feed, index) => {
+                return (
+                  <ContentPanel
+                    key={filterTable[match.params.section] + feed.feedId}
+                    style={{
+                      marginBottom: '1rem',
+                      zIndex: profileFeeds.length - index
+                    }}
+                    commentsLoadLimit={5}
+                    contentObj={feed}
+                    inputAtBottom={feed.type === 'comment'}
+                    onInitContent={fetchFeed}
+                    onAddTags={addTags}
+                    onAddTagToContents={addTagToContents}
+                    onAttachStar={attachStar}
+                    onByUserStatusChange={changeByUserStatus}
+                    onCommentSubmit={data =>
+                      handleUploadFeedComment({ feed, data })
+                    }
+                    onDeleteComment={feedCommentDelete}
+                    onDeleteContent={feedContentDelete}
+                    onEditComment={feedCommentEdit}
+                    onEditContent={feedContentEdit}
+                    onEditRewardComment={feedRewardCommentEdit}
+                    onLikeContent={contentFeedLike}
+                    onLoadMoreComments={loadMoreFeedComments}
+                    onLoadMoreReplies={loadMoreFeedReplies}
+                    onLoadRepliesOfReply={loadRepliesOfReply}
+                    onLoadTags={loadTags}
+                    onReplySubmit={data =>
+                      handleUploadFeedComment({ feed, data })
+                    }
+                    onSetDifficulty={setDifficulty}
+                    onShowComments={showFeedComments}
+                    onTargetCommentSubmit={uploadTargetContentComment}
+                    userId={myId}
+                  />
+                );
+              })}
+            {profileFeeds.length === 0 && (
+              <div
+                style={{
+                  marginTop: '6rem',
+                  fontSize: '2.5rem',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
+                <div style={{ textAlign: 'center' }}>{onNoFeed(username)}</div>
+              </div>
+            )}
+            {loadMoreButton && (
+              <LoadMoreButton
+                style={{ marginBottom: '1rem' }}
+                onClick={loadMoreFeeds}
+                loading={loading}
+                color="lightBlue"
+                filled
+              />
+            )}
+          </div>
+        )}
         <SideMenu
           className={`desktop ${css`
             width: 30rem;

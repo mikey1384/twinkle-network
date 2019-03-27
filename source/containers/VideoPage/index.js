@@ -10,14 +10,10 @@ import {
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
 import VideoPlayer from 'components/VideoPlayer';
 import NotFound from 'components/NotFound';
 import CheckListGroup from 'components/CheckListGroup';
-import PageTab from './PageTab';
 import Comments from 'components/Comments';
-import Details from './Details';
-import NavMenu from './NavMenu';
 import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
@@ -37,6 +33,17 @@ import {
   loadSubjects
 } from 'helpers/requestHelpers';
 import URL from 'constants/URL';
+import Loading from 'components/Loading';
+import loadable from 'loadable-components';
+const Details = loadable(() => import('./Details'), {
+  LoadingComponent: Loading
+});
+const NavMenu = loadable(() => import('./NavMenu'), {
+  LoadingComponent: Loading
+});
+const PageTab = loadable(() => import('./PageTab'), {
+  LoadingComponent: Loading
+});
 
 VideoPage.propTypes = {
   authLevel: PropTypes.number,
