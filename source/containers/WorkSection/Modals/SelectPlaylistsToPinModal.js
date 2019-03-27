@@ -260,12 +260,10 @@ function SelectPlaylistsToPinModal({
 
   function renderListItems() {
     const playlists = searchText ? searchedPlaylists : playlistsToPin;
-    return playlists.map(playlist => {
-      return {
-        label: playlist.title,
-        checked: selectedPlaylists.indexOf(playlist.id) !== -1
-      };
-    });
+    return playlists.map(playlist => ({
+      label: playlist.title,
+      checked: selectedPlaylists.indexOf(playlist.id) !== -1
+    }));
   }
 }
 

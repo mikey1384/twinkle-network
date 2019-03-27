@@ -369,7 +369,7 @@ function Body({
             type === 'comment'
               ? 'reply'
               : type === 'subject'
-              ? 'respond'
+              ? 'response'
               : 'comment'
           }
           numPreviews={1}
