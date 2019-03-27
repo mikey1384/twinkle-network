@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
@@ -42,24 +42,21 @@ function SelectPlaylistsToPinModal({
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [searchedPlaylists, setSearchedPlaylists] = useState([]);
   const [playlistsToPinObject, setPlaylistsToPinObject] = useState({});
-  const [pinnedPlaylistsObject, setPinnedPlaylistsObject] = useState({});
-  const [searchedPlaylistsObject, setSearchedPlaylistsObject] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
+  const pinnedPlaylistsObjectRef = useRef({});
+  const searchedPlaylistsObjectRef = useRef({});
   const { handleSearch, searchText, searching } = useSearch({
     onSearch: handlePlaylistSearch,
     onClear: () => setSearchedPlaylists([])
   });
-
   useEffect(() => {
-    setSelectedPlaylists(initialSelectedPlaylists);
-    setPinnedPlaylistsObject(
-      pinnedPlaylists.reduce(
-        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-        {}
-      )
+    pinnedPlaylistsObjectRef.current = pinnedPlaylists.reduce(
+      (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+      {}
     );
+    setSelectedPlaylists(initialSelectedPlaylists);
   }, []);
   useEffect(() => {
     setPlaylistsToPinObject(
@@ -69,13 +66,13 @@ function SelectPlaylistsToPinModal({
       )
     );
   }, [playlistsToPin]);
-  const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
-  const playlistObjects = {
-    ...pinnedPlaylistsObject,
-    ...playlistsToPinObject,
-    ...searchedPlaylistsObject
-  };
 
+  const playlistObjects = {
+    ...pinnedPlaylistsObjectRef.current,
+    ...playlistsToPinObject,
+    ...searchedPlaylistsObjectRef.current
+  };
+  const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
   const displayedLoadMoreButton = stringIsEmpty(searchText)
     ? loadMoreButton
     : searchLoadMoreButton;
@@ -207,13 +204,13 @@ function SelectPlaylistsToPinModal({
       searchText,
       shownResults: searchedPlaylists
     });
-    setSearchedPlaylistsObject(searchedPlaylistsObject => ({
-      ...searchedPlaylistsObject,
+    searchedPlaylistsObjectRef.current = {
+      ...searchedPlaylistsObjectRef.current,
       ...results.reduce(
         (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
         {}
       )
-    }));
+    };
     setSearchedPlaylists(searchedPlaylists =>
       searchedPlaylists.concat(results)
     );
@@ -227,11 +224,9 @@ function SelectPlaylistsToPinModal({
       filter: 'playlist',
       searchText: text
     });
-    setSearchedPlaylistsObject(
-      results.reduce(
-        (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
-        {}
-      )
+    searchedPlaylistsObjectRef.current = results.reduce(
+      (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
+      {}
     );
     setSearchedPlaylists(results);
     setSearchLoadMoreButton(loadMoreShown);
