@@ -38,12 +38,13 @@ module.exports = {
     ]
   },
   optimization: {
+    runtimeChunk: 'single',
     splitChunks: {
       cacheGroups: {
         commons: {
           test: /node_modules/,
           name: 'vendor',
-          chunks: 'initial'
+          chunks: 'all'
         }
       }
     },
