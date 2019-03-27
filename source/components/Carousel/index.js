@@ -469,16 +469,17 @@ function Carousel({
     const r = Math.atan2(yDist, xDist);
 
     let swipeAngle = Math.round((r * 180) / Math.PI);
+    const maxAngle = 15;
     if (swipeAngle < 0) {
       swipeAngle = 360 - Math.abs(swipeAngle);
     }
-    if (swipeAngle >= 0 && swipeAngle <= 15) {
+    if (swipeAngle >= 0 && swipeAngle <= maxAngle) {
       return 1;
     }
-    if (swipeAngle <= 360 && swipeAngle >= 345) {
+    if (swipeAngle <= 360 && swipeAngle >= 360 - maxAngle) {
       return 1;
     }
-    if (swipeAngle >= 165 && swipeAngle <= 195) {
+    if (swipeAngle >= 180 - maxAngle && swipeAngle <= 180 + maxAngle) {
       return -1;
     }
     return 0;
