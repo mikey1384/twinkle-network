@@ -10,7 +10,7 @@
     "dev": "cross-env NODE_PATH=./source node .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.js",
     "reload": "sudo pm2 reload server.js",
-    "start": "sudo NODE_PATH=./source pm2 start server.js -i max",
+    "start": "sudo NODE_ENV=production NODE_PATH=./source pm2 start server.js -i max",
     "stop": "sudo pm2 stop server.js",
     "test": "node scripts/test.js --env=jsdom"
   },
