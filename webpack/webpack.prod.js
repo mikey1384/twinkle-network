@@ -2,7 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const envKeys = require('./env.config').envKeys;
-const BrotliPlugin = require('brotli-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -49,13 +48,6 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
-    new BrotliPlugin({
-      asset: '[path].br[query]',
-      test: /\.(js|css|html|svg)$/,
-      threshold: 10240,
-      minRatio: 0.8,
-      deleteOriginalAssets: true
-    }),
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
