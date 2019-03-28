@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "cross-env NODE_PATH=./source node .",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.js",
-    "reload": "sudo pm2 reload index.js",
-    "start": "sudo NODE_PATH=./source pm2 start index.js -i max",
-    "stop": "sudo pm2 stop index.js",
+    "reload": "sudo pm2 reload build",
+    "start": "sudo NODE_PATH=./source pm2 start build -i max",
+    "stop": "sudo pm2 stop build",
     "test": "node scripts/test.js --env=jsdom"
   },
   "dependencies": {

@@ -49,7 +49,6 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new BrotliPlugin({
       asset: '[path].br[query]',
       test: /\.(js|css|html|svg)$/,
