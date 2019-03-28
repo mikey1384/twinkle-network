@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
 
         cb(null, { options: opts, certs });
       },
-      app
+      app: app
     })
     .listen(80, 443);
 } else {
