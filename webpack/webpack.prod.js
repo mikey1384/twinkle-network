@@ -6,7 +6,7 @@ const BrotliPlugin = require('brotli-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: '../app.js',
+  entry: './app.js',
   mode: 'production',
   devtool: 'source-map',
   resolve: {
@@ -53,8 +53,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
-      template: './public/index.html',
-      favicon: './public/favicon.png'
+      template: './index.html',
+      favicon: './favicon.png'
     }),
     new BrotliPlugin({
       asset: '[path].br[query]',
