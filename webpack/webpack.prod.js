@@ -56,7 +56,7 @@ module.exports = {
       favicon: './public/favicon.png'
     }),
     new HtmlWebpackIncludeAssetsPlugin({
-      assets: ['css/slider.css', 'css/styles.css'],
+      assets: ['./public/css/slider.css', './public/css/styles.css'],
       append: false
     })
   ]
