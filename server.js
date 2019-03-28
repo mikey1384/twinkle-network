@@ -25,6 +25,6 @@ require('greenlock-express')
 
       cb(null, { options: opts, certs });
     },
-    app: app
+    app
   })
   .listen(80, 443);
