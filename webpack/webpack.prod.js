@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const envKeys = require('./env.config').envKeys;
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 module.exports = {
   entry: ['./app.js'],
@@ -53,6 +54,10 @@ module.exports = {
       filename: 'index.html',
       template: './public/index.html',
       favicon: './public/favicon.png'
+    }),
+    new HtmlWebpackIncludeAssetsPlugin({
+      assets: ['css/slider.css', 'css/styles.css'],
+      append: false
     })
   ]
 };
