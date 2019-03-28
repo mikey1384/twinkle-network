@@ -6,6 +6,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 if (process.env.NODE_ENV === 'production') {
+  const server = require('./webpack/webpack.prod').default(app);
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, './public', '/index.html'));
   });
@@ -24,7 +25,7 @@ if (process.env.NODE_ENV === 'production') {
 
         cb(null, { options: opts, certs });
       },
-      app: app
+      app: server
     })
     .listen(80, 443);
 } else {
