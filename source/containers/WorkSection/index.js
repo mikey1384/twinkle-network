@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Featured from './Featured';
 import Notification from 'components/Notification';
+import WorkMenuItems from './WorkMenuItems';
 import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -15,7 +16,6 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
-const WorkMenuItems = React.lazy(() => import('./WorkMenuItems'));
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
@@ -47,44 +47,42 @@ function WorkSection({
             }
           `}
         >
-          <Suspense fallback={<Loading />}>
-            <WorkMenuItems
-              className={css`
-                top: CALC(50vh - 11rem);
-                height: auto;
-                width: 19rem;
+          <WorkMenuItems
+            className={css`
+              top: CALC(50vh - 11rem);
+              height: auto;
+              width: 19rem;
+              display: flex;
+              position: fixed;
+              justify-content: center;
+              flex-direction: column;
+              font-size: 2rem;
+              font-family: sans-serif, Arial, Helvetica;
+              > a {
+                padding: 1.5rem;
+                cursor: pointer;
                 display: flex;
-                position: fixed;
+                align-items: center;
+                text-align: center;
+                width: 100%;
                 justify-content: center;
-                flex-direction: column;
-                font-size: 2rem;
-                font-family: sans-serif, Arial, Helvetica;
-                > a {
-                  padding: 1.5rem;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  text-align: center;
-                  width: 100%;
-                  justify-content: center;
-                  color: ${Color.gray()};
-                  text-decoration: none;
-                }
-                > a:hover {
-                  font-weight: bold;
-                  color: ${Color.black()};
-                }
-                > a.active {
-                  font-weight: bold;
-                  color: ${Color.black()};
-                  background: #fff;
-                }
-                @media (max-width: ${mobileMaxWidth}) {
-                  display: none;
-                }
-              `}
-            />
-          </Suspense>
+                color: ${Color.gray()};
+                text-decoration: none;
+              }
+              > a:hover {
+                font-weight: bold;
+                color: ${Color.black()};
+              }
+              > a.active {
+                font-weight: bold;
+                color: ${Color.black()};
+                background: #fff;
+              }
+              @media (max-width: ${mobileMaxWidth}) {
+                display: none;
+              }
+            `}
+          />
           <div
             className={css`
               width: CALC(100vw - 51rem - 2rem);
