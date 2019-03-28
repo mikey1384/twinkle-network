@@ -53,8 +53,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
-      template: './index.html',
-      favicon: './favicon.png'
+      template: './public/index.html',
+      favicon: './public/favicon.png'
     }),
     new BrotliPlugin({
       asset: '[path].br[query]',
