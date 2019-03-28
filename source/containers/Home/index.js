@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Loading from 'components/Loading';
@@ -11,13 +11,8 @@ import Notification from 'components/Notification';
 import { uploadProfilePic } from 'redux/actions/UserActions';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
-import loadable from 'loadable-components';
-const People = loadable(() => import('./People'), {
-  LoadingComponent: Loading
-});
-const Stories = loadable(() => import('./Stories'), {
-  LoadingComponent: Loading
-});
+const People = React.lazy(() => import('./People'));
+const Stories = React.lazy(() => import('./Stories'));
 
 Home.propTypes = {
   history: PropTypes.object.isRequired,
@@ -50,17 +45,19 @@ function Home({ history, location, uploadProfilePic }) {
           />
         </div>
         <div className={Center}>
-          <Switch>
-            <Route
-              path="/users"
-              render={({ history }) => <People history={history} />}
-            />
-            <Route
-              exact
-              path="/"
-              render={({ history }) => <Stories history={history} />}
-            />
-          </Switch>
+          <Suspense fallback={<Loading />}>
+            <Switch>
+              <Route
+                path="/users"
+                render={({ history }) => <People history={history} />}
+              />
+              <Route
+                exact
+                path="/"
+                render={({ history }) => <Stories history={history} />}
+              />
+            </Switch>
+          </Suspense>
         </div>
         <Notification className={Right} location="home" />
         {imageEditModalShown && (

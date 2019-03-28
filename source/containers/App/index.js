@@ -1,11 +1,10 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
-import loadable from 'loadable-components';
 import MobileMenu from './MobileMenu';
 import withScroll from 'components/Wrappers/withScroll';
 import { Switch, Route } from 'react-router-dom';
@@ -23,42 +22,19 @@ import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
-const Home = loadable(() => import('containers/Home'), {
-  LoadingComponent: Loading
-});
-const Profile = loadable(() => import('containers/Profile'), {
-  LoadingComponent: Loading
-});
-const WorkSection = loadable(() => import('containers/WorkSection'), {
-  LoadingComponent: Loading
-});
-const Redirect = loadable(() => import('containers/Redirect'), {
-  LoadingComponent: Loading
-});
-const Privacy = loadable(() => import('containers/Privacy'), {
-  LoadingComponent: Loading
-});
-const SearchPage = loadable(() => import('containers/SearchPage'), {
-  LoadingComponent: Loading
-});
-const PlaylistPage = loadable(() => import('containers/PlaylistPage'), {
-  LoadingComponent: Loading
-});
-const ContentPage = loadable(() => import('containers/ContentPage'), {
-  LoadingComponent: Loading
-});
-const VideoPage = loadable(() => import('containers/VideoPage'), {
-  LoadingComponent: Loading
-});
-const LinkPage = loadable(() => import('containers/LinkPage'), {
-  LoadingComponent: Loading
-});
-const Verify = loadable(() => import('containers/Verify'), {
-  LoadingComponent: Loading
-});
-const Chat = loadable(() => import('containers/Chat'), {
-  LoadingComponent: Loading
-});
+
+const Home = React.lazy(() => import('containers/Home'));
+const Profile = React.lazy(() => import('containers/Profile'));
+const WorkSection = React.lazy(() => import('containers/WorkSection'));
+const Redirect = React.lazy(() => import('containers/Redirect'));
+const Privacy = React.lazy(() => import('containers/Privacy'));
+const SearchPage = React.lazy(() => import('containers/SearchPage'));
+const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
+const ContentPage = React.lazy(() => import('containers/ContentPage'));
+const VideoPage = React.lazy(() => import('containers/VideoPage'));
+const LinkPage = React.lazy(() => import('containers/LinkPage'));
+const Verify = React.lazy(() => import('containers/Verify'));
+const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
   changePageVisibility: PropTypes.func.isRequired,
@@ -231,57 +207,61 @@ function App({
         id="App"
         className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
       >
-        <Switch>
-          <Route
-            path="/users/:username"
-            render={({ history, location, match }) => (
-              <Profile history={history} location={location} match={match} />
-            )}
-          />
-          <Route path="/subjects" component={ContentPage} />
-          <Route path="/comments" component={ContentPage} />
-          <Route path="/videos/:videoId" component={VideoPage} />
-          <Route path="/videos" component={WorkSection} />
-          <Route path="/links/:linkId" component={LinkPage} />
-          <Route path="/links" component={WorkSection} />
-          <Route path="/xp" component={WorkSection} />
-          <Route path="/playlists" component={PlaylistPage} />
-          <Route path="/verify" component={Verify} />
-          <Route path="/privacy" component={Privacy} />
-          <Route
-            exact
-            path="/"
-            render={({ history, location }) => (
-              <Home history={history} location={location} />
-            )}
-          />
-          <Route
-            exact
-            path="/users/"
-            render={({ history, location }) => (
-              <Home history={history} location={location} />
-            )}
-          />
-          <Route path="/:username" component={Redirect} />
-        </Switch>
+        <Suspense fallback={<Loading />}>
+          <Switch>
+            <Route
+              path="/users/:username"
+              render={({ history, location, match }) => (
+                <Profile history={history} location={location} match={match} />
+              )}
+            />
+            <Route path="/subjects" component={ContentPage} />
+            <Route path="/comments" component={ContentPage} />
+            <Route path="/videos/:videoId" component={VideoPage} />
+            <Route path="/videos" component={WorkSection} />
+            <Route path="/links/:linkId" component={LinkPage} />
+            <Route path="/links" component={WorkSection} />
+            <Route path="/xp" component={WorkSection} />
+            <Route path="/playlists" component={PlaylistPage} />
+            <Route path="/verify" component={Verify} />
+            <Route path="/privacy" component={Privacy} />
+            <Route
+              exact
+              path="/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
+            <Route
+              exact
+              path="/users/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
+            <Route path="/:username" component={Redirect} />
+          </Switch>
+        </Suspense>
       </div>
-      {searchMode && (
-        <div
-          className={`${css`
-            margin-top: 5rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
-            }
-          `} ${chatMode ? 'hidden' : ''}`}
-        >
-          <SearchPage
-            searchText={searchText}
-            onSearchBoxFocus={() => SearchBoxRef.current.focus()}
-          />
-        </div>
-      )}
-      {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
-      {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+      <Suspense fallback={<Loading />}>
+        {searchMode && (
+          <div
+            className={`${css`
+              margin-top: 5rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-top: 0;
+              }
+            `} ${chatMode ? 'hidden' : ''}`}
+          >
+            <SearchPage
+              searchText={searchText}
+              onSearchBoxFocus={() => SearchBoxRef.current.focus()}
+            />
+          </div>
+        )}
+        {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
+        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+      </Suspense>
     </div>
   );
 

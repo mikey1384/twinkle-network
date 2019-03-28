@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { Suspense, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -9,12 +9,7 @@ import { container } from './Styles';
 import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const WelcomeMessage = loadable(() => import('./WelcomeMessage'), {
-  LoadingComponent: () => (
-    <Loading innerStyle={{ fontSize: '2rem' }} text="Loading Twinkle Network" />
-  )
-});
+const WelcomeMessage = React.lazy(() => import('./WelcomeMessage'));
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -103,7 +98,17 @@ function ProfileWidget({
               </Button>
             </div>
           )}
-          <WelcomeMessage userId={userId} openSigninModal={openSigninModal} />
+          <Suspense
+            fallback={
+              <Loading
+                innerStyle={{ fontSize: '2rem' }}
+                text="Loading Twinkle Network"
+              />
+            }
+          >
+            <WelcomeMessage userId={userId} openSigninModal={openSigninModal} />
+          </Suspense>
+
           <input
             ref={FileInputRef}
             style={{ display: 'none' }}

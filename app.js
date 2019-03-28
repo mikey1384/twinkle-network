@@ -69,7 +69,7 @@ library.add(
 );
 
 const store = createStoreWithMiddlewares();
-ReactDOM.hydrate(
+ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Route component={App} />

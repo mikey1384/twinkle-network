@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -16,15 +15,9 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
-const WorkMenuItems = loadable(() => import('./WorkMenuItems'), {
-  LoadingComponent: Loading
-});
-const Videos = loadable(() => import('./Videos'), {
-  LoadingComponent: Loading
-});
-const Links = loadable(() => import('./Links'), {
-  LoadingComponent: Loading
-});
+const WorkMenuItems = React.lazy(() => import('./WorkMenuItems'));
+const Videos = React.lazy(() => import('./Videos'));
+const Links = React.lazy(() => import('./Links'));
 
 WorkSection.propTypes = {
   location: PropTypes.object.isRequired,
@@ -54,42 +47,44 @@ function WorkSection({
             }
           `}
         >
-          <WorkMenuItems
-            className={css`
-              top: CALC(50vh - 11rem);
-              height: auto;
-              width: 19rem;
-              display: flex;
-              position: fixed;
-              justify-content: center;
-              flex-direction: column;
-              font-size: 2rem;
-              font-family: sans-serif, Arial, Helvetica;
-              > a {
-                padding: 1.5rem;
-                cursor: pointer;
+          <Suspense fallback={<Loading />}>
+            <WorkMenuItems
+              className={css`
+                top: CALC(50vh - 11rem);
+                height: auto;
+                width: 19rem;
                 display: flex;
-                align-items: center;
-                text-align: center;
-                width: 100%;
+                position: fixed;
                 justify-content: center;
-                color: ${Color.gray()};
-                text-decoration: none;
-              }
-              > a:hover {
-                font-weight: bold;
-                color: ${Color.black()};
-              }
-              > a.active {
-                font-weight: bold;
-                color: ${Color.black()};
-                background: #fff;
-              }
-              @media (max-width: ${mobileMaxWidth}) {
-                display: none;
-              }
-            `}
-          />
+                flex-direction: column;
+                font-size: 2rem;
+                font-family: sans-serif, Arial, Helvetica;
+                > a {
+                  padding: 1.5rem;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  text-align: center;
+                  width: 100%;
+                  justify-content: center;
+                  color: ${Color.gray()};
+                  text-decoration: none;
+                }
+                > a:hover {
+                  font-weight: bold;
+                  color: ${Color.black()};
+                }
+                > a.active {
+                  font-weight: bold;
+                  color: ${Color.black()};
+                  background: #fff;
+                }
+                @media (max-width: ${mobileMaxWidth}) {
+                  display: none;
+                }
+              `}
+            />
+          </Suspense>
           <div
             className={css`
               width: CALC(100vw - 51rem - 2rem);
@@ -102,11 +97,13 @@ function WorkSection({
               }
             `}
           >
-            <Switch>
-              <Route path="/videos" component={Videos} />
-              <Route path="/links" component={Links} />
-              <Route path="/xp" component={Featured} />
-            </Switch>
+            <Suspense fallback={<Loading />}>
+              <Switch>
+                <Route path="/videos" component={Videos} />
+                <Route path="/links" component={Links} />
+                <Route path="/xp" component={Featured} />
+              </Switch>
+            </Suspense>
             <div
               className={css`
                 display: none;

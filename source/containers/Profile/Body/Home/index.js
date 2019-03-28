@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useContentObj } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
@@ -31,13 +31,8 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const BasicInfos = loadable(() => import('./BasicInfos'), {
-  LoadingComponent: Loading
-});
-const Achievements = loadable(() => import('./Achievements'), {
-  LoadingComponent: Loading
-});
+const BasicInfos = React.lazy(() => import('./BasicInfos'));
+const Achievements = React.lazy(() => import('./Achievements'));
 
 Home.propTypes = {
   dispatch: PropTypes.func.isRequired,
@@ -271,43 +266,45 @@ function Home({
               )}
             </div>
           </div>
-          <BasicInfos
-            className={css`
-              margin-top: ${(!greeting || greeting.length) < 50
-                ? userId === profile.id
-                  ? '-7rem'
-                  : '-4rem'
-                : 0};
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: ${(!greeting || greeting.length) < 20
+          <Suspense fallback={<Loading />}>
+            <BasicInfos
+              className={css`
+                margin-top: ${(!greeting || greeting.length) < 50
                   ? userId === profile.id
                     ? '-7rem'
                     : '-4rem'
                   : 0};
-              }
-            `}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              width: 'CALC(50% - 1rem)',
-              fontSize: '1.7rem',
-              marginLeft: '1rem',
-              marginBottom: '1rem'
-            }}
-            email={email}
-            emailVerified={emailVerified}
-            joinDate={joinDate}
-            lastActive={lastActive}
-            myId={userId}
-            userId={id}
-            username={username}
-            selectedTheme={selectedTheme}
-            website={website}
-            youtubeName={youtubeName}
-            youtubeUrl={youtubeUrl}
-          />
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-top: ${(!greeting || greeting.length) < 20
+                    ? userId === profile.id
+                      ? '-7rem'
+                      : '-4rem'
+                    : 0};
+                }
+              `}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                width: 'CALC(50% - 1rem)',
+                fontSize: '1.7rem',
+                marginLeft: '1rem',
+                marginBottom: '1rem'
+              }}
+              email={email}
+              emailVerified={emailVerified}
+              joinDate={joinDate}
+              lastActive={lastActive}
+              myId={userId}
+              userId={id}
+              username={username}
+              selectedTheme={selectedTheme}
+              website={website}
+              youtubeName={youtubeName}
+              youtubeUrl={youtubeUrl}
+            />
+          </Suspense>
         </div>
         {profile.twinkleXP > 0 && (
           <RankBar
@@ -403,11 +400,13 @@ function Home({
           </div>
         )}
       </SectionPanel>
-      <Achievements
-        selectedTheme={selectedTheme}
-        profile={profile}
-        myId={userId}
-      />
+      <Suspense fallback={<Loading />}>
+        <Achievements
+          selectedTheme={selectedTheme}
+          profile={profile}
+          myId={userId}
+        />
+      </Suspense>
       {confirmModalShown && (
         <ConfirmModal
           onConfirm={onRemoveStatus}

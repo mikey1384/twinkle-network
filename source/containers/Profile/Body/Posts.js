@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
@@ -34,10 +34,7 @@ import {
 } from 'redux/actions/FeedActions';
 import { connect } from 'react-redux';
 import Loading from 'components/Loading';
-import loadable from 'loadable-components';
-const SideMenu = loadable(() => import('./SideMenu'), {
-  LoadingComponent: Loading
-});
+const SideMenu = React.lazy(() => import('./SideMenu'));
 
 Posts.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -258,20 +255,22 @@ function Posts({
             )}
           </div>
         )}
-        <SideMenu
-          className={`desktop ${css`
-            width: 30rem;
-          `}`}
-          menuItems={[
-            { key: 'all', label: 'All' },
-            { key: 'comment', label: 'Comments' },
-            { key: 'post', label: 'Subjects' },
-            { key: 'video', label: 'Videos' },
-            { key: 'url', label: 'Links' }
-          ]}
-          onMenuClick={onClickPostsMenu}
-          selectedKey={filterTable[match.params.section]}
-        />
+        <Suspense fallback={<Loading />}>
+          <SideMenu
+            className={`desktop ${css`
+              width: 30rem;
+            `}`}
+            menuItems={[
+              { key: 'all', label: 'All' },
+              { key: 'comment', label: 'Comments' },
+              { key: 'post', label: 'Subjects' },
+              { key: 'video', label: 'Videos' },
+              { key: 'url', label: 'Links' }
+            ]}
+            onMenuClick={onClickPostsMenu}
+            selectedKey={filterTable[match.params.section]}
+          />
+        </Suspense>
       </div>
     </div>
   );

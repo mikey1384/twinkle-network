@@ -3,9 +3,10 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const envKeys = require('./env.config').envKeys;
 const BrotliPlugin = require('brotli-webpack-plugin');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './entry/client.js',
+  entry: './app.js',
   mode: 'production',
   devtool: 'source-map',
   resolve: {
@@ -13,9 +14,9 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
   output: {
-    filename: '[name].js',
     publicPath: '/',
-    path: path.join(__dirname, '../public')
+    path: path.resolve(__dirname, 'public'),
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -49,6 +50,12 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin(envKeys),
     new webpack.optimize.ModuleConcatenationPlugin(),
+    new HtmlWebPackPlugin({
+      hash: true,
+      filename: 'index.html',
+      template: './public/index.html',
+      favicon: './public/favicon.png'
+    }),
     new BrotliPlugin({
       asset: '[path].br[query]',
       test: /\.(js|css|html|svg)$/,
