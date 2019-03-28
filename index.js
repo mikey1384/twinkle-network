@@ -5,6 +5,7 @@ require('@babel/polyfill');
 const express = require('express');
 const path = require('path');
 const app = express();
+console.log(process.env.NODE_ENV);
 const webpackServer =
   process.env.NODE_ENV === 'production'
     ? require('./webpack/webpack.prod')
