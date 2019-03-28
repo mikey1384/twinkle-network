@@ -6,7 +6,7 @@ const BrotliPlugin = require('brotli-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './app.js',
+  entry: ['./app.js'],
   mode: 'production',
   devtool: 'source-map',
   resolve: {
@@ -15,7 +15,7 @@ module.exports = {
   },
   output: {
     publicPath: '/',
-    path: path.resolve(__dirname, '../public'),
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].js'
   },
   module: {
