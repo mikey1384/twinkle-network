@@ -50,18 +50,18 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin(envKeys),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new HtmlWebPackPlugin({
-      hash: true,
-      filename: 'index.html',
-      template: './public/index.html',
-      favicon: './public/favicon.png'
-    }),
     new BrotliPlugin({
       asset: '[path].br[query]',
       test: /\.(js|css|html|svg)$/,
       threshold: 10240,
       minRatio: 0.8,
       deleteOriginalAssets: true
+    }),
+    new HtmlWebPackPlugin({
+      hash: true,
+      filename: 'index.html',
+      template: './public/index.html',
+      favicon: './public/favicon.png'
     })
   ]
 };
