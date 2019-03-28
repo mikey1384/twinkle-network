@@ -5,15 +5,9 @@ require('@babel/polyfill');
 const express = require('express');
 const path = require('path');
 const app = express();
-console.log(process.env.NODE_ENV);
-const webpackServer =
-  process.env.NODE_ENV === 'production'
-    ? require('./webpack/webpack.prod')
-    : require('./webpack/webpack.dev');
-const server = webpackServer.default(app);
-server.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../public')));
 if (process.env.NODE_ENV === 'production') {
-  server.get('*', (req, res) => {
+  app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
   });
   require('greenlock-express')
@@ -31,10 +25,11 @@ if (process.env.NODE_ENV === 'production') {
 
         cb(null, { options: opts, certs });
       },
-      app: server
+      app: app
     })
     .listen(80, 443);
 } else {
+  const server = require('./webpack/webpack.dev').default(app);
   const http = require('http');
   const DEV_PORT = process.env.PORT;
 
