@@ -14,7 +14,7 @@ module.exports = {
   },
   output: {
     publicPath: '/',
-    path: path.resolve(__dirname, '../build'),
+    path: path.resolve(__dirname, '../public'),
     filename: '[hash][name].bundle.js'
   },
   module: {
@@ -51,7 +51,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
-      template: './public/index.html',
+      template: './template/index.html',
       favicon: './public/favicon.png'
     })
   ]
