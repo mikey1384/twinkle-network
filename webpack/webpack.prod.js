@@ -7,6 +7,7 @@ const BrotliPlugin = require('brotli-webpack-plugin');
 module.exports = {
   entry: './entry/client.js',
   mode: 'production',
+  devtool: 'source-map',
   resolve: {
     modules: ['node_modules', 'source'],
     extensions: ['.js', '.jsx']
@@ -49,7 +50,8 @@ module.exports = {
     },
     minimizer: [
       new TerserPlugin({
-        parallel: true
+        parallel: true,
+        sourceMap: true
       })
     ]
   },
