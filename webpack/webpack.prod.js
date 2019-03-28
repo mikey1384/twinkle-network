@@ -15,7 +15,7 @@ module.exports = {
   },
   output: {
     publicPath: '/',
-    path: path.resolve(__dirname, '../public'),
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].js'
   },
   module: {
@@ -53,8 +53,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
-      template: path.resolve(__dirname, '../public/index.html'),
-      favicon: path.resolve(__dirname, '../public/favicon.png')
+      template: './public/index.html',
+      favicon: './public/favicon.png'
     }),
     new BrotliPlugin({
       asset: '[path].br[query]',
