@@ -267,7 +267,9 @@ function Chat({
       >
         {currentChannel.id !== GENERAL_CHAT_ID && (
           <DropdownButton
+            skeuomorphic
             color="darkerGray"
+            opacity={0.7}
             style={{
               position: 'absolute',
               zIndex: 10,
