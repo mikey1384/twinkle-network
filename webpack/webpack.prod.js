@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const envKeys = require('./env.config').envKeys;
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-const CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 
 module.exports = {
   entry: ['./app.js'],
@@ -65,7 +64,6 @@ module.exports = {
       filename: 'index.html',
       template: './template/index.html',
       favicon: './public/favicon.png'
-    }),
-    new CleanObsoleteChunks()
+    })
   ]
 };
