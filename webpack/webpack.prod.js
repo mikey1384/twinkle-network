@@ -58,6 +58,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
+    new webpack.HashedModuleIdsPlugin(),
     new HtmlWebPackPlugin({
       hash: true,
       filename: 'index.html',
