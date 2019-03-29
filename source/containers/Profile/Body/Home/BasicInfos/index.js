@@ -13,6 +13,7 @@ import {
 } from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { setProfileInfo } from 'redux/actions/UserActions';
 
 BasicInfos.propTypes = {
@@ -20,10 +21,12 @@ BasicInfos.propTypes = {
   dispatch: PropTypes.func.isRequired,
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
-  online: PropTypes.bool,
+  online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
   lastActive: PropTypes.string,
   myId: PropTypes.number,
+  openDirectMessageChannel: PropTypes.func.isRequired,
   selectedTheme: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
@@ -43,6 +46,8 @@ function BasicInfos({
   joinDate,
   lastActive,
   myId,
+  openDirectMessageChannel,
+  profileTheme,
   selectedTheme,
   setProfileInfo,
   userId,
@@ -241,6 +246,31 @@ function BasicInfos({
             ) : (
               `Was last active ${timeSince(lastActive)}`
             )}
+            {myId !== userId && (
+              <Button
+                style={{
+                  marginTop: '1rem',
+                  width: '100%'
+                }}
+                skeuomorphic
+                color={selectedTheme || profileTheme || 'logoBlue'}
+                onClick={() =>
+                  openDirectMessageChannel(
+                    { userId: myId },
+                    { id: userId, username },
+                    false
+                  )
+                }
+              >
+                <Icon icon="comments" />
+                <span style={{ marginLeft: '0.7rem' }}>
+                  {online ? 'Chat' : 'Message'}
+                  <span className="desktop">
+                    {online ? ' with' : ''} {username}
+                  </span>
+                </span>
+              </Button>
+            )}
           </div>
         </div>
       ) : null}
@@ -300,6 +330,8 @@ export default connect(
   null,
   dispatch => ({
     dispatch,
+    openDirectMessageChannel: (...params) =>
+      dispatch(openDirectMessageChannel(...params)),
     setProfileInfo: data => dispatch(setProfileInfo(data))
   })
 )(BasicInfos);

@@ -69,6 +69,7 @@ function Home({
     statusMsg,
     profileFirstRow,
     profileSecondRow,
+    profileTheme,
     profileThirdRow,
     statusColor,
     username,
@@ -269,6 +270,7 @@ function Home({
           </div>
           <Suspense fallback={<Loading />}>
             <BasicInfos
+              profileTheme={profileTheme}
               className={css`
                 margin-top: ${(!greeting || greeting.length) < 50
                   ? userId === profile.id

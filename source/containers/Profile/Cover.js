@@ -5,7 +5,6 @@ import ColorSelector from 'components/ColorSelector';
 import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
-import Icon from 'components/Icon';
 import moment from 'moment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { openDirectMessageChannel } from 'redux/actions/ChatActions';
@@ -87,6 +86,7 @@ function Cover({
   useEffect(() => {
     onSelectTheme(profileTheme || 'logoBlue');
   }, []);
+
   return (
     <ErrorBoundary>
       <div
@@ -172,34 +172,6 @@ function Cover({
             >
               Change Theme
             </Button>
-          )}
-          {id !== userId && (
-            <div
-              style={{
-                background: '#fff',
-                marginBottom: '-1rem',
-                marginRight: '-1rem',
-                borderRadius
-              }}
-            >
-              <Button
-                style={{
-                  width: '100%',
-                  color: Color[selectedTheme || profileTheme || 'logoBlue']()
-                }}
-                skeuomorphic
-                color="darkerGray"
-                onClick={() =>
-                  openDirectMessageChannel({ userId }, { id, username }, false)
-                }
-              >
-                <Icon icon="comments" />
-                <span style={{ marginLeft: '0.7rem' }}>
-                  Chat
-                  <span className="desktop"> with {username}</span>
-                </span>
-              </Button>
-            </div>
           )}
           {colorSelectorShown && id === userId && (
             <>
