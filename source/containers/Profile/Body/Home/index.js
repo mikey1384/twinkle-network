@@ -65,6 +65,7 @@ function Home({
     id,
     joinDate,
     lastActive,
+    online,
     statusMsg,
     profileFirstRow,
     profileSecondRow,
@@ -295,6 +296,7 @@ function Home({
               email={email}
               emailVerified={emailVerified}
               joinDate={joinDate}
+              online={online}
               lastActive={lastActive}
               myId={userId}
               userId={id}

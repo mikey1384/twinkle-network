@@ -20,6 +20,7 @@ BasicInfos.propTypes = {
   dispatch: PropTypes.func.isRequired,
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
+  online: PropTypes.bool,
   joinDate: PropTypes.string,
   lastActive: PropTypes.string,
   myId: PropTypes.number,
@@ -38,6 +39,7 @@ function BasicInfos({
   dispatch,
   email,
   emailVerified,
+  online,
   joinDate,
   lastActive,
   myId,
@@ -231,7 +233,15 @@ function BasicInfos({
             textAlign: 'center'
           }}
         >
-          <div>Was last active {timeSince(lastActive)}</div>
+          <div>
+            {online ? (
+              <span
+                style={{ fontWeight: 'bold', color: Color.green() }}
+              >{`${username} is online`}</span>
+            ) : (
+              `Was last active ${timeSince(lastActive)}`
+            )}
+          </div>
         </div>
       ) : null}
     </div>
