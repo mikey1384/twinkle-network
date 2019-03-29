@@ -1,4 +1,5 @@
 import webpack from 'webpack';
+const path = require('path');
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import prodCfg from './webpack.prod.js';
@@ -10,6 +11,11 @@ export default function devConfig(app) {
   const config = {
     ...prodCfg,
     entry: ['webpack-hot-middleware/client', './app.js'],
+    output: {
+      publicPath: '/',
+      path: path.resolve(__dirname, '../public'),
+      filename: '[name].[hash].js'
+    },
     devtool: 'cheap-module-eval-source-map',
     mode: 'development',
     module: {
