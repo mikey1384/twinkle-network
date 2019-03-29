@@ -8,9 +8,8 @@ const app = express();
 
 app.use(express.static(path.resolve(__dirname, 'public')));
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'), {
-    maxAge: '1y'
-  });
+  res.set('Cache-Control', 'public, max-age=31557600');
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
 });
 require('greenlock-express')
   .create({
