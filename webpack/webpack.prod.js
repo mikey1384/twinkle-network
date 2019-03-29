@@ -15,7 +15,7 @@ module.exports = {
   output: {
     publicPath: '/',
     path: path.resolve(__dirname, '../public'),
-    filename: '[name][contenthash].js'
+    filename: '[name].[contenthash].js'
   },
   module: {
     rules: [
@@ -44,7 +44,17 @@ module.exports = {
         parallel: true,
         sourceMap: true
       })
-    ]
+    ],
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
   },
   plugins: [
     new webpack.DefinePlugin(envKeys),
