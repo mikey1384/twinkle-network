@@ -60,9 +60,7 @@ function RewardStatus({
             ? Color.gold()
             : rewardedStars > 10
             ? Color.orange(0.5 + 0.01 * rewardedStars)
-            : Color.blue(
-                0.5 + (1 / Math.min(20, maxStars * 2)) * rewardedStars
-              )};
+            : Color.logoBlue()};
         `}`}
       >
         <Starmarks stars={rewardedStars} />
