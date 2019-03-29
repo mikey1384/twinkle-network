@@ -224,7 +224,7 @@ function BasicInfos({
             <span style={{ marginLeft: '0.7rem' }}>Edit</span>
           </Button>
         ) : null
-      ) : (
+      ) : lastActive ? (
         <div
           style={{
             marginTop: email || youtubeUrl ? '1rem' : 0,
@@ -233,7 +233,7 @@ function BasicInfos({
         >
           <div>Was last active {timeSince(lastActive)}</div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 
