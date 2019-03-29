@@ -34,7 +34,7 @@ import {
 } from 'redux/actions/FeedActions';
 import { connect } from 'react-redux';
 import Loading from 'components/Loading';
-const SideMenu = React.lazy(() => import('./SideMenu'));
+import SideMenu from './SideMenu';
 
 Posts.propTypes = {
   addTags: PropTypes.func.isRequired,
