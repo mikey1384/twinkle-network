@@ -24,7 +24,8 @@ export default function ColorSelector({
   const requirement = {
     black: 35000,
     rose: 70000,
-    purple: 100000
+    purple: 100000,
+    vantaBlack: 1000000
   };
 
   return (

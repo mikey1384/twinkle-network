@@ -66,6 +66,10 @@ export const profileThemes = {
     color: Color.rose(),
     cover: Color.rose()
   },
+  vantaBlack: {
+    color: Color.vantaBlack(),
+    cover: Color.vantaBlack()
+  },
   white: {
     color: '#fff',
     cover: '#fff'

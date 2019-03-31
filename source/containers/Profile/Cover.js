@@ -94,7 +94,7 @@ function Cover({
         style={{
           color:
             showCover &&
-            ['black', 'rose', 'purple'].indexOf(
+            ['black', 'rose', 'purple', 'vantaBlack'].indexOf(
               selectedTheme || profileTheme
             ) !== -1
               ? Color.gold()
@@ -156,74 +156,77 @@ function Cover({
           )}
           <p>({realName})</p>
         </div>
-        <div
-          style={{
-            background: colorSelectorShown && '#fff',
-            borderRadius,
-            position: 'absolute',
-            padding: '1rem',
-            bottom: '1rem',
-            right: '1rem'
-          }}
-        >
-          {!colorSelectorShown && id === userId && (
-            <Button
-              style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
-              default
-              filled
-              onClick={() => setColorSelectorShown(true)}
-            >
-              Change Theme
-            </Button>
-          )}
-          {colorSelectorShown && id === userId && (
-            <>
-              <ColorSelector
-                colors={[
-                  'logoBlue',
-                  'green',
-                  'orange',
-                  'pink',
-                  'rose',
-                  'purple',
-                  'black'
-                ]}
-                twinkleXP={twinkleXP || 0}
-                setColor={onSelectTheme}
-                selectedColor={selectedTheme || profileTheme || 'logoBlue'}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  justifyContent: 'center'
-                }}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  marginTop: '1rem',
-                  justifyContent: 'flex-end'
-                }}
+        {id === userId && (
+          <div
+            style={{
+              background: colorSelectorShown && '#fff',
+              borderRadius,
+              position: 'absolute',
+              padding: '1rem',
+              bottom: '1rem',
+              right: '1rem'
+            }}
+          >
+            {!colorSelectorShown && (
+              <Button
+                style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
+                default
+                filled
+                onClick={() => setColorSelectorShown(true)}
               >
-                <Button
-                  style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                  skeuomorphic
-                  color="darkerGray"
-                  onClick={onColorSelectCancel}
+                Change Theme
+              </Button>
+            )}
+            {colorSelectorShown && (
+              <>
+                <ColorSelector
+                  colors={[
+                    'logoBlue',
+                    'green',
+                    'orange',
+                    'pink',
+                    'rose',
+                    'purple',
+                    'black',
+                    'vantaBlack'
+                  ]}
+                  twinkleXP={twinkleXP || 0}
+                  setColor={onSelectTheme}
+                  selectedColor={selectedTheme || profileTheme || 'logoBlue'}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    justifyContent: 'center'
+                  }}
+                />
+                <div
+                  style={{
+                    display: 'flex',
+                    marginTop: '1rem',
+                    justifyContent: 'flex-end'
+                  }}
                 >
-                  Cancel
-                </Button>
-                <Button
-                  style={{ fontSize: '1.2rem' }}
-                  color="blue"
-                  filled
-                  onClick={handleSetTheme}
-                >
-                  Change
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
+                  <Button
+                    style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                    skeuomorphic
+                    color="darkerGray"
+                    onClick={onColorSelectCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    style={{ fontSize: '1.2rem' }}
+                    color="blue"
+                    filled
+                    onClick={handleSetTheme}
+                  >
+                    Change
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
         <input
           ref={FileInputRef}
           style={{ display: 'none' }}

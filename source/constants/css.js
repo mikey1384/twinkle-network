@@ -29,6 +29,7 @@ export const Color = {
   purple: (opacity = 1) => `rgba(152,28,235,${opacity})`,
   red: (opacity = 1) => `rgba(255,65,54,${opacity})`,
   rose: (opacity = 1) => `rgba(223,0,102,${opacity})`,
+  vantaBlack: (opacity = 1) => `rgba(0,0,0,${opacity})`,
   white: (opacity = 1) => `rgba(255,255,255,${opacity})`
 };
 
