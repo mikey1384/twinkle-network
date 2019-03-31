@@ -78,6 +78,7 @@ export const container = ({ username, usernameHovered }) => css`
     }
     .details {
       border: 0;
+      border-top: 1px solid ${Color.borderGray()};
       border-bottom: 1px solid ${Color.borderGray()};
       border-radius: 0;
       text-align: center;
