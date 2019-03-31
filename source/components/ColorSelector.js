@@ -23,7 +23,8 @@ export default function ColorSelector({
   const [hovered, setHovered] = useState();
   const requirement = {
     black: 35000,
-    rose: 70000
+    rose: 70000,
+    purple: 100000
   };
 
   return (

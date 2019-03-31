@@ -69,6 +69,7 @@ export default function StatusInput({
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <ColorSelector
               colors={[
+                'purple',
                 'rose',
                 'pink',
                 'ivory',
