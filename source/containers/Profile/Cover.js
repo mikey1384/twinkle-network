@@ -181,8 +181,8 @@ function Cover({
                   'green',
                   'orange',
                   'pink',
-                  'purple',
                   'rose',
+                  'purple',
                   'black'
                 ]}
                 twinkleXP={twinkleXP || 0}
