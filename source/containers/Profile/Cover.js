@@ -48,7 +48,8 @@ const backgroundImageObj = {
     1: ValentinesCover
   },
   logoBlue: {
-    2: MarchCover
+    2: MarchCover,
+    3: MarchCover
   }
 };
 
@@ -93,7 +94,9 @@ function Cover({
         style={{
           color:
             showCover &&
-            ['black', 'rose'].indexOf(selectedTheme || profileTheme) !== -1
+            ['black', 'rose', 'purple'].indexOf(
+              selectedTheme || profileTheme
+            ) !== -1
               ? Color.gold()
               : '#fff',
           backgroundImage: showCover
