@@ -187,8 +187,7 @@ function Cover({
                     'pink',
                     'rose',
                     'purple',
-                    'black',
-                    'vantaBlack'
+                    'black'
                   ]}
                   twinkleXP={twinkleXP || 0}
                   setColor={onSelectTheme}
