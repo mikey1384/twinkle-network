@@ -45,7 +45,6 @@ module.exports = {
         sourceMap: true
       })
     ],
-    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
       maxInitialRequests: Infinity,
