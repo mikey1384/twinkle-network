@@ -40,7 +40,7 @@ function TagModal({
       <main>
         <TagForm
           title="Search Playlists"
-          subTitle="(e.g., crash course, history of the world)"
+          subTitle="(e.g., crash course, story of the world)"
           itemLabel="title"
           searchResults={searchResults}
           filter={result => currentPlaylists.indexOf(result.id) === -1}
