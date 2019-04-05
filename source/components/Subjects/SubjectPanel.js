@@ -268,7 +268,7 @@ function SubjectPanel({
                 }}
               >
                 <Button
-                  filled
+                  skeuomorphic
                   color={themeColor}
                   style={{ fontSize: '2rem' }}
                   onClick={onExpand}
