@@ -317,6 +317,9 @@ function Comment({
     if (parent.type === 'subject' && parent.difficulty > 0) {
       return parent.difficulty;
     }
+    if (parent.rootType === 'subject' && parent.rootObj?.difficulty > 0) {
+      return parent.rootObj.difficulty;
+    }
     if (parent.type === 'video' || parent.type === 'url') {
       if (targetObj.subject?.difficulty) {
         return targetObj.subject?.difficulty;

@@ -296,6 +296,9 @@ function Reply({
     if (parent.type === 'subject' && parent.difficulty > 0) {
       return parent.difficulty;
     }
+    if (parent.rootType === 'subject' && parent.rootObj?.difficulty > 0) {
+      return parent.rootObj.difficulty;
+    }
     if (parent.type === 'video' || parent.type === 'url') {
       if (subject?.difficulty) {
         return subject?.difficulty;
