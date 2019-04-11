@@ -47,6 +47,7 @@ function SelectPlaylistsToPinModal({
   const playlistsToPinObjectRef = useRef({});
   const pinnedPlaylistsObjectRef = useRef({});
   const searchedPlaylistsObjectRef = useRef({});
+  const playlistObjectsRef = useRef({});
   const { handleSearch, searchText, searching } = useSearch({
     onSearch: handlePlaylistSearch,
     onClear: () => setSearchedPlaylists([])
@@ -64,8 +65,8 @@ function SelectPlaylistsToPinModal({
       {}
     );
   }, [playlistsToPin]);
-
-  const playlistObjects = {
+  playlistObjectsRef.current = {
+    ...playlistObjectsRef.current,
     ...pinnedPlaylistsObjectRef.current,
     ...playlistsToPinObjectRef.current,
     ...searchedPlaylistsObjectRef.current
@@ -117,7 +118,7 @@ function SelectPlaylistsToPinModal({
                   listItems={renderListItems()}
                 />
               )}
-              {displayedLoadMoreButton && (
+              {displayedLoadMoreButton && !searching && (
                 <Button
                   style={{ marginTop: '2rem', width: '100%' }}
                   transparent
@@ -149,7 +150,7 @@ function SelectPlaylistsToPinModal({
                 inputType="checkbox"
                 onSelect={handleDeselect}
                 listItems={selectedPlaylists.map(playlistId => ({
-                  label: playlistObjects[playlistId],
+                  label: playlistObjectsRef.current[playlistId],
                   checked: true
                 }))}
               />
