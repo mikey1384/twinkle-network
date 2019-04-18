@@ -229,7 +229,8 @@ function Header({
                   >
                     <span
                       style={
-                        numNewPosts > 0
+                        ['links', 'videos'].indexOf(pathname.split('/')[1]) ===
+                          -1 && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }
@@ -241,7 +242,8 @@ function Header({
                     </span>
                     <span
                       style={
-                        numNewPosts > 0
+                        ['links', 'videos'].indexOf(pathname.split('/')[1]) ===
+                          -1 && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }

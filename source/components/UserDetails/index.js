@@ -17,7 +17,7 @@ import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import URL from 'constants/URL';
 
 UserDetails.propTypes = {
-  isProfilePage: PropTypes.bool,
+  noLink: PropTypes.bool,
   profile: PropTypes.object.isRequired,
   removeStatusMsg: PropTypes.func,
   style: PropTypes.object,
@@ -29,7 +29,7 @@ UserDetails.propTypes = {
 };
 
 export default function UserDetails({
-  isProfilePage,
+  noLink,
   profile,
   removeStatusMsg,
   small,
@@ -57,7 +57,7 @@ export default function UserDetails({
       }}
     >
       <Link
-        to={isProfilePage ? null : `/users/${profile.username}`}
+        to={noLink ? null : `/users/${profile.username}`}
         style={{
           fontSize: small ? '3rem' : '3.5rem',
           fontWeight: 'bold',
@@ -69,7 +69,7 @@ export default function UserDetails({
           textDecoration: 'none'
         }}
         className={
-          isProfilePage
+          noLink
             ? ''
             : css`
                 transition: color 0.2s;
