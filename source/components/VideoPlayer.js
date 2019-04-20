@@ -86,7 +86,7 @@ function VideoPlayer({
   const rewardAmountRef = useRef(difficulty * xp);
   const userIsLevel2 = twinkleXP >= 1000000;
   const requiredDurationCap = userIsLevel2
-    ? 600
+    ? 300
     : 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
