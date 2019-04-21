@@ -206,7 +206,7 @@ function ContentListItem({
                 </div>
               )}
             </div>
-            {type === 'subject' && contentObj.rootObj && (
+            {type === 'subject' && contentObj.rootObj.id && (
               <div
                 style={{ display: 'flex', alignItems: 'center', width: '25%' }}
               >
