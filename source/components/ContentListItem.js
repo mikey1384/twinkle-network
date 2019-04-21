@@ -210,7 +210,7 @@ function ContentListItem({
               <div
                 style={{ display: 'flex', alignItems: 'center', width: '25%' }}
               >
-                {contentObj.rootObj.type === 'video' && (
+                {contentObj.rootObj?.type === 'video' && (
                   <VideoThumbImage
                     difficulty={contentObj.rootObj.difficulty}
                     videoId={contentObj.rootObj.id}
@@ -219,7 +219,7 @@ function ContentListItem({
                     }/mqdefault.jpg`}
                   />
                 )}
-                {contentObj.rootObj.type === 'url' && (
+                {contentObj.rootObj?.type === 'url' && (
                   <Embedly
                     imageOnly
                     noLink
