@@ -4,7 +4,7 @@ export const rewardValue = {
 };
 import { Color } from './css';
 
-export const clientVersion = '1.0.3';
+export const clientVersion = '1.0.4';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -41,6 +41,10 @@ export const profileThemes = {
   black: {
     color: Color.black(),
     cover: Color.black()
+  },
+  darkBlue: {
+    color: Color.darkBlue(),
+    cover: Color.darkBlue()
   },
   logoBlue: {
     color: Color.logoBlue(),

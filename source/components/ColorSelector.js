@@ -25,6 +25,7 @@ export default function ColorSelector({
     black: 35000,
     rose: 70000,
     purple: 100000,
+    darkBlue: 500000,
     vantaBlack: 1000000
   };
 

@@ -75,8 +75,10 @@ export default function StatusInput({
                 'ivory',
                 'logoGreen',
                 'logoBlue',
+                'darkBlue',
                 'darkGray',
-                'black'
+                'black',
+                'vantaBlack'
               ]}
               twinkleXP={profile.twinkleXP || 0}
               setColor={setColor}

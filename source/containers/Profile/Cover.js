@@ -94,7 +94,7 @@ function Cover({
         style={{
           color:
             showCover &&
-            ['black', 'rose', 'purple', 'vantaBlack'].indexOf(
+            ['black', 'rose', 'purple', 'darkBlue'].indexOf(
               selectedTheme || profileTheme
             ) !== -1
               ? Color.gold()
@@ -187,7 +187,9 @@ function Cover({
                     'pink',
                     'rose',
                     'purple',
-                    'black'
+                    'darkBlue',
+                    'black',
+                    'vantaBlack'
                   ]}
                   twinkleXP={twinkleXP || 0}
                   setColor={onSelectTheme}
