@@ -75,8 +75,8 @@ export default function StatusInput({
                 'ivory',
                 'logoGreen',
                 'logoBlue',
-                'darkBlue',
                 'darkGray',
+                'darkBlue',
                 'black',
                 'vantaBlack'
               ]}
