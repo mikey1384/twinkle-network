@@ -191,7 +191,7 @@ function Header({
     ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
     pathname.length > 1;
 
-  const notAtHomeSection =
+  const atHomeSection =
     ['links', 'videos', 'xp', 'comments', 'subjects'].indexOf(
       pathname.split('/')[1]
     ) === -1;
@@ -234,7 +234,7 @@ function Header({
                   >
                     <span
                       style={
-                        notAtHomeSection && numNewPosts > 0
+                        atHomeSection && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }
@@ -246,7 +246,7 @@ function Header({
                     </span>
                     <span
                       style={
-                        notAtHomeSection && numNewPosts > 0
+                        atHomeSection && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }
