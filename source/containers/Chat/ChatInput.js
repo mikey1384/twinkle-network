@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 
 ChatInput.propTypes = {
@@ -26,21 +27,37 @@ export default function ChatInput({
   }, [currentChannelId]);
 
   return (
-    <Textarea
-      innerRef={TextareaRef}
-      minRows={1}
-      placeholder="Type a message..."
-      onKeyDown={onKeyDown}
-      value={message}
-      onChange={handleChange}
-      onKeyUp={event => {
-        if (event.key === ' ') {
-          onChange(addEmoji(event.target.value));
-        }
-      }}
-      autoFocus
-      style={style}
-    />
+    <div style={{ display: 'flex' }}>
+      <Textarea
+        innerRef={TextareaRef}
+        minRows={1}
+        placeholder="Type a message..."
+        onKeyDown={onKeyDown}
+        value={message}
+        onChange={handleChange}
+        onKeyUp={event => {
+          if (event.key === ' ') {
+            onChange(addEmoji(event.target.value));
+          }
+        }}
+        autoFocus
+        style={style}
+      />
+      <div
+        style={{
+          margin: '0.5rem 1rem 0.5rem 1rem',
+          height: '100%'
+        }}
+      >
+        <Button
+          color="blue"
+          filled
+          onClick={() => console.log('chess clicked')}
+        >
+          Chess
+        </Button>
+      </div>
+    </div>
   );
 
   function handleChange(event) {
