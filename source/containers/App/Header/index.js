@@ -191,6 +191,11 @@ function Header({
     ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
     pathname.length > 1;
 
+  const notAtHomeSection =
+    ['links', 'videos', 'xp', 'comments', 'subjects'].indexOf(
+      pathname.split('/')[1]
+    ) === -1;
+
   return (
     <nav
       className={`unselectable ${container} ${
@@ -229,8 +234,7 @@ function Header({
                   >
                     <span
                       style={
-                        ['links', 'videos'].indexOf(pathname.split('/')[1]) ===
-                          -1 && numNewPosts > 0
+                        notAtHomeSection && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }
@@ -242,8 +246,7 @@ function Header({
                     </span>
                     <span
                       style={
-                        ['links', 'videos'].indexOf(pathname.split('/')[1]) ===
-                          -1 && numNewPosts > 0
+                        notAtHomeSection && numNewPosts > 0
                           ? {
                               color: Color.gold()
                             }
