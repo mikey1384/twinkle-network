@@ -58,7 +58,7 @@ function RewardStatus({
           align-items: center;
           background: ${rewardedStars === maxStars
             ? Color.gold()
-            : rewardedStars > 20
+            : rewardedStars >= 30
             ? Color.brownOrange()
             : Color.logoBlue()};
         `}`}
