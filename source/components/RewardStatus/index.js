@@ -58,7 +58,7 @@ function RewardStatus({
           align-items: center;
           background: ${rewardedStars === maxStars
             ? Color.gold()
-            : rewardedStars > 10
+            : rewardedStars > 20
             ? Color.brownOrange()
             : Color.logoBlue()};
         `}`}
@@ -67,7 +67,7 @@ function RewardStatus({
         <div style={{ fontSize: '1.5rem' }}>
           {rewardedStars} Twinkle
           {rewardedStars > 1 ? 's' : ''} (
-          {addCommasToNumber(rewardedStars * 200)} XP) rewarded
+          {addCommasToNumber(rewardedStars * 200)} XP) rewarded (max {maxStars})
         </div>
       </div>
       {loaded < stars.length && (

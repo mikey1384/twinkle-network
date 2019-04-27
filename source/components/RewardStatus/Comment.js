@@ -108,6 +108,8 @@ function Comment({
                   color:
                     star.rewardAmount >= maxRewardableStars
                       ? Color.gold()
+                      : star.rewardAmount >= 10
+                      ? Color.rose()
                       : star.rewardAmount >= 5
                       ? Color.orange()
                       : Color.lightBlue()
