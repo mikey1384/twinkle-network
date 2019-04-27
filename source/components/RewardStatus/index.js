@@ -59,7 +59,7 @@ function RewardStatus({
           background: ${rewardedStars === maxStars
             ? Color.gold()
             : rewardedStars > 10
-            ? Color.orange(0.5 + 0.01 * rewardedStars)
+            ? Color.bronze()
             : Color.logoBlue()};
         `}`}
       >
