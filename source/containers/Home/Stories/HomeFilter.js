@@ -31,7 +31,7 @@ const categoryObj = {
     label: `${months[moment().month()]}'s Top Comments`
   },
   videos: {
-    label: 'Starred Videos'
+    label: 'XP Videos'
   }
 };
 
