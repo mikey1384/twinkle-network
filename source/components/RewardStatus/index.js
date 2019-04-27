@@ -67,7 +67,7 @@ function RewardStatus({
         <div style={{ fontSize: '1.5rem' }}>
           {rewardedStars} Twinkle
           {rewardedStars > 1 ? 's' : ''} (
-          {addCommasToNumber(rewardedStars * 200)} XP) rewarded (max {maxStars})
+          {addCommasToNumber(rewardedStars * 200)} XP) rewarded out of max {maxStars}
         </div>
       </div>
       {loaded < stars.length && (
