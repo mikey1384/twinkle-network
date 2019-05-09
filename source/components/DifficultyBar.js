@@ -19,7 +19,7 @@ export default function DifficultyBar({ className, difficulty, style }) {
     difficulty === 5
       ? Color.gold()
       : difficulty === 4
-      ? Color.rose()
+      ? Color.brownOrange()
       : difficulty === 3
       ? Color.orange()
       : difficulty === 2

@@ -4,6 +4,22 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import moment from 'moment';
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 
 const categoryObj = {
   uploads: {
@@ -11,16 +27,11 @@ const categoryObj = {
     desc: 'New to Old',
     asc: 'Old to New'
   },
-  challenges: {
-    label: 'Challenges',
-    desc: 'Hard to Easy',
-    asc: 'Easy to Hard'
-  },
   responses: {
-    label: 'Top Comments'
+    label: `${months[moment().month()]}'s Top Comments`
   },
   videos: {
-    label: 'Starred Videos'
+    label: 'XP Videos'
   }
 };
 
@@ -61,10 +72,11 @@ export default function HomeFilter({
           fontSize: '1.6rem'
         }}
       >
-        {['uploads', 'responses', 'challenges', 'videos'].map(elem => (
+        {['uploads', 'responses', 'videos'].map(elem => (
           <nav
             key={elem}
             className={activeTab === elem ? 'active' : ''}
+            style={{ width: elem !== 'responses' ? '70%' : '100%' }}
             onClick={() => {
               document.getElementById('App').scrollTop = 0;
               changeCategory(elem);
@@ -74,9 +86,7 @@ export default function HomeFilter({
           </nav>
         ))}
       </FilterBar>
-      {(activeTab === 'uploads' ||
-        activeTab === 'challenges' ||
-        (category === 'videos' && userId)) && (
+      {(activeTab === 'uploads' || (category === 'videos' && userId)) && (
         <nav
           style={{
             display: 'flex',
@@ -137,7 +147,7 @@ export default function HomeFilter({
                 })}
               </FilterBar>
             )}
-            {(category === 'challenges' || category === 'videos') && (
+            {category === 'videos' && (
               <div
                 style={{
                   display: 'flex',
@@ -148,28 +158,7 @@ export default function HomeFilter({
                   justifyContent: 'flex-end'
                 }}
               >
-                {category === 'challenges' && (
-                  <DropdownButton
-                    skeuomorphic
-                    color="darkerGray"
-                    direction="left"
-                    icon="caret-down"
-                    text={categoryObj[category][displayOrder]}
-                    style={{
-                      marginLeft: category === 'uploads' && '1rem'
-                    }}
-                    menuProps={[
-                      {
-                        label:
-                          displayOrder === 'desc'
-                            ? categoryObj[category]['asc']
-                            : categoryObj[category]['desc'],
-                        onClick: setDisplayOrder
-                      }
-                    ]}
-                  />
-                )}
-                {category === 'videos' && userId && (
+                {userId && (
                   <SwitchButton
                     checked={!!hideWatched}
                     label="Hide Watched"

@@ -233,7 +233,6 @@ export const loadFeaturedPlaylists = async() => {
 
 export const loadFeeds = async({
   filter = 'all',
-  limit = 20,
   order = 'desc',
   orderBy = 'lastInteraction',
   username,
@@ -241,7 +240,7 @@ export const loadFeeds = async({
 } = {}) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&limit=${limit}${
+      `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&${
         shownFeeds ? `&${shownFeeds}` : ''
       }`,
       auth()

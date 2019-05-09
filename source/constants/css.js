@@ -19,7 +19,7 @@ export const Color = {
   logoGreen: (opacity = 1) => `rgba(97,226,101,${opacity})`,
   green: (opacity = 1) => `rgba(40,182,44,${opacity})`,
   brown: (opacity = 1) => `rgba(139,69,19,${opacity})`,
-  brownOrange: (opacity = 1) => `rgba(240,163,78,${opacity})`,
+  brownOrange: (opacity = 1) => `rgba(245,190,70,${opacity})`,
   orange: (opacity = 1) => `rgba(255,150,30,${opacity})`,
   bronze: (opacity = 1) => `rgba(255,190,130,${opacity})`,
   gold: (opacity = 1) => `rgba(255,210,0,${opacity})`,

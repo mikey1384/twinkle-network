@@ -58,17 +58,16 @@ function RewardStatus({
           align-items: center;
           background: ${rewardedStars === maxStars
             ? Color.gold()
-            : rewardedStars > 10
-            ? Color.orange(0.5 + 0.01 * rewardedStars)
+            : rewardedStars >= 25
+            ? Color.brownOrange()
             : Color.logoBlue()};
         `}`}
       >
         <Starmarks stars={rewardedStars} />
         <div style={{ fontSize: '1.5rem' }}>
           {rewardedStars} Twinkle
-          {rewardedStars > 1 ? 's' : ''} rewarded ({rewardedStars} × 200 XP ={' '}
-          {addCommasToNumber(rewardedStars * 200)} XP | max {maxStars} Twinkle
-          {maxStars > 1 ? 's' : ''})
+          {rewardedStars > 1 ? 's' : ''} (
+          {addCommasToNumber(rewardedStars * 200)} XP) rewarded out of max {maxStars}
         </div>
       </div>
       {loaded < stars.length && (

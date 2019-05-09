@@ -108,9 +108,11 @@ function Comment({
                   color:
                     star.rewardAmount >= maxRewardableStars
                       ? Color.gold()
-                      : star.rewardAmount >= 5
+                      : star.rewardAmount >= 10
                       ? Color.orange()
-                      : Color.lightBlue()
+                      : star.rewardAmount >= 5
+                      ? Color.pink()
+                      : Color.logoBlue()
                 }}
               >
                 rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
