@@ -61,8 +61,8 @@ export default function Board({
   return (
     <div
       style={{
-        width: '480px',
-        height: '480px',
+        width: '360px',
+        height: '360px',
         position: 'relative'
       }}
     >

@@ -42,34 +42,46 @@ export default function FallenPieces({ whiteFallenPieces, blackFallenPieces }) {
   return (
     <div
       style={{
-        height: '3rem',
+        height: '4rem',
         display: 'flex',
         flexDirection: 'column',
-        margin: '1rem 0 1rem 0'
+        margin: '1rem 0'
       }}
     >
-      <div style={{ display: 'flex' }}>
-        {whiteFallenPiecesCompressed.map((piece, index) => (
-          <Square
-            key={index}
-            piece={getPiece(piece)}
-            style={{ ...getPiece(piece).style, height: '3rem', width: '3rem' }}
-            count={piece.count}
-            player="white"
-          />
-        ))}
-      </div>
-      <div style={{ display: 'flex' }}>
-        {blackFallenPiecesCompressed.map((piece, index) => (
-          <Square
-            key={index}
-            piece={getPiece(piece)}
-            style={{ ...getPiece(piece).style, height: '3rem', width: '3rem' }}
-            count={piece.count}
-            player="black"
-          />
-        ))}
-      </div>
+      {whiteFallenPiecesCompressed.length > 0 && (
+        <div style={{ display: 'flex', marginBottom: '1rem' }}>
+          {whiteFallenPiecesCompressed.map((piece, index) => (
+            <Square
+              key={index}
+              piece={getPiece(piece)}
+              style={{
+                ...getPiece(piece).style,
+                height: '4rem',
+                width: '4rem'
+              }}
+              count={piece.count}
+              player="white"
+            />
+          ))}
+        </div>
+      )}
+      {blackFallenPiecesCompressed.length > 0 && (
+        <div style={{ display: 'flex', marginBottom: '1rem' }}>
+          {blackFallenPiecesCompressed.map((piece, index) => (
+            <Square
+              key={index}
+              piece={getPiece(piece)}
+              style={{
+                ...getPiece(piece).style,
+                height: '4rem',
+                width: '4rem'
+              }}
+              count={piece.count}
+              player="black"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

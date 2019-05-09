@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
-import initialiseChessBoard from './helpers/board-initialiser.js';
+import { initialiseChessBoard } from './helpers/model.js';
 import {
   checkerPos,
   getPieceIndex,
