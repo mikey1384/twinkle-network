@@ -60,7 +60,7 @@ export default function ChessModal({ onHide }) {
           }
         `}
       >
-        <Chess />
+        <Chess myColor="white" />
       </main>
       <footer>
         <Button transparent onClick={onHide} style={{ marginRight: '0.7rem' }}>

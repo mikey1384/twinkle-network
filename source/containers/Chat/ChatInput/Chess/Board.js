@@ -8,7 +8,7 @@ Board.propTypes = {
   blackCastled: PropTypes.object,
   status: PropTypes.string,
   onClick: PropTypes.func.isRequired,
-  player: PropTypes.number.isRequired,
+  player: PropTypes.string.isRequired,
   squares: PropTypes.array.isRequired,
   turn: PropTypes.string.isRequired,
   onCastling: PropTypes.func.isRequired,

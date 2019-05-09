@@ -1,72 +1,44 @@
 import getPiece from './piece';
 
-export function initialiseChessBoard() {
-  return [
-    { type: 'rook', player: 2 },
-    { type: 'knight', player: 2 },
-    { type: 'bishop', player: 2 },
-    { type: 'queen', player: 2 },
-    { type: 'king', player: 2 },
-    { type: 'bishop', player: 2 },
-    { type: 'knight', player: 2 },
-    { type: 'rook', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    { type: 'pawn', player: 2 },
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'pawn', player: 1 },
-    { type: 'rook', player: 1 },
-    { type: 'knight', player: 1 },
-    { type: 'bishop', player: 1 },
-    { type: 'queen', player: 1 },
-    { type: 'king', player: 1 },
-    { type: 'bishop', player: 1 },
-    { type: 'knight', player: 1 },
-    { type: 'rook', player: 1 }
+export function initialiseChessBoard(myColor) {
+  const blackPieces = [
+    { type: 'rook', player: 'black' },
+    { type: 'knight', player: 'black' },
+    { type: 'bishop', player: 'black' },
+    { type: 'queen', player: 'black' },
+    { type: 'king', player: 'black' },
+    { type: 'bishop', player: 'black' },
+    { type: 'knight', player: 'black' },
+    { type: 'rook', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' },
+    { type: 'pawn', player: 'black' }
   ];
+  const whitePieces = [
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'pawn', player: 'white' },
+    { type: 'rook', player: 'white' },
+    { type: 'knight', player: 'white' },
+    { type: 'bishop', player: 'white' },
+    { type: 'queen', player: 'white' },
+    { type: 'king', player: 'white' },
+    { type: 'bishop', player: 'white' },
+    { type: 'knight', player: 'white' },
+    { type: 'rook', player: 'white' }
+  ];
+  const board = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
+  return board;
 }
 
 export function checkerPos({ squares, kingIndex, player }) {
@@ -103,8 +75,8 @@ export function getPieceIndex({ player, squares, type }) {
   return result;
 }
 
-export function getOpponentPlayerId(player) {
-  return player === 1 ? 2 : 1;
+export function getOpponentPlayerColor(player) {
+  return player === 'white' ? 'black' : 'white';
 }
 
 export function getPlayerPieces({ player, squares }) {
@@ -168,7 +140,7 @@ export function isGameOver({ player, squares, enPassantTarget }) {
     checkers = checkerPos({
       squares,
       kingIndex,
-      player: getOpponentPlayerId(player)
+      player: getOpponentPlayerColor(player)
     });
   }
   const possibleNextDest = nextDest.filter(
@@ -336,7 +308,7 @@ export function kingWillBeCapturedBy({ kingIndex, player, squares }) {
   const checkerPositions = checkerPos({
     squares: squares,
     kingIndex,
-    player: getOpponentPlayerId(player)
+    player: getOpponentPlayerColor(player)
   });
   return checkerPositions;
 }
@@ -352,7 +324,7 @@ export function returnBoardAfterMove({
   const destRow = Math.floor(dest / 8);
   const destColumn = dest % 8;
   const attacking =
-    player === 1 ? srcRow - destRow === 1 : destRow - srcRow === 1;
+    player === 'white' ? srcRow - destRow === 1 : destRow - srcRow === 1;
   const enPassanting =
     enPassantTarget &&
     enPassantTarget.player !== player &&
@@ -364,10 +336,10 @@ export function returnBoardAfterMove({
       const lastRow = [56, 57, 58, 59, 60, 61, 62, 63];
       let transform = false;
       if (squares[src].type === 'pawn') {
-        if (player === 1 && firstRow.indexOf(index) !== -1) {
+        if (player === 'white' && firstRow.indexOf(index) !== -1) {
           transform = true;
         }
-        if (player === 2 && lastRow.indexOf(index) !== -1) {
+        if (player === 'black' && lastRow.indexOf(index) !== -1) {
           transform = true;
         }
       }

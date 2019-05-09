@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
 import { initialiseChessBoard } from './helpers/model.js';
 import {
   checkerPos,
   getPieceIndex,
-  getOpponentPlayerId,
+  getOpponentPlayerColor,
   isGameOver,
   isPossibleAndLegal,
   kingWillBeCapturedBy,
@@ -14,11 +15,15 @@ import {
   getPlayerPieces
 } from './helpers/model';
 
-export default function Game() {
-  const [squares, setSquares] = useState(initialiseChessBoard());
+Chess.propTypes = {
+  myColor: PropTypes.string.isRequired
+};
+
+export default function Chess({ myColor }) {
+  const [squares, setSquares] = useState(initialiseChessBoard(myColor));
   const [whiteFallenPieces, setWhiteFallenPieces] = useState([]);
   const [blackFallenPieces, setBlackFallenPieces] = useState([]);
-  const [player, setPlayer] = useState(1);
+  const [player, setPlayer] = useState('white');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [status, setStatus] = useState('');
   const [turn, setTurn] = useState('white');
@@ -34,10 +39,9 @@ export default function Game() {
   });
 
   useEffect(() => {
-    const players = { white: 1, black: 2 };
     setSquares(squares =>
       squares.map(square =>
-        square.player === players[turn]
+        square.player === turn
           ? {
               ...square,
               state:
@@ -86,7 +90,7 @@ export default function Game() {
   );
 
   function handleCastling(direction) {
-    const opponent = getOpponentPlayerId(player);
+    const opponent = getOpponentPlayerColor(player);
     const { playerPieces } = getPlayerPieces({
       player: opponent,
       squares
@@ -250,28 +254,30 @@ export default function Game() {
           const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
           const attacking =
-            player === 1 ? srcRow - destRow === 1 : destRow - srcRow === 1;
+            player === 'white'
+              ? srcRow - destRow === 1
+              : destRow - srcRow === 1;
           const enPassanting =
             !squares[dest].player &&
             enPassantTarget.player !== player &&
             attacking &&
             enPassantTarget.index % 8 === destColumn;
           if (enPassanting) {
-            enPassantTarget.player === 1
+            enPassantTarget.player === 'white'
               ? newWhiteFallenPieces.push(squares[enPassantTarget.index])
               : newBlackFallenPieces.push(squares[enPassantTarget.index]);
           }
         }
       }
       if (squares[dest].player) {
-        squares[dest].player === 1
+        squares[dest].player === 'white'
           ? newWhiteFallenPieces.push(squares[dest])
           : newBlackFallenPieces.push(squares[dest]);
       }
     }
     setSelectedIndex(-1);
     const theirKingIndex = getPieceIndex({
-      player: getOpponentPlayerId(player),
+      player: getOpponentPlayerColor(player),
       squares: newSquares,
       type: 'king'
     });
@@ -295,7 +301,7 @@ export default function Game() {
     setBlackFallenPieces(newBlackFallenPieces);
     setStatus('');
     const gameOver = isGameOver({
-      player: getOpponentPlayerId(player),
+      player: getOpponentPlayerColor(player),
       squares: newSquares,
       enPassantTarget
     });
@@ -317,7 +323,7 @@ export default function Game() {
         ? { index: dest, player: newSquares[dest].player }
         : {};
     setEnPassantTarget(target);
-    setPlayer(getOpponentPlayerId(player));
+    setPlayer(getOpponentPlayerColor(player));
     setTurn(turn === 'white' ? 'black' : 'white');
     return 'success';
   }
