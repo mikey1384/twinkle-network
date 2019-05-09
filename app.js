@@ -13,6 +13,7 @@ import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
+import { faChess } from '@fortawesome/pro-solid-svg-icons/faChess';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight';
 import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
@@ -44,6 +45,7 @@ library.add(
   faCaretDown,
   faCertificate,
   faCheckCircle,
+  faChess,
   faChevronLeft,
   faChevronRight,
   faComment,

@@ -303,7 +303,6 @@ function Chat({
         />
         {socketConnected ? (
           <ChatInput
-            style={{ width: 'CALC(100% - 1rem)' }}
             onChange={setChatMessage}
             message={chatMessage}
             currentChannelId={currentChannel.id}
