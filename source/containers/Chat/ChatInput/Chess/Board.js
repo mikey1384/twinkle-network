@@ -67,7 +67,7 @@ export default function Board({
 
   function renderCastlingButtons() {
     const top = 'CALC(100% - 3.5rem)';
-    return (
+    return myColor === 'white' ? (
       <>
         {!castled.left &&
           !squares[57].color &&
@@ -122,6 +122,82 @@ export default function Board({
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
                 left: '225px',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 0.5rem 0 0.5rem'
+              }}
+              onClick={() => onCastling('right')}
+            >
+              ←{' '}
+              <img
+                style={{ width: '2.5rem', height: '2.5rem' }}
+                src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
+                alt=""
+              />
+              <img
+                style={{ width: '2.5rem', height: '2.5rem' }}
+                src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
+                alt=""
+              />{' '}
+              →
+            </div>
+          )}
+      </>
+    ) : (
+      <>
+        {!castled.left &&
+          !squares[57].color &&
+          !squares[58].color &&
+          squares[56].type === 'rook' &&
+          !squares[56].moved &&
+          squares[59].type === 'king' &&
+          squares[59].state !== 'check' &&
+          squares[59].state !== 'checkmate' &&
+          !squares[59].moved && (
+            <div
+              style={{
+                cursor: 'pointer',
+                position: 'absolute',
+                background: 'RGB(255, 255, 255, 0.7)',
+                top,
+                left: '45px',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 0.5rem 0 0.5rem'
+              }}
+              onClick={() => onCastling('left')}
+            >
+              ←{' '}
+              <img
+                style={{ width: '2.5rem', height: '2.5rem' }}
+                src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
+                alt=""
+              />
+              <img
+                style={{ width: '2.5rem', height: '2.5rem' }}
+                src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
+                alt=""
+              />{' '}
+              →
+            </div>
+          )}
+        {!castled.right &&
+          !squares[60].color &&
+          !squares[61].color &&
+          !squares[62].color &&
+          squares[63].type === 'rook' &&
+          !squares[63].moved &&
+          squares[59].type === 'king' &&
+          squares[59].state !== 'check' &&
+          squares[59].state !== 'checkmate' &&
+          !squares[59].moved && (
+            <div
+              style={{
+                cursor: 'pointer',
+                position: 'absolute',
+                background: 'RGB(255, 255, 255, 0.7)',
+                top,
+                left: '203px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
