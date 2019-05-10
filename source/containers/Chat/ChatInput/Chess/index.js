@@ -86,7 +86,7 @@ export default function Chess({ myColor }) {
 
   function handleCastling(direction) {
     const { playerPieces } = getPlayerPieces({
-      color: myColor,
+      color: getOpponentPlayerColor(myColor),
       squares
     });
     let kingPos = getPieceIndex({ color: myColor, squares, type: 'king' });
@@ -110,7 +110,6 @@ export default function Chess({ myColor }) {
           src: piece.index,
           dest: kingMidDest,
           squares,
-          color: myColor,
           myColor
         })
       ) {
@@ -185,7 +184,6 @@ export default function Chess({ myColor }) {
             src: selectedIndex,
             dest: i,
             squares,
-            color: myColor,
             enPassantTarget,
             myColor
           })

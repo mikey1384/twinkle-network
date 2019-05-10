@@ -66,7 +66,7 @@ export default function Board({
   );
 
   function renderCastlingButtons() {
-    const top = 'CALC(100% - 3.2rem)';
+    const top = 'CALC(100% - 3.5rem)';
     return (
       <>
         {!castled.left &&
@@ -85,7 +85,7 @@ export default function Board({
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
-                left: '72px',
+                left: '68px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -94,12 +94,12 @@ export default function Board({
             >
               ←{' '}
               <img
-                style={{ width: '2rem', height: '2rem' }}
+                style={{ width: '2.5rem', height: '2.5rem' }}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2rem', height: '2rem' }}
+                style={{ width: '2.5rem', height: '2.5rem' }}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />{' '}
@@ -121,7 +121,7 @@ export default function Board({
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
-                left: '305px',
+                left: '225px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -130,12 +130,12 @@ export default function Board({
             >
               ←{' '}
               <img
-                style={{ width: '2rem', height: '2rem' }}
+                style={{ width: '2.5rem', height: '2.5rem' }}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2rem', height: '2rem' }}
+                style={{ width: '2.5rem', height: '2.5rem' }}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />{' '}

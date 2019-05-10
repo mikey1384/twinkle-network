@@ -113,7 +113,6 @@ export function highlightPossiblePathsFromSrc({
       src,
       dest: index,
       squares,
-      color,
       enPassantTarget,
       myColor
     })
@@ -167,7 +166,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
       isPossibleAndLegal({
         src: kingIndex,
         dest,
-        color: myColor,
         squares,
         enPassantTarget,
         myColor
@@ -203,7 +201,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
           isPossibleAndLegal({
             src: piece.index,
             dest: checkers[0],
-            color: myColor,
             squares,
             enPassantTarget,
             myColor
@@ -228,7 +225,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             isPossibleAndLegal({
               src: piece.index,
               dest: square,
-              color: myColor,
               squares,
               enPassantTarget,
               myColor
@@ -261,7 +257,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
           isPossibleAndLegal({
             src: piece.index,
             dest: i,
-            color: myColor,
             squares,
             enPassantTarget,
             myColor
@@ -304,12 +299,11 @@ export function isMoveLegal({ srcToDestPath, ignore, include, squares }) {
 export function isPossibleAndLegal({
   src,
   dest,
-  color,
   myColor,
   squares,
   enPassantTarget
 }) {
-  if (squares[dest].color === color) {
+  if (squares[dest].color === squares[src].color) {
     return false;
   }
   return (
