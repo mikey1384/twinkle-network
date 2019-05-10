@@ -27,11 +27,7 @@ export default function Chess({ myColor }) {
   const [status, setStatus] = useState('');
   const [gameOverMsg, setGameOverMsg] = useState();
   const [enPassantTarget, setEnPassantTarget] = useState({});
-  const [blackCastled, setBlackCastled] = useState({
-    left: false,
-    right: false
-  });
-  const [whiteCastled, setWhiteCastled] = useState({
+  const [castled, setCastled] = useState({
     left: false,
     right: false
   });
@@ -68,8 +64,7 @@ export default function Chess({ myColor }) {
           myColor={myColor}
           onClick={handleClick}
           onCastling={handleCastling}
-          blackCastled={blackCastled}
-          whiteCastled={whiteCastled}
+          castled={castled}
         />
         <div
           style={{
@@ -163,11 +158,7 @@ export default function Chess({ myColor }) {
       myColor
     });
     if (handleMove({ myKingIndex: kingEndDest, newSquares }) === 'success') {
-      if (myColor === 'white') {
-        setWhiteCastled(castled => ({ ...castled, [direction]: true }));
-      } else {
-        setBlackCastled(castled => ({ ...castled, [direction]: true }));
-      }
+      setCastled(castled => ({ ...castled, [direction]: true }));
     }
   }
 
