@@ -6,12 +6,12 @@ import { initialiseChessBoard } from './helpers/model.js';
 import {
   checkerPos,
   getPieceIndex,
-  getOpponentPlayerColor,
   isGameOver,
   isPossibleAndLegal,
   kingWillBeCapturedBy,
   returnBoardAfterMove,
   highlightPossiblePathsFromSrc,
+  getOpponentPlayerColor,
   getPlayerPieces
 } from './helpers/model';
 
@@ -23,10 +23,8 @@ export default function Chess({ myColor }) {
   const [squares, setSquares] = useState(initialiseChessBoard(myColor));
   const [whiteFallenPieces, setWhiteFallenPieces] = useState([]);
   const [blackFallenPieces, setBlackFallenPieces] = useState([]);
-  const [player, setPlayer] = useState('white');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [status, setStatus] = useState('');
-  const [turn, setTurn] = useState('white');
   const [gameOverMsg, setGameOverMsg] = useState();
   const [enPassantTarget, setEnPassantTarget] = useState({});
   const [blackCastled, setBlackCastled] = useState({
@@ -41,7 +39,7 @@ export default function Chess({ myColor }) {
   useEffect(() => {
     setSquares(squares =>
       squares.map(square =>
-        square.player === turn
+        square.color === myColor
           ? {
               ...square,
               state:
@@ -53,7 +51,7 @@ export default function Chess({ myColor }) {
           : square
       )
     );
-  }, [turn]);
+  }, []);
 
   return (
     <div>
@@ -67,10 +65,9 @@ export default function Chess({ myColor }) {
         <FallenPieces whiteFallenPieces={whiteFallenPieces} />
         <Board
           squares={squares}
-          turn={turn}
+          myColor={myColor}
           onClick={handleClick}
           onCastling={handleCastling}
-          player={player}
           blackCastled={blackCastled}
           whiteCastled={whiteCastled}
         />
@@ -90,17 +87,16 @@ export default function Chess({ myColor }) {
   );
 
   function handleCastling(direction) {
-    const opponent = getOpponentPlayerColor(player);
     const { playerPieces } = getPlayerPieces({
-      player: opponent,
+      color: myColor,
       squares
     });
-    let kingPos = getPieceIndex({ player, squares, type: 'king' });
+    let kingPos = getPieceIndex({ color: myColor, squares, type: 'king' });
     let rookPos = -1;
     let kingMidDest = -1;
     let kingEndDest = -1;
 
-    if (turn === 'white') {
+    if (myColor === 'white') {
       if (direction === 'right') {
         kingMidDest = 61;
         kingEndDest = 62;
@@ -127,7 +123,7 @@ export default function Chess({ myColor }) {
           src: piece.index,
           dest: kingMidDest,
           squares,
-          player: opponent
+          color: myColor
         })
       ) {
         setSquares(squares =>
@@ -156,29 +152,29 @@ export default function Chess({ myColor }) {
         squares,
         src: kingPos,
         dest: kingEndDest,
-        player
+        myColor
       }),
       src: rookPos,
       dest: rookDest,
-      player
+      myColor
     });
     if (handleMove({ myKingIndex: kingEndDest, newSquares }) === 'success') {
-      if (turn === 'black') {
-        setBlackCastled(castled => ({ ...castled, [direction]: true }));
-      } else {
+      if (myColor === 'white') {
         setWhiteCastled(castled => ({ ...castled, [direction]: true }));
+      } else {
+        setBlackCastled(castled => ({ ...castled, [direction]: true }));
       }
     }
   }
 
   function handleClick(i) {
     if (selectedIndex === -1) {
-      if (!squares[i] || squares[i].player !== player) {
+      if (!squares[i] || squares[i].color !== myColor) {
         return;
       }
       setSquares(squares =>
         highlightPossiblePathsFromSrc({
-          player,
+          color: myColor,
           squares,
           src: i,
           enPassantTarget
@@ -187,11 +183,11 @@ export default function Chess({ myColor }) {
       setStatus('');
       setSelectedIndex(i);
     } else {
-      if (squares[i] && squares[i].player === player) {
+      if (squares[i] && squares[i].color === myColor) {
         setSelectedIndex(i);
         setStatus('');
         setSquares(squares =>
-          highlightPossiblePathsFromSrc({ player, squares, src: i })
+          highlightPossiblePathsFromSrc({ color: myColor, squares, src: i })
         );
       } else {
         if (
@@ -199,7 +195,7 @@ export default function Chess({ myColor }) {
             src: selectedIndex,
             dest: i,
             squares,
-            player,
+            color: myColor,
             enPassantTarget
           })
         ) {
@@ -207,11 +203,11 @@ export default function Chess({ myColor }) {
             squares,
             src: selectedIndex,
             dest: i,
-            player,
+            color: myColor,
             enPassantTarget
           });
           const myKingIndex = getPieceIndex({
-            player,
+            color: myColor,
             squares: newSquares,
             type: 'king'
           });
@@ -226,7 +222,7 @@ export default function Chess({ myColor }) {
     const newBlackFallenPieces = [...blackFallenPieces];
     const potentialCapturers = kingWillBeCapturedBy({
       kingIndex: myKingIndex,
-      player,
+      myColor,
       squares: newSquares
     });
     if (potentialCapturers.length > 0) {
@@ -249,35 +245,32 @@ export default function Chess({ myColor }) {
     }
     if (dest) {
       if (squares[src].type === 'pawn') {
-        if (enPassantTarget && enPassantTarget.player) {
+        if (enPassantTarget && enPassantTarget.color) {
           const srcRow = Math.floor(src / 8);
           const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
-          const attacking =
-            player === 'white'
-              ? srcRow - destRow === 1
-              : destRow - srcRow === 1;
+          const attacking = srcRow - destRow === 1;
           const enPassanting =
-            !squares[dest].player &&
-            enPassantTarget.player !== player &&
+            !squares[dest].color &&
+            enPassantTarget.color !== myColor &&
             attacking &&
             enPassantTarget.index % 8 === destColumn;
           if (enPassanting) {
-            enPassantTarget.player === 'white'
+            enPassantTarget.color === 'white'
               ? newWhiteFallenPieces.push(squares[enPassantTarget.index])
               : newBlackFallenPieces.push(squares[enPassantTarget.index]);
           }
         }
       }
-      if (squares[dest].player) {
-        squares[dest].player === 'white'
+      if (squares[dest].color) {
+        squares[dest].color === 'white'
           ? newWhiteFallenPieces.push(squares[dest])
           : newBlackFallenPieces.push(squares[dest]);
       }
     }
     setSelectedIndex(-1);
     const theirKingIndex = getPieceIndex({
-      player: getOpponentPlayerColor(player),
+      color: getOpponentPlayerColor(myColor),
       squares: newSquares,
       type: 'king'
     });
@@ -285,7 +278,7 @@ export default function Chess({ myColor }) {
       checkerPos({
         squares: newSquares,
         kingIndex: theirKingIndex,
-        player
+        myColor
       }).length !== 0
     ) {
       newSquares[theirKingIndex] = {
@@ -301,9 +294,9 @@ export default function Chess({ myColor }) {
     setBlackFallenPieces(newBlackFallenPieces);
     setStatus('');
     const gameOver = isGameOver({
-      player: getOpponentPlayerColor(player),
       squares: newSquares,
-      enPassantTarget
+      enPassantTarget,
+      myColor
     });
     if (gameOver) {
       if (gameOver === 'Checkmate') {
@@ -320,11 +313,9 @@ export default function Chess({ myColor }) {
     const target =
       newSquares[dest].type === 'pawn' &&
       (dest === src + 16 || dest === src - 16)
-        ? { index: dest, player: newSquares[dest].player }
+        ? { index: dest, color: newSquares[dest].color }
         : {};
     setEnPassantTarget(target);
-    setPlayer(getOpponentPlayerColor(player));
-    setTurn(turn === 'white' ? 'black' : 'white');
     return 'success';
   }
 }

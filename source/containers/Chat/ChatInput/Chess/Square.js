@@ -5,7 +5,7 @@ import { css } from 'emotion';
 Square.propTypes = {
   className: PropTypes.string,
   count: PropTypes.number,
-  player: PropTypes.string,
+  color: PropTypes.string,
   style: PropTypes.object,
   onClick: PropTypes.func,
   shade: PropTypes.string
@@ -17,7 +17,7 @@ export default function Square({
   shade,
   onClick,
   style,
-  player
+  color
 }) {
   return (
     <div
@@ -41,7 +41,7 @@ export default function Square({
             position: 'absolute',
             right: 0,
             bottom: '-5px',
-            color: player === 'black' ? '#fff' : '#000'
+            color: color === 'black' ? '#fff' : '#000'
           }}
         >
           &times;{count}

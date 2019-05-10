@@ -8,9 +8,8 @@ Board.propTypes = {
   blackCastled: PropTypes.object,
   status: PropTypes.string,
   onClick: PropTypes.func.isRequired,
-  player: PropTypes.string.isRequired,
   squares: PropTypes.array.isRequired,
-  turn: PropTypes.string.isRequired,
+  myColor: PropTypes.string.isRequired,
   onCastling: PropTypes.func.isRequired,
   whiteCastled: PropTypes.object
 };
@@ -21,9 +20,8 @@ export default function Board({
   status,
   onClick,
   squares,
-  turn,
-  onCastling,
-  player
+  myColor,
+  onCastling
 }) {
   const board = [];
   for (let i = 0; i < 8; i++) {
@@ -34,19 +32,7 @@ export default function Board({
         <Square
           key={index}
           className={squares[index].state}
-          style={
-            squares[index].player
-              ? {
-                  ...getPiece(squares[index]).style,
-                  cursor:
-                    player === squares[index].player ||
-                    squares[index].state === 'highlighted' ||
-                    squares[index].state === 'check'
-                      ? 'pointer'
-                      : 'default'
-                }
-              : getPiece(squares[index]).style
-          }
+          style={getPiece({ piece: squares[index], myColor }).style}
           shade={
             (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
               ? 'light'
@@ -85,10 +71,10 @@ export default function Board({
     return (
       <>
         {!blackCastled.left &&
-          turn === 'black' &&
-          !squares[1].player &&
-          !squares[2].player &&
-          !squares[3].player &&
+          myColor === 'black' &&
+          !squares[1].color &&
+          !squares[2].color &&
+          !squares[3].color &&
           squares[0].type === 'rook' &&
           !squares[0].moved &&
           squares[4].type === 'king' &&
@@ -123,9 +109,9 @@ export default function Board({
             </div>
           )}
         {!blackCastled.right &&
-          turn === 'black' &&
-          !squares[5].player &&
-          !squares[6].player &&
+          myColor === 'black' &&
+          !squares[5].color &&
+          !squares[6].color &&
           squares[7].type === 'rook' &&
           !squares[7].moved &&
           squares[4].type === 'king' &&
@@ -160,10 +146,10 @@ export default function Board({
             </div>
           )}
         {!whiteCastled.left &&
-          turn === 'white' &&
-          !squares[57].player &&
-          !squares[58].player &&
-          !squares[59].player &&
+          myColor === 'white' &&
+          !squares[57].color &&
+          !squares[58].color &&
+          !squares[59].color &&
           squares[56].type === 'rook' &&
           !squares[7].moved &&
           squares[60].type === 'king' &&
@@ -198,9 +184,9 @@ export default function Board({
             </div>
           )}
         {!whiteCastled.right &&
-          turn === 'white' &&
-          !squares[61].player &&
-          !squares[62].player &&
+          myColor === 'white' &&
+          !squares[61].color &&
+          !squares[62].color &&
           squares[63].type === 'rook' &&
           !squares[63].moved &&
           squares[60].type === 'king' &&

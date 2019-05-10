@@ -1,16 +1,16 @@
-const initialPawnPositions = {
-  white: [48, 49, 50, 51, 52, 53, 54, 55],
-  black: [8, 9, 10, 11, 12, 13, 14, 15]
-};
-
-export default function getPiece({ type, player }) {
-  if (!player) return {};
+export default function getPiece({ piece: { type, color }, myColor }) {
+  const initialPawnPositions = {
+    [myColor]: [48, 49, 50, 51, 52, 53, 54, 55],
+    [myColor === 'white' ? 'black' : 'white']: [8, 9, 10, 11, 12, 13, 14, 15]
+  };
+  if (!color) return {};
   switch (type) {
     case 'pawn':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg'
           }')`
@@ -20,17 +20,15 @@ export default function getPiece({ type, player }) {
           const srcColumn = src % 8;
           const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
-          const oneSquareModifier = player === 'white' ? -8 : 8;
-          const twoSquaresModifier = player === 'white' ? -16 : 16;
+          const oneSquareModifier = color === myColor ? 8 : -8;
+          const twoSquaresModifier = color === myColor ? 16 : -16;
           const destCrossable =
-            player === 'white'
-              ? srcRow - destRow === 1
-              : destRow - srcRow === 1;
+            color === myColor ? srcRow - destRow === 1 : destRow - srcRow === 1;
           let attackable = isDestEnemyOccupied && destCrossable;
           const enPassantPossible =
             enPassantTarget &&
-            enPassantTarget.player &&
-            enPassantTarget.player !== player &&
+            enPassantTarget.color &&
+            enPassantTarget.color !== myColor &&
             destCrossable &&
             destColumn === enPassantTarget.index % 8 &&
             srcRow === Math.floor(enPassantTarget.index / 8) &&
@@ -38,7 +36,7 @@ export default function getPiece({ type, player }) {
           if (
             (dest === src + oneSquareModifier ||
               (dest === src + twoSquaresModifier &&
-                initialPawnPositions[player].indexOf(src) !== -1)) &&
+                initialPawnPositions[myColor].indexOf(src) !== -1)) &&
             !isDestEnemyOccupied
           ) {
             return true;
@@ -66,8 +64,9 @@ export default function getPiece({ type, player }) {
     case 'bishop':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg'
           }')`
@@ -111,8 +110,9 @@ export default function getPiece({ type, player }) {
     case 'knight':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg'
           }')`
@@ -141,8 +141,9 @@ export default function getPiece({ type, player }) {
     case 'rook':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg'
           }')`
@@ -184,8 +185,9 @@ export default function getPiece({ type, player }) {
     case 'queen':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg'
           }')`
@@ -237,8 +239,9 @@ export default function getPiece({ type, player }) {
     case 'king':
       return {
         style: {
+          cursor: color === myColor ? 'pointer' : '',
           backgroundImage: `url('${
-            player === 'white'
+            color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
           }')`
