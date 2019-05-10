@@ -94,27 +94,16 @@ export default function Chess({ myColor }) {
     let kingMidDest = -1;
     let kingEndDest = -1;
 
-    if (myColor === 'white') {
-      if (direction === 'right') {
-        kingMidDest = 61;
-        kingEndDest = 62;
-        rookPos = 63;
-      } else {
-        kingMidDest = 59;
-        kingEndDest = 58;
-        rookPos = 56;
-      }
+    if (direction === 'right') {
+      kingMidDest = 61;
+      kingEndDest = 62;
+      rookPos = 63;
     } else {
-      if (direction === 'right') {
-        kingMidDest = 5;
-        kingEndDest = 6;
-        rookPos = 7;
-      } else {
-        kingMidDest = 3;
-        kingEndDest = 2;
-        rookPos = 0;
-      }
+      kingMidDest = 59;
+      kingEndDest = 58;
+      rookPos = 56;
     }
+
     for (let piece of playerPieces) {
       if (
         isPossibleAndLegal({

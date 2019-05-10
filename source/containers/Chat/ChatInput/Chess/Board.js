@@ -66,26 +66,26 @@ export default function Board({
   );
 
   function renderCastlingButtons() {
+    const top = 'CALC(100% - 3.2rem)';
     return (
       <>
         {!castled.left &&
-          myColor === 'black' &&
-          !squares[1].color &&
-          !squares[2].color &&
-          !squares[3].color &&
-          squares[0].type === 'rook' &&
-          !squares[0].moved &&
-          squares[4].type === 'king' &&
-          squares[4].state !== 'check' &&
-          squares[4].state !== 'checkmate' &&
-          !squares[4].moved && (
+          !squares[57].color &&
+          !squares[58].color &&
+          !squares[59].color &&
+          squares[56].type === 'rook' &&
+          !squares[7].moved &&
+          squares[60].type === 'king' &&
+          squares[60].state !== 'check' &&
+          squares[60].state !== 'checkmate' &&
+          !squares[60].moved && (
             <div
               style={{
                 cursor: 'pointer',
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
-                top: 0,
-                left: '95px',
+                top,
+                left: '72px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -95,34 +95,33 @@ export default function Board({
               ←{' '}
               <img
                 style={{ width: '2rem', height: '2rem' }}
-                src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
-                alt=""
-              />{' '}
-              <img
-                style={{ width: '2rem', height: '2rem' }}
-                src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />
+              <img
+                style={{ width: '2rem', height: '2rem' }}
+                src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
+                alt=""
+              />{' '}
               →
             </div>
           )}
         {!castled.right &&
-          myColor === 'black' &&
-          !squares[5].color &&
-          !squares[6].color &&
-          squares[7].type === 'rook' &&
-          !squares[7].moved &&
-          squares[4].type === 'king' &&
-          squares[4].state !== 'check' &&
-          squares[4].state !== 'checkmate' &&
-          !squares[4].moved && (
+          !squares[61].color &&
+          !squares[62].color &&
+          squares[63].type === 'rook' &&
+          !squares[63].moved &&
+          squares[60].type === 'king' &&
+          squares[60].state !== 'check' &&
+          squares[60].state !== 'checkmate' &&
+          !squares[60].moved && (
             <div
               style={{
                 cursor: 'pointer',
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
-                top: 0,
-                right: '65px',
+                top,
+                left: '305px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -132,12 +131,12 @@ export default function Board({
               ←{' '}
               <img
                 style={{ width: '2rem', height: '2rem' }}
-                src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />
               <img
                 style={{ width: '2rem', height: '2rem' }}
-                src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />{' '}
               →
