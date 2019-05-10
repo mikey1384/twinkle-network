@@ -135,7 +135,7 @@ export function highlightPossiblePathsFromSrc({
 
 export function isGameOver({ squares, enPassantTarget, myColor }) {
   const { kingIndex, playerPieces } = getPlayerPieces({
-    color: myColor,
+    color: getOpponentPlayerColor(myColor),
     squares
   });
   let isChecked = false;
