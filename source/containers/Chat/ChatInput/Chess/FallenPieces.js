@@ -5,10 +5,15 @@ import getPiece from './helpers/piece';
 
 FallenPieces.propTypes = {
   whiteFallenPieces: PropTypes.array,
-  blackFallenPieces: PropTypes.array
+  blackFallenPieces: PropTypes.array,
+  myColor: PropTypes.string
 };
 
-export default function FallenPieces({ whiteFallenPieces, blackFallenPieces }) {
+export default function FallenPieces({
+  whiteFallenPieces,
+  blackFallenPieces,
+  myColor
+}) {
   const whiteFallenHash = {};
   const blackFallenHash = {};
 
@@ -53,14 +58,14 @@ export default function FallenPieces({ whiteFallenPieces, blackFallenPieces }) {
           {whiteFallenPiecesCompressed.map((piece, index) => (
             <Square
               key={index}
-              piece={getPiece(piece)}
+              piece={getPiece({ piece, myColor })}
               style={{
-                ...getPiece(piece).style,
+                ...getPiece({ piece, myColor }).style,
                 height: '4rem',
                 width: '4rem'
               }}
               count={piece.count}
-              player="white"
+              color="white"
             />
           ))}
         </div>
@@ -70,14 +75,14 @@ export default function FallenPieces({ whiteFallenPieces, blackFallenPieces }) {
           {blackFallenPiecesCompressed.map((piece, index) => (
             <Square
               key={index}
-              piece={getPiece(piece)}
+              piece={getPiece({ piece, myColor })}
               style={{
-                ...getPiece(piece).style,
+                ...getPiece({ piece, myColor }).style,
                 height: '4rem',
                 width: '4rem'
               }}
               count={piece.count}
-              player="black"
+              color="black"
             />
           ))}
         </div>

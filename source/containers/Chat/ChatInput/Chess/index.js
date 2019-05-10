@@ -62,7 +62,7 @@ export default function Chess({ myColor }) {
           alignItems: 'center'
         }}
       >
-        <FallenPieces whiteFallenPieces={whiteFallenPieces} />
+        <FallenPieces myColor={myColor} whiteFallenPieces={whiteFallenPieces} />
         <Board
           squares={squares}
           myColor={myColor}
@@ -80,7 +80,10 @@ export default function Chess({ myColor }) {
           }}
         >
           <div style={{ lineHeight: 2 }}>{status || gameOverMsg}</div>
-          <FallenPieces blackFallenPieces={blackFallenPieces} />
+          <FallenPieces
+            myColor={myColor}
+            blackFallenPieces={blackFallenPieces}
+          />
         </div>
       </div>
     </div>
@@ -123,7 +126,8 @@ export default function Chess({ myColor }) {
           src: piece.index,
           dest: kingMidDest,
           squares,
-          color: myColor
+          color: myColor,
+          myColor
         })
       ) {
         setSquares(squares =>
@@ -177,7 +181,8 @@ export default function Chess({ myColor }) {
           color: myColor,
           squares,
           src: i,
-          enPassantTarget
+          enPassantTarget,
+          myColor
         })
       );
       setStatus('');
@@ -187,7 +192,12 @@ export default function Chess({ myColor }) {
         setSelectedIndex(i);
         setStatus('');
         setSquares(squares =>
-          highlightPossiblePathsFromSrc({ color: myColor, squares, src: i })
+          highlightPossiblePathsFromSrc({
+            color: myColor,
+            squares,
+            src: i,
+            myColor
+          })
         );
       } else {
         if (
@@ -196,14 +206,15 @@ export default function Chess({ myColor }) {
             dest: i,
             squares,
             color: myColor,
-            enPassantTarget
+            enPassantTarget,
+            myColor
           })
         ) {
           const newSquares = returnBoardAfterMove({
             squares,
             src: selectedIndex,
             dest: i,
-            color: myColor,
+            myColor,
             enPassantTarget
           });
           const myKingIndex = getPieceIndex({

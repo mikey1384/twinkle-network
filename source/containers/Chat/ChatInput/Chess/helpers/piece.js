@@ -15,15 +15,25 @@ export default function getPiece({ piece: { type, color }, myColor }) {
               : 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg'
           }')`
         },
-        isMovePossible({ src, dest, isDestEnemyOccupied, enPassantTarget }) {
+        isMovePossible({
+          src,
+          dest,
+          isDestEnemyOccupied,
+          enPassantTarget,
+          color,
+          myColor
+        }) {
           const srcRow = Math.floor(src / 8);
           const srcColumn = src % 8;
           const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
-          const oneSquareModifier = color === myColor ? 8 : -8;
-          const twoSquaresModifier = color === myColor ? 16 : -16;
-          const destCrossable =
-            color === myColor ? srcRow - destRow === 1 : destRow - srcRow === 1;
+          const oneSquareModifier = color === myColor ? -8 : 8;
+          const twoSquaresModifier = color === myColor ? -16 : 16;
+          const destCrossable = color
+            ? color === myColor
+              ? srcRow - destRow === 1
+              : destRow - srcRow === 1
+            : false;
           let attackable = isDestEnemyOccupied && destCrossable;
           const enPassantPossible =
             enPassantTarget &&
@@ -36,7 +46,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
           if (
             (dest === src + oneSquareModifier ||
               (dest === src + twoSquaresModifier &&
-                initialPawnPositions[myColor].indexOf(src) !== -1)) &&
+                initialPawnPositions[color].indexOf(src) !== -1)) &&
             !isDestEnemyOccupied
           ) {
             return true;

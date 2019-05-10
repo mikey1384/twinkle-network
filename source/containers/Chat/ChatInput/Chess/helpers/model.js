@@ -42,17 +42,19 @@ export function initialiseChessBoard(myColor) {
   return board;
 }
 
-export function checkerPos({ squares, kingIndex, color, myColor }) {
+export function checkerPos({ squares, kingIndex, myColor }) {
   const result = [];
   for (let i = 0; i < squares.length; i++) {
-    if (!squares[i].color || squares[i].color !== color) {
+    if (!squares[i].color || squares[i].color === squares[kingIndex].color) {
       continue;
     }
     if (
       getPiece({ piece: squares[i], myColor }).isMovePossible({
         src: i,
         dest: kingIndex,
-        isDestEnemyOccupied: true
+        isDestEnemyOccupied: true,
+        color: squares[i].color,
+        myColor
       }) &&
       isMoveLegal({
         srcToDestPath: getPiece({
@@ -102,11 +104,19 @@ export function highlightPossiblePathsFromSrc({
   color,
   squares,
   src,
-  enPassantTarget
+  enPassantTarget,
+  myColor
 }) {
   return squares.map((square, index) =>
     index === src ||
-    isPossibleAndLegal({ src, dest: index, squares, color, enPassantTarget })
+    isPossibleAndLegal({
+      src,
+      dest: index,
+      squares,
+      color,
+      enPassantTarget,
+      myColor
+    })
       ? {
           ...square,
           state:
@@ -147,7 +157,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     checkers = checkerPos({
       squares,
       kingIndex,
-      color: getOpponentPlayerColor(myColor),
       myColor
     });
   }
@@ -160,7 +169,8 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
         dest,
         color: myColor,
         squares,
-        enPassantTarget
+        enPassantTarget,
+        myColor
       })
   );
   if (possibleNextDest.length === 0 && kingPiece.state !== 'check') {
@@ -172,7 +182,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     const newSquares = returnBoardAfterMove({
       src: kingIndex,
       dest,
-      color: myColor,
+      myColor,
       squares
     });
     potentialKingSlayers = kingWillBeCapturedBy({
@@ -195,7 +205,8 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             dest: checkers[0],
             color: myColor,
             squares,
-            enPassantTarget
+            enPassantTarget,
+            myColor
           })
         ) {
           return false;
@@ -219,7 +230,8 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
               dest: square,
               color: myColor,
               squares,
-              enPassantTarget
+              enPassantTarget,
+              myColor
             })
           ) {
             if (checkers.length === 1) return false;
@@ -251,13 +263,14 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             dest: i,
             color: myColor,
             squares,
-            enPassantTarget
+            enPassantTarget,
+            myColor
           })
         ) {
           const newSquares = returnBoardAfterMove({
             src: piece.index,
             dest: i,
-            color: myColor,
+            myColor,
             squares
           });
           if (
@@ -301,10 +314,12 @@ export function isPossibleAndLegal({
   }
   return (
     getPiece({ piece: squares[src], myColor }).isMovePossible({
+      color: squares[src].color,
       src,
       dest,
       isDestEnemyOccupied: !!squares[dest].color,
-      enPassantTarget
+      enPassantTarget,
+      myColor
     }) &&
     isMoveLegal({
       srcToDestPath: getPiece({
@@ -318,9 +333,8 @@ export function isPossibleAndLegal({
 
 export function kingWillBeCapturedBy({ kingIndex, squares, myColor }) {
   const checkerPositions = checkerPos({
-    squares: squares,
+    squares,
     kingIndex,
-    color: getOpponentPlayerColor(myColor),
     myColor
   });
   return checkerPositions;
