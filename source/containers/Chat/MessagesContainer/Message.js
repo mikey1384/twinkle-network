@@ -6,11 +6,13 @@ import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTextArea from 'components/Texts/EditTextArea';
 import Button from 'components/Button';
+import Chess from '../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { editMessage, saveMessage } from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
+import { Color } from 'constants/css';
 
 Message.propTypes = {
   authLevel: PropTypes.number,
@@ -47,7 +49,9 @@ function Message({
     isReloadedSubject,
     isSubject,
     numMsgs,
-    uploaderAuthLevel
+    uploaderAuthLevel,
+    isChessMove,
+    chessState
   },
   myId,
   onDelete,
@@ -122,64 +126,78 @@ function Message({
             </span>
           </div>
           <div>
-            {onEdit ? (
-              <EditTextArea
-                autoFocus
-                disabled={!socketConnected}
-                rows={2}
-                text={content}
-                onCancel={() => {
-                  setOnEdit(false);
-                  setEditPadding(false);
-                }}
-                onEditDone={handleEditDone}
-              />
+            {isChessMove ? (
+              <div
+                style={{ background: Color.gray(), margin: '1rem 1rem 0 0' }}
+              >
+                <Chess
+                  myId={myId}
+                  initialState={chessState}
+                  onConfirmChessMove={() => console.log('move')}
+                />
+              </div>
             ) : (
-              <div>
-                <div className={MessageStyle.messageWrapper}>
-                  {renderPrefix()}
-                  <span
-                    style={style}
-                    dangerouslySetInnerHTML={{
-                      __html: processedStringWithURL(content)
+              <>
+                {onEdit ? (
+                  <EditTextArea
+                    autoFocus
+                    disabled={!socketConnected}
+                    rows={2}
+                    text={content}
+                    onCancel={() => {
+                      setOnEdit(false);
+                      setEditPadding(false);
                     }}
+                    onEditDone={handleEditDone}
                   />
-                </div>
-                {!!messageId &&
-                  !isReloadedSubject &&
-                  editButtonShown &&
-                  !onEdit && (
-                    <DropdownButton
-                      skeuomorphic
-                      color="darkerGray"
-                      style={{ position: 'absolute', top: 0, right: '5px' }}
-                      direction="left"
-                      opacity={0.8}
-                      onButtonClick={menuDisplayed => {
-                        setEditPadding(!menuDisplayed && isLastMsg);
-                      }}
-                      onOutsideClick={() => {
-                        setEditPadding(false);
-                      }}
-                      menuProps={editMenuItems}
-                    />
-                  )}
-                {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
-                  <div className={MessageStyle.relatedConversationsButton}>
-                    <Button
-                      filled
-                      color="logoBlue"
-                      onClick={() =>
-                        showSubjectMsgsModal({ subjectId, content })
-                      }
-                    >
-                      Show related conversations
-                    </Button>
+                ) : (
+                  <div>
+                    <div className={MessageStyle.messageWrapper}>
+                      {renderPrefix()}
+                      <span
+                        style={style}
+                        dangerouslySetInnerHTML={{
+                          __html: processedStringWithURL(content)
+                        }}
+                      />
+                    </div>
+                    {!!messageId &&
+                      !isReloadedSubject &&
+                      editButtonShown &&
+                      !onEdit && (
+                        <DropdownButton
+                          skeuomorphic
+                          color="darkerGray"
+                          style={{ position: 'absolute', top: 0, right: '5px' }}
+                          direction="left"
+                          opacity={0.8}
+                          onButtonClick={menuDisplayed => {
+                            setEditPadding(!menuDisplayed && isLastMsg);
+                          }}
+                          onOutsideClick={() => {
+                            setEditPadding(false);
+                          }}
+                          menuProps={editMenuItems}
+                        />
+                      )}
+                    {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
+                      <div className={MessageStyle.relatedConversationsButton}>
+                        <Button
+                          filled
+                          color="logoBlue"
+                          onClick={() =>
+                            showSubjectMsgsModal({ subjectId, content })
+                          }
+                        >
+                          Show related conversations
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
+                {editPadding && <div style={{ height: '10rem' }} />}
+              </>
             )}
-            {editPadding && <div style={{ height: '10rem' }} />}
           </div>
         </div>
       </div>

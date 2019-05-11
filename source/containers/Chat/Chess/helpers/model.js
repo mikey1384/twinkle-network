@@ -1,6 +1,7 @@
 import getPiece from './piece';
 
-export function initialiseChessBoard(myColor) {
+export function initialiseChessBoard({ initialState, myId }) {
+  let myColor = 'white';
   const blackPieces = [
     { type: 'rook', color: 'black' },
     { type: 'knight', color: 'black' },
@@ -37,8 +38,13 @@ export function initialiseChessBoard(myColor) {
     { type: 'knight', color: 'white' },
     { type: 'rook', color: 'white' }
   ];
-  const standardBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
-  const board = myColor === 'black' ? standardBoard.reverse() : standardBoard;
+  let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
+  if (initialState) {
+    const state = JSON.parse(initialState);
+    myColor = state.playerColors[myId];
+    defaultBoard = state.board;
+  }
+  const board = myColor === 'black' ? defaultBoard.reverse() : defaultBoard;
   return board;
 }
 

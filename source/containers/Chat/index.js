@@ -16,12 +16,14 @@ import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
+import { uploadChessMove } from 'helpers/requestHelpers';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
   editChannelTitle: PropTypes.func,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
@@ -54,6 +56,7 @@ function Chat({
   channelLoadMoreButtonShown,
   currentChannel,
   createNewChannel,
+  dispatch,
   editChannelTitle,
   enterChannelWithId,
   enterEmptyChat,
@@ -304,7 +307,11 @@ function Chat({
         {socketConnected ? (
           <ChatInput
             onChange={setChatMessage}
+            onConfirmChessMove={handleConfirmChessMove}
             message={chatMessage}
+            myId={userId}
+            channelMembers={currentChannel.members}
+            isTwoPeopleChannel={currentChannel.twoPeople}
             currentChannelId={currentChannel.id}
             onMessageSubmit={onMessageSubmit}
             onHeightChange={height => {
@@ -328,6 +335,10 @@ function Chat({
 
   function channelName(currentChannel) {
     return channelsObj[currentChannel.id]?.channelName;
+  }
+
+  function handleConfirmChessMove(state) {
+    uploadChessMove({ state, channelId: currentChannel.id, dispatch });
   }
 
   function userListDescriptionShown(user) {
@@ -497,22 +508,27 @@ export default connect(
     socketConnected: state.NotiReducer.socketConnected,
     subjectId: state.ChatReducer.subject.id
   }),
-  {
-    receiveMessage: ChatActions.receiveMessage,
-    receiveMessageOnDifferentChannel:
-      ChatActions.receiveMessageOnDifferentChannel,
-    receiveFirstMsg: ChatActions.receiveFirstMsg,
-    enterChannelWithId: ChatActions.enterChannelWithId,
-    enterEmptyChat: ChatActions.enterEmptyChat,
-    submitMessage: ChatActions.submitMessageAsync,
-    loadMoreChannels: ChatActions.loadMoreChannels,
-    loadMoreMessages: ChatActions.loadMoreMessages,
-    createNewChannel: ChatActions.createNewChannel,
-    sendFirstDirectMessage: ChatActions.sendFirstDirectMessage,
-    hideChat: ChatActions.hideChat,
-    leaveChannel: ChatActions.leaveChannel,
-    editChannelTitle: ChatActions.editChannelTitle,
-    notifyThatMemberLeftChannel: ChatActions.notifyThatMemberLeftChannel,
-    openDirectMessageChannel: ChatActions.openDirectMessageChannel
-  }
+  dispatch => ({
+    dispatch,
+    receiveMessage: params => dispatch(ChatActions.receiveMessage(params)),
+    receiveMessageOnDifferentChannel: params =>
+      dispatch(ChatActions.receiveMessageOnDifferentChannel(params)),
+    receiveFirstMsg: params => dispatch(ChatActions.receiveFirstMsg(params)),
+    enterChannelWithId: params =>
+      dispatch(ChatActions.enterChannelWithId(params)),
+    enterEmptyChat: params => dispatch(ChatActions.enterEmptyChat(params)),
+    submitMessage: params => dispatch(ChatActions.submitMessageAsync(params)),
+    loadMoreChannels: params => dispatch(ChatActions.loadMoreChannels(params)),
+    loadMoreMessages: params => dispatch(ChatActions.loadMoreMessages(params)),
+    createNewChannel: params => dispatch(ChatActions.createNewChannel(params)),
+    sendFirstDirectMessage: params =>
+      dispatch(ChatActions.sendFirstDirectMessage(params)),
+    hideChat: params => dispatch(ChatActions.hideChat(params)),
+    leaveChannel: params => dispatch(ChatActions.leaveChannel(params)),
+    editChannelTitle: params => dispatch(ChatActions.editChannelTitle(params)),
+    notifyThatMemberLeftChannel: params =>
+      dispatch(ChatActions.notifyThatMemberLeftChannel(params)),
+    openDirectMessageChannel: params =>
+      dispatch(ChatActions.openDirectMessageChannel(params))
+  })
 )(Chat);

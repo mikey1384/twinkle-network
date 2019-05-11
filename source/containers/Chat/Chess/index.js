@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
+import { css } from 'emotion';
 import { initialiseChessBoard } from './helpers/model.js';
 import {
   checkerPos,
@@ -16,21 +17,39 @@ import {
 } from './helpers/model';
 
 Chess.propTypes = {
-  myColor: PropTypes.string.isRequired
+  initialState: PropTypes.string,
+  myId: PropTypes.number,
+  onConfirmChessMove: PropTypes.func.isRequired,
+  opponentId: PropTypes.number
 };
 
-export default function Chess({ myColor }) {
-  const [squares, setSquares] = useState(initialiseChessBoard(myColor));
+export default function Chess({
+  initialState,
+  myId,
+  onConfirmChessMove,
+  opponentId
+}) {
+  const [squares, setSquares] = useState(
+    initialiseChessBoard({ initialState, myId })
+  );
   const [whiteFallenPieces, setWhiteFallenPieces] = useState([]);
   const [blackFallenPieces, setBlackFallenPieces] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [status, setStatus] = useState('');
   const [gameOverMsg, setGameOverMsg] = useState();
   const [enPassantTarget, setEnPassantTarget] = useState({});
+  const [playerColors] = useState();
   const [castled, setCastled] = useState({
     left: false,
     right: false
   });
+  const fallenPieces = useRef({
+    white: [],
+    black: []
+  });
+  const myColor = initialState
+    ? JSON.parse(initialState).playerColors[myId]
+    : 'white';
 
   useEffect(() => {
     setSquares(squares =>
@@ -50,7 +69,50 @@ export default function Chess({ myColor }) {
   }, []);
 
   return (
-    <div>
+    <div
+      className={css`
+        font: 14px 'Century Gothic', Futura, sans-serif;
+        .dark {
+          background-color: RGB(104, 136, 107);
+        }
+
+        .dark.highlighted {
+          background-color: RGB(164, 236, 137);
+        }
+
+        .dark.check {
+          background-color: yellow;
+        }
+
+        .dark.danger {
+          background-color: yellow;
+        }
+
+        .dark.checkmate {
+          background-color: red;
+        }
+
+        .light {
+          background-color: RGB(234, 240, 206);
+        }
+
+        .light.highlighted {
+          background-color: RGB(174, 255, 196);
+        }
+
+        .light.check {
+          background-color: yellow;
+        }
+
+        .light.danger {
+          background-color: yellow;
+        }
+
+        .light.checkmate {
+          background-color: red;
+        }
+      `}
+    >
       <div
         style={{
           display: 'flex',
@@ -210,7 +272,23 @@ export default function Chess({ myColor }) {
             squares: newSquares,
             type: 'king'
           });
-          handleMove({ myKingIndex, newSquares, dest: i, src: selectedIndex });
+          const result = handleMove({
+            myKingIndex,
+            newSquares,
+            dest: i,
+            src: selectedIndex
+          });
+          if (result === 'success') {
+            const json = JSON.stringify({
+              playerColors: playerColors || {
+                [myId]: 'white',
+                [opponentId]: 'black'
+              },
+              board: newSquares,
+              fallenPieces: fallenPieces.current
+            });
+            onConfirmChessMove(json);
+          }
         }
       }
     }
@@ -291,6 +369,10 @@ export default function Chess({ myColor }) {
     setSquares(newSquares);
     setWhiteFallenPieces(newWhiteFallenPieces);
     setBlackFallenPieces(newBlackFallenPieces);
+    fallenPieces.current = {
+      white: newWhiteFallenPieces,
+      black: newBlackFallenPieces
+    };
     setStatus('');
     const gameOver = isGameOver({
       squares: newSquares,

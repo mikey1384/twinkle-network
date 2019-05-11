@@ -77,8 +77,8 @@ function SubjectHeader({
     mounted.current = true;
     socket.on('subject_change', onSubjectChange);
     return function cleanUp() {
-      mounted.current = false;
       socket.removeListener('subject_change', onSubjectChange);
+      mounted.current = false;
     };
   });
 

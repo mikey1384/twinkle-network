@@ -8,18 +8,26 @@ import { connect } from 'react-redux';
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 
 ChatInput.propTypes = {
+  channelMembers: PropTypes.array,
   currentChannelId: PropTypes.number.isRequired,
+  isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   message: PropTypes.string.isRequired,
+  myId: PropTypes.number,
   onChange: PropTypes.func.isRequired,
+  onConfirmChessMove: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
   profileTheme: PropTypes.string
 };
 
 function ChatInput({
+  channelMembers,
   currentChannelId,
+  isTwoPeopleChannel,
   message,
+  myId,
   onChange,
+  onConfirmChessMove,
   onHeightChange,
   onMessageSubmit,
   profileTheme
@@ -34,21 +42,23 @@ function ChatInput({
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <div
-          style={{
-            margin: '0.2rem 1rem 0.2rem 0',
-            height: '100%'
-          }}
-        >
-          <Button
-            onClick={() => setChessModalShown(true)}
-            color={themeColor}
-            filled
+        {!!isTwoPeopleChannel && (
+          <div
+            style={{
+              margin: '0.2rem 1rem 0.2rem 0',
+              height: '100%'
+            }}
           >
-            <Icon size="lg" icon={['fas', 'chess']} />
-            <span style={{ marginLeft: '0.7rem' }}>Chess</span>
-          </Button>
-        </div>
+            <Button
+              skeuomorphic
+              onClick={() => setChessModalShown(true)}
+              color={themeColor}
+            >
+              <Icon size="lg" icon={['fas', 'chess']} />
+              <span style={{ marginLeft: '0.7rem' }}>Chess</span>
+            </Button>
+          </div>
+        )}
         <Textarea
           innerRef={TextareaRef}
           minRows={1}
@@ -66,7 +76,14 @@ function ChatInput({
         />
       </div>
       {chessModalShown && (
-        <ChessModal onHide={() => setChessModalShown(false)} />
+        <ChessModal
+          myId={myId}
+          onConfirmChessMove={onConfirmChessMove}
+          onHide={() => setChessModalShown(false)}
+          opponentId={
+            channelMembers.map(({ id }) => id).filter(id => id !== myId)[0]
+          }
+        />
       )}
     </>
   );

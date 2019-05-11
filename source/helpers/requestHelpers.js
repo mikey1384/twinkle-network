@@ -523,6 +523,20 @@ export const setTheme = async({ color, dispatch }) => {
   }
 };
 
+export const uploadChessMove = async({ state, channelId, dispatch }) => {
+  try {
+    const data = await request.post(
+      `${URL}/chat/chess`,
+      { state, channelId },
+      auth()
+    );
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadProfileInfo = async({
   dispatch,
   email,
