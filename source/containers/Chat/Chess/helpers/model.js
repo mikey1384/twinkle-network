@@ -38,14 +38,17 @@ export function initialiseChessBoard({ initialState, myId }) {
     { type: 'knight', color: 'white' },
     { type: 'rook', color: 'white' }
   ];
+  let board;
   let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
   if (initialState) {
-    const state = JSON.parse(initialState);
-    myColor = state.playerColors[myId];
-    defaultBoard = state.board;
+    let { board: parsedBoard, playerColors } = JSON.parse(initialState);
+    board = parsedBoard;
+    myColor = playerColors[myId];
+    if (myColor === 'black') {
+      board.reverse();
+    }
   }
-  const board = myColor === 'black' ? defaultBoard.reverse() : defaultBoard;
-  return board;
+  return board || defaultBoard;
 }
 
 export function checkerPos({ squares, kingIndex, myColor }) {

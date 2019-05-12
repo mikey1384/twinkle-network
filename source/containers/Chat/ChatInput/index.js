@@ -77,6 +77,7 @@ function ChatInput({
       </div>
       {chessModalShown && (
         <ChessModal
+          channelId={currentChannelId}
           myId={myId}
           onConfirmChessMove={onConfirmChessMove}
           onHide={() => setChessModalShown(false)}

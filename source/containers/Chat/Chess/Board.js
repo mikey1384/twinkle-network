@@ -6,6 +6,7 @@ import { css } from 'emotion';
 
 Board.propTypes = {
   castled: PropTypes.object,
+  interactable: PropTypes.bool,
   status: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   squares: PropTypes.array.isRequired,
@@ -15,6 +16,7 @@ Board.propTypes = {
 
 export default function Board({
   castled,
+  interactable,
   status,
   onClick,
   squares,
@@ -30,7 +32,9 @@ export default function Board({
         <Square
           key={index}
           className={squares[index].state}
-          style={getPiece({ piece: squares[index], myColor }).style}
+          style={
+            getPiece({ piece: squares[index], myColor, interactable }).style
+          }
           shade={
             (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
               ? 'light'

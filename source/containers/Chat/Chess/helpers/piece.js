@@ -1,4 +1,8 @@
-export default function getPiece({ piece: { type, color }, myColor }) {
+export default function getPiece({
+  piece: { type, color },
+  myColor,
+  interactable
+}) {
   const initialPawnPositions = {
     [myColor]: [48, 49, 50, 51, 52, 53, 54, 55],
     [myColor === 'white' ? 'black' : 'white']: [8, 9, 10, 11, 12, 13, 14, 15]
@@ -8,7 +12,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'pawn':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg'
@@ -74,7 +78,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'bishop':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg'
@@ -120,7 +124,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'knight':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg'
@@ -151,7 +155,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'rook':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg'
@@ -195,7 +199,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'queen':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg'
@@ -249,7 +253,7 @@ export default function getPiece({ piece: { type, color }, myColor }) {
     case 'king':
       return {
         style: {
-          cursor: color === myColor ? 'pointer' : '',
+          cursor: color === myColor && interactable ? 'pointer' : '',
           backgroundImage: `url('${
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'

@@ -17,6 +17,7 @@ import {
 } from './helpers/model';
 
 Chess.propTypes = {
+  interactable: PropTypes.bool,
   initialState: PropTypes.string,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
@@ -24,11 +25,16 @@ Chess.propTypes = {
 };
 
 export default function Chess({
+  interactable,
   initialState,
   myId,
   onConfirmChessMove,
   opponentId
 }) {
+  const [playerColors, setPlayerColors] = useState({
+    [myId]: 'white',
+    [opponentId]: 'black'
+  });
   const [squares, setSquares] = useState(
     initialiseChessBoard({ initialState, myId })
   );
@@ -38,7 +44,6 @@ export default function Chess({
   const [status, setStatus] = useState('');
   const [gameOverMsg, setGameOverMsg] = useState();
   const [enPassantTarget, setEnPassantTarget] = useState({});
-  const [playerColors] = useState();
   const [castled, setCastled] = useState({
     left: false,
     right: false
@@ -47,26 +52,37 @@ export default function Chess({
     white: [],
     black: []
   });
-  const myColor = initialState
-    ? JSON.parse(initialState).playerColors[myId]
-    : 'white';
 
   useEffect(() => {
-    setSquares(squares =>
-      squares.map(square =>
-        square.color === myColor
-          ? {
-              ...square,
-              state:
-                gameOverMsg ||
-                ['check', 'checkmate'].indexOf(square.state) !== -1
-                  ? square.state
-                  : 'highlighted'
-            }
-          : square
-      )
-    );
-  }, []);
+    const playerColors = initialState
+      ? JSON.parse(initialState).playerColors
+      : {
+          [myId]: 'white',
+          [opponentId]: 'black'
+        };
+    setPlayerColors(playerColors);
+    setSquares(initialiseChessBoard({ initialState, myId }));
+    if (interactable) {
+      setSquares(squares =>
+        squares.map(square =>
+          square.color === playerColors[myId]
+            ? {
+                ...square,
+                state:
+                  gameOverMsg ||
+                  ['check', 'checkmate'].indexOf(square.state) !== -1
+                    ? square.state
+                    : 'highlighted'
+              }
+            : square
+        )
+      );
+    }
+  }, [initialState]);
+  let myColor = 'white';
+  if (initialState) {
+    myColor = JSON.parse(initialState).playerColors[myId];
+  }
 
   return (
     <div
@@ -122,6 +138,7 @@ export default function Chess({
       >
         <FallenPieces myColor={myColor} whiteFallenPieces={whiteFallenPieces} />
         <Board
+          interactable={interactable}
           squares={squares}
           myColor={myColor}
           onClick={handleClick}
@@ -223,6 +240,7 @@ export default function Chess({
   }
 
   function handleClick(i) {
+    if (!interactable) return;
     if (selectedIndex === -1) {
       if (!squares[i] || squares[i].color !== myColor) {
         return;
@@ -284,7 +302,16 @@ export default function Chess({
                 [myId]: 'white',
                 [opponentId]: 'black'
               },
-              board: newSquares,
+              board: (myColor === 'black'
+                ? newSquares.map(
+                    (square, index) => newSquares[newSquares.length - 1 - index]
+                  )
+                : newSquares
+              ).map(square =>
+                square.state === 'highlighted'
+                  ? { ...square, state: '' }
+                  : square
+              ),
               fallenPieces: fallenPieces.current
             });
             onConfirmChessMove(json);

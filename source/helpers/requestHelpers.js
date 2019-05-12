@@ -162,6 +162,18 @@ export const fetchPlaylistsContaining = async({ videoId }) => {
   }
 };
 
+export const fetchCurrentChessState = async channelId => {
+  try {
+    const { data } = await request.get(
+      `${URL}/chat/chess?channelId=${channelId}`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const likeContent = async({ id, type, dispatch }) => {
   try {
     const {
