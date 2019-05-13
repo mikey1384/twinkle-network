@@ -11,7 +11,10 @@ Board.propTypes = {
   onClick: PropTypes.func.isRequired,
   squares: PropTypes.array.isRequired,
   myColor: PropTypes.string.isRequired,
-  onCastling: PropTypes.func.isRequired
+  onCastling: PropTypes.func.isRequired,
+  spoilerOn: PropTypes.bool,
+  opponentName: PropTypes.string,
+  onSpoilerClick: PropTypes.func
 };
 
 export default function Board({
@@ -21,33 +24,11 @@ export default function Board({
   onClick,
   squares,
   myColor,
-  onCastling
+  onCastling,
+  onSpoilerClick,
+  opponentName,
+  spoilerOn
 }) {
-  const board = [];
-  for (let i = 0; i < 8; i++) {
-    const squareRows = [];
-    for (let j = 0; j < 8; j++) {
-      const index = i * 8 + j;
-      squareRows.push(
-        <Square
-          key={index}
-          className={squares[index]?.state}
-          style={
-            squares[index]
-              ? getPiece({ piece: squares[index], myColor, interactable }).style
-              : {}
-          }
-          shade={
-            (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
-              ? 'light'
-              : 'dark'
-          }
-          onClick={() => onClick(index)}
-        />
-      );
-    }
-    board.push(<Fragment key={i}>{squareRows}</Fragment>);
-  }
   return (
     <div
       style={{
@@ -56,20 +37,88 @@ export default function Board({
         position: 'relative'
       }}
     >
-      <div
-        className={css`
-          margin: 0 auto;
-          width: 100%;
-          height: 100%;
-          display: grid;
-          grid-template-columns: repeat(8, 1fr);
-        `}
-      >
-        {board}
-      </div>
-      {squares.length > 0 && renderCastlingButtons()}
+      {spoilerOn ? (
+        <div
+          style={{
+            margin: '0 auto',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            fontSize: '1.5rem',
+            lineHeight: 2
+          }}
+        >
+          <div
+            className={css`
+              cursor: pointer;
+              &:hover {
+                text-decoration: underline;
+              }
+            `}
+            onClick={onSpoilerClick}
+          >
+            <p>{opponentName} has made a new chess move</p>
+            <p>Tap here to view it</p>
+            <p>
+              {`Once you have viewed ${opponentName}'s move, you`} <b>must</b>{' '}
+              make your own move within one minute in order to avoid losing
+            </p>
+          </div>
+        </div>
+      ) : (
+        renderBoard()
+      )}
     </div>
   );
+
+  function renderBoard() {
+    const board = [];
+    for (let i = 0; i < 8; i++) {
+      const squareRows = [];
+      for (let j = 0; j < 8; j++) {
+        const index = i * 8 + j;
+        squareRows.push(
+          <Square
+            key={index}
+            className={squares[index]?.state}
+            style={
+              squares[index]
+                ? getPiece({ piece: squares[index], myColor, interactable })
+                    .style
+                : {}
+            }
+            shade={
+              (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
+                ? 'light'
+                : 'dark'
+            }
+            onClick={() => onClick(index)}
+          />
+        );
+      }
+      board.push(<Fragment key={i}>{squareRows}</Fragment>);
+    }
+    return (
+      <>
+        <div
+          style={{
+            margin: '0 auto',
+            width: '100%',
+            height: '100%',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(8, 1fr)'
+          }}
+        >
+          {board}
+        </div>
+        {squares.length > 0 && renderCastlingButtons()}
+      </>
+    );
+  }
 
   function renderCastlingButtons() {
     const top = 'CALC(100% - 3.5rem)';

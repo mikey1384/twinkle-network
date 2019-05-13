@@ -27,6 +27,7 @@ Message.propTypes = {
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
+  onChessSpoilerReveal: PropTypes.func,
   setScrollToBottom: PropTypes.func,
   socketConnected: PropTypes.bool
 };
@@ -50,12 +51,14 @@ function Message({
     isSubject,
     numMsgs,
     uploaderAuthLevel,
+    moveViewTimeStamp,
     isChessMove,
     chessState
   },
   myId,
   onDelete,
   onEditDone,
+  onChessSpoilerReveal,
   saveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
@@ -64,6 +67,7 @@ function Message({
 }) {
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
+  const [spoilerOn, setSpoilerOn] = useState(true);
 
   useEffect(() => {
     if (
@@ -131,9 +135,12 @@ function Message({
                 style={{ background: Color.gray(), margin: '1rem 1rem 0 0' }}
               >
                 <Chess
+                  spoilerOn={handleSpoilerOn()}
                   myId={myId}
                   initialState={chessState}
                   onConfirmChessMove={() => console.log('move')}
+                  onSpoilerClick={handleSpoilerClick}
+                  opponentName={username}
                 />
               </div>
             ) : (
@@ -207,6 +214,21 @@ function Message({
   async function handleEditDone(editedMessage) {
     await onEditDone({ editedMessage, messageId: message.id });
     setOnEdit(false);
+  }
+
+  async function handleSpoilerClick() {
+    await onChessSpoilerReveal();
+    setSpoilerOn(false);
+  }
+
+  function handleSpoilerOn() {
+    if (spoilerOn) {
+      const userMadeLastMove = JSON.parse(chessState).lastMoveBy === myId;
+      if (!userMadeLastMove && !moveViewTimeStamp) {
+        return true;
+      }
+    }
+    return false;
   }
 
   function renderPrefix() {

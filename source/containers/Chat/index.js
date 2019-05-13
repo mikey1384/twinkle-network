@@ -11,12 +11,16 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import Loading from 'components/Loading';
+import ChessModal from './ChessModal';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-import { uploadChessMove } from 'helpers/requestHelpers';
+import {
+  setChessMoveViewTimeStamp,
+  uploadChessMove
+} from 'helpers/requestHelpers';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -98,6 +102,7 @@ function Chat({
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [textAreaHeight, setTextAreaHeight] = useState(0);
+  const [chessModalShown, setChessModalShown] = useState(false);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -302,17 +307,18 @@ function Chat({
           messages={messages}
           userId={userId}
           loadMoreMessages={loadMoreMessages}
+          onChessSpoilerReveal={handleChessSpoilerReveal}
           onLoadingDone={() => setLoading(false)}
         />
         {socketConnected ? (
           <ChatInput
             onChange={setChatMessage}
-            onConfirmChessMove={handleConfirmChessMove}
             message={chatMessage}
             myId={userId}
             channelMembers={currentChannel.members}
             isTwoPeopleChannel={currentChannel.twoPeople}
             currentChannelId={currentChannel.id}
+            onChessButtonClick={() => setChessModalShown(true)}
             onMessageSubmit={onMessageSubmit}
             onHeightChange={height => {
               if (height !== textAreaHeight) {
@@ -330,11 +336,30 @@ function Chat({
           </div>
         )}
       </div>
+      {chessModalShown && (
+        <ChessModal
+          channelId={currentChannel.id}
+          myId={userId}
+          onConfirmChessMove={handleConfirmChessMove}
+          onHide={() => setChessModalShown(false)}
+          opponentId={
+            currentChannel.members
+              .map(({ id }) => id)
+              .filter(id => id !== userId)[0]
+          }
+        />
+      )}
     </div>
   );
 
   function channelName(currentChannel) {
     return channelsObj[currentChannel.id]?.channelName;
+  }
+
+  async function handleChessSpoilerReveal() {
+    await setChessMoveViewTimeStamp({ channelId: currentChannel.id, dispatch });
+    setChessModalShown(true);
+    return Promise.resolve();
   }
 
   function handleConfirmChessMove(state) {

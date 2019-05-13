@@ -22,7 +22,10 @@ Chess.propTypes = {
   loading: PropTypes.bool,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
-  opponentId: PropTypes.number
+  onSpoilerClick: PropTypes.func,
+  opponentId: PropTypes.number,
+  opponentName: PropTypes.string,
+  spoilerOn: PropTypes.bool
 };
 
 export default function Chess({
@@ -31,7 +34,10 @@ export default function Chess({
   loading,
   myId,
   onConfirmChessMove,
-  opponentId
+  onSpoilerClick,
+  opponentId,
+  opponentName,
+  spoilerOn
 }) {
   const [playerColors, setPlayerColors] = useState({
     [myId]: 'white',
@@ -138,12 +144,15 @@ export default function Chess({
       >
         <FallenPieces myColor={myColor} whiteFallenPieces={whiteFallenPieces} />
         <Board
+          spoilerOn={spoilerOn}
           interactable={interactable}
           squares={squares}
           myColor={myColor}
           onClick={handleClick}
           onCastling={handleCastling}
           castled={castled}
+          onSpoilerClick={onSpoilerClick}
+          opponentName={opponentName}
         />
         <div
           style={{
@@ -298,6 +307,7 @@ export default function Chess({
           });
           if (result === 'success') {
             const json = JSON.stringify({
+              lastMoveBy: myId,
               playerColors: playerColors || {
                 [myId]: 'white',
                 [opponentId]: 'black'

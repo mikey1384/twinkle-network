@@ -495,6 +495,15 @@ export const setByUser = async({ contentId, dispatch }) => {
   }
 };
 
+export const setChessMoveViewTimeStamp = async({ channelId, dispatch }) => {
+  try {
+    await request.put(`${URL}/chat/chess/timeStamp`, { channelId }, auth());
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const setDefaultSearchFilter = async({ filter, dispatch }) => {
   try {
     const { data } = await request.post(

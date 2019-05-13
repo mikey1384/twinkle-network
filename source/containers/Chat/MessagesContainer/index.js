@@ -24,6 +24,7 @@ class MessagesContainer extends Component {
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
     loading: PropTypes.bool,
+    onChessSpoilerReveal: PropTypes.func,
     onLoadingDone: PropTypes.func
   };
 
@@ -270,7 +271,7 @@ class MessagesContainer extends Component {
   };
 
   renderMessages = () => {
-    const { messages } = this.props;
+    const { messages, onChessSpoilerReveal } = this.props;
     return messages.map((message, index) => {
       let { isNotification } = message;
       let messageStyle = isNotification ? { color: Color.gray() } : null;
@@ -279,6 +280,7 @@ class MessagesContainer extends Component {
           key={message.id || 'newMessage' + index}
           onDelete={this.onShowDeleteModal}
           index={index}
+          onChessSpoilerReveal={onChessSpoilerReveal}
           style={messageStyle}
           message={message}
           isLastMsg={index === messages.length - 1}

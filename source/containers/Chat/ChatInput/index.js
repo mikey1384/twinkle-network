@@ -1,38 +1,34 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import ChessModal from './ChessModal';
 import { connect } from 'react-redux';
 import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 
 ChatInput.propTypes = {
-  channelMembers: PropTypes.array,
   currentChannelId: PropTypes.number.isRequired,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   message: PropTypes.string.isRequired,
   myId: PropTypes.number,
   onChange: PropTypes.func.isRequired,
-  onConfirmChessMove: PropTypes.func.isRequired,
+  onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
   profileTheme: PropTypes.string
 };
 
 function ChatInput({
-  channelMembers,
   currentChannelId,
   isTwoPeopleChannel,
   message,
   myId,
   onChange,
-  onConfirmChessMove,
+  onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
   profileTheme
 }) {
-  const [chessModalShown, setChessModalShown] = useState(false);
   const TextareaRef = useRef(null);
   useEffect(() => {
     TextareaRef.current.focus();
@@ -51,7 +47,7 @@ function ChatInput({
           >
             <Button
               skeuomorphic
-              onClick={() => setChessModalShown(true)}
+              onClick={onChessButtonClick}
               color={themeColor}
             >
               <Icon size="lg" icon={['fas', 'chess']} />
@@ -75,17 +71,6 @@ function ChatInput({
           style={{ marginRight: '1rem' }}
         />
       </div>
-      {chessModalShown && (
-        <ChessModal
-          channelId={currentChannelId}
-          myId={myId}
-          onConfirmChessMove={onConfirmChessMove}
-          onHide={() => setChessModalShown(false)}
-          opponentId={
-            channelMembers.map(({ id }) => id).filter(id => id !== myId)[0]
-          }
-        />
-      )}
     </>
   );
 
