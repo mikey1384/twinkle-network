@@ -7,7 +7,6 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import moment from 'moment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { uploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -23,7 +22,6 @@ Cover.propTypes = {
     realName: PropTypes.string,
     username: PropTypes.string
   }),
-  openDirectMessageChannel: PropTypes.func.isRequired,
   onSelectTheme: PropTypes.func.isRequired,
   onSetTheme: PropTypes.func.isRequired,
   selectedTheme: PropTypes.string,
@@ -68,7 +66,6 @@ function Cover({
   },
   onSelectTheme,
   onSetTheme,
-  openDirectMessageChannel,
   uploadProfilePic,
   selectedTheme
 }) {
@@ -321,7 +318,6 @@ export default connect(
     userId: state.UserReducer.userId
   }),
   {
-    openDirectMessageChannel,
     uploadProfilePic
   }
 )(Cover);

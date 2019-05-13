@@ -245,11 +245,11 @@ export const notifyThatMemberLeftChannel = data => ({
   data
 });
 
-export const openDirectMessageChannel = (
+export const openDirectMessageChannel = ({
   user,
   partner,
   chatCurrentlyOn
-) => async dispatch => {
+}) => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/channel/check?partnerId=${partner.id}`,

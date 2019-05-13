@@ -19,6 +19,7 @@ import {
 Chess.propTypes = {
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
+  loading: PropTypes.bool,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
   opponentId: PropTypes.number
@@ -27,6 +28,7 @@ Chess.propTypes = {
 export default function Chess({
   interactable,
   initialState,
+  loading,
   myId,
   onConfirmChessMove,
   opponentId
@@ -35,9 +37,7 @@ export default function Chess({
     [myId]: 'white',
     [opponentId]: 'black'
   });
-  const [squares, setSquares] = useState(
-    initialiseChessBoard({ initialState, myId })
-  );
+  const [squares, setSquares] = useState([]);
   const [whiteFallenPieces, setWhiteFallenPieces] = useState([]);
   const [blackFallenPieces, setBlackFallenPieces] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -61,7 +61,7 @@ export default function Chess({
           [opponentId]: 'black'
         };
     setPlayerColors(playerColors);
-    setSquares(initialiseChessBoard({ initialState, myId }));
+    setSquares(initialiseChessBoard({ initialState, loading, myId }));
     if (interactable) {
       setSquares(squares =>
         squares.map(square =>
@@ -78,7 +78,7 @@ export default function Chess({
         )
       );
     }
-  }, [initialState]);
+  }, [initialState, loading]);
   let myColor = 'white';
   if (initialState) {
     myColor = JSON.parse(initialState).playerColors[myId];

@@ -1,6 +1,7 @@
 import getPiece from './piece';
 
-export function initialiseChessBoard({ initialState, myId }) {
+export function initialiseChessBoard({ initialState, loading, myId }) {
+  if (loading) return [];
   let myColor = 'white';
   const blackPieces = [
     { type: 'rook', color: 'black' },

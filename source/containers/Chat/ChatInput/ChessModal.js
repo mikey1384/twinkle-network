@@ -21,12 +21,14 @@ export default function ChessModal({
   onHide,
   opponentId
 }) {
+  const [loading, setLoading] = useState(true);
   const [initialState, setInitialState] = useState();
   useEffect(() => {
     init();
     async function init() {
       const { chessState } = await fetchCurrentChessState(channelId);
       setInitialState(chessState);
+      setLoading(false);
     }
   }, []);
   return (
@@ -36,6 +38,7 @@ export default function ChessModal({
         <Chess
           interactable
           initialState={initialState}
+          loading={loading}
           myId={myId}
           onConfirmChessMove={onConfirmChessMove}
           opponentId={opponentId}

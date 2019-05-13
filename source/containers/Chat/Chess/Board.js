@@ -31,9 +31,11 @@ export default function Board({
       squareRows.push(
         <Square
           key={index}
-          className={squares[index].state}
+          className={squares[index]?.state}
           style={
-            getPiece({ piece: squares[index], myColor, interactable }).style
+            squares[index]
+              ? getPiece({ piece: squares[index], myColor, interactable }).style
+              : {}
           }
           shade={
             (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
@@ -65,7 +67,7 @@ export default function Board({
       >
         {board}
       </div>
-      {renderCastlingButtons()}
+      {squares.length > 0 && renderCastlingButtons()}
     </div>
   );
 

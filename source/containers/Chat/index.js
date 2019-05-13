@@ -406,7 +406,11 @@ function Chat({
   async function onCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
       const partner = params.selectedUsers[0];
-      await openDirectMessageChannel({ username, id: userId }, partner, true);
+      await openDirectMessageChannel({
+        user: { username, id: userId },
+        partner,
+        chatCurrentlyOn: true
+      });
       return setCreateNewChannelModalShown(false);
     }
 

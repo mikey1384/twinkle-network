@@ -276,11 +276,11 @@ function ProfilePanel({
                   style={{ marginLeft: '0.5rem' }}
                   color="green"
                   onClick={() =>
-                    openDirectMessageChannel(
-                      { id: userId, username },
-                      { id: profile.id, username: profile.username },
-                      false
-                    )
+                    openDirectMessageChannel({
+                      user: { id: userId, username },
+                      partner: { id: profile.id, username: profile.username },
+                      chatCurrentlyOn: false
+                    })
                   }
                 >
                   <Icon icon="comments" />

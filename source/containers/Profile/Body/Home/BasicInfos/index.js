@@ -255,11 +255,11 @@ function BasicInfos({
                 skeuomorphic
                 color={selectedTheme || profileTheme || 'logoBlue'}
                 onClick={() =>
-                  openDirectMessageChannel(
-                    { userId: myId },
-                    { id: userId, username },
-                    false
-                  )
+                  openDirectMessageChannel({
+                    user: { userId: myId },
+                    partner: { id: userId, username },
+                    chatCurrentlyOn: false
+                  })
                 }
               >
                 <Icon icon="comments" />
@@ -330,8 +330,8 @@ export default connect(
   null,
   dispatch => ({
     dispatch,
-    openDirectMessageChannel: (...params) =>
-      dispatch(openDirectMessageChannel(...params)),
+    openDirectMessageChannel: params =>
+      dispatch(openDirectMessageChannel(params)),
     setProfileInfo: data => dispatch(setProfileInfo(data))
   })
 )(BasicInfos);

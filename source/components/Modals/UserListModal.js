@@ -100,11 +100,11 @@ function UserListModal({
   async function onTalkClick(user) {
     if (user.id !== userId) {
       onHide();
-      openDirectMessageChannel(
-        { id: userId, username },
-        { id: user.id, username: user.username },
-        chatMode
-      );
+      openDirectMessageChannel({
+        user: { id: userId, username },
+        partner: { id: user.id, username: user.username },
+        chatCurrentlyOn: chatMode
+      });
     }
   }
 }
