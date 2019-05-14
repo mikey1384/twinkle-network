@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import Chess from './Chess';
+import Chess from '../Chess';
 import { updateChessMoveViewTimeStamp } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import {

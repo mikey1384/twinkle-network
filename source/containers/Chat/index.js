@@ -11,7 +11,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import Loading from 'components/Loading';
-import ChessModal from './ChessModal';
+import ChessModal from './Modals/ChessModal';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
