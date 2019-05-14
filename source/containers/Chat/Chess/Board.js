@@ -7,6 +7,7 @@ import { css } from 'emotion';
 Board.propTypes = {
   castled: PropTypes.object,
   interactable: PropTypes.bool,
+  loading: PropTypes.bool,
   status: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   squares: PropTypes.array.isRequired,
@@ -20,6 +21,7 @@ Board.propTypes = {
 export default function Board({
   castled,
   interactable,
+  loading,
   status,
   onClick,
   squares,
@@ -37,40 +39,45 @@ export default function Board({
         position: 'relative'
       }}
     >
-      {spoilerOn ? (
-        <div
-          style={{
-            margin: '0 auto',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textAlign: 'center',
-            fontSize: '1.5rem',
-            lineHeight: 2
-          }}
-        >
-          <div
-            className={css`
-              cursor: pointer;
-              &:hover {
-                text-decoration: underline;
-              }
-            `}
-            onClick={onSpoilerClick}
-          >
-            <p>{opponentName} has made a new chess move</p>
-            <p>Tap here to view it</p>
-            <p>
-              {`Once you have viewed ${opponentName}'s move, you`} <b>must</b>{' '}
-              make your own move within one minute in order to avoid losing
-            </p>
-          </div>
-        </div>
-      ) : (
-        renderBoard()
+      {!loading && (
+        <>
+          {spoilerOn ? (
+            <div
+              style={{
+                margin: '0 auto',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                fontSize: '1.5rem',
+                lineHeight: 2
+              }}
+            >
+              <div
+                className={css`
+                  cursor: pointer;
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                `}
+                onClick={onSpoilerClick}
+              >
+                <p>{opponentName} has made a new chess move.</p>
+                <p>Tap here to view it.</p>
+                <p>
+                  {`After viewing ${opponentName}'s move, you must make a move within`}{' '}
+                  <b>one minute</b>. If you {`don't`}, you will lose
+                  automatically.
+                </p>
+              </div>
+            </div>
+          ) : (
+            renderBoard()
+          )}
+        </>
       )}
     </div>
   );

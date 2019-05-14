@@ -144,6 +144,7 @@ export default function Chess({
       >
         <FallenPieces myColor={myColor} whiteFallenPieces={whiteFallenPieces} />
         <Board
+          loading={loading}
           spoilerOn={spoilerOn}
           interactable={interactable}
           squares={squares}

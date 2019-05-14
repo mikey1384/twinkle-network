@@ -17,10 +17,7 @@ import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-import {
-  setChessMoveViewTimeStamp,
-  uploadChessMove
-} from 'helpers/requestHelpers';
+import { uploadChessMove } from 'helpers/requestHelpers';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -291,6 +288,7 @@ function Chat({
           />
         )}
         <MessagesContainer
+          channelId={currentChannel.id}
           className={css`
             display: flex;
             flex-direction: column;
@@ -307,7 +305,7 @@ function Chat({
           messages={messages}
           userId={userId}
           loadMoreMessages={loadMoreMessages}
-          onChessSpoilerReveal={handleChessSpoilerReveal}
+          onChessSpoilerClick={handleChessSpoilerClick}
           onLoadingDone={() => setLoading(false)}
         />
         {socketConnected ? (
@@ -342,11 +340,7 @@ function Chat({
           myId={userId}
           onConfirmChessMove={handleConfirmChessMove}
           onHide={() => setChessModalShown(false)}
-          opponentId={
-            currentChannel.members
-              .map(({ id }) => id)
-              .filter(id => id !== userId)[0]
-          }
+          {...getOpponentInfo()}
         />
       )}
     </div>
@@ -356,8 +350,23 @@ function Chat({
     return channelsObj[currentChannel.id]?.channelName;
   }
 
-  async function handleChessSpoilerReveal() {
-    await setChessMoveViewTimeStamp({ channelId: currentChannel.id, dispatch });
+  function getOpponentInfo() {
+    let opponentId;
+    let opponentName;
+    if (currentChannel?.members) {
+      for (let i = 0; i < currentChannel.members.length; i++) {
+        const member = currentChannel.members[i];
+        if (member.id !== userId) {
+          opponentId = member.id;
+          opponentName = member.username;
+          break;
+        }
+      }
+    }
+    return { opponentId, opponentName };
+  }
+
+  async function handleChessSpoilerClick() {
     setChessModalShown(true);
     return Promise.resolve();
   }

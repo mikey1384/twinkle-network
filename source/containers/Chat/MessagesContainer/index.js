@@ -16,6 +16,7 @@ const scrollIsAtTheBottom = (content, container) => {
 
 class MessagesContainer extends Component {
   static propTypes = {
+    channelId: PropTypes.number,
     className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
     currentChannelId: PropTypes.number.isRequired,
@@ -24,7 +25,7 @@ class MessagesContainer extends Component {
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
     loading: PropTypes.bool,
-    onChessSpoilerReveal: PropTypes.func,
+    onChessSpoilerClick: PropTypes.func,
     onLoadingDone: PropTypes.func
   };
 
@@ -271,16 +272,17 @@ class MessagesContainer extends Component {
   };
 
   renderMessages = () => {
-    const { messages, onChessSpoilerReveal } = this.props;
+    const { channelId, messages, onChessSpoilerClick } = this.props;
     return messages.map((message, index) => {
       let { isNotification } = message;
       let messageStyle = isNotification ? { color: Color.gray() } : null;
       return (
         <Message
           key={message.id || 'newMessage' + index}
+          channelId={channelId}
           onDelete={this.onShowDeleteModal}
           index={index}
-          onChessSpoilerReveal={onChessSpoilerReveal}
+          onChessSpoilerClick={onChessSpoilerClick}
           style={messageStyle}
           message={message}
           isLastMsg={index === messages.length - 1}

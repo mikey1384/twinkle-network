@@ -10,7 +10,12 @@ import Chess from '../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { processedStringWithURL } from 'helpers/stringHelpers';
-import { editMessage, saveMessage } from 'redux/actions/ChatActions';
+import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
+import {
+  editMessage,
+  saveMessage,
+  updateChessMoveViewTimeStamp
+} from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
 import { Color } from 'constants/css';
 
@@ -18,6 +23,8 @@ Message.propTypes = {
   authLevel: PropTypes.number,
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
+  channelId: PropTypes.number,
+  dispatch: PropTypes.func.isRequired,
   message: PropTypes.object,
   style: PropTypes.object,
   myId: PropTypes.number,
@@ -27,15 +34,18 @@ Message.propTypes = {
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
-  onChessSpoilerReveal: PropTypes.func,
+  onChessSpoilerClick: PropTypes.func,
   setScrollToBottom: PropTypes.func,
-  socketConnected: PropTypes.bool
+  socketConnected: PropTypes.bool,
+  updateChessMoveViewTimeStamp: PropTypes.func
 };
 
 function Message({
   authLevel,
   canDelete,
   canEdit,
+  channelId,
+  dispatch,
   index,
   isLastMsg,
   message,
@@ -58,16 +68,16 @@ function Message({
   myId,
   onDelete,
   onEditDone,
-  onChessSpoilerReveal,
+  onChessSpoilerClick,
   saveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
   socketConnected,
-  style
+  style,
+  updateChessMoveViewTimeStamp
 }) {
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
-  const [spoilerOn, setSpoilerOn] = useState(true);
 
   useEffect(() => {
     if (
@@ -217,16 +227,15 @@ function Message({
   }
 
   async function handleSpoilerClick() {
-    await onChessSpoilerReveal();
-    setSpoilerOn(false);
+    await setChessMoveViewTimeStamp({ channelId, dispatch });
+    updateChessMoveViewTimeStamp(messageId);
+    onChessSpoilerClick();
   }
 
   function handleSpoilerOn() {
-    if (spoilerOn) {
-      const userMadeLastMove = JSON.parse(chessState).lastMoveBy === myId;
-      if (!userMadeLastMove && !moveViewTimeStamp) {
-        return true;
-      }
+    const userMadeLastMove = JSON.parse(chessState).lastMoveBy === myId;
+    if (!userMadeLastMove && !moveViewTimeStamp) {
+      return true;
     }
     return false;
   }
@@ -255,8 +264,11 @@ export default connect(
     myId: state.UserReducer.userId,
     socketConnected: state.NotiReducer.socketConnected
   }),
-  {
-    onEditDone: editMessage,
-    saveMessage
-  }
+  dispatch => ({
+    dispatch,
+    onEditDone: params => dispatch(editMessage(params)),
+    saveMessage: (params, index) => dispatch(saveMessage(params, index)),
+    updateChessMoveViewTimeStamp: messageId =>
+      dispatch(updateChessMoveViewTimeStamp(messageId))
+  })
 )(Message);

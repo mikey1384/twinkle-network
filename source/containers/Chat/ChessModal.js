@@ -3,34 +3,55 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from './Chess';
+import { updateChessMoveViewTimeStamp } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
-import { fetchCurrentChessState } from 'helpers/requestHelpers';
+import {
+  fetchCurrentChessState,
+  setChessMoveViewTimeStamp
+} from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
+  dispatch: PropTypes.func,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
-  opponentId: PropTypes.number
+  opponentId: PropTypes.number,
+  opponentName: PropTypes.string,
+  updateChessMoveViewTimeStamp: PropTypes.func.isRequired
 };
 
-export default function ChessModal({
+function ChessModal({
   channelId,
+  dispatch,
   myId,
   onConfirmChessMove,
   onHide,
-  opponentId
+  opponentId,
+  opponentName,
+  updateChessMoveViewTimeStamp
 }) {
   const [loading, setLoading] = useState(true);
   const [initialState, setInitialState] = useState();
+  const [spoilerOn, setSpoilerOn] = useState(true);
+  const [viewTimeStamp, setViewTimeStamp] = useState();
+  const [messageId, setMessageId] = useState();
   useEffect(() => {
     init();
     async function init() {
-      const { chessState } = await fetchCurrentChessState(channelId);
+      const {
+        messageId,
+        chessState,
+        moveViewTimeStamp
+      } = await fetchCurrentChessState(channelId);
+      setMessageId(messageId);
       setInitialState(chessState);
+      setViewTimeStamp(moveViewTimeStamp);
       setLoading(false);
     }
   }, []);
+
   return (
     <Modal large onHide={onHide}>
       <header>Chess</header>
@@ -40,8 +61,11 @@ export default function ChessModal({
           initialState={initialState}
           loading={loading}
           myId={myId}
-          onConfirmChessMove={onConfirmChessMove}
+          onConfirmChessMove={handleConfirmChessMove}
           opponentId={opponentId}
+          opponentName={opponentName}
+          spoilerOn={handleSpoilerOn()}
+          onSpoilerClick={handleSpoilerClick}
         />
       </main>
       <footer>
@@ -51,4 +75,33 @@ export default function ChessModal({
       </footer>
     </Modal>
   );
+
+  function handleConfirmChessMove(json) {
+    console.log(json);
+  }
+
+  async function handleSpoilerClick() {
+    await setChessMoveViewTimeStamp({ channelId, dispatch });
+    setSpoilerOn(false);
+    updateChessMoveViewTimeStamp(messageId);
+  }
+
+  function handleSpoilerOn() {
+    if (spoilerOn && initialState) {
+      const userMadeLastMove = JSON.parse(initialState).lastMoveBy === myId;
+      if (!userMadeLastMove && !viewTimeStamp) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
+
+export default connect(
+  null,
+  dispatch => ({
+    dispatch,
+    updateChessMoveViewTimeStamp: messageId =>
+      dispatch(updateChessMoveViewTimeStamp(messageId))
+  })
+)(ChessModal);

@@ -573,6 +573,15 @@ export default function ChatReducer(state = defaultState, action) {
       };
     case CHAT.RESET:
       return defaultState;
+    case CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP:
+      return {
+        ...state,
+        messages: state.messages.map(message =>
+          message.id === action.messageId
+            ? { ...message, moveViewTimeStamp: Math.floor(Date.now() / 1000) }
+            : message
+        )
+      };
     default:
       return state;
   }
