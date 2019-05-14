@@ -17,7 +17,6 @@ import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
-import { uploadChessMove } from 'helpers/requestHelpers';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -371,10 +370,6 @@ function Chat({
     return Promise.resolve();
   }
 
-  function handleConfirmChessMove(state) {
-    uploadChessMove({ state, channelId: currentChannel.id, dispatch });
-  }
-
   function userListDescriptionShown(user) {
     for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
       if (user.id === currentChannelOnlineMembers[i].id) return true;
@@ -418,8 +413,26 @@ function Chat({
         numUnreads: 1
       }));
     try {
-      const newMessage = await submitMessage(params);
-      socket.emit('new_chat_message', newMessage, channel);
+      submitMessage(params);
+      socket.emit('new_chat_message', params, channel);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleConfirmChessMove(state) {
+    const params = {
+      userId,
+      username,
+      profilePicId,
+      content: 'Made a chess move',
+      channelId: currentChannel.id,
+      chessState: state,
+      isChessMove: 1
+    };
+    try {
+      submitMessage(params);
+      socket.emit('new_chat_message', params, currentChannel);
     } catch (error) {
       console.error(error);
     }

@@ -34,12 +34,15 @@ function ChessModal({
 }) {
   const [loading, setLoading] = useState(true);
   const [initialState, setInitialState] = useState();
-  const [spoilerOn, setSpoilerOn] = useState(true);
+  const [spoilerOn, setSpoilerOn] = useState();
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
+  const [newChessState, setNewChessState] = useState();
+
   useEffect(() => {
     init();
     async function init() {
+      setLoading(true);
       const {
         messageId,
         chessState,
@@ -50,50 +53,78 @@ function ChessModal({
       setViewTimeStamp(moveViewTimeStamp);
       setLoading(false);
     }
+    return function cleanUp() {
+      setLoading(true);
+      setInitialState(undefined);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      if (initialState) {
+        const { lastMoveBy } = JSON.parse(initialState);
+        const userMadeLastMove = lastMoveBy === myId;
+        if (!userMadeLastMove && !viewTimeStamp) {
+          setSpoilerOn(true);
+        } else {
+          setSpoilerOn(false);
+        }
+      } else {
+        setSpoilerOn(false);
+      }
+    }
+  }, [initialState, loading, viewTimeStamp]);
 
   return (
     <Modal large onHide={onHide}>
       <header>Chess</header>
-      <main style={{ backgroundColor: Color.gray() }}>
+      <main style={{ backgroundColor: Color.subtitleGray() }}>
         <Chess
           interactable
           initialState={initialState}
           loading={loading}
           myId={myId}
-          onConfirmChessMove={handleConfirmChessMove}
+          newChessState={newChessState}
+          onChessMove={setNewChessState}
           opponentId={opponentId}
           opponentName={opponentName}
-          spoilerOn={handleSpoilerOn()}
+          spoilerOn={spoilerOn}
           onSpoilerClick={handleSpoilerClick}
         />
       </main>
       <footer>
         <Button transparent onClick={onHide} style={{ marginRight: '0.7rem' }}>
-          Cancel
+          Close
+        </Button>
+        {!!newChessState && (
+          <Button
+            style={{ marginRight: '0.7rem' }}
+            color="pink"
+            onClick={() => setNewChessState(undefined)}
+          >
+            Cancel Move
+          </Button>
+        )}
+        <Button
+          color="blue"
+          onClick={submitChessMove}
+          disabled={!newChessState}
+        >
+          Confirm Move
         </Button>
       </footer>
     </Modal>
   );
 
-  function handleConfirmChessMove(json) {
-    console.log(json);
-  }
-
   async function handleSpoilerClick() {
-    await setChessMoveViewTimeStamp({ channelId, dispatch });
+    await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     setSpoilerOn(false);
     updateChessMoveViewTimeStamp(messageId);
   }
 
-  function handleSpoilerOn() {
-    if (spoilerOn && initialState) {
-      const userMadeLastMove = JSON.parse(initialState).lastMoveBy === myId;
-      if (!userMadeLastMove && !viewTimeStamp) {
-        return true;
-      }
-    }
-    return false;
+  async function submitChessMove() {
+    await onConfirmChessMove(newChessState);
+    onHide();
   }
 }
 

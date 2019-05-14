@@ -495,9 +495,17 @@ export const setByUser = async({ contentId, dispatch }) => {
   }
 };
 
-export const setChessMoveViewTimeStamp = async({ channelId, dispatch }) => {
+export const setChessMoveViewTimeStamp = async({
+  channelId,
+  messageId,
+  dispatch
+}) => {
   try {
-    await request.put(`${URL}/chat/chess/timeStamp`, { channelId }, auth());
+    await request.put(
+      `${URL}/chat/chess/timeStamp`,
+      { channelId, messageId },
+      auth()
+    );
     return Promise.resolve();
   } catch (error) {
     return handleError(error, dispatch);
@@ -540,20 +548,6 @@ export const setTheme = async({ color, dispatch }) => {
     await request.put(`${URL}/user/theme`, { color }, auth());
     return Promise.resolve();
   } catch (error) {
-    return handleError(error, dispatch);
-  }
-};
-
-export const uploadChessMove = async({ state, channelId, dispatch }) => {
-  try {
-    const data = await request.post(
-      `${URL}/chat/chess`,
-      { state, channelId },
-      auth()
-    );
-    console.log(data);
-  } catch (error) {
-    console.error(error);
     return handleError(error, dispatch);
   }
 };

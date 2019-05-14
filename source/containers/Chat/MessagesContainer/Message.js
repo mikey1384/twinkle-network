@@ -52,8 +52,6 @@ function Message({
   message: {
     id: messageId,
     userId,
-    profilePicId,
-    username,
     timeStamp,
     content,
     subjectId,
@@ -76,6 +74,7 @@ function Message({
   style,
   updateChessMoveViewTimeStamp
 }) {
+  const { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
 
@@ -86,7 +85,7 @@ function Message({
       !message.isSubject &&
       !message.isNotification
     ) {
-      saveMessage({ ...message, content: message.content }, index);
+      saveMessage(post, index);
     }
   }, []);
   useEffect(() => {
@@ -142,7 +141,10 @@ function Message({
           <div>
             {isChessMove ? (
               <div
-                style={{ background: Color.gray(), margin: '1rem 1rem 0 0' }}
+                style={{
+                  background: Color.subtitleGray(),
+                  margin: '1rem 1rem 0 0'
+                }}
               >
                 <Chess
                   spoilerOn={handleSpoilerOn()}
@@ -227,7 +229,7 @@ function Message({
   }
 
   async function handleSpoilerClick() {
-    await setChessMoveViewTimeStamp({ channelId, dispatch });
+    await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     updateChessMoveViewTimeStamp(messageId);
     onChessSpoilerClick();
   }

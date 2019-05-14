@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
 import { css } from 'emotion';
+import { Color } from 'constants/css';
 import { initialiseChessBoard } from './helpers/model.js';
 import {
   checkerPos,
@@ -21,7 +22,8 @@ Chess.propTypes = {
   initialState: PropTypes.string,
   loading: PropTypes.bool,
   myId: PropTypes.number,
-  onConfirmChessMove: PropTypes.func.isRequired,
+  newChessState: PropTypes.string,
+  onChessMove: PropTypes.func,
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
@@ -33,7 +35,8 @@ export default function Chess({
   initialState,
   loading,
   myId,
-  onConfirmChessMove,
+  newChessState,
+  onChessMove,
   onSpoilerClick,
   opponentId,
   opponentName,
@@ -60,14 +63,21 @@ export default function Chess({
   });
 
   useEffect(() => {
-    const playerColors = initialState
-      ? JSON.parse(initialState).playerColors
+    if (newChessState) return;
+    const parsedState = initialState ? JSON.parse(initialState) : undefined;
+    const playerColors = parsedState
+      ? parsedState.playerColors
       : {
           [myId]: 'white',
           [opponentId]: 'black'
         };
     setPlayerColors(playerColors);
     setSquares(initialiseChessBoard({ initialState, loading, myId }));
+    if (parsedState) {
+      setBlackFallenPieces(parsedState.fallenPieces.black);
+      setWhiteFallenPieces(parsedState.fallenPieces.white);
+      fallenPieces.current = parsedState.fallenPieces;
+    }
     if (interactable) {
       setSquares(squares =>
         squares.map(square =>
@@ -84,7 +94,8 @@ export default function Chess({
         )
       );
     }
-  }, [initialState, loading]);
+  }, [initialState, loading, newChessState]);
+
   let myColor = 'white';
   if (initialState) {
     myColor = JSON.parse(initialState).playerColors[myId];
@@ -95,7 +106,7 @@ export default function Chess({
       className={css`
         font: 14px 'Century Gothic', Futura, sans-serif;
         .dark {
-          background-color: RGB(104, 136, 107);
+          background-color: ${Color.orange()};
         }
 
         .dark.highlighted {
@@ -142,11 +153,30 @@ export default function Chess({
           alignItems: 'center'
         }}
       >
-        <FallenPieces myColor={myColor} whiteFallenPieces={whiteFallenPieces} />
+        <div
+          style={{
+            height: '4rem',
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '1rem 0'
+          }}
+        >
+          {!loading && spoilerOn === false && (
+            <FallenPieces
+              myColor={myColor}
+              {...{
+                [myColor === 'white'
+                  ? 'whiteFallenPieces'
+                  : 'blackFallenPieces']:
+                  myColor === 'white' ? whiteFallenPieces : blackFallenPieces
+              }}
+            />
+          )}
+        </div>
         <Board
           loading={loading}
           spoilerOn={spoilerOn}
-          interactable={interactable}
+          interactable={interactable && !newChessState}
           squares={squares}
           myColor={myColor}
           onClick={handleClick}
@@ -164,10 +194,26 @@ export default function Chess({
           }}
         >
           <div style={{ lineHeight: 2 }}>{status || gameOverMsg}</div>
-          <FallenPieces
-            myColor={myColor}
-            blackFallenPieces={blackFallenPieces}
-          />
+          <div
+            style={{
+              height: '4rem',
+              display: 'flex',
+              flexDirection: 'column',
+              margin: '1rem 0'
+            }}
+          >
+            {!loading && spoilerOn === false && (
+              <FallenPieces
+                myColor={myColor}
+                {...{
+                  [myColor === 'white'
+                    ? 'blackFallenPieces'
+                    : 'whiteFallenPieces']:
+                    myColor === 'white' ? blackFallenPieces : whiteFallenPieces
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -250,7 +296,7 @@ export default function Chess({
   }
 
   function handleClick(i) {
-    if (!interactable) return;
+    if (!interactable || newChessState) return;
     if (selectedIndex === -1) {
       if (!squares[i] || squares[i].color !== myColor) {
         return;
@@ -325,7 +371,7 @@ export default function Chess({
               ),
               fallenPieces: fallenPieces.current
             });
-            onConfirmChessMove(json);
+            onChessMove(json);
           }
         }
       }

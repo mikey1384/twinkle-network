@@ -45,14 +45,7 @@ export default function FallenPieces({
   );
 
   return (
-    <div
-      style={{
-        height: '4rem',
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '1rem 0'
-      }}
-    >
+    <>
       {whiteFallenPiecesCompressed.length > 0 && (
         <div style={{ display: 'flex', marginBottom: '1rem' }}>
           {whiteFallenPiecesCompressed.map((piece, index) => (
@@ -87,6 +80,6 @@ export default function FallenPieces({
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }

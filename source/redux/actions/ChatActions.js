@@ -406,17 +406,13 @@ export const sendFirstDirectMessage = (params, callback) => async dispatch => {
   }
 };
 
-export const submitMessageAsync = params => dispatch => {
-  let message = {
+export const submitMessageAsync = params => ({
+  type: CHAT.SUBMIT_MESSAGE,
+  message: {
     ...params,
     timeStamp: Math.floor(Date.now() / 1000)
-  };
-  dispatch({
-    type: CHAT.SUBMIT_MESSAGE,
-    message
-  });
-  return Promise.resolve(params);
-};
+  }
+});
 
 export const saveMessage = (message, index) => async dispatch => {
   try {
