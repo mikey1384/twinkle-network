@@ -125,12 +125,68 @@ export default function Board({
   return (
     <div
       style={{
-        width: '360px',
-        height: '360px',
-        position: 'relative'
+        display: 'grid',
+        gridTemplateAreas: `
+          "chess num"
+          "letter nothing"
+        `,
+        gridTemplateColumns: '360px 2rem',
+        gridTemplateRows: '360px 2.5rem',
+        background: '#fff',
+        width: 'CALC(360px + 2rem)',
+        height: 'CALC(360px + 2.5rem)'
       }}
     >
-      {loading ? <Loading /> : squares.length > 0 ? board : null}
+      <div
+        style={{
+          gridArea: 'num',
+          display: 'grid',
+          gridTemplateRows: 'repeat(8, 1fr)'
+        }}
+      >
+        {Array(8)
+          .fill()
+          .map((elem, index) => (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              key={index}
+            >
+              {index + 1}
+            </div>
+          ))}
+      </div>
+      <div
+        style={{
+          gridArea: 'chess',
+          position: 'relative'
+        }}
+      >
+        {loading ? <Loading /> : squares.length > 0 ? board : null}
+      </div>
+      <div
+        style={{
+          gridArea: 'letter',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(8, 1fr)'
+        }}
+      >
+        {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((elem, index) => (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            key={index}
+          >
+            {elem}
+          </div>
+        ))}
+      </div>
     </div>
   );
 
