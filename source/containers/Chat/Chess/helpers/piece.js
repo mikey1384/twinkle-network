@@ -11,13 +11,15 @@ export default function getPiece({
   switch (type) {
     case 'pawn':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg'
-          }')`
         },
         isMovePossible({
           src,
@@ -77,13 +79,15 @@ export default function getPiece({
 
     case 'bishop':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg'
-          }')`
         },
         isMovePossible({ src, dest }) {
           const srcRow = Math.floor(src / 8);
@@ -123,13 +127,15 @@ export default function getPiece({
 
     case 'knight':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg'
-          }')`
         },
         isMovePossible({ src, dest }) {
           const srcRow = Math.floor(src / 8);
@@ -154,13 +160,15 @@ export default function getPiece({
 
     case 'rook':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg'
-          }')`
         },
         isMovePossible({ src, dest }) {
           const srcRow = Math.floor(src / 8);
@@ -198,13 +206,15 @@ export default function getPiece({
 
     case 'queen':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg'
-          }')`
         },
         isMovePossible({ src, dest }) {
           const srcRow = Math.floor(src / 8);
@@ -252,13 +262,15 @@ export default function getPiece({
 
     case 'king':
       return {
-        style: {
-          cursor: color === myColor && interactable ? 'pointer' : '',
-          backgroundImage: `url('${
+        img: {
+          style: {
+            cursor: color === myColor && interactable ? 'pointer' : '',
+            position: 'absolute'
+          },
+          src:
             color === 'white'
               ? 'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'
               : 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
-          }')`
         },
         isMovePossible({ src, dest }) {
           const srcRow = Math.floor(src / 8);

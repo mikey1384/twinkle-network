@@ -53,10 +53,10 @@ export default function FallenPieces({
               key={index}
               piece={getPiece({ piece, myColor })}
               style={{
-                ...getPiece({ piece, myColor }).style,
                 height: '4rem',
                 width: '4rem'
               }}
+              img={getPiece({ piece, myColor }).img}
               count={piece.count}
               color="white"
             />
@@ -70,10 +70,10 @@ export default function FallenPieces({
               key={index}
               piece={getPiece({ piece, myColor })}
               style={{
-                ...getPiece({ piece, myColor }).style,
                 height: '4rem',
                 width: '4rem'
               }}
+              img={getPiece({ piece, myColor }).img}
               count={piece.count}
               color="black"
             />

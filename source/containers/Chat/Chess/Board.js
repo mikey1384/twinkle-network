@@ -46,11 +46,11 @@ export default function Board({
             <Square
               key={index}
               className={squares[index]?.state}
-              style={
+              img={
                 squares[index]
                   ? getPiece({ piece: squares[index], myColor, interactable })
-                      .style
-                  : {}
+                      .img
+                  : undefined
               }
               shade={
                 (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))

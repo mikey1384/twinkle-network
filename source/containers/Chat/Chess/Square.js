@@ -6,18 +6,20 @@ Square.propTypes = {
   className: PropTypes.string,
   count: PropTypes.number,
   color: PropTypes.string,
-  style: PropTypes.object,
+  img: PropTypes.object,
   onClick: PropTypes.func,
-  shade: PropTypes.string
+  shade: PropTypes.string,
+  style: PropTypes.object
 };
 
 export default function Square({
   count,
   className,
+  img,
   shade,
   onClick,
-  style,
-  color
+  color,
+  style
 }) {
   return (
     <div
@@ -25,6 +27,11 @@ export default function Square({
         background-repeat: no-repeat;
         background-position: center;
         font-size: 1.5rem;
+        &.blurred {
+          > img {
+            opacity: 0.2;
+          }
+        }
         &.highlighted {
           cursor: pointer;
         }
@@ -35,6 +42,7 @@ export default function Square({
       style={{ position: 'relative', ...style }}
       onClick={onClick}
     >
+      {img && <img {...img} />}
       {count > 1 && (
         <div
           style={{

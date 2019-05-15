@@ -113,7 +113,9 @@ export default function Chess({
         >
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {!spoilerOn ? `moved a ${parsedState?.move?.piece}` : 'made a move'}
+            {!spoilerOn
+              ? `moved a ${parsedState?.move?.piece.type}`
+              : 'made a move'}
           </p>
           {!spoilerOn ? (
             <>
@@ -380,9 +382,15 @@ export default function Chess({
             const json = JSON.stringify({
               move: {
                 by: myId,
-                piece: squares[selectedIndex].type,
+                piece: {
+                  ...squares[selectedIndex],
+                  state: 'blurred',
+                  isPiece: false
+                },
                 from: getPositionId({ index: selectedIndex, myColor }),
-                to: getPositionId({ index: i, myColor })
+                to: getPositionId({ index: i, myColor }),
+                srcIndex:
+                  myColor === 'black' ? 63 - selectedIndex : selectedIndex
               },
               playerColors: playerColors || {
                 [myId]: 'white',

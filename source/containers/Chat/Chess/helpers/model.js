@@ -42,8 +42,12 @@ export function initialiseChessBoard({ initialState, loading, myId }) {
   let board;
   let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
   if (initialState) {
-    let { board: parsedBoard, playerColors } = JSON.parse(initialState);
+    let { board: parsedBoard, playerColors, move } = JSON.parse(initialState);
     board = parsedBoard;
+    if (move?.srcIndex) {
+      board[myColor === 'black' ? 63 - move.srcIndex : move.srcIndex] =
+        move.piece;
+    }
     myColor = playerColors[myId];
     if (myColor === 'black') {
       board.reverse();
@@ -117,30 +121,32 @@ export function highlightPossiblePathsFromSrc({
   enPassantTarget,
   myColor
 }) {
-  return squares.map((square, index) =>
-    index === src ||
-    isPossibleAndLegal({
-      src,
-      dest: index,
-      squares,
-      enPassantTarget,
-      myColor
-    })
-      ? {
-          ...square,
-          state:
-            ['check', 'checkmate'].indexOf(square.state) !== -1
-              ? square.state
-              : 'highlighted'
-        }
-      : {
-          ...square,
-          state:
-            ['check', 'checkmate'].indexOf(square.state) !== -1
-              ? square.state
-              : ''
-        }
-  );
+  return squares
+    .map(square => (square.isPiece ? square : {}))
+    .map((square, index) =>
+      index === src ||
+      isPossibleAndLegal({
+        src,
+        dest: index,
+        squares,
+        enPassantTarget,
+        myColor
+      })
+        ? {
+            ...square,
+            state:
+              ['check', 'checkmate'].indexOf(square.state) !== -1
+                ? square.state
+                : 'highlighted'
+          }
+        : {
+            ...square,
+            state:
+              ['check', 'checkmate'].indexOf(square.state) !== -1
+                ? square.state
+                : ''
+          }
+    );
 }
 
 export function isGameOver({ squares, enPassantTarget, myColor }) {
@@ -392,7 +398,6 @@ export function returnBoardAfterMove({
 export function getPositionId({ index, myColor }) {
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   if (myColor === 'black') letters.reverse();
-  console.log(letters);
   const row =
     myColor === 'black' ? 9 - Math.ceil(index / 8) : Math.ceil(index / 8);
   const column = letters[index % 8];
