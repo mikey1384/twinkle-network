@@ -93,12 +93,13 @@ function Message({
       setTimeout(() => setScrollToBottom(), 0);
     }
   }, [editPadding]);
-  const userMadeLastMove = JSON.parse(chessState).lastMoveBy === myId;
+  const userMadeLastMove = JSON.parse(chessState)?.move?.by === myId;
   const userIsUploader = myId === userId;
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
+  const spoilerOn = handleSpoilerOn();
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
@@ -147,24 +148,14 @@ function Message({
                   margin: '1rem 1rem 0 0'
                 }}
               >
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    marginLeft: '1rem',
-                    position: 'absolute',
-                    fontSize: '2.5rem',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {userMadeLastMove ? 'You' : username}
-                </div>
                 <Chess
-                  spoilerOn={handleSpoilerOn()}
+                  spoilerOn={spoilerOn}
                   myId={myId}
                   initialState={chessState}
                   onConfirmChessMove={() => console.log('move')}
                   onSpoilerClick={handleSpoilerClick}
                   opponentName={username}
+                  userMadeLastMove={userMadeLastMove}
                 />
               </div>
             ) : (

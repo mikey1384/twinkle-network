@@ -62,8 +62,8 @@ function ChessModal({
   useEffect(() => {
     if (!loading) {
       if (initialState) {
-        const { lastMoveBy } = JSON.parse(initialState);
-        const userMadeLastMove = lastMoveBy === myId;
+        const { move } = JSON.parse(initialState);
+        const userMadeLastMove = move?.by === myId;
         if (!userMadeLastMove && !viewTimeStamp) {
           setSpoilerOn(true);
         } else {
@@ -78,21 +78,29 @@ function ChessModal({
   return (
     <Modal large onHide={onHide}>
       <header>Chess</header>
-      <main style={{ backgroundColor: Color.subtitleGray() }}>
-        <Chess
-          interactable
-          initialState={initialState}
-          loading={loading}
-          myId={myId}
-          newChessState={newChessState}
-          onChessMove={setNewChessState}
-          opponentId={opponentId}
-          opponentName={opponentName}
-          spoilerOn={spoilerOn}
-          onSpoilerClick={handleSpoilerClick}
-        />
+      <main style={{ padding: 0 }}>
+        <div
+          style={{
+            backgroundColor: Color.subtitleGray(),
+            position: 'relative',
+            width: '100%'
+          }}
+        >
+          <Chess
+            interactable
+            initialState={initialState}
+            loading={loading}
+            myId={myId}
+            newChessState={newChessState}
+            onChessMove={setNewChessState}
+            opponentId={opponentId}
+            opponentName={opponentName}
+            spoilerOn={spoilerOn}
+            onSpoilerClick={handleSpoilerClick}
+          />
+        </div>
       </main>
-      <footer>
+      <footer style={{ border: 0 }}>
         <Button transparent onClick={onHide} style={{ marginRight: '0.7rem' }}>
           Close
         </Button>

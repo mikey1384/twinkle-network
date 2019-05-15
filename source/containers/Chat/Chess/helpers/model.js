@@ -4,40 +4,40 @@ export function initialiseChessBoard({ initialState, loading, myId }) {
   if (loading) return [];
   let myColor = 'white';
   const blackPieces = [
-    { type: 'rook', color: 'black' },
-    { type: 'knight', color: 'black' },
-    { type: 'bishop', color: 'black' },
-    { type: 'queen', color: 'black' },
-    { type: 'king', color: 'black' },
-    { type: 'bishop', color: 'black' },
-    { type: 'knight', color: 'black' },
-    { type: 'rook', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' },
-    { type: 'pawn', color: 'black' }
+    { type: 'rook', color: 'black', isPiece: true },
+    { type: 'knight', color: 'black', isPiece: true },
+    { type: 'bishop', color: 'black', isPiece: true },
+    { type: 'queen', color: 'black', isPiece: true },
+    { type: 'king', color: 'black', isPiece: true },
+    { type: 'bishop', color: 'black', isPiece: true },
+    { type: 'knight', color: 'black', isPiece: true },
+    { type: 'rook', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true },
+    { type: 'pawn', color: 'black', isPiece: true }
   ];
   const whitePieces = [
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'pawn', color: 'white' },
-    { type: 'rook', color: 'white' },
-    { type: 'knight', color: 'white' },
-    { type: 'bishop', color: 'white' },
-    { type: 'queen', color: 'white' },
-    { type: 'king', color: 'white' },
-    { type: 'bishop', color: 'white' },
-    { type: 'knight', color: 'white' },
-    { type: 'rook', color: 'white' }
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'pawn', color: 'white', isPiece: true },
+    { type: 'rook', color: 'white', isPiece: true },
+    { type: 'knight', color: 'white', isPiece: true },
+    { type: 'bishop', color: 'white', isPiece: true },
+    { type: 'queen', color: 'white', isPiece: true },
+    { type: 'king', color: 'white', isPiece: true },
+    { type: 'bishop', color: 'white', isPiece: true },
+    { type: 'knight', color: 'white', isPiece: true },
+    { type: 'rook', color: 'white', isPiece: true }
   ];
   let board;
   let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
@@ -387,4 +387,14 @@ export function returnBoardAfterMove({
     };
   });
   return newSquares;
+}
+
+export function getPositionId({ index, myColor }) {
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  if (myColor === 'black') letters.reverse();
+  console.log(letters);
+  const row =
+    myColor === 'black' ? 9 - Math.ceil(index / 8) : Math.ceil(index / 8);
+  const column = letters[index % 8];
+  return `${column + row}`;
 }

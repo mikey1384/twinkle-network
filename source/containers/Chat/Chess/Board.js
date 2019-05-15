@@ -33,6 +33,8 @@ export default function Board({
   spoilerOn
 }) {
   const [board, setBoard] = useState();
+  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  if (myColor === 'black') letters.reverse();
   useEffect(() => {
     if (spoilerOn === false) {
       const board = [];
@@ -66,16 +68,65 @@ export default function Board({
         <>
           <div
             style={{
-              margin: '0 auto',
-              width: '100%',
-              height: '100%',
+              gridArea: 'num',
+              display: 'grid',
+              gridTemplateRows: 'repeat(8, 1fr)'
+            }}
+          >
+            {Array(8)
+              .fill()
+              .map((elem, index) => (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  key={index}
+                >
+                  {myColor === 'black' ? 8 - index : index + 1}
+                </div>
+              ))}
+          </div>
+          <div
+            style={{
+              gridArea: 'chess',
+              position: 'relative'
+            }}
+          >
+            <div
+              style={{
+                margin: '0 auto',
+                width: '100%',
+                height: '100%',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(8, 1fr)'
+              }}
+            >
+              {board}
+            </div>
+          </div>
+          {squares.length > 0 && renderCastlingButtons()}
+          <div
+            style={{
+              gridArea: 'letter',
               display: 'grid',
               gridTemplateColumns: 'repeat(8, 1fr)'
             }}
           >
-            {board}
+            {letters.map((elem, index) => (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                key={index}
+              >
+                {elem}
+              </div>
+            ))}
           </div>
-          {squares.length > 0 && renderCastlingButtons()}
         </>
       );
     } else {
@@ -124,69 +175,26 @@ export default function Board({
 
   return (
     <div
-      style={{
-        display: 'grid',
-        gridTemplateAreas: `
-          "chess num"
-          "letter nothing"
-        `,
-        gridTemplateColumns: '360px 2rem',
-        gridTemplateRows: '360px 2.5rem',
-        background: '#fff',
-        width: 'CALC(360px + 2rem)',
-        height: 'CALC(360px + 2.5rem)'
-      }}
+      style={{ width: 'CALC(360px + 2rem)', height: 'CALC(360px + 2.5rem)' }}
     >
-      <div
-        style={{
-          gridArea: 'num',
-          display: 'grid',
-          gridTemplateRows: 'repeat(8, 1fr)'
-        }}
-      >
-        {Array(8)
-          .fill()
-          .map((elem, index) => (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-              key={index}
-            >
-              {index + 1}
-            </div>
-          ))}
-      </div>
-      <div
-        style={{
-          gridArea: 'chess',
-          position: 'relative'
-        }}
-      >
-        {loading ? <Loading /> : squares.length > 0 ? board : null}
-      </div>
-      <div
-        style={{
-          gridArea: 'letter',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(8, 1fr)'
-        }}
-      >
-        {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((elem, index) => (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            key={index}
-          >
-            {elem}
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <Loading />
+      ) : squares.length > 0 ? (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateAreas: `
+              "chess num"
+              "letter ."
+            `,
+            gridTemplateColumns: '360px 2rem',
+            gridTemplateRows: '360px 2.5rem',
+            background: spoilerOn === false ? '#fff' : ''
+          }}
+        >
+          {board}
+        </div>
+      ) : null}
     </div>
   );
 

@@ -4,7 +4,7 @@ import Board from './Board';
 import FallenPieces from './FallenPieces.js';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { initialiseChessBoard } from './helpers/model.js';
+import { initialiseChessBoard, getPositionId } from './helpers/model.js';
 import {
   checkerPos,
   getPieceIndex,
@@ -61,10 +61,10 @@ export default function Chess({
     white: [],
     black: []
   });
+  const parsedState = initialState ? JSON.parse(initialState) : undefined;
 
   useEffect(() => {
     if (newChessState) return;
-    const parsedState = initialState ? JSON.parse(initialState) : undefined;
     const playerColors = parsedState
       ? parsedState.playerColors
       : {
@@ -78,7 +78,7 @@ export default function Chess({
       setWhiteFallenPieces(parsedState.fallenPieces.white);
       fallenPieces.current = parsedState.fallenPieces;
     }
-    if (interactable) {
+    if (interactable && !userMadeLastMove) {
       setSquares(squares =>
         squares.map(square =>
           square.color === playerColors[myId]
@@ -96,104 +96,84 @@ export default function Chess({
     }
   }, [initialState, loading, newChessState]);
 
-  let myColor = 'white';
-  if (initialState) {
-    myColor = JSON.parse(initialState).playerColors[myId];
-  }
+  const myColor = parsedState?.playerColors[myId] || 'white';
+  const userMadeLastMove = parsedState?.move?.by === myId;
 
   return (
-    <div
-      className={css`
-        font: 14px 'Century Gothic', Futura, sans-serif;
-        .dark {
-          background-color: ${Color.orange()};
-        }
-
-        .dark.highlighted {
-          background-color: RGB(164, 236, 137);
-        }
-
-        .dark.check {
-          background-color: yellow;
-        }
-
-        .dark.danger {
-          background-color: yellow;
-        }
-
-        .dark.checkmate {
-          background-color: red;
-        }
-
-        .light {
-          background-color: RGB(234, 240, 206);
-        }
-
-        .light.highlighted {
-          background-color: RGB(174, 255, 196);
-        }
-
-        .light.check {
-          background-color: yellow;
-        }
-
-        .light.danger {
-          background-color: yellow;
-        }
-
-        .light.checkmate {
-          background-color: red;
-        }
-      `}
-    >
+    <>
+      {!loading && (
+        <div
+          style={{
+            marginTop: '1rem',
+            marginLeft: '1rem',
+            position: 'absolute',
+            fontSize: '2.5rem',
+            fontWeight: 'bold'
+          }}
+        >
+          <p>{userMadeLastMove ? 'You' : opponentName}</p>
+          <p>
+            {!spoilerOn ? `moved a ${parsedState?.move?.piece}` : 'made a move'}
+          </p>
+          {!spoilerOn ? (
+            <>
+              <p>from {parsedState?.move?.from}</p>
+              <p>to {parsedState?.move?.to}</p>
+            </>
+          ) : null}
+        </div>
+      )}
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}
+        className={css`
+          font: 14px 'Century Gothic', Futura, sans-serif;
+          .dark {
+            background-color: ${Color.orange()};
+          }
+
+          .dark.highlighted {
+            background-color: RGB(164, 236, 137);
+          }
+
+          .dark.check {
+            background-color: yellow;
+          }
+
+          .dark.danger {
+            background-color: yellow;
+          }
+
+          .dark.checkmate {
+            background-color: red;
+          }
+
+          .light {
+            background-color: RGB(234, 240, 206);
+          }
+
+          .light.highlighted {
+            background-color: RGB(174, 255, 196);
+          }
+
+          .light.check {
+            background-color: yellow;
+          }
+
+          .light.danger {
+            background-color: yellow;
+          }
+
+          .light.checkmate {
+            background-color: red;
+          }
+        `}
       >
         <div
           style={{
-            height: '4rem',
             display: 'flex',
-            flexDirection: 'column',
-            margin: '1rem 0'
-          }}
-        >
-          {!loading && spoilerOn === false && (
-            <FallenPieces
-              myColor={myColor}
-              {...{
-                [myColor === 'white'
-                  ? 'whiteFallenPieces'
-                  : 'blackFallenPieces']:
-                  myColor === 'white' ? whiteFallenPieces : blackFallenPieces
-              }}
-            />
-          )}
-        </div>
-        <Board
-          loading={loading}
-          spoilerOn={spoilerOn}
-          interactable={interactable && !newChessState}
-          squares={squares}
-          myColor={myColor}
-          onClick={handleClick}
-          onCastling={handleCastling}
-          castled={castled}
-          onSpoilerClick={onSpoilerClick}
-          opponentName={opponentName}
-        />
-        <div
-          style={{
-            display: 'flex',
-            width: '100%',
             flexDirection: 'column',
             alignItems: 'center'
           }}
         >
-          <div style={{ lineHeight: 2 }}>{status || gameOverMsg}</div>
           <div
             style={{
               height: '4rem',
@@ -207,16 +187,60 @@ export default function Chess({
                 myColor={myColor}
                 {...{
                   [myColor === 'white'
-                    ? 'blackFallenPieces'
-                    : 'whiteFallenPieces']:
-                    myColor === 'white' ? blackFallenPieces : whiteFallenPieces
+                    ? 'whiteFallenPieces'
+                    : 'blackFallenPieces']:
+                    myColor === 'white' ? whiteFallenPieces : blackFallenPieces
                 }}
               />
             )}
           </div>
+          <Board
+            loading={loading}
+            spoilerOn={spoilerOn}
+            interactable={interactable && !newChessState && !userMadeLastMove}
+            squares={squares}
+            myColor={myColor}
+            onClick={handleClick}
+            onCastling={handleCastling}
+            castled={castled}
+            onSpoilerClick={onSpoilerClick}
+            opponentName={opponentName}
+          />
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ lineHeight: 2 }}>{status || gameOverMsg}</div>
+            <div
+              style={{
+                height: '4rem',
+                display: 'flex',
+                flexDirection: 'column',
+                margin: '1rem 0'
+              }}
+            >
+              {!loading && spoilerOn === false && (
+                <FallenPieces
+                  myColor={myColor}
+                  {...{
+                    [myColor === 'white'
+                      ? 'blackFallenPieces'
+                      : 'whiteFallenPieces']:
+                      myColor === 'white'
+                        ? blackFallenPieces
+                        : whiteFallenPieces
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   function handleCastling(direction) {
@@ -296,7 +320,7 @@ export default function Chess({
   }
 
   function handleClick(i) {
-    if (!interactable || newChessState) return;
+    if (!interactable || newChessState || userMadeLastMove) return;
     if (selectedIndex === -1) {
       if (!squares[i] || squares[i].color !== myColor) {
         return;
@@ -354,7 +378,12 @@ export default function Chess({
           });
           if (result === 'success') {
             const json = JSON.stringify({
-              lastMoveBy: myId,
+              move: {
+                by: myId,
+                piece: squares[selectedIndex].type,
+                from: getPositionId({ index: selectedIndex, myColor }),
+                to: getPositionId({ index: i, myColor })
+              },
               playerColors: playerColors || {
                 [myId]: 'white',
                 [opponentId]: 'black'
