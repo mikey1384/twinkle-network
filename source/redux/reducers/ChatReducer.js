@@ -577,7 +577,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         messages: state.messages.map(message =>
-          message.id === action.messageId || !message.id
+          !message.moveViewTimeStamp
             ? { ...message, moveViewTimeStamp: Math.floor(Date.now() / 1000) }
             : message
         )

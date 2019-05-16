@@ -434,9 +434,8 @@ export const turnChatOff = () => dispatch => {
   return Promise.resolve();
 };
 
-export const updateChessMoveViewTimeStamp = messageId => ({
-  type: CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP,
-  messageId
+export const updateChessMoveViewTimeStamp = () => ({
+  type: CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP
 });
 
 export const uploadChatSubject = content => async dispatch => {

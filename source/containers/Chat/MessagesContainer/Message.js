@@ -24,6 +24,7 @@ Message.propTypes = {
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
   channelId: PropTypes.number,
+  channelName: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   message: PropTypes.object,
   style: PropTypes.object,
@@ -45,6 +46,7 @@ function Message({
   canDelete,
   canEdit,
   channelId,
+  channelName,
   dispatch,
   index,
   isLastMsg,
@@ -144,6 +146,7 @@ function Message({
             {isChessMove ? (
               <div
                 style={{
+                  position: 'relative',
                   background: Color.subtitleGray(),
                   margin: '1rem 1rem 0 0'
                 }}
@@ -152,9 +155,10 @@ function Message({
                   spoilerOn={spoilerOn}
                   myId={myId}
                   initialState={chessState}
+                  moveViewed={!!moveViewTimeStamp}
                   onConfirmChessMove={() => console.log('move')}
                   onSpoilerClick={handleSpoilerClick}
-                  opponentName={username}
+                  opponentName={channelName}
                   userMadeLastMove={userMadeLastMove}
                 />
               </div>
@@ -233,7 +237,7 @@ function Message({
 
   async function handleSpoilerClick() {
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
-    updateChessMoveViewTimeStamp(messageId);
+    updateChessMoveViewTimeStamp();
     onChessSpoilerClick();
   }
 
@@ -272,7 +276,7 @@ export default connect(
     dispatch,
     onEditDone: params => dispatch(editMessage(params)),
     saveMessage: (params, index) => dispatch(saveMessage(params, index)),
-    updateChessMoveViewTimeStamp: messageId =>
-      dispatch(updateChessMoveViewTimeStamp(messageId))
+    updateChessMoveViewTimeStamp: params =>
+      dispatch(updateChessMoveViewTimeStamp(params))
   })
 )(Message);

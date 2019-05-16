@@ -47,6 +47,7 @@ Chat.propTypes = {
   socketConnected: PropTypes.bool,
   submitMessage: PropTypes.func,
   subjectId: PropTypes.number,
+  updateChessMoveViewTimeStamp: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
 };
@@ -80,6 +81,7 @@ function Chat({
   socketConnected,
   subjectId,
   submitMessage,
+  updateChessMoveViewTimeStamp,
   userId,
   username
 }) {
@@ -123,6 +125,7 @@ function Chat({
     socket.on('subject_change', onSubjectChange);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
+    socket.on('notifiy_move_viewed', updateChessMoveViewTimeStamp);
 
     function onReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === currentChannel.id;
@@ -156,6 +159,10 @@ function Chat({
     }
 
     return function cleanUp() {
+      socket.removeListener(
+        'notifiy_move_viewed',
+        updateChessMoveViewTimeStamp
+      );
       socket.removeListener('receive_message', onReceiveMessage);
       socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('subject_change', onSubjectChange);
@@ -288,6 +295,7 @@ function Chat({
         )}
         <MessagesContainer
           channelId={currentChannel.id}
+          channelName={currentChannel.name}
           className={css`
             display: flex;
             flex-direction: column;
@@ -580,6 +588,8 @@ export default connect(
     notifyThatMemberLeftChannel: params =>
       dispatch(ChatActions.notifyThatMemberLeftChannel(params)),
     openDirectMessageChannel: params =>
-      dispatch(ChatActions.openDirectMessageChannel(params))
+      dispatch(ChatActions.openDirectMessageChannel(params)),
+    updateChessMoveViewTimeStamp: params =>
+      dispatch(ChatActions.updateChessMoveViewTimeStamp(params))
   })
 )(Chat);

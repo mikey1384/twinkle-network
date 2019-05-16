@@ -21,6 +21,7 @@ Chess.propTypes = {
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
   loading: PropTypes.bool,
+  moveViewed: PropTypes.bool,
   myId: PropTypes.number,
   newChessState: PropTypes.string,
   onChessMove: PropTypes.func,
@@ -35,6 +36,7 @@ export default function Chess({
   initialState,
   loading,
   myId,
+  moveViewed,
   newChessState,
   onChessMove,
   onSpoilerClick,
@@ -104,8 +106,8 @@ export default function Chess({
       {!loading && (
         <div
           style={{
-            marginTop: '1rem',
-            marginLeft: '1rem',
+            top: '1rem',
+            left: '1rem',
             position: 'absolute',
             fontSize: '2.5rem',
             fontWeight: 'bold'
@@ -242,6 +244,20 @@ export default function Chess({
           </div>
         </div>
       </div>
+      {!loading && userMadeLastMove && !moveViewed && (
+        <div
+          style={{
+            bottom: '1rem',
+            right: '1rem',
+            position: 'absolute',
+            fontSize: '2.5rem',
+            fontWeight: 'bold'
+          }}
+        >
+          <p>Awaiting</p>
+          <p>{`${opponentName}'s move`}</p>
+        </div>
+      )}
     </>
   );
 

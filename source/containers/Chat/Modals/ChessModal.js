@@ -127,7 +127,7 @@ function ChessModal({
   async function handleSpoilerClick() {
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     setSpoilerOn(false);
-    updateChessMoveViewTimeStamp(messageId);
+    updateChessMoveViewTimeStamp();
   }
 
   async function submitChessMove() {
@@ -140,7 +140,7 @@ export default connect(
   null,
   dispatch => ({
     dispatch,
-    updateChessMoveViewTimeStamp: messageId =>
-      dispatch(updateChessMoveViewTimeStamp(messageId))
+    updateChessMoveViewTimeStamp: params =>
+      dispatch(updateChessMoveViewTimeStamp(params))
   })
 )(ChessModal);
