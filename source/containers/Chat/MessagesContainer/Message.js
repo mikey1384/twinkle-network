@@ -152,6 +152,7 @@ function Message({
                 }}
               >
                 <Chess
+                  loaded
                   spoilerOn={spoilerOn}
                   myId={myId}
                   initialState={chessState}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -32,17 +32,17 @@ function ChessModal({
   opponentName,
   updateChessMoveViewTimeStamp
 }) {
-  const [loading, setLoading] = useState(true);
   const [initialState, setInitialState] = useState();
   const [spoilerOn, setSpoilerOn] = useState();
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
   const [newChessState, setNewChessState] = useState();
+  const loading = useRef(null);
 
   useEffect(() => {
     init();
     async function init() {
-      setLoading(true);
+      loading.current = true;
       const {
         messageId,
         chessState,
@@ -51,16 +51,16 @@ function ChessModal({
       setMessageId(messageId);
       setInitialState(chessState);
       setViewTimeStamp(moveViewTimeStamp);
-      setLoading(false);
+      loading.current = false;
     }
     return function cleanUp() {
-      setLoading(true);
+      loading.current = true;
       setInitialState(undefined);
     };
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading.current) {
       if (initialState) {
         const { move } = JSON.parse(initialState);
         const userMadeLastMove = move?.by === myId;
@@ -73,7 +73,7 @@ function ChessModal({
         setSpoilerOn(false);
       }
     }
-  }, [initialState, loading, viewTimeStamp]);
+  }, [initialState, loading.current, viewTimeStamp]);
 
   return (
     <Modal large onHide={onHide}>
@@ -89,7 +89,7 @@ function ChessModal({
           <Chess
             interactable
             initialState={initialState}
-            loading={loading}
+            loaded={loading.current === false}
             myId={myId}
             newChessState={newChessState}
             onChessMove={setNewChessState}

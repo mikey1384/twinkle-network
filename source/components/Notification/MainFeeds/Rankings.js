@@ -45,10 +45,10 @@ function Rankings({
   useEffect(() => {
     mounted.current = true;
     userChangedTab.current = false;
-    if (!myId) {
+    if (!myId && mounted.current) {
       setAllSelected(false);
+      loadRankings();
     }
-    loadRankings();
     async function loadRankings() {
       try {
         const {

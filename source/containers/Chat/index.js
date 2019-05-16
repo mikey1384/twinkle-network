@@ -295,7 +295,7 @@ function Chat({
         )}
         <MessagesContainer
           channelId={currentChannel.id}
-          channelName={currentChannel.name}
+          channelName={channelName(currentChannel)}
           className={css`
             display: flex;
             flex-direction: column;

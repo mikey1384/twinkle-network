@@ -175,7 +175,11 @@ export default function Board({
 
   return (
     <div
-      style={{ width: 'CALC(360px + 2rem)', height: 'CALC(360px + 2.5rem)' }}
+      style={{
+        width: 'CALC(360px + 2rem)',
+        height: 'CALC(360px + 2.5rem)',
+        position: 'relative'
+      }}
     >
       {loading ? (
         <Loading />
@@ -199,13 +203,14 @@ export default function Board({
   );
 
   function renderCastlingButtons() {
-    const top = 'CALC(100% - 3.5rem)';
+    const top = 'CALC(100% - 6rem)';
     return myColor === 'white' ? (
       <>
-        {!castled.left &&
-          !squares[57].color &&
-          !squares[58].color &&
-          !squares[59].color &&
+        {interactable &&
+          !castled.left &&
+          !squares[57].isPiece &&
+          !squares[58].isPiece &&
+          !squares[59].isPiece &&
           squares[56].type === 'rook' &&
           !squares[7].moved &&
           squares[60].type === 'king' &&
@@ -218,7 +223,7 @@ export default function Board({
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
-                left: '68px',
+                left: '69px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -239,9 +244,10 @@ export default function Board({
               →
             </div>
           )}
-        {!castled.right &&
-          !squares[61].color &&
-          !squares[62].color &&
+        {interactable &&
+          !castled.right &&
+          !squares[61].isPiece &&
+          !squares[62].isPiece &&
           squares[63].type === 'rook' &&
           !squares[63].moved &&
           squares[60].type === 'king' &&
@@ -254,7 +260,7 @@ export default function Board({
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
-                left: '225px',
+                left: '226px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -278,9 +284,10 @@ export default function Board({
       </>
     ) : (
       <>
-        {!castled.left &&
-          !squares[57].color &&
-          !squares[58].color &&
+        {interactable &&
+          !castled.left &&
+          !squares[57].isPiece &&
+          !squares[58].isPiece &&
           squares[56].type === 'rook' &&
           !squares[56].moved &&
           squares[59].type === 'king' &&
@@ -314,10 +321,11 @@ export default function Board({
               →
             </div>
           )}
-        {!castled.right &&
-          !squares[60].color &&
-          !squares[61].color &&
-          !squares[62].color &&
+        {interactable &&
+          !castled.right &&
+          !squares[60].isPiece &&
+          !squares[61].isPiece &&
+          !squares[62].isPiece &&
           squares[63].type === 'rook' &&
           !squares[63].moved &&
           squares[59].type === 'king' &&

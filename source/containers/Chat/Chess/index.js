@@ -20,7 +20,7 @@ import {
 Chess.propTypes = {
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
-  loading: PropTypes.bool,
+  loaded: PropTypes.bool,
   moveViewed: PropTypes.bool,
   myId: PropTypes.number,
   newChessState: PropTypes.string,
@@ -34,7 +34,7 @@ Chess.propTypes = {
 export default function Chess({
   interactable,
   initialState,
-  loading,
+  loaded,
   myId,
   moveViewed,
   newChessState,
@@ -74,7 +74,7 @@ export default function Chess({
           [opponentId]: 'black'
         };
     setPlayerColors(playerColors);
-    setSquares(initialiseChessBoard({ initialState, loading, myId }));
+    setSquares(initialiseChessBoard({ initialState, loading: !loaded, myId }));
     if (parsedState) {
       setBlackFallenPieces(parsedState.fallenPieces.black);
       setWhiteFallenPieces(parsedState.fallenPieces.white);
@@ -96,14 +96,13 @@ export default function Chess({
         )
       );
     }
-  }, [initialState, loading, newChessState]);
+  }, [initialState, loaded, newChessState]);
 
   const myColor = parsedState?.playerColors[myId] || 'white';
   const userMadeLastMove = parsedState?.move?.by === myId;
-
   return (
     <>
-      {!loading && (
+      {loaded && (
         <div
           style={{
             top: '1rem',
@@ -186,7 +185,7 @@ export default function Chess({
               margin: '1rem 0'
             }}
           >
-            {!loading && spoilerOn === false && (
+            {loaded && spoilerOn === false && (
               <FallenPieces
                 myColor={myColor}
                 {...{
@@ -199,7 +198,7 @@ export default function Chess({
             )}
           </div>
           <Board
-            loading={loading}
+            loading={!loaded}
             spoilerOn={spoilerOn}
             interactable={interactable && !newChessState && !userMadeLastMove}
             squares={squares}
@@ -227,7 +226,7 @@ export default function Chess({
                 margin: '1rem 0'
               }}
             >
-              {!loading && spoilerOn === false && (
+              {loaded && spoilerOn === false && (
                 <FallenPieces
                   myColor={myColor}
                   {...{
@@ -244,7 +243,7 @@ export default function Chess({
           </div>
         </div>
       </div>
-      {!loading && userMadeLastMove && !moveViewed && (
+      {loaded && userMadeLastMove && !moveViewed && (
         <div
           style={{
             bottom: '1rem',
