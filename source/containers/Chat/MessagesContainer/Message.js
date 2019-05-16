@@ -35,6 +35,7 @@ Message.propTypes = {
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
+  onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   setScrollToBottom: PropTypes.func,
   socketConnected: PropTypes.bool,
@@ -66,6 +67,7 @@ function Message({
     chessState
   },
   myId,
+  onChessBoardClick,
   onDelete,
   onEditDone,
   onChessSpoilerClick,
@@ -157,7 +159,7 @@ function Message({
                   myId={myId}
                   initialState={chessState}
                   moveViewed={!!moveViewTimeStamp}
-                  onConfirmChessMove={() => console.log('move')}
+                  onBoardClick={onChessBoardClick}
                   onSpoilerClick={handleSpoilerClick}
                   opponentName={channelName}
                   userMadeLastMove={userMadeLastMove}

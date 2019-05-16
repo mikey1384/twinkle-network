@@ -26,6 +26,7 @@ class MessagesContainer extends Component {
     messages: PropTypes.array,
     loadMoreMessages: PropTypes.func,
     loading: PropTypes.bool,
+    onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
     onLoadingDone: PropTypes.func
   };
@@ -277,6 +278,7 @@ class MessagesContainer extends Component {
       channelId,
       channelName,
       messages,
+      onChessBoardClick,
       onChessSpoilerClick
     } = this.props;
     return messages.map((message, index) => {
@@ -289,6 +291,7 @@ class MessagesContainer extends Component {
           channelName={channelName}
           onDelete={this.onShowDeleteModal}
           index={index}
+          onChessBoardClick={onChessBoardClick}
           onChessSpoilerClick={onChessSpoilerClick}
           style={messageStyle}
           message={message}

@@ -312,6 +312,7 @@ function Chat({
           messages={messages}
           userId={userId}
           loadMoreMessages={loadMoreMessages}
+          onChessBoardClick={() => setChessModalShown(true)}
           onChessSpoilerClick={handleChessSpoilerClick}
           onLoadingDone={() => setLoading(false)}
         />

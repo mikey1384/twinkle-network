@@ -15,6 +15,7 @@ Board.propTypes = {
   onCastling: PropTypes.func.isRequired,
   spoilerOn: PropTypes.bool,
   opponentName: PropTypes.string,
+  onBoardClick: PropTypes.func,
   onSpoilerClick: PropTypes.func
 };
 
@@ -25,6 +26,7 @@ export default function Board({
   onClick,
   squares,
   myColor,
+  onBoardClick,
   onCastling,
   onSpoilerClick,
   opponentName,
@@ -174,10 +176,12 @@ export default function Board({
   return (
     <div
       style={{
+        cursor: onBoardClick ? 'pointer' : '',
         width: 'CALC(360px + 2rem)',
         height: 'CALC(360px + 2.5rem)',
         position: 'relative'
       }}
+      onClick={onBoardClick}
     >
       {loading ? (
         <Loading />

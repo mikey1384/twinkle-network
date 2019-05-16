@@ -24,6 +24,7 @@ Chess.propTypes = {
   moveViewed: PropTypes.bool,
   myId: PropTypes.number,
   newChessState: PropTypes.string,
+  onBoardClick: PropTypes.func,
   onChessMove: PropTypes.func,
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
@@ -38,6 +39,7 @@ export default function Chess({
   myId,
   moveViewed,
   newChessState,
+  onBoardClick,
   onChessMove,
   onSpoilerClick,
   opponentId,
@@ -94,8 +96,9 @@ export default function Chess({
     }
   }, [initialState, loaded, newChessState]);
 
+  const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
-  const userMadeLastMove = parsedState?.move?.by === myId;
+  const userMadeLastMove = move?.by === myId;
   return (
     <>
       {loaded && (
@@ -111,13 +114,15 @@ export default function Chess({
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
             {!spoilerOn
-              ? `moved a ${parsedState?.move?.piece?.type}`
+              ? move?.piece
+                ? `moved a ${move?.piece?.type}`
+                : 'castled'
               : 'made a move'}
           </p>
-          {!spoilerOn ? (
+          {!spoilerOn && move?.piece?.type ? (
             <>
-              <p>from {parsedState?.move?.from}</p>
-              <p>to {parsedState?.move?.to}</p>
+              <p>from {move?.from}</p>
+              <p>to {move?.to}</p>
             </>
           ) : null}
         </div>
@@ -200,6 +205,7 @@ export default function Chess({
             squares={squares}
             myColor={myColor}
             onClick={handleClick}
+            onBoardClick={onBoardClick}
             onCastling={handleCastling}
             onSpoilerClick={onSpoilerClick}
             opponentName={opponentName}
