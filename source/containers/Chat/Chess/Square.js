@@ -47,8 +47,9 @@ export default function Square({
         <div
           style={{
             position: 'absolute',
-            right: 0,
-            bottom: '-5px',
+            fontWeight: 'bold',
+            left: '18px',
+            bottom: '-2px',
             color: color === 'black' ? '#fff' : '#000'
           }}
         >

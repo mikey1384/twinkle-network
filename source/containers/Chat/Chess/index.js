@@ -55,10 +55,6 @@ export default function Chess({
   const [status, setStatus] = useState('');
   const [gameOverMsg, setGameOverMsg] = useState();
   const [enPassantTarget, setEnPassantTarget] = useState({});
-  const [castled, setCastled] = useState({
-    left: false,
-    right: false
-  });
   const fallenPieces = useRef({
     white: [],
     black: []
@@ -115,7 +111,7 @@ export default function Chess({
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
             {!spoilerOn
-              ? `moved a ${parsedState?.move?.piece.type}`
+              ? `moved a ${parsedState?.move?.piece?.type}`
               : 'made a move'}
           </p>
           {!spoilerOn ? (
@@ -205,7 +201,6 @@ export default function Chess({
             myColor={myColor}
             onClick={handleClick}
             onCastling={handleCastling}
-            castled={castled}
             onSpoilerClick={onSpoilerClick}
             opponentName={opponentName}
           />
@@ -261,11 +256,16 @@ export default function Chess({
   );
 
   function handleCastling(direction) {
+    const actualSquares = squares.map(square => (square.isPiece ? square : {}));
     const { playerPieces } = getPlayerPieces({
       color: getOpponentPlayerColor(myColor),
-      squares
+      squares: actualSquares
     });
-    let kingPos = getPieceIndex({ color: myColor, squares, type: 'king' });
+    let kingPos = getPieceIndex({
+      color: myColor,
+      squares: actualSquares,
+      type: 'king'
+    });
     let rookPos = -1;
     let kingMidDest = -1;
     let kingEndDest = -1;
@@ -295,12 +295,12 @@ export default function Chess({
         isPossibleAndLegal({
           src: piece.index,
           dest: kingMidDest,
-          squares,
+          squares: actualSquares,
           myColor
         })
       ) {
-        setSquares(squares =>
-          squares.map((square, index) => {
+        setSquares(
+          actualSquares.map((square, index) => {
             if (index === piece.index) {
               return {
                 ...square,
@@ -322,7 +322,7 @@ export default function Chess({
     const rookDest = kingMidDest;
     const newSquares = returnBoardAfterMove({
       squares: returnBoardAfterMove({
-        squares,
+        squares: actualSquares,
         src: kingPos,
         dest: kingEndDest,
         myColor
@@ -331,8 +331,8 @@ export default function Chess({
       dest: rookDest,
       myColor
     });
-    if (handleMove({ myKingIndex: kingEndDest, newSquares }) === 'success') {
-      setCastled(castled => ({ ...castled, [direction]: true }));
+    if (processResult({ myKingIndex: kingEndDest, newSquares }) === 'success') {
+      handleMove({ newSquares });
     }
   }
 
@@ -387,50 +387,56 @@ export default function Chess({
             squares: newSquares,
             type: 'king'
           });
-          const result = handleMove({
+          const result = processResult({
             myKingIndex,
             newSquares,
             dest: i,
             src: selectedIndex
           });
           if (result === 'success') {
-            const json = JSON.stringify({
-              move: {
-                by: myId,
-                piece: {
-                  ...squares[selectedIndex],
-                  state: 'blurred',
-                  isPiece: false
-                },
-                from: getPositionId({ index: selectedIndex, myColor }),
-                to: getPositionId({ index: i, myColor }),
-                srcIndex:
-                  myColor === 'black' ? 63 - selectedIndex : selectedIndex
-              },
-              playerColors: playerColors || {
-                [myId]: 'white',
-                [opponentId]: 'black'
-              },
-              board: (myColor === 'black'
-                ? newSquares.map(
-                    (square, index) => newSquares[newSquares.length - 1 - index]
-                  )
-                : newSquares
-              ).map(square =>
-                square.state === 'highlighted'
-                  ? { ...square, state: '' }
-                  : square
-              ),
-              fallenPieces: fallenPieces.current
-            });
-            onChessMove(json);
+            handleMove({ newSquares, dest: i });
           }
         }
       }
     }
   }
 
-  function handleMove({ myKingIndex, newSquares, dest, src }) {
+  function handleMove({ newSquares, dest }) {
+    const moveDetail = dest
+      ? {
+          piece: {
+            ...squares[selectedIndex],
+            state: 'blurred',
+            isPiece: false
+          },
+          from: getPositionId({ index: selectedIndex, myColor }),
+          to: getPositionId({ index: dest, myColor }),
+          srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
+        }
+      : {};
+    const json = JSON.stringify({
+      move: {
+        by: myId,
+        ...moveDetail
+      },
+      playerColors: playerColors || {
+        [myId]: 'white',
+        [opponentId]: 'black'
+      },
+      board: (myColor === 'black'
+        ? newSquares.map(
+            (square, index) => newSquares[newSquares.length - 1 - index]
+          )
+        : newSquares
+      ).map(square =>
+        square.state === 'highlighted' ? { ...square, state: '' } : square
+      ),
+      fallenPieces: fallenPieces.current
+    });
+    onChessMove(json);
+  }
+
+  function processResult({ myKingIndex, newSquares, dest, src }) {
     const newWhiteFallenPieces = [...whiteFallenPieces];
     const newBlackFallenPieces = [...blackFallenPieces];
     const potentialCapturers = kingWillBeCapturedBy({
@@ -528,7 +534,7 @@ export default function Chess({
       setGameOverMsg(gameOver);
     }
     const target =
-      newSquares[dest].type === 'pawn' &&
+      newSquares[dest]?.type === 'pawn' &&
       (dest === src + 16 || dest === src - 16)
         ? { index: dest, color: newSquares[dest].color }
         : {};

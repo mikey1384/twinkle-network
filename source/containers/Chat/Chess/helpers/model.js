@@ -121,32 +121,31 @@ export function highlightPossiblePathsFromSrc({
   enPassantTarget,
   myColor
 }) {
-  return squares
-    .map(square => (square.isPiece ? square : {}))
-    .map((square, index) =>
-      index === src ||
-      isPossibleAndLegal({
-        src,
-        dest: index,
-        squares,
-        enPassantTarget,
-        myColor
-      })
-        ? {
-            ...square,
-            state:
-              ['check', 'checkmate'].indexOf(square.state) !== -1
-                ? square.state
-                : 'highlighted'
-          }
-        : {
-            ...square,
-            state:
-              ['check', 'checkmate'].indexOf(square.state) !== -1
-                ? square.state
-                : ''
-          }
-    );
+  const actualSquares = squares.map(square => (square.isPiece ? square : {}));
+  return actualSquares.map((square, index) =>
+    index === src ||
+    isPossibleAndLegal({
+      src,
+      dest: index,
+      squares: actualSquares,
+      enPassantTarget,
+      myColor
+    })
+      ? {
+          ...square,
+          state:
+            ['check', 'checkmate'].indexOf(square.state) !== -1
+              ? square.state
+              : 'highlighted'
+        }
+      : {
+          ...square,
+          state:
+            ['check', 'checkmate'].indexOf(square.state) !== -1
+              ? square.state
+              : ''
+        }
+  );
 }
 
 export function isGameOver({ squares, enPassantTarget, myColor }) {

@@ -6,7 +6,6 @@ import Loading from 'components/Loading';
 import { css } from 'emotion';
 
 Board.propTypes = {
-  castled: PropTypes.object,
   interactable: PropTypes.bool,
   loading: PropTypes.bool,
   status: PropTypes.string,
@@ -20,7 +19,6 @@ Board.propTypes = {
 };
 
 export default function Board({
-  castled,
   interactable,
   loading,
   status,
@@ -207,7 +205,6 @@ export default function Board({
     return myColor === 'white' ? (
       <>
         {interactable &&
-          !castled.left &&
           !squares[57].isPiece &&
           !squares[58].isPiece &&
           !squares[59].isPiece &&
@@ -245,7 +242,6 @@ export default function Board({
             </div>
           )}
         {interactable &&
-          !castled.right &&
           !squares[61].isPiece &&
           !squares[62].isPiece &&
           squares[63].type === 'rook' &&
@@ -285,7 +281,6 @@ export default function Board({
     ) : (
       <>
         {interactable &&
-          !castled.left &&
           !squares[57].isPiece &&
           !squares[58].isPiece &&
           squares[56].type === 'rook' &&
@@ -300,7 +295,7 @@ export default function Board({
                 position: 'absolute',
                 background: 'RGB(255, 255, 255, 0.7)',
                 top,
-                left: '45px',
+                left: '46px',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '0 0.5rem 0 0.5rem'
@@ -322,7 +317,6 @@ export default function Board({
             </div>
           )}
         {interactable &&
-          !castled.right &&
           !squares[60].isPiece &&
           !squares[61].isPiece &&
           !squares[62].isPiece &&
