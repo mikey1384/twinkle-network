@@ -43,12 +43,10 @@ export default function getPiece({
           let attackable = isDestEnemyOccupied && destCrossable;
           const enPassantPossible =
             enPassantTarget &&
-            enPassantTarget.color &&
-            enPassantTarget.color !== myColor &&
             destCrossable &&
-            destColumn === enPassantTarget.index % 8 &&
-            srcRow === Math.floor(enPassantTarget.index / 8) &&
-            Math.abs(srcColumn - (enPassantTarget.index % 8)) === 1;
+            destColumn === enPassantTarget % 8 &&
+            srcRow === Math.floor(enPassantTarget / 8) &&
+            Math.abs(srcColumn - (enPassantTarget % 8)) === 1;
           if (
             (dest === src + oneSquareModifier ||
               (dest === src + twoSquaresModifier &&

@@ -37,6 +37,7 @@ function ChessModal({
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
   const [newChessState, setNewChessState] = useState();
+  const [loaded, setLoaded] = useState(false);
   const loading = useRef(null);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ function ChessModal({
       setInitialState(chessState);
       setViewTimeStamp(moveViewTimeStamp);
       loading.current = false;
+      setLoaded(true);
     }
     return function cleanUp() {
       loading.current = true;
@@ -89,7 +91,7 @@ function ChessModal({
           <Chess
             interactable
             initialState={initialState}
-            loaded={loading.current === false}
+            loaded={loaded}
             myId={myId}
             newChessState={newChessState}
             onChessMove={setNewChessState}

@@ -46,6 +46,7 @@ export default function Square({
       {count > 1 && (
         <div
           style={{
+            cursor: 'default',
             position: 'absolute',
             fontWeight: 'bold',
             left: '18px',

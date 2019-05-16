@@ -361,10 +361,7 @@ export function returnBoardAfterMove({
   const destColumn = dest % 8;
   const attacking = srcRow - destRow === 1;
   const enPassanting =
-    enPassantTarget &&
-    enPassantTarget.color !== myColor &&
-    attacking &&
-    enPassantTarget.index % 8 === destColumn;
+    enPassantTarget && attacking && enPassantTarget % 8 === destColumn;
   const newSquares = squares.map((square, index) => {
     if (index === dest) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -385,7 +382,7 @@ export function returnBoardAfterMove({
       };
     }
     if (index === src) return {};
-    if (enPassanting && index === enPassantTarget.index) return {};
+    if (enPassanting && index === enPassantTarget) return {};
     return {
       ...square,
       state: ''

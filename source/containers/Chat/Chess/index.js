@@ -56,11 +56,12 @@ export default function Chess({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [status, setStatus] = useState('');
   const [gameOverMsg, setGameOverMsg] = useState();
-  const [enPassantTarget, setEnPassantTarget] = useState({});
   const fallenPieces = useRef({
     white: [],
     black: []
   });
+  const enPassantTarget = useRef({});
+  const capturedPiece = useRef(null);
   const parsedState = initialState ? JSON.parse(initialState) : undefined;
 
   useEffect(() => {
@@ -74,6 +75,7 @@ export default function Chess({
     setPlayerColors(playerColors);
     setSquares(initialiseChessBoard({ initialState, loading: !loaded, myId }));
     if (parsedState) {
+      enPassantTarget.current = parsedState.enPassantTarget || {};
       setBlackFallenPieces(parsedState.fallenPieces.black);
       setWhiteFallenPieces(parsedState.fallenPieces.white);
       fallenPieces.current = parsedState.fallenPieces;
@@ -353,7 +355,7 @@ export default function Chess({
           color: myColor,
           squares,
           src: i,
-          enPassantTarget,
+          enPassantTarget: enPassantTarget.current,
           myColor
         })
       );
@@ -377,7 +379,7 @@ export default function Chess({
             src: selectedIndex,
             dest: i,
             squares,
-            enPassantTarget,
+            enPassantTarget: enPassantTarget.current,
             myColor
           })
         ) {
@@ -386,7 +388,7 @@ export default function Chess({
             src: selectedIndex,
             dest: i,
             myColor,
-            enPassantTarget
+            enPassantTarget: enPassantTarget.current
           });
           const myKingIndex = getPieceIndex({
             color: myColor,
@@ -425,6 +427,7 @@ export default function Chess({
         by: myId,
         ...moveDetail
       },
+      capturedPiece: capturedPiece.current,
       playerColors: playerColors || {
         [myId]: 'white',
         [opponentId]: 'black'
@@ -437,7 +440,8 @@ export default function Chess({
       ).map(square =>
         square.state === 'highlighted' ? { ...square, state: '' } : square
       ),
-      fallenPieces: fallenPieces.current
+      fallenPieces: fallenPieces.current,
+      enPassantTarget: enPassantTarget.current
     });
     onChessMove(json);
   }
@@ -470,20 +474,19 @@ export default function Chess({
     }
     if (dest) {
       if (squares[src].type === 'pawn') {
-        if (enPassantTarget && enPassantTarget.color) {
+        if (enPassantTarget.current) {
           const srcRow = Math.floor(src / 8);
           const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
           const attacking = srcRow - destRow === 1;
           const enPassanting =
             !squares[dest].color &&
-            enPassantTarget.color !== myColor &&
             attacking &&
-            enPassantTarget.index % 8 === destColumn;
+            enPassantTarget.current % 8 === destColumn;
           if (enPassanting) {
-            enPassantTarget.color === 'white'
-              ? newWhiteFallenPieces.push(squares[enPassantTarget.index])
-              : newBlackFallenPieces.push(squares[enPassantTarget.index]);
+            myColor === 'white'
+              ? newBlackFallenPieces.push(squares[enPassantTarget.current])
+              : newWhiteFallenPieces.push(squares[enPassantTarget.current]);
           }
         }
       }
@@ -491,6 +494,7 @@ export default function Chess({
         squares[dest].color === 'white'
           ? newWhiteFallenPieces.push(squares[dest])
           : newBlackFallenPieces.push(squares[dest]);
+        capturedPiece.current = squares[dest];
       }
     }
     setSelectedIndex(-1);
@@ -540,11 +544,8 @@ export default function Chess({
       setGameOverMsg(gameOver);
     }
     const target =
-      newSquares[dest]?.type === 'pawn' &&
-      (dest === src + 16 || dest === src - 16)
-        ? { index: dest, color: newSquares[dest].color }
-        : {};
-    setEnPassantTarget(target);
+      newSquares[dest]?.type === 'pawn' && dest === src - 16 ? 63 - dest : null;
+    enPassantTarget.current = target;
     return 'success';
   }
 }
