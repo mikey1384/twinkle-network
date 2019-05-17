@@ -103,7 +103,7 @@ function Message({
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
-  const spoilerOn = handleSpoilerOn();
+  const spoilerOff = handleSpoilerOff();
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
@@ -155,7 +155,7 @@ function Message({
               >
                 <Chess
                   loaded
-                  spoilerOn={spoilerOn}
+                  spoilerOff={spoilerOff}
                   myId={myId}
                   initialState={chessState}
                   moveViewed={!!moveViewTimeStamp}
@@ -244,11 +244,11 @@ function Message({
     onChessSpoilerClick();
   }
 
-  function handleSpoilerOn() {
+  function handleSpoilerOff() {
     if (!userMadeLastMove && !moveViewTimeStamp) {
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
 
   function renderPrefix() {

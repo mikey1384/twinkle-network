@@ -33,7 +33,7 @@ function ChessModal({
   updateChessMoveViewTimeStamp
 }) {
   const [initialState, setInitialState] = useState();
-  const [spoilerOn, setSpoilerOn] = useState();
+  const [spoilerOff, setSpoilerOff] = useState();
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
   const [newChessState, setNewChessState] = useState();
@@ -67,12 +67,12 @@ function ChessModal({
         const { move } = JSON.parse(initialState);
         const userMadeLastMove = move?.by === myId;
         if (!userMadeLastMove && !viewTimeStamp) {
-          setSpoilerOn(true);
+          setSpoilerOff(false);
         } else {
-          setSpoilerOn(false);
+          setSpoilerOff(true);
         }
       } else {
-        setSpoilerOn(false);
+        setSpoilerOff(true);
       }
     }
   }, [initialState, loading.current, viewTimeStamp]);
@@ -97,7 +97,7 @@ function ChessModal({
             onChessMove={setNewChessState}
             opponentId={opponentId}
             opponentName={opponentName}
-            spoilerOn={spoilerOn}
+            spoilerOff={spoilerOff}
             onSpoilerClick={handleSpoilerClick}
           />
         </div>
@@ -128,7 +128,7 @@ function ChessModal({
 
   async function handleSpoilerClick() {
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
-    setSpoilerOn(false);
+    setSpoilerOff(true);
     updateChessMoveViewTimeStamp();
   }
 

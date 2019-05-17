@@ -6,6 +6,7 @@ import Loading from 'components/Loading';
 import { css } from 'emotion';
 
 Board.propTypes = {
+  initialState: PropTypes.string,
   interactable: PropTypes.bool,
   loading: PropTypes.bool,
   status: PropTypes.string,
@@ -13,13 +14,14 @@ Board.propTypes = {
   squares: PropTypes.array.isRequired,
   myColor: PropTypes.string.isRequired,
   onCastling: PropTypes.func.isRequired,
-  spoilerOn: PropTypes.bool,
+  spoilerOff: PropTypes.bool,
   opponentName: PropTypes.string,
   onBoardClick: PropTypes.func,
   onSpoilerClick: PropTypes.func
 };
 
 export default function Board({
+  initialState,
   interactable,
   loading,
   status,
@@ -30,13 +32,13 @@ export default function Board({
   onCastling,
   onSpoilerClick,
   opponentName,
-  spoilerOn
+  spoilerOff
 }) {
   const [board, setBoard] = useState();
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   if (myColor === 'black') letters.reverse();
   useEffect(() => {
-    if (spoilerOn === false) {
+    if (spoilerOff) {
       const board = [];
       for (let i = 0; i < 8; i++) {
         const squareRows = [];
@@ -129,7 +131,7 @@ export default function Board({
           </div>
         </>
       );
-    } else {
+    } else if (spoilerOff === false) {
       setBoard(
         <>
           <div
@@ -166,12 +168,12 @@ export default function Board({
           </div>
         </>
       );
-    }
+    } else setBoard(null);
 
     return function cleanUp() {
-      setBoard(undefined);
+      setBoard(null);
     };
-  }, [interactable, spoilerOn, squares]);
+  }, [interactable, spoilerOff, squares]);
 
   return (
     <div
@@ -195,7 +197,7 @@ export default function Board({
             `,
             gridTemplateColumns: '360px 2rem',
             gridTemplateRows: '360px 2.5rem',
-            background: spoilerOn === false ? '#fff' : ''
+            background: spoilerOff ? '#fff' : ''
           }}
         >
           {board}

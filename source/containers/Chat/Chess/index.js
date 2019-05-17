@@ -29,7 +29,7 @@ Chess.propTypes = {
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
-  spoilerOn: PropTypes.bool
+  spoilerOff: PropTypes.bool
 };
 
 export default function Chess({
@@ -44,7 +44,7 @@ export default function Chess({
   onSpoilerClick,
   opponentId,
   opponentName,
-  spoilerOn
+  spoilerOff
 }) {
   const [playerColors, setPlayerColors] = useState({
     [myId]: 'white',
@@ -101,9 +101,10 @@ export default function Chess({
   const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
   const userMadeLastMove = move?.by === myId;
+
   return (
     <>
-      {loaded && (
+      {loaded && parsedState && (
         <div
           style={{
             top: '1rem',
@@ -115,18 +116,25 @@ export default function Chess({
         >
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {!spoilerOn
+            {spoilerOff
               ? move?.piece
                 ? `moved a ${move?.piece?.type}`
                 : 'castled'
               : 'made a move'}
           </p>
-          {!spoilerOn && move?.piece?.type ? (
+          {spoilerOff && move?.piece?.type && (
             <>
               <p>from {move?.from}</p>
               <p>to {move?.to}</p>
+              {parsedState?.capturedPiece && (
+                <>
+                  <p>and captured</p>
+                  <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
+                  <p>{parsedState?.capturedPiece}</p>
+                </>
+              )}
             </>
-          ) : null}
+          )}
         </div>
       )}
       <div
@@ -188,7 +196,7 @@ export default function Chess({
               margin: '1rem 0'
             }}
           >
-            {loaded && spoilerOn === false && (
+            {loaded && spoilerOff && (
               <FallenPieces
                 myColor={myColor}
                 {...{
@@ -202,7 +210,8 @@ export default function Chess({
           </div>
           <Board
             loading={!loaded}
-            spoilerOn={spoilerOn}
+            spoilerOff={spoilerOff}
+            initialState={initialState}
             interactable={interactable && !newChessState && !userMadeLastMove}
             squares={squares}
             myColor={myColor}
@@ -229,7 +238,7 @@ export default function Chess({
                 margin: '1rem 0'
               }}
             >
-              {loaded && spoilerOn === false && (
+              {loaded && spoilerOff && (
                 <FallenPieces
                   myColor={myColor}
                   {...{
@@ -427,7 +436,7 @@ export default function Chess({
         by: myId,
         ...moveDetail
       },
-      capturedPiece: capturedPiece.current,
+      capturedPiece: capturedPiece.current?.type,
       playerColors: playerColors || {
         [myId]: 'white',
         [opponentId]: 'black'
@@ -487,10 +496,11 @@ export default function Chess({
             myColor === 'white'
               ? newBlackFallenPieces.push(squares[enPassantTarget.current])
               : newWhiteFallenPieces.push(squares[enPassantTarget.current]);
+            capturedPiece.current = squares[enPassantTarget.current];
           }
         }
       }
-      if (squares[dest].color) {
+      if (squares[dest].isPiece) {
         squares[dest].color === 'white'
           ? newWhiteFallenPieces.push(squares[dest])
           : newBlackFallenPieces.push(squares[dest]);
