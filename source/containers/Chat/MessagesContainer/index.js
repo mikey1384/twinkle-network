@@ -268,7 +268,7 @@ class MessagesContainer extends Component {
     const { loadMoreButtonLock } = this.state;
     if (!loadMoreButtonLock) {
       this.setState({ loadMoreButtonLock: true });
-      await loadMoreMessages(userId, messageId, channelId);
+      await loadMoreMessages({ userId, messageId, channelId });
       this.setState({ loadMoreButtonLock: false });
     }
   };

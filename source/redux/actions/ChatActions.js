@@ -6,7 +6,7 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
-export const openNewChatTab = (user, partner) => ({
+export const openNewChatTab = ({ user, partner }) => ({
   type: CHAT.OPEN_NEW_TAB,
   user,
   partner
@@ -17,7 +17,10 @@ export const changeChatSubject = subject => ({
   subject
 });
 
-export const enterChannelWithId = (channelId, showOnTop) => async dispatch => {
+export const enterChannelWithId = ({
+  channelId,
+  showOnTop
+}) => async dispatch => {
   dispatch({
     type: CHAT.SELECT_CHANNEL,
     channelId
@@ -53,7 +56,7 @@ export const clearUserSearchResults = () => ({
   type: CHAT.CLEAR_USER_SEARCH_RESULTS
 });
 
-export const createNewChannel = (params, callback) => async dispatch => {
+export const createNewChannel = params => async dispatch => {
   try {
     const { data } = await request.post(
       `${API_URL}/channel`,
@@ -83,7 +86,7 @@ export const deleteMessage = messageId => async dispatch => {
   }
 };
 
-export const editChannelTitle = (params, callback) => async dispatch => {
+export const editChannelTitle = params => async dispatch => {
   try {
     await request.post(`${API_URL}/title`, params, auth());
     dispatch({
@@ -137,7 +140,9 @@ export const hideChat = channelId => async dispatch => {
       type: CHAT.HIDE_CHAT,
       channelId
     });
-    dispatch(enterChannelWithId(GENERAL_CHAT_ID, true));
+    dispatch(
+      enterChannelWithId({ channelId: GENERAL_CHAT_ID, showOnTop: true })
+    );
   } catch (error) {
     handleError(error, dispatch);
   }
@@ -152,7 +157,7 @@ export const initChat = data => ({
   data
 });
 
-export const inviteUsersToChannel = (params, callback) => async dispatch => {
+export const inviteUsersToChannel = params => async dispatch => {
   try {
     const {
       data: { message }
@@ -183,10 +188,10 @@ export const loadChatSubject = () => async dispatch => {
   }
 };
 
-export const loadMoreChannels = (
+export const loadMoreChannels = ({
   currentChannelId,
   channelIds
-) => async dispatch => {
+}) => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
@@ -202,12 +207,11 @@ export const loadMoreChannels = (
   }
 };
 
-export const loadMoreMessages = (
+export const loadMoreMessages = ({
   userId,
   messageId,
-  channelId,
-  callback
-) => async dispatch => {
+  channelId
+}) => async dispatch => {
   try {
     const { data } = await request.get(
       `${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
@@ -234,7 +238,9 @@ export const leaveChannel = channelId => async dispatch => {
       type: CHAT.LEAVE_CHANNEL,
       channelId
     });
-    dispatch(enterChannelWithId(GENERAL_CHAT_ID, true));
+    dispatch(
+      enterChannelWithId({ channelId: GENERAL_CHAT_ID, showOnTop: true })
+    );
   } catch (error) {
     handleError(error, dispatch);
   }
@@ -385,7 +391,7 @@ export const searchUserToInvite = text => async dispatch => {
   }
 };
 
-export const sendFirstDirectMessage = (params, callback) => async dispatch => {
+export const sendFirstDirectMessage = params => async dispatch => {
   let body = {
     ...params,
     timeStamp: Math.floor(Date.now() / 1000)
@@ -414,7 +420,7 @@ export const submitMessageAsync = params => ({
   }
 });
 
-export const saveMessage = (message, index) => async dispatch => {
+export const saveMessage = ({ message, index }) => async dispatch => {
   try {
     const { data } = await request.post(API_URL, { message }, auth());
     dispatch({

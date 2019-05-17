@@ -64,12 +64,12 @@ function ChatSearchBox({
 
   function onSelect(item) {
     if (item.primary || !!item.channelId) {
-      enterChannelWithId(item.channelId, true);
+      enterChannelWithId({ channelId: item.channelId, showOnTop: true });
     } else {
-      openNewChatTab(
-        { username, id: userId },
-        { username: item.label, id: item.id }
-      );
+      openNewChatTab({
+        user: { username, id: userId },
+        partner: { username: item.label, id: item.id }
+      });
     }
     setSearchText('');
     clearSearchResults();

@@ -456,7 +456,7 @@ function Chat({
       setCurrentChannelOnlineMembers([]);
       return enterEmptyChat();
     }
-    enterChannelWithId(id);
+    enterChannelWithId({ channelId: id });
   }
 
   async function onCreateNewChannel(params) {

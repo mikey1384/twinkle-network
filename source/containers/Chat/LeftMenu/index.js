@@ -206,14 +206,14 @@ export default function LeftMenu({
   async function handleLoadMoreChannels() {
     if (!channelsLoading) {
       setChannelsLoading(true);
-      await loadMoreChannels(
-        currentChannel.id,
-        queryStringForArray({
+      await loadMoreChannels({
+        currentChannelId: currentChannel.id,
+        channelIds: queryStringForArray({
           array: channels,
           originVar: 'id',
           destinationVar: 'channelIds'
         })
-      );
+      });
       setChannelsLoading(false);
     }
   }

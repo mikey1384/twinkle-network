@@ -89,7 +89,7 @@ function Message({
       !message.isSubject &&
       !message.isNotification
     ) {
-      saveMessage(post, index);
+      saveMessage({ message: post, index });
     }
   }, []);
   useEffect(() => {
@@ -278,7 +278,7 @@ export default connect(
   dispatch => ({
     dispatch,
     onEditDone: params => dispatch(editMessage(params)),
-    saveMessage: (params, index) => dispatch(saveMessage(params, index)),
+    saveMessage: params => dispatch(saveMessage(params)),
     updateChessMoveViewTimeStamp: params =>
       dispatch(updateChessMoveViewTimeStamp(params))
   })
