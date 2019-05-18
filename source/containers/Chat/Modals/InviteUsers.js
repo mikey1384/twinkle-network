@@ -30,7 +30,7 @@ function InviteUsersModal({
   currentChannel
 }) {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const currentMembersUID = currentChannel.members.map(member => member.userId);
+  const currentMembersUID = currentChannel.members.map(member => member.id);
 
   return (
     <Modal onHide={onHide}>
