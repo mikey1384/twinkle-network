@@ -178,18 +178,18 @@ export default function Board({
   return (
     <div
       style={{
-        cursor: onBoardClick ? 'pointer' : '',
         width: 'CALC(360px + 2rem)',
         height: 'CALC(360px + 2.5rem)',
         position: 'relative'
       }}
-      onClick={onBoardClick}
     >
       {loading ? (
         <Loading />
       ) : squares.length > 0 ? (
         <div
+          onClick={onBoardClick}
           style={{
+            cursor: spoilerOff && onBoardClick ? 'pointer' : '',
             display: 'grid',
             gridTemplateAreas: `
               "chess num"

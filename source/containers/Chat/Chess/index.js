@@ -139,6 +139,7 @@ export default function Chess({
       )}
       <div
         className={css`
+          user-select: none;
           font: 14px 'Century Gothic', Futura, sans-serif;
           .dark {
             background-color: ${Color.orange()};

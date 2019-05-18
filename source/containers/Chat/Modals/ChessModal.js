@@ -33,11 +33,12 @@ function ChessModal({
   updateChessMoveViewTimeStamp
 }) {
   const [initialState, setInitialState] = useState();
-  const [spoilerOff, setSpoilerOff] = useState();
+  const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
   const [newChessState, setNewChessState] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [spoilerOff, setSpoilerOff] = useState(false);
   const loading = useRef(null);
 
   useEffect(() => {
@@ -66,16 +67,10 @@ function ChessModal({
       if (initialState) {
         const { move } = JSON.parse(initialState);
         const userMadeLastMove = move?.by === myId;
-        if (!userMadeLastMove && !viewTimeStamp) {
-          setSpoilerOff(false);
-        } else {
-          setSpoilerOff(true);
-        }
-      } else {
-        setSpoilerOff(true);
+        setUserMadeLastMove(!!userMadeLastMove);
       }
     }
-  }, [initialState, loading.current, viewTimeStamp]);
+  }, [loading.current]);
 
   return (
     <Modal large onHide={onHide}>
@@ -97,7 +92,12 @@ function ChessModal({
             onChessMove={setNewChessState}
             opponentId={opponentId}
             opponentName={opponentName}
-            spoilerOff={spoilerOff}
+            spoilerOff={
+              spoilerOff ||
+              (!loading.current && !initialState) ||
+              !!userMadeLastMove ||
+              !!viewTimeStamp
+            }
             onSpoilerClick={handleSpoilerClick}
           />
         </div>

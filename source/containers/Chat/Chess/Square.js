@@ -29,7 +29,7 @@ export default function Square({
         font-size: 1.5rem;
         &.blurred {
           > img {
-            opacity: 0.2;
+            opacity: 0.1;
           }
         }
         &.highlighted {
