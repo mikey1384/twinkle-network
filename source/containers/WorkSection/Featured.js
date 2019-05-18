@@ -13,8 +13,8 @@ Featured.propTypes = {
 export default function Featured({ history }) {
   return (
     <div>
+      <ChallengesPanel history={history} />
       <Suspense fallback={<Loading />}>
-        <ChallengesPanel history={history} />
         <FeaturedPlaylistsPanel history={history} />
       </Suspense>
     </div>
