@@ -41,15 +41,17 @@ function Rankings({
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
+  const loading = useRef(null);
 
   useEffect(() => {
     mounted.current = true;
     userChangedTab.current = false;
-    if (!myId && mounted.current) {
+    if (!loading.current && mounted.current) {
       setAllSelected(false);
       loadRankings();
     }
     async function loadRankings() {
+      loading.current = true;
       try {
         const {
           data: { all, rankModifier: modifier, top30s }
@@ -60,6 +62,7 @@ function Rankings({
             setAllSelected(!!myId);
           }
         }
+        loading.current = false;
       } catch (error) {
         console.error(error.response || error);
       }

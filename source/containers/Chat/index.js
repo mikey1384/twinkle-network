@@ -12,6 +12,7 @@ import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import Loading from 'components/Loading';
 import ChessModal from './Modals/ChessModal';
+import { startNewDMChannel } from 'helpers/requestHelpers';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
@@ -394,12 +395,16 @@ function Chat({
     setTextAreaHeight(0);
     let isFirstDirectMessage = currentChannel.id === 0;
     if (isFirstDirectMessage) {
-      return sendFirstDirectMessage({ message, userId, partnerId }).then(
-        chat => {
-          socket.emit('join_chat_channel', chat.channelId);
-          socket.emit('send_bi_chat_invitation', partnerId, chat);
-        }
-      );
+      const data = await startNewDMChannel({
+        content: message,
+        userId,
+        partnerId,
+        dispatch
+      });
+      sendFirstDirectMessage(data);
+      socket.emit('join_chat_channel', data.channelId);
+      socket.emit('send_bi_chat_invitation', partnerId, data);
+      return;
     }
     const params = {
       userId,
@@ -434,14 +439,20 @@ function Chat({
       userId,
       username,
       profilePicId,
-      content: 'Made a chess move',
-      channelId: currentChannel.id,
       chessState: state,
       isChessMove: 1
     };
     try {
-      submitMessage(params);
-      socket.emit('new_chat_message', params, currentChannel);
+      if (currentChannel.id) {
+        submitMessage({
+          ...params,
+          content: 'Made a chess move',
+          channelId: currentChannel.id
+        });
+        socket.emit('new_chat_message', params, currentChannel);
+      } else {
+        console.log('hang on');
+      }
     } catch (error) {
       console.error(error);
     }

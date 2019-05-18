@@ -391,26 +391,10 @@ export const searchUserToInvite = text => async dispatch => {
   }
 };
 
-export const sendFirstDirectMessage = params => async dispatch => {
-  let body = {
-    ...params,
-    timeStamp: Math.floor(Date.now() / 1000)
-  };
-  try {
-    const { data } = await request.post(
-      `${API_URL}/channel/twoPeople`,
-      body,
-      auth()
-    );
-    dispatch({
-      type: CHAT.CREATE_NEW_DM_CHANNEL,
-      data
-    });
-    return Promise.resolve(data);
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const sendFirstDirectMessage = data => ({
+  type: CHAT.CREATE_NEW_DM_CHANNEL,
+  data
+});
 
 export const submitMessageAsync = params => ({
   type: CHAT.SUBMIT_MESSAGE,

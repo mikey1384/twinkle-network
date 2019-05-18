@@ -97,7 +97,9 @@ function Message({
       setTimeout(() => setScrollToBottom(), 0);
     }
   }, [editPadding]);
-  const userMadeLastMove = JSON.parse(chessState)?.move?.by === myId;
+  const userMadeLastMove = chessState
+    ? JSON.parse(chessState)?.move?.by === myId
+    : false;
   const userIsUploader = myId === userId;
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
@@ -162,7 +164,6 @@ function Message({
                   onBoardClick={onChessBoardClick}
                   onSpoilerClick={handleSpoilerClick}
                   opponentName={channelName}
-                  userMadeLastMove={userMadeLastMove}
                 />
               </div>
             ) : (

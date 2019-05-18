@@ -552,6 +552,24 @@ export const setTheme = async({ color, dispatch }) => {
   }
 };
 
+export const startNewDMChannel = async({
+  content,
+  userId,
+  partnerId,
+  dispatch
+}) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/chat/channel/twoPeople`,
+      { content, userId, partnerId },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadProfileInfo = async({
   dispatch,
   email,

@@ -103,7 +103,7 @@ export default function ChatReducer(state = defaultState, action) {
         subject: {},
         channels: state.channels.map(channel => {
           if (channel.id === 0) {
-            channel = {
+            return {
               ...channel,
               id: action.data.channelId,
               lastMessage: action.data.content,
