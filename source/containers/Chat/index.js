@@ -106,20 +106,25 @@ function Chat({
 
   useEffect(() => {
     mounted.current = true;
-    setChannelsObj(
-      channels.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr.id]: curr
-        }),
-        {}
-      )
-    );
-    return () => {
+    return function cleanUp() {
       mounted.current = false;
       onUnmount();
     };
   }, []);
+
+  useEffect(() => {
+    if (mounted.current) {
+      setChannelsObj(
+        channels.reduce(
+          (prev, curr) => ({
+            ...prev,
+            [curr.id]: curr
+          }),
+          {}
+        )
+      );
+    }
+  }, [channels]);
 
   useEffect(() => {
     socket.on('receive_message', onReceiveMessage);
@@ -430,7 +435,6 @@ function Chat({
   async function handleConfirmChessMove(state) {
     const params = {
       userId,
-      profilePicId,
       chessState: state,
       isChessMove: 1
     };
@@ -445,7 +449,13 @@ function Chat({
         });
         socket.emit(
           'new_chat_message',
-          { ...params, content, username, channelId: currentChannel.id },
+          {
+            ...params,
+            content,
+            username,
+            profilePicId,
+            channelId: currentChannel.id
+          },
           {
             ...currentChannel,
             numUnreads: 1,

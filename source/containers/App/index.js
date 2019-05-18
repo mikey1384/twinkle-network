@@ -22,9 +22,9 @@ import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
+import Profile from 'containers/Profile';
 
 const Home = React.lazy(() => import('containers/Home'));
-const Profile = React.lazy(() => import('containers/Profile'));
 const WorkSection = React.lazy(() => import('containers/WorkSection'));
 const Redirect = React.lazy(() => import('containers/Redirect'));
 const Privacy = React.lazy(() => import('containers/Privacy'));

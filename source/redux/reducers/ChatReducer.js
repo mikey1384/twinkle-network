@@ -112,6 +112,7 @@ export default function ChatReducer(state = defaultState, action) {
                 username: action.message.username
               },
               lastUpdate: action.message.timeStamp,
+              members: action.members,
               numUnreads: 0
             };
           }
