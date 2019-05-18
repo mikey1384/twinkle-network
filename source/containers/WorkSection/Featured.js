@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-const ChallengesPanel = React.lazy(() => import('./Panels/ChallengesPanel'));
+import ChallengesPanel from './Panels/ChallengesPanel';
 const FeaturedPlaylistsPanel = React.lazy(() =>
   import('./Panels/FeaturedPlaylistsPanel')
 );
