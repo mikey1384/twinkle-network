@@ -442,11 +442,12 @@ function Chat({
       chessState: state,
       isChessMove: 1
     };
+    const content = 'Made a chess move';
     try {
       if (currentChannel.id) {
         submitMessage({
           ...params,
-          content: 'Made a chess move',
+          content,
           channelId: currentChannel.id
         });
         socket.emit('new_chat_message', params, currentChannel);
