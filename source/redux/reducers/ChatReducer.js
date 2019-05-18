@@ -105,26 +105,26 @@ export default function ChatReducer(state = defaultState, action) {
           if (channel.id === 0) {
             return {
               ...channel,
-              id: action.data.channelId,
-              lastMessage: action.data.content,
+              id: action.message.channelId,
+              lastMessage: action.message.content,
               lastMessageSender: {
-                id: action.data.userId,
-                username: action.data.username
+                id: action.message.userId,
+                username: action.message.username
               },
-              lastUpdate: action.data.timeStamp,
+              lastUpdate: action.message.timeStamp,
               numUnreads: 0
             };
           }
           return channel;
         }),
-        selectedChannelId: action.data.channelId,
+        selectedChannelId: action.message.channelId,
         currentChannel: {
-          id: action.data.channelId,
+          id: action.message.channelId,
           twoPeople: true,
-          creatorId: action.data.userId,
-          members: action.data.members
+          creatorId: action.message.userId,
+          members: action.members
         },
-        messages: [action.data]
+        messages: [{ ...action.message }]
       };
     case CHAT.SELECT_CHANNEL: {
       return {

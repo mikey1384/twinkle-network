@@ -391,9 +391,10 @@ export const searchUserToInvite = text => async dispatch => {
   }
 };
 
-export const sendFirstDirectMessage = data => ({
+export const sendFirstDirectMessage = ({ members, message }) => ({
   type: CHAT.CREATE_NEW_DM_CHANNEL,
-  data
+  members,
+  message
 });
 
 export const submitMessageAsync = params => ({

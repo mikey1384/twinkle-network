@@ -391,26 +391,26 @@ function Chat({
     return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
   }
 
-  async function onMessageSubmit(message) {
+  async function onMessageSubmit(content) {
     setTextAreaHeight(0);
     let isFirstDirectMessage = currentChannel.id === 0;
     if (isFirstDirectMessage) {
-      const data = await startNewDMChannel({
-        content: message,
+      const { members, message } = await startNewDMChannel({
+        content,
         userId,
         partnerId,
         dispatch
       });
-      sendFirstDirectMessage(data);
-      socket.emit('join_chat_channel', data.channelId);
-      socket.emit('send_bi_chat_invitation', partnerId, data);
+      sendFirstDirectMessage({ members, message });
+      socket.emit('join_chat_channel', message.channelId);
+      socket.emit('send_bi_chat_invitation', partnerId, message);
       return;
     }
     const params = {
       userId,
       username,
       profilePicId,
-      content: message,
+      content,
       channelId: currentChannel.id,
       subjectId
     };
@@ -419,7 +419,7 @@ function Chat({
       .map(channel => ({
         ...channel,
         channelName: currentChannel.twoPeople ? username : channel.channelName,
-        lastMessage: message,
+        lastMessage: content,
         lastMessageSender: {
           id: userId,
           username
