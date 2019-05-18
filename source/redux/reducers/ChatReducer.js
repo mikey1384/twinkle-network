@@ -485,15 +485,15 @@ export default function ChatReducer(state = defaultState, action) {
       };
     case CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL:
       for (let i = 0; i < state.channels.length; i++) {
-        if (state.channels[i].id === action.data.channelId) {
-          action.channel[0].numUnreads = state.channels[i].numUnreads + 1;
+        if (state.channels[i].id === action.channel.id) {
+          action.channel.numUnreads = state.channels[i].numUnreads + 1;
         }
       }
       return {
         ...state,
         numUnreads: state.numUnreads + 1,
-        channels: action.channel.concat(
-          state.channels.filter(channel => channel.id !== action.data.channelId)
+        channels: [action.channel].concat(
+          state.channels.filter(channel => channel.id !== action.channel.id)
         )
       };
     case CHAT.RELOAD_SUBJECT:

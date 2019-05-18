@@ -552,16 +552,11 @@ export const setTheme = async({ color, dispatch }) => {
   }
 };
 
-export const startNewDMChannel = async({
-  content,
-  userId,
-  partnerId,
-  dispatch
-}) => {
+export const startNewDMChannel = async({ dispatch, ...params }) => {
   try {
     const { data } = await request.post(
       `${URL}/chat/channel/twoPeople`,
-      { content, userId, partnerId },
+      params,
       auth()
     );
     return Promise.resolve(data);

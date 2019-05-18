@@ -136,7 +136,6 @@ function Chat({
       }
       if (!messageIsForCurrentChannel) {
         receiveMessageOnDifferentChannel({
-          message,
           channel,
           senderIsNotTheUser
         });
@@ -414,21 +413,15 @@ function Chat({
       channelId: currentChannel.id,
       subjectId
     };
-    let channel = channels
-      .filter(channel => channel.id === currentChannel.id)
-      .map(channel => ({
-        ...channel,
-        channelName: currentChannel.twoPeople ? username : channel.channelName,
-        lastMessage: content,
-        lastMessageSender: {
-          id: userId,
-          username
-        },
-        numUnreads: 1
-      }));
     try {
       submitMessage(params);
-      socket.emit('new_chat_message', params, channel);
+      socket.emit('new_chat_message', params, {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessageSender: { id: userId, username },
+        lastMessage: content,
+        channelName: currentChannel.channelName || username
+      });
     } catch (error) {
       console.error(error);
     }
@@ -437,7 +430,6 @@ function Chat({
   async function handleConfirmChessMove(state) {
     const params = {
       userId,
-      username,
       profilePicId,
       chessState: state,
       isChessMove: 1
@@ -447,12 +439,32 @@ function Chat({
       if (currentChannel.id) {
         submitMessage({
           ...params,
+          username,
           content,
           channelId: currentChannel.id
         });
-        socket.emit('new_chat_message', params, currentChannel);
+        socket.emit(
+          'new_chat_message',
+          { ...params, content, username, channelId: currentChannel.id },
+          {
+            ...currentChannel,
+            numUnreads: 1,
+            lastMessageSender: { id: userId, username },
+            lastMessage: content,
+            channelName: username
+          }
+        );
       } else {
-        console.log('hang on');
+        const { members, message } = await startNewDMChannel({
+          ...params,
+          content,
+          partnerId,
+          dispatch
+        });
+        sendFirstDirectMessage({ members, message });
+        socket.emit('join_chat_channel', message.channelId);
+        socket.emit('send_bi_chat_invitation', partnerId, message);
+        return;
       }
     } catch (error) {
       console.error(error);
@@ -497,22 +509,19 @@ function Chat({
     }
     if (!messageIsForCurrentChannel) {
       receiveMessageOnDifferentChannel({
-        message,
         senderIsNotTheUser,
-        channel: [
-          {
-            id: 2,
-            lastUpdate: message.timeStamp,
-            isHidden: false,
-            channelName: 'General',
-            lastMessage: message.content,
-            lastMessageSender: {
-              id: message.userId,
-              username: message.username
-            },
-            numUnreads: 1
-          }
-        ]
+        channel: {
+          id: 2,
+          lastUpdate: message.timeStamp,
+          isHidden: false,
+          channelName: 'General',
+          lastMessage: message.content,
+          lastMessageSender: {
+            id: message.userId,
+            username: message.username
+          },
+          numUnreads: 1
+        }
       });
     }
   }
