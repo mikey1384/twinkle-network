@@ -18,6 +18,7 @@ class MessagesContainer extends Component {
   static propTypes = {
     channelId: PropTypes.number,
     channelName: PropTypes.string,
+    chessCountdownObj: PropTypes.object,
     className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
     currentChannelId: PropTypes.number.isRequired,
@@ -295,6 +296,7 @@ class MessagesContainer extends Component {
     const {
       channelId,
       channelName,
+      chessCountdownObj,
       messages,
       onChessBoardClick,
       onChessSpoilerClick
@@ -307,6 +309,7 @@ class MessagesContainer extends Component {
           key={message.id || 'newMessage' + index}
           channelId={channelId}
           channelName={channelName}
+          chessCountdownObj={chessCountdownObj}
           onDelete={this.onShowDeleteModal}
           index={index}
           onChessBoardClick={onChessBoardClick}

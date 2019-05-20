@@ -144,7 +144,7 @@ export default function Board({
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
-              fontSize: '1.5rem',
+              fontSize: '1.7rem',
               lineHeight: 2
             }}
           >
@@ -160,9 +160,9 @@ export default function Board({
               <p>{opponentName} has made a new chess move.</p>
               <p>Tap here to view it.</p>
               <p>
-                {`After viewing ${opponentName}'s move, you must make a move within`}{' '}
-                <b>one minute</b>. If you {`don't`}, you will lose
-                automatically.
+                {`After viewing ${opponentName}'s move, you `}
+                <b>must</b> make your own move in <b>one minute</b>. Otherwise,
+                you will lose.
               </p>
             </div>
           </div>

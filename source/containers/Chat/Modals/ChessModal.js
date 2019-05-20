@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
+import { socket } from 'constants/io';
 import { updateChessMoveViewTimeStamp } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import {
@@ -13,10 +14,12 @@ import { connect } from 'react-redux';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
+  chessCountdownObj: PropTypes.object,
   dispatch: PropTypes.func,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
+  onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired
@@ -24,10 +27,12 @@ ChessModal.propTypes = {
 
 function ChessModal({
   channelId,
+  chessCountdownObj,
   dispatch,
   myId,
   onConfirmChessMove,
   onHide,
+  onSpoilerClick,
   opponentId,
   opponentName,
   updateChessMoveViewTimeStamp
@@ -68,9 +73,21 @@ function ChessModal({
         const { move } = JSON.parse(initialState);
         const userMadeLastMove = move?.by === myId;
         setUserMadeLastMove(!!userMadeLastMove);
+        if (move && !userMadeLastMove && (spoilerOff || viewTimeStamp)) {
+          socket.emit('user_is_making_move', {
+            userId: myId,
+            channelId
+          });
+        }
       }
     }
-  }, [loading.current]);
+  }, [loading.current, spoilerOff]);
+
+  useEffect(() => {
+    if (typeof chessCountdownObj[channelId] === 'number') {
+      setSpoilerOff(true);
+    }
+  }, [chessCountdownObj]);
 
   return (
     <Modal large onHide={onHide}>
@@ -84,6 +101,8 @@ function ChessModal({
           }}
         >
           <Chess
+            channelId={channelId}
+            chessCountdownObj={chessCountdownObj}
             interactable
             initialState={initialState}
             loaded={loaded}
@@ -130,6 +149,7 @@ function ChessModal({
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     setSpoilerOff(true);
     updateChessMoveViewTimeStamp();
+    onSpoilerClick();
   }
 
   async function submitChessMove() {

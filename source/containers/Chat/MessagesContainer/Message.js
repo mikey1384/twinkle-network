@@ -25,6 +25,7 @@ Message.propTypes = {
   canEdit: PropTypes.bool,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
+  chessCountdownObj: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   message: PropTypes.object,
   style: PropTypes.object,
@@ -48,6 +49,7 @@ function Message({
   canEdit,
   channelId,
   channelName,
+  chessCountdownObj,
   dispatch,
   index,
   isLastMsg,
@@ -63,7 +65,7 @@ function Message({
     numMsgs,
     uploaderAuthLevel,
     moveViewTimeStamp,
-    isChessMove,
+    isChessMsg,
     chessState
   },
   myId,
@@ -147,7 +149,7 @@ function Message({
             </span>
           </div>
           <div>
-            {isChessMove ? (
+            {isChessMsg ? (
               <div
                 style={{
                   position: 'relative',
@@ -156,6 +158,8 @@ function Message({
                 }}
               >
                 <Chess
+                  channelId={channelId}
+                  chessCountdownObj={chessCountdownObj}
                   loaded
                   spoilerOff={spoilerOff}
                   myId={myId}

@@ -103,6 +103,7 @@ function Chat({
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [chessModalShown, setChessModalShown] = useState(false);
+  const [chessCountdownObj, setChessCountdownObj] = useState({});
   const memberObj = useRef({});
   const mounted = useRef(true);
 
@@ -136,10 +137,18 @@ function Chat({
     socket.on('change_in_members_online', onChangeMembersOnline);
     socket.on('notifiy_move_viewed', updateChessMoveViewTimeStamp);
     socket.on('notifiy_making_move', onNotifiedMakingMove);
+    socket.on('notifiy_move_made', onNotifiedMoveMade);
+    socket.on('receive_chess_countdown_number', onReceiveCountdownNumber);
 
     function onReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === currentChannel.id;
       let senderIsNotTheUser = message.userId !== userId;
+      if (message.isChessMsg) {
+        setChessCountdownObj(countdownObj => ({
+          ...countdownObj,
+          [message.channelId]: undefined
+        }));
+      }
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         receiveMessage({ message, pageVisible });
       }
@@ -186,6 +195,32 @@ function Chat({
       );
     }
 
+    function onNotifiedMoveMade({ userId, channelId }) {
+      setCurrentChannelOnlineMembers(members =>
+        members.map(member =>
+          member.id === userId
+            ? {
+                ...member,
+                channelObj: {
+                  ...member.channelObj,
+                  [channelId]: {
+                    ...member.channelObj[channelId],
+                    makingChessMove: false
+                  }
+                }
+              }
+            : member
+        )
+      );
+    }
+
+    function onReceiveCountdownNumber({ channelId, number }) {
+      setChessCountdownObj(countdownObj => ({
+        ...countdownObj,
+        [channelId]: number
+      }));
+    }
+
     return function cleanUp() {
       socket.removeListener('receive_message', onReceiveMessage);
       socket.removeListener('chat_invitation', onChatInvitation);
@@ -196,6 +231,11 @@ function Chat({
         updateChessMoveViewTimeStamp
       );
       socket.removeListener('notifiy_making_move', onNotifiedMakingMove);
+      socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
+      socket.removeListener(
+        'receive_chess_countdown_number',
+        onReceiveCountdownNumber
+      );
     };
   });
 
@@ -325,6 +365,7 @@ function Chat({
         <MessagesContainer
           channelId={currentChannel.id}
           channelName={channelName(currentChannel)}
+          chessCountdownObj={chessCountdownObj}
           className={css`
             display: flex;
             flex-direction: column;
@@ -375,9 +416,11 @@ function Chat({
       {chessModalShown && (
         <ChessModal
           channelId={currentChannel.id}
+          chessCountdownObj={chessCountdownObj}
           myId={userId}
           onConfirmChessMove={handleConfirmChessMove}
           onHide={() => setChessModalShown(false)}
+          onSpoilerClick={handleChessSpoilerClick}
           {...getOpponentInfo()}
         />
       )}
@@ -404,14 +447,10 @@ function Chat({
     return { opponentId, opponentName };
   }
 
-  async function handleChessSpoilerClick() {
+  function handleChessSpoilerClick() {
     socket.emit('viewed_chess_move', currentChannel.id);
-    socket.emit('user_is_making_move', {
-      userId,
-      channelId: currentChannel.id
-    });
+    socket.emit('start_chess_timer', currentChannel.id);
     setChessModalShown(true);
-    return Promise.resolve();
   }
 
   function userListDescriptionShown(user) {
@@ -466,7 +505,7 @@ function Chat({
     const params = {
       userId,
       chessState: state,
-      isChessMove: 1
+      isChessMsg: 1
     };
     const content = 'Made a chess move';
     try {
@@ -475,6 +514,10 @@ function Chat({
           ...params,
           username,
           content,
+          channelId: currentChannel.id
+        });
+        socket.emit('user_made_a_move', {
+          userId,
           channelId: currentChannel.id
         });
         socket.emit(

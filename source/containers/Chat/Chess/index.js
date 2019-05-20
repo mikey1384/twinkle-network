@@ -18,6 +18,8 @@ import {
 } from './helpers/model';
 
 Chess.propTypes = {
+  channelId: PropTypes.number,
+  chessCountdownObj: PropTypes.object,
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
   loaded: PropTypes.bool,
@@ -33,6 +35,8 @@ Chess.propTypes = {
 };
 
 export default function Chess({
+  channelId,
+  chessCountdownObj,
   interactable,
   initialState,
   loaded,
@@ -101,6 +105,7 @@ export default function Chess({
   const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
   const userMadeLastMove = move?.by === myId;
+  const countdownNumber = chessCountdownObj?.[channelId];
 
   return (
     <>
@@ -256,7 +261,7 @@ export default function Chess({
           </div>
         </div>
       </div>
-      {loaded && userMadeLastMove && !moveViewed && (
+      {((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
         <div
           style={{
             bottom: '1rem',
@@ -266,8 +271,12 @@ export default function Chess({
             fontWeight: 'bold'
           }}
         >
-          <p>Awaiting</p>
-          <p>{`${opponentName}'s move`}</p>
+          {countdownNumber || (
+            <>
+              <p>Awaiting</p>
+              <p>{`${opponentName}'s move`}</p>
+            </>
+          )}
         </div>
       )}
     </>
