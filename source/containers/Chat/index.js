@@ -18,6 +18,7 @@ import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
+import { objectify } from 'helpers';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -102,6 +103,7 @@ function Chat({
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [chessModalShown, setChessModalShown] = useState(false);
+  const memberObj = useRef({});
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -114,6 +116,7 @@ function Chat({
 
   useEffect(() => {
     if (mounted.current) {
+      memberObj.current = objectify(currentChannelOnlineMembers);
       setChannelsObj(
         channels.reduce(
           (prev, curr) => ({
@@ -124,7 +127,7 @@ function Chat({
         )
       );
     }
-  }, [channels]);
+  }, [currentChannelOnlineMembers, channels]);
 
   useEffect(() => {
     socket.on('receive_message', onReceiveMessage);
@@ -132,6 +135,7 @@ function Chat({
     socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
     socket.on('notifiy_move_viewed', updateChessMoveViewTimeStamp);
+    socket.on('notifiy_making_move', onNotifiedMakingMove);
 
     function onReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === currentChannel.id;
@@ -163,15 +167,35 @@ function Chat({
       }
     }
 
-    return function cleanUp() {
-      socket.removeListener(
-        'notifiy_move_viewed',
-        updateChessMoveViewTimeStamp
+    function onNotifiedMakingMove({ userId, channelId }) {
+      setCurrentChannelOnlineMembers(members =>
+        members.map(member =>
+          member.id === userId
+            ? {
+                ...member,
+                channelObj: {
+                  ...member.channelObj,
+                  [channelId]: {
+                    ...member.channelObj[channelId],
+                    makingChessMove: true
+                  }
+                }
+              }
+            : member
+        )
       );
+    }
+
+    return function cleanUp() {
       socket.removeListener('receive_message', onReceiveMessage);
       socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('subject_change', onSubjectChange);
       socket.removeListener('change_in_members_online', onChangeMembersOnline);
+      socket.removeListener(
+        'notifiy_move_viewed',
+        updateChessMoveViewTimeStamp
+      );
+      socket.removeListener('notifiy_making_move', onNotifiedMakingMove);
     };
   });
 
@@ -320,6 +344,7 @@ function Chat({
           onChessBoardClick={() => setChessModalShown(true)}
           onChessSpoilerClick={handleChessSpoilerClick}
           onLoadingDone={() => setLoading(false)}
+          statusText={renderStatusMessage()}
         />
         {socketConnected ? (
           <ChatInput
@@ -380,6 +405,11 @@ function Chat({
   }
 
   async function handleChessSpoilerClick() {
+    socket.emit('viewed_chess_move', currentChannel.id);
+    socket.emit('user_is_making_move', {
+      userId,
+      channelId: currentChannel.id
+    });
     setChessModalShown(true);
     return Promise.resolve();
   }
@@ -580,6 +610,14 @@ function Chat({
       profilePicId
     });
     setLeaveConfirmModalShown(false);
+  }
+
+  function renderStatusMessage() {
+    const { opponentId, opponentName } = getOpponentInfo();
+    return memberObj.current[opponentId]?.channelObj[currentChannel.id]
+      ?.makingChessMove
+      ? `${opponentName} is thinking...`
+      : '';
   }
 }
 

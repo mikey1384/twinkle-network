@@ -19,12 +19,14 @@ function NotiItem({
     actionObj = {},
     targetComment = {},
     targetObj = {},
+    targetSubject = {},
     timeStamp,
     user = {}
   }
 }) {
   let notificationMessage;
   const isReply = targetComment?.userId === myId;
+  const isSubjectResponse = targetSubject?.userId === myId;
 
   switch (actionObj.type) {
     case 'like':
@@ -98,13 +100,25 @@ function NotiItem({
           />{' '}
           your{' '}
           <ContentLink
-            type={isReply ? 'comment' : targetObj.type}
+            type={
+              isReply
+                ? 'comment'
+                : isSubjectResponse
+                ? 'subject'
+                : targetObj.type
+            }
             content={{
-              id: isReply ? targetComment.id : targetObj.id,
+              id: isReply
+                ? targetComment.id
+                : isSubjectResponse
+                ? targetSubject.id
+                : targetObj.id,
               username: targetObj.content,
               title: `${
                 isReply
                   ? 'comment'
+                  : isSubjectResponse
+                  ? 'subject'
                   : targetObj.type === 'user'
                   ? 'profile'
                   : targetObj.type === 'url'
@@ -114,7 +128,11 @@ function NotiItem({
                 !isReply && targetObj.type === 'user'
                   ? ''
                   : ` (${truncateText({
-                      text: isReply ? targetComment.content : targetObj.content,
+                      text: isReply
+                        ? targetComment.content
+                        : isSubjectResponse
+                        ? targetSubject.content
+                        : targetObj.content,
                       limit: 100
                     })})`
               }`

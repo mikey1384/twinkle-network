@@ -28,7 +28,8 @@ class MessagesContainer extends Component {
     loading: PropTypes.bool,
     onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
-    onLoadingDone: PropTypes.func
+    onLoadingDone: PropTypes.func,
+    statusText: PropTypes.string
   };
 
   state = {
@@ -80,6 +81,7 @@ class MessagesContainer extends Component {
       prevMessages.length >= 0 &&
       prevMessages.length < currentMessages.length &&
       (prevMessages[0] ? prevMessages[0].id === currentMessages[0].id : false);
+    const statusTextAppeared = !prevProps.statusText && this.props.statusText;
     const messageDeleted =
       prevProps.currentChannelId === this.props.currentChannelId &&
       prevMessages.length > currentMessages.length;
@@ -104,7 +106,7 @@ class MessagesContainer extends Component {
             : 0
       });
     }
-    if (newMessageArrived) {
+    if (newMessageArrived || statusTextAppeared) {
       const messageSenderId =
         currentMessages[currentMessages.length - 1].userId;
       if (messageSenderId !== userId && !scrollAtBottom) {
@@ -122,7 +124,13 @@ class MessagesContainer extends Component {
   }
 
   render() {
-    const { className, loadMoreButton, loading, currentChannelId } = this.props;
+    const {
+      className,
+      loadMoreButton,
+      loading,
+      currentChannelId,
+      statusText
+    } = this.props;
     const {
       deleteModal,
       loadMoreButtonLock,
@@ -202,6 +210,16 @@ class MessagesContainer extends Component {
               >
                 {this.renderMessages()}
               </div>
+              {statusText && (
+                <div
+                  style={{
+                    padding: '2rem',
+                    textAlign: 'center'
+                  }}
+                >
+                  {statusText}
+                </div>
+              )}
             </div>
           </div>
           {!loading && currentChannelId === 2 && <SubjectHeader />}
