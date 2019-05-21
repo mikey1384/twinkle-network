@@ -187,7 +187,7 @@ export default function Board({
         <Loading />
       ) : squares.length > 0 ? (
         <div
-          onClick={onBoardClick}
+          onClick={spoilerOff ? onBoardClick : undefined}
           style={{
             cursor: spoilerOff && onBoardClick ? 'pointer' : '',
             display: 'grid',

@@ -17,8 +17,9 @@ export const MessageStyle = {
     }
   `,
   contentWrapper: css`
-    margin-left: 1.3rem;
-    width: 92%;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: 100%;
     position: relative;
     white-space: pre-wrap;
     overflow-wrap: break-word;

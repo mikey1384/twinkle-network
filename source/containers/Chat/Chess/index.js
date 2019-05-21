@@ -20,6 +20,7 @@ import {
 Chess.propTypes = {
   channelId: PropTypes.number,
   chessCountdownObj: PropTypes.object,
+  gameWinnerId: PropTypes.number,
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
   loaded: PropTypes.bool,
@@ -31,12 +32,14 @@ Chess.propTypes = {
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
-  spoilerOff: PropTypes.bool
+  spoilerOff: PropTypes.bool,
+  style: PropTypes.object
 };
 
 export default function Chess({
   channelId,
   chessCountdownObj,
+  gameWinnerId,
   interactable,
   initialState,
   loaded,
@@ -48,7 +51,8 @@ export default function Chess({
   onSpoilerClick,
   opponentId,
   opponentName,
-  spoilerOff
+  spoilerOff,
+  style
 }) {
   const [playerColors, setPlayerColors] = useState({
     [myId]: 'white',
@@ -108,7 +112,13 @@ export default function Chess({
   const countdownNumber = chessCountdownObj?.[channelId];
 
   return (
-    <>
+    <div
+      style={{
+        position: 'relative',
+        background: Color.subtitleGray(),
+        ...style
+      }}
+    >
       {loaded && parsedState && (
         <div
           style={{
@@ -216,7 +226,7 @@ export default function Chess({
           </div>
           <Board
             loading={!loaded}
-            spoilerOff={spoilerOff}
+            spoilerOff={spoilerOff || !!gameWinnerId}
             initialState={initialState}
             interactable={interactable && !newChessState && !userMadeLastMove}
             squares={squares}
@@ -279,7 +289,7 @@ export default function Chess({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 
   function handleCastling(direction) {

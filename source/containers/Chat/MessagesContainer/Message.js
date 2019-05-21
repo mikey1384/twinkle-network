@@ -8,6 +8,7 @@ import EditTextArea from 'components/Texts/EditTextArea';
 import Button from 'components/Button';
 import Chess from '../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import GameOverMessage from './GameOverMessage';
 import { connect } from 'react-redux';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
@@ -17,7 +18,6 @@ import {
   updateChessMoveViewTimeStamp
 } from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
-import { Color } from 'constants/css';
 
 Message.propTypes = {
   authLevel: PropTypes.number,
@@ -59,6 +59,7 @@ function Message({
     userId,
     timeStamp,
     content,
+    gameWinnerId,
     subjectId,
     isReloadedSubject,
     isSubject,
@@ -127,6 +128,16 @@ function Message({
     });
   }
 
+  if (!chessState && gameWinnerId) {
+    return (
+      <GameOverMessage
+        winnerId={gameWinnerId}
+        opponentName={channelName}
+        myId={myId}
+      />
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className={MessageStyle.container}>
@@ -148,28 +159,22 @@ function Message({
               {moment.unix(timeStamp).format('LLL')}
             </span>
           </div>
-          <div>
+          <>
             {isChessMsg ? (
-              <div
-                style={{
-                  position: 'relative',
-                  background: Color.subtitleGray(),
-                  margin: '1rem 1rem 0 0'
-                }}
-              >
-                <Chess
-                  channelId={channelId}
-                  chessCountdownObj={chessCountdownObj}
-                  loaded
-                  spoilerOff={spoilerOff}
-                  myId={myId}
-                  initialState={chessState}
-                  moveViewed={!!moveViewTimeStamp}
-                  onBoardClick={onChessBoardClick}
-                  onSpoilerClick={handleSpoilerClick}
-                  opponentName={channelName}
-                />
-              </div>
+              <Chess
+                channelId={channelId}
+                chessCountdownObj={chessCountdownObj}
+                gameWinnerId={gameWinnerId}
+                loaded
+                spoilerOff={spoilerOff}
+                myId={myId}
+                initialState={chessState}
+                moveViewed={!!moveViewTimeStamp}
+                onBoardClick={onChessBoardClick}
+                onSpoilerClick={handleSpoilerClick}
+                opponentName={channelName}
+                style={{ marginTop: '1rem', width: '100%' }}
+              />
             ) : (
               <>
                 {onEdit ? (
@@ -232,7 +237,7 @@ function Message({
                 {editPadding && <div style={{ height: '10rem' }} />}
               </>
             )}
-          </div>
+          </>
         </div>
       </div>
     </ErrorBoundary>
