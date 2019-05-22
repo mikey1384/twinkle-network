@@ -293,7 +293,7 @@ export const receiveMessage = ({ message, pageVisible }) => async dispatch => {
     dispatch({
       type: CHAT.RECEIVE_MESSAGE,
       pageVisible,
-      data: {
+      message: {
         ...message,
         timeStamp: Math.floor(Date.now() / 1000)
       }

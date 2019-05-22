@@ -8,13 +8,15 @@ Channels.propTypes = {
   currentChannel: PropTypes.object.isRequired,
   channels: PropTypes.arrayOf(
     PropTypes.shape({
-      lastMessageSender: PropTypes.shape({
-        id: PropTypes.number,
-        username: PropTypes.string
+      lastMessage: PropTypes.shape({
+        sender: PropTypes.shape({
+          id: PropTypes.number,
+          username: PropTypes.string
+        }),
+        content: PropTypes.string
       }),
-      lastMessage: PropTypes.string,
       id: PropTypes.number.isRequired,
-      channelName: PropTypes.string.isRequired,
+      channelName: PropTypes.string,
       numUnreads: PropTypes.number.isRequired
     })
   ).isRequired,
@@ -32,13 +34,8 @@ export default function Channels({
   return channels
     .filter(channel => !channel.isHidden)
     .map(channel => {
-      const {
-        lastMessageSender,
-        lastMessage,
-        id,
-        channelName,
-        numUnreads
-      } = channel;
+      const { lastMessage, id, channelName, members, numUnreads } = channel;
+      const otherMember = members?.filter(member => member.id !== userId)?.[0];
       return (
         <div
           className={css`
@@ -77,7 +74,7 @@ export default function Channels({
               <div>
                 <p
                   style={{
-                    color: !channelName && '#7c7c7c',
+                    color: !channelName && !otherMember && '#7c7c7c',
                     fontWeight: 'bold',
                     margin: 0,
                     padding: 0,
@@ -86,7 +83,7 @@ export default function Channels({
                     lineHeight: 'normal'
                   }}
                 >
-                  {channelName || '(Deleted)'}
+                  {channelName || otherMember?.username || '(Deleted)'}
                 </p>
               </div>
               <div
@@ -96,18 +93,7 @@ export default function Channels({
                   overflow: 'hidden'
                 }}
               >
-                {lastMessageSender && lastMessage ? (
-                  <>
-                    <span>{`${
-                      lastMessageSender.id === userId
-                        ? 'You'
-                        : lastMessageSender.username
-                    }:`}</span>{' '}
-                    <span>{lastMessage.substring(0, 100)}</span>
-                  </>
-                ) : (
-                  '\u00a0'
-                )}
+                {renderPreviewMessage(lastMessage)}
               </div>
             </div>
             {id !== currentChannel.id && numUnreads > 0 && (
@@ -131,4 +117,23 @@ export default function Channels({
         </div>
       );
     });
+
+  function renderPreviewMessage({ content, gameWinnerId, sender }) {
+    if (gameWinnerId) {
+      return gameWinnerId === userId ? (
+        <span>You won the chess match!</span>
+      ) : (
+        <span>You lost the chess match</span>
+      );
+    }
+    if (sender && content) {
+      return (
+        <>
+          <span>{`${sender.id === userId ? 'You' : sender.username}:`}</span>{' '}
+          <span>{content.substring(0, 100)}</span>
+        </>
+      );
+    }
+    return '\u00a0';
+  }
 }

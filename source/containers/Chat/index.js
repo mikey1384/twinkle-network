@@ -158,6 +158,20 @@ function Chat({
           senderIsNotTheUser
         });
       }
+      if (message.gameWinnerId) {
+        setCurrentChannelOnlineMembers(members =>
+          members.map(member => ({
+            ...member,
+            channelObj: {
+              ...member.channelObj,
+              [message.channelId]: {
+                ...member.channelObj[message.channelId],
+                makingChessMove: false
+              }
+            }
+          }))
+        );
+      }
     }
 
     function onChangeMembersOnline(data) {
@@ -196,6 +210,7 @@ function Chat({
     }
 
     function onNotifiedMoveMade({ userId, channelId }) {
+      setChessModalShown(false);
       setCurrentChannelOnlineMembers(members =>
         members.map(member =>
           member.id === userId
@@ -215,6 +230,9 @@ function Chat({
     }
 
     function onReceiveCountdownNumber({ channelId, number }) {
+      if (number === 0) {
+        setChessModalShown(false);
+      }
       setChessCountdownObj(countdownObj => ({
         ...countdownObj,
         [channelId]: number
@@ -382,7 +400,7 @@ function Chat({
           messages={messages}
           userId={userId}
           loadMoreMessages={loadMoreMessages}
-          onChessBoardClick={() => setChessModalShown(true)}
+          onChessBoardClick={handleChessModalShown}
           onChessSpoilerClick={handleChessSpoilerClick}
           onLoadingDone={() => setLoading(false)}
           statusText={renderStatusMessage()}
@@ -392,10 +410,9 @@ function Chat({
             onChange={setChatMessage}
             message={chatMessage}
             myId={userId}
-            channelMembers={currentChannel.members}
             isTwoPeopleChannel={currentChannel.twoPeople}
             currentChannelId={currentChannel.id}
-            onChessButtonClick={() => setChessModalShown(true)}
+            onChessButtonClick={handleChessModalShown}
             onMessageSubmit={onMessageSubmit}
             onHeightChange={height => {
               if (height !== textAreaHeight) {
@@ -428,7 +445,10 @@ function Chat({
   );
 
   function channelName(currentChannel) {
-    return channelsObj[currentChannel.id]?.channelName;
+    const otherMember = currentChannel?.members?.filter(
+      member => member.id !== userId
+    )?.[0];
+    return channelsObj[currentChannel.id]?.channelName || otherMember.username;
   }
 
   function getOpponentInfo() {
@@ -447,9 +467,16 @@ function Chat({
     return { opponentId, opponentName };
   }
 
+  function handleChessModalShown() {
+    const channelId = currentChannel?.id;
+    if (chessCountdownObj[channelId] !== 0) {
+      setChessModalShown(true);
+    }
+  }
+
   function handleChessSpoilerClick() {
     socket.emit('viewed_chess_move', currentChannel.id);
-    socket.emit('start_chess_timer', currentChannel.id);
+    socket.emit('start_chess_timer', currentChannel);
     setChessModalShown(true);
   }
 
@@ -492,8 +519,10 @@ function Chat({
       socket.emit('new_chat_message', params, {
         ...currentChannel,
         numUnreads: 1,
-        lastMessageSender: { id: userId, username },
-        lastMessage: content,
+        lastMessage: {
+          content,
+          sender: { id: userId, username }
+        },
         channelName: currentChannel.channelName || username
       });
     } catch (error) {
@@ -532,8 +561,10 @@ function Chat({
           {
             ...currentChannel,
             numUnreads: 1,
-            lastMessageSender: { id: userId, username },
-            lastMessage: content,
+            lastMessage: {
+              sender: { id: userId, username },
+              content
+            },
             channelName: username
           }
         );
@@ -598,10 +629,12 @@ function Chat({
           lastUpdate: message.timeStamp,
           isHidden: false,
           channelName: 'General',
-          lastMessage: message.content,
-          lastMessageSender: {
-            id: message.userId,
-            username: message.username
+          lastMessage: {
+            content: message.content,
+            sender: {
+              id: message.userId,
+              username: message.username
+            }
           },
           numUnreads: 1
         }

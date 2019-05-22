@@ -200,7 +200,10 @@ export default function LeftMenu({
   );
 
   function channelName(currentChannel) {
-    return channelsObj[currentChannel.id]?.channelName;
+    const otherMember = currentChannel?.members?.filter(
+      member => member.id !== userId
+    )?.[0];
+    return channelsObj[currentChannel.id]?.channelName || otherMember.username;
   }
 
   async function handleLoadMoreChannels() {

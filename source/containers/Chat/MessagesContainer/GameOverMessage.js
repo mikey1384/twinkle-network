@@ -14,7 +14,8 @@ export default function GameOverMessage({ myId, opponentName, winnerId }) {
     <ErrorBoundary>
       <div
         style={{
-          background: myId === winnerId ? Color.gold() : Color.logoBlue(),
+          background:
+            myId === winnerId ? Color.brownOrange() : Color.logoBlue(),
           fontSize: '2.5rem',
           display: 'flex',
           justifyContent: 'center',
