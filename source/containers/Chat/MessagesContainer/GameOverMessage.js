@@ -14,29 +14,34 @@ export default function GameOverMessage({ myId, opponentName, winnerId }) {
     <ErrorBoundary>
       <div
         style={{
-          background:
-            myId === winnerId ? Color.brownOrange() : Color.logoBlue(),
-          fontSize: '2.5rem',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '1rem',
-          color: '#fff',
           marginRight: '1rem',
-          marginBottom: '1rem'
+          paddingBottom: '1rem'
         }}
       >
-        {myId === winnerId ? (
-          <div style={{ textAlign: 'center' }}>
-            <p>{opponentName} failed to make a move in time...</p>
-            <p style={{ fontWeight: 'bold' }}>You win!</p>
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <p>You failed to make a move in time...</p>
-            <p>{opponentName} wins</p>
-          </div>
-        )}
+        <div
+          style={{
+            background:
+              myId === winnerId ? Color.brownOrange() : Color.logoBlue(),
+            fontSize: '2.5rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1rem',
+            color: '#fff'
+          }}
+        >
+          {myId === winnerId ? (
+            <div style={{ textAlign: 'center' }}>
+              <p>{opponentName} failed to make a move in time...</p>
+              <p style={{ fontWeight: 'bold' }}>You win!</p>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center' }}>
+              <p>You failed to make a move in time...</p>
+              <p>{opponentName} wins</p>
+            </div>
+          )}
+        </div>
       </div>
     </ErrorBoundary>
   );

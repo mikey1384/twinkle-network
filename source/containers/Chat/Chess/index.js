@@ -110,11 +110,22 @@ export default function Chess({
   const myColor = parsedState?.playerColors[myId] || 'white';
   const userMadeLastMove = move?.by === myId;
   const countdownNumber = chessCountdownObj?.[channelId];
+  const isCheck = parsedState?.isCheck;
+  const isCheckmate = parsedState?.isCheckmate;
+  const isStalemate = parsedState?.isStalemate;
+  const statusText = isCheckmate
+    ? 'Checkmate'
+    : isStalemate
+    ? 'Stalemate'
+    : isCheck
+    ? 'Check'
+    : '';
 
   return (
     <div
       style={{
         position: 'relative',
+        padding: '1rem',
         background: Color.subtitleGray(),
         ...style
       }}
@@ -133,20 +144,31 @@ export default function Chess({
           <p>
             {spoilerOff
               ? move?.piece
-                ? `moved a ${move?.piece?.type}`
+                ? `moved ${
+                    move?.piece?.type === 'king'
+                      ? `${userMadeLastMove ? 'your' : 'their'} king`
+                      : `a ${move?.piece?.type}`
+                  }`
                 : 'castled'
               : 'made a move'}
           </p>
-          {spoilerOff && move?.piece?.type && (
+          {spoilerOff && (
             <>
-              <p>from {move?.from}</p>
-              <p>to {move?.to}</p>
-              {parsedState?.capturedPiece && (
+              {move?.piece?.type && (
                 <>
-                  <p>and captured</p>
-                  <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
-                  <p>{parsedState?.capturedPiece}</p>
+                  <p>from {move?.from}</p>
+                  <p>to {move?.to}</p>
+                  {parsedState?.capturedPiece && (
+                    <>
+                      <p>and captured</p>
+                      <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
+                      <p>{parsedState?.capturedPiece}</p>
+                    </>
+                  )}
                 </>
+              )}
+              {(isCheck || isCheckmate || isStalemate) && (
+                <p style={{ marginTop: '2rem' }}>{`${statusText}!`}</p>
               )}
             </>
           )}
@@ -206,7 +228,7 @@ export default function Chess({
         >
           <div
             style={{
-              height: '4rem',
+              height: '4.5rem',
               display: 'flex',
               flexDirection: 'column',
               margin: '1rem 0'
@@ -245,10 +267,9 @@ export default function Chess({
               alignItems: 'center'
             }}
           >
-            <div style={{ lineHeight: 2 }}>{status || gameOverMsg}</div>
             <div
               style={{
-                height: '4rem',
+                height: '4.5rem',
                 display: 'flex',
                 flexDirection: 'column',
                 margin: '1rem 0'
@@ -268,6 +289,11 @@ export default function Chess({
                 />
               )}
             </div>
+            {(status || gameOverMsg) && (
+              <div style={{ fontSize: '2rem', paddingBottom: '1rem' }}>
+                {status || gameOverMsg}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -277,8 +303,10 @@ export default function Chess({
             bottom: '1rem',
             right: '1rem',
             position: 'absolute',
-            fontSize: '2.5rem',
-            fontWeight: 'bold'
+            fontSize:
+              countdownNumber && countdownNumber <= 10 ? '3.5rem' : '2.5rem',
+            fontWeight: 'bold',
+            color: countdownNumber && countdownNumber <= 10 ? 'red' : ''
           }}
         >
           {countdownNumber || (
@@ -368,7 +396,11 @@ export default function Chess({
       dest: rookDest,
       myColor
     });
-    if (processResult({ myKingIndex: kingEndDest, newSquares }) === 'success') {
+    const { moved } = processResult({
+      myKingIndex: kingEndDest,
+      newSquares
+    });
+    if (moved) {
       handleMove({ newSquares });
     }
   }
@@ -424,33 +456,40 @@ export default function Chess({
             squares: newSquares,
             type: 'king'
           });
-          const result = processResult({
+          const { moved, isCheck, isCheckmate, isStalemate } = processResult({
             myKingIndex,
             newSquares,
             dest: i,
             src: selectedIndex
           });
-          if (result === 'success') {
-            handleMove({ newSquares, dest: i });
+          if (moved) {
+            handleMove({
+              newSquares,
+              dest: i,
+              isCheck,
+              isCheckmate,
+              isStalemate
+            });
           }
         }
       }
     }
   }
 
-  function handleMove({ newSquares, dest }) {
-    const moveDetail = dest
-      ? {
-          piece: {
-            ...squares[selectedIndex],
-            state: 'blurred',
-            isPiece: false
-          },
-          from: getPositionId({ index: selectedIndex, myColor }),
-          to: getPositionId({ index: dest, myColor }),
-          srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
-        }
-      : {};
+  function handleMove({ newSquares, dest, isCheck, isCheckmate, isStalemate }) {
+    const moveDetail =
+      typeof dest === 'number'
+        ? {
+            piece: {
+              ...squares[selectedIndex],
+              state: 'blurred',
+              isPiece: false
+            },
+            from: getPositionId({ index: selectedIndex, myColor }),
+            to: getPositionId({ index: dest, myColor }),
+            srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
+          }
+        : {};
     const json = JSON.stringify({
       move: {
         by: myId,
@@ -470,12 +509,16 @@ export default function Chess({
         square.state === 'highlighted' ? { ...square, state: '' } : square
       ),
       fallenPieces: fallenPieces.current,
-      enPassantTarget: enPassantTarget.current
+      enPassantTarget: enPassantTarget.current,
+      isCheck,
+      isCheckmate,
+      isStalemate
     });
     onChessMove(json);
   }
 
   function processResult({ myKingIndex, newSquares, dest, src }) {
+    let isCheck = false;
     const newWhiteFallenPieces = [...whiteFallenPieces];
     const newBlackFallenPieces = [...blackFallenPieces];
     const potentialCapturers = kingWillBeCapturedBy({
@@ -499,7 +542,7 @@ export default function Chess({
         })
       );
       setStatus('Your King will be captured if you make that move.');
-      return;
+      return {};
     }
     if (dest) {
       if (squares[src].type === 'pawn') {
@@ -544,6 +587,7 @@ export default function Chess({
         ...newSquares[theirKingIndex],
         state: 'check'
       };
+      isCheck = true;
     }
     if (dest) {
       newSquares[dest].moved = true;
@@ -576,6 +620,11 @@ export default function Chess({
     const target =
       newSquares[dest]?.type === 'pawn' && dest === src - 16 ? 63 - dest : null;
     enPassantTarget.current = target;
-    return 'success';
+    return {
+      moved: true,
+      isCheck,
+      isCheckmate: gameOver === 'Checkmate',
+      isStalemate: gameOver === 'Stalemate'
+    };
   }
 }
