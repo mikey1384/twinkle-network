@@ -203,7 +203,7 @@ export default function LeftMenu({
     const otherMember = currentChannel?.members?.filter(
       member => member.id !== userId
     )?.[0];
-    return channelsObj[currentChannel.id]?.channelName || otherMember.username;
+    return channelsObj[currentChannel.id]?.channelName || otherMember?.username;
   }
 
   async function handleLoadMoreChannels() {
