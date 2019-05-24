@@ -89,6 +89,8 @@ function ChessModal({
     }
   }, [chessCountdownObj]);
 
+  const parsedState = initialState ? JSON.parse(initialState) : {};
+
   return (
     <Modal large onHide={onHide}>
       <header>Chess</header>
@@ -134,13 +136,19 @@ function ChessModal({
             Cancel Move
           </Button>
         )}
-        <Button
-          color="blue"
-          onClick={submitChessMove}
-          disabled={!newChessState}
-        >
-          Confirm Move
-        </Button>
+        {parsedState?.isCheckmate || parsedState?.isStalemate ? (
+          <Button color="orange" onClick={() => setInitialState(undefined)}>
+            Start a new game
+          </Button>
+        ) : (
+          <Button
+            color="blue"
+            onClick={submitChessMove}
+            disabled={!newChessState}
+          >
+            Confirm Move
+          </Button>
+        )}
       </footer>
     </Modal>
   );

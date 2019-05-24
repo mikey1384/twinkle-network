@@ -157,7 +157,7 @@ export default function Board({
               `}
               onClick={onSpoilerClick}
             >
-              <p>{opponentName} has made a new chess move.</p>
+              <p>{opponentName} made a new chess move.</p>
               <p>Tap here to view it.</p>
               <p>
                 {`After viewing ${opponentName}'s move, you `}

@@ -20,8 +20,7 @@ export default function GameOverMessage({ myId, opponentName, winnerId }) {
       >
         <div
           style={{
-            background:
-              myId === winnerId ? Color.brownOrange() : Color.logoBlue(),
+            background: myId === winnerId ? Color.brownOrange() : Color.black(),
             fontSize: '2.5rem',
             display: 'flex',
             justifyContent: 'center',

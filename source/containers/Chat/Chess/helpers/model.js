@@ -365,15 +365,9 @@ export function returnBoardAfterMove({
   const newSquares = squares.map((square, index) => {
     if (index === dest) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
-      const lastRow = [56, 57, 58, 59, 60, 61, 62, 63];
       let transform = false;
-      if (squares[src].type === 'pawn') {
-        if (myColor === 'white' && firstRow.indexOf(index) !== -1) {
-          transform = true;
-        }
-        if (myColor === 'black' && lastRow.indexOf(index) !== -1) {
-          transform = true;
-        }
+      if (squares[src].type === 'pawn' && firstRow.indexOf(index) !== -1) {
+        transform = true;
       }
       return {
         ...squares[src],
@@ -395,7 +389,7 @@ export function getPositionId({ index, myColor }) {
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   if (myColor === 'black') letters.reverse();
   const row =
-    myColor === 'black' ? 9 - Math.ceil(index / 8) : Math.ceil(index / 8);
+    myColor === 'black' ? 8 - Math.floor(index / 8) : Math.floor(index / 8) + 1;
   const column = letters[index % 8];
   return `${column + row}`;
 }

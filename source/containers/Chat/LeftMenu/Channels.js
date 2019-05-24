@@ -119,7 +119,10 @@ export default function Channels({
     });
 
   function renderPreviewMessage({ content, gameWinnerId, sender }) {
-    if (gameWinnerId) {
+    if (typeof gameWinnerId === 'number') {
+      if (gameWinnerId === 0) {
+        return <span>The chess match ended in a draw</span>;
+      }
       return gameWinnerId === userId ? (
         <span>You won the chess match!</span>
       ) : (

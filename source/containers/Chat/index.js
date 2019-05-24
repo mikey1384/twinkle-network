@@ -530,11 +530,13 @@ function Chat({
     }
   }
 
-  async function handleConfirmChessMove(state) {
+  async function handleConfirmChessMove({ state, isCheckmate, isStalemate }) {
+    const gameWinnerId = isCheckmate ? userId : isStalemate ? 0 : undefined;
     const params = {
       userId,
       chessState: state,
-      isChessMsg: 1
+      isChessMsg: 1,
+      gameWinnerId
     };
     const content = 'Made a chess move';
     try {
@@ -562,6 +564,7 @@ function Chat({
             ...currentChannel,
             numUnreads: 1,
             lastMessage: {
+              gameWinnerId,
               sender: { id: userId, username },
               content
             },

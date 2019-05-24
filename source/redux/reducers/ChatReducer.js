@@ -539,6 +539,7 @@ export default function ChatReducer(state = defaultState, action) {
                 {
                   ...channel,
                   lastMessage: {
+                    gameWinnerId: action.message.gameWinnerId,
                     content: action.message.content,
                     sender: {
                       id: action.message.userId,

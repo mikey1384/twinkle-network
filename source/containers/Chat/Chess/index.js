@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import { borderRadius, Color } from 'constants/css';
 import { initialiseChessBoard, getPositionId } from './helpers/model.js';
 import {
   checkerPos,
@@ -26,7 +26,7 @@ Chess.propTypes = {
   loaded: PropTypes.bool,
   moveViewed: PropTypes.bool,
   myId: PropTypes.number,
-  newChessState: PropTypes.string,
+  newChessState: PropTypes.object,
   onBoardClick: PropTypes.func,
   onChessMove: PropTypes.func,
   onSpoilerClick: PropTypes.func,
@@ -87,6 +87,14 @@ export default function Chess({
       setBlackFallenPieces(parsedState.fallenPieces.black);
       setWhiteFallenPieces(parsedState.fallenPieces.white);
       fallenPieces.current = parsedState.fallenPieces;
+    } else {
+      enPassantTarget.current = {};
+      setBlackFallenPieces([]);
+      setWhiteFallenPieces([]);
+      fallenPieces.current = {
+        white: [],
+        black: []
+      };
     }
     if (interactable && !userMadeLastMove) {
       setSquares(squares =>
@@ -142,7 +150,7 @@ export default function Chess({
         >
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {spoilerOff
+            {spoilerOff || isCheckmate || isStalemate
               ? move?.piece
                 ? `moved ${
                     move?.piece?.type === 'king'
@@ -152,7 +160,7 @@ export default function Chess({
                 : 'castled'
               : 'made a move'}
           </p>
-          {spoilerOff && (
+          {(spoilerOff || isCheckmate || isStalemate) && (
             <>
               {move?.piece?.type && (
                 <>
@@ -179,7 +187,7 @@ export default function Chess({
           user-select: none;
           font: 14px 'Century Gothic', Futura, sans-serif;
           .dark {
-            background-color: ${Color.orange()};
+            background-color: ${Color.sandyBrown()};
           }
 
           .dark.highlighted {
@@ -187,7 +195,7 @@ export default function Chess({
           }
 
           .dark.check {
-            background-color: yellow;
+            background-color: ${Color.orange()};
           }
 
           .dark.danger {
@@ -199,7 +207,7 @@ export default function Chess({
           }
 
           .light {
-            background-color: RGB(234, 240, 206);
+            background-color: ${Color.ivory()};
           }
 
           .light.highlighted {
@@ -207,7 +215,7 @@ export default function Chess({
           }
 
           .light.check {
-            background-color: yellow;
+            background-color: ${Color.orange()};
           }
 
           .light.danger {
@@ -234,7 +242,7 @@ export default function Chess({
               margin: '1rem 0'
             }}
           >
-            {loaded && spoilerOff && (
+            {loaded && (spoilerOff || isCheckmate || isStalemate) && (
               <FallenPieces
                 myColor={myColor}
                 {...{
@@ -248,7 +256,13 @@ export default function Chess({
           </div>
           <Board
             loading={!loaded}
-            spoilerOff={spoilerOff || !!gameWinnerId}
+            spoilerOff={
+              spoilerOff ||
+              !!gameWinnerId ||
+              userMadeLastMove ||
+              !!isCheckmate ||
+              !!isStalemate
+            }
             initialState={initialState}
             interactable={interactable && !newChessState && !userMadeLastMove}
             squares={squares}
@@ -275,7 +289,7 @@ export default function Chess({
                 margin: '1rem 0'
               }}
             >
-              {loaded && spoilerOff && (
+              {loaded && (spoilerOff || isCheckmate || isStalemate) && (
                 <FallenPieces
                   myColor={myColor}
                   {...{
@@ -297,25 +311,67 @@ export default function Chess({
           </div>
         </div>
       </div>
-      {((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
-        <div
-          style={{
-            bottom: '1rem',
-            right: '1rem',
-            position: 'absolute',
-            fontSize:
-              countdownNumber && countdownNumber <= 10 ? '3.5rem' : '2.5rem',
-            fontWeight: 'bold',
-            color: countdownNumber && countdownNumber <= 10 ? 'red' : ''
-          }}
-        >
-          {countdownNumber || (
-            <>
-              <p>Awaiting</p>
-              <p>{`${opponentName}'s move`}</p>
-            </>
-          )}
+      {isCheckmate || isStalemate ? (
+        <div style={{ position: 'absolute', bottom: '1rem', right: '1rem' }}>
+          <div
+            style={{
+              background: isStalemate
+                ? Color.logoBlue()
+                : userMadeLastMove
+                ? Color.brownOrange()
+                : Color.black(),
+              color: '#fff',
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              padding: '1rem 2rem',
+              textAlign: 'center',
+              borderRadius
+            }}
+          >
+            {isStalemate ? (
+              <>
+                <p>Stalemate...</p>
+                <p>{`It's a draw`}</p>
+              </>
+            ) : userMadeLastMove ? (
+              <>
+                <p>Boom - Checkmate!</p>
+                <p>You win</p>
+              </>
+            ) : (
+              <>
+                <p>Checkmate...</p>
+                <p>{opponentName} wins</p>
+              </>
+            )}
+          </div>
         </div>
+      ) : (
+        <>
+          {((loaded && userMadeLastMove && !moveViewed) ||
+            !!countdownNumber) && (
+            <div
+              style={{
+                bottom: '1rem',
+                right: '1rem',
+                position: 'absolute',
+                fontSize:
+                  countdownNumber && countdownNumber <= 10
+                    ? '3.5rem'
+                    : '2.5rem',
+                fontWeight: 'bold',
+                color: countdownNumber && countdownNumber <= 10 ? 'red' : ''
+              }}
+            >
+              {countdownNumber || (
+                <>
+                  <p>Awaiting</p>
+                  <p>{`${opponentName}'s move`}</p>
+                </>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -506,7 +562,11 @@ export default function Chess({
           )
         : newSquares
       ).map(square =>
-        square.state === 'highlighted' ? { ...square, state: '' } : square
+        square.state === 'highlighted'
+          ? { ...square, state: '' }
+          : square.state === 'check' && isCheckmate
+          ? { ...square, state: 'checkmate' }
+          : square
       ),
       fallenPieces: fallenPieces.current,
       enPassantTarget: enPassantTarget.current,
@@ -514,7 +574,7 @@ export default function Chess({
       isCheckmate,
       isStalemate
     });
-    onChessMove(json);
+    onChessMove({ state: json, isCheckmate, isStalemate });
   }
 
   function processResult({ myKingIndex, newSquares, dest, src }) {
@@ -544,7 +604,7 @@ export default function Chess({
       setStatus('Your King will be captured if you make that move.');
       return {};
     }
-    if (dest) {
+    if (typeof dest === 'number') {
       if (squares[src].type === 'pawn') {
         if (enPassantTarget.current) {
           const srcRow = Math.floor(src / 8);
@@ -589,7 +649,7 @@ export default function Chess({
       };
       isCheck = true;
     }
-    if (dest) {
+    if (typeof dest === 'number') {
       newSquares[dest].moved = true;
     }
     setSquares(newSquares);
