@@ -152,7 +152,7 @@ export default function Chess({
                 display: inline-block;
                 margin-left: 0.5rem;
               }
-              p:first-child {
+              p:first-of-type {
                 margin-left: 0;
               }
             }
