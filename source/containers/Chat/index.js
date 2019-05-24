@@ -210,7 +210,9 @@ function Chat({
     }
 
     function onNotifiedMoveMade({ userId, channelId }) {
-      setChessModalShown(false);
+      if (channelId === currentChannel.id) {
+        setChessModalShown(false);
+      }
       setCurrentChannelOnlineMembers(members =>
         members.map(member =>
           member.id === userId
