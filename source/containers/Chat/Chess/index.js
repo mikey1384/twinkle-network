@@ -54,6 +54,7 @@ export default function Chess({
   spoilerOff,
   style
 }) {
+  const [countdownNumber, setCountdownNumber] = useState();
   const [playerColors, setPlayerColors] = useState({
     [myId]: 'white',
     [opponentId]: 'black'
@@ -114,10 +115,13 @@ export default function Chess({
     }
   }, [initialState, loaded, newChessState]);
 
+  useEffect(() => {
+    setCountdownNumber(chessCountdownObj?.[channelId]);
+  }, [channelId, chessCountdownObj]);
+
   const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
   const userMadeLastMove = move?.by === myId;
-  const countdownNumber = chessCountdownObj?.[channelId];
   const isCheck = parsedState?.isCheck;
   const isCheckmate = parsedState?.isCheckmate;
   const isStalemate = parsedState?.isStalemate;
