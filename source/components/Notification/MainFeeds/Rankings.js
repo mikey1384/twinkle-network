@@ -47,7 +47,7 @@ function Rankings({
     mounted.current = true;
     userChangedTab.current = false;
     if (!loading.current && mounted.current) {
-      setAllSelected(false);
+      setAllSelected(true);
       loadRankings();
     }
     async function loadRankings() {
@@ -58,9 +58,6 @@ function Rankings({
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
           getRanks({ all, top30s, rankModifier: modifier });
-          if (!userChangedTab.current) {
-            setAllSelected(!!myId);
-          }
         }
         loading.current = false;
       } catch (error) {
@@ -70,7 +67,11 @@ function Rankings({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [myId, twinkleXP]);
+  }, [twinkleXP]);
+
+  useEffect(() => {
+    setAllSelected(!!myId);
+  }, [myId]);
 
   const users = allSelected ? all : top30s;
   const modifier = allSelected ? rankModifier : 0;
