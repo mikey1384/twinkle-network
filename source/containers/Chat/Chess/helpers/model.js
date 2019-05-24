@@ -360,7 +360,7 @@ export function returnBoardAfterMove({
   const destColumn = dest % 8;
   const attacking = Math.abs(srcColumn - destColumn) === 1;
   const enPassanting =
-    enPassantTarget && attacking && enPassantTarget % 8 === destColumn;
+    enPassantTarget && attacking && squares[src].type === 'pawn';
   const newSquares = squares.map((square, index) => {
     if (index === dest) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];

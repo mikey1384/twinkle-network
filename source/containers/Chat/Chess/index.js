@@ -640,10 +640,7 @@ export default function Chess({
           const srcColumn = src % 8;
           const destColumn = dest % 8;
           const attacking = Math.abs(srcColumn - destColumn) === 1;
-          const enPassanting =
-            !squares[dest].isPiece &&
-            attacking &&
-            enPassantTarget.current % 8 === destColumn;
+          const enPassanting = !squares[dest].isPiece && attacking;
           if (enPassanting) {
             myColor === 'white'
               ? newBlackFallenPieces.push(squares[enPassantTarget.current])
