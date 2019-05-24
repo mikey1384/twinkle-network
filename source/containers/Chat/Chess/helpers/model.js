@@ -356,10 +356,9 @@ export function returnBoardAfterMove({
   enPassantTarget,
   myColor
 }) {
-  const srcRow = Math.floor(src / 8);
-  const destRow = Math.floor(dest / 8);
+  const srcColumn = src % 8;
   const destColumn = dest % 8;
-  const attacking = srcRow - destRow === 1;
+  const attacking = Math.abs(srcColumn - destColumn) === 1;
   const enPassanting =
     enPassantTarget && attacking && enPassantTarget % 8 === destColumn;
   const newSquares = squares.map((square, index) => {
