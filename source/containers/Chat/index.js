@@ -232,13 +232,15 @@ function Chat({
     }
 
     function onReceiveCountdownNumber({ channelId, number }) {
-      if (number === 0) {
-        setChessModalShown(false);
+      if (channelId === currentChannel.id) {
+        if (number === 0) {
+          setChessModalShown(false);
+        }
+        setChessCountdownObj(countdownObj => ({
+          ...countdownObj,
+          [channelId]: number
+        }));
       }
-      setChessCountdownObj(countdownObj => ({
-        ...countdownObj,
-        [channelId]: number
-      }));
     }
 
     return function cleanUp() {
