@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { Color } from 'constants/css';
+import { css } from 'emotion';
+import { Color, mobileMaxWidth } from 'constants/css';
 
 GameOverMessage.propTypes = {
   opponentName: PropTypes.string,
@@ -19,15 +20,20 @@ export default function GameOverMessage({ myId, opponentName, winnerId }) {
         }}
       >
         <div
-          style={{
-            background: myId === winnerId ? Color.brownOrange() : Color.black(),
-            fontSize: '2.5rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '1rem',
-            color: '#fff'
-          }}
+          className={css`
+            background: ${myId === winnerId
+              ? Color.brownOrange()
+              : Color.black()};
+            font-size: 2.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            color: #fff;
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 1.7rem;
+            }
+          `}
         >
           {myId === winnerId ? (
             <div style={{ textAlign: 'center' }}>

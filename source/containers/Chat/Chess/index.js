@@ -147,7 +147,10 @@ export default function Chess({
             font-size: 2.5rem;
             font-weight: bold;
             @media (max-width: ${mobileMaxWidth}) {
-              font-size: 2rem;
+              top: 0;
+              left: 0;
+              position: relative;
+              font-size: 1.5rem;
               p {
                 display: inline-block;
                 margin-left: 0.5rem;
@@ -186,7 +189,14 @@ export default function Chess({
                 </>
               )}
               {(isCheck || isCheckmate || isStalemate) && (
-                <p style={{ marginTop: '2rem' }}>{`${statusText}!`}</p>
+                <div
+                  className={css`
+                    margin-top: 2rem;
+                    @media (max-width: ${mobileMaxWidth}) {
+                      margin-top: 1rem;
+                    }
+                  `}
+                >{`${statusText}!`}</div>
               )}
             </>
           )}
@@ -245,12 +255,15 @@ export default function Chess({
           }}
         >
           <div
-            style={{
-              height: '4.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              margin: '1rem 0'
-            }}
+            className={css`
+              height: 4.5rem;
+              display: flex;
+              flex-direction: column;
+              margin: 1rem 0;
+              @media (max-width: ${mobileMaxWidth}) {
+                height: 3rem;
+              }
+            `}
           >
             {loaded && (spoilerOff || isCheckmate || isStalemate) && (
               <FallenPieces
@@ -292,12 +305,15 @@ export default function Chess({
             }}
           >
             <div
-              style={{
-                height: '4.5rem',
-                display: 'flex',
-                flexDirection: 'column',
-                margin: '1rem 0'
-              }}
+              className={css`
+                height: 4.5rem;
+                display: flex;
+                flex-direction: column;
+                margin: 1rem 0;
+                @media (max-width: ${mobileMaxWidth}) {
+                  height: 3rem;
+                }
+              `}
             >
               {loaded && (spoilerOff || isCheckmate || isStalemate) && (
                 <FallenPieces
@@ -361,17 +377,21 @@ export default function Chess({
           {((loaded && userMadeLastMove && !moveViewed) ||
             !!countdownNumber) && (
             <div
-              style={{
-                bottom: '1rem',
-                right: '1rem',
-                position: 'absolute',
-                fontSize:
-                  countdownNumber && countdownNumber <= 10
-                    ? '3.5rem'
-                    : '2.5rem',
-                fontWeight: 'bold',
-                color: countdownNumber && countdownNumber <= 10 ? 'red' : ''
-              }}
+              className={css`
+                bottom: 1rem;
+                right: 1rem;
+                position: absolute;
+                font-size: ${countdownNumber && countdownNumber <= 10
+                  ? '3.5rem'
+                  : '2.5rem'};
+                font-weight: bold;
+                color: ${countdownNumber && countdownNumber <= 10 ? 'red' : ''};
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: ${countdownNumber && countdownNumber <= 10
+                    ? '2.5rem'
+                    : '1.5rem'};
+                }
+              `}
             >
               {countdownNumber || (
                 <>

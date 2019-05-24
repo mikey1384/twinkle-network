@@ -136,18 +136,21 @@ export default function Board({
       setBoard(
         <>
           <div
-            style={{
-              margin: '0 auto',
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              fontSize: '1.7rem',
-              lineHeight: 2
-            }}
+            className={css`
+              margin: 0 auto;
+              width: 100%;
+              height: 100%;
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              align-items: center;
+              text-align: center;
+              font-size: 1.7rem;
+              line-height: 2;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.5rem;
+              }
+            `}
           >
             <div
               className={css`
@@ -195,7 +198,9 @@ export default function Board({
           onClick={spoilerOff ? onBoardClick : undefined}
           className={css`
             cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
-            display: grid;
+            display: ${spoilerOff === false ? 'flex' : 'grid'};
+            align-items: ${spoilerOff === false ? 'center' : ''};
+            height: 100%;
             grid-template-areas:
               'chess num'
               'letter .';

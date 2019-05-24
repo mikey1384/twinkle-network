@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 Square.propTypes = {
   className: PropTypes.string,
@@ -24,7 +25,6 @@ export default function Square({
   return (
     <div
       className={`${css`
-        width: 100%;
         background-repeat: no-repeat;
         background-position: center;
         font-size: 1.5rem;
@@ -39,21 +39,35 @@ export default function Square({
         &:focus {
           outline: none;
         }
+        @media (max-width: ${mobileMaxWidth}) {
+          font-size: 1rem;
+        }
       `} ${shade} ${className}`}
-      style={{ position: 'relative', ...style }}
+      style={{ position: 'relative', ...(style || {}) }}
       onClick={onClick}
     >
-      {img && <img {...img} style={{ ...(img?.style || {}), width: '100%' }} />}
+      {img && (
+        <img
+          {...img}
+          style={img?.style || {}}
+          className={css`
+            width: 100%;
+          `}
+        />
+      )}
       {count > 1 && (
         <div
-          style={{
-            cursor: 'default',
-            position: 'absolute',
-            fontWeight: 'bold',
-            left: '18px',
-            bottom: '-2px',
-            color: color === 'black' ? '#fff' : '#000'
-          }}
+          className={css`
+            cursor: default;
+            position: absolute;
+            font-weight: bold;
+            left: 18px;
+            bottom: -2px;
+            color: ${color === 'black' ? '#fff' : '#000'};
+            @media (max-width: ${mobileMaxWidth}) {
+              left: 10px;
+            }
+          `}
         >
           &times;{count}
         </div>

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Square from './Square';
 import getPiece from './helpers/piece';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 FallenPieces.propTypes = {
   whiteFallenPieces: PropTypes.array,
@@ -52,10 +54,14 @@ export default function FallenPieces({
             <Square
               key={index}
               piece={getPiece({ piece, myColor })}
-              style={{
-                height: '4rem',
-                width: '4rem'
-              }}
+              className={css`
+                height: 4rem;
+                width: 4rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  height: 3rem;
+                  width: 3rem;
+                }
+              `}
               img={getPiece({ piece, myColor }).img}
               count={piece.count}
               color="white"
@@ -69,10 +75,14 @@ export default function FallenPieces({
             <Square
               key={index}
               piece={getPiece({ piece, myColor })}
-              style={{
-                height: '4rem',
-                width: '4rem'
-              }}
+              className={css`
+                height: 4rem;
+                width: 4rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  height: 3rem;
+                  width: 3rem;
+                }
+              `}
               img={getPiece({ piece, myColor }).img}
               count={piece.count}
               color="black"
