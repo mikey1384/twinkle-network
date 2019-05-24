@@ -84,6 +84,7 @@ function Message({
   const { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
+  const [spoilerOff, setSpoilerOff] = useState(false);
   useEffect(() => {
     if (
       !message.id &&
@@ -99,15 +100,21 @@ function Message({
       setTimeout(() => setScrollToBottom(), 0);
     }
   }, [editPadding]);
-  const userMadeLastMove = chessState
-    ? JSON.parse(chessState)?.move?.by === myId
-    : false;
+  useEffect(() => {
+    const userMadeLastMove = chessState
+      ? JSON.parse(chessState)?.move?.by === myId
+      : false;
+    if (!userMadeLastMove && !moveViewTimeStamp) {
+      setSpoilerOff(false);
+    } else {
+      setSpoilerOff(true);
+    }
+  }, [channelId, moveViewTimeStamp]);
   const userIsUploader = myId === userId;
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
-  const spoilerOff = handleSpoilerOff();
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
@@ -251,13 +258,6 @@ function Message({
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     updateChessMoveViewTimeStamp();
     onChessSpoilerClick();
-  }
-
-  function handleSpoilerOff() {
-    if (!userMadeLastMove && !moveViewTimeStamp) {
-      return false;
-    }
-    return true;
   }
 
   function renderPrefix() {
