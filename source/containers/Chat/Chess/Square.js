@@ -24,6 +24,7 @@ export default function Square({
   return (
     <div
       className={`${css`
+        width: 100%;
         background-repeat: no-repeat;
         background-position: center;
         font-size: 1.5rem;
@@ -42,7 +43,7 @@ export default function Square({
       style={{ position: 'relative', ...style }}
       onClick={onClick}
     >
-      {img && <img {...img} />}
+      {img && <img {...img} style={{ ...(img?.style || {}), width: '100%' }} />}
       {count > 1 && (
         <div
           style={{

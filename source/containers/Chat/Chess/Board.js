@@ -4,6 +4,7 @@ import Square from './Square';
 import getPiece from './helpers/piece';
 import Loading from 'components/Loading';
 import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 Board.propTypes = {
   initialState: PropTypes.string,
@@ -177,28 +178,35 @@ export default function Board({
 
   return (
     <div
-      style={{
-        width: 'CALC(360px + 2rem)',
-        height: 'CALC(360px + 2.5rem)',
-        position: 'relative'
-      }}
+      className={css`
+        width: CALC(360px + 2rem);
+        height: CALC(360px + 2.5rem);
+        position: relative;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: CALC(180px + 2rem);
+          height: CALC(180px + 2.5rem);
+        }
+      `}
     >
       {loading ? (
         <Loading />
       ) : squares.length > 0 ? (
         <div
           onClick={spoilerOff ? onBoardClick : undefined}
-          style={{
-            cursor: spoilerOff && onBoardClick ? 'pointer' : '',
-            display: 'grid',
-            gridTemplateAreas: `
-              "chess num"
-              "letter ."
-            `,
-            gridTemplateColumns: '360px 2rem',
-            gridTemplateRows: '360px 2.5rem',
-            background: spoilerOff ? '#fff' : ''
-          }}
+          className={css`
+            cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
+            display: grid;
+            grid-template-areas:
+              'chess num'
+              'letter .';
+            grid-template-columns: 360px 2rem;
+            grid-template-rows: 360px 2.5rem;
+            background: ${spoilerOff ? '#fff' : ''};
+            @media (max-width: ${mobileMaxWidth}) {
+              grid-template-columns: 180px 2rem;
+              grid-template-rows: 180px 2.5rem;
+            }
+          `}
         >
           {board}
         </div>
