@@ -93,7 +93,7 @@ export default function Channels({
                   overflow: 'hidden'
                 }}
               >
-                {renderPreviewMessage(lastMessage)}
+                {renderPreviewMessage(lastMessage || {})}
               </div>
             </div>
             {id !== currentChannel.id && numUnreads > 0 && (
