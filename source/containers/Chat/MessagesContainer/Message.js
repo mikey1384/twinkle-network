@@ -84,7 +84,6 @@ function Message({
   const { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
-
   useEffect(() => {
     if (
       !message.id &&
