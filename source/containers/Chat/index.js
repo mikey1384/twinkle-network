@@ -543,6 +543,7 @@ function Chat({
       if (currentChannel.id) {
         submitMessage({
           ...params,
+          profilePicId,
           username,
           content,
           channelId: currentChannel.id
