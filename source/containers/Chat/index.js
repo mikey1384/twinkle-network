@@ -450,7 +450,7 @@ function Chat({
 
   function channelName(currentChannel) {
     const otherMember = currentChannel?.members?.filter(
-      member => member.id !== userId
+      member => Number(member.id) !== userId
     )?.[0];
     return channelsObj[currentChannel.id]?.channelName || otherMember?.username;
   }
