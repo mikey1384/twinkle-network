@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
 import { css } from 'emotion';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { initialiseChessBoard, getPositionId } from './helpers/model.js';
 import {
   checkerPos,
@@ -140,13 +140,23 @@ export default function Chess({
     >
       {loaded && parsedState && (
         <div
-          style={{
-            top: '1rem',
-            left: '1rem',
-            position: 'absolute',
-            fontSize: '2.5rem',
-            fontWeight: 'bold'
-          }}
+          className={css`
+            top: 1rem;
+            left: 1rem;
+            position: absolute;
+            font-size: 2.5rem;
+            font-weight: bold;
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 2rem;
+              p {
+                display: inline-block;
+                margin-left: 0.5rem;
+              }
+              p:first-child {
+                margin-left: 0;
+              }
+            }
+          `}
         >
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>

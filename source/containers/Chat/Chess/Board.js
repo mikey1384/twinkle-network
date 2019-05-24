@@ -183,8 +183,8 @@ export default function Board({
         height: CALC(360px + 2.5rem);
         position: relative;
         @media (max-width: ${mobileMaxWidth}) {
-          width: CALC(180px + 2rem);
-          height: CALC(180px + 2.5rem);
+          width: CALC(50vw + 2rem);
+          height: CALC(50vw + 2.5rem);
         }
       `}
     >
@@ -203,8 +203,8 @@ export default function Board({
             grid-template-rows: 360px 2.5rem;
             background: ${spoilerOff ? '#fff' : ''};
             @media (max-width: ${mobileMaxWidth}) {
-              grid-template-columns: 180px 2rem;
-              grid-template-rows: 180px 2.5rem;
+              grid-template-columns: 50vw 2rem;
+              grid-template-rows: 50vw 2.5rem;
             }
           `}
         >
