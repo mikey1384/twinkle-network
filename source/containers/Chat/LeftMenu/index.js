@@ -10,6 +10,7 @@ import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { connect } from 'react-redux';
 
 LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,
@@ -24,7 +25,7 @@ LeftMenu.propTypes = {
   userId: PropTypes.number.isRequired
 };
 
-export default function LeftMenu({
+function LeftMenu({
   channels,
   channelLoadMoreButtonShown,
   currentChannel,
@@ -38,21 +39,20 @@ export default function LeftMenu({
 }) {
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
-  const [channelsObj, setChannelsObj] = useState({});
   const [prevChannels, setPrevChannels] = useState(channels);
+  const [channelName, setChannelName] = useState('');
   const ChannelListRef = useRef(null);
   const ChannelTitleRef = useRef(null);
   const loading = useRef(false);
+  const channelsObj = useRef({});
 
   useEffect(() => {
-    setChannelsObj(
-      channels.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr.id]: curr
-        }),
-        {}
-      )
+    channelsObj.current = channels.reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr.id]: curr
+      }),
+      {}
     );
     addEvent(ChannelListRef.current, 'scroll', onListScroll);
 
@@ -81,6 +81,18 @@ export default function LeftMenu({
     }
     setPrevChannels(channels);
   }, [channels]);
+
+  useEffect(() => {
+    const members = currentChannel?.members;
+    let otherMember;
+    if (currentChannel.twoPeople) {
+      otherMember = members.filter(member => Number(member.id) !== userId)[0];
+    }
+    setChannelName(
+      otherMember?.username ||
+        channelsObj.current?.[currentChannel.id]?.channelName
+    );
+  }, [currentChannel]);
 
   return (
     <div
@@ -126,7 +138,7 @@ export default function LeftMenu({
               overflow: 'hidden',
               lineHeight: 'normal',
               cursor: 'default',
-              color: !channelName(currentChannel) && '#7c7c7c'
+              color: !channelName && '#7c7c7c'
             }}
             onClick={() =>
               setOnTitleHover(
@@ -136,14 +148,9 @@ export default function LeftMenu({
             onMouseOver={onMouseOverTitle}
             onMouseLeave={() => setOnTitleHover(false)}
           >
-            {channelName(currentChannel)
-              ? channelName(currentChannel)
-              : '(Deleted)'}
+            {channelName || '(Deleted)'}
           </span>
-          <FullTextReveal
-            text={channelName(currentChannel) || ''}
-            show={onTitleHover}
-          />
+          <FullTextReveal text={channelName || ''} show={onTitleHover} />
           {currentChannel.id !== 0 ? (
             <small style={{ gridArea: 'channelMembers', textAlign: 'center' }}>
               <a
@@ -200,17 +207,6 @@ export default function LeftMenu({
     </div>
   );
 
-  function channelName(currentChannel) {
-    const members = currentChannel?.members;
-    let otherMember;
-    if (members.length === 2) {
-      otherMember = members?.filter(
-        member => Number(member.id) !== userId
-      )?.[0];
-    }
-    return channelsObj[currentChannel.id]?.channelName || otherMember?.username;
-  }
-
   async function handleLoadMoreChannels() {
     if (!loading.current) {
       setChannelsLoading(true);
@@ -241,3 +237,7 @@ export default function LeftMenu({
     }`;
   }
 }
+
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(LeftMenu);

@@ -124,13 +124,15 @@ function Chat({
   }, [currentChannelOnlineMembers, channels]);
 
   useEffect(() => {
-    const otherMember = currentChannel?.members?.filter(
-      member => Number(member.id) !== userId
-    )?.[0];
+    const otherMember = currentChannel.twoPeople
+      ? currentChannel?.members?.filter(
+          member => Number(member.id) !== userId
+        )?.[0]
+      : null;
 
     setChannelName(
-      channelsObj.current?.[currentChannel?.id]?.channelName ||
-        otherMember?.username
+      otherMember?.username ||
+        channelsObj.current?.[currentChannel?.id]?.channelName
     );
   }, [currentChannel]);
 
@@ -356,7 +358,6 @@ function Chat({
         onNewButtonClick={onNewButtonClick}
         selectedChannelId={selectedChannelId}
         showUserListModal={() => setUserListModalShown(true)}
-        userId={userId}
       />
       <div
         className={css`
@@ -524,7 +525,7 @@ function Chat({
           content,
           sender: { id: userId, username }
         },
-        channelName: currentChannel.channelName || username
+        channelName
       });
     } catch (error) {
       console.error(error);

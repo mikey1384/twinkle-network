@@ -33,8 +33,7 @@ export default function Channels({
 }) {
   return channels
     .filter(channel => !channel.isHidden)
-    .map(channel => {
-      const { lastMessage, id, channelName, members, numUnreads } = channel;
+    .map(({ lastMessage, id, channelName, members, numUnreads }) => {
       const otherMember = members?.filter(
         member => Number(member.id) !== userId
       )?.[0];
@@ -85,7 +84,7 @@ export default function Channels({
                     lineHeight: 'normal'
                   }}
                 >
-                  {channelName || otherMember?.username || '(Deleted)'}
+                  {otherMember?.username || channelName || '(Deleted)'}
                 </p>
               </div>
               <div

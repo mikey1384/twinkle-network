@@ -252,7 +252,6 @@ export default function getPiece({
             incrementBy = 7;
             pathStart += 7;
           } else {
-            if (dest === 7) console.log(dest, src);
             incrementBy = 1;
             pathStart += 1;
           }
