@@ -83,6 +83,7 @@ export default function Chess({
         };
     setPlayerColors(playerColors);
     setSquares(initialiseChessBoard({ initialState, loading: !loaded, myId }));
+    capturedPiece.current = null;
     if (parsedState) {
       enPassantTarget.current = parsedState.enPassantTarget || {};
       setBlackFallenPieces(parsedState.fallenPieces.black);
