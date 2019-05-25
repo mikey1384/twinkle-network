@@ -141,10 +141,16 @@ function Chat({
     socket.on('subject_change', onSubjectChange);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
-    socket.on('notifiy_move_viewed', updateChessMoveViewTimeStamp);
+    socket.on('notifiy_move_viewed', onNotifyMoveViewed);
     socket.on('notifiy_making_move', onNotifiedMakingMove);
     socket.on('notifiy_move_made', onNotifiedMoveMade);
     socket.on('receive_chess_countdown_number', onReceiveCountdownNumber);
+
+    function onNotifyMoveViewed(channelId) {
+      if (channelId === currentChannel.id) {
+        updateChessMoveViewTimeStamp();
+      }
+    }
 
     function onReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === currentChannel.id;
@@ -254,10 +260,7 @@ function Chat({
       socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('subject_change', onSubjectChange);
       socket.removeListener('change_in_members_online', onChangeMembersOnline);
-      socket.removeListener(
-        'notifiy_move_viewed',
-        updateChessMoveViewTimeStamp
-      );
+      socket.removeListener('notifiy_move_viewed', onNotifyMoveViewed);
       socket.removeListener('notifiy_making_move', onNotifiedMakingMove);
       socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
       socket.removeListener(
