@@ -40,6 +40,7 @@ export default function Channels({
       )?.[0];
       return (
         <div
+          key={id}
           className={css`
             &:hover {
               background: ${Color.checkboxAreaGray()};
@@ -53,7 +54,6 @@ export default function Channels({
             height: '6.5rem'
           }}
           onClick={() => onChannelEnter(id)}
-          key={id}
         >
           <div
             style={{

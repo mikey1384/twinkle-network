@@ -103,6 +103,7 @@ function Chat({
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [chessModalShown, setChessModalShown] = useState(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
+  const [channelName, setChannelName] = useState('');
   const memberObj = useRef({});
   const channelsObj = useRef({});
   const mounted = useRef(true);
@@ -121,6 +122,17 @@ function Chat({
       channelsObj.current = objectify(channels);
     }
   }, [currentChannelOnlineMembers, channels]);
+
+  useEffect(() => {
+    const otherMember = currentChannel?.members?.filter(
+      member => Number(member.id) !== userId
+    )?.[0];
+
+    setChannelName(
+      channelsObj.current?.[currentChannel?.id]?.channelName ||
+        otherMember?.username
+    );
+  }, [currentChannel]);
 
   useEffect(() => {
     socket.on('receive_message', onReceiveMessage);
@@ -320,7 +332,7 @@ function Chat({
       )}
       {editTitleModalShown && (
         <EditTitleModal
-          title={channelName(currentChannel)}
+          title={channelName}
           onHide={() => setEditTitleModalShown(false)}
           onDone={onEditTitleDone}
         />
@@ -378,7 +390,7 @@ function Chat({
         )}
         <MessagesContainer
           channelId={currentChannel.id}
-          channelName={channelName(currentChannel)}
+          channelName={channelName}
           chessCountdownObj={chessCountdownObj}
           className={css`
             display: flex;
@@ -439,17 +451,6 @@ function Chat({
       )}
     </div>
   );
-
-  function channelName(currentChannel) {
-    const otherMember = currentChannel?.members?.filter(
-      member => Number(member.id) !== userId
-    )?.[0];
-
-    return (
-      channelsObj.current?.[currentChannel?.id]?.channelName ||
-      otherMember?.username
-    );
-  }
 
   function getOpponentInfo() {
     let opponentId;

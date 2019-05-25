@@ -42,6 +42,7 @@ export default function LeftMenu({
   const [prevChannels, setPrevChannels] = useState(channels);
   const ChannelListRef = useRef(null);
   const ChannelTitleRef = useRef(null);
+  const loading = useRef(false);
 
   useEffect(() => {
     setChannelsObj(
@@ -211,8 +212,9 @@ export default function LeftMenu({
   }
 
   async function handleLoadMoreChannels() {
-    if (!channelsLoading) {
+    if (!loading.current) {
       setChannelsLoading(true);
+      loading.current = true;
       await loadMoreChannels({
         currentChannelId: currentChannel.id,
         channelIds: queryStringForArray({
@@ -222,6 +224,7 @@ export default function LeftMenu({
         })
       });
       setChannelsLoading(false);
+      loading.current = false;
     }
   }
 
