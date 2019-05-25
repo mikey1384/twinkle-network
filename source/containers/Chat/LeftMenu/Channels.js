@@ -33,10 +33,10 @@ export default function Channels({
 }) {
   return channels
     .filter(channel => !channel.isHidden)
-    .map(({ lastMessage, id, channelName, members, numUnreads }) => {
-      const otherMember = members?.filter(
-        member => Number(member.id) !== userId
-      )?.[0];
+    .map(({ lastMessage, id, channelName, members, numUnreads, twoPeople }) => {
+      const otherMember = twoPeople
+        ? members?.filter(member => Number(member.id) !== userId)?.[0]
+        : null;
       return (
         <div
           key={id}
