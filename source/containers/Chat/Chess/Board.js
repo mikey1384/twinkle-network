@@ -221,6 +221,7 @@ export default function Board({
 
   function renderCastlingButtons() {
     const top = 'CALC(100% - 6rem)';
+    const mobileTop = 'CALC(50vw + 0.5rem)';
     return myColor === 'white' ? (
       <>
         {interactable &&
@@ -234,26 +235,45 @@ export default function Board({
           squares[60].state !== 'checkmate' &&
           !squares[60].moved && (
             <div
-              style={{
-                cursor: 'pointer',
-                position: 'absolute',
-                background: 'RGB(255, 255, 255, 0.7)',
-                top,
-                left: '69px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 0.5rem 0 0.5rem'
-              }}
+              className={css`
+                cursor: pointer;
+                position: absolute;
+                background: RGB(255, 255, 255, 0.7);
+                top: ${top};
+                left: 69px;
+                display: flex;
+                align-items: center;
+                padding: 0 0.5rem 0 0.5rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
+                  left: 0;
+                  top: ${mobileTop};
+                }
+              `}
               onClick={() => onCastling('left')}
             >
               ←{' '}
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />{' '}
@@ -270,26 +290,45 @@ export default function Board({
           squares[60].state !== 'checkmate' &&
           !squares[60].moved && (
             <div
-              style={{
-                cursor: 'pointer',
-                position: 'absolute',
-                background: 'RGB(255, 255, 255, 0.7)',
-                top,
-                left: '226px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 0.5rem 0 0.5rem'
-              }}
+              className={css`
+                cursor: pointer;
+                position: absolute;
+                background: RGB(255, 255, 255, 0.7);
+                top: ${top};
+                left: 226px;
+                display: flex;
+                align-items: center;
+                padding: 0 0.5rem 0 0.5rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
+                  left: CALC(100% - 7rem);
+                  top: ${mobileTop};
+                }
+              `}
               onClick={() => onCastling('right')}
             >
               ←{' '}
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />{' '}
@@ -309,26 +348,45 @@ export default function Board({
           squares[59].state !== 'checkmate' &&
           !squares[59].moved && (
             <div
-              style={{
-                cursor: 'pointer',
-                position: 'absolute',
-                background: 'RGB(255, 255, 255, 0.7)',
-                top,
-                left: '46px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 0.5rem 0 0.5rem'
-              }}
+              className={css`
+                cursor: pointer;
+                position: absolute;
+                background: RGB(255, 255, 255, 0.7);
+                top: ${top};
+                left: 46px;
+                display: flex;
+                align-items: center;
+                padding: 0 0.5rem 0 0.5rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
+                  left: 0;
+                  top: ${mobileTop};
+                }
+              `}
               onClick={() => onCastling('left')}
             >
               ←{' '}
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />{' '}
@@ -346,26 +404,45 @@ export default function Board({
           squares[59].state !== 'checkmate' &&
           !squares[59].moved && (
             <div
-              style={{
-                cursor: 'pointer',
-                position: 'absolute',
-                background: 'RGB(255, 255, 255, 0.7)',
-                top,
-                left: '203px',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '0 0.5rem 0 0.5rem'
-              }}
+              className={css`
+                cursor: pointer;
+                position: absolute;
+                background: RGB(255, 255, 255, 0.7);
+                top: ${top};
+                left: 203px;
+                display: flex;
+                align-items: center;
+                padding: 0 0.5rem 0 0.5rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
+                  left: CALC(100% - 7rem);
+                  top: ${mobileTop};
+                }
+              `}
               onClick={() => onCastling('right')}
             >
               ←{' '}
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg"
                 alt=""
               />
               <img
-                style={{ width: '2.5rem', height: '2.5rem' }}
+                className={css`
+                  width: 2.5rem;
+                  height: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    width: 2rem;
+                    height: 2rem;
+                  }
+                `}
                 src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg"
                 alt=""
               />{' '}
