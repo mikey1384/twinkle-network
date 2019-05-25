@@ -87,7 +87,7 @@ export default function Board({
                   }}
                   key={index}
                 >
-                  {myColor === 'black' ? 8 - index : index + 1}
+                  {myColor === 'black' ? index + 1 : 8 - index}
                 </div>
               ))}
           </div>

@@ -385,7 +385,7 @@ export function getPositionId({ index, myColor }) {
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   if (myColor === 'black') letters.reverse();
   const row =
-    myColor === 'black' ? 8 - Math.floor(index / 8) : Math.floor(index / 8) + 1;
+    myColor === 'black' ? Math.floor(index / 8) + 1 : 8 - Math.floor(index / 8);
   const column = letters[index % 8];
   return `${column + row}`;
 }
