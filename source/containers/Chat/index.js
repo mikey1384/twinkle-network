@@ -87,7 +87,6 @@ function Chat({
   userId,
   username
 }) {
-  const [channelsObj, setChannelsObj] = useState({});
   const [chatMessage, setChatMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [
@@ -105,6 +104,7 @@ function Chat({
   const [chessModalShown, setChessModalShown] = useState(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const memberObj = useRef({});
+  const channelsObj = useRef({});
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -118,15 +118,7 @@ function Chat({
   useEffect(() => {
     if (mounted.current) {
       memberObj.current = objectify(currentChannelOnlineMembers);
-      setChannelsObj(
-        channels.reduce(
-          (prev, curr) => ({
-            ...prev,
-            [curr.id]: curr
-          }),
-          {}
-        )
-      );
+      channelsObj.current = objectify(channels);
     }
   }, [currentChannelOnlineMembers, channels]);
 
@@ -452,7 +444,11 @@ function Chat({
     const otherMember = currentChannel?.members?.filter(
       member => Number(member.id) !== userId
     )?.[0];
-    return channelsObj[currentChannel.id]?.channelName || otherMember?.username;
+
+    return (
+      channelsObj.current?.[currentChannel?.id]?.channelName ||
+      otherMember?.username
+    );
   }
 
   function getOpponentInfo() {
