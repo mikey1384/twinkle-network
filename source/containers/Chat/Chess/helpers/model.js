@@ -299,12 +299,9 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
   return 'Stalemate';
 }
 
-export function isMoveLegal({ srcToDestPath, ignore, include, squares }) {
+export function isMoveLegal({ srcToDestPath, squares }) {
   for (let i = 0; i < srcToDestPath.length; i++) {
-    if (
-      srcToDestPath[i] === include ||
-      (srcToDestPath[i] !== ignore && squares[srcToDestPath[i]].color)
-    ) {
+    if (squares[srcToDestPath[i]].isPiece) {
       return false;
     }
   }

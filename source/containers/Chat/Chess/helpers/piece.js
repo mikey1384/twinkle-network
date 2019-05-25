@@ -244,10 +244,15 @@ export default function getPiece({
           } else if (Math.abs(src - dest) % 9 === 0) {
             incrementBy = 9;
             pathStart += 9;
-          } else if (Math.abs(src - dest) % 7 === 0) {
+          } else if (
+            !(src % 8 === 0 && dest - src === 7) &&
+            !(src % 8 === 7 && src - dest === 7) &&
+            Math.abs(src - dest) % 7 === 0
+          ) {
             incrementBy = 7;
             pathStart += 7;
           } else {
+            if (dest === 7) console.log(dest, src);
             incrementBy = 1;
             pathStart += 1;
           }
