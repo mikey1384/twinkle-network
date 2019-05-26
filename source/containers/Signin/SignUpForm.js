@@ -26,8 +26,8 @@ export default function SignUpForm({ showLoginForm, signup }) {
     stringIsEmpty(password) ||
     stringIsEmpty(firstname) ||
     stringIsEmpty(lastname) ||
-    stringIsEmpty(keyphrase);
-  errorMessage;
+    // stringIsEmpty(keyphrase);
+    errorMessage;
 
   return (
     <ErrorBoundary>
@@ -119,23 +119,25 @@ export default function SignUpForm({ showLoginForm, signup }) {
               type="text"
             />
           </section>
-          <section>
-            <label>Who is Cheesestick?</label>
-            <Input
-              value={keyphrase}
-              placeholder="Who is Cheesestick?"
-              onChange={text => {
-                setErrorMessage('');
-                setKeyphrase(text);
-              }}
-              onKeyPress={event => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  onSubmit();
-                }
-              }}
-              type="text"
-            />
-          </section>
+          {false && (
+            <section>
+              <label>Who is Cheesestick?</label>
+              <Input
+                value={keyphrase}
+                placeholder="Who is Cheesestick?"
+                onChange={text => {
+                  setErrorMessage('');
+                  setKeyphrase(text);
+                }}
+                onKeyPress={event => {
+                  if (event.key === 'Enter' && !submitDisabled) {
+                    onSubmit();
+                  }
+                }}
+                type="text"
+              />
+            </section>
+          )}
           <section style={{ marginTop: '2rem' }}>
             <label style={{ fontWeight: 'normal' }}>
               {'Email '}

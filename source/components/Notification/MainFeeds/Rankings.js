@@ -42,11 +42,12 @@ function Rankings({
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
   const loading = useRef(null);
+  const prevId = useRef(null);
 
   useEffect(() => {
     mounted.current = true;
     userChangedTab.current = false;
-    if (!loading.current && mounted.current) {
+    if ((!loading.current && mounted.current) || (!prevId.current && myId)) {
       setAllSelected(true);
       loadRankings();
     }
@@ -60,6 +61,7 @@ function Rankings({
           getRanks({ all, top30s, rankModifier: modifier });
         }
         loading.current = false;
+        prevId.current = myId;
       } catch (error) {
         console.error(error.response || error);
       }
@@ -67,7 +69,7 @@ function Rankings({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [twinkleXP]);
+  }, [twinkleXP, myId]);
 
   useEffect(() => {
     setAllSelected(!!myId);
@@ -75,6 +77,7 @@ function Rankings({
 
   const users = allSelected ? all : top30s;
   const modifier = allSelected ? rankModifier : 0;
+
   return (
     <ErrorBoundary>
       {!!myId && (
