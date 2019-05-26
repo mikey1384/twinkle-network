@@ -355,7 +355,11 @@ export function returnBoardAfterMove({
 }) {
   const srcColumn = src % 8;
   const destColumn = dest % 8;
-  const attacking = Math.abs(srcColumn - destColumn) === 1;
+  const destRow = Math.floor(dest / 8);
+  const attacking =
+    Math.abs(srcColumn - destColumn) === 1 &&
+    destColumn === enPassantTarget &&
+    destRow === enPassantTarget - 1;
   const enPassanting =
     enPassantTarget && attacking && squares[src].type === 'pawn';
   const newSquares = squares.map((square, index) => {

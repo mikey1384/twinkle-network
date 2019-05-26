@@ -643,8 +643,14 @@ export default function Chess({
       if (squares[src].type === 'pawn') {
         if (enPassantTarget.current) {
           const srcColumn = src % 8;
+          const destRow = Math.floor(dest / 8);
           const destColumn = dest % 8;
-          const attacking = Math.abs(srcColumn - destColumn) === 1;
+          const enPassantTargetRow = Math.floor(enPassantTarget.current / 8);
+          const enPassantTargetColumn = enPassantTarget.current % 8;
+          const attacking =
+            Math.abs(srcColumn - destColumn) === 1 &&
+            destColumn === enPassantTargetColumn &&
+            destRow === enPassantTargetRow - 1;
           const enPassanting = !squares[dest].isPiece && attacking;
           if (enPassanting) {
             myColor === 'white'
