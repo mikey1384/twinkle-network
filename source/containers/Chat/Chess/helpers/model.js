@@ -356,10 +356,12 @@ export function returnBoardAfterMove({
   const srcColumn = src % 8;
   const destColumn = dest % 8;
   const destRow = Math.floor(dest / 8);
+  const enPassantTargetRow = Math.floor(enPassantTarget.current / 8);
+  const enPassantTargetColumn = enPassantTarget.current % 8;
   const attacking =
     Math.abs(srcColumn - destColumn) === 1 &&
-    destColumn === enPassantTarget &&
-    destRow === enPassantTarget - 1;
+    destColumn === enPassantTargetColumn &&
+    destRow === enPassantTargetRow - 1;
   const enPassanting =
     enPassantTarget && attacking && squares[src].type === 'pawn';
   const newSquares = squares.map((square, index) => {
