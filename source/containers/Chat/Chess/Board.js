@@ -4,7 +4,7 @@ import Square from './Square';
 import getPiece from './helpers/piece';
 import Loading from 'components/Loading';
 import { css } from 'emotion';
-import { mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 
 Board.propTypes = {
   initialState: PropTypes.string,
@@ -222,6 +222,7 @@ export default function Board({
   function renderCastlingButtons() {
     const top = 'CALC(100% - 6rem)';
     const mobileTop = 'CALC(50vw + 0.5rem)';
+    const mobileCastlingBackgroundColor = Color.pink(0.7);
     return myColor === 'white' ? (
       <>
         {interactable &&
@@ -245,6 +246,7 @@ export default function Board({
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
                 @media (max-width: ${mobileMaxWidth}) {
+                  background: ${mobileCastlingBackgroundColor};
                   font-size: 1rem;
                   left: 0;
                   top: ${mobileTop};
@@ -300,6 +302,7 @@ export default function Board({
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
                 @media (max-width: ${mobileMaxWidth}) {
+                  background: ${mobileCastlingBackgroundColor};
                   font-size: 1rem;
                   left: CALC(100% - 7rem);
                   top: ${mobileTop};
@@ -358,6 +361,7 @@ export default function Board({
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
                 @media (max-width: ${mobileMaxWidth}) {
+                  background: ${mobileCastlingBackgroundColor};
                   font-size: 1rem;
                   left: 0;
                   top: ${mobileTop};
@@ -414,6 +418,7 @@ export default function Board({
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
                 @media (max-width: ${mobileMaxWidth}) {
+                  background: ${mobileCastlingBackgroundColor};
                   font-size: 1rem;
                   left: CALC(100% - 7rem);
                   top: ${mobileTop};
