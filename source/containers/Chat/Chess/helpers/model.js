@@ -356,8 +356,8 @@ export function returnBoardAfterMove({
   const srcColumn = src % 8;
   const destColumn = dest % 8;
   const destRow = Math.floor(dest / 8);
-  const enPassantTargetRow = Math.floor(enPassantTarget.current / 8);
-  const enPassantTargetColumn = enPassantTarget.current % 8;
+  const enPassantTargetRow = Math.floor(enPassantTarget / 8);
+  const enPassantTargetColumn = enPassantTarget % 8;
   const attacking =
     Math.abs(srcColumn - destColumn) === 1 &&
     destColumn === enPassantTargetColumn &&
