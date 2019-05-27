@@ -186,7 +186,10 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(colored pencil\))/gi, '🖍️')
     .replace(/(\(happy\))/gi, '😄')
     .replace(/(\(vegetable\))/gi, '🥬')
-    .replace(/(\(thank you\))/gi, '🙏');
+    .replace(/(\(thank you\))/gi, '🙏')
+    .replace(/(\(computer\))/gi, '🖥')
+    .replace(/(\(money\))/gi, '💰')
+    .replace(/(\(chess\))/gi, '♟️');
 }
 
 export function addEmoji(string) {
