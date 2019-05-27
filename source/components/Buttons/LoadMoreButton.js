@@ -12,13 +12,7 @@ LoadMoreButton.propTypes = {
   loading: PropTypes.bool
 };
 
-export default function LoadMoreButton({
-  label,
-  onClick,
-  loading,
-  style,
-  ...props
-}) {
+export default function LoadMoreButton({ label, loading, ...props }) {
   return (
     <ErrorBoundary>
       <div
@@ -29,7 +23,7 @@ export default function LoadMoreButton({
           justify-content: center;
         `}
       >
-        <Button disabled={loading} onClick={onClick} style={style} {...props}>
+        <Button disabled={loading} {...props}>
           {loading ? 'Loading' : label || 'Load More'}
           {loading && (
             <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />

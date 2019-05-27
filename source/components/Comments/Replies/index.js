@@ -4,7 +4,7 @@ import Context from '../Context';
 import Reply from './Reply';
 import { scrollElementToCenter } from 'helpers';
 import { loadReplies } from 'helpers/requestHelpers';
-import Button from 'components/Button';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 Replies.propTypes = {
   comment: PropTypes.shape({
@@ -38,6 +38,7 @@ export default function Replies({
   } = useContext(Context);
   const [deleting, setDeleting] = useState(false);
   const [replying, setReplying] = useState(false);
+  const [loadingMoreReplies, setLoadingMoreReplies] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
   const ContainerRef = useRef(null);
 
@@ -68,17 +69,18 @@ export default function Replies({
   return (
     <div ref={ContainerRef}>
       {comment.loadMoreButton && (
-        <Button
+        <LoadMoreButton
           style={{
             marginTop: '0.5rem',
             width: '100%'
           }}
           filled
           color="lightBlue"
-          onClick={loadMoreReplies}
+          loading={loadingMoreReplies}
+          onClick={handleLoadMoreReplies}
         >
           Load More
-        </Button>
+        </LoadMoreButton>
       )}
       {replies.map((reply, index) => {
         return (
@@ -100,11 +102,13 @@ export default function Replies({
     </div>
   );
 
-  async function loadMoreReplies() {
+  async function handleLoadMoreReplies() {
     try {
+      setLoadingMoreReplies(true);
       const lastReplyId = replies[0] ? replies[0].id : 'undefined';
       const data = await loadReplies({ lastReplyId, commentId: comment.id });
       onLoadMoreReplies(data);
+      setLoadingMoreReplies(false);
     } catch (error) {
       console.error(error.response, error);
     }
