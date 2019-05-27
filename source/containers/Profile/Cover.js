@@ -144,7 +144,14 @@ function Cover({
           {userType ? (
             <>
               {' '}
-              <span style={{ fontSize: '2.5rem' }}>
+              <span
+                className={css`
+                  font-size: 2.5rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.5rem;
+                  }
+                `}
+              >
                 {`[${userType.includes('teacher') ? 'teacher' : userType}]`}
               </span>
             </>
