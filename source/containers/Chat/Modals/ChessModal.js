@@ -105,7 +105,7 @@ function ChessModal({
           <Chess
             channelId={channelId}
             chessCountdownObj={chessCountdownObj}
-            interactable
+            interactable={!parsedState?.isDraw}
             initialState={initialState}
             loaded={loaded}
             myId={myId}
@@ -136,7 +136,9 @@ function ChessModal({
             Cancel Move
           </Button>
         )}
-        {parsedState?.isCheckmate || parsedState?.isStalemate ? (
+        {parsedState?.isCheckmate ||
+        parsedState?.isStalemate ||
+        parsedState?.isDraw ? (
           <Button color="orange" onClick={() => setInitialState(undefined)}>
             Start a new game
           </Button>

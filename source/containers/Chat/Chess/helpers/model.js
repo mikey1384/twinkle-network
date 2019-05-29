@@ -153,6 +153,13 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     color: getOpponentPlayerColor(myColor),
     squares
   });
+  const whitePieces = squares.filter(
+    square => square.color === 'white' && !!square.isPiece
+  );
+  const blackPieces = squares.filter(
+    square => square.color === 'black' && !!square.isPiece
+  );
+  if (whitePieces.length === 1 && blackPieces.length === 1) return 'Draw';
   let isChecked = false;
   const nextDest = [
     kingIndex - 1,

@@ -126,12 +126,15 @@ export default function Chess({
   const isCheck = parsedState?.isCheck;
   const isCheckmate = parsedState?.isCheckmate;
   const isStalemate = parsedState?.isStalemate;
+  const isDraw = parsedState?.isDraw;
   const statusText = isCheckmate
-    ? 'Checkmate'
+    ? 'Checkmate!'
     : isStalemate
-    ? 'Stalemate'
+    ? 'Stalemate!'
+    : isDraw
+    ? `It's a draw...`
     : isCheck
-    ? 'Check'
+    ? 'Check!'
     : '';
 
   return (
@@ -166,12 +169,11 @@ export default function Chess({
             }
           `}
         >
-          {(spoilerOff || isCheckmate || isStalemate) && move?.number && (
-            <p>Move {move?.number}:</p>
-          )}
+          {(spoilerOff || isCheckmate || isStalemate || isDraw) &&
+            move?.number && <p>Move {move?.number}:</p>}
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {spoilerOff || isCheckmate || isStalemate
+            {spoilerOff || isCheckmate || isStalemate || isDraw
               ? move?.piece
                 ? `moved ${
                     move?.piece?.type === 'king'
@@ -181,7 +183,7 @@ export default function Chess({
                 : 'castled'
               : 'made a move'}
           </p>
-          {(spoilerOff || isCheckmate || isStalemate) && (
+          {(spoilerOff || isCheckmate || isStalemate || isDraw) && (
             <>
               {move?.piece?.type && (
                 <>
@@ -196,7 +198,7 @@ export default function Chess({
                   )}
                 </>
               )}
-              {(isCheck || isCheckmate || isStalemate) && (
+              {(isCheck || isCheckmate || isStalemate || isDraw) && (
                 <div
                   className={css`
                     margin-top: 2rem;
@@ -204,7 +206,9 @@ export default function Chess({
                       margin-top: 1rem;
                     }
                   `}
-                >{`${statusText}!`}</div>
+                >
+                  {statusText}
+                </div>
               )}
             </>
           )}
@@ -289,10 +293,11 @@ export default function Chess({
             loading={!loaded}
             spoilerOff={
               spoilerOff ||
-              !!gameWinnerId ||
               userMadeLastMove ||
+              !!gameWinnerId ||
               !!isCheckmate ||
-              !!isStalemate
+              !!isStalemate ||
+              !!isDraw
             }
             initialState={initialState}
             interactable={interactable && !newChessState && !userMadeLastMove}
@@ -323,7 +328,7 @@ export default function Chess({
                 }
               `}
             >
-              {loaded && (spoilerOff || isCheckmate || isStalemate) && (
+              {loaded && (spoilerOff || isCheckmate || isStalemate || isDraw) && (
                 <FallenPieces
                   myColor={myColor}
                   {...{
@@ -345,15 +350,16 @@ export default function Chess({
           </div>
         </div>
       </div>
-      {isCheckmate || isStalemate ? (
+      {isCheckmate || isStalemate || isDraw ? (
         <div style={{ position: 'absolute', bottom: '1rem', right: '1rem' }}>
           <div
             style={{
-              background: isStalemate
-                ? Color.logoBlue()
-                : userMadeLastMove
-                ? Color.brownOrange()
-                : Color.black(),
+              background:
+                isStalemate || isDraw
+                  ? Color.logoBlue()
+                  : userMadeLastMove
+                  ? Color.brownOrange()
+                  : Color.black(),
               color: '#fff',
               fontSize: '2.5rem',
               fontWeight: 'bold',
@@ -362,9 +368,9 @@ export default function Chess({
               borderRadius
             }}
           >
-            {isStalemate ? (
+            {isStalemate || isDraw ? (
               <>
-                <p>Stalemate...</p>
+                {isStalemate && <p>Stalemate...</p>}
                 <p>{`It's a draw`}</p>
               </>
             ) : userMadeLastMove ? (
@@ -550,7 +556,13 @@ export default function Chess({
             squares: newSquares,
             type: 'king'
           });
-          const { moved, isCheck, isCheckmate, isStalemate } = processResult({
+          const {
+            moved,
+            isCheck,
+            isCheckmate,
+            isDraw,
+            isStalemate
+          } = processResult({
             myKingIndex,
             newSquares,
             dest: i,
@@ -562,7 +574,8 @@ export default function Chess({
               dest: i,
               isCheck,
               isCheckmate,
-              isStalemate
+              isStalemate,
+              isDraw
             });
           }
         }
@@ -570,7 +583,14 @@ export default function Chess({
     }
   }
 
-  function handleMove({ newSquares, dest, isCheck, isCheckmate, isStalemate }) {
+  function handleMove({
+    newSquares,
+    dest,
+    isCheck,
+    isDraw,
+    isCheckmate,
+    isStalemate
+  }) {
     const moveDetail =
       typeof dest === 'number'
         ? {
@@ -611,6 +631,7 @@ export default function Chess({
       enPassantTarget: enPassantTarget.current,
       isCheck,
       isCheckmate,
+      isDraw,
       isStalemate
     });
     onChessMove({ state: json, isCheckmate, isStalemate });
@@ -725,7 +746,8 @@ export default function Chess({
       moved: true,
       isCheck,
       isCheckmate: gameOver === 'Checkmate',
-      isStalemate: gameOver === 'Stalemate'
+      isStalemate: gameOver === 'Stalemate',
+      isDraw: gameOver === 'Draw'
     };
   }
 }
