@@ -160,6 +160,29 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     square => square.color === 'black' && !!square.isPiece
   );
   if (whitePieces.length === 1 && blackPieces.length === 1) return 'Draw';
+  if (whitePieces.length === 2 && blackPieces.length === 1) {
+    const remainingWhitePieceType = whitePieces.filter(
+      piece => piece.type !== 'king'
+    );
+    if (
+      remainingWhitePieceType === 'bishop' ||
+      remainingWhitePieceType === 'knight'
+    ) {
+      return 'Draw';
+    }
+  }
+  if (blackPieces.length === 2 && whitePieces.length === 1) {
+    const remainingBlackPieceType = blackPieces.filter(
+      piece => piece.type !== 'king'
+    );
+    if (
+      remainingBlackPieceType === 'bishop' ||
+      remainingBlackPieceType === 'knight'
+    ) {
+      return 'Draw';
+    }
+  }
+
   let isChecked = false;
   const nextDest = [
     kingIndex - 1,
