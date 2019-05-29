@@ -166,6 +166,9 @@ export default function Chess({
             }
           `}
         >
+          {(spoilerOff || isCheckmate || isStalemate) && move?.number && (
+            <p>Move {move?.number}:</p>
+          )}
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
             {spoilerOff || isCheckmate || isStalemate
@@ -583,6 +586,7 @@ export default function Chess({
         : {};
     const json = JSON.stringify({
       move: {
+        number: parsedState?.move?.number ? parsedState?.move?.number + 1 : 1,
         by: myId,
         ...moveDetail
       },
