@@ -163,7 +163,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
   if (whitePieces.length === 2 && blackPieces.length === 1) {
     const remainingWhitePieceType = whitePieces.filter(
       piece => piece.type !== 'king'
-    );
+    )[0]?.type;
     if (
       remainingWhitePieceType === 'bishop' ||
       remainingWhitePieceType === 'knight'
@@ -174,7 +174,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
   if (blackPieces.length === 2 && whitePieces.length === 1) {
     const remainingBlackPieceType = blackPieces.filter(
       piece => piece.type !== 'king'
-    );
+    )[0]?.type;
     if (
       remainingBlackPieceType === 'bishop' ||
       remainingBlackPieceType === 'knight'
