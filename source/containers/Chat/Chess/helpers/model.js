@@ -153,33 +153,59 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     color: getOpponentPlayerColor(myColor),
     squares
   });
-  const whitePieces = squares.filter(
-    square => square.color === 'white' && !!square.isPiece
-  );
-  const blackPieces = squares.filter(
-    square => square.color === 'black' && !!square.isPiece
-  );
+  const whitePieces = squares
+    .map((square, index) => ({ ...square, index }))
+    .filter(square => square.color === 'white' && !!square.isPiece);
+  const remainingWhitePiece = whitePieces.filter(
+    piece => piece.type !== 'king'
+  )[0];
+  const blackPieces = squares
+    .map((square, index) => ({ ...square, index }))
+    .filter(square => square.color === 'black' && !!square.isPiece);
+  const remainingBlackPiece = blackPieces.filter(
+    piece => piece.type !== 'king'
+  )[0];
   if (whitePieces.length === 1 && blackPieces.length === 1) return 'Draw';
   if (whitePieces.length === 2 && blackPieces.length === 1) {
-    const remainingWhitePieceType = whitePieces.filter(
-      piece => piece.type !== 'king'
-    )[0]?.type;
     if (
-      remainingWhitePieceType === 'bishop' ||
-      remainingWhitePieceType === 'knight'
+      remainingWhitePiece?.type === 'bishop' ||
+      remainingWhitePiece?.type === 'knight'
     ) {
       return 'Draw';
     }
   }
   if (blackPieces.length === 2 && whitePieces.length === 1) {
-    const remainingBlackPieceType = blackPieces.filter(
-      piece => piece.type !== 'king'
-    )[0]?.type;
     if (
-      remainingBlackPieceType === 'bishop' ||
-      remainingBlackPieceType === 'knight'
+      remainingBlackPiece?.type === 'bishop' ||
+      remainingBlackPiece?.type === 'knight'
     ) {
       return 'Draw';
+    }
+  }
+
+  if (blackPieces.length === 2 && whitePieces.length === 2) {
+    if (
+      remainingWhitePiece?.type === 'bishop' &&
+      remainingBlackPiece?.type === 'bishop'
+    ) {
+      const { index: whiteBishopIndex } = remainingWhitePiece;
+      const { index: blackBishopIndex } = remainingBlackPiece;
+
+      const whiteBishopRow = Math.floor(whiteBishopIndex / 8);
+      const whiteBishopRowIsEven = whiteBishopRow % 2 === 0;
+      const whiteBishopColumn = whiteBishopIndex % 8;
+      const whiteBishopColumnIsEven = whiteBishopColumn % 2 === 0;
+      const blackBishopRow = Math.floor(blackBishopIndex / 8);
+      const blackBishopRowIsEven = blackBishopRow % 2 === 0;
+      const blackBishopColumn = blackBishopIndex % 8;
+      const blackBishopColumnIsEven = blackBishopColumn % 2 === 0;
+
+      const whiteBishopIsOnShadedSquare =
+        whiteBishopRowIsEven === whiteBishopColumnIsEven;
+      const blackBishopIsOnShadedSquare =
+        blackBishopRowIsEven === blackBishopColumnIsEven;
+
+      if (whiteBishopIsOnShadedSquare === blackBishopIsOnShadedSquare) { return 'Draw'; }
     }
   }
 
