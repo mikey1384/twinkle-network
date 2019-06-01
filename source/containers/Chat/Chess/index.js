@@ -100,6 +100,7 @@ export default function Chess({
     }
     if (interactable && !userMadeLastMove) {
       setGameOverMsg('');
+      setStatus('');
       setSquares(squares =>
         squares.map(square =>
           square.color === playerColors[myId]
