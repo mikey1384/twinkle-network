@@ -65,7 +65,10 @@ export default function withScroll(WrappedComponent) {
         }));
       }
 
-      if (prevProps.searchMode && !this.props.searchMode) {
+      if (
+        (prevProps.searchMode && !this.props.searchMode) ||
+        (prevProps.chatMode && !this.props.chatMode)
+      ) {
         if (location !== prevProps.location) {
           this.setState({ scrollPosition: 0 });
         } else {
@@ -95,12 +98,7 @@ export default function withScroll(WrappedComponent) {
     }
 
     render() {
-      return (
-        <WrappedComponent
-          {...this.props}
-          scrollPosition={this.state.scrollPosition}
-        />
-      );
+      return <WrappedComponent {...this.props} />;
     }
   };
 }

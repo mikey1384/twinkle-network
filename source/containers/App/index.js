@@ -50,7 +50,6 @@ App.propTypes = {
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   resetChat: PropTypes.func.isRequired,
-  scrollPosition: PropTypes.number.isRequired,
   searchMode: PropTypes.bool,
   searchText: PropTypes.string,
   signinModalShown: PropTypes.bool,
@@ -73,7 +72,6 @@ function App({
   numNewPosts,
   history,
   resetChat,
-  scrollPosition,
   searchMode,
   searchText,
   signinModalShown,
@@ -84,11 +82,6 @@ function App({
   const [chatLoading, setChatLoading] = useState(false);
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
-  const BodyRef = useRef(
-    typeof document !== 'undefined'
-      ? document.scrollingElement || document.documentElement
-      : {}
-  );
   const SearchBoxRef = useRef(null);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
@@ -277,7 +270,6 @@ function App({
 
   async function handleChatUnmount() {
     await resetChat();
-    BodyRef.current.scrollTop = scrollPosition;
     turnChatOff();
   }
 
