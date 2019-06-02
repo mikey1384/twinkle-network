@@ -10,16 +10,25 @@ SwitchButton.propTypes = {
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  style: PropTypes.object,
   profileTheme: PropTypes.string
 };
 
-function SwitchButton({ color, checked, label, onChange, profileTheme }) {
+function SwitchButton({
+  color,
+  checked,
+  label,
+  onChange,
+  profileTheme,
+  style
+}) {
   const themeColor = profileTheme || 'logoBlue';
   return (
     <ErrorBoundary
       style={{
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        ...style
       }}
     >
       {label && (

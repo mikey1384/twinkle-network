@@ -20,7 +20,8 @@ export const PanelStyle = css`
   }
   .button-container {
     display: flex;
-    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-end;
   }
   @media (max-width: ${mobileMaxWidth}) {
     border-radius: 0;

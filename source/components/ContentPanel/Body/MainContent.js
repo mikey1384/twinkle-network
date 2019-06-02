@@ -170,6 +170,9 @@ export default function MainContent({
                     ? contentObj.title
                     : ''}
                 </LongText>
+                {contentObj.secretAnswer && (
+                  <div>{contentObj.secretAnswer}</div>
+                )}
               </div>
             </>
           )}

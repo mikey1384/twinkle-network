@@ -15,6 +15,7 @@ import {
   finalizeEmoji,
   renderCharLimit
 } from 'helpers/stringHelpers';
+import SwitchButton from 'components/SwitchButton';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
@@ -28,14 +29,24 @@ SubjectInput.propTypes = {
 function SubjectInput({ dispatch, uploadFeedContent }) {
   const [attachment, setAttachment] = useState(undefined);
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
-  const [details, setDetails] = useState({ title: '', description: '' });
-  const { title, description } = details;
+  const [details, setDetails] = useState({
+    title: '',
+    description: '',
+    secretAnswer: ''
+  });
+  const { title, description, secretAnswer } = details;
   const [descriptionInputShown, setDescriptionInputShown] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [hasSecretAnswer, setHasSecretAnswer] = useState(false);
   const descriptionExceedsCharLimit = exceedsCharLimit({
     contentType: 'subject',
     inputType: 'description',
     text: description
+  });
+  const secretAnswerExceedsCharLimit = exceedsCharLimit({
+    contentType: 'subject',
+    inputType: 'description',
+    text: secretAnswer
   });
 
   return (
@@ -141,12 +152,66 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
               })}
             </small>
           )}
-          <div className="button-container">
+          {hasSecretAnswer && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '2rem',
+                  color: Color.darkerGray()
+                }}
+              >
+                Secret Answer
+              </span>
+              <Textarea
+                autoFocus
+                type="text"
+                style={{
+                  marginTop: '0.5rem',
+                  ...(secretAnswerExceedsCharLimit || null)
+                }}
+                value={secretAnswer}
+                minRows={4}
+                placeholder="Enter the Secret Answer"
+                onChange={event =>
+                  setDetails({
+                    ...details,
+                    secretAnswer: addEmoji(event.target.value)
+                  })
+                }
+                onKeyUp={event => {
+                  if (event.key === ' ') {
+                    setDetails({
+                      ...details,
+                      secretAnswer: addEmoji(event.target.value)
+                    });
+                  }
+                }}
+              />
+              {secretAnswerExceedsCharLimit && (
+                <small style={{ color: 'red' }}>
+                  {renderCharLimit({
+                    contentType: 'subject',
+                    inputType: 'description',
+                    text: secretAnswer
+                  })}
+                </small>
+              )}
+            </div>
+          )}
+          <div style={{ marginTop: '1rem' }} className="button-container">
+            <SwitchButton
+              checked={hasSecretAnswer}
+              label="Secret Answer"
+              onChange={() =>
+                setHasSecretAnswer(hasSecretAnswer => !hasSecretAnswer)
+              }
+              style={{ marginRight: '1rem' }}
+            />
             <Button
               filled
               color="green"
               type="submit"
-              style={{ marginTop: '1rem' }}
               disabled={submitting || buttonDisabled()}
               onClick={onSubmit}
             >
@@ -170,6 +235,12 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
   function buttonDisabled() {
     if (title.length > charLimit.subject.title) return true;
     if (description.length > charLimit.subject.description) return true;
+    if (
+      (hasSecretAnswer && stringIsEmpty(secretAnswer)) ||
+      secretAnswer.length > charLimit.subject.description
+    ) {
+      return true;
+    }
     return false;
   }
 
@@ -179,11 +250,18 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
       title: text
     });
     setDescriptionInputShown(!!text.length);
+    if (!text.length) {
+      setHasSecretAnswer(false);
+    }
   }
 
   async function onSubmit(event) {
     event.preventDefault();
-    if (stringIsEmpty(title) || title.length > charLimit.subject.title) {
+    if (
+      stringIsEmpty(title) ||
+      title.length > charLimit.subject.title ||
+      (hasSecretAnswer && stringIsEmpty(secretAnswer))
+    ) {
       return;
     }
     setSubmitting(true);
@@ -192,13 +270,15 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
         attachment,
         title,
         description: finalizeEmoji(description),
+        secretAnswer,
         dispatch
       });
       uploadFeedContent(data);
       setAttachment(undefined);
-      setDetails({ title: '', description: '' });
+      setDetails({ title: '', description: '', secretAnswer: '' });
       setDescriptionInputShown(false);
       setSubmitting(false);
+      setHasSecretAnswer(false);
     } catch (error) {
       setSubmitting(false);
       console.error(error);
