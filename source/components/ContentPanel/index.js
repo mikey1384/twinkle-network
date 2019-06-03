@@ -197,6 +197,7 @@ function ContentPanel({
           {contentObj.loaded && contentObj.targetObj?.subject && (
             <div>
               <ContentListItem
+                comments={contentObj.childComments}
                 style={{
                   zIndex: 1,
                   position: 'relative',

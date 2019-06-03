@@ -61,6 +61,19 @@ export const checkIfContentExists = async({ url, videoCode, type }) => {
   }
 };
 
+export const checkIfUserResponded = async subjectId => {
+  try {
+    const { data } = await request.get(
+      `${URL}/content/checkResponded?subjectId=${subjectId}`,
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const deleteContent = async({ id, type, dispatch }) => {
   try {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());

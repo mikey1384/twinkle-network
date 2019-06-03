@@ -123,6 +123,7 @@ function Body({
   const [commentsShown, setCommentsShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [secretAnswerShown, setSecretAnswerShown] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
 
@@ -192,9 +193,11 @@ function Body({
           isEditing={isEditing}
           onEditContent={editThisContent}
           onEditDismiss={() => setIsEditing(false)}
+          onClickSecretAnswer={onCommentButtonClick}
           onLoadTags={onLoadTags}
           rootObj={rootObj}
           rootType={rootType}
+          secretAnswerShown={secretAnswerShown}
           urlRelated={
             edited
               ? {}
@@ -374,7 +377,7 @@ function Body({
           }
           numPreviews={1}
           onAttachStar={onAttachStar}
-          onCommentSubmit={onCommentSubmit}
+          onCommentSubmit={handleCommentSubmit}
           onDelete={onDeleteComment}
           onEditDone={onEditComment}
           onLikeClick={({ commentId, likes }) =>
@@ -427,6 +430,13 @@ function Body({
       : targetObj.subject?.difficulty || rootDifficulty;
   }
 
+  function handleCommentSubmit(params) {
+    onCommentSubmit(params);
+    if (contentObj.secretAnswer) {
+      setSecretAnswerShown(true);
+    }
+  }
+
   function renderEditMenuItems() {
     const editMenuItems = [];
     if (myId === uploader.id || canEdit) {
@@ -466,7 +476,7 @@ function Body({
     });
   }
 
-  async function onCommentButtonClick(data) {
+  async function onCommentButtonClick() {
     if (!commentsShown) {
       await onExpandComments();
     }

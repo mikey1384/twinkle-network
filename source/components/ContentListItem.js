@@ -5,12 +5,14 @@ import Link from 'components/Link';
 import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import DifficultyBar from 'components/DifficultyBar';
+import SecretAnswer from 'components/SecretAnswer';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 ContentListItem.propTypes = {
+  comments: PropTypes.array,
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
@@ -231,6 +233,12 @@ function ContentListItem({
               </div>
             )}
           </div>
+          {type === 'subject' && contentObj.secretAnswer && (
+            <SecretAnswer
+              answer={contentObj.secretAnswer}
+              subjectId={contentObj.id}
+            />
+          )}
         </div>
         {!!contentObj.difficulty && type === 'subject' && (
           <div

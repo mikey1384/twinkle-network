@@ -8,6 +8,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
+import SecretAnswer from 'components/SecretAnswer';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -18,12 +19,14 @@ MainContent.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   onAddTags: PropTypes.func,
   onAddTagToContents: PropTypes.func,
+  onClickSecretAnswer: PropTypes.func,
   onEditContent: PropTypes.func.isRequired,
   onEditDismiss: PropTypes.func.isRequired,
   onLoadTags: PropTypes.func,
   rootObj: PropTypes.object,
   urlRelated: PropTypes.object,
   rootType: PropTypes.string,
+  secretAnswerShown: PropTypes.bool,
   type: PropTypes.string.isRequired
 };
 
@@ -33,10 +36,12 @@ export default function MainContent({
   isEditing,
   onAddTags,
   onAddTagToContents,
+  onClickSecretAnswer,
   onEditContent,
   onEditDismiss,
   onLoadTags,
   rootObj,
+  secretAnswerShown,
   urlRelated,
   rootType,
   type
@@ -170,10 +175,15 @@ export default function MainContent({
                     ? contentObj.title
                     : ''}
                 </LongText>
-                {contentObj.secretAnswer && (
-                  <div>{contentObj.secretAnswer}</div>
-                )}
               </div>
+              {contentObj.secretAnswer && (
+                <SecretAnswer
+                  answer={contentObj.secretAnswer}
+                  onClick={onClickSecretAnswer}
+                  shownJustNow={secretAnswerShown}
+                  subjectId={contentObj.id}
+                />
+              )}
             </>
           )}
           {isEditing && (
