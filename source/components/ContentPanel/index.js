@@ -26,6 +26,7 @@ ContentPanel.propTypes = {
   onAddTags: PropTypes.func,
   onAddTagToContents: PropTypes.func,
   onAttachStar: PropTypes.func.isRequired,
+  onChangeSpoilerStatus: PropTypes.func.isRequired,
   onCommentSubmit: PropTypes.func.isRequired,
   onDeleteComment: PropTypes.func.isRequired,
   onDeleteContent: PropTypes.func.isRequired,
@@ -50,13 +51,14 @@ function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentObj,
-  contentObj: { contentId, feedId, newPost, type },
+  contentObj: { contentId, feedId, newPost, secretShown, type },
   dispatch,
   inputAtBottom,
   onAddTags,
   onAddTagToContents,
   onAttachStar,
   onByUserStatusChange,
+  onChangeSpoilerStatus,
   onCommentSubmit,
   onDeleteComment,
   onDeleteContent,
@@ -169,6 +171,8 @@ function ContentPanel({
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
                     myId={userId}
+                    secretShown={secretShown}
+                    onChangeSpoilerStatus={onChangeSpoilerStatus}
                   />
                 </div>
               </>
@@ -212,6 +216,8 @@ function ContentPanel({
                   window.open(`/subjects/${contentObj.targetObj.subject.id}`)
                 }
                 contentObj={contentObj.targetObj.subject}
+                onChangeSpoilerStatus={onChangeSpoilerStatus}
+                secretShown={secretShown}
               />
             </div>
           )}

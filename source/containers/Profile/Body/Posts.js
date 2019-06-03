@@ -13,6 +13,7 @@ import {
   addTagToContents,
   attachStar,
   changeByUserStatus,
+  changeSpoilerStatus,
   contentFeedLike,
   feedCommentDelete,
   feedCommentEdit,
@@ -41,6 +42,7 @@ Posts.propTypes = {
   addTagToContents: PropTypes.func.isRequired,
   attachStar: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
+  changeSpoilerStatus: PropTypes.func.isRequired,
   chatMode: PropTypes.bool.isRequired,
   contentFeedLike: PropTypes.func.isRequired,
   fetchFeed: PropTypes.func.isRequired,
@@ -84,6 +86,7 @@ function Posts({
   addTagToContents,
   attachStar,
   changeByUserStatus,
+  changeSpoilerStatus,
   chatMode,
   contentFeedLike,
   feedCommentDelete,
@@ -208,6 +211,7 @@ function Posts({
                     onAddTagToContents={addTagToContents}
                     onAttachStar={attachStar}
                     onByUserStatusChange={changeByUserStatus}
+                    onChangeSpoilerStatus={changeSpoilerStatus}
                     onCommentSubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
@@ -355,6 +359,7 @@ export default connect(
     addTagToContents,
     attachStar,
     changeByUserStatus,
+    changeSpoilerStatus,
     contentFeedLike,
     fetchFeed,
     fetchFeeds,

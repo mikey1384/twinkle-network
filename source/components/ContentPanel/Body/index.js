@@ -43,6 +43,7 @@ Body.propTypes = {
   onAddTagToContents: PropTypes.func,
   onAttachStar: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
+  onChangeSpoilerStatus: PropTypes.func,
   onCommentSubmit: PropTypes.func.isRequired,
   onDeleteComment: PropTypes.func.isRequired,
   onDeleteContent: PropTypes.func.isRequired,
@@ -56,7 +57,8 @@ Body.propTypes = {
   onLoadRepliesOfReply: PropTypes.func,
   onReplySubmit: PropTypes.func.isRequired,
   onSetDifficulty: PropTypes.func,
-  onShowComments: PropTypes.func.isRequired
+  onShowComments: PropTypes.func.isRequired,
+  secretShown: PropTypes.bool
 };
 
 function Body({
@@ -103,6 +105,7 @@ function Body({
   onAddTagToContents,
   onAttachStar,
   onByUserStatusChange,
+  onChangeSpoilerStatus,
   onCommentSubmit,
   onDeleteComment,
   onDeleteContent,
@@ -115,7 +118,8 @@ function Body({
   onLoadTags,
   onLoadRepliesOfReply,
   onReplySubmit,
-  onSetDifficulty
+  onSetDifficulty,
+  secretShown
 }) {
   const [edited, setEdited] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -123,7 +127,6 @@ function Body({
   const [commentsShown, setCommentsShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const [secretAnswerShown, setSecretAnswerShown] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
 
@@ -184,6 +187,7 @@ function Body({
           />
         )}
         <MainContent
+          changeSpoilerStatus={onChangeSpoilerStatus}
           contentId={contentId}
           contentObj={contentObj}
           type={type}
@@ -191,13 +195,14 @@ function Body({
           onAddTags={onAddTags}
           onAddTagToContents={onAddTagToContents}
           isEditing={isEditing}
+          myId={myId}
           onEditContent={editThisContent}
           onEditDismiss={() => setIsEditing(false)}
           onClickSecretAnswer={onCommentButtonClick}
           onLoadTags={onLoadTags}
           rootObj={rootObj}
           rootType={rootType}
-          secretAnswerShown={secretAnswerShown}
+          secretAnswerShown={secretShown}
           urlRelated={
             edited
               ? {}
@@ -210,116 +215,117 @@ function Body({
                 }
           }
         />
-        {!isEditing && (
-          <div
-            className="bottom-interface"
-            style={{
-              marginBottom:
-                likes.length > 0 &&
-                !(stars.length > 0) &&
-                !commentsShown &&
-                !xpRewardInterfaceShown &&
-                '0.5rem'
-            }}
-          >
-            <div className="buttons-bar">
-              <div className="left">
-                <LikeButton
-                  contentType={type}
-                  contentId={contentId}
-                  key="likeButton"
-                  onClick={onLikeClick}
-                  liked={determineUserLikedThis(likes)}
-                  small
-                />
-                <Button
-                  transparent
-                  key="commentButton"
-                  style={{ marginLeft: '1rem' }}
-                  onClick={onCommentButtonClick}
-                >
-                  <Icon icon="comment-alt" />
-                  <span style={{ marginLeft: '0.7rem' }}>
-                    {type === 'video' || type === 'url'
-                      ? 'Comment'
-                      : type === 'subject'
-                      ? 'Respond'
-                      : 'Reply'}
-                  </span>
-                  {numChildComments > 0 && !commentsShown && (
-                    <span style={{ marginLeft: '0.5rem' }}>
-                      ({numChildComments})
-                    </span>
-                  )}
-                </Button>
-                {editButtonShown && (
-                  <DropdownButton
-                    transparent
-                    direction="right"
-                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                    size={type !== 'subject' ? 'sm' : null}
-                    text="Edit"
-                    menuProps={renderEditMenuItems()}
-                  />
-                )}
-                {userCanRewardThis && myId !== uploader.id && (
-                  <Button
-                    color="pink"
-                    disabled={xpButtonDisabled()}
-                    style={{ marginLeft: '1rem' }}
-                    onClick={() => setXpRewardInterfaceShown(true)}
-                  >
-                    <Icon icon="certificate" />
-                    <span style={{ marginLeft: '0.7rem' }}>
-                      {xpButtonDisabled() || 'Reward'}
-                    </span>
-                  </Button>
-                )}
-              </div>
-              <div className="right" style={{ position: 'relative' }}>
-                {canEditDifficulty &&
-                  (type === 'subject' || type === 'video') && (
-                    <StarButton
-                      byUser={!!contentObj.byUser}
-                      contentId={contentObj.id}
-                      difficulty={difficulty}
-                      onSetDifficulty={onSetDifficulty}
-                      onToggleByUser={onToggleByUser}
-                      type={type}
-                      uploader={uploader}
-                    />
-                  )}
-              </div>
-            </div>
+        {!isEditing &&
+          !(type === 'comment' && rootObj.secretAnswer && !secretShown) && (
             <div
+              className="bottom-interface"
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginTop: '0.5rem',
-                marginBottom: '0.5rem'
+                marginBottom:
+                  likes.length > 0 &&
+                  !(stars.length > 0) &&
+                  !commentsShown &&
+                  !xpRewardInterfaceShown &&
+                  '0.5rem'
               }}
             >
-              <Likers
-                className="content-panel__likes"
-                userId={myId}
-                likes={likes}
-                onLinkClick={() => setUserListModalShown(true)}
-              />
-              {views > 10 && type === 'video' && (
-                <div
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: '1.7rem'
-                  }}
-                >
-                  {views} view
-                  {`${views > 1 ? 's' : ''}`}
+              <div className="buttons-bar">
+                <div className="left">
+                  <LikeButton
+                    contentType={type}
+                    contentId={contentId}
+                    key="likeButton"
+                    onClick={onLikeClick}
+                    liked={determineUserLikedThis(likes)}
+                    small
+                  />
+                  <Button
+                    transparent
+                    key="commentButton"
+                    style={{ marginLeft: '1rem' }}
+                    onClick={onCommentButtonClick}
+                  >
+                    <Icon icon="comment-alt" />
+                    <span style={{ marginLeft: '0.7rem' }}>
+                      {type === 'video' || type === 'url'
+                        ? 'Comment'
+                        : type === 'subject'
+                        ? 'Respond'
+                        : 'Reply'}
+                    </span>
+                    {numChildComments > 0 && !commentsShown && (
+                      <span style={{ marginLeft: '0.5rem' }}>
+                        ({numChildComments})
+                      </span>
+                    )}
+                  </Button>
+                  {editButtonShown && (
+                    <DropdownButton
+                      transparent
+                      direction="right"
+                      style={{ marginLeft: '0.5rem', display: 'inline-block' }}
+                      size={type !== 'subject' ? 'sm' : null}
+                      text="Edit"
+                      menuProps={renderEditMenuItems()}
+                    />
+                  )}
+                  {userCanRewardThis && myId !== uploader.id && (
+                    <Button
+                      color="pink"
+                      disabled={xpButtonDisabled()}
+                      style={{ marginLeft: '1rem' }}
+                      onClick={() => setXpRewardInterfaceShown(true)}
+                    >
+                      <Icon icon="certificate" />
+                      <span style={{ marginLeft: '0.7rem' }}>
+                        {xpButtonDisabled() || 'Reward'}
+                      </span>
+                    </Button>
+                  )}
                 </div>
-              )}
+                <div className="right" style={{ position: 'relative' }}>
+                  {canEditDifficulty &&
+                    (type === 'subject' || type === 'video') && (
+                      <StarButton
+                        byUser={!!contentObj.byUser}
+                        contentId={contentObj.id}
+                        difficulty={difficulty}
+                        onSetDifficulty={onSetDifficulty}
+                        onToggleByUser={onToggleByUser}
+                        type={type}
+                        uploader={uploader}
+                      />
+                    )}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginTop: '0.5rem',
+                  marginBottom: '0.5rem'
+                }}
+              >
+                <Likers
+                  className="content-panel__likes"
+                  userId={myId}
+                  likes={likes}
+                  onLinkClick={() => setUserListModalShown(true)}
+                />
+                {views > 10 && type === 'video' && (
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '1.7rem'
+                    }}
+                  >
+                    {views} view
+                    {`${views > 1 ? 's' : ''}`}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
         {xpRewardInterfaceShown && (
           <XPRewardInterface
             contentType={type}
@@ -392,6 +398,8 @@ function Body({
           onReplySubmit={onReplySubmit}
           onRewardCommentEdit={onEditRewardComment}
           parent={contentObj}
+          hasSecretAnswer={!!contentObj.secretAnswer}
+          secretAnswerShown={secretShown}
           style={{
             padding: '0 1rem',
             paddingBottom:
@@ -433,7 +441,9 @@ function Body({
   function handleCommentSubmit(params) {
     onCommentSubmit(params);
     if (contentObj.secretAnswer) {
-      setSecretAnswerShown(true);
+      if (type === 'subject') {
+        onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
+      }
     }
   }
 

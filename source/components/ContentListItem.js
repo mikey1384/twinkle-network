@@ -16,7 +16,9 @@ ContentListItem.propTypes = {
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
+  onChangeSpoilerStatus: PropTypes.func,
   profileTheme: PropTypes.string,
+  secretShown: PropTypes.bool,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
   style: PropTypes.object
@@ -27,7 +29,9 @@ function ContentListItem({
   contentObj,
   contentObj: { type },
   expandable,
+  onChangeSpoilerStatus,
   profileTheme,
+  secretShown,
   selectable,
   selected,
   style
@@ -237,6 +241,8 @@ function ContentListItem({
             <SecretAnswer
               answer={contentObj.secretAnswer}
               subjectId={contentObj.id}
+              changeSpoilerStatus={onChangeSpoilerStatus}
+              shown={secretShown}
             />
           )}
         </div>

@@ -168,6 +168,40 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         category: action.category
       };
+    case FEED.CHANGE_SPOILER_STATUS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed => {
+          const contentMatches =
+            feed.type === 'subject' && feed.contentId === action.subjectId;
+          const targetContentMatches =
+            feed.targetObj?.subject?.id === action.subjectId;
+          return contentMatches
+            ? {
+                ...feed,
+                secretShown: action.shown
+              }
+            : {
+                ...feed,
+                secretShown: targetContentMatches
+                  ? action.shown
+                  : feed.secretShown,
+                targetObj: feed.targetObj
+                  ? {
+                      ...feed.targetObj,
+                      subject: feed.targetObj.subject
+                        ? targetContentMatches
+                          ? {
+                              ...feed.targetObj.subject,
+                              secretShown: action.shown
+                            }
+                          : feed.targetObj.subject
+                        : undefined
+                    }
+                  : undefined
+              };
+        })
+      };
     case FEED.CHANGE_SUB_FILTER:
       return {
         ...state,

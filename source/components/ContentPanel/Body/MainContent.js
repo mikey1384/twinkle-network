@@ -10,13 +10,15 @@ import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
 import SecretAnswer from 'components/SecretAnswer';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 MainContent.propTypes = {
+  changeSpoilerStatus: PropTypes.func,
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
   isEditing: PropTypes.bool.isRequired,
+  myId: PropTypes.number,
   onAddTags: PropTypes.func,
   onAddTagToContents: PropTypes.func,
   onClickSecretAnswer: PropTypes.func,
@@ -31,9 +33,11 @@ MainContent.propTypes = {
 };
 
 export default function MainContent({
+  changeSpoilerStatus,
   contentObj,
   contentId,
   isEditing,
+  myId,
   onAddTags,
   onAddTagToContents,
   onClickSecretAnswer,
@@ -118,17 +122,7 @@ export default function MainContent({
         >
           {!isEditing && (
             <>
-              {type === 'comment' && (
-                <div
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    overflowWrap: 'break-word',
-                    wordBreak: 'break-word'
-                  }}
-                >
-                  <LongText>{contentObj.content}</LongText>
-                </div>
-              )}
+              {type === 'comment' && renderComment()}
               {type === 'subject' && (
                 <div
                   style={{
@@ -180,7 +174,8 @@ export default function MainContent({
                 <SecretAnswer
                   answer={contentObj.secretAnswer}
                   onClick={onClickSecretAnswer}
-                  shownJustNow={secretAnswerShown}
+                  changeSpoilerStatus={changeSpoilerStatus}
+                  shown={secretAnswerShown}
                   subjectId={contentObj.id}
                 />
               )}
@@ -235,4 +230,41 @@ export default function MainContent({
       </div>
     </ErrorBoundary>
   );
+
+  function renderComment() {
+    if (
+      rootObj.secretAnswer &&
+      contentObj.uploader.id !== myId &&
+      !secretAnswerShown
+    ) {
+      return (
+        <div
+          style={{
+            background: Color.darkerGray(),
+            color: '#fff',
+            textAlign: 'center',
+            padding: '1rem',
+            borderRadius,
+            border: `1px solid ${Color.black()}`,
+            fontSize: '1.7rem',
+            cursor: 'pointer'
+          }}
+          onClick={() => window.open(`/subjects/${rootObj.id}`)}
+        >
+          You need to submit your own response to view this
+        </div>
+      );
+    }
+    return (
+      <div
+        style={{
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word'
+        }}
+      >
+        <LongText>{contentObj.content}</LongText>
+      </div>
+    );
+  }
 }

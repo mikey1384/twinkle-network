@@ -38,6 +38,12 @@ export const changeCategory = category => ({
   category
 });
 
+export const changeSpoilerStatus = ({ shown, subjectId }) => ({
+  type: FEED.CHANGE_SPOILER_STATUS,
+  shown,
+  subjectId
+});
+
 export const changeSubFilter = filter => ({
   type: FEED.CHANGE_SUB_FILTER,
   filter

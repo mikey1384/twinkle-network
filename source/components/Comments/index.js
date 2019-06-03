@@ -23,6 +23,7 @@ Comments.propTypes = {
   comments: PropTypes.array.isRequired,
   commentsLoadLimit: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
+  hasSecretAnswer: PropTypes.bool,
   inputAreaInnerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   inputAtBottom: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
@@ -43,6 +44,7 @@ Comments.propTypes = {
     id: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired
   }).isRequired,
+  secretAnswerShown: PropTypes.bool,
   style: PropTypes.object,
   userId: PropTypes.number
 };
@@ -55,6 +57,7 @@ function Comments({
   commentsShown,
   className,
   dispatch,
+  hasSecretAnswer,
   inputAreaInnerRef,
   inputAtBottom,
   inputTypeLabel,
@@ -73,6 +76,7 @@ function Comments({
   onReplySubmit,
   onRewardCommentEdit,
   parent,
+  secretAnswerShown,
   style,
   userId
 }) {
@@ -168,31 +172,32 @@ function Comments({
           !noInput &&
           (commentsShown || autoExpand) &&
           renderInputArea()}
-        {(commentsShown || autoExpand || numPreviews > 0) && (
-          <div
-            style={{
-              width: '100%'
-            }}
-          >
-            {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
-            {(previewComments.length > 0 ? previewComments : comments).map(
-              (comment, index) => (
-                <Comment
-                  isPreview={previewComments.length > 0}
-                  index={index}
-                  innerRef={ref => {
-                    CommentRefs[comment.id] = ref;
-                  }}
-                  parent={parent}
-                  comment={comment}
-                  key={comment.id}
-                  userId={userId}
-                />
-              )
-            )}
-            {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
-          </div>
-        )}
+        {(commentsShown || autoExpand || numPreviews > 0) &&
+          !(hasSecretAnswer && !secretAnswerShown) && (
+            <div
+              style={{
+                width: '100%'
+              }}
+            >
+              {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+              {(previewComments.length > 0 ? previewComments : comments).map(
+                (comment, index) => (
+                  <Comment
+                    isPreview={previewComments.length > 0}
+                    index={index}
+                    innerRef={ref => {
+                      CommentRefs[comment.id] = ref;
+                    }}
+                    parent={parent}
+                    comment={comment}
+                    key={comment.id}
+                    userId={userId}
+                  />
+                )
+              )}
+              {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+            </div>
+          )}
         {inputAtBottom &&
           !noInput &&
           (commentsShown || autoExpand) &&

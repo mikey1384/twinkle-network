@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
@@ -8,35 +8,41 @@ import { checkIfUserResponded } from 'helpers/requestHelpers';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
-  shownJustNow: PropTypes.bool,
+  changeSpoilerStatus: PropTypes.func.isRequired,
+  shown: PropTypes.bool,
   onClick: PropTypes.func,
   subjectId: PropTypes.number,
   userId: PropTypes.number
 };
 
-function SecretAnswer({ answer, shownJustNow, userId, onClick, subjectId }) {
-  const [shown, setShown] = useState(false);
+function SecretAnswer({
+  answer,
+  shown,
+  userId,
+  onClick,
+  changeSpoilerStatus,
+  subjectId
+}) {
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     if (userId) {
       init();
-    }
-    if (shownJustNow) {
-      setShown(true);
+    } else {
+      changeSpoilerStatus({ shown: false, subjectId });
     }
 
     async function init() {
       const { responded } = await checkIfUserResponded(subjectId);
       if (mounted.current) {
-        setShown(responded);
+        changeSpoilerStatus({ shown: responded, subjectId });
       }
     }
 
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [shownJustNow, userId]);
+  }, [userId]);
 
   return (
     <ErrorBoundary>
@@ -54,9 +60,7 @@ function SecretAnswer({ answer, shownJustNow, userId, onClick, subjectId }) {
         }}
       >
         {shown && <LongText>{answer}</LongText>}
-        {!shown && (
-          <span>Submit your response if you wish to view the answer</span>
-        )}
+        {!shown && <span>You need to submit your response to view this</span>}
       </div>
     </ErrorBoundary>
   );

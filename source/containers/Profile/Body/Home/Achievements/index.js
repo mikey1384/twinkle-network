@@ -69,6 +69,7 @@ export default function Achievements({
             onAddTags={onAddTags}
             onAddTagToContents={onAddTagToContents}
             onAttachStar={onAttachStar}
+            onChangeSpoilerStatus={onChangeSpoilerStatus}
             onCommentSubmit={data =>
               onCommentSubmit({
                 contentId: contentObj.contentId,
@@ -149,6 +150,14 @@ export default function Achievements({
     dispatch({
       type: 'ATTACH_STAR',
       data
+    });
+  }
+
+  function onChangeSpoilerStatus({ shown, subjectId }) {
+    dispatch({
+      type: 'CHANGE_SPOILER_STATUS',
+      shown,
+      subjectId
     });
   }
 
@@ -363,6 +372,40 @@ function reducer(state, action) {
                   : undefined
               }
             : contentObj;
+        })
+      };
+    case 'CHANGE_SPOILER_STATUS':
+      return {
+        notables: state.notables.map(contentObj => {
+          const contentMatches =
+            contentObj.type === 'subject' &&
+            contentObj.contentId === action.subjectId;
+          const targetContentMatches =
+            contentObj.targetObj?.subject?.id === action.subjectId;
+          return contentMatches
+            ? {
+                ...contentObj,
+                secretShown: action.shown
+              }
+            : {
+                ...contentObj,
+                secretShown: targetContentMatches
+                  ? action.shown
+                  : contentObj.secretShown,
+                targetObj: contentObj.targetObj
+                  ? {
+                      ...contentObj.targetObj,
+                      subject: contentObj.targetObj.subject
+                        ? targetContentMatches
+                          ? {
+                              ...contentObj.targetObj.subject,
+                              secretShown: action.shown
+                            }
+                          : contentObj.targetObj.subject
+                        : undefined
+                    }
+                  : undefined
+              };
         })
       };
     case 'DELETE_COMMENT':

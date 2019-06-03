@@ -7,6 +7,7 @@ import {
   attachStar,
   changeByUserStatus,
   changeCategory,
+  changeSpoilerStatus,
   changeSubFilter,
   contentFeedLike,
   feedCommentDelete,
@@ -48,6 +49,7 @@ Stories.propTypes = {
   category: PropTypes.string.isRequired,
   changeCategory: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
+  changeSpoilerStatus: PropTypes.func.isRequired,
   changeSubFilter: PropTypes.func.isRequired,
   chatMode: PropTypes.bool,
   contentFeedLike: PropTypes.func.isRequired,
@@ -107,6 +109,7 @@ function Stories({
   addTagToContents,
   attachStar,
   category,
+  changeSpoilerStatus,
   chatMode,
   changeByUserStatus,
   changeCategory,
@@ -257,6 +260,7 @@ function Stories({
                     onAddTagToContents={addTagToContents}
                     onAttachStar={attachStar}
                     onByUserStatusChange={changeByUserStatus}
+                    onChangeSpoilerStatus={changeSpoilerStatus}
                     onCommentSubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
@@ -429,6 +433,7 @@ export default connect(
     attachStar,
     changeByUserStatus,
     changeCategory,
+    changeSpoilerStatus,
     changeSubFilter,
     contentFeedLike,
     fetchMoreFeeds,

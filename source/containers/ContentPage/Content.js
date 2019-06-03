@@ -28,6 +28,7 @@ function Content({
   const {
     contentObj,
     onAttachStar,
+    onChangeSpoilerStatus,
     onDeleteComment,
     onEditComment,
     onEditRewardComment,
@@ -95,6 +96,7 @@ function Content({
             contentObj={contentObj}
             userId={userId}
             onAttachStar={onAttachStar}
+            onChangeSpoilerStatus={onChangeSpoilerStatus}
             onCommentSubmit={onUploadComment}
             onDeleteComment={onDeleteComment}
             onDeleteContent={() => history.push('/')}

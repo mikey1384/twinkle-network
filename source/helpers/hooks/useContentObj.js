@@ -84,22 +84,21 @@ export default function useContentObj(props) {
     }));
   }
 
-  function onUploadComment(data) {
-    const { type } = contentObj;
+  function onChangeSpoilerStatus({ shown, subjectId }) {
     setContentObj(contentObj => ({
       ...contentObj,
-      childComments:
-        type === 'comment'
-          ? (contentObj.childComments || []).concat([data])
-          : [data].concat(contentObj.childComments),
-      subjects: contentObj.subjects?.map(subject =>
-        subject.id === data.subjectId
-          ? {
-              ...subject,
-              comments: [data].concat(subject.comments)
-            }
-          : subject
-      )
+      secretShown: shown,
+      targetObj: contentObj.targetObj
+        ? {
+            ...contentObj.targetObj,
+            subject: contentObj.targetObj.subject
+              ? {
+                  ...contentObj.targetObj.subject,
+                  secretShown: shown
+                }
+              : undefined
+          }
+        : undefined
     }));
   }
 
@@ -557,6 +556,25 @@ export default function useContentObj(props) {
     }));
   }
 
+  function onUploadComment(data) {
+    const { type } = contentObj;
+    setContentObj(contentObj => ({
+      ...contentObj,
+      childComments:
+        type === 'comment'
+          ? (contentObj.childComments || []).concat([data])
+          : [data].concat(contentObj.childComments),
+      subjects: contentObj.subjects?.map(subject =>
+        subject.id === data.subjectId
+          ? {
+              ...subject,
+              comments: [data].concat(subject.comments)
+            }
+          : subject
+      )
+    }));
+  }
+
   function onUploadReply(data) {
     setContentObj(contentObj => ({
       ...contentObj,
@@ -599,6 +617,7 @@ export default function useContentObj(props) {
     setContentObj,
     onAddTags,
     onAttachStar,
+    onChangeSpoilerStatus,
     onDeleteComment,
     onDeleteSubject,
     onEditComment,
