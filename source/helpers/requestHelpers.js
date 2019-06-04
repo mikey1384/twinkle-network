@@ -95,32 +95,9 @@ export const deleteSubject = async({ subjectId, dispatch }) => {
   }
 };
 
-export const editContent = async({
-  params: {
-    contentId,
-    editedComment,
-    editedContent,
-    editedDescription,
-    editedTitle,
-    editedUrl,
-    type
-  },
-  dispatch
-}) => {
+export const editContent = async({ params, dispatch }) => {
   try {
-    const { data } = await request.put(
-      `${URL}/content`,
-      {
-        contentId,
-        editedComment,
-        editedContent,
-        editedDescription,
-        editedTitle,
-        editedUrl,
-        type
-      },
-      auth()
-    );
+    const { data } = await request.put(`${URL}/content`, params, auth());
     return Promise.resolve(data);
   } catch (error) {
     return handleError(error, dispatch);

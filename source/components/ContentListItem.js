@@ -21,7 +21,8 @@ ContentListItem.propTypes = {
   secretShown: PropTypes.bool,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  userId: PropTypes.number
 };
 
 function ContentListItem({
@@ -34,7 +35,8 @@ function ContentListItem({
   secretShown,
   selectable,
   selected,
-  style
+  style,
+  userId
 }) {
   const themeColor = profileTheme || 'logoBlue';
   const [mouseEntered, setMouseEntered] = useState(false);
@@ -242,7 +244,7 @@ function ContentListItem({
               answer={contentObj.secretAnswer}
               subjectId={contentObj.id}
               changeSpoilerStatus={onChangeSpoilerStatus}
-              shown={secretShown}
+              shown={secretShown || contentObj.uploader.id === userId}
             />
           )}
         </div>
@@ -266,5 +268,6 @@ function ContentListItem({
 }
 
 export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
+  profileTheme: state.UserReducer.profileTheme,
+  userId: state.UserReducer.userId
 }))(ContentListItem);

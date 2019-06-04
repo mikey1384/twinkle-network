@@ -29,6 +29,7 @@ MainContent.propTypes = {
   urlRelated: PropTypes.object,
   rootType: PropTypes.string,
   secretAnswerShown: PropTypes.bool,
+  targetObj: PropTypes.object,
   type: PropTypes.string.isRequired
 };
 
@@ -46,6 +47,7 @@ export default function MainContent({
   onLoadTags,
   rootObj,
   secretAnswerShown,
+  targetObj,
   urlRelated,
   rootType,
   type
@@ -175,7 +177,7 @@ export default function MainContent({
                   answer={contentObj.secretAnswer}
                   onClick={onClickSecretAnswer}
                   changeSpoilerStatus={changeSpoilerStatus}
-                  shown={secretAnswerShown}
+                  shown={secretAnswerShown || contentObj.uploader.id === myId}
                   subjectId={contentObj.id}
                 />
               )}
@@ -189,6 +191,7 @@ export default function MainContent({
               description={contentObj.description}
               onDismiss={onEditDismiss}
               onEditContent={onEditContent}
+              secretAnswer={contentObj.secretAnswer}
               style={{
                 marginTop: (type === 'video' || type === 'subject') && '1rem'
               }}
@@ -233,10 +236,12 @@ export default function MainContent({
 
   function renderComment() {
     if (
-      rootObj.secretAnswer &&
-      contentObj.uploader.id !== myId &&
+      ((targetObj?.subject?.secretAnswer &&
+        targetObj?.subject?.uploader.id !== myId) ||
+        (rootObj.secretAnswer && rootObj.uploader.id !== myId)) &&
       !secretAnswerShown
     ) {
+      const subjectId = targetObj?.subject ? targetObj.subject.id : rootObj.id;
       return (
         <div
           style={{
@@ -249,7 +254,7 @@ export default function MainContent({
             fontSize: '1.7rem',
             cursor: 'pointer'
           }}
-          onClick={() => window.open(`/subjects/${rootObj.id}`)}
+          onClick={() => window.open(`/subjects/${subjectId}`)}
         >
           You need to submit your own response to view this
         </div>
