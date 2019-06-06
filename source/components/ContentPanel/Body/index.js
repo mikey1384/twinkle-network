@@ -185,6 +185,7 @@ function Body({
     (canEdit || canDelete) && authLevel > uploader.authLevel;
   const userCanRewardThis = canStar && authLevel > uploader.authLevel;
   const editButtonShown = myId === uploader.id || userCanEditThis;
+  const secretLocked = type === 'comment' && commentsHidden;
 
   return (
     <ErrorBoundary>
@@ -384,10 +385,13 @@ function Body({
         />
         <Comments
           autoFocus={false}
-          autoExpand={autoExpand || (type === 'subject' && commentsHidden)}
+          autoExpand={
+            (autoExpand && !secretLocked) ||
+            (type === 'subject' && commentsHidden)
+          }
           comments={childComments}
           commentsLoadLimit={commentsLoadLimit}
-          commentsShown={commentsShown}
+          commentsShown={commentsShown && !secretLocked}
           contentId={contentId}
           inputAreaInnerRef={CommentInputAreaRef}
           inputAtBottom={inputAtBottom}

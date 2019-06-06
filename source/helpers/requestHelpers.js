@@ -108,12 +108,13 @@ export const editSubject = async({
   subjectId,
   editedTitle,
   editedDescription,
+  editedSecretAnswer,
   dispatch
 }) => {
   try {
     const { data } = await request.put(
       `${URL}/content/subjects`,
-      { subjectId, editedTitle, editedDescription },
+      { subjectId, editedTitle, editedDescription, editedSecretAnswer },
       auth()
     );
     return Promise.resolve(data);

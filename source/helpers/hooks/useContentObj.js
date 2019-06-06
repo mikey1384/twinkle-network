@@ -264,14 +264,14 @@ export default function useContentObj(props) {
   function onEditSubject({ editedSubject, subjectId }) {
     setContentObj(contentObj => ({
       ...contentObj,
-      subjects: contentObj.subjects?.map(subject => ({
-        ...subject,
-        title: subject.id === subjectId ? editedSubject.title : subject.title,
-        description:
-          subject.id === subjectId
-            ? editedSubject.description
-            : subject.description
-      }))
+      subjects: contentObj.subjects?.map(subject =>
+        subject.id === subjectId
+          ? {
+              ...subject,
+              ...editedSubject
+            }
+          : subject
+      )
     }));
   }
 
