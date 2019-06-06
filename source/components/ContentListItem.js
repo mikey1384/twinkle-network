@@ -14,6 +14,7 @@ import { css } from 'emotion';
 ContentListItem.propTypes = {
   comments: PropTypes.array,
   contentObj: PropTypes.object.isRequired,
+  contentType: PropTypes.string,
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
   onChangeSpoilerStatus: PropTypes.func,
@@ -28,7 +29,8 @@ ContentListItem.propTypes = {
 function ContentListItem({
   onClick = () => {},
   contentObj,
-  contentObj: { type },
+  contentObj: { type: contentObjType },
+  contentType,
   expandable,
   onChangeSpoilerStatus,
   profileTheme,
@@ -39,8 +41,9 @@ function ContentListItem({
   userId
 }) {
   const themeColor = profileTheme || 'logoBlue';
+  const type = contentObjType || contentType;
   const [mouseEntered, setMouseEntered] = useState(false);
-  const [listItemSecretShown, setListItemSecretShown] = useState(false);
+  const [localScopeSecretShown, setLocalScopeSecretShown] = useState(false);
 
   return (
     <div
@@ -78,7 +81,7 @@ function ContentListItem({
       <Link
         style={{ textDecoration: 'none' }}
         to={
-          expandable || selectable
+          expandable || selectable || onClick
             ? ''
             : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
         }
@@ -155,6 +158,44 @@ function ContentListItem({
                     </LongText>
                   </div>
                 </>
+              )}
+              {type === 'book' && (
+                <div
+                  style={{
+                    display: 'flex'
+                  }}
+                >
+                  <div className="label">
+                    <LongText
+                      noExpand
+                      cleanString
+                      maxLines={4}
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: '2.5rem'
+                      }}
+                    >
+                      {contentObj.title}
+                    </LongText>
+                    <p style={{ color: Color.gray() }}>
+                      Written by {contentObj.uploader.username}
+                    </p>
+                    {contentObj.description && (
+                      <div
+                        style={{
+                          marginTop: '1rem',
+                          width: '100%',
+                          textAlign: 'left',
+                          color: Color.darkerGray()
+                        }}
+                      >
+                        <LongText noExpand cleanString maxLines={4}>
+                          {contentObj.description}
+                        </LongText>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
               {type === 'subject' && (
                 <div
@@ -248,7 +289,7 @@ function ContentListItem({
               changeSpoilerStatus={handleChangeSpoilerStatus}
               shown={
                 secretShown ||
-                listItemSecretShown ||
+                localScopeSecretShown ||
                 contentObj.uploader.id === userId
               }
             />
@@ -276,7 +317,7 @@ function ContentListItem({
     if (onChangeSpoilerStatus) {
       return onChangeSpoilerStatus(status);
     }
-    setListItemSecretShown(status.shown);
+    setLocalScopeSecretShown(status.shown);
   }
 }
 
