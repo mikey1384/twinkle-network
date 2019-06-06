@@ -81,7 +81,7 @@ function ContentListItem({
       <Link
         style={{ textDecoration: 'none' }}
         to={
-          expandable || selectable || onClick
+          expandable || selectable
             ? ''
             : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
         }
