@@ -20,7 +20,7 @@ export default function HiddenComment({ onClick }) {
       }}
       onClick={onClick}
     >
-      Submit your own response to view this. Tap here
+      Submit your own response to view this comment. Tap here
     </div>
   );
 }

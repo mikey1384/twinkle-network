@@ -65,7 +65,9 @@ function SecretAnswer({
         }}
       >
         {shown && <LongText>{answer}</LongText>}
-        {!shown && <span>Submit your response to view this. Tap here</span>}
+        {!shown && (
+          <span>Submit your response to view the secret message. Tap here</span>
+        )}
       </div>
     </ErrorBoundary>
   );
