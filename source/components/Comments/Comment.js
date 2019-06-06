@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Context from './Context';
-import { timeSince } from 'helpers/timeStampHelpers';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
@@ -12,17 +11,19 @@ import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
-import { commentContainer } from './Styles';
 import RewardStatus from 'components/RewardStatus';
+import HiddenComment from 'components/HiddenComment';
 import XPRewardInterface from 'components/XPRewardInterface';
-import { Link } from 'react-router-dom';
-import { editContent } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
+import { Link } from 'react-router-dom';
+import { checkIfUserResponded, editContent } from 'helpers/requestHelpers';
+import { commentContainer } from './Styles';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { connect } from 'react-redux';
+import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 
 Comment.propTypes = {
   authLevel: PropTypes.number,
@@ -47,6 +48,7 @@ Comment.propTypes = {
   dispatch: PropTypes.func.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
+  pageVisible: PropTypes.bool,
   parent: PropTypes.object,
   userId: PropTypes.number
 };
@@ -61,6 +63,7 @@ function Comment({
   innerRef,
   isPreview,
   userId,
+  pageVisible,
   parent,
   comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
 }) {
@@ -79,9 +82,11 @@ function Comment({
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
+  const [secretShown, setSecretShown] = useState(false);
 
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
+  const mounted = useRef(true);
 
   useEffect(() => {
     if (replying && replies.length > prevReplies.length) {
@@ -112,6 +117,33 @@ function Comment({
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === userId) userLikedThis = true;
   }
+
+  const isCommentForContentSubject =
+    parent.type !== 'subject' &&
+    !parent.subjectId &&
+    targetObj &&
+    targetObj.subject;
+  const hasSecretAnswer = targetObj?.subject?.secretAnswer;
+
+  useEffect(() => {
+    mounted.current = true;
+    if (mounted.current) {
+      if (userId) {
+        checkSecretShown();
+      } else {
+        setSecretShown(false);
+      }
+    }
+
+    async function checkSecretShown() {
+      if (hasSecretAnswer) {
+        const { responded } = await checkIfUserResponded(targetObj.subject.id);
+        if (mounted.current) {
+          setSecretShown(responded);
+        }
+      }
+    }
+  }, [pageVisible, userId]);
 
   return (
     <>
@@ -172,16 +204,21 @@ function Comment({
                 />
               ) : (
                 <div>
-                  {parent.type !== 'subject' &&
-                    !parent.subjectId &&
-                    targetObj &&
-                    targetObj.subject && (
-                      <SubjectLink subject={targetObj.subject} />
-                    )}
-                  <LongText className="comment__content">
-                    {comment.content}
-                  </LongText>
-                  {!isPreview && (
+                  {isCommentForContentSubject && (
+                    <SubjectLink subject={targetObj.subject} />
+                  )}
+                  {hasSecretAnswer && !secretShown ? (
+                    <HiddenComment
+                      onClick={() =>
+                        window.open(`/subjects/${targetObj.subject.id}`)
+                      }
+                    />
+                  ) : (
+                    <LongText className="comment__content">
+                      {comment.content}
+                    </LongText>
+                  )}
+                  {!isPreview && !(hasSecretAnswer && !secretShown) && (
                     <>
                       <div className="comment__buttons">
                         <LikeButton
@@ -265,7 +302,7 @@ function Comment({
                 uploaderName={uploader.username}
               />
             )}
-            {!isPreview && (
+            {!isPreview && !(hasSecretAnswer && !secretShown) && (
               <>
                 <ReplyInputArea
                   innerRef={ReplyInputAreaRef}
@@ -367,7 +404,8 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar
+    canStar: state.UserReducer.canStar,
+    pageVisible: state.ViewReducer.pageVisible
   }),
   dispatch => ({ dispatch })
 )(Comment);

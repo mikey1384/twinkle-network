@@ -11,6 +11,7 @@ SecretAnswer.propTypes = {
   changeSpoilerStatus: PropTypes.func.isRequired,
   shown: PropTypes.bool,
   onClick: PropTypes.func,
+  pageVisible: PropTypes.bool,
   style: PropTypes.object,
   subjectId: PropTypes.number,
   userId: PropTypes.number
@@ -22,6 +23,7 @@ function SecretAnswer({
   userId,
   onClick,
   changeSpoilerStatus,
+  pageVisible,
   style,
   subjectId
 }) {
@@ -44,7 +46,7 @@ function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [userId]);
+  }, [pageVisible, userId]);
 
   return (
     <ErrorBoundary>
@@ -69,6 +71,7 @@ function SecretAnswer({
   );
 }
 
-export default connect(state => ({ userId: state.UserReducer.userId }))(
-  SecretAnswer
-);
+export default connect(state => ({
+  pageVisible: state.ViewReducer.pageVisible,
+  userId: state.UserReducer.userId
+}))(SecretAnswer);

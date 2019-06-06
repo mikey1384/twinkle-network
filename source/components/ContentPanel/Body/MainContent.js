@@ -8,9 +8,10 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import DifficultyBar from 'components/DifficultyBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
+import HiddenComment from 'components/HiddenComment';
 import SecretAnswer from 'components/SecretAnswer';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 MainContent.propTypes = {
@@ -245,21 +246,7 @@ export default function MainContent({
     ) {
       const subjectId = targetObj?.subject ? targetObj.subject.id : rootObj.id;
       return (
-        <div
-          style={{
-            background: Color.darkerGray(),
-            color: '#fff',
-            textAlign: 'center',
-            padding: '1rem',
-            borderRadius,
-            border: `1px solid ${Color.black()}`,
-            fontSize: '1.7rem',
-            cursor: 'pointer'
-          }}
-          onClick={() => window.open(`/subjects/${subjectId}`)}
-        >
-          Submit your own response to view this. Tap here
-        </div>
+        <HiddenComment onClick={() => window.open(`/subjects/${subjectId}`)} />
       );
     }
     return (

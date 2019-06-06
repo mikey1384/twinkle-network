@@ -14,6 +14,7 @@ import ContentLink from 'components/ContentLink';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import HiddenComment from 'components/HiddenComment';
 import Icon from 'components/Icon';
 import { connect } from 'react-redux';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -174,21 +175,9 @@ function TargetContent({
                   </div>
                   <div style={{ marginTop: '1rem' }}>
                     {contentHidden ? (
-                      <div
-                        style={{
-                          background: Color.darkerGray(),
-                          color: '#fff',
-                          textAlign: 'center',
-                          padding: '1rem',
-                          borderRadius,
-                          border: `1px solid ${Color.black()}`,
-                          fontSize: '1.7rem',
-                          cursor: 'pointer'
-                        }}
+                      <HiddenComment
                         onClick={() => window.open(`/subjects/${subject.id}`)}
-                      >
-                        Submit your own response to view this. Tap here
-                      </div>
+                      />
                     ) : (
                       <LongText>{comment.content}</LongText>
                     )}
