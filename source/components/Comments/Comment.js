@@ -124,6 +124,8 @@ function Comment({
     targetObj &&
     targetObj.subject;
   const hasSecretAnswer = targetObj?.subject?.secretAnswer;
+  const isHidden =
+    hasSecretAnswer && !secretShown && targetObj.subject.uploader.id !== userId;
 
   useEffect(() => {
     mounted.current = true;
@@ -207,7 +209,7 @@ function Comment({
                   {isCommentForContentSubject && (
                     <SubjectLink subject={targetObj.subject} />
                   )}
-                  {hasSecretAnswer && !secretShown ? (
+                  {isHidden ? (
                     <HiddenComment
                       onClick={() =>
                         window.open(`/subjects/${targetObj.subject.id}`)
@@ -218,7 +220,7 @@ function Comment({
                       {comment.content}
                     </LongText>
                   )}
-                  {!isPreview && !(hasSecretAnswer && !secretShown) && (
+                  {!isPreview && !isHidden && (
                     <>
                       <div className="comment__buttons">
                         <LikeButton
