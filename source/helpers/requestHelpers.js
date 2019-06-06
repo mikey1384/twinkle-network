@@ -665,12 +665,13 @@ export const uploadSubject = async({
   contentId,
   title,
   description,
+  secretAnswer,
   dispatch
 }) => {
   try {
     const { data } = await request.post(
       `${URL}/content/subjects`,
-      { title, description, contentId, type },
+      { title, description, contentId, secretAnswer, type },
       auth()
     );
     return Promise.resolve(data);

@@ -15,6 +15,7 @@ import { css } from 'emotion';
 
 MainContent.propTypes = {
   changeSpoilerStatus: PropTypes.func,
+  commentsHidden: PropTypes.bool,
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
   isEditing: PropTypes.bool.isRequired,
@@ -35,6 +36,7 @@ MainContent.propTypes = {
 
 export default function MainContent({
   changeSpoilerStatus,
+  commentsHidden,
   contentObj,
   contentId,
   isEditing,
@@ -115,7 +117,7 @@ export default function MainContent({
         <div
           style={{
             marginTop: '1rem',
-            marginBottom: type !== 'video' && '1rem',
+            marginBottom: type !== 'video' && !commentsHidden && '1rem',
             padding: '1rem',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'break-word',
@@ -256,7 +258,7 @@ export default function MainContent({
           }}
           onClick={() => window.open(`/subjects/${subjectId}`)}
         >
-          You need to submit your own response to view this
+          Submit your own response to view this. Tap here
         </div>
       );
     }

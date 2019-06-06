@@ -195,6 +195,7 @@ function ContentPanel({
               rootObj={contentObj.rootObj}
               rootId={contentObj.rootId}
               rootType={contentObj.rootType}
+              secretShown={secretShown}
               feedId={feedId}
             />
           )}

@@ -10,6 +10,7 @@ TitleDescriptionForm.propTypes = {
   autoFocus: PropTypes.bool,
   descriptionMaxChar: PropTypes.number,
   descriptionPlaceholder: PropTypes.string,
+  isSubject: PropTypes.bool,
   onClose: PropTypes.func,
   onSubmit: PropTypes.func,
   rows: PropTypes.number,
@@ -19,6 +20,7 @@ TitleDescriptionForm.propTypes = {
 
 export default function TitleDescriptionForm({
   autoFocus,
+  isSubject,
   onClose,
   rows,
   titlePlaceholder,
@@ -29,6 +31,7 @@ export default function TitleDescriptionForm({
 }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [secretAnswer, setSecretAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     return function cleanUp() {
@@ -70,12 +73,36 @@ export default function TitleDescriptionForm({
             onChange={event => setDescription(event.target.value)}
             onKeyUp={event => setDescription(addEmoji(event.target.value))}
           />
+          {description.length > descriptionMaxChar && (
+            <small style={{ color: 'red', fontSize: '1.3rem' }}>
+              {descriptionMaxChar} character limit exceeded
+            </small>
+          )}
+          {isSubject && (
+            <div style={{ marginTop: '0.5rem' }}>
+              <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
+                Secret Message
+              </span>
+              <Textarea
+                style={{
+                  marginTop: '0.7rem',
+                  color: secretAnswer.length > descriptionMaxChar && 'red',
+                  borderColor: secretAnswer.length > descriptionMaxChar && 'red'
+                }}
+                minRows={rows}
+                placeholder="Enter Secret Message... (Optional)"
+                value={secretAnswer}
+                onChange={event => setSecretAnswer(event.target.value)}
+                onKeyUp={event => setSecretAnswer(addEmoji(event.target.value))}
+              />
+              {secretAnswer.length > descriptionMaxChar && (
+                <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                  {secretAnswer} character limit exceeded
+                </small>
+              )}
+            </div>
+          )}
         </div>
-        {description.length > descriptionMaxChar && (
-          <small style={{ color: 'red', fontSize: '1.3rem' }}>
-            {descriptionMaxChar} character limit exceeded
-          </small>
-        )}
         <div
           style={{
             marginTop: '1rem',
@@ -93,13 +120,14 @@ export default function TitleDescriptionForm({
           <Button
             color="blue"
             style={{ fontSize: '1.7rem' }}
-            onClick={submitThis}
+            onClick={handleSubmit}
             disabled={
               submitting ||
               !title ||
               stringIsEmpty(title) ||
               title.length > titleMaxChar ||
-              description.length > descriptionMaxChar
+              description.length > descriptionMaxChar ||
+              secretAnswer.length > descriptionMaxChar
             }
           >
             Submit
@@ -109,13 +137,18 @@ export default function TitleDescriptionForm({
     </ErrorBoundary>
   );
 
-  async function submitThis(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setSubmitting(true);
     try {
       setTitle('');
       setDescription('');
-      await onSubmit(finalizeEmoji(title), finalizeEmoji(description));
+      setSecretAnswer('');
+      await onSubmit({
+        title: finalizeEmoji(title),
+        description: finalizeEmoji(description),
+        secretAnswer: finalizeEmoji(secretAnswer)
+      });
       return Promise.resolve();
     } catch (error) {
       setSubmitting(false);

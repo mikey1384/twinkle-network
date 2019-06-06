@@ -161,7 +161,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                   color: Color.darkerGray()
                 }}
               >
-                Secret Answer
+                Secret Message
               </span>
               <Textarea
                 autoFocus
@@ -172,7 +172,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                 }}
                 value={secretAnswer}
                 minRows={4}
-                placeholder="Enter the Secret Answer"
+                placeholder="Enter the Secret Message"
                 onChange={event =>
                   setDetails({
                     ...details,
@@ -202,7 +202,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
           <div style={{ marginTop: '1rem' }} className="button-container">
             <SwitchButton
               checked={hasSecretAnswer}
-              label="Secret Answer"
+              label="Secret Message"
               onChange={() =>
                 setHasSecretAnswer(hasSecretAnswer => !hasSecretAnswer)
               }
@@ -270,7 +270,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
         attachment,
         title,
         description: finalizeEmoji(description),
-        secretAnswer,
+        secretAnswer: hasSecretAnswer ? secretAnswer : '',
         dispatch
       });
       uploadFeedContent(data);

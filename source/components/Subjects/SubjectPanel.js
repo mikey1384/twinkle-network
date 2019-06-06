@@ -13,6 +13,7 @@ import DifficultyBar from 'components/DifficultyBar';
 import DifficultyModal from 'components/Modals/DifficultyModal';
 import Link from 'components/Link';
 import withContext from 'components/Wrappers/withContext';
+import SecretAnswer from 'components/SecretAnswer';
 import Context from './Context';
 import { connect } from 'react-redux';
 import {
@@ -56,6 +57,7 @@ SubjectPanel.propTypes = {
   onUploadReply: PropTypes.func.isRequired,
   profileTheme: PropTypes.string,
   rootDifficulty: PropTypes.number,
+  secretAnswer: PropTypes.string,
   setSubjectDifficulty: PropTypes.func.isRequired,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
@@ -100,6 +102,7 @@ function SubjectPanel({
   onUploadComment,
   onUploadReply,
   rootDifficulty,
+  secretAnswer,
   setSubjectDifficulty,
   type
 }) {
@@ -109,6 +112,10 @@ function SubjectPanel({
   const [difficultyModalShown, setDifficultyModalShown] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
   const [editedDescription, setEditedDescription] = useState(description || '');
+  const [secretShown, setSecretShown] = useState(false);
+  const [editedSecretAnswer, setEditedSecretAnswer] = useState(
+    secretAnswer || ''
+  );
   const [editDoneButtonDisabled, setEditDoneButtonDisabled] = useState(true);
   const userIsUploader = myId === userId;
   const userCanEditThis =
@@ -121,10 +128,12 @@ function SubjectPanel({
     const titleIsEmpty = stringIsEmpty(editedTitle);
     const titleChanged = editedTitle !== title;
     const descriptionChanged = editedDescription !== description;
+    const secretAnswerChanged = editedSecretAnswer !== secretAnswer;
     const editDoneButtonDisabled =
-      titleIsEmpty || (!titleChanged && !descriptionChanged);
+      titleIsEmpty ||
+      (!titleChanged && !descriptionChanged && !secretAnswerChanged);
     setEditDoneButtonDisabled(editDoneButtonDisabled);
-  }, [editedTitle, editedDescription]);
+  }, [editedTitle, editedDescription, editedSecretAnswer]);
 
   return (
     <div
@@ -167,6 +176,16 @@ function SubjectPanel({
         {!onEdit && !!description && (
           <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
         )}
+        {secretAnswer && !onEdit && (
+          <SecretAnswer
+            style={{ marginTop: '1rem' }}
+            answer={secretAnswer}
+            subjectId={id}
+            changeSpoilerStatus={({ shown }) => setSecretShown(shown)}
+            shown={secretShown || userId === myId}
+            onClick={onExpand}
+          />
+        )}
         {onEdit && (
           <form onSubmit={event => event.preventDefault()}>
             <Input
@@ -192,6 +211,20 @@ function SubjectPanel({
                 setEditedDescription(event.target.value);
               }}
             />
+            <div style={{ marginTop: '1rem' }}>
+              <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
+                Secret Message
+              </span>
+              <Textarea
+                style={{ marginTop: '0.7rem' }}
+                placeholder="Enter Secret Message (Optional)"
+                minRows={5}
+                value={editedSecretAnswer}
+                onChange={event => {
+                  setEditedSecretAnswer(event.target.value);
+                }}
+              />
+            </div>
             <div
               style={{
                 marginTop: '1rem',
@@ -209,6 +242,7 @@ function SubjectPanel({
                   setOnEdit(false);
                   setEditedTitle(cleanString(title));
                   setEditedDescription(description);
+                  setEditedSecretAnswer(secretAnswer);
                 }}
               >
                 Cancel
@@ -232,13 +266,16 @@ function SubjectPanel({
               <Comments
                 inputAreaInnerRef={CommentsRef}
                 commentsLoadLimit={10}
+                commentsHidden={
+                  secretAnswer && !(secretShown || userId === myId)
+                }
                 commentsShown={expanded}
                 inputTypeLabel={'response'}
                 comments={comments}
                 loadMoreButton={loadMoreCommentsButton}
                 userId={myId}
                 onAttachStar={attachStar}
-                onCommentSubmit={onUploadComment}
+                onCommentSubmit={handleCommentSubmit}
                 onDelete={onDelete}
                 onEditDone={onEditDone}
                 onLikeClick={onLikeClick}
@@ -338,6 +375,11 @@ function SubjectPanel({
     return menuProps;
   }
 
+  function handleCommentSubmit(params) {
+    setSecretShown(true);
+    onUploadComment(params);
+  }
+
   function loadMoreComments(data) {
     onLoadMoreComments({ data, subjectId: id });
   }
@@ -368,6 +410,7 @@ function SubjectPanel({
       subjectId: id,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
+      editedSecretAnswer: finalizeEmoji(editedSecretAnswer),
       dispatch
     });
     onSubjectEditDone({ editedSubject, subjectId: id });

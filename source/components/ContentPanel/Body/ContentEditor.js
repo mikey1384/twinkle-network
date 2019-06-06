@@ -193,7 +193,7 @@ export default function ContentEditor({
         </div>
         {type === 'subject' && (
           <div style={{ position: 'relative', marginTop: '1rem' }}>
-            <span style={{ fontWeight: 'bold' }}>Secret Answer</span>
+            <span style={{ fontWeight: 'bold' }}>Secret Message</span>
             <Textarea
               minRows={4}
               onChange={event => {
@@ -203,7 +203,7 @@ export default function ContentEditor({
                   editedSecretAnswer: value
                 });
               }}
-              placeholder="Enter Secret Answer... (Optional)"
+              placeholder="Enter Secret Message... (Optional)"
               value={editedSecretAnswer}
               style={{
                 marginTop: '0.7rem',

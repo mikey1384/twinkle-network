@@ -38,6 +38,7 @@ TargetContent.propTypes = {
   profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
+  secretShown: PropTypes.bool,
   style: PropTypes.object,
   targetObj: PropTypes.object,
   username: PropTypes.string
@@ -59,6 +60,7 @@ function TargetContent({
   rootObj,
   profilePicId,
   rootType,
+  secretShown,
   style,
   targetObj: {
     comment,
@@ -78,6 +80,8 @@ function TargetContent({
   let userIsUploader;
   let userCanStarThis;
   let uploader = {};
+  const hasSecretAnswer = subject?.secretAnswer;
+
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
     for (let i = 0; i < comment.likes.length; i++) {
@@ -87,6 +91,8 @@ function TargetContent({
     userCanStarThis =
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
   }
+
+  const contentHidden = hasSecretAnswer && !secretShown && !userIsUploader;
 
   return (
     <ErrorBoundary
@@ -166,61 +172,81 @@ function TargetContent({
                       </span>
                     </div>
                   </div>
-                  <LongText style={{ marginTop: '1rem' }}>
-                    {comment.content}
-                  </LongText>
-                </div>
-                <ErrorBoundary className="buttons">
-                  <div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        marginBottom: comment.likes.length > 0 ? '0.5rem' : 0
-                      }}
-                    >
-                      <LikeButton
-                        contentType="comment"
-                        contentId={comment.id}
-                        onClick={onLikeClick}
-                        liked={userLikedThis}
-                        small
-                      />
-                      <Button
-                        style={{ marginLeft: '1rem' }}
-                        transparent
-                        onClick={onReplyClick}
+                  <div style={{ marginTop: '1rem' }}>
+                    {contentHidden ? (
+                      <div
+                        style={{
+                          background: Color.darkerGray(),
+                          color: '#fff',
+                          textAlign: 'center',
+                          padding: '1rem',
+                          borderRadius,
+                          border: `1px solid ${Color.black()}`,
+                          fontSize: '1.7rem',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => window.open(`/subjects/${subject.id}`)}
                       >
-                        <Icon icon="comment-alt" />
-                        <span style={{ marginLeft: '0.7rem' }}>Reply</span>
-                      </Button>
-                    </div>
-                    <Likers
-                      className={css`
-                        font-weight: bold;
-                        color: ${Color.darkerGray()};
-                        font-size: 1.2rem;
-                        line-height: 1;
-                      `}
-                      userId={myId}
-                      likes={comment.likes}
-                      onLinkClick={() => setUserListModalShown(true)}
-                    />
-                  </div>
-                  <div>
-                    {canStar && userCanStarThis && (
-                      <Button
-                        color="pink"
-                        disabled={xpButtonDisabled()}
-                        onClick={() => setXpRewardInterfaceShown(true)}
-                      >
-                        <Icon icon="certificate" />
-                        <span style={{ marginLeft: '0.7rem' }}>
-                          {xpButtonDisabled() || 'Reward'}
-                        </span>
-                      </Button>
+                        Submit your own response to view this. Tap here
+                      </div>
+                    ) : (
+                      <LongText>{comment.content}</LongText>
                     )}
                   </div>
-                </ErrorBoundary>
+                </div>
+                {!contentHidden && (
+                  <ErrorBoundary className="buttons">
+                    <div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          marginBottom: comment.likes.length > 0 ? '0.5rem' : 0
+                        }}
+                      >
+                        <LikeButton
+                          contentType="comment"
+                          contentId={comment.id}
+                          onClick={onLikeClick}
+                          liked={userLikedThis}
+                          small
+                        />
+                        <Button
+                          style={{ marginLeft: '1rem' }}
+                          transparent
+                          onClick={onReplyClick}
+                        >
+                          <Icon icon="comment-alt" />
+                          <span style={{ marginLeft: '0.7rem' }}>Reply</span>
+                        </Button>
+                      </div>
+                      <Likers
+                        className={css`
+                          font-weight: bold;
+                          color: ${Color.darkerGray()};
+                          font-size: 1.2rem;
+                          line-height: 1;
+                        `}
+                        userId={myId}
+                        likes={comment.likes}
+                        onLinkClick={() => setUserListModalShown(true)}
+                      />
+                    </div>
+                    <div>
+                      {canStar && userCanStarThis && (
+                        <Button
+                          color="pink"
+                          disabled={xpButtonDisabled()}
+                          onClick={() => setXpRewardInterfaceShown(true)}
+                        >
+                          <Icon icon="certificate" />
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {xpButtonDisabled() || 'Reward'}
+                          </span>
+                        </Button>
+                      )}
+                    </div>
+                  </ErrorBoundary>
+                )}
               </div>
               {xpRewardInterfaceShown && (
                 <XPRewardInterface
@@ -263,7 +289,7 @@ function TargetContent({
                 stars={comment.stars}
                 uploaderName={uploader.username}
               />
-              {replyInputShown && (
+              {replyInputShown && !contentHidden && (
                 <InputForm
                   innerRef={InputFormRef}
                   style={{

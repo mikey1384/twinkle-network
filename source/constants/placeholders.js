@@ -3,7 +3,7 @@ export const edit = {
   description: 'Enter Description... (Optional)',
   title: 'Enter Title...',
   url: 'Enter URL...',
-  secretAnswer: 'Enter Secret Answer...',
+  secretAnswer: 'Enter Secret Message...',
   subject: 'Enter Subject...',
   video: 'Enter YouTube URL...'
 };

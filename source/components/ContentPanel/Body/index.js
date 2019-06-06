@@ -208,6 +208,7 @@ function Body({
           contentId={contentId}
           contentObj={contentObj}
           type={type}
+          commentsHidden={commentsHidden}
           contentTitle={title || rootObj.title}
           onAddTags={onAddTags}
           onAddTagToContents={onAddTagToContents}
@@ -383,7 +384,7 @@ function Body({
         />
         <Comments
           autoFocus={false}
-          autoExpand={autoExpand}
+          autoExpand={autoExpand || (type === 'subject' && commentsHidden)}
           comments={childComments}
           commentsLoadLimit={commentsLoadLimit}
           commentsShown={commentsShown}
@@ -454,10 +455,13 @@ function Body({
       : targetObj.subject?.difficulty || rootDifficulty;
   }
 
-  function handleCommentSubmit(params) {
+  async function handleCommentSubmit(params) {
     onCommentSubmit(params);
     if (contentObj.secretAnswer) {
       if (type === 'subject') {
+        if (!commentsShown) {
+          await onExpandComments();
+        }
         onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
       }
     }

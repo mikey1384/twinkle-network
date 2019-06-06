@@ -36,14 +36,15 @@ function SubjectInputArea({
       <div style={{ padding: '1rem' }}>
         {subjectFormShown ? (
           <TitleDescriptionForm
+            isSubject
             autoFocus
             onSubmit={onSubmit}
             onClose={() => setSubjectFormShown(false)}
             rows={4}
             titleMaxChar={charLimit.subject.title}
             descriptionMaxChar={charLimit.subject.description}
-            titlePlaceholder="Enter subject topic..."
-            descriptionPlaceholder="Enter details... (Optional)"
+            titlePlaceholder="Enter Subject..."
+            descriptionPlaceholder="Enter Details... (Optional)"
           />
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -62,12 +63,13 @@ function SubjectInputArea({
     </div>
   );
 
-  async function onSubmit(title, description) {
+  async function onSubmit({ title, description, secretAnswer }) {
     const data = await uploadSubject({
       title,
       description,
       dispatch,
       contentId,
+      secretAnswer,
       type
     });
     setSubjectFormShown(false);

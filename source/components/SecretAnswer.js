@@ -11,6 +11,7 @@ SecretAnswer.propTypes = {
   changeSpoilerStatus: PropTypes.func.isRequired,
   shown: PropTypes.bool,
   onClick: PropTypes.func,
+  style: PropTypes.object,
   subjectId: PropTypes.number,
   userId: PropTypes.number
 };
@@ -21,6 +22,7 @@ function SecretAnswer({
   userId,
   onClick,
   changeSpoilerStatus,
+  style,
   subjectId
 }) {
   const mounted = useRef(true);
@@ -56,11 +58,12 @@ function SecretAnswer({
           borderRadius,
           color: shown ? '' : '#fff',
           textAlign: shown ? '' : 'center',
-          padding: '1rem'
+          padding: '1rem',
+          ...style
         }}
       >
         {shown && <LongText>{answer}</LongText>}
-        {!shown && <span>You need to submit your response to view this</span>}
+        {!shown && <span>Submit your response to view this. Tap here</span>}
       </div>
     </ErrorBoundary>
   );
