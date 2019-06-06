@@ -58,7 +58,7 @@ function SecretAnswer({
           background: shown ? Color.ivory() : Color.darkerGray(),
           border: `1px solid ${shown ? Color.borderGray() : Color.black()}`,
           borderRadius,
-          color: shown ? '' : '#fff',
+          color: shown ? Color.black() : '#fff',
           textAlign: shown ? '' : 'center',
           padding: '1rem',
           ...style

@@ -40,6 +40,8 @@ function ContentListItem({
 }) {
   const themeColor = profileTheme || 'logoBlue';
   const [mouseEntered, setMouseEntered] = useState(false);
+  const [listItemSecretShown, setListItemSecretShown] = useState(false);
+
   return (
     <div
       onTouchStart={() => setMouseEntered(true)}
@@ -243,8 +245,12 @@ function ContentListItem({
             <SecretAnswer
               answer={contentObj.secretAnswer}
               subjectId={contentObj.id}
-              changeSpoilerStatus={onChangeSpoilerStatus}
-              shown={secretShown || contentObj.uploader.id === userId}
+              changeSpoilerStatus={handleChangeSpoilerStatus}
+              shown={
+                secretShown ||
+                listItemSecretShown ||
+                contentObj.uploader.id === userId
+              }
             />
           )}
         </div>
@@ -265,6 +271,13 @@ function ContentListItem({
       </Link>
     </div>
   );
+
+  function handleChangeSpoilerStatus(status) {
+    if (onChangeSpoilerStatus) {
+      return onChangeSpoilerStatus(status);
+    }
+    setListItemSecretShown(status.shown);
+  }
 }
 
 export default connect(state => ({
