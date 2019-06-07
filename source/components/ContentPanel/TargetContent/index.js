@@ -82,6 +82,7 @@ function TargetContent({
   let userCanStarThis;
   let uploader = {};
   const hasSecretAnswer = subject?.secretAnswer;
+  const userUploadedTheSubject = subject?.uploader?.id === myId;
 
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
@@ -93,7 +94,11 @@ function TargetContent({
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
   }
 
-  const contentHidden = hasSecretAnswer && !secretShown && !userIsUploader;
+  const contentHidden =
+    hasSecretAnswer &&
+    !secretShown &&
+    !userIsUploader &&
+    !userUploadedTheSubject;
 
   return (
     <ErrorBoundary
