@@ -374,7 +374,7 @@ function Body({
           onCommentEdit={onEditRewardComment}
           stars={stars}
           className={css`
-            margin-top: ${commentsHidden ? '1rem' : ''};
+            margin-top: ${commentsHidden && difficulty ? '1rem' : ''};
             margin-left: -1px;
             margin-right: -1px;
             @media (max-width: ${mobileMaxWidth}) {
