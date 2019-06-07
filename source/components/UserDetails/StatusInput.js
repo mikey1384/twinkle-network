@@ -73,7 +73,7 @@ export default function StatusInput({
                 'rose',
                 'pink',
                 'ivory',
-                'logoGreen',
+                'green',
                 'logoBlue',
                 'darkGray',
                 'darkBlue',
