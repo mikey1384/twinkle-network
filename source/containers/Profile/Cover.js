@@ -5,11 +5,10 @@ import ColorSelector from 'components/ColorSelector';
 import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
-import moment from 'moment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { uploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { borderRadius, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 
@@ -27,28 +26,6 @@ Cover.propTypes = {
   selectedTheme: PropTypes.string,
   uploadProfilePic: PropTypes.func,
   userId: PropTypes.number
-};
-
-const ChristmasCover = '/img/christmas-cover.png';
-const MarchFirstCover = '/img/march-first-cover.png';
-const MarchCover = '/img/march-cover.png';
-const NewYearsCover = '/img/newyears-cover.png';
-const ValentinesCover = '/img/valentines-cover.png';
-
-const backgroundImageObj = {
-  black: {
-    0: NewYearsCover,
-    1: NewYearsCover,
-    2: MarchFirstCover,
-    11: ChristmasCover
-  },
-  rose: {
-    1: ValentinesCover
-  },
-  logoBlue: {
-    2: MarchCover,
-    3: MarchCover
-  }
 };
 
 function Cover({
@@ -69,11 +46,6 @@ function Cover({
   uploadProfilePic,
   selectedTheme
 }) {
-  const showCover =
-    rank <= 30 &&
-    rank > 0 &&
-    twinkleXP &&
-    !!backgroundImageObj[selectedTheme || profileTheme]?.[moment().month()];
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
@@ -89,20 +61,7 @@ function Cover({
     <ErrorBoundary>
       <div
         style={{
-          color:
-            showCover &&
-            ['black', 'rose', 'purple', 'darkBlue'].indexOf(
-              selectedTheme || profileTheme
-            ) !== -1
-              ? Color.gold()
-              : '#fff',
-          backgroundImage: showCover
-            ? `url(${
-                backgroundImageObj[selectedTheme || profileTheme][
-                  moment().month()
-                ]
-              })`
-            : undefined,
+          color: '#fff',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',
           backgroundColor:
