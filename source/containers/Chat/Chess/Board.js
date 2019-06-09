@@ -202,9 +202,9 @@ export default function Board({
             align-items: ${spoilerOff === false ? 'center' : ''};
             height: 100%;
             grid-template-areas:
-              'chess num'
-              'letter .';
-            grid-template-columns: 360px 2rem;
+              'num chess'
+              '. letter';
+            grid-template-columns: 2rem 360px;
             grid-template-rows: 360px 2.5rem;
             background: ${spoilerOff ? '#fff' : ''};
             @media (max-width: ${mobileMaxWidth}) {
