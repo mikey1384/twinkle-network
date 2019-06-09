@@ -208,7 +208,7 @@ export default function Board({
             grid-template-rows: 360px 2.5rem;
             background: ${spoilerOff ? '#fff' : ''};
             @media (max-width: ${mobileMaxWidth}) {
-              grid-template-columns: 50vw 2rem;
+              grid-template-columns: 2rem 50vw;
               grid-template-rows: 50vw 2.5rem;
             }
           `}
