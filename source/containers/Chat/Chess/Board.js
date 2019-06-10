@@ -241,7 +241,7 @@ export default function Board({
                 position: absolute;
                 background: RGB(255, 255, 255, 0.7);
                 top: ${top};
-                left: 69px;
+                left: 89px;
                 display: flex;
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
@@ -297,7 +297,7 @@ export default function Board({
                 position: absolute;
                 background: RGB(255, 255, 255, 0.7);
                 top: ${top};
-                left: 226px;
+                left: 246px;
                 display: flex;
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
@@ -356,7 +356,7 @@ export default function Board({
                 position: absolute;
                 background: RGB(255, 255, 255, 0.7);
                 top: ${top};
-                left: 46px;
+                left: 66px;
                 display: flex;
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
@@ -413,7 +413,7 @@ export default function Board({
                 position: absolute;
                 background: RGB(255, 255, 255, 0.7);
                 top: ${top};
-                left: 203px;
+                left: 223px;
                 display: flex;
                 align-items: center;
                 padding: 0 0.5rem 0 0.5rem;
