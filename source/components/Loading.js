@@ -18,11 +18,13 @@ export default function Loading({
 }) {
   return (
     <div
-      className={`${css`
-        width: 100%;
-        height: 15rem;
-      `} ${className}`}
-      style={style}
+      className={
+        className ||
+        css`
+          width: 100%;
+        `
+      }
+      style={{ height: '15rem', ...style }}
     >
       <div
         style={{

@@ -184,7 +184,15 @@ function Posts({
         `}
       >
         {loadingFeeds ? (
-          <Loading style={{ width: 'CALC(100% - 25rem)' }} text="Loading..." />
+          <Loading
+            className={css`
+              width: CALC(100% - 25rem);
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+              }
+            `}
+            text="Loading..."
+          />
         ) : (
           <div
             className={css`
