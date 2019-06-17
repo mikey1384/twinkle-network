@@ -37,9 +37,11 @@ function SecretAnswer({
     }
 
     async function init() {
-      const { responded } = await checkIfUserResponded(subjectId);
-      if (mounted.current) {
-        changeSpoilerStatus({ shown: responded, subjectId });
+      if (!shown) {
+        const { responded } = await checkIfUserResponded(subjectId);
+        if (mounted.current) {
+          changeSpoilerStatus({ shown: responded, subjectId });
+        }
       }
     }
 
