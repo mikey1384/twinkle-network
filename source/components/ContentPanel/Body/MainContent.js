@@ -224,11 +224,12 @@ export default function MainContent({
                 }
               `}
               style={{
-                marginBottom: isEditing
-                  ? '1rem'
-                  : rootType === 'url'
-                  ? '-0.5rem'
-                  : 0
+                marginBottom:
+                  isEditing || commentsHidden
+                    ? '1rem'
+                    : rootType === 'url'
+                    ? '-0.5rem'
+                    : 0
               }}
               difficulty={contentObj.difficulty}
             />

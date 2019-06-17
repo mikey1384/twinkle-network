@@ -138,7 +138,7 @@ function Comment({
     }
 
     async function checkSecretShown() {
-      if (hasSecretAnswer) {
+      if (hasSecretAnswer && !secretShown) {
         const { responded } = await checkIfUserResponded(targetObj.subject.id);
         if (mounted.current) {
           setSecretShown(responded);
@@ -304,7 +304,7 @@ function Comment({
                 uploaderName={uploader.username}
               />
             )}
-            {!isPreview && !(hasSecretAnswer && !secretShown) && (
+            {!isPreview && !isHidden && (
               <>
                 <ReplyInputArea
                   innerRef={ReplyInputAreaRef}
