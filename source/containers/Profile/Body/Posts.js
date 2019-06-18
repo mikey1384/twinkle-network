@@ -33,9 +33,9 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
-import { connect } from 'react-redux';
 import Loading from 'components/Loading';
 import SideMenu from './SideMenu';
+import { connect } from 'react-redux';
 
 Posts.propTypes = {
   addTags: PropTypes.func.isRequired,

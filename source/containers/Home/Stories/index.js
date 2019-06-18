@@ -29,18 +29,23 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
-import { toggleHideWatched } from 'redux/actions/UserActions';
-import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
-import { connect } from 'react-redux';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { queryStringForArray } from 'helpers/stringHelpers';
-import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import HomeFilter from './HomeFilter';
+import { toggleHideWatched } from 'redux/actions/UserActions';
+import { resetNumNewPosts } from 'redux/actions/NotiActions';
+import { connect } from 'react-redux';
+import { queryStringForArray } from 'helpers/stringHelpers';
+import {
+  checkIfFeedsUpToDate,
+  loadFeeds,
+  loadNewFeeds
+} from 'helpers/requestHelpers';
+import { socket } from 'constants/io';
 
 Stories.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -150,6 +155,7 @@ function Stories({
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
+  const [feedsOutdated, setFeedsOutdated] = useState(false);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
 
@@ -159,6 +165,20 @@ function Stories({
     loading: loadingMore,
     onScrollToBottom: () => setLoadingMore(true),
     onLoad: loadMoreFeeds
+  });
+
+  useEffect(() => {
+    socket.on('connect', onConnect);
+    async function onConnect() {
+      const firstFeed = storyFeeds[0];
+      if (firstFeed) {
+        const outdated = await checkIfFeedsUpToDate(firstFeed.feedId);
+        setFeedsOutdated(outdated);
+      }
+    }
+    return function cleanUp() {
+      socket.removeListener('connect', onConnect);
+    };
   });
 
   useEffect(() => {
@@ -234,6 +254,15 @@ function Stories({
           )}
           {loaded && !loadingFeeds && storyFeeds.length > 0 && (
             <>
+              {feedsOutdated && (
+                <Banner
+                  color="gold"
+                  onClick={() => window.location.reload()}
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Click to See New Posts!
+                </Banner>
+              )}
               {numNewPosts > 0 && (
                 <Banner
                   color="gold"
