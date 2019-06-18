@@ -172,7 +172,7 @@ function Stories({
     async function onConnect() {
       const firstFeed = storyFeeds[0];
       if (firstFeed) {
-        const outdated = await checkIfFeedsUpToDate(firstFeed.feedId);
+        const outdated = await checkIfFeedsUpToDate(firstFeed.lastInteraction);
         setFeedsOutdated(outdated);
       }
     }
