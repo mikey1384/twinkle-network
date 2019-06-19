@@ -341,6 +341,8 @@ function Posts({
         return `${username} has not uploaded a link, yet`;
       case 'videos':
         return `${username} has not uploaded a video, yet`;
+      case 'likes':
+        return `${username} doesn't like any content so far`;
     }
   }
 
