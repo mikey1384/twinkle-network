@@ -187,12 +187,12 @@ function Header({
   }, [versionMatch]);
 
   const isUsername =
-    pathname.split('/')[1] !== 'xp' &&
+    pathname.split('/')[1] !== 'featured' &&
     ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
     pathname.length > 1;
 
   const atHomeSection =
-    ['links', 'videos', 'xp', 'comments', 'subjects'].indexOf(
+    ['links', 'videos', 'featured', 'comments', 'subjects'].indexOf(
       pathname.split('/')[1]
     ) === -1;
 
@@ -293,7 +293,7 @@ function Header({
               Home
             </HeaderNav>
             <HeaderNav
-              to="/xp"
+              to="/featured"
               onClick={closeSearch}
               pathname={pathname}
               className={chatLoading || searchMode ? 'hidden' : 'mobile'}
@@ -379,13 +379,13 @@ function Header({
     ) {
       return (
         <HeaderNav
-          to="/xp"
+          to="/featured"
           onClick={closeSearch}
           pathname={pathname}
           className="desktop"
           imgLabel="bolt"
         >
-          EARN XP
+          FEATURED
         </HeaderNav>
       );
     }
@@ -399,7 +399,7 @@ function Header({
           className="desktop"
           imgLabel="book"
         >
-          READ
+          LINKS
         </HeaderNav>
       );
     }
@@ -413,20 +413,20 @@ function Header({
           className="desktop"
           imgLabel="film"
         >
-          WATCH
+          VIDEOS
         </HeaderNav>
       );
     }
 
     return (
       <HeaderNav
-        to="/xp"
+        to="/featured"
         onClick={closeSearch}
         pathname={pathname}
         className="desktop"
         imgLabel="bolt"
       >
-        EARN XP
+        FEATURED
       </HeaderNav>
     );
   }

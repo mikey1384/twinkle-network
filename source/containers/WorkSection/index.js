@@ -99,7 +99,7 @@ function WorkSection({
               <Switch>
                 <Route path="/videos" component={Videos} />
                 <Route path="/links" component={Links} />
-                <Route path="/xp" component={Featured} />
+                <Route path="/featured" component={Featured} />
               </Switch>
             </Suspense>
             <div
@@ -189,7 +189,7 @@ function WorkSection({
             }
           `}
         >
-          <NavLink to="/xp" activeClassName="active">
+          <NavLink to="/featured" activeClassName="active">
             <Icon icon="bolt" />
           </NavLink>
           <NavLink to="/videos" activeClassName="active">

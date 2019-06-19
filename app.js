@@ -35,6 +35,7 @@ import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
 import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
+import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 library.add(
   faAlignJustify,
@@ -67,6 +68,7 @@ library.add(
   faTrashAlt,
   faTree,
   faUser,
+  faUserGraduate,
   faUsers
 );
 

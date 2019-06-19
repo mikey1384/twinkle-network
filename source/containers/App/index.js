@@ -214,7 +214,7 @@ function App({
             <Route path="/videos" component={WorkSection} />
             <Route path="/links/:linkId" component={LinkPage} />
             <Route path="/links" component={WorkSection} />
-            <Route path="/xp" component={WorkSection} />
+            <Route path="/featured" component={WorkSection} />
             <Route path="/playlists" component={PlaylistPage} />
             <Route path="/verify" component={Verify} />
             <Route path="/privacy" component={Privacy} />

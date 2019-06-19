@@ -76,6 +76,7 @@ Posts.propTypes = {
 const filterTable = {
   all: 'all',
   comments: 'comment',
+  likes: 'like',
   posts: 'post',
   videos: 'video',
   links: 'url'
@@ -142,7 +143,7 @@ function Posts({
 
   useEffect(() => {
     if (history.action === 'PUSH' || profileFeeds.length === 0) {
-      loadTab(match.params.section);
+      loadTab(section);
     }
   }, [location]);
 
@@ -164,9 +165,7 @@ function Posts({
           return (
             <nav
               key={type.key}
-              className={
-                filterTable[match.params.section] === type.key ? 'active' : ''
-              }
+              className={filterTable[section] === type.key ? 'active' : ''}
               onClick={() => onClickPostsMenu({ item: type.key })}
             >
               {type.label}
@@ -176,7 +175,7 @@ function Posts({
       </FilterBar>
       <div
         className={css`
-          width: 80vw;
+          width: ${section === 'likes' ? '65vw' : '80vw'};
           display: flex;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100vw;
@@ -186,7 +185,7 @@ function Posts({
         {loadingFeeds ? (
           <Loading
             className={css`
-              width: CALC(100% - 25rem);
+              width: ${section === 'likes' ? '100%' : 'CALC(100% - 25rem)'};
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100%;
               }
@@ -196,7 +195,7 @@ function Posts({
         ) : (
           <div
             className={css`
-              width: CALC(100% - 25rem);
+              width: ${section === 'likes' ? '100%' : 'CALC(100% - 25rem)'};
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100%;
               }
@@ -206,7 +205,7 @@ function Posts({
               profileFeeds.map((feed, index) => {
                 return (
                   <ContentPanel
-                    key={filterTable[match.params.section] + feed.feedId}
+                    key={filterTable[section] + feed.feedId}
                     style={{
                       marginBottom: '1rem',
                       zIndex: profileFeeds.length - index
@@ -267,22 +266,24 @@ function Posts({
             )}
           </div>
         )}
-        <Suspense fallback={<Loading />}>
-          <SideMenu
-            className={`desktop ${css`
-              width: 30rem;
-            `}`}
-            menuItems={[
-              { key: 'all', label: 'All' },
-              { key: 'comment', label: 'Comments' },
-              { key: 'post', label: 'Subjects' },
-              { key: 'video', label: 'Videos' },
-              { key: 'url', label: 'Links' }
-            ]}
-            onMenuClick={onClickPostsMenu}
-            selectedKey={filterTable[match.params.section]}
-          />
-        </Suspense>
+        {section !== 'likes' && (
+          <Suspense fallback={<Loading />}>
+            <SideMenu
+              className={`desktop ${css`
+                width: 30rem;
+              `}`}
+              menuItems={[
+                { key: 'all', label: 'All' },
+                { key: 'comment', label: 'Comments' },
+                { key: 'post', label: 'Subjects' },
+                { key: 'video', label: 'Videos' },
+                { key: 'url', label: 'Links' }
+              ]}
+              onMenuClick={onClickPostsMenu}
+              selectedKey={filterTable[section]}
+            />
+          </Suspense>
+        )}
       </div>
     </div>
   );
@@ -329,7 +330,7 @@ function Posts({
   }
 
   function onNoFeed(username) {
-    switch (match.params.section) {
+    switch (section) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
       case 'posts':

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { capitalize } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import FilterBar from 'components/FilterBar';
 import Routes from './Routes';
@@ -48,14 +47,23 @@ export default function Body({
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`/users/${username}`)}
           >
-            <a>
-              <span className="desktop">{`${capitalize(username)}'s`} </span>
-              Profile
-            </a>
+            <a>Profile</a>
           </nav>
           <nav
             className={
-              location.pathname !== `/users/${username}` ? 'active' : ''
+              location.pathname === `/users/${username}/likes` ? 'active' : ''
+            }
+            style={{ cursor: 'pointer' }}
+            onClick={() => history.push(`${match.url}${`/likes`}`)}
+          >
+            <a>Likes</a>
+          </nav>
+          <nav
+            className={
+              location.pathname !== `/users/${username}` &&
+              location.pathname !== `/users/${username}/likes`
+                ? 'active'
+                : ''
             }
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`${match.url}${`/all`}`)}
