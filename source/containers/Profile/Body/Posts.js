@@ -293,7 +293,7 @@ function Posts({
       await fetchMoreFeeds({
         shownFeeds: queryStringForArray({
           array: profileFeeds,
-          originVar: 'feedId',
+          originVar: section === 'likes' ? 'likeId' : 'feedId',
           destinationVar: 'shownFeeds'
         }),
         filter: filterTable[section],
