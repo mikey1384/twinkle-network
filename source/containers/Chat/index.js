@@ -431,6 +431,7 @@ function Chat({
                 setTextAreaHeight(height > 46 ? height : 0);
               }
             }}
+            onPlusButtonClick={handlePlusButtonClick}
           />
         ) : (
           <div>
@@ -483,6 +484,10 @@ function Chat({
     socket.emit('viewed_chess_move', currentChannel.id);
     socket.emit('start_chess_timer', currentChannel);
     setChessModalShown(true);
+  }
+
+  function handlePlusButtonClick() {
+    console.log('clicked');
   }
 
   function userListDescriptionShown(user) {

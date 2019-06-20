@@ -15,6 +15,7 @@ ChatInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
+  onPlusButtonClick: PropTypes.func.isRequired,
   profileTheme: PropTypes.string
 };
 
@@ -27,6 +28,7 @@ function ChatInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
+  onPlusButtonClick,
   profileTheme
 }) {
   const TextareaRef = useRef(null);
@@ -70,6 +72,16 @@ function ChatInput({
           autoFocus
           style={{ marginRight: '1rem' }}
         />
+        <div
+          style={{
+            margin: '0.2rem 1rem 0.2rem 0',
+            height: '100%'
+          }}
+        >
+          <Button skeuomorphic onClick={onPlusButtonClick} color={themeColor}>
+            <Icon size="lg" icon="plus" />
+          </Button>
+        </div>
       </div>
     </>
   );
