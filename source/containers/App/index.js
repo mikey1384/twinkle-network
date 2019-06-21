@@ -303,7 +303,7 @@ export default connect(
     changePageVisibility: visible => dispatch(changePageVisibility(visible))
   })
 )(
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === 'development'
     ? hot(module)(withScroll(App))
     : withScroll(App)
 );
