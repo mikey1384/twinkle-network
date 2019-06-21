@@ -12,6 +12,8 @@ import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import Loading from 'components/Loading';
 import ChessModal from './Modals/ChessModal';
+import AlertModal from 'components/Modals/AlertModal';
+import UploadModal from './Modals/UploadModal';
 import { startNewDMChannel } from 'helpers/requestHelpers';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
@@ -102,10 +104,14 @@ function Chat({
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [chessModalShown, setChessModalShown] = useState(false);
+  const [uploadModalShown, setUploadModalShown] = useState(false);
+  const [alertModalShown, setAlertModalShown] = useState(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
+  const [fileObj, setFileObj] = useState('');
   const memberObj = useRef({});
   const channelsObj = useRef({});
+  const FileInputRef = useRef(null);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -314,6 +320,12 @@ function Chat({
         }
       `}
     >
+      <input
+        ref={FileInputRef}
+        style={{ display: 'none' }}
+        type="file"
+        onChange={handleUpload}
+      />
       {leaveConfirmModalShown && (
         <ConfirmModal
           title="Leave Channel"
@@ -431,7 +443,7 @@ function Chat({
                 setTextAreaHeight(height > 46 ? height : 0);
               }
             }}
-            onPlusButtonClick={handlePlusButtonClick}
+            onPlusButtonClick={() => FileInputRef.current.click()}
           />
         ) : (
           <div>
@@ -452,6 +464,19 @@ function Chat({
           onHide={() => setChessModalShown(false)}
           onSpoilerClick={handleChessSpoilerClick}
           {...getOpponentInfo()}
+        />
+      )}
+      {alertModalShown && (
+        <AlertModal
+          title="File is too large"
+          content="The file size is larger than the limit of 100mb"
+          onHide={() => setAlertModalShown(false)}
+        />
+      )}
+      {uploadModalShown && (
+        <UploadModal
+          fileObj={fileObj}
+          onHide={() => setUploadModalShown(false)}
         />
       )}
     </div>
@@ -486,8 +511,15 @@ function Chat({
     setChessModalShown(true);
   }
 
-  function handlePlusButtonClick() {
-    console.log('clicked');
+  function handleUpload(event) {
+    const maxSize = 100000;
+    const file = event.target.files[0];
+    if (file.size / 1000 > maxSize) {
+      return setAlertModalShown(true);
+    }
+    setFileObj(file);
+    setUploadModalShown(true);
+    event.target.value = null;
   }
 
   function userListDescriptionShown(user) {
