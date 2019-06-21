@@ -57,7 +57,7 @@ export default function Likers({
                 color={Color.blue()}
                 user={{
                   id: otherLikes[0]?.id,
-                  username: otherLikes[0].username
+                  username: otherLikes[0]?.username
                 }}
               />{' '}
               like {`this${target ? ' ' + target : ''}.`}
