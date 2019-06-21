@@ -41,7 +41,7 @@ export default function Likers({
     let totalLikes = 0;
     if (likes) {
       for (let i = 0; i < likes.length; i++) {
-        if (likes[i].id === userId) userLiked = true;
+        if (likes[i]?.id === userId) userLiked = true;
         totalLikes++;
       }
     }
@@ -49,15 +49,15 @@ export default function Likers({
       totalLikes--;
       if (totalLikes > 0) {
         if (totalLikes === 1) {
-          let otherLikes = likes.filter(like => like.id !== userId);
+          let otherLikes = likes.filter(like => like?.id !== userId);
           return (
             <div>
               You and{' '}
               <UsernameText
                 color={Color.blue()}
                 user={{
-                  id: otherLikes[0].id,
-                  username: otherLikes[0].username
+                  id: otherLikes[0]?.id,
+                  username: otherLikes[0]?.username
                 }}
               />{' '}
               like {`this${target ? ' ' + target : ''}.`}

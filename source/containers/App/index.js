@@ -302,4 +302,8 @@ export default connect(
     resetChat: () => dispatch(resetChat()),
     changePageVisibility: visible => dispatch(changePageVisibility(visible))
   })
-)(hot(module)(withScroll(App)));
+)(
+  process.env.NODE_ENV === 'development'
+    ? hot(module)(withScroll(App))
+    : withScroll(App)
+);
