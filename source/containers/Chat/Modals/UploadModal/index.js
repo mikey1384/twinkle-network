@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
+import File from './File';
 
 UploadModal.propTypes = {
   fileObj: PropTypes.object,
@@ -27,10 +28,7 @@ export default function UploadModal({ fileObj, onHide }) {
       <header>Upload a file</header>
       <main>
         {fileObj ? (
-          <div>
-            {fileSize}
-            {fileType}
-          </div>
+          <File fileSize={fileSize} fileType={fileType} />
         ) : (
           <Loading />
         )}
