@@ -469,7 +469,7 @@ function Chat({
       {alertModalShown && (
         <AlertModal
           title="File is too large"
-          content="The file size is larger than the limit of 100mb"
+          content="The file size is larger than the limit of 300mb"
           onHide={() => setAlertModalShown(false)}
         />
       )}
@@ -512,7 +512,7 @@ function Chat({
   }
 
   function handleUpload(event) {
-    const maxSize = 100000;
+    const maxSize = 300000;
     const file = event.target.files[0];
     if (file.size / 1000 > maxSize) {
       return setAlertModalShown(true);

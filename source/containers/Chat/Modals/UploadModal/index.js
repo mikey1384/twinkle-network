@@ -28,7 +28,11 @@ export default function UploadModal({ fileObj, onHide }) {
       <header>Upload a file</header>
       <main>
         {fileObj ? (
-          <File fileSize={fileSize} fileType={fileType} />
+          <File
+            fileName={fileObj.name}
+            fileSize={fileSize}
+            fileType={fileType}
+          />
         ) : (
           <Loading />
         )}
