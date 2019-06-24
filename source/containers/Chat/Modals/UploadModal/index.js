@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -11,32 +11,10 @@ UploadModal.propTypes = {
 };
 
 export default function UploadModal({ fileObj, onHide }) {
-  const [fileSize, setFileSize] = useState(0);
-  const [fileType, setFileType] = useState('');
-  useEffect(() => {
-    setFileSize(fileObj.size);
-    setFileType(
-      fileObj.name
-        .split('.')
-        .pop()
-        .toLowerCase()
-    );
-  }, [fileObj]);
-
   return (
     <Modal large onHide={onHide}>
       <header>Upload a file</header>
-      <main>
-        {fileObj ? (
-          <File
-            fileName={fileObj.name}
-            fileSize={fileSize}
-            fileType={fileType}
-          />
-        ) : (
-          <Loading />
-        )}
-      </main>
+      <main>{fileObj ? <File fileObj={fileObj} /> : <Loading />}</main>
       <footer>
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel

@@ -1,34 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
+import Image from './Image';
 
 File.propTypes = {
-  fileName: PropTypes.string,
-  fileSize: PropTypes.number,
-  fileType: PropTypes.string
+  fileObj: PropTypes.object.isRequired
 };
 
-export default function File({ fileName, fileSize, fileType }) {
+export default function File({ fileObj }) {
+  const [fileType, setFileType] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isImage, setIsImage] = useState(false);
   useEffect(() => {
-    if (fileType) {
+    if (fileObj) {
       setLoading(false);
     }
-    setIsImage(checkIsImage(fileType));
-  }, [fileType]);
+    const extension = fileObj.name
+      .split('.')
+      .pop()
+      .toLowerCase();
+    setFileType(checkFileType(extension));
+  }, [fileObj]);
   return loading ? (
     <Loading />
   ) : (
     <div>
-      {isImage ? 'it is an image' : 'it is not an image'}
-      <div>{fileName}</div>
-      <div>{fileSize}</div>
+      {fileType === 'image' && <Image imageObj={fileObj} />}
+      {fileType !== 'image' && <div>not an image</div>}
+      <div>{fileObj.name}</div>
+      <div>{fileObj.size}</div>
     </div>
   );
 }
 
-function checkIsImage(fileType) {
+function checkFileType(extension) {
   const imageExt = ['jpg', 'png', 'jpeg'];
-  return imageExt.indexOf(fileType) !== -1;
+  if (imageExt.indexOf(extension) !== -1) {
+    return 'image';
+  }
+  return 'other files';
 }
