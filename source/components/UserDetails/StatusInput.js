@@ -6,7 +6,7 @@ import ColorSelector from 'components/ColorSelector';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { exceedsCharLimit, renderCharLimit } from 'helpers/stringHelpers';
+import { exceedsCharLimit } from 'helpers/stringHelpers';
 
 StatusInput.propTypes = {
   autoFocus: PropTypes.bool,
@@ -31,6 +31,11 @@ export default function StatusInput({
   onTextChange,
   setColor
 }) {
+  const statusExceedsCharLimit = exceedsCharLimit({
+    contentType: 'statusMsg',
+    text: editedStatusMsg
+  });
+
   return (
     <ErrorBoundary>
       <Textarea
@@ -46,16 +51,16 @@ export default function StatusInput({
         value={editedStatusMsg}
         onChange={onTextChange}
         placeholder={`Enter a ${profile.statusMsg ? 'new ' : ''}status message`}
-        style={exceedsCharLimit({
-          contentType: 'statusMsg',
-          text: editedStatusMsg
-        })}
+        style={statusExceedsCharLimit?.style}
       />
-      <p style={{ fontSize: '1.3rem', marginTop: '0.5rem' }}>
-        {renderCharLimit({
-          contentType: 'statusMsg',
-          text: editedStatusMsg
-        })}
+      <p
+        style={{
+          fontSize: '1.3rem',
+          marginTop: '0.5rem',
+          ...(statusExceedsCharLimit?.style || {})
+        }}
+      >
+        {statusExceedsCharLimit?.message}
       </p>
       {editedStatusMsg && (
         <div

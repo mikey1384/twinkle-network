@@ -14,8 +14,7 @@ import {
   isValidUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
@@ -58,7 +57,21 @@ function Description({
   const [editedUrl, setEditedUrl] = useState(content);
   const [editedDescription, setEditedDescription] = useState(description);
   const [onEdit, setOnEdit] = useState(false);
-
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'description',
+    text: editedDescription
+  });
+  const titleExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'title',
+    text: editedTitle
+  });
+  const urlExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'url',
+    text: editedUrl
+  });
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
@@ -109,7 +122,7 @@ function Description({
                 className={css`
                   width: 80%;
                 `}
-                style={titleExceedsCharLimit(editedTitle)}
+                style={titleExceedsCharLimit?.style}
                 placeholder="Enter Title..."
                 value={editedTitle}
                 onChange={text => {
@@ -121,13 +134,9 @@ function Description({
                   }
                 }}
               />
-              {titleExceedsCharLimit(editedTitle) && (
+              {titleExceedsCharLimit && (
                 <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'url',
-                    inputType: 'title',
-                    text: editedTitle
-                  })}
+                  {titleExceedsCharLimit.message}
                 </small>
               )}
             </>
@@ -168,7 +177,7 @@ function Description({
               className={css`
                 margin-bottom: '1rem';
               `}
-              style={urlExceedsCharLimit(editedUrl)}
+              style={urlExceedsCharLimit?.style}
               value={editedUrl}
               onChange={text => {
                 setEditedUrl(text);
@@ -188,16 +197,12 @@ function Description({
               }}
               style={{
                 marginTop: '1rem',
-                ...(descriptionExceedsCharLimit(editedDescription) || {})
+                ...(descriptionExceedsCharLimit?.style || {})
               }}
             />
-            {descriptionExceedsCharLimit(editedDescription) && (
+            {descriptionExceedsCharLimit && (
               <small style={{ color: 'red' }}>
-                {renderCharLimit({
-                  contentType: 'url',
-                  inputType: 'description',
-                  text: editedDescription
-                })}
+                {descriptionExceedsCharLimit?.message}
               </small>
             )}
             <div style={{ justifyContent: 'center', display: 'flex' }}>
@@ -235,9 +240,9 @@ function Description({
     if (urlIsEmpty) return true;
     if (titleIsEmpty) return true;
     if (!titleChanged && !descriptionChanged && !urlChanged) return true;
-    if (titleExceedsCharLimit(editedTitle)) return true;
-    if (descriptionExceedsCharLimit(editedDescription)) return true;
-    if (urlExceedsCharLimit(editedUrl)) return true;
+    if (titleExceedsCharLimit) return true;
+    if (descriptionExceedsCharLimit) return true;
+    if (urlExceedsCharLimit) return true;
     return false;
   }
 
@@ -256,30 +261,6 @@ function Description({
       linkId
     });
     setOnEdit(false);
-  }
-
-  function descriptionExceedsCharLimit(description) {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'description',
-      text: description
-    });
-  }
-
-  function titleExceedsCharLimit(title) {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'title',
-      text: title
-    });
-  }
-
-  function urlExceedsCharLimit(url) {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'url',
-      text: url
-    });
   }
 }
 

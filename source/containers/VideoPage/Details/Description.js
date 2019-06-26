@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import LongText from 'components/Texts/LongText';
 import Button from 'components/Button';
-import { renderCharLimit, stringIsEmpty } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { edit } from 'constants/placeholders';
 
 Description.propTypes = {
@@ -41,16 +41,12 @@ export default function Description({
             onKeyUp={onKeyUp}
             style={{
               marginTop: '1rem',
-              ...descriptionExceedsCharLimit(editedDescription)
+              ...(descriptionExceedsCharLimit(editedDescription)?.style || {})
             }}
           />
           {descriptionExceedsCharLimit(editedDescription) && (
             <small style={{ color: 'red' }}>
-              {renderCharLimit({
-                contentType: 'video',
-                inputType: 'description',
-                text: editedDescription
-              })}
+              {descriptionExceedsCharLimit(editedDescription)?.message}
             </small>
           )}
           <div

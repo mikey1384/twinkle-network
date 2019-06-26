@@ -38,20 +38,13 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
       : charLimit[contentType][inputType];
   return text.length > limit
     ? {
-        color: 'red',
-        borderColor: 'red'
+        style: {
+          color: 'red',
+          borderColor: 'red'
+        },
+        message: `${text.length}/${limit} Characters`
       }
     : undefined;
-}
-
-export function renderCharLimit({ inputType, contentType, text }) {
-  const limit =
-    contentType === 'comment' ||
-    contentType === 'rewardComment' ||
-    contentType === 'statusMsg'
-      ? charLimit[contentType]
-      : charLimit[contentType][inputType];
-  return `${text.length}/${limit} Characters`;
 }
 
 export function turnStringIntoQuestion(string) {

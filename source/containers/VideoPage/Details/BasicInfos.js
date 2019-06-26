@@ -4,7 +4,7 @@ import Input from 'components/Texts/Input';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import { edit } from 'constants/placeholders';
-import { cleanString, renderCharLimit } from 'helpers/stringHelpers';
+import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 
 BasicInfos.propTypes = {
@@ -55,7 +55,7 @@ export default function BasicInfos({
             placeholder={edit.video}
             value={editedUrl}
             onChange={onUrlChange}
-            style={urlExceedsCharLimit(editedUrl)}
+            style={urlExceedsCharLimit(editedUrl)?.style}
           />
           <Input
             type="text"
@@ -65,16 +65,12 @@ export default function BasicInfos({
             onKeyUp={onTitleKeyUp}
             style={{
               marginTop: '1rem',
-              ...titleExceedsCharLimit(editedTitle)
+              ...(titleExceedsCharLimit(editedTitle)?.style || {})
             }}
           />
           {titleExceedsCharLimit(editedTitle) && (
             <small style={{ color: 'red' }}>
-              {renderCharLimit({
-                contentType: 'video',
-                inputType: 'title',
-                text: editedTitle
-              })}
+              {titleExceedsCharLimit(editedTitle)?.message}
             </small>
           )}
         </div>

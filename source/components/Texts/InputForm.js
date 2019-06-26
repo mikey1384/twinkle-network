@@ -6,8 +6,7 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 
@@ -52,7 +51,7 @@ export default function InputForm({
           innerRef={innerRef}
           style={{
             fontSize: '1.7rem',
-            ...(commentExceedsCharLimit || {})
+            ...(commentExceedsCharLimit?.style || {})
           }}
           minRows={rows}
           value={text}
@@ -62,10 +61,7 @@ export default function InputForm({
         />
         {commentExceedsCharLimit && (
           <small style={{ color: 'red', fontSize: '1.3rem' }}>
-            {renderCharLimit({
-              contentType: 'comment',
-              text
-            })}
+            {commentExceedsCharLimit.message}
           </small>
         )}
       </div>

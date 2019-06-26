@@ -12,8 +12,7 @@ import {
   isValidUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 
 AddLinkModal.propTypes = {
@@ -29,6 +28,21 @@ function AddLinkModal({ onHide, uploadLink }) {
     description: ''
   });
   const UrlFieldRef = useRef(null);
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'description',
+    text: form.description
+  });
+  const titleExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'title',
+    text: form.title
+  });
+  const urlExceedsCharLimit = exceedsCharLimit({
+    contentType: 'url',
+    inputType: 'url',
+    text: form.url
+  });
 
   return (
     <Modal onHide={onHide}>
@@ -46,7 +60,7 @@ function AddLinkModal({ onHide, uploadLink }) {
           type="text"
         />
         <Input
-          style={{ marginTop: '1rem', ...(titleExceedsCharLimit() || {}) }}
+          style={{ marginTop: '1rem', ...(titleExceedsCharLimit?.style || {}) }}
           value={form.title}
           onChange={text => setForm({ ...form, title: text })}
           placeholder="Enter Title"
@@ -60,19 +74,15 @@ function AddLinkModal({ onHide, uploadLink }) {
             }
           }}
         />
-        {titleExceedsCharLimit() && (
+        {titleExceedsCharLimit && (
           <small style={{ color: 'red', width: '100%' }}>
-            {renderCharLimit({
-              contentType: 'url',
-              inputType: 'title',
-              text: form.title
-            })}
+            {titleExceedsCharLimit?.message}
           </small>
         )}
         <Textarea
           style={{
             marginTop: '1rem',
-            ...(descriptionExceedsCharLimit() || {})
+            ...(descriptionExceedsCharLimit?.style || {})
           }}
           value={form.description}
           minRows={4}
@@ -89,13 +99,9 @@ function AddLinkModal({ onHide, uploadLink }) {
             }
           }}
         />
-        {descriptionExceedsCharLimit() && (
+        {descriptionExceedsCharLimit && (
           <small style={{ color: 'red', width: '100%' }}>
-            {renderCharLimit({
-              contentType: 'url',
-              inputType: 'description',
-              text: form.description
-            })}
+            {descriptionExceedsCharLimit.message}
           </small>
         )}
       </main>
@@ -143,8 +149,8 @@ function AddLinkModal({ onHide, uploadLink }) {
     if (stringIsEmpty(url)) return true;
     if (stringIsEmpty(title)) return true;
     if (urlHasError()) return true;
-    if (titleExceedsCharLimit()) return true;
-    if (descriptionExceedsCharLimit()) return true;
+    if (titleExceedsCharLimit) return true;
+    if (descriptionExceedsCharLimit) return true;
     return false;
   }
 
@@ -155,31 +161,7 @@ function AddLinkModal({ onHide, uploadLink }) {
         borderColor: 'red'
       };
     }
-    return urlExceedsCharLimit();
-  }
-
-  function descriptionExceedsCharLimit() {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'description',
-      text: form.description
-    });
-  }
-
-  function titleExceedsCharLimit() {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'title',
-      text: form.title
-    });
-  }
-
-  function urlExceedsCharLimit() {
-    return exceedsCharLimit({
-      contentType: 'url',
-      inputType: 'url',
-      text: form.url
-    });
+    return urlExceedsCharLimit?.style;
   }
 }
 

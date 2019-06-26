@@ -12,8 +12,7 @@ import {
   isValidYoutubeUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 
 AddVideoModal.propTypes = {
@@ -51,6 +50,11 @@ function AddVideoModal({
     inputType: 'description',
     contentType: 'video',
     text: description
+  });
+  const urlExceedsCharLimit = exceedsCharLimit({
+    contentType: 'video',
+    inputType: 'url',
+    text: url
   });
 
   return (
@@ -93,15 +97,11 @@ function AddVideoModal({
                   });
                 }
               }}
-              style={titleExceedsCharLimit}
+              style={titleExceedsCharLimit?.style}
             />
             {titleExceedsCharLimit && (
               <small style={{ color: 'red' }}>
-                {renderCharLimit({
-                  contentType: 'video',
-                  inputType: 'title',
-                  text: title
-                })}
+                {titleExceedsCharLimit?.message}
               </small>
             )}
           </section>
@@ -121,15 +121,11 @@ function AddVideoModal({
                   });
                 }
               }}
-              style={descriptionExceedsCharLimit}
+              style={descriptionExceedsCharLimit?.style}
             />
             {descriptionExceedsCharLimit && (
               <small style={{ color: 'red' }}>
-                {renderCharLimit({
-                  contentType: 'video',
-                  inputType: 'description',
-                  text: description
-                })}
+                {descriptionExceedsCharLimit?.message}
               </small>
             )}
           </section>
@@ -186,13 +182,7 @@ function AddVideoModal({
     if (disabled) return true;
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
     if (urlHasError()) return true;
-    if (
-      exceedsCharLimit({
-        inputType: 'description',
-        contentType: 'video',
-        text: description
-      })
-    ) {
+    if (descriptionExceedsCharLimit) {
       return true;
     }
     return false;
@@ -200,11 +190,7 @@ function AddVideoModal({
 
   function urlHasError() {
     if (urlError) return { color: 'red', borderColor: 'red' };
-    return exceedsCharLimit({
-      contentType: 'video',
-      inputType: 'url',
-      text: url
-    });
+    return urlExceedsCharLimit?.style;
   }
 }
 

@@ -6,8 +6,7 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 
 EditTextArea.propTypes = {
@@ -47,7 +46,7 @@ export default function EditTextArea({
         style={{
           marginTop,
           position: 'relative',
-          ...(commentExceedsCharLimit || {})
+          ...(commentExceedsCharLimit?.style || {})
         }}
         minRows={rows}
         value={editedText}
@@ -56,10 +55,7 @@ export default function EditTextArea({
       />
       {commentExceedsCharLimit && (
         <small style={{ color: 'red', fontSize: '1.3rem', lineHeight: 1 }}>
-          {renderCharLimit({
-            contentType: 'comment',
-            text: editedText
-          })}
+          {commentExceedsCharLimit?.message}
         </small>
       )}
       <div
@@ -74,7 +70,7 @@ export default function EditTextArea({
           onClick={onSubmit}
           disabled={
             (!allowEmptyText && stringIsEmpty(editedText)) ||
-            commentExceedsCharLimit ||
+            !!commentExceedsCharLimit ||
             text === editedText ||
             disabled
           }

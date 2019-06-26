@@ -4,7 +4,12 @@ import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { connect } from 'react-redux';
-import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
+import {
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji,
+  exceedsCharLimit
+} from 'helpers/stringHelpers';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -90,6 +95,13 @@ function ChatInput({
     setTimeout(() => {
       onHeightChange(TextareaRef.current?.clientHeight);
     }, 0);
+    console.log(
+      exceedsCharLimit({
+        inputType: 'message',
+        contentType: 'chat',
+        text: event.target.value
+      })
+    );
     onChange(event.target.value);
   }
 

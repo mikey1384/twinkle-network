@@ -12,8 +12,7 @@ import {
   addEmoji,
   exceedsCharLimit,
   stringIsEmpty,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 import SwitchButton from 'components/SwitchButton';
 import { Color } from 'constants/css';
@@ -38,6 +37,11 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
   const [descriptionInputShown, setDescriptionInputShown] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [hasSecretAnswer, setHasSecretAnswer] = useState(false);
+  const titleExceedsCharLimit = exceedsCharLimit({
+    inputType: 'title',
+    contentType: 'subject',
+    text: title
+  });
   const descriptionExceedsCharLimit = exceedsCharLimit({
     contentType: 'subject',
     inputType: 'description',
@@ -71,11 +75,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                 title: addEmoji(event.target.value)
               });
             }}
-            style={exceedsCharLimit({
-              inputType: 'title',
-              contentType: 'subject',
-              text: title
-            })}
+            style={titleExceedsCharLimit?.style}
           />
         </div>
         <div style={{ marginLeft: '1rem' }}>
@@ -110,11 +110,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
                 : Color.darkerGray()
           }}
         >
-          {renderCharLimit({
-            inputType: 'title',
-            contentType: 'subject',
-            text: title
-          })}
+          {titleExceedsCharLimit?.message}
         </span>
       </div>
       {descriptionInputShown && (
@@ -123,7 +119,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
             type="text"
             style={{
               marginTop: '1rem',
-              ...(descriptionExceedsCharLimit || null)
+              ...(descriptionExceedsCharLimit?.style || null)
             }}
             value={description}
             minRows={4}
@@ -145,11 +141,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
           />
           {descriptionExceedsCharLimit && (
             <small style={{ color: 'red' }}>
-              {renderCharLimit({
-                contentType: 'subject',
-                inputType: 'description',
-                text: description
-              })}
+              {descriptionExceedsCharLimit.message}
             </small>
           )}
           {hasSecretAnswer && (
@@ -190,11 +182,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
               />
               {secretAnswerExceedsCharLimit && (
                 <small style={{ color: 'red' }}>
-                  {renderCharLimit({
-                    contentType: 'subject',
-                    inputType: 'description',
-                    text: secretAnswer
-                  })}
+                  {secretAnswerExceedsCharLimit.message}
                 </small>
               )}
             </div>

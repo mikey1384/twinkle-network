@@ -9,8 +9,7 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  renderCharLimit
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 import SortableThumb from 'components/SortableThumb';
 import { DragDropContext } from 'react-dnd';
@@ -119,15 +118,11 @@ function AddPlaylistModal({
                     setTitle(addEmoji(event.target.value));
                   }
                 }}
-                style={titleExceedsCharLimit}
+                style={titleExceedsCharLimit?.style}
               />
               {titleExceedsCharLimit && (
                 <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                  {renderCharLimit({
-                    contentType: 'playlist',
-                    inputType: 'title',
-                    text: title
-                  })}
+                  {titleExceedsCharLimit.message}
                 </small>
               )}
             </section>
@@ -143,15 +138,11 @@ function AddPlaylistModal({
                     setDescription(addEmoji(event.target.value));
                   }
                 }}
-                style={descriptionExceedsCharLimit}
+                style={descriptionExceedsCharLimit?.style}
               />
               {descriptionExceedsCharLimit && (
                 <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                  {renderCharLimit({
-                    contentType: 'playlist',
-                    inputType: 'description',
-                    text: description
-                  })}
+                  {descriptionExceedsCharLimit.message}
                 </small>
               )}
             </section>

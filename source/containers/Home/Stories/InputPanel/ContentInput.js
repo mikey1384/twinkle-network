@@ -13,8 +13,7 @@ import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
-  processedStringWithURL,
-  renderCharLimit
+  processedStringWithURL
 } from 'helpers/stringHelpers';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Banner from 'components/Banner';
@@ -45,6 +44,16 @@ function ContentInput({ dispatch, uploadFeedContent }) {
   const UrlFieldRef = useRef(null);
   const checkContentExistsTimerRef = useRef(null);
   const showHelperMessageTimerRef = useRef(null);
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    inputType: 'description',
+    contentType: form.isVideo ? 'video' : 'url',
+    text: form.description
+  });
+  const titleExceedsCharLimit = exceedsCharLimit({
+    inputType: 'title',
+    contentType: form.isVideo ? 'video' : 'url',
+    text: form.title
+  });
 
   return (
     <ErrorBoundary className={PanelStyle}>
@@ -122,12 +131,14 @@ function ContentInput({ dispatch, uploadFeedContent }) {
                 }}
                 style={{
                   marginTop: '0.5rem',
-                  ...titleExceedsCharLimit()
+                  ...(titleExceedsCharLimit?.style || {})
                 }}
                 type="text"
               />
-              {titleExceedsCharLimit() && (
-                <small style={{ color: 'red' }}>{renderTitleCharLimit()}</small>
+              {titleExceedsCharLimit && (
+                <small style={{ color: 'red' }}>
+                  {titleExceedsCharLimit.message}
+                </small>
               )}
             </>
           )}
@@ -150,12 +161,12 @@ function ContentInput({ dispatch, uploadFeedContent }) {
                 }}
                 style={{
                   marginTop: '1rem',
-                  ...(descriptionExceedsCharLimit() || {})
+                  ...(descriptionExceedsCharLimit?.style || {})
                 }}
               />
-              {descriptionExceedsCharLimit() && (
+              {descriptionExceedsCharLimit && (
                 <small style={{ color: 'red' }}>
-                  {renderDescriptionCharLimit()}
+                  {descriptionExceedsCharLimit?.message}
                 </small>
               )}
             </>
@@ -183,8 +194,8 @@ function ContentInput({ dispatch, uploadFeedContent }) {
     const { url, title } = form;
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
     if (errorInUrlField()) return true;
-    if (titleExceedsCharLimit()) return true;
-    if (descriptionExceedsCharLimit()) return true;
+    if (titleExceedsCharLimit) return true;
+    if (descriptionExceedsCharLimit) return true;
     return false;
   }
 
@@ -195,7 +206,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
       inputType: 'url',
       contentType: isVideo ? 'video' : 'url',
       text: url
-    });
+    })?.style;
   }
 
   async function onSubmit(event) {
@@ -278,42 +289,6 @@ function ContentInput({ dispatch, uploadFeedContent }) {
       type: isVideo ? 'video' : 'url'
     });
     return setAlreadyPosted(exists ? content : false);
-  }
-
-  function renderDescriptionCharLimit() {
-    const { isVideo, description } = form;
-    return renderCharLimit({
-      inputType: 'description',
-      contentType: isVideo ? 'video' : 'url',
-      text: description
-    });
-  }
-
-  function renderTitleCharLimit() {
-    const { isVideo, title } = form;
-    return renderCharLimit({
-      inputType: 'title',
-      contentType: isVideo ? 'video' : 'url',
-      text: title
-    });
-  }
-
-  function descriptionExceedsCharLimit() {
-    const { isVideo, description } = form;
-    return exceedsCharLimit({
-      inputType: 'description',
-      contentType: isVideo ? 'video' : 'url',
-      text: description
-    });
-  }
-
-  function titleExceedsCharLimit() {
-    const { isVideo, title } = form;
-    return exceedsCharLimit({
-      inputType: 'title',
-      contentType: isVideo ? 'video' : 'url',
-      text: title
-    });
   }
 }
 

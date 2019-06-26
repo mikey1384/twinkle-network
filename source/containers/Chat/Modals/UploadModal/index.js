@@ -12,7 +12,7 @@ UploadModal.propTypes = {
 
 export default function UploadModal({ fileObj, onHide }) {
   return (
-    <Modal large onHide={onHide}>
+    <Modal onHide={onHide}>
       <header>Upload a file</header>
       <main>{fileObj ? <File fileObj={fileObj} /> : <Loading />}</main>
       <footer>

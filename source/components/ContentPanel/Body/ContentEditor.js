@@ -11,8 +11,7 @@ import {
   finalizeEmoji,
   stringIsEmpty,
   isValidUrl,
-  isValidYoutubeUrl,
-  renderCharLimit
+  isValidYoutubeUrl
 } from 'helpers/stringHelpers';
 
 ContentEditor.propTypes = {
@@ -47,7 +46,9 @@ export default function ContentEditor({
     editedSecretAnswer: secretAnswer || '',
     editedTitle: title || '',
     editedUrl:
-      type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content
+      type === 'video'
+        ? `https://www.youtube.com/watch?v=${content}`
+        : content || ''
   });
   const {
     editedContent,
@@ -60,6 +61,26 @@ export default function ContentEditor({
   const urlError =
     !stringIsEmpty(editedUrl) &&
     !(type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl));
+  const descriptionExceedsCharLimit = exceedsCharLimit({
+    contentType: type,
+    inputType: 'description',
+    text: type === 'comment' ? editedComment : editedDescription
+  });
+  const secretAnswerExceedsCharLimit = exceedsCharLimit({
+    inputType: 'description',
+    contentType: type,
+    text: editedSecretAnswer
+  });
+  const titleExceedsCharLimit = exceedsCharLimit({
+    contentType: type,
+    inputType: 'title',
+    text: editedTitle
+  });
+  const urlExceedsCharLimit = exceedsCharLimit({
+    contentType: type,
+    inputType: 'url',
+    text: editedUrl
+  });
 
   return (
     <div
@@ -89,30 +110,11 @@ export default function ContentEditor({
               }
               placeholder={edit[type]}
               value={editedUrl}
-              style={exceedsCharLimit({
-                contentType: type,
-                inputType: 'url',
-                text: editedUrl
-              })}
+              style={urlExceedsCharLimit?.style}
             />
-            {(exceedsCharLimit({
-              contentType: type,
-              inputType: 'url',
-              text: editedUrl
-            }) ||
-              urlError) && (
+            {(urlExceedsCharLimit || urlError) && (
               <small style={{ color: 'red', lineHeight: 0.5 }}>
-                {exceedsCharLimit({
-                  contentType: type,
-                  inputType: 'url',
-                  text: editedUrl
-                })
-                  ? renderCharLimit({
-                      inputType: 'url',
-                      contentType: type,
-                      text: editedUrl
-                    })
-                  : 'Please check the url'}
+                {urlExceedsCharLimit?.message || 'Please check the url'}
               </small>
             )}
           </div>
@@ -135,24 +137,10 @@ export default function ContentEditor({
               }
               placeholder={edit.title}
               value={editedTitle}
-              style={exceedsCharLimit({
-                contentType: type,
-                inputType: 'title',
-                text: editedTitle
-              })}
+              style={titleExceedsCharLimit?.style}
             />
-            <small
-              style={exceedsCharLimit({
-                contentType: type,
-                inputType: 'title',
-                text: editedTitle
-              })}
-            >
-              {renderCharLimit({
-                inputType: 'title',
-                contentType: type,
-                text: editedTitle
-              })}
+            <small style={titleExceedsCharLimit?.style}>
+              {titleExceedsCharLimit?.message}
             </small>
           </>
         )}
@@ -171,23 +159,11 @@ export default function ContentEditor({
             }}
             placeholder={edit[type === 'comment' ? 'comment' : 'description']}
             value={type === 'comment' ? editedComment : editedDescription}
-            style={exceedsCharLimit({
-              contentType: type,
-              inputType: 'description',
-              text: editedDescription
-            })}
+            style={descriptionExceedsCharLimit?.style}
           />
-          {exceedsCharLimit({
-            contentType: type,
-            inputType: 'description',
-            text: editedDescription
-          }) && (
+          {descriptionExceedsCharLimit && (
             <small style={{ color: 'red' }}>
-              {renderCharLimit({
-                inputType: 'description',
-                contentType: type,
-                text: editedDescription
-              })}
+              {descriptionExceedsCharLimit?.message}
             </small>
           )}
         </div>
@@ -207,24 +183,12 @@ export default function ContentEditor({
               value={editedSecretAnswer}
               style={{
                 marginTop: '0.7rem',
-                ...exceedsCharLimit({
-                  contentType: type,
-                  inputType: 'description',
-                  text: editedSecretAnswer
-                })
+                ...(secretAnswerExceedsCharLimit?.style || {})
               }}
             />
-            {exceedsCharLimit({
-              contentType: type,
-              inputType: 'description',
-              text: editedSecretAnswer
-            }) && (
+            {secretAnswerExceedsCharLimit && (
               <small style={{ color: 'red' }}>
-                {renderCharLimit({
-                  inputType: 'description',
-                  contentType: type,
-                  text: editedSecretAnswer
-                })}
+                {secretAnswerExceedsCharLimit.message}
               </small>
             )}
           </div>
@@ -260,41 +224,16 @@ export default function ContentEditor({
       type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content;
     const isValid =
       type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl);
-    if (
-      exceedsCharLimit({
-        contentType: type,
-        inputType: 'title',
-        text: editedTitle
-      })
-    ) {
+    if (titleExceedsCharLimit) {
       return true;
     }
-    if (
-      exceedsCharLimit({
-        contentType: type,
-        inputType: 'description',
-        text: editedDescription
-      })
-    ) {
+    if (descriptionExceedsCharLimit) {
       return true;
     }
-    if (
-      exceedsCharLimit({
-        contentType: type,
-        inputType: 'description',
-        text: editedSecretAnswer
-      })
-    ) {
+    if (secretAnswerExceedsCharLimit) {
       return true;
     }
-    if (
-      (type === 'vidoe' || type === 'url') &&
-      exceedsCharLimit({
-        contentType: type,
-        inputType: 'url',
-        text: editedUrl
-      })
-    ) {
+    if ((type === 'vidoe' || type === 'url') && urlExceedsCharLimit) {
       return true;
     }
 
