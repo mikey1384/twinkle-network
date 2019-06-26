@@ -36,13 +36,13 @@ export default function File({ fileObj }) {
         justifyContent: 'space-between'
       }}
     >
-      <div style={{ width: '15vw', height: '15vw' }}>
+      <div style={{ width: '13vw', height: '13vw' }}>
         {fileType === 'image' && <Image imageObj={fileObj} />}
-        {fileType !== 'image' && <FileIcon />}
+        {fileType !== 'image' && <FileIcon fileType={fileType} />}
       </div>
       <div
         style={{
-          width: 'CALC(100% - 15vw - 1rem)',
+          width: 'CALC(100% - 13vw - 2rem)',
           fontSize: '2rem',
           fontWeight: 'bold',
           display: 'flex',
@@ -52,10 +52,15 @@ export default function File({ fileObj }) {
       >
         <div>
           <div>File Name: {fileObj.name}</div>
-          <div>File Size: {addCommasToNumber(fileObj.size)} byte</div>
+          <div>
+            File Size: {addCommasToNumber(fileObj.size)} byte
+            {renderFileSize(fileObj.size)}
+          </div>
         </div>
         <div>
           <Textarea
+            autoFocus
+            style={{ marginTop: '1rem' }}
             value="text"
             onChange={() => console.log('change')}
             minRows={3}
@@ -67,9 +72,38 @@ export default function File({ fileObj }) {
 }
 
 function checkFileType(extension) {
-  const imageExt = ['jpg', 'png', 'jpeg'];
+  const audioExt = ['wav', '.aif', 'mp3', 'mid'];
+  const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif'];
+  const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
+  const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
+  const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
+  if (audioExt.indexOf(extension) !== -1) {
+    return 'audio';
+  }
   if (imageExt.indexOf(extension) !== -1) {
     return 'image';
   }
-  return 'other files';
+  if (movieExt.indexOf(extension) !== -1) {
+    return 'video';
+  }
+  if (compressedExt.indexOf(extension) !== -1) {
+    return 'archive';
+  }
+  if (wordExt.indexOf(extension) !== -1) {
+    return 'word';
+  }
+  if (extension === 'pdf') {
+    return 'pdf';
+  }
+  return 'other';
+}
+
+function renderFileSize(fileSize) {
+  if (fileSize > 1000000) {
+    return ` (${(fileSize / 1000000).toFixed(2)} MB)`;
+  }
+  if (fileSize > 1000) {
+    return ` (${(fileSize / 1000).toFixed(2)} KB)`;
+  }
+  return null;
 }

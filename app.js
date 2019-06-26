@@ -20,6 +20,12 @@ import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
 import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
+import { faFile } from '@fortawesome/pro-solid-svg-icons/faFile';
+import { faFileArchive } from '@fortawesome/pro-solid-svg-icons/faFileArchive';
+import { faFileAudio } from '@fortawesome/pro-solid-svg-icons/faFileAudio';
+import { faFilePdf } from '@fortawesome/pro-solid-svg-icons/faFilePdf';
+import { faFileVideo } from '@fortawesome/pro-solid-svg-icons/faFileVideo';
+import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
@@ -53,6 +59,12 @@ library.add(
   faComment,
   faCommentAlt,
   faComments,
+  faFile,
+  faFileArchive,
+  faFileAudio,
+  faFilePdf,
+  faFileVideo,
+  faFileWord,
   faFilm,
   faHome,
   faLink,
