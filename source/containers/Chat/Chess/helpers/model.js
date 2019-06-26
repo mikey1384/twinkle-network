@@ -63,7 +63,7 @@ export function checkerPos({ squares, kingIndex, myColor }) {
       continue;
     }
     if (
-      getPiece({ piece: squares[i], myColor }).isMovePossible({
+      getPiece({ piece: squares[i], myColor })?.isMovePossible({
         src: i,
         dest: kingIndex,
         isDestEnemyOccupied: true,
@@ -205,7 +205,9 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
       const blackBishopIsOnShadedSquare =
         blackBishopRowIsEven === blackBishopColumnIsEven;
 
-      if (whiteBishopIsOnShadedSquare === blackBishopIsOnShadedSquare) { return 'Draw'; }
+      if (whiteBishopIsOnShadedSquare === blackBishopIsOnShadedSquare) {
+        return 'Draw';
+      }
     }
   }
 
@@ -375,7 +377,7 @@ export function isPossibleAndLegal({
     return false;
   }
   return (
-    getPiece({ piece: squares[src], myColor }).isMovePossible({
+    getPiece({ piece: squares[src], myColor })?.isMovePossible({
       color: squares[src].color,
       src,
       dest,
