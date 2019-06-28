@@ -24,6 +24,9 @@ LinkItem.propTypes = {
   link: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
+    numComments: PropTypes.number,
+    siteUrl: PropTypes.string,
+    thumbUrl: PropTypes.string,
     title: PropTypes.string.isRequired,
     timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired,

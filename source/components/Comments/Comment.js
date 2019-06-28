@@ -31,6 +31,7 @@ Comment.propTypes = {
   canEdit: PropTypes.bool,
   canStar: PropTypes.bool,
   comment: PropTypes.shape({
+    commentId: PropTypes.number,
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
     likes: PropTypes.array.isRequired,

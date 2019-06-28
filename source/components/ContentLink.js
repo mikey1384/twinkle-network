@@ -6,8 +6,11 @@ import { removeLineBreaks } from 'helpers/stringHelpers';
 
 ContentLink.propTypes = {
   content: PropTypes.shape({
+    byUser: PropTypes.number,
+    content: PropTypes.string,
     id: PropTypes.number,
-    title: PropTypes.string
+    title: PropTypes.string,
+    username: PropTypes.string
   }).isRequired,
   style: PropTypes.object,
   type: PropTypes.string
