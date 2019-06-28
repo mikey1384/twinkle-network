@@ -4,16 +4,23 @@ import Loading from 'components/Loading';
 import Image from './Image';
 import FileIcon from './FileIcon';
 import Textarea from 'components/Texts/Textarea';
-import { addCommasToNumber } from 'helpers/stringHelpers';
+import { addCommasToNumber, addEmoji } from 'helpers/stringHelpers';
 
 File.propTypes = {
-  fileObj: PropTypes.object.isRequired
+  captionExceedsCharLimit: PropTypes.object,
+  caption: PropTypes.string,
+  fileObj: PropTypes.object.isRequired,
+  onCaptionChange: PropTypes.func.isRequired
 };
 
-export default function File({ fileObj }) {
+export default function File({
+  caption,
+  captionExceedsCharLimit,
+  fileObj,
+  onCaptionChange
+}) {
   const [fileType, setFileType] = useState(false);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (fileObj) {
       setLoading(false);
@@ -60,15 +67,37 @@ export default function File({ fileObj }) {
         <div>
           <Textarea
             autoFocus
-            style={{ marginTop: '1rem' }}
-            value="text"
-            onChange={() => console.log('change')}
+            placeholder="Add a caption..."
+            style={{
+              marginTop: '1rem',
+              ...(captionExceedsCharLimit?.style || {})
+            }}
+            value={caption}
+            onChange={event => onCaptionChange(event.target.value)}
+            onKeyUp={handleKeyUp}
             minRows={3}
           />
+          {captionExceedsCharLimit && (
+            <div
+              style={{
+                fontWeight: 'normal',
+                fontSize: '1.3rem',
+                color: 'red'
+              }}
+            >
+              {captionExceedsCharLimit.message}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
+
+  function handleKeyUp(event) {
+    if (event.key === ' ') {
+      onCaptionChange(addEmoji(event.target.value));
+    }
+  }
 }
 
 function checkFileType(extension) {

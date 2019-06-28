@@ -41,6 +41,11 @@ function ChatInput({
     TextareaRef.current.focus();
   }, [currentChannelId]);
   const themeColor = profileTheme || 'logoBlue';
+  const messageExceedsCharLimit = exceedsCharLimit({
+    inputType: 'message',
+    contentType: 'chat',
+    text: message
+  });
 
   return (
     <>
@@ -75,7 +80,10 @@ function ChatInput({
             }
           }}
           autoFocus
-          style={{ marginRight: '1rem' }}
+          style={{
+            marginRight: '1rem',
+            ...(messageExceedsCharLimit?.style || {})
+          }}
         />
         <div
           style={{
@@ -95,20 +103,13 @@ function ChatInput({
     setTimeout(() => {
       onHeightChange(TextareaRef.current?.clientHeight);
     }, 0);
-    console.log(
-      exceedsCharLimit({
-        inputType: 'message',
-        contentType: 'chat',
-        text: event.target.value
-      })
-    );
     onChange(event.target.value);
   }
 
   function onKeyDown(event) {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    if (enterKeyPressed && !shiftKeyPressed) {
+    if (enterKeyPressed && !shiftKeyPressed && !messageExceedsCharLimit) {
       event.preventDefault();
       if (stringIsEmpty(message)) return;
       onMessageSubmit(finalizeEmoji(message));

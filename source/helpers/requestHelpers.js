@@ -673,6 +673,19 @@ export const uploadFeaturedPlaylists = async({
   }
 };
 
+export const uploadFileData = async({ dispatch, fileData, fileName }) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/content/file`,
+      { fileData, fileName },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const uploadSubject = async({
   type,
   contentId,
