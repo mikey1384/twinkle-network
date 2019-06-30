@@ -38,11 +38,16 @@ Reply.propTypes = {
   loadRepliesOfReply: PropTypes.func,
   parent: PropTypes.object.isRequired,
   reply: PropTypes.shape({
+    commentId: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
     likes: PropTypes.array,
+    numReplies: PropTypes.number,
     originType: PropTypes.string,
     profilePicId: PropTypes.number,
+    replyId: PropTypes.number,
+    stars: PropTypes.array,
+    targetObj: PropTypes.object,
     targetUserId: PropTypes.number,
     targetUserName: PropTypes.string,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

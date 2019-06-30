@@ -8,7 +8,8 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 Replies.propTypes = {
   comment: PropTypes.shape({
-    id: PropTypes.number.isRequired
+    id: PropTypes.number.isRequired,
+    loadMoreButton: PropTypes.bool
   }).isRequired,
   subject: PropTypes.object,
   parent: PropTypes.object.isRequired,

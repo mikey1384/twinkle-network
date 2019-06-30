@@ -19,7 +19,9 @@ Cover.propTypes = {
     profilePicId: PropTypes.number,
     profileTheme: PropTypes.string,
     realName: PropTypes.string,
-    username: PropTypes.string
+    twinkleXP: PropTypes.number,
+    username: PropTypes.string,
+    userType: PropTypes.string
   }),
   onSelectTheme: PropTypes.func.isRequired,
   onSetTheme: PropTypes.func.isRequired,
@@ -32,7 +34,6 @@ function Cover({
   userId,
   profile: {
     id,
-    rank,
     profilePicId,
     online,
     profileTheme,

@@ -42,6 +42,7 @@ Comments.propTypes = {
   onReplySubmit: PropTypes.func.isRequired,
   onRewardCommentEdit: PropTypes.func.isRequired,
   parent: PropTypes.shape({
+    commentId: PropTypes.number,
     id: PropTypes.number.isRequired,
     type: PropTypes.string.isRequired
   }).isRequired,
