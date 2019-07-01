@@ -20,11 +20,7 @@ function UploadModal({ dispatch, fileObj, onHide }) {
   useEffect(() => {
     init();
     function init() {
-      const reader = new FileReader();
-      reader.onload = upload => {
-        setSelectedFile(upload.target.result);
-      };
-      reader.readAsDataURL(fileObj);
+      setSelectedFile(fileObj);
     }
   }, []);
   const captionExceedsCharLimit = exceedsCharLimit({
@@ -64,12 +60,9 @@ function UploadModal({ dispatch, fileObj, onHide }) {
   );
 
   async function handleSubmit() {
-    const fileData = new FormData();
-    fileData.append('file', selectedFile);
     const data = await uploadFileData({
       dispatch,
-      fileData,
-      fileName: fileObj.name
+      selectedFile
     });
     console.log(data);
   }
