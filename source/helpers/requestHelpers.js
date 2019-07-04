@@ -28,7 +28,7 @@ export function handleError(error, dispatch) {
   return Promise.reject(error);
 }
 
-export const addVideoToPlaylists = async({
+export const addVideoToPlaylists = async ({
   dispatch,
   videoId,
   playlistIds
@@ -45,7 +45,7 @@ export const addVideoToPlaylists = async({
   }
 };
 
-export const checkIfContentExists = async({ url, videoCode, type }) => {
+export const checkIfContentExists = async ({ url, videoCode, type }) => {
   try {
     const {
       data: { exists, content }
@@ -86,7 +86,7 @@ export const checkIfUserResponded = async subjectId => {
   }
 };
 
-export const deleteContent = async({ id, type, dispatch }) => {
+export const deleteContent = async ({ id, type, dispatch }) => {
   try {
     await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());
     return Promise.resolve({ contentId: id, type });
@@ -95,7 +95,7 @@ export const deleteContent = async({ id, type, dispatch }) => {
   }
 };
 
-export const deleteSubject = async({ subjectId, dispatch }) => {
+export const deleteSubject = async ({ subjectId, dispatch }) => {
   try {
     await request.delete(
       `${URL}/content/subjects?subjectId=${subjectId}`,
@@ -107,7 +107,7 @@ export const deleteSubject = async({ subjectId, dispatch }) => {
   }
 };
 
-export const editContent = async({ params, dispatch }) => {
+export const editContent = async ({ params, dispatch }) => {
   try {
     const { data } = await request.put(`${URL}/content`, params, auth());
     return Promise.resolve(data);
@@ -116,7 +116,7 @@ export const editContent = async({ params, dispatch }) => {
   }
 };
 
-export const editSubject = async({
+export const editSubject = async ({
   subjectId,
   editedTitle,
   editedDescription,
@@ -135,7 +135,7 @@ export const editSubject = async({
   }
 };
 
-export const editPlaylistVideos = async({
+export const editPlaylistVideos = async ({
   addedVideoIds,
   dispatch,
   removedVideoIds,
@@ -153,7 +153,7 @@ export const editPlaylistVideos = async({
   }
 };
 
-export const fetchPlaylistsContaining = async({ videoId }) => {
+export const fetchPlaylistsContaining = async ({ videoId }) => {
   try {
     const { data: playlists } = await request.get(
       `${URL}/playlist/containing?videoId=${videoId}`
@@ -177,7 +177,7 @@ export const fetchCurrentChessState = async channelId => {
   }
 };
 
-export const likeContent = async({ id, type, dispatch }) => {
+export const likeContent = async ({ id, type, dispatch }) => {
   try {
     const {
       data: { likes }
@@ -188,7 +188,7 @@ export const likeContent = async({ id, type, dispatch }) => {
   }
 };
 
-export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
+export const loadChat = async ({ channelId, dispatch, testAuth } = {}) => {
   try {
     const { data } = await request.get(
       `${URL}/chat?channelId=${channelId}`,
@@ -200,7 +200,7 @@ export const loadChat = async({ channelId, dispatch, testAuth } = {}) => {
   }
 };
 
-export const loadContent = async({ contentId, type }) => {
+export const loadContent = async ({ contentId, type }) => {
   try {
     const { data } = await request.get(
       `${URL}/content?contentId=${contentId}&type=${type}`
@@ -212,7 +212,7 @@ export const loadContent = async({ contentId, type }) => {
   }
 };
 
-export const loadComments = async({ id, type, lastCommentId, limit }) => {
+export const loadComments = async ({ id, type, lastCommentId, limit }) => {
   try {
     const {
       data: { comments, loadMoreButton }
@@ -226,7 +226,7 @@ export const loadComments = async({ id, type, lastCommentId, limit }) => {
   }
 };
 
-export const loadFeaturedChallenges = async() => {
+export const loadFeaturedChallenges = async () => {
   try {
     const { data } = await request.get(`${URL}/content/featured/challenges`);
     return Promise.resolve(data);
@@ -236,7 +236,7 @@ export const loadFeaturedChallenges = async() => {
   }
 };
 
-export const loadFeaturedPlaylists = async() => {
+export const loadFeaturedPlaylists = async () => {
   try {
     const { data } = await request.get(`${URL}/content/featured/playlists`);
     return Promise.resolve(data);
@@ -246,7 +246,7 @@ export const loadFeaturedPlaylists = async() => {
   }
 };
 
-export const loadFeeds = async({
+export const loadFeeds = async ({
   filter = 'all',
   order = 'desc',
   orderBy = 'lastInteraction',
@@ -267,7 +267,7 @@ export const loadFeeds = async({
   }
 };
 
-export const loadNotableContent = async({ userId }) => {
+export const loadNotableContent = async ({ userId }) => {
   try {
     const {
       data: { results, loadMoreButton }
@@ -279,7 +279,7 @@ export const loadNotableContent = async({ userId }) => {
   }
 };
 
-export const loadMoreNotableContents = async({ userId, notables }) => {
+export const loadMoreNotableContents = async ({ userId, notables }) => {
   try {
     const {
       data: { results, loadMoreButton }
@@ -299,7 +299,7 @@ export const loadMoreNotableContents = async({ userId, notables }) => {
   }
 };
 
-export const loadReplies = async({ lastReplyId, commentId }) => {
+export const loadReplies = async ({ lastReplyId, commentId }) => {
   try {
     const { data } = await request.get(
       `${URL}/content/replies?${
@@ -313,7 +313,7 @@ export const loadReplies = async({ lastReplyId, commentId }) => {
   }
 };
 
-export const loadSubjects = async({ type, contentId, lastSubjectId }) => {
+export const loadSubjects = async ({ type, contentId, lastSubjectId }) => {
   try {
     const { data } = await request.get(
       `${URL}/content/subjects?contentId=${contentId}&type=${type}&lastSubjectId=${lastSubjectId}`
@@ -337,7 +337,7 @@ export const loadMonthlyXp = async userId => {
   }
 };
 
-export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
+export const loadNewFeeds = async ({ lastInteraction, shownFeeds }) => {
   try {
     const { data } = await request.get(
       `${URL}/content/newFeeds?lastInteraction=${lastInteraction}${
@@ -351,7 +351,7 @@ export const loadNewFeeds = async({ lastInteraction, shownFeeds }) => {
   }
 };
 
-export const loadPlaylists = async({ shownPlaylists }) => {
+export const loadPlaylists = async ({ shownPlaylists }) => {
   try {
     const {
       data: { results, loadMoreButton }
@@ -369,7 +369,7 @@ export const loadPlaylists = async({ shownPlaylists }) => {
   }
 };
 
-export const loadPlaylistVideos = async({
+export const loadPlaylistVideos = async ({
   limit,
   shownVideos,
   targetVideos,
@@ -406,7 +406,7 @@ export const loadPlaylistVideos = async({
   }
 };
 
-export const loadUploads = async({
+export const loadUploads = async ({
   limit,
   contentId,
   includeRoot,
@@ -433,7 +433,7 @@ export const loadUploads = async({
   }
 };
 
-export const reorderPlaylistVideos = async({
+export const reorderPlaylistVideos = async ({
   dispatch,
   originalVideoIds,
   reorderedVideoIds,
@@ -451,7 +451,7 @@ export const reorderPlaylistVideos = async({
   }
 };
 
-export const reportBug = async({ error, info }) => {
+export const reportBug = async ({ error, info }) => {
   const errorStack = await StackTrace.fromError(error);
   await StackTrace.report(errorStack, `${URL}/user/error`, {
     clientVersion,
@@ -462,7 +462,7 @@ export const reportBug = async({ error, info }) => {
   return Promise.resolve();
 };
 
-export const searchContent = async({
+export const searchContent = async ({
   filter,
   limit,
   searchText,
@@ -487,7 +487,7 @@ export const searchContent = async({
   }
 };
 
-export const setByUser = async({ contentId, dispatch }) => {
+export const setByUser = async ({ contentId, dispatch }) => {
   try {
     const {
       data: { byUser }
@@ -498,7 +498,7 @@ export const setByUser = async({ contentId, dispatch }) => {
   }
 };
 
-export const setChessMoveViewTimeStamp = async({
+export const setChessMoveViewTimeStamp = async ({
   channelId,
   messageId,
   dispatch
@@ -515,7 +515,7 @@ export const setChessMoveViewTimeStamp = async({
   }
 };
 
-export const setDefaultSearchFilter = async({ filter, dispatch }) => {
+export const setDefaultSearchFilter = async ({ filter, dispatch }) => {
   try {
     const { data } = await request.post(
       `${URL}/user/searchFilter`,
@@ -528,7 +528,7 @@ export const setDefaultSearchFilter = async({ filter, dispatch }) => {
   }
 };
 
-export const setDifficulty = async({
+export const setDifficulty = async ({
   difficulty,
   contentId,
   dispatch,
@@ -546,7 +546,7 @@ export const setDifficulty = async({
   }
 };
 
-export const setTheme = async({ color, dispatch }) => {
+export const setTheme = async ({ color, dispatch }) => {
   try {
     await request.put(`${URL}/user/theme`, { color }, auth());
     return Promise.resolve();
@@ -555,7 +555,7 @@ export const setTheme = async({ color, dispatch }) => {
   }
 };
 
-export const startNewDMChannel = async({ dispatch, ...params }) => {
+export const startNewDMChannel = async ({ dispatch, ...params }) => {
   try {
     const { data } = await request.post(
       `${URL}/chat/channel/twoPeople`,
@@ -568,7 +568,7 @@ export const startNewDMChannel = async({ dispatch, ...params }) => {
   }
 };
 
-export const uploadProfileInfo = async({
+export const uploadProfileInfo = async ({
   dispatch,
   email,
   website,
@@ -593,7 +593,7 @@ export const uploadProfileInfo = async({
   }
 };
 
-export const uploadGreeting = async({ greeting, dispatch }) => {
+export const uploadGreeting = async ({ greeting, dispatch }) => {
   try {
     await request.put(`${URL}/user/greeting`, { greeting }, auth());
     return Promise.resolve();
@@ -602,7 +602,7 @@ export const uploadGreeting = async({ greeting, dispatch }) => {
   }
 };
 
-export const uploadComment = async({
+export const uploadComment = async ({
   content,
   parent,
   rootCommentId,
@@ -621,7 +621,7 @@ export const uploadComment = async({
   }
 };
 
-export const uploadContent = async({
+export const uploadContent = async ({
   attachment,
   url,
   isVideo,
@@ -642,7 +642,7 @@ export const uploadContent = async({
   }
 };
 
-export const uploadFeaturedChallenges = async({ dispatch, selected }) => {
+export const uploadFeaturedChallenges = async ({ dispatch, selected }) => {
   try {
     const challenges = await request.post(
       `${URL}/content/featured/challenges`,
@@ -655,7 +655,7 @@ export const uploadFeaturedChallenges = async({ dispatch, selected }) => {
   }
 };
 
-export const uploadFeaturedPlaylists = async({
+export const uploadFeaturedPlaylists = async ({
   dispatch,
   selectedPlaylists
 }) => {
@@ -673,14 +673,16 @@ export const uploadFeaturedPlaylists = async({
   }
 };
 
-export const uploadFileData = async({
+export const uploadFileData = async ({
   dispatch,
   selectedFile,
-  onUploadProgress
+  onUploadProgress,
+  path
 }) => {
   try {
     const fileData = new FormData();
     fileData.append('file', selectedFile, selectedFile.name);
+    fileData.append('path', path);
     const { data } = await request.post(`${URL}/content/file`, fileData, {
       ...auth(),
       onUploadProgress
@@ -691,7 +693,7 @@ export const uploadFileData = async({
   }
 };
 
-export const uploadSubject = async({
+export const uploadSubject = async ({
   type,
   contentId,
   title,
@@ -711,7 +713,7 @@ export const uploadSubject = async({
   }
 };
 
-export const uploadPlaylist = async({
+export const uploadPlaylist = async ({
   dispatch,
   title,
   description,
@@ -731,7 +733,7 @@ export const uploadPlaylist = async({
   }
 };
 
-export const sendVerificationEmail = async({ dispatch }) => {
+export const sendVerificationEmail = async ({ dispatch }) => {
   try {
     const { data } = await request.put(
       `${URL}/user/email/verify`,
@@ -744,7 +746,7 @@ export const sendVerificationEmail = async({ dispatch }) => {
   }
 };
 
-export const verifyEmail = async({ token }) => {
+export const verifyEmail = async ({ token }) => {
   try {
     const {
       data: { username }

@@ -153,7 +153,7 @@ function Message({
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : fileToUpload ? (
-              <FileUploadStatusIndicator />
+              <FileUploadStatusIndicator fileToUpload={fileToUpload} />
             ) : (
               <TextMessage
                 authLevel={authLevel}

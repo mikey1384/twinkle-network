@@ -5,7 +5,6 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import File from './File';
 import { exceedsCharLimit } from 'helpers/stringHelpers';
-// import { uploadFileData } from 'helpers/requestHelpers';
 import { submitMessageAsync } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 
@@ -79,21 +78,7 @@ function UploadModal({
       channelId,
       fileToUpload: selectedFile
     });
-    /*
-    const data = await uploadFileData({
-      dispatch,
-      selectedFile,
-      onUploadProgress: handleUploadProgress
-    });
-    console.log(data);
-    */
   }
-
-  /*
-  function handleUploadProgress({ loaded, total }) {
-    console.log((loaded * 100) / total, 'new');
-  }
-  */
 }
 
 export default connect(
