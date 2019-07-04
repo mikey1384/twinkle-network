@@ -475,6 +475,7 @@ function Chat({
       )}
       {uploadModalShown && (
         <UploadModal
+          channelId={currentChannel.id}
           fileObj={fileObj}
           onHide={() => setUploadModalShown(false)}
         />

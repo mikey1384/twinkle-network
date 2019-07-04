@@ -5,16 +5,31 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import File from './File';
 import { exceedsCharLimit } from 'helpers/stringHelpers';
-import { uploadFileData } from 'helpers/requestHelpers';
+// import { uploadFileData } from 'helpers/requestHelpers';
+import { submitMessageAsync } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 
 UploadModal.propTypes = {
+  channelId: PropTypes.number,
   fileObj: PropTypes.object,
   onHide: PropTypes.func.isRequired,
+  userId: PropTypes.number,
+  username: PropTypes.string,
+  profilePicId: PropTypes.number,
+  submitMessage: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
-function UploadModal({ dispatch, fileObj, onHide }) {
+function UploadModal({
+  channelId,
+  dispatch,
+  fileObj,
+  onHide,
+  submitMessage,
+  userId,
+  username,
+  profilePicId
+}) {
   const [caption, setCaption] = useState('');
   const [selectedFile, setSelectedFile] = useState('');
   useEffect(() => {
@@ -57,20 +72,38 @@ function UploadModal({ dispatch, fileObj, onHide }) {
   );
 
   async function handleSubmit() {
+    submitMessage({
+      userId,
+      username,
+      profilePicId,
+      channelId,
+      fileToUpload: selectedFile
+    });
+    /*
     const data = await uploadFileData({
       dispatch,
       selectedFile,
       onUploadProgress: handleUploadProgress
     });
     console.log(data);
+    */
   }
 
+  /*
   function handleUploadProgress({ loaded, total }) {
     console.log((loaded * 100) / total, 'new');
   }
+  */
 }
 
 export default connect(
-  null,
-  dispatch => ({ dispatch })
+  state => ({
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
+    profilePicId: state.UserReducer.profilePicId
+  }),
+  dispatch => ({
+    dispatch,
+    submitMessage: params => dispatch(submitMessageAsync(params))
+  })
 )(UploadModal);

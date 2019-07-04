@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import FileUploadStatusIndicator from './FileUploadStatusIndicator';
 import moment from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -55,6 +56,7 @@ function Message({
   message,
   message: {
     id: messageId,
+    fileToUpload,
     userId,
     timeStamp,
     content,
@@ -83,6 +85,7 @@ function Message({
   const [spoilerOff, setSpoilerOff] = useState(false);
   useEffect(() => {
     if (
+      !message.fileToUpload &&
       !message.id &&
       message.userId === myId &&
       !message.isSubject &&
@@ -149,6 +152,8 @@ function Message({
                 opponentName={channelName}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
+            ) : fileToUpload ? (
+              <FileUploadStatusIndicator />
             ) : (
               <TextMessage
                 authLevel={authLevel}
