@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from 'components/Button';
-import { Color } from 'constants/css';
 import Loading from 'components/Loading';
 import Message from './Message';
 import SubjectHeader from './SubjectHeader';
@@ -267,7 +266,7 @@ class MessagesContainer extends Component {
     );
   }
 
-  onDelete = async() => {
+  onDelete = async () => {
     const { deleteMessage } = this.props;
     const { messageId } = this.state.deleteModal;
     try {
@@ -280,7 +279,7 @@ class MessagesContainer extends Component {
     }
   };
 
-  onLoadMoreButtonClick = async() => {
+  onLoadMoreButtonClick = async () => {
     const messageId = this.props.messages[0].id;
     const channelId = this.props.messages[0].channelId;
     const { userId, loadMoreMessages } = this.props;
@@ -303,7 +302,6 @@ class MessagesContainer extends Component {
     } = this.props;
     return messages.map((message, index) => {
       let { isNotification } = message;
-      let messageStyle = isNotification ? { color: Color.gray() } : null;
       return (
         <Message
           key={message.id || 'newMessage' + index}
@@ -314,7 +312,7 @@ class MessagesContainer extends Component {
           index={index}
           onChessBoardClick={onChessBoardClick}
           onChessSpoilerClick={onChessSpoilerClick}
-          style={messageStyle}
+          isNotification={!!isNotification}
           message={message}
           isLastMsg={index === messages.length - 1}
           setScrollToBottom={this.setScrollToBottom}

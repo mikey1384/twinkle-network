@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
-import DropdownButton from 'components/Buttons/DropdownButton';
-import EditTextArea from 'components/Texts/EditTextArea';
-import Button from 'components/Button';
 import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from '../GameOverMessage';
+import TextMessage from './TextMessage';
 import { connect } from 'react-redux';
-import { processedStringWithURL } from 'helpers/stringHelpers';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
 import {
   editMessage,
@@ -36,6 +33,7 @@ Message.propTypes = {
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
+  isNotification: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   setScrollToBottom: PropTypes.func,
@@ -53,6 +51,7 @@ function Message({
   dispatch,
   index,
   isLastMsg,
+  isNotification,
   message,
   message: {
     id: messageId,
@@ -78,12 +77,9 @@ function Message({
   setScrollToBottom,
   showSubjectMsgsModal,
   socketConnected,
-  style,
   updateChessMoveViewTimeStamp
 }) {
   const { username, profilePicId, ...post } = message;
-  const [onEdit, setOnEdit] = useState(false);
-  const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
   useEffect(() => {
     if (
@@ -96,11 +92,6 @@ function Message({
     }
   }, []);
   useEffect(() => {
-    if (isLastMsg && message.userId === myId) {
-      setTimeout(() => setScrollToBottom(), 0);
-    }
-  }, [editPadding]);
-  useEffect(() => {
     const userMadeLastMove = chessState
       ? JSON.parse(chessState)?.move?.by === myId
       : false;
@@ -110,29 +101,6 @@ function Message({
       setSpoilerOff(true);
     }
   }, [channelId, moveViewTimeStamp]);
-  const userIsUploader = myId === userId;
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
-  const editButtonShown = userIsUploader || userCanEditThis;
-  const editMenuItems = [];
-  if (userIsUploader || canEdit) {
-    editMenuItems.push({
-      label: 'Edit',
-      onClick: () => {
-        setOnEdit(true);
-        setEditPadding(false);
-      }
-    });
-  }
-  if (userIsUploader || canDelete) {
-    editMenuItems.push({
-      label: 'Remove',
-      onClick: () => {
-        setEditPadding(false);
-        onDelete(messageId);
-      }
-    });
-  }
 
   if (!chessState && gameWinnerId) {
     return (
@@ -182,66 +150,28 @@ function Message({
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : (
-              <>
-                {onEdit ? (
-                  <EditTextArea
-                    autoFocus
-                    disabled={!socketConnected}
-                    rows={2}
-                    text={content}
-                    onCancel={() => {
-                      setOnEdit(false);
-                      setEditPadding(false);
-                    }}
-                    onEditDone={handleEditDone}
-                  />
-                ) : (
-                  <div>
-                    <div className={MessageStyle.messageWrapper}>
-                      {renderPrefix()}
-                      <span
-                        style={style}
-                        dangerouslySetInnerHTML={{
-                          __html: processedStringWithURL(content)
-                        }}
-                      />
-                    </div>
-                    {!!messageId &&
-                      !isReloadedSubject &&
-                      editButtonShown &&
-                      !onEdit && (
-                        <DropdownButton
-                          skeuomorphic
-                          color="darkerGray"
-                          style={{ position: 'absolute', top: 0, right: '5px' }}
-                          direction="left"
-                          opacity={0.8}
-                          onButtonClick={menuDisplayed => {
-                            setEditPadding(!menuDisplayed && isLastMsg);
-                          }}
-                          onOutsideClick={() => {
-                            setEditPadding(false);
-                          }}
-                          menuProps={editMenuItems}
-                        />
-                      )}
-                    {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
-                      <div className={MessageStyle.relatedConversationsButton}>
-                        <Button
-                          filled
-                          color="logoBlue"
-                          onClick={() =>
-                            showSubjectMsgsModal({ subjectId, content })
-                          }
-                        >
-                          Show related conversations
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {editPadding && <div style={{ height: '10rem' }} />}
-              </>
+              <TextMessage
+                authLevel={authLevel}
+                canDelete={canDelete}
+                canEdit={canEdit}
+                content={content}
+                messageId={messageId}
+                myId={myId}
+                numMsgs={numMsgs}
+                isLastMsg={isLastMsg}
+                isNotification={isNotification}
+                isSubject={!!isSubject}
+                isReloadedSubject={!!isReloadedSubject}
+                MessageStyle={MessageStyle}
+                onDelete={onDelete}
+                onEditDone={onEditDone}
+                setScrollToBottom={setScrollToBottom}
+                showSubjectMsgsModal={showSubjectMsgsModal}
+                socketConnected={socketConnected}
+                subjectId={subjectId}
+                uploaderAuthLevel={uploaderAuthLevel}
+                uploaderId={userId}
+              />
             )}
           </>
         </div>
@@ -249,30 +179,10 @@ function Message({
     </ErrorBoundary>
   );
 
-  async function handleEditDone(editedMessage) {
-    await onEditDone({ editedMessage, messageId: message.id });
-    setOnEdit(false);
-  }
-
   async function handleSpoilerClick() {
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
     updateChessMoveViewTimeStamp();
     onChessSpoilerClick();
-  }
-
-  function renderPrefix() {
-    let prefix = '';
-    if (isSubject) {
-      prefix = <span className={MessageStyle.subjectPrefix}>Subject: </span>;
-    }
-    if (isReloadedSubject) {
-      prefix = (
-        <span className={MessageStyle.subjectPrefix}>
-          {'Returning Subject: '}
-        </span>
-      );
-    }
-    return prefix;
   }
 }
 
