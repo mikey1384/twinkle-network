@@ -5,7 +5,7 @@ import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import GameOverMessage from '../GameOverMessage';
+import GameOverMessage from './GameOverMessage';
 import TextMessage from './TextMessage';
 import { connect } from 'react-redux';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
