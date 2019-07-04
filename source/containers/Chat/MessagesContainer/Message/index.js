@@ -6,9 +6,9 @@ import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTextArea from 'components/Texts/EditTextArea';
 import Button from 'components/Button';
-import Chess from '../Chess';
+import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import GameOverMessage from './GameOverMessage';
+import GameOverMessage from '../GameOverMessage';
 import { connect } from 'react-redux';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
@@ -17,7 +17,7 @@ import {
   saveMessage,
   updateChessMoveViewTimeStamp
 } from 'redux/actions/ChatActions';
-import { MessageStyle } from '../Styles';
+import { MessageStyle } from '../../Styles';
 
 Message.propTypes = {
   authLevel: PropTypes.number,

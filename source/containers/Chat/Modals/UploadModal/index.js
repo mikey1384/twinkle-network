@@ -18,10 +18,7 @@ function UploadModal({ dispatch, fileObj, onHide }) {
   const [caption, setCaption] = useState('');
   const [selectedFile, setSelectedFile] = useState('');
   useEffect(() => {
-    init();
-    function init() {
-      setSelectedFile(fileObj);
-    }
+    setSelectedFile(fileObj);
   }, []);
   const captionExceedsCharLimit = exceedsCharLimit({
     inputType: 'message',
