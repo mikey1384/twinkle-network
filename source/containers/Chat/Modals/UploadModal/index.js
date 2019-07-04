@@ -62,9 +62,14 @@ function UploadModal({ dispatch, fileObj, onHide }) {
   async function handleSubmit() {
     const data = await uploadFileData({
       dispatch,
-      selectedFile
+      selectedFile,
+      onUploadProgress: handleUploadProgress
     });
     console.log(data);
+  }
+
+  function handleUploadProgress({ loaded, total }) {
+    console.log((loaded * 100) / total, 'new');
   }
 }
 
