@@ -4,7 +4,8 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import File from './File';
-import { exceedsCharLimit } from 'helpers/stringHelpers';
+import uuidv1 from 'uuid/v1';
+import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
 import { submitMessageAsync } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 
@@ -72,11 +73,13 @@ function UploadModal({
 
   async function handleSubmit() {
     submitMessage({
+      content: finalizeEmoji(caption),
       userId,
       username,
       profilePicId,
       channelId,
-      fileToUpload: selectedFile
+      fileToUpload: selectedFile,
+      filePath: uuidv1()
     });
   }
 }

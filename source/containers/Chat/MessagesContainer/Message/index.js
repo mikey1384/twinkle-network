@@ -60,6 +60,7 @@ function Message({
     userId,
     timeStamp,
     content,
+    filePath,
     gameWinnerId,
     subjectId,
     isReloadedSubject,
@@ -153,7 +154,12 @@ function Message({
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : fileToUpload ? (
-              <FileUploadStatusIndicator fileToUpload={fileToUpload} />
+              <FileUploadStatusIndicator
+                channelId={channelId}
+                content={content}
+                fileToUpload={fileToUpload}
+                filePath={filePath}
+              />
             ) : (
               <TextMessage
                 authLevel={authLevel}

@@ -14,7 +14,8 @@ const defaultState = {
   numUnreads: 0,
   msgsWhileInvisible: 0,
   subject: {},
-  subjectSearchResults: []
+  subjectSearchResults: [],
+  filesBeingUploaded: {}
 };
 
 export default function ChatReducer(state = defaultState, action) {
@@ -412,6 +413,16 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages: false,
         partnerId: action.partner.id
       };
+    case CHAT.POST_FILE_UPLOAD_STATUS:
+      return {
+        ...state,
+        filesBeingUploaded: {
+          ...state.filesBeingUploaded,
+          [action.channelId]: state.filesBeingUploaded[
+            action.channelId
+          ]?.concat(action.file) || [action.file]
+        }
+      };
     case CHAT.RECEIVE_FIRST_MSG:
       return {
         ...state,
@@ -589,8 +600,56 @@ export default function ChatReducer(state = defaultState, action) {
           }
         ])
       };
+    case CHAT.POST_UPLOAD_COMPLETE:
+      return {
+        ...state,
+        filesBeingUploaded: {
+          ...state.filesBeingUploaded,
+          [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
+            file =>
+              file.path === action.path
+                ? {
+                    ...file,
+                    uploadComplete: action.result
+                  }
+                : file
+          )
+        }
+      };
     case CHAT.RESET:
       return defaultState;
+    case CHAT.UPDATE_API_SERVER_TO_S3_PROGRESS:
+      return {
+        ...state,
+        filesBeingUploaded: {
+          ...state.filesBeingUploaded,
+          [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
+            file =>
+              file.path === action.path
+                ? {
+                    ...file,
+                    apiServerToS3Progress: action.progress
+                  }
+                : file
+          )
+        }
+      };
+    case CHAT.UPDATE_CLIENT_TO_API_SERVER_PROGRESS:
+      return {
+        ...state,
+        filesBeingUploaded: {
+          ...state.filesBeingUploaded,
+          [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
+            file =>
+              file.path === action.path
+                ? {
+                    ...file,
+                    clientToApiServerProgress: action.progress
+                  }
+                : file
+          )
+        }
+      };
     case CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP:
       return {
         ...state,

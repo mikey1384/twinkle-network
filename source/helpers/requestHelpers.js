@@ -674,6 +674,8 @@ export const uploadFeaturedPlaylists = async ({
 };
 
 export const uploadFileData = async ({
+  channelId,
+  content,
   dispatch,
   selectedFile,
   onUploadProgress,
@@ -683,6 +685,8 @@ export const uploadFileData = async ({
     const fileData = new FormData();
     fileData.append('file', selectedFile, selectedFile.name);
     fileData.append('path', path);
+    fileData.append('channelId', channelId);
+    fileData.append('content', content);
     const { data } = await request.post(`${URL}/content/file`, fileData, {
       ...auth(),
       onUploadProgress

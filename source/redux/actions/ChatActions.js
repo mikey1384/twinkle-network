@@ -286,6 +286,22 @@ export const openDirectMessageChannel = ({
   }
 };
 
+export const postFileUploadStatus = ({ channelId, content, filePath }) => ({
+  type: CHAT.POST_FILE_UPLOAD_STATUS,
+  channelId,
+  file: {
+    content,
+    path: filePath
+  }
+});
+
+export const postUploadComplete = ({ channelId, path, result }) => ({
+  type: CHAT.POST_UPLOAD_COMPLETE,
+  channelId,
+  path,
+  result
+});
+
 export const receiveMessage = ({ message, pageVisible }) => async dispatch => {
   const { channelId } = message;
   try {
@@ -421,6 +437,26 @@ export const turnChatOff = () => dispatch => {
     type: CHAT.CLOSE
   });
   return Promise.resolve();
+};
+
+export const updateApiServerToS3Progress = ({ progress, channelId, path }) => ({
+  type: CHAT.UPDATE_API_SERVER_TO_S3_PROGRESS,
+  progress,
+  channelId,
+  path
+});
+
+export const updateClientToApiServerProgress = ({
+  progress,
+  channelId,
+  path
+}) => {
+  return {
+    type: CHAT.UPDATE_CLIENT_TO_API_SERVER_PROGRESS,
+    progress,
+    channelId,
+    path
+  };
 };
 
 export const updateChessMoveViewTimeStamp = () => ({
