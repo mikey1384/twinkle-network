@@ -64,7 +64,11 @@ function FileUploadStatusIndicator({
     }
   }, []);
   const [
-    { uploadComplete, clientToApiServerProgress, apiServerToS3Progress } = {}
+    {
+      uploadComplete = false,
+      clientToApiServerProgress = 0,
+      apiServerToS3Progress = 0
+    } = {}
   ] =
     filesBeingUploaded[channelId]?.filter(({ path }) => path === filePath) ||
     [];
