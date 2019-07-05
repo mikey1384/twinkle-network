@@ -54,13 +54,13 @@ function FileUploadStatusIndicator({
         channelId,
         result: !!data?.success
       });
-    }
-    function handleUploadProgress({ loaded, total }) {
-      updateClientToApiServerProgress({
-        channelId,
-        path: filePath,
-        progress: loaded / total
-      });
+      function handleUploadProgress({ loaded, total }) {
+        updateClientToApiServerProgress({
+          channelId,
+          path: filePath,
+          progress: loaded / total
+        });
+      }
     }
   }, []);
   const [
