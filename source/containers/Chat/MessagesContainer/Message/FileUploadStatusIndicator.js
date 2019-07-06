@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
+import Context from '../../Context';
 import { socket } from 'constants/io';
 import { connect } from 'react-redux';
-import { uploadFileData } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
-import {
-  postFileUploadStatus,
-  postUploadComplete,
-  updateApiServerToS3Progress,
-  updateClientToApiServerProgress
-} from 'redux/actions/ChatActions';
+import { updateApiServerToS3Progress } from 'redux/actions/ChatActions';
 
 FileUploadStatusIndicator.propTypes = {
   channelId: PropTypes.number.isRequired,
@@ -19,10 +14,7 @@ FileUploadStatusIndicator.propTypes = {
   filesBeingUploaded: PropTypes.object.isRequired,
   fileToUpload: PropTypes.object.isRequired,
   filePath: PropTypes.string.isRequired,
-  postFileUploadStatus: PropTypes.func.isRequired,
-  postUploadComplete: PropTypes.func.isRequired,
-  updateApiServerToS3Progress: PropTypes.func.isRequired,
-  updateClientToApiServerProgress: PropTypes.func.isRequired
+  updateApiServerToS3Progress: PropTypes.func.isRequired
 };
 
 function FileUploadStatusIndicator({
@@ -32,36 +24,11 @@ function FileUploadStatusIndicator({
   filesBeingUploaded,
   fileToUpload,
   filePath,
-  postFileUploadStatus,
-  postUploadComplete,
-  updateApiServerToS3Progress,
-  updateClientToApiServerProgress
+  updateApiServerToS3Progress
 }) {
+  const { onFileUpload } = useContext(Context);
   useEffect(() => {
-    postFileUploadStatus({ channelId, content, filePath });
-    init();
-    async function init() {
-      const data = await uploadFileData({
-        channelId,
-        content,
-        dispatch,
-        selectedFile: fileToUpload,
-        onUploadProgress: handleUploadProgress,
-        path: filePath
-      });
-      postUploadComplete({
-        path: filePath,
-        channelId,
-        result: !!data?.success
-      });
-      function handleUploadProgress({ loaded, total }) {
-        updateClientToApiServerProgress({
-          channelId,
-          path: filePath,
-          progress: loaded / total
-        });
-      }
-    }
+    onFileUpload({ channelId, content, filePath, fileToUpload });
   }, []);
   const [
     {
@@ -115,10 +82,6 @@ export default connect(
   }),
   dispatch => ({
     dispatch,
-    postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
-    postUploadComplete: params => dispatch(postUploadComplete(params)),
-    updateClientToApiServerProgress: params =>
-      dispatch(updateClientToApiServerProgress(params)),
     updateApiServerToS3Progress: params =>
       dispatch(updateApiServerToS3Progress(params))
   })

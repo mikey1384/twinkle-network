@@ -9,8 +9,15 @@ import MobileMenu from './MobileMenu';
 import withScroll from 'components/Wrappers/withScroll';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { initChat, resetChat, turnChatOff } from 'redux/actions/ChatActions';
-import { loadChat } from 'helpers/requestHelpers';
+import {
+  initChat,
+  postFileUploadStatus,
+  postUploadComplete,
+  resetChat,
+  turnChatOff,
+  updateClientToApiServerProgress
+} from 'redux/actions/ChatActions';
+import { loadChat, uploadFileData } from 'helpers/requestHelpers';
 import { changePageVisibility } from 'redux/actions/ViewActions';
 import {
   initSession,
@@ -49,11 +56,14 @@ App.propTypes = {
   loggedIn: PropTypes.bool,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
+  postFileUploadStatus: PropTypes.func.isRequired,
+  postUploadComplete: PropTypes.func.isRequired,
   resetChat: PropTypes.func.isRequired,
   searchMode: PropTypes.bool,
   searchText: PropTypes.string,
   signinModalShown: PropTypes.bool,
   turnChatOff: PropTypes.func.isRequired,
+  updateClientToApiServerProgress: PropTypes.func.isRequired,
   updateDetail: PropTypes.string,
   username: PropTypes.string
 };
@@ -71,11 +81,14 @@ function App({
   numNewNotis,
   numNewPosts,
   history,
+  postFileUploadStatus,
+  postUploadComplete,
   resetChat,
   searchMode,
   searchText,
   signinModalShown,
   turnChatOff,
+  updateClientToApiServerProgress,
   updateDetail,
   username
 }) {
@@ -252,11 +265,42 @@ function App({
             />
           </div>
         )}
-        {chatMode && loggedIn && <Chat onUnmount={handleChatUnmount} />}
+        {chatMode && loggedIn && (
+          <Chat onFileUpload={handleFileUpload} onUnmount={handleChatUnmount} />
+        )}
         {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
       </Suspense>
     </div>
   );
+
+  async function handleFileUpload({
+    channelId,
+    content,
+    filePath,
+    fileToUpload
+  }) {
+    postFileUploadStatus({ channelId, content, filePath });
+    const data = await uploadFileData({
+      channelId,
+      content,
+      dispatch,
+      selectedFile: fileToUpload,
+      onUploadProgress: handleUploadProgress,
+      path: filePath
+    });
+    postUploadComplete({
+      path: filePath,
+      channelId,
+      result: !!data?.success
+    });
+    function handleUploadProgress({ loaded, total }) {
+      updateClientToApiServerProgress({
+        channelId,
+        path: filePath,
+        progress: loaded / total
+      });
+    }
+  }
 
   async function onChatButtonClick() {
     setChatLoading(true);
@@ -299,7 +343,11 @@ export default connect(
     initSession: pathname => dispatch(initSession(pathname)),
     turnChatOff: () => dispatch(turnChatOff()),
     initChat: data => dispatch(initChat(data)),
+    postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
+    postUploadComplete: params => dispatch(postUploadComplete(params)),
     resetChat: () => dispatch(resetChat()),
+    updateClientToApiServerProgress: params =>
+      dispatch(updateClientToApiServerProgress(params)),
     changePageVisibility: visible => dispatch(changePageVisibility(visible))
   })
 )(

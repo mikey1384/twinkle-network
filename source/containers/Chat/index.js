@@ -14,6 +14,7 @@ import Loading from 'components/Loading';
 import ChessModal from './Modals/ChessModal';
 import AlertModal from 'components/Modals/AlertModal';
 import UploadModal from './Modals/UploadModal';
+import Context from './Context';
 import { startNewDMChannel } from 'helpers/requestHelpers';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
@@ -38,6 +39,7 @@ Chat.propTypes = {
   loadMoreMessages: PropTypes.func,
   messages: PropTypes.array,
   notifyThatMemberLeftChannel: PropTypes.func,
+  onFileUpload: PropTypes.func,
   onUnmount: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func,
   pageVisible: PropTypes.bool,
@@ -72,6 +74,7 @@ function Chat({
   loadMoreMessages,
   messages,
   notifyThatMemberLeftChannel,
+  onFileUpload,
   onUnmount,
   openDirectMessageChannel,
   pageVisible,
@@ -307,180 +310,186 @@ function Chat({
       ];
 
   return (
-    <div
-      className={css`
-        width: 100%;
-        height: 100%;
-        display: flex;
-        font-size: 1.5rem;
-        position: relative;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 100vw;
-          height: CALC(100% - 1rem);
-        }
-      `}
+    <Context.Provider
+      value={{
+        onFileUpload
+      }}
     >
-      <input
-        ref={FileInputRef}
-        style={{ display: 'none' }}
-        type="file"
-        onChange={handleUpload}
-      />
-      {leaveConfirmModalShown && (
-        <ConfirmModal
-          title="Leave Channel"
-          onHide={() => setLeaveConfirmModalShown(false)}
-          onConfirm={onLeaveChannel}
-        />
-      )}
-      {createNewChannelModalShown && (
-        <CreateNewChannelModal
-          userId={userId}
-          onHide={() => setCreateNewChannelModalShown(false)}
-          onDone={onCreateNewChannel}
-        />
-      )}
-      {inviteUsersModalShown && (
-        <InviteUsersModal
-          onHide={() => setInviteUsersModalShown(false)}
-          currentChannel={currentChannel}
-          onDone={onInviteUsersDone}
-        />
-      )}
-      {editTitleModalShown && (
-        <EditTitleModal
-          title={channelName}
-          onHide={() => setEditTitleModalShown(false)}
-          onDone={onEditTitleDone}
-        />
-      )}
-      {userListModalShown && (
-        <UserListModal
-          onHide={() => setUserListModalShown(false)}
-          users={returnUsers(currentChannel, currentChannelOnlineMembers)}
-          descriptionShown={userListDescriptionShown}
-          description="(online)"
-          title="Online Status"
-        />
-      )}
-      <LeftMenu
-        channels={channels}
-        channelLoadMoreButtonShown={channelLoadMoreButtonShown}
-        currentChannel={currentChannel}
-        currentChannelOnlineMembers={currentChannelOnlineMembers}
-        loadMoreChannels={loadMoreChannels}
-        onChannelEnter={onChannelEnter}
-        onNewButtonClick={onNewButtonClick}
-        selectedChannelId={selectedChannelId}
-        showUserListModal={() => setUserListModalShown(true)}
-      />
       <div
         className={css`
+          width: 100%;
           height: 100%;
-          width: CALC(100% - 30rem);
-          border-left: 1px solid ${Color.borderGray()};
-          padding: 0 0 1rem 1rem;
+          display: flex;
+          font-size: 1.5rem;
           position: relative;
-          background: #fff;
           @media (max-width: ${mobileMaxWidth}) {
-            width: 75%;
+            width: 100vw;
+            height: CALC(100% - 1rem);
           }
         `}
       >
-        {currentChannel.id !== GENERAL_CHAT_ID && (
-          <DropdownButton
-            skeuomorphic
-            color="darkerGray"
-            opacity={0.7}
-            style={{
-              position: 'absolute',
-              zIndex: 10,
-              top: '1rem',
-              right: '1rem'
-            }}
-            direction="left"
-            icon="bars"
-            text="Menu"
-            menuProps={menuProps}
+        <input
+          ref={FileInputRef}
+          style={{ display: 'none' }}
+          type="file"
+          onChange={handleUpload}
+        />
+        {leaveConfirmModalShown && (
+          <ConfirmModal
+            title="Leave Channel"
+            onHide={() => setLeaveConfirmModalShown(false)}
+            onConfirm={onLeaveChannel}
           />
         )}
-        <MessagesContainer
-          channelId={currentChannel.id}
-          channelName={channelName}
-          chessCountdownObj={chessCountdownObj}
-          className={css`
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: CALC(
-              100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
-            );
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-          `}
-          loading={loading}
-          currentChannelId={currentChannel.id}
-          loadMoreButton={loadMoreButton}
-          messages={messages}
-          userId={userId}
-          loadMoreMessages={loadMoreMessages}
-          onChessBoardClick={handleChessModalShown}
-          onChessSpoilerClick={handleChessSpoilerClick}
-          onLoadingDone={() => setLoading(false)}
-          statusText={renderStatusMessage()}
-        />
-        {socketConnected ? (
-          <ChatInput
-            onChange={setChatMessage}
-            message={chatMessage}
-            myId={userId}
-            isTwoPeopleChannel={currentChannel.twoPeople}
-            currentChannelId={currentChannel.id}
-            onChessButtonClick={handleChessModalShown}
-            onMessageSubmit={onMessageSubmit}
-            onHeightChange={height => {
-              if (height !== textAreaHeight) {
-                setTextAreaHeight(height > 46 ? height : 0);
-              }
-            }}
-            onPlusButtonClick={() => FileInputRef.current.click()}
+        {createNewChannelModalShown && (
+          <CreateNewChannelModal
+            userId={userId}
+            onHide={() => setCreateNewChannelModalShown(false)}
+            onDone={onCreateNewChannel}
           />
-        ) : (
-          <div>
-            <Loading
-              style={{ height: '2.2rem' }}
-              innerStyle={{ fontSize: '2rem' }}
-              text="Socket disconnected. Reconnecting..."
+        )}
+        {inviteUsersModalShown && (
+          <InviteUsersModal
+            onHide={() => setInviteUsersModalShown(false)}
+            currentChannel={currentChannel}
+            onDone={onInviteUsersDone}
+          />
+        )}
+        {editTitleModalShown && (
+          <EditTitleModal
+            title={channelName}
+            onHide={() => setEditTitleModalShown(false)}
+            onDone={onEditTitleDone}
+          />
+        )}
+        {userListModalShown && (
+          <UserListModal
+            onHide={() => setUserListModalShown(false)}
+            users={returnUsers(currentChannel, currentChannelOnlineMembers)}
+            descriptionShown={userListDescriptionShown}
+            description="(online)"
+            title="Online Status"
+          />
+        )}
+        <LeftMenu
+          channels={channels}
+          channelLoadMoreButtonShown={channelLoadMoreButtonShown}
+          currentChannel={currentChannel}
+          currentChannelOnlineMembers={currentChannelOnlineMembers}
+          loadMoreChannels={loadMoreChannels}
+          onChannelEnter={onChannelEnter}
+          onNewButtonClick={onNewButtonClick}
+          selectedChannelId={selectedChannelId}
+          showUserListModal={() => setUserListModalShown(true)}
+        />
+        <div
+          className={css`
+            height: 100%;
+            width: CALC(100% - 30rem);
+            border-left: 1px solid ${Color.borderGray()};
+            padding: 0 0 1rem 1rem;
+            position: relative;
+            background: #fff;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 75%;
+            }
+          `}
+        >
+          {currentChannel.id !== GENERAL_CHAT_ID && (
+            <DropdownButton
+              skeuomorphic
+              color="darkerGray"
+              opacity={0.7}
+              style={{
+                position: 'absolute',
+                zIndex: 10,
+                top: '1rem',
+                right: '1rem'
+              }}
+              direction="left"
+              icon="bars"
+              text="Menu"
+              menuProps={menuProps}
             />
-          </div>
+          )}
+          <MessagesContainer
+            channelId={currentChannel.id}
+            channelName={channelName}
+            chessCountdownObj={chessCountdownObj}
+            className={css`
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              height: CALC(
+                100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
+              );
+              position: relative;
+              -webkit-overflow-scrolling: touch;
+            `}
+            loading={loading}
+            currentChannelId={currentChannel.id}
+            loadMoreButton={loadMoreButton}
+            messages={messages}
+            userId={userId}
+            loadMoreMessages={loadMoreMessages}
+            onChessBoardClick={handleChessModalShown}
+            onChessSpoilerClick={handleChessSpoilerClick}
+            onLoadingDone={() => setLoading(false)}
+            statusText={renderStatusMessage()}
+          />
+          {socketConnected ? (
+            <ChatInput
+              onChange={setChatMessage}
+              message={chatMessage}
+              myId={userId}
+              isTwoPeopleChannel={currentChannel.twoPeople}
+              currentChannelId={currentChannel.id}
+              onChessButtonClick={handleChessModalShown}
+              onMessageSubmit={onMessageSubmit}
+              onHeightChange={height => {
+                if (height !== textAreaHeight) {
+                  setTextAreaHeight(height > 46 ? height : 0);
+                }
+              }}
+              onPlusButtonClick={() => FileInputRef.current.click()}
+            />
+          ) : (
+            <div>
+              <Loading
+                style={{ height: '2.2rem' }}
+                innerStyle={{ fontSize: '2rem' }}
+                text="Socket disconnected. Reconnecting..."
+              />
+            </div>
+          )}
+        </div>
+        {chessModalShown && (
+          <ChessModal
+            channelId={currentChannel.id}
+            chessCountdownObj={chessCountdownObj}
+            myId={userId}
+            onConfirmChessMove={handleConfirmChessMove}
+            onHide={() => setChessModalShown(false)}
+            onSpoilerClick={handleChessSpoilerClick}
+            {...getOpponentInfo()}
+          />
+        )}
+        {alertModalShown && (
+          <AlertModal
+            title="File is too large"
+            content="The file size is larger than the limit of 500mb"
+            onHide={() => setAlertModalShown(false)}
+          />
+        )}
+        {uploadModalShown && (
+          <UploadModal
+            channelId={currentChannel.id}
+            fileObj={fileObj}
+            onHide={() => setUploadModalShown(false)}
+          />
         )}
       </div>
-      {chessModalShown && (
-        <ChessModal
-          channelId={currentChannel.id}
-          chessCountdownObj={chessCountdownObj}
-          myId={userId}
-          onConfirmChessMove={handleConfirmChessMove}
-          onHide={() => setChessModalShown(false)}
-          onSpoilerClick={handleChessSpoilerClick}
-          {...getOpponentInfo()}
-        />
-      )}
-      {alertModalShown && (
-        <AlertModal
-          title="File is too large"
-          content="The file size is larger than the limit of 500mb"
-          onHide={() => setAlertModalShown(false)}
-        />
-      )}
-      {uploadModalShown && (
-        <UploadModal
-          channelId={currentChannel.id}
-          fileObj={fileObj}
-          onHide={() => setUploadModalShown(false)}
-        />
-      )}
-    </div>
+    </Context.Provider>
   );
 
   function getOpponentInfo() {
