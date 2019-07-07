@@ -13,7 +13,8 @@ import {
   getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
   turnChatOff,
-  resetChat
+  resetChat,
+  updateApiServerToS3Progress
 } from 'redux/actions/ChatActions';
 import {
   changeRankingsLoadedStatus,
@@ -61,6 +62,7 @@ Header.propTypes = {
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
   turnChatOff: PropTypes.func,
+  updateApiServerToS3Progress: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string,
   versionMatch: PropTypes.bool
@@ -96,6 +98,7 @@ function Header({
   style = {},
   totalRewardAmount,
   turnChatOff,
+  updateApiServerToS3Progress,
   userId,
   username,
   versionMatch
@@ -107,9 +110,10 @@ function Header({
     socket.on('disconnect', onDisconnect);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('receive_message', onReceiveMessage);
-    socket.on('subject_change', onSubjectChange);
     socket.on('new_story_post', increaseNumNewPosts);
     socket.on('new_notification', increaseNumNewNotis);
+    socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
+    socket.on('subject_change', onSubjectChange);
 
     return function cleanUp() {
       socket.removeListener('chat_invitation', onChatInvitation);
@@ -117,6 +121,10 @@ function Header({
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('new_story_post', increaseNumNewPosts);
       socket.removeListener('new_notification', increaseNumNewNotis);
+      socket.removeListener(
+        'receive_chat_file_upload_progress',
+        onReceiveUploadProgress
+      );
       socket.removeListener('receive_message', onReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
     };
@@ -145,6 +153,13 @@ function Header({
       ) {
         increaseNumberOfUnreadMessages();
       }
+    }
+    function onReceiveUploadProgress({ channelId, path, percentage }) {
+      updateApiServerToS3Progress({
+        progress: percentage / 100,
+        channelId,
+        path
+      });
     }
     function onSubjectChange({ subject }) {
       notifyChatSubjectChange(subject);
@@ -460,6 +475,7 @@ export default connect(
     notifyChatSubjectChange,
     closeSearch,
     resetChat,
-    turnChatOff
+    turnChatOff,
+    updateApiServerToS3Progress
   }
 )(withRouter(Header));

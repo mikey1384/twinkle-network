@@ -2,10 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import Context from '../../Context';
-import { socket } from 'constants/io';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
-import { updateApiServerToS3Progress } from 'redux/actions/ChatActions';
 
 FileUploadStatusIndicator.propTypes = {
   channelId: PropTypes.number.isRequired,
@@ -13,8 +11,7 @@ FileUploadStatusIndicator.propTypes = {
   dispatch: PropTypes.func.isRequired,
   filesBeingUploaded: PropTypes.object.isRequired,
   fileToUpload: PropTypes.object.isRequired,
-  filePath: PropTypes.string.isRequired,
-  updateApiServerToS3Progress: PropTypes.func.isRequired
+  filePath: PropTypes.string.isRequired
 };
 
 function FileUploadStatusIndicator({
@@ -23,8 +20,7 @@ function FileUploadStatusIndicator({
   dispatch,
   filesBeingUploaded,
   fileToUpload,
-  filePath,
-  updateApiServerToS3Progress
+  filePath
 }) {
   const { onFileUpload } = useContext(Context);
   useEffect(() => {
@@ -45,25 +41,6 @@ function FileUploadStatusIndicator({
       Math.ceil(5 + 15 * clientToApiServerProgress + 80 * apiServerToS3Progress)
     );
   }, [clientToApiServerProgress, apiServerToS3Progress]);
-  useEffect(() => {
-    socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
-    return function cleanUp() {
-      socket.removeListener(
-        'receive_chat_file_upload_progress',
-        onReceiveUploadProgress
-      );
-    };
-
-    function onReceiveUploadProgress({ path, percentage }) {
-      if (path === filePath) {
-        updateApiServerToS3Progress({
-          progress: percentage / 100,
-          channelId,
-          path: filePath
-        });
-      }
-    }
-  });
 
   return (
     <div>
@@ -81,8 +58,6 @@ export default connect(
     filesBeingUploaded: state.ChatReducer.filesBeingUploaded
   }),
   dispatch => ({
-    dispatch,
-    updateApiServerToS3Progress: params =>
-      dispatch(updateApiServerToS3Progress(params))
+    dispatch
   })
 )(FileUploadStatusIndicator);
