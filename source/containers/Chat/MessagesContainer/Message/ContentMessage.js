@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
+import ImagePreview from './ImagePreview';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileTypeFromFileName } from 'helpers/stringHelpers';
 
@@ -17,11 +18,7 @@ export default function ContentMessage({ filePath, fileName, fileSize }) {
   return (
     <div style={{ marginTop: '1rem' }}>
       {fileType === 'image' ? (
-        <img
-          style={{ maxWidth: '100%', height: '25vw', objectFit: 'contain' }}
-          src={src}
-          rel={fileName}
-        />
+        <ImagePreview src={src} fileName={fileName} />
       ) : (
         <FileInfo
           fileName={fileName}
