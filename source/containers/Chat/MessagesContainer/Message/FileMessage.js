@@ -5,12 +5,13 @@ import ImagePreview from './ImagePreview';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileTypeFromFileName } from 'helpers/stringHelpers';
 
-ContentMessage.propTypes = {
+FileMessage.propTypes = {
+  content: PropTypes.string,
   filePath: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
-export default function ContentMessage({ filePath, fileName, fileSize }) {
+export default function FileMessage({ content, filePath, fileName, fileSize }) {
   const fileType = getFileTypeFromFileName(fileName);
   const src = `${cloudFrontURL}/attachments/chat/${filePath}/${encodeURIComponent(
     fileName
@@ -27,6 +28,7 @@ export default function ContentMessage({ filePath, fileName, fileSize }) {
           src={src}
         />
       )}
+      {content}
     </div>
   );
 }

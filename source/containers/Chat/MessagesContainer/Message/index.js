@@ -7,7 +7,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
-import ContentMessage from './ContentMessage';
+import FileMessage from './FileMessage';
 import TextMessage from './TextMessage';
 import { connect } from 'react-redux';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
@@ -91,7 +91,7 @@ function Message({
 }) {
   let { username, profilePicId, ...post } = message;
   const [spoilerOff, setSpoilerOff] = useState(false);
-  if (fileToUpload) {
+  if (fileToUpload && !userId) {
     userId = myId;
     username = myUsername;
     profilePicId = myProfilePicId;
@@ -173,7 +173,8 @@ function Message({
                 filePath={filePath}
               />
             ) : filePath ? (
-              <ContentMessage
+              <FileMessage
+                content={content}
                 filePath={filePath}
                 fileName={fileName}
                 fileSize={fileSize}
