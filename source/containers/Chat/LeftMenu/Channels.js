@@ -17,7 +17,7 @@ Channels.propTypes = {
       }),
       id: PropTypes.number.isRequired,
       channelName: PropTypes.string,
-      numUnreads: PropTypes.number.isRequired
+      numUnreads: PropTypes.number
     })
   ).isRequired,
   onChannelEnter: PropTypes.func.isRequired,
@@ -33,91 +33,101 @@ export default function Channels({
 }) {
   return channels
     .filter(channel => !channel.isHidden)
-    .map(({ lastMessage, id, channelName, members, numUnreads, twoPeople }) => {
-      const otherMember = twoPeople
-        ? members?.filter(member => Number(member.id) !== userId)?.[0]
-        : null;
-      return (
-        <div
-          key={id}
-          className={css`
-            &:hover {
-              background: ${Color.checkboxAreaGray()};
-            }
-          `}
-          style={{
-            width: '100%',
-            backgroundColor: id === selectedChannelId && Color.highlightGray(),
-            cursor: 'pointer',
-            padding: '1rem',
-            height: '6.5rem'
-          }}
-          onClick={() => onChannelEnter(id)}
-        >
+    .map(
+      ({
+        lastMessage,
+        id,
+        channelName,
+        members,
+        numUnreads = 0,
+        twoPeople
+      }) => {
+        const otherMember = twoPeople
+          ? members?.filter(member => Number(member.id) !== userId)?.[0]
+          : null;
+        return (
           <div
+            key={id}
+            className={css`
+              &:hover {
+                background: ${Color.checkboxAreaGray()};
+              }
+            `}
             style={{
-              display: 'flex',
-              height: '100%',
-              justifyContent: 'space-between',
-              alignItems: 'center'
+              width: '100%',
+              backgroundColor:
+                id === selectedChannelId && Color.highlightGray(),
+              cursor: 'pointer',
+              padding: '1rem',
+              height: '6.5rem'
             }}
+            onClick={() => onChannelEnter(id)}
           >
             <div
               style={{
                 display: 'flex',
-                width: '85%',
                 height: '100%',
-                whiteSpace: 'nowrap',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}
             >
-              <div>
-                <p
+              <div
+                style={{
+                  display: 'flex',
+                  width: '85%',
+                  height: '100%',
+                  whiteSpace: 'nowrap',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <div>
+                  <p
+                    style={{
+                      color: !channelName && !otherMember && '#7c7c7c',
+                      fontWeight: 'bold',
+                      margin: 0,
+                      padding: 0,
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      lineHeight: 'normal'
+                    }}
+                  >
+                    {otherMember?.username || channelName || '(Deleted)'}
+                  </p>
+                </div>
+                <div
                   style={{
-                    color: !channelName && !otherMember && '#7c7c7c',
-                    fontWeight: 'bold',
-                    margin: 0,
-                    padding: 0,
+                    width: '100%',
                     textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    lineHeight: 'normal'
+                    overflow: 'hidden'
                   }}
                 >
-                  {otherMember?.username || channelName || '(Deleted)'}
-                </p>
+                  {renderPreviewMessage(lastMessage || {})}
+                </div>
               </div>
-              <div
-                style={{
-                  width: '100%',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden'
-                }}
-              >
-                {renderPreviewMessage(lastMessage || {})}
-              </div>
+              {id !== currentChannel.id && numUnreads > 0 && (
+                <div
+                  style={{
+                    background: Color.rose(),
+                    display: 'flex',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    minWidth: '2rem',
+                    height: '2rem',
+                    borderRadius: '50%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                >
+                  {numUnreads}
+                </div>
+              )}
             </div>
-            {id !== currentChannel.id && numUnreads > 0 && (
-              <div
-                style={{
-                  background: Color.rose(),
-                  display: 'flex',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  minWidth: '2rem',
-                  height: '2rem',
-                  borderRadius: '50%',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
-                {numUnreads}
-              </div>
-            )}
           </div>
-        </div>
-      );
-    });
+        );
+      }
+    );
 
   function renderPreviewMessage({ content, gameWinnerId, sender }) {
     if (typeof gameWinnerId === 'number') {

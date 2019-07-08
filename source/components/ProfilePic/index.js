@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
+import { cloudFrontURL } from 'constants/defaultValues';
 import { borderRadius, Color, innerBorderRadius } from 'constants/css';
 import { connect } from 'react-redux';
 
@@ -28,7 +29,7 @@ function ProfilePic({
   style
 }) {
   const [changePictureShown, setChangePictureShown] = useState(false);
-  const src = `https://d3jvoamd2k4p0s.cloudfront.net/pictures/${userId}/${profilePicId}.jpg`;
+  const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
 
   return (
     <div

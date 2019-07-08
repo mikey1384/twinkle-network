@@ -32,10 +32,10 @@ import { hot } from 'react-hot-loader';
 import Profile from 'containers/Profile';
 
 const Home = React.lazy(() => import('containers/Home'));
-const WorkSection = React.lazy(() => import('containers/WorkSection'));
-const Redirect = React.lazy(() => import('containers/Redirect'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
+const Redirect = React.lazy(() => import('containers/Redirect'));
 const SearchPage = React.lazy(() => import('containers/SearchPage'));
+const WorkSection = React.lazy(() => import('containers/WorkSection'));
 const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
 const ContentPage = React.lazy(() => import('containers/ContentPage'));
 const VideoPage = React.lazy(() => import('containers/VideoPage'));
@@ -279,7 +279,7 @@ function App({
     filePath,
     fileToUpload
   }) {
-    postFileUploadStatus({ channelId, content, filePath });
+    postFileUploadStatus({ channelId, content, filePath, fileToUpload });
     const data = await uploadFileData({
       channelId,
       content,

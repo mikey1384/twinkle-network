@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
+import { loadChatChannel } from 'helpers/requestHelpers';
 import {
   searchChat,
   clearChatSearchResults,
@@ -13,6 +14,7 @@ import {
 
 ChatSearchBox.propTypes = {
   clearSearchResults: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func.isRequired,
   openNewChatTab: PropTypes.func.isRequired,
   searchChat: PropTypes.func.isRequired,
@@ -23,6 +25,7 @@ ChatSearchBox.propTypes = {
 
 function ChatSearchBox({
   clearSearchResults,
+  dispatch,
   enterChannelWithId,
   openNewChatTab,
   searchChat,
@@ -62,9 +65,13 @@ function ChatSearchBox({
     </div>
   );
 
-  function onSelect(item) {
+  async function onSelect(item) {
     if (item.primary || !!item.channelId) {
-      enterChannelWithId({ channelId: item.channelId, showOnTop: true });
+      const data = await loadChatChannel({
+        channelId: item.channelId,
+        dispatch
+      });
+      enterChannelWithId({ data, showOnTop: true });
     } else {
       openNewChatTab({
         user: { username, id: userId },
@@ -82,10 +89,11 @@ export default connect(
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),
-  {
-    searchChat,
-    clearSearchResults: clearChatSearchResults,
-    enterChannelWithId,
-    openNewChatTab
-  }
+  dispatch => ({
+    dispatch,
+    searchChat: params => dispatch(searchChat(params)),
+    clearSearchResults: params => dispatch(clearChatSearchResults(params)),
+    enterChannelWithId: params => dispatch(enterChannelWithId(params)),
+    openNewChatTab: params => dispatch(openNewChatTab(params))
+  })
 )(ChatSearchBox);

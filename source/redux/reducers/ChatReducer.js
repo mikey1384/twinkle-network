@@ -19,10 +19,6 @@ const defaultState = {
 };
 
 export default function ChatReducer(state = defaultState, action) {
-  let channelLoadMoreButton = false;
-  let loadMoreMessages;
-  let channels;
-  let originalNumUnreads = 0;
   switch (action.type) {
     case CHAT.ADD_ID_TO_NEW_MESSAGE:
       return {
@@ -132,13 +128,12 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [{ ...action.message }]
       };
-    case CHAT.SELECT_CHANNEL: {
+    case CHAT.SELECT_CHANNEL:
       return {
         ...state,
         subject: action.channelId === 2 ? state.subject : {},
         selectedChannelId: action.channelId
       };
-    }
     case CHAT.DELETE_MESSAGE:
       return {
         ...state,
@@ -159,14 +154,18 @@ export default function ChatReducer(state = defaultState, action) {
           };
         })
       };
-    case CHAT.ENTER_CHANNEL:
-      loadMoreMessages = false;
+    case CHAT.ENTER_CHANNEL: {
+      let loadMoreMessages = false;
+      let originalNumUnreads = 0;
+      const selectedChannel = action.data.channel;
+      const uploadStatusMessages = state.filesBeingUploaded[
+        selectedChannel.id
+      ]?.filter(message => !message.uploadComplete);
       if (action.data.messages.length === 21) {
         action.data.messages.pop();
         loadMoreMessages = true;
       }
       action.data.messages.reverse();
-      const selectedChannel = action.data.channel;
       return {
         ...state,
         subject: selectedChannel.id === 2 ? state.subject : {},
@@ -193,10 +192,13 @@ export default function ChatReducer(state = defaultState, action) {
           ]);
         }, []),
         chatMode: true,
-        messages: action.data.messages,
+        messages: uploadStatusMessages
+          ? [...action.data.messages, ...uploadStatusMessages]
+          : action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         loadMoreMessages
       };
+    }
     case CHAT.ENTER_EMPTY_CHAT:
       return {
         ...state,
@@ -230,8 +232,13 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         numUnreads: state.numUnreads + 1
       };
-    case CHAT.INIT:
-      loadMoreMessages = false;
+    case CHAT.INIT: {
+      let loadMoreMessages = false;
+      let originalNumUnreads = 0;
+      let channelLoadMoreButton = false;
+      const uploadStatusMessages = state.filesBeingUploaded[
+        action.data.currentChannel.id
+      ]?.filter(message => !message.uploadComplete);
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
         loadMoreMessages = true;
@@ -261,10 +268,13 @@ export default function ChatReducer(state = defaultState, action) {
           return resultingArray.concat([channel]);
         }, []),
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
-        messages: action.data.messages,
+        messages: uploadStatusMessages
+          ? [...action.data.messages, ...uploadStatusMessages]
+          : action.data.messages,
         loadMoreMessages,
         userSearchResult: []
       };
+    }
     case CHAT.INVITE_USERS_TO_CHANNEL:
       return {
         ...state,
@@ -291,7 +301,8 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         subject: action.subject
       };
-    case CHAT.LOAD_MORE_CHANNELS:
+    case CHAT.LOAD_MORE_CHANNELS: {
+      let channelLoadMoreButton = false;
       if (action.data.length > 20) {
         action.data.pop();
         channelLoadMoreButton = true;
@@ -301,8 +312,9 @@ export default function ChatReducer(state = defaultState, action) {
         channelLoadMoreButton,
         channels: state.channels.concat(action.data)
       };
-    case CHAT.LOAD_MORE_MESSAGES:
-      loadMoreMessages = false;
+    }
+    case CHAT.LOAD_MORE_MESSAGES: {
+      let loadMoreMessages = false;
       if (action.data.length === 21) {
         action.data.pop();
         loadMoreMessages = true;
@@ -313,6 +325,7 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages,
         messages: action.data.concat(state.messages)
       };
+    }
     case CHAT.NOTIFY_MEMBER_LEFT:
       let timeStamp = Math.floor(Date.now() / 1000);
       return {
@@ -352,12 +365,14 @@ export default function ChatReducer(state = defaultState, action) {
           }
         ])
       };
-    case CHAT.OPEN_DM:
+    case CHAT.OPEN_DM: {
+      let loadMoreMessages = false;
       if (action.messages.length > 20) {
         action.messages.pop();
         loadMoreMessages = true;
       }
-      channels = action.channels.length > 0 ? action.channels : state.channels;
+      let channels =
+        action.channels.length > 0 ? action.channels : state.channels;
       return {
         ...state,
         subject: {},
@@ -382,6 +397,7 @@ export default function ChatReducer(state = defaultState, action) {
         loadMoreMessages,
         partnerId: action.partner.id
       };
+    }
     case CHAT.OPEN_NEW_TAB:
       let filteredChannel = state.channels.filter(channel => {
         return channel.id !== 0;
@@ -607,7 +623,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
             file =>
-              file.path === action.path
+              file.filePath === action.path
                 ? {
                     ...file,
                     uploadComplete: action.result
@@ -617,7 +633,7 @@ export default function ChatReducer(state = defaultState, action) {
         }
       };
     case CHAT.RESET:
-      return defaultState;
+      return { ...defaultState, filesBeingUploaded: state.filesBeingUploaded };
     case CHAT.UPDATE_API_SERVER_TO_S3_PROGRESS:
       return {
         ...state,
@@ -625,7 +641,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
             file =>
-              file.path === action.path
+              file.filePath === action.path
                 ? {
                     ...file,
                     apiServerToS3Progress: action.progress
@@ -641,7 +657,7 @@ export default function ChatReducer(state = defaultState, action) {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
             file =>
-              file.path === action.path
+              file.filePath === action.path
                 ? {
                     ...file,
                     clientToApiServerProgress: action.progress

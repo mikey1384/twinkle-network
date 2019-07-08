@@ -15,78 +15,6 @@ export function addCommasToNumber(number) {
   return result;
 }
 
-export function capitalize(string = '') {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function cleanString(string) {
-  return string
-    ? string
-        .replace(/<br\s*[\/]?>/gi, '\n')
-        .replace(/&amp;/gi, '&')
-        .replace(/&lt;/gi, '<')
-        .replace(/&gt;/gi, '>')
-    : '';
-}
-
-export function exceedsCharLimit({ inputType, contentType, text }) {
-  const limit =
-    contentType === 'comment' ||
-    contentType === 'rewardComment' ||
-    contentType === 'statusMsg'
-      ? charLimit[contentType]
-      : charLimit[contentType][inputType];
-  return text.length > limit
-    ? {
-        style: {
-          color: 'red',
-          borderColor: 'red'
-        },
-        message: `${text.length}/${limit} Characters`
-      }
-    : undefined;
-}
-
-export function turnStringIntoQuestion(string) {
-  const toDelete = ['?', ' '];
-  while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {
-    string = string.slice(0, -1);
-  }
-  return string + '?';
-}
-
-export function limitBrs(string) {
-  return string.replace(
-    /(<br ?\/?>){11,}/gi,
-    '<br><br><br><br><br><br><br><br><br><br>'
-  );
-}
-
-export function renderText(text) {
-  let newText = text;
-  while (
-    newText !== '' &&
-    (newText[0] === ' ' ||
-      (newText[newText.length - 1] === ' ' &&
-        newText[newText.length - 2] === ' '))
-  ) {
-    if (newText[0] === ' ') {
-      newText = newText.substring(1);
-    }
-    if (
-      newText[newText.length - 1] === ' ' &&
-      newText[newText.length - 2] === ' '
-    ) {
-      newText = newText.slice(0, -1);
-    }
-  }
-  return newText;
-}
-
-export function removeLineBreaks(string) {
-  return string.replace(/\n/gi, ' ').replace(/ {2,}/gi, ' ');
-}
-
 export function addTwoLetterEmoji(string) {
   return string
     .replace(/(:\) )/g, '😊 ')
@@ -192,6 +120,91 @@ export function addEmoji(string) {
   firstPart = firstResult.substring(0, firstResult.length - 4);
   lastPart = addThreeLetterEmoji(firstResult.slice(-4));
   return `${firstPart}${lastPart}`;
+}
+
+export function capitalize(string = '') {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function cleanString(string) {
+  return string
+    ? string
+        .replace(/<br\s*[\/]?>/gi, '\n')
+        .replace(/&amp;/gi, '&')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+    : '';
+}
+
+export function exceedsCharLimit({ inputType, contentType, text }) {
+  const limit =
+    contentType === 'comment' ||
+    contentType === 'rewardComment' ||
+    contentType === 'statusMsg'
+      ? charLimit[contentType]
+      : charLimit[contentType][inputType];
+  return text.length > limit
+    ? {
+        style: {
+          color: 'red',
+          borderColor: 'red'
+        },
+        message: `${text.length}/${limit} Characters`
+      }
+    : undefined;
+}
+
+export function fetchedVideoCodeFromURL(url) {
+  let videoCode = '';
+  if (typeof url.split('v=')[1] !== 'undefined') {
+    let trimmedUrl = url.split('v=')[1].split('#')[0];
+    videoCode = trimmedUrl.split('&')[0];
+  } else {
+    let trimmedUrl = url.split('youtu.be/')[1].split('#')[0];
+    videoCode = trimmedUrl.split('&')[0].split('?')[0];
+  }
+  return videoCode;
+}
+
+export function getFileTypeFromFileName(fileName) {
+  const fileNameArray = fileName.split('.');
+  const extension =
+    fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
+  return checkFileType(extension);
+
+  function checkFileType(extension) {
+    const audioExt = ['wav', '.aif', 'mp3', 'mid'];
+    const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif'];
+    const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
+    const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
+    const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
+    if (audioExt.indexOf(extension) !== -1) {
+      return 'audio';
+    }
+    if (imageExt.indexOf(extension) !== -1) {
+      return 'image';
+    }
+    if (movieExt.indexOf(extension) !== -1) {
+      return 'video';
+    }
+    if (compressedExt.indexOf(extension) !== -1) {
+      return 'archive';
+    }
+    if (wordExt.indexOf(extension) !== -1) {
+      return 'word';
+    }
+    if (extension === 'pdf') {
+      return 'pdf';
+    }
+    return 'other';
+  }
+}
+
+export function limitBrs(string) {
+  return string.replace(
+    /(<br ?\/?>){11,}/gi,
+    '<br><br><br><br><br><br><br><br><br><br>'
+  );
 }
 
 export function finalizeEmoji(string) {
@@ -315,6 +328,41 @@ export function queryStringForArray({ array, originVar, destinationVar }) {
     .join('&')}`;
 }
 
+export function removeLineBreaks(string) {
+  return string.replace(/\n/gi, ' ').replace(/ {2,}/gi, ' ');
+}
+
+export function renderFileSize(fileSize) {
+  if (fileSize > 1000000) {
+    return `(${(fileSize / 1000000).toFixed(2)} MB)`;
+  }
+  if (fileSize > 1000) {
+    return `(${(fileSize / 1000).toFixed(2)} KB)`;
+  }
+  return null;
+}
+
+export function renderText(text) {
+  let newText = text;
+  while (
+    newText !== '' &&
+    (newText[0] === ' ' ||
+      (newText[newText.length - 1] === ' ' &&
+        newText[newText.length - 2] === ' '))
+  ) {
+    if (newText[0] === ' ') {
+      newText = newText.substring(1);
+    }
+    if (
+      newText[newText.length - 1] === ' ' &&
+      newText[newText.length - 2] === ' '
+    ) {
+      newText = newText.slice(0, -1);
+    }
+  }
+  return newText;
+}
+
 export function stringIsEmpty(string) {
   const checkedString = string
     ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
@@ -351,16 +399,12 @@ export function truncateText({ text, limit }) {
   return text;
 }
 
-export function fetchedVideoCodeFromURL(url) {
-  let videoCode = '';
-  if (typeof url.split('v=')[1] !== 'undefined') {
-    let trimmedUrl = url.split('v=')[1].split('#')[0];
-    videoCode = trimmedUrl.split('&')[0];
-  } else {
-    let trimmedUrl = url.split('youtu.be/')[1].split('#')[0];
-    videoCode = trimmedUrl.split('&')[0].split('?')[0];
+export function turnStringIntoQuestion(string) {
+  const toDelete = ['?', ' '];
+  while (toDelete.indexOf(string.charAt(string.length - 1)) !== -1) {
+    string = string.slice(0, -1);
   }
-  return videoCode;
+  return string + '?';
 }
 
 /* eslint-enable no-useless-escape */

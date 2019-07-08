@@ -200,6 +200,18 @@ export const loadChat = async ({ channelId, dispatch, testAuth } = {}) => {
   }
 };
 
+export const loadChatChannel = async ({ channelId, dispatch }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/chat/channel?channelId=${channelId}`,
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const loadContent = async ({ contentId, type }) => {
   try {
     const { data } = await request.get(

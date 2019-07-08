@@ -1,0 +1,35 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import FileInfo from './FileInfo';
+import { cloudFrontURL } from 'constants/defaultValues';
+import { getFileTypeFromFileName } from 'helpers/stringHelpers';
+
+ContentMessage.propTypes = {
+  filePath: PropTypes.string.isRequired,
+  fileName: PropTypes.string.isRequired,
+  fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+export default function ContentMessage({ filePath, fileName, fileSize }) {
+  const fileType = getFileTypeFromFileName(fileName);
+  const src = `${cloudFrontURL}/attachments/chat/${filePath}/${encodeURIComponent(
+    fileName
+  )}`;
+  return (
+    <div style={{ marginTop: '1rem' }}>
+      {fileType === 'image' ? (
+        <img
+          style={{ maxWidth: '100%', height: '25vw', objectFit: 'contain' }}
+          src={src}
+          rel={fileName}
+        />
+      ) : (
+        <FileInfo
+          fileName={fileName}
+          fileType={fileType}
+          fileSize={fileSize}
+          src={src}
+        />
+      )}
+    </div>
+  );
+}

@@ -15,7 +15,7 @@ import ChessModal from './Modals/ChessModal';
 import AlertModal from 'components/Modals/AlertModal';
 import UploadModal from './Modals/UploadModal';
 import Context from './Context';
-import { startNewDMChannel } from 'helpers/requestHelpers';
+import { loadChatChannel, startNewDMChannel } from 'helpers/requestHelpers';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { socket } from 'constants/io';
@@ -645,12 +645,13 @@ function Chat({
     setCreateNewChannelModalShown(true);
   }
 
-  function onChannelEnter(id) {
+  async function onChannelEnter(id) {
     if (id === 0) {
       setCurrentChannelOnlineMembers([]);
       return enterEmptyChat();
     }
-    enterChannelWithId({ channelId: id });
+    const data = await loadChatChannel({ channelId: id, dispatch });
+    enterChannelWithId({ data });
   }
 
   async function onCreateNewChannel(params) {

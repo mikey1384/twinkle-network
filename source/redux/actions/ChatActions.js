@@ -1,6 +1,6 @@
 import request from 'axios';
 import { GENERAL_CHAT_ID } from 'constants/database';
-import { auth, handleError } from 'helpers/requestHelpers';
+import { auth, handleError, loadChatChannel } from 'helpers/requestHelpers';
 import CHAT from '../constants/Chat';
 import URL from 'constants/URL';
 
@@ -17,28 +17,11 @@ export const changeChatSubject = subject => ({
   subject
 });
 
-export const enterChannelWithId = ({
-  channelId,
+export const enterChannelWithId = ({ data, showOnTop }) => ({
+  type: CHAT.ENTER_CHANNEL,
+  data,
   showOnTop
-}) => async dispatch => {
-  dispatch({
-    type: CHAT.SELECT_CHANNEL,
-    channelId
-  });
-  try {
-    const { data } = await request.get(
-      `${API_URL}/channel?channelId=${channelId}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.ENTER_CHANNEL,
-      data,
-      showOnTop
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+});
 
 export const resetMsgUnreadsOnTabSwitch = () => ({
   type: CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH
@@ -140,9 +123,11 @@ export const hideChat = channelId => async dispatch => {
       type: CHAT.HIDE_CHAT,
       channelId
     });
-    dispatch(
-      enterChannelWithId({ channelId: GENERAL_CHAT_ID, showOnTop: true })
-    );
+    const data = await loadChatChannel({
+      channelId: GENERAL_CHAT_ID,
+      dispatch
+    });
+    dispatch(enterChannelWithId({ data, showOnTop: true }));
   } catch (error) {
     handleError(error, dispatch);
   }
@@ -238,9 +223,11 @@ export const leaveChannel = channelId => async dispatch => {
       type: CHAT.LEAVE_CHANNEL,
       channelId
     });
-    dispatch(
-      enterChannelWithId({ channelId: GENERAL_CHAT_ID, showOnTop: true })
-    );
+    const data = await loadChatChannel({
+      channelId: GENERAL_CHAT_ID,
+      dispatch
+    });
+    dispatch(enterChannelWithId({ data, showOnTop: true }));
   } catch (error) {
     handleError(error, dispatch);
   }
@@ -286,12 +273,18 @@ export const openDirectMessageChannel = ({
   }
 };
 
-export const postFileUploadStatus = ({ channelId, content, filePath }) => ({
+export const postFileUploadStatus = ({
+  channelId,
+  content,
+  filePath,
+  fileToUpload
+}) => ({
   type: CHAT.POST_FILE_UPLOAD_STATUS,
   channelId,
   file: {
     content,
-    path: filePath
+    filePath,
+    fileToUpload
   }
 });
 

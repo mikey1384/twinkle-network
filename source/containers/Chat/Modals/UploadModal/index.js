@@ -74,9 +74,6 @@ function UploadModal({
   async function handleSubmit() {
     submitMessage({
       content: finalizeEmoji(caption),
-      userId,
-      username,
-      profilePicId,
       channelId,
       fileToUpload: selectedFile,
       filePath: uuidv1()

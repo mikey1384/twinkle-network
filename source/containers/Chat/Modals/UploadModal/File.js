@@ -4,7 +4,12 @@ import Loading from 'components/Loading';
 import Image from './Image';
 import FileIcon from './FileIcon';
 import Textarea from 'components/Texts/Textarea';
-import { addCommasToNumber, addEmoji } from 'helpers/stringHelpers';
+import {
+  addCommasToNumber,
+  addEmoji,
+  getFileTypeFromFileName,
+  renderFileSize
+} from 'helpers/stringHelpers';
 
 File.propTypes = {
   captionExceedsCharLimit: PropTypes.object,
@@ -25,11 +30,8 @@ export default function File({
     if (fileObj) {
       setLoading(false);
     }
-    const extension = fileObj.name
-      .split('.')
-      .pop()
-      .toLowerCase();
-    setFileType(checkFileType(extension));
+    const fileType = getFileTypeFromFileName(fileObj.name);
+    setFileType(fileType);
   }, [fileObj]);
 
   return loading ? (
@@ -60,7 +62,7 @@ export default function File({
         <div>
           <div>File Name: {fileObj.name}</div>
           <div>
-            File Size: {addCommasToNumber(fileObj.size)} byte
+            File Size: {addCommasToNumber(fileObj.size)} byte{' '}
             {renderFileSize(fileObj.size)}
           </div>
         </div>
@@ -98,41 +100,4 @@ export default function File({
       onCaptionChange(addEmoji(event.target.value));
     }
   }
-}
-
-function checkFileType(extension) {
-  const audioExt = ['wav', '.aif', 'mp3', 'mid'];
-  const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif'];
-  const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
-  const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
-  const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
-  if (audioExt.indexOf(extension) !== -1) {
-    return 'audio';
-  }
-  if (imageExt.indexOf(extension) !== -1) {
-    return 'image';
-  }
-  if (movieExt.indexOf(extension) !== -1) {
-    return 'video';
-  }
-  if (compressedExt.indexOf(extension) !== -1) {
-    return 'archive';
-  }
-  if (wordExt.indexOf(extension) !== -1) {
-    return 'word';
-  }
-  if (extension === 'pdf') {
-    return 'pdf';
-  }
-  return 'other';
-}
-
-function renderFileSize(fileSize) {
-  if (fileSize > 1000000) {
-    return ` (${(fileSize / 1000000).toFixed(2)} MB)`;
-  }
-  if (fileSize > 1000) {
-    return ` (${(fileSize / 1000).toFixed(2)} KB)`;
-  }
-  return null;
 }

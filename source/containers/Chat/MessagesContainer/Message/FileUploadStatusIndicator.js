@@ -24,7 +24,13 @@ function FileUploadStatusIndicator({
 }) {
   const { onFileUpload } = useContext(Context);
   useEffect(() => {
-    onFileUpload({ channelId, content, filePath, fileToUpload });
+    if (
+      !filesBeingUploaded[channelId] ||
+      filesBeingUploaded[channelId].filter(file => file.filePath === filePath)
+        .length === 0
+    ) {
+      onFileUpload({ channelId, content, filePath, fileToUpload });
+    }
   }, []);
   const [
     {
@@ -33,8 +39,9 @@ function FileUploadStatusIndicator({
       apiServerToS3Progress = 0
     } = {}
   ] =
-    filesBeingUploaded[channelId]?.filter(({ path }) => path === filePath) ||
-    [];
+    filesBeingUploaded[channelId]?.filter(
+      ({ filePath: path }) => path === filePath
+    ) || [];
   const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => {
     setUploadProgress(

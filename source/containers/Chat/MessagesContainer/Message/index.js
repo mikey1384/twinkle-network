@@ -7,6 +7,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
+import ContentMessage from './ContentMessage';
 import TextMessage from './TextMessage';
 import { connect } from 'react-redux';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
@@ -28,6 +29,8 @@ Message.propTypes = {
   message: PropTypes.object,
   style: PropTypes.object,
   myId: PropTypes.number,
+  myProfilePicId: PropTypes.number,
+  myUsername: PropTypes.string,
   onDelete: PropTypes.func,
   onEditDone: PropTypes.func,
   saveMessage: PropTypes.func,
@@ -57,10 +60,12 @@ function Message({
   message: {
     id: messageId,
     fileToUpload,
+    fileName,
     userId,
     timeStamp,
     content,
     filePath,
+    fileSize,
     gameWinnerId,
     subjectId,
     isReloadedSubject,
@@ -72,6 +77,8 @@ function Message({
     chessState
   },
   myId,
+  myProfilePicId,
+  myUsername,
   onChessBoardClick,
   onDelete,
   onEditDone,
@@ -82,8 +89,13 @@ function Message({
   socketConnected,
   updateChessMoveViewTimeStamp
 }) {
-  const { username, profilePicId, ...post } = message;
+  let { username, profilePicId, ...post } = message;
   const [spoilerOff, setSpoilerOff] = useState(false);
+  if (fileToUpload) {
+    userId = myId;
+    username = myUsername;
+    profilePicId = myProfilePicId;
+  }
   useEffect(() => {
     if (
       !message.fileToUpload &&
@@ -160,6 +172,12 @@ function Message({
                 fileToUpload={fileToUpload}
                 filePath={filePath}
               />
+            ) : filePath ? (
+              <ContentMessage
+                filePath={filePath}
+                fileName={fileName}
+                fileSize={fileSize}
+              />
             ) : (
               <TextMessage
                 authLevel={authLevel}
@@ -203,6 +221,8 @@ export default connect(
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
     myId: state.UserReducer.userId,
+    myUsername: state.UserReducer.username,
+    myProfilePicId: state.UserReducer.profilePicId,
     socketConnected: state.NotiReducer.socketConnected
   }),
   dispatch => ({
