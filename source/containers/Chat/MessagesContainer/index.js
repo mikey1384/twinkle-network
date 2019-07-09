@@ -35,6 +35,8 @@ class MessagesContainer extends Component {
   state = {
     deleteModal: {
       shown: false,
+      fileName: '',
+      filePath: '',
       messageId: null
     },
     fillerHeight: 20,
@@ -254,7 +256,7 @@ class MessagesContainer extends Component {
             <ConfirmModal
               onHide={() =>
                 this.setState({
-                  deleteModal: { shown: false, messageId: null }
+                  deleteModal: { shown: false, filePath: '', messageId: null }
                 })
               }
               title="Remove Message"
@@ -268,11 +270,16 @@ class MessagesContainer extends Component {
 
   onDelete = async () => {
     const { deleteMessage } = this.props;
-    const { messageId } = this.state.deleteModal;
+    const { fileName, filePath, messageId } = this.state.deleteModal;
     try {
-      await deleteMessage(messageId);
+      await deleteMessage({ fileName, filePath, messageId });
       this.setState({
-        deleteModal: { shown: false, messageId: null }
+        deleteModal: {
+          shown: false,
+          fileName: '',
+          filePath: '',
+          messageId: null
+        }
       });
     } catch (error) {
       console.error(error);
@@ -329,10 +336,12 @@ class MessagesContainer extends Component {
     });
   };
 
-  onShowDeleteModal = messageId => {
+  onShowDeleteModal = ({ fileName, filePath, messageId }) => {
     this.setState({
       deleteModal: {
         shown: true,
+        fileName,
+        filePath,
         messageId
       }
     });

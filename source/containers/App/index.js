@@ -17,7 +17,7 @@ import {
   turnChatOff,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { loadChat, uploadFileData } from 'helpers/requestHelpers';
+import { loadChat, uploadFileOnChat } from 'helpers/requestHelpers';
 import { changePageVisibility } from 'redux/actions/ViewActions';
 import {
   initSession,
@@ -276,11 +276,18 @@ function App({
   async function handleFileUpload({
     channelId,
     content,
+    fileName,
     filePath,
     fileToUpload
   }) {
-    postFileUploadStatus({ channelId, content, filePath, fileToUpload });
-    const data = await uploadFileData({
+    postFileUploadStatus({
+      channelId,
+      content,
+      fileName,
+      filePath,
+      fileToUpload
+    });
+    const { messageId } = await uploadFileOnChat({
       channelId,
       content,
       dispatch,
@@ -291,7 +298,8 @@ function App({
     postUploadComplete({
       path: filePath,
       channelId,
-      result: !!data?.success
+      messageId,
+      result: !!messageId
     });
     function handleUploadProgress({ loaded, total }) {
       updateClientToApiServerProgress({

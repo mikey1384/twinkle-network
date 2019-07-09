@@ -178,13 +178,20 @@ function Message({
               />
             ) : filePath ? (
               <FileMessage
+                authLevel={authLevel}
+                canDelete={canDelete}
                 content={content}
                 filePath={filePath}
                 fileName={fileName}
                 fileSize={fileSize}
                 isLastMsg={isLastMsg}
+                messageId={messageId}
+                myId={myId}
+                onDelete={onDelete}
                 scrollAtBottom={scrollAtBottom}
                 setScrollToBottom={setScrollToBottom}
+                uploaderAuthLevel={uploaderAuthLevel}
+                uploaderId={userId}
               />
             ) : (
               <TextMessage

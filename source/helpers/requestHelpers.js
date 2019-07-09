@@ -685,7 +685,7 @@ export const uploadFeaturedPlaylists = async ({
   }
 };
 
-export const uploadFileData = async ({
+export const uploadFileOnChat = async ({
   channelId,
   content,
   dispatch,
@@ -699,7 +699,7 @@ export const uploadFileData = async ({
     fileData.append('path', path);
     fileData.append('channelId', channelId);
     fileData.append('content', content);
-    const { data } = await request.post(`${URL}/content/file`, fileData, {
+    const { data } = await request.post(`${URL}/chat/file`, fileData, {
       ...auth(),
       onUploadProgress
     });

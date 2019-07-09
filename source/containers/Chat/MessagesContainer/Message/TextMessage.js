@@ -62,7 +62,6 @@ export default function TextMessage({
       setTimeout(() => setScrollToBottom(), 0);
     }
   }, [editPadding]);
-  const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
     editMenuItems.push({
@@ -78,12 +77,16 @@ export default function TextMessage({
       label: 'Remove',
       onClick: () => {
         setEditPadding(false);
-        onDelete(messageId);
+        onDelete({ messageId });
       }
     });
   }
   const dropdownButtonShown =
-    !!messageId && !isReloadedSubject && editButtonShown && !onEdit;
+    !!messageId &&
+    !isReloadedSubject &&
+    (userIsUploader || userCanEditThis) &&
+    !onEdit;
+
   return (
     <ErrorBoundary>
       {onEdit ? (

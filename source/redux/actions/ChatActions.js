@@ -56,9 +56,16 @@ export const createNewChannel = params => async dispatch => {
   }
 };
 
-export const deleteMessage = messageId => async dispatch => {
+export const deleteMessage = ({
+  fileName = '',
+  filePath = '',
+  messageId
+}) => async dispatch => {
   try {
-    await request.delete(`${API_URL}/message?messageId=${messageId}`, auth());
+    await request.delete(
+      `${API_URL}/message?messageId=${messageId}&filePath=${filePath}&fileName=${fileName}`,
+      auth()
+    );
     dispatch({
       type: CHAT.DELETE_MESSAGE,
       messageId
@@ -75,18 +82,22 @@ export const displayAttachedFile = ({
   userId,
   username,
   profilePicId,
-  scrollAtBottom
-}) => ({
-  type: CHAT.DISPLAY_ATTACHED_FILE,
-  channelId,
-  filePath,
-  fileInfo: {
-    userId,
-    username,
-    profilePicId,
-    scrollAtBottom
-  }
-});
+  scrollAtBottom,
+  uploaderAuthLevel
+}) => {
+  return {
+    type: CHAT.DISPLAY_ATTACHED_FILE,
+    channelId,
+    filePath,
+    fileInfo: {
+      userId,
+      username,
+      profilePicId,
+      scrollAtBottom,
+      uploaderAuthLevel
+    }
+  };
+};
 
 export const editChannelTitle = params => async dispatch => {
   try {
@@ -295,6 +306,7 @@ export const openDirectMessageChannel = ({
 export const postFileUploadStatus = ({
   channelId,
   content,
+  fileName,
   filePath,
   fileToUpload
 }) => ({
@@ -302,14 +314,16 @@ export const postFileUploadStatus = ({
   channelId,
   file: {
     content,
+    fileName,
     filePath,
     fileToUpload
   }
 });
 
-export const postUploadComplete = ({ channelId, path, result }) => ({
+export const postUploadComplete = ({ channelId, messageId, path, result }) => ({
   type: CHAT.POST_UPLOAD_COMPLETE,
   channelId,
+  messageId,
   path,
   result
 });

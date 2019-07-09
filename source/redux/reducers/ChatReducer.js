@@ -41,11 +41,12 @@ export default function ChatReducer(state = defaultState, action) {
           };
         })
       };
-    case CHAT.CHANGE_SUBJECT:
+    case CHAT.CHANGE_SUBJECT: {
       return {
         ...state,
         subject: action.subject
       };
+    }
     case CHAT.CLEAR_CHAT_SEARCH_RESULTS:
       return {
         ...state,
@@ -69,6 +70,9 @@ export default function ChatReducer(state = defaultState, action) {
             ? {
                 ...message,
                 ...action.fileInfo,
+                id: state.filesBeingUploaded[action.channelId]?.filter(
+                  file => file.filePath === action.filePath
+                )?.[0]?.id,
                 fileToUpload: undefined
               }
             : message
@@ -639,6 +643,7 @@ export default function ChatReducer(state = defaultState, action) {
               file.filePath === action.path
                 ? {
                     ...file,
+                    id: action.messageId,
                     uploadComplete: action.result
                   }
                 : file

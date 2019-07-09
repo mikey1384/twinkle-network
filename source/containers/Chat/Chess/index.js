@@ -144,7 +144,7 @@ export default function Chess({
       style={{
         position: 'relative',
         padding: '1rem',
-        background: Color.subtitleGray(),
+        background: Color.lightGray(),
         ...style
       }}
     >

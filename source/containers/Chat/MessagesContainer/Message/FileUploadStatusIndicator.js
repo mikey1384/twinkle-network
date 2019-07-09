@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 
 FileUploadStatusIndicator.propTypes = {
+  authLevel: PropTypes.number,
   channelId: PropTypes.number.isRequired,
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   content: PropTypes.string,
@@ -21,6 +22,7 @@ FileUploadStatusIndicator.propTypes = {
 };
 
 function FileUploadStatusIndicator({
+  authLevel,
   channelId,
   checkScrollIsAtTheBottom,
   content,
@@ -43,6 +45,7 @@ function FileUploadStatusIndicator({
       onFileUpload({
         channelId,
         content,
+        fileName: fileToUpload.name,
         filePath,
         fileToUpload
       });
@@ -61,6 +64,7 @@ function FileUploadStatusIndicator({
   useEffect(() => {
     if (uploadComplete) {
       displayAttachedFile({
+        uploaderAuthLevel: authLevel,
         channelId,
         filePath,
         userId,
@@ -78,7 +82,8 @@ function FileUploadStatusIndicator({
   }, [clientToApiServerProgress, apiServerToS3Progress]);
 
   return (
-    <div>
+    <div style={{ marginTop: '1rem' }}>
+      <div>{`Uploading ${fileToUpload.name}...`}</div>
       <ProgressBar
         text={uploadComplete ? 'Upload Complete!' : ''}
         color={uploadComplete ? Color.green() : Color.blue()}
@@ -90,6 +95,7 @@ function FileUploadStatusIndicator({
 
 export default connect(
   state => ({
+    authLevel: state.UserReducer.authLevel,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId,
