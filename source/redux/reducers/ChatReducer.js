@@ -61,6 +61,19 @@ export default function ChatReducer(state = defaultState, action) {
         ...state,
         userSearchResults: []
       };
+    case CHAT.DISPLAY_ATTACHED_FILE:
+      return {
+        ...state,
+        messages: state.messages.map(message =>
+          message.filePath === action.filePath
+            ? {
+                ...message,
+                ...action.fileInfo,
+                fileToUpload: undefined
+              }
+            : message
+        )
+      };
     case CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH:
       return {
         ...state,

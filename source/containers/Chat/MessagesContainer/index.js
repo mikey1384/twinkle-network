@@ -308,6 +308,9 @@ class MessagesContainer extends Component {
           channelId={channelId}
           channelName={channelName}
           chessCountdownObj={chessCountdownObj}
+          checkScrollIsAtTheBottom={() =>
+            scrollIsAtTheBottom(this.content, this.messagesContainer)
+          }
           onDelete={this.onShowDeleteModal}
           index={index}
           onChessBoardClick={onChessBoardClick}

@@ -31,7 +31,7 @@ function UploadModal({
   profilePicId
 }) {
   const [caption, setCaption] = useState('');
-  const [selectedFile, setSelectedFile] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     setSelectedFile(fileObj);
   }, []);
@@ -76,8 +76,10 @@ function UploadModal({
       content: finalizeEmoji(caption),
       channelId,
       fileToUpload: selectedFile,
-      filePath: uuidv1()
+      filePath: uuidv1(),
+      fileName: selectedFile.name
     });
+    onHide();
   }
 }
 

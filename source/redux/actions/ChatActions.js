@@ -69,6 +69,25 @@ export const deleteMessage = messageId => async dispatch => {
   }
 };
 
+export const displayAttachedFile = ({
+  channelId,
+  filePath,
+  userId,
+  username,
+  profilePicId,
+  scrollAtBottom
+}) => ({
+  type: CHAT.DISPLAY_ATTACHED_FILE,
+  channelId,
+  filePath,
+  fileInfo: {
+    userId,
+    username,
+    profilePicId,
+    scrollAtBottom
+  }
+});
+
 export const editChannelTitle = params => async dispatch => {
   try {
     await request.post(`${API_URL}/title`, params, auth());

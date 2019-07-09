@@ -22,6 +22,7 @@ Message.propTypes = {
   authLevel: PropTypes.number,
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
+  checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
@@ -51,6 +52,7 @@ function Message({
   canEdit,
   channelId,
   channelName,
+  checkScrollIsAtTheBottom,
   chessCountdownObj,
   dispatch,
   index,
@@ -74,7 +76,8 @@ function Message({
     uploaderAuthLevel,
     moveViewTimeStamp,
     isChessMsg,
-    chessState
+    chessState,
+    scrollAtBottom
   },
   myId,
   myProfilePicId,
@@ -168,6 +171,7 @@ function Message({
             ) : fileToUpload ? (
               <FileUploadStatusIndicator
                 channelId={channelId}
+                checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
                 content={content}
                 fileToUpload={fileToUpload}
                 filePath={filePath}
@@ -178,6 +182,9 @@ function Message({
                 filePath={filePath}
                 fileName={fileName}
                 fileSize={fileSize}
+                isLastMsg={isLastMsg}
+                scrollAtBottom={scrollAtBottom}
+                setScrollToBottom={setScrollToBottom}
               />
             ) : (
               <TextMessage
