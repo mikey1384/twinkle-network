@@ -123,6 +123,7 @@ export default function ChatReducer(state = defaultState, action) {
               ...channel,
               id: action.message.channelId,
               lastMessage: {
+                fileName: action.message.fileName || '',
                 content: action.message.content,
                 sender: {
                   id: action.message.userId,

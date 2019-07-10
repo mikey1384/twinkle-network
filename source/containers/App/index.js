@@ -14,6 +14,7 @@ import {
   postFileUploadStatus,
   postUploadComplete,
   resetChat,
+  sendFirstDirectMessage,
   turnChatOff,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
@@ -29,6 +30,7 @@ import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
+import { socket } from 'constants/io';
 import Profile from 'containers/Profile';
 
 const Home = React.lazy(() => import('containers/Home'));
@@ -61,6 +63,7 @@ App.propTypes = {
   resetChat: PropTypes.func.isRequired,
   searchMode: PropTypes.bool,
   searchText: PropTypes.string,
+  sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
   turnChatOff: PropTypes.func.isRequired,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
@@ -87,6 +90,7 @@ function App({
   searchMode,
   searchText,
   signinModalShown,
+  sendFirstDirectMessage,
   turnChatOff,
   updateClientToApiServerProgress,
   updateDetail,
@@ -289,7 +293,7 @@ function App({
       fileToUpload,
       partnerId
     });
-    const { messageId } = await uploadFileOnChat({
+    const { messageId, members, message } = await uploadFileOnChat({
       channelId,
       content,
       dispatch,
@@ -298,6 +302,11 @@ function App({
       partnerId,
       path: filePath
     });
+    if (members) {
+      sendFirstDirectMessage({ members, message });
+      socket.emit('join_chat_channel', message.channelId);
+      socket.emit('send_bi_chat_invitation', partnerId, message);
+    }
     postUploadComplete({
       path: filePath,
       channelId,
@@ -357,6 +366,7 @@ export default connect(
     postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
     postUploadComplete: params => dispatch(postUploadComplete(params)),
     resetChat: () => dispatch(resetChat()),
+    sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
     updateClientToApiServerProgress: params =>
       dispatch(updateClientToApiServerProgress(params)),
     changePageVisibility: visible => dispatch(changePageVisibility(visible))

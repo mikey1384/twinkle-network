@@ -80,7 +80,9 @@ function FileUploadStatusIndicator({
         scrollAtBottom: checkScrollIsAtTheBottom()
       };
       displayAttachedFile(params);
-      onSendFileMessage(params);
+      if (channelId) {
+        onSendFileMessage(params);
+      }
     }
   }, [filesBeingUploaded]);
   const [uploadProgress, setUploadProgress] = useState(0);

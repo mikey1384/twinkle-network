@@ -89,6 +89,8 @@ class MessagesContainer extends Component {
     const messageDeleted =
       prevProps.currentChannelId === this.props.currentChannelId &&
       prevMessages.length > currentMessages.length;
+    const firstMessagePosted =
+      prevProps.messages.length === 0 && currentMessages.length === 1;
     if (switchedChannel) {
       this.setState({
         fillerHeight:
@@ -124,6 +126,9 @@ class MessagesContainer extends Component {
         });
         this.setScrollToBottom();
       }
+    }
+    if (firstMessagePosted) {
+      this.setScrollToBottom();
     }
   }
 

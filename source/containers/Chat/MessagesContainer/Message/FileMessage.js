@@ -22,7 +22,7 @@ FileMessage.propTypes = {
   onDelete: PropTypes.func.isRequired,
   scrollAtBottom: PropTypes.bool,
   setScrollToBottom: PropTypes.func.isRequired,
-  uploaderAuthLevel: PropTypes.number.isRequired,
+  uploaderAuthLevel: PropTypes.number,
   uploaderId: PropTypes.number.isRequired
 };
 
