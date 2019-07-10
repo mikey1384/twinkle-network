@@ -278,14 +278,16 @@ function App({
     content,
     fileName,
     filePath,
-    fileToUpload
+    fileToUpload,
+    partnerId
   }) {
     postFileUploadStatus({
       channelId,
       content,
       fileName,
       filePath,
-      fileToUpload
+      fileToUpload,
+      partnerId
     });
     const { messageId } = await uploadFileOnChat({
       channelId,
@@ -293,6 +295,7 @@ function App({
       dispatch,
       selectedFile: fileToUpload,
       onUploadProgress: handleUploadProgress,
+      partnerId,
       path: filePath
     });
     postUploadComplete({

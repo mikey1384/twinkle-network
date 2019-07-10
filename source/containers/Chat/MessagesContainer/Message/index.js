@@ -41,6 +41,8 @@ Message.propTypes = {
   isNotification: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
+  onSendFileMessage: PropTypes.func.isRequired,
+  partnerId: PropTypes.number,
   setScrollToBottom: PropTypes.func,
   socketConnected: PropTypes.bool,
   updateChessMoveViewTimeStamp: PropTypes.func
@@ -86,6 +88,8 @@ function Message({
   onDelete,
   onEditDone,
   onChessSpoilerClick,
+  onSendFileMessage,
+  partnerId,
   saveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
@@ -101,9 +105,8 @@ function Message({
   }
   useEffect(() => {
     if (
-      !message.fileToUpload &&
-      !message.id &&
       message.userId === myId &&
+      !message.id &&
       !message.isSubject &&
       !message.isNotification
     ) {
@@ -175,6 +178,8 @@ function Message({
                 content={content}
                 fileToUpload={fileToUpload}
                 filePath={filePath}
+                onSendFileMessage={onSendFileMessage}
+                partnerId={partnerId}
               />
             ) : filePath ? (
               <FileMessage

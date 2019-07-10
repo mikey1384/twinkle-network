@@ -18,6 +18,8 @@ FileUploadStatusIndicator.propTypes = {
   filePath: PropTypes.string.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string,
+  onSendFileMessage: PropTypes.func.isRequired,
+  partnerId: PropTypes.number,
   profilePicId: PropTypes.number
 };
 
@@ -31,8 +33,10 @@ function FileUploadStatusIndicator({
   filesBeingUploaded,
   fileToUpload,
   filePath,
+  onSendFileMessage,
   userId,
   username,
+  partnerId,
   profilePicId
 }) {
   const { onFileUpload } = useContext(Context);
@@ -47,7 +51,9 @@ function FileUploadStatusIndicator({
         content,
         fileName: fileToUpload.name,
         filePath,
-        fileToUpload
+        fileToUpload,
+        userId,
+        partnerId
       });
     }
   }, []);
@@ -63,15 +69,18 @@ function FileUploadStatusIndicator({
     ) || [];
   useEffect(() => {
     if (uploadComplete) {
-      displayAttachedFile({
+      const params = {
+        fileName: fileToUpload.name,
+        filePath,
         uploaderAuthLevel: authLevel,
         channelId,
-        filePath,
         userId,
         username,
         profilePicId,
         scrollAtBottom: checkScrollIsAtTheBottom()
-      });
+      };
+      displayAttachedFile(params);
+      onSendFileMessage(params);
     }
   }, [filesBeingUploaded]);
   const [uploadProgress, setUploadProgress] = useState(0);

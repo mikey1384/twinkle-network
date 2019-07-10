@@ -129,7 +129,10 @@ export default function Channels({
       }
     );
 
-  function renderPreviewMessage({ content, gameWinnerId, sender }) {
+  function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
+    if (fileName) {
+      return <span>{`"${fileName}"`}</span>;
+    }
     if (typeof gameWinnerId === 'number') {
       if (gameWinnerId === 0) {
         return <span>The chess match ended in a draw</span>;

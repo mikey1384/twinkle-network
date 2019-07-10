@@ -435,6 +435,8 @@ function Chat({
             onChessBoardClick={handleChessModalShown}
             onChessSpoilerClick={handleChessSpoilerClick}
             onLoadingDone={() => setLoading(false)}
+            onSendFileMessage={handleSendFileMessage}
+            partnerId={partnerId}
             statusText={renderStatusMessage()}
           />
           {socketConnected ? (
@@ -519,6 +521,18 @@ function Chat({
     socket.emit('viewed_chess_move', currentChannel.id);
     socket.emit('start_chess_timer', currentChannel);
     setChessModalShown(true);
+  }
+
+  function handleSendFileMessage(params) {
+    socket.emit('new_chat_message', params, {
+      ...currentChannel,
+      numUnreads: 1,
+      lastMessage: {
+        fileName: params.fileName,
+        sender: { id: userId, username }
+      },
+      channelName
+    });
   }
 
   function handleUpload(event) {

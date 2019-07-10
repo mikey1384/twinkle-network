@@ -29,6 +29,8 @@ class MessagesContainer extends Component {
     onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
     onLoadingDone: PropTypes.func,
+    onSendFileMessage: PropTypes.func.isRequired,
+    partnerId: PropTypes.number,
     statusText: PropTypes.string
   };
 
@@ -305,7 +307,9 @@ class MessagesContainer extends Component {
       chessCountdownObj,
       messages,
       onChessBoardClick,
-      onChessSpoilerClick
+      onChessSpoilerClick,
+      onSendFileMessage,
+      partnerId
     } = this.props;
     return messages.map((message, index) => {
       let { isNotification } = message;
@@ -322,9 +326,11 @@ class MessagesContainer extends Component {
           index={index}
           onChessBoardClick={onChessBoardClick}
           onChessSpoilerClick={onChessSpoilerClick}
+          onSendFileMessage={onSendFileMessage}
           isNotification={!!isNotification}
           message={message}
           isLastMsg={index === messages.length - 1}
+          partnerId={partnerId}
           setScrollToBottom={this.setScrollToBottom}
           showSubjectMsgsModal={({ subjectId, content }) =>
             this.setState({

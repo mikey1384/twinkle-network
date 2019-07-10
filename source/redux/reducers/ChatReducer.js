@@ -495,6 +495,7 @@ export default function ChatReducer(state = defaultState, action) {
             id: action.data.channelId,
             channelName: action.data.channelName || action.data.username,
             lastMessage: {
+              fileName: action.data.fileName || '',
               content: action.data.content,
               sender: {
                 id: action.data.userId,
@@ -525,6 +526,7 @@ export default function ChatReducer(state = defaultState, action) {
             return {
               ...channel,
               lastMessage: {
+                fileName: action.message.fileName || '',
                 gameWinnerId: action.message.gameWinnerId,
                 content: action.message.content,
                 sender: {
@@ -583,6 +585,7 @@ export default function ChatReducer(state = defaultState, action) {
                 {
                   ...channel,
                   lastMessage: {
+                    fileName: action.message.fileName || '',
                     gameWinnerId: action.message.gameWinnerId,
                     content: action.message.content,
                     sender: {
