@@ -70,6 +70,7 @@ function FileUploadStatusIndicator({
   useEffect(() => {
     if (uploadComplete) {
       const params = {
+        content,
         fileName: fileToUpload.name,
         filePath,
         uploaderAuthLevel: authLevel,

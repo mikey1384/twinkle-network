@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import { objectify } from 'helpers';
 
 Chat.propTypes = {
+  authLevel: PropTypes.number,
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
   createNewChannel: PropTypes.func,
@@ -59,6 +60,7 @@ Chat.propTypes = {
 };
 
 function Chat({
+  authLevel,
   channels,
   channelLoadMoreButtonShown,
   currentChannel,
@@ -116,6 +118,15 @@ function Chat({
   const channelsObj = useRef({});
   const FileInputRef = useRef(null);
   const mounted = useRef(true);
+  const mb = 1000;
+  const maxSize =
+    authLevel > 8
+      ? 4000 * mb
+      : authLevel > 4
+      ? 2000 * mb
+      : authLevel === 4
+      ? 1000 * mb
+      : 50 * mb;
 
   useEffect(() => {
     mounted.current = true;
@@ -479,7 +490,8 @@ function Chat({
         {alertModalShown && (
           <AlertModal
             title="File is too large"
-            content="The file size is larger than the limit of 500mb"
+            content={`The file size is larger than your limit of ${maxSize /
+              mb} MB`}
             onHide={() => setAlertModalShown(false)}
           />
         )}
@@ -536,9 +548,8 @@ function Chat({
   }
 
   function handleUpload(event) {
-    const maxSize = 500000;
     const file = event.target.files[0];
-    if (file.size / 1000 > maxSize) {
+    if (file.size / mb > maxSize) {
       return setAlertModalShown(true);
     }
     setFileObj(file);
@@ -770,6 +781,7 @@ function Chat({
 
 export default connect(
   state => ({
+    authLevel: state.UserReducer.authLevel,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     pageVisible: state.ViewReducer.pageVisible,
