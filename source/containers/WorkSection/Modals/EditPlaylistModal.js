@@ -10,6 +10,7 @@ import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import SortableThumb from 'components/SortableThumb';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import TouchBackend from 'react-dnd-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -101,209 +102,217 @@ function EditPlaylistModal({
   return (
     <ErrorBoundary>
       <DndProvider backend={HTML5Backend}>
-        <Modal large onHide={onHide}>
-          <header>
-            {modalType === 'change'
-              ? 'Change Playlist Videos'
-              : 'Reorder Videos'}
-          </header>
-          <main>
-            <FilterBar style={{ marginBottom: '2rem', fontWeight: 'bold' }}>
-              <nav
-                className={mainTabActive ? 'active' : ''}
-                onClick={() => {
-                  setMainTabActive(true);
-                  setLoadingMore(false);
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
-              </nav>
-              <nav
-                className={mainTabActive ? '' : 'active'}
-                onClick={openRemoveVideosTab}
-                style={{ cursor: 'pointer' }}
-              >
-                Remove Videos
-              </nav>
-            </FilterBar>
-            {mainTabActive && modalType === 'change' && (
-              <SearchInput
-                placeholder="Search videos..."
-                autoFocus
-                style={{
-                  marginBottom: '2rem',
-                  width: '70%'
-                }}
-                value={searchText}
-                onChange={handleSearch}
-              />
-            )}
-            {isLoading || searching ? (
-              <Loading />
-            ) : (
-              <>
-                {mainTabActive && modalType === 'change' && (
-                  <SelectUploadsForm
-                    contentObjs={playlistVideoObjects.current}
-                    loadingMore={loadingMore}
-                    uploads={
-                      !stringIsEmpty(searchText) ? searchedVideos : modalVideos
-                    }
-                    selectedUploads={selectedVideos}
-                    loadMoreButton={
-                      !stringIsEmpty(searchText)
-                        ? searchLoadMoreButton
-                        : loadMoreButton
-                    }
-                    onSelect={selectedVideoId => {
-                      setAddedVideos(addedVideos =>
-                        [selectedVideoId].concat(addedVideos)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        [selectedVideoId].concat(selectedVideos)
-                      );
-                      setLoadedOrSearchedVideos(loadedOrSearchedVideo =>
-                        [selectedVideoId].concat(
-                          loadedOrSearchedVideo.filter(
-                            videoId => videoId !== selectedVideoId
-                          )
-                        )
-                      );
-                      if (!stringIsEmpty(searchText)) {
-                        setModalVideos(modalVideos =>
+        <DndProvider backend={TouchBackend}>
+          <Modal large onHide={onHide}>
+            <header>
+              {modalType === 'change'
+                ? 'Change Playlist Videos'
+                : 'Reorder Videos'}
+            </header>
+            <main>
+              <FilterBar style={{ marginBottom: '2rem', fontWeight: 'bold' }}>
+                <nav
+                  className={mainTabActive ? 'active' : ''}
+                  onClick={() => {
+                    setMainTabActive(true);
+                    setLoadingMore(false);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {modalType === 'change' ? 'Add Videos' : 'Reorder Videos'}
+                </nav>
+                <nav
+                  className={mainTabActive ? '' : 'active'}
+                  onClick={openRemoveVideosTab}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Remove Videos
+                </nav>
+              </FilterBar>
+              {mainTabActive && modalType === 'change' && (
+                <SearchInput
+                  placeholder="Search videos..."
+                  autoFocus
+                  style={{
+                    marginBottom: '2rem',
+                    width: '70%'
+                  }}
+                  value={searchText}
+                  onChange={handleSearch}
+                />
+              )}
+              {isLoading || searching ? (
+                <Loading />
+              ) : (
+                <>
+                  {mainTabActive && modalType === 'change' && (
+                    <SelectUploadsForm
+                      contentObjs={playlistVideoObjects.current}
+                      loadingMore={loadingMore}
+                      uploads={
+                        !stringIsEmpty(searchText)
+                          ? searchedVideos
+                          : modalVideos
+                      }
+                      selectedUploads={selectedVideos}
+                      loadMoreButton={
+                        !stringIsEmpty(searchText)
+                          ? searchLoadMoreButton
+                          : loadMoreButton
+                      }
+                      onSelect={selectedVideoId => {
+                        setAddedVideos(addedVideos =>
+                          [selectedVideoId].concat(addedVideos)
+                        );
+                        setSelectedVideos(selectedVideos =>
+                          [selectedVideoId].concat(selectedVideos)
+                        );
+                        setLoadedOrSearchedVideos(loadedOrSearchedVideo =>
                           [selectedVideoId].concat(
-                            modalVideos.filter(
+                            loadedOrSearchedVideo.filter(
                               videoId => videoId !== selectedVideoId
                             )
                           )
                         );
-                      }
-                    }}
-                    onDeselect={deselectedId => {
-                      setAddedVideos(addedVideos =>
-                        addedVideos.filter(videoId => videoId !== deselectedId)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        selectedVideos.filter(
-                          videoId => videoId !== deselectedId
-                        )
-                      );
-                      setRemovedVideoIds(removedVideoIds => ({
-                        ...removedVideoIds,
-                        [deselectedId]: true
-                      }));
-                    }}
-                    loadMoreUploads={handleLoadMoreVideos}
-                  />
-                )}
-                {mainTabActive && modalType === 'reorder' && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      justifyContent: 'flex-start',
-                      width: '100%'
-                    }}
-                  >
-                    {videosToRearrange.map(videoId => (
-                      <SortableThumb
-                        key={videoId}
-                        id={videoId}
-                        video={playlistVideoObjects.current[videoId]}
-                        onMove={({ sourceId, targetId }) => {
-                          let selected = [...videosToRearrange];
-                          const sourceIndex = selected.indexOf(sourceId);
-                          const targetIndex = selected.indexOf(targetId);
-                          selected.splice(sourceIndex, 1);
-                          selected.splice(targetIndex, 0, sourceId);
-                          setModalVideos(selected);
-                        }}
-                      />
-                    ))}
-                    {loadMoreButton && (
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          width: '100%'
-                        }}
-                      >
-                        <LoadMoreButton
-                          style={{ fontSize: '2rem', marginTop: '1rem' }}
-                          transparent
-                          loading={loadingMore}
-                          onClick={handleLoadMoreVideos}
-                        >
-                          Load More
-                        </LoadMoreButton>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {!mainTabActive && (
-                  <SelectUploadsForm
-                    contentObjs={playlistVideoObjects.current}
-                    loadingMore={loadingMore}
-                    uploads={loadedOrSearchedVideos}
-                    loadMoreButton={removeVideosLoadMoreButton}
-                    selectedUploads={selectedVideos}
-                    onSelect={selectedVideoId => {
-                      setAddedVideos(addedVideos =>
-                        [selectedVideoId].concat(addedVideos)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        [selectedVideoId].concat(selectedVideos)
-                      );
-                      setModalVideos(modalVideos =>
-                        [selectedVideoId].concat(
-                          modalVideos.filter(
-                            modalVideoId => modalVideoId !== selectedVideoId
+                        if (!stringIsEmpty(searchText)) {
+                          setModalVideos(modalVideos =>
+                            [selectedVideoId].concat(
+                              modalVideos.filter(
+                                videoId => videoId !== selectedVideoId
+                              )
+                            )
+                          );
+                        }
+                      }}
+                      onDeselect={deselectedId => {
+                        setAddedVideos(addedVideos =>
+                          addedVideos.filter(
+                            videoId => videoId !== deselectedId
                           )
-                        )
-                      );
-                    }}
-                    onDeselect={deselectedId => {
-                      setAddedVideos(addedVideos =>
-                        addedVideos.filter(videoId => videoId !== deselectedId)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        selectedVideos.filter(
-                          videoId => videoId !== deselectedId
-                        )
-                      );
-                      setRemovedVideoIds(removedVideoIds => ({
-                        ...removedVideoIds,
-                        [deselectedId]: true
-                      }));
-                    }}
-                    loadMoreUploads={handleLoadMoreVideos}
-                  />
-                )}
-              </>
-            )}
-          </main>
-          <footer>
-            <Button
-              style={{ marginRight: '0.7rem' }}
-              transparent
-              onClick={onHide}
-            >
-              Cancel
-            </Button>
-            <Button
-              color="blue"
-              onClick={handleSave}
-              disabled={
-                (Object.keys(removedVideoIds).length === numPlaylistVids &&
-                  addedVideos.length === 0) ||
-                isSaving
-              }
-            >
-              Save
-            </Button>
-          </footer>
-        </Modal>
+                        );
+                        setSelectedVideos(selectedVideos =>
+                          selectedVideos.filter(
+                            videoId => videoId !== deselectedId
+                          )
+                        );
+                        setRemovedVideoIds(removedVideoIds => ({
+                          ...removedVideoIds,
+                          [deselectedId]: true
+                        }));
+                      }}
+                      loadMoreUploads={handleLoadMoreVideos}
+                    />
+                  )}
+                  {mainTabActive && modalType === 'reorder' && (
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'flex-start',
+                        width: '100%'
+                      }}
+                    >
+                      {videosToRearrange.map(videoId => (
+                        <SortableThumb
+                          key={videoId}
+                          id={videoId}
+                          video={playlistVideoObjects.current[videoId]}
+                          onMove={({ sourceId, targetId }) => {
+                            let selected = [...videosToRearrange];
+                            const sourceIndex = selected.indexOf(sourceId);
+                            const targetIndex = selected.indexOf(targetId);
+                            selected.splice(sourceIndex, 1);
+                            selected.splice(targetIndex, 0, sourceId);
+                            setModalVideos(selected);
+                          }}
+                        />
+                      ))}
+                      {loadMoreButton && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            width: '100%'
+                          }}
+                        >
+                          <LoadMoreButton
+                            style={{ fontSize: '2rem', marginTop: '1rem' }}
+                            transparent
+                            loading={loadingMore}
+                            onClick={handleLoadMoreVideos}
+                          >
+                            Load More
+                          </LoadMoreButton>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {!mainTabActive && (
+                    <SelectUploadsForm
+                      contentObjs={playlistVideoObjects.current}
+                      loadingMore={loadingMore}
+                      uploads={loadedOrSearchedVideos}
+                      loadMoreButton={removeVideosLoadMoreButton}
+                      selectedUploads={selectedVideos}
+                      onSelect={selectedVideoId => {
+                        setAddedVideos(addedVideos =>
+                          [selectedVideoId].concat(addedVideos)
+                        );
+                        setSelectedVideos(selectedVideos =>
+                          [selectedVideoId].concat(selectedVideos)
+                        );
+                        setModalVideos(modalVideos =>
+                          [selectedVideoId].concat(
+                            modalVideos.filter(
+                              modalVideoId => modalVideoId !== selectedVideoId
+                            )
+                          )
+                        );
+                      }}
+                      onDeselect={deselectedId => {
+                        setAddedVideos(addedVideos =>
+                          addedVideos.filter(
+                            videoId => videoId !== deselectedId
+                          )
+                        );
+                        setSelectedVideos(selectedVideos =>
+                          selectedVideos.filter(
+                            videoId => videoId !== deselectedId
+                          )
+                        );
+                        setRemovedVideoIds(removedVideoIds => ({
+                          ...removedVideoIds,
+                          [deselectedId]: true
+                        }));
+                      }}
+                      loadMoreUploads={handleLoadMoreVideos}
+                    />
+                  )}
+                </>
+              )}
+            </main>
+            <footer>
+              <Button
+                style={{ marginRight: '0.7rem' }}
+                transparent
+                onClick={onHide}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="blue"
+                onClick={handleSave}
+                disabled={
+                  (Object.keys(removedVideoIds).length === numPlaylistVids &&
+                    addedVideos.length === 0) ||
+                  isSaving
+                }
+              >
+                Save
+              </Button>
+            </footer>
+          </Modal>
+        </DndProvider>
       </DndProvider>
     </ErrorBoundary>
   );
