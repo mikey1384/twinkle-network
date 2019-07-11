@@ -35,6 +35,7 @@ export default function SortableThumb({ id, onMove, video }) {
       }
     }
   });
+
   return (
     <div
       ref={drag(drop(Draggable))}
