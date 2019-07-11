@@ -42,8 +42,9 @@ export default function SortableListGroup({ listItems, onMove }) {
           return (
             <SortableListItem
               key={index}
+              id={item.id}
               index={index}
-              item={item}
+              label={item.label}
               onMove={onMove}
             />
           );
