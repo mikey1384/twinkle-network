@@ -163,6 +163,7 @@ function XPRewardInterface({
         auth()
       );
       if (mounted.current) {
+        setRewarding(false);
         onRewardSubmit(data);
       }
     } catch (error) {
