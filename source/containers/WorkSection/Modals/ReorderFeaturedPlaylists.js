@@ -62,12 +62,14 @@ function ReorderFeaturedPlaylists({
   );
 
   function handleMove({ sourceId, targetId }) {
-    const sourceIndex = playlistIds.indexOf(sourceId);
-    const targetIndex = playlistIds.indexOf(targetId);
-    const newPlaylistIds = [...playlistIds];
-    newPlaylistIds.splice(sourceIndex, 1);
-    newPlaylistIds.splice(targetIndex, 0, sourceId);
-    setPlaylistIds(newPlaylistIds);
+    setPlaylistIds(playlistIds => {
+      const sourceIndex = playlistIds.indexOf(sourceId);
+      const targetIndex = playlistIds.indexOf(targetId);
+      const newPlaylistIds = [...playlistIds];
+      newPlaylistIds.splice(sourceIndex, 1);
+      newPlaylistIds.splice(targetIndex, 0, sourceId);
+      return newPlaylistIds;
+    });
   }
 
   async function handleSubmit() {
