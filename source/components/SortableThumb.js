@@ -1,124 +1,112 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import ItemTypes from 'constants/itemTypes';
+import { useDrag, useDrop } from 'react-dnd';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
-import { DragSource, DropTarget } from 'react-dnd';
 import { Color } from 'constants/css';
 
-const thumbSource = {
-  beginDrag(props) {
-    return {
-      id: props.video.id
-    };
-  },
-  isDragging(props, monitor) {
-    return props.video.id && props.video.id === monitor.getItem().id;
-  }
-};
-
-const thumbTarget = {
-  hover(targetProps, monitor) {
-    const targetId = targetProps.video.id;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
-
-    if (sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId });
-    }
-  }
-};
-
 SortableThumb.propTypes = {
-  connectDragSource: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
-  isDragging: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
+  onMove: PropTypes.func.isRequired,
   video: PropTypes.object.isRequired
 };
 
-function SortableThumb({
-  connectDragSource,
-  connectDropTarget,
-  isDragging,
-  video
-}) {
+export default function SortableThumb({ id, onMove, video }) {
   const [onTitleHover, setOnTitleHover] = useState(false);
+  const Draggable = useRef(null);
   const ThumbLabelRef = useRef(null);
-  return connectDragSource(
-    connectDropTarget(
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: ItemTypes.THUMB, id },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging()
+    })
+  });
+  const [, drop] = useDrop({
+    accept: ItemTypes.THUMB,
+    hover(item, monitor) {
+      if (!Draggable.current) {
+        return;
+      }
+      if (item.id !== id) {
+        onMove({ sourceId: item.id, targetId: id });
+      }
+    }
+  });
+  return (
+    <div
+      ref={drag(drop(Draggable))}
+      key={video.id}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        width: '16%',
+        margin: '0.3%',
+        cursor: 'pointer',
+        boxShadow: `0 0 5px ${Color.darkerGray()}`,
+        background: Color.whiteGray()
+      }}
+    >
       <div
-        key={video.id}
         style={{
-          opacity: isDragging ? 0.5 : 1,
-          width: '16%',
-          margin: '0.3%',
-          cursor: 'pointer',
-          boxShadow: `0 0 5px ${Color.darkerGray()}`,
-          background: Color.whiteGray()
+          display: 'flex',
+          width: '100%',
+          flexDirection: 'column',
+          alignItems: 'flex-end'
         }}
       >
+        <div style={{ width: '100%' }}>
+          <VideoThumbImage
+            height="65%"
+            videoId={video.id}
+            difficulty={video.difficulty}
+            src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+          />
+        </div>
         <div
           style={{
-            display: 'flex',
+            height: '8rem',
             width: '100%',
-            flexDirection: 'column',
-            alignItems: 'flex-end'
+            padding: '0 1rem'
           }}
         >
-          <div style={{ width: '100%' }}>
-            <VideoThumbImage
-              height="65%"
-              videoId={video.id}
-              difficulty={video.difficulty}
-              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-            />
-          </div>
           <div
-            style={{
-              height: '8rem',
-              width: '100%',
-              padding: '0 1rem'
-            }}
+            onMouseOver={onMouseOver}
+            onMouseLeave={() => setOnTitleHover(false)}
           >
-            <div
-              onMouseOver={onMouseOver}
-              onMouseLeave={() => setOnTitleHover(false)}
-            >
-              <p
-                ref={ThumbLabelRef}
-                style={{
-                  marginTop: '1rem',
-                  fontWeight: 'bold',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
-                }}
-              >
-                {cleanString(video.title)}
-              </p>
-              <FullTextReveal
-                show={onTitleHover}
-                text={cleanString(video.title)}
-              />
-            </div>
             <p
+              ref={ThumbLabelRef}
               style={{
+                marginTop: '1rem',
+                fontWeight: 'bold',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
-                fontSize: '1.3rem',
-                lineHeight: 2
+                lineHeight: 'normal'
               }}
             >
-              {video.uploaderName}
+              {cleanString(video.title)}
             </p>
+            <FullTextReveal
+              show={onTitleHover}
+              text={cleanString(video.title)}
+            />
           </div>
+          <p
+            style={{
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              fontSize: '1.3rem',
+              lineHeight: 2
+            }}
+          >
+            {video.uploaderName}
+          </p>
         </div>
       </div>
-    )
+    </div>
   );
 
   function onMouseOver() {
@@ -127,12 +115,3 @@ function SortableThumb({
     }
   }
 }
-
-export default DropTarget(ItemTypes.THUMB, thumbTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))(
-  DragSource(ItemTypes.THUMB, thumbSource, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }))(SortableThumb)
-);

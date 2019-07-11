@@ -8,8 +8,8 @@ import QuestionsListGroup from './QuestionsListGroup';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import ReactPlayer from 'react-player';
 import { css } from 'emotion';
-import HTML5Backend from 'react-dnd-html5-touch-backend';
-import { DragDropContext } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const Styles = {
   Player: css`
@@ -54,7 +54,7 @@ QuestionsBuilder.propTypes = {
   videoCode: PropTypes.string.isRequired
 };
 
-function QuestionsBuilder({
+export default function QuestionsBuilder({
   onHide,
   onSubmit,
   questions: initialQuestions,
@@ -82,141 +82,143 @@ function QuestionsBuilder({
   }, []);
 
   return (
-    <Modal large onHide={onHide}>
-      <header>{title}</header>
-      <main
-        style={{
-          flexDirection: 'row',
-          justifyContent: reorderModeOn ? 'center' : 'space-between',
-          alignItems: 'center',
-          width: '100%',
-          height: 'CALC(100vh - 21rem)'
-        }}
-      >
-        <section
-          className={Styles.leftSection}
-          ref={LeftMenuRef}
+    <DndProvider backend={HTML5Backend}>
+      <Modal large onHide={onHide}>
+        <header>{title}</header>
+        <main
           style={{
-            width: reorderModeOn && '80%'
+            flexDirection: 'row',
+            justifyContent: reorderModeOn ? 'center' : 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            height: 'CALC(100vh - 21rem)'
           }}
         >
-          {reorderModeOn ? (
-            <QuestionsListGroup
-              questions={questions}
-              questionIds={questionIds}
-              onMove={onQuestionsRearrange}
-              onReorderDone={questionIds => {
-                setQuestionIds(questionIds);
-                setReorderModeOn(false);
-              }}
-              onReorderCancel={() => setReorderModeOn(false)}
-            />
-          ) : questionIds.length > 0 ? (
-            <div ref={QuestionBlocksRef}>
-              {questionIds.map((questionId, index) => {
-                const question = questions[questionId];
-                return (
-                  <QuestionBlock
-                    {...question}
-                    key={index}
-                    id={Number(questionId)}
-                    hideErrorMsg={id => {
-                      setQuestions({
-                        ...questions,
-                        [id]: {
-                          ...questions[id],
-                          errorMessage: ''
-                        }
-                      });
-                    }}
-                    questionIndex={index}
-                    errorMessage={question.errorMessage}
-                    innerRef={ref => {
-                      QuestionsRef.current[questionId] = ref;
-                    }}
-                    onSelectChoice={onSelectChoice}
-                    onRearrange={onChoicesRearrange}
-                    onRemove={onRemoveQuestion}
-                    onUndoRemove={onUndoRemove}
-                    onEditStart={questionId => {
-                      setQuestions({
-                        ...questions,
-                        [questionId]: {
-                          ...questions[questionId],
-                          onEdit: true
-                        }
-                      });
-                    }}
-                    onEditCancel={questionId => {
-                      setQuestions({
-                        ...questions,
-                        [questionId]: {
-                          ...questions[questionId],
-                          errorMessage: '',
-                          onEdit: false
-                        }
-                      });
-                    }}
-                    onEditDone={onChoiceEditDone}
-                  />
-                );
-              })}
-            </div>
-          ) : null}
-        </section>
-        {!reorderModeOn && (
-          <section className={Styles.rightSection}>
-            <div className={Styles.videoContainer}>
-              <ReactPlayer
-                url={`https://www.youtube.com/watch?v=${videoCode}`}
-                controls
-                width="100%"
+          <section
+            className={Styles.leftSection}
+            ref={LeftMenuRef}
+            style={{
+              width: reorderModeOn && '80%'
+            }}
+          >
+            {reorderModeOn ? (
+              <QuestionsListGroup
+                questions={questions}
+                questionIds={questionIds}
+                onMove={onQuestionsRearrange}
+                onReorderDone={questionIds => {
+                  setQuestionIds(questionIds);
+                  setReorderModeOn(false);
+                }}
+                onReorderCancel={() => setReorderModeOn(false)}
               />
-              <div className={Styles.videoInterface}>
-                <ButtonGroup
-                  buttons={[
-                    {
-                      label: '+ Add',
-                      filled: true,
-                      onClick: onAddQuestion,
-                      color: 'green'
-                    },
-                    {
-                      label: 'Reorder',
-                      filled: true,
-                      onClick: () => setReorderModeOn(true),
-                      color: 'lightBlue'
-                    },
-                    {
-                      label: 'Reset',
-                      filled: true,
-                      onClick: onReset,
-                      color: 'orange'
-                    }
-                  ]}
+            ) : questionIds.length > 0 ? (
+              <div ref={QuestionBlocksRef}>
+                {questionIds.map((questionId, index) => {
+                  const question = questions[questionId];
+                  return (
+                    <QuestionBlock
+                      {...question}
+                      key={index}
+                      id={Number(questionId)}
+                      hideErrorMsg={id => {
+                        setQuestions({
+                          ...questions,
+                          [id]: {
+                            ...questions[id],
+                            errorMessage: ''
+                          }
+                        });
+                      }}
+                      questionIndex={index}
+                      errorMessage={question.errorMessage}
+                      innerRef={ref => {
+                        QuestionsRef.current[questionId] = ref;
+                      }}
+                      onSelectChoice={onSelectChoice}
+                      onRearrange={onChoicesRearrange}
+                      onRemove={onRemoveQuestion}
+                      onUndoRemove={onUndoRemove}
+                      onEditStart={questionId => {
+                        setQuestions({
+                          ...questions,
+                          [questionId]: {
+                            ...questions[questionId],
+                            onEdit: true
+                          }
+                        });
+                      }}
+                      onEditCancel={questionId => {
+                        setQuestions({
+                          ...questions,
+                          [questionId]: {
+                            ...questions[questionId],
+                            errorMessage: '',
+                            onEdit: false
+                          }
+                        });
+                      }}
+                      onEditDone={onChoiceEditDone}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
+          </section>
+          {!reorderModeOn && (
+            <section className={Styles.rightSection}>
+              <div className={Styles.videoContainer}>
+                <ReactPlayer
+                  url={`https://www.youtube.com/watch?v=${videoCode}`}
+                  controls
+                  width="100%"
                 />
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    display: 'flex',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Button
-                    color="blue"
-                    filled
-                    onClick={handleSubmit}
-                    style={{ fontSize: '2rem' }}
+                <div className={Styles.videoInterface}>
+                  <ButtonGroup
+                    buttons={[
+                      {
+                        label: '+ Add',
+                        filled: true,
+                        onClick: onAddQuestion,
+                        color: 'green'
+                      },
+                      {
+                        label: 'Reorder',
+                        filled: true,
+                        onClick: () => setReorderModeOn(true),
+                        color: 'lightBlue'
+                      },
+                      {
+                        label: 'Reset',
+                        filled: true,
+                        onClick: onReset,
+                        color: 'orange'
+                      }
+                    ]}
+                  />
+                  <div
+                    style={{
+                      marginTop: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
                   >
-                    Submit
-                  </Button>
+                    <Button
+                      color="blue"
+                      filled
+                      onClick={handleSubmit}
+                      style={{ fontSize: '2rem' }}
+                    >
+                      Submit
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        )}
-      </main>
-    </Modal>
+            </section>
+          )}
+        </main>
+      </Modal>
+    </DndProvider>
   );
 
   function onAddQuestion() {
@@ -446,5 +448,3 @@ function QuestionsBuilder({
     };
   }
 }
-
-export default DragDropContext(HTML5Backend)(QuestionsBuilder);
