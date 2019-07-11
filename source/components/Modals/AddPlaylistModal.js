@@ -96,182 +96,180 @@ function AddPlaylistModal({
     inputType: 'description',
     text: description
   });
-
+  const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+    ? TouchBackend
+    : HTML5Backend;
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DndProvider backend={TouchBackend}>
-        <Modal
-          modalOverModal={modalOverModal}
-          onHide={onHide}
-          large={section > 0}
-        >
-          <header>{renderTitle()}</header>
-          <main style={{ paddingBottom: '1rem' }}>
-            {section === 0 && (
-              <form
-                className={css`
-                  width: 100%;
-                `}
-                onSubmit={event => event.preventDefault()}
-              >
-                <section>
-                  <Input
-                    autoFocus
-                    placeholder="Enter Playlist Title"
-                    value={title}
-                    onChange={text => setTitle(text)}
-                    onKeyUp={event => {
-                      if (event.key === ' ') {
-                        setTitle(addEmoji(event.target.value));
-                      }
-                    }}
-                    style={titleExceedsCharLimit?.style}
-                  />
-                  {titleExceedsCharLimit && (
-                    <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                      {titleExceedsCharLimit.message}
-                    </small>
-                  )}
-                </section>
-                <section style={{ marginTop: '1.5rem' }}>
-                  <Textarea
-                    name="description"
-                    placeholder="Enter Description (Optional)"
-                    minRows={4}
-                    value={description}
-                    onChange={event => setDescription(event.target.value)}
-                    onKeyUp={event => {
-                      if (event.key === ' ') {
-                        setDescription(addEmoji(event.target.value));
-                      }
-                    }}
-                    style={descriptionExceedsCharLimit?.style}
-                  />
-                  {descriptionExceedsCharLimit && (
-                    <small style={{ color: 'red', fontSize: '1.3rem' }}>
-                      {descriptionExceedsCharLimit.message}
-                    </small>
-                  )}
-                </section>
-              </form>
-            )}
-            {section === 1 && (
-              <div style={{ width: '100%' }}>
-                <SearchInput
-                  placeholder="Search videos..."
+    <DndProvider backend={Backend}>
+      <Modal
+        modalOverModal={modalOverModal}
+        onHide={onHide}
+        large={section > 0}
+      >
+        <header>{renderTitle()}</header>
+        <main style={{ paddingBottom: '1rem' }}>
+          {section === 0 && (
+            <form
+              className={css`
+                width: 100%;
+              `}
+              onSubmit={event => event.preventDefault()}
+            >
+              <section>
+                <Input
                   autoFocus
-                  style={{
-                    marginBottom: '2em',
-                    width: '50%'
+                  placeholder="Enter Playlist Title"
+                  value={title}
+                  onChange={text => setTitle(text)}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      setTitle(addEmoji(event.target.value));
+                    }
                   }}
-                  value={searchText}
-                  onChange={handleSearch}
+                  style={titleExceedsCharLimit?.style}
                 />
-                {searching ? (
-                  <Loading />
-                ) : (
-                  <SelectUploadsForm
-                    contentObjs={playlistVideoObjects.current}
-                    uploads={
-                      !stringIsEmpty(searchText) ? searchedVideos : allVideos
-                    }
-                    selectedUploads={selectedVideos}
-                    loaded={loaded}
-                    loadingMore={loadingMore}
-                    loadMoreButton={
-                      !stringIsEmpty(searchText)
-                        ? searchLoadMoreButton
-                        : loadMoreButton
-                    }
-                    onSelect={selectedVideoId =>
-                      setSelectedVideos(selectedVideos =>
-                        selectedVideos.concat(selectedVideoId)
-                      )
-                    }
-                    onDeselect={deselectedVideoId =>
-                      setSelectedVideos(
-                        selectedVideos.filter(
-                          videoId => videoId !== deselectedVideoId
-                        )
-                      )
-                    }
-                    loadMoreUploads={loadMoreVideos}
-                  />
+                {titleExceedsCharLimit && (
+                  <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                    {titleExceedsCharLimit.message}
+                  </small>
                 )}
-              </div>
-            )}
-            {section === 2 && (
-              <div
+              </section>
+              <section style={{ marginTop: '1.5rem' }}>
+                <Textarea
+                  name="description"
+                  placeholder="Enter Description (Optional)"
+                  minRows={4}
+                  value={description}
+                  onChange={event => setDescription(event.target.value)}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      setDescription(addEmoji(event.target.value));
+                    }
+                  }}
+                  style={descriptionExceedsCharLimit?.style}
+                />
+                {descriptionExceedsCharLimit && (
+                  <small style={{ color: 'red', fontSize: '1.3rem' }}>
+                    {descriptionExceedsCharLimit.message}
+                  </small>
+                )}
+              </section>
+            </form>
+          )}
+          {section === 1 && (
+            <div style={{ width: '100%' }}>
+              <SearchInput
+                placeholder="Search videos..."
+                autoFocus
                 style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-start',
-                  width: '100%'
+                  marginBottom: '2em',
+                  width: '50%'
                 }}
-              >
-                {selectedVideos.map(videoId => (
-                  <SortableThumb
-                    key={videoId}
-                    id={videoId}
-                    video={playlistVideoObjects.current[videoId]}
-                    onMove={({ sourceId, targetId }) => {
-                      let selected = [...selectedVideos];
-                      const sourceIndex = selected.indexOf(sourceId);
-                      const targetIndex = selected.indexOf(targetId);
-                      selected.splice(sourceIndex, 1);
-                      selected.splice(targetIndex, 0, sourceId);
-                      setSelectedVideos(selected);
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </main>
-          <footer>
-            {section === 0 ? (
-              <Button
-                style={{ marginRight: '0.7rem' }}
-                transparent
-                onClick={onHide}
-              >
-                Cancel
-              </Button>
-            ) : (
-              <Button
-                style={{ marginRight: '0.7rem' }}
-                transparent
-                onClick={handlePrev}
-              >
-                Prev
-              </Button>
-            )}
-            {section === 2 ? (
-              <Button
-                color="blue"
-                disabled={isUploading}
-                onClick={handleFinish}
-              >
-                Finish
-              </Button>
-            ) : (
-              <Button
-                color="blue"
-                type="submit"
-                disabled={
-                  (section === 0 &&
-                    (stringIsEmpty(title) ||
-                      titleExceedsCharLimit ||
-                      descriptionExceedsCharLimit)) ||
-                  (section === 1 && selectedVideos.length === 0)
-                }
-                onClick={handleNext}
-              >
-                Next
-              </Button>
-            )}
-          </footer>
-        </Modal>
-      </DndProvider>
+                value={searchText}
+                onChange={handleSearch}
+              />
+              {searching ? (
+                <Loading />
+              ) : (
+                <SelectUploadsForm
+                  contentObjs={playlistVideoObjects.current}
+                  uploads={
+                    !stringIsEmpty(searchText) ? searchedVideos : allVideos
+                  }
+                  selectedUploads={selectedVideos}
+                  loaded={loaded}
+                  loadingMore={loadingMore}
+                  loadMoreButton={
+                    !stringIsEmpty(searchText)
+                      ? searchLoadMoreButton
+                      : loadMoreButton
+                  }
+                  onSelect={selectedVideoId =>
+                    setSelectedVideos(selectedVideos =>
+                      selectedVideos.concat(selectedVideoId)
+                    )
+                  }
+                  onDeselect={deselectedVideoId =>
+                    setSelectedVideos(
+                      selectedVideos.filter(
+                        videoId => videoId !== deselectedVideoId
+                      )
+                    )
+                  }
+                  loadMoreUploads={loadMoreVideos}
+                />
+              )}
+            </div>
+          )}
+          {section === 2 && (
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-start',
+                width: '100%'
+              }}
+            >
+              {selectedVideos.map(videoId => (
+                <SortableThumb
+                  key={videoId}
+                  id={videoId}
+                  video={playlistVideoObjects.current[videoId]}
+                  onMove={({ sourceId, targetId }) => {
+                    let selected = [...selectedVideos];
+                    const sourceIndex = selected.indexOf(sourceId);
+                    const targetIndex = selected.indexOf(targetId);
+                    selected.splice(sourceIndex, 1);
+                    selected.splice(targetIndex, 0, sourceId);
+                    setSelectedVideos(selected);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+        <footer>
+          {section === 0 ? (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              transparent
+              onClick={onHide}
+            >
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              transparent
+              onClick={handlePrev}
+            >
+              Prev
+            </Button>
+          )}
+          {section === 2 ? (
+            <Button color="blue" disabled={isUploading} onClick={handleFinish}>
+              Finish
+            </Button>
+          ) : (
+            <Button
+              color="blue"
+              type="submit"
+              disabled={
+                (section === 0 &&
+                  (stringIsEmpty(title) ||
+                    titleExceedsCharLimit ||
+                    descriptionExceedsCharLimit)) ||
+                (section === 1 && selectedVideos.length === 0)
+              }
+              onClick={handleNext}
+            >
+              Next
+            </Button>
+          )}
+        </footer>
+      </Modal>
     </DndProvider>
   );
 

@@ -81,146 +81,148 @@ export default function QuestionsBuilder({
         : [0]
     );
   }, []);
-
+  const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+    ? TouchBackend
+    : HTML5Backend;
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DndProvider backend={TouchBackend}>
-        <Modal large onHide={onHide}>
-          <header>{title}</header>
-          <main
+    <DndProvider backend={Backend}>
+      <Modal large onHide={onHide}>
+        <header>{title}</header>
+        <main
+          style={{
+            flexDirection: 'row',
+            justifyContent: reorderModeOn ? 'center' : 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            height: 'CALC(100vh - 21rem)'
+          }}
+        >
+          <section
+            className={Styles.leftSection}
+            ref={LeftMenuRef}
             style={{
-              flexDirection: 'row',
-              justifyContent: reorderModeOn ? 'center' : 'space-between',
-              alignItems: 'center',
-              width: '100%',
-              height: 'CALC(100vh - 21rem)'
+              width: reorderModeOn && '80%'
             }}
           >
-            <section
-              className={Styles.leftSection}
-              ref={LeftMenuRef}
-              style={{
-                width: reorderModeOn && '80%'
-              }}
-            >
-              {reorderModeOn ? (
-                <QuestionsListGroup
-                  questions={questions}
-                  questionIds={questionIds}
-                  onMove={onQuestionsRearrange}
-                  onReorderDone={questionIds => {
-                    setQuestionIds(questionIds);
-                    setReorderModeOn(false);
-                  }}
-                  onReorderCancel={() => setReorderModeOn(false)}
-                />
-              ) : questionIds.length > 0 ? (
-                <div ref={QuestionBlocksRef}>
-                  {questionIds.map((questionId, index) => {
-                    const question = questions[questionId];
-                    return (
-                      <QuestionBlock
-                        {...question}
-                        key={index}
-                        id={Number(questionId)}
-                        hideErrorMsg={id => {
-                          setQuestions({
-                            ...questions,
-                            [id]: {
-                              ...questions[id],
-                              errorMessage: ''
-                            }
-                          });
-                        }}
-                        questionIndex={index}
-                        errorMessage={question.errorMessage}
-                        innerRef={ref => {
-                          QuestionsRef.current[questionId] = ref;
-                        }}
-                        onSelectChoice={onSelectChoice}
-                        onRearrange={onChoicesRearrange}
-                        onRemove={onRemoveQuestion}
-                        onUndoRemove={onUndoRemove}
-                        onEditStart={questionId => {
-                          setQuestions({
-                            ...questions,
-                            [questionId]: {
-                              ...questions[questionId],
-                              onEdit: true
-                            }
-                          });
-                        }}
-                        onEditCancel={questionId => {
-                          setQuestions({
-                            ...questions,
-                            [questionId]: {
-                              ...questions[questionId],
-                              errorMessage: '',
-                              onEdit: false
-                            }
-                          });
-                        }}
-                        onEditDone={onChoiceEditDone}
-                      />
-                    );
-                  })}
-                </div>
-              ) : null}
-            </section>
-            {!reorderModeOn && (
-              <section className={Styles.rightSection}>
-                <div className={Styles.videoContainer}>
-                  <ReactPlayer
-                    url={`https://www.youtube.com/watch?v=${videoCode}`}
-                    controls
-                    width="100%"
-                  />
-                  <div className={Styles.videoInterface}>
-                    <ButtonGroup
-                      buttons={[
-                        {
-                          label: '+ Add',
-                          filled: true,
-                          onClick: onAddQuestion,
-                          color: 'green'
-                        },
-                        {
-                          label: 'Reorder',
-                          filled: true,
-                          onClick: () => setReorderModeOn(true),
-                          color: 'lightBlue'
-                        },
-                        {
-                          label: 'Reset',
-                          filled: true,
-                          onClick: onReset,
-                          color: 'orange'
-                        }
-                      ]}
-                    />
-                    <div
-                      style={{
-                        marginTop: '1rem',
-                        display: 'flex',
-                        justifyContent: 'center'
+            {reorderModeOn ? (
+              <QuestionsListGroup
+                questions={questions}
+                questionIds={questionIds}
+                onMove={onQuestionsRearrange}
+                onReorderDone={questionIds => {
+                  setQuestionIds(questionIds);
+                  setReorderModeOn(false);
+                }}
+                onReorderCancel={() => setReorderModeOn(false)}
+              />
+            ) : questionIds.length > 0 ? (
+              <div ref={QuestionBlocksRef}>
+                {questionIds.map((questionId, index) => {
+                  const question = questions[questionId];
+                  return (
+                    <QuestionBlock
+                      {...question}
+                      key={index}
+                      id={Number(questionId)}
+                      hideErrorMsg={id => {
+                        setQuestions({
+                          ...questions,
+                          [id]: {
+                            ...questions[id],
+                            errorMessage: ''
+                          }
+                        });
                       }}
+                      questionIndex={index}
+                      errorMessage={question.errorMessage}
+                      innerRef={ref => {
+                        QuestionsRef.current[questionId] = ref;
+                      }}
+                      onSelectChoice={onSelectChoice}
+                      onRearrange={onChoicesRearrange}
+                      onRemove={onRemoveQuestion}
+                      onUndoRemove={onUndoRemove}
+                      onEditStart={questionId => {
+                        setQuestions({
+                          ...questions,
+                          [questionId]: {
+                            ...questions[questionId],
+                            onEdit: true
+                          }
+                        });
+                      }}
+                      onEditCancel={questionId => {
+                        setQuestions({
+                          ...questions,
+                          [questionId]: {
+                            ...questions[questionId],
+                            errorMessage: '',
+                            onEdit: false
+                          }
+                        });
+                      }}
+                      onEditDone={onChoiceEditDone}
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
+          </section>
+          {!reorderModeOn && (
+            <section className={Styles.rightSection}>
+              <div className={Styles.videoContainer}>
+                <ReactPlayer
+                  url={`https://www.youtube.com/watch?v=${videoCode}`}
+                  controls
+                  width="100%"
+                />
+                <div className={Styles.videoInterface}>
+                  <ButtonGroup
+                    buttons={[
+                      {
+                        label: '+ Add',
+                        filled: true,
+                        onClick: onAddQuestion,
+                        color: 'green'
+                      },
+                      {
+                        label: 'Reorder',
+                        filled: true,
+                        onClick: () => setReorderModeOn(true),
+                        color: 'lightBlue'
+                      },
+                      {
+                        label: 'Reset',
+                        filled: true,
+                        onClick: onReset,
+                        color: 'orange'
+                      }
+                    ]}
+                  />
+                  <div
+                    style={{
+                      marginTop: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Button
+                      color="blue"
+                      filled
+                      onClick={handleSubmit}
+                      style={{ fontSize: '2rem' }}
                     >
-                      <Button
-                        color="blue"
-                        filled
-                        onClick={handleSubmit}
-                        style={{ fontSize: '2rem' }}
-                      >
-                        Submit
-                      </Button>
-                    </div>
+                      Submit
+                    </Button>
                   </div>
                 </div>
-              </section>
-            )}
-          </main>
-        </Modal>
-      </DndProvider>
+              </div>
+            </section>
+          )}
+        </main>
+      </Modal>
     </DndProvider>
   );
 

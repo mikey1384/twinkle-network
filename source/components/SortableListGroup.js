@@ -11,48 +11,50 @@ SortableListGroup.propTypes = {
   listItems: PropTypes.array.isRequired,
   onMove: PropTypes.func.isRequired
 };
-
+const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  navigator.userAgent
+)
+  ? TouchBackend
+  : HTML5Backend;
 export default function SortableListGroup({ listItems, onMove }) {
   return (
-    <DndProvider backend={HTML5Backend}>
-      <DndProvider backend={TouchBackend}>
-        <div
-          className={css`
-            width: 100%;
-            cursor: ns-resize;
+    <DndProvider backend={Backend}>
+      <div
+        className={css`
+          width: 100%;
+          cursor: ns-resize;
+          display: flex;
+          flex-direction: column;
+          nav {
+            align-items: center;
+            padding: 1rem;
             display: flex;
-            flex-direction: column;
-            nav {
-              align-items: center;
-              padding: 1rem;
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: -1px;
-              border: 1px solid ${Color.borderGray()};
-            }
-            nav:first-of-type {
-              border-top-left-radius: ${borderRadius};
-              border-top-right-radius: ${borderRadius};
-            }
-            nav:last-child {
-              border-bottom-left-radius: ${borderRadius};
-              border-bottom-right-radius: ${borderRadius};
-            }
-          `}
-        >
-          {listItems.map((item, index) => {
-            return (
-              <SortableListItem
-                key={index}
-                id={item.id}
-                index={index}
-                label={item.label}
-                onMove={onMove}
-              />
-            );
-          })}
-        </div>
-      </DndProvider>
+            justify-content: space-between;
+            margin-bottom: -1px;
+            border: 1px solid ${Color.borderGray()};
+          }
+          nav:first-of-type {
+            border-top-left-radius: ${borderRadius};
+            border-top-right-radius: ${borderRadius};
+          }
+          nav:last-child {
+            border-bottom-left-radius: ${borderRadius};
+            border-bottom-right-radius: ${borderRadius};
+          }
+        `}
+      >
+        {listItems.map((item, index) => {
+          return (
+            <SortableListItem
+              key={index}
+              id={item.id}
+              index={index}
+              label={item.label}
+              onMove={onMove}
+            />
+          );
+        })}
+      </div>
     </DndProvider>
   );
 }
