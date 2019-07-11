@@ -24,6 +24,7 @@ function ReorderFeaturedPlaylists({
   playlistIds: initialPlaylistIds
 }) {
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
+  const [disabled, setDisabled] = useState(false);
   const listItems = playlistIds.reduce((result, playlistId) => {
     for (let i = 0; i < playlists.length; i++) {
       if (playlists[i].id === playlistId) {
@@ -47,10 +48,10 @@ function ReorderFeaturedPlaylists({
           Cancel
         </Button>
         <Button
-          disabled={isEqual(
-            playlistIds,
-            playlists.map(playlist => playlist.id)
-          )}
+          disabled={
+            isEqual(playlistIds, playlists.map(playlist => playlist.id)) ||
+            disabled
+          }
           color="blue"
           onClick={handleSubmit}
         >
@@ -70,6 +71,7 @@ function ReorderFeaturedPlaylists({
   }
 
   async function handleSubmit() {
+    setDisabled(true);
     const newSelectedPlaylists = await uploadFeaturedPlaylists({
       dispatch,
       selectedPlaylists: playlistIds
