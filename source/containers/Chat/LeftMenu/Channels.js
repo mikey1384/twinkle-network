@@ -131,7 +131,12 @@ export default function Channels({
 
   function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
     if (fileName) {
-      return <span>{`"${fileName}"`}</span>;
+      return (
+        <span>
+          {`${sender.id === userId ? 'You' : sender.username}:`}{' '}
+          {`"${fileName}"`}
+        </span>
+      );
     }
     if (typeof gameWinnerId === 'number') {
       if (gameWinnerId === 0) {
