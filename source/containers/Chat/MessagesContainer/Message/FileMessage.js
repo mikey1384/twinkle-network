@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import ImagePreview from './ImagePreview';
+import ReactPlayer from 'react-player';
 import { cloudFrontURL } from 'constants/defaultValues';
 import {
   getFileTypeFromFileName,
@@ -61,6 +62,8 @@ export default function FileMessage({
     <div style={{ marginTop: '1rem' }}>
       {fileType === 'image' ? (
         <ImagePreview src={src} fileName={fileName} />
+      ) : fileType === 'video' ? (
+        <ReactPlayer width="70%" height="100%" url={src} controls />
       ) : (
         <FileInfo
           fileName={fileName}

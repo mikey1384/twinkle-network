@@ -9,13 +9,14 @@ import { isMobile } from 'helpers';
 import { css } from 'emotion';
 
 SortableListGroup.propTypes = {
-  listItems: PropTypes.array.isRequired,
-  onMove: PropTypes.func.isRequired
+  listItemObj: PropTypes.object.isRequired,
+  onMove: PropTypes.func.isRequired,
+  itemIds: PropTypes.array.isRequired
 };
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-export default function SortableListGroup({ listItems, onMove }) {
+export default function SortableListGroup({ listItemObj, onMove, itemIds }) {
   return (
     <DndProvider backend={Backend}>
       <div
@@ -42,12 +43,13 @@ export default function SortableListGroup({ listItems, onMove }) {
           }
         `}
       >
-        {listItems.map((item, index) => {
+        {itemIds.map((id, index) => {
           return (
             <SortableListItem
-              key={index}
+              key={id}
+              id={id}
               index={index}
-              item={item}
+              item={listItemObj[id]}
               onMove={onMove}
             />
           );

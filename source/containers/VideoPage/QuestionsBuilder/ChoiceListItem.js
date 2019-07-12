@@ -1,116 +1,96 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import { DragSource, DropTarget } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 
-const ListItemSource = {
-  beginDrag(props) {
-    return {
-      id: props.id,
-      questionIndex: props.questionIndex
-    };
-  },
-  isDragging(props, monitor) {
-    return (
-      props.id === monitor.getItem().id &&
-      props.questionIndex === monitor.getItem().questionIndex
-    );
-  },
-  endDrag(props) {
-    props.onDrop();
-  }
-};
-
-const ListItemTarget = {
-  hover(targetProps, monitor) {
-    const targetId = targetProps.id;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
-
-    const targetQuestionIndex = targetProps.questionIndex;
-    const sourceQuestionIndex = sourceProps.questionIndex;
-
-    if (targetQuestionIndex === sourceQuestionIndex && sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId });
-    }
-  }
-};
-
 ChoiceListItem.propTypes = {
-  connectDragSource: PropTypes.func,
-  connectDropTarget: PropTypes.func,
   deleted: PropTypes.bool,
+  id: PropTypes.number.isRequired,
   isDragging: PropTypes.bool,
   onSelect: PropTypes.func,
   checked: PropTypes.bool,
   checkDisabled: PropTypes.bool,
   label: PropTypes.string,
-  placeholder: PropTypes.string
+  onDrop: PropTypes.func.isRequired,
+  onMove: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  questionIndex: PropTypes.number.isRequired
 };
 
-function ChoiceListItem({
+export default function ChoiceListItem({
   checked,
   checkDisabled,
-  connectDragSource,
-  connectDropTarget,
   deleted,
+  id,
   isDragging,
   label,
+  onDrop,
+  onMove,
   onSelect,
-  placeholder
+  placeholder,
+  questionIndex
 }) {
-  return deleted
-    ? renderListItem()
-    : connectDragSource(connectDropTarget(renderListItem()));
+  const Draggable = useRef(null);
+  const [{ opacity }, drag] = useDrag({
+    item: { type: ItemTypes.LIST_ITEM, id, questionIndex },
+    collect: monitor => ({
+      opacity: monitor.isDragging() ? 0 : 1
+    })
+  });
+  const [, drop] = useDrop({
+    accept: ItemTypes.LIST_ITEM,
+    drop: () => {
+      onDrop();
+    },
+    hover(item, monitor) {
+      if (!Draggable.current) {
+        return;
+      }
+      if (item.id === id) {
+        return;
+      }
+      if (item.questionIndex !== questionIndex) {
+        return;
+      }
+      onMove({ sourceId: item.id, targetId: id });
+    }
+  });
 
-  function renderListItem() {
-    return (
-      <nav
-        style={{
-          opacity: isDragging ? 0 : 1,
-          cursor: !checkDisabled && 'ns-resize'
-        }}
-        className="unselectable"
-      >
-        <main>
-          <section>
-            <div style={{ width: '10%' }}>
-              <Icon
-                icon="align-justify"
-                style={{ color: Color.borderGray() }}
-              />
-            </div>
-            <div
-              style={{
-                width: '90%',
-                color: !label && '#999'
-              }}
-            >
-              {label || placeholder}
-            </div>
-          </section>
-        </main>
-        <aside>
-          <input
-            type="radio"
-            onChange={onSelect}
-            checked={checked}
-            disabled={checkDisabled}
-            style={{ cursor: !checkDisabled && 'pointer' }}
-          />
-        </aside>
-      </nav>
-    );
-  }
+  return (
+    <nav
+      ref={drag(drop(Draggable))}
+      style={{
+        opacity,
+        cursor: !checkDisabled && 'ns-resize'
+      }}
+      className="unselectable"
+    >
+      <main>
+        <section>
+          <div style={{ width: '10%' }}>
+            <Icon icon="align-justify" style={{ color: Color.borderGray() }} />
+          </div>
+          <div
+            style={{
+              width: '90%',
+              color: !label && '#999'
+            }}
+          >
+            {label || placeholder}
+          </div>
+        </section>
+      </main>
+      <aside>
+        <input
+          type="radio"
+          onChange={onSelect}
+          checked={checked}
+          disabled={checkDisabled}
+          style={{ cursor: !checkDisabled && 'pointer' }}
+        />
+      </aside>
+    </nav>
+  );
 }
-
-export default DropTarget(ItemTypes.LIST_ITEM, ListItemTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))(
-  DragSource(ItemTypes.LIST_ITEM, ListItemSource, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }))(ChoiceListItem)
-);

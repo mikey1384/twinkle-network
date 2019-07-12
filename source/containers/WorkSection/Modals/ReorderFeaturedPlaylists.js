@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
+import { objectify } from 'helpers';
 import { uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { changePinnedPlaylists } from 'redux/actions/VideoActions';
@@ -25,23 +26,17 @@ function ReorderFeaturedPlaylists({
 }) {
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
   const [disabled, setDisabled] = useState(false);
-  const listItems = playlistIds.reduce((result, playlistId) => {
-    for (let i = 0; i < playlists.length; i++) {
-      if (playlists[i].id === playlistId) {
-        result.push({
-          label: playlists[i].title,
-          id: playlistId
-        });
-      }
-    }
-    return result;
-  }, []);
+  const listItemObj = objectify(playlists);
 
   return (
     <Modal onHide={onHide}>
       <header>Reorder Pinned Playlists</header>
       <main>
-        <SortableListGroup listItems={listItems} onMove={handleMove} />
+        <SortableListGroup
+          listItemObj={listItemObj}
+          onMove={handleMove}
+          itemIds={playlistIds}
+        />
       </main>
       <footer>
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
@@ -62,14 +57,12 @@ function ReorderFeaturedPlaylists({
   );
 
   function handleMove({ sourceId, targetId }) {
-    setPlaylistIds(playlistIds => {
-      const sourceIndex = playlistIds.indexOf(sourceId);
-      const targetIndex = playlistIds.indexOf(targetId);
-      const newPlaylistIds = [...playlistIds];
-      newPlaylistIds.splice(sourceIndex, 1);
-      newPlaylistIds.splice(targetIndex, 0, sourceId);
-      return newPlaylistIds;
-    });
+    const sourceIndex = playlistIds.indexOf(sourceId);
+    const targetIndex = playlistIds.indexOf(targetId);
+    const newPlaylistIds = [...playlistIds];
+    newPlaylistIds.splice(sourceIndex, 1);
+    newPlaylistIds.splice(targetIndex, 0, sourceId);
+    setPlaylistIds(newPlaylistIds);
   }
 
   async function handleSubmit() {
