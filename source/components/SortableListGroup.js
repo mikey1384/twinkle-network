@@ -12,7 +12,9 @@ SortableListGroup.propTypes = {
   listItems: PropTypes.array.isRequired,
   onMove: PropTypes.func.isRequired
 };
+
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 export default function SortableListGroup({ listItems, onMove }) {
   return (
     <DndProvider backend={Backend}>

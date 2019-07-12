@@ -34,6 +34,8 @@ EditPlaylistModal.propTypes = {
   playlistId: PropTypes.number.isRequired
 };
 
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 function EditPlaylistModal({
   changePlaylistVideos,
   dispatch,
@@ -98,7 +100,7 @@ function EditPlaylistModal({
   const videosToRearrange = modalVideos.filter(
     videoId => !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
   );
-  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
   return (
     <ErrorBoundary>
       <DndProvider backend={Backend}>

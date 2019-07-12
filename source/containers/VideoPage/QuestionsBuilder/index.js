@@ -56,6 +56,8 @@ QuestionsBuilder.propTypes = {
   videoCode: PropTypes.string.isRequired
 };
 
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 export default function QuestionsBuilder({
   onHide,
   onSubmit,
@@ -82,7 +84,7 @@ export default function QuestionsBuilder({
         : [0]
     );
   }, []);
-  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
   return (
     <DndProvider backend={Backend}>
       <Modal large onHide={onHide}>

@@ -37,6 +37,8 @@ AddPlaylistModal.propTypes = {
   title: PropTypes.string
 };
 
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 function AddPlaylistModal({
   dispatch,
   existingVideoIds = [],
@@ -96,7 +98,6 @@ function AddPlaylistModal({
     inputType: 'description',
     text: description
   });
-  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
   return (
     <DndProvider backend={Backend}>
