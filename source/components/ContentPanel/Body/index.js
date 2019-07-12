@@ -19,7 +19,11 @@ import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
+import {
+  determineXpButtonDisabled,
+  isMobile,
+  scrollElementToCenter
+} from 'helpers';
 import {
   deleteContent,
   editContent,
@@ -515,7 +519,7 @@ function Body({
     if (!commentsShown) {
       await onExpandComments();
     }
-    if (!/iPad|iPhone|iPod/g.test(navigator.userAgent)) {
+    if (!isMobile(navigator)) {
       CommentInputAreaRef.current.focus();
     }
     scrollElementToCenter(CommentInputAreaRef.current);
@@ -545,10 +549,7 @@ function Body({
     onLikeContent({ likes, type, contentId });
     if (!commentsShown) {
       await onExpandComments();
-      if (
-        Number(numChildComments) === 0 &&
-        !/iPad|iPhone|iPod/g.test(navigator.userAgent)
-      ) {
+      if (Number(numChildComments) === 0 && !isMobile(navigator)) {
         CommentInputAreaRef.current.focus();
       }
     }

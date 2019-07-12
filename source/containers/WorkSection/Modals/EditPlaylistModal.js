@@ -15,7 +15,7 @@ import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { objectify } from 'helpers';
+import { isMobile, objectify } from 'helpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import {
   editPlaylistVideos,
@@ -98,11 +98,7 @@ function EditPlaylistModal({
   const videosToRearrange = modalVideos.filter(
     videoId => !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
   );
-  const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-    ? TouchBackend
-    : HTML5Backend;
+  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
   return (
     <ErrorBoundary>
       <DndProvider backend={Backend}>

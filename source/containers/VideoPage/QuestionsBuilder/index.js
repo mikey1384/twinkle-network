@@ -5,6 +5,7 @@ import QuestionBlock from './QuestionBlock';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import Button from 'components/Button';
 import QuestionsListGroup from './QuestionsListGroup';
+import { isMobile } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import ReactPlayer from 'react-player';
 import { css } from 'emotion';
@@ -81,11 +82,7 @@ export default function QuestionsBuilder({
         : [0]
     );
   }, []);
-  const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-    ? TouchBackend
-    : HTML5Backend;
+  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
   return (
     <DndProvider backend={Backend}>
       <Modal large onHide={onHide}>

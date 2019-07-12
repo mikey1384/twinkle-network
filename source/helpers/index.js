@@ -1,5 +1,11 @@
 import { returnMaxStars } from 'constants/defaultValues';
 
+export function isMobile({ userAgent }) {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    userAgent
+  );
+}
+
 export function objectify(array, id = 'id') {
   const result = {};
   for (let elem of array) {

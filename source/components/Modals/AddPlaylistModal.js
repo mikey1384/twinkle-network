@@ -5,12 +5,6 @@ import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
-import {
-  exceedsCharLimit,
-  stringIsEmpty,
-  addEmoji,
-  finalizeEmoji
-} from 'helpers/stringHelpers';
 import SortableThumb from 'components/SortableThumb';
 import { DndProvider } from 'react-dnd';
 import TouchBackend from 'react-dnd-touch-backend';
@@ -19,11 +13,17 @@ import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import Input from 'components/Texts/Input';
 import SearchInput from 'components/Texts/SearchInput';
 import {
+  exceedsCharLimit,
+  stringIsEmpty,
+  addEmoji,
+  finalizeEmoji
+} from 'helpers/stringHelpers';
+import {
   loadUploads,
   searchContent,
   uploadPlaylist
 } from 'helpers/requestHelpers';
-import { objectify } from 'helpers';
+import { isMobile, objectify } from 'helpers';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 
@@ -96,11 +96,8 @@ function AddPlaylistModal({
     inputType: 'description',
     text: description
   });
-  const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
-    ? TouchBackend
-    : HTML5Backend;
+  const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
   return (
     <DndProvider backend={Backend}>
       <Modal

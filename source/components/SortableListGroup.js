@@ -5,17 +5,14 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import TouchBackend from 'react-dnd-touch-backend';
 import SortableListItem from './SortableListItem';
 import { borderRadius, Color } from 'constants/css';
+import { isMobile } from 'helpers';
 import { css } from 'emotion';
 
 SortableListGroup.propTypes = {
   listItems: PropTypes.array.isRequired,
   onMove: PropTypes.func.isRequired
 };
-const Backend = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-  navigator.userAgent
-)
-  ? TouchBackend
-  : HTML5Backend;
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 export default function SortableListGroup({ listItems, onMove }) {
   return (
     <DndProvider backend={Backend}>
