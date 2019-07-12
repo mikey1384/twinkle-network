@@ -130,11 +130,15 @@ export default function Channels({
     );
 
   function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
+    const messageSender = sender
+      ? sender.id === userId
+        ? 'You'
+        : sender.username
+      : '';
     if (fileName) {
       return (
         <span>
-          {`${sender.id === userId ? 'You' : sender.username}:`}{' '}
-          {`"${fileName}"`}
+          {`${messageSender}:`} {`"${fileName}"`}
         </span>
       );
     }
@@ -148,10 +152,10 @@ export default function Channels({
         <span>You lost the chess match</span>
       );
     }
-    if (sender && content) {
+    if (messageSender && content) {
       return (
         <>
-          <span>{`${sender.id === userId ? 'You' : sender.username}:`}</span>{' '}
+          <span>{`${messageSender}:`}</span>{' '}
           <span>{content.substring(0, 100)}</span>
         </>
       );
