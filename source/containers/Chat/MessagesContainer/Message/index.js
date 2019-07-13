@@ -106,6 +106,7 @@ function Message({
   useEffect(() => {
     if (
       message.userId === myId &&
+      !message.fileToUpload &&
       !message.id &&
       !message.isSubject &&
       !message.isNotification
