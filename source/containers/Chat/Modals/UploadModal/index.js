@@ -73,6 +73,7 @@ function UploadModal({
 
   async function handleSubmit() {
     submitMessage({
+      profilePicId,
       userId,
       username,
       content: finalizeEmoji(caption),
