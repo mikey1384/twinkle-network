@@ -173,7 +173,7 @@ export function getFileTypeFromFileName(fileName) {
   return checkFileType(extension);
 
   function checkFileType(extension) {
-    const audioExt = ['wav', '.aif', 'mp3', 'mid'];
+    const audioExt = ['wav', '.aif', 'mp3', 'mid', 'm4a'];
     const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif'];
     const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
     const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
