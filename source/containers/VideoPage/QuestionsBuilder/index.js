@@ -296,12 +296,17 @@ export default function QuestionsBuilder({
     }));
   }
 
-  function onChoicesRearrange({ questionIndex, choiceIds }) {
+  function onChoicesRearrange({ questionIndex, sourceId, targetId }) {
+    const newIndices = [...questions[questionIndex].choiceIds];
+    const sourceIndex = newIndices.indexOf(sourceId);
+    const targetIndex = newIndices.indexOf(targetId);
+    newIndices.splice(sourceIndex, 1);
+    newIndices.splice(targetIndex, 0, sourceId);
     setQuestions(questions => ({
       ...questions,
       [questionIds[questionIndex]]: {
         ...questions[questionIds[questionIndex]],
-        choiceIds
+        choiceIds: newIndices
       }
     }));
   }

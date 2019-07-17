@@ -88,7 +88,7 @@ QuestionBlock.propTypes = {
 
 export default function QuestionBlock({
   correctChoice,
-  choiceIds: initialChoiceIds,
+  choiceIds,
   choicesObj: initialChoices,
   deleted,
   errorMessage,
@@ -108,12 +108,10 @@ export default function QuestionBlock({
 }) {
   const [editedQuestionTitle, setEditedQuestionTitle] = useState('');
   const [choices, setChoices] = useState({});
-  const [choiceIds, setChoiceIds] = useState([]);
 
   useEffect(() => {
     setEditedQuestionTitle(title);
     setChoices(initialChoices);
-    setChoiceIds(initialChoiceIds);
   }, [initialChoices]);
 
   const choicePlaceHolder = [
@@ -187,8 +185,8 @@ export default function QuestionBlock({
           return onEdit ? (
             <EditChoiceListItem
               key={choiceId}
-              checked={correctChoice === choiceId}
               choiceId={choiceId}
+              checked={correctChoice === choiceId}
               onEdit={handleEditChoice}
               onSelect={() => onSelectChoice({ questionId, choiceId })}
               placeholder={choicePlaceHolder[index]}
@@ -200,8 +198,9 @@ export default function QuestionBlock({
               id={choiceId}
               deleted={deleted}
               questionIndex={questionIndex}
-              onDrop={() => onRearrange({ questionIndex, choiceIds })}
-              onMove={onMove}
+              onMove={({ sourceId, targetId }) =>
+                onRearrange({ questionIndex, sourceId, targetId })
+              }
               checked={correctChoice === choiceId}
               onSelect={() => onSelectChoice({ questionId, choiceId })}
               label={choices[choiceId]}
@@ -263,14 +262,5 @@ export default function QuestionBlock({
   function handleEditDone() {
     hideErrorMsg(questionId);
     onEditDone({ questionId, choices, choiceIds, editedQuestionTitle });
-  }
-
-  function onMove({ sourceId, targetId }) {
-    const newIndices = [...choiceIds];
-    const sourceIndex = newIndices.indexOf(sourceId);
-    const targetIndex = newIndices.indexOf(targetId);
-    newIndices.splice(sourceIndex, 1);
-    newIndices.splice(targetIndex, 0, sourceId);
-    setChoiceIds(newIndices);
   }
 }

@@ -13,7 +13,6 @@ ChoiceListItem.propTypes = {
   checked: PropTypes.bool,
   checkDisabled: PropTypes.bool,
   label: PropTypes.string,
-  onDrop: PropTypes.func.isRequired,
   onMove: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   questionIndex: PropTypes.number.isRequired
@@ -26,7 +25,6 @@ export default function ChoiceListItem({
   id,
   isDragging,
   label,
-  onDrop,
   onMove,
   onSelect,
   placeholder,
@@ -41,9 +39,6 @@ export default function ChoiceListItem({
   });
   const [, drop] = useDrop({
     accept: ItemTypes.LIST_ITEM,
-    drop: () => {
-      onDrop();
-    },
     hover(item, monitor) {
       if (!Draggable.current) {
         return;
