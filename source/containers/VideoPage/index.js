@@ -477,13 +477,12 @@ function VideoPage({
   function handleRenderSlides() {
     return questions.map((question, questionIndex) => {
       const filteredChoices = question.choices.filter(choice => !!choice);
-      let isCurrentSlide = currentSlide === questionIndex;
-      const listItems = filteredChoices.map((choice, choiceIndex) => {
-        return {
-          label: choice,
-          checked: isCurrentSlide && userAnswers[currentSlide] === choiceIndex
-        };
-      });
+      const isCurrentSlide = currentSlide === questionIndex;
+      const listItems = filteredChoices.map((choice, choiceIndex) => ({
+        label: choice,
+        checked: isCurrentSlide && userAnswers[currentSlide] === choiceIndex
+      }));
+
       return (
         <div key={questionIndex}>
           <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import QuestionsListItem from './QuestionsListItem';
 import RoundList from 'components/RoundList';
@@ -18,12 +18,7 @@ export default function QuestionsListGroup({
   questions,
   questionIds: initialQuestionIds
 }) {
-  const [questionIds, setQuestionIds] = useState([]);
-
-  useEffect(() => {
-    setQuestionIds(initialQuestionIds);
-  }, []);
-
+  const [questionIds, setQuestionIds] = useState(initialQuestionIds);
   return (
     <div
       style={{
@@ -34,9 +29,9 @@ export default function QuestionsListGroup({
     >
       <h3 style={{ color: Color.darkerGray() }}>Reorder Questions</h3>
       <RoundList style={{ marginTop: '2rem' }}>
-        {questionIds.map((questionId, index) => (
+        {questionIds.map(questionId => (
           <QuestionsListItem
-            key={index}
+            key={questionId}
             item={questions[questionId]}
             questionId={Number(questionId)}
             onMove={handleMove}

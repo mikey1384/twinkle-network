@@ -1,80 +1,70 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
-import { DragSource, DropTarget } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 import { Color } from 'constants/css';
-
-const listItemSource = {
-  beginDrag(props) {
-    return {
-      questionId: props.questionId
-    };
-  },
-  isDragging(props, monitor) {
-    return props.questionId === monitor.getItem().questionId;
-  }
-};
-
-const listItemTarget = {
-  hover(targetProps, monitor) {
-    const targetId = targetProps.questionId;
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.questionId;
-    if (sourceId !== targetId) {
-      targetProps.onMove({ sourceId, targetId });
-    }
-  }
-};
 
 QuestionsListItem.propTypes = {
   connectDragSource: PropTypes.func,
   connectDropTarget: PropTypes.func,
   isDragging: PropTypes.bool,
   item: PropTypes.object,
+  onMove: PropTypes.func.isRequired,
   questionId: PropTypes.number
 };
 
-function QuestionsListItem({
+export default function QuestionsListItem({
   connectDragSource,
   connectDropTarget,
   isDragging,
-  item,
+  item: listItem,
+  onMove,
   questionId
 }) {
-  return connectDragSource(
-    connectDropTarget(
-      <li
-        style={{
-          background: '#fff',
-          opacity: isDragging ? 0 : 1,
-          color: (!item.title || item.deleted) && '#999',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          cursor: 'ns-resize'
-        }}
-      >
-        <div>
-          {item.title
-            ? `${item.title} ${item.deleted ? '(removed)' : ''}`
-            : `Untitled Question ${questionId + 1} ${
-                item.deleted ? '(removed)' : ''
-              }`}
-        </div>
-        <div>
-          <Icon icon="align-justify" style={{ color: Color.gray() }} />
-        </div>
-      </li>
-    )
+  const Draggable = useRef(null);
+  const [{ opacity }, drag] = useDrag({
+    item: { type: ItemTypes.LIST_ITEM, questionId: questionId },
+    collect: monitor => ({
+      opacity: monitor.isDragging() ? 0 : 1
+    })
+  });
+  const [, drop] = useDrop({
+    accept: ItemTypes.LIST_ITEM,
+    hover(item, monitor) {
+      if (!Draggable.current) {
+        return;
+      }
+      if (item.questionId === questionId) {
+        return;
+      }
+      onMove({ sourceId: item.questionId, targetId: questionId });
+    }
+  });
+
+  return (
+    <li
+      ref={drag(drop(Draggable))}
+      style={{
+        background: '#fff',
+        opacity,
+        color: (!listItem.title || listItem.deleted) && Color.lightGray,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        cursor: 'ns-resize'
+      }}
+    >
+      <div>
+        {listItem.title
+          ? `${listItem.title} ${listItem.deleted ? '(removed)' : ''}`
+          : `Untitled Question ${questionId + 1} ${
+              listItem.deleted ? '(removed)' : ''
+            }`}
+      </div>
+      <div>
+        <Icon icon="align-justify" style={{ color: Color.gray() }} />
+      </div>
+    </li>
   );
 }
-
-export default DropTarget(ItemTypes.LIST_ITEM, listItemTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))(
-  DragSource(ItemTypes.LIST_ITEM, listItemSource, (connect, monitor) => ({
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  }))(QuestionsListItem)
-);
