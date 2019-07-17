@@ -72,13 +72,17 @@ function Carousel({
   const DEFAULT_EDGE_EASING = 'easeElasticOut';
   const [left, setLeft] = useState(0);
   const [easing, setEasing] = useState(DEFAULT_EASING);
-  const [currentSlide, setCurrentSlide] = useState(slideIndex);
+  const [currentSlide, setCurrentSlide] = useState();
   const [dragging, setDragging] = useState(false);
   const [slideWidth, setSlideWidth] = useState(0);
   const [slideCount, setSlideCount] = useState(React.Children.count(children));
   const [touchObject, setTouchObject] = useState({});
   const FrameRef = useRef(null);
   const scrollYRef = useRef(null);
+
+  useEffect(() => {
+    setCurrentSlide(slideIndex);
+  }, [slideIndex]);
 
   useEffect(() => {
     addEvent(window, 'resize', onResize);

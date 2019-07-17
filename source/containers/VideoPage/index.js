@@ -70,7 +70,7 @@ function VideoPage({
   const [changingPage, setChangingPage] = useState(false);
   const [watchTabActive, setWatchTabActive] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [userAnswers, setUserAnswers] = useState({});
   const [resultModalShown, setResultModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
@@ -182,6 +182,7 @@ function VideoPage({
   const { playlist: playlistId } = queryString.parse(search);
   const userIsUploader = uploader?.id === userId;
   const userCanEditThis = canEdit && authLevel >= uploader?.authLevel;
+
   return (
     <ErrorBoundary
       className={css`
@@ -465,42 +466,26 @@ function VideoPage({
   }
 
   function numberCorrect() {
-    const correctAnswers = questions.map(question => {
-      return question.correctChoice;
-    });
+    const correctAnswers = questions.map(question => question.correctChoice);
     let numberCorrect = 0;
-    for (let i = 0; i < userAnswers.length; i++) {
+    for (let i = 0; i < correctAnswers.length; i++) {
       if (userAnswers[i] + 1 === correctAnswers[i]) numberCorrect++;
     }
     return numberCorrect;
   }
 
-  function handleSelectChoice(newAnswer) {
-    if (typeof userAnswers[currentSlide] === 'number') {
-      return setUserAnswers(
-        userAnswers.map((answer, index) => {
-          return index === currentSlide ? newAnswer : answer;
-        })
-      );
-    }
-    const newAnswers = [...userAnswers];
-    newAnswers[currentSlide] = newAnswer;
-    setUserAnswers(newAnswers);
-  }
-
   function handleRenderSlides() {
-    return questions.map((question, index) => {
+    return questions.map((question, questionIndex) => {
       const filteredChoices = question.choices.filter(choice => !!choice);
-      let isCurrentSlide = index === currentSlide;
-      const listItems = filteredChoices.map((choice, index) => {
-        let isSelectedChoice = index === userAnswers[currentSlide];
+      let isCurrentSlide = currentSlide === questionIndex;
+      const listItems = filteredChoices.map((choice, choiceIndex) => {
         return {
           label: choice,
-          checked: isCurrentSlide && isSelectedChoice
+          checked: isCurrentSlide && userAnswers[currentSlide] === choiceIndex
         };
       });
       return (
-        <div key={index}>
+        <div key={questionIndex}>
           <div>
             <h3
               style={{ marginTop: '1rem' }}
@@ -518,6 +503,13 @@ function VideoPage({
     });
   }
 
+  function handleSelectChoice(newAnswer) {
+    setUserAnswers(userAnswers => ({
+      ...userAnswers,
+      [currentSlide]: newAnswer
+    }));
+  }
+
   function handleSetDifficulty({ contentId, difficulty }) {
     onSetDifficulty({ contentId, difficulty });
     setDifficulty({ videoId: Number(contentId), difficulty });
@@ -527,19 +519,15 @@ function VideoPage({
     const data = {
       videoId,
       questions: questions.map(question => {
-        const choices = question.choices.filter(choice => {
-          return choice.label && !stringIsEmpty(choice.label);
-        });
+        const choices = question.choiceIds
+          .map(id => ({ id, label: question.choicesObj[id] }))
+          .filter(choice => choice.label && !stringIsEmpty(choice.label));
         return {
           videoId,
           title: question.title,
-          correctChoice: (() => {
-            let correctChoice = 0;
-            for (let i = 0; i < choices.length; i++) {
-              if (choices[i].checked) correctChoice = i + 1;
-            }
-            return correctChoice;
-          })(),
+          correctChoice:
+            choices.map(choice => choice.id).indexOf(question.correctChoice) +
+            1,
           choice1: choices[0].label,
           choice2: choices[1].label,
           choice3: choices[2]?.label,
@@ -570,7 +558,7 @@ function VideoPage({
       });
       setQuestionsBuilderShown(false);
       setCurrentSlide(0);
-      setUserAnswers([]);
+      setUserAnswers({});
     } catch (error) {
       handleError(error, dispatch);
     }

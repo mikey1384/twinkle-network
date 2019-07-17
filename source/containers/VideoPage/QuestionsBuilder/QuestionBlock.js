@@ -66,10 +66,12 @@ const Styles = {
 };
 
 QuestionBlock.propTypes = {
-  choices: PropTypes.array.isRequired,
+  choiceIds: PropTypes.array.isRequired,
+  choicesObj: PropTypes.object.isRequired,
+  correctChoice: PropTypes.number,
   deleted: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
-  id: PropTypes.number.isRequired,
+  questionId: PropTypes.number.isRequired,
   innerRef: PropTypes.func.isRequired,
   onEdit: PropTypes.bool.isRequired,
   onEditCancel: PropTypes.func.isRequired,
@@ -85,11 +87,13 @@ QuestionBlock.propTypes = {
 };
 
 export default function QuestionBlock({
-  choices: initialChoices,
+  correctChoice,
+  choiceIds: initialChoiceIds,
+  choicesObj: initialChoices,
   deleted,
   errorMessage,
   hideErrorMsg,
-  id,
+  questionId,
   innerRef,
   onEditDone,
   onSelectChoice,
@@ -108,12 +112,8 @@ export default function QuestionBlock({
 
   useEffect(() => {
     setEditedQuestionTitle(title);
-    setChoices(
-      initialChoices.reduce((prev, choice) => {
-        return { ...prev, [choice.id]: choice };
-      }, {})
-    );
-    setChoiceIds(initialChoices.map(choice => choice.id));
+    setChoices(initialChoices);
+    setChoiceIds(initialChoiceIds);
   }, [initialChoices]);
 
   const choicePlaceHolder = [
@@ -159,7 +159,7 @@ export default function QuestionBlock({
               placeholder="Enter Question..."
               value={cleanString(editedQuestionTitle)}
               onChange={event => {
-                hideErrorMsg(id);
+                hideErrorMsg(questionId);
                 setEditedQuestionTitle(event.target.value);
               }}
             />
@@ -167,7 +167,7 @@ export default function QuestionBlock({
         </div>
         <div>
           {!onEdit && !deleted && (
-            <Button color="pink" filled onClick={() => onRemove(id)}>
+            <Button color="pink" filled onClick={() => onRemove(questionId)}>
               Remove
             </Button>
           )}
@@ -175,7 +175,7 @@ export default function QuestionBlock({
             <Button
               skeuomorphic
               color="darkerGray"
-              onClick={() => onUndoRemove(id)}
+              onClick={() => onUndoRemove(questionId)}
             >
               Undo
             </Button>
@@ -187,12 +187,12 @@ export default function QuestionBlock({
           return onEdit ? (
             <EditChoiceListItem
               key={choiceId}
-              checked={choices[choiceId].checked}
+              checked={correctChoice === choiceId}
               choiceId={choiceId}
               onEdit={handleEditChoice}
-              onSelect={() => handleSelectChoice(choiceId)}
+              onSelect={() => onSelectChoice({ questionId, choiceId })}
               placeholder={choicePlaceHolder[index]}
-              text={choices[choiceId].label}
+              text={choices[choiceId]}
             />
           ) : (
             <ChoiceListItem
@@ -200,11 +200,11 @@ export default function QuestionBlock({
               id={choiceId}
               deleted={deleted}
               questionIndex={questionIndex}
-              onDrop={() => onRearrange({ questionIndex, choiceIds, choices })}
+              onDrop={() => onRearrange({ questionIndex, choiceIds })}
               onMove={onMove}
-              checked={choices[choiceId].checked}
-              onSelect={() => onSelectChoice({ questionId: id, choiceId })}
-              label={choices[choiceId].label}
+              checked={correctChoice === choiceId}
+              onSelect={() => onSelectChoice({ questionId, choiceId })}
+              label={choices[choiceId]}
               placeholder={choicePlaceHolder[index]}
               checkDisabled={deleted}
             />
@@ -221,7 +221,7 @@ export default function QuestionBlock({
         {!onEdit ? (
           <Button
             transparent
-            onClick={() => onEditStart(id)}
+            onClick={() => onEditStart(questionId)}
             style={{ opacity: deleted && '0.2', fontSize: '2rem' }}
             disabled={deleted && true}
           >
@@ -230,7 +230,7 @@ export default function QuestionBlock({
           </Button>
         ) : (
           <div style={{ display: 'flex' }}>
-            <Button transparent onClick={() => handleEditCancel(id)}>
+            <Button transparent onClick={() => handleEditCancel(questionId)}>
               Cancel
             </Button>
             <Button
@@ -247,40 +247,22 @@ export default function QuestionBlock({
   );
 
   function handleEditChoice({ choiceId, text }) {
-    hideErrorMsg(id);
+    hideErrorMsg(questionId);
     setChoices({
       ...choices,
-      [choiceId]: {
-        ...choices[choiceId],
-        label: text
-      }
+      [choiceId]: text
     });
   }
 
   function handleEditCancel(questionIndex) {
-    hideErrorMsg(id);
+    hideErrorMsg(questionId);
     setEditedQuestionTitle(title);
     onEditCancel(questionIndex);
   }
 
   function handleEditDone() {
-    hideErrorMsg(id);
-    onEditDone({ id, choices, choiceIds, editedQuestionTitle });
-  }
-
-  function handleSelectChoice(choiceId) {
-    hideErrorMsg(id);
-    setChoices(
-      initialChoices.reduce((prev, choice) => {
-        return {
-          ...prev,
-          [choice.id]: {
-            ...choices[choice.id],
-            checked: choice.id === choiceId
-          }
-        };
-      }, {})
-    );
+    hideErrorMsg(questionId);
+    onEditDone({ questionId, choices, choiceIds, editedQuestionTitle });
   }
 
   function onMove({ sourceId, targetId }) {

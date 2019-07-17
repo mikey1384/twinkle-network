@@ -124,7 +124,7 @@ export default function QuestionsBuilder({
                     <QuestionBlock
                       {...question}
                       key={index}
-                      id={Number(questionId)}
+                      questionId={Number(questionId)}
                       hideErrorMsg={id => {
                         setQuestions({
                           ...questions,
@@ -257,13 +257,19 @@ export default function QuestionsBuilder({
     });
   }
 
-  function onChoiceEditDone({ id, choices, choiceIds, editedQuestionTitle }) {
+  function onChoiceEditDone({
+    questionId,
+    choices,
+    choiceIds,
+    editedQuestionTitle
+  }) {
     setQuestions({
       ...questions,
-      [id]: {
-        ...questions[id],
+      [questionId]: {
+        ...questions[questionId],
         errorMessage: '',
-        choices: choiceIds.map(choiceId => choices[choiceId]),
+        choicesObj: choices,
+        choiceIds,
         title: editedQuestionTitle,
         onEdit: false
       }
@@ -280,27 +286,24 @@ export default function QuestionsBuilder({
   }
 
   function onSelectChoice({ questionId, choiceId }) {
-    setQuestions({
+    setQuestions(questions => ({
       ...questions,
       [questionId]: {
         ...questions[questionId],
-        errorMessage: '',
-        choices: questions[questionId].choices.map(choice => ({
-          ...choice,
-          checked: choice.id === choiceId
-        }))
+        correctChoice: choiceId,
+        errorMessage: ''
       }
-    });
+    }));
   }
 
-  function onChoicesRearrange({ questionIndex, choiceIds, choices }) {
-    setQuestions({
+  function onChoicesRearrange({ questionIndex, choiceIds }) {
+    setQuestions(questions => ({
       ...questions,
       [questionIds[questionIndex]]: {
         ...questions[questionIds[questionIndex]],
-        choices: choiceIds.map(choiceId => choices[choiceId])
+        choiceIds
       }
-    });
+    }));
   }
 
   function onReset() {
@@ -381,16 +384,15 @@ export default function QuestionsBuilder({
       if (!question.title || stringIsEmpty(question.title)) {
         return 'missingTitle';
       }
-      const validChoices = question.choices.filter(choice => !!choice.label);
+      const validChoices = Object.keys(question.choicesObj)
+        .map(id => question.choicesObj[id])
+        .filter(choice => !!choice);
       if (validChoices.length < 2) {
         return 'notEnoughChoices';
       }
-      for (let i = 0; i < validChoices.length; i++) {
-        if (validChoices[i].checked) {
-          return false;
-        }
+      if (!question.choicesObj[question.correctChoice]) {
+        return 'invalidChoice';
       }
-      return 'invalidChoice';
     }
   }
 
@@ -398,15 +400,17 @@ export default function QuestionsBuilder({
     let questionsObject = {};
     questions.forEach((question, index) => {
       questionsObject[index] = {
+        correctChoice: question.correctChoice,
         title: question.title,
         onEdit: false,
-        choices: question.choices.map((choice, index) => ({
-          label: choice || '',
-          checked: question.correctChoice
-            ? index === question.correctChoice - 1
-            : false,
-          id: index
-        })),
+        choicesObj: question.choices.reduce(
+          (result, choice, index) => ({
+            ...result,
+            [index + 1]: choice || ''
+          }),
+          {}
+        ),
+        choiceIds: [1, 2, 3, 4, 5],
         errorMessage: '',
         deleted: false
       };
@@ -419,33 +423,14 @@ export default function QuestionsBuilder({
       [questionId]: {
         title: '',
         onEdit: true,
-        choices: [
-          {
-            label: '',
-            checked: false,
-            id: 0
-          },
-          {
-            label: '',
-            checked: false,
-            id: 1
-          },
-          {
-            label: '',
-            checked: false,
-            id: 2
-          },
-          {
-            label: '',
-            checked: false,
-            id: 3
-          },
-          {
-            label: '',
-            checked: false,
-            id: 4
-          }
-        ],
+        choicesObj: {
+          1: '',
+          2: '',
+          3: '',
+          4: '',
+          5: ''
+        },
+        choiceIds: [0, 1, 2, 3, 4],
         errorMessage: '',
         deleted: false
       }
