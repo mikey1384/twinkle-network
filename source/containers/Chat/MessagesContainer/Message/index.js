@@ -7,7 +7,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
-import FileMessage from './FileMessage';
+import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
@@ -225,7 +225,7 @@ function Message({
             ) : (
               <>
                 {filePath && (
-                  <FileMessage
+                  <FileViewer
                     authLevel={authLevel}
                     canDelete={canDelete}
                     content={content}

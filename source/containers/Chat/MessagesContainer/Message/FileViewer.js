@@ -6,7 +6,7 @@ import ReactPlayer from 'react-player';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileTypeFromFileName } from 'helpers/stringHelpers';
 
-FileMessage.propTypes = {
+FileViewer.propTypes = {
   filePath: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -15,7 +15,7 @@ FileMessage.propTypes = {
   setScrollToBottom: PropTypes.func.isRequired
 };
 
-export default function FileMessage({
+export default function FileViewer({
   filePath,
   fileName,
   fileSize,
