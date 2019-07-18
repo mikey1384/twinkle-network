@@ -500,6 +500,7 @@ function Chat({
             channelId={currentChannel.id}
             fileObj={fileObj}
             onHide={() => setUploadModalShown(false)}
+            subjectId={subjectId}
           />
         )}
       </div>

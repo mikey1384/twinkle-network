@@ -9,6 +9,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileMessage from './FileMessage';
 import TextMessage from './TextMessage';
+import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
 import {
@@ -97,6 +98,8 @@ function Message({
   updateChessMoveViewTimeStamp
 }) {
   let { username, profilePicId, ...post } = message;
+  const [onEdit, setOnEdit] = useState(false);
+  const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
   if (fileToUpload && !userId) {
     userId = myId;
@@ -124,6 +127,42 @@ function Message({
       setSpoilerOff(true);
     }
   }, [channelId, moveViewTimeStamp]);
+
+  const userIsUploader = myId === userId;
+  const userCanEditThis =
+    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+
+  useEffect(() => {
+    if (isLastMsg && userCanEditThis) {
+      setTimeout(() => setScrollToBottom(), 0);
+    }
+  }, [onEdit, editPadding]);
+
+  const editMenuItems = [];
+  if (userIsUploader || canEdit) {
+    editMenuItems.push({
+      label: 'Edit',
+      onClick: () => {
+        setOnEdit(true);
+        setEditPadding(false);
+      }
+    });
+  }
+  if (userIsUploader || canDelete) {
+    editMenuItems.push({
+      label: 'Remove',
+      onClick: () => {
+        setEditPadding(false);
+        onDelete({ messageId });
+      }
+    });
+  }
+  const dropdownButtonShown =
+    !!messageId &&
+    !isReloadedSubject &&
+    (userIsUploader || userCanEditThis) &&
+    !isChessMsg &&
+    !onEdit;
 
   if (!chessState && gameWinnerId) {
     return (
@@ -181,53 +220,77 @@ function Message({
                 filePath={filePath}
                 onSendFileMessage={onSendFileMessage}
                 partnerId={partnerId}
-              />
-            ) : filePath ? (
-              <FileMessage
-                authLevel={authLevel}
-                canDelete={canDelete}
-                content={content}
-                filePath={filePath}
-                fileName={fileName}
-                fileSize={fileSize}
-                isLastMsg={isLastMsg}
-                messageId={messageId}
-                myId={myId}
-                onDelete={onDelete}
-                scrollAtBottom={scrollAtBottom}
-                setScrollToBottom={setScrollToBottom}
-                uploaderAuthLevel={uploaderAuthLevel}
-                uploaderId={userId}
+                subjectId={subjectId}
               />
             ) : (
-              <TextMessage
-                authLevel={authLevel}
-                canDelete={canDelete}
-                canEdit={canEdit}
-                content={content}
-                messageId={messageId}
-                myId={myId}
-                numMsgs={numMsgs}
-                isLastMsg={isLastMsg}
-                isNotification={isNotification}
-                isSubject={!!isSubject}
-                isReloadedSubject={!!isReloadedSubject}
-                MessageStyle={MessageStyle}
-                onDelete={onDelete}
-                onEditDone={onEditDone}
-                setScrollToBottom={setScrollToBottom}
-                showSubjectMsgsModal={showSubjectMsgsModal}
-                socketConnected={socketConnected}
-                subjectId={subjectId}
-                uploaderAuthLevel={uploaderAuthLevel}
-                uploaderId={userId}
-              />
+              <>
+                {filePath && (
+                  <FileMessage
+                    authLevel={authLevel}
+                    canDelete={canDelete}
+                    content={content}
+                    filePath={filePath}
+                    fileName={fileName}
+                    fileSize={fileSize}
+                    isLastMsg={isLastMsg}
+                    messageId={messageId}
+                    myId={myId}
+                    onDelete={onDelete}
+                    scrollAtBottom={scrollAtBottom}
+                    setScrollToBottom={setScrollToBottom}
+                    uploaderAuthLevel={uploaderAuthLevel}
+                    uploaderId={userId}
+                  />
+                )}
+                <TextMessage
+                  content={content}
+                  myId={myId}
+                  numMsgs={numMsgs}
+                  isNotification={isNotification}
+                  isSubject={!!isSubject}
+                  isReloadedSubject={!!isReloadedSubject}
+                  MessageStyle={MessageStyle}
+                  onEdit={onEdit}
+                  onEditCancel={handleEditCancel}
+                  onEditDone={handleEditDone}
+                  showSubjectMsgsModal={showSubjectMsgsModal}
+                  socketConnected={socketConnected}
+                  subjectId={subjectId}
+                />
+              </>
             )}
           </>
+          {dropdownButtonShown && (
+            <DropdownButton
+              skeuomorphic
+              color="darkerGray"
+              style={{ position: 'absolute', top: 0, right: '5px' }}
+              direction="left"
+              opacity={0.8}
+              onButtonClick={menuDisplayed => {
+                setEditPadding(!menuDisplayed && isLastMsg && !filePath);
+              }}
+              onOutsideClick={() => {
+                setEditPadding(false);
+              }}
+              menuProps={editMenuItems}
+            />
+          )}
+          {editPadding && <div style={{ height: '10rem' }} />}
         </div>
       </div>
     </ErrorBoundary>
   );
+
+  function handleEditCancel() {
+    setOnEdit(false);
+    setEditPadding(false);
+  }
+
+  async function handleEditDone(editedMessage) {
+    await onEditDone({ editedMessage, messageId });
+    setOnEdit(false);
+  }
 
   async function handleSpoilerClick() {
     await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });

@@ -283,7 +283,8 @@ function App({
     fileName,
     filePath,
     fileToUpload,
-    partnerId
+    partnerId,
+    subjectId
   }) {
     postFileUploadStatus({
       channelId,
@@ -300,7 +301,8 @@ function App({
       selectedFile: fileToUpload,
       onUploadProgress: handleUploadProgress,
       partnerId,
-      path: filePath
+      path: filePath,
+      subjectId
     });
     if (members) {
       sendFirstDirectMessage({ members, message });

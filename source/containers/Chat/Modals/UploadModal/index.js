@@ -16,6 +16,7 @@ UploadModal.propTypes = {
   userId: PropTypes.number,
   username: PropTypes.string,
   profilePicId: PropTypes.number,
+  subjectId: PropTypes.number,
   submitMessage: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired
 };
@@ -25,6 +26,7 @@ function UploadModal({
   dispatch,
   fileObj,
   onHide,
+  subjectId,
   submitMessage,
   userId,
   username,
@@ -73,14 +75,15 @@ function UploadModal({
 
   async function handleSubmit() {
     submitMessage({
-      profilePicId,
-      userId,
-      username,
       content: finalizeEmoji(caption),
       channelId,
       fileToUpload: selectedFile,
       filePath: uuidv1(),
-      fileName: selectedFile.name
+      fileName: selectedFile.name,
+      profilePicId,
+      subjectId,
+      userId,
+      username
     });
     onHide();
   }
