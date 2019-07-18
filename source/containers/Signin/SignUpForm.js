@@ -189,7 +189,13 @@ export default function SignUpForm({ showLoginForm, signup }) {
 
   async function onSubmit() {
     if (!isValidUsername(username)) {
-      return setErrorMessage('That is not a valid username');
+      return setErrorMessage(
+        `${username} is not a valid username.${
+          username.length < 4
+            ? ' Make sure it is at least 4 characters long.'
+            : ''
+        }`
+      );
     }
     if (!isValidPassword(password)) {
       return setErrorMessage('Passwords need to be at least 5 characters long');
@@ -205,7 +211,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
       );
     }
     if (email && !isValidEmailAddress(email)) {
-      return setErrorMessage("That's not a valid email address");
+      return setErrorMessage(`${email} is not a valid email address`);
     }
 
     try {
@@ -236,7 +242,7 @@ function isValidRealname(realName) {
 }
 
 function isValidUsername(username) {
-  var pattern = new RegExp(/^[a-zA-Z0-9_]+$/);
+  var pattern = new RegExp(/^[^0-9_](?!.*__)[a-zA-Z0-9_]+$/);
   return (
     !!username &&
     username.length < 20 &&
