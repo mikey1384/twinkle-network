@@ -11,8 +11,9 @@ FileViewer.propTypes = {
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isLastMsg: PropTypes.bool,
+  modalOverModal: PropTypes.bool,
   scrollAtBottom: PropTypes.bool,
-  setScrollToBottom: PropTypes.func.isRequired
+  setScrollToBottom: PropTypes.func
 };
 
 export default function FileViewer({
@@ -20,12 +21,13 @@ export default function FileViewer({
   fileName,
   fileSize,
   isLastMsg,
+  modalOverModal,
   scrollAtBottom,
   setScrollToBottom
 }) {
   useEffect(() => {
     if (scrollAtBottom && isLastMsg) {
-      setScrollToBottom();
+      setScrollToBottom?.();
     }
   }, []);
   const fileType = getFileTypeFromFileName(fileName);
@@ -36,7 +38,11 @@ export default function FileViewer({
   return (
     <div style={{ marginTop: '1rem' }}>
       {fileType === 'image' ? (
-        <ImagePreview src={src} fileName={fileName} />
+        <ImagePreview
+          modalOverModal={modalOverModal}
+          src={src}
+          fileName={fileName}
+        />
       ) : fileType === 'video' ? (
         <ReactPlayer width="70%" height="100%" url={src} controls />
       ) : (

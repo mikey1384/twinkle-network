@@ -4,11 +4,12 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 ImagePreview.propTypes = {
+  modalOverModal: PropTypes.bool,
   src: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired
 };
 
-export default function ImagePreview({ src, fileName }) {
+export default function ImagePreview({ modalOverModal, src, fileName }) {
   const [imageModalShown, setImageModalShown] = useState(false);
   return (
     <div>
@@ -24,7 +25,11 @@ export default function ImagePreview({ src, fileName }) {
         onClick={() => setImageModalShown(true)}
       />
       {imageModalShown && (
-        <Modal large onHide={() => setImageModalShown(false)}>
+        <Modal
+          modalOverModal={modalOverModal}
+          large
+          onHide={() => setImageModalShown(false)}
+        >
           <header>{fileName}</header>
           <main>
             <img
