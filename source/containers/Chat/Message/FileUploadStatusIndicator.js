@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
-import Context from '../../Context';
+import Context from '../Context';
 import { displayAttachedFile } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
@@ -12,7 +12,6 @@ FileUploadStatusIndicator.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   content: PropTypes.string,
   displayAttachedFile: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   filesBeingUploaded: PropTypes.object.isRequired,
   fileToUpload: PropTypes.object.isRequired,
   filePath: PropTypes.string.isRequired,
@@ -29,7 +28,6 @@ function FileUploadStatusIndicator({
   channelId,
   checkScrollIsAtTheBottom,
   content,
-  dispatch,
   displayAttachedFile,
   filesBeingUploaded,
   fileToUpload,
@@ -116,8 +114,5 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId,
     filesBeingUploaded: state.ChatReducer.filesBeingUploaded
   }),
-  dispatch => ({
-    dispatch,
-    displayAttachedFile: params => dispatch(displayAttachedFile(params))
-  })
+  { displayAttachedFile }
 )(FileUploadStatusIndicator);

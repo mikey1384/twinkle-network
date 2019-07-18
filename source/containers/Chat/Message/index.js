@@ -4,7 +4,7 @@ import FileUploadStatusIndicator from './FileUploadStatusIndicator';
 import moment from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
-import Chess from '../../Chess';
+import Chess from '../Chess';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
@@ -17,7 +17,7 @@ import {
   saveMessage,
   updateChessMoveViewTimeStamp
 } from 'redux/actions/ChatActions';
-import { MessageStyle } from '../../Styles';
+import { MessageStyle } from '../Styles';
 
 Message.propTypes = {
   authLevel: PropTypes.number,

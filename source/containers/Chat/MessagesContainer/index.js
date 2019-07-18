@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
-import Message from './Message';
+import Message from '../Message';
 import SubjectHeader from './SubjectHeader';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { connect } from 'react-redux';
@@ -71,10 +71,11 @@ class MessagesContainer extends Component {
     }, 300);
   }
 
-  getSnapshotBeforeUpdate(prevProps, prevState) {
+  getSnapshotBeforeUpdate() {
     return scrollIsAtTheBottom(this.content, this.messagesContainer);
   }
 
+  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
     const { onLoadingDone, userId } = this.props;
     const prevMessages = prevProps.messages;
