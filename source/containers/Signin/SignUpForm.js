@@ -230,19 +230,19 @@ export default function SignUpForm({ showLoginForm, signup }) {
 }
 
 function isValidEmailAddress(email) {
-  let regex =
+  const regex =
     '^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$';
-  let pattern = new RegExp(regex);
+  const pattern = new RegExp(regex);
   return pattern.test(email);
 }
 
 function isValidRealname(realName) {
-  var pattern = new RegExp(/^[a-zA-Z]+$/);
+  const pattern = new RegExp(/^[a-zA-Z]+$/);
   return pattern.test(realName);
 }
 
 function isValidUsername(username) {
-  var pattern = new RegExp(/^[^0-9_](?!.*__)[a-zA-Z0-9_]+$/);
+  const pattern = new RegExp(/^[^0-9_](?!.*__)[a-zA-Z0-9_]+$/);
   return (
     !!username &&
     username.length < 20 &&
