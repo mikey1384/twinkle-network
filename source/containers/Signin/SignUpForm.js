@@ -88,6 +88,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
           <section>
             <label>First Name</label>
             <Input
+              maxLength={30}
               value={firstname}
               placeholder="What is your first name? Mine is Mikey"
               onChange={text => {
@@ -105,6 +106,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
           <section>
             <label>Last Name</label>
             <Input
+              maxLength={30}
               value={lastname}
               placeholder="What is your last name? Mine is Lee"
               onChange={text => {
@@ -193,14 +195,19 @@ export default function SignUpForm({ showLoginForm, signup }) {
       return setErrorMessage('Passwords need to be at least 5 characters long');
     }
     if (!isValidRealname(firstname)) {
-      return setErrorMessage("That's not a valid name");
+      return setErrorMessage(
+        `${firstname} is not a valid first name. Your first name should consist of english letters only`
+      );
     }
     if (!isValidRealname(lastname)) {
-      return setErrorMessage("That's not a valid last name");
+      return setErrorMessage(
+        `${lastname} is not a valid last name. Your last name should consist of english letters only`
+      );
     }
     if (email && !isValidEmailAddress(email)) {
       return setErrorMessage("That's not a valid email address");
     }
+
     try {
       await signup({
         username,

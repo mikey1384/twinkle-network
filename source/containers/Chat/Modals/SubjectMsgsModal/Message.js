@@ -8,15 +8,15 @@ import { Color } from 'constants/css';
 import moment from 'moment';
 
 Message.propTypes = {
+  content: PropTypes.string,
   fileName: PropTypes.string,
   filePath: PropTypes.string,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  userId: PropTypes.number,
-  username: PropTypes.string,
-  profilePicId: PropTypes.number,
-  content: PropTypes.string,
   isReloadedSubject: PropTypes.number,
-  timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  profilePicId: PropTypes.number,
+  timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  userId: PropTypes.number,
+  username: PropTypes.string
 };
 
 export default function Message({
