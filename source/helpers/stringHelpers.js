@@ -170,11 +170,11 @@ export function getFileTypeFromFileName(fileName) {
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
-  return checkFileType(extension);
+  return getFileType(extension);
 
-  function checkFileType(extension) {
+  function getFileType(extension) {
     const audioExt = ['wav', 'aif', 'mp3', 'mid', 'm4a'];
-    const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif'];
+    const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif', 'webp'];
     const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
     const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
     const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
