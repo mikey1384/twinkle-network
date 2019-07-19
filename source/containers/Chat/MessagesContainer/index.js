@@ -64,7 +64,7 @@ class MessagesContainer extends Component {
           : 0
     });
     this.setScrollToBottom();
-    setTimeout(() => {}, 300);
+    setTimeout(() => {}, 500);
     this.setScrollToBottom();
   }
 
@@ -98,7 +98,7 @@ class MessagesContainer extends Component {
             : 0
       });
       this.setScrollToBottom();
-      setTimeout(() => {}, 300);
+      setTimeout(() => {}, 500);
       return this.setScrollToBottom();
     }
     if (messageDeleted) {
