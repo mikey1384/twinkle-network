@@ -84,11 +84,7 @@ export const deleteVideo = ({
   }
 };
 
-export const editPlaylistTitle = (
-  params,
-  arrayNumber,
-  sender
-) => async dispatch => {
+export const editPlaylistTitle = (params, arrayNumber) => async dispatch => {
   try {
     const { data } = await request.put(`${URL}/playlist/title`, params, auth());
     if (data.result) {

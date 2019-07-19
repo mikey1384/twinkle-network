@@ -11,13 +11,11 @@ Dropdown.propTypes = {
   renderItemLabel: PropTypes.func.isRequired,
   renderItemUrl: PropTypes.func,
   searchResults: PropTypes.array.isRequired,
-  startingIndex: PropTypes.number,
   style: PropTypes.object
 };
 
 export default function Dropdown({
   indexToHighlight,
-  startingIndex = 0,
   searchResults,
   onUpdate,
   style = {},

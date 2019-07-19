@@ -26,10 +26,8 @@ Notification.propTypes = {
   numNewNotis: PropTypes.number,
   notifications: PropTypes.array,
   rewards: PropTypes.array,
-  rank: PropTypes.number,
   style: PropTypes.object,
-  totalRewardAmount: PropTypes.number,
-  twinkleXP: PropTypes.number
+  totalRewardAmount: PropTypes.number
 };
 
 function Notification({
@@ -44,10 +42,8 @@ function Notification({
   numNewNotis,
   notifications,
   rewards,
-  rank,
   style,
-  totalRewardAmount,
-  twinkleXP
+  totalRewardAmount
 }) {
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
@@ -175,10 +171,8 @@ export default connect(
     loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,
     numNewNotis: state.NotiReducer.numNewNotis,
-    rank: state.UserReducer.rank,
     rewards: state.NotiReducer.rewards,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    twinkleXP: state.UserReducer.twinkleXP,
     currentChatSubject: state.NotiReducer.currentChatSubject
   }),
   { clearNotifications, fetchNotifications }

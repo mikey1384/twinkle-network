@@ -241,11 +241,10 @@ function SelectPlaylistsToPinModal({
     );
   }
 
-  function handleDeselect(index) {
-    let playlistIndex = 0;
-    const newSelectedPlaylists = selectedPlaylists.filter(playlist => {
-      return playlistIndex++ !== index;
-    });
+  function handleDeselect(selectedIndex) {
+    const newSelectedPlaylists = selectedPlaylists.filter(
+      (playlist, index) => index !== selectedIndex
+    );
     setSelectedPlaylists(newSelectedPlaylists);
   }
 

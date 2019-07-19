@@ -7,7 +7,6 @@ ProgressBar.propTypes = {
   noBorderRadius: PropTypes.bool,
   progress: PropTypes.number.isRequired,
   color: PropTypes.string,
-  stretch: PropTypes.bool,
   style: PropTypes.object,
   text: PropTypes.string
 };
@@ -16,7 +15,6 @@ export default function ProgressBar({
   color = Color.blue(),
   noBorderRadius,
   progress,
-  stretch,
   style = {},
   text
 }) {

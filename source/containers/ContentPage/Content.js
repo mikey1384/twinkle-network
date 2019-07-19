@@ -17,7 +17,6 @@ Content.propTypes = {
 
 function Content({
   history,
-  match,
   match: {
     params: { contentId },
     url

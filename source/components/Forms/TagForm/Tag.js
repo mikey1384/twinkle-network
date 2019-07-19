@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { borderRadius } from 'constants/css';
 
 Tag.propTypes = {
-  index: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   renderTagLabel: PropTypes.func
 };
-export default function Tag({ index, label, onClick, renderTagLabel }) {
+export default function Tag({ label, onClick, renderTagLabel }) {
   return (
     <div
       style={{

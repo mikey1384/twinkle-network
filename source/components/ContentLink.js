@@ -19,8 +19,7 @@ ContentLink.propTypes = {
 export default function ContentLink({
   style,
   content: { byUser, id, content, title, username },
-  type,
-  ...actions
+  type
 }) {
   let destination = '';
   if (type === 'url') {

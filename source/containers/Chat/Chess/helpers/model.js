@@ -115,7 +115,6 @@ export function getPlayerPieces({ color, squares }) {
 }
 
 export function highlightPossiblePathsFromSrc({
-  color,
   squares,
   src,
   enPassantTarget,
@@ -404,13 +403,7 @@ export function kingWillBeCapturedBy({ kingIndex, squares, myColor }) {
   return checkerPositions;
 }
 
-export function returnBoardAfterMove({
-  squares,
-  src,
-  dest,
-  enPassantTarget,
-  myColor
-}) {
+export function returnBoardAfterMove({ squares, src, dest, enPassantTarget }) {
   const srcColumn = src % 8;
   const destColumn = dest % 8;
   const destRow = Math.floor(dest / 8);

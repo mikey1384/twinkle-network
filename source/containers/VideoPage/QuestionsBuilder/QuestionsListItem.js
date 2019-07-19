@@ -6,18 +6,12 @@ import ItemTypes from 'constants/itemTypes';
 import { Color } from 'constants/css';
 
 QuestionsListItem.propTypes = {
-  connectDragSource: PropTypes.func,
-  connectDropTarget: PropTypes.func,
-  isDragging: PropTypes.bool,
   item: PropTypes.object,
   onMove: PropTypes.func.isRequired,
   questionId: PropTypes.number
 };
 
 export default function QuestionsListItem({
-  connectDragSource,
-  connectDropTarget,
-  isDragging,
   item: listItem,
   onMove,
   questionId
@@ -31,7 +25,7 @@ export default function QuestionsListItem({
   });
   const [, drop] = useDrop({
     accept: ItemTypes.LIST_ITEM,
-    hover(item, monitor) {
+    hover(item) {
       if (!Draggable.current) {
         return;
       }

@@ -84,7 +84,7 @@ export default function useContentObj(props) {
     }));
   }
 
-  function onChangeSpoilerStatus({ shown, subjectId }) {
+  function onChangeSpoilerStatus({ shown }) {
     setContentObj(contentObj => ({
       ...contentObj,
       secretShown: shown,

@@ -34,7 +34,6 @@ Carousel.propTypes = {
   slidesToScroll: PropTypes.number.isRequired,
   slidesToShow: PropTypes.number,
   slideWidthMultiplier: PropTypes.number,
-  speed: PropTypes.number,
   style: PropTypes.object,
   userCanEditThis: PropTypes.bool,
   userIsUploader: PropTypes.bool
@@ -62,7 +61,6 @@ function Carousel({
   slideWidthMultiplier = 1,
   showAllButton,
   showQuestionsBuilder,
-  speed = 500,
   style,
   userCanEditThis,
   userIsUploader
@@ -402,7 +400,7 @@ function Carousel({
     afterSlide(index);
   }
 
-  function handleSwipe(e) {
+  function handleSwipe() {
     if (typeof touchObject.length !== 'undefined' && touchObject.length > 44) {
       clickSafeOn();
     } else {

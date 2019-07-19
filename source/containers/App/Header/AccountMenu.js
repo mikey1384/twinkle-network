@@ -24,8 +24,7 @@ function AccountMenu({
   openSigninModal,
   title,
   logout,
-  username,
-  ...props
+  username
 }) {
   return loggedIn ? (
     <DropdownButton

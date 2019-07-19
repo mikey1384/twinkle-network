@@ -11,7 +11,6 @@ import Embedly from 'components/Embedly';
 import Profile from './Profile';
 import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
 import { loadContent } from 'helpers/requestHelpers';
@@ -20,7 +19,6 @@ ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
   contentObj: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
   inputAtBottom: PropTypes.bool,
   userId: PropTypes.number,
   onAddTags: PropTypes.func,
@@ -47,12 +45,11 @@ ContentPanel.propTypes = {
   style: PropTypes.object
 };
 
-function ContentPanel({
+export default function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentObj,
   contentObj: { contentId, feedId, newPost, secretShown, type },
-  dispatch,
   inputAtBottom,
   onAddTags,
   onAddTagToContents,
@@ -297,8 +294,3 @@ function ContentPanel({
     </Context.Provider>
   );
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(ContentPanel);

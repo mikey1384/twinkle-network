@@ -28,7 +28,7 @@ Comment.propTypes = {
 
 function Comment({
   comment,
-  comment: { id, content, timeStamp },
+  comment: { content, timeStamp },
   dispatch,
   onDelete,
   onEditDone,

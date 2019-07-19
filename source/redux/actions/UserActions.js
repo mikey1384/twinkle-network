@@ -194,7 +194,7 @@ export const updateStatusMsg = ({ statusColor, statusMsg, userId }) => ({
   userId
 });
 
-export const uploadBio = (params, callback) => async dispatch => {
+export const uploadBio = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/bio`, params, auth());
     dispatch({

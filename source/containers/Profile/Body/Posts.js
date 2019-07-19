@@ -106,7 +106,6 @@ function Posts({
   loadRepliesOfReply,
   loadTags,
   location,
-  match,
   match: {
     params: { section, username }
   },

@@ -72,7 +72,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
           setSelectedUpload([uploadId]);
           onSelect(contentObjs.current[uploadId]);
         }}
-        onDeselect={uploadId => {
+        onDeselect={() => {
           setSelectedUpload([]);
           onDeselect();
         }}

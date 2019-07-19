@@ -288,7 +288,7 @@ export default function getPiece({
               Math.abs(srcColumn - destColumn) === 1)
           );
         },
-        getSrcToDestPath(src, dest) {
+        getSrcToDestPath() {
           return [];
         }
       };

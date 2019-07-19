@@ -47,7 +47,7 @@ export default function SideMenu({
           top: '1rem'
         }}
       >
-        {menuItems.map(({ key, label }, index) => (
+        {menuItems.map(({ key, label }) => (
           <nav
             key={key}
             onClick={() => onMenuClick({ item: key })}

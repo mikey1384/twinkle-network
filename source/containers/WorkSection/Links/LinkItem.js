@@ -51,7 +51,6 @@ function LinkItem({
     timeStamp,
     uploader
   },
-  link,
   authLevel,
   canEdit,
   canDelete,

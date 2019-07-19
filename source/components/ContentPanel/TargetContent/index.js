@@ -63,12 +63,7 @@ function TargetContent({
   rootType,
   secretShown,
   style,
-  targetObj: {
-    comment,
-    comment: { comments = [], stars = [] } = {},
-    subject,
-    type
-  },
+  targetObj: { comment, comment: { comments = [] } = {}, subject, type },
   username
 }) {
   const [userListModalShown, setUserListModalShown] = useState(false);

@@ -26,7 +26,7 @@ export default function SortableThumb({ id, onMove, video }) {
   });
   const [, drop] = useDrop({
     accept: ItemTypes.THUMB,
-    hover(item, monitor) {
+    hover(item) {
       if (!Draggable.current) {
         return;
       }

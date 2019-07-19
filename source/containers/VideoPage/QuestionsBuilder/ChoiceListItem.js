@@ -6,9 +6,7 @@ import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 
 ChoiceListItem.propTypes = {
-  deleted: PropTypes.bool,
   id: PropTypes.number.isRequired,
-  isDragging: PropTypes.bool,
   onSelect: PropTypes.func,
   checked: PropTypes.bool,
   checkDisabled: PropTypes.bool,
@@ -21,9 +19,7 @@ ChoiceListItem.propTypes = {
 export default function ChoiceListItem({
   checked,
   checkDisabled,
-  deleted,
   id,
-  isDragging,
   label,
   onMove,
   onSelect,
@@ -39,7 +35,7 @@ export default function ChoiceListItem({
   });
   const [, drop] = useDrop({
     accept: ItemTypes.LIST_ITEM,
-    hover(item, monitor) {
+    hover(item) {
       if (!Draggable.current) {
         return;
       }

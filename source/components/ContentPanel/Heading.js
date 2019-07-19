@@ -7,14 +7,9 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
-import { connect } from 'react-redux';
 
 Heading.propTypes = {
   action: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
-  onCommentSubmit: PropTypes.func.isRequired,
-  onLikeContent: PropTypes.func.isRequired,
-  attachedVideoShown: PropTypes.bool,
   contentObj: PropTypes.shape({
     id: PropTypes.number,
     commentId: PropTypes.number,
@@ -28,33 +23,23 @@ Heading.propTypes = {
       .isRequired,
     type: PropTypes.string,
     uploader: PropTypes.object
-  }).isRequired,
-  myId: PropTypes.number,
-  onPlayVideoClick: PropTypes.func
+  }).isRequired
 };
 
 function Heading({
   action,
-  attachedVideoShown,
   contentObj,
   contentObj: {
     commentId,
     id,
     replyId,
-    rootId,
     rootObj = {},
     rootType,
-    subjectId,
     targetObj = {},
     timeStamp,
     type,
     uploader = {}
-  },
-  dispatch,
-  myId,
-  onCommentSubmit,
-  onLikeContent,
-  onPlayVideoClick
+  }
 }) {
   return (
     <header className="heading">
@@ -175,7 +160,4 @@ function Heading({
   }
 }
 
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(withContext({ Component: Heading, Context }));
+export default withContext({ Component: Heading, Context });

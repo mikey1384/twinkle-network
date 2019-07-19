@@ -7,7 +7,7 @@ export { default as useInfiniteScroll } from './useInfiniteScroll';
 export function useInterval(callback, interval, tracked) {
   const timerRef = useRef(null);
   useEffect(() => {
-    timerRef.current = setInterval(callback, 1000);
+    timerRef.current = setInterval(callback, interval);
     return function cleanUp() {
       clearInterval(timerRef.current);
     };
@@ -54,7 +54,7 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
       return setSearching(false);
     }
     setSearching(true);
-    timerRef.current = setTimeout(async() => {
+    timerRef.current = setTimeout(async () => {
       await onSearch(text);
       setSearching(false);
     }, 300);

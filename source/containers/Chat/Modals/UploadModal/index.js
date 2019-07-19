@@ -17,13 +17,11 @@ UploadModal.propTypes = {
   username: PropTypes.string,
   profilePicId: PropTypes.number,
   subjectId: PropTypes.number,
-  submitMessage: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired
+  submitMessage: PropTypes.func.isRequired
 };
 
 function UploadModal({
   channelId,
-  dispatch,
   fileObj,
   onHide,
   subjectId,
@@ -95,8 +93,7 @@ export default connect(
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId
   }),
-  dispatch => ({
-    dispatch,
-    submitMessage: params => dispatch(submitMessageAsync(params))
-  })
+  {
+    submitMessage: submitMessageAsync
+  }
 )(UploadModal);

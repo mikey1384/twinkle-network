@@ -60,9 +60,9 @@ export default function withScroll(WrappedComponent) {
       }
 
       if (typeof snapshot.scrollPosition === 'number') {
-        this.setState(state => ({
+        this.setState({
           scrollPosition: snapshot.scrollPosition
-        }));
+        });
       }
 
       if (

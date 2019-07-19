@@ -25,7 +25,7 @@ export default function SortableListItem({ index, item: listItem, onMove }) {
   });
   const [, drop] = useDrop({
     accept: ItemTypes.THUMB,
-    hover(item, monitor) {
+    hover(item) {
       if (!Draggable.current) {
         return;
       }

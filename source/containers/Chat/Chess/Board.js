@@ -7,10 +7,8 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
 Board.propTypes = {
-  initialState: PropTypes.string,
   interactable: PropTypes.bool,
   loading: PropTypes.bool,
-  status: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   squares: PropTypes.array.isRequired,
   myColor: PropTypes.string.isRequired,
@@ -22,10 +20,8 @@ Board.propTypes = {
 };
 
 export default function Board({
-  initialState,
   interactable,
   loading,
-  status,
   onClick,
   squares,
   myColor,

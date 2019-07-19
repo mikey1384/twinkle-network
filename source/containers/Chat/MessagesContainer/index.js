@@ -75,7 +75,6 @@ class MessagesContainer extends Component {
     return scrollIsAtTheBottom(this.content, this.messagesContainer);
   }
 
-  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
     const { onLoadingDone, userId } = this.props;
     const prevMessages = prevProps.messages;

@@ -63,7 +63,7 @@ function TagStatus({
     >
       {(tags.length > 0 || canEditPlaylists) && (
         <div style={{ padding: '0 1rem' }}>
-          {tags.map((tag, index) => (
+          {tags.map(tag => (
             <a
               style={{ marginRight: '0.5rem' }}
               key={tag.id}
