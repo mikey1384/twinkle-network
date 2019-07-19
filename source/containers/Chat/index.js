@@ -460,6 +460,7 @@ function Chat({
               myId={userId}
               isTwoPeopleChannel={currentChannel.twoPeople}
               currentChannelId={selectedChannelId}
+              currentChannel={currentChannel}
               onChessButtonClick={handleChessModalShown}
               onMessageSubmit={onMessageSubmit}
               onHeightChange={height => {

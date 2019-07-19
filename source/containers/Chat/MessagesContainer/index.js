@@ -20,6 +20,7 @@ class MessagesContainer extends Component {
     chessCountdownObj: PropTypes.object,
     className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
+    currentChannel: PropTypes.object,
     currentChannelId: PropTypes.number.isRequired,
     deleteMessage: PropTypes.func.isRequired,
     loadMoreButton: PropTypes.bool,
@@ -75,7 +76,8 @@ class MessagesContainer extends Component {
     const prevMessages = prevProps.messages;
     const currentMessages = this.props.messages;
     const switchedChannel =
-      prevProps.currentChannelId !== this.props.currentChannelId;
+      prevProps.currentChannel?.id !== prevProps.currentChannelId &&
+      this.props.currentChannel?.id === this.props.currentChannelId;
     const newMessageArrived =
       prevMessages.length >= 0 &&
       prevMessages.length < currentMessages.length &&
@@ -93,7 +95,8 @@ class MessagesContainer extends Component {
             ? this.messagesContainer.offsetHeight - this.messages.offsetHeight
             : 0
       });
-      return this.setScrollToBottom();
+      this.setScrollToBottom();
+      return setTimeout(() => this.setScrollToBottom(), 300);
     }
     if (messageDeleted) {
       return this.setState({
