@@ -1,8 +1,8 @@
 import { returnMaxStars } from 'constants/defaultValues';
 
-export function isMobile({ userAgent }) {
+export function isMobile(navigator) {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    userAgent
+    navigator.userAgent
   );
 }
 

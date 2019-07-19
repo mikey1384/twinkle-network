@@ -40,7 +40,7 @@ function ChatInput({
   const TextareaRef = useRef(null);
   useEffect(() => {
     onChange('');
-    if (!isMobile) {
+    if (!isMobile(navigator)) {
       TextareaRef.current.focus();
     }
   }, [currentChannelId]);
