@@ -14,6 +14,7 @@ import {
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+  loading: PropTypes.bool,
   message: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onChessButtonClick: PropTypes.func.isRequired,
@@ -26,6 +27,7 @@ ChatInput.propTypes = {
 function ChatInput({
   currentChannelId,
   isTwoPeopleChannel,
+  loading,
   message,
   onChange,
   onChessButtonClick,
@@ -36,6 +38,7 @@ function ChatInput({
 }) {
   const TextareaRef = useRef(null);
   useEffect(() => {
+    onChange('');
     TextareaRef.current.focus();
   }, [currentChannelId]);
   const themeColor = profileTheme || 'logoBlue';
@@ -107,7 +110,12 @@ function ChatInput({
   function onKeyDown(event) {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    if (enterKeyPressed && !shiftKeyPressed && !messageExceedsCharLimit) {
+    if (
+      enterKeyPressed &&
+      !shiftKeyPressed &&
+      !messageExceedsCharLimit &&
+      !loading
+    ) {
       event.preventDefault();
       if (stringIsEmpty(message)) return;
       onMessageSubmit(finalizeEmoji(message));

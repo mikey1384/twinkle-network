@@ -454,6 +454,7 @@ function Chat({
           />
           {socketConnected ? (
             <ChatInput
+              loading={loading}
               onChange={setChatMessage}
               message={chatMessage}
               myId={userId}
