@@ -63,6 +63,7 @@ class MessagesContainer extends Component {
           : 0
     });
     this.setScrollToBottom();
+    setTimeout(() => this.setScrollToBottom(), 300);
   }
 
   getSnapshotBeforeUpdate() {

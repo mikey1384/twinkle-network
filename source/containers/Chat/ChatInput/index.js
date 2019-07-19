@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
+import { isMobile } from 'helpers';
 import { connect } from 'react-redux';
 import {
   stringIsEmpty,
@@ -39,7 +40,9 @@ function ChatInput({
   const TextareaRef = useRef(null);
   useEffect(() => {
     onChange('');
-    TextareaRef.current.focus();
+    if (!isMobile) {
+      TextareaRef.current.focus();
+    }
   }, [currentChannelId]);
   const themeColor = profileTheme || 'logoBlue';
   const messageExceedsCharLimit = exceedsCharLimit({
