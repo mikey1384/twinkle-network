@@ -77,6 +77,7 @@ class MessagesContainer extends Component {
     const prevMessages = prevProps.messages;
     const currentMessages = this.props.messages;
     const switchedChannel =
+      prevProps.currentChannel?.id !== this.props.currentChannel?.id &&
       prevProps.currentChannel?.id !== prevProps.currentChannelId &&
       this.props.currentChannel?.id === this.props.currentChannelId;
     const newMessageArrived =
