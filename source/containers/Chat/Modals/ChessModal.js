@@ -41,6 +41,7 @@ function ChessModal({
   const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [messageId, setMessageId] = useState();
+  const [uploaderId, setUploaderId] = useState();
   const [newChessState, setNewChessState] = useState();
   const [loaded, setLoaded] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
@@ -51,11 +52,13 @@ function ChessModal({
     async function init() {
       loading.current = true;
       const {
+        userId,
         messageId,
         chessState,
         moveViewTimeStamp
       } = await fetchCurrentChessState(channelId);
       setMessageId(messageId);
+      setUploaderId(userId);
       setInitialState(chessState);
       setViewTimeStamp(moveViewTimeStamp);
       loading.current = false;
@@ -71,7 +74,7 @@ function ChessModal({
     if (!loading.current) {
       if (initialState) {
         const { move } = JSON.parse(initialState);
-        const userMadeLastMove = move?.by === myId;
+        const userMadeLastMove = move?.by === myId || uploaderId === myId;
         setUserMadeLastMove(!!userMadeLastMove);
         if (move && !userMadeLastMove && (spoilerOff || viewTimeStamp)) {
           socket.emit('user_is_making_move', {

@@ -55,6 +55,7 @@ Chat.propTypes = {
   submitMessage: PropTypes.func,
   subjectId: PropTypes.number,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired,
+  updateSelectedChannelId: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
 };
@@ -91,6 +92,7 @@ function Chat({
   subjectId,
   submitMessage,
   updateChessMoveViewTimeStamp,
+  updateSelectedChannelId,
   userId,
   username
 }) {
@@ -167,13 +169,13 @@ function Chat({
     socket.on('receive_chess_countdown_number', onReceiveCountdownNumber);
 
     function onNotifyMoveViewed(channelId) {
-      if (channelId === currentChannel.id) {
+      if (channelId === selectedChannelId) {
         updateChessMoveViewTimeStamp();
       }
     }
 
     function onReceiveMessage(message, channel) {
-      let messageIsForCurrentChannel = message.channelId === currentChannel.id;
+      let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
       if (message.isChessMsg) {
         setChessCountdownObj(countdownObj => ({
@@ -207,7 +209,7 @@ function Chat({
     }
 
     function onChangeMembersOnline(data) {
-      let forCurrentChannel = data.channelId === currentChannel.id;
+      let forCurrentChannel = data.channelId === selectedChannelId;
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const { userId, username, profilePicId } = data.leftChannel;
@@ -242,7 +244,7 @@ function Chat({
     }
 
     function onNotifiedMoveMade({ userId, channelId }) {
-      if (channelId === currentChannel.id) {
+      if (channelId === selectedChannelId) {
         setChessModalShown(false);
       }
       setCurrentChannelOnlineMembers(members =>
@@ -264,7 +266,7 @@ function Chat({
     }
 
     function onReceiveCountdownNumber({ channelId, number }) {
-      if (channelId === currentChannel.id) {
+      if (channelId === selectedChannelId) {
         if (number === 0) {
           setChessModalShown(false);
         }
@@ -291,14 +293,14 @@ function Chat({
   });
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(selectedChannelId !== currentChannel.id);
     socket.emit('check_online_members', selectedChannelId, (err, data) => {
       if (err) console.error(err);
       if (mounted.current) {
         setCurrentChannelOnlineMembers(data.membersOnline);
       }
     });
-  }, [selectedChannelId]);
+  }, [currentChannel, selectedChannelId]);
 
   let menuProps = currentChannel.twoPeople
     ? [{ label: 'Hide Chat', onClick: onHideChat }]
@@ -363,6 +365,7 @@ function Chat({
           <InviteUsersModal
             onHide={() => setInviteUsersModalShown(false)}
             currentChannel={currentChannel}
+            selectedChannelId={selectedChannelId}
             onDone={onInviteUsersDone}
           />
         )}
@@ -406,7 +409,7 @@ function Chat({
             }
           `}
         >
-          {currentChannel.id !== GENERAL_CHAT_ID && (
+          {selectedChannelId !== GENERAL_CHAT_ID && (
             <DropdownButton
               skeuomorphic
               color="darkerGray"
@@ -424,7 +427,7 @@ function Chat({
             />
           )}
           <MessagesContainer
-            channelId={currentChannel.id}
+            channelId={selectedChannelId}
             channelName={channelName}
             chessCountdownObj={chessCountdownObj}
             className={css`
@@ -438,14 +441,13 @@ function Chat({
               -webkit-overflow-scrolling: touch;
             `}
             loading={loading}
-            currentChannelId={currentChannel.id}
+            currentChannelId={selectedChannelId}
             loadMoreButton={loadMoreButton}
             messages={messages}
             userId={userId}
             loadMoreMessages={loadMoreMessages}
             onChessBoardClick={handleChessModalShown}
             onChessSpoilerClick={handleChessSpoilerClick}
-            onLoadingDone={() => setLoading(false)}
             onSendFileMessage={handleSendFileMessage}
             partnerId={partnerId}
             statusText={renderStatusMessage()}
@@ -456,7 +458,7 @@ function Chat({
               message={chatMessage}
               myId={userId}
               isTwoPeopleChannel={currentChannel.twoPeople}
-              currentChannelId={currentChannel.id}
+              currentChannelId={selectedChannelId}
               onChessButtonClick={handleChessModalShown}
               onMessageSubmit={onMessageSubmit}
               onHeightChange={height => {
@@ -478,7 +480,7 @@ function Chat({
         </div>
         {chessModalShown && (
           <ChessModal
-            channelId={currentChannel.id}
+            channelId={selectedChannelId}
             chessCountdownObj={chessCountdownObj}
             myId={userId}
             onConfirmChessMove={handleConfirmChessMove}
@@ -497,7 +499,7 @@ function Chat({
         )}
         {uploadModalShown && (
           <UploadModal
-            channelId={currentChannel.id}
+            channelId={selectedChannelId}
             fileObj={fileObj}
             onHide={() => setUploadModalShown(false)}
             subjectId={subjectId}
@@ -531,7 +533,7 @@ function Chat({
   }
 
   function handleChessSpoilerClick() {
-    socket.emit('viewed_chess_move', currentChannel.id);
+    socket.emit('viewed_chess_move', selectedChannelId);
     socket.emit('start_chess_timer', currentChannel);
     setChessModalShown(true);
   }
@@ -571,7 +573,7 @@ function Chat({
 
   async function onMessageSubmit(content) {
     setTextAreaHeight(0);
-    let isFirstDirectMessage = currentChannel.id === 0;
+    let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
       const { members, message } = await startNewDMChannel({
         content,
@@ -589,7 +591,7 @@ function Chat({
       username,
       profilePicId,
       content,
-      channelId: currentChannel.id,
+      channelId: selectedChannelId,
       subjectId
     };
     try {
@@ -618,17 +620,17 @@ function Chat({
     };
     const content = 'Made a chess move';
     try {
-      if (currentChannel.id) {
+      if (selectedChannelId) {
         submitMessage({
           ...params,
           profilePicId,
           username,
           content,
-          channelId: currentChannel.id
+          channelId: selectedChannelId
         });
         socket.emit('user_made_a_move', {
           userId,
-          channelId: currentChannel.id
+          channelId: selectedChannelId
         });
         socket.emit(
           'new_chat_message',
@@ -637,7 +639,7 @@ function Chat({
             content,
             username,
             profilePicId,
-            channelId: currentChannel.id
+            channelId: selectedChannelId
           },
           {
             ...currentChannel,
@@ -676,6 +678,7 @@ function Chat({
       setCurrentChannelOnlineMembers([]);
       return enterEmptyChat();
     }
+    updateSelectedChannelId(id);
     const data = await loadChatChannel({ channelId: id, dispatch });
     enterChannelWithId({ data });
   }
@@ -699,7 +702,7 @@ function Chat({
   }
 
   function onSubjectChange({ message }) {
-    let messageIsForCurrentChannel = message.channelId === currentChannel.id;
+    let messageIsForCurrentChannel = message.channelId === selectedChannelId;
     let senderIsNotTheUser = message.userId !== userId;
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
       receiveMessage({ message, pageVisible });
@@ -727,7 +730,7 @@ function Chat({
 
   function onChatInvitation(data) {
     let duplicate = false;
-    if (currentChannel.id === 0) {
+    if (selectedChannelId === 0) {
       if (
         data.members.filter(member => member.userId !== userId)[0].userId ===
         currentChannel.members.filter(member => member.userId !== userId)[0]
@@ -752,18 +755,18 @@ function Chat({
   }
 
   async function onEditTitleDone(title) {
-    await editChannelTitle({ title, channelId: currentChannel.id });
+    await editChannelTitle({ title, channelId: selectedChannelId });
     setEditTitleModalShown(false);
   }
 
   function onHideChat() {
-    hideChat(currentChannel.id);
+    hideChat(selectedChannelId);
   }
 
   function onLeaveChannel() {
-    leaveChannel(currentChannel.id);
+    leaveChannel(selectedChannelId);
     socket.emit('leave_chat_channel', {
-      channelId: currentChannel.id,
+      channelId: selectedChannelId,
       userId,
       username,
       profilePicId
@@ -773,7 +776,7 @@ function Chat({
 
   function renderStatusMessage() {
     const { opponentId, opponentName } = getOpponentInfo();
-    return memberObj.current[opponentId]?.channelObj[currentChannel.id]
+    return memberObj.current[opponentId]?.channelObj[selectedChannelId]
       ?.makingChessMove
       ? `${opponentName} is thinking...`
       : '';
@@ -820,6 +823,8 @@ export default connect(
     openDirectMessageChannel: params =>
       dispatch(ChatActions.openDirectMessageChannel(params)),
     updateChessMoveViewTimeStamp: params =>
-      dispatch(ChatActions.updateChessMoveViewTimeStamp(params))
+      dispatch(ChatActions.updateChessMoveViewTimeStamp(params)),
+    updateSelectedChannelId: channelId =>
+      dispatch(ChatActions.updateSelectedChannelId(channelId))
   })
 )(Chat);

@@ -146,12 +146,6 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [{ ...action.message }]
       };
-    case CHAT.SELECT_CHANNEL:
-      return {
-        ...state,
-        subject: action.channelId === 2 ? state.subject : {},
-        selectedChannelId: action.channelId
-      };
     case CHAT.DELETE_MESSAGE:
       return {
         ...state,
@@ -186,8 +180,6 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse();
       return {
         ...state,
-        subject: selectedChannel.id === 2 ? state.subject : {},
-        selectedChannelId: selectedChannel.id,
         currentChannel: selectedChannel,
         channels: state.channels.reduce((prev, channel, index) => {
           if (channel.id === selectedChannel.id) {
@@ -696,6 +688,12 @@ export default function ChatReducer(state = defaultState, action) {
             ? { ...message, moveViewTimeStamp: Math.floor(Date.now() / 1000) }
             : message
         )
+      };
+    case CHAT.UPDATE_SELECTED_CHANNEL_ID:
+      return {
+        ...state,
+        subject: action.channelId === 2 ? state.subject : {},
+        selectedChannelId: action.channelId
       };
     default:
       return state;

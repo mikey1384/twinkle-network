@@ -74,7 +74,7 @@ function LeftMenu({
 
   useEffect(() => {
     if (
-      currentChannel.id === channels[0].id &&
+      selectedChannelId === channels[0].id &&
       channels[0].id !== prevChannels[0].id
     ) {
       ChannelListRef.current.scrollTop = 0;
@@ -90,7 +90,7 @@ function LeftMenu({
     }
     setChannelName(
       otherMember?.username ||
-        channelsObj.current?.[currentChannel.id]?.channelName
+        channelsObj.current?.[selectedChannelId]?.channelName
     );
   }, [currentChannel]);
 
@@ -151,7 +151,7 @@ function LeftMenu({
             {channelName || '(Deleted)'}
           </span>
           <FullTextReveal text={channelName || ''} show={onTitleHover} />
-          {currentChannel.id !== 0 ? (
+          {selectedChannelId !== 0 ? (
             <small style={{ gridArea: 'channelMembers', textAlign: 'center' }}>
               <a
                 style={{
@@ -212,7 +212,7 @@ function LeftMenu({
       setChannelsLoading(true);
       loading.current = true;
       await loadMoreChannels({
-        currentChannelId: currentChannel.id,
+        currentChannelId: selectedChannelId,
         channelIds: queryStringForArray({
           array: channels,
           originVar: 'id',

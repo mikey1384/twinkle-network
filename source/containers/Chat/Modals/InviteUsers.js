@@ -16,6 +16,7 @@ InviteUsersModal.propTypes = {
   inviteUsersToChannel: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
+  selectedChannelId: PropTypes.number.isRequired,
   searchResults: PropTypes.array.isRequired,
   searchUserToInvite: PropTypes.func.isRequired
 };
@@ -25,6 +26,7 @@ function InviteUsersModal({
   inviteUsersToChannel,
   searchUserToInvite,
   searchResults,
+  selectedChannelId,
   onDone,
   onHide,
   currentChannel
@@ -82,7 +84,7 @@ function InviteUsersModal({
   async function handleDone() {
     const message = await inviteUsersToChannel({
       selectedUsers,
-      channelId: currentChannel.id
+      channelId: selectedChannelId
     });
     onDone(selectedUsers.map(user => user.id), message);
   }

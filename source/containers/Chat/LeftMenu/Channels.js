@@ -5,7 +5,6 @@ import { css } from 'emotion';
 
 Channels.propTypes = {
   userId: PropTypes.number.isRequired,
-  currentChannel: PropTypes.object.isRequired,
   channels: PropTypes.arrayOf(
     PropTypes.shape({
       lastMessage: PropTypes.shape({
@@ -26,7 +25,6 @@ Channels.propTypes = {
 
 export default function Channels({
   userId,
-  currentChannel,
   channels,
   onChannelEnter,
   selectedChannelId
@@ -106,7 +104,7 @@ export default function Channels({
                   {renderPreviewMessage(lastMessage || {})}
                 </div>
               </div>
-              {id !== currentChannel.id && numUnreads > 0 && (
+              {id !== selectedChannelId && numUnreads > 0 && (
                 <div
                   style={{
                     background: Color.rose(),

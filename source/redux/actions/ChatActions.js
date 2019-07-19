@@ -489,6 +489,11 @@ export const updateChessMoveViewTimeStamp = () => ({
   type: CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP
 });
 
+export const updateSelectedChannelId = channelId => ({
+  type: CHAT.UPDATE_SELECTED_CHANNEL_ID,
+  channelId
+});
+
 export const uploadChatSubject = content => async dispatch => {
   try {
     const { data } = await request.post(
