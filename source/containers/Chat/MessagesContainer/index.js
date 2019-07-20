@@ -29,6 +29,7 @@ class MessagesContainer extends Component {
     loading: PropTypes.bool,
     onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
+    onFinishLoading: PropTypes.func,
     onSendFileMessage: PropTypes.func.isRequired,
     partnerId: PropTypes.number,
     statusText: PropTypes.string
@@ -73,7 +74,7 @@ class MessagesContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, scrollAtBottom) {
-    const { userId } = this.props;
+    const { onFinishLoading, userId } = this.props;
     const prevMessages = prevProps.messages;
     const currentMessages = this.props.messages;
     const switchedChannel =
@@ -99,6 +100,7 @@ class MessagesContainer extends Component {
       });
       this.setScrollToBottom();
       setTimeout(() => {}, 500);
+      onFinishLoading();
       return this.setScrollToBottom();
     }
     if (messageDeleted) {

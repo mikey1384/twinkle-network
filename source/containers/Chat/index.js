@@ -448,6 +448,7 @@ function Chat({
             loadMoreMessages={loadMoreMessages}
             onChessBoardClick={handleChessModalShown}
             onChessSpoilerClick={handleChessSpoilerClick}
+            onFinishLoading={() => setLoading(false)}
             onSendFileMessage={handleSendFileMessage}
             partnerId={partnerId}
             statusText={renderStatusMessage()}
