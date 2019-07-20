@@ -206,6 +206,8 @@ export default function ChatReducer(state = defaultState, action) {
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
+        selectedChannelId: selectedChannel.id,
+        subject: action.channelId === 2 ? state.subject : {},
         loadMoreMessages
       };
     }
