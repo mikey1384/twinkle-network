@@ -441,6 +441,7 @@ function Chat({
               -webkit-overflow-scrolling: touch;
             `}
             loading={loading}
+            currentChannel={currentChannel}
             currentChannelId={selectedChannelId}
             loadMoreButton={loadMoreButton}
             messages={messages}

@@ -64,8 +64,7 @@ class MessagesContainer extends Component {
           : 0
     });
     this.setScrollToBottom();
-    setTimeout(() => {}, 500);
-    this.setScrollToBottom();
+    setTimeout(() => this.setScrollToBottom(), 500);
   }
 
   getSnapshotBeforeUpdate() {
@@ -96,8 +95,7 @@ class MessagesContainer extends Component {
             : 0
       });
       this.setScrollToBottom();
-      setTimeout(() => {}, 500);
-      return this.setScrollToBottom();
+      return setTimeout(() => this.setScrollToBottom(), 500);
     }
     if (messageDeleted) {
       return this.setState({
