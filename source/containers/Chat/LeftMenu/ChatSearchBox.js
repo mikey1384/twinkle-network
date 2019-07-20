@@ -9,7 +9,8 @@ import {
   searchChat,
   clearChatSearchResults,
   enterChannelWithId,
-  openNewChatTab
+  openNewChatTab,
+  updateSelectedChannelId
 } from 'redux/actions/ChatActions';
 
 ChatSearchBox.propTypes = {
@@ -19,6 +20,7 @@ ChatSearchBox.propTypes = {
   openNewChatTab: PropTypes.func.isRequired,
   searchChat: PropTypes.func.isRequired,
   searchResults: PropTypes.array.isRequired,
+  updateSelectedChannelId: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
 };
@@ -30,6 +32,7 @@ function ChatSearchBox({
   openNewChatTab,
   searchChat,
   searchResults,
+  updateSelectedChannelId,
   userId,
   username
 }) {
@@ -67,6 +70,7 @@ function ChatSearchBox({
 
   async function onSelect(item) {
     if (item.primary || !!item.channelId) {
+      updateSelectedChannelId(item.channelId);
       const data = await loadChatChannel({
         channelId: item.channelId,
         dispatch
@@ -94,6 +98,8 @@ export default connect(
     searchChat: params => dispatch(searchChat(params)),
     clearSearchResults: params => dispatch(clearChatSearchResults(params)),
     enterChannelWithId: params => dispatch(enterChannelWithId(params)),
-    openNewChatTab: params => dispatch(openNewChatTab(params))
+    openNewChatTab: params => dispatch(openNewChatTab(params)),
+    updateSelectedChannelId: channelId =>
+      dispatch(updateSelectedChannelId(channelId))
   })
 )(ChatSearchBox);
