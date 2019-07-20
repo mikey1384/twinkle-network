@@ -45,7 +45,16 @@ export default function FileViewer({
         />
       ) : fileType === 'video' || fileType === 'audio' ? (
         <div>
-          <div>{fileName}</div>
+          <div>
+            <a
+              style={{ fontWeight: 'bold' }}
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {fileName}
+            </a>
+          </div>
           <ReactPlayer
             style={{ marginTop: '1rem' }}
             width={`CALC(60vw - 3rem)`}
