@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
+import { mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 ImagePreview.propTypes = {
   modalOverModal: PropTypes.bool,
@@ -16,10 +18,15 @@ export default function ImagePreview({ modalOverModal, src, fileName }) {
       <img
         style={{
           maxWidth: '100%',
-          height: '25vw',
           objectFit: 'contain',
           cursor: 'pointer'
         }}
+        className={css`
+          height: 25vw;
+          @media (max-width: ${mobileMaxWidth}) {
+            height: 50vw;
+          }
+        `}
         src={src}
         rel={fileName}
         onClick={() => setImageModalShown(true)}

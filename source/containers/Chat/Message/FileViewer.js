@@ -26,7 +26,7 @@ export default function FileViewer({
   setScrollToBottom
 }) {
   useEffect(() => {
-    if (scrollAtBottom && isLastMsg) {
+    if (!!scrollAtBottom && isLastMsg) {
       setScrollToBottom?.();
     }
   }, []);
@@ -43,8 +43,17 @@ export default function FileViewer({
           src={src}
           fileName={fileName}
         />
-      ) : fileType === 'video' ? (
-        <ReactPlayer width="70%" height="100%" url={src} controls />
+      ) : fileType === 'video' || fileType === 'audio' ? (
+        <div>
+          <div>{fileName}</div>
+          <ReactPlayer
+            style={{ marginTop: '1rem' }}
+            width={`CALC(60vw - 3rem)`}
+            height={fileType === 'video' ? '32vw' : '5rem'}
+            url={src}
+            controls
+          />
+        </div>
       ) : (
         <FileInfo
           fileName={fileName}
