@@ -13,15 +13,22 @@ export default function Email({ match }) {
   const [verified, setVerified] = useState(false);
   const [expired, setExpired] = useState(false);
   const [username, setUsername] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     init();
     async function init() {
       try {
-        const username = await verifyEmail({ token: match?.params?.token });
+        const { username, error } = await verifyEmail({
+          token: match?.params?.token
+        });
         setLoaded(true);
-        setVerified(true);
-        setUsername(username);
+        setVerified(!!username);
+        if (username) {
+          setUsername(username);
+        } else {
+          setErrorMessage(error);
+        }
       } catch (error) {
         setLoaded(true);
         setExpired(error.response?.status === 401);
@@ -48,6 +55,8 @@ export default function Email({ match }) {
               The token is invalid or expired. Please request the verification
               email again
             </div>
+          ) : errorMessage ? (
+            <div>{errorMessage}</div>
           ) : (
             <div>There was an error</div>
           )}
