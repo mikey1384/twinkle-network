@@ -19,15 +19,15 @@ export default function Email({ match }) {
     init();
     async function init() {
       try {
-        const { username, error } = await verifyEmail({
+        const { username, errorMsg } = await verifyEmail({
           token: match?.params?.token
         });
         setLoaded(true);
         setVerified(!!username);
         if (username) {
           setUsername(username);
-        } else {
-          setErrorMessage(error);
+        } else if (errorMsg) {
+          setErrorMessage(errorMsg);
         }
       } catch (error) {
         setLoaded(true);
