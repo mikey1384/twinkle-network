@@ -49,7 +49,7 @@ export default function Email({ match }) {
       {loaded ? (
         <div style={{ textAlign: 'center' }}>
           {verified ? (
-            <div>Your email has been successfully verified</div>
+            <div>Your email address has been successfully verified</div>
           ) : expired ? (
             <div>
               The token is invalid or expired. Please request the verification
