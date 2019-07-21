@@ -769,9 +769,9 @@ export const sendVerificationEmail = async ({ dispatch }) => {
 export const verifyEmail = async ({ token }) => {
   try {
     const {
-      data: { username, error }
+      data: { username, errorMsg }
     } = await request.get(`${URL}/user/email/verify?token=${token}`, auth());
-    return Promise.resolve({ username, error });
+    return Promise.resolve({ username, errorMsg });
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
