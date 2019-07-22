@@ -701,10 +701,10 @@ export const uploadFileOnChat = async ({
     fileData.append('path', path);
     fileData.append('channelId', channelId);
     fileData.append('partnerId', partnerId);
+    fileData.append('content', content);
     if (subjectId) {
       fileData.append('subjectId', subjectId);
     }
-    fileData.append('content', content);
     const { data } = await request.post(`${URL}/chat/file`, fileData, {
       ...auth(),
       onUploadProgress
