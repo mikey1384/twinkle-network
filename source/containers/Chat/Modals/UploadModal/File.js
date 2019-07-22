@@ -7,7 +7,7 @@ import Textarea from 'components/Texts/Textarea';
 import {
   addCommasToNumber,
   addEmoji,
-  getFileTypeFromFileName,
+  getFileInfoFromFileName,
   renderFileSize
 } from 'helpers/stringHelpers';
 
@@ -30,7 +30,7 @@ export default function File({
     if (fileObj) {
       setLoading(false);
     }
-    const fileType = getFileTypeFromFileName(fileObj.name);
+    const { fileType } = getFileInfoFromFileName(fileObj.name);
     setFileType(fileType);
   }, [fileObj]);
 

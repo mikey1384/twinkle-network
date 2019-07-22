@@ -4,7 +4,7 @@ import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
 import ReactPlayer from 'react-player';
 import { cloudFrontURL } from 'constants/defaultValues';
-import { getFileTypeFromFileName } from 'helpers/stringHelpers';
+import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
 FileViewer.propTypes = {
   filePath: PropTypes.string.isRequired,
@@ -30,7 +30,7 @@ export default function FileViewer({
       setScrollToBottom?.();
     }
   }, []);
-  const fileType = getFileTypeFromFileName(fileName);
+  const { fileType } = getFileInfoFromFileName(fileName);
   const src = `${cloudFrontURL}/attachments/chat/${filePath}/${encodeURIComponent(
     fileName
   )}`;

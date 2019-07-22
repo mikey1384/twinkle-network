@@ -166,16 +166,16 @@ export function fetchedVideoCodeFromURL(url) {
   return videoCode;
 }
 
-export function getFileTypeFromFileName(fileName) {
+export function getFileInfoFromFileName(fileName) {
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
-  return getFileType(extension);
+  return { extension, fileType: getFileType(extension) };
 
   function getFileType(extension) {
     const audioExt = ['wav', 'aif', 'mp3', 'mid', 'm4a'];
     const imageExt = ['jpg', 'png', 'jpeg', 'bmp', 'gif', 'webp'];
-    const movieExt = ['avi', 'flv', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
+    const movieExt = ['avi', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
     const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
     const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
     if (audioExt.indexOf(extension) !== -1) {
