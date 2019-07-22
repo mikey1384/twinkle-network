@@ -287,7 +287,6 @@ export function processedStringWithURL(string) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/\r?\n/g, '<br>')
     .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`);
   let newString = '';
   while (tempString.length > 0) {
