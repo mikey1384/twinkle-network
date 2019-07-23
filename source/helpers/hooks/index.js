@@ -57,7 +57,7 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
     timerRef.current = setTimeout(async () => {
       await onSearch(text);
       setSearching(false);
-    }, 300);
+    }, 500);
   }
 
   return { handleSearch, searching, searchText, setSearchText };
