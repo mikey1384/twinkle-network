@@ -302,7 +302,10 @@ function Body({
                   </Button>
                 )}
               </div>
-              <div className="right" style={{ position: 'relative' }}>
+              <div
+                className="right"
+                style={{ position: 'relative', marginRight: 0 }}
+              >
                 {canEditDifficulty &&
                   (type === 'subject' || type === 'video') && (
                     <StarButton
