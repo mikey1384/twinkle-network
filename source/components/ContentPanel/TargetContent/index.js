@@ -116,6 +116,12 @@ function TargetContent({
           display: flex;
           width: 100%;
           justify-content: space-between;
+          @media (max-width: ${mobileMaxWidth}) {
+            button,
+            span {
+              font-size: 1rem;
+            }
+          }
         }
         .detail-block {
           display: flex;
