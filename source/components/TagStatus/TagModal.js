@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -33,6 +33,7 @@ function TagModal({
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [disabled, setDisabled] = useState(false);
+  const searchTextRef = useRef('');
 
   return (
     <Modal onHide={onHide}>
@@ -129,13 +130,16 @@ function TagModal({
   }
 
   async function onSearchPlaylists(text) {
-    const { results } = await searchContent({
+    searchTextRef.current = text;
+    const { results, searchText } = await searchContent({
       filter: 'playlist',
       searchText: text,
       limit: 5
     });
-    setSearchText(text);
-    setSearchResults(results);
+    if (searchTextRef.current === searchText) {
+      setSearchText(searchText);
+      setSearchResults(results);
+    }
   }
 }
 
