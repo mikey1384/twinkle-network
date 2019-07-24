@@ -35,15 +35,18 @@ function TagModal({
   const [disabled, setDisabled] = useState(false);
   const InputRef = useRef(null);
   const searchTextRef = useRef('');
-  const formSubtitle = notFoundMessageShown ? (
+  const dropdownTitle = notFoundMessageShown ? (
     <a
       style={{ cursor: 'pointer', fontWeight: 'bold' }}
-      onClick={() => setAddPlaylistModalShown(true)}
+      onClick={() => {
+        setSearchResults([]);
+        setAddPlaylistModalShown(true);
+      }}
     >
       {`Create a new playlist titled "${capitalize(searchText)}"`}
     </a>
   ) : (
-    '(e.g., crash course, story of the world)'
+    ''
   );
 
   return (
@@ -52,7 +55,8 @@ function TagModal({
       <main>
         <TagForm
           title="Search Playlists"
-          subTitle={formSubtitle}
+          subTitle="(e.g., crash course, story of the world)"
+          dropdownTitle={dropdownTitle}
           inputRef={InputRef}
           itemLabel="title"
           searchResults={searchResults}
