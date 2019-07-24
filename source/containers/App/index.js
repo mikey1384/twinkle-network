@@ -7,6 +7,7 @@ import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
 import withScroll from 'components/Wrappers/withScroll';
+import Head from './Head';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
@@ -150,6 +151,7 @@ function App({
         }
       `}
     >
+      <Head />
       {mobileMenuShown && (
         <MobileMenu
           chatMode={chatMode}
