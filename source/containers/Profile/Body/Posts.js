@@ -333,7 +333,7 @@ function Posts({
       case 'all':
         return `${username} has not uploaded anything, yet`;
       case 'posts':
-        return `${username} has not uploaded a post, yet`;
+        return `${username} has not uploaded a subject, yet`;
       case 'comments':
         return `${username} has not uploaded a comment, yet`;
       case 'links':
