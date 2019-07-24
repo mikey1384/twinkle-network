@@ -52,8 +52,8 @@ export default function TagInput({
     if (!loading) {
       const shown =
         !loading &&
-        searchResults.filter(
-          ({ title }) => title?.toLowerCase() === value?.toLowerCase()
+        searchResults.filter(({ title }) =>
+          title ? title.toLowerCase() === value.toLowerCase() : true
         ).length === 0 &&
         !stringIsEmpty(value) &&
         value.length > 1;
