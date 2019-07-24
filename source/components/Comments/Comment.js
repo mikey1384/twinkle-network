@@ -98,8 +98,8 @@ function Comment({
   }, [replies]);
 
   const userIsUploader = uploader.id === userId;
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploader.authLevel;
+  const userIsHigherAuth = authLevel > uploader.authLevel;
+  const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
@@ -238,7 +238,7 @@ function Comment({
                           <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '1rem' }}>Reply</span>
                         </Button>
-                        {canStar && userCanEditThis && !userIsUploader && (
+                        {canStar && userIsHigherAuth && !userIsUploader && (
                           <Button
                             color="pink"
                             style={{ marginLeft: '0.7rem' }}

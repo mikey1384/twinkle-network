@@ -89,8 +89,8 @@ function Reply({
   const ReplyInputAreaRef = useRef(null);
 
   const userIsUploader = userId === uploader.id;
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploader.authLevel;
+  const userIsHigherAuth = authLevel > uploader.authLevel;
+  const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
 
@@ -110,7 +110,6 @@ function Reply({
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === userId) userLikedThis = true;
   }
-  console.log(canStar, userCanEditThis, !userIsUploader);
 
   return (
     <ErrorBoundary>
@@ -202,7 +201,7 @@ function Reply({
                           : ''}
                       </span>
                     </Button>
-                    {canStar && userCanEditThis && !userIsUploader && (
+                    {canStar && userIsHigherAuth && !userIsUploader && (
                       <Button
                         color="pink"
                         style={{ marginLeft: '1rem' }}
