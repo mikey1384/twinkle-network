@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
-import { hashify } from 'helpers/stringHelpers';
+import { capitalize, hashify } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 
 TagModal.propTypes = {
@@ -33,7 +33,18 @@ function TagModal({
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [disabled, setDisabled] = useState(false);
+  const InputRef = useRef(null);
   const searchTextRef = useRef('');
+  const formSubtitle = notFoundMessageShown ? (
+    <a
+      style={{ cursor: 'pointer', fontWeight: 'bold' }}
+      onClick={() => setAddPlaylistModalShown(true)}
+    >
+      {`Create a new playlist titled "${capitalize(searchText)}"`}
+    </a>
+  ) : (
+    '(e.g., crash course, story of the world)'
+  );
 
   return (
     <Modal onHide={onHide}>
@@ -41,7 +52,8 @@ function TagModal({
       <main>
         <TagForm
           title="Search Playlists"
-          subTitle="(e.g., crash course, story of the world)"
+          subTitle={formSubtitle}
+          inputRef={InputRef}
           itemLabel="title"
           searchResults={searchResults}
           filter={result => currentPlaylists.indexOf(result.id) === -1}
@@ -49,6 +61,7 @@ function TagModal({
           onClear={onClearSearchResults}
           onAddItem={playlist => {
             setAddPlaylistModalShown(false);
+            setNotFoundMessageShown(false);
             setSelectedPlaylists(selectedPlaylists.concat([playlist]));
           }}
           onNotFound={({ messageShown }) =>
@@ -60,22 +73,17 @@ function TagModal({
           renderTagLabel={label => hashify(label)}
           searchPlaceholder="Search for playlists here..."
           selectedItems={selectedPlaylists}
-        >
-          {notFoundMessageShown && (
-            <div style={{ marginTop: '0.5rem' }}>
-              No playlists were found.{' '}
-              <a onClick={() => setAddPlaylistModalShown(true)}>
-                Create a new playlist
-              </a>
-            </div>
-          )}
-        </TagForm>
+        />
         {addPlaylistModalShown && (
           <AddPlaylistModal
             modalOverModal
             existingVideoIds={[videoId]}
             postPlaylist={addPlaylist}
-            onHide={() => setAddPlaylistModalShown(false)}
+            onHide={() => {
+              setNotFoundMessageShown(false);
+              setAddPlaylistModalShown(false);
+              InputRef.current.focus();
+            }}
             title={searchText}
           />
         )}

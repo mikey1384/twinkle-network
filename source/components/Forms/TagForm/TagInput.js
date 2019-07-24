@@ -13,6 +13,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 TagInput.propTypes = {
   autoFocus: PropTypes.bool,
   className: PropTypes.string,
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   loading: PropTypes.bool,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
@@ -29,6 +30,7 @@ TagInput.propTypes = {
 export default function TagInput({
   autoFocus,
   className,
+  inputRef,
   onClickOutSide,
   loading,
   onAddItem,
@@ -48,7 +50,9 @@ export default function TagInput({
     if (!loading) {
       const shown =
         !loading &&
-        searchResults.length === 0 &&
+        searchResults.filter(
+          ({ title }) => title.toLowerCase() === value.toLowerCase()
+        ).length === 0 &&
         !stringIsEmpty(value) &&
         value.length > 1;
       onNotFound?.({ messageShown: shown });
@@ -88,6 +92,7 @@ export default function TagInput({
           </div>
           <Input
             autoFocus={autoFocus}
+            inputRef={inputRef}
             value={value}
             placeholder={placeholder}
             onChange={text => onChange(text)}

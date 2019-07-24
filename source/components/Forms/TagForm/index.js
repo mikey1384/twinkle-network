@@ -7,6 +7,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
+  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   itemLabel: PropTypes.string.isRequired,
   searchPlaceholder: PropTypes.string.isRequired,
   searchResults: PropTypes.array.isRequired,
@@ -25,12 +26,13 @@ TagForm.propTypes = {
   onSubmit: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   renderDropdownLabel: PropTypes.func.isRequired,
   renderTagLabel: PropTypes.func,
-  subTitle: PropTypes.string,
+  subTitle: PropTypes.node,
   title: PropTypes.string
 };
 
 export default function TagForm({
   children,
+  inputRef,
   filter,
   itemLabel,
   onAddItem,
@@ -70,6 +72,7 @@ export default function TagForm({
           <TagInput
             style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
             autoFocus
+            inputRef={inputRef}
             loading={searching}
             value={searchText}
             onChange={handleSearch}
