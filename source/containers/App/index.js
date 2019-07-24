@@ -49,7 +49,6 @@ const Chat = React.lazy(() => import('containers/Chat'));
 App.propTypes = {
   changePageVisibility: PropTypes.func.isRequired,
   chatMode: PropTypes.bool,
-  chatNumUnreads: PropTypes.number,
   closeSigninModal: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object,
@@ -57,8 +56,6 @@ App.propTypes = {
   initSession: PropTypes.func.isRequired,
   location: PropTypes.object,
   loggedIn: PropTypes.bool,
-  numNewNotis: PropTypes.number,
-  numNewPosts: PropTypes.number,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   resetChat: PropTypes.func.isRequired,
@@ -75,15 +72,12 @@ App.propTypes = {
 function App({
   changePageVisibility,
   chatMode,
-  chatNumUnreads,
   closeSigninModal,
   dispatch,
   initChat,
   initSession,
   location,
   loggedIn,
-  numNewNotis,
-  numNewPosts,
   history,
   postFileUploadStatus,
   postUploadComplete,
@@ -135,11 +129,6 @@ function App({
       );
     };
   });
-
-  useEffect(() => {
-    const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads;
-    document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
-  }, [numNewNotis, numNewPosts, chatMode, chatNumUnreads]);
 
   return (
     <div
@@ -350,10 +339,7 @@ function App({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    numNewPosts: state.NotiReducer.numNewPosts,
-    numNewNotis: state.NotiReducer.numNewNotis,
     chatMode: state.ChatReducer.chatMode,
-    chatNumUnreads: state.ChatReducer.numUnreads,
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
