@@ -45,7 +45,6 @@ export default function Dropdown({
       <div
         className={css`
           width: 100%;
-          cursor: pointer;
           display: block;
           nav {
             padding: 1rem;
@@ -71,6 +70,7 @@ export default function Dropdown({
               key={index}
               style={{
                 width: '100%',
+                cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
