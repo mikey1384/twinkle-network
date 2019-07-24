@@ -201,7 +201,7 @@ function Reply({
                           : ''}
                       </span>
                     </Button>
-                    {canStar && userCanEditThis && !userIsUploader && (
+                    {canStar && !userIsUploader && (
                       <Button
                         color="pink"
                         style={{ marginLeft: '1rem' }}
