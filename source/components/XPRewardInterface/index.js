@@ -46,15 +46,15 @@ function XPRewardInterface({
   const mounted = useRef(true);
 
   useEffect(() => {
-    setSelectedAmount(0);
-  }, [difficulty]);
-
-  useEffect(() => {
     mounted.current = true;
     return function cleanUp() {
       mounted.current = false;
     };
-  });
+  }, []);
+
+  useEffect(() => {
+    setSelectedAmount(0);
+  }, [difficulty]);
 
   if (!userId || uploaderId === userId) return null;
   return (
@@ -168,6 +168,7 @@ function XPRewardInterface({
       }
     } catch (error) {
       console.error({ error });
+      setRewarding(false);
     }
   }
 }
