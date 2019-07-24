@@ -110,7 +110,7 @@ function Reply({
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === userId) userLikedThis = true;
   }
-  console.log(canStar && userCanEditThis && !userIsUploader);
+  console.log(canStar, userCanEditThis, !userIsUploader);
 
   return (
     <ErrorBoundary>
