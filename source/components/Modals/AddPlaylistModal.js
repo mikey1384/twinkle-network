@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
 import SortableThumb from 'components/SortableThumb';
 import { DndProvider } from 'react-dnd';
 import TouchBackend from 'react-dnd-touch-backend';
@@ -168,37 +167,34 @@ function AddPlaylistModal({
                 value={searchText}
                 onChange={handleSearch}
               />
-              {searching ? (
-                <Loading />
-              ) : (
-                <SelectUploadsForm
-                  contentObjs={playlistVideoObjects.current}
-                  uploads={
-                    !stringIsEmpty(searchText) ? searchedVideos : allVideos
-                  }
-                  selectedUploads={selectedVideos}
-                  loaded={loaded}
-                  loadingMore={loadingMore}
-                  loadMoreButton={
-                    !stringIsEmpty(searchText)
-                      ? searchLoadMoreButton
-                      : loadMoreButton
-                  }
-                  onSelect={selectedVideoId =>
-                    setSelectedVideos(selectedVideos =>
-                      selectedVideos.concat(selectedVideoId)
+              <SelectUploadsForm
+                contentObjs={playlistVideoObjects.current}
+                uploads={
+                  !stringIsEmpty(searchText) ? searchedVideos : allVideos
+                }
+                selectedUploads={selectedVideos}
+                loaded={loaded}
+                loading={searching}
+                loadingMore={loadingMore}
+                loadMoreButton={
+                  !stringIsEmpty(searchText)
+                    ? searchLoadMoreButton
+                    : loadMoreButton
+                }
+                onSelect={selectedVideoId =>
+                  setSelectedVideos(selectedVideos =>
+                    selectedVideos.concat(selectedVideoId)
+                  )
+                }
+                onDeselect={deselectedVideoId =>
+                  setSelectedVideos(
+                    selectedVideos.filter(
+                      videoId => videoId !== deselectedVideoId
                     )
-                  }
-                  onDeselect={deselectedVideoId =>
-                    setSelectedVideos(
-                      selectedVideos.filter(
-                        videoId => videoId !== deselectedVideoId
-                      )
-                    )
-                  }
-                  loadMoreUploads={loadMoreVideos}
-                />
-              )}
+                  )
+                }
+                loadMoreUploads={loadMoreVideos}
+              />
             </div>
           )}
           {section === 2 && (

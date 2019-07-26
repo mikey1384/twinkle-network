@@ -5,6 +5,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 
 SelectUploadsForm.propTypes = {
+  loaded: PropTypes.bool,
   loading: PropTypes.bool,
   loadingMore: PropTypes.bool,
   loadMoreUploads: PropTypes.func,
@@ -18,6 +19,7 @@ SelectUploadsForm.propTypes = {
 };
 
 export default function SelectUploadsForm({
+  loaded = true,
   uploads,
   selectedUploads,
   contentObjs,
@@ -38,7 +40,7 @@ export default function SelectUploadsForm({
         width: '100%'
       }}
     >
-      {loading ? (
+      {loading || !loaded ? (
         <Loading />
       ) : uploads.length === 0 ? (
         <div
