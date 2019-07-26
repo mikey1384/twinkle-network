@@ -10,10 +10,10 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
 import DifficultyBar from 'components/DifficultyBar';
-import DifficultyModal from 'components/Modals/DifficultyModal';
 import Link from 'components/Link';
 import withContext from 'components/Wrappers/withContext';
 import SecretAnswer from 'components/SecretAnswer';
+import StarButton from 'components/Buttons/StarButton';
 import Context from './Context';
 import { connect } from 'react-redux';
 import {
@@ -109,7 +109,6 @@ function SubjectPanel({
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [difficultyModalShown, setDifficultyModalShown] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
   const [editedDescription, setEditedDescription] = useState(description || '');
   const [secretShown, setSecretShown] = useState(false);
@@ -118,8 +117,8 @@ function SubjectPanel({
   );
   const [editDoneButtonDisabled, setEditDoneButtonDisabled] = useState(true);
   const userIsUploader = myId === userId;
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
+  const userHasHigherAuthLevel = authLevel > uploaderAuthLevel;
+  const userCanEditThis = (canEdit || canDelete) && userHasHigherAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
   const themeColor = profileTheme || 'logoBlue';
   const CommentsRef = useRef(null);
@@ -164,14 +163,27 @@ function SubjectPanel({
               {cleanString(title)}
             </Link>
           )}
-          {editButtonEnabled && !onEdit && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              direction="left"
-              menuProps={renderMenuProps()}
-            />
-          )}
+          <div style={{ display: 'flex' }}>
+            {userHasHigherAuthLevel && canEditDifficulty && (
+              <StarButton
+                contentId={id}
+                type="subject"
+                difficulty={difficulty}
+                onSetDifficulty={setSubjectDifficulty}
+              />
+            )}
+            <div>
+              {editButtonEnabled && !onEdit && (
+                <DropdownButton
+                  skeuomorphic
+                  style={{ marginLeft: '1rem' }}
+                  color="darkerGray"
+                  direction="left"
+                  menuProps={renderMenuProps()}
+                />
+              )}
+            </div>
+          </div>
         </div>
         {!onEdit && !!description && (
           <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
@@ -338,18 +350,6 @@ function SubjectPanel({
           onConfirm={deleteThis}
         />
       )}
-      {difficultyModalShown && (
-        <DifficultyModal
-          type="subject"
-          contentId={id}
-          difficulty={difficulty}
-          onSubmit={data => {
-            setSubjectDifficulty(data);
-            setDifficultyModalShown(false);
-          }}
-          onHide={() => setDifficultyModalShown(false)}
-        />
-      )}
     </div>
   );
 
@@ -358,18 +358,12 @@ function SubjectPanel({
       {
         label: 'Edit',
         onClick: () => setOnEdit(true)
+      },
+      {
+        label: 'Remove',
+        onClick: () => setConfirmModalShown(true)
       }
     ];
-    if (canEditDifficulty) {
-      menuProps.push({
-        label: 'Set Reward Level',
-        onClick: () => setDifficultyModalShown(true)
-      });
-    }
-    menuProps.push({
-      label: 'Remove',
-      onClick: () => setConfirmModalShown(true)
-    });
     return menuProps;
   }
 
