@@ -15,6 +15,7 @@ StarButton.propTypes = {
   difficulty: PropTypes.number,
   direction: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
+  filled: PropTypes.bool,
   onSetDifficulty: PropTypes.func,
   onToggleByUser: PropTypes.func,
   style: PropTypes.object,
@@ -28,6 +29,7 @@ function StarButton({
   difficulty,
   direction = 'left',
   dispatch,
+  filled,
   onSetDifficulty,
   onToggleByUser,
   uploader,
@@ -44,7 +46,7 @@ function StarButton({
       <div ref={StarButtonRef} style={style}>
         <Button
           color={!!difficulty && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
-          filled={!!difficulty || byUser}
+          filled={!!difficulty || byUser || filled}
           onClick={onClick}
         >
           <Icon icon="star" />
