@@ -262,62 +262,60 @@ function SubjectPanel({
         )}
         {!onEdit && (
           <div style={{ marginTop: '1rem' }}>
-            {expanded ? (
-              <Comments
-                inputAreaInnerRef={CommentsRef}
-                commentsLoadLimit={10}
-                commentsHidden={
-                  secretAnswer && !(secretShown || userId === myId)
-                }
-                commentsShown={expanded}
-                inputTypeLabel={'response'}
-                comments={comments}
-                loadMoreButton={loadMoreCommentsButton}
-                userId={myId}
-                onAttachStar={attachStar}
-                onCommentSubmit={handleCommentSubmit}
-                onDelete={onDelete}
-                onEditDone={onEditDone}
-                onLikeClick={onLikeClick}
-                onLoadMoreComments={loadMoreComments}
-                onLoadMoreReplies={onLoadMoreReplies}
-                onReplySubmit={onUploadReply}
-                onRewardCommentEdit={editRewardComment}
-                contentId={id}
-                parent={{
-                  id,
-                  difficulty,
-                  rootObj: {
-                    id: contentId,
-                    difficulty: rootDifficulty,
-                    type
-                  },
-                  type: 'subject'
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  minHeight: '8rem'
-                }}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '8rem'
+              }}
+            >
+              <Button
+                skeuomorphic
+                color={themeColor}
+                style={{ fontSize: '2rem' }}
+                onClick={onExpand}
               >
-                <Button
-                  skeuomorphic
-                  color={themeColor}
-                  style={{ fontSize: '2rem' }}
-                  onClick={onExpand}
-                >
-                  <Icon icon="comment-alt" />
-                  <span style={{ marginLeft: '1rem' }}>
-                    Respond
-                    {numComments && numComments > 0 ? ` (${numComments})` : ''}
-                  </span>
-                </Button>
-              </div>
-            )}
+                <Icon icon="comment-alt" />
+                <span style={{ marginLeft: '1rem' }}>
+                  Comment{!expanded && numComments > 1 ? 's' : ''}
+                  {!expanded && numComments && numComments > 0
+                    ? ` (${numComments})`
+                    : ''}
+                </span>
+              </Button>
+            </div>
+            <Comments
+              inputAreaInnerRef={CommentsRef}
+              numInputRows={expanded ? 4 : 2}
+              commentsLoadLimit={10}
+              commentsHidden={secretAnswer && !(secretShown || userId === myId)}
+              commentsShown
+              inputTypeLabel={'comment'}
+              comments={comments}
+              loadMoreButton={loadMoreCommentsButton}
+              userId={myId}
+              onAttachStar={attachStar}
+              onCommentSubmit={handleCommentSubmit}
+              onDelete={onDelete}
+              onEditDone={onEditDone}
+              onLikeClick={onLikeClick}
+              onLoadMoreComments={loadMoreComments}
+              onLoadMoreReplies={onLoadMoreReplies}
+              onReplySubmit={onUploadReply}
+              onRewardCommentEdit={editRewardComment}
+              contentId={id}
+              parent={{
+                id,
+                difficulty,
+                rootObj: {
+                  id: contentId,
+                  difficulty: rootDifficulty,
+                  type
+                },
+                type: 'subject'
+              }}
+            />
           </div>
         )}
         <div style={{ marginTop: '1rem' }}>

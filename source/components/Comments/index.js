@@ -28,6 +28,7 @@ Comments.propTypes = {
   inputAtBottom: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
   loadMoreButton: PropTypes.bool.isRequired,
+  numInputRows: PropTypes.number,
   noInput: PropTypes.bool,
   onAttachStar: PropTypes.func.isRequired,
   onCommentSubmit: PropTypes.func.isRequired,
@@ -63,6 +64,7 @@ function Comments({
   inputTypeLabel,
   loadMoreButton,
   noInput,
+  numInputRows,
   numPreviews,
   onAttachStar,
   onCommentSubmit,
@@ -264,6 +266,7 @@ function Comments({
         autoFocus={autoFocus}
         InputFormRef={CommentInputAreaRef}
         innerRef={inputAreaInnerRef}
+        numInputRows={numInputRows}
         style={style}
         inputTypeLabel={inputTypeLabel}
         onSubmit={submitComment}

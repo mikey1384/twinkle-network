@@ -401,13 +401,7 @@ function Body({
           inputAreaInnerRef={CommentInputAreaRef}
           inputAtBottom={inputAtBottom}
           loadMoreButton={commentsLoadMoreButton}
-          inputTypeLabel={
-            type === 'comment'
-              ? 'reply'
-              : type === 'subject'
-              ? 'response'
-              : 'comment'
-          }
+          inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
           numPreviews={1}
           onAttachStar={onAttachStar}
           onCommentSubmit={handleCommentSubmit}
