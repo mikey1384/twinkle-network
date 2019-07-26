@@ -164,7 +164,7 @@ function SubjectPanel({
             </Link>
           )}
           <div style={{ display: 'flex' }}>
-            {userHasHigherAuthLevel && canEditDifficulty && (
+            {canEditDifficulty && (
               <StarButton
                 contentId={id}
                 type="subject"
