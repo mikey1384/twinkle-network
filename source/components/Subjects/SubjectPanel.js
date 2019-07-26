@@ -166,7 +166,6 @@ function SubjectPanel({
           <div style={{ display: 'flex' }}>
             {canEditDifficulty && (
               <StarButton
-                filled
                 contentId={id}
                 type="subject"
                 difficulty={difficulty}
