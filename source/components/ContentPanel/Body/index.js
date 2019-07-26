@@ -130,6 +130,7 @@ function Body({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const mounted = useRef(true);
+  const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
@@ -179,7 +180,10 @@ function Body({
   }, [contentObj.id, secretShown, myId]);
 
   useEffect(() => {
-    setEdited(true);
+    if (prevContent.current && prevContent.current !== contentObj.content) {
+      setEdited(true);
+    }
+    prevContent.current = contentObj.content;
   }, [contentObj.content]);
 
   const userCanEditThis =
@@ -187,6 +191,14 @@ function Body({
   const userCanRewardThis = canStar && authLevel > uploader.authLevel;
   const editButtonShown = myId === uploader.id || userCanEditThis;
   const secretLocked = type === 'comment' && commentsHidden;
+  const urlRelated = edited
+    ? {}
+    : {
+        thumbUrl: thumbUrl || rootObj.thumbUrl,
+        actualTitle: actualTitle || rootObj.actualTitle,
+        actualDescription: actualDescription || rootObj.actualDescription,
+        siteUrl: siteUrl || rootObj.siteUrl
+      };
 
   return (
     <ErrorBoundary>
@@ -224,17 +236,7 @@ function Body({
           rootType={rootType}
           secretAnswerShown={secretShown}
           targetObj={targetObj}
-          urlRelated={
-            edited
-              ? {}
-              : {
-                  thumbUrl: thumbUrl || rootObj.thumbUrl,
-                  actualTitle: actualTitle || rootObj.actualTitle,
-                  actualDescription:
-                    actualDescription || rootObj.actualDescription,
-                  siteUrl: siteUrl || rootObj.siteUrl
-                }
-          }
+          urlRelated={urlRelated}
         />
         {!isEditing && !commentsHidden && (
           <div
