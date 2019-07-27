@@ -281,7 +281,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
       setUrlHelper(
         urlIsValid || stringIsEmpty(url)
           ? ''
-          : `You can think of URL as the address of a website. For example, Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
+          : `A <b>URL</b> is the address of a website. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
       );
       const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
       setForm(form => ({
