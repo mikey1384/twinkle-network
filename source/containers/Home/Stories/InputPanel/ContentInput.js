@@ -12,8 +12,7 @@ import {
   isValidYoutubeUrl,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji,
-  processedStringWithURL
+  finalizeEmoji
 } from 'helpers/stringHelpers';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Banner from 'components/Banner';
@@ -68,7 +67,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
         style={errorInUrlField()}
         value={form.url}
         onChange={onUrlFieldChange}
-        placeholder="Copy the URL address of a website or a YouTube video and paste it here"
+        placeholder="Copy and paste a URL address here"
         type="text"
       />
       {alreadyPosted && (
@@ -109,14 +108,22 @@ function ContentInput({ dispatch, uploadFeedContent }) {
             }
           `}
           dangerouslySetInnerHTML={{
-            __html: processedStringWithURL(urlHelper)
+            __html: urlHelper
           }}
         />
       )}
-      <div style={{ marginTop: '0.5rem' }}>
+      <div style={{ marginTop: '1.5rem' }}>
         <div style={{ position: 'relative' }}>
           {titleFieldShown && (
             <>
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '2rem'
+                }}
+              >
+                Title:
+              </span>
               <Input
                 value={form.title}
                 onChange={text => setForm({ ...form, title: text })}
@@ -130,7 +137,6 @@ function ContentInput({ dispatch, uploadFeedContent }) {
                   }
                 }}
                 style={{
-                  marginTop: '0.5rem',
                   ...(titleExceedsCharLimit?.style || {})
                 }}
                 type="text"
@@ -275,11 +281,15 @@ function ContentInput({ dispatch, uploadFeedContent }) {
       setUrlHelper(
         urlIsValid || stringIsEmpty(url)
           ? ''
-          : `You can think of URL as the "address" of a webpage. For example, this webpage's URL is www.twin-kle.com and www.twinkle.network (yes, you can use either one). YouTube's URL is www.youtube.com, and my favorite YouTube video's URL is https://www.youtube.com/watch?v=rf8FX2sI3gU. You can find a webpage's URL at the top area of your browser. Copy a URL you want to share and paste it to the box above.`
+          : `You can think of URL as the address of a website. For example, Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
       );
+      const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
       setForm(form => ({
         ...form,
-        title: !urlIsValid && !stringIsEmpty(url) ? url : form.title
+        title:
+          !urlIsValid && !stringIsEmpty(url) && !regex.test(url)
+            ? url
+            : form.title
       }));
       setTitleFieldShown(!stringIsEmpty(url));
     }, 300);

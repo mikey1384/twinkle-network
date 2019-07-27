@@ -301,7 +301,9 @@ function SubjectPanel({
               inputAreaInnerRef={CommentsRef}
               numInputRows={expanded ? 4 : 2}
               commentsLoadLimit={10}
-              commentsHidden={secretAnswer && !(secretShown || userId === myId)}
+              commentsHidden={
+                !!secretAnswer && !(secretShown || userId === myId)
+              }
               commentsShown
               inputTypeLabel={'comment'}
               comments={comments}

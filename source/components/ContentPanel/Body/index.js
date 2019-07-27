@@ -165,13 +165,13 @@ function Body({
 
   useEffect(() => {
     const contentSecretHidden =
-      contentObj.secretAnswer &&
+      !!contentObj.secretAnswer &&
       !secretShown &&
       contentObj.uploader.id !== myId;
     const rootContentSecretHidden =
-      rootObj.secretAnswer && !secretShown && rootObj.uploader.id !== myId;
+      !!rootObj.secretAnswer && !secretShown && rootObj.uploader.id !== myId;
     const subjectSecretHidden =
-      targetObj?.subject?.secretAnswer &&
+      !!targetObj?.subject?.secretAnswer &&
       !secretShown &&
       targetObj?.subject?.uploader.id !== myId;
     setCommentsHidden(
