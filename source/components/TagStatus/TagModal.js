@@ -35,7 +35,7 @@ function TagModal({
   const [disabled, setDisabled] = useState(false);
   const InputRef = useRef(null);
   const searchTextRef = useRef('');
-  const dropdownTitle = notFoundMessageShown ? (
+  const dropdownFooter = notFoundMessageShown ? (
     <a
       style={{ cursor: 'pointer', fontWeight: 'bold' }}
       onClick={() => {
@@ -54,7 +54,7 @@ function TagModal({
         <TagForm
           title="Search Playlists"
           subTitle="(e.g., crash course, story of the world)"
-          dropdownTitle={dropdownTitle}
+          dropdownFooter={dropdownFooter}
           inputRef={InputRef}
           itemLabel="title"
           searchResults={searchResults}

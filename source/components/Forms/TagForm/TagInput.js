@@ -13,7 +13,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 TagInput.propTypes = {
   autoFocus: PropTypes.bool,
   className: PropTypes.string,
-  dropdownTitle: PropTypes.object,
+  dropdownFooter: PropTypes.node,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   loading: PropTypes.bool,
   value: PropTypes.string.isRequired,
@@ -31,7 +31,7 @@ TagInput.propTypes = {
 export default function TagInput({
   autoFocus,
   className,
-  dropdownTitle,
+  dropdownFooter,
   inputRef,
   onClickOutSide,
   loading,
@@ -104,8 +104,8 @@ export default function TagInput({
         {loading && <Loading style={{ position: 'absolute', top: '1rem' }} />}
         {renderDropdownList()}
       </div>
-      {dropdownTitle && (
-        <div style={{ marginTop: '0.5rem' }}>{dropdownTitle}</div>
+      {dropdownFooter && (
+        <div style={{ marginTop: '0.5rem' }}>{dropdownFooter}</div>
       )}
     </ErrorBoundary>
   );
@@ -113,7 +113,7 @@ export default function TagInput({
   function renderDropdownList() {
     return results.length > 0 ? (
       <SearchDropdown
-        dropdownTitle={dropdownTitle}
+        dropdownFooter={dropdownFooter}
         searchResults={results}
         onUpdate={() => setIndexToHighlight(0)}
         onUnmount={() => setIndexToHighlight(0)}

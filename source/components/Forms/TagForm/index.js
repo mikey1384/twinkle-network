@@ -7,7 +7,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
-  dropdownTitle: PropTypes.string,
+  dropdownFooter: PropTypes.node,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   itemLabel: PropTypes.string.isRequired,
   searchPlaceholder: PropTypes.string.isRequired,
@@ -33,7 +33,7 @@ TagForm.propTypes = {
 
 export default function TagForm({
   children,
-  dropdownTitle,
+  dropdownFooter,
   inputRef,
   filter,
   itemLabel,
@@ -72,7 +72,7 @@ export default function TagForm({
           {subTitle && <span>{subTitle}</span>}
           {renderTags()}
           <TagInput
-            dropdownTitle={dropdownTitle}
+            dropdownFooter={dropdownFooter}
             style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
             autoFocus
             inputRef={inputRef}

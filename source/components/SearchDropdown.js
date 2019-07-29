@@ -5,7 +5,7 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 
 Dropdown.propTypes = {
-  dropdownTitle: PropTypes.string,
+  dropdownFooter: PropTypes.node,
   indexToHighlight: PropTypes.number.isRequired,
   onItemClick: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
@@ -16,7 +16,7 @@ Dropdown.propTypes = {
 };
 
 export default function Dropdown({
-  dropdownTitle,
+  dropdownFooter,
   indexToHighlight,
   searchResults,
   onUpdate,
@@ -90,8 +90,8 @@ export default function Dropdown({
             </nav>
           );
         })}
-        {dropdownTitle && (
-          <div style={{ padding: '1rem' }}>{dropdownTitle}</div>
+        {dropdownFooter && (
+          <div style={{ padding: '1rem' }}>{dropdownFooter}</div>
         )}
       </div>
     </ErrorBoundary>
