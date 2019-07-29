@@ -19,7 +19,7 @@ Selectable.propTypes = {
 };
 
 function Selectable({
-  item,
+  item = {},
   selected,
   onSelect,
   onDeselect,
