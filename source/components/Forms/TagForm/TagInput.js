@@ -13,7 +13,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 TagInput.propTypes = {
   autoFocus: PropTypes.bool,
   className: PropTypes.string,
-  dropdownTitle: PropTypes.string,
+  dropdownTitle: PropTypes.object,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   loading: PropTypes.bool,
   value: PropTypes.string.isRequired,

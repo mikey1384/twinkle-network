@@ -45,9 +45,7 @@ function TagModal({
     >
       {`Create a new playlist titled "${capitalize(searchText)}"`}
     </a>
-  ) : (
-    ''
-  );
+  ) : null;
 
   return (
     <Modal onHide={onHide}>
