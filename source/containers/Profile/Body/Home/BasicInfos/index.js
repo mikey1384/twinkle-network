@@ -170,7 +170,7 @@ function BasicInfos({
                     onClick={verificationEmailSent ? goToEmail : onVerifyEmail}
                   >
                     {verificationEmailSent
-                      ? 'Email has been sent. Click here to check your inbox'
+                      ? 'Email has been sent. Tap here to check your inbox'
                       : 'Please verify your email'}
                   </a>
                 </div>

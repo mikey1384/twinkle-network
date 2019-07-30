@@ -81,7 +81,7 @@ export default function InputForm({
             }
             onClick={handleSubmit}
           >
-            Click This Button to Submit!
+            Tap This Button to Submit!
           </Button>
         </div>
       )}

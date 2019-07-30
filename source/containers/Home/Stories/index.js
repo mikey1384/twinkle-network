@@ -258,7 +258,7 @@ function Stories({
               onClick={() => window.location.reload()}
               style={{ marginBottom: '1rem' }}
             >
-              Click to See New Posts!
+              Tap to See New Posts!
             </Banner>
           )}
           {loaded && !loadingFeeds && storyFeeds.length > 0 && (
@@ -269,7 +269,7 @@ function Stories({
                   onClick={handleFetchNewFeeds}
                   style={{ marginBottom: '1rem' }}
                 >
-                  Click to See {numNewPosts} new Post
+                  Tap to See {numNewPosts} new Post
                   {numNewPosts > 1 ? 's' : ''}
                 </Banner>
               )}
