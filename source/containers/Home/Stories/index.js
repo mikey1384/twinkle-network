@@ -171,7 +171,7 @@ function Stories({
     socket.on('connect', onConnect);
     async function onConnect() {
       const firstFeed = storyFeeds[0];
-      if (firstFeed) {
+      if (firstFeed?.lastInteraction) {
         const outdated = await checkIfFeedsUpToDate(firstFeed.lastInteraction);
         setFeedsOutdated(outdated);
       }
@@ -252,17 +252,17 @@ function Stories({
               </h1>
             </div>
           )}
+          {feedsOutdated && (
+            <Banner
+              color="gold"
+              onClick={() => window.location.reload()}
+              style={{ marginBottom: '1rem' }}
+            >
+              Click to See New Posts!
+            </Banner>
+          )}
           {loaded && !loadingFeeds && storyFeeds.length > 0 && (
             <>
-              {feedsOutdated && (
-                <Banner
-                  color="gold"
-                  onClick={() => window.location.reload()}
-                  style={{ marginBottom: '1rem' }}
-                >
-                  Click to See New Posts!
-                </Banner>
-              )}
               {numNewPosts > 0 && (
                 <Banner
                   color="gold"
