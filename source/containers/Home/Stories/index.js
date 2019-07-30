@@ -173,7 +173,6 @@ function Stories({
       const firstFeed = storyFeeds[0];
       if (firstFeed?.lastInteraction) {
         const outdated = await checkIfFeedsUpToDate(firstFeed.lastInteraction);
-        console.log(outdated);
         setFeedsOutdated(outdated);
       }
     }

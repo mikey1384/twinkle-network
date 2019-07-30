@@ -64,7 +64,7 @@ export const checkIfContentExists = async ({ url, videoCode, type }) => {
 export const checkIfFeedsUpToDate = async lastInteraction => {
   try {
     const { data } = await request.get(
-      `${URL}/content/checkUpToDate?feedId=${lastInteraction}`
+      `${URL}/content/checkUpToDate?lastInteraction=${lastInteraction}`
     );
     return Promise.resolve(data.outdated);
   } catch (error) {
