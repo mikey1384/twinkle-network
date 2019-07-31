@@ -1,4 +1,5 @@
 # Twinkle Network
+
 https://www.twinkle.network
 
 ## About this project:
@@ -26,14 +27,18 @@ And to fill their minds with wonder.
 I've recently made the API source code private due to security concerns. If you are interested in helping me build this project, please contact me at mikey1384@gmail.com
 
 ## Setup:
+
 0. Ensure that Node 9+ is installed
+1. Install yarn `npm install -g yarn`
+1. Install nodemon `sudo npm install -g nodemon`
 1. git clone https://github.com/mikey1384/twinkle-network.git [your directory name]
-2. Run `npm install` at the directory where you cloned the git repository.
-3. Inside /source/constants there is a file titled "rename this to URL.js" rename it to URL.js
-4. Install nodemon `sudo npm install -g nodemon`
+1. Run `yarn install` at the directory where you cloned the git repository.
+1. Inside /source/constants there is a file titled "rename this to URL.js" rename it to URL.js
 
 finally, run:
+
 ```shell
-npm run dev
+yarn dev
 ```
+
 then access it via http://localhost:3000
