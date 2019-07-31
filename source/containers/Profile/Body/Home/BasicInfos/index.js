@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import InfoEditForm from './InfoEditForm';
-import YouTubeSubscribe from 'components/Buttons/YouTubeSubscribe';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -275,13 +274,6 @@ function BasicInfos({
           </div>
         </div>
       ) : null}
-      <YouTubeSubscribe
-        channelName="스테이지5"
-        channelid="UCc3fHtAunCal-notj1sSsBQ"
-        theme={'default'}
-        layout={'full'}
-        count={'default'}
-      />
     </div>
   );
 
