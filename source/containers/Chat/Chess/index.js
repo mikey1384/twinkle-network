@@ -225,11 +225,11 @@ export default function Chess({
           }
 
           .dark.arrived {
-            background-color: ${Color.brownOrange()};
+            background-color: ${Color.brownOrange(0.9)};
           }
 
           .dark.blurred {
-            background-color: ${Color.brownOrange()};
+            background-color: ${Color.brownOrange(0.9)};
           }
 
           .dark.highlighted {
