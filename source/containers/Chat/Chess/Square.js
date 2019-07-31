@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { mobileMaxWidth } from 'constants/css';
 
 Square.propTypes = {
   className: PropTypes.string,
@@ -29,6 +29,7 @@ export default function Square({
         background-position: center;
         font-size: 1.5rem;
         &.blurred {
+          background: ${Color.brownOrange()};
           > img {
             opacity: 0.1;
           }

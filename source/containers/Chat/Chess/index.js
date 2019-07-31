@@ -224,6 +224,14 @@ export default function Chess({
             background-color: ${Color.sandyBrown()};
           }
 
+          .dark.arrived {
+            background-color: ${Color.brownOrange()};
+          }
+
+          .dark.blurred {
+            background-color: ${Color.brownOrange()};
+          }
+
           .dark.highlighted {
             background-color: RGB(164, 236, 137);
           }
@@ -242,6 +250,14 @@ export default function Chess({
 
           .light {
             background-color: ${Color.ivory()};
+          }
+
+          .light.arrived {
+            background-color: ${Color.brownOrange(0.4)};
+          }
+
+          .light.blurred {
+            background-color: ${Color.brownOrange(0.4)};
           }
 
           .light.highlighted {
@@ -492,11 +508,13 @@ export default function Chess({
         squares: actualSquares,
         src: kingPos,
         dest: kingEndDest,
-        myColor
+        myColor,
+        isCastling: true
       }),
       src: rookPos,
       dest: rookDest,
-      myColor
+      myColor,
+      isCastling: true
     });
     const { moved } = processResult({
       myKingIndex: kingEndDest,

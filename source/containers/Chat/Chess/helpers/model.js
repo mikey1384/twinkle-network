@@ -403,7 +403,13 @@ export function kingWillBeCapturedBy({ kingIndex, squares, myColor }) {
   return checkerPositions;
 }
 
-export function returnBoardAfterMove({ squares, src, dest, enPassantTarget }) {
+export function returnBoardAfterMove({
+  squares,
+  src,
+  dest,
+  enPassantTarget,
+  isCastling
+}) {
   const srcColumn = src % 8;
   const destColumn = dest % 8;
   const destRow = Math.floor(dest / 8);
@@ -424,7 +430,7 @@ export function returnBoardAfterMove({ squares, src, dest, enPassantTarget }) {
       }
       return {
         ...squares[src],
-        state: '',
+        state: isCastling ? '' : 'arrived',
         type: transform ? 'queen' : squares[src].type
       };
     }
