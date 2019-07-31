@@ -139,6 +139,9 @@ function Header({
       checkVersion();
       if (userId) {
         socket.emit('bind_uid_to_socket', userId, username);
+        if (!chatMode) {
+          getNumberOfUnreadMessages();
+        }
       }
     }
     function onDisconnect() {
