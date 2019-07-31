@@ -551,6 +551,7 @@ export default function Chess({
             color: myColor,
             squares,
             src: i,
+            enPassantTarget: enPassantTarget.current,
             myColor
           })
         );
