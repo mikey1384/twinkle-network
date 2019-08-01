@@ -56,7 +56,6 @@ export default function Embedly({
   const [prevUrl, setPrevUrl] = useState(url);
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
-
   const fallbackImage = '/img/link.png';
   const contentCss = css`
     display: flex;
