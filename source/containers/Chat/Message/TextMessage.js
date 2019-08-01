@@ -95,7 +95,7 @@ export default function TextMessage({
             height: 35vw;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
-              height: auto;
+              height: 65vw;
             }
           `}
         >
