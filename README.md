@@ -4,7 +4,7 @@ https://www.twinkle.network
 
 ## About this project:
 
-Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - an English teaching institute located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat within channels or send private messages to other users.
+Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - a private school located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat within channels or send private messages to other users.
 
 My ultimate goal for this website is to help children all around the world to:
 
@@ -24,7 +24,7 @@ My ultimate goal for this website is to help children all around the world to:
 
 And to fill their minds with wonder.
 
-I've recently made the API source code private due to security concerns. If you are interested in helping me build this project, please contact me at mikey1384@gmail.com
+API source codes are private due to security concerns. If you are interested in helping me build this project, please contact me at mikey1384@gmail.com
 
 ## Setup:
 
