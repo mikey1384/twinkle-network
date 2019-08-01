@@ -70,6 +70,9 @@ export default function Embedly({
 
   useEffect(() => {
     mounted.current = true;
+    if (url.substr(url.length - 4) === '.gif') {
+      setImageUrl(url);
+    }
     if (url && (!siteUrl || url !== prevUrl)) {
       fetchUrlData();
     }
@@ -80,7 +83,11 @@ export default function Embedly({
           data: { image, title, description, site }
         } = await request.put(`${API_URL}/embed`, { url, contentId, type });
         if (mounted.current) {
-          setImageUrl(image.url.replace('http://', 'https://'));
+          setImageUrl(
+            url.substr(url.length - 4) === '.gif'
+              ? url
+              : image.url.replace('http://', 'https://')
+          );
           setTitle(title);
           setDescription(description);
           setSite(site);
