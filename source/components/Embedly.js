@@ -168,7 +168,7 @@ export default function Embedly({
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                object-fit: ${forChat ? 'contain' : 'cover'};
               `}
               src={imageUrl}
               onError={onImageLoadError}
