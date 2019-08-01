@@ -208,7 +208,7 @@ export default function MainContent({
             title={cleanString(contentObj.title)}
             url={contentObj.content}
             contentId={contentObj.contentId}
-            loadingHeight="50rem"
+            loadingHeight="30rem"
             {...urlRelated}
           />
         )}

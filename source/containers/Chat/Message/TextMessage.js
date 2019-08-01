@@ -14,6 +14,10 @@ TextMessage.propTypes = {
   isNotification: PropTypes.bool,
   isReloadedSubject: PropTypes.bool,
   isSubject: PropTypes.bool,
+  messageId: PropTypes.number,
+  linkTitle: PropTypes.string,
+  linkDescription: PropTypes.string,
+  linkUrl: PropTypes.string,
   MessageStyle: PropTypes.object,
   numMsgs: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onEdit: PropTypes.bool,
@@ -21,7 +25,8 @@ TextMessage.propTypes = {
   onEditDone: PropTypes.func.isRequired,
   showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
-  subjectId: PropTypes.number
+  subjectId: PropTypes.number,
+  thumbUrl: PropTypes.string
 };
 
 export default function TextMessage({
@@ -30,6 +35,10 @@ export default function TextMessage({
   isNotification,
   isReloadedSubject,
   isSubject,
+  linkDescription,
+  linkTitle,
+  linkUrl,
+  messageId,
   MessageStyle,
   numMsgs,
   onEdit,
@@ -37,7 +46,8 @@ export default function TextMessage({
   onEditDone,
   subjectId,
   showSubjectMsgsModal,
-  socketConnected
+  socketConnected,
+  thumbUrl
 }) {
   return (
     <ErrorBoundary>
@@ -91,10 +101,15 @@ export default function TextMessage({
         >
           <Embedly
             url={extractedUrl}
+            contentId={messageId}
+            type="chat"
             objectFit="contain"
             imageHeight="25vw"
             imageMobileHeight="50vw"
-            maxDescriptionLines={3}
+            siteUrl={linkUrl}
+            thumbUrl={thumbUrl}
+            actualDescription={linkDescription}
+            actualTitle={linkTitle}
           />
         </div>
       )}

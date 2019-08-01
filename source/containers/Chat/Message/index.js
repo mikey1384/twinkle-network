@@ -81,7 +81,11 @@ function Message({
     moveViewTimeStamp,
     isChessMsg,
     chessState,
-    scrollAtBottom
+    scrollAtBottom,
+    thumbUrl,
+    linkUrl,
+    linkTitle,
+    linkDescription
   },
   myId,
   myProfilePicId,
@@ -241,6 +245,7 @@ function Message({
                   content={content}
                   extractedUrl={extractedUrl}
                   myId={myId}
+                  messageId={messageId}
                   numMsgs={numMsgs}
                   isNotification={isNotification}
                   isSubject={!!isSubject}
@@ -249,6 +254,10 @@ function Message({
                   onEdit={onEdit}
                   onEditCancel={handleEditCancel}
                   onEditDone={handleEditDone}
+                  linkDescription={linkDescription}
+                  linkTitle={linkTitle}
+                  linkUrl={linkUrl}
+                  thumbUrl={thumbUrl}
                   showSubjectMsgsModal={showSubjectMsgsModal}
                   socketConnected={socketConnected}
                   subjectId={subjectId}

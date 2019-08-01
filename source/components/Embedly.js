@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
-import LongText from 'components/Texts/LongText';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
@@ -18,11 +17,11 @@ Embedly.propTypes = {
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
   loadingHeight: PropTypes.string,
-  maxDescriptionLines: PropTypes.number,
   noLink: PropTypes.bool,
   siteUrl: PropTypes.string,
   style: PropTypes.object,
   thumbUrl: PropTypes.string,
+  type: PropTypes.string,
   title: PropTypes.string,
   url: PropTypes.string
 };
@@ -36,11 +35,11 @@ export default function Embedly({
   imageMobileHeight = '100%',
   imageOnly,
   loadingHeight = '100%',
-  maxDescriptionLines = 10,
   noLink,
   siteUrl,
   small,
   style,
+  type = 'url',
   url,
   ...props
 }) {
@@ -77,7 +76,7 @@ export default function Embedly({
         setLoading(true);
         const {
           data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, linkId: contentId });
+        } = await request.put(`${API_URL}/embed`, { url, contentId, type });
         if (mounted.current) {
           setImageUrl(image.url.replace('http://', 'https://'));
           setTitle(title);
@@ -95,9 +94,7 @@ export default function Embedly({
     };
   }, [url]);
 
-  return loading ? (
-    <Loading style={{ height: loadingHeight }} />
-  ) : (
+  return (
     <div
       className={css`
         width: 100%;
@@ -137,33 +134,37 @@ export default function Embedly({
   function renderInner() {
     return (
       <>
-        <section
-          className={css`
-            position: relative;
-            width: ${small ? '25%' : '100%'};
-            height: ${imageHeight};
-            &:after {
-              content: '';
-              display: block;
-              padding-bottom: ${small ? '100%' : '60%'};
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              height: ${imageMobileHeight};
-            }
-          `}
-        >
-          <img
+        {loading ? (
+          <Loading style={{ height: loadingHeight }} />
+        ) : (
+          <section
             className={css`
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
+              position: relative;
+              width: ${small ? '25%' : '100%'};
+              height: ${imageHeight};
+              &:after {
+                content: '';
+                display: block;
+                padding-bottom: ${small ? '100%' : '60%'};
+              }
+              @media (max-width: ${mobileMaxWidth}) {
+                height: ${imageMobileHeight};
+              }
             `}
-            src={imageUrl}
-            onError={onImageLoadError}
-            alt={title}
-          />
-        </section>
+          >
+            <img
+              className={css`
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              `}
+              src={imageUrl}
+              onError={onImageLoadError}
+              alt={title}
+            />
+          </section>
+        )}
         {!imageOnly && (
           <section
             className={css`
@@ -175,13 +176,7 @@ export default function Embedly({
             `}
           >
             <h3>{title || props.title}</h3>
-            <p>
-              {
-                <LongText maxLines={maxDescriptionLines} noExpand>
-                  {description}
-                </LongText>
-              }
-            </p>
+            <p>{description}</p>
             <p style={{ fontWeight: 'bold' }}>{site}</p>
           </section>
         )}
