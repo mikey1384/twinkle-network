@@ -259,17 +259,17 @@ function Stories({
               </h1>
             </div>
           )}
-          {feedsOutdated && (
-            <Banner
-              color="gold"
-              onClick={() => window.location.reload()}
-              style={{ marginBottom: '1rem' }}
-            >
-              Tap to See New Posts!
-            </Banner>
-          )}
           {loaded && !loadingFeeds && storyFeeds.length > 0 && (
             <>
+              {feedsOutdated && (
+                <Banner
+                  color="gold"
+                  onClick={() => window.location.reload()}
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Tap to See New Posts!
+                </Banner>
+              )}
               {numNewPosts > 0 && (
                 <Banner
                   color="gold"
