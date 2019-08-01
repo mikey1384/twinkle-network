@@ -12,6 +12,7 @@ Embedly.propTypes = {
   actualDescription: PropTypes.string,
   actualTitle: PropTypes.string,
   contentId: PropTypes.number,
+  forChat: PropTypes.bool,
   small: PropTypes.bool,
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
@@ -31,6 +32,7 @@ export default function Embedly({
   actualTitle,
   actualDescription,
   contentId,
+  forChat,
   imageHeight = '100%',
   imageMobileHeight = '100%',
   imageOnly,
@@ -108,6 +110,15 @@ export default function Embedly({
         p {
           font-size: 1.4rem;
           margin-top: 1rem;
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          h3 {
+            font-size: ${forChat ? '1.4rem' : '1.9rem'};
+          }
+          p {
+            font-size: ${forChat ? '1.1rem' : '1.4rem'};
+            margin-top: 1rem;
+          }
         }
       `}
       style={style}

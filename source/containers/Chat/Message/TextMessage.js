@@ -100,12 +100,13 @@ export default function TextMessage({
           `}
         >
           <Embedly
+            forChat
             url={extractedUrl}
             contentId={messageId}
             type="chat"
             objectFit="contain"
             imageHeight="25vw"
-            imageMobileHeight="50vw"
+            imageMobileHeight="60vw"
             siteUrl={linkUrl}
             thumbUrl={thumbUrl}
             actualDescription={linkDescription}
