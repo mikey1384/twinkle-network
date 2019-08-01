@@ -28,7 +28,7 @@ I've recently made the API source code private due to security concerns. If you 
 
 ## Setup:
 
-0. Ensure that Node 9+ is installed
+0. Ensure that Node 12+ is installed
 1. Install yarn `npm install -g yarn`
 1. Install nodemon `sudo npm install -g nodemon`
 1. git clone https://github.com/mikey1384/twinkle-network.git [your directory name]
