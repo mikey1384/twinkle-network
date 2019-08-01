@@ -4,7 +4,7 @@ https://www.twinkle.network
 
 ## About this project:
 
-Twinkle is a social network used primarily by students and teachers of Twinkle - a private school located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat or play chess with other users.
+Twinkle Network is a social network service used primarily by students and teachers of Twinkle - a private school located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat or play chess with other users.
 
 This website is a tool for the Twinkle community members to:
 
