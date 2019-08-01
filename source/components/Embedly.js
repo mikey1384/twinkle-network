@@ -73,7 +73,7 @@ export default function Embedly({
     if (url.substr(url.length - 4) === '.gif') {
       setImageUrl(url);
     }
-    if (url && (!siteUrl || url !== prevUrl)) {
+    if (url && (siteUrl === null || url !== prevUrl)) {
       fetchUrlData();
     }
     async function fetchUrlData() {
