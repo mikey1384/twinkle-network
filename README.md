@@ -4,17 +4,17 @@ https://www.twinkle.network
 
 ## About this project:
 
-Twinkle is a small social network website used almost exclusively by students and teachers of Twinkle - a private school located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat or play chess with other users.
+Twinkle is a social network used primarily by students and teachers of Twinkle - a private school located in Seoul, Korea. The members of the website can share YouTube videos and educational web URLs, create discussion topics, and chat or play chess with other users.
 
-My ultimate goal for this website is to help children all around the world to:
+This website is a tool for the Twinkle community members to:
 
-1. Build relationships with students of different countries, ethnicities, and cultures early on in their lives
+1. Build relationships with people from different countries, ethnicities, and cultures early on in their lives
 
 2. Find and connect with lifelong mentors from all over the world
 
 3. Find motivation in learning, to become active learners instead of passive ones, to be driven by their own curiosity rather than the pressure imposed on them by grownups
 
-4. Have opportunity to teach and help other children
+4. Have opportunity to teach and help other members of the community
 
 5. Become critical thinkers
 
