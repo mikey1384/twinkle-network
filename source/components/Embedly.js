@@ -46,7 +46,9 @@ export default function Embedly({
   ...props
 }) {
   const [imageUrl, setImageUrl] = useState(
-    thumbUrl ? thumbUrl.replace('http://', 'https://') : '/img/link.png'
+    !thumbUrl && typeof siteUrl === 'string'
+      ? '/img/link.png'
+      : thumbUrl?.replace('http://', 'https://')
   );
   const [title, setTitle] = useState(actualTitle);
   const [description, setDescription] = useState(actualDescription);
