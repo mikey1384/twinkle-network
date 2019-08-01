@@ -252,6 +252,7 @@ function ContentListItem({
                     style={{ marginTop: '0.5rem' }}
                     title={cleanString(contentObj.title)}
                     url={contentObj.content}
+                    contentId={contentObj.id}
                     {...contentObj}
                   />
                 </div>
@@ -259,7 +260,12 @@ function ContentListItem({
             </div>
             {type === 'subject' && contentObj.rootObj?.id && (
               <div
-                style={{ display: 'flex', alignItems: 'center', width: '25%' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '25%',
+                  marginBottom: contentObj.secretAnswer ? '1rem' : ''
+                }}
               >
                 {contentObj.rootObj?.type === 'video' && (
                   <VideoThumbImage
@@ -276,6 +282,7 @@ function ContentListItem({
                     noLink
                     title={cleanString(contentObj.rootObj.title)}
                     url={contentObj.rootObj?.content}
+                    contentId={contentObj.rootObj?.id}
                     {...contentObj.rootObj}
                   />
                 )}

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
+import Loading from 'components/Loading';
+import LongText from 'components/Texts/LongText';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/content`;
@@ -10,9 +12,13 @@ const API_URL = `${URL}/content`;
 Embedly.propTypes = {
   actualDescription: PropTypes.string,
   actualTitle: PropTypes.string,
+  contentId: PropTypes.number,
   small: PropTypes.bool,
-  id: PropTypes.number.isRequired,
+  imageHeight: PropTypes.string,
+  imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
+  loadingHeight: PropTypes.string,
+  maxDescriptionLines: PropTypes.number,
   noLink: PropTypes.bool,
   siteUrl: PropTypes.string,
   style: PropTypes.object,
@@ -25,8 +31,12 @@ export default function Embedly({
   thumbUrl,
   actualTitle,
   actualDescription,
-  id,
+  contentId,
+  imageHeight = '100%',
+  imageMobileHeight = '100%',
   imageOnly,
+  loadingHeight = '100%',
+  maxDescriptionLines = 10,
   noLink,
   siteUrl,
   small,
@@ -41,6 +51,7 @@ export default function Embedly({
   const [description, setDescription] = useState(actualDescription);
   const [site, setSite] = useState(siteUrl);
   const [prevUrl, setPrevUrl] = useState(url);
+  const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
 
   const fallbackImage = '/img/link.png';
@@ -49,6 +60,7 @@ export default function Embedly({
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 100%;
     color: ${Color.darkerGray()};
     position: relative;
     overflow: hidden;
@@ -62,15 +74,17 @@ export default function Embedly({
     }
     async function fetchUrlData() {
       try {
+        setLoading(true);
         const {
           data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, linkId: id });
+        } = await request.put(`${API_URL}/embed`, { url, linkId: contentId });
         if (mounted.current) {
           setImageUrl(image.url.replace('http://', 'https://'));
           setTitle(title);
           setDescription(description);
           setSite(site);
           setPrevUrl(url);
+          setLoading(false);
         }
       } catch (error) {
         console.error(error.response || error);
@@ -81,10 +95,13 @@ export default function Embedly({
     };
   }, [url]);
 
-  return (
+  return loading ? (
+    <Loading style={{ height: loadingHeight }} />
+  ) : (
     <div
       className={css`
         width: 100%;
+        height: 100%;
         > a {
           text-decoration: none;
         }
@@ -92,7 +109,7 @@ export default function Embedly({
           font-size: 1.9rem;
         }
         p {
-          font-size: 1.5rem;
+          font-size: 1.4rem;
           margin-top: 1rem;
         }
       `}
@@ -124,10 +141,14 @@ export default function Embedly({
           className={css`
             position: relative;
             width: ${small ? '25%' : '100%'};
+            height: ${imageHeight};
             &:after {
               content: '';
               display: block;
               padding-bottom: ${small ? '100%' : '60%'};
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              height: ${imageMobileHeight};
             }
           `}
         >
@@ -148,12 +169,19 @@ export default function Embedly({
             className={css`
               width: 100%;
               padding: 1rem;
+              line-height: 1.5;
               ${small ? 'margin-left: 1rem;' : ''};
               ${small ? '' : 'margin-top: 1rem;'};
             `}
           >
             <h3>{title || props.title}</h3>
-            <p>{description}</p>
+            <p>
+              {
+                <LongText maxLines={maxDescriptionLines} noExpand>
+                  {description}
+                </LongText>
+              }
+            </p>
             <p style={{ fontWeight: 'bold' }}>{site}</p>
           </section>
         )}

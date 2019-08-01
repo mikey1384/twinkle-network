@@ -12,6 +12,7 @@ import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
 import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
+import { fetchURLFromText } from 'helpers/stringHelpers';
 import {
   editMessage,
   saveMessage,
@@ -174,6 +175,8 @@ function Message({
     );
   }
 
+  const extractedUrl = fetchURLFromText(content);
+
   return (
     <ErrorBoundary>
       <div className={MessageStyle.container}>
@@ -236,6 +239,7 @@ function Message({
                 )}
                 <TextMessage
                   content={content}
+                  extractedUrl={extractedUrl}
                   myId={myId}
                   numMsgs={numMsgs}
                   isNotification={isNotification}
@@ -260,7 +264,9 @@ function Message({
               direction="left"
               opacity={0.8}
               onButtonClick={menuDisplayed => {
-                setEditPadding(!menuDisplayed && isLastMsg && !filePath);
+                setEditPadding(
+                  !menuDisplayed && isLastMsg && !filePath && !extractedUrl
+                );
               }}
               onOutsideClick={() => {
                 setEditPadding(false);

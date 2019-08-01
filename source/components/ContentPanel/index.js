@@ -253,7 +253,7 @@ export default function ContentPanel({
                   small
                   title={cleanString(contentObj.rootObj.title)}
                   url={contentObj.rootObj.content}
-                  id={contentObj.rootId}
+                  contentId={contentObj.rootId}
                   thumbUrl={contentObj.rootObj.thumbUrl}
                   actualTitle={contentObj.rootObj.actualTitle}
                   actualDescription={contentObj.rootObj.actualDescription}

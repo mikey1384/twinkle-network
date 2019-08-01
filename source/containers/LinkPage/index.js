@@ -208,8 +208,9 @@ function LinkPage({
           key={'link' + id}
           title={title}
           style={{ marginTop: '2rem' }}
-          id={id}
+          contentId={id}
           url={content}
+          loadingHeight="30rem"
           {...embedlyProps}
         />
         <RewardStatus

@@ -207,7 +207,8 @@ export default function MainContent({
           <Embedly
             title={cleanString(contentObj.title)}
             url={contentObj.content}
-            id={contentObj.contentId}
+            contentId={contentObj.contentId}
+            loadingHeight="50rem"
             {...urlRelated}
           />
         )}

@@ -37,5 +37,5 @@ export const Color = {
 
 export const borderRadius = '5px';
 export const innerBorderRadius = '4px';
-export const mobileMaxWidth = '1024px';
+export const mobileMaxWidth = '850px';
 export const desktopMinWidth = '1025px';

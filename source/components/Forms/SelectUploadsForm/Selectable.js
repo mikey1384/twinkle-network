@@ -68,7 +68,7 @@ function Selectable({
               src={`https://img.youtube.com/vi/${item.content}/mqdefault.jpg`}
             />
           ) : (
-            <Embedly noLink imageOnly {...item} />
+            <Embedly noLink imageOnly contentId={item.id} {...item} />
           )}
         </div>
         <div

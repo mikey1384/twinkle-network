@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { Color } from 'constants/css';
+import Embedly from 'components/Embedly';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 
 TextMessage.propTypes = {
   content: PropTypes.string.isRequired,
+  extractedUrl: PropTypes.string,
   isNotification: PropTypes.bool,
   isReloadedSubject: PropTypes.bool,
   isSubject: PropTypes.bool,
@@ -23,6 +26,7 @@ TextMessage.propTypes = {
 
 export default function TextMessage({
   content,
+  extractedUrl,
   isNotification,
   isReloadedSubject,
   isSubject,
@@ -68,6 +72,30 @@ export default function TextMessage({
               </Button>
             </div>
           )}
+        </div>
+      )}
+      {extractedUrl && (
+        <div
+          style={{
+            marginTop: '1rem'
+          }}
+          className={css`
+            display: flex;
+            width: 40%;
+            height: 35vw;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+              height: 65vw;
+            }
+          `}
+        >
+          <Embedly
+            url={extractedUrl}
+            objectFit="contain"
+            imageHeight="25vw"
+            imageMobileHeight="50vw"
+            maxDescriptionLines={3}
+          />
         </div>
       )}
     </ErrorBoundary>

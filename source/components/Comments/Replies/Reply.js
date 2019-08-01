@@ -42,7 +42,7 @@ Reply.propTypes = {
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
     likes: PropTypes.array,
-    numReplies: PropTypes.number,
+    numReplies: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     originType: PropTypes.string,
     profilePicId: PropTypes.number,
     replyId: PropTypes.number,
