@@ -40,11 +40,7 @@ import { toggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import { connect } from 'react-redux';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import {
-  checkIfFeedsUpToDate,
-  loadFeeds,
-  loadNewFeeds
-} from 'helpers/requestHelpers';
+import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import { socket } from 'constants/io';
 
 Stories.propTypes = {
@@ -172,15 +168,15 @@ function Stories({
     async function onConnect() {
       const firstFeed = storyFeeds[0];
       if (firstFeed?.lastInteraction && !loadingFeeds) {
-        const outdated = await checkIfFeedsUpToDate({
-          lastInteraction: firstFeed.lastInteraction,
+        const outdated = await loadNewFeeds({
+          lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
           shownFeeds: queryStringForArray({
             array: storyFeeds,
             originVar: 'feedId',
             destinationVar: 'shownFeeds'
           })
         });
-        setFeedsOutdated(outdated);
+        setFeedsOutdated(outdated.length > 0);
       }
     }
     return function cleanUp() {

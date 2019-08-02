@@ -61,18 +61,6 @@ export const checkIfContentExists = async ({ url, videoCode, type }) => {
   }
 };
 
-export const checkIfFeedsUpToDate = async ({ lastInteraction, shownFeeds }) => {
-  try {
-    const { data } = await request.get(
-      `${URL}/content/checkUpToDate?lastInteraction=${lastInteraction}&shownFeeds=${shownFeeds}`
-    );
-    return Promise.resolve(data.outdated);
-  } catch (error) {
-    console.error(error.response || error);
-    return Promise.reject(error);
-  }
-};
-
 export const checkIfUserResponded = async subjectId => {
   try {
     const { data } = await request.get(
