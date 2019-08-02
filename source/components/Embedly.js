@@ -71,7 +71,7 @@ export default function Embedly({
 
   useEffect(() => {
     mounted.current = true;
-    if (url.substr(url.length - 4) === '.gif') {
+    if (url && url.substr(url.length - 4) === '.gif') {
       setImageUrl(url);
     }
     if (url && (typeof siteUrl !== 'string' || url !== prevUrl)) {
