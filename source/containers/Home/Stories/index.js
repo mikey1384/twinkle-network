@@ -171,7 +171,7 @@ function Stories({
     socket.on('connect', onConnect);
     async function onConnect() {
       const firstFeed = storyFeeds[0];
-      if (firstFeed?.lastInteraction) {
+      if (firstFeed?.lastInteraction && !loadingFeeds) {
         const outdated = await checkIfFeedsUpToDate({
           lastInteraction: firstFeed.lastInteraction,
           shownFeeds: queryStringForArray({

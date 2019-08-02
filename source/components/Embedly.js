@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
 import { css } from 'emotion';
+import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import URL from 'constants/URL';
 
@@ -71,7 +72,7 @@ export default function Embedly({
 
   useEffect(() => {
     mounted.current = true;
-    if (url && url.substr(url.length - 4) === '.gif') {
+    if (url && getFileInfoFromFileName(url)?.fileType === 'image') {
       setImageUrl(url);
     }
     if (url && (typeof siteUrl !== 'string' || url !== prevUrl)) {
@@ -85,7 +86,7 @@ export default function Embedly({
         } = await request.put(`${API_URL}/embed`, { url, contentId, type });
         if (mounted.current) {
           setImageUrl(
-            url.substr(url.length - 4) === '.gif'
+            url && getFileInfoFromFileName(url) === 'image'
               ? url
               : image.url.replace('http://', 'https://')
           );
