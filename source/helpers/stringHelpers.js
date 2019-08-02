@@ -293,6 +293,9 @@ export function processedStringWithURL(string) {
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const regex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?@%_\+~#=\/()])+(\.[A-Z])?([^\s-.,;:?'"])+)/gi;
   let tempString = string
+    .replace(/&/g, '&amp')
+    .replace(/</g, '&lt')
+    .replace(/>/g, '&gt')
     .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(/\r?\n/g, '<br>');
   let newString = '';
@@ -302,7 +305,11 @@ export function processedStringWithURL(string) {
       let headPos = tempString.indexOf('target="_blank">');
       let tailPos = tempString.indexOf('</a>');
       if (headPos !== -1) {
-        let wrapperHead = tempString.substring(0, headPos + 16);
+        let wrapperHead = tempString
+          .substring(0, headPos + 16)
+          .replace(/&amp/g, '&')
+          .replace(/&lt/g, '<')
+          .replace(/&gt/g, '>');
         let url = tempString.substring(headPos + 16, tailPos);
         let wrapperTail = tempString.substring(tailPos, tempString.length);
         newString += `${wrapperHead}${trimmedString(url)}${wrapperTail}`;
@@ -311,7 +318,6 @@ export function processedStringWithURL(string) {
       }
       break;
     }
-
     newString += tempString.substring(0, hrefPos + 6);
     tempString = tempString.substring(hrefPos + 6, tempString.length);
     if (tempString.indexOf('://') > 8 || tempString.indexOf('://') === -1) {
