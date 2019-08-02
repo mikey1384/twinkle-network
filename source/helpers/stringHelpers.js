@@ -300,18 +300,18 @@ export function processedStringWithURL(string) {
     .replace(/\r?\n/g, '<br>');
   let newString = '';
   while (tempString.length > 0) {
-    let hrefPos = tempString.indexOf('href="');
+    const hrefPos = tempString.indexOf('href="');
     if (hrefPos === -1) {
-      let headPos = tempString.indexOf('target="_blank">');
-      let tailPos = tempString.indexOf('</a>');
+      const headPos = tempString.indexOf('target="_blank">');
+      const tailPos = tempString.indexOf('</a>');
       if (headPos !== -1) {
-        let wrapperHead = tempString
+        const wrapperHead = tempString
           .substring(0, headPos + 16)
           .replace(/&amp/g, '&')
           .replace(/&lt/g, '<')
           .replace(/&gt/g, '>');
-        let url = tempString.substring(headPos + 16, tailPos);
-        let wrapperTail = tempString.substring(tailPos, tempString.length);
+        const url = tempString.substring(headPos + 16, tailPos);
+        const wrapperTail = tempString.substring(tailPos, tempString.length);
         newString += `${wrapperHead}${trimmedString(url)}${wrapperTail}`;
       } else {
         newString += tempString;
