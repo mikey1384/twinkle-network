@@ -812,7 +812,7 @@ export default connect(
     enterChannelWithId: params =>
       dispatch(ChatActions.enterChannelWithId(params)),
     enterEmptyChat: params => dispatch(ChatActions.enterEmptyChat(params)),
-    submitMessage: params => dispatch(ChatActions.submitMessageAsync(params)),
+    submitMessage: params => dispatch(ChatActions.submitMessage(params)),
     loadMoreChannels: params => dispatch(ChatActions.loadMoreChannels(params)),
     loadMoreMessages: params => dispatch(ChatActions.loadMoreMessages(params)),
     createNewChannel: params => dispatch(ChatActions.createNewChannel(params)),

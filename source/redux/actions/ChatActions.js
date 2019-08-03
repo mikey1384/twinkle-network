@@ -437,7 +437,7 @@ export const sendFirstDirectMessage = ({ members, message }) => ({
   message
 });
 
-export const submitMessageAsync = params => ({
+export const submitMessage = params => ({
   type: CHAT.SUBMIT_MESSAGE,
   message: {
     ...params,

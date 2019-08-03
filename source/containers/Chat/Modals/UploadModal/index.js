@@ -6,7 +6,7 @@ import Loading from 'components/Loading';
 import File from './File';
 import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
-import { submitMessageAsync } from 'redux/actions/ChatActions';
+import { submitMessage } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 
 UploadModal.propTypes = {
@@ -94,6 +94,6 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId
   }),
   {
-    submitMessage: submitMessageAsync
+    submitMessage
   }
 )(UploadModal);
