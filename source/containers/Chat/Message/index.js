@@ -113,13 +113,11 @@ function Message({
   }
   useEffect(() => {
     if (
-      (message.userId === myId &&
-        !message.id &&
-        !message.fileToUpload &&
-        !message.isSubject &&
-        !message.isNotification &&
-        !message.isChessMsg) ||
-      (message.isChessMsg && message.userId !== myId && !message.id)
+      message.userId === myId &&
+      !message.id &&
+      !message.fileToUpload &&
+      !message.isSubject &&
+      !message.isNotification
     ) {
       saveMessage({ message: post, index });
     }
