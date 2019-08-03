@@ -287,7 +287,10 @@ function ContentInput({ dispatch, uploadFeedContent }) {
       setForm(form => ({
         ...form,
         title:
-          !urlIsValid && !stringIsEmpty(url) && !regex.test(url)
+          !urlIsValid &&
+          !stringIsEmpty(url) &&
+          url.length > 3 &&
+          !regex.test(url)
             ? url
             : form.title
       }));
