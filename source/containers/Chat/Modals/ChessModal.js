@@ -22,7 +22,7 @@ ChessModal.propTypes = {
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
-  recentChessMessages: PropTypes.object,
+  recentChessMessage: PropTypes.object,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired
 };
 
@@ -36,7 +36,7 @@ function ChessModal({
   onSpoilerClick,
   opponentId,
   opponentName,
-  recentChessMessages,
+  recentChessMessage,
   updateChessMoveViewTimeStamp
 }) {
   const [initialState, setInitialState] = useState();
@@ -55,7 +55,7 @@ function ChessModal({
       loading.current = true;
       const message = await fetchCurrentChessState({
         channelId,
-        recentChessMessage: recentChessMessages[channelId]
+        recentChessMessage
       });
       setMessage(message);
       setUploaderId(message?.userId);
@@ -177,7 +177,7 @@ function ChessModal({
 
 export default connect(
   state => ({
-    recentChessMessages: state.ChatReducer.recentChessMessages
+    recentChessMessage: state.ChatReducer.recentChessMessage
   }),
   dispatch => ({
     dispatch,

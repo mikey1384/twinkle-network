@@ -116,14 +116,15 @@ function Message({
   }
   useEffect(() => {
     if (!message.id && message.isChessMsg) {
-      updateRecentChessMessage({ channelId, message });
+      updateRecentChessMessage(message);
     }
     if (
       message.userId === myId &&
       !message.id &&
       !message.fileToUpload &&
       !message.isSubject &&
-      !message.isNotification
+      !message.isNotification &&
+      !message.isChessMsg
     ) {
       saveMessage({ message: post, index });
     }
@@ -332,7 +333,7 @@ export default connect(
     saveMessage: params => dispatch(saveMessage(params)),
     updateChessMoveViewTimeStamp: params =>
       dispatch(updateChessMoveViewTimeStamp(params)),
-    updateRecentChessMessage: params =>
-      dispatch(updateRecentChessMessage(params))
+    updateRecentChessMessage: message =>
+      dispatch(updateRecentChessMessage(message))
   })
 )(Message);

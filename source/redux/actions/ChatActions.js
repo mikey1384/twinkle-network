@@ -489,9 +489,8 @@ export const updateChessMoveViewTimeStamp = () => ({
   type: CHAT.UPDATE_CHESS_MOVE_VIEW_STAMP
 });
 
-export const updateRecentChessMessage = ({ channelId, message }) => ({
+export const updateRecentChessMessage = message => ({
   type: CHAT.UPDATE_RECENT_CHESS_MESSAGE,
-  channelId,
   message
 });
 
