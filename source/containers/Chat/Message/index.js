@@ -123,8 +123,7 @@ function Message({
       !message.id &&
       !message.fileToUpload &&
       !message.isSubject &&
-      !message.isNotification &&
-      !message.isChessMsg
+      !message.isNotification
     ) {
       saveMessage({ message: post, index });
     }
