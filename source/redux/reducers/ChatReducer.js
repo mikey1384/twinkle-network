@@ -42,6 +42,12 @@ export default function ChatReducer(state = defaultState, action) {
           };
         })
       };
+    case CHAT.CLEAR_RECENT_CHESS_MESSAGE: {
+      return {
+        ...state,
+        recentChessMessage: {}
+      };
+    }
     case CHAT.CHANGE_SUBJECT: {
       return {
         ...state,

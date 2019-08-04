@@ -6,6 +6,10 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
+export const clearRecentChessMessage = () => ({
+  type: CHAT.CLEAR_RECENT_CHESS_MESSAGE
+});
+
 export const openNewChatTab = ({ user, partner }) => ({
   type: CHAT.OPEN_NEW_TAB,
   user,

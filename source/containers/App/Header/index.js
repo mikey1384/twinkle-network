@@ -10,6 +10,7 @@ import { withRouter } from 'react-router';
 import { Route } from 'react-router-dom';
 import { logout } from 'redux/actions/UserActions';
 import {
+  clearRecentChessMessage,
   getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
   turnChatOff,
@@ -38,6 +39,7 @@ Header.propTypes = {
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   checkVersion: PropTypes.func,
+  clearRecentChessMessage: PropTypes.func,
   history: PropTypes.object.isRequired,
   getNumberOfUnreadMessages: PropTypes.func,
   increaseNumNewPosts: PropTypes.func,
@@ -74,6 +76,7 @@ function Header({
   chatMode,
   changeSocketStatus,
   checkVersion,
+  clearRecentChessMessage,
   closeSearch,
   getNumberOfUnreadMessages,
   history,
@@ -135,6 +138,7 @@ function Header({
     }
     function onConnect() {
       console.log('connected to socket');
+      clearRecentChessMessage();
       changeSocketStatus(true);
       checkVersion();
       if (userId) {
@@ -469,6 +473,7 @@ export default connect(
     changeRankingsLoadedStatus,
     changeSocketStatus,
     checkVersion,
+    clearRecentChessMessage,
     getNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
