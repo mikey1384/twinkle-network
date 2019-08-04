@@ -158,10 +158,14 @@ export const fetchCurrentChessState = async ({
   recentChessMessage
 }) => {
   try {
-    const { data } = await request.put(`${URL}/chat/chess`, {
-      channelId,
-      recentChessMessage
-    });
+    const { data } = await request.put(
+      `${URL}/chat/chess`,
+      {
+        channelId,
+        recentChessMessage
+      },
+      auth()
+    );
     return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
