@@ -13,7 +13,7 @@ const defaultState = {
   partnerId: null,
   numUnreads: 0,
   msgsWhileInvisible: 0,
-  recentChessMessage: {},
+  recentChessMessage: undefined,
   subject: {},
   subjectSearchResults: [],
   filesBeingUploaded: {}
@@ -45,7 +45,7 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.CLEAR_RECENT_CHESS_MESSAGE: {
       return {
         ...state,
-        recentChessMessage: {}
+        recentChessMessage: undefined
       };
     }
     case CHAT.CHANGE_SUBJECT: {
@@ -187,7 +187,7 @@ export default function ChatReducer(state = defaultState, action) {
       action.data.messages.reverse();
       return {
         ...state,
-        recentChessMessage: {},
+        recentChessMessage: undefined,
         currentChannel: selectedChannel,
         channels: state.channels.reduce((prev, channel, index) => {
           if (channel.id === selectedChannel.id) {
