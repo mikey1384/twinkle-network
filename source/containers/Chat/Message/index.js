@@ -16,7 +16,8 @@ import { fetchURLFromText } from 'helpers/stringHelpers';
 import {
   editMessage,
   saveMessage,
-  updateChessMoveViewTimeStamp
+  updateChessMoveViewTimeStamp,
+  updateRecentChessMessage
 } from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
 
@@ -47,7 +48,8 @@ Message.propTypes = {
   partnerId: PropTypes.number,
   setScrollToBottom: PropTypes.func,
   socketConnected: PropTypes.bool,
-  updateChessMoveViewTimeStamp: PropTypes.func
+  updateChessMoveViewTimeStamp: PropTypes.func,
+  updateRecentChessMessage: PropTypes.func
 };
 
 function Message({
@@ -100,7 +102,8 @@ function Message({
   setScrollToBottom,
   showSubjectMsgsModal,
   socketConnected,
-  updateChessMoveViewTimeStamp
+  updateChessMoveViewTimeStamp,
+  updateRecentChessMessage
 }) {
   let { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
@@ -112,6 +115,9 @@ function Message({
     profilePicId = myProfilePicId;
   }
   useEffect(() => {
+    if (!message.id && message.isChessMsg) {
+      updateRecentChessMessage({ channelId, message });
+    }
     if (
       message.userId === myId &&
       !message.id &&
@@ -300,9 +306,13 @@ function Message({
   }
 
   async function handleSpoilerClick() {
-    await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
-    updateChessMoveViewTimeStamp();
-    onChessSpoilerClick();
+    try {
+      await setChessMoveViewTimeStamp({ channelId, message, dispatch });
+      updateChessMoveViewTimeStamp();
+      onChessSpoilerClick();
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 
@@ -321,6 +331,8 @@ export default connect(
     onEditDone: params => dispatch(editMessage(params)),
     saveMessage: params => dispatch(saveMessage(params)),
     updateChessMoveViewTimeStamp: params =>
-      dispatch(updateChessMoveViewTimeStamp(params))
+      dispatch(updateChessMoveViewTimeStamp(params)),
+    updateRecentChessMessage: params =>
+      dispatch(updateRecentChessMessage(params))
   })
 )(Message);

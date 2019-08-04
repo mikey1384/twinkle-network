@@ -153,11 +153,15 @@ export const fetchPlaylistsContaining = async ({ videoId }) => {
   }
 };
 
-export const fetchCurrentChessState = async channelId => {
+export const fetchCurrentChessState = async ({
+  channelId,
+  recentChessMessage
+}) => {
   try {
-    const { data } = await request.get(
-      `${URL}/chat/chess?channelId=${channelId}`
-    );
+    const { data } = await request.put(`${URL}/chat/chess`, {
+      channelId,
+      recentChessMessage
+    });
     return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
@@ -500,13 +504,13 @@ export const setByUser = async ({ contentId, dispatch }) => {
 
 export const setChessMoveViewTimeStamp = async ({
   channelId,
-  messageId,
+  message,
   dispatch
 }) => {
   try {
     await request.put(
       `${URL}/chat/chess/timeStamp`,
-      { channelId, messageId },
+      { channelId, message },
       auth()
     );
     return Promise.resolve();

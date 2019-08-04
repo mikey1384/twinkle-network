@@ -13,6 +13,7 @@ const defaultState = {
   partnerId: null,
   numUnreads: 0,
   msgsWhileInvisible: 0,
+  recentChessMessages: {},
   subject: {},
   subjectSearchResults: [],
   filesBeingUploaded: {}
@@ -690,6 +691,14 @@ export default function ChatReducer(state = defaultState, action) {
             ? { ...message, moveViewTimeStamp: Math.floor(Date.now() / 1000) }
             : message
         )
+      };
+    case CHAT.UPDATE_RECENT_CHESS_MESSAGE:
+      return {
+        ...state,
+        recentChessMessages: {
+          ...state.recentChessMessages,
+          [action.channelId]: action.message
+        }
       };
     case CHAT.UPDATE_SELECTED_CHANNEL_ID:
       return {

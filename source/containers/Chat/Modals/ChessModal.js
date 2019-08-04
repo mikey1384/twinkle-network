@@ -22,6 +22,7 @@ ChessModal.propTypes = {
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
+  recentChessMessages: PropTypes.object,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired
 };
 
@@ -35,12 +36,13 @@ function ChessModal({
   onSpoilerClick,
   opponentId,
   opponentName,
+  recentChessMessages,
   updateChessMoveViewTimeStamp
 }) {
   const [initialState, setInitialState] = useState();
   const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const [viewTimeStamp, setViewTimeStamp] = useState();
-  const [messageId, setMessageId] = useState();
+  const [message, setMessage] = useState();
   const [uploaderId, setUploaderId] = useState();
   const [newChessState, setNewChessState] = useState();
   const [loaded, setLoaded] = useState(false);
@@ -51,16 +53,14 @@ function ChessModal({
     init();
     async function init() {
       loading.current = true;
-      const {
-        userId,
-        messageId,
-        chessState,
-        moveViewTimeStamp
-      } = await fetchCurrentChessState(channelId);
-      setMessageId(messageId);
-      setUploaderId(userId);
-      setInitialState(chessState);
-      setViewTimeStamp(moveViewTimeStamp);
+      const message = await fetchCurrentChessState({
+        channelId,
+        recentChessMessage: recentChessMessages[channelId]
+      });
+      setMessage(message);
+      setUploaderId(message?.userId);
+      setInitialState(message?.chessState);
+      setViewTimeStamp(message?.moveViewTimeStamp);
       loading.current = false;
       setLoaded(true);
     }
@@ -159,10 +159,14 @@ function ChessModal({
   );
 
   async function handleSpoilerClick() {
-    await setChessMoveViewTimeStamp({ channelId, messageId, dispatch });
-    setSpoilerOff(true);
-    updateChessMoveViewTimeStamp();
-    onSpoilerClick();
+    try {
+      await setChessMoveViewTimeStamp({ channelId, message, dispatch });
+      setSpoilerOff(true);
+      updateChessMoveViewTimeStamp();
+      onSpoilerClick();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async function submitChessMove() {
@@ -172,7 +176,9 @@ function ChessModal({
 }
 
 export default connect(
-  null,
+  state => ({
+    recentChessMessages: state.ChatReducer.recentChessMessages
+  }),
   dispatch => ({
     dispatch,
     updateChessMoveViewTimeStamp: params =>
