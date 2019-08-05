@@ -7,7 +7,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { setDifficulty } from 'helpers/requestHelpers';
 
-DifficultyModal.propTypes = {
+RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
   difficulty: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
@@ -16,7 +16,7 @@ DifficultyModal.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-function DifficultyModal({
+function RewardLevelModal({
   contentId,
   dispatch,
   difficulty: initialDifficulty = 0,
@@ -106,4 +106,4 @@ export default connect(
   dispatch => ({
     dispatch
   })
-)(DifficultyModal);
+)(RewardLevelModal);

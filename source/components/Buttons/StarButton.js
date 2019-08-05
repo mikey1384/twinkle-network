@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
-import DifficultyModal from 'components/Modals/DifficultyModal';
+import RewardLevelModal from 'components/Modals/RewardLevelModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { setByUser } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ function StarButton({
   style,
   type
 }) {
-  const [difficultyModalShown, setDifficultyModalShown] = useState(false);
+  const [rewardLevelModalShown, setRewardLevelModalShown] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
   const StarButtonRef = useRef(null);
   useOutsideClick(StarButtonRef, () => setMenuShown(false));
@@ -60,7 +60,7 @@ function StarButton({
               width: '25rem'
             }}
           >
-            <li onClick={showDifficultyModal}>Set Reward Level</li>
+            <li onClick={showRewardLevelModal}>Set Reward Level</li>
             <li onClick={toggleByUser}>
               {byUser
                 ? `This video wasn't made by ${uploader.username}`
@@ -69,16 +69,16 @@ function StarButton({
           </DropdownList>
         )}
       </div>
-      {difficultyModalShown && (
-        <DifficultyModal
+      {rewardLevelModalShown && (
+        <RewardLevelModal
           type={type}
           contentId={contentId}
           difficulty={difficulty}
           onSubmit={async data => {
             await onSetDifficulty(data);
-            setDifficultyModalShown(false);
+            setRewardLevelModalShown(false);
           }}
-          onHide={() => setDifficultyModalShown(false)}
+          onHide={() => setRewardLevelModalShown(false)}
         />
       )}
     </ErrorBoundary>
@@ -88,11 +88,11 @@ function StarButton({
     if (type === 'video') {
       return setMenuShown(!menuShown);
     }
-    return setDifficultyModalShown(true);
+    return setRewardLevelModalShown(true);
   }
 
-  function showDifficultyModal() {
-    setDifficultyModalShown(true);
+  function showRewardLevelModal() {
+    setRewardLevelModalShown(true);
     setMenuShown(false);
   }
 

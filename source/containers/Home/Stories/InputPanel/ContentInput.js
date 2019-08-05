@@ -178,6 +178,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
             </>
           )}
         </div>
+        {!buttonDisabled() && <div>here comes the reward level ui</div>}
         {descriptionFieldShown && (
           <div className="button-container">
             <Button
