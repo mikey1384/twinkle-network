@@ -36,7 +36,7 @@ Body.propTypes = {
   authLevel: PropTypes.number,
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
-  canEditDifficulty: PropTypes.bool,
+  canEditRewardLevel: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
   canStar: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
@@ -60,7 +60,7 @@ Body.propTypes = {
   onLoadTags: PropTypes.func,
   onLoadRepliesOfReply: PropTypes.func,
   onReplySubmit: PropTypes.func.isRequired,
-  onSetDifficulty: PropTypes.func,
+  onSetRewardLevel: PropTypes.func,
   onShowComments: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
 };
@@ -73,7 +73,7 @@ function Body({
     actualDescription,
     actualTitle,
     contentId,
-    difficulty,
+    rewardLevel,
     feedId,
     id,
     numChildComments,
@@ -96,7 +96,7 @@ function Body({
   authLevel,
   canDelete,
   canEdit,
-  canEditDifficulty,
+  canEditRewardLevel,
   canStar,
   dispatch,
   inputAtBottom,
@@ -119,7 +119,7 @@ function Body({
   onLoadTags,
   onLoadRepliesOfReply,
   onReplySubmit,
-  onSetDifficulty,
+  onSetRewardLevel,
   secretShown
 }) {
   const [commentsHidden, setCommentsHidden] = useState(true);
@@ -207,7 +207,7 @@ function Body({
           <VideoPlayer
             stretch
             autoplay
-            difficulty={rootObj.difficulty}
+            rewardLevel={rootObj.rewardLevel}
             byUser={!!rootObj.byUser}
             title={rootObj.title}
             style={{ marginBottom: '1rem' }}
@@ -308,13 +308,13 @@ function Body({
                 className="right"
                 style={{ position: 'relative', marginRight: 0 }}
               >
-                {canEditDifficulty &&
+                {canEditRewardLevel &&
                   (type === 'subject' || type === 'video') && (
                     <StarButton
                       byUser={!!contentObj.byUser}
                       contentId={contentObj.id}
-                      difficulty={difficulty}
-                      onSetDifficulty={onSetDifficulty}
+                      rewardLevel={rewardLevel}
+                      onSetRewardLevel={onSetRewardLevel}
                       onToggleByUser={onToggleByUser}
                       type={type}
                       uploader={uploader}
@@ -355,7 +355,7 @@ function Body({
           <XPRewardInterface
             contentType={type}
             contentId={contentId}
-            difficulty={determineDifficulty({
+            rewardLevel={determineRewardLevel({
               contentObj,
               rootObj,
               rootType,
@@ -371,7 +371,7 @@ function Body({
         )}
         <RewardStatus
           contentType={type}
-          difficulty={determineDifficulty({
+          rewardLevel={determineRewardLevel({
             contentObj,
             rootObj,
             rootType,
@@ -380,7 +380,7 @@ function Body({
           onCommentEdit={onEditRewardComment}
           stars={stars}
           className={css`
-            margin-top: ${commentsHidden && difficulty ? '1rem' : ''};
+            margin-top: ${commentsHidden && rewardLevel ? '1rem' : ''};
             margin-left: -1px;
             margin-right: -1px;
             @media (max-width: ${mobileMaxWidth}) {
@@ -448,16 +448,16 @@ function Body({
     </ErrorBoundary>
   );
 
-  function determineDifficulty({ contentObj, rootType, rootObj, targetObj }) {
+  function determineRewardLevel({ contentObj, rootType, rootObj, targetObj }) {
     const rootDifficulty =
       rootType === 'video' || rootType === 'url'
-        ? rootObj.difficulty > 0
+        ? rootObj.rewardLevel > 0
           ? 1
           : 0
-        : rootObj.difficulty;
+        : rootObj.rewardLevel;
     return contentObj.byUser
       ? 5
-      : targetObj.subject?.difficulty || rootDifficulty;
+      : targetObj.subject?.rewardLevel || rootDifficulty;
   }
 
   async function handleCommentSubmit(params) {
@@ -500,7 +500,7 @@ function Body({
   function xpButtonDisabled() {
     return determineXpButtonDisabled({
       stars,
-      difficulty: determineDifficulty({
+      rewardLevel: determineRewardLevel({
         contentObj,
         rootObj,
         rootType,
@@ -561,7 +561,7 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    canEditDifficulty: state.UserReducer.canEditDifficulty,
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
     canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })

@@ -536,16 +536,16 @@ export const setDefaultSearchFilter = async ({ filter, dispatch }) => {
   }
 };
 
-export const setDifficulty = async ({
-  difficulty,
+export const updateRewardLevel = async ({
+  rewardLevel,
   contentId,
   dispatch,
   type
 }) => {
   try {
     await request.put(
-      `${URL}/content/difficulty`,
-      { difficulty, contentId, type },
+      `${URL}/content/rewardLevel`,
+      { rewardLevel, contentId, type },
       auth()
     );
     return Promise.resolve();

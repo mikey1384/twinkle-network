@@ -233,7 +233,7 @@ function PlaylistCarousel({
             id: thumb.videoId,
             byUser: thumb.byUser,
             content: thumb.content,
-            difficulty: thumb.difficulty,
+            rewardLevel: thumb.rewardLevel,
             title: thumb.video_title,
             description: thumb.video_description,
             uploaderName: thumb.video_uploader,

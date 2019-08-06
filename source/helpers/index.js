@@ -43,12 +43,12 @@ export function textIsOverflown(element) {
 }
 
 export function determineXpButtonDisabled({
-  difficulty,
+  rewardLevel,
   stars,
   myId,
   xpRewardInterfaceShown
 }) {
-  const maxStars = returnMaxStars({ difficulty });
+  const maxStars = returnMaxStars({ rewardLevel });
   if (xpRewardInterfaceShown) return 'Reward';
   const numTotalStars = stars.reduce(
     (prev, star) => prev + star.rewardAmount,

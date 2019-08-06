@@ -74,7 +74,7 @@ export default function Playlist({
               to={`/videos/${video.id}?playlist=${playlistId}`}
             >
               <VideoThumbImage
-                difficulty={video.difficulty}
+                rewardLevel={video.rewardLevel}
                 videoId={video.id}
                 src={`https://img.youtube.com/vi/${
                   video.content

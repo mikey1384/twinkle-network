@@ -29,7 +29,7 @@ VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
   chatMode: PropTypes.bool,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
   hasHqThumb: PropTypes.number,
@@ -55,7 +55,7 @@ function VideoPlayer({
   currentVideoSlot,
   emptyCurrentVideoSlot,
   fillCurrentVideoSlot,
-  difficulty,
+  rewardLevel,
   hasHqThumb,
   minimized,
   onEdit,
@@ -83,7 +83,7 @@ function VideoPlayer({
   const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
-  const rewardAmountRef = useRef(difficulty * xp);
+  const rewardAmountRef = useRef(rewardLevel * xp);
   const userIsLevel2 = twinkleXP >= 1000000;
   const requiredDurationCap = userIsLevel2
     ? 300
@@ -99,7 +99,7 @@ function VideoPlayer({
   }, []);
 
   useEffect(() => {
-    rewardAmountRef.current = difficulty * xp;
+    rewardAmountRef.current = rewardLevel * xp;
     if (videoCode && typeof hasHqThumb !== 'number') {
       fetchVideoThumb();
     } else {
@@ -107,7 +107,7 @@ function VideoPlayer({
       setImageUrl(`https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`);
     }
 
-    if (!!difficulty && userId) {
+    if (!!rewardLevel && userId) {
       checkXpEarned();
     }
 
@@ -145,7 +145,7 @@ function VideoPlayer({
         console.error(error.response || error);
       }
     }
-  }, [difficulty, userId]);
+  }, [rewardLevel, userId]);
 
   useEffect(() => {
     if (onEdit === true) onVideoStop();
@@ -181,7 +181,7 @@ function VideoPlayer({
 
   useEffect(() => {
     const alreadyEarned = xpEarned || justEarned;
-    if (started && !!difficulty && userId && !alreadyEarned) {
+    if (started && !!rewardLevel && userId && !alreadyEarned) {
       onVideoStop();
       PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
@@ -189,13 +189,13 @@ function VideoPlayer({
 
   const meterColor = xpEarned
     ? Color.green()
-    : difficulty === 5
+    : rewardLevel === 5
     ? Color.gold()
-    : difficulty === 4
+    : rewardLevel === 4
     ? Color.brownOrange()
-    : difficulty === 3
+    : rewardLevel === 3
     ? Color.orange()
-    : difficulty === 2
+    : rewardLevel === 2
     ? Color.pink()
     : Color.logoBlue();
   return (
@@ -328,7 +328,7 @@ function VideoPlayer({
           />
         ) : null}
       </div>
-      {(!userId || xpLoaded) && !!difficulty && (!started || xpEarned) && (
+      {(!userId || xpLoaded) && !!rewardLevel && (!started || xpEarned) && (
         <div
           style={{
             background: meterColor,
@@ -343,7 +343,7 @@ function VideoPlayer({
         >
           {!xpEarned && (
             <div>
-              {[...Array(difficulty)].map((elem, index) => (
+              {[...Array(rewardLevel)].map((elem, index) => (
                 <Icon key={index} icon="star" />
               ))}
             </div>
@@ -352,18 +352,18 @@ function VideoPlayer({
             {xpEarned
               ? 'You have already earned XP from this video'
               : ` Watch this video and earn ${addCommasToNumber(
-                  difficulty * xp
+                  rewardLevel * xp
                 )} XP`}
           </div>
         </div>
       )}
-      {!xpEarned && !!difficulty && userId && started && (
+      {!xpEarned && !!rewardLevel && userId && started && (
         <ProgressBar
           progress={progress}
           noBorderRadius={stretch}
           color={justEarned ? Color.green() : meterColor}
           text={
-            justEarned ? `Earned ${addCommasToNumber(difficulty * xp)} XP!` : ''
+            justEarned ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!` : ''
           }
         />
       )}
@@ -394,7 +394,7 @@ function VideoPlayer({
     }
     const authorization = auth();
     const authExists = !!authorization.headers.authorization;
-    if (authExists && !!difficulty && !(justEarned || xpEarned)) {
+    if (authExists && !!rewardLevel && !(justEarned || xpEarned)) {
       try {
         request.put(
           `${VIDEO_URL}/currentlyWatching`,
@@ -414,7 +414,7 @@ function VideoPlayer({
   }
 
   async function increaseProgress() {
-    if (!!difficulty && !xpEarned && !justEarned) {
+    if (!!rewardLevel && !xpEarned && !justEarned) {
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
       }
@@ -475,7 +475,7 @@ function VideoPlayer({
           `${VIDEO_URL}/duration`,
           {
             videoId,
-            difficulty,
+            rewardLevel,
             xpEarned,
             watchCode: watchCodeRef.current
           },
@@ -485,7 +485,7 @@ function VideoPlayer({
         if (
           currentlyWatchingAnotherVideo &&
           !xpEarned &&
-          !!difficulty &&
+          !!rewardLevel &&
           !justEarned
         ) {
           PlayerRef.current.getInternalPlayer()?.pauseVideo?.();

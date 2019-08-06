@@ -93,7 +93,7 @@ const categoryObj = {
   },
   challenges: {
     filter: 'post',
-    orderBy: 'difficulty'
+    orderBy: 'rewardLevel'
   },
   responses: {
     filter: 'comment',
@@ -309,7 +309,7 @@ function Stories({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
-                    onSetDifficulty={setDifficulty}
+                    onSetRewardLevel={setDifficulty}
                     onShowComments={showFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={userId}

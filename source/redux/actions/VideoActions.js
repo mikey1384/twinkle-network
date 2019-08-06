@@ -226,10 +226,10 @@ export const postPlaylist = data => ({
   data
 });
 
-export const setDifficulty = ({ videoId, difficulty }) => ({
+export const setDifficulty = ({ videoId, rewardLevel }) => ({
   type: VIDEO.SET_DIFFICULTY,
   videoId,
-  difficulty
+  rewardLevel
 });
 
 export const setSearchedPlaylists = ({ playlists, loadMoreButton }) => ({

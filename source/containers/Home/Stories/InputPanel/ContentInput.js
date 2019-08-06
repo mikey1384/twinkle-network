@@ -1,10 +1,6 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Textarea from 'components/Texts/Textarea';
-import Button from 'components/Button';
-import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
-import Input from 'components/Texts/Input';
 import { scrollElementToCenter } from 'helpers';
 import {
   exceedsCharLimit,
@@ -14,11 +10,15 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import { uploadFeedContent } from 'redux/actions/FeedActions';
-import Banner from 'components/Banner';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import { uploadFeedContent } from 'redux/actions/FeedActions';
+import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
+import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
+import Input from 'components/Texts/Input';
+import Banner from 'components/Banner';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
@@ -38,7 +38,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
     isVideo: false,
     title: '',
     description: '',
-    difficulty: 0
+    rewardLevel: 0
   });
   const [submitting, setSubmitting] = useState(false);
   const [urlHelper, setUrlHelper] = useState('');
@@ -192,11 +192,11 @@ function ContentInput({ dispatch, uploadFeedContent }) {
                 padding: '1rem',
                 fontSize: '3rem'
               }}
-              difficulty={form.difficulty}
-              onSetDifficulty={difficulty =>
+              rewardLevel={form.rewardLevel}
+              onSetRewardLevel={rewardLevel =>
                 setForm(form => ({
                   ...form,
-                  difficulty
+                  rewardLevel
                 }))
               }
             />

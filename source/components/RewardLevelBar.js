@@ -4,25 +4,25 @@ import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 
-DifficultyBar.propTypes = {
+RewardLevelBar.propTypes = {
   className: PropTypes.string,
-  difficulty: PropTypes.number.isRequired,
+  rewardLevel: PropTypes.number.isRequired,
   style: PropTypes.object
 };
 
-export default function DifficultyBar({ className, difficulty, style }) {
+export default function RewardLevelBar({ className, rewardLevel, style }) {
   const stars = [];
-  for (let i = 0; i < difficulty; i++) {
+  for (let i = 0; i < rewardLevel; i++) {
     stars.push(<Icon key={i} icon="star" style={{ marginLeft: '0.2rem' }} />);
   }
   const barColor =
-    difficulty === 5
+    rewardLevel === 5
       ? Color.gold()
-      : difficulty === 4
+      : rewardLevel === 4
       ? Color.brownOrange()
-      : difficulty === 3
+      : rewardLevel === 3
       ? Color.orange()
-      : difficulty === 2
+      : rewardLevel === 2
       ? Color.pink()
       : Color.logoBlue();
   return (
@@ -39,7 +39,7 @@ export default function DifficultyBar({ className, difficulty, style }) {
       }}
     >
       <div>Reward Level: {stars}</div>
-      <div>Earn up to {addCommasToNumber(difficulty * 2000)} XP</div>
+      <div>Earn up to {addCommasToNumber(rewardLevel * 2000)} XP</div>
     </div>
   );
 }

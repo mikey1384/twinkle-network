@@ -259,7 +259,7 @@ function NavMenu({
             }`}
           >
             <VideoThumbImage
-              difficulty={video.difficulty}
+              rewardLevel={video.rewardLevel}
               videoId={video.videoId}
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
             />

@@ -33,7 +33,7 @@ Details.propTypes = {
   changingPage: PropTypes.bool,
   content: PropTypes.string.isRequired,
   description: PropTypes.string,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   likeVideo: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -62,7 +62,7 @@ function Details({
   changeByUserStatus,
   changingPage,
   content,
-  difficulty,
+  rewardLevel,
   likeVideo,
   userId,
   uploader,
@@ -188,7 +188,7 @@ function Details({
               byUser={byUser}
               canStar={canStar}
               changeByUserStatus={changeByUserStatus}
-              difficulty={difficulty}
+              rewardLevel={rewardLevel}
               likes={likes}
               likeVideo={likeVideo}
               setDifficulty={handleSetDifficulty}
@@ -244,7 +244,7 @@ function Details({
               skeuomorphic
               color="pink"
               disabled={determineXpButtonDisabled({
-                difficulty: byUser ? 5 : 0,
+                rewardLevel: byUser ? 5 : 0,
                 myId: userId,
                 xpRewardInterfaceShown,
                 stars
@@ -254,7 +254,7 @@ function Details({
               <Icon icon="certificate" />
               <span style={{ marginLeft: '0.7rem' }}>
                 {determineXpButtonDisabled({
-                  difficulty: byUser ? 5 : 0,
+                  rewardLevel: byUser ? 5 : 0,
                   myId: userId,
                   xpRewardInterfaceShown,
                   stars
@@ -265,7 +265,7 @@ function Details({
         </div>
         {xpRewardInterfaceShown && (
           <XPRewardInterface
-            difficulty={byUser ? 5 : 0}
+            rewardLevel={byUser ? 5 : 0}
             stars={stars}
             contentType="video"
             contentId={Number(videoId)}

@@ -5,7 +5,7 @@ import LongText from 'components/Texts/LongText';
 import VideoPlayer from 'components/VideoPlayer';
 import ContentEditor from './ContentEditor';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import DifficultyBar from 'components/DifficultyBar';
+import RewardLevelBar from 'components/RewardLevelBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
 import HiddenComment from 'components/HiddenComment';
@@ -61,8 +61,8 @@ export default function MainContent({
         {(type === 'video' || (type === 'subject' && rootType === 'video')) && (
           <VideoPlayer
             stretch
-            difficulty={
-              type === 'subject' ? rootObj.difficulty : contentObj.difficulty
+            rewardLevel={
+              type === 'subject' ? rootObj.rewardLevel : contentObj.rewardLevel
             }
             byUser={!!(rootObj.byUser || contentObj.byUser)}
             onEdit={isEditing}
@@ -80,8 +80,8 @@ export default function MainContent({
         )}
         {type === 'subject' &&
           !contentObj.rootObj.id &&
-          !!contentObj.difficulty && (
-            <DifficultyBar
+          !!contentObj.rewardLevel && (
+            <RewardLevelBar
               className={css`
                 margin-left: -1px;
                 margin-right: -1px;
@@ -93,7 +93,7 @@ export default function MainContent({
               style={{
                 marginBottom: rootType === 'url' ? '-0.5rem' : 0
               }}
-              difficulty={contentObj.difficulty}
+              rewardLevel={contentObj.rewardLevel}
             />
           )}
         {(type === 'url' || type === 'video') && (
@@ -213,9 +213,9 @@ export default function MainContent({
           />
         )}
         {type === 'subject' &&
-          !!contentObj.difficulty &&
+          !!contentObj.rewardLevel &&
           !!contentObj.rootObj.id && (
-            <DifficultyBar
+            <RewardLevelBar
               className={css`
                 margin-left: -1px;
                 margin-right: -1px;
@@ -232,7 +232,7 @@ export default function MainContent({
                     ? '-0.5rem'
                     : 0
               }}
-              difficulty={contentObj.difficulty}
+              rewardLevel={contentObj.rewardLevel}
             />
           )}
       </div>

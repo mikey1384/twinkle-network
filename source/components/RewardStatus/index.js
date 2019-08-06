@@ -12,7 +12,7 @@ import Starmarks from './Starmarks';
 
 RewardStatus.propTypes = {
   className: PropTypes.string,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   userId: PropTypes.number,
   noMarginForEditButton: PropTypes.bool,
   onCommentEdit: PropTypes.func,
@@ -22,7 +22,7 @@ RewardStatus.propTypes = {
 
 function RewardStatus({
   className,
-  difficulty,
+  rewardLevel,
   noMarginForEditButton,
   onCommentEdit,
   stars = [],
@@ -40,7 +40,7 @@ function RewardStatus({
   stars = starsWithoutComment
     .concat(starsWithComment)
     .concat(finalStar.id ? [finalStar] : []);
-  const maxStars = returnMaxStars({ difficulty });
+  const maxStars = returnMaxStars({ rewardLevel });
   let rewardedStars = stars.reduce((prev, star) => prev + star.rewardAmount, 0);
   rewardedStars = Math.min(rewardedStars, maxStars);
   if (!stars || stars.length === 0) return null;

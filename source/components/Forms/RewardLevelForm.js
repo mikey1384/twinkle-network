@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 
 RewardLevelForm.propTypes = {
-  difficulty: PropTypes.number.isRequired,
-  onSetDifficulty: PropTypes.func.isRequired,
+  rewardLevel: PropTypes.number.isRequired,
+  onSetRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
 export default function RewardLevelForm({
-  difficulty,
-  onSetDifficulty,
+  rewardLevel,
+  onSetRewardLevel,
   style
 }) {
   return (
@@ -18,33 +18,33 @@ export default function RewardLevelForm({
       <div style={{ display: 'flex' }}>
         <Icon
           key={0}
-          icon={difficulty > 0 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 0 ? 'star' : ['far', 'star']}
           style={{ cursor: 'pointer' }}
-          onClick={() => onSetDifficulty(1)}
+          onClick={() => onSetRewardLevel(1)}
         />
         <Icon
           key={1}
-          icon={difficulty > 1 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 1 ? 'star' : ['far', 'star']}
           style={{ cursor: 'pointer' }}
-          onClick={() => onSetDifficulty(2)}
+          onClick={() => onSetRewardLevel(2)}
         />
         <Icon
           key={2}
-          icon={difficulty > 2 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 2 ? 'star' : ['far', 'star']}
           style={{ cursor: 'pointer' }}
-          onClick={() => onSetDifficulty(3)}
+          onClick={() => onSetRewardLevel(3)}
         />
         <Icon
           key={3}
-          icon={difficulty > 3 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 3 ? 'star' : ['far', 'star']}
           style={{ cursor: 'pointer' }}
-          onClick={() => onSetDifficulty(4)}
+          onClick={() => onSetRewardLevel(4)}
         />
         <Icon
           key={4}
-          icon={difficulty > 4 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 4 ? 'star' : ['far', 'star']}
           style={{ cursor: 'pointer' }}
-          onClick={() => onSetDifficulty(5)}
+          onClick={() => onSetRewardLevel(5)}
         />
       </div>
       <a
@@ -54,7 +54,7 @@ export default function RewardLevelForm({
           userSelect: 'none',
           marginTop: '0.5rem'
         }}
-        onClick={() => onSetDifficulty(0)}
+        onClick={() => onSetRewardLevel(0)}
       >
         Clear
       </a>

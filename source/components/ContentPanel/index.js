@@ -38,7 +38,7 @@ ContentPanel.propTypes = {
   onLoadTags: PropTypes.func,
   onLoadRepliesOfReply: PropTypes.func,
   onReplySubmit: PropTypes.func.isRequired,
-  onSetDifficulty: PropTypes.func,
+  onSetRewardLevel: PropTypes.func,
   onShowComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
   onTargetCommentSubmit: PropTypes.func.isRequired,
@@ -69,7 +69,7 @@ export default function ContentPanel({
   onLoadTags,
   onLoadRepliesOfReply,
   onReplySubmit,
-  onSetDifficulty,
+  onSetRewardLevel,
   onShowComments,
   onTargetCommentSubmit,
   style = {},
@@ -120,7 +120,7 @@ export default function ContentPanel({
         onLoadTags,
         onLoadRepliesOfReply,
         onReplySubmit,
-        onSetDifficulty,
+        onSetRewardLevel,
         onShowComments,
         onTargetCommentSubmit
       }}

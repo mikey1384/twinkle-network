@@ -33,7 +33,7 @@ VideoThumb.propTypes = {
     byUser: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
-    difficulty: PropTypes.number,
+    rewardLevel: PropTypes.number,
     likes: PropTypes.array,
     title: PropTypes.string.isRequired
   }).isRequired
@@ -107,7 +107,7 @@ function VideoThumb({
             <VideoThumbImage
               height="65%"
               videoId={video.id}
-              difficulty={video.difficulty}
+              rewardLevel={video.rewardLevel}
               src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
             />
           </Link>

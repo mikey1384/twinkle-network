@@ -637,7 +637,7 @@ export default function FeedReducer(state = defaultState, action) {
             feed.id === action.contentId
             ? {
                 ...feed,
-                difficulty: action.difficulty
+                rewardLevel: action.rewardLevel
               }
             : {
                 ...feed,
@@ -646,7 +646,7 @@ export default function FeedReducer(state = defaultState, action) {
                     feed.rootId === action.contentId
                     ? {
                         ...feed.rootObj,
-                        difficulty: action.difficulty
+                        rewardLevel: action.rewardLevel
                       }
                     : feed.rootObj
                   : undefined,
@@ -657,7 +657,7 @@ export default function FeedReducer(state = defaultState, action) {
                         ...feed.targetObj,
                         subject: {
                           ...feed.targetObj.subject,
-                          difficulty: action.difficulty
+                          rewardLevel: action.rewardLevel
                         }
                       }
                     : feed.targetObj

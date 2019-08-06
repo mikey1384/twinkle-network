@@ -247,7 +247,7 @@ function TargetContent({
                 <XPRewardInterface
                   contentType={'comment'}
                   contentId={comment.id}
-                  difficulty={determineDifficulty({
+                  rewardLevel={determineRewardLevel({
                     rootObj,
                     rootType,
                     subject
@@ -275,7 +275,7 @@ function TargetContent({
                       ? '0.5rem'
                       : '1rem'
                 }}
-                difficulty={determineDifficulty({
+                rewardLevel={determineRewardLevel({
                   rootObj,
                   rootType,
                   subject
@@ -328,21 +328,21 @@ function TargetContent({
 
   function xpButtonDisabled() {
     return determineXpButtonDisabled({
-      difficulty: determineDifficulty({ rootObj, rootType, subject }),
+      rewardLevel: determineRewardLevel({ rootObj, rootType, subject }),
       stars: comment.stars,
       myId,
       xpRewardInterfaceShown
     });
   }
 
-  function determineDifficulty({ rootType, rootObj, subject }) {
+  function determineRewardLevel({ rootType, rootObj, subject }) {
     const rootDifficulty =
       rootType === 'video' || rootType === 'url'
-        ? rootObj.difficulty > 0
+        ? rootObj.rewardLevel > 0
           ? 1
           : 0
-        : rootObj.difficulty;
-    return subject?.difficulty || rootDifficulty;
+        : rootObj.rewardLevel;
+    return subject?.rewardLevel || rootDifficulty;
   }
 
   function onLikeClick(likes) {

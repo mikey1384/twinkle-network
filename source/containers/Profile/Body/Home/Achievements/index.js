@@ -93,7 +93,7 @@ export default function Achievements({
             onReplySubmit={data =>
               onReplySubmit({ ...data, feedId: contentObj.feedId })
             }
-            onSetDifficulty={onSetDifficulty}
+            onSetRewardLevel={onSetRewardLevel}
             onShowComments={onShowComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
           />
@@ -268,12 +268,12 @@ export default function Achievements({
     });
   }
 
-  function onSetDifficulty({ type, contentId, difficulty }) {
+  function onSetRewardLevel({ type, contentId, rewardLevel }) {
     dispatch({
       type: 'SET_DIFFICULTY',
       contentType: type,
       contentId,
-      difficulty
+      rewardLevel
     });
   }
 
@@ -844,7 +844,7 @@ function reducer(state, action) {
             contentObj.id === action.contentId
             ? {
                 ...contentObj,
-                difficulty: action.difficulty
+                rewardLevel: action.rewardLevel
               }
             : {
                 ...contentObj,
@@ -853,7 +853,7 @@ function reducer(state, action) {
                     contentObj.rootId === action.contentId
                     ? {
                         ...contentObj.rootObj,
-                        difficulty: action.difficulty
+                        rewardLevel: action.rewardLevel
                       }
                     : contentObj.rootObj
                   : undefined,
@@ -864,7 +864,7 @@ function reducer(state, action) {
                         ...contentObj.targetObj,
                         subject: {
                           ...contentObj.targetObj.subject,
-                          difficulty: action.difficulty
+                          rewardLevel: action.rewardLevel
                         }
                       }
                     : contentObj.targetObj

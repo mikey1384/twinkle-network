@@ -234,7 +234,7 @@ function Posts({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
-                    onSetDifficulty={setDifficulty}
+                    onSetRewardLevel={setDifficulty}
                     onShowComments={showFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={myId}

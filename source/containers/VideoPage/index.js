@@ -88,7 +88,7 @@ function VideoPage({
       commentsLoadMoreButton,
       content,
       description,
-      difficulty,
+      rewardLevel,
       hasHqThumb,
       likes,
       questions,
@@ -118,7 +118,7 @@ function VideoPage({
     onLoadMoreSubjects,
     onLoadMoreSubjectComments,
     onLoadMoreSubjectReplies,
-    onSetDifficulty,
+    onSetRewardLevel,
     onSetSubjectDifficulty,
     onUploadComment,
     onUploadReply,
@@ -233,7 +233,7 @@ function VideoPage({
               <div style={{ marginTop: '2rem' }}>
                 {!questionsBuilderShown && (
                   <VideoPlayer
-                    difficulty={difficulty}
+                    rewardLevel={rewardLevel}
                     byUser={!!byUser}
                     key={videoId}
                     hasHqThumb={hasHqThumb}
@@ -248,7 +248,7 @@ function VideoPage({
                 {!watchTabActive && questions.length > 0 && (
                   <Carousel
                     allowDrag={false}
-                    style={{ marginTop: !!difficulty && '1rem' }}
+                    style={{ marginTop: !!rewardLevel && '1rem' }}
                     progressBar
                     showQuestionsBuilder={() => setQuestionsBuilderShown(true)}
                     userIsUploader={userIsUploader}
@@ -301,7 +301,7 @@ function VideoPage({
                 attachStar={onAttachStar}
                 byUser={!!byUser}
                 changingPage={changingPage}
-                difficulty={difficulty}
+                rewardLevel={rewardLevel}
                 likes={likes}
                 likeVideo={handleLikeVideo}
                 content={content}
@@ -323,7 +323,7 @@ function VideoPage({
               />
               <RewardStatus
                 contentType="video"
-                difficulty={byUser ? 5 : 0}
+                rewardLevel={byUser ? 5 : 0}
                 onCommentEdit={onEditRewardComment}
                 style={{
                   fontSize: '1.4rem'
@@ -343,7 +343,7 @@ function VideoPage({
               uploadSubject={onUploadSubject}
               contentId={videoId}
               type="video"
-              rootDifficulty={difficulty}
+              rootDifficulty={rewardLevel}
               commentActions={{
                 attachStar: onAttachStar,
                 editRewardComment: onEditRewardComment,
@@ -388,7 +388,7 @@ function VideoPage({
                 onRewardCommentEdit={onEditRewardComment}
                 parent={{
                   type: 'video',
-                  difficulty,
+                  rewardLevel,
                   id: Number(videoId),
                   uploader
                 }}
@@ -509,9 +509,9 @@ function VideoPage({
     }));
   }
 
-  function handleSetDifficulty({ contentId, difficulty }) {
-    onSetDifficulty({ contentId, difficulty });
-    setDifficulty({ videoId: Number(contentId), difficulty });
+  function handleSetDifficulty({ contentId, rewardLevel }) {
+    onSetRewardLevel({ contentId, rewardLevel });
+    setDifficulty({ videoId: Number(contentId), rewardLevel });
   }
 
   async function handleUploadQuestions(questions) {

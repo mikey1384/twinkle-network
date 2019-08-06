@@ -8,7 +8,7 @@ import StarButton from 'components/Buttons/StarButton';
 SideButtons.propTypes = {
   byUser: PropTypes.bool.isRequired,
   canStar: PropTypes.bool.isRequired,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   likeVideo: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
@@ -23,7 +23,7 @@ export default function SideButtons({
   byUser,
   canStar,
   changeByUserStatus,
-  difficulty,
+  rewardLevel,
   likes,
   likeVideo,
   setDifficulty,
@@ -57,8 +57,8 @@ export default function SideButtons({
               contentId={Number(videoId)}
               style={{ position: 'absolute', top: 0, left: 0 }}
               type="video"
-              difficulty={difficulty}
-              onSetDifficulty={setDifficulty}
+              rewardLevel={rewardLevel}
+              onSetRewardLevel={setDifficulty}
               onToggleByUser={onToggleByUser}
               uploader={uploader}
             />

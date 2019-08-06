@@ -207,7 +207,7 @@ function Reply({
                         style={{ marginLeft: '1rem' }}
                         onClick={() => setXpRewardInterfaceShown(true)}
                         disabled={determineXpButtonDisabled({
-                          difficulty: determineDifficulty({
+                          rewardLevel: determineRewardLevel({
                             parent,
                             subject
                           }),
@@ -219,7 +219,7 @@ function Reply({
                         <Icon icon="certificate" />
                         <span style={{ marginLeft: '0.7rem' }}>
                           {determineXpButtonDisabled({
-                            difficulty: determineDifficulty({
+                            rewardLevel: determineRewardLevel({
                               parent,
                               subject
                             }),
@@ -244,7 +244,7 @@ function Reply({
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={determineDifficulty({ parent, subject })}
+                rewardLevel={determineRewardLevel({ parent, subject })}
                 stars={stars}
                 contentType="comment"
                 contentId={reply.id}
@@ -257,7 +257,7 @@ function Reply({
             )}
             <RewardStatus
               noMarginForEditButton
-              difficulty={determineDifficulty({ parent, subject })}
+              rewardLevel={determineRewardLevel({ parent, subject })}
               onCommentEdit={onRewardCommentEdit}
               style={{
                 fontSize: '1.5rem',
@@ -297,26 +297,26 @@ function Reply({
     </ErrorBoundary>
   );
 
-  function determineDifficulty({ parent, subject }) {
-    if (parent.type === 'subject' && parent.difficulty > 0) {
-      return parent.difficulty;
+  function determineRewardLevel({ parent, subject }) {
+    if (parent.type === 'subject' && parent.rewardLevel > 0) {
+      return parent.rewardLevel;
     }
-    if (parent.rootType === 'subject' && parent.rootObj?.difficulty > 0) {
-      return parent.rootObj.difficulty;
+    if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
+      return parent.rootObj.rewardLevel;
     }
     if (parent.type === 'video' || parent.type === 'url') {
-      if (subject?.difficulty) {
-        return subject?.difficulty;
+      if (subject?.rewardLevel) {
+        return subject?.rewardLevel;
       }
-      if (parent.difficulty > 0) {
+      if (parent.rewardLevel > 0) {
         return 1;
       }
     }
     if (parent.rootType === 'video' || parent.rootType === 'url') {
-      if (subject?.difficulty) {
-        return subject?.difficulty;
+      if (subject?.rewardLevel) {
+        return subject?.rewardLevel;
       }
-      if (parent.rootObj?.difficulty > 0) {
+      if (parent.rootObj?.rewardLevel > 0) {
         return 1;
       }
     }

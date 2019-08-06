@@ -156,11 +156,11 @@ export const loadTags = ({ type, contentId, tags }) => ({
   tags
 });
 
-export const setDifficulty = ({ type, contentId, difficulty }) => ({
+export const setDifficulty = ({ type, contentId, rewardLevel }) => ({
   type: FEED.SET_DIFFICULTY,
   contentType: type,
   contentId,
-  difficulty
+  rewardLevel
 });
 
 export const setCurrentSection = section => ({

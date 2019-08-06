@@ -12,11 +12,11 @@ import { connect } from 'react-redux';
 StarButton.propTypes = {
   byUser: PropTypes.bool,
   contentId: PropTypes.number,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   direction: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   filled: PropTypes.bool,
-  onSetDifficulty: PropTypes.func,
+  onSetRewardLevel: PropTypes.func,
   onToggleByUser: PropTypes.func,
   style: PropTypes.object,
   type: PropTypes.string.isRequired,
@@ -26,11 +26,11 @@ StarButton.propTypes = {
 function StarButton({
   byUser,
   contentId,
-  difficulty,
+  rewardLevel,
   direction = 'left',
   dispatch,
   filled,
-  onSetDifficulty,
+  onSetRewardLevel,
   onToggleByUser,
   uploader,
   style,
@@ -45,8 +45,8 @@ function StarButton({
     <ErrorBoundary>
       <div ref={StarButtonRef} style={style}>
         <Button
-          color={!!difficulty && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
-          filled={!!difficulty || byUser || filled}
+          color={!!rewardLevel && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
+          filled={!!rewardLevel || byUser || filled}
           onClick={onClick}
         >
           <Icon icon="star" />
@@ -73,9 +73,9 @@ function StarButton({
         <RewardLevelModal
           type={type}
           contentId={contentId}
-          difficulty={difficulty}
+          rewardLevel={rewardLevel}
           onSubmit={async data => {
-            await onSetDifficulty(data);
+            await onSetRewardLevel(data);
             setRewardLevelModalShown(false);
           }}
           onHide={() => setRewardLevelModalShown(false)}

@@ -4,7 +4,7 @@ import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
 import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
-import DifficultyBar from 'components/DifficultyBar';
+import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
@@ -104,7 +104,7 @@ function ContentListItem({
                 }}
               >
                 <VideoThumbImage
-                  difficulty={contentObj.difficulty}
+                  rewardLevel={contentObj.rewardLevel}
                   videoId={contentObj.id}
                   src={`https://img.youtube.com/vi/${
                     contentObj.content
@@ -269,7 +269,7 @@ function ContentListItem({
               >
                 {contentObj.rootObj?.type === 'video' && (
                   <VideoThumbImage
-                    difficulty={contentObj.rootObj.difficulty}
+                    rewardLevel={contentObj.rootObj.rewardLevel}
                     videoId={contentObj.rootObj.id}
                     src={`https://img.youtube.com/vi/${
                       contentObj.rootObj.content
@@ -302,17 +302,17 @@ function ContentListItem({
             />
           )}
         </div>
-        {!!contentObj.difficulty && type === 'subject' && (
+        {!!contentObj.rewardLevel && type === 'subject' && (
           <div
             style={{
               marginLeft: '-1px',
               marginRight: '-1px',
-              paddingBottom: !!contentObj.difficulty && '1rem'
+              paddingBottom: !!contentObj.rewardLevel && '1rem'
             }}
           >
-            <DifficultyBar
+            <RewardLevelBar
               style={{ fontSize: '1.3rem' }}
-              difficulty={contentObj.difficulty}
+              rewardLevel={contentObj.rewardLevel}
             />
           </div>
         )}

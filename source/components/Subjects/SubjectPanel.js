@@ -9,7 +9,7 @@ import LongText from 'components/Texts/LongText';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
-import DifficultyBar from 'components/DifficultyBar';
+import RewardLevelBar from 'components/RewardLevelBar';
 import Link from 'components/Link';
 import withContext from 'components/Wrappers/withContext';
 import SecretAnswer from 'components/SecretAnswer';
@@ -35,10 +35,10 @@ SubjectPanel.propTypes = {
   authLevel: PropTypes.number,
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
-  canEditDifficulty: PropTypes.bool,
+  canEditRewardLevel: PropTypes.bool,
   comments: PropTypes.array.isRequired,
   description: PropTypes.string,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
   editRewardComment: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
@@ -74,13 +74,13 @@ function SubjectPanel({
   authLevel,
   canDelete,
   canEdit,
-  canEditDifficulty,
+  canEditRewardLevel,
   contentId,
   description,
   dispatch,
   id,
   title,
-  difficulty,
+  rewardLevel,
   editRewardComment,
   uploaderAuthLevel,
   username,
@@ -142,7 +142,7 @@ function SubjectPanel({
         fontSize: '1.5rem'
       }}
     >
-      {difficulty > 0 && <DifficultyBar difficulty={difficulty} />}
+      {rewardLevel > 0 && <RewardLevelBar rewardLevel={rewardLevel} />}
       <div style={{ padding: '1rem' }}>
         <div
           style={{
@@ -164,12 +164,12 @@ function SubjectPanel({
             </Link>
           )}
           <div style={{ display: 'flex' }}>
-            {canEditDifficulty && (
+            {canEditRewardLevel && (
               <StarButton
                 contentId={id}
                 type="subject"
-                difficulty={difficulty}
-                onSetDifficulty={setSubjectDifficulty}
+                rewardLevel={rewardLevel}
+                onSetRewardLevel={setSubjectDifficulty}
               />
             )}
             <div>
@@ -321,10 +321,10 @@ function SubjectPanel({
               contentId={id}
               parent={{
                 id,
-                difficulty,
+                rewardLevel,
                 rootObj: {
                   id: contentId,
-                  difficulty: rootDifficulty,
+                  rewardLevel: rootDifficulty,
                   type
                 },
                 type: 'subject'
@@ -419,7 +419,7 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    canEditDifficulty: state.UserReducer.canEditDifficulty,
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
     profileTheme: state.UserReducer.profileTheme
   }),
   dispatch => ({ dispatch })

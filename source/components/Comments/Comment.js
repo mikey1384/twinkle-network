@@ -244,7 +244,7 @@ function Comment({
                             style={{ marginLeft: '0.7rem' }}
                             onClick={() => setXpRewardInterfaceShown(true)}
                             disabled={determineXpButtonDisabled({
-                              difficulty: determineDifficulty({
+                              rewardLevel: determineRewardLevel({
                                 parent,
                                 targetObj
                               }),
@@ -256,7 +256,7 @@ function Comment({
                             <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
                               {determineXpButtonDisabled({
-                                difficulty: determineDifficulty({
+                                rewardLevel: determineRewardLevel({
                                   parent,
                                   targetObj
                                 }),
@@ -281,7 +281,7 @@ function Comment({
             </div>
             {xpRewardInterfaceShown && (
               <XPRewardInterface
-                difficulty={determineDifficulty({ parent, targetObj })}
+                rewardLevel={determineRewardLevel({ parent, targetObj })}
                 stars={stars}
                 contentType="comment"
                 contentId={comment.id}
@@ -294,7 +294,7 @@ function Comment({
             )}
             {!isPreview && (
               <RewardStatus
-                difficulty={determineDifficulty({ parent, targetObj })}
+                rewardLevel={determineRewardLevel({ parent, targetObj })}
                 noMarginForEditButton
                 onCommentEdit={onRewardCommentEdit}
                 style={{
@@ -353,26 +353,26 @@ function Comment({
     </>
   );
 
-  function determineDifficulty({ parent, targetObj }) {
-    if (parent.type === 'subject' && parent.difficulty > 0) {
-      return parent.difficulty;
+  function determineRewardLevel({ parent, targetObj }) {
+    if (parent.type === 'subject' && parent.rewardLevel > 0) {
+      return parent.rewardLevel;
     }
-    if (parent.rootType === 'subject' && parent.rootObj?.difficulty > 0) {
-      return parent.rootObj.difficulty;
+    if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
+      return parent.rootObj.rewardLevel;
     }
     if (parent.type === 'video' || parent.type === 'url') {
-      if (targetObj.subject?.difficulty) {
-        return targetObj.subject?.difficulty;
+      if (targetObj.subject?.rewardLevel) {
+        return targetObj.subject?.rewardLevel;
       }
-      if (parent.difficulty > 0) {
+      if (parent.rewardLevel > 0) {
         return 1;
       }
     }
     if (parent.rootType === 'video' || parent.rootType === 'url') {
-      if (targetObj.subject?.difficulty) {
-        return targetObj.subject?.difficulty;
+      if (targetObj.subject?.rewardLevel) {
+        return targetObj.subject?.rewardLevel;
       }
-      if (parent.rootObj?.difficulty > 0) {
+      if (parent.rootObj?.rewardLevel > 0) {
         return 1;
       }
     }

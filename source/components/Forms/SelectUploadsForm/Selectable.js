@@ -64,7 +64,7 @@ function Selectable({
             <VideoThumbImage
               height="65%"
               videoId={item.id}
-              difficulty={item.difficulty}
+              rewardLevel={item.rewardLevel}
               src={`https://img.youtube.com/vi/${item.content}/mqdefault.jpg`}
             />
           ) : (

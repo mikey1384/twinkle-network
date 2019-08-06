@@ -38,7 +38,7 @@ function Content({
     onLoadMoreComments,
     onLoadMoreReplies,
     onLoadRepliesOfReply,
-    onSetDifficulty,
+    onSetRewardLevel,
     onTargetCommentSubmit,
     onUploadComment,
     onUploadReply
@@ -108,7 +108,7 @@ function Content({
             onLoadMoreReplies={onLoadMoreReplies}
             onLoadRepliesOfReply={onLoadRepliesOfReply}
             onReplySubmit={onUploadReply}
-            onSetDifficulty={onSetDifficulty}
+            onSetRewardLevel={onSetRewardLevel}
             onShowComments={onLoadComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
           />

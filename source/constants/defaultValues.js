@@ -81,10 +81,10 @@ export const profileThemes = {
   }
 };
 
-export const returnMaxStars = ({ difficulty }) => {
+export const returnMaxStars = ({ rewardLevel }) => {
   let maxStars = 5;
-  if (difficulty > 0) {
-    maxStars = 10 * difficulty;
+  if (rewardLevel > 0) {
+    maxStars = 10 * rewardLevel;
   }
   return maxStars;
 };

@@ -358,7 +358,7 @@ export default function VideoReducer(state = defaultState, action) {
           return video.id === action.videoId
             ? {
                 ...video,
-                difficulty: action.difficulty
+                rewardLevel: action.rewardLevel
               }
             : video;
         }),
@@ -368,7 +368,7 @@ export default function VideoReducer(state = defaultState, action) {
             video.videoId === action.videoId
               ? {
                   ...video,
-                  difficulty: action.difficulty
+                  rewardLevel: action.rewardLevel
                 }
               : video
           )
@@ -379,7 +379,7 @@ export default function VideoReducer(state = defaultState, action) {
             video.videoId === action.videoId
               ? {
                   ...video,
-                  difficulty: action.difficulty
+                  rewardLevel: action.rewardLevel
                 }
               : video
           )
@@ -390,7 +390,7 @@ export default function VideoReducer(state = defaultState, action) {
             video.videoId === action.videoId
               ? {
                   ...video,
-                  difficulty: action.difficulty
+                  rewardLevel: action.rewardLevel
                 }
               : video
           )

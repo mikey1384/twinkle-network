@@ -61,7 +61,7 @@ export default function SortableThumb({ id, onMove, video }) {
           <VideoThumbImage
             height="65%"
             videoId={video.id}
-            difficulty={video.difficulty}
+            rewardLevel={video.rewardLevel}
             src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
           />
         </div>

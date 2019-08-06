@@ -5,11 +5,11 @@ import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { connect } from 'react-redux';
-import { setDifficulty } from 'helpers/requestHelpers';
+import { updateRewardLevel } from 'helpers/requestHelpers';
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -19,13 +19,13 @@ RewardLevelModal.propTypes = {
 function RewardLevelModal({
   contentId,
   dispatch,
-  difficulty: initialDifficulty = 0,
+  rewardLevel: initialRewardLevel = 0,
   onSubmit,
   type,
   onHide
 }) {
   const [disabled, setDisabled] = useState(false);
-  const [difficulty, setDisplayDifficulty] = useState(initialDifficulty);
+  const [rewardLevel, setRewardLevel] = useState(initialRewardLevel);
   return (
     <Modal onHide={onHide}>
       <ErrorBoundary>
@@ -34,8 +34,8 @@ function RewardLevelModal({
         </header>
         <main style={{ fontSize: '3rem', paddingTop: 0 }}>
           <RewardLevelForm
-            difficulty={difficulty}
-            onSetDifficulty={setDisplayDifficulty}
+            rewardLevel={rewardLevel}
+            onSetRewardLevel={setRewardLevel}
             style={{ marginTop: '5rem', textAlign: 'center' }}
           />
         </main>
@@ -57,8 +57,8 @@ function RewardLevelModal({
 
   async function submit() {
     setDisabled(true);
-    await setDifficulty({ contentId, type, difficulty, dispatch });
-    onSubmit({ contentId, difficulty, type });
+    await updateRewardLevel({ contentId, type, rewardLevel, dispatch });
+    onSubmit({ contentId, rewardLevel, type });
   }
 }
 

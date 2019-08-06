@@ -14,7 +14,7 @@ const xp = rewardValue.star;
 
 VideoThumbImage.propTypes = {
   height: PropTypes.string,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   playIcon: PropTypes.bool,
   src: PropTypes.string.isRequired,
   userId: PropTypes.number,
@@ -22,7 +22,7 @@ VideoThumbImage.propTypes = {
 };
 
 function VideoThumbImage({
-  difficulty,
+  rewardLevel,
   height = '55%',
   playIcon,
   src,
@@ -56,7 +56,7 @@ function VideoThumbImage({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [videoId, difficulty, userId]);
+  }, [videoId, rewardLevel, userId]);
 
   return (
     <div
@@ -100,19 +100,19 @@ function VideoThumbImage({
           `}
         />
       )}
-      {!!difficulty && (
+      {!!rewardLevel && (
         <div
           style={{
             position: 'absolute',
             padding: '0.1rem 0.5rem',
             background:
-              difficulty === 5
+              rewardLevel === 5
                 ? Color.gold()
-                : difficulty === 4
+                : rewardLevel === 4
                 ? Color.brownOrange()
-                : difficulty === 3
+                : rewardLevel === 3
                 ? Color.orange()
-                : difficulty === 2
+                : rewardLevel === 2
                 ? Color.pink()
                 : Color.logoBlue(),
             fontSize: '1.5rem',
@@ -120,7 +120,7 @@ function VideoThumbImage({
             color: '#fff'
           }}
         >
-          {addCommasToNumber(difficulty * xp)} XP
+          {addCommasToNumber(rewardLevel * xp)} XP
         </div>
       )}
     </div>

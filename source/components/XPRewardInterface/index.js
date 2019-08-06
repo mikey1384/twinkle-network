@@ -21,7 +21,7 @@ import URL from 'constants/URL';
 XPRewardInterface.propTypes = {
   contentType: PropTypes.string.isRequired,
   contentId: PropTypes.number.isRequired,
-  difficulty: PropTypes.number,
+  rewardLevel: PropTypes.number,
   stars: PropTypes.array,
   uploaderId: PropTypes.number.isRequired,
   userId: PropTypes.number,
@@ -32,7 +32,7 @@ XPRewardInterface.propTypes = {
 function XPRewardInterface({
   contentId,
   contentType,
-  difficulty,
+  rewardLevel,
   noPadding,
   onRewardSubmit,
   stars = [],
@@ -54,7 +54,7 @@ function XPRewardInterface({
 
   useEffect(() => {
     setSelectedAmount(0);
-  }, [difficulty]);
+  }, [rewardLevel]);
 
   if (!userId || uploaderId === userId) return null;
   return (
@@ -92,7 +92,7 @@ function XPRewardInterface({
         style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
       >
         <MenuButtons
-          maxStars={returnMaxStars({ difficulty })}
+          maxStars={returnMaxStars({ rewardLevel })}
           selectedAmount={selectedAmount}
           setTwinkleTabActive={setTwinkleTabActive}
           setSelectedAmount={setSelectedAmount}
