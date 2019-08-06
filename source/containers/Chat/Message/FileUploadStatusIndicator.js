@@ -18,7 +18,7 @@ FileUploadStatusIndicator.propTypes = {
   userId: PropTypes.number,
   username: PropTypes.string,
   onSendFileMessage: PropTypes.func.isRequired,
-  partnerId: PropTypes.number,
+  recepientId: PropTypes.number,
   profilePicId: PropTypes.number,
   subjectId: PropTypes.number
 };
@@ -35,7 +35,7 @@ function FileUploadStatusIndicator({
   onSendFileMessage,
   userId,
   username,
-  partnerId,
+  recepientId,
   profilePicId,
   subjectId
 }) {
@@ -53,7 +53,7 @@ function FileUploadStatusIndicator({
         filePath,
         fileToUpload,
         userId,
-        partnerId,
+        recepientId,
         subjectId
       });
     }

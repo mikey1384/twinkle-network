@@ -18,6 +18,8 @@ import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Banner from 'components/Banner';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
+import { Color } from 'constants/css';
+import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -35,7 +37,8 @@ function ContentInput({ dispatch, uploadFeedContent }) {
     url: '',
     isVideo: false,
     title: '',
-    description: ''
+    description: '',
+    difficulty: 0
   });
   const [submitting, setSubmitting] = useState(false);
   const [urlHelper, setUrlHelper] = useState('');
@@ -178,7 +181,27 @@ function ContentInput({ dispatch, uploadFeedContent }) {
             </>
           )}
         </div>
-        {!buttonDisabled() && <div>here comes the reward level ui</div>}
+        {!buttonDisabled() && !urlHelper && (
+          <div style={{ background: Color.lightGray(), color: '#fff' }}>
+            <RewardLevelForm
+              style={{
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                padding: '1rem',
+                fontSize: '3rem'
+              }}
+              difficulty={form.difficulty}
+              onSetDifficulty={difficulty =>
+                setForm(form => ({
+                  ...form,
+                  difficulty
+                }))
+              }
+            />
+          </div>
+        )}
         {descriptionFieldShown && (
           <div className="button-container">
             <Button

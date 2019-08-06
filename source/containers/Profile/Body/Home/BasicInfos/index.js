@@ -257,7 +257,7 @@ function BasicInfos({
                 onClick={() =>
                   openDirectMessageChannel({
                     user: { userId: myId },
-                    partner: { id: userId, username },
+                    recepient: { id: userId, username },
                     chatCurrentlyOn: false
                   })
                 }

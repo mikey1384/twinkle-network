@@ -51,7 +51,8 @@ export default function RewardLevelForm({
         style={{
           cursor: 'pointer',
           fontSize: '1.5rem',
-          userSelect: 'none'
+          userSelect: 'none',
+          marginTop: '0.5rem'
         }}
         onClick={() => onSetDifficulty(0)}
       >

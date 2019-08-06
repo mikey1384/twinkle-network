@@ -46,7 +46,7 @@ Chat.propTypes = {
   openDirectMessageChannel: PropTypes.func,
   pageVisible: PropTypes.bool,
   profilePicId: PropTypes.number,
-  partnerId: PropTypes.number,
+  recepientId: PropTypes.number,
   receiveMessage: PropTypes.func,
   receiveMessageOnDifferentChannel: PropTypes.func,
   receiveFirstMsg: PropTypes.func,
@@ -83,7 +83,7 @@ function Chat({
   onUnmount,
   openDirectMessageChannel,
   pageVisible,
-  partnerId,
+  recepientId,
   profilePicId,
   receiveFirstMsg,
   receiveMessage,
@@ -118,6 +118,7 @@ function Chat({
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
   const [fileObj, setFileObj] = useState('');
+  const [partner, setPartner] = useState(null);
   const memberObj = useRef({});
   const channelsObj = useRef({});
   const FileInputRef = useRef(null);
@@ -153,7 +154,7 @@ function Chat({
           member => Number(member.id) !== userId
         )?.[0]
       : null;
-
+    setPartner(otherMember);
     setChannelName(
       otherMember?.username ||
         channelsObj.current?.[currentChannel?.id]?.channelName
@@ -433,6 +434,7 @@ function Chat({
             channelId={selectedChannelId}
             channelName={channelName}
             chessCountdownObj={chessCountdownObj}
+            chessOpponent={partner}
             className={css`
               display: flex;
               flex-direction: column;
@@ -453,7 +455,7 @@ function Chat({
             onChessBoardClick={handleChessModalShown}
             onChessSpoilerClick={handleChessSpoilerClick}
             onSendFileMessage={handleSendFileMessage}
-            partnerId={partnerId}
+            recepientId={recepientId}
             statusText={renderStatusMessage()}
           />
           {socketConnected ? (
@@ -492,7 +494,8 @@ function Chat({
             onConfirmChessMove={handleConfirmChessMove}
             onHide={() => setChessModalShown(false)}
             onSpoilerClick={handleChessSpoilerClick}
-            {...getOpponentInfo()}
+            opponentId={partner?.id}
+            opponentName={partner?.username}
           />
         )}
         {alertModalShown && (
@@ -514,22 +517,6 @@ function Chat({
       </div>
     </Context.Provider>
   );
-
-  function getOpponentInfo() {
-    let opponentId;
-    let opponentName;
-    if (currentChannel?.members) {
-      for (let i = 0; i < currentChannel.members.length; i++) {
-        const member = currentChannel.members[i];
-        if (member.id !== userId) {
-          opponentId = member.id;
-          opponentName = member.username;
-          break;
-        }
-      }
-    }
-    return { opponentId, opponentName };
-  }
 
   function handleChessModalShown() {
     const channelId = currentChannel?.id;
@@ -584,12 +571,12 @@ function Chat({
       const { members, message } = await startNewDMChannel({
         content,
         userId,
-        partnerId,
+        recepientId,
         dispatch
       });
       sendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
-      socket.emit('send_bi_chat_invitation', partnerId, message);
+      socket.emit('send_bi_chat_invitation', recepientId, message);
       return;
     }
     const params = {
@@ -662,12 +649,12 @@ function Chat({
         const { members, message } = await startNewDMChannel({
           ...params,
           content,
-          partnerId,
+          recepientId,
           dispatch
         });
         sendFirstDirectMessage({ members, message });
         socket.emit('join_chat_channel', message.channelId);
-        socket.emit('send_bi_chat_invitation', partnerId, message);
+        socket.emit('send_bi_chat_invitation', recepientId, message);
         return;
       }
     } catch (error) {
@@ -691,10 +678,10 @@ function Chat({
 
   async function onCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
-      const partner = params.selectedUsers[0];
+      const recepient = params.selectedUsers[0];
       await openDirectMessageChannel({
         user: { username, id: userId },
-        partner,
+        recepient,
         chatCurrentlyOn: true
       });
       return setCreateNewChannelModalShown(false);
@@ -781,10 +768,9 @@ function Chat({
   }
 
   function renderStatusMessage() {
-    const { opponentId, opponentName } = getOpponentInfo();
-    return memberObj.current[opponentId]?.channelObj[selectedChannelId]
+    return memberObj.current[(partner?.id)]?.channelObj[selectedChannelId]
       ?.makingChessMove
-      ? `${opponentName} is thinking...`
+      ? `${partner?.username} is thinking...`
       : '';
   }
 }
@@ -802,7 +788,7 @@ export default connect(
     messages: state.ChatReducer.messages,
     channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
     loadMoreButton: state.ChatReducer.loadMoreMessages,
-    partnerId: state.ChatReducer.partnerId,
+    recepientId: state.ChatReducer.recepientId,
     socketConnected: state.NotiReducer.socketConnected,
     subjectId: state.ChatReducer.subject.id
   }),

@@ -687,7 +687,7 @@ export const uploadFileOnChat = async ({
   dispatch,
   selectedFile,
   onUploadProgress,
-  partnerId,
+  recepientId,
   path,
   subjectId
 }) => {
@@ -696,7 +696,7 @@ export const uploadFileOnChat = async ({
     fileData.append('file', selectedFile, selectedFile.name);
     fileData.append('path', path);
     fileData.append('channelId', channelId);
-    fileData.append('partnerId', partnerId);
+    fileData.append('recepientId', recepientId);
     fileData.append('content', content);
     if (subjectId) {
       fileData.append('subjectId', subjectId);

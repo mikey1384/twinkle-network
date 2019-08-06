@@ -278,7 +278,7 @@ function ProfilePanel({
                   onClick={() =>
                     openDirectMessageChannel({
                       user: { id: userId, username },
-                      partner: { id: profile.id, username: profile.username },
+                      recepient: { id: profile.id, username: profile.username },
                       chatCurrentlyOn: false
                     })
                   }

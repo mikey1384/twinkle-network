@@ -18,6 +18,7 @@ class MessagesContainer extends Component {
     channelId: PropTypes.number,
     channelName: PropTypes.string,
     chessCountdownObj: PropTypes.object,
+    chessOpponent: PropTypes.object,
     className: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
     currentChannel: PropTypes.object,
@@ -30,7 +31,7 @@ class MessagesContainer extends Component {
     onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
     onSendFileMessage: PropTypes.func.isRequired,
-    partnerId: PropTypes.number,
+    recepientId: PropTypes.number,
     statusText: PropTypes.string
   };
 
@@ -303,11 +304,12 @@ class MessagesContainer extends Component {
       channelId,
       channelName,
       chessCountdownObj,
+      chessOpponent,
       messages,
       onChessBoardClick,
       onChessSpoilerClick,
       onSendFileMessage,
-      partnerId
+      recepientId
     } = this.props;
     return messages.map((message, index) => {
       let { isNotification } = message;
@@ -317,6 +319,7 @@ class MessagesContainer extends Component {
           channelId={channelId}
           channelName={channelName}
           chessCountdownObj={chessCountdownObj}
+          chessOpponent={chessOpponent}
           checkScrollIsAtTheBottom={() =>
             scrollIsAtTheBottom(this.content, this.messagesContainer)
           }
@@ -328,7 +331,7 @@ class MessagesContainer extends Component {
           isNotification={!!isNotification}
           message={message}
           isLastMsg={index === messages.length - 1}
-          partnerId={partnerId}
+          recepientId={recepientId}
           setScrollToBottom={this.setScrollToBottom}
           showSubjectMsgsModal={({ subjectId, content }) =>
             this.setState({

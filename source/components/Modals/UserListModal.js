@@ -102,7 +102,7 @@ function UserListModal({
       onHide();
       openDirectMessageChannel({
         user: { id: userId, username },
-        partner: { id: user.id, username: user.username },
+        recepient: { id: user.id, username: user.username },
         chatCurrentlyOn: chatMode
       });
     }

@@ -10,10 +10,10 @@ export const clearRecentChessMessage = () => ({
   type: CHAT.CLEAR_RECENT_CHESS_MESSAGE
 });
 
-export const openNewChatTab = ({ user, partner }) => ({
+export const openNewChatTab = ({ user, recepient }) => ({
   type: CHAT.OPEN_NEW_TAB,
   user,
-  partner
+  recepient
 });
 
 export const changeChatSubject = subject => ({
@@ -274,19 +274,19 @@ export const notifyThatMemberLeftChannel = data => ({
 
 export const openDirectMessageChannel = ({
   user,
-  partner,
+  recepient,
   chatCurrentlyOn
 }) => async dispatch => {
   try {
     const { data } = await request.get(
-      `${API_URL}/channel/check?partnerId=${partner.id}`,
+      `${API_URL}/channel/check?partnerId=${recepient.id}`,
       auth()
     );
     const { currentChannel, channels } = await fetchChannels(data);
     dispatch({
       type: CHAT.OPEN_DM,
       user,
-      partner,
+      recepient,
       channels,
       ...currentChannel
     });

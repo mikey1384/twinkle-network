@@ -10,9 +10,9 @@ const defaultState = {
   chatSearchResults: [],
   loadMoreMessages: false,
   channelLoadMoreButton: false,
-  partnerId: null,
   numUnreads: 0,
   msgsWhileInvisible: 0,
+  recepientId: null,
   recentChessMessage: undefined,
   subject: {},
   subjectSearchResults: [],
@@ -400,10 +400,10 @@ export default function ChatReducer(state = defaultState, action) {
         channels: [
           {
             id: action.channelId,
-            channelName: action.partner.username,
+            channelName: action.recepient.username,
             lastMessage: action.lastMessage,
             lastUpdate: action.lastUpdate,
-            members: [action.user, action.partner],
+            members: [action.user, action.recepient],
             numUnreads: 0
           }
         ].concat(channels.filter(channel => channel.id !== action.channelId)),
@@ -411,11 +411,11 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: {
           id: action.channelId,
           twoPeople: true,
-          members: [action.user, action.partner]
+          members: [action.user, action.recepient]
         },
         messages: action.messages.reverse(),
         loadMoreMessages,
-        partnerId: action.partner.id
+        recepientId: action.recepient.id
       };
     }
     case CHAT.OPEN_NEW_TAB:
@@ -429,13 +429,13 @@ export default function ChatReducer(state = defaultState, action) {
         channels: [
           {
             id: 0,
-            channelName: action.partner.username,
+            channelName: action.recepient.username,
             lastMessage: {
               content: null,
               sender: null
             },
             lastUpdate: null,
-            members: [action.user, action.partner],
+            members: [action.user, action.recepient],
             numUnreads: 0
           }
         ].concat(filteredChannel),
@@ -443,11 +443,11 @@ export default function ChatReducer(state = defaultState, action) {
         currentChannel: {
           id: 0,
           twoPeople: true,
-          members: [action.user, action.partner]
+          members: [action.user, action.recepient]
         },
         messages: [],
         loadMoreMessages: false,
-        partnerId: action.partner.id
+        recepientId: action.recepient.id
       };
     case CHAT.POST_FILE_UPLOAD_STATUS:
       return {

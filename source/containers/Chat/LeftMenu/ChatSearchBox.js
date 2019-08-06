@@ -79,7 +79,7 @@ function ChatSearchBox({
     } else {
       openNewChatTab({
         user: { username, id: userId },
-        partner: { username: item.label, id: item.id }
+        recepient: { username: item.label, id: item.id }
       });
     }
     setSearchText('');

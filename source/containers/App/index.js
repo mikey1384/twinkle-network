@@ -274,7 +274,7 @@ function App({
     fileName,
     filePath,
     fileToUpload,
-    partnerId,
+    recepientId,
     subjectId
   }) {
     postFileUploadStatus({
@@ -283,7 +283,7 @@ function App({
       fileName,
       filePath,
       fileToUpload,
-      partnerId
+      recepientId
     });
     const { messageId, members, message } = await uploadFileOnChat({
       channelId,
@@ -291,14 +291,14 @@ function App({
       dispatch,
       selectedFile: fileToUpload,
       onUploadProgress: handleUploadProgress,
-      partnerId,
+      recepientId,
       path: filePath,
       subjectId
     });
     if (members) {
       sendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
-      socket.emit('send_bi_chat_invitation', partnerId, message);
+      socket.emit('send_bi_chat_invitation', recepientId, message);
     }
     postUploadComplete({
       path: filePath,

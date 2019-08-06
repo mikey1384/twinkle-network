@@ -26,6 +26,7 @@ Message.propTypes = {
   canDelete: PropTypes.bool,
   canEdit: PropTypes.bool,
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
+  chessOpponent: PropTypes.object,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
@@ -45,7 +46,7 @@ Message.propTypes = {
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
-  partnerId: PropTypes.number,
+  recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func,
   socketConnected: PropTypes.bool,
   updateChessMoveViewTimeStamp: PropTypes.func,
@@ -60,6 +61,7 @@ function Message({
   channelName,
   checkScrollIsAtTheBottom,
   chessCountdownObj,
+  chessOpponent,
   dispatch,
   index,
   isLastMsg,
@@ -97,7 +99,7 @@ function Message({
   onEditDone,
   onChessSpoilerClick,
   onSendFileMessage,
-  partnerId,
+  recepientId,
   saveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
@@ -221,7 +223,8 @@ function Message({
                 moveViewed={!!moveViewTimeStamp}
                 onBoardClick={onChessBoardClick}
                 onSpoilerClick={handleSpoilerClick}
-                opponentName={channelName}
+                opponentId={chessOpponent?.id}
+                opponentName={chessOpponent?.username}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : fileToUpload ? (
@@ -232,7 +235,7 @@ function Message({
                 fileToUpload={fileToUpload}
                 filePath={filePath}
                 onSendFileMessage={onSendFileMessage}
-                partnerId={partnerId}
+                recepientId={recepientId}
                 subjectId={subjectId}
               />
             ) : (

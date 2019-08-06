@@ -308,7 +308,7 @@ export default function Chess({
             )}
           </div>
           <Board
-            loading={!loaded}
+            loading={!loaded || !opponentId}
             spoilerOff={
               spoilerOff ||
               userMadeLastMove ||
