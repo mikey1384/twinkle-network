@@ -40,7 +40,7 @@ Details.propTypes = {
   onEditCancel: PropTypes.func.isRequired,
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
-  setDifficulty: PropTypes.func.isRequired,
+  setRewardLevel: PropTypes.func.isRequired,
   tags: PropTypes.array,
   stars: PropTypes.array,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -74,7 +74,7 @@ function Details({
   onEditStart,
   onEditFinish,
   tags = [],
-  setDifficulty,
+  setRewardLevel,
   stars,
   timeStamp,
   videoId,
@@ -191,7 +191,7 @@ function Details({
               rewardLevel={rewardLevel}
               likes={likes}
               likeVideo={likeVideo}
-              setDifficulty={handleSetDifficulty}
+              setRewardLevel={handleSetRewardLevel}
               uploader={uploader}
               userId={userId}
               videoId={videoId}
@@ -327,8 +327,8 @@ function Details({
     }
   }
 
-  function handleSetDifficulty(params) {
-    setDifficulty(params);
+  function handleSetRewardLevel(params) {
+    setRewardLevel(params);
   }
 
   function descriptionExceedsCharLimit(description) {

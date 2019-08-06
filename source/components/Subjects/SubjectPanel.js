@@ -56,9 +56,9 @@ SubjectPanel.propTypes = {
   onUploadComment: PropTypes.func.isRequired,
   onUploadReply: PropTypes.func.isRequired,
   profileTheme: PropTypes.string,
-  rootDifficulty: PropTypes.number,
+  rootRewardLevel: PropTypes.number,
   secretAnswer: PropTypes.string,
-  setSubjectDifficulty: PropTypes.func.isRequired,
+  setSubjectRewardLevel: PropTypes.func.isRequired,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   title: PropTypes.string.isRequired,
@@ -101,9 +101,9 @@ function SubjectPanel({
   onSubjectEditDone,
   onUploadComment,
   onUploadReply,
-  rootDifficulty,
+  rootRewardLevel,
   secretAnswer,
-  setSubjectDifficulty,
+  setSubjectRewardLevel,
   type
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -169,7 +169,7 @@ function SubjectPanel({
                 contentId={id}
                 type="subject"
                 rewardLevel={rewardLevel}
-                onSetRewardLevel={setSubjectDifficulty}
+                onSetRewardLevel={setSubjectRewardLevel}
               />
             )}
             <div>
@@ -324,7 +324,7 @@ function SubjectPanel({
                 rewardLevel,
                 rootObj: {
                   id: contentId,
-                  rewardLevel: rootDifficulty,
+                  rewardLevel: rootRewardLevel,
                   type
                 },
                 type: 'subject'

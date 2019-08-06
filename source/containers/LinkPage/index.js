@@ -86,7 +86,7 @@ function LinkPage({
     onLoadMoreSubjects,
     onLoadMoreSubjectComments,
     onLoadMoreSubjectReplies,
-    onSetSubjectDifficulty,
+    onSetSubjectRewardLevel,
     onUploadComment,
     onUploadReply,
     onUploadSubject
@@ -305,7 +305,7 @@ function LinkPage({
         onLoadSubjectComments={onLoadSubjectComments}
         onSubjectEditDone={onEditSubject}
         onSubjectDelete={onDeleteSubject}
-        setSubjectDifficulty={onSetSubjectDifficulty}
+        setSubjectRewardLevel={onSetSubjectRewardLevel}
         uploadSubject={onUploadSubject}
         type="url"
         commentActions={{

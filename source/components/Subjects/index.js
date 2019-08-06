@@ -15,8 +15,8 @@ Subjects.propTypes = {
   onSubjectEditDone: PropTypes.func.isRequired,
   onSubjectDelete: PropTypes.func.isRequired,
   onLoadSubjectComments: PropTypes.func.isRequired,
-  rootDifficulty: PropTypes.number,
-  setSubjectDifficulty: PropTypes.func.isRequired,
+  rootRewardLevel: PropTypes.number,
+  setSubjectRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
   type: PropTypes.string,
   uploadSubject: PropTypes.func.isRequired,
@@ -45,8 +45,8 @@ export default function Subjects({
   onLoadSubjectComments,
   onSubjectEditDone,
   onSubjectDelete,
-  rootDifficulty,
-  setSubjectDifficulty,
+  rootRewardLevel,
+  setSubjectRewardLevel,
   commentActions: {
     attachStar,
     editRewardComment,
@@ -72,7 +72,7 @@ export default function Subjects({
         onSubjectEditDone,
         onSubjectDelete,
         onLoadSubjectComments,
-        setSubjectDifficulty,
+        setSubjectRewardLevel,
         onUploadComment,
         onUploadReply
       }}
@@ -89,7 +89,7 @@ export default function Subjects({
               <SubjectPanel
                 key={subject.id}
                 contentId={Number(contentId)}
-                rootDifficulty={rootDifficulty}
+                rootRewardLevel={rootRewardLevel}
                 type={type}
                 {...subject}
               />

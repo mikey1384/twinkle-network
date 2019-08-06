@@ -270,7 +270,7 @@ export default function Achievements({
 
   function onSetRewardLevel({ type, contentId, rewardLevel }) {
     dispatch({
-      type: 'SET_DIFFICULTY',
+      type: 'SET_REWARD_LEVEL',
       contentType: type,
       contentId,
       rewardLevel
@@ -837,7 +837,7 @@ function reducer(state, action) {
               : notable.tags
         }))
       };
-    case 'SET_DIFFICULTY':
+    case 'SET_REWARD_LEVEL':
       return {
         notables: state.notables.map(contentObj => {
           return contentObj.type === action.contentType &&

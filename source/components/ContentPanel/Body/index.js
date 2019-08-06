@@ -449,7 +449,7 @@ function Body({
   );
 
   function determineRewardLevel({ contentObj, rootType, rootObj, targetObj }) {
-    const rootDifficulty =
+    const rootRewardLevel =
       rootType === 'video' || rootType === 'url'
         ? rootObj.rewardLevel > 0
           ? 1
@@ -457,7 +457,7 @@ function Body({
         : rootObj.rewardLevel;
     return contentObj.byUser
       ? 5
-      : targetObj.subject?.rewardLevel || rootDifficulty;
+      : targetObj.subject?.rewardLevel || rootRewardLevel;
   }
 
   async function handleCommentSubmit(params) {

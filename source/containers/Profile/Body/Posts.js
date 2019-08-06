@@ -28,7 +28,7 @@ import {
   loadRepliesOfReply,
   loadTags,
   setCurrentSection,
-  setDifficulty,
+  setRewardLevel,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -67,7 +67,7 @@ Posts.propTypes = {
   searchMode: PropTypes.bool.isRequired,
   selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
-  setDifficulty: PropTypes.func,
+  setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
   uploadTargetContentComment: PropTypes.func.isRequired,
   uploadFeedComment: PropTypes.func.isRequired
@@ -117,7 +117,7 @@ function Posts({
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment,
-  setDifficulty
+  setRewardLevel
 }) {
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);
@@ -234,7 +234,7 @@ function Posts({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
-                    onSetRewardLevel={setDifficulty}
+                    onSetRewardLevel={setRewardLevel}
                     onShowComments={showFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={myId}
@@ -384,7 +384,7 @@ export default connect(
     loadRepliesOfReply,
     loadTags,
     setCurrentSection,
-    setDifficulty,
+    setRewardLevel,
     showFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

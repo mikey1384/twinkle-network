@@ -503,7 +503,7 @@ export default function useContentObj(props) {
     }));
   }
 
-  function onSetSubjectDifficulty({ contentId, rewardLevel }) {
+  function onSetSubjectRewardLevel({ contentId, rewardLevel }) {
     setContentObj(contentObj => ({
       ...contentObj,
       subjects: contentObj.subjects?.map(subject => {
@@ -638,7 +638,7 @@ export default function useContentObj(props) {
     onLoadSubjectComments,
     onLoadTags,
     onSetRewardLevel,
-    onSetSubjectDifficulty,
+    onSetSubjectRewardLevel,
     onTargetCommentSubmit,
     onUploadComment,
     onUploadReply,

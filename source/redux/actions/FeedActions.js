@@ -156,8 +156,8 @@ export const loadTags = ({ type, contentId, tags }) => ({
   tags
 });
 
-export const setDifficulty = ({ type, contentId, rewardLevel }) => ({
-  type: FEED.SET_DIFFICULTY,
+export const setRewardLevel = ({ type, contentId, rewardLevel }) => ({
+  type: FEED.SET_REWARD_LEVEL,
   contentType: type,
   contentId,
   rewardLevel

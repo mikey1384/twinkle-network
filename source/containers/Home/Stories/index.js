@@ -24,7 +24,7 @@ import {
   loadRepliesOfReply,
   loadTags,
   setCurrentSection,
-  setDifficulty,
+  setRewardLevel,
   showFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -75,7 +75,7 @@ Stories.propTypes = {
   resetNumNewPosts: PropTypes.func.isRequired,
   searchMode: PropTypes.bool.isRequired,
   setCurrentSection: PropTypes.func.isRequired,
-  setDifficulty: PropTypes.func,
+  setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
   storyFeeds: PropTypes.array.isRequired,
   subFilter: PropTypes.string.isRequired,
@@ -137,7 +137,7 @@ function Stories({
   resetNumNewPosts,
   searchMode,
   setCurrentSection,
-  setDifficulty,
+  setRewardLevel,
   showFeedComments,
   storyFeeds = [],
   subFilter,
@@ -309,7 +309,7 @@ function Stories({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
-                    onSetRewardLevel={setDifficulty}
+                    onSetRewardLevel={setRewardLevel}
                     onShowComments={showFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={userId}
@@ -483,7 +483,7 @@ export default connect(
     loadTags,
     resetNumNewPosts,
     setCurrentSection,
-    setDifficulty,
+    setRewardLevel,
     showFeedComments,
     toggleHideWatched,
     uploadFeedComment,

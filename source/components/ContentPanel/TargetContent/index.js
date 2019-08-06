@@ -336,13 +336,13 @@ function TargetContent({
   }
 
   function determineRewardLevel({ rootType, rootObj, subject }) {
-    const rootDifficulty =
+    const rootRewardLevel =
       rootType === 'video' || rootType === 'url'
         ? rootObj.rewardLevel > 0
           ? 1
           : 0
         : rootObj.rewardLevel;
-    return subject?.rewardLevel || rootDifficulty;
+    return subject?.rewardLevel || rootRewardLevel;
   }
 
   function onLikeClick(likes) {

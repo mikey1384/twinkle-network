@@ -6,7 +6,7 @@ import {
   changeByUserStatusForThumbs,
   editVideoThumbs,
   likeVideo,
-  setDifficulty
+  setRewardLevel
 } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -48,7 +48,7 @@ VideoPage.propTypes = {
   likeVideo: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  setDifficulty: PropTypes.func.isRequired,
+  setRewardLevel: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
@@ -64,7 +64,7 @@ function VideoPage({
   match: {
     params: { videoId: initialVideoId }
   },
-  setDifficulty,
+  setRewardLevel,
   userId
 }) {
   const [changingPage, setChangingPage] = useState(false);
@@ -119,7 +119,7 @@ function VideoPage({
     onLoadMoreSubjectComments,
     onLoadMoreSubjectReplies,
     onSetRewardLevel,
-    onSetSubjectDifficulty,
+    onSetSubjectRewardLevel,
     onUploadComment,
     onUploadReply,
     onUploadSubject
@@ -311,7 +311,7 @@ function VideoPage({
                 onEditCancel={() => setOnEdit(false)}
                 onEditFinish={handleEditVideoPage}
                 onDelete={() => setConfirmModalShown(true)}
-                setDifficulty={handleSetDifficulty}
+                setRewardLevel={handleSetRewardLevel}
                 stars={stars}
                 tags={tags}
                 title={title}
@@ -339,11 +339,11 @@ function VideoPage({
               onLoadSubjectComments={onLoadSubjectComments}
               onSubjectEditDone={onEditSubject}
               onSubjectDelete={onDeleteSubject}
-              setSubjectDifficulty={onSetSubjectDifficulty}
+              setSubjectRewardLevel={onSetSubjectRewardLevel}
               uploadSubject={onUploadSubject}
               contentId={videoId}
               type="video"
-              rootDifficulty={rewardLevel}
+              rootRewardLevel={rewardLevel}
               commentActions={{
                 attachStar: onAttachStar,
                 editRewardComment: onEditRewardComment,
@@ -509,9 +509,9 @@ function VideoPage({
     }));
   }
 
-  function handleSetDifficulty({ contentId, rewardLevel }) {
+  function handleSetRewardLevel({ contentId, rewardLevel }) {
     onSetRewardLevel({ contentId, rewardLevel });
-    setDifficulty({ videoId: Number(contentId), rewardLevel });
+    setRewardLevel({ videoId: Number(contentId), rewardLevel });
   }
 
   async function handleUploadQuestions(questions) {
@@ -577,6 +577,6 @@ export default connect(
       dispatch(changeByUserStatusForThumbs(params)),
     editVideoThumbs: params => dispatch(editVideoThumbs(params)),
     likeVideo: params => dispatch(likeVideo(params)),
-    setDifficulty: params => dispatch(setDifficulty(params))
+    setRewardLevel: params => dispatch(setRewardLevel(params))
   })
 )(VideoPage);

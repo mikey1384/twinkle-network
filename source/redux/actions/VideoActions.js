@@ -226,8 +226,8 @@ export const postPlaylist = data => ({
   data
 });
 
-export const setDifficulty = ({ videoId, rewardLevel }) => ({
-  type: VIDEO.SET_DIFFICULTY,
+export const setRewardLevel = ({ videoId, rewardLevel }) => ({
+  type: VIDEO.SET_REWARD_LEVEL,
   videoId,
   rewardLevel
 });

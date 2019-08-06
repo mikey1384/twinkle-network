@@ -351,7 +351,7 @@ export default function VideoReducer(state = defaultState, action) {
         loadMorePlaylistsToPinButton,
         selectPlaylistsToPinModalShown: true
       };
-    case VIDEO.SET_DIFFICULTY:
+    case VIDEO.SET_REWARD_LEVEL:
       return {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(video => {

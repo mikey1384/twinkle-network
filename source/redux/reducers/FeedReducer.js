@@ -629,7 +629,7 @@ export default function FeedReducer(state = defaultState, action) {
             : feed;
         })
       };
-    case FEED.SET_DIFFICULTY:
+    case FEED.SET_REWARD_LEVEL:
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
