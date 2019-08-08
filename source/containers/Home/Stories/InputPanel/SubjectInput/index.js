@@ -15,25 +15,28 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import SwitchButton from 'components/SwitchButton';
+import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
 
 SubjectInput.propTypes = {
+  canEditRewardLevel: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   uploadFeedContent: PropTypes.func.isRequired
 };
 
-function SubjectInput({ dispatch, uploadFeedContent }) {
+function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   const [attachment, setAttachment] = useState(undefined);
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const [details, setDetails] = useState({
     title: '',
     description: '',
-    secretAnswer: ''
+    secretAnswer: '',
+    rewardLevel: 0
   });
-  const { title, description, secretAnswer } = details;
+  const { title, description, rewardLevel, secretAnswer } = details;
   const [descriptionInputShown, setDescriptionInputShown] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [hasSecretAnswer, setHasSecretAnswer] = useState(false);
@@ -187,6 +190,34 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
               )}
             </div>
           )}
+          {canEditRewardLevel && (
+            <div style={{ marginTop: '1rem' }}>
+              <div style={{ fontSize: '1.5rem' }}>
+                For every star you add, the amount of maximum XP you and other
+                moderators could reward the participants of this subject rises
+                by 1,000 XP.
+              </div>
+              <RewardLevelForm
+                themed
+                style={{
+                  marginTop: '1rem',
+                  textAlign: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  padding: '1rem',
+                  fontSize: '3rem'
+                }}
+                rewardLevel={rewardLevel}
+                onSetRewardLevel={rewardLevel =>
+                  setDetails(form => ({
+                    ...form,
+                    rewardLevel
+                  }))
+                }
+              />
+            </div>
+          )}
           <div style={{ marginTop: '1rem' }} className="button-container">
             <SwitchButton
               checked={hasSecretAnswer}
@@ -259,6 +290,7 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
         title,
         description: finalizeEmoji(description),
         secretAnswer: hasSecretAnswer ? secretAnswer : '',
+        rewardLevel,
         dispatch
       });
       uploadFeedContent(data);
@@ -275,7 +307,9 @@ function SubjectInput({ dispatch, uploadFeedContent }) {
 }
 
 export default connect(
-  null,
+  state => ({
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel
+  }),
   dispatch => ({
     dispatch,
     uploadFeedContent: params => dispatch(uploadFeedContent(params))

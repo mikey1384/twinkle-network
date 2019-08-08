@@ -12,7 +12,6 @@ import {
 } from 'helpers/stringHelpers';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import Textarea from 'components/Texts/Textarea';
@@ -25,11 +24,12 @@ import Checkbox from 'components/Checkbox';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 ContentInput.propTypes = {
+  canEditRewardLevel: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   uploadFeedContent: PropTypes.func.isRequired
 };
 
-function ContentInput({ dispatch, uploadFeedContent }) {
+function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   const [alreadyPosted, setAlreadyPosted] = useState(false);
   const [descriptionFieldShown, setDescriptionFieldShown] = useState(false);
   const [titleFieldShown, setTitleFieldShown] = useState(false);
@@ -181,10 +181,18 @@ function ContentInput({ dispatch, uploadFeedContent }) {
             </>
           )}
         </div>
-        {!buttonDisabled() && !urlHelper && (
-          <div style={{ background: Color.lightGray(), color: '#fff' }}>
+        {!buttonDisabled() && !urlHelper && form.isVideo && canEditRewardLevel && (
+          <div style={{ marginTop: '1rem' }}>
+            <div style={{ fontSize: '1.5rem' }}>
+              For every star you add, the amount of XP gained by the viewers of
+              this video rises by 200 XP. Please consider both difficulty and
+              educational importance of your video when setting the reward
+              level.
+            </div>
             <RewardLevelForm
+              themed
               style={{
+                marginTop: '1rem',
                 textAlign: 'center',
                 display: 'flex',
                 alignItems: 'center',
@@ -267,7 +275,8 @@ function ContentInput({ dispatch, uploadFeedContent }) {
         url: '',
         isVideo: false,
         title: '',
-        description: ''
+        description: '',
+        rewardLevel: 0
       });
       setSubmitting(false);
       setUrlHelper('');
@@ -334,6 +343,7 @@ function ContentInput({ dispatch, uploadFeedContent }) {
 
 export default connect(
   state => ({
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
     username: state.UserReducer.username,
     profileTheme: state.UserReducer.profileTheme
   }),

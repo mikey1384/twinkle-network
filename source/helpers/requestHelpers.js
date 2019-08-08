@@ -635,13 +635,22 @@ export const uploadContent = async ({
   isVideo,
   title,
   description,
+  rewardLevel,
   secretAnswer,
   dispatch
 }) => {
   try {
     const { data } = await request.post(
       `${URL}/content`,
-      { attachment, url, isVideo, title, description, secretAnswer },
+      {
+        attachment,
+        url,
+        isVideo,
+        title,
+        description,
+        rewardLevel,
+        secretAnswer
+      },
       auth()
     );
     return Promise.resolve(data);
