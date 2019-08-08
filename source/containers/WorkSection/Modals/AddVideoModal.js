@@ -6,7 +6,6 @@ import Button from 'components/Button';
 import { uploadContent } from 'helpers/requestHelpers';
 import { uploadVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
-import Input from 'components/Texts/Input';
 import {
   exceedsCharLimit,
   isValidYoutubeUrl,
@@ -14,8 +13,11 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
+import Input from 'components/Texts/Input';
+import RewardLevelForm from 'components/Forms/RewardLevelForm';
 
 AddVideoModal.propTypes = {
+  canEditRewardLevel: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   focusVideoPanelAfterUpload: PropTypes.func.isRequired,
@@ -25,6 +27,7 @@ AddVideoModal.propTypes = {
 };
 
 function AddVideoModal({
+  canEditRewardLevel,
   dispatch,
   focusVideoPanelAfterUpload,
   onHide,
@@ -36,10 +39,11 @@ function AddVideoModal({
   const [form, setForm] = useState({
     url: '',
     title: '',
-    description: ''
+    description: '',
+    rewardLevel: 0
   });
   const [disabled, setDisabled] = useState(false);
-  const { url, title, description } = form;
+  const { url, title, description, rewardLevel } = form;
   const UrlFieldRef = useRef(null);
   const titleExceedsCharLimit = exceedsCharLimit({
     inputType: 'title',
@@ -129,6 +133,27 @@ function AddVideoModal({
               </small>
             )}
           </section>
+          {canEditRewardLevel && (
+            <RewardLevelForm
+              themed
+              style={{
+                marginTop: '1rem',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                padding: '1rem',
+                fontSize: '3rem'
+              }}
+              rewardLevel={form.rewardLevel}
+              onSetRewardLevel={rewardLevel =>
+                setForm(form => ({
+                  ...form,
+                  rewardLevel
+                }))
+              }
+            />
+          )}
         </form>
       </main>
       <footer>
@@ -159,12 +184,14 @@ function AddVideoModal({
       isVideo: true,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
+      rewardLevel,
       dispatch
     });
     uploadVideo({
       id: data.contentId,
       title,
       content: data.content,
+      rewardLevel,
       uploader: {
         id: userId,
         username
@@ -197,7 +224,8 @@ function AddVideoModal({
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    username: state.UserReducer.username,
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel
   }),
   dispatch => ({
     dispatch,
