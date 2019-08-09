@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -29,20 +29,24 @@ function LikeButton({
   onClick,
   targetLabel
 }) {
+  const [disabled, setDisabled] = useState(false);
   return (
     <ErrorBoundary>
       <Button
+        disabled={disabled}
         className={className}
         color={(filled && liked) || !filled ? 'logoBlue' : 'lightBlue'}
         filled={filled || liked}
         style={style}
-        onClick={async() => {
+        onClick={async () => {
           try {
+            setDisabled(true);
             const likes = await likeContent({
               id: contentId,
               type: contentType,
               dispatch
             });
+            setDisabled(false);
             onClick(likes, contentId);
           } catch (error) {
             return console.error(error);
