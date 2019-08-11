@@ -269,7 +269,7 @@ export default function ChatReducer(state = defaultState, action) {
         channelLoadMoreButton = true;
       }
       return {
-        ...state,
+        ...defaultState,
         channelLoadMoreButton,
         subject: action.data.currentChannel.id === 2 ? state.subject : {},
         chatMode: true,
@@ -291,8 +291,7 @@ export default function ChatReducer(state = defaultState, action) {
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
-        loadMoreMessages,
-        userSearchResult: []
+        loadMoreMessages
       };
     }
     case CHAT.INVITE_USERS_TO_CHANNEL:
