@@ -161,7 +161,7 @@ export default function Board({
               <p>Tap here to view it.</p>
               <p>
                 {`After viewing ${opponentName}'s move, you `}
-                <b>must</b> make your own move in <b>90 seconds</b>. Otherwise,
+                <b>must</b> make your own move in <b>3 minutes</b>. Otherwise,
                 you will lose.
               </p>
             </div>
