@@ -24,6 +24,7 @@ import {
   isMobile,
   scrollElementToCenter
 } from 'helpers';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 import {
   deleteContent,
   editContent,
@@ -344,7 +345,7 @@ function Body({
                     fontSize: '1.7rem'
                   }}
                 >
-                  {views} view
+                  {addCommasToNumber(views)} view
                   {`${views > 1 ? 's' : ''}`}
                 </div>
               )}
