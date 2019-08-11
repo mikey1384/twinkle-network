@@ -4,22 +4,6 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import moment from 'moment';
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
 
 const categoryObj = {
   uploads: {
@@ -27,8 +11,8 @@ const categoryObj = {
     desc: 'New to Old',
     asc: 'Old to New'
   },
-  responses: {
-    label: `${months[moment().month()]}'s Top Comments`
+  challenges: {
+    label: 'High Reward Subjects'
   },
   videos: {
     label: 'XP Videos'
@@ -66,15 +50,15 @@ export default function HomeFilter({
         inverted
         bordered
         style={{
-          height: '3rem',
+          height: '4rem',
           fontSize: '1.6rem'
         }}
       >
-        {['uploads', 'responses', 'videos'].map(elem => (
+        {['uploads', 'challenges', 'videos'].map(elem => (
           <nav
             key={elem}
             className={activeTab === elem ? 'active' : ''}
-            style={{ width: elem !== 'responses' ? '70%' : '100%' }}
+            style={{ width: elem !== 'challenges' ? '70%' : '100%' }}
             onClick={() => {
               document.getElementById('App').scrollTop = 0;
               changeCategory(elem);

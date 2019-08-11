@@ -167,7 +167,12 @@ function Stories({
     socket.on('connect', onConnect);
     async function onConnect() {
       const firstFeed = storyFeeds[0];
-      if (firstFeed?.lastInteraction && !loadingFeeds) {
+      if (
+        firstFeed?.lastInteraction &&
+        !loadingFeeds &&
+        category === 'uploads' &&
+        subFilter === 'all'
+      ) {
         const outdated = await loadNewFeeds({
           lastInteraction: storyFeeds[0] ? storyFeeds[0].lastInteraction : 0,
           shownFeeds: queryStringForArray({
