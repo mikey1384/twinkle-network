@@ -328,6 +328,7 @@ function Chat({
   return (
     <Context.Provider
       value={{
+        selectedChannelId,
         onFileUpload
       }}
     >
@@ -368,7 +369,6 @@ function Chat({
           <InviteUsersModal
             onHide={() => setInviteUsersModalShown(false)}
             currentChannel={currentChannel}
-            selectedChannelId={selectedChannelId}
             onDone={onInviteUsersDone}
           />
         )}
@@ -397,7 +397,6 @@ function Chat({
           loadMoreChannels={loadMoreChannels}
           onChannelEnter={onChannelEnter}
           onNewButtonClick={onNewButtonClick}
-          selectedChannelId={selectedChannelId}
           showUserListModal={() => setUserListModalShown(true)}
         />
         <div
@@ -431,7 +430,6 @@ function Chat({
             />
           )}
           <MessagesContainer
-            channelId={selectedChannelId}
             channelName={channelName}
             chessCountdownObj={chessCountdownObj}
             chessOpponent={partner}
@@ -456,6 +454,7 @@ function Chat({
             onChessSpoilerClick={handleChessSpoilerClick}
             onSendFileMessage={handleSendFileMessage}
             recepientId={recepientId}
+            selectedChannelId={selectedChannelId}
             statusText={renderStatusMessage()}
           />
           {socketConnected ? (

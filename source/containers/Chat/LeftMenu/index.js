@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import Context from '../Context';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
@@ -21,7 +22,6 @@ LeftMenu.propTypes = {
   loadMoreChannels: PropTypes.func.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number.isRequired,
   showUserListModal: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired
 };
@@ -35,10 +35,10 @@ function LeftMenu({
   loadMoreChannels,
   onChannelEnter,
   onNewButtonClick,
-  selectedChannelId,
   showUserListModal,
   userId
 }) {
+  const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
   const [prevChannels, setPrevChannels] = useState(channels);

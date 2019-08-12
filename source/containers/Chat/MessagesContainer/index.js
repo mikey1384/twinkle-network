@@ -15,7 +15,6 @@ const scrollIsAtTheBottom = (content, container) => {
 
 class MessagesContainer extends Component {
   static propTypes = {
-    channelId: PropTypes.number,
     channelName: PropTypes.string,
     chessCountdownObj: PropTypes.object,
     chessOpponent: PropTypes.object,
@@ -31,6 +30,7 @@ class MessagesContainer extends Component {
     onChessBoardClick: PropTypes.func,
     onChessSpoilerClick: PropTypes.func,
     onSendFileMessage: PropTypes.func.isRequired,
+    selectedChannelId: PropTypes.number,
     recepientId: PropTypes.number,
     statusText: PropTypes.string
   };
@@ -301,7 +301,6 @@ class MessagesContainer extends Component {
 
   renderMessages = () => {
     const {
-      channelId,
       channelName,
       chessCountdownObj,
       chessOpponent,
@@ -309,6 +308,7 @@ class MessagesContainer extends Component {
       onChessBoardClick,
       onChessSpoilerClick,
       onSendFileMessage,
+      selectedChannelId,
       recepientId
     } = this.props;
     return messages.map((message, index) => {
@@ -316,7 +316,7 @@ class MessagesContainer extends Component {
       return (
         <Message
           key={message.id || 'newMessage' + index}
-          channelId={channelId}
+          channelId={selectedChannelId}
           channelName={channelName}
           chessCountdownObj={chessCountdownObj}
           chessOpponent={chessOpponent}
