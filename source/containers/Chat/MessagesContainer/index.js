@@ -95,7 +95,7 @@ function MessagesContainer({
         setNewUnseenMessage(true);
       }
     }
-  }, [messages, statusText, scrollAtBottom]);
+  }, [messages, statusText]);
 
   useEffect(() => {
     setFillerHeight(
