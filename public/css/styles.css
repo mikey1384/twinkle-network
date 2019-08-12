@@ -111,7 +111,7 @@ hr {
   user-select: none;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 851px) {
   html,
   body {
     overflow: hidden;
