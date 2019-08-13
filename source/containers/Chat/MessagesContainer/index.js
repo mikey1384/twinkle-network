@@ -447,6 +447,7 @@ function MessagesContainer({
         <InviteUsersModal
           onHide={() => setInviteUsersModalShown(false)}
           currentChannel={currentChannel}
+          selectedChannelId={selectedChannelId}
           onDone={onInviteUsersDone}
         />
       )}
