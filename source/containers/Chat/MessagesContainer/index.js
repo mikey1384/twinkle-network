@@ -127,7 +127,7 @@ function MessagesContainer({
   }, [messages]);
 
   useEffect(() => {
-    prevStatusText.current = prevStatusText;
+    prevStatusText.current = statusText;
   }, [prevStatusText]);
 
   useEffect(() => {
