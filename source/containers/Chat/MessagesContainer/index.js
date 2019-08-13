@@ -203,7 +203,36 @@ function MessagesContainer({
                 }}
               />
             )}
-            <div ref={MessagesRef}>{renderMessages()}</div>
+            <div ref={MessagesRef}>
+              {messages.map((message, index) => (
+                <Message
+                  key={message.id || 'newMessage' + index}
+                  channelId={selectedChannelId}
+                  channelName={channelName}
+                  chessCountdownObj={chessCountdownObj}
+                  chessOpponent={chessOpponent}
+                  checkScrollIsAtTheBottom={() =>
+                    checkScrollIsAtTheBottom({
+                      content: ContentRef.current,
+                      container: MessagesContainerRef.current
+                    })
+                  }
+                  onDelete={handleShowDeleteModal}
+                  index={index}
+                  onChessBoardClick={onChessBoardClick}
+                  onChessSpoilerClick={onChessSpoilerClick}
+                  onSendFileMessage={onSendFileMessage}
+                  isNotification={!!message.isNotification}
+                  message={message}
+                  isLastMsg={index === messages.length - 1}
+                  recepientId={recepientId}
+                  setScrollToBottom={handleSetScrollToBottom}
+                  showSubjectMsgsModal={({ subjectId, content }) =>
+                    setSubjectMsgsModal({ shown: true, subjectId, content })
+                  }
+                />
+              ))}
+            </div>
             {statusText && (
               <div
                 style={{
@@ -303,40 +332,6 @@ function MessagesContainer({
       maxScroll.current = MessagesContainerRef.current.scrollTop;
     }
     scrollAtBottom.current = true;
-  }
-
-  function renderMessages() {
-    return messages.map((message, index) => {
-      let { isNotification } = message;
-      return (
-        <Message
-          key={message.id || 'newMessage' + index}
-          channelId={selectedChannelId}
-          channelName={channelName}
-          chessCountdownObj={chessCountdownObj}
-          chessOpponent={chessOpponent}
-          checkScrollIsAtTheBottom={() =>
-            checkScrollIsAtTheBottom({
-              content: ContentRef.current,
-              container: MessagesContainerRef.current
-            })
-          }
-          onDelete={handleShowDeleteModal}
-          index={index}
-          onChessBoardClick={onChessBoardClick}
-          onChessSpoilerClick={onChessSpoilerClick}
-          onSendFileMessage={onSendFileMessage}
-          isNotification={!!isNotification}
-          message={message}
-          isLastMsg={index === messages.length - 1}
-          recepientId={recepientId}
-          setScrollToBottom={handleSetScrollToBottom}
-          showSubjectMsgsModal={({ subjectId, content }) =>
-            setSubjectMsgsModal({ shown: true, subjectId, content })
-          }
-        />
-      );
-    });
   }
 }
 
