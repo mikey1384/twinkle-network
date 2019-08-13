@@ -128,7 +128,7 @@ function MessagesContainer({
 
   useEffect(() => {
     prevStatusText.current = statusText;
-  }, [prevStatusText]);
+  }, [statusText]);
 
   useEffect(() => {
     handleSetScrollToBottom();
