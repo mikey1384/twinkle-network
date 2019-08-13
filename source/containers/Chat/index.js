@@ -1,41 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as ChatActions from 'redux/actions/ChatActions';
-import ChatInput from './ChatInput';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
-import InviteUsersModal from './Modals/InviteUsers';
-import EditTitleModal from './Modals/EditTitle';
-import ConfirmModal from 'components/Modals/ConfirmModal';
 import UserListModal from 'components/Modals/UserListModal';
-import DropdownButton from 'components/Buttons/DropdownButton';
 import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
-import Loading from 'components/Loading';
 import ChessModal from './Modals/ChessModal';
-import AlertModal from 'components/Modals/AlertModal';
-import UploadModal from './Modals/UploadModal';
 import Context from './Context';
 import { loadChatChannel, startNewDMChannel } from 'helpers/requestHelpers';
-import { GENERAL_CHAT_ID } from 'constants/database';
-import { mobileMaxWidth, Color } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { objectify } from 'helpers';
 
 Chat.propTypes = {
-  authLevel: PropTypes.number,
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
   clearRecentChessMessage: PropTypes.func.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
-  editChannelTitle: PropTypes.func,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
-  hideChat: PropTypes.func,
-  leaveChannel: PropTypes.func,
   loadMoreButton: PropTypes.bool,
   loadMoreChannels: PropTypes.func.isRequired,
   loadMoreMessages: PropTypes.func,
@@ -52,7 +39,6 @@ Chat.propTypes = {
   receiveFirstMsg: PropTypes.func,
   selectedChannelId: PropTypes.number,
   sendFirstDirectMessage: PropTypes.func,
-  socketConnected: PropTypes.bool,
   submitMessage: PropTypes.func,
   subjectId: PropTypes.number,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired,
@@ -62,18 +48,14 @@ Chat.propTypes = {
 };
 
 function Chat({
-  authLevel,
   channels,
   channelLoadMoreButtonShown,
   clearRecentChessMessage,
   currentChannel,
   createNewChannel,
   dispatch,
-  editChannelTitle,
   enterChannelWithId,
   enterEmptyChat,
-  hideChat,
-  leaveChannel,
   loadMoreButton,
   loadMoreChannels,
   loadMoreMessages,
@@ -90,7 +72,6 @@ function Chat({
   receiveMessageOnDifferentChannel,
   selectedChannelId,
   sendFirstDirectMessage,
-  socketConnected,
   subjectId,
   submitMessage,
   updateChessMoveViewTimeStamp,
@@ -98,40 +79,22 @@ function Chat({
   userId,
   username
 }) {
-  const [chatMessage, setChatMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
   ] = useState([]);
-  const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [createNewChannelModalShown, setCreateNewChannelModalShown] = useState(
     false
   );
-  const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [editTitleModalShown, setEditTitleModalShown] = useState(false);
-  const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [chessModalShown, setChessModalShown] = useState(false);
-  const [uploadModalShown, setUploadModalShown] = useState(false);
-  const [alertModalShown, setAlertModalShown] = useState(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
-  const [fileObj, setFileObj] = useState('');
   const [partner, setPartner] = useState(null);
   const memberObj = useRef({});
   const channelsObj = useRef({});
-  const FileInputRef = useRef(null);
   const mounted = useRef(true);
-  const mb = 1000;
-  const maxSize =
-    authLevel > 8
-      ? 4000 * mb
-      : authLevel > 4
-      ? 2000 * mb
-      : authLevel === 4
-      ? 1000 * mb
-      : 50 * mb;
 
   useEffect(() => {
     mounted.current = true;
@@ -305,26 +268,6 @@ function Chat({
     });
   }, [currentChannel, selectedChannelId]);
 
-  let menuProps = currentChannel.twoPeople
-    ? [{ label: 'Hide Chat', onClick: onHideChat }]
-    : [
-        {
-          label: 'Invite People',
-          onClick: () => setInviteUsersModalShown(true)
-        },
-        {
-          label: 'Edit Channel Name',
-          onClick: () => setEditTitleModalShown(true)
-        },
-        {
-          separator: true
-        },
-        {
-          label: 'Leave Channel',
-          onClick: () => setLeaveConfirmModalShown(true)
-        }
-      ];
-
   return (
     <Context.Provider
       value={{
@@ -345,38 +288,11 @@ function Chat({
           }
         `}
       >
-        <input
-          ref={FileInputRef}
-          style={{ display: 'none' }}
-          type="file"
-          onChange={handleUpload}
-        />
-        {leaveConfirmModalShown && (
-          <ConfirmModal
-            title="Leave Channel"
-            onHide={() => setLeaveConfirmModalShown(false)}
-            onConfirm={onLeaveChannel}
-          />
-        )}
         {createNewChannelModalShown && (
           <CreateNewChannelModal
             userId={userId}
             onHide={() => setCreateNewChannelModalShown(false)}
             onDone={onCreateNewChannel}
-          />
-        )}
-        {inviteUsersModalShown && (
-          <InviteUsersModal
-            onHide={() => setInviteUsersModalShown(false)}
-            currentChannel={currentChannel}
-            onDone={onInviteUsersDone}
-          />
-        )}
-        {editTitleModalShown && (
-          <EditTitleModal
-            title={channelName}
-            onHide={() => setEditTitleModalShown(false)}
-            onDone={onEditTitleDone}
           />
         )}
         {userListModalShown && (
@@ -399,92 +315,26 @@ function Chat({
           onNewButtonClick={onNewButtonClick}
           showUserListModal={() => setUserListModalShown(true)}
         />
-        <div
-          className={css`
-            height: 100%;
-            width: CALC(100% - 30rem);
-            border-left: 1px solid ${Color.borderGray()};
-            padding: 0 0 1rem 1rem;
-            position: relative;
-            background: #fff;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 75%;
-            }
-          `}
-        >
-          {selectedChannelId !== GENERAL_CHAT_ID && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              opacity={0.7}
-              style={{
-                position: 'absolute',
-                zIndex: 10,
-                top: '1rem',
-                right: '1rem'
-              }}
-              direction="left"
-              icon="bars"
-              text="Menu"
-              menuProps={menuProps}
-            />
-          )}
-          <MessagesContainer
-            channelName={channelName}
-            chessCountdownObj={chessCountdownObj}
-            chessOpponent={partner}
-            className={css`
-              display: flex;
-              flex-direction: column;
-              width: 100%;
-              height: CALC(
-                100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
-              );
-              position: relative;
-              -webkit-overflow-scrolling: touch;
-            `}
-            loading={loading}
-            currentChannel={currentChannel}
-            currentChannelId={selectedChannelId}
-            loadMoreButton={loadMoreButton}
-            messages={messages}
-            userId={userId}
-            loadMoreMessages={loadMoreMessages}
-            onChessBoardClick={handleChessModalShown}
-            onChessSpoilerClick={handleChessSpoilerClick}
-            onSendFileMessage={handleSendFileMessage}
-            recepientId={recepientId}
-            selectedChannelId={selectedChannelId}
-            statusText={renderStatusMessage()}
-          />
-          {socketConnected ? (
-            <ChatInput
-              loading={loading}
-              onChange={setChatMessage}
-              message={chatMessage}
-              myId={userId}
-              isTwoPeopleChannel={currentChannel.twoPeople}
-              currentChannelId={selectedChannelId}
-              currentChannel={currentChannel}
-              onChessButtonClick={handleChessModalShown}
-              onMessageSubmit={onMessageSubmit}
-              onHeightChange={height => {
-                if (height !== textAreaHeight) {
-                  setTextAreaHeight(height > 46 ? height : 0);
-                }
-              }}
-              onPlusButtonClick={() => FileInputRef.current.click()}
-            />
-          ) : (
-            <div>
-              <Loading
-                style={{ height: '2.2rem' }}
-                innerStyle={{ fontSize: '2rem' }}
-                text="Socket disconnected. Reconnecting..."
-              />
-            </div>
-          )}
-        </div>
+        <MessagesContainer
+          channelName={channelName}
+          chessCountdownObj={chessCountdownObj}
+          chessOpponent={partner}
+          loading={loading}
+          currentChannel={currentChannel}
+          currentChannelId={selectedChannelId}
+          loadMoreButton={loadMoreButton}
+          messages={messages}
+          loadMoreMessages={loadMoreMessages}
+          onShowChessModal={handleChessModalShown}
+          onChessBoardClick={handleChessModalShown}
+          onChessSpoilerClick={handleChessSpoilerClick}
+          onMessageSubmit={handleMessageSubmit}
+          onSendFileMessage={handleSendFileMessage}
+          recepientId={recepientId}
+          selectedChannelId={selectedChannelId}
+          subjectId={subjectId}
+          statusText={renderStatusMessage()}
+        />
         {chessModalShown && (
           <ChessModal
             channelId={selectedChannelId}
@@ -495,22 +345,6 @@ function Chat({
             onSpoilerClick={handleChessSpoilerClick}
             opponentId={partner?.id}
             opponentName={partner?.username}
-          />
-        )}
-        {alertModalShown && (
-          <AlertModal
-            title="File is too large"
-            content={`The file size is larger than your limit of ${maxSize /
-              mb} MB`}
-            onHide={() => setAlertModalShown(false)}
-          />
-        )}
-        {uploadModalShown && (
-          <UploadModal
-            channelId={selectedChannelId}
-            fileObj={fileObj}
-            onHide={() => setUploadModalShown(false)}
-            subjectId={subjectId}
           />
         )}
       </div>
@@ -530,41 +364,7 @@ function Chat({
     setChessModalShown(true);
   }
 
-  function handleSendFileMessage(params) {
-    socket.emit('new_chat_message', params, {
-      ...currentChannel,
-      numUnreads: 1,
-      lastMessage: {
-        fileName: params.fileName,
-        sender: { id: userId, username }
-      },
-      channelName
-    });
-  }
-
-  function handleUpload(event) {
-    const file = event.target.files[0];
-    if (file.size / mb > maxSize) {
-      return setAlertModalShown(true);
-    }
-    setFileObj(file);
-    setUploadModalShown(true);
-    event.target.value = null;
-  }
-
-  function userListDescriptionShown(user) {
-    for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
-      if (user.id === currentChannelOnlineMembers[i].id) return true;
-    }
-    return false;
-  }
-
-  function returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
-    return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
-  }
-
-  async function onMessageSubmit(content) {
-    setTextAreaHeight(0);
+  async function handleMessageSubmit(content) {
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
       const { members, message } = await startNewDMChannel({
@@ -600,6 +400,29 @@ function Chat({
     } catch (error) {
       console.error(error);
     }
+  }
+
+  function handleSendFileMessage(params) {
+    socket.emit('new_chat_message', params, {
+      ...currentChannel,
+      numUnreads: 1,
+      lastMessage: {
+        fileName: params.fileName,
+        sender: { id: userId, username }
+      },
+      channelName
+    });
+  }
+
+  function userListDescriptionShown(user) {
+    for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
+      if (user.id === currentChannelOnlineMembers[i].id) return true;
+    }
+    return false;
+  }
+
+  function returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
+    return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
   }
 
   async function handleConfirmChessMove({ state, isCheckmate, isStalemate }) {
@@ -735,37 +558,6 @@ function Chat({
     socket.emit('join_chat_channel', data.channelId);
   }
 
-  function onInviteUsersDone(users, message) {
-    socket.emit('new_chat_message', {
-      ...message,
-      channelId: message.channelId
-    });
-    socket.emit('send_group_chat_invitation', users, {
-      message: { ...message, messageId: message.id }
-    });
-    setInviteUsersModalShown(false);
-  }
-
-  async function onEditTitleDone(title) {
-    await editChannelTitle({ title, channelId: selectedChannelId });
-    setEditTitleModalShown(false);
-  }
-
-  function onHideChat() {
-    hideChat(selectedChannelId);
-  }
-
-  function onLeaveChannel() {
-    leaveChannel(selectedChannelId);
-    socket.emit('leave_chat_channel', {
-      channelId: selectedChannelId,
-      userId,
-      username,
-      profilePicId
-    });
-    setLeaveConfirmModalShown(false);
-  }
-
   function renderStatusMessage() {
     return memberObj.current[(partner?.id)]?.channelObj[selectedChannelId]
       ?.makingChessMove
@@ -776,7 +568,6 @@ function Chat({
 
 export default connect(
   state => ({
-    authLevel: state.UserReducer.authLevel,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     pageVisible: state.ViewReducer.pageVisible,
@@ -788,7 +579,6 @@ export default connect(
     channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
     loadMoreButton: state.ChatReducer.loadMoreMessages,
     recepientId: state.ChatReducer.recepientId,
-    socketConnected: state.NotiReducer.socketConnected,
     subjectId: state.ChatReducer.subject.id
   }),
   dispatch => ({
@@ -802,15 +592,12 @@ export default connect(
     enterChannelWithId: params =>
       dispatch(ChatActions.enterChannelWithId(params)),
     enterEmptyChat: params => dispatch(ChatActions.enterEmptyChat(params)),
-    submitMessage: params => dispatch(ChatActions.submitMessage(params)),
     loadMoreChannels: params => dispatch(ChatActions.loadMoreChannels(params)),
     loadMoreMessages: params => dispatch(ChatActions.loadMoreMessages(params)),
     createNewChannel: params => dispatch(ChatActions.createNewChannel(params)),
     sendFirstDirectMessage: params =>
       dispatch(ChatActions.sendFirstDirectMessage(params)),
-    hideChat: params => dispatch(ChatActions.hideChat(params)),
-    leaveChannel: params => dispatch(ChatActions.leaveChannel(params)),
-    editChannelTitle: params => dispatch(ChatActions.editChannelTitle(params)),
+    submitMessage: params => dispatch(ChatActions.submitMessage(params)),
     notifyThatMemberLeftChannel: params =>
       dispatch(ChatActions.notifyThatMemberLeftChannel(params)),
     openDirectMessageChannel: params =>

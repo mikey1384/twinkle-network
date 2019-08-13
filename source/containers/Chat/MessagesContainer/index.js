@@ -1,20 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import {
+  deleteMessage,
+  editChannelTitle,
+  leaveChannel,
+  hideChat
+} from 'redux/actions/ChatActions';
+import { GENERAL_CHAT_ID } from 'constants/database';
+import { mobileMaxWidth, Color } from 'constants/css';
+import { css } from 'emotion';
+import { socket } from 'constants/io';
 import Button from 'components/Button';
+import ConfirmModal from 'components/Modals/ConfirmModal';
+import ChatInput from './ChatInput';
+import DropdownButton from 'components/Buttons/DropdownButton';
 import Loading from 'components/Loading';
 import Message from '../Message';
-import SubjectHeader from './SubjectHeader';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-import { connect } from 'react-redux';
-import { deleteMessage } from 'redux/actions/ChatActions';
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal';
+import SubjectHeader from './SubjectHeader';
+import UploadModal from '../Modals/UploadModal';
+import InviteUsersModal from '../Modals/InviteUsers';
+import AlertModal from 'components/Modals/AlertModal';
+import EditTitleModal from '../Modals/EditTitle';
 
 MessagesContainer.propTypes = {
+  authLevel: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
-  className: PropTypes.string.isRequired,
   deleteMessage: PropTypes.func.isRequired,
+  editChannelTitle: PropTypes.func.isRequired,
+  hideChat: PropTypes.func.isRequired,
+  leaveChannel: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
@@ -23,31 +41,46 @@ MessagesContainer.propTypes = {
   messages: PropTypes.array,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
+  onMessageSubmit: PropTypes.func.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
+  onShowChessModal: PropTypes.func.isRequired,
+  profilePicId: PropTypes.number,
   recepientId: PropTypes.number,
   selectedChannelId: PropTypes.number,
+  socketConnected: PropTypes.bool,
   statusText: PropTypes.string,
+  subjectId: PropTypes.number,
+  username: PropTypes.string,
   userId: PropTypes.number.isRequired
 };
 
 function MessagesContainer({
+  authLevel,
   channelName,
   chessCountdownObj,
   chessOpponent,
-  className,
   deleteMessage,
+  editChannelTitle,
+  leaveChannel,
   loadMoreButton,
   loading,
   loadMoreMessages,
   currentChannel,
   currentChannelId,
+  hideChat,
   messages,
   onChessBoardClick,
   onChessSpoilerClick,
+  onMessageSubmit,
   onSendFileMessage,
+  onShowChessModal,
+  profilePicId,
   recepientId,
   selectedChannelId,
+  socketConnected,
+  subjectId,
   statusText,
+  username,
   userId
 }) {
   const [deleteModal, setDeleteModal] = useState({
@@ -64,13 +97,50 @@ function MessagesContainer({
     content: ''
   });
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);
+  const [chatMessage, setChatMessage] = useState('');
+  const [textAreaHeight, setTextAreaHeight] = useState(0);
+  const [fileObj, setFileObj] = useState('');
+  const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
+  const [uploadModalShown, setUploadModalShown] = useState(false);
+  const [alertModalShown, setAlertModalShown] = useState(false);
+  const [editTitleModalShown, setEditTitleModalShown] = useState(false);
+  const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const scrollAtBottom = useRef(true);
   const MessagesRef = useRef({});
   const ContentRef = useRef({});
+  const FileInputRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const maxScroll = useRef(0);
   const prevMessages = useRef(messages || []);
   const prevStatusText = useRef('');
+  const mb = 1000;
+  const maxSize =
+    authLevel > 8
+      ? 4000 * mb
+      : authLevel > 4
+      ? 2000 * mb
+      : authLevel === 4
+      ? 1000 * mb
+      : 50 * mb;
+  const menuProps = currentChannel.twoPeople
+    ? [{ label: 'Hide Chat', onClick: () => hideChat(selectedChannelId) }]
+    : [
+        {
+          label: 'Invite People',
+          onClick: () => setInviteUsersModalShown(true)
+        },
+        {
+          label: 'Edit Channel Name',
+          onClick: () => setEditTitleModalShown(true)
+        },
+        {
+          separator: true
+        },
+        {
+          label: 'Leave Channel',
+          onClick: () => setLeaveConfirmModalShown(true)
+        }
+      ];
 
   useEffect(() => {
     const newMessageArrived =
@@ -135,7 +205,42 @@ function MessagesContainer({
   }, [currentChannel.id]);
 
   return (
-    <>
+    <div
+      className={css`
+        height: 100%;
+        width: CALC(100% - 30rem);
+        border-left: 1px solid ${Color.borderGray()};
+        padding: 0 0 1rem 1rem;
+        position: relative;
+        background: #fff;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 75%;
+        }
+      `}
+    >
+      <input
+        ref={FileInputRef}
+        style={{ display: 'none' }}
+        type="file"
+        onChange={handleUpload}
+      />
+      {selectedChannelId !== GENERAL_CHAT_ID && (
+        <DropdownButton
+          skeuomorphic
+          color="darkerGray"
+          opacity={0.7}
+          style={{
+            position: 'absolute',
+            zIndex: 10,
+            top: '1rem',
+            right: '1rem'
+          }}
+          direction="left"
+          icon="bars"
+          text="Menu"
+          menuProps={menuProps}
+        />
+      )}
       {subjectMsgsModal.shown && (
         <SubjectMsgsModal
           subjectId={subjectMsgsModal.subjectId}
@@ -149,7 +254,18 @@ function MessagesContainer({
           }
         />
       )}
-      <div className={className}>
+      <div
+        className={css`
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: CALC(
+            100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
+          );
+          position: relative;
+          -webkit-overflow-scrolling: touch;
+        `}
+      >
         {loading && <Loading />}
         <div
           ref={MessagesContainerRef}
@@ -281,7 +397,74 @@ function MessagesContainer({
           />
         )}
       </div>
-    </>
+      {socketConnected ? (
+        <ChatInput
+          loading={loading}
+          onChange={setChatMessage}
+          message={chatMessage}
+          myId={userId}
+          isTwoPeopleChannel={currentChannel.twoPeople}
+          currentChannelId={selectedChannelId}
+          currentChannel={currentChannel}
+          onChessButtonClick={onShowChessModal}
+          onMessageSubmit={content => {
+            setTextAreaHeight(0);
+            onMessageSubmit(content);
+          }}
+          onHeightChange={height => {
+            if (height !== textAreaHeight) {
+              setTextAreaHeight(height > 46 ? height : 0);
+            }
+          }}
+          onPlusButtonClick={() => FileInputRef.current.click()}
+        />
+      ) : (
+        <div>
+          <Loading
+            style={{ height: '2.2rem' }}
+            innerStyle={{ fontSize: '2rem' }}
+            text="Socket disconnected. Reconnecting..."
+          />
+        </div>
+      )}
+      {alertModalShown && (
+        <AlertModal
+          title="File is too large"
+          content={`The file size is larger than your limit of ${maxSize /
+            mb} MB`}
+          onHide={() => setAlertModalShown(false)}
+        />
+      )}
+      {uploadModalShown && (
+        <UploadModal
+          channelId={selectedChannelId}
+          fileObj={fileObj}
+          onHide={() => setUploadModalShown(false)}
+          subjectId={subjectId}
+        />
+      )}
+      {inviteUsersModalShown && (
+        <InviteUsersModal
+          onHide={() => setInviteUsersModalShown(false)}
+          currentChannel={currentChannel}
+          onDone={onInviteUsersDone}
+        />
+      )}
+      {editTitleModalShown && (
+        <EditTitleModal
+          title={channelName}
+          onHide={() => setEditTitleModalShown(false)}
+          onDone={onEditTitleDone}
+        />
+      )}
+      {leaveConfirmModalShown && (
+        <ConfirmModal
+          title="Leave Channel"
+          onHide={() => setLeaveConfirmModalShown(false)}
+          onConfirm={onLeaveChannel}
+        />
+      )}
+    </div>
   );
 
   function checkScrollIsAtTheBottom({ content, container }) {
@@ -333,9 +516,52 @@ function MessagesContainer({
     }
     scrollAtBottom.current = true;
   }
+
+  function handleUpload(event) {
+    const file = event.target.files[0];
+    if (file.size / mb > maxSize) {
+      return setAlertModalShown(true);
+    }
+    setFileObj(file);
+    setUploadModalShown(true);
+    event.target.value = null;
+  }
+
+  async function onEditTitleDone(title) {
+    await editChannelTitle({ title, channelId: selectedChannelId });
+    setEditTitleModalShown(false);
+  }
+
+  function onInviteUsersDone(users, message) {
+    socket.emit('new_chat_message', {
+      ...message,
+      channelId: message.channelId
+    });
+    socket.emit('send_group_chat_invitation', users, {
+      message: { ...message, messageId: message.id }
+    });
+    setInviteUsersModalShown(false);
+  }
+
+  function onLeaveChannel() {
+    leaveChannel(selectedChannelId);
+    socket.emit('leave_chat_channel', {
+      channelId: selectedChannelId,
+      userId,
+      username,
+      profilePicId
+    });
+    setLeaveConfirmModalShown(false);
+  }
 }
 
 export default connect(
-  null,
-  { deleteMessage }
+  state => ({
+    authLevel: state.UserReducer.authLevel,
+    profilePicId: state.UserReducer.profilePicId,
+    userId: state.UserReducer.userId,
+    username: state.UserReducer.username,
+    socketConnected: state.NotiReducer.socketConnected
+  }),
+  { deleteMessage, editChannelTitle, hideChat, leaveChannel }
 )(MessagesContainer);
