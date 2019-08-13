@@ -302,6 +302,7 @@ function MessagesContainer({
       );
       maxScroll.current = MessagesContainerRef.current.scrollTop;
     }
+    scrollAtBottom.current = true;
   }
 
   function renderMessages() {
