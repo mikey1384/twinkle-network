@@ -35,19 +35,20 @@ export default function FirstPage({
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: 3rem;
           color: ${Color.darkerGray()};
           > nav {
             text-align: center;
             > p {
               font-weight: bold;
               text-transform: capitalize;
+              font-size: 3.5rem;
             }
             span {
               font-size: 1.5rem;
             }
           }
           > a {
+            line-height: 1.8;
             font-size: 2.7rem;
             cursor: pointer;
             text-transform: capitalize;
@@ -84,7 +85,7 @@ export default function FirstPage({
             </nav>
           ) : (
             <a key={type} onClick={() => changeFilter(type)}>
-              Search {(type === 'url' ? 'link' : type) + 's'}
+              Search for {(type === 'url' ? 'link' : type) + 's'}
             </a>
           )
         )}

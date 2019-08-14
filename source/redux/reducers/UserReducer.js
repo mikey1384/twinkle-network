@@ -12,6 +12,7 @@ const defaultState = {
   loggedIn: false,
   profile: {},
   profiles: [],
+  searchFilter: '',
   searchedProfiles: [],
   loadMoreButton: false
 };
@@ -23,6 +24,11 @@ export default function UserReducer(state = defaultState, action) {
       return {
         ...state,
         profiles: []
+      };
+    case USER.CHANGE_DEFAULT_FILTER:
+      return {
+        ...state,
+        searchFilter: action.filter
       };
     case USER.CHANGE_PROFILE_THEME:
       return {
@@ -109,11 +115,6 @@ export default function UserReducer(state = defaultState, action) {
         profile: state.profile,
         profiles: state.profiles,
         searchedProfiles: state.searchedProfiles
-      };
-    case USER.SET_DEFAULT_FILTER:
-      return {
-        ...state,
-        searchFilter: action.filter
       };
     case USER.SET_GREETING:
       return {

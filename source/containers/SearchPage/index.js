@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Checkbox from 'components/Checkbox';
 import { searchPage } from './Styles';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import {
   changeFilter,
   closeSearch,
@@ -30,8 +29,7 @@ SearchPage.propTypes = {
   searchText: PropTypes.string.isRequired,
   selectedFilter: PropTypes.string.isRequired,
   setResults: PropTypes.func.isRequired,
-  updateDefaultSearchFilter: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  updateDefaultSearchFilter: PropTypes.func.isRequired
 };
 
 function SearchPage({
@@ -45,8 +43,7 @@ function SearchPage({
   searchText,
   selectedFilter,
   setResults,
-  updateDefaultSearchFilter,
-  userId
+  updateDefaultSearchFilter
 }) {
   const [prevSearchText, setPrevSearchText] = useState(searchText);
   const SearchPageRef = useRef(null);
@@ -83,41 +80,13 @@ function SearchPage({
         `}
       >
         <CloseText className="desktop" />
-        <div
-          style={{
-            fontSize: '3rem',
-            fontWeight: 'bold',
-            padding: '1rem',
-            color: Color.darkerGray()
-          }}
-        >
-          {stringIsEmpty(searchText) ? (
-            <div style={{ textTransform: 'capitalize' }}>
-              {renderHelperText()}
-            </div>
-          ) : (
-            <span>
-              <span style={{ textTransform: 'capitalize' }}>
-                {selectedFilter === 'url' ? 'link' : selectedFilter}
-              </span>
-              : {`"${searchText}"`}
-            </span>
-          )}
-          {userId && (
-            <Checkbox
-              label={`Always search for ${
-                selectedFilter === 'url' ? 'link' : selectedFilter
-              }s first:`}
-              backgroundColor="#fff"
-              checked={selectedFilter === searchFilter}
-              onClick={handleSetDefaultSearchFilter}
-            />
-          )}
-        </div>
-        <TopFilter
-          applyFilter={handleChangeFilter}
-          selectedFilter={selectedFilter}
-        />
+        {!stringIsEmpty(searchText) && (
+          <TopFilter
+            style={{ marginTop: '2rem' }}
+            applyFilter={handleChangeFilter}
+            selectedFilter={selectedFilter}
+          />
+        )}
         {stringIsEmpty(searchText) ? (
           <FirstPage
             changeFilter={handleChangeFilter}
@@ -141,12 +110,6 @@ function SearchPage({
     setResults({ results: [], loadMoreButton: false });
     changeFilter(nextFilter);
     onSearchBoxFocus();
-  }
-
-  function renderHelperText() {
-    if (selectedFilter === 'all') return 'Search all content type...';
-    if (selectedFilter === 'url') return 'Search links...';
-    return `Search ${selectedFilter}s...`;
   }
 
   async function handleSetDefaultSearchFilter() {
