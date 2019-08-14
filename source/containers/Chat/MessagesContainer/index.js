@@ -160,7 +160,7 @@ function MessagesContainer({
                 MessagesRef.current.offsetHeight
             : 0
         );
-        handleSetScrollToBottom();
+        setTimeout(() => handleSetScrollToBottom(), 0);
       } else {
         setNewUnseenMessage(true);
       }
@@ -188,7 +188,7 @@ function MessagesContainer({
       );
     }
     if (prevMessages.current.length === 0 && messages.length === 1) {
-      handleSetScrollToBottom();
+      setTimeout(() => handleSetScrollToBottom(), 0);
     }
   }, [messages]);
 
@@ -201,7 +201,7 @@ function MessagesContainer({
   }, [statusText]);
 
   useEffect(() => {
-    handleSetScrollToBottom();
+    setTimeout(() => handleSetScrollToBottom(), 0);
   }, [currentChannel.id]);
 
   return (

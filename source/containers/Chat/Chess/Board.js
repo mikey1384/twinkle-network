@@ -67,6 +67,8 @@ export default function Board({
         <>
           <div
             style={{
+              width: '100%',
+              height: '100%',
               gridArea: 'num',
               display: 'grid',
               gridTemplateRows: 'repeat(8, 1fr)'
@@ -130,90 +132,77 @@ export default function Board({
       );
     } else if (spoilerOff === false) {
       setBoard(
-        <>
+        <div
+          className={css`
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            font-size: 1.7rem;
+            line-height: 2;
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 1.5rem;
+            }
+          `}
+        >
           <div
             className={css`
-              margin: 0 auto;
-              width: 100%;
-              height: 100%;
-              display: flex;
-              justify-content: center;
-              flex-direction: column;
-              align-items: center;
-              text-align: center;
-              font-size: 1.7rem;
-              line-height: 2;
-              @media (max-width: ${mobileMaxWidth}) {
-                font-size: 1.5rem;
+              cursor: pointer;
+              &:hover {
+                text-decoration: underline;
               }
             `}
+            onClick={onSpoilerClick}
           >
-            <div
-              className={css`
-                cursor: pointer;
-                &:hover {
-                  text-decoration: underline;
-                }
-              `}
-              onClick={onSpoilerClick}
-            >
-              <p>{opponentName} made a new chess move.</p>
-              <p>Tap here to view it.</p>
-              <p>
-                {`After viewing ${opponentName}'s move, you `}
-                <b>must</b> make your own move in <b>3 minutes</b>. Otherwise,
-                you will lose.
-              </p>
-            </div>
+            <p>{opponentName} made a new chess move.</p>
+            <p>Tap here to view it.</p>
+            <p>
+              {`After viewing ${opponentName}'s move, you `}
+              <b>must</b> make your own move in <b>3 minutes</b>. Otherwise, you
+              will lose.
+            </p>
           </div>
-        </>
+        </div>
       );
-    } else setBoard(null);
+    } else setBoard(<div style={{ width: '100%', height: '100%' }} />);
 
     return function cleanUp() {
-      setBoard(null);
+      setBoard(<div style={{ width: '100%', height: '100%' }} />);
     };
   }, [interactable, spoilerOff, squares]);
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : squares.length > 0 ? (
     <div
+      onClick={spoilerOff ? onBoardClick : undefined}
       className={css`
+        cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
+        display: ${spoilerOff === false ? 'flex' : 'grid'};
+        align-items: ${spoilerOff === false ? 'center' : ''};
         width: CALC(360px + 2rem);
         height: CALC(360px + 2.5rem);
-        position: relative;
+        grid-template-areas:
+          'num chess'
+          '. letter';
+        grid-template-columns: 2rem 360px;
+        grid-template-rows: 360px 2.5rem;
+        background: ${spoilerOff ? '#fff' : ''};
         @media (max-width: ${mobileMaxWidth}) {
+          grid-template-columns: 2rem 50vw;
+          grid-template-rows: 50vw 2.5rem;
           width: CALC(50vw + 2rem);
           height: CALC(50vw + 2.5rem);
         }
       `}
     >
-      {loading ? (
-        <Loading />
-      ) : squares.length > 0 ? (
-        <div
-          onClick={spoilerOff ? onBoardClick : undefined}
-          className={css`
-            cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
-            display: ${spoilerOff === false ? 'flex' : 'grid'};
-            align-items: ${spoilerOff === false ? 'center' : ''};
-            height: 100%;
-            grid-template-areas:
-              'num chess'
-              '. letter';
-            grid-template-columns: 2rem 360px;
-            grid-template-rows: 360px 2.5rem;
-            background: ${spoilerOff ? '#fff' : ''};
-            @media (max-width: ${mobileMaxWidth}) {
-              grid-template-columns: 2rem 50vw;
-              grid-template-rows: 50vw 2.5rem;
-            }
-          `}
-        >
-          {board}
-        </div>
-      ) : null}
+      {board}
     </div>
-  );
+  ) : null;
 
   function renderCastlingButtons() {
     const top = 'CALC(100% - 6rem)';
