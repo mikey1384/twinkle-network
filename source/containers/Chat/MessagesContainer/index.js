@@ -146,9 +146,9 @@ function MessagesContainer({
     const newMessageArrived =
       prevMessages.current.length >= 0 &&
       prevMessages.current.length < messages.length &&
-      (prevMessages.current[0]
+      prevMessages.current[0]
         ? prevMessages.current[0].id === messages[0].id
-        : false);
+        : false;
     const statusTextAppeared = !prevStatusText.current && !!statusText;
     if (newMessageArrived || statusTextAppeared) {
       const messageSenderId = messages[messages.length - 1].userId;
