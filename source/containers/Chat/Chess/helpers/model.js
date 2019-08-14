@@ -132,17 +132,15 @@ export function highlightPossiblePathsFromSrc({
     })
       ? {
           ...square,
-          state:
-            ['check', 'checkmate'].indexOf(square.state) !== -1
-              ? square.state
-              : 'highlighted'
+          state: ['check', 'checkmate'].includes(square.state)
+            ? square.state
+            : 'highlighted'
         }
       : {
           ...square,
-          state:
-            ['check', 'checkmate'].indexOf(square.state) !== -1
-              ? square.state
-              : ''
+          state: ['check', 'checkmate'].includes(square.state)
+            ? square.state
+            : ''
         }
   );
 }
@@ -303,7 +301,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             })
           ) {
             if (checkers.length === 1) return false;
-            if (blockPoints.indexOf(square) === -1) blockPoints.push(square);
+            if (!blockPoints.includes(square)) blockPoints.push(square);
           }
         }
       }
@@ -314,7 +312,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     for (let i = 0; i < allBlockPoints[0].length; i++) {
       let blockable = true;
       for (let j = 0; j < allBlockPoints.length; j++) {
-        if (allBlockPoints[j].indexOf(allBlockPoints[0][i]) === -1) {
+        if (!allBlockPoints[j].includes(allBlockPoints[0][i])) {
           blockable = false;
           break;
         }
@@ -425,7 +423,7 @@ export function returnBoardAfterMove({
     if (index === dest) {
       const firstRow = [0, 1, 2, 3, 4, 5, 6, 7];
       let transform = false;
-      if (squares[src].type === 'pawn' && firstRow.indexOf(index) !== -1) {
+      if (squares[src].type === 'pawn' && firstRow.includes(index)) {
         transform = true;
       }
       return {

@@ -34,8 +34,8 @@ export default function HeaderNav({
   style
 }) {
   const highlighted =
-    ['/featured', '/videos', '/links'].indexOf(to) !== -1 &&
-    ['featured', 'videos', 'links'].indexOf(pathname?.split('/')[1]) !== -1;
+    ['/featured', '/videos', '/links'].includes(to) &&
+    ['featured', 'videos', 'links'].includes(pathname?.split('/')[1]);
   return (
     <Route
       path={to}

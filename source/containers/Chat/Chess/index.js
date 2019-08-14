@@ -107,8 +107,7 @@ export default function Chess({
             ? {
                 ...square,
                 state:
-                  gameOverMsg ||
-                  ['check', 'checkmate'].indexOf(square.state) !== -1
+                  gameOverMsg || ['check', 'checkmate'].includes(square.state)
                     ? square.state
                     : 'highlighted'
               }
@@ -678,7 +677,7 @@ export default function Chess({
     if (potentialCapturers.length > 0) {
       setSquares(squares =>
         squares.map((square, index) => {
-          if (potentialCapturers.indexOf(index) !== -1) {
+          if (potentialCapturers.includes(index)) {
             return {
               ...square,
               state: 'danger'

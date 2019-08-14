@@ -61,7 +61,7 @@ export default function SelectUploadsForm({
             <Selectable
               key={uploadId}
               item={contentObjs[uploadId]}
-              selected={selectedUploads.indexOf(uploadId) !== -1}
+              selected={selectedUploads.includes(uploadId)}
               onSelect={onSelect}
               onDeselect={onDeselect}
               type={type}

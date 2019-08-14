@@ -98,7 +98,7 @@ function EditPlaylistModal({
   }, []);
 
   const videosToRearrange = modalVideos.filter(
-    videoId => !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
+    videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
   );
 
   return (
@@ -326,7 +326,7 @@ function EditPlaylistModal({
             originalVideoIds: initialSelectedVideos.current,
             reorderedVideoIds: modalVideos.filter(
               videoId =>
-                !removedVideoIds[videoId] || addedVideos.indexOf(videoId) !== -1
+                !removedVideoIds[videoId] || addedVideos.includes(videoId)
             ),
             playlistId
           });
@@ -355,10 +355,7 @@ function EditPlaylistModal({
         initialSelectedVideos.current = initialSelectedVideos.current
           .filter(videoId => videoId !== video.id)
           .concat(video.id);
-        if (
-          selectedVideos.indexOf(video.id) === -1 &&
-          !removedVideoIds[video.id]
-        ) {
+        if (!selectedVideos.includes(video.id) && !removedVideoIds[video.id]) {
           setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
         }
       }
@@ -366,7 +363,7 @@ function EditPlaylistModal({
         loadedOrSearchedVideos.concat(
           loadedVideos
             .map(video => video.id)
-            .filter(videoId => loadedOrSearchedVideos.indexOf(videoId) === -1)
+            .filter(videoId => !loadedOrSearchedVideos.includes(videoId))
         )
       );
       setRemoveVideosLoadMoreButton(removeVidsLoadMoreButton);
@@ -402,8 +399,7 @@ function EditPlaylistModal({
             .map(video => video.id)
             .filter(
               videoId =>
-                selectedVideos.indexOf(videoId) === -1 &&
-                !removedVideoIds[videoId]
+                !selectedVideos.includes(videoId) && !removedVideoIds[videoId]
             )
         )
       );
@@ -433,7 +429,7 @@ function EditPlaylistModal({
         modalVideos.concat(
           loadedVideos
             .map(video => video.id)
-            .filter(videoId => modalVideos.indexOf(videoId) === -1)
+            .filter(videoId => !modalVideos.includes(videoId))
         )
       );
       setSelectedVideos(selectedVideos =>
@@ -442,8 +438,7 @@ function EditPlaylistModal({
             .map(video => video.id)
             .filter(
               videoId =>
-                selectedVideos.indexOf(videoId) === -1 &&
-                !removedVideoIds[videoId]
+                !selectedVideos.includes(videoId) && !removedVideoIds[videoId]
             )
         )
       );
@@ -482,7 +477,7 @@ function EditPlaylistModal({
       modalVideos.concat(
         loadedVideos
           .map(video => video.id)
-          .filter(videoId => modalVideos.indexOf(videoId) === -1)
+          .filter(videoId => !modalVideos.includes(videoId))
       )
     );
     setLoadingMore(false);
@@ -508,10 +503,7 @@ function EditPlaylistModal({
       ...objectify(loadedVideos)
     };
     for (let video of loadedVideos) {
-      if (
-        selectedVideos.indexOf(video.id) === -1 &&
-        !removedVideoIds[video.id]
-      ) {
+      if (!selectedVideos.includes(video.id) && !removedVideoIds[video.id]) {
         setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
       }
     }
@@ -519,7 +511,7 @@ function EditPlaylistModal({
       loadedOrSearchedVideos.concat(
         loadedVideos
           .map(video => video.id)
-          .filter(videoId => loadedOrSearchedVideos.indexOf(videoId) === -1)
+          .filter(videoId => !loadedOrSearchedVideos.includes(videoId))
       )
     );
     setRemoveVideosLoadMoreButton(loadMoreButton);
@@ -545,7 +537,7 @@ function EditPlaylistModal({
       selectedVideos.concat(
         playlistVideos
           .map(video => video.id)
-          .filter(id => selectedVideos.indexOf(id) === -1)
+          .filter(id => !selectedVideos.includes(id))
       )
     );
     setIsLoading(false);

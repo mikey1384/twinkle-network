@@ -124,12 +124,12 @@ function SelectFeaturedChallengesModal({
                 displayedChallenges.map(challengeId => (
                   <ContentListItem
                     selectable
-                    selected={selected.indexOf(challengeId) !== -1}
+                    selected={selected.includes(challengeId)}
                     key={challengeId}
                     style={{ width: '100%', marginBottom: '1rem' }}
                     contentObj={challengeObjs[challengeId]}
                     onClick={() =>
-                      selected.indexOf(challengeId) === -1
+                      !selected.includes(challengeId)
                         ? setSelected([challengeId].concat(selected))
                         : setSelected(selected.filter(id => id !== challengeId))
                     }
@@ -154,7 +154,7 @@ function SelectFeaturedChallengesModal({
                 selected.map((selectedId, index) => (
                   <ContentListItem
                     selectable
-                    selected={selected.indexOf(selectedId) !== -1}
+                    selected={selected.includes(selectedId)}
                     key={selectedId}
                     style={{
                       width: '100%',
@@ -162,7 +162,7 @@ function SelectFeaturedChallengesModal({
                     }}
                     contentObj={challengeObjs[selectedId]}
                     onClick={() =>
-                      selected.indexOf(selectedId) === -1
+                      !selected.includes(selectedId)
                         ? setSelected([selectedId].concat(selected))
                         : setSelected(selected.filter(id => id !== selectedId))
                     }

@@ -42,7 +42,7 @@ function InviteUsersModal({
           title="People"
           itemLabel="username"
           searchResults={searchResults}
-          filter={result => currentMembersUID.indexOf(result.id) === -1}
+          filter={result => !currentMembersUID.includes(result.id)}
           onSearch={searchUserToInvite}
           onClear={clearSearchResults}
           onAddItem={onAddUser}

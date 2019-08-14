@@ -235,7 +235,7 @@ function SelectPlaylistsToPinModal({
     const playlists = searchText ? searchedPlaylists : playlistsToPin;
     let playlistId = playlists[index].id;
     setSelectedPlaylists(
-      selectedPlaylists.indexOf(playlistId) === -1
+      !selectedPlaylists.includes(playlistId)
         ? [playlistId].concat(selectedPlaylists)
         : selectedPlaylists.filter(id => id !== playlistId)
     );
@@ -262,7 +262,7 @@ function SelectPlaylistsToPinModal({
     const playlists = searchText ? searchedPlaylists : playlistsToPin;
     return playlists.map(playlist => ({
       label: playlist.title,
-      checked: selectedPlaylists.indexOf(playlist.id) !== -1
+      checked: selectedPlaylists.includes(playlist.id)
     }));
   }
 }

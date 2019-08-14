@@ -50,7 +50,7 @@ export default function getPiece({
           if (
             (dest === src + oneSquareModifier ||
               (dest === src + twoSquaresModifier &&
-                initialPawnPositions[color].indexOf(src) !== -1)) &&
+                initialPawnPositions[color].includes(src))) &&
             !isDestEnemyOccupied
           ) {
             return true;

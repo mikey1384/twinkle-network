@@ -314,7 +314,7 @@ function reducer(state, action) {
           ...notable,
           tags:
             notable.type === action.contentType &&
-            action.contentIds.indexOf(notable.contentId) !== -1
+            action.contentIds.includes(notable.contentId)
               ? (notable.tags || []).concat({
                   id: action.tagId,
                   title: action.tagTitle

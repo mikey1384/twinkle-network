@@ -35,7 +35,7 @@ export default function FeedReducer(state = defaultState, action) {
           ...feed,
           tags:
             feed.type === action.contentType &&
-            action.contentIds.indexOf(feed.contentId) !== -1
+            action.contentIds.includes(feed.contentId)
               ? (feed.tags || []).concat(action.tag)
               : feed.tags
         }))

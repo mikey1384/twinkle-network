@@ -210,13 +210,16 @@ function Header({
 
   const isUsername =
     pathname.split('/')[1] !== 'featured' &&
-    ['links', 'videos'].indexOf(pathname.split('/')[1]) === -1 &&
+    !['links', 'videos'].includes(pathname.split('/')[1]) &&
     pathname.length > 1;
 
-  const atHomeSection =
-    ['links', 'videos', 'featured', 'comments', 'subjects'].indexOf(
-      pathname.split('/')[1]
-    ) === -1;
+  const atHomeSection = ![
+    'links',
+    'videos',
+    'featured',
+    'comments',
+    'subjects'
+  ].includes(pathname.split('/')[1]);
 
   return (
     <nav
@@ -397,7 +400,7 @@ function Header({
   function renderWorkNav() {
     if (
       !prevPathname ||
-      ['xp', 'links', 'videos'].indexOf(pathname.split('/')[1]) === -1
+      !['xp', 'links', 'videos'].includes(pathname.split('/')[1])
     ) {
       return (
         <HeaderNav
@@ -412,7 +415,7 @@ function Header({
       );
     }
 
-    if (['links'].indexOf(prevPathname.split('/')[1]) !== -1) {
+    if (['links'].includes(prevPathname.split('/')[1])) {
       return (
         <HeaderNav
           to="/links"
@@ -426,7 +429,7 @@ function Header({
       );
     }
 
-    if (['videos'].indexOf(prevPathname.split('/')[1]) !== -1) {
+    if (['videos'].includes(prevPathname.split('/')[1])) {
       return (
         <HeaderNav
           to="/videos"

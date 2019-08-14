@@ -187,19 +187,19 @@ export function getFileInfoFromFileName(fileName) {
     const movieExt = ['avi', 'wmv', 'mov', 'mp4', '3gp', 'ogg', 'm4v'];
     const compressedExt = ['zip', 'rar', 'arj', 'tar', 'gz', 'tgz'];
     const wordExt = ['docx', 'docm', 'dotx', 'dotm', 'docb'];
-    if (audioExt.indexOf(extension) !== -1) {
+    if (audioExt.includes(extension)) {
       return 'audio';
     }
-    if (imageExt.indexOf(extension) !== -1) {
+    if (imageExt.includes(extension)) {
       return 'image';
     }
-    if (movieExt.indexOf(extension) !== -1) {
+    if (movieExt.includes(extension)) {
       return 'video';
     }
-    if (compressedExt.indexOf(extension) !== -1) {
+    if (compressedExt.includes(extension)) {
       return 'archive';
     }
-    if (wordExt.indexOf(extension) !== -1) {
+    if (wordExt.includes(extension)) {
       return 'word';
     }
     if (extension === 'pdf') {
@@ -238,7 +238,7 @@ export function isValidEmail(email = '') {
 
 export function isValidUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+  if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
   return regex.test(url);
@@ -246,7 +246,7 @@ export function isValidUrl(url = '') {
 
 export function isValidYoutubeUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+  if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
   let trimOne = url.split('v=')[1];
@@ -260,7 +260,7 @@ export function isValidYoutubeUrl(url = '') {
 export function isValidYoutubeChannelUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   const trim = url.split('youtube.com/')[1];
-  if (url.indexOf('://') === -1 && url.indexOf('www.') === -1) {
+  if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
   return regex.test(url) && typeof trim !== 'undefined';
@@ -320,7 +320,7 @@ export function processedStringWithURL(string) {
     }
     newString += tempString.substring(0, hrefPos + 6);
     tempString = tempString.substring(hrefPos + 6, tempString.length);
-    if (tempString.indexOf('://') > 8 || tempString.indexOf('://') === -1) {
+    if (tempString.indexOf('://') > 8 || !tempString.includes('://')) {
       newString += 'http://';
     }
   }
@@ -328,7 +328,7 @@ export function processedStringWithURL(string) {
 }
 
 export function processedURL(url) {
-  if (url.indexOf('://') === -1) {
+  if (!url.includes('://')) {
     url = 'http://' + url;
   }
   return url;

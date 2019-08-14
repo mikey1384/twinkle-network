@@ -58,7 +58,7 @@ function TagModal({
           inputRef={InputRef}
           itemLabel="title"
           searchResults={searchResults}
-          filter={result => currentPlaylists.indexOf(result.id) === -1}
+          filter={result => !currentPlaylists.includes(result.id)}
           onSearch={onSearchPlaylists}
           onClear={onClearSearchResults}
           onAddItem={playlist => {
