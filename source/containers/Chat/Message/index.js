@@ -147,13 +147,13 @@ function Message({
 
   useEffect(() => {
     if (isLastMsg && userCanEditThis) {
-      setTimeout(() => setScrollToBottom(), 0);
+      setScrollToBottom();
     }
   }, [onEdit, editPadding]);
 
   useEffect(() => {
     if (isChessMsg && myId !== userId) {
-      setTimeout(() => setScrollToBottom(), 0);
+      setScrollToBottom();
     }
   }, []);
 

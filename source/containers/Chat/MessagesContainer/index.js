@@ -109,8 +109,8 @@ function MessagesContainer({
   const MessagesRef = useRef({});
   const ContentRef = useRef({});
   const FileInputRef = useRef(null);
+  const BottomRef = useRef(null);
   const MessagesContainerRef = useRef({});
-  const maxScroll = useRef(0);
   const prevMessages = useRef(messages || []);
   const prevStatusText = useRef('');
   const mb = 1000;
@@ -160,7 +160,7 @@ function MessagesContainer({
                 MessagesRef.current.offsetHeight
             : 0
         );
-        setTimeout(() => handleSetScrollToBottom(), 0);
+        handleSetScrollToBottom();
       } else {
         setNewUnseenMessage(true);
       }
@@ -188,7 +188,7 @@ function MessagesContainer({
       );
     }
     if (prevMessages.current.length === 0 && messages.length === 1) {
-      setTimeout(() => handleSetScrollToBottom(), 0);
+      handleSetScrollToBottom();
     }
   }, [messages]);
 
@@ -348,6 +348,7 @@ function MessagesContainer({
                   }
                 />
               ))}
+              <div ref={BottomRef} />
             </div>
             {statusText && (
               <div
@@ -507,14 +508,7 @@ function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    if (MessagesContainerRef.current) {
-      MessagesContainerRef.current.scrollTop = Math.max(
-        maxScroll.current,
-        MessagesContainerRef.current.offsetHeight || 0,
-        fillerHeight + (MessagesRef.current.offsetHeight || 0)
-      );
-      maxScroll.current = MessagesContainerRef.current.scrollTop;
-    }
+    BottomRef.current.scrollIntoView();
     scrollAtBottom.current = true;
   }
 
