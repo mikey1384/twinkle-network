@@ -32,6 +32,13 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.APPLY_CHANGED_CHANNEL_TITLE:
       return {
         ...state,
+        currentChannel: {
+          ...state.currentChannel,
+          title:
+            state.currentChannel.id === action.data.channelId
+              ? action.data.title
+              : state.currentChannel.title
+        },
         channels: state.channels.map(channel => {
           return {
             ...channel,
