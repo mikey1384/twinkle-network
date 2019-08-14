@@ -64,7 +64,26 @@ export default function Board({
       }
 
       setBoard(
-        <>
+        <div
+          onClick={spoilerOff ? onBoardClick : undefined}
+          className={css`
+            cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
+            display: ${spoilerOff === false ? 'flex' : 'grid'};
+            align-items: ${spoilerOff === false ? 'center' : ''};
+            width: 100%;
+            height: 100%;
+            grid-template-areas:
+              'num chess'
+              '. letter';
+            grid-template-columns: 2rem 360px;
+            grid-template-rows: 360px 2.5rem;
+            background: ${spoilerOff ? '#fff' : ''};
+            @media (max-width: ${mobileMaxWidth}) {
+              grid-template-columns: 2rem 50vw;
+              grid-template-rows: 50vw 2.5rem;
+            }
+          `}
+        >
           <div
             style={{
               gridArea: 'num',
@@ -126,11 +145,30 @@ export default function Board({
               </div>
             ))}
           </div>
-        </>
+        </div>
       );
     } else if (spoilerOff === false) {
       setBoard(
-        <>
+        <div
+          onClick={spoilerOff ? onBoardClick : undefined}
+          className={css`
+            cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
+            display: ${spoilerOff === false ? 'flex' : 'grid'};
+            align-items: ${spoilerOff === false ? 'center' : ''};
+            width: 100%;
+            height: 100%;
+            grid-template-areas:
+              'num chess'
+              '. letter';
+            grid-template-columns: 2rem 360px;
+            grid-template-rows: 360px 2.5rem;
+            background: ${spoilerOff ? '#fff' : ''};
+            @media (max-width: ${mobileMaxWidth}) {
+              grid-template-columns: 2rem 50vw;
+              grid-template-rows: 50vw 2.5rem;
+            }
+          `}
+        >
           <div
             className={css`
               margin: 0 auto;
@@ -166,7 +204,7 @@ export default function Board({
               </p>
             </div>
           </div>
-        </>
+        </div>
       );
     } else setBoard(null);
 
@@ -187,31 +225,7 @@ export default function Board({
         }
       `}
     >
-      {loading ? (
-        <Loading />
-      ) : squares.length > 0 ? (
-        <div
-          onClick={spoilerOff ? onBoardClick : undefined}
-          className={css`
-            cursor: ${spoilerOff && onBoardClick ? 'pointer' : ''};
-            display: ${spoilerOff === false ? 'flex' : 'grid'};
-            align-items: ${spoilerOff === false ? 'center' : ''};
-            height: 100%;
-            grid-template-areas:
-              'num chess'
-              '. letter';
-            grid-template-columns: 2rem 360px;
-            grid-template-rows: 360px 2.5rem;
-            background: ${spoilerOff ? '#fff' : ''};
-            @media (max-width: ${mobileMaxWidth}) {
-              grid-template-columns: 2rem 50vw;
-              grid-template-rows: 50vw 2.5rem;
-            }
-          `}
-        >
-          {board}
-        </div>
-      ) : null}
+      {loading ? <Loading /> : squares.length > 0 ? board : null}
     </div>
   );
 

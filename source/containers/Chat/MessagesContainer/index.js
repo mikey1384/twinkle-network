@@ -378,10 +378,7 @@ function MessagesContainer({
               color="orange"
               onClick={() => {
                 setNewUnseenMessage(false);
-                MessagesContainerRef.current.scrollTop = Math.max(
-                  MessagesContainerRef.current.offsetHeight,
-                  ContentRef.current.offsetHeight
-                );
+                BottomRef.current.scrollIntoView();
               }}
             >
               New Message
