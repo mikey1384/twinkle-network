@@ -4,13 +4,13 @@ import FilterBar from 'components/FilterBar';
 
 TopFilter.propTypes = {
   applyFilter: PropTypes.func.isRequired,
-  style: PropTypes.object,
+  className: PropTypes.string,
   selectedFilter: PropTypes.string.isRequired
 };
 
-export default function TopFilter({ applyFilter, selectedFilter, style }) {
+export default function TopFilter({ applyFilter, selectedFilter, className }) {
   return (
-    <FilterBar style={style} bordered>
+    <FilterBar className={className} bordered>
       <nav
         className={selectedFilter === 'video' ? 'active' : ''}
         onClick={() => applyFilter('video')}

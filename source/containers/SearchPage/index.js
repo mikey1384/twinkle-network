@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { searchPage } from './Styles';
 import { stringIsEmpty } from 'helpers/stringHelpers';
@@ -45,7 +45,7 @@ function SearchPage({
   setResults,
   updateDefaultSearchFilter
 }) {
-  const [prevSearchText, setPrevSearchText] = useState(searchText);
+  const prevSearchText = useRef(searchText);
   const SearchPageRef = useRef(null);
   useEffect(() => {
     if (!selectedFilter) changeFilter(searchFilter || 'video');
@@ -55,13 +55,13 @@ function SearchPage({
       }
     }, 10);
     if (
-      !stringIsEmpty(prevSearchText) &&
-      prevSearchText.length >= 2 &&
+      !stringIsEmpty(prevSearchText.current) &&
+      prevSearchText.current.length >= 2 &&
       (stringIsEmpty(searchText) || searchText.length < 2)
     ) {
       setResults({ results: [], loadMoreButton: false });
     }
-    setPrevSearchText(searchText);
+    prevSearchText.current = searchText;
 
     return function onUnmount() {
       recordSearchScroll(SearchPageRef.current.scrollTop);
@@ -75,14 +75,19 @@ function SearchPage({
           width: 80%;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100%;
-            margin: 0 1rem 0 1rem;
           }
         `}
       >
         <CloseText className="desktop" />
         {!stringIsEmpty(searchText) && (
           <TopFilter
-            style={{ marginTop: '2rem' }}
+            className={css`
+              margin-top: 2rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-top: 0;
+                border-top: 0;
+              }
+            `}
             applyFilter={handleChangeFilter}
             selectedFilter={selectedFilter}
           />
@@ -109,7 +114,9 @@ function SearchPage({
   function handleChangeFilter(nextFilter) {
     setResults({ results: [], loadMoreButton: false });
     changeFilter(nextFilter);
-    onSearchBoxFocus();
+    if (stringIsEmpty(searchText)) {
+      onSearchBoxFocus();
+    }
   }
 
   async function handleSetDefaultSearchFilter() {
@@ -119,7 +126,9 @@ function SearchPage({
       dispatch
     });
     updateDefaultSearchFilter(selectedFilter);
-    onSearchBoxFocus();
+    if (stringIsEmpty(searchText)) {
+      onSearchBoxFocus();
+    }
   }
 }
 
