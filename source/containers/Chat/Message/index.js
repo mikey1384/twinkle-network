@@ -153,7 +153,7 @@ function Message({
 
   useEffect(() => {
     if (isChessMsg && myId !== userId) {
-      setScrollToBottom();
+      setTimeout(() => setScrollToBottom(), 0);
     }
   }, []);
 
