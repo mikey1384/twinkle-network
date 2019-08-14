@@ -35,9 +35,16 @@ function Results({
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
-  const [prevSearchText, setPrevSearchText] = useState(searchText);
   const prevFilter = useRef(filter);
+  const prevSearchText = useRef(searchText);
   const timerRef = useRef(null);
+
+  useEffect(() => {
+    if (filter !== prevFilter.current) {
+      handleSearchContent();
+    }
+    prevFilter.current = filter;
+  }, [filter]);
 
   useEffect(() => {
     if (!stringIsEmpty(searchText) && searchText.length > 1) {
@@ -45,22 +52,17 @@ function Results({
         setResults({ filter, results: [], loadMoreButton: false });
       }
       setFirstRun(false);
-      if ((firstRun && results.length === 0) || searchText !== prevSearchText) {
+      if (
+        (firstRun && results.length === 0) ||
+        searchText !== prevSearchText.current
+      ) {
         clearTimeout(timerRef.current);
         setSearching(true);
         timerRef.current = setTimeout(handleSearchContent, 500);
       }
-      setPrevSearchText(searchText);
+      prevSearchText.current = searchText;
     }
   }, [searchText]);
-
-  useEffect(() => {
-    if (filter !== prevFilter.current) {
-      setSearching(true);
-      handleSearchContent();
-    }
-    prevFilter.current = filter;
-  }, [filter]);
 
   async function handleSearchContent() {
     const data = await searchContent({
@@ -88,7 +90,7 @@ function Results({
         justifyContent: 'center'
       }}
     >
-      {searching && <Loading />}
+      {(searching || filter !== prevFilter.current) && <Loading />}
       {!searching &&
         searchText.length > 1 &&
         results.map(result => (
@@ -99,7 +101,7 @@ function Results({
             contentObj={result}
           />
         ))}
-      {!searching && results.length === 0 && (
+      {!searching && results.length === 0 && filter === prevFilter.current && (
         <div
           style={{
             fontSize: '2.5rem',
