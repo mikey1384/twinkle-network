@@ -119,6 +119,7 @@ function SearchPage({
       dispatch
     });
     updateDefaultSearchFilter(selectedFilter);
+    onSearchBoxFocus();
   }
 }
 

@@ -36,7 +36,7 @@ function Results({
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
   const [prevSearchText, setPrevSearchText] = useState(searchText);
-  const [prevFilter, setPrevFilter] = useState(filter);
+  const prevFilter = useRef(filter);
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -55,11 +55,11 @@ function Results({
   }, [searchText]);
 
   useEffect(() => {
-    if (filter !== prevFilter) {
+    if (filter !== prevFilter.current) {
       setSearching(true);
       handleSearchContent();
     }
-    setPrevFilter(filter);
+    prevFilter.current = filter;
   }, [filter]);
 
   async function handleSearchContent() {
