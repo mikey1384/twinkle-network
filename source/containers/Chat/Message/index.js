@@ -151,6 +151,12 @@ function Message({
     }
   }, [onEdit, editPadding]);
 
+  useEffect(() => {
+    if (isChessMsg && myId !== userId) {
+      setTimeout(() => setScrollToBottom(), 0);
+    }
+  }, []);
+
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
     editMenuItems.push({
