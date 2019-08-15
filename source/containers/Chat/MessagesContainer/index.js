@@ -109,7 +109,6 @@ function MessagesContainer({
   const FileInputRef = useRef(null);
   const BottomRef = useRef(null);
   const MessagesContainerRef = useRef({});
-  const prevMessages = useRef(messages || []);
   const mb = 1000;
   const maxSize =
     authLevel > 8
@@ -140,10 +139,6 @@ function MessagesContainer({
       ];
 
   useEffect(() => {
-    prevMessages.current = messages;
-  }, [messages]);
-
-  useEffect(() => {
     setFillerHeight(
       MessagesContainerRef.current.offsetHeight >
         MessagesRef.current.offsetHeight
@@ -151,7 +146,7 @@ function MessagesContainer({
             MessagesRef.current.offsetHeight
         : 0
     );
-    handleSetScrollToBottom();
+    BottomRef.current.scrollIntoView();
   }, [currentChannel.id]);
 
   return (
