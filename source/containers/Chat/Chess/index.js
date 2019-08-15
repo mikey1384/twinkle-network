@@ -141,7 +141,7 @@ export default function Chess({
   return (
     <div
       className={css`
-        height: 510px;
+        height: 515px;
         @media (max-width: ${mobileMaxWidth}) {
           height: auto;
         }
