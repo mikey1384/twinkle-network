@@ -140,9 +140,14 @@ export default function Chess({
 
   return (
     <div
+      className={css`
+        height: 510px;
+        @media (max-width: ${mobileMaxWidth}) {
+          height: 77vw;
+        }
+      `}
       style={{
         position: 'relative',
-        padding: '1rem',
         background: Color.lightGray(),
         ...style
       }}
