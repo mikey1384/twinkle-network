@@ -154,7 +154,7 @@ function Message({
   }, [onEdit, editPadding]);
 
   useEffect(() => {
-    if (isLastMsg) {
+    if (isLastMsg && !message.id) {
       onReceiveNewMessage();
     }
   }, []);
