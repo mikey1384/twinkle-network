@@ -143,7 +143,7 @@ export default function Chess({
       className={css`
         height: 510px;
         @media (max-width: ${mobileMaxWidth}) {
-          height: 77vw;
+          height: 78vw;
         }
       `}
       style={{
