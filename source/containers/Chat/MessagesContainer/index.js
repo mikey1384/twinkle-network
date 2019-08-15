@@ -165,6 +165,9 @@ function MessagesContainer({
         setNewUnseenMessage(true);
       }
     }
+    if (prevStatusText.current && !statusText) {
+      setTimeout(() => handleSetScrollToBottom(), 0);
+    }
   }, [messages, statusText]);
 
   useEffect(() => {
