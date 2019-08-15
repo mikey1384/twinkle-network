@@ -146,6 +146,7 @@ function MessagesContainer({
             MessagesRef.current.offsetHeight
         : 0
     );
+    BottomRef.current.scrollIntoView();
     setTimeout(() => BottomRef.current.scrollIntoView(), 0);
   }, [currentChannel.id]);
 
