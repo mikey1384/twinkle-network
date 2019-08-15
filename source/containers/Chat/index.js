@@ -333,7 +333,6 @@ function Chat({
           recepientId={recepientId}
           selectedChannelId={selectedChannelId}
           subjectId={subjectId}
-          statusText={renderStatusMessage()}
         />
         {chessModalShown && (
           <ChessModal
@@ -556,13 +555,6 @@ function Chat({
     }
     receiveFirstMsg({ data, duplicate, pageVisible });
     socket.emit('join_chat_channel', data.channelId);
-  }
-
-  function renderStatusMessage() {
-    return memberObj.current[(partner?.id)]?.channelObj[selectedChannelId]
-      ?.makingChessMove
-      ? `${partner?.username} is thinking...`
-      : '';
   }
 }
 

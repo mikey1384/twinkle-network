@@ -48,7 +48,6 @@ MessagesContainer.propTypes = {
   recepientId: PropTypes.number,
   selectedChannelId: PropTypes.number,
   socketConnected: PropTypes.bool,
-  statusText: PropTypes.string,
   subjectId: PropTypes.number,
   username: PropTypes.string,
   userId: PropTypes.number.isRequired
@@ -79,7 +78,6 @@ function MessagesContainer({
   selectedChannelId,
   socketConnected,
   subjectId,
-  statusText,
   username,
   userId
 }) {
@@ -112,7 +110,6 @@ function MessagesContainer({
   const BottomRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const prevMessages = useRef(messages || []);
-  const prevStatusText = useRef('');
   const mb = 1000;
   const maxSize =
     authLevel > 8
@@ -149,8 +146,7 @@ function MessagesContainer({
       prevMessages.current[0]
         ? prevMessages.current[0].id === messages[0].id
         : false;
-    const statusTextAppeared = !prevStatusText.current && !!statusText;
-    if (newMessageArrived || statusTextAppeared) {
+    if (newMessageArrived) {
       const messageSenderId = messages[messages.length - 1].userId;
       if (messageSenderId === userId || scrollAtBottom.current) {
         setFillerHeight(
@@ -165,10 +161,7 @@ function MessagesContainer({
         setNewUnseenMessage(true);
       }
     }
-    if (prevStatusText.current && !statusText) {
-      setTimeout(() => handleSetScrollToBottom(), 0);
-    }
-  }, [messages, statusText]);
+  }, [messages]);
 
   useEffect(() => {
     setFillerHeight(
@@ -198,10 +191,6 @@ function MessagesContainer({
   useEffect(() => {
     prevMessages.current = messages;
   }, [messages]);
-
-  useEffect(() => {
-    prevStatusText.current = statusText;
-  }, [statusText]);
 
   useEffect(() => {
     setTimeout(() => handleSetScrollToBottom(), 0);
@@ -270,101 +259,91 @@ function MessagesContainer({
         `}
       >
         {loading && <Loading />}
-        <div
-          ref={MessagesContainerRef}
-          style={{
-            position: 'absolute',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            opacity: loading && '0.3',
-            top: currentChannelId === 2 ? '7rem' : 0,
-            overflowY: 'scroll'
-          }}
-          onScroll={() => {
-            if (
-              checkScrollIsAtTheBottom({
-                content: ContentRef.current,
-                container: MessagesContainerRef.current
-              })
-            ) {
-              scrollAtBottom.current = true;
-              setNewUnseenMessage(false);
-            } else {
-              scrollAtBottom.current = false;
-            }
-          }}
-        >
-          <div ref={ContentRef} style={{ width: '100%' }}>
-            {loadMoreButton ? (
-              <div
-                style={{
-                  marginTop: '1rem',
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '100%'
-                }}
-              >
-                <Button
-                  filled
-                  color="lightBlue"
-                  disabled={loadMoreButtonLock}
-                  onClick={handleLoadMoreButtonClick}
+          <div
+            ref={MessagesContainerRef}
+            style={{
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              opacity: loading && '0.3',
+              top: currentChannelId === 2 ? '7rem' : 0,
+              overflowY: 'scroll'
+            }}
+            onScroll={() => {
+              if (
+                checkScrollIsAtTheBottom({
+                  content: ContentRef.current,
+                  container: MessagesContainerRef.current
+                })
+              ) {
+                scrollAtBottom.current = true;
+                setNewUnseenMessage(false);
+              } else {
+                scrollAtBottom.current = false;
+              }
+            }}
+          >
+            <div ref={ContentRef} style={{ width: '100%' }}>
+              {loadMoreButton ? (
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%'
+                  }}
                 >
-                  Load More
-                </Button>
-              </div>
-            ) : (
-              <div
-                style={{
-                  height: fillerHeight + 'px'
-                }}
-              />
-            )}
-            <div ref={MessagesRef}>
-              {messages.map((message, index) => (
-                <Message
-                  key={message.id || 'newMessage' + index}
-                  channelId={selectedChannelId}
-                  channelName={channelName}
-                  chessCountdownObj={chessCountdownObj}
-                  chessOpponent={chessOpponent}
-                  checkScrollIsAtTheBottom={() =>
-                    checkScrollIsAtTheBottom({
-                      content: ContentRef.current,
-                      container: MessagesContainerRef.current
-                    })
-                  }
-                  onDelete={handleShowDeleteModal}
-                  index={index}
-                  onChessBoardClick={onChessBoardClick}
-                  onChessSpoilerClick={onChessSpoilerClick}
-                  onSendFileMessage={onSendFileMessage}
-                  isNotification={!!message.isNotification}
-                  message={message}
-                  isLastMsg={index === messages.length - 1}
-                  recepientId={recepientId}
-                  setScrollToBottom={handleSetScrollToBottom}
-                  showSubjectMsgsModal={({ subjectId, content }) =>
-                    setSubjectMsgsModal({ shown: true, subjectId, content })
-                  }
+                  <Button
+                    filled
+                    color="lightBlue"
+                    disabled={loadMoreButtonLock}
+                    onClick={handleLoadMoreButtonClick}
+                  >
+                    Load More
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    height: fillerHeight + 'px'
+                  }}
                 />
-              ))}
-              <div ref={BottomRef} />
+              )}
+              <div ref={MessagesRef}>
+                {messages.map((message, index) => (
+                  <Message
+                    key={message.id || 'newMessage' + index}
+                    channelId={selectedChannelId}
+                    channelName={channelName}
+                    chessCountdownObj={chessCountdownObj}
+                    chessOpponent={chessOpponent}
+                    checkScrollIsAtTheBottom={() =>
+                      checkScrollIsAtTheBottom({
+                        content: ContentRef.current,
+                        container: MessagesContainerRef.current
+                      })
+                    }
+                    onDelete={handleShowDeleteModal}
+                    index={index}
+                    onChessBoardClick={onChessBoardClick}
+                    onChessSpoilerClick={onChessSpoilerClick}
+                    onSendFileMessage={onSendFileMessage}
+                    isNotification={!!message.isNotification}
+                    message={message}
+                    isLastMsg={index === messages.length - 1}
+                    recepientId={recepientId}
+                    setScrollToBottom={handleSetScrollToBottom}
+                    showSubjectMsgsModal={({ subjectId, content }) =>
+                      setSubjectMsgsModal({ shown: true, subjectId, content })
+                    }
+                  />
+                ))}
+                <div ref={BottomRef} />
+              </div>
             </div>
           </div>
-          {statusText && (
-            <div
-              style={{
-                padding: '2rem',
-                textAlign: 'center'
-              }}
-            >
-              {statusText}
-            </div>
-          )}
-        </div>
         {!loading && currentChannelId === 2 && <SubjectHeader />}
         <div
           style={{
