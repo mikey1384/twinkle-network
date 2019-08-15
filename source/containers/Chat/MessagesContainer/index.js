@@ -348,7 +348,6 @@ function MessagesContainer({
                   }
                 />
               ))}
-              <div ref={BottomRef} />
             </div>
             {statusText && (
               <div
@@ -360,6 +359,7 @@ function MessagesContainer({
                 {statusText}
               </div>
             )}
+            <div ref={BottomRef} />
           </div>
         </div>
         {!loading && currentChannelId === 2 && <SubjectHeader />}
