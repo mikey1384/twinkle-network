@@ -103,7 +103,7 @@ function MessagesContainer({
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
-  const scrollAtBottom = useRef(true);
+  const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const MessagesRef = useRef({});
   const ContentRef = useRef({});
   const FileInputRef = useRef(null);
@@ -140,60 +140,11 @@ function MessagesContainer({
       ];
 
   useEffect(() => {
-    const newMessageArrived =
-      prevMessages.current.length >= 0 &&
-      prevMessages.current.length < messages.length &&
-      prevMessages.current[0]
-        ? prevMessages.current[0].id === messages[0].id
-        : false;
-    if (newMessageArrived) {
-      const messageSenderId = messages[messages.length - 1].userId;
-      if (messageSenderId === userId || scrollAtBottom.current) {
-        setFillerHeight(
-          MessagesContainerRef.current.offsetHeight >
-            MessagesRef.current.offsetHeight
-            ? MessagesContainerRef.current.offsetHeight -
-                MessagesRef.current.offsetHeight
-            : 0
-        );
-        setTimeout(() => handleSetScrollToBottom(), 0);
-      } else {
-        setNewUnseenMessage(true);
-      }
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    setFillerHeight(
-      MessagesContainerRef.current.offsetHeight >
-        MessagesRef.current.offsetHeight
-        ? MessagesContainerRef.current.offsetHeight -
-            MessagesRef.current.offsetHeight
-        : 0
-    );
-  }, [currentChannel.id]);
-
-  useEffect(() => {
-    if (prevMessages.current.length > messages.length) {
-      setFillerHeight(
-        MessagesContainerRef.current.offsetHeight >
-          MessagesRef.current.offsetHeight
-          ? MessagesContainerRef.current.offsetHeight -
-              MessagesRef.current.offsetHeight
-          : 0
-      );
-    }
-    if (prevMessages.current.length === 0 && messages.length === 1) {
-      setTimeout(() => handleSetScrollToBottom(), 0);
-    }
-  }, [messages]);
-
-  useEffect(() => {
     prevMessages.current = messages;
   }, [messages]);
 
   useEffect(() => {
-    setTimeout(() => handleSetScrollToBottom(), 0);
+    handleSetScrollToBottom();
   }, [currentChannel.id]);
 
   return (
@@ -259,91 +210,92 @@ function MessagesContainer({
         `}
       >
         {loading && <Loading />}
-          <div
-            ref={MessagesContainerRef}
-            style={{
-              position: 'absolute',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              opacity: loading && '0.3',
-              top: currentChannelId === 2 ? '7rem' : 0,
-              overflowY: 'scroll'
-            }}
-            onScroll={() => {
-              if (
-                checkScrollIsAtTheBottom({
-                  content: ContentRef.current,
-                  container: MessagesContainerRef.current
-                })
-              ) {
-                scrollAtBottom.current = true;
-                setNewUnseenMessage(false);
-              } else {
-                scrollAtBottom.current = false;
-              }
-            }}
-          >
-            <div ref={ContentRef} style={{ width: '100%' }}>
-              {loadMoreButton ? (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    marginBottom: '1rem',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '100%'
-                  }}
+        <div
+          ref={MessagesContainerRef}
+          style={{
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            opacity: loading && '0.3',
+            top: currentChannelId === 2 ? '7rem' : 0,
+            overflowY: 'scroll'
+          }}
+          onScroll={() => {
+            if (
+              checkScrollIsAtTheBottom({
+                content: ContentRef.current,
+                container: MessagesContainerRef.current
+              })
+            ) {
+              setScrollAtBottom(true);
+              setNewUnseenMessage(false);
+            } else {
+              setScrollAtBottom(false);
+            }
+          }}
+        >
+          <div ref={ContentRef} style={{ width: '100%' }}>
+            {loadMoreButton ? (
+              <div
+                style={{
+                  marginTop: '1rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%'
+                }}
+              >
+                <Button
+                  filled
+                  color="lightBlue"
+                  disabled={loadMoreButtonLock}
+                  onClick={handleLoadMoreButtonClick}
                 >
-                  <Button
-                    filled
-                    color="lightBlue"
-                    disabled={loadMoreButtonLock}
-                    onClick={handleLoadMoreButtonClick}
-                  >
-                    Load More
-                  </Button>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    height: fillerHeight + 'px'
-                  }}
-                />
-              )}
-              <div ref={MessagesRef}>
-                {messages.map((message, index) => (
-                  <Message
-                    key={message.id || 'newMessage' + index}
-                    channelId={selectedChannelId}
-                    channelName={channelName}
-                    chessCountdownObj={chessCountdownObj}
-                    chessOpponent={chessOpponent}
-                    checkScrollIsAtTheBottom={() =>
-                      checkScrollIsAtTheBottom({
-                        content: ContentRef.current,
-                        container: MessagesContainerRef.current
-                      })
-                    }
-                    onDelete={handleShowDeleteModal}
-                    index={index}
-                    onChessBoardClick={onChessBoardClick}
-                    onChessSpoilerClick={onChessSpoilerClick}
-                    onSendFileMessage={onSendFileMessage}
-                    isNotification={!!message.isNotification}
-                    message={message}
-                    isLastMsg={index === messages.length - 1}
-                    recepientId={recepientId}
-                    setScrollToBottom={handleSetScrollToBottom}
-                    showSubjectMsgsModal={({ subjectId, content }) =>
-                      setSubjectMsgsModal({ shown: true, subjectId, content })
-                    }
-                  />
-                ))}
-                <div ref={BottomRef} />
+                  Load More
+                </Button>
               </div>
+            ) : (
+              <div
+                style={{
+                  height: fillerHeight + 'px'
+                }}
+              />
+            )}
+            <div ref={MessagesRef}>
+              {messages.map((message, index) => (
+                <Message
+                  key={message.id || 'newMessage' + index}
+                  channelId={selectedChannelId}
+                  channelName={channelName}
+                  chessCountdownObj={chessCountdownObj}
+                  chessOpponent={chessOpponent}
+                  checkScrollIsAtTheBottom={() =>
+                    checkScrollIsAtTheBottom({
+                      content: ContentRef.current,
+                      container: MessagesContainerRef.current
+                    })
+                  }
+                  index={index}
+                  isLastMsg={index === messages.length - 1}
+                  isNotification={!!message.isNotification}
+                  message={message}
+                  onChessBoardClick={onChessBoardClick}
+                  onChessSpoilerClick={onChessSpoilerClick}
+                  onSendFileMessage={onSendFileMessage}
+                  onDelete={handleShowDeleteModal}
+                  onReceiveNewMessage={handleReceiveNewMessage}
+                  recepientId={recepientId}
+                  setScrollToBottom={handleSetScrollToBottom}
+                  showSubjectMsgsModal={({ subjectId, content }) =>
+                    setSubjectMsgsModal({ shown: true, subjectId, content })
+                  }
+                />
+              ))}
+              <div ref={BottomRef} />
             </div>
           </div>
+        </div>
         {!loading && currentChannelId === 2 && <SubjectHeader />}
         <div
           style={{
@@ -477,6 +429,22 @@ function MessagesContainer({
     }
   }
 
+  function handleReceiveNewMessage() {
+    const messageSenderId = messages[messages.length - 1].userId;
+    if (messageSenderId === userId || scrollAtBottom) {
+      setFillerHeight(
+        MessagesContainerRef.current.offsetHeight >
+          MessagesRef.current.offsetHeight
+          ? MessagesContainerRef.current.offsetHeight -
+              MessagesRef.current.offsetHeight
+          : 0
+      );
+      handleSetScrollToBottom();
+    } else {
+      setNewUnseenMessage(true);
+    }
+  }
+
   function handleShowDeleteModal({ fileName, filePath, messageId }) {
     setDeleteModal({
       shown: true,
@@ -488,7 +456,7 @@ function MessagesContainer({
 
   function handleSetScrollToBottom() {
     BottomRef.current.scrollIntoView();
-    scrollAtBottom.current = true;
+    setScrollAtBottom(true);
   }
 
   function handleUpload(event) {

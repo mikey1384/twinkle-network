@@ -45,6 +45,7 @@ Message.propTypes = {
   isNotification: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
+  onReceiveNewMessage: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func,
@@ -98,6 +99,7 @@ function Message({
   onDelete,
   onEditDone,
   onChessSpoilerClick,
+  onReceiveNewMessage,
   onSendFileMessage,
   recepientId,
   saveMessage,
@@ -147,9 +149,15 @@ function Message({
 
   useEffect(() => {
     if (isLastMsg && userCanEditThis) {
-      setTimeout(() => setScrollToBottom(), 0);
+      setScrollToBottom();
     }
   }, [onEdit, editPadding]);
+
+  useEffect(() => {
+    if (isLastMsg) {
+      onReceiveNewMessage();
+    }
+  }, []);
 
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
