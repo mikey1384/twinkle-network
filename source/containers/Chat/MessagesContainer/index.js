@@ -455,7 +455,7 @@ function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    BottomRef.current.scrollIntoView();
+    setTimeout(() => BottomRef.current.scrollIntoView(), 0);
     setScrollAtBottom(true);
   }
 
