@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
-import { socket } from 'constants/io';
 import { updateChessMoveViewTimeStamp } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import {
@@ -76,12 +75,6 @@ function ChessModal({
         const { move } = JSON.parse(initialState);
         const userMadeLastMove = move?.by === myId || uploaderId === myId;
         setUserMadeLastMove(!!userMadeLastMove);
-        if (move && !userMadeLastMove && (spoilerOff || viewTimeStamp)) {
-          socket.emit('user_is_making_move', {
-            userId: myId,
-            channelId
-          });
-        }
       }
     }
   }, [loading.current, spoilerOff]);

@@ -130,7 +130,6 @@ function Chat({
     socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
     socket.on('notifiy_move_viewed', onNotifyMoveViewed);
-    socket.on('notifiy_making_move', onNotifiedMakingMove);
     socket.on('notifiy_move_made', onNotifiedMoveMade);
     socket.on('receive_chess_countdown_number', onReceiveCountdownNumber);
 
@@ -158,20 +157,6 @@ function Chat({
           senderIsNotTheUser
         });
       }
-      if (message.gameWinnerId) {
-        setCurrentChannelOnlineMembers(members =>
-          members.map(member => ({
-            ...member,
-            channelObj: {
-              ...member.channelObj,
-              [message.channelId]: {
-                ...member.channelObj[message.channelId],
-                makingChessMove: false
-              }
-            }
-          }))
-        );
-      }
     }
 
     function onChangeMembersOnline(data) {
@@ -190,45 +175,10 @@ function Chat({
       }
     }
 
-    function onNotifiedMakingMove({ userId, channelId }) {
-      setCurrentChannelOnlineMembers(members =>
-        members.map(member =>
-          member.id === userId
-            ? {
-                ...member,
-                channelObj: {
-                  ...member.channelObj,
-                  [channelId]: {
-                    ...member.channelObj[channelId],
-                    makingChessMove: true
-                  }
-                }
-              }
-            : member
-        )
-      );
-    }
-
-    function onNotifiedMoveMade({ userId, channelId }) {
+    function onNotifiedMoveMade({ channelId }) {
       if (channelId === selectedChannelId) {
         setChessModalShown(false);
       }
-      setCurrentChannelOnlineMembers(members =>
-        members.map(member =>
-          member.id === userId
-            ? {
-                ...member,
-                channelObj: {
-                  ...member.channelObj,
-                  [channelId]: {
-                    ...member.channelObj[channelId],
-                    makingChessMove: false
-                  }
-                }
-              }
-            : member
-        )
-      );
     }
 
     function onReceiveCountdownNumber({ channelId, number }) {
@@ -249,7 +199,6 @@ function Chat({
       socket.removeListener('subject_change', onSubjectChange);
       socket.removeListener('change_in_members_online', onChangeMembersOnline);
       socket.removeListener('notifiy_move_viewed', onNotifyMoveViewed);
-      socket.removeListener('notifiy_making_move', onNotifiedMakingMove);
       socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
       socket.removeListener(
         'receive_chess_countdown_number',
