@@ -163,7 +163,6 @@ export default function Chess({
             @media (max-width: ${mobileMaxWidth}) {
               top: 0;
               left: 0;
-              position: relative;
               font-size: 1.5rem;
               p {
                 display: inline-block;
