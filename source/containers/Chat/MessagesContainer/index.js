@@ -144,6 +144,13 @@ function MessagesContainer({
   }, [messages]);
 
   useEffect(() => {
+    setFillerHeight(
+      MessagesContainerRef.current.offsetHeight >
+        MessagesRef.current.offsetHeight
+        ? MessagesContainerRef.current.offsetHeight -
+            MessagesRef.current.offsetHeight
+        : 0
+    );
     handleSetScrollToBottom();
   }, [currentChannel.id]);
 
