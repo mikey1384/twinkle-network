@@ -351,19 +351,19 @@ function MessagesContainer({
                   }
                 />
               ))}
-              {statusText && (
-                <div
-                  style={{
-                    padding: '2rem',
-                    textAlign: 'center'
-                  }}
-                >
-                  {statusText}
-                </div>
-              )}
-              <div ref={BottomRef} />
             </div>
           </div>
+          {statusText && (
+            <div
+              style={{
+                padding: '2rem',
+                textAlign: 'center'
+              }}
+            >
+              {statusText}
+            </div>
+          )}
+          <div ref={BottomRef} />
         </div>
         {!loading && currentChannelId === 2 && <SubjectHeader />}
         <div
