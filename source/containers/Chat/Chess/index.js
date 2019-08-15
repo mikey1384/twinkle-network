@@ -162,7 +162,7 @@ export default function Chess({
             font-weight: bold;
             @media (max-width: ${mobileMaxWidth}) {
               top: 0;
-              left: 0;
+              left: 0.5rem;
               position: relative;
               font-size: 1.5rem;
               p {
