@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
-import ChatButton from './ChatButton';
 import Icon from 'components/Icon';
-import HeaderNav from './HeaderNav';
+import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -27,7 +26,7 @@ import {
 import { closeSearch, initSearch } from 'redux/actions/SearchActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
-import { Color, desktopMinWidth } from 'constants/css';
+import { desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
 import { container } from './Styles';
@@ -103,7 +102,6 @@ function Header({
   username,
   versionMatch
 }) {
-  const [prevPathname, setPrevPathname] = useState();
   const prevUserIdRef = useRef(userId);
   useEffect(() => {
     socket.on('connect', onConnect);
@@ -196,12 +194,6 @@ function Header({
   }, [userId]);
 
   useEffect(() => {
-    return function() {
-      setPrevPathname(pathname);
-    };
-  }, [pathname]);
-
-  useEffect(() => {
     showUpdateNotice(versionMatch);
   }, [versionMatch]);
 
@@ -244,80 +236,21 @@ function Header({
             numNewPosts={numNewPosts}
             pathname={pathname}
           />
-          <div
-            className={css`
-              padding: 0;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            `}
-          >
-            <HeaderNav
-              className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
-              alert={numNewNotis > 0 || totalRewardAmount > 0}
-              alertColor={Color.gold()}
-              imgLabel="user"
-              onClick={onMobileMenuOpen}
-            />
-            <div
-              className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-              onClick={searchMode ? closeSearch : initSearch}
-              style={{ width: searchMode && '10%' }}
-            >
-              <a className={searchMode ? 'active' : ''}>
-                {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
-              </a>
-            </div>
-            <HeaderNav
-              to="/"
-              onClick={() => {
-                closeSearch();
-                window.scrollTo(0, 0);
-              }}
-              isHome
-              className={chatLoading || searchMode ? 'hidden' : 'mobile'}
-              imgLabel="home"
-              alert={numNewPosts > 0}
-              isUsername={isUsername}
-            >
-              Home
-            </HeaderNav>
-            <HeaderNav
-              to="/featured"
-              onClick={closeSearch}
-              pathname={pathname}
-              className={chatLoading || searchMode ? 'hidden' : 'mobile'}
-              imgLabel="bolt"
-            />
-            {renderWorkNav()}
-            <div
-              className={`header-nav ${
-                chatLoading || chatMode ? 'hidden' : 'mobile'
-              }`}
-              style={{ width: searchMode && '10%' }}
-              onClick={onChatButtonClick}
-            >
-              <a
-                style={{
-                  color: numChatUnreads > 0 && Color.gold()
-                }}
-              >
-                <Icon icon="comments" />
-              </a>
-            </div>
-            <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
-              Loading...
-            </div>
-            <div>
-              <ChatButton
-                className="desktop"
-                onClick={onChatButtonClick}
-                chatMode={chatMode}
-                loading={chatLoading}
-                numUnreads={numChatUnreads}
-              />
-            </div>
-          </div>
+          <MainNavs
+            chatLoading={chatLoading}
+            chatMode={chatMode}
+            closeSearch={closeSearch}
+            initSearch={initSearch}
+            isUsername={isUsername}
+            numChatUnreads={numChatUnreads}
+            numNewNotis={numNewNotis}
+            numNewPosts={numNewPosts}
+            onChatButtonClick={onChatButtonClick}
+            onMobileMenuOpen={onMobileMenuOpen}
+            pathname={pathname}
+            searchMode={searchMode}
+            totalRewardAmount={totalRewardAmount}
+          />
           <AccountMenu
             style={{ marginRight: '3rem' }}
             className={`desktop ${css`
@@ -339,65 +272,6 @@ function Header({
     recordUserAction({ action: 'logout' });
     logout();
     resetChat();
-  }
-
-  function renderWorkNav() {
-    if (
-      !prevPathname ||
-      !['xp', 'links', 'videos'].includes(pathname.split('/')[1])
-    ) {
-      return (
-        <HeaderNav
-          to="/featured"
-          onClick={closeSearch}
-          pathname={pathname}
-          className="desktop"
-          imgLabel="search"
-        >
-          EXPLORE
-        </HeaderNav>
-      );
-    }
-
-    if (['links'].includes(prevPathname.split('/')[1])) {
-      return (
-        <HeaderNav
-          to="/links"
-          onClick={closeSearch}
-          pathname={pathname}
-          className="desktop"
-          imgLabel="book"
-        >
-          LINKS
-        </HeaderNav>
-      );
-    }
-
-    if (['videos'].includes(prevPathname.split('/')[1])) {
-      return (
-        <HeaderNav
-          to="/videos"
-          onClick={closeSearch}
-          pathname={pathname}
-          className="desktop"
-          imgLabel="film"
-        >
-          VIDEOS
-        </HeaderNav>
-      );
-    }
-
-    return (
-      <HeaderNav
-        to="/featured"
-        onClick={closeSearch}
-        pathname={pathname}
-        className="desktop"
-        imgLabel="bolt"
-      >
-        FEATURED
-      </HeaderNav>
-    );
   }
 }
 
