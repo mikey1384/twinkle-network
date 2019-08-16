@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import ChatButton from './ChatButton';
 import Icon from 'components/Icon';
-import SearchBox from '../SearchBox';
 import HeaderNav from './HeaderNav';
+import TwinkleLogo from './TwinkleLogo';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Route } from 'react-router-dom';
 import { logout } from 'redux/actions/UserActions';
 import {
   clearRecentChessMessage,
@@ -31,7 +30,7 @@ import { css } from 'emotion';
 import { Color, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
-import { container, logo } from './Styles';
+import { container } from './Styles';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
@@ -58,7 +57,6 @@ Header.propTypes = {
   closeSearch: PropTypes.func.isRequired,
   onMobileMenuOpen: PropTypes.func,
   resetChat: PropTypes.func,
-  searchBoxRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   searchMode: PropTypes.bool,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
@@ -95,7 +93,6 @@ function Header({
   onChatButtonClick,
   onMobileMenuOpen,
   resetChat,
-  searchBoxRef,
   searchMode,
   showUpdateNotice,
   style = {},
@@ -213,14 +210,6 @@ function Header({
     !['links', 'videos'].includes(pathname.split('/')[1]) &&
     pathname.length > 1;
 
-  const atHomeSection = ![
-    'links',
-    'videos',
-    'featured',
-    'comments',
-    'subjects'
-  ].includes(pathname.split('/')[1]);
-
   return (
     <nav
       className={`unselectable ${container} ${
@@ -239,54 +228,30 @@ function Header({
         </div>
       )}
       {!chatMode && (
-        <div className="main-tabs">
-          <Route
-            to="/"
-            children={({ match }) => {
-              return (
-                <div
-                  className={logo.outer}
-                  onClick={() => {
-                    history.push('/');
-                    closeSearch();
-                  }}
-                >
-                  <div
-                    onClick={onLogoClick}
-                    className={`${logo.inner} ${
-                      isUsername || match.isExact ? 'active' : ''
-                    }`}
-                  >
-                    <span
-                      style={
-                        atHomeSection && numNewPosts > 0
-                          ? {
-                              color: Color.gold()
-                            }
-                          : {}
-                      }
-                      className="logo logo-twin"
-                    >
-                      Twin
-                    </span>
-                    <span
-                      style={
-                        atHomeSection && numNewPosts > 0
-                          ? {
-                              color: Color.gold()
-                            }
-                          : {}
-                      }
-                      className="logo logo-kle"
-                    >
-                      kle
-                    </span>
-                  </div>
-                </div>
-              );
-            }}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <TwinkleLogo
+            style={{ marginLeft: '3rem' }}
+            closeSearch={closeSearch}
+            history={history}
+            isUsername={isUsername}
+            numNewPosts={numNewPosts}
+            pathname={pathname}
           />
-          <>
+          <div
+            className={css`
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `}
+          >
             <HeaderNav
               className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
               alert={numNewNotis > 0 || totalRewardAmount > 0}
@@ -325,53 +290,36 @@ function Header({
               imgLabel="bolt"
             />
             {renderWorkNav()}
-          </>
-          <div
-            className={!searchMode || chatLoading ? 'desktop' : ''}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginLeft: '1rem',
-              marginRight: '1rem',
-              width: '60%'
-            }}
-          >
-            <SearchBox
-              innerRef={searchBoxRef}
-              onFocus={initSearch}
-              style={{
-                width: '95%'
-              }}
-            />
-          </div>
-          <div
-            className={`header-nav ${
-              chatLoading || chatMode ? 'hidden' : 'mobile'
-            }`}
-            style={{ width: searchMode && '10%' }}
-            onClick={onChatButtonClick}
-          >
-            <a
-              style={{
-                color: numChatUnreads > 0 && Color.gold()
-              }}
-            >
-              <Icon icon="comments" />
-            </a>
-          </div>
-          <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
-            Loading...
-          </div>
-          <div>
-            <ChatButton
-              className="desktop"
+            <div
+              className={`header-nav ${
+                chatLoading || chatMode ? 'hidden' : 'mobile'
+              }`}
+              style={{ width: searchMode && '10%' }}
               onClick={onChatButtonClick}
-              chatMode={chatMode}
-              loading={chatLoading}
-              numUnreads={numChatUnreads}
-            />
+            >
+              <a
+                style={{
+                  color: numChatUnreads > 0 && Color.gold()
+                }}
+              >
+                <Icon icon="comments" />
+              </a>
+            </div>
+            <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
+              Loading...
+            </div>
+            <div>
+              <ChatButton
+                className="desktop"
+                onClick={onChatButtonClick}
+                chatMode={chatMode}
+                loading={chatLoading}
+                numUnreads={numChatUnreads}
+              />
+            </div>
           </div>
           <AccountMenu
+            style={{ marginRight: '3rem' }}
             className={`desktop ${css`
               @media (min-width: ${desktopMinWidth}) {
                 margin-left: 0.5rem;
@@ -386,10 +334,6 @@ function Header({
       )}
     </nav>
   );
-
-  function onLogoClick() {
-    document.getElementById('App').scrollTop = 0;
-  }
 
   function onLogout() {
     recordUserAction({ action: 'logout' });
@@ -408,9 +352,9 @@ function Header({
           onClick={closeSearch}
           pathname={pathname}
           className="desktop"
-          imgLabel="bolt"
+          imgLabel="search"
         >
-          FEATURED
+          EXPLORE
         </HeaderNav>
       );
     }

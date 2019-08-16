@@ -63,18 +63,6 @@ export const container = css`
     }
   }
 
-  > .main-tabs {
-    width: 100%;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    @media (max-width: ${mobileMaxWidth}) {
-      padding: 0;
-      width: 100%;
-    }
-  }
-
   > .chat-bar {
     font-size: 2rem;
     font-weight: bold;
@@ -107,39 +95,3 @@ export const container = css`
     border-top: 1px solid ${Color.borderGray()};
   }
 `;
-
-export const logo = {
-  outer: `desktop ${css`
-    cursor: pointer;
-    position: relative;
-    margin-left: 1rem;
-    width: 10rem;
-    height: 2rem;
-  `}`,
-  inner: css`
-    font-size: 2rem;
-    font-weight: bold;
-    font-family: sans-serif, Arial, Helvetica;
-    line-height: 0.9;
-    color: ${Color.gray()};
-    > .logo {
-      line-height: 1;
-    }
-    &:hover {
-      > .logo-twin {
-        color: ${Color.logoBlue()};
-      }
-      > .logo-kle {
-        color: ${Color.logoGreen()};
-      }
-    }
-    &.active {
-      > .logo-twin {
-        color: ${Color.logoBlue()};
-      }
-      > .logo-kle {
-        color: ${Color.logoGreen()};
-      }
-    }
-  `
-};

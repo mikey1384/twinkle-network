@@ -12,6 +12,7 @@ AccountMenu.propTypes = {
   logout: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   openSigninModal: PropTypes.func.isRequired,
+  style: PropTypes.object,
   title: PropTypes.string,
   username: PropTypes.string
 };
@@ -24,59 +25,64 @@ function AccountMenu({
   openSigninModal,
   title,
   logout,
+  style,
   username
 }) {
-  return loggedIn ? (
-    <DropdownButton
-      className={className}
-      buttonStyle={buttonStyle}
-      transparent
-      listStyle={{ marginTop: '0.5rem' }}
-      direction="left"
-      text={
-        <div
-          style={{
-            maxWidth: '10rem',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis'
-          }}
+  return (
+    <div style={style}>
+      {loggedIn ? (
+        <DropdownButton
+          className={className}
+          buttonStyle={buttonStyle}
+          transparent
+          listStyle={{ marginTop: '0.5rem' }}
+          direction="left"
+          text={
+            <div
+              style={{
+                maxWidth: '10rem',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis'
+              }}
+            >
+              {title}
+            </div>
+          }
+          shape="button"
+          icon="caret-down"
+          iconSize="lg"
+          menuProps={[
+            {
+              label: 'Profile',
+              onClick: () => history.push(`/${username}`)
+            },
+            {
+              label: 'Log out',
+              onClick: logout
+            }
+          ]}
+        />
+      ) : (
+        <Button
+          className={className}
+          onClick={openSigninModal}
+          style={{ marginLeft: '1rem', ...buttonStyle }}
+          color="green"
+          filled
         >
-          {title}
-        </div>
-      }
-      shape="button"
-      icon="caret-down"
-      iconSize="lg"
-      menuProps={[
-        {
-          label: 'Profile',
-          onClick: () => history.push(`/${username}`)
-        },
-        {
-          label: 'Log out',
-          onClick: logout
-        }
-      ]}
-    />
-  ) : (
-    <Button
-      className={className}
-      onClick={openSigninModal}
-      style={{ marginLeft: '1rem', ...buttonStyle }}
-      color="green"
-      filled
-    >
-      <div
-        style={{
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis'
-        }}
-      >
-        Log In
-      </div>
-    </Button>
+          <div
+            style={{
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis'
+            }}
+          >
+            Log In
+          </div>
+        </Button>
+      )}
+    </div>
   );
 }
 
