@@ -70,6 +70,13 @@ export default function MainNavs({
         </a>
       </div>
       <HeaderNav
+        to="/featured"
+        onClick={closeSearch}
+        pathname={pathname}
+        className={chatLoading || searchMode ? 'hidden' : 'mobile'}
+        imgLabel="bolt"
+      />
+      <HeaderNav
         to="/"
         onClick={() => {
           closeSearch();
@@ -84,18 +91,24 @@ export default function MainNavs({
         Home
       </HeaderNav>
       <HeaderNav
-        to="/featured"
+        to="/"
+        isHome
         onClick={closeSearch}
         pathname={pathname}
-        className={chatLoading || searchMode ? 'hidden' : 'mobile'}
-        imgLabel="bolt"
-      />
-      {renderWorkNav()}
+        className="desktop"
+        imgLabel="home"
+        alert={numNewPosts > 0}
+        isUsername={isUsername}
+      >
+        HOME
+      </HeaderNav>
+      <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
+        {renderWorkNav()}
+      </div>
       <div
         className={`header-nav ${
           chatLoading || chatMode ? 'hidden' : 'mobile'
         }`}
-        style={{ width: searchMode && '10%' }}
         onClick={onChatButtonClick}
       >
         <a
