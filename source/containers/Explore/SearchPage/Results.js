@@ -6,9 +6,7 @@ import { setResults, showMoreResults } from 'redux/actions/SearchActions';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
-import CloseText from './CloseText';
+import { Color } from 'constants/css';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 Results.propTypes = {
@@ -78,11 +76,6 @@ function Results({
   );
   return (
     <div
-      className={css`
-        @media (max-width: ${mobileMaxWidth}) {
-          padding-bottom: 30rem;
-        }
-      `}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -132,10 +125,6 @@ function Results({
               ))}
             </div>
           </div>
-          <CloseText
-            text="Or tap to close"
-            style={{ marginTop: '3rem', marginBottom: '1rem' }}
-          />
         </div>
       )}
       {!searching && loadMoreButton && (
@@ -147,20 +136,6 @@ function Results({
             onClick={loadMoreSearchResults}
           />
         </div>
-      )}
-      {!searching && results.length > 0 && (
-        <CloseText
-          className="desktop"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            bottom: '1rem',
-            padding: '1.5rem',
-            borderRadius: borderRadius,
-            background: Color.lightGray(0.8)
-          }}
-        />
       )}
     </div>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { searchPage } from './Styles';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
@@ -16,7 +15,6 @@ import { css } from 'emotion';
 import TopFilter from './TopFilter';
 import FirstPage from './FirstPage';
 import Results from './Results';
-import CloseText from './CloseText';
 
 SearchPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
@@ -69,7 +67,22 @@ function SearchPage({
   }, [searchText]);
 
   return (
-    <div ref={SearchPageRef} className={searchPage}>
+    <div
+      ref={SearchPageRef}
+      className={css`
+        padding-top: 1rem;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: 0;
+          padding-top: 0;
+          padding-bottom: 9rem;
+        }
+      `}
+    >
       <div
         className={css`
           width: 80%;
@@ -78,7 +91,6 @@ function SearchPage({
           }
         `}
       >
-        <CloseText className="desktop" />
         {!stringIsEmpty(searchText) && (
           <TopFilter
             className={css`

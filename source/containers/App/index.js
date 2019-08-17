@@ -33,8 +33,7 @@ import Profile from 'containers/Profile';
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
 const Redirect = React.lazy(() => import('containers/Redirect'));
-const SearchPage = React.lazy(() => import('containers/SearchPage'));
-const WorkSection = React.lazy(() => import('containers/WorkSection'));
+const Explore = React.lazy(() => import('containers/Explore'));
 const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
 const ContentPage = React.lazy(() => import('containers/ContentPage'));
 const VideoPage = React.lazy(() => import('containers/VideoPage'));
@@ -51,8 +50,6 @@ App.propTypes = {
   location: PropTypes.object,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
-  searchMode: PropTypes.bool,
-  searchText: PropTypes.string,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
@@ -69,8 +66,6 @@ function App({
   history,
   postFileUploadStatus,
   postUploadComplete,
-  searchMode,
-  searchText,
   signinModalShown,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
@@ -207,10 +202,10 @@ function App({
             <Route path="/subjects" component={ContentPage} />
             <Route path="/comments" component={ContentPage} />
             <Route path="/videos/:videoId" component={VideoPage} />
-            <Route path="/videos" component={WorkSection} />
+            <Route path="/videos" component={Explore} />
             <Route path="/links/:linkId" component={LinkPage} />
-            <Route path="/links" component={WorkSection} />
-            <Route path="/featured" component={WorkSection} />
+            <Route path="/links" component={Explore} />
+            <Route path="/featured" component={Explore} />
             <Route path="/playlists" component={PlaylistPage} />
             <Route
               path="/talk"
@@ -237,21 +232,6 @@ function App({
         </Suspense>
       </div>
       <Suspense fallback={<Loading />}>
-        {searchMode && (
-          <div
-            className={css`
-              margin-top: 5rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: 0;
-              }
-            `}
-          >
-            <SearchPage
-              searchText={searchText}
-              onSearchBoxFocus={() => SearchBoxRef.current.focus()}
-            />
-          </div>
-        )}
         {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
       </Suspense>
     </div>

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import CloseText from './CloseText';
 import Checkbox from 'components/Checkbox';
 
 FirstPage.propTypes = {
@@ -29,7 +28,6 @@ export default function FirstPage({
     >
       <div
         className={css`
-          height: 50vh;
           width: 80%;
           flex-direction: column;
           display: flex;
@@ -59,7 +57,7 @@ export default function FirstPage({
         {['video', 'url', 'subject'].map(type =>
           filter === type ? (
             <nav key={type}>
-              <p>Search for {(type === 'url' ? 'link' : type) + 's...'}</p>
+              <p>Explore {(type === 'url' ? 'link' : type) + 's...'}</p>
               <div
                 style={{
                   display: 'flex',
@@ -69,7 +67,7 @@ export default function FirstPage({
               >
                 <Checkbox
                   backgroundColor="#fff"
-                  label={`Always search for ${
+                  label={`Always explore ${
                     type === 'url' ? 'link' : type
                   }s first:`}
                   textIsClickable
@@ -85,12 +83,11 @@ export default function FirstPage({
             </nav>
           ) : (
             <a key={type} onClick={() => changeFilter(type)}>
-              Search for {(type === 'url' ? 'link' : type) + 's'}
+              Explore {(type === 'url' ? 'link' : type) + 's'}
             </a>
           )
         )}
       </div>
-      <CloseText />
     </div>
   );
 }

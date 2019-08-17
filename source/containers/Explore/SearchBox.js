@@ -10,6 +10,7 @@ SearchBox.propTypes = {
   changeSearch: PropTypes.func.isRequired,
   onFocus: PropTypes.func.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  profileTheme: PropTypes.string,
   searchText: PropTypes.string.isRequired,
   style: PropTypes.object
 };
@@ -19,13 +20,16 @@ function SearchBox({
   className,
   onFocus,
   innerRef,
+  profileTheme,
   searchText,
   style
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <div className={className} style={style}>
       <SearchInput
-        inputHeight="80%"
+        addonColor={themeColor}
+        borderColor={themeColor}
         innerRef={innerRef}
         placeholder="Search Videos, Subjects, Links, and More"
         onChange={changeSearch}
@@ -38,6 +42,7 @@ function SearchBox({
 
 export default connect(
   state => ({
+    profileTheme: state.UserReducer.profileTheme,
     searchText: state.SearchReducer.searchText
   }),
   {

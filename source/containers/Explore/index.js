@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
@@ -8,6 +8,8 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Featured from './Featured';
 import Notification from 'components/Notification';
 import WorkMenuItems from './WorkMenuItems';
+import SearchBox from './SearchBox';
+import SearchPage from './SearchPage';
 import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -19,28 +21,30 @@ import {
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
-WorkSection.propTypes = {
+Explore.propTypes = {
   location: PropTypes.object.isRequired,
   mobileNavbarShown: PropTypes.bool.isRequired,
   openAddVideoModal: PropTypes.func.isRequired,
   openAddPlaylistModal: PropTypes.func.isRequired,
+  searchText: PropTypes.string,
   userId: PropTypes.number
 };
 
-function WorkSection({
+function Explore({
   location,
   mobileNavbarShown,
   openAddPlaylistModal,
   openAddVideoModal,
+  searchText,
   userId
 }) {
+  const SearchBoxRef = useRef(null);
   return (
     <ErrorBoundary>
       <div>
         <div
           className={css`
             width: 100%;
-            margin-top: 1rem;
             display: flex;
             @media (max-width: ${mobileMaxWidth}) {
               margin-top: 0;
@@ -95,6 +99,22 @@ function WorkSection({
               }
             `}
           >
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                marginTop: '2rem',
+                marginBottom: '2rem'
+              }}
+            >
+              <SearchPage
+                searchText={searchText}
+                onSearchBoxFocus={() => SearchBoxRef.current.focus()}
+              />
+              <SearchBox innerRef={SearchBoxRef} style={{ width: '50%' }} />
+            </div>
             <Suspense fallback={<Loading />}>
               <Switch>
                 <Route path="/videos" component={Videos} />
@@ -207,7 +227,8 @@ function WorkSection({
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    mobileNavbarShown: state.ViewReducer.mobileNavbarShown
+    mobileNavbarShown: state.ViewReducer.mobileNavbarShown,
+    searchText: state.SearchReducer.searchText
   }),
   { openAddPlaylistModal, openAddVideoModal }
-)(WorkSection);
+)(Explore);
