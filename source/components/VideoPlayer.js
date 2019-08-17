@@ -28,7 +28,6 @@ const xp = rewardValue.star;
 VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
-  chatMode: PropTypes.bool,
   rewardLevel: PropTypes.number,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
@@ -51,7 +50,6 @@ function VideoPlayer({
   addVideoView,
   byUser,
   changeUserXP,
-  chatMode,
   currentVideoSlot,
   emptyCurrentVideoSlot,
   fillCurrentVideoSlot,
@@ -185,7 +183,7 @@ function VideoPlayer({
       onVideoStop();
       PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
-  }, [pageVisible, chatMode]);
+  }, [pageVisible]);
 
   const meterColor = xpEarned
     ? Color.green()
@@ -363,7 +361,9 @@ function VideoPlayer({
           noBorderRadius={stretch}
           color={justEarned ? Color.green() : meterColor}
           text={
-            justEarned ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!` : ''
+            justEarned
+              ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`
+              : ''
           }
         />
       )}
@@ -499,7 +499,6 @@ function VideoPlayer({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     userId: state.UserReducer.userId,
     pageVisible: state.ViewReducer.pageVisible,
     currentVideoSlot: state.VideoReducer.currentVideoSlot,

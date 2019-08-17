@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 
 UserListModal.propTypes = {
-  chatMode: PropTypes.bool,
   description: PropTypes.string,
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
@@ -23,7 +22,6 @@ UserListModal.propTypes = {
 };
 
 function UserListModal({
-  chatMode,
   description = '',
   descriptionColor = Color.green(),
   descriptionShown,
@@ -102,8 +100,7 @@ function UserListModal({
       onHide();
       openDirectMessageChannel({
         user: { id: userId, username },
-        recepient: { id: user.id, username: user.username },
-        chatCurrentlyOn: chatMode
+        recepient: { id: user.id, username: user.username }
       });
     }
   }
@@ -111,7 +108,6 @@ function UserListModal({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),

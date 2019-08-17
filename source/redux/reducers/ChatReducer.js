@@ -1,7 +1,7 @@
 import CHAT from '../constants/Chat';
 
 const defaultState = {
-  chatMode: false,
+  loaded: false,
   selectedChannelId: null,
   currentChannel: {},
   channels: [],
@@ -216,7 +216,6 @@ export default function ChatReducer(state = defaultState, action) {
             }
           ]);
         }, []),
-        chatMode: true,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
@@ -277,9 +276,9 @@ export default function ChatReducer(state = defaultState, action) {
       }
       return {
         ...defaultState,
+        loaded: true,
         channelLoadMoreButton,
         subject: action.data.currentChannel.id === 2 ? state.subject : {},
-        chatMode: true,
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels.reduce((resultingArray, channel) => {
@@ -402,7 +401,6 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         subject: {},
-        chatMode: true,
         channels: [
           {
             id: action.channelId,
@@ -431,7 +429,6 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         subject: {},
-        chatMode: true,
         channels: [
           {
             id: 0,
@@ -615,11 +612,6 @@ export default function ChatReducer(state = defaultState, action) {
           }
         ])
       };
-    case CHAT.CLOSE:
-      return {
-        ...state,
-        chatMode: false
-      };
     case CHAT.NEW_SUBJECT:
       return {
         ...state,
@@ -663,7 +655,7 @@ export default function ChatReducer(state = defaultState, action) {
         }
       };
     case CHAT.RESET:
-      return { ...defaultState, filesBeingUploaded: state.filesBeingUploaded };
+      return defaultState;
     case CHAT.UPDATE_API_SERVER_TO_S3_PROGRESS:
       return {
         ...state,

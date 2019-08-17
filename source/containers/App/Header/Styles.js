@@ -13,56 +13,6 @@ export const container = css`
   width: 100%;
   margin-bottom: 0px;
   height: 5rem;
-
-  .header-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .chat {
-      color: ${Color.gray()};
-    }
-    a {
-      text-decoration: none;
-      font-weight: bold;
-      color: ${Color.gray()};
-      align-items: center;
-      line-height: 1;
-    }
-    a.active {
-      color: ${Color.black()};
-    }
-    &:hover {
-      > a {
-        > svg {
-          color: ${Color.black()};
-        }
-        color: ${Color.black()};
-      }
-    }
-    @media (max-width: ${mobileMaxWidth}) {
-      width: 100%;
-      justify-content: center;
-      font-size: 4rem;
-      a {
-        .nav-label {
-          display: none;
-        }
-      }
-      > a.active {
-        > svg {
-          color: ${Color.black()}!important;
-        }
-      }
-      &:hover {
-        > a {
-          > svg {
-            color: ${Color.gray()};
-          }
-        }
-      }
-    }
-  }
-
   > .chat-bar {
     font-size: 2rem;
     font-weight: bold;

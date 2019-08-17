@@ -4,7 +4,6 @@ import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 
 LongText.propTypes = {
-  chatMode: PropTypes.bool,
   children: PropTypes.string,
   className: PropTypes.string,
   cleanString: PropTypes.bool,
@@ -15,7 +14,6 @@ LongText.propTypes = {
 };
 
 function LongText({
-  chatMode,
   style,
   className,
   cleanString,
@@ -36,10 +34,10 @@ function LongText({
   }, [children]);
 
   useEffect(() => {
-    if (!chatMode && !searchMode) {
+    if (!searchMode) {
       truncateText(children || '');
     }
-  }, [children, ContainerRef.current?.clientWidth, chatMode, searchMode]);
+  }, [children, ContainerRef.current?.clientWidth, searchMode]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
@@ -121,6 +119,5 @@ function LongText({
 }
 
 export default connect(state => ({
-  chatMode: state.ChatReducer.chatMode,
   searchMode: state.SearchReducer.searchMode
 }))(LongText);

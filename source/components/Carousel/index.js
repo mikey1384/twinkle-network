@@ -16,7 +16,6 @@ Carousel.propTypes = {
   afterSlide: PropTypes.func,
   allowDrag: PropTypes.bool,
   beforeSlide: PropTypes.func,
-  chatMode: PropTypes.bool,
   children: PropTypes.array.isRequired,
   cellSpacing: PropTypes.number,
   className: PropTypes.string,
@@ -43,7 +42,6 @@ function Carousel({
   allowDrag = true,
   afterSlide = () => {},
   beforeSlide = () => {},
-  chatMode,
   className,
   clickSafe,
   cellSpacing = 0,
@@ -85,7 +83,7 @@ function Carousel({
   useEffect(() => {
     addEvent(window, 'resize', onResize);
     addEvent(document, 'readystatechange', onReadyStateChange);
-    if (!chatMode && !searchMode) {
+    if (!searchMode) {
       renderDimensions(FrameRef);
     }
     return function cleanUp() {
@@ -443,7 +441,7 @@ function Carousel({
   }
 
   function onResize() {
-    if (!chatMode && !searchMode) {
+    if (!searchMode) {
       renderDimensions(FrameRef);
     }
   }
@@ -489,7 +487,6 @@ function Carousel({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     searchMode: state.SearchReducer.searchMode,
     clickSafe: state.VideoReducer.clickSafe
   }),

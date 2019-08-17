@@ -6,7 +6,6 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
-import withScroll from 'components/Wrappers/withScroll';
 import Head from './Head';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -14,12 +13,10 @@ import {
   initChat,
   postFileUploadStatus,
   postUploadComplete,
-  resetChat,
   sendFirstDirectMessage,
-  turnChatOff,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { loadChat, uploadFileOnChat } from 'helpers/requestHelpers';
+import { uploadFileOnChat } from 'helpers/requestHelpers';
 import { changePageVisibility } from 'redux/actions/ViewActions';
 import {
   initSession,
@@ -27,7 +24,6 @@ import {
   closeSigninModal
 } from 'redux/actions/UserActions';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { siteContent } from './Styles';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
@@ -48,22 +44,17 @@ const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
   changePageVisibility: PropTypes.func.isRequired,
-  chatMode: PropTypes.bool,
   closeSigninModal: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object,
-  initChat: PropTypes.func.isRequired,
   initSession: PropTypes.func.isRequired,
   location: PropTypes.object,
-  loggedIn: PropTypes.bool,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
-  resetChat: PropTypes.func.isRequired,
   searchMode: PropTypes.bool,
   searchText: PropTypes.string,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
-  turnChatOff: PropTypes.func.isRequired,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
   updateDetail: PropTypes.string,
   username: PropTypes.string
@@ -71,27 +62,21 @@ App.propTypes = {
 
 function App({
   changePageVisibility,
-  chatMode,
   closeSigninModal,
   dispatch,
-  initChat,
   initSession,
   location,
-  loggedIn,
   history,
   postFileUploadStatus,
   postUploadComplete,
-  resetChat,
   searchMode,
   searchText,
   signinModalShown,
   sendFirstDirectMessage,
-  turnChatOff,
   updateClientToApiServerProgress,
   updateDetail,
   username
 }) {
-  const [chatLoading, setChatLoading] = useState(false);
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const SearchBoxRef = useRef(null);
@@ -136,14 +121,13 @@ function App({
         height: CALC(100% - 5rem);
         width: 100%;
         @media (max-width: ${mobileMaxWidth}) {
-          height: ${chatMode ? 'CALC(100% - 8rem)' : 'auto'};
+          height: auto;
         }
       `}
     >
       <Head />
       {mobileMenuShown && (
         <MobileMenu
-          chatMode={chatMode}
           location={location}
           history={history}
           username={username}
@@ -195,18 +179,22 @@ function App({
         </div>
       )}
       <Header
-        chatMode={chatMode}
-        chatLoading={chatLoading}
         history={history}
-        onChatButtonClick={onChatButtonClick}
-        turnChatOff={turnChatOff}
         searchBoxRef={SearchBoxRef}
         showUpdateNotice={match => setUpdateNoticeShown(!match)}
         onMobileMenuOpen={() => setMobileMenuShown(true)}
       />
       <div
         id="App"
-        className={`${siteContent} ${(chatMode || searchMode) && 'hidden'}`}
+        className={css`
+          margin-top: 5rem;
+          height: 100%;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 9rem;
+          }
+        `}
       >
         <Suspense fallback={<Loading />}>
           <Switch>
@@ -224,6 +212,10 @@ function App({
             <Route path="/links" component={WorkSection} />
             <Route path="/featured" component={WorkSection} />
             <Route path="/playlists" component={PlaylistPage} />
+            <Route
+              path="/talk"
+              component={() => <Chat onFileUpload={handleFileUpload} />}
+            />
             <Route path="/verify" component={Verify} />
             <Route path="/privacy" component={Privacy} />
             <Route
@@ -247,21 +239,18 @@ function App({
       <Suspense fallback={<Loading />}>
         {searchMode && (
           <div
-            className={`${css`
+            className={css`
               margin-top: 5rem;
               @media (max-width: ${mobileMaxWidth}) {
                 margin-top: 0;
               }
-            `} ${chatMode ? 'hidden' : ''}`}
+            `}
           >
             <SearchPage
               searchText={searchText}
               onSearchBoxFocus={() => SearchBoxRef.current.focus()}
             />
           </div>
-        )}
-        {chatMode && loggedIn && (
-          <Chat onFileUpload={handleFileUpload} onUnmount={handleChatUnmount} />
         )}
         {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
       </Suspense>
@@ -314,32 +303,11 @@ function App({
       });
     }
   }
-
-  async function onChatButtonClick() {
-    setChatLoading(true);
-    try {
-      await (chatMode ? turnChatOff() : handleInitChat());
-    } catch (error) {
-      setChatLoading(false);
-    }
-    setChatLoading(false);
-  }
-
-  async function handleChatUnmount() {
-    await resetChat();
-    turnChatOff();
-  }
-
-  async function handleInitChat() {
-    const data = await loadChat({ dispatch });
-    initChat(data);
-  }
 }
 
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    chatMode: state.ChatReducer.chatMode,
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
@@ -351,18 +319,12 @@ export default connect(
     closeSigninModal: () => dispatch(closeSigninModal()),
     openSigninModal: () => dispatch(openSigninModal()),
     initSession: pathname => dispatch(initSession(pathname)),
-    turnChatOff: () => dispatch(turnChatOff()),
     initChat: data => dispatch(initChat(data)),
     postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
     postUploadComplete: params => dispatch(postUploadComplete(params)),
-    resetChat: () => dispatch(resetChat()),
     sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
     updateClientToApiServerProgress: params =>
       dispatch(updateClientToApiServerProgress(params)),
     changePageVisibility: visible => dispatch(changePageVisibility(visible))
   })
-)(
-  process.env.NODE_ENV === 'development'
-    ? hot(module)(withScroll(App))
-    : withScroll(App)
-);
+)(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);

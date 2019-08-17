@@ -43,7 +43,6 @@ Posts.propTypes = {
   attachStar: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
   changeSpoilerStatus: PropTypes.func.isRequired,
-  chatMode: PropTypes.bool.isRequired,
   contentFeedLike: PropTypes.func.isRequired,
   fetchFeed: PropTypes.func.isRequired,
   feedCommentDelete: PropTypes.func.isRequired,
@@ -88,7 +87,6 @@ function Posts({
   attachStar,
   changeByUserStatus,
   changeSpoilerStatus,
-  chatMode,
   contentFeedLike,
   feedCommentDelete,
   feedContentDelete,
@@ -125,7 +123,7 @@ function Posts({
   const selectedFilter = useRef('all');
 
   const [setScrollHeight] = useInfiniteScroll({
-    scrollable: !chatMode && !searchMode && profileFeeds.length > 0,
+    scrollable: !searchMode && profileFeeds.length > 0,
     loadable: loadMoreButton,
     loading,
     onScrollToBottom: () => setLoading(true),
@@ -356,7 +354,6 @@ function Posts({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     profileFeeds: state.FeedReducer.profileFeeds,
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,

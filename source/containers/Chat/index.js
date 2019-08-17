@@ -7,7 +7,12 @@ import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import ChessModal from './Modals/ChessModal';
 import Context from './Context';
-import { loadChatChannel, startNewDMChannel } from 'helpers/requestHelpers';
+import Loading from 'components/Loading';
+import {
+  loadChat,
+  loadChatChannel,
+  startNewDMChannel
+} from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
@@ -23,13 +28,14 @@ Chat.propTypes = {
   dispatch: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
+  initChat: PropTypes.func.isRequired,
+  loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool,
   loadMoreChannels: PropTypes.func.isRequired,
   loadMoreMessages: PropTypes.func,
   messages: PropTypes.array,
   notifyThatMemberLeftChannel: PropTypes.func,
   onFileUpload: PropTypes.func,
-  onUnmount: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func,
   pageVisible: PropTypes.bool,
   profilePicId: PropTypes.number,
@@ -56,13 +62,14 @@ function Chat({
   dispatch,
   enterChannelWithId,
   enterEmptyChat,
+  initChat,
+  loaded,
   loadMoreButton,
   loadMoreChannels,
   loadMoreMessages,
   messages,
   notifyThatMemberLeftChannel,
   onFileUpload,
-  onUnmount,
   openDirectMessageChannel,
   pageVisible,
   recepientId,
@@ -79,7 +86,7 @@ function Chat({
   userId,
   username
 }) {
-  const [loading, setLoading] = useState(false);
+  const [channelLoading, setChannelLoading] = useState(false);
   const [
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
@@ -98,9 +105,17 @@ function Chat({
 
   useEffect(() => {
     mounted.current = true;
+    if (!loaded) {
+      init();
+    }
+
+    async function init() {
+      const data = await loadChat();
+      initChat(data);
+    }
+
     return function cleanUp() {
       mounted.current = false;
-      onUnmount();
     };
   }, []);
 
@@ -208,7 +223,7 @@ function Chat({
   });
 
   useEffect(() => {
-    setLoading(selectedChannelId !== currentChannel.id);
+    setChannelLoading(selectedChannelId !== currentChannel.id);
     socket.emit('check_online_members', selectedChannelId, (err, data) => {
       if (err) console.error(err);
       if (mounted.current) {
@@ -237,63 +252,69 @@ function Chat({
           }
         `}
       >
-        {createNewChannelModalShown && (
-          <CreateNewChannelModal
-            userId={userId}
-            onHide={() => setCreateNewChannelModalShown(false)}
-            onDone={onCreateNewChannel}
-          />
-        )}
-        {userListModalShown && (
-          <UserListModal
-            onHide={() => setUserListModalShown(false)}
-            users={returnUsers(currentChannel, currentChannelOnlineMembers)}
-            descriptionShown={userListDescriptionShown}
-            description="(online)"
-            title="Online Status"
-          />
-        )}
-        <LeftMenu
-          channels={channels}
-          channelLoadMoreButtonShown={channelLoadMoreButtonShown}
-          clearRecentChessMessage={clearRecentChessMessage}
-          currentChannel={currentChannel}
-          currentChannelOnlineMembers={currentChannelOnlineMembers}
-          loadMoreChannels={loadMoreChannels}
-          onChannelEnter={onChannelEnter}
-          onNewButtonClick={onNewButtonClick}
-          showUserListModal={() => setUserListModalShown(true)}
-        />
-        <MessagesContainer
-          channelName={channelName}
-          chessCountdownObj={chessCountdownObj}
-          chessOpponent={partner}
-          loading={loading}
-          currentChannel={currentChannel}
-          currentChannelId={selectedChannelId}
-          loadMoreButton={loadMoreButton}
-          messages={messages}
-          loadMoreMessages={loadMoreMessages}
-          onShowChessModal={handleChessModalShown}
-          onChessBoardClick={handleChessModalShown}
-          onChessSpoilerClick={handleChessSpoilerClick}
-          onMessageSubmit={handleMessageSubmit}
-          onSendFileMessage={handleSendFileMessage}
-          recepientId={recepientId}
-          selectedChannelId={selectedChannelId}
-          subjectId={subjectId}
-        />
-        {chessModalShown && (
-          <ChessModal
-            channelId={selectedChannelId}
-            chessCountdownObj={chessCountdownObj}
-            myId={userId}
-            onConfirmChessMove={handleConfirmChessMove}
-            onHide={() => setChessModalShown(false)}
-            onSpoilerClick={handleChessSpoilerClick}
-            opponentId={partner?.id}
-            opponentName={partner?.username}
-          />
+        {loaded ? (
+          <>
+            {createNewChannelModalShown && (
+              <CreateNewChannelModal
+                userId={userId}
+                onHide={() => setCreateNewChannelModalShown(false)}
+                onDone={onCreateNewChannel}
+              />
+            )}
+            {userListModalShown && (
+              <UserListModal
+                onHide={() => setUserListModalShown(false)}
+                users={returnUsers(currentChannel, currentChannelOnlineMembers)}
+                descriptionShown={userListDescriptionShown}
+                description="(online)"
+                title="Online Status"
+              />
+            )}
+            <LeftMenu
+              channels={channels}
+              channelLoadMoreButtonShown={channelLoadMoreButtonShown}
+              clearRecentChessMessage={clearRecentChessMessage}
+              currentChannel={currentChannel}
+              currentChannelOnlineMembers={currentChannelOnlineMembers}
+              loadMoreChannels={loadMoreChannels}
+              onChannelEnter={onChannelEnter}
+              onNewButtonClick={onNewButtonClick}
+              showUserListModal={() => setUserListModalShown(true)}
+            />
+            <MessagesContainer
+              channelName={channelName}
+              chessCountdownObj={chessCountdownObj}
+              chessOpponent={partner}
+              loading={channelLoading}
+              currentChannel={currentChannel}
+              currentChannelId={selectedChannelId}
+              loadMoreButton={loadMoreButton}
+              messages={messages}
+              loadMoreMessages={loadMoreMessages}
+              onShowChessModal={handleChessModalShown}
+              onChessBoardClick={handleChessModalShown}
+              onChessSpoilerClick={handleChessSpoilerClick}
+              onMessageSubmit={handleMessageSubmit}
+              onSendFileMessage={handleSendFileMessage}
+              recepientId={recepientId}
+              selectedChannelId={selectedChannelId}
+              subjectId={subjectId}
+            />
+            {chessModalShown && (
+              <ChessModal
+                channelId={selectedChannelId}
+                chessCountdownObj={chessCountdownObj}
+                myId={userId}
+                onConfirmChessMove={handleConfirmChessMove}
+                onHide={() => setChessModalShown(false)}
+                onSpoilerClick={handleChessSpoilerClick}
+                opponentId={partner?.id}
+                opponentName={partner?.username}
+              />
+            )}
+          </>
+        ) : (
+          <Loading />
         )}
       </div>
     </Context.Provider>
@@ -509,6 +530,7 @@ function Chat({
 
 export default connect(
   state => ({
+    loaded: state.ChatReducer.loaded,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     pageVisible: state.ViewReducer.pageVisible,
@@ -526,6 +548,7 @@ export default connect(
     dispatch,
     clearRecentChessMessage: () =>
       dispatch(ChatActions.clearRecentChessMessage()),
+    initChat: data => dispatch(ChatActions.initChat(data)),
     receiveMessage: params => dispatch(ChatActions.receiveMessage(params)),
     receiveMessageOnDifferentChannel: params =>
       dispatch(ChatActions.receiveMessageOnDifferentChannel(params)),

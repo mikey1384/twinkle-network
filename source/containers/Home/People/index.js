@@ -17,7 +17,6 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 
 People.propTypes = {
-  chatMode: PropTypes.bool.isRequired,
   clearUserSearch: PropTypes.func.isRequired,
   fetchMoreUsers: PropTypes.func.isRequired,
   fetchUsers: PropTypes.func.isRequired,
@@ -32,7 +31,6 @@ People.propTypes = {
 };
 
 function People({
-  chatMode,
   clearUserSearch,
   fetchUsers,
   fetchMoreUsers,
@@ -55,11 +53,7 @@ function People({
   const themeColor = profileTheme || 'logoBlue';
 
   useInfiniteScroll({
-    scrollable:
-      !chatMode &&
-      !searchMode &&
-      profiles.length > 0 &&
-      stringIsEmpty(searchText),
+    scrollable: !searchMode && profiles.length > 0 && stringIsEmpty(searchText),
     loadable: loadMoreButton,
     loading,
     onScrollToBottom: () => setLoading(true),
@@ -177,7 +171,6 @@ function People({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
     profileTheme: state.UserReducer.profileTheme,

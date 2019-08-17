@@ -13,7 +13,6 @@ import { logout, uploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 
 MobileMenu.propTypes = {
-  chatMode: PropTypes.bool,
   location: PropTypes.object,
   logout: PropTypes.func.isRequired,
   history: PropTypes.object,
@@ -23,7 +22,6 @@ MobileMenu.propTypes = {
 };
 
 function MobileMenu({
-  chatMode,
   location,
   history,
   logout,
@@ -36,7 +34,7 @@ function MobileMenu({
     if (marginLeft !== '-100%') {
       onClose();
     }
-  }, [location, chatMode]);
+  }, [location]);
   useEffect(() => {
     setMarginLeft(0);
   });

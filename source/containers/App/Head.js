@@ -6,16 +6,15 @@ import { Helmet } from 'react-helmet';
 Head.propTypes = {
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
-  chatMode: PropTypes.bool,
   chatNumUnreads: PropTypes.number
 };
 
-function Head({ numNewNotis, numNewPosts, chatMode, chatNumUnreads }) {
+function Head({ numNewNotis, numNewPosts, chatNumUnreads }) {
   const [title, setTitle] = useState('Twinkle');
   useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + chatNumUnreads;
     setTitle(`${newNotiNum > 0 ? `(${newNotiNum}) ` : ''}Twinkle`);
-  }, [numNewNotis, numNewPosts, chatMode, chatNumUnreads]);
+  }, [numNewNotis, numNewPosts, chatNumUnreads]);
 
   return (
     <Helmet>
@@ -25,7 +24,6 @@ function Head({ numNewNotis, numNewPosts, chatMode, chatNumUnreads }) {
 }
 
 export default connect(state => ({
-  chatMode: state.ChatReducer.chatMode,
   numNewPosts: state.NotiReducer.numNewPosts,
   numNewNotis: state.NotiReducer.numNewNotis,
   chatNumUnreads: state.ChatReducer.numUnreads

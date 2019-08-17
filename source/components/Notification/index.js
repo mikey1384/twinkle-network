@@ -166,7 +166,6 @@ function Notification({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     myId: state.UserReducer.userId,
     loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,

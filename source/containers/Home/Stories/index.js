@@ -52,7 +52,6 @@ Stories.propTypes = {
   changeByUserStatus: PropTypes.func.isRequired,
   changeSpoilerStatus: PropTypes.func.isRequired,
   changeSubFilter: PropTypes.func.isRequired,
-  chatMode: PropTypes.bool,
   contentFeedLike: PropTypes.func.isRequired,
   feedCommentDelete: PropTypes.func.isRequired,
   feedContentDelete: PropTypes.func.isRequired,
@@ -111,7 +110,6 @@ function Stories({
   attachStar,
   category,
   changeSpoilerStatus,
-  chatMode,
   changeByUserStatus,
   changeCategory,
   changeSubFilter,
@@ -156,7 +154,7 @@ function Stories({
   const ContainerRef = useRef(null);
 
   const [setScrollHeight] = useInfiniteScroll({
-    scrollable: !chatMode && !searchMode && storyFeeds.length > 0,
+    scrollable: !searchMode && storyFeeds.length > 0,
     loadable: loadMoreButton,
     loading: loadingMore,
     onScrollToBottom: () => setLoadingMore(true),
@@ -459,7 +457,6 @@ export default connect(
     numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    chatMode: state.ChatReducer.chatMode,
     noFeeds: state.FeedReducer.noFeeds,
     searchMode: state.SearchReducer.searchMode,
     subFilter: state.FeedReducer.subFilter

@@ -107,7 +107,6 @@ function MessagesContainer({
   const MessagesRef = useRef({});
   const ContentRef = useRef({});
   const FileInputRef = useRef(null);
-  const BottomRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const mb = 1000;
   const maxSize =
@@ -146,8 +145,13 @@ function MessagesContainer({
             MessagesRef.current.offsetHeight
         : 0
     );
-    BottomRef.current.scrollIntoView();
-    setTimeout(() => BottomRef.current.scrollIntoView(), 0);
+    MessagesContainerRef.current.scrollTop = ContentRef.current.offsetHeight;
+    setTimeout(
+      () =>
+        (MessagesContainerRef.current.scrollTop =
+          ContentRef.current.offsetHeight),
+      0
+    );
   }, [currentChannel.id]);
 
   return (
@@ -295,7 +299,6 @@ function MessagesContainer({
                   }
                 />
               ))}
-              <div ref={BottomRef} />
             </div>
           </div>
         </div>
@@ -315,7 +318,8 @@ function MessagesContainer({
               color="orange"
               onClick={() => {
                 setNewUnseenMessage(false);
-                BottomRef.current.scrollIntoView();
+                MessagesContainerRef.current.scrollTop =
+                  ContentRef.current.offsetHeight;
               }}
             >
               New Message
@@ -458,7 +462,12 @@ function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    setTimeout(() => BottomRef.current.scrollIntoView(), 0);
+    setTimeout(
+      () =>
+        (MessagesContainerRef.current.scrollTop =
+          ContentRef.current.offsetHeight),
+      0
+    );
     setScrollAtBottom(true);
   }
 

@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Link, Route } from 'react-router-dom';
 import Icon from 'components/Icon';
-import { Color } from 'constants/css';
+import { connect } from 'react-redux';
+import { Link, Route } from 'react-router-dom';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -15,11 +17,12 @@ HeaderNav.propTypes = {
   isUsername: PropTypes.bool,
   onClick: PropTypes.func,
   pathname: PropTypes.string,
+  profileTheme: PropTypes.string,
   style: PropTypes.object,
   to: PropTypes.string
 };
 
-export default function HeaderNav({
+function HeaderNav({
   active,
   alert,
   alertColor,
@@ -29,19 +32,76 @@ export default function HeaderNav({
   imgLabel,
   isHome,
   isUsername,
-  pathname,
   onClick = () => {},
+  pathname,
+  profileTheme,
   style
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   const highlighted =
-    ['/featured', '/videos', '/links'].includes(to) &&
-    ['featured', 'videos', 'links'].includes(pathname?.split('/')[1]);
+    ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
+    ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
+      pathname?.split('/')[1]
+    );
   return (
     <Route
       path={to}
       exact={isHome && !isUsername}
       children={({ match }) => (
-        <div className={`${className} header-nav`} style={style}>
+        <div
+          className={`${className} ${css`
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .chat {
+              color: ${Color.gray()};
+            }
+            a {
+              text-decoration: none;
+              font-weight: bold;
+              color: ${Color.gray()};
+              align-items: center;
+              line-height: 1;
+            }
+            > a.active {
+              color: ${Color[themeColor](0.8)}!important;
+              > svg {
+                color: ${Color[themeColor](0.8)}!important;
+              }
+            }
+            &:hover {
+              > a {
+                > svg {
+                  color: ${Color[themeColor](0.6)};
+                }
+                color: ${Color[themeColor](0.6)};
+              }
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+              justify-content: center;
+              font-size: 4rem;
+              a {
+                .nav-label {
+                  display: none;
+                }
+              }
+              > a.active {
+                > svg {
+                  color: ${Color.black()}!important;
+                }
+              }
+              &:hover {
+                > a {
+                  > svg {
+                    color: ${Color.gray()};
+                  }
+                }
+              }
+            }
+          `}`}
+          style={style}
+        >
           {to ? (
             <Link
               className={to && (match || highlighted) ? 'active ' : ''}
@@ -90,3 +150,7 @@ export default function HeaderNav({
     />
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(HeaderNav);

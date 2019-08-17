@@ -6,7 +6,6 @@ import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 
 UsernameText.propTypes = {
-  chatMode: PropTypes.bool,
   className: PropTypes.string,
   color: PropTypes.string,
   style: PropTypes.object,
@@ -17,7 +16,6 @@ UsernameText.propTypes = {
 };
 
 function UsernameText({
-  chatMode,
   className,
   color,
   openDirectMessageChannel,
@@ -77,8 +75,7 @@ function UsernameText({
     if (user.id !== userId) {
       openDirectMessageChannel({
         user: { id: userId, username },
-        recepient: { id: user.id, username: user.username },
-        chatCurrentlyOn: chatMode
+        recepient: { id: user.id, username: user.username }
       });
     }
   }
@@ -92,7 +89,6 @@ function UsernameText({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),

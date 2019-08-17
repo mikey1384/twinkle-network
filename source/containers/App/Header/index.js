@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
-import Icon from 'components/Icon';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import { connect } from 'react-redux';
@@ -11,7 +10,6 @@ import {
   clearRecentChessMessage,
   getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
-  turnChatOff,
   resetChat,
   updateApiServerToS3Progress
 } from 'redux/actions/ChatActions';
@@ -33,13 +31,11 @@ import { container } from './Styles';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
-  chatMode: PropTypes.bool,
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   checkVersion: PropTypes.func,
   clearRecentChessMessage: PropTypes.func,
   history: PropTypes.object.isRequired,
-  getNumberOfUnreadMessages: PropTypes.func,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
   increaseNumberOfUnreadMessages: PropTypes.func,
@@ -60,7 +56,6 @@ Header.propTypes = {
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
-  turnChatOff: PropTypes.func,
   updateApiServerToS3Progress: PropTypes.func.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string,
@@ -70,12 +65,10 @@ Header.propTypes = {
 function Header({
   changeRankingsLoadedStatus,
   chatLoading,
-  chatMode,
   changeSocketStatus,
   checkVersion,
   clearRecentChessMessage,
   closeSearch,
-  getNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
@@ -96,7 +89,6 @@ function Header({
   showUpdateNotice,
   style = {},
   totalRewardAmount,
-  turnChatOff,
   updateApiServerToS3Progress,
   userId,
   username,
@@ -129,7 +121,6 @@ function Header({
 
     function onChatInvitation(data) {
       socket.emit('join_chat_channel', data.channelId);
-      if (!chatMode) increaseNumberOfUnreadMessages();
     }
     function onConnect() {
       console.log('connected to socket');
@@ -138,9 +129,6 @@ function Header({
       checkVersion();
       if (userId) {
         socket.emit('bind_uid_to_socket', userId, username);
-        if (!chatMode) {
-          getNumberOfUnreadMessages();
-        }
       }
     }
     function onDisconnect() {
@@ -148,11 +136,7 @@ function Header({
       changeSocketStatus(false);
     }
     function onReceiveMessage(data) {
-      if (
-        !chatMode &&
-        data.channelId !== GENERAL_CHAT_ID &&
-        data.userId !== userId
-      ) {
+      if (data.channelId !== GENERAL_CHAT_ID && data.userId !== userId) {
         increaseNumberOfUnreadMessages();
       }
     }
@@ -182,9 +166,6 @@ function Header({
     if (userId) {
       socket.emit('bind_uid_to_socket', userId, username);
       socket.emit('enter_my_notification_channel', userId);
-      if (!chatMode) {
-        getNumberOfUnreadMessages();
-      }
     } else {
       if (prevUserIdRef.current) {
         socket.emit('leave_my_notification_channel', prevUserIdRef.current);
@@ -199,7 +180,9 @@ function Header({
 
   const isUsername =
     pathname.split('/')[1] !== 'featured' &&
-    !['links', 'videos'].includes(pathname.split('/')[1]) &&
+    !['links', 'videos', 'talk', 'comments', 'subjects'].includes(
+      pathname.split('/')[1]
+    ) &&
     pathname.length > 1;
 
   return (
@@ -209,62 +192,46 @@ function Header({
       }`}
       style={{
         justifyContent: 'space-around',
-        position: chatMode ? 'relative' : 'fixed',
+        position: 'fixed',
         ...style
       }}
     >
-      {chatMode && (
-        <div className="chat-bar" onClick={turnChatOff}>
-          <Icon icon="times" />
-          <div style={{ marginLeft: '1rem' }}>Tap to close chat</div>
-        </div>
-      )}
-      {!chatMode && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%'
-          }}
-        >
-          <TwinkleLogo
-            style={{ marginLeft: '3rem' }}
-            closeSearch={closeSearch}
-            history={history}
-            isUsername={isUsername}
-            numNewPosts={numNewPosts}
-            pathname={pathname}
-          />
-          <MainNavs
-            chatLoading={chatLoading}
-            chatMode={chatMode}
-            closeSearch={closeSearch}
-            initSearch={initSearch}
-            isUsername={isUsername}
-            numChatUnreads={numChatUnreads}
-            numNewNotis={numNewNotis}
-            numNewPosts={numNewPosts}
-            onChatButtonClick={onChatButtonClick}
-            onMobileMenuOpen={onMobileMenuOpen}
-            pathname={pathname}
-            searchMode={searchMode}
-            totalRewardAmount={totalRewardAmount}
-          />
-          <AccountMenu
-            style={{ marginRight: '3rem' }}
-            className={`desktop ${css`
-              @media (min-width: ${desktopMinWidth}) {
-                margin-left: 0.5rem;
-              }
-            `}`}
-            history={history}
-            loggedIn={loggedIn}
-            logout={onLogout}
-            title={username}
-          />
-        </div>
-      )}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%'
+        }}
+      >
+        <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
+        <MainNavs
+          chatLoading={chatLoading}
+          closeSearch={closeSearch}
+          initSearch={initSearch}
+          isUsername={isUsername}
+          numChatUnreads={numChatUnreads}
+          numNewNotis={numNewNotis}
+          numNewPosts={numNewPosts}
+          onChatButtonClick={onChatButtonClick}
+          onMobileMenuOpen={onMobileMenuOpen}
+          pathname={pathname}
+          searchMode={searchMode}
+          totalRewardAmount={totalRewardAmount}
+        />
+        <AccountMenu
+          style={{ marginRight: '3rem' }}
+          className={`desktop ${css`
+            @media (min-width: ${desktopMinWidth}) {
+              margin-left: 0.5rem;
+            }
+          `}`}
+          history={history}
+          loggedIn={loggedIn}
+          logout={onLogout}
+          title={username}
+        />
+      </div>
     </nav>
   );
 
@@ -285,7 +252,6 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
-    chatMode: state.ChatReducer.chatMode,
     searchMode: state.SearchReducer.searchMode,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     versionMatch: state.NotiReducer.versionMatch
@@ -304,7 +270,6 @@ export default connect(
     notifyChatSubjectChange,
     closeSearch,
     resetChat,
-    turnChatOff,
     updateApiServerToS3Progress
   }
 )(withRouter(Header));
