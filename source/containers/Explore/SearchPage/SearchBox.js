@@ -8,7 +8,6 @@ import { changeSearch } from 'redux/actions/SearchActions';
 SearchBox.propTypes = {
   className: PropTypes.string,
   changeSearch: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   profileTheme: PropTypes.string,
   searchText: PropTypes.string.isRequired,
@@ -18,7 +17,6 @@ SearchBox.propTypes = {
 function SearchBox({
   changeSearch,
   className,
-  onFocus,
   innerRef,
   profileTheme,
   searchText,
@@ -34,7 +32,6 @@ function SearchBox({
         placeholder="Search Videos, Subjects, Links, and More"
         onChange={changeSearch}
         value={searchText}
-        onFocus={onFocus}
       />
     </div>
   );

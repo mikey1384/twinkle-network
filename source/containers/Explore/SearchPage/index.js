@@ -6,7 +6,6 @@ import { mobileMaxWidth } from 'constants/css';
 import {
   changeFilter,
   closeSearch,
-  recordSearchScroll,
   setResults
 } from 'redux/actions/SearchActions';
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
@@ -15,18 +14,18 @@ import { css } from 'emotion';
 import TopFilter from './TopFilter';
 import FirstPage from './FirstPage';
 import Results from './Results';
+import SearchBox from './SearchBox';
 
 SearchPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
   changeFilter: PropTypes.func.isRequired,
   closeSearch: PropTypes.func.isRequired,
-  onSearchBoxFocus: PropTypes.func.isRequired,
-  recordSearchScroll: PropTypes.func.isRequired,
   searchFilter: PropTypes.string,
   searchScrollPosition: PropTypes.number,
   searchText: PropTypes.string.isRequired,
   selectedFilter: PropTypes.string.isRequired,
   setResults: PropTypes.func.isRequired,
+  style: PropTypes.object,
   updateDefaultSearchFilter: PropTypes.func.isRequired
 };
 
@@ -34,17 +33,17 @@ function SearchPage({
   changeFilter,
   closeSearch,
   dispatch,
-  onSearchBoxFocus,
-  recordSearchScroll,
   searchFilter,
   searchScrollPosition,
   searchText,
   selectedFilter,
   setResults,
+  style,
   updateDefaultSearchFilter
 }) {
   const prevSearchText = useRef(searchText);
   const SearchPageRef = useRef(null);
+  const SearchBoxRef = useRef(null);
   useEffect(() => {
     if (!selectedFilter) changeFilter(searchFilter || 'video');
     setTimeout(() => {
@@ -60,40 +59,28 @@ function SearchPage({
       setResults({ results: [], loadMoreButton: false });
     }
     prevSearchText.current = searchText;
-
-    return function onUnmount() {
-      recordSearchScroll(SearchPageRef.current.scrollTop);
-    };
   }, [searchText]);
 
   return (
-    <div
-      ref={SearchPageRef}
-      className={css`
-        padding-top: 1rem;
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-        @media (max-width: ${mobileMaxWidth}) {
-          margin-top: 0;
-          padding-top: 0;
-          padding-bottom: 9rem;
-        }
-      `}
-    >
-      <div
-        className={css`
-          width: 80%;
-          @media (max-width: ${mobileMaxWidth}) {
-            width: 100%;
-          }
-        `}
-      >
-        {!stringIsEmpty(searchText) && (
+    <div style={style}>
+      {stringIsEmpty(searchText) && (
+        <FirstPage
+          style={{ marginTop: '7rem', marginBottom: '4rem' }}
+          changeFilter={handleChangeFilter}
+          defaultFilter={searchFilter}
+          filter={selectedFilter}
+          setDefaultSearchFilter={handleSetDefaultSearchFilter}
+        />
+      )}
+      <SearchBox
+        style={{ width: '50%', marginTop: '2rem' }}
+        innerRef={SearchBoxRef}
+      />
+      {!stringIsEmpty(searchText) && (
+        <>
           <TopFilter
             className={css`
+              width: 100%;
               margin-top: 2rem;
               @media (max-width: ${mobileMaxWidth}) {
                 margin-top: 0;
@@ -103,23 +90,14 @@ function SearchPage({
             applyFilter={handleChangeFilter}
             selectedFilter={selectedFilter}
           />
-        )}
-        {stringIsEmpty(searchText) ? (
-          <FirstPage
-            changeFilter={handleChangeFilter}
-            defaultFilter={searchFilter}
-            filter={selectedFilter}
-            setDefaultSearchFilter={handleSetDefaultSearchFilter}
-          />
-        ) : (
           <Results
             changeFilter={handleChangeFilter}
             closeSearch={closeSearch}
             searchText={searchText}
             filter={selectedFilter}
           />
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 
@@ -127,7 +105,7 @@ function SearchPage({
     setResults({ results: [], loadMoreButton: false });
     changeFilter(nextFilter);
     if (stringIsEmpty(searchText)) {
-      onSearchBoxFocus();
+      SearchBoxRef.current.focus();
     }
   }
 
@@ -139,7 +117,7 @@ function SearchPage({
     });
     updateDefaultSearchFilter(selectedFilter);
     if (stringIsEmpty(searchText)) {
-      onSearchBoxFocus();
+      SearchBoxRef.current.focus();
     }
   }
 }
@@ -155,7 +133,6 @@ export default connect(
     dispatch,
     changeFilter: filter => dispatch(changeFilter(filter)),
     closeSearch: () => dispatch(closeSearch()),
-    recordSearchScroll: scrollTop => dispatch(recordSearchScroll(scrollTop)),
     setResults: data => dispatch(setResults(data)),
     updateDefaultSearchFilter: filter =>
       dispatch(updateDefaultSearchFilter(filter))

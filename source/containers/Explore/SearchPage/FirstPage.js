@@ -8,14 +8,16 @@ FirstPage.propTypes = {
   changeFilter: PropTypes.func.isRequired,
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
-  setDefaultSearchFilter: PropTypes.func.isRequired
+  setDefaultSearchFilter: PropTypes.func.isRequired,
+  style: PropTypes.object
 };
 
 export default function FirstPage({
   changeFilter,
   defaultFilter,
   filter,
-  setDefaultSearchFilter
+  setDefaultSearchFilter,
+  style
 }) {
   return (
     <div
@@ -23,7 +25,8 @@ export default function FirstPage({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        ...style
       }}
     >
       <div
@@ -54,7 +57,7 @@ export default function FirstPage({
           }
         `}
       >
-        {['video', 'url', 'subject'].map(type =>
+        {['subject', 'video', 'url'].map(type =>
           filter === type ? (
             <nav key={type}>
               <p>Explore {(type === 'url' ? 'link' : type) + 's...'}</p>

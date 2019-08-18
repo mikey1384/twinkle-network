@@ -18,11 +18,6 @@ export const initSearch = () => ({
   type: SEARCH.INIT
 });
 
-export const recordSearchScroll = scrollTop => ({
-  type: SEARCH.RECORD_SCROLL_POSITION,
-  scrollTop
-});
-
 export const setResults = ({ filter, results, loadMoreButton }) => ({
   type: SEARCH.SET_RESULTS,
   filter,
