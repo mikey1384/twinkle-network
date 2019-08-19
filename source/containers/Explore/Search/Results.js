@@ -2,37 +2,26 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ContentListItem from 'components/ContentListItem';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import Link from 'components/Link';
 import { setResults, showMoreResults } from 'redux/actions/SearchActions';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
-import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 
 Results.propTypes = {
-  changeFilter: PropTypes.func.isRequired,
-  closeSearch: PropTypes.func.isRequired,
   filter: PropTypes.string.isRequired,
-  loadMoreButton: PropTypes.bool.isRequired,
-  results: PropTypes.array.isRequired,
   searchText: PropTypes.string.isRequired,
-  setResults: PropTypes.func.isRequired,
   showMoreResults: PropTypes.func.isRequired
 };
 
-function Results({
-  changeFilter,
-  closeSearch,
-  filter,
-  loadMoreButton,
-  results,
-  searchText,
-  setResults,
-  showMoreResults
-}) {
+function Results({ filter, searchText, showMoreResults }) {
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
+  const [results, setResults] = useState([]);
+  const [loadMoreButton, setLoadMoreButton] = useState(false);
   const prevFilter = useRef(filter);
   const prevSearchText = useRef(searchText);
   const timerRef = useRef(null);
@@ -63,17 +52,19 @@ function Results({
   }, [searchText]);
 
   async function handleSearchContent() {
-    const data = await searchContent({
-      filter,
+    const { results, loadMoreButton } = await searchContent({
+      filter:
+        filter === 'links' ? 'url' : filter.substring(0, filter.length - 1),
       searchText
     });
-    setResults({ filter, ...data });
+    setLoadMoreButton(loadMoreButton);
+    setResults(results);
     return setSearching(false);
   }
-
   const availableFilters = ['video', 'url', 'subject'].filter(
     availableFilter => availableFilter !== filter
   );
+
   return (
     <div
       style={{
@@ -90,7 +81,6 @@ function Results({
           <ContentListItem
             key={result.id}
             style={{ marginBottom: '1rem' }}
-            onClick={closeSearch}
             contentObj={result}
           />
         ))}
@@ -115,12 +105,9 @@ function Results({
               Search with the same keyword(s) for:
               {availableFilters.map((availableFilter, index) => (
                 <p style={{ textTransform: 'capitalize' }} key={index}>
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => changeFilter(availableFilter)}
-                  >{`${
-                    availableFilter === 'url' ? 'link' : availableFilter
-                  }s`}</a>
+                  <Link style={{ cursor: 'pointer' }} to={availableFilter}>
+                    {availableFilter}
+                  </Link>
                 </p>
               ))}
             </div>

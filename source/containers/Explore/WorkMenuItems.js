@@ -11,9 +11,9 @@ WorkMenuItems.propTypes = {
 export default function WorkMenuItems({ className, style }) {
   return (
     <div style={style} className={className}>
-      <NavLink to="/featured" activeClassName="active">
+      <NavLink to="/subjects" activeClassName="active">
         <Icon icon="bolt" />
-        <span style={{ marginLeft: '1.1rem' }}>Featured</span>
+        <span style={{ marginLeft: '1.1rem' }}>Subjects</span>
       </NavLink>
       <NavLink to="/videos" activeClassName="active">
         <Icon icon="film" />

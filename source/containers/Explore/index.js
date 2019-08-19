@@ -2,13 +2,12 @@ import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
-import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import Featured from './Featured';
+import Subjects from './Subjects';
 import Notification from 'components/Notification';
 import WorkMenuItems from './WorkMenuItems';
-import SearchPage from './SearchPage';
+import Search from './Search';
 import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -23,20 +22,10 @@ const Links = React.lazy(() => import('./Links'));
 Explore.propTypes = {
   location: PropTypes.object.isRequired,
   mobileNavbarShown: PropTypes.bool.isRequired,
-  openAddVideoModal: PropTypes.func.isRequired,
-  openAddPlaylistModal: PropTypes.func.isRequired,
-  searchText: PropTypes.string,
-  userId: PropTypes.number
+  searchText: PropTypes.string
 };
 
-function Explore({
-  location,
-  mobileNavbarShown,
-  openAddPlaylistModal,
-  openAddVideoModal,
-  searchText,
-  userId
-}) {
+function Explore({ location, mobileNavbarShown, searchText }) {
   return (
     <ErrorBoundary>
       <div
@@ -96,21 +85,22 @@ function Explore({
             }
           `}
         >
-          <SearchPage
+          <Search
             searchText={searchText}
+            pathname={location.pathname}
             style={{
               width: '100%',
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'column',
-              marginBottom: '8rem'
+              marginBottom: '5rem'
             }}
           />
           <Suspense fallback={<Loading />}>
             <Switch>
               <Route path="/videos" component={Videos} />
               <Route path="/links" component={Links} />
-              <Route path="/featured" component={Featured} />
+              <Route path="/subjects" component={Subjects} />
             </Switch>
           </Suspense>
           <div
@@ -138,37 +128,7 @@ function Explore({
             }
           `}
           location={location.pathname.substring(1)}
-        >
-          {location.pathname === '/videos' && userId && (
-            <>
-              <Button
-                skeuomorphic
-                color="darkerGray"
-                style={{
-                  fontSize: '2rem',
-                  width: '99%',
-                  marginTop: '0.1rem',
-                  marginBottom: '1rem'
-                }}
-                onClick={openAddVideoModal}
-              >
-                + Add Video
-              </Button>
-              <Button
-                skeuomorphic
-                color="darkerGray"
-                style={{
-                  fontSize: '2rem',
-                  width: '99%',
-                  marginBottom: '1rem'
-                }}
-                onClick={openAddPlaylistModal}
-              >
-                + Add Playlist
-              </Button>
-            </>
-          )}
-        </Notification>
+        />
       </div>
       <div
         style={{ display: mobileNavbarShown ? '' : 'none' }}

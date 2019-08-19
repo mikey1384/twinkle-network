@@ -2,8 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
-import AddVideoModal from './Modals/AddVideoModal';
-import AllVideosPanel from './Panels/AllVideosPanel';
+import FeaturedPlaylistPanel from './Panels/FeaturedPlaylistsPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
@@ -23,9 +22,7 @@ import { scrollElementToCenter } from 'helpers';
 
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
-  addVideoModalShown: PropTypes.bool.isRequired,
   closeAddPlaylistModal: PropTypes.func.isRequired,
-  closeAddVideoModal: PropTypes.func.isRequired,
   getInitialVideos: PropTypes.func.isRequired,
   getPlaylists: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -33,7 +30,6 @@ Videos.propTypes = {
   loadMorePlaylistsButton: PropTypes.bool.isRequired,
   loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
   openAddPlaylistModal: PropTypes.func.isRequired,
-  openAddVideoModal: PropTypes.func.isRequired,
   playlists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
   searchedPlaylists: PropTypes.array.isRequired,
@@ -44,9 +40,7 @@ Videos.propTypes = {
 
 function Videos({
   addPlaylistModalShown,
-  addVideoModalShown,
   closeAddPlaylistModal,
-  closeAddVideoModal,
   getPlaylists,
   getInitialVideos,
   history,
@@ -54,7 +48,6 @@ function Videos({
   loadMorePlaylistsButton,
   loadMoreSearchedPlaylistsButton,
   openAddPlaylistModal,
-  openAddVideoModal,
   playlists: allPlaylists = [],
   postPlaylist,
   playlistsLoaded,
@@ -68,7 +61,6 @@ function Videos({
       setSearchedPlaylists({ playlists: [], loadMoreButton: false })
   });
   const AllPlaylistsPanelRef = useRef(null);
-  const AllVideosPanelRef = useRef(null);
 
   useEffect(() => {
     init();
@@ -90,6 +82,7 @@ function Videos({
 
   return (
     <div>
+      <FeaturedPlaylistPanel history={history} />
       <PlaylistsPanel
         key={'allplaylists'}
         innerRef={AllPlaylistsPanelRef}
@@ -120,21 +113,6 @@ function Videos({
         onSearch={handleSearch}
         searchQuery={searchText}
       />
-      <AllVideosPanel
-        innerRef={AllVideosPanelRef}
-        key={'allvideos'}
-        title="All Videos"
-        userId={userId}
-        onAddVideoClick={openAddVideoModal}
-      />
-      {addVideoModalShown && (
-        <AddVideoModal
-          onHide={closeAddVideoModal}
-          focusVideoPanelAfterUpload={() =>
-            scrollElementToCenter(AllVideosPanelRef.current, 150)
-          }
-        />
-      )}
       {addPlaylistModalShown && (
         <AddPlaylistModal
           postPlaylist={postPlaylist}

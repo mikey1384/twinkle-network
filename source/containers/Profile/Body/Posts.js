@@ -63,7 +63,6 @@ Posts.propTypes = {
   match: PropTypes.object.isRequired,
   myId: PropTypes.number,
   profileFeeds: PropTypes.array.isRequired,
-  searchMode: PropTypes.bool.isRequired,
   selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
@@ -109,7 +108,6 @@ function Posts({
   },
   myId,
   profileFeeds,
-  searchMode,
   selectedTheme,
   setCurrentSection,
   showFeedComments,
@@ -123,7 +121,7 @@ function Posts({
   const selectedFilter = useRef('all');
 
   const [setScrollHeight] = useInfiniteScroll({
-    scrollable: !searchMode && profileFeeds.length > 0,
+    scrollable: profileFeeds.length > 0,
     loadable: loadMoreButton,
     loading,
     onScrollToBottom: () => setLoading(true),
@@ -358,8 +356,7 @@ export default connect(
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
     loadMoreButton: state.FeedReducer.profileFeedsLoadMoreButton,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected,
-    searchMode: state.SearchReducer.searchMode
+    homeComponentConnected: state.FeedReducer.homeComponentConnected
   }),
   {
     addTags,

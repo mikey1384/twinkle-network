@@ -6,6 +6,7 @@ import SearchInput from 'components/Texts/SearchInput';
 import { changeSearch } from 'redux/actions/SearchActions';
 
 SearchBox.propTypes = {
+  category: PropTypes.string,
   className: PropTypes.string,
   changeSearch: PropTypes.func.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
@@ -15,6 +16,7 @@ SearchBox.propTypes = {
 };
 
 function SearchBox({
+  category,
   changeSearch,
   className,
   innerRef,
@@ -24,16 +26,16 @@ function SearchBox({
 }) {
   const themeColor = profileTheme || 'logoBlue';
   return (
-    <div className={className} style={style}>
-      <SearchInput
-        addonColor={themeColor}
-        borderColor={themeColor}
-        innerRef={innerRef}
-        placeholder="Search Videos, Subjects, Links, and More"
-        onChange={changeSearch}
-        value={searchText}
-      />
-    </div>
+    <SearchInput
+      className={className}
+      style={style}
+      addonColor={themeColor}
+      borderColor={themeColor}
+      innerRef={innerRef}
+      placeholder={`Search ${category}...`}
+      onChange={changeSearch}
+      value={searchText}
+    />
   );
 }
 

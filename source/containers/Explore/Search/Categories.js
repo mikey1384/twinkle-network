@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from 'components/Checkbox';
+import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 
 Categories.propTypes = {
-  changeFilter: PropTypes.func.isRequired,
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
   profileTheme: PropTypes.string,
@@ -15,7 +15,6 @@ Categories.propTypes = {
 };
 
 function Categories({
-  changeFilter,
   defaultFilter,
   filter,
   profileTheme,
@@ -62,10 +61,10 @@ function Categories({
           }
         `}
       >
-        {['subject', 'video', 'url'].map(type =>
+        {['subjects', 'videos', 'links'].map(type =>
           filter === type ? (
             <nav key={type}>
-              <p>Explore {(type === 'url' ? 'link' : type) + 's...'}</p>
+              <p>Explore {type}</p>
               <div
                 style={{
                   display: 'flex',
@@ -75,9 +74,7 @@ function Categories({
               >
                 <Checkbox
                   backgroundColor="#fff"
-                  label={`Always explore ${
-                    type === 'url' ? 'link' : type
-                  }s first:`}
+                  label={`Always explore ${type} first:`}
                   textIsClickable
                   style={{
                     width: 'auto',
@@ -90,9 +87,9 @@ function Categories({
               </div>
             </nav>
           ) : (
-            <a key={type} onClick={() => changeFilter(type)}>
-              Explore {(type === 'url' ? 'link' : type) + 's'}
-            </a>
+            <Link key={type} to={type}>
+              Explore {type}
+            </Link>
           )
         )}
       </div>

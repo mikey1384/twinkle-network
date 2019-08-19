@@ -26,7 +26,6 @@ Carousel.propTypes = {
   onFinish: PropTypes.func,
   onShowAll: PropTypes.func,
   progressBar: PropTypes.bool,
-  searchMode: PropTypes.bool,
   showAllButton: PropTypes.bool,
   showQuestionsBuilder: PropTypes.func,
   slideIndex: PropTypes.number,
@@ -52,7 +51,6 @@ function Carousel({
   onFinish,
   onShowAll,
   progressBar,
-  searchMode,
   slideIndex = 0,
   slidesToScroll = 1,
   slidesToShow = 1,
@@ -83,9 +81,7 @@ function Carousel({
   useEffect(() => {
     addEvent(window, 'resize', onResize);
     addEvent(document, 'readystatechange', onReadyStateChange);
-    if (!searchMode) {
-      renderDimensions(FrameRef);
-    }
+    renderDimensions(FrameRef);
     return function cleanUp() {
       removeEvent(window, 'resize', onResize);
       removeEvent(document, 'readystatechange', onReadyStateChange);
@@ -441,9 +437,7 @@ function Carousel({
   }
 
   function onResize() {
-    if (!searchMode) {
-      renderDimensions(FrameRef);
-    }
+    renderDimensions(FrameRef);
   }
 
   function onReadyStateChange() {
@@ -487,7 +481,6 @@ function Carousel({
 
 export default connect(
   state => ({
-    searchMode: state.SearchReducer.searchMode,
     clickSafe: state.VideoReducer.clickSafe
   }),
   { clickSafeOn, clickSafeOff }

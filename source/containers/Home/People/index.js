@@ -25,7 +25,6 @@ People.propTypes = {
   profiles: PropTypes.array.isRequired,
   profileTheme: PropTypes.string,
   searchedProfiles: PropTypes.array.isRequired,
-  searchMode: PropTypes.bool.isRequired,
   searchUsers: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
@@ -40,7 +39,6 @@ function People({
   profileTheme,
   userId,
   searchedProfiles,
-  searchMode,
   searchUsers
 }) {
   const [loaded, setLoaded] = useState(false);
@@ -53,7 +51,7 @@ function People({
   const themeColor = profileTheme || 'logoBlue';
 
   useInfiniteScroll({
-    scrollable: !searchMode && profiles.length > 0 && stringIsEmpty(searchText),
+    scrollable: profiles.length > 0 && stringIsEmpty(searchText),
     loadable: loadMoreButton,
     loading,
     onScrollToBottom: () => setLoading(true),
@@ -174,7 +172,6 @@ export default connect(
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
     profileTheme: state.UserReducer.profileTheme,
-    searchMode: state.SearchReducer.searchMode,
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId
   }),

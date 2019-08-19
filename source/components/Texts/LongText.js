@@ -1,26 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
 
 LongText.propTypes = {
   children: PropTypes.string,
   className: PropTypes.string,
   cleanString: PropTypes.bool,
   maxLines: PropTypes.number,
-  searchMode: PropTypes.bool,
   style: PropTypes.object,
   noExpand: PropTypes.bool
 };
 
-function LongText({
+export default function LongText({
   style,
   className,
   cleanString,
   children,
   maxLines = 10,
-  noExpand,
-  searchMode
+  noExpand
 }) {
   const [text, setText] = useState(children || '');
   const [fullText, setFullText] = useState(false);
@@ -34,10 +31,8 @@ function LongText({
   }, [children]);
 
   useEffect(() => {
-    if (!searchMode) {
-      truncateText(children || '');
-    }
-  }, [children, ContainerRef.current?.clientWidth, searchMode]);
+    truncateText(children || '');
+  }, [children, ContainerRef.current?.clientWidth]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
@@ -117,7 +112,3 @@ function LongText({
     setText(trimmedText + line || line);
   }
 }
-
-export default connect(state => ({
-  searchMode: state.SearchReducer.searchMode
-}))(LongText);

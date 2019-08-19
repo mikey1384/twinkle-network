@@ -1,35 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
-import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 
 MainNavs.propTypes = {
+  category: PropTypes.string,
   chatLoading: PropTypes.bool,
-  closeSearch: PropTypes.func.isRequired,
-  initSearch: PropTypes.func.isRequired,
   isUsername: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   onMobileMenuOpen: PropTypes.func.isRequired,
   pathname: PropTypes.string,
-  searchMode: PropTypes.bool,
   totalRewardAmount: PropTypes.number
 };
 
 export default function MainNavs({
+  category,
   chatLoading,
-  closeSearch,
-  initSearch,
   isUsername,
   numChatUnreads,
   numNewNotis,
   numNewPosts,
   onMobileMenuOpen,
   pathname,
-  searchMode,
   totalRewardAmount
 }) {
   return (
@@ -42,36 +37,19 @@ export default function MainNavs({
       `}
     >
       <HeaderNav
-        className={`${searchMode || chatLoading ? 'hidden' : 'mobile'}`}
+        className={`${chatLoading ? 'hidden' : 'mobile'}`}
         alert={numNewNotis > 0 || totalRewardAmount > 0}
         alertColor={Color.gold()}
         imgLabel="user"
         onClick={onMobileMenuOpen}
       />
-      <div
-        className={`header-nav ${chatLoading ? 'hidden' : 'mobile'}`}
-        onClick={searchMode ? closeSearch : initSearch}
-        style={{ width: searchMode && '10%' }}
-      >
-        <a className={searchMode ? 'active' : ''}>
-          {searchMode ? <Icon icon="times" /> : <Icon icon="search" />}
-        </a>
-      </div>
-      <HeaderNav
-        to="/featured"
-        onClick={closeSearch}
-        pathname={pathname}
-        className={chatLoading || searchMode ? 'hidden' : 'mobile'}
-        imgLabel="bolt"
-      />
       <HeaderNav
         to="/"
         onClick={() => {
-          closeSearch();
           window.scrollTo(0, 0);
         }}
         isHome
-        className={chatLoading || searchMode ? 'hidden' : 'mobile'}
+        className="mobile"
         imgLabel="home"
         alert={numNewPosts > 0}
         isUsername={isUsername}
@@ -81,7 +59,6 @@ export default function MainNavs({
       <HeaderNav
         to="/"
         isHome
-        onClick={closeSearch}
         pathname={pathname}
         className="desktop"
         imgLabel="home"
@@ -92,8 +69,7 @@ export default function MainNavs({
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav
-          to="/featured"
-          onClick={closeSearch}
+          to={`/${category}`}
           pathname={pathname}
           className="desktop"
           imgLabel="search"

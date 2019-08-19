@@ -72,7 +72,6 @@ Stories.propTypes = {
   loadTags: PropTypes.func.isRequired,
   numNewPosts: PropTypes.number.isRequired,
   resetNumNewPosts: PropTypes.func.isRequired,
-  searchMode: PropTypes.bool.isRequired,
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
@@ -133,7 +132,6 @@ function Stories({
   loadTags,
   numNewPosts,
   resetNumNewPosts,
-  searchMode,
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
@@ -154,7 +152,7 @@ function Stories({
   const ContainerRef = useRef(null);
 
   const [setScrollHeight] = useInfiniteScroll({
-    scrollable: !searchMode && storyFeeds.length > 0,
+    scrollable: storyFeeds.length > 0,
     loadable: loadMoreButton,
     loading: loadingMore,
     onScrollToBottom: () => setLoadingMore(true),
@@ -458,7 +456,6 @@ export default connect(
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     noFeeds: state.FeedReducer.noFeeds,
-    searchMode: state.SearchReducer.searchMode,
     subFilter: state.FeedReducer.subFilter
   }),
   {

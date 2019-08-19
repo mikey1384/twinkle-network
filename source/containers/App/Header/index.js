@@ -21,7 +21,6 @@ import {
   increaseNumNewPosts,
   increaseNumNewNotis
 } from 'redux/actions/NotiActions';
-import { closeSearch, initSearch } from 'redux/actions/SearchActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
 import { desktopMinWidth } from 'constants/css';
@@ -39,7 +38,6 @@ Header.propTypes = {
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
   increaseNumberOfUnreadMessages: PropTypes.func,
-  initSearch: PropTypes.func,
   location: PropTypes.object,
   loggedIn: PropTypes.bool,
   logout: PropTypes.func,
@@ -49,10 +47,9 @@ Header.propTypes = {
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
-  closeSearch: PropTypes.func.isRequired,
   onMobileMenuOpen: PropTypes.func,
   resetChat: PropTypes.func,
-  searchMode: PropTypes.bool,
+  searchFilter: PropTypes.string,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
@@ -68,12 +65,10 @@ function Header({
   changeSocketStatus,
   checkVersion,
   clearRecentChessMessage,
-  closeSearch,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
   increaseNumberOfUnreadMessages,
-  initSearch,
   location: { pathname },
   logout,
   loggedIn,
@@ -85,7 +80,7 @@ function Header({
   onChatButtonClick,
   onMobileMenuOpen,
   resetChat,
-  searchMode,
+  searchFilter,
   showUpdateNotice,
   style = {},
   totalRewardAmount,
@@ -95,6 +90,9 @@ function Header({
   versionMatch
 }) {
   const prevUserIdRef = useRef(userId);
+  const category = ['videos', 'subjects', 'links'].includes(searchFilter)
+    ? searchFilter
+    : 'subjects';
   useEffect(() => {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -179,11 +177,9 @@ function Header({
   }, [versionMatch]);
 
   const isUsername =
-    pathname.split('/')[1] !== 'featured' &&
     !['links', 'videos', 'talk', 'comments', 'subjects'].includes(
       pathname.split('/')[1]
-    ) &&
-    pathname.length > 1;
+    ) && pathname.length > 1;
 
   return (
     <nav
@@ -206,9 +202,8 @@ function Header({
       >
         <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
         <MainNavs
+          category={category}
           chatLoading={chatLoading}
-          closeSearch={closeSearch}
-          initSearch={initSearch}
           isUsername={isUsername}
           numChatUnreads={numChatUnreads}
           numNewNotis={numNewNotis}
@@ -216,7 +211,6 @@ function Header({
           onChatButtonClick={onChatButtonClick}
           onMobileMenuOpen={onMobileMenuOpen}
           pathname={pathname}
-          searchMode={searchMode}
           totalRewardAmount={totalRewardAmount}
         />
         <AccountMenu
@@ -245,6 +239,7 @@ function Header({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
+    searchFilter: state.UserReducer.searchFilter,
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
@@ -252,7 +247,6 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
-    searchMode: state.SearchReducer.searchMode,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     versionMatch: state.NotiReducer.versionMatch
   }),
@@ -265,10 +259,8 @@ export default connect(
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
-    initSearch,
     logout,
     notifyChatSubjectChange,
-    closeSearch,
     resetChat,
     updateApiServerToS3Progress
   }

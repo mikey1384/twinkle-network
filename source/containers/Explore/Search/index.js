@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
-import {
-  changeFilter,
-  closeSearch,
-  setResults
-} from 'redux/actions/SearchActions';
+import { setResults } from 'redux/actions/SearchActions';
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
@@ -16,36 +12,32 @@ import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
 
-SearchPage.propTypes = {
+Search.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  changeFilter: PropTypes.func.isRequired,
-  closeSearch: PropTypes.func.isRequired,
-  searchFilter: PropTypes.string,
+  pathname: PropTypes.string.isRequired,
   searchScrollPosition: PropTypes.number,
   searchText: PropTypes.string.isRequired,
-  selectedFilter: PropTypes.string.isRequired,
+  searchFilter: PropTypes.string.isRequired,
   setResults: PropTypes.func.isRequired,
   style: PropTypes.object,
   updateDefaultSearchFilter: PropTypes.func.isRequired
 };
 
-function SearchPage({
-  changeFilter,
-  closeSearch,
+function Search({
   dispatch,
-  searchFilter,
+  pathname,
   searchScrollPosition,
   searchText,
-  selectedFilter,
+  searchFilter,
   setResults,
   style,
   updateDefaultSearchFilter
 }) {
+  const category = pathname?.split('/')[1];
   const prevSearchText = useRef(searchText);
   const SearchPageRef = useRef(null);
   const SearchBoxRef = useRef(null);
   useEffect(() => {
-    if (!selectedFilter) changeFilter(searchFilter || 'video');
     setTimeout(() => {
       if (SearchPageRef.current) {
         SearchPageRef.current.scrollTop = searchScrollPosition;
@@ -66,14 +58,24 @@ function SearchPage({
       {stringIsEmpty(searchText) && (
         <Categories
           style={{ marginTop: '7rem', marginBottom: '4rem' }}
-          changeFilter={handleChangeFilter}
           defaultFilter={searchFilter}
-          filter={selectedFilter}
+          filter={category}
           setDefaultSearchFilter={handleSetDefaultSearchFilter}
         />
       )}
       <SearchBox
-        style={{ width: '50%', marginTop: '2rem' }}
+        style={{
+          width: '50%',
+          marginTop: '2rem',
+          height: '5rem'
+        }}
+        category={category}
+        className={css`
+          svg,
+          input {
+            font-size: 2.3rem;
+          }
+        `}
         innerRef={SearchBoxRef}
       />
       {!stringIsEmpty(searchText) && (
@@ -87,35 +89,21 @@ function SearchPage({
                 border-top: 0;
               }
             `}
-            applyFilter={handleChangeFilter}
-            selectedFilter={selectedFilter}
+            selectedFilter={category}
           />
-          <Results
-            changeFilter={handleChangeFilter}
-            closeSearch={closeSearch}
-            searchText={searchText}
-            filter={selectedFilter}
-          />
+          <Results searchText={searchText} filter={category} />
         </>
       )}
     </div>
   );
 
-  function handleChangeFilter(nextFilter) {
-    setResults({ results: [], loadMoreButton: false });
-    changeFilter(nextFilter);
-    if (stringIsEmpty(searchText)) {
-      SearchBoxRef.current.focus();
-    }
-  }
-
   async function handleSetDefaultSearchFilter() {
-    if (selectedFilter === searchFilter) return;
+    if (category === searchFilter) return;
     await setDefaultSearchFilter({
-      filter: selectedFilter,
+      filter: searchFilter,
       dispatch
     });
-    updateDefaultSearchFilter(selectedFilter);
+    updateDefaultSearchFilter(category);
     if (stringIsEmpty(searchText)) {
       SearchBoxRef.current.focus();
     }
@@ -125,16 +113,13 @@ function SearchPage({
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    searchFilter: state.UserReducer.searchFilter,
     searchScrollPosition: state.SearchReducer.searchScrollPosition,
-    selectedFilter: state.SearchReducer.selectedFilter
+    searchFilter: state.UserReducer.searchFilter
   }),
   dispatch => ({
     dispatch,
-    changeFilter: filter => dispatch(changeFilter(filter)),
-    closeSearch: () => dispatch(closeSearch()),
     setResults: data => dispatch(setResults(data)),
     updateDefaultSearchFilter: filter =>
       dispatch(updateDefaultSearchFilter(filter))
   })
-)(SearchPage);
+)(Search);

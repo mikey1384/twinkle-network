@@ -74,7 +74,6 @@ function App({
 }) {
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
-  const SearchBoxRef = useRef(null);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
 
@@ -175,7 +174,6 @@ function App({
       )}
       <Header
         history={history}
-        searchBoxRef={SearchBoxRef}
         showUpdateNotice={match => setUpdateNoticeShown(!match)}
         onMobileMenuOpen={() => setMobileMenuShown(true)}
       />
@@ -199,13 +197,13 @@ function App({
                 <Profile history={history} location={location} match={match} />
               )}
             />
-            <Route path="/subjects" component={ContentPage} />
-            <Route path="/comments" component={ContentPage} />
+            <Route path="/comments/:contentId" component={ContentPage} />
             <Route path="/videos/:videoId" component={VideoPage} />
             <Route path="/videos" component={Explore} />
             <Route path="/links/:linkId" component={LinkPage} />
             <Route path="/links" component={Explore} />
-            <Route path="/featured" component={Explore} />
+            <Route path="/subjects/:contentId" component={ContentPage} />
+            <Route path="/subjects" component={Explore} />
             <Route path="/playlists" component={PlaylistPage} />
             <Route
               path="/talk"
@@ -288,8 +286,6 @@ function App({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    searchMode: state.SearchReducer.searchMode,
-    searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
     updateDetail: state.NotiReducer.updateDetail,
     username: state.UserReducer.username
