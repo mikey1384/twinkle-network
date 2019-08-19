@@ -12,7 +12,7 @@ import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import TopFilter from './TopFilter';
-import FirstPage from './FirstPage';
+import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
 
@@ -64,7 +64,7 @@ function SearchPage({
   return (
     <div style={style}>
       {stringIsEmpty(searchText) && (
-        <FirstPage
+        <Categories
           style={{ marginTop: '7rem', marginBottom: '4rem' }}
           changeFilter={handleChangeFilter}
           defaultFilter={searchFilter}

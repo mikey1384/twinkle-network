@@ -1,24 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Checkbox from 'components/Checkbox';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import Checkbox from 'components/Checkbox';
+import { connect } from 'react-redux';
 
-FirstPage.propTypes = {
+Categories.propTypes = {
   changeFilter: PropTypes.func.isRequired,
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
+  profileTheme: PropTypes.string,
   setDefaultSearchFilter: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
-export default function FirstPage({
+function Categories({
   changeFilter,
   defaultFilter,
   filter,
+  profileTheme,
   setDefaultSearchFilter,
   style
 }) {
+  const themeColor = profileTheme || 'logoBlue';
   return (
     <div
       style={{
@@ -36,10 +40,11 @@ export default function FirstPage({
           display: flex;
           justify-content: center;
           align-items: center;
-          color: ${Color.darkerGray()};
+          color: ${Color[themeColor]()};
           > nav {
             text-align: center;
             > p {
+              cursor: default;
               font-weight: bold;
               text-transform: capitalize;
               font-size: 3.5rem;
@@ -94,3 +99,7 @@ export default function FirstPage({
     </div>
   );
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(Categories);
