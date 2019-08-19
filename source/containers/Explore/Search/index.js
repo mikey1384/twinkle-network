@@ -13,6 +13,7 @@ import Results from './Results';
 import SearchBox from './SearchBox';
 
 Search.propTypes = {
+  history: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   pathname: PropTypes.string.isRequired,
   searchScrollPosition: PropTypes.number,
@@ -25,6 +26,7 @@ Search.propTypes = {
 
 function Search({
   dispatch,
+  history,
   pathname,
   searchScrollPosition,
   searchText,
@@ -89,6 +91,7 @@ function Search({
                 border-top: 0;
               }
             `}
+            history={history}
             selectedFilter={category}
           />
           <Results searchText={searchText} filter={category} />
@@ -100,7 +103,7 @@ function Search({
   async function handleSetDefaultSearchFilter() {
     if (category === searchFilter) return;
     await setDefaultSearchFilter({
-      filter: searchFilter,
+      filter: category,
       dispatch
     });
     updateDefaultSearchFilter(category);

@@ -20,12 +20,13 @@ const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
 Explore.propTypes = {
+  history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   mobileNavbarShown: PropTypes.bool.isRequired,
   searchText: PropTypes.string
 };
 
-function Explore({ location, mobileNavbarShown, searchText }) {
+function Explore({ history, location, mobileNavbarShown, searchText }) {
   return (
     <ErrorBoundary>
       <div
@@ -86,6 +87,7 @@ function Explore({ location, mobileNavbarShown, searchText }) {
           `}
         >
           <Search
+            history={history}
             searchText={searchText}
             pathname={location.pathname}
             style={{

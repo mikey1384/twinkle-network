@@ -61,7 +61,7 @@ function Results({ filter, searchText, showMoreResults }) {
     setResults(results);
     return setSearching(false);
   }
-  const availableFilters = ['video', 'url', 'subject'].filter(
+  const availableFilters = ['videos', 'links', 'subjects'].filter(
     availableFilter => availableFilter !== filter
   );
 
@@ -98,11 +98,11 @@ function Results({ filter, searchText, showMoreResults }) {
           }}
         >
           <div style={{ textAlign: 'center' }}>
-            <p style={{ textTransform: 'capitalize' }}>{`No ${
-              filter === 'url' ? 'link' : filter
-            }s Found`}</p>
-            <div style={{ marginTop: '1rem', fontSize: '2rem' }}>
-              Search with the same keyword(s) for:
+            <p>{`No ${filter} found for "${searchText}"`}</p>
+            <div
+              style={{ marginTop: '1rem', fontSize: '2rem', lineHeight: 1.7 }}
+            >
+              Search {`"${searchText}"`} for:
               {availableFilters.map((availableFilter, index) => (
                 <p style={{ textTransform: 'capitalize' }} key={index}>
                   <Link style={{ cursor: 'pointer' }} to={availableFilter}>
