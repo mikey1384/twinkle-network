@@ -179,7 +179,7 @@ function People({
 
   async function handleSetOrderBy(label) {
     setLoaded(false);
-    await fetchUsers(orderBy);
+    await fetchUsers(label === RANKING_FILTER_LABEL ? 'twinkleXP' : '');
     setOrderBy(label);
     setLoaded(true);
   }
