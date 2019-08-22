@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
@@ -131,6 +133,13 @@ export default function HomeFilter({
             )}
             {category === 'videos' && (
               <div
+                className={css`
+                  border: 1px solid ${Color.borderGray()};
+                  @media (max-width: ${mobileMaxWidth}) {
+                    border-right: 0;
+                    border-left: 0;
+                  }
+                `}
                 style={{
                   display: 'flex',
                   background: '#fff',

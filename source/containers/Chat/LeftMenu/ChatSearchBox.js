@@ -44,7 +44,7 @@ function ChatSearchBox({
   return (
     <div style={{ padding: '0 1rem', zIndex: 5 }}>
       <SearchInput
-        placeholder="Search for channels / users"
+        placeholder="Play chess or talk with..."
         onChange={handleSearch}
         value={searchText}
         searchResults={searchResults}

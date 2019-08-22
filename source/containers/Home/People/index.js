@@ -12,6 +12,7 @@ import {
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
+import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
@@ -111,6 +112,11 @@ function People({
           width: '100%'
         }}
       >
+        <PeopleFilterBar
+          style={{
+            marginBottom: '1rem'
+          }}
+        />
         {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
