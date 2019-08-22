@@ -12,6 +12,7 @@ import {
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
+import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
@@ -41,6 +42,10 @@ function People({
   searchedProfiles,
   searchUsers
 }) {
+  const themeColor = profileTheme || 'logoBlue';
+  const LAST_ONLINE_FILTER_LABEL = 'Last Online';
+  const RANKING_FILTER_LABEL = 'Ranking';
+  const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
@@ -48,7 +53,10 @@ function People({
     onClear: clearUserSearch
   });
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
+  const dropdownLabel =
+    orderBy === LAST_ONLINE_FILTER_LABEL
+      ? RANKING_FILTER_LABEL
+      : LAST_ONLINE_FILTER_LABEL;
 
   useInfiniteScroll({
     scrollable: profiles.length > 0 && stringIsEmpty(searchText),
@@ -103,6 +111,14 @@ function People({
           width: '100%'
         }}
       >
+        <PeopleFilterBar
+          style={{
+            marginBottom: '1rem'
+          }}
+          onSetOrderByText={handleSetOrderBy}
+          orderByText={orderBy}
+          dropdownLabel={dropdownLabel}
+        />
         {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
@@ -153,14 +169,22 @@ function People({
     </div>
   );
 
+  async function handleSetOrderBy(label) {
+    setLoaded(false);
+    await fetchUsers(label === RANKING_FILTER_LABEL ? 'twinkleXP' : '');
+    setOrderBy(label);
+    setLoaded(true);
+  }
+
   async function loadMoreProfiles() {
-    await fetchMoreUsers(
-      queryStringForArray({
+    await fetchMoreUsers({
+      shownUsersIds: queryStringForArray({
         array: profiles,
         originVar: 'id',
         destinationVar: 'shownUsers'
-      })
-    );
+      }),
+      orderBy: orderBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
+    });
     if (mounted.current) {
       setLoading(false);
     }

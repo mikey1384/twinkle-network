@@ -116,25 +116,25 @@ function LeftMenu({
           width: 100%;
           padding: 1rem;
           display: flex;
+          align-items: center;
           justify-content: space-between;
         `}
       >
         <div
           className={css`
-            grid-area: channelDetail;
             display: flex;
-            width: CALC(100% - 5rem);
+            width: 60%;
             flex-direction: column;
           `}
         >
           <span
             ref={ChannelTitleRef}
             style={{
-              gridArea: 'channelName',
               textAlign: 'center',
+              justifyContent: 'center',
               fontSize: '2rem',
               fontWeight: 'bold',
-              display: 'block',
+              display: 'flex',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
@@ -169,9 +169,11 @@ function LeftMenu({
             <small>{'\u00a0'}</small>
           )}
         </div>
-        <Button transparent onClick={onNewButtonClick}>
-          +New
-        </Button>
+        <div>
+          <Button transparent onClick={onNewButtonClick}>
+            + Group
+          </Button>
+        </div>
       </div>
       <ChatSearchBox />
       <div
