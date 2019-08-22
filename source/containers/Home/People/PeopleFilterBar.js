@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 PeopleFilterBar.propTypes = {
+  dropdownLabel: PropTypes.string,
+  onSetOrderByText: PropTypes.func,
+  orderByText: PropTypes.string,
   style: PropTypes.object
 };
 
-const LAST_ONLINE_FILTER_LABEL = 'Last Online';
-const RANKING_FILTER_LABEL = 'Ranking';
-
-export default function PeopleFilterBar({ style }) {
-  const [orderByText, setOrderByText] = useState(LAST_ONLINE_FILTER_LABEL);
-  const label =
-    orderByText === LAST_ONLINE_FILTER_LABEL
-      ? RANKING_FILTER_LABEL
-      : LAST_ONLINE_FILTER_LABEL;
+export default function PeopleFilterBar({
+  dropdownLabel,
+  onSetOrderByText,
+  orderByText,
+  style
+}) {
   return (
     <div
       className={css`
@@ -44,8 +44,8 @@ export default function PeopleFilterBar({ style }) {
         text={orderByText}
         menuProps={[
           {
-            label: label,
-            onClick: () => setOrderByText(label)
+            label: dropdownLabel,
+            onClick: () => onSetOrderByText(dropdownLabel)
           }
         ]}
       />

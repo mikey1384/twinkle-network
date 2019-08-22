@@ -61,9 +61,11 @@ export const clearUserSearch = () => ({
   type: USER.CLEAR_SEARCH
 });
 
-export const fetchUsers = () => async dispatch => {
+export const fetchUsers = orderBy => async dispatch => {
   try {
-    const { data } = await request.get(`${API_URL}/users`);
+    const { data } = await request.get(
+      `${API_URL}/users${orderBy ? `?orderBy=${orderBy}` : ''}`
+    );
     dispatch({
       type: USER.LOAD_USERS,
       data
@@ -74,9 +76,14 @@ export const fetchUsers = () => async dispatch => {
   }
 };
 
-export const fetchMoreUsers = shownUsersIds => async dispatch => {
+export const fetchMoreUsers = ({
+  orderBy,
+  shownUsersIds
+}) => async dispatch => {
   try {
-    const { data } = await request.get(`${API_URL}/users?${shownUsersIds}`);
+    const { data } = await request.get(
+      `${API_URL}/users?${shownUsersIds}${orderBy ? `&orderBy=${orderBy}` : ''}`
+    );
     dispatch({
       type: USER.LOAD_MORE_USERS,
       data

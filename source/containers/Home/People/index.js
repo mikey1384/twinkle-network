@@ -46,6 +46,10 @@ function People({
   searchMode,
   searchUsers
 }) {
+  const themeColor = profileTheme || 'logoBlue';
+  const LAST_ONLINE_FILTER_LABEL = 'Last Online';
+  const RANKING_FILTER_LABEL = 'Ranking';
+  const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
@@ -53,7 +57,10 @@ function People({
     onClear: clearUserSearch
   });
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
+  const dropdownLabel =
+    orderBy === LAST_ONLINE_FILTER_LABEL
+      ? RANKING_FILTER_LABEL
+      : LAST_ONLINE_FILTER_LABEL;
 
   useInfiniteScroll({
     scrollable:
@@ -116,6 +123,9 @@ function People({
           style={{
             marginBottom: '1rem'
           }}
+          onSetOrderByText={handleSetOrderBy}
+          orderByText={orderBy}
+          dropdownLabel={dropdownLabel}
         />
         {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
@@ -167,14 +177,22 @@ function People({
     </div>
   );
 
+  async function handleSetOrderBy(label) {
+    setLoaded(false);
+    await fetchUsers(orderBy);
+    setOrderBy(label);
+    setLoaded(true);
+  }
+
   async function loadMoreProfiles() {
-    await fetchMoreUsers(
-      queryStringForArray({
+    await fetchMoreUsers({
+      shownUsersIds: queryStringForArray({
         array: profiles,
         originVar: 'id',
         destinationVar: 'shownUsers'
-      })
-    );
+      }),
+      orderBy: orderBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
+    });
     if (mounted.current) {
       setLoading(false);
     }
