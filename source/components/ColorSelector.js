@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
+import { css } from 'emotion';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { mobileMaxWidth } from '../constants/css';
 import Icon from 'components/Icon';
 import FullTextReveal from 'components/Texts/FullTextReveal';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 
 ColorSelector.propTypes = {
   colors: PropTypes.array.isRequired,
@@ -43,9 +45,15 @@ export default function ColorSelector({
       {colors.map(color => (
         <div key={color}>
           <div
+            className={css`
+              width: 3rem;
+              height: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 2rem;
+                height: 2rem;
+              }
+            `}
             style={{
-              width: '3rem',
-              height: '3rem',
               borderRadius: '50%',
               background: Color[color](),
               cursor:
