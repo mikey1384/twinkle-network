@@ -49,8 +49,8 @@ export default function ColorSelector({
               width: 3rem;
               height: 3rem;
               @media (max-width: ${mobileMaxWidth}) {
-                width: 2.5rem;
-                height: 2.5rem;
+                width: 2.3rem;
+                height: 2.3rem;
               }
             `}
             style={{
@@ -77,7 +77,16 @@ export default function ColorSelector({
             onMouseLeave={() => setHovered(undefined)}
           >
             {twinkleXP < (requirement[color] || -1) && (
-              <Icon style={{ color: '#fff', fontSize: '1rem' }} icon="lock" />
+              <Icon
+                className={css`
+                  font-size: 1rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 0.8rem;
+                  }
+                `}
+                style={{ color: '#fff' }}
+                icon="lock"
+              />
             )}
           </div>
           {twinkleXP < (requirement[color] || -1) && hovered === color && (
