@@ -49,8 +49,8 @@ export default function ColorSelector({
               width: 3rem;
               height: 3rem;
               @media (max-width: ${mobileMaxWidth}) {
-                width: 2.2rem;
-                height: 2.2rem;
+                width: 2.1rem;
+                height: 2.1rem;
               }
             `}
             style={{
@@ -81,7 +81,7 @@ export default function ColorSelector({
                 className={css`
                   font-size: 1rem;
                   @media (max-width: ${mobileMaxWidth}) {
-                    font-size: 0.7rem;
+                    font-size: 0.6rem;
                   }
                 `}
                 style={{ color: '#fff' }}
