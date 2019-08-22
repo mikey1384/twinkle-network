@@ -150,6 +150,7 @@ function Cover({
                     'orange',
                     'pink',
                     'rose',
+                    'red',
                     'purple',
                     'darkBlue',
                     'black',

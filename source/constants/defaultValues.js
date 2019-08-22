@@ -67,6 +67,10 @@ export const profileThemes = {
     color: Color.purple(),
     cover: Color.purple()
   },
+  red: {
+    color: Color.red(),
+    cover: Color.red()
+  },
   rose: {
     color: Color.rose(),
     cover: Color.rose()
