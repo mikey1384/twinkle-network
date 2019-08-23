@@ -75,13 +75,15 @@ export default function StatusInput({
             <ColorSelector
               colors={[
                 'purple',
-                'rose',
                 'pink',
+                'rose',
+                'red',
+                'orange',
                 'ivory',
                 'green',
                 'logoBlue',
-                'darkGray',
                 'darkBlue',
+                'darkGray',
                 'black',
                 'vantaBlack'
               ]}

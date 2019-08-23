@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
+import { css } from 'emotion';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { mobileMaxWidth } from '../constants/css';
 import Icon from 'components/Icon';
 import FullTextReveal from 'components/Texts/FullTextReveal';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 
 ColorSelector.propTypes = {
   colors: PropTypes.array.isRequired,
@@ -24,6 +26,7 @@ export default function ColorSelector({
   const requirement = {
     black: 35000,
     rose: 70000,
+    red: 1500000,
     purple: 100000,
     darkBlue: 500000,
     vantaBlack: 1000000
@@ -42,9 +45,15 @@ export default function ColorSelector({
       {colors.map(color => (
         <div key={color}>
           <div
+            className={css`
+              width: 3rem;
+              height: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 2.1rem;
+                height: 2.1rem;
+              }
+            `}
             style={{
-              width: '3rem',
-              height: '3rem',
               borderRadius: '50%',
               background: Color[color](),
               cursor:
@@ -68,7 +77,16 @@ export default function ColorSelector({
             onMouseLeave={() => setHovered(undefined)}
           >
             {twinkleXP < (requirement[color] || -1) && (
-              <Icon style={{ color: '#fff', fontSize: '1rem' }} icon="lock" />
+              <Icon
+                className={css`
+                  font-size: 1rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 0.6rem;
+                  }
+                `}
+                style={{ color: '#fff' }}
+                icon="lock"
+              />
             )}
           </div>
           {twinkleXP < (requirement[color] || -1) && hovered === color && (

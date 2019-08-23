@@ -27,7 +27,11 @@ export default function StatusMsg({
         overflow-wrap: break-word;
         word-break: break-word;
         > a {
-          color: ${statusColor === 'ivory' ? Color.blue() : Color.gold()};
+          color: ${statusColor === 'ivory'
+            ? Color.blue()
+            : statusColor === 'orange' || statusColor === 'red'
+            ? 'yellow'
+            : Color.gold()};
         }
       `}
       dangerouslySetInnerHTML={{
