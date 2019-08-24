@@ -144,7 +144,7 @@ function ChessModal({
             onClick={submitChessMove}
             disabled={!newChessState}
           >
-            Confirm Move
+            Done
           </Button>
         )}
       </footer>
