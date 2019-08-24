@@ -245,7 +245,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     return false;
   }
   let kingCanMove = false;
-  let potentialKingSlayers = [];
   for (let dest of possibleNextDest) {
     const newSquares = returnBoardAfterMove({
       src: kingIndex,
@@ -253,7 +252,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
       myColor,
       squares
     });
-    potentialKingSlayers = kingWillBeCapturedBy({
+    const potentialKingSlayers = kingWillBeCapturedBy({
       kingIndex: dest,
       squares: newSquares,
       myColor
@@ -282,7 +281,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             myColor,
             squares
           });
-          potentialKingSlayers = kingWillBeCapturedBy({
+          const potentialKingSlayers = kingWillBeCapturedBy({
             kingIndex,
             squares: newSquares,
             myColor
