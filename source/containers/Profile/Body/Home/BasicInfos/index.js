@@ -8,12 +8,14 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import {
+  loadChat,
+  loadDMChannel,
   uploadProfileInfo,
   sendVerificationEmail
 } from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { setProfileInfo } from 'redux/actions/UserActions';
 import { withRouter } from 'react-router';
 
@@ -23,6 +25,8 @@ BasicInfos.propTypes = {
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
   history: PropTypes.object,
+  initChat: PropTypes.func,
+  loaded: PropTypes.bool,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
@@ -45,6 +49,8 @@ function BasicInfos({
   email,
   emailVerified,
   history,
+  initChat,
+  loaded,
   online,
   joinDate,
   lastActive,
@@ -275,9 +281,18 @@ function BasicInfos({
   );
 
   async function handleTalkButtonClick() {
-    await openDirectMessageChannel({
+    if (!loaded) {
+      const initialData = await loadChat();
+      initChat(initialData);
+    }
+    const data = await loadDMChannel({
+      recepient: { id: userId, username },
+      dispatch
+    });
+    openDirectMessageChannel({
       user: { id: myId },
-      recepient: { id: userId, username }
+      recepient: { id: userId, username },
+      channelData: data
     });
     history.push('/talk');
   }
@@ -332,9 +347,12 @@ function BasicInfos({
 }
 
 export default connect(
-  null,
+  state => ({
+    loaded: state.ChatReducer.loaded
+  }),
   dispatch => ({
     dispatch,
+    initChat: params => dispatch(initChat(params)),
     openDirectMessageChannel: params =>
       dispatch(openDirectMessageChannel(params)),
     setProfileInfo: data => dispatch(setProfileInfo(data))

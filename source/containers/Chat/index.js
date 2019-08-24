@@ -11,6 +11,7 @@ import Loading from 'components/Loading';
 import {
   loadChat,
   loadChatChannel,
+  loadDMChannel,
   startNewDMChannel
 } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
@@ -470,9 +471,11 @@ function Chat({
   async function onCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
       const recepient = params.selectedUsers[0];
-      await openDirectMessageChannel({
-        user: { username, id: userId },
-        recepient
+      const data = await loadDMChannel({ recepient, dispatch });
+      openDirectMessageChannel({
+        user: { id: userId, username },
+        recepient,
+        channelData: data
       });
       return setCreateNewChannelModalShown(false);
     }
