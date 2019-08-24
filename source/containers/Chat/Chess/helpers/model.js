@@ -276,7 +276,20 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             myColor
           })
         ) {
-          return false;
+          const newSquares = returnBoardAfterMove({
+            src: piece.index,
+            dest: checkers[0],
+            myColor,
+            squares
+          });
+          potentialKingSlayers = kingWillBeCapturedBy({
+            kingIndex,
+            squares: newSquares,
+            myColor
+          });
+          if (potentialKingSlayers.length === 0) {
+            return false;
+          }
         }
       }
     }
