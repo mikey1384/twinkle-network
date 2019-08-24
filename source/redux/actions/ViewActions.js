@@ -8,3 +8,9 @@ export const changePageVisibility = visible => dispatch => {
     visible
   });
 };
+
+export const recordScrollPosition = ({ section, position }) => ({
+  type: VIEW.RECORD_SCROLL_POSITION,
+  section,
+  position
+});

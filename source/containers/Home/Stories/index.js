@@ -63,7 +63,6 @@ Stories.propTypes = {
   fetchMoreFeeds: PropTypes.func.isRequired,
   fetchNewFeeds: PropTypes.func.isRequired,
   hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-  history: PropTypes.object.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   loadMoreFeedComments: PropTypes.func.isRequired,
@@ -123,7 +122,6 @@ function Stories({
   fetchMoreFeeds,
   fetchNewFeeds,
   hideWatched,
-  history,
   loaded,
   loadMoreFeedComments,
   loadRepliesOfReply,
@@ -148,6 +146,7 @@ function Stories({
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [feedsOutdated, setFeedsOutdated] = useState(false);
+  const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
 
@@ -160,6 +159,7 @@ function Stories({
   });
 
   useEffect(() => {
+    mounted.current = true;
     socket.on('connect', onConnect);
     async function onConnect() {
       const firstFeed = storyFeeds[0];
@@ -177,17 +177,20 @@ function Stories({
             destinationVar: 'shownFeeds'
           })
         });
-        setFeedsOutdated(outdated.length > 0);
+        if (mounted.current) {
+          setFeedsOutdated(outdated.length > 0);
+        }
       }
     }
     return function cleanUp() {
       socket.removeListener('connect', onConnect);
+      mounted.current = false;
     };
   });
 
   useEffect(() => {
     setCurrentSection('storyFeeds');
-    if (history.action === 'PUSH' || !loaded) {
+    if (storyFeeds.length === 0) {
       init();
     }
     async function init() {

@@ -16,17 +16,20 @@ import Icon from 'components/Icon';
 import Comments from 'components/Comments';
 import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { loadComments } from 'helpers/requestHelpers';
+import { loadChat, loadDMChannel, loadComments } from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 
 ProfilePanel.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   expandable: PropTypes.bool,
   history: PropTypes.object,
+  loaded: PropTypes.bool,
+  initChat: PropTypes.func.isRequired,
   isCreator: PropTypes.bool,
   updateStatusMsg: PropTypes.func,
   openDirectMessageChannel: PropTypes.func,
@@ -39,7 +42,10 @@ ProfilePanel.propTypes = {
 };
 
 function ProfilePanel({
+  dispatch,
   history,
+  initChat,
+  loaded,
   profile,
   profile: { id, numMessages },
   userId,
@@ -275,13 +281,7 @@ function ProfilePanel({
                 <Button
                   style={{ marginLeft: '0.5rem' }}
                   color="green"
-                  onClick={() =>
-                    openDirectMessageChannel({
-                      user: { id: userId, username },
-                      recepient: { id: profile.id, username: profile.username },
-                      chatCurrentlyOn: false
-                    })
-                  }
+                  onClick={handleTalkClick}
                 >
                   <Icon icon="comments" />
                   <span style={{ marginLeft: '0.7rem' }}>Talk</span>
@@ -378,6 +378,20 @@ function ProfilePanel({
     };
     reader.readAsDataURL(file);
     event.target.value = null;
+  }
+
+  async function handleTalkClick() {
+    if (!loaded) {
+      const initialData = await loadChat();
+      initChat(initialData);
+    }
+    const data = await loadDMChannel({ recepient: profile, dispatch });
+    openDirectMessageChannel({
+      user: { id: userId, username },
+      recepient: profile,
+      channelData: data
+    });
+    history.push('/talk');
   }
 
   function onAttachStar(star) {
@@ -580,15 +594,19 @@ function ProfilePanel({
 
 export default connect(
   state => ({
+    loaded: state.ChatReducer.loaded,
     isCreator: state.UserReducer.isCreator,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),
-  {
-    removeStatusMsg,
-    updateStatusMsg,
-    uploadProfilePic,
-    uploadBio,
-    openDirectMessageChannel
-  }
+  dispatch => ({
+    dispatch,
+    initChat: params => dispatch(initChat(params)),
+    removeStatusMsg: params => dispatch(removeStatusMsg(params)),
+    updateStatusMsg: params => dispatch(updateStatusMsg(params)),
+    uploadProfilePic: params => dispatch(uploadProfilePic(params)),
+    uploadBio: params => dispatch(uploadBio(params)),
+    openDirectMessageChannel: params =>
+      dispatch(openDirectMessageChannel(params))
+  })
 )(withRouter(ProfilePanel));

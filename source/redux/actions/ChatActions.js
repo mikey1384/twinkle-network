@@ -272,40 +272,12 @@ export const notifyThatMemberLeftChannel = data => ({
   data
 });
 
-export const openDirectMessageChannel = ({
+export const openDirectMessageChannel = ({ user, recepient, channelData }) => ({
+  type: CHAT.OPEN_DM,
   user,
   recepient,
-  chatCurrentlyOn
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/channel/check?partnerId=${recepient.id}`,
-      auth()
-    );
-    const { currentChannel, channels } = await fetchChannels(data);
-    dispatch({
-      type: CHAT.OPEN_DM,
-      user,
-      recepient,
-      channels,
-      ...currentChannel
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-
-  async function fetchChannels(currentChannel) {
-    if (!chatCurrentlyOn) {
-      const { data } = await request.get(
-        `${API_URL}/channels?currentChannelId=${currentChannel.channelId}`,
-        auth()
-      );
-      return Promise.resolve({ currentChannel, channels: data });
-    }
-    return Promise.resolve({ currentChannel, channels: [] });
-  }
-};
+  ...channelData
+});
 
 export const postFileUploadStatus = ({
   channelId,

@@ -472,8 +472,7 @@ function Chat({
       const recepient = params.selectedUsers[0];
       await openDirectMessageChannel({
         user: { username, id: userId },
-        recepient,
-        chatCurrentlyOn: true
+        recepient
       });
       return setCreateNewChannelModalShown(false);
     }

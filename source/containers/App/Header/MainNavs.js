@@ -5,8 +5,9 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 
 MainNavs.propTypes = {
-  category: PropTypes.string,
+  exploreCategory: PropTypes.string,
   chatLoading: PropTypes.bool,
+  homeLink: PropTypes.string,
   isUsername: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
@@ -17,8 +18,9 @@ MainNavs.propTypes = {
 };
 
 export default function MainNavs({
-  category,
+  exploreCategory,
   chatLoading,
+  homeLink,
   isUsername,
   numChatUnreads,
   numNewNotis,
@@ -45,9 +47,6 @@ export default function MainNavs({
       />
       <HeaderNav
         to="/"
-        onClick={() => {
-          window.scrollTo(0, 0);
-        }}
         isHome
         className="mobile"
         imgLabel="home"
@@ -57,7 +56,7 @@ export default function MainNavs({
         Home
       </HeaderNav>
       <HeaderNav
-        to="/"
+        to={homeLink}
         isHome
         pathname={pathname}
         className="desktop"
@@ -69,7 +68,7 @@ export default function MainNavs({
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav
-          to={`/${category}`}
+          to={`/${exploreCategory}`}
           pathname={pathname}
           className="desktop"
           imgLabel="search"

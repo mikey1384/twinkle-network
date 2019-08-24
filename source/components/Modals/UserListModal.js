@@ -4,14 +4,20 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { loadChat, loadDMChannel } from 'helpers/requestHelpers';
+import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
+import { withRouter } from 'react-router';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  initChat: PropTypes.func.isRequired,
+  loaded: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
@@ -25,6 +31,10 @@ function UserListModal({
   description = '',
   descriptionColor = Color.green(),
   descriptionShown,
+  dispatch,
+  history,
+  initChat,
+  loaded,
   onHide,
   openDirectMessageChannel,
   title,
@@ -98,18 +108,31 @@ function UserListModal({
   async function onTalkClick(user) {
     if (user.id !== userId) {
       onHide();
+      if (!loaded) {
+        const initialData = await loadChat();
+        initChat(initialData);
+      }
+      const data = await loadDMChannel({ recepient: user, dispatch });
       openDirectMessageChannel({
         user: { id: userId, username },
-        recepient: { id: user.id, username: user.username }
+        recepient: user,
+        channelData: data
       });
+      history.push('/talk');
     }
   }
 }
 
 export default connect(
   state => ({
+    loaded: state.ChatReducer.loaded,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username
   }),
-  { openDirectMessageChannel }
-)(UserListModal);
+  dispatch => ({
+    dispatch,
+    initChat: params => dispatch(initChat(params)),
+    openDirectMessageChannel: params =>
+      dispatch(openDirectMessageChannel(params))
+  })
+)(withRouter(UserListModal));

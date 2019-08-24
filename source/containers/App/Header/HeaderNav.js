@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { getSectionFromPathname } from 'helpers';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -41,7 +42,7 @@ function HeaderNav({
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
-      pathname?.split('/')[1]
+      getSectionFromPathname(pathname)?.section
     );
   return (
     <Route

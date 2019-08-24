@@ -146,6 +146,10 @@ function Comment({
         }
       }
     }
+
+    return function cleanUp() {
+      mounted.current = false;
+    };
   }, [pageVisible, userId]);
 
   return (

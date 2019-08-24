@@ -7,6 +7,7 @@ import { setResults } from 'redux/actions/SearchActions';
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
+import { getSectionFromPathname } from 'helpers';
 import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
@@ -35,7 +36,7 @@ function Search({
   style,
   updateDefaultSearchFilter
 }) {
-  const category = pathname?.split('/')[1];
+  const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
   const SearchPageRef = useRef(null);
   const SearchBoxRef = useRef(null);

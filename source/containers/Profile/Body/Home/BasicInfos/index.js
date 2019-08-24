@@ -15,12 +15,14 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { setProfileInfo } from 'redux/actions/UserActions';
+import { withRouter } from 'react-router';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
+  history: PropTypes.object,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
@@ -42,6 +44,7 @@ function BasicInfos({
   dispatch,
   email,
   emailVerified,
+  history,
   online,
   joinDate,
   lastActive,
@@ -254,17 +257,11 @@ function BasicInfos({
                 }}
                 skeuomorphic
                 color={selectedTheme || profileTheme || 'logoBlue'}
-                onClick={() =>
-                  openDirectMessageChannel({
-                    user: { userId: myId },
-                    recepient: { id: userId, username },
-                    chatCurrentlyOn: false
-                  })
-                }
+                onClick={handleTalkButtonClick}
               >
                 <Icon icon="comments" />
                 <span style={{ marginLeft: '0.7rem' }}>
-                  {online ? 'Chat' : 'Message'}
+                  {online ? 'Talk' : 'Message'}
                   <span className="desktop">
                     {online ? ' with' : ''} {username}
                   </span>
@@ -276,6 +273,14 @@ function BasicInfos({
       ) : null}
     </div>
   );
+
+  async function handleTalkButtonClick() {
+    await openDirectMessageChannel({
+      user: { id: myId },
+      recepient: { id: userId, username }
+    });
+    history.push('/talk');
+  }
 
   function goToEmail() {
     const emailProvider = 'http://www.' + email.split('@')[1];
@@ -334,4 +339,4 @@ export default connect(
       dispatch(openDirectMessageChannel(params)),
     setProfileInfo: data => dispatch(setProfileInfo(data))
   })
-)(BasicInfos);
+)(withRouter(BasicInfos));

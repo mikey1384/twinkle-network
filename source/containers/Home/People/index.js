@@ -78,7 +78,7 @@ function People({
   useEffect(() => {
     init();
     async function init() {
-      if (history.action === 'PUSH' || profiles.length === 0) {
+      if (profiles.length === 0) {
         await fetchUsers();
       }
       if (mounted.current) {

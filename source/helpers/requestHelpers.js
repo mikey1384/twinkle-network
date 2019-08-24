@@ -208,6 +208,18 @@ export const loadChatChannel = async ({ channelId, dispatch }) => {
   }
 };
 
+export const loadDMChannel = async ({ dispatch, recepient }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/chat/channel/check?partnerId=${recepient.id}`,
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const loadContent = async ({ contentId, type }) => {
   try {
     const { data } = await request.get(

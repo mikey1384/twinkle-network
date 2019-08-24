@@ -7,6 +7,7 @@ import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
 import Head from './Head';
+import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
@@ -16,8 +17,10 @@ import {
   sendFirstDirectMessage,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { uploadFileOnChat } from 'helpers/requestHelpers';
-import { changePageVisibility } from 'redux/actions/ViewActions';
+import {
+  changePageVisibility,
+  recordScrollPosition
+} from 'redux/actions/ViewActions';
 import {
   initSession,
   openSigninModal,
@@ -28,7 +31,8 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import Profile from 'containers/Profile';
+import { getSectionFromPathname } from 'helpers';
+import { uploadFileOnChat } from 'helpers/requestHelpers';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -50,6 +54,8 @@ App.propTypes = {
   location: PropTypes.object,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
+  recordScrollPosition: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
@@ -66,7 +72,9 @@ function App({
   history,
   postFileUploadStatus,
   postUploadComplete,
+  recordScrollPosition,
   signinModalShown,
+  scrollPositions,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
   updateDetail,
@@ -76,6 +84,17 @@ function App({
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
+
+  useEffect(() => {
+    const { section, isSubsection } = getSectionFromPathname(location.pathname);
+    if (!isSubsection) {
+      setTimeout(() => {
+        document.getElementById('App').scrollTop = scrollPositions[section];
+        BodyRef.current.scrollTop = scrollPositions[section];
+      }, 0);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     initSession(location.pathname);
@@ -84,6 +103,29 @@ function App({
       window.ga('send', 'pageview', location.pathname);
     });
   }, []);
+
+  useEffect(() => {
+    addEvent(window, 'scroll', onScroll);
+    addEvent(document.getElementById('App'), 'scroll', onScroll);
+
+    function onScroll() {
+      const { section, isSubsection } = getSectionFromPathname(
+        location.pathname
+      );
+      if (!isSubsection) {
+        const position = Math.max(
+          document.getElementById('App').scrollTop,
+          BodyRef.current.scrollTop
+        );
+        recordScrollPosition({ section, position });
+      }
+    }
+
+    return function cleanUp() {
+      removeEvent(window, 'scroll', onScroll);
+      removeEvent(document.getElementById('App'), 'scroll', onScroll);
+    };
+  });
 
   useEffect(() => {
     if (typeof document.hidden !== 'undefined') {
@@ -286,6 +328,7 @@ function App({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
+    scrollPositions: state.ViewReducer.scrollPositions,
     signinModalShown: state.UserReducer.signinModalShown,
     updateDetail: state.NotiReducer.updateDetail,
     username: state.UserReducer.username
@@ -301,6 +344,7 @@ export default connect(
     sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
     updateClientToApiServerProgress: params =>
       dispatch(updateClientToApiServerProgress(params)),
-    changePageVisibility: visible => dispatch(changePageVisibility(visible))
+    changePageVisibility: visible => dispatch(changePageVisibility(visible)),
+    recordScrollPosition: params => dispatch(recordScrollPosition(params))
   })
 )(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -27,6 +27,7 @@ import { desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
 import { container } from './Styles';
+import { getSectionFromPathname } from 'helpers';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
@@ -90,9 +91,28 @@ function Header({
   versionMatch
 }) {
   const prevUserIdRef = useRef(userId);
-  const category = ['videos', 'subjects', 'links'].includes(searchFilter)
-    ? searchFilter
-    : 'subjects';
+  const [exploreCategory, setExploreCategory] = useState('');
+  const [homeLink, setHomeLink] = useState('/');
+  useEffect(() => {
+    const { section } = getSectionFromPathname(pathname);
+    if (!exploreCategory) {
+      setExploreCategory(
+        ['videos', 'subjects', 'links'].includes(searchFilter)
+          ? searchFilter
+          : 'subjects'
+      );
+    } else {
+      if (['links', 'videos', 'subjects'].includes(section)) {
+        setExploreCategory(section);
+      }
+    }
+    if (section === 'home') {
+      setHomeLink('/');
+    }
+    if (section === 'users') {
+      setHomeLink('/users');
+    }
+  }, [pathname]);
   useEffect(() => {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -178,7 +198,7 @@ function Header({
 
   const isUsername =
     !['links', 'videos', 'talk', 'comments', 'subjects'].includes(
-      pathname.split('/')[1]
+      getSectionFromPathname(pathname)?.section
     ) && pathname.length > 1;
 
   return (
@@ -202,7 +222,8 @@ function Header({
       >
         <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
         <MainNavs
-          category={category}
+          exploreCategory={exploreCategory}
+          homeLink={homeLink}
           chatLoading={chatLoading}
           isUsername={isUsername}
           numChatUnreads={numChatUnreads}

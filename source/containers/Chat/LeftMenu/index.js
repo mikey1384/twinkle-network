@@ -85,7 +85,7 @@ function LeftMenu({
   }, [channels]);
 
   useEffect(() => {
-    const members = currentChannel?.members;
+    const members = currentChannel?.members || [];
     let otherMember;
     if (currentChannel.twoPeople) {
       otherMember = members.filter(member => Number(member.id) !== userId)[0];
@@ -236,7 +236,7 @@ function LeftMenu({
   }
 
   function renderNumberOfMembers() {
-    const numberOfMembers = currentChannel.members.length;
+    const numberOfMembers = currentChannel?.members?.length;
     return `${currentChannelOnlineMembers.length || 1}${
       numberOfMembers <= 1 ? '' : '/' + numberOfMembers
     }`;

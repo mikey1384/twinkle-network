@@ -396,10 +396,9 @@ export default function ChatReducer(state = defaultState, action) {
         action.messages.pop();
         loadMoreMessages = true;
       }
-      let channels =
-        action.channels.length > 0 ? action.channels : state.channels;
       return {
         ...state,
+        loaded: true,
         subject: {},
         channels: [
           {
@@ -410,7 +409,9 @@ export default function ChatReducer(state = defaultState, action) {
             members: [action.user, action.recepient],
             numUnreads: 0
           }
-        ].concat(channels.filter(channel => channel.id !== action.channelId)),
+        ].concat(
+          state.channels.filter(channel => channel.id !== action.channelId)
+        ),
         selectedChannelId: action.channelId,
         currentChannel: {
           id: action.channelId,

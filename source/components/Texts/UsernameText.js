@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import DropdownList from 'components/DropdownList';
+import { connect } from 'react-redux';
+import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { loadChat, loadDMChannel } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
+import { withRouter } from 'react-router';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  initChat: PropTypes.func.isRequired,
+  loaded: PropTypes.bool,
   style: PropTypes.object,
   openDirectMessageChannel: PropTypes.func.isRequired,
   user: PropTypes.object,
@@ -18,6 +24,10 @@ UsernameText.propTypes = {
 function UsernameText({
   className,
   color,
+  dispatch,
+  history,
+  initChat,
+  loaded,
   openDirectMessageChannel,
   style = {},
   user = {},
@@ -70,13 +80,20 @@ function UsernameText({
     if (user.username) setMenuShown(true);
   }
 
-  function onLinkClick() {
+  async function onLinkClick() {
     setMenuShown(false);
     if (user.id !== userId) {
+      if (!loaded) {
+        const initialData = await loadChat();
+        initChat(initialData);
+      }
+      const data = await loadDMChannel({ recepient: user, dispatch });
       openDirectMessageChannel({
         user: { id: userId, username },
-        recepient: { id: user.id, username: user.username }
+        recepient: user,
+        channelData: data
       });
+      history.push('/talk');
     }
   }
 
@@ -89,8 +106,14 @@ function UsernameText({
 
 export default connect(
   state => ({
+    loaded: state.ChatReducer.loaded,
     username: state.UserReducer.username,
     userId: state.UserReducer.userId
   }),
-  { openDirectMessageChannel }
-)(UsernameText);
+  dispatch => ({
+    dispatch,
+    initChat: params => dispatch(initChat(params)),
+    openDirectMessageChannel: params =>
+      dispatch(openDirectMessageChannel(params))
+  })
+)(withRouter(UsernameText));

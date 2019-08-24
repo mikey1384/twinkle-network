@@ -139,17 +139,19 @@ function MessagesContainer({
 
   useEffect(() => {
     setFillerHeight(
-      MessagesContainerRef.current.offsetHeight >
-        MessagesRef.current.offsetHeight
-        ? MessagesContainerRef.current.offsetHeight -
-            MessagesRef.current.offsetHeight
+      MessagesContainerRef.current?.offsetHeight >
+        MessagesRef.current?.offsetHeight
+        ? MessagesContainerRef.current?.offsetHeight -
+            MessagesRef.current?.offsetHeight
         : 0
     );
-    MessagesContainerRef.current.scrollTop = ContentRef.current.offsetHeight;
+    MessagesContainerRef.current.scrollTop = ContentRef.current?.offsetHeight;
     setTimeout(
       () =>
-        (MessagesContainerRef.current.scrollTop =
-          ContentRef.current.offsetHeight),
+        MessagesContainerRef.current
+          ? (MessagesContainerRef.current.scrollTop =
+              ContentRef.current?.offsetHeight || 0)
+          : {},
       0
     );
   }, [currentChannel.id]);
@@ -440,10 +442,10 @@ function MessagesContainer({
     const messageSenderId = messages[messages.length - 1].userId;
     if (messageSenderId === userId || scrollAtBottom) {
       setFillerHeight(
-        MessagesContainerRef.current.offsetHeight >
-          MessagesRef.current.offsetHeight
-          ? MessagesContainerRef.current.offsetHeight -
-              MessagesRef.current.offsetHeight
+        MessagesContainerRef.current?.offsetHeight >
+          MessagesRef.current?.offsetHeight
+          ? MessagesContainerRef.current?.offsetHeight -
+              MessagesRef.current?.offsetHeight
           : 0
       );
       handleSetScrollToBottom();
