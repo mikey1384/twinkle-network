@@ -418,6 +418,7 @@ export function returnBoardAfterMove({
   src,
   dest,
   enPassantTarget,
+  kingEndDest,
   isCastling
 }) {
   const srcColumn = src % 8;
@@ -440,7 +441,7 @@ export function returnBoardAfterMove({
       }
       return {
         ...squares[src],
-        state: isCastling ? '' : 'arrived',
+        state: 'arrived',
         type: transform ? 'queen' : squares[src].type
       };
     }
@@ -448,7 +449,7 @@ export function returnBoardAfterMove({
     if (enPassanting && index === enPassantTarget) return {};
     return {
       ...square,
-      state: ''
+      state: isCastling && index === kingEndDest ? 'arrived' : ''
     };
   });
   return newSquares;

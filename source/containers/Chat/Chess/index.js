@@ -528,6 +528,7 @@ export default function Chess({
       src: rookPos,
       dest: rookDest,
       myColor,
+      kingEndDest,
       isCastling: true
     });
     const { moved } = processResult({
