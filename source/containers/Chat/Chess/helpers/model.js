@@ -245,7 +245,6 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
     return false;
   }
   let kingCanMove = false;
-  let potentialKingSlayers = [];
   for (let dest of possibleNextDest) {
     const newSquares = returnBoardAfterMove({
       src: kingIndex,
@@ -253,7 +252,7 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
       myColor,
       squares
     });
-    potentialKingSlayers = kingWillBeCapturedBy({
+    const potentialKingSlayers = kingWillBeCapturedBy({
       kingIndex: dest,
       squares: newSquares,
       myColor
@@ -276,7 +275,20 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
             myColor
           })
         ) {
-          return false;
+          const newSquares = returnBoardAfterMove({
+            src: piece.index,
+            dest: checkers[0],
+            myColor,
+            squares
+          });
+          const potentialKingSlayers = kingWillBeCapturedBy({
+            kingIndex,
+            squares: newSquares,
+            myColor
+          });
+          if (potentialKingSlayers.length === 0) {
+            return false;
+          }
         }
       }
     }
@@ -406,6 +418,7 @@ export function returnBoardAfterMove({
   src,
   dest,
   enPassantTarget,
+  kingEndDest,
   isCastling
 }) {
   const srcColumn = src % 8;
@@ -428,7 +441,7 @@ export function returnBoardAfterMove({
       }
       return {
         ...squares[src],
-        state: isCastling ? '' : 'arrived',
+        state: 'arrived',
         type: transform ? 'queen' : squares[src].type
       };
     }
@@ -436,7 +449,7 @@ export function returnBoardAfterMove({
     if (enPassanting && index === enPassantTarget) return {};
     return {
       ...square,
-      state: ''
+      state: isCastling && index === kingEndDest ? 'arrived' : ''
     };
   });
   return newSquares;
