@@ -1,5 +1,5 @@
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import Icon from 'components/Icon';
 import { connect } from 'react-redux';
 import { Link, Route } from 'react-router-dom';
@@ -38,6 +38,7 @@ function HeaderNav({
   profileTheme,
   style
 }) {
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const themeColor = profileTheme || 'logoBlue';
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
@@ -58,6 +59,12 @@ function HeaderNav({
       exact={isHome && !isUsername}
       children={({ match }) => (
         <div
+          onClick={() => {
+            if (match) {
+              document.getElementById('App').scrollTop = 0;
+              BodyRef.current.scrollTop = 0;
+            }
+          }}
           className={`${className} ${css`
             display: flex;
             align-items: center;

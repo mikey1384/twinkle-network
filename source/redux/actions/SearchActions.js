@@ -11,9 +11,3 @@ export const setResults = ({ filter, results, loadMoreButton }) => ({
   results,
   loadMoreButton
 });
-
-export const showMoreResults = ({ results, loadMoreButton }) => ({
-  type: SEARCH.LOAD_MORE_RESULTS,
-  results,
-  loadMoreButton
-});

@@ -15,12 +15,6 @@ export default function SearchReducer(state = defaultState, action) {
         ...state,
         searchText: action.text
       };
-    case SEARCH.LOAD_MORE_RESULTS:
-      return {
-        ...state,
-        results: state.results.concat(action.results),
-        loadMoreButton: action.loadMoreButton
-      };
     case SEARCH.SET_RESULTS:
       if (action.filter && action.filter !== state.selectedFilter) return state;
       return {

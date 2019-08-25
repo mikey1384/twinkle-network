@@ -4,7 +4,7 @@ import Loading from 'components/Loading';
 import ContentListItem from 'components/ContentListItem';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Link from 'components/Link';
-import { setResults, showMoreResults } from 'redux/actions/SearchActions';
+import { setResults } from 'redux/actions/SearchActions';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
@@ -12,11 +12,10 @@ import { Color } from 'constants/css';
 
 Results.propTypes = {
   filter: PropTypes.string.isRequired,
-  searchText: PropTypes.string.isRequired,
-  showMoreResults: PropTypes.func.isRequired
+  searchText: PropTypes.string.isRequired
 };
 
-function Results({ filter, searchText, showMoreResults }) {
+function Results({ filter, searchText }) {
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
@@ -129,12 +128,14 @@ function Results({ filter, searchText, showMoreResults }) {
 
   async function loadMoreSearchResults() {
     setLoadingMore(true);
-    const data = await searchContent({
-      filter,
+    const { results: moreResults, loadMoreButton } = await searchContent({
+      filter:
+        filter === 'links' ? 'url' : filter.substring(0, filter.length - 1),
       searchText,
       shownResults: results
     });
-    if (data) showMoreResults(data);
+    setResults(results => results.concat(moreResults));
+    setLoadMoreButton(loadMoreButton);
     setLoadingMore(false);
   }
 }
@@ -144,5 +145,5 @@ export default connect(
     loadMoreButton: state.SearchReducer.loadMoreButton,
     results: state.SearchReducer.results
   }),
-  { setResults, showMoreResults }
+  { setResults }
 )(Results);

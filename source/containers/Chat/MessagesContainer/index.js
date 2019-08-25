@@ -467,10 +467,10 @@ function MessagesContainer({
     setTimeout(
       () =>
         (MessagesContainerRef.current.scrollTop =
-          ContentRef.current.offsetHeight),
+          ContentRef.current?.offsetHeight || 0),
       0
     );
-    setScrollAtBottom(true);
+    if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);
   }
 
   function handleUpload(event) {
