@@ -466,8 +466,10 @@ function MessagesContainer({
   function handleSetScrollToBottom() {
     setTimeout(
       () =>
-        (MessagesContainerRef.current.scrollTop =
-          ContentRef.current?.offsetHeight || 0),
+        MessagesContainerRef.current
+          ? (MessagesContainerRef.current.scrollTop =
+              ContentRef.current?.offsetHeight || 0)
+          : {},
       0
     );
     if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);

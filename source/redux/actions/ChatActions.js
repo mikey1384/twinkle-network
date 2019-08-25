@@ -323,11 +323,13 @@ export const receiveMessage = ({ message, pageVisible }) => async dispatch => {
 
 export const receiveMessageOnDifferentChannel = ({
   channel,
-  senderIsNotTheUser
+  senderIsNotTheUser,
+  pageVisible
 }) => ({
   type: CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL,
   channel,
-  senderIsNotTheUser
+  senderIsNotTheUser,
+  pageVisible
 });
 
 export const receiveFirstMsg = ({ data, duplicate, pageVisible }) => ({

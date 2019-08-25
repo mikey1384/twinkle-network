@@ -171,7 +171,8 @@ function Chat({
       if (!messageIsForCurrentChannel) {
         receiveMessageOnDifferentChannel({
           channel,
-          senderIsNotTheUser
+          senderIsNotTheUser,
+          pageVisible
         });
       }
     }
@@ -500,6 +501,7 @@ function Chat({
     if (!messageIsForCurrentChannel) {
       receiveMessageOnDifferentChannel({
         senderIsNotTheUser,
+        pageVisible,
         channel: {
           id: 2,
           lastUpdate: message.timeStamp,

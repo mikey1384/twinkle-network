@@ -6,7 +6,6 @@ import Button from 'components/Button';
 import Loading from 'components/Loading';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
-import Head from './Head';
 import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -87,6 +86,15 @@ function App({
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
 
   useEffect(() => {
+    initSession(location.pathname);
+    window.ga('send', 'pageview', location.pathname);
+    history.listen(location => {
+      window.ga('send', 'pageview', location.pathname);
+    });
+    changePageVisibility(!document[hiddenRef.current]);
+  }, []);
+
+  useEffect(() => {
     const { section, isSubsection } = getSectionFromPathname(location.pathname);
     if (!isSubsection) {
       setTimeout(() => {
@@ -95,14 +103,6 @@ function App({
       }, 0);
     }
   }, [location.pathname]);
-
-  useEffect(() => {
-    initSession(location.pathname);
-    window.ga('send', 'pageview', location.pathname);
-    history.listen(location => {
-      window.ga('send', 'pageview', location.pathname);
-    });
-  }, []);
 
   useEffect(() => {
     addEvent(window, 'scroll', onScroll);
@@ -161,7 +161,6 @@ function App({
         }
       `}
     >
-      <Head />
       {mobileMenuShown && (
         <MobileMenu
           location={location}

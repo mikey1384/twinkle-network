@@ -557,7 +557,12 @@ export default function ChatReducer(state = defaultState, action) {
       }
       return {
         ...state,
-        numUnreads: state.numUnreads + 1,
+        numUnreads: action.pageVisible
+          ? state.numUnreads
+          : state.numUnreads + 1,
+        msgsWhileInvisible: action.pageVisible
+          ? 0
+          : state.msgsWhileInvisible + 1,
         channels: [action.channel].concat(
           state.channels.filter(channel => channel.id !== action.channel.id)
         )

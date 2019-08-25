@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { logout } from 'redux/actions/UserActions';
@@ -154,7 +155,12 @@ function Header({
       changeSocketStatus(false);
     }
     function onReceiveMessage(data) {
-      if (data.channelId !== GENERAL_CHAT_ID && data.userId !== userId) {
+      const { section } = getSectionFromPathname(pathname);
+      if (
+        data.channelId !== GENERAL_CHAT_ID &&
+        data.userId !== userId &&
+        section !== 'talk'
+      ) {
         increaseNumberOfUnreadMessages();
       }
     }
@@ -169,6 +175,11 @@ function Header({
       notifyChatSubjectChange(subject);
     }
   });
+
+  useEffect(() => {
+    const newNotiNum = numNewPosts + numNewNotis + numChatUnreads;
+    document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
+  }, [numNewNotis, numNewPosts, numChatUnreads]);
 
   useEffect(() => {
     socket.connect();
@@ -202,52 +213,54 @@ function Header({
     ) && pathname.length > 1;
 
   return (
-    <nav
-      className={`unselectable ${container} ${
-        mobileNavbarShown ? '' : 'desktop'
-      }`}
-      style={{
-        justifyContent: 'space-around',
-        position: 'fixed',
-        ...style
-      }}
-    >
-      <div
+    <ErrorBoundary>
+      <nav
+        className={`unselectable ${container} ${
+          mobileNavbarShown ? '' : 'desktop'
+        }`}
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%'
+          justifyContent: 'space-around',
+          position: 'fixed',
+          ...style
         }}
       >
-        <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
-        <MainNavs
-          exploreCategory={exploreCategory}
-          homeLink={homeLink}
-          chatLoading={chatLoading}
-          isUsername={isUsername}
-          numChatUnreads={numChatUnreads}
-          numNewNotis={numNewNotis}
-          numNewPosts={numNewPosts}
-          onChatButtonClick={onChatButtonClick}
-          onMobileMenuOpen={onMobileMenuOpen}
-          pathname={pathname}
-          totalRewardAmount={totalRewardAmount}
-        />
-        <AccountMenu
-          style={{ marginRight: '3rem' }}
-          className={`desktop ${css`
-            @media (min-width: ${desktopMinWidth}) {
-              margin-left: 0.5rem;
-            }
-          `}`}
-          history={history}
-          loggedIn={loggedIn}
-          logout={onLogout}
-          title={username}
-        />
-      </div>
-    </nav>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
+          <MainNavs
+            exploreCategory={exploreCategory}
+            homeLink={homeLink}
+            chatLoading={chatLoading}
+            isUsername={isUsername}
+            numChatUnreads={numChatUnreads}
+            numNewNotis={numNewNotis}
+            numNewPosts={numNewPosts}
+            onChatButtonClick={onChatButtonClick}
+            onMobileMenuOpen={onMobileMenuOpen}
+            pathname={pathname}
+            totalRewardAmount={totalRewardAmount}
+          />
+          <AccountMenu
+            style={{ marginRight: '3rem' }}
+            className={`desktop ${css`
+              @media (min-width: ${desktopMinWidth}) {
+                margin-left: 0.5rem;
+              }
+            `}`}
+            history={history}
+            loggedIn={loggedIn}
+            logout={onLogout}
+            title={username}
+          />
+        </div>
+      </nav>
+    </ErrorBoundary>
   );
 
   function onLogout() {
