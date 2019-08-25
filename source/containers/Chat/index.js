@@ -92,6 +92,7 @@ function Chat({
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
   const [partner, setPartner] = useState(null);
+  const [creatingNewDMChannel, setCreatingNewDMChannel] = useState(false);
   const memberObj = useRef({});
   const channelsObj = useRef({});
   const mounted = useRef(true);
@@ -268,7 +269,7 @@ function Chat({
           channelName={channelName}
           chessCountdownObj={chessCountdownObj}
           chessOpponent={partner}
-          loading={loading}
+          loading={loading || creatingNewDMChannel}
           currentChannel={currentChannel}
           currentChannelId={selectedChannelId}
           loadMoreButton={loadMoreButton}
@@ -315,6 +316,8 @@ function Chat({
   async function handleMessageSubmit(content) {
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
+      if (creatingNewDMChannel) return;
+      setCreatingNewDMChannel(true);
       const { members, message } = await startNewDMChannel({
         content,
         userId,
@@ -324,6 +327,7 @@ function Chat({
       sendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
+      setCreatingNewDMChannel(false);
       return;
     }
     const params = {
