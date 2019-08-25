@@ -122,7 +122,7 @@ function Explore({ history, location, mobileNavbarShown, searchText }) {
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
             right: 1rem;
-            top: 5rem;
+            top: 4.5rem;
             bottom: 0;
             position: absolute;
             @media (max-width: ${mobileMaxWidth}) {
