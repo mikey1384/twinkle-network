@@ -44,6 +44,14 @@ function HeaderNav({
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
       getSectionFromPathname(pathname)?.section
     );
+  const activeColor = Color[themeColor](
+    themeColor === 'black' || themeColor === 'vantaBlack' ? 0.8 : 0.6
+  );
+  const hoverColor = alert
+    ? alertColor
+    : Color[themeColor](
+        themeColor === 'black' || themeColor === 'vantaBlack' ? 0.6 : 0.4
+      );
   return (
     <Route
       path={to}
@@ -65,17 +73,17 @@ function HeaderNav({
               line-height: 1;
             }
             > a.active {
-              color: ${Color[themeColor](0.8)}!important;
+              color: ${activeColor}!important;
               > svg {
-                color: ${Color[themeColor](0.8)}!important;
+                color: ${activeColor}!important;
               }
             }
             &:hover {
               > a {
                 > svg {
-                  color: ${Color[themeColor](0.6)};
+                  color: ${hoverColor};
                 }
-                color: ${Color[themeColor](0.6)};
+                color: ${hoverColor};
               }
             }
             @media (max-width: ${mobileMaxWidth}) {

@@ -5,14 +5,14 @@ export const container = css`
   z-index: 30000;
   position: relative;
   font-family: sans-serif, Arial, Helvetica;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   background: #fff;
   display: flex;
   box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
   align-items: center;
   width: 100%;
   margin-bottom: 0px;
-  height: 5rem;
+  height: 4.5rem;
   > .chat-bar {
     font-size: 2rem;
     font-weight: bold;

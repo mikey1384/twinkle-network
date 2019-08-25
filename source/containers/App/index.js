@@ -154,7 +154,7 @@ function App({
   return (
     <div
       className={css`
-        height: CALC(100% - 5rem);
+        height: CALC(100% - 4.5rem);
         width: 100%;
         @media (max-width: ${mobileMaxWidth}) {
           height: auto;
@@ -222,7 +222,7 @@ function App({
       <div
         id="App"
         className={css`
-          margin-top: 5rem;
+          margin-top: 4.5rem;
           height: 100%;
           @media (max-width: ${mobileMaxWidth}) {
             margin-top: 0;

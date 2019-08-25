@@ -34,7 +34,7 @@ function FilterBar({
       style={style}
       ref={innerRef}
       className={`${css`
-        background: ${inverted ? Color[themeColor](0.5) : '#fff'};
+        background: ${inverted ? Color[themeColor](0.6) : '#fff'};
         height: 6rem;
         margin-bottom: 1rem;
         ${
