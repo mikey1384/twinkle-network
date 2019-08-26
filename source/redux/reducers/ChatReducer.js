@@ -49,6 +49,12 @@ export default function ChatReducer(state = defaultState, action) {
           };
         })
       };
+    case CHAT.CLEAR_NUM_UNREADS: {
+      return {
+        ...state,
+        numUnreads: 0
+      };
+    }
     case CHAT.CLEAR_RECENT_CHESS_MESSAGE: {
       return {
         ...state,

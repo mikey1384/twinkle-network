@@ -95,7 +95,6 @@ function MessagesContainer({
     content: ''
   });
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);
-  const [chatMessage, setChatMessage] = useState('');
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [fileObj, setFileObj] = useState('');
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
@@ -341,8 +340,6 @@ function MessagesContainer({
       {socketConnected ? (
         <ChatInput
           loading={loading}
-          onChange={setChatMessage}
-          message={chatMessage}
           myId={userId}
           isTwoPeopleChannel={currentChannel.twoPeople}
           currentChannelId={selectedChannelId}

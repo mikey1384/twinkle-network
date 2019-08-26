@@ -23,6 +23,7 @@ import { objectify } from 'helpers';
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
+  clearNumUnreads: PropTypes.func.isRequired,
   clearRecentChessMessage: PropTypes.func.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
@@ -57,6 +58,7 @@ Chat.propTypes = {
 function Chat({
   channels,
   channelLoadMoreButtonShown,
+  clearNumUnreads,
   clearRecentChessMessage,
   currentChannel,
   createNewChannel,
@@ -109,6 +111,8 @@ function Chat({
     mounted.current = true;
     if (!loaded) {
       init();
+    } else {
+      clearNumUnreads();
     }
 
     async function init() {
@@ -156,24 +160,12 @@ function Chat({
       }
     }
 
-    function onReceiveMessage(message, channel) {
-      let messageIsForCurrentChannel = message.channelId === selectedChannelId;
-      let senderIsNotTheUser = message.userId !== userId;
+    function onReceiveMessage(message) {
       if (message.isChessMsg) {
         setChessCountdownObj(countdownObj => ({
           ...countdownObj,
           [message.channelId]: undefined
         }));
-      }
-      if (messageIsForCurrentChannel && senderIsNotTheUser) {
-        receiveMessage({ message, pageVisible });
-      }
-      if (!messageIsForCurrentChannel) {
-        receiveMessageOnDifferentChannel({
-          channel,
-          senderIsNotTheUser,
-          pageVisible
-        });
       }
     }
 
@@ -554,6 +546,7 @@ export default connect(
   }),
   dispatch => ({
     dispatch,
+    clearNumUnreads: () => dispatch(ChatActions.clearNumUnreads()),
     clearRecentChessMessage: () =>
       dispatch(ChatActions.clearRecentChessMessage()),
     initChat: data => dispatch(ChatActions.initChat(data)),

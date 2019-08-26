@@ -6,16 +6,20 @@ import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { loadChat } from 'helpers/requestHelpers';
+import { loadChat, loadChatChannel } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
-import { initChat } from 'redux/actions/ChatActions';
+import { enterChannelWithId, initChat } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { withRouter } from 'react-router';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
+  enterChannelWithId: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   initChat: PropTypes.func.isRequired,
+  loaded: PropTypes.bool,
   reloadedBy: PropTypes.number,
   reloaderName: PropTypes.string,
   reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -28,7 +32,10 @@ ChatFeeds.propTypes = {
 function ChatFeeds({
   content,
   dispatch,
+  enterChannelWithId,
+  history,
   initChat,
+  loaded,
   reloadedBy,
   reloaderName,
   reloadTimeStamp,
@@ -94,8 +101,14 @@ function ChatFeeds({
   );
 
   async function initChatFromThis() {
-    const data = await loadChat({ dispatch, channelId: 2 });
-    initChat(data);
+    if (!loaded) {
+      const data = await loadChat({ dispatch, channelId: 2 });
+      initChat(data);
+    } else {
+      const data = await loadChatChannel({ channelId: 2, dispatch });
+      enterChannelWithId({ data });
+    }
+    history.push('/talk');
   }
 
   function renderDetails() {
@@ -123,9 +136,12 @@ function ChatFeeds({
 }
 
 export default connect(
-  null,
+  state => ({
+    loaded: state.ChatReducer.loaded
+  }),
   dispatch => ({
     dispatch,
+    enterChannelWithId: params => dispatch(enterChannelWithId(params)),
     initChat: data => dispatch(initChat(data))
   })
-)(ChatFeeds);
+)(withRouter(ChatFeeds));

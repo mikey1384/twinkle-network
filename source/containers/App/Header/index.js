@@ -11,6 +11,8 @@ import {
   clearRecentChessMessage,
   getNumberOfUnreadMessages,
   increaseNumberOfUnreadMessages,
+  receiveMessage,
+  receiveMessageOnDifferentChannel,
   resetChat,
   updateApiServerToS3Progress
 } from 'redux/actions/ChatActions';
@@ -51,8 +53,12 @@ Header.propTypes = {
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
+  pageVisible: PropTypes.bool,
+  receiveMessage: PropTypes.func.isRequired,
+  receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
   resetChat: PropTypes.func,
   searchFilter: PropTypes.string,
+  selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
@@ -83,8 +89,12 @@ function Header({
   numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
+  pageVisible,
+  receiveMessage,
+  receiveMessageOnDifferentChannel,
   resetChat,
   searchFilter,
+  selectedChannelId,
   showUpdateNotice,
   style = {},
   totalRewardAmount,
@@ -109,11 +119,11 @@ function Header({
         setExploreCategory(section);
       }
     }
-    if (section === 'home') {
-      setHomeLink('/');
-    }
     if (section === 'users') {
       setHomeLink('/users');
+    }
+    if (section === 'home' || numNewPosts > 0) {
+      setHomeLink('/');
     }
   }, [pathname]);
   useEffect(() => {
@@ -157,16 +167,30 @@ function Header({
       console.log('disconnected from socket');
       changeSocketStatus(false);
     }
-    function onReceiveMessage(data) {
+    function onReceiveMessage(message, channel) {
       const { section } = getSectionFromPathname(pathname);
       if (
-        data.channelId !== GENERAL_CHAT_ID &&
-        data.userId !== userId &&
+        message.channelId !== GENERAL_CHAT_ID &&
+        message.userId !== userId &&
         section !== 'talk'
       ) {
         increaseNumberOfUnreadMessages();
       }
+
+      let messageIsForCurrentChannel = message.channelId === selectedChannelId;
+      let senderIsNotTheUser = message.userId !== userId;
+      if (messageIsForCurrentChannel && senderIsNotTheUser) {
+        receiveMessage({ message, pageVisible });
+      }
+      if (!messageIsForCurrentChannel) {
+        receiveMessageOnDifferentChannel({
+          channel,
+          senderIsNotTheUser,
+          pageVisible
+        });
+      }
     }
+
     function onReceiveUploadProgress({ channelId, path, percentage }) {
       updateApiServerToS3Progress({
         progress: percentage / 100,
@@ -237,6 +261,9 @@ function Header({
         >
           <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
           <MainNavs
+            isAtExploreTab={['links', 'videos', 'subjects'].includes(
+              getSectionFromPathname(pathname)?.section
+            )}
             exploreCategory={exploreCategory}
             homeLink={homeLink}
             chatLoading={chatLoading}
@@ -276,7 +303,9 @@ function Header({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
+    pageVisible: state.ViewReducer.pageVisible,
     searchFilter: state.UserReducer.searchFilter,
+    selectedChannelId: state.ChatReducer.selectedChannelId,
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
@@ -298,6 +327,8 @@ export default connect(
     increaseNumberOfUnreadMessages,
     logout,
     notifyChatSubjectChange,
+    receiveMessage,
+    receiveMessageOnDifferentChannel,
     resetChat,
     updateApiServerToS3Progress
   }

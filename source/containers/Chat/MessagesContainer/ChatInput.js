@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -16,8 +16,6 @@ ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
-  message: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
@@ -29,8 +27,6 @@ function ChatInput({
   currentChannelId,
   isTwoPeopleChannel,
   loading,
-  message,
-  onChange,
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
@@ -38,8 +34,9 @@ function ChatInput({
   profileTheme
 }) {
   const TextareaRef = useRef(null);
+  const [message, setMessage] = useState('');
   useEffect(() => {
-    onChange('');
+    setMessage('');
     if (!isMobile(navigator)) {
       TextareaRef.current.focus();
     }
@@ -80,7 +77,7 @@ function ChatInput({
           onChange={handleChange}
           onKeyUp={event => {
             if (event.key === ' ') {
-              onChange(addEmoji(event.target.value));
+              setMessage(addEmoji(event.target.value));
             }
           }}
           autoFocus
@@ -107,7 +104,7 @@ function ChatInput({
     setTimeout(() => {
       onHeightChange(TextareaRef.current?.clientHeight);
     }, 0);
-    onChange(event.target.value);
+    setMessage(event.target.value);
   }
 
   function onKeyDown(event) {
@@ -122,7 +119,7 @@ function ChatInput({
       event.preventDefault();
       if (stringIsEmpty(message)) return;
       onMessageSubmit(finalizeEmoji(message));
-      onChange('');
+      setMessage('');
     }
   }
 }

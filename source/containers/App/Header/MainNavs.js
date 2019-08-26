@@ -8,6 +8,7 @@ MainNavs.propTypes = {
   exploreCategory: PropTypes.string,
   chatLoading: PropTypes.bool,
   homeLink: PropTypes.string,
+  isAtExploreTab: PropTypes.bool,
   isUsername: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
@@ -21,6 +22,7 @@ export default function MainNavs({
   exploreCategory,
   chatLoading,
   homeLink,
+  isAtExploreTab,
   isUsername,
   numChatUnreads,
   numNewNotis,
@@ -61,10 +63,10 @@ export default function MainNavs({
         pathname={pathname}
         className="desktop"
         imgLabel="home"
-        alert={numNewPosts > 0}
+        alert={!isAtExploreTab && numNewPosts > 0}
         isUsername={isUsername}
       >
-        HOME{numNewPosts > 0 ? ` (${numNewPosts})` : ''}
+        HOME{!isAtExploreTab && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav
@@ -85,7 +87,7 @@ export default function MainNavs({
           pathname={pathname}
           className="desktop"
           imgLabel="comments"
-          alert={numChatUnreads > 0}
+          alert={!isAtExploreTab && numChatUnreads > 0}
           isUsername={isUsername}
         >
           TALK
