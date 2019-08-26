@@ -45,9 +45,11 @@ function HeaderNav({
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
       getSectionFromPathname(pathname)?.section
     );
-  const activeColor = Color[themeColor](
-    themeColor === 'black' || themeColor === 'vantaBlack' ? 0.8 : 0.6
-  );
+  const activeColor = alert
+    ? alertColor
+    : Color[themeColor](
+        themeColor === 'black' || themeColor === 'vantaBlack' ? 0.8 : 0.6
+      );
   const hoverColor = alert
     ? alertColor
     : Color[themeColor](

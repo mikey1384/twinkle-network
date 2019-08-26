@@ -64,7 +64,7 @@ export default function MainNavs({
         alert={numNewPosts > 0}
         isUsername={isUsername}
       >
-        HOME
+        HOME{numNewPosts > 0 ? ` (${numNewPosts})` : ''}
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav

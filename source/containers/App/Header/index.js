@@ -36,6 +36,7 @@ Header.propTypes = {
   changeSocketStatus: PropTypes.func,
   checkVersion: PropTypes.func,
   clearRecentChessMessage: PropTypes.func,
+  getNumberOfUnreadMessages: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
@@ -67,6 +68,7 @@ function Header({
   changeSocketStatus,
   checkVersion,
   clearRecentChessMessage,
+  getNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
@@ -146,6 +148,7 @@ function Header({
       clearRecentChessMessage();
       changeSocketStatus(true);
       checkVersion();
+      getNumberOfUnreadMessages();
       if (userId) {
         socket.emit('bind_uid_to_socket', userId, username);
       }

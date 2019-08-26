@@ -153,7 +153,10 @@ function Notification({
             activeTab={activeTab}
             notifications={notifications}
             rewards={rewards}
-            selectNotiTab={() => setActiveTab('notification')}
+            selectNotiTab={() => {
+              userChangedTab.current = true;
+              setActiveTab('notification');
+            }}
             style={{
               marginTop: loaded && myId && notifications.length > 0 && '1rem'
             }}

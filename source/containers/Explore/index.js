@@ -95,7 +95,7 @@ function Explore({ history, location, mobileNavbarShown, searchText }) {
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'column',
-              marginBottom: '5rem'
+              marginBottom: '4rem'
             }}
           />
           <Suspense fallback={<Loading />}>
