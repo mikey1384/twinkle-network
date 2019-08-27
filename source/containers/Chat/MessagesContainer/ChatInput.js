@@ -121,6 +121,9 @@ function ChatInput({
       onMessageSubmit(finalizeEmoji(message));
       setMessage('');
     }
+    if (enterKeyPressed && shiftKeyPressed) {
+      onHeightChange(TextareaRef.current?.clientHeight + 20);
+    }
   }
 }
 

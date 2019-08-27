@@ -109,7 +109,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\(thank you\))/gi, '🙏')
     .replace(/(\(computer\))/gi, '🖥')
     .replace(/(\(money\))/gi, '💰')
-    .replace(/(\(chess\))/gi, '♟️');
+    .replace(/(\(chess\))/gi, '♟️')
+    .replace(/(\(potato\))/gi, '🥔');
 }
 
 export function addEmoji(string) {
