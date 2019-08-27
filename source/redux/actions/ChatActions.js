@@ -6,6 +6,10 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
+export const clearChatLoadedState = () => ({
+  type: CHAT.CLEAR_LOADED_STATE
+});
+
 export const clearNumUnreads = () => ({
   type: CHAT.CLEAR_NUM_UNREADS
 });

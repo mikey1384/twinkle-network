@@ -8,8 +8,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { logout } from 'redux/actions/UserActions';
 import {
+  clearChatLoadedState,
   clearRecentChessMessage,
   getNumberOfUnreadMessages,
+  initChat,
   increaseNumberOfUnreadMessages,
   receiveMessage,
   receiveMessageOnDifferentChannel,
@@ -30,6 +32,7 @@ import { desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
 import { container } from './Styles';
+import { loadChat } from 'helpers/requestHelpers';
 import { getSectionFromPathname } from 'helpers';
 
 Header.propTypes = {
@@ -37,12 +40,14 @@ Header.propTypes = {
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   checkVersion: PropTypes.func,
-  clearRecentChessMessage: PropTypes.func,
+  clearChatLoadedState: PropTypes.func.isRequired,
+  clearRecentChessMessage: PropTypes.func.isRequired,
   getNumberOfUnreadMessages: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
   increaseNumberOfUnreadMessages: PropTypes.func,
+  initChat: PropTypes.func.isRequired,
   location: PropTypes.object,
   loggedIn: PropTypes.bool,
   logout: PropTypes.func,
@@ -73,12 +78,14 @@ function Header({
   chatLoading,
   changeSocketStatus,
   checkVersion,
+  clearChatLoadedState,
   clearRecentChessMessage,
   getNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
   increaseNumberOfUnreadMessages,
+  initChat,
   location: { pathname },
   logout,
   loggedIn,
@@ -153,14 +160,22 @@ function Header({
     function onChatInvitation(data) {
       socket.emit('join_chat_channel', data.channelId);
     }
-    function onConnect() {
+    async function onConnect() {
       console.log('connected to socket');
+      const { section } = getSectionFromPathname(pathname);
       clearRecentChessMessage();
       changeSocketStatus(true);
       checkVersion();
       getNumberOfUnreadMessages();
       if (userId) {
         socket.emit('bind_uid_to_socket', userId, username);
+      }
+      if (section !== 'talk') {
+        clearChatLoadedState();
+      }
+      if (section === 'talk') {
+        const data = await loadChat();
+        initChat(data);
       }
     }
     function onDisconnect() {
@@ -320,11 +335,13 @@ export default connect(
     changeRankingsLoadedStatus,
     changeSocketStatus,
     checkVersion,
+    clearChatLoadedState,
     clearRecentChessMessage,
     getNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
+    initChat,
     logout,
     notifyChatSubjectChange,
     receiveMessage,
