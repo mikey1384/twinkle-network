@@ -6619,9 +6619,9 @@ rc-align@^2.4.0:
     rc-util "^4.0.4"
 
 rc-animate@2.x:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-2.9.2.tgz#5964767805c886f1bdc7563d3935a74912a0b78f"
-  integrity sha512-rkJjeJgfbDqVjVX1/QTRfS7PiCq3AnmeYo840cVcuC4pXq4k4yAQMsC2v5BPXXdawC04vnyO4/qHQdbx9ANaiw==
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-2.10.0.tgz#d2224cee4700cc9e9836700eb47af6b6e41a080c"
+  integrity sha512-gZM3WteZO0e3X8B71KP0bs95EY2tAPRuiZyKnlhdLpOjTX/64SrhDZM3pT2Z8mJjKWNiiB5q2SSSf+BD8ljwVw==
   dependencies:
     babel-runtime "6.x"
     classnames "^2.2.6"
@@ -6746,10 +6746,17 @@ react-helmet@^5.2.1:
     react-fast-compare "^2.0.2"
     react-side-effect "^1.1.0"
 
+<<<<<<< HEAD
 react-hot-loader@4.12.11:
   version "4.12.11"
   resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.11.tgz#06bd618d0a7343c8afa4a31206844f651193bae5"
   integrity sha512-ySsg1hPwr/5dkZCJVp1nZRbwbpbEQ+3e2+bn/D681Wvr9+o+5bLKkTGq0TXskj8HgCS3ScysXddOng9Cg+JKzw==
+=======
+react-hot-loader@4.12.12:
+  version "4.12.12"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.12.tgz#8b33f59efef8a34f64e01f0d9393230d4b4bc6d4"
+  integrity sha512-Tkd412j5yPKHoTRsJzZb+5UJNFKkPszm7QGKGYvt+jnzTkDS+qK0u3AYPlB0MmBlwzUKVHICqq5KH9Srzda7XA==
+>>>>>>> master
   dependencies:
     fast-levenshtein "^2.0.6"
     global "^4.3.0"
@@ -8417,10 +8424,17 @@ webpack-sources@^1.0.2, webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
+<<<<<<< HEAD
 webpack@^4.39.2:
   version "4.39.2"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.39.2.tgz#c9aa5c1776d7c309d1b3911764f0288c8c2816aa"
   integrity sha512-AKgTfz3xPSsEibH00JfZ9sHXGUwIQ6eZ9tLN8+VLzachk1Cw2LVmy+4R7ZiwTa9cZZ15tzySjeMui/UnSCAZhA==
+=======
+webpack@^4.39.3:
+  version "4.39.3"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.39.3.tgz#a02179d1032156b713b6ec2da7e0df9d037def50"
+  integrity sha512-BXSI9M211JyCVc3JxHWDpze85CvjC842EvpRsVTc/d15YJGlox7GIDd38kJgWrb3ZluyvIjgenbLDMBQPDcxYQ==
+>>>>>>> master
   dependencies:
     "@webassemblyjs/ast" "1.8.5"
     "@webassemblyjs/helper-module-context" "1.8.5"

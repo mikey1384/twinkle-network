@@ -370,7 +370,16 @@ export default function Chess({
               )}
             </div>
             {(status || gameOverMsg) && (
-              <div style={{ fontSize: '2rem', paddingBottom: '1rem' }}>
+              <div
+                style={{
+                  color: '#fff',
+                  background: Color.black(0.7),
+                  padding: '0.5rem',
+                  marginTop: '1.5rem',
+                  position: 'absolute',
+                  fontSize: '2rem'
+                }}
+              >
                 {status || gameOverMsg}
               </div>
             )}
