@@ -172,8 +172,7 @@ function Header({
       }
       if (section !== 'talk') {
         clearChatLoadedState();
-      }
-      if (section === 'talk') {
+      } else {
         const data = await loadChat();
         initChat(data);
       }
