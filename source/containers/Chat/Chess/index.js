@@ -157,6 +157,9 @@ export default function Chess({
           className={css`
             top: 1rem;
             left: 1rem;
+            padding: 0.5rem 1rem;
+            background: ${Color.white(0.9)};
+            border: 1px solid ${Color.darkGray()};
             position: absolute;
             font-size: 2.5rem;
             font-weight: bold;
@@ -416,6 +419,9 @@ export default function Chess({
             !!countdownNumber) && (
             <div
               className={css`
+                padding: 0.5rem 1rem;
+                background: ${Color.white(0.9)};
+                border: 1px solid ${Color.darkGray()};
                 bottom: 1rem;
                 right: 1rem;
                 position: absolute;
