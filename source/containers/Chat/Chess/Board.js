@@ -189,6 +189,9 @@ export default function Board({
             <div
               className={css`
                 cursor: pointer;
+                background: #fff;
+                border: 1px solid ${Color.darkGray()};
+                padding: 1rem;
                 &:hover {
                   text-decoration: underline;
                 }
