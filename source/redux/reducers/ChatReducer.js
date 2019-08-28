@@ -240,6 +240,7 @@ export default function ChatReducer(state = defaultState, action) {
     case CHAT.ENTER_EMPTY_CHAT:
       return {
         ...state,
+        recentChessMessage: undefined,
         subject: {},
         selectedChannelId: 0,
         currentChannel: {
@@ -290,6 +291,7 @@ export default function ChatReducer(state = defaultState, action) {
         ...defaultState,
         loaded: true,
         channelLoadMoreButton,
+        recentChessMessage: undefined,
         subject: action.data.currentChannel.id === 2 ? state.subject : {},
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
@@ -411,6 +413,7 @@ export default function ChatReducer(state = defaultState, action) {
       return {
         ...state,
         loaded: true,
+        recentChessMessage: undefined,
         subject: {},
         channels: [
           {
@@ -441,6 +444,7 @@ export default function ChatReducer(state = defaultState, action) {
       });
       return {
         ...state,
+        recentChessMessage: undefined,
         subject: {},
         channels: [
           {

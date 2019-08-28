@@ -24,7 +24,6 @@ Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
   clearNumUnreads: PropTypes.func.isRequired,
-  clearRecentChessMessage: PropTypes.func.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
@@ -59,7 +58,6 @@ function Chat({
   channels,
   channelLoadMoreButtonShown,
   clearNumUnreads,
-  clearRecentChessMessage,
   currentChannel,
   createNewChannel,
   dispatch,
@@ -268,7 +266,6 @@ function Chat({
             <LeftMenu
               channels={channels}
               channelLoadMoreButtonShown={channelLoadMoreButtonShown}
-              clearRecentChessMessage={clearRecentChessMessage}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={loadMoreChannels}

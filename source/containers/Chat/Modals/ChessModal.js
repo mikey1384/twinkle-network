@@ -52,6 +52,7 @@ function ChessModal({
     init();
     async function init() {
       loading.current = true;
+      console.log(channelId);
       const message = await fetchCurrentChessState({
         channelId,
         recentChessMessage
