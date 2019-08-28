@@ -59,6 +59,7 @@ function ChatInput({
             }}
           >
             <Button
+              disabled={loading}
               skeuomorphic
               onClick={onChessButtonClick}
               color={themeColor}
@@ -92,7 +93,12 @@ function ChatInput({
             height: '100%'
           }}
         >
-          <Button skeuomorphic onClick={onPlusButtonClick} color={themeColor}>
+          <Button
+            disabled={loading}
+            skeuomorphic
+            onClick={onPlusButtonClick}
+            color={themeColor}
+          >
             <Icon size="lg" icon="plus" />
           </Button>
         </div>
