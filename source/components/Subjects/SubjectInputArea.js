@@ -8,6 +8,7 @@ import { charLimit } from 'constants/defaultValues';
 import { connect } from 'react-redux';
 
 SubjectInputArea.propTypes = {
+  canEditRewardLevel: PropTypes.bool,
   onUploadSubject: PropTypes.func.isRequired,
   contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
@@ -17,6 +18,7 @@ SubjectInputArea.propTypes = {
 };
 
 function SubjectInputArea({
+  canEditRewardLevel,
   contentId,
   dispatch,
   onUploadSubject,
@@ -35,17 +37,20 @@ function SubjectInputArea({
     >
       <div style={{ padding: '1rem' }}>
         {subjectFormShown ? (
-          <TitleDescriptionForm
-            isSubject
-            autoFocus
-            onSubmit={onSubmit}
-            onClose={() => setSubjectFormShown(false)}
-            rows={4}
-            titleMaxChar={charLimit.subject.title}
-            descriptionMaxChar={charLimit.subject.description}
-            titlePlaceholder="Enter Subject..."
-            descriptionPlaceholder="Enter Details... (Optional)"
-          />
+          <div>
+            <TitleDescriptionForm
+              canEditRewardLevel={canEditRewardLevel}
+              isSubject
+              autoFocus
+              onSubmit={onSubmit}
+              onClose={() => setSubjectFormShown(false)}
+              rows={4}
+              titleMaxChar={charLimit.subject.title}
+              descriptionMaxChar={charLimit.subject.description}
+              titlePlaceholder="Enter Subject..."
+              descriptionPlaceholder="Enter Details... (Optional)"
+            />
+          </div>
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
@@ -63,12 +68,13 @@ function SubjectInputArea({
     </div>
   );
 
-  async function onSubmit({ title, description, secretAnswer }) {
+  async function onSubmit({ title, description, rewardLevel, secretAnswer }) {
     const data = await uploadSubject({
       title,
       description,
       dispatch,
       contentId,
+      rewardLevel,
       secretAnswer,
       type
     });
@@ -79,7 +85,8 @@ function SubjectInputArea({
 
 export default connect(
   state => ({
-    profileTheme: state.UserReducer.profileTheme
+    profileTheme: state.UserReducer.profileTheme,
+    canEditRewardLevel: state.UserReducer.canEditRewardLevel
   }),
   dispatch => ({ dispatch })
 )(SubjectInputArea);

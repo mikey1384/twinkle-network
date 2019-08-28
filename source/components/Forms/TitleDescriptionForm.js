@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
+import RewardLevelForm from 'components/Forms/RewardLevelForm';
 
 TitleDescriptionForm.propTypes = {
   autoFocus: PropTypes.bool,
+  canEditRewardLevel: PropTypes.bool,
   descriptionMaxChar: PropTypes.number,
   descriptionPlaceholder: PropTypes.string,
   isSubject: PropTypes.bool,
@@ -20,6 +22,7 @@ TitleDescriptionForm.propTypes = {
 
 export default function TitleDescriptionForm({
   autoFocus,
+  canEditRewardLevel,
   isSubject,
   onClose,
   rows,
@@ -31,6 +34,7 @@ export default function TitleDescriptionForm({
 }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [rewardLevel, setRewardLevel] = useState(0);
   const [secretAnswer, setSecretAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
@@ -102,6 +106,22 @@ export default function TitleDescriptionForm({
               )}
             </div>
           )}
+          {canEditRewardLevel && (
+            <RewardLevelForm
+              themed
+              style={{
+                marginTop: '1rem',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                padding: '1rem',
+                fontSize: '3rem'
+              }}
+              rewardLevel={rewardLevel}
+              onSetRewardLevel={setRewardLevel}
+            />
+          )}
         </div>
         <div
           style={{
@@ -144,9 +164,11 @@ export default function TitleDescriptionForm({
       setTitle('');
       setDescription('');
       setSecretAnswer('');
+      setRewardLevel(0);
       await onSubmit({
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),
+        rewardLevel,
         secretAnswer: finalizeEmoji(secretAnswer)
       });
       return Promise.resolve();
