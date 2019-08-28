@@ -219,8 +219,13 @@ function Header({
 
   useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + numChatUnreads;
-    document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
-  }, [numNewNotis, numNewPosts, numChatUnreads]);
+    const { section } = getSectionFromPathname(pathname);
+    document.title = `${
+      newNotiNum > 0 && !['links', 'videos', 'subjects'].includes(section)
+        ? '(' + newNotiNum + ') '
+        : ''
+    }Twinkle`;
+  }, [numNewNotis, numNewPosts, numChatUnreads, pathname]);
 
   useEffect(() => {
     socket.connect();
