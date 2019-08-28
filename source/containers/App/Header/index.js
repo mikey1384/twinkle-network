@@ -138,7 +138,7 @@ function Header({
     socket.on('disconnect', onDisconnect);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('receive_message', onReceiveMessage);
-    socket.on('new_story_post', increaseNumNewPosts);
+    socket.on('new_post', increaseNumNewPosts);
     socket.on('new_notification', increaseNumNewNotis);
     socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
     socket.on('subject_change', onSubjectChange);
@@ -147,7 +147,7 @@ function Header({
       socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
-      socket.removeListener('new_story_post', increaseNumNewPosts);
+      socket.removeListener('new_post', increaseNumNewPosts);
       socket.removeListener('new_notification', increaseNumNewNotis);
       socket.removeListener(
         'receive_chat_file_upload_progress',

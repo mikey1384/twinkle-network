@@ -12,7 +12,8 @@ import {
   loadChat,
   loadChatChannel,
   loadDMChannel,
-  startNewDMChannel
+  startNewDMChannel,
+  updateChatLastRead
 } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
@@ -110,6 +111,7 @@ function Chat({
     if (!loaded) {
       init();
     } else {
+      updateChatLastRead({ channelId: selectedChannelId, dispatch });
       clearNumUnreads();
     }
 
@@ -117,7 +119,6 @@ function Chat({
       const data = await loadChat();
       initChat(data);
     }
-
     return function cleanUp() {
       mounted.current = false;
     };

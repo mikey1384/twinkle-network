@@ -548,6 +548,15 @@ export const setDefaultSearchFilter = async ({ filter, dispatch }) => {
   }
 };
 
+export const updateChatLastRead = async ({ channelId, dispatch }) => {
+  try {
+    await request.post(`${URL}/chat/lastRead`, { channelId }, auth());
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
 export const updateRewardLevel = async ({
   rewardLevel,
   contentId,
