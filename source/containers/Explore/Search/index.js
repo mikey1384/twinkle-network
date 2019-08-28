@@ -19,7 +19,7 @@ Search.propTypes = {
   pathname: PropTypes.string.isRequired,
   searchScrollPosition: PropTypes.number,
   searchText: PropTypes.string.isRequired,
-  searchFilter: PropTypes.string.isRequired,
+  searchFilter: PropTypes.string,
   setResults: PropTypes.func.isRequired,
   style: PropTypes.object,
   updateDefaultSearchFilter: PropTypes.func.isRequired
