@@ -14,7 +14,6 @@ import { css } from 'emotion';
 import { connect } from 'react-redux';
 
 LeftMenu.propTypes = {
-  clearRecentChessMessage: PropTypes.func.isRequired,
   channels: PropTypes.array.isRequired,
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
   currentChannel: PropTypes.object.isRequired,
@@ -27,7 +26,6 @@ LeftMenu.propTypes = {
 };
 
 function LeftMenu({
-  clearRecentChessMessage,
   channels,
   channelLoadMoreButtonShown,
   currentChannel,
@@ -188,7 +186,6 @@ function LeftMenu({
         ref={ChannelListRef}
       >
         <Channels
-          clearRecentChessMessage={clearRecentChessMessage}
           userId={userId}
           currentChannel={currentChannel}
           channels={channels}

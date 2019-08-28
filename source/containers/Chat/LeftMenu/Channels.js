@@ -4,7 +4,6 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 
 Channels.propTypes = {
-  clearRecentChessMessage: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
   channels: PropTypes.arrayOf(
     PropTypes.shape({
@@ -25,7 +24,6 @@ Channels.propTypes = {
 };
 
 export default function Channels({
-  clearRecentChessMessage,
   userId,
   channels,
   onChannelEnter,
@@ -62,7 +60,6 @@ export default function Channels({
               height: '6.5rem'
             }}
             onClick={() => {
-              clearRecentChessMessage();
               onChannelEnter(id);
             }}
           >

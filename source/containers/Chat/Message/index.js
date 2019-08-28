@@ -129,6 +129,7 @@ function Message({
       !message.isSubject &&
       !message.isNotification
     ) {
+      console.log('saving message');
       saveMessage({ message: post, index });
     }
   }, []);

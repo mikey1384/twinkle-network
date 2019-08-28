@@ -17,7 +17,6 @@ import { objectify } from 'helpers';
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
-  clearRecentChessMessage: PropTypes.func.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
@@ -50,7 +49,6 @@ Chat.propTypes = {
 function Chat({
   channels,
   channelLoadMoreButtonShown,
-  clearRecentChessMessage,
   currentChannel,
   createNewChannel,
   dispatch,
@@ -257,7 +255,6 @@ function Chat({
         <LeftMenu
           channels={channels}
           channelLoadMoreButtonShown={channelLoadMoreButtonShown}
-          clearRecentChessMessage={clearRecentChessMessage}
           currentChannel={currentChannel}
           currentChannelOnlineMembers={currentChannelOnlineMembers}
           loadMoreChannels={loadMoreChannels}
@@ -528,8 +525,6 @@ export default connect(
   }),
   dispatch => ({
     dispatch,
-    clearRecentChessMessage: () =>
-      dispatch(ChatActions.clearRecentChessMessage()),
     receiveMessage: params => dispatch(ChatActions.receiveMessage(params)),
     receiveMessageOnDifferentChannel: params =>
       dispatch(ChatActions.receiveMessageOnDifferentChannel(params)),
