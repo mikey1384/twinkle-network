@@ -1,8 +1,5 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Textarea from 'components/Texts/Textarea';
-import Modal from 'components/Modal';
-import Button from 'components/Button';
 import { uploadContent } from 'helpers/requestHelpers';
 import { uploadVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
@@ -13,6 +10,9 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
+import Textarea from 'components/Texts/Textarea';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 

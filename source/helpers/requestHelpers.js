@@ -725,13 +725,14 @@ export const uploadSubject = async ({
   contentId,
   title,
   description,
+  rewardLevel,
   secretAnswer,
   dispatch
 }) => {
   try {
     const { data } = await request.post(
       `${URL}/content/subjects`,
-      { title, description, contentId, secretAnswer, type },
+      { title, description, contentId, rewardLevel, secretAnswer, type },
       auth()
     );
     return Promise.resolve(data);
