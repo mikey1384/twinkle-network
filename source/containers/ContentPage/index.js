@@ -50,8 +50,11 @@ function Content({
     exists: false
   });
   const mounted = useRef(null);
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
     mounted.current = true;
+    document.getElementById('App').scrollTop = 0;
+    BodyRef.current.scrollTop = 0;
     initContent();
     async function initContent() {
       try {

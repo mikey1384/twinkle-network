@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useSearch } from 'helpers/hooks';
+import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import FeaturedPlaylistPanel from './Panels/FeaturedPlaylistsPanel';
@@ -17,6 +17,7 @@ import {
   setSearchedPlaylists,
   postPlaylist
 } from 'redux/actions/VideoActions';
+import { recordScrollPosition } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
 
@@ -29,9 +30,12 @@ Videos.propTypes = {
   loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsButton: PropTypes.bool.isRequired,
   loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
+  location: PropTypes.object.isRequired,
   openAddPlaylistModal: PropTypes.func.isRequired,
   playlists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
+  recordScrollPosition: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object.isRequired,
   searchedPlaylists: PropTypes.array.isRequired,
   setSearchedPlaylists: PropTypes.func.isRequired,
   postPlaylist: PropTypes.func.isRequired,
@@ -47,14 +51,23 @@ function Videos({
   loaded,
   loadMorePlaylistsButton,
   loadMoreSearchedPlaylistsButton,
+  location,
   openAddPlaylistModal,
   playlists: allPlaylists = [],
   postPlaylist,
   playlistsLoaded,
+  recordScrollPosition,
+  scrollPositions,
   searchedPlaylists,
   setSearchedPlaylists,
   userId
 }) {
+  useScrollPosition({
+    scrollPositions,
+    pathname: location.pathname,
+    recordScrollPosition,
+    currentSection: '/videos'
+  });
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: searchPlaylist,
     onClear: () =>
@@ -74,7 +87,7 @@ function Videos({
         getInitialVideos({ videos, loadMoreButton });
       }
     }
-  }, []);
+  }, [loaded]);
 
   const playlists = !stringIsEmpty(searchText)
     ? searchedPlaylists
@@ -145,6 +158,7 @@ export default connect(
       state.VideoReducer.loadMoreSearchedPlaylistsButton,
     playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
     playlists: state.VideoReducer.allPlaylists,
+    scrollPositions: state.ViewReducer.scrollPositions,
     searchedPlaylists: state.VideoReducer.searchedPlaylists,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId
@@ -157,6 +171,7 @@ export default connect(
     setSearchedPlaylists,
     closeAddPlaylistModal,
     closeAddVideoModal,
-    postPlaylist
+    postPlaylist,
+    recordScrollPosition
   }
 )(Videos);

@@ -5,6 +5,10 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/url`;
 
+export const clearLinksLoaded = () => ({
+  type: LINK.CLEAR_LOADED
+});
+
 export const deleteLink = linkId => async dispatch => {
   try {
     await request.delete(`${API_URL}?linkId=${linkId}`, auth());

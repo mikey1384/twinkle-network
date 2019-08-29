@@ -3,15 +3,7 @@ import VIEW from '../constants/View';
 const defaultState = {
   mobileNavbarShown: true,
   pageVisible: true,
-  scrollPositions: {
-    // here
-    home: 0,
-    subjects: 0,
-    videos: 0,
-    links: 0,
-    talk: 0,
-    users: 0
-  }
+  scrollPositions: {}
 };
 
 export default function ViewReducer(state = defaultState, action) {

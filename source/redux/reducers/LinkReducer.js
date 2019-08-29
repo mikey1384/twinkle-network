@@ -1,12 +1,18 @@
 import LINK from '../constants/Link';
 
 const defaultState = {
+  loaded: false,
   links: [],
   loadMoreLinksButtonShown: false
 };
 
 export default function linkReducer(state = defaultState, action) {
   switch (action.type) {
+    case LINK.CLEAR_LOADED:
+      return {
+        ...state,
+        loaded: false
+      };
     case LINK.DELETE:
       return {
         ...state,
@@ -48,6 +54,7 @@ export default function linkReducer(state = defaultState, action) {
     case LINK.LOAD:
       return {
         ...state,
+        loaded: true,
         links: action.links,
         loadMoreLinksButtonShown: action.loadMoreButton
       };

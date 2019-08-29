@@ -127,9 +127,13 @@ function VideoPage({
     type: 'video',
     contentId: Number(videoId)
   });
-
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
     mounted.current = true;
+    document.getElementById('App').scrollTop = 0;
+    BodyRef.current.scrollTop = 0;
+    setCurrentSlide(0);
+    setWatchTabActive(true);
     setChangingPage(true);
     setVideoLoading(true);
     setVideoUnavailable(false);

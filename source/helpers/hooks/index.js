@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
+
 export { default as useContentObj } from './useContentObj';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 
@@ -61,4 +62,37 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
   }
 
   return { handleSearch, searching, searchText, setSearchText };
+}
+
+export function useScrollPosition({
+  scrollPositions,
+  pathname,
+  recordScrollPosition,
+  currentSection
+}) {
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
+  useEffect(() => {
+    if (currentSection === pathname) {
+      setTimeout(() => {
+        document.getElementById('App').scrollTop =
+          scrollPositions[currentSection] || 0;
+        BodyRef.current.scrollTop = scrollPositions[currentSection] || 0;
+      }, 0);
+    }
+  }, [pathname]);
+  useEffect(() => {
+    addEvent(window, 'scroll', onScroll);
+    addEvent(document.getElementById('App'), 'scroll', onScroll);
+    function onScroll() {
+      const position = Math.max(
+        document.getElementById('App').scrollTop,
+        BodyRef.current.scrollTop
+      );
+      recordScrollPosition({ section: currentSection, position });
+    }
+    return function cleanUp() {
+      removeEvent(window, 'scroll', onScroll);
+      removeEvent(document.getElementById('App'), 'scroll', onScroll);
+    };
+  });
 }

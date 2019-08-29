@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
@@ -12,23 +12,36 @@ import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
+import { clearLinksLoaded } from 'redux/actions/LinkActions';
 import {
+  clearVideosLoaded,
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
+import { clearSubjectsLoaded } from 'redux/actions/SubjectActions';
 import { socket } from 'constants/io';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
 Explore.propTypes = {
+  clearLinksLoaded: PropTypes.func.isRequired,
+  clearSubjectsLoaded: PropTypes.func.isRequired,
+  clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   mobileNavbarShown: PropTypes.bool.isRequired,
   searchText: PropTypes.string
 };
 
-function Explore({ history, location, mobileNavbarShown, searchText }) {
-  const [key, setKey] = useState(0);
+function Explore({
+  clearLinksLoaded,
+  clearSubjectsLoaded,
+  clearVideosLoaded,
+  history,
+  location,
+  mobileNavbarShown,
+  searchText
+}) {
   const mounted = useRef(true);
   const disconnected = useRef(false);
   useEffect(() => {
@@ -37,7 +50,9 @@ function Explore({ history, location, mobileNavbarShown, searchText }) {
     socket.on('disconnect', onDisconnect);
     function onConnect() {
       if (disconnected.current && mounted.current) {
-        setKey(key => key + 1);
+        clearLinksLoaded();
+        clearSubjectsLoaded();
+        clearVideosLoaded();
       }
       disconnected.current = false;
     }
@@ -53,7 +68,6 @@ function Explore({ history, location, mobileNavbarShown, searchText }) {
   return (
     <ErrorBoundary>
       <div
-        key={key}
         className={css`
           width: 100%;
           display: flex;
@@ -206,5 +220,11 @@ export default connect(
     mobileNavbarShown: state.ViewReducer.mobileNavbarShown,
     searchText: state.SearchReducer.searchText
   }),
-  { openAddPlaylistModal, openAddVideoModal }
+  {
+    clearLinksLoaded,
+    clearSubjectsLoaded,
+    clearVideosLoaded,
+    openAddPlaylistModal,
+    openAddVideoModal
+  }
 )(Explore);

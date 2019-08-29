@@ -21,7 +21,7 @@ FeaturedPlaylistsPanel.propTypes = {
   closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   featuredPlaylists: PropTypes.array.isRequired,
   getPinnedPlaylists: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
+  loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
   openReorderFeaturedPlaylists: PropTypes.func.isRequired,
   openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
@@ -38,7 +38,7 @@ function FeaturedPlaylistsPanel({
   closeSelectPlaylistsToPinModal,
   featuredPlaylists,
   getPinnedPlaylists,
-  history,
+  loaded,
   loadMorePlaylistsToPinButton,
   openReorderFeaturedPlaylists,
   openSelectPlaylistsToPinModal,
@@ -51,12 +51,12 @@ function FeaturedPlaylistsPanel({
   useEffect(() => {
     init();
     async function init() {
-      if (history.action === 'PUSH' || !playlistsLoaded) {
+      if (!loaded) {
         const playlists = await loadFeaturedPlaylists();
         getPinnedPlaylists(playlists);
       }
     }
-  }, []);
+  }, [loaded]);
 
   const menuButtons = [
     {
@@ -112,6 +112,7 @@ function FeaturedPlaylistsPanel({
 export default connect(
   state => ({
     canPinPlaylists: state.UserReducer.canPinPlaylists,
+    loaded: state.VideoReducer.loaded,
     loadMorePlaylistsToPinButton:
       state.VideoReducer.loadMorePlaylistsToPinButton,
     featuredPlaylists: state.VideoReducer.pinnedPlaylists,

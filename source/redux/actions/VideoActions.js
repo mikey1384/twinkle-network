@@ -27,6 +27,10 @@ export const changePlaylistVideos = playlist => ({
   playlist
 });
 
+export const clearVideosLoaded = () => ({
+  type: VIDEO.CLEAR_LOADED
+});
+
 export const clickSafeOff = () => ({
   type: VIDEO.TURN_OFF_CLICK_SAFE
 });

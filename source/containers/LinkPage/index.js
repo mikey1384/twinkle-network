@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useContentObj } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
@@ -94,8 +94,10 @@ function LinkPage({
     type: 'url',
     contentId: Number(linkId)
   });
-
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
+    document.getElementById('App').scrollTop = 0;
+    BodyRef.current.scrollTop = 0;
     setLoading(true);
     initLinkPage();
     async function initLinkPage() {

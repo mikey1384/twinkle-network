@@ -95,6 +95,11 @@ export default function VideoReducer(state = defaultState, action) {
             : playlist
         )
       };
+    case VIDEO.CLEAR_LOADED:
+      return {
+        ...state,
+        loaded: false
+      };
     case VIDEO.CLOSE_MODAL:
       return {
         ...state,

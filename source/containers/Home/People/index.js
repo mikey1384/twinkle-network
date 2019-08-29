@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useSearch } from 'helpers/hooks';
+import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
@@ -9,6 +9,7 @@ import {
   fetchMoreUsers,
   searchUsers
 } from 'redux/actions/UserActions';
+import { recordScrollPosition } from 'redux/actions/ViewActions';
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
@@ -23,8 +24,11 @@ People.propTypes = {
   fetchUsers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   loadMoreButton: PropTypes.bool,
+  location: PropTypes.object.isRequired,
   profiles: PropTypes.array.isRequired,
   profileTheme: PropTypes.string,
+  recordScrollPosition: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object.isRequired,
   searchedProfiles: PropTypes.array.isRequired,
   searchUsers: PropTypes.func.isRequired,
   userId: PropTypes.number
@@ -35,10 +39,13 @@ function People({
   fetchUsers,
   fetchMoreUsers,
   history,
+  location,
   loadMoreButton,
   profiles,
   profileTheme,
+  recordScrollPosition,
   userId,
+  scrollPositions,
   searchedProfiles,
   searchUsers
 }) {
@@ -64,6 +71,13 @@ function People({
     loading,
     onScrollToBottom: () => setLoading(true),
     onLoad: loadMoreProfiles
+  });
+
+  useScrollPosition({
+    scrollPositions,
+    pathname: location.pathname,
+    recordScrollPosition,
+    currentSection: `/users`
   });
 
   useEffect(() => {
@@ -196,6 +210,7 @@ export default connect(
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
     profileTheme: state.UserReducer.profileTheme,
+    scrollPositions: state.ViewReducer.scrollPositions,
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId
   }),
@@ -203,6 +218,7 @@ export default connect(
     clearUserSearch,
     fetchUsers,
     fetchMoreUsers,
+    recordScrollPosition,
     searchUsers
   }
 )(People);

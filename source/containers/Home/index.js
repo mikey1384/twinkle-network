@@ -49,12 +49,16 @@ function Home({ history, location, uploadProfilePic }) {
             <Switch>
               <Route
                 path="/users"
-                render={({ history }) => <People history={history} />}
+                render={({ history, location }) => (
+                  <People location={location} history={history} />
+                )}
               />
               <Route
                 exact
                 path="/"
-                render={({ history }) => <Stories history={history} />}
+                render={({ location, history }) => (
+                  <Stories location={location} history={history} />
+                )}
               />
             </Switch>
           </Suspense>

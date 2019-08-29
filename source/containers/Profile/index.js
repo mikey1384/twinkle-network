@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { useScrollPosition } from 'helpers/hooks';
 import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -9,6 +10,7 @@ import {
   changeProfileTheme,
   checkValidUsername
 } from 'redux/actions/UserActions';
+import { recordScrollPosition } from 'redux/actions/ViewActions';
 import { setTheme } from 'helpers/requestHelpers';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
@@ -21,6 +23,8 @@ Profile.propTypes = {
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
+  recordScrollPosition: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
 };
@@ -34,11 +38,19 @@ function Profile({
   match,
   profile,
   profile: { unavailable },
+  recordScrollPosition,
+  scrollPositions,
   userId,
   username
 }) {
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
+  useScrollPosition({
+    scrollPositions,
+    pathname: location.pathname,
+    recordScrollPosition,
+    currentSection: `/users/${username}`
+  });
 
   useEffect(() => {
     if (history.action === 'PUSH' || !profile.id) {
@@ -113,11 +125,13 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    profile: state.UserReducer.profile
+    profile: state.UserReducer.profile,
+    scrollPositions: state.ViewReducer.scrollPositions
   }),
   dispatch => ({
     dispatch,
     changeProfileTheme: theme => dispatch(changeProfileTheme(theme)),
-    checkValidUsername: username => dispatch(checkValidUsername(username))
+    checkValidUsername: username => dispatch(checkValidUsername(username)),
+    recordScrollPosition: params => dispatch(recordScrollPosition(params))
   })
 )(Profile);

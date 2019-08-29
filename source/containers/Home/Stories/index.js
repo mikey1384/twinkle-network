@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll } from 'helpers/hooks';
+import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import {
   addTags,
@@ -29,6 +29,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
+import { recordScrollPosition } from 'redux/actions/ViewActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -69,8 +70,11 @@ Stories.propTypes = {
   loadMoreFeedReplies: PropTypes.func.isRequired,
   loadRepliesOfReply: PropTypes.func.isRequired,
   loadTags: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
   numNewPosts: PropTypes.number.isRequired,
+  recordScrollPosition: PropTypes.func.isRequired,
   resetNumNewPosts: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object.isRequired,
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
@@ -122,6 +126,7 @@ function Stories({
   fetchMoreFeeds,
   fetchNewFeeds,
   hideWatched,
+  location,
   loaded,
   loadMoreFeedComments,
   loadRepliesOfReply,
@@ -129,7 +134,9 @@ function Stories({
   loadMoreFeedReplies,
   loadTags,
   numNewPosts,
+  recordScrollPosition,
   resetNumNewPosts,
+  scrollPositions,
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
@@ -149,6 +156,13 @@ function Stories({
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+
+  useScrollPosition({
+    scrollPositions,
+    pathname: location.pathname,
+    recordScrollPosition,
+    currentSection: `/`
+  });
 
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: storyFeeds.length > 0,
@@ -459,6 +473,7 @@ export default connect(
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
     noFeeds: state.FeedReducer.noFeeds,
+    scrollPositions: state.ViewReducer.scrollPositions,
     subFilter: state.FeedReducer.subFilter
   }),
   {
@@ -483,6 +498,7 @@ export default connect(
     loadMoreFeedReplies,
     loadRepliesOfReply,
     loadTags,
+    recordScrollPosition,
     resetNumNewPosts,
     setCurrentSection,
     setRewardLevel,

@@ -1,11 +1,11 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
 import ContentPanel from 'components/ContentPanel';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { useInfiniteScroll } from 'helpers/hooks';
 import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import {
@@ -33,6 +33,7 @@ import {
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
+import { recordScrollPosition } from 'redux/actions/ViewActions';
 import Loading from 'components/Loading';
 import SideMenu from './SideMenu';
 import { connect } from 'react-redux';
@@ -63,6 +64,8 @@ Posts.propTypes = {
   match: PropTypes.object.isRequired,
   myId: PropTypes.number,
   profileFeeds: PropTypes.array.isRequired,
+  recordScrollPosition: PropTypes.func.isRequired,
+  scrollPositions: PropTypes.object.isRequired,
   selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
@@ -108,6 +111,8 @@ function Posts({
   },
   myId,
   profileFeeds,
+  recordScrollPosition,
+  scrollPositions,
   selectedTheme,
   setCurrentSection,
   showFeedComments,
@@ -119,6 +124,14 @@ function Posts({
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
   const selectedFilter = useRef('all');
+  useScrollPosition({
+    scrollPositions,
+    pathname: location.pathname,
+    recordScrollPosition,
+    currentSection: `/users/${username}/${
+      filterTable[section] === 'url' ? 'link' : filterTable[section]
+    }${filterTable[section] === 'all' ? '' : 's'}`
+  });
 
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: profileFeeds.length > 0,
@@ -356,7 +369,8 @@ export default connect(
     loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
     loadMoreButton: state.FeedReducer.profileFeedsLoadMoreButton,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected
+    homeComponentConnected: state.FeedReducer.homeComponentConnected,
+    scrollPositions: state.ViewReducer.scrollPositions
   }),
   {
     addTags,
@@ -377,6 +391,7 @@ export default connect(
     loadMoreFeedReplies,
     loadRepliesOfReply,
     loadTags,
+    recordScrollPosition,
     setCurrentSection,
     setRewardLevel,
     showFeedComments,

@@ -30,7 +30,6 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { getSectionFromPathname } from 'helpers';
 import { uploadFileOnChat } from 'helpers/requestHelpers';
 
 const Home = React.lazy(() => import('containers/Home'));
@@ -53,8 +52,6 @@ App.propTypes = {
   location: PropTypes.object,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
@@ -71,9 +68,7 @@ function App({
   history,
   postFileUploadStatus,
   postUploadComplete,
-  recordScrollPosition,
   signinModalShown,
-  scrollPositions,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
   updateDetail,
@@ -83,7 +78,6 @@ function App({
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
 
   useEffect(() => {
     initSession(location.pathname);
@@ -93,39 +87,6 @@ function App({
     });
     changePageVisibility(!document[hiddenRef.current]);
   }, []);
-
-  useEffect(() => {
-    const { section, isSubsection } = getSectionFromPathname(location.pathname);
-    if (!isSubsection) {
-      setTimeout(() => {
-        document.getElementById('App').scrollTop = scrollPositions[section];
-        BodyRef.current.scrollTop = scrollPositions[section];
-      }, 0);
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    addEvent(window, 'scroll', onScroll);
-    addEvent(document.getElementById('App'), 'scroll', onScroll);
-
-    function onScroll() {
-      const { section, isSubsection } = getSectionFromPathname(
-        location.pathname
-      );
-      if (!isSubsection) {
-        const position = Math.max(
-          document.getElementById('App').scrollTop,
-          BodyRef.current.scrollTop
-        );
-        recordScrollPosition({ section, position });
-      }
-    }
-
-    return function cleanUp() {
-      removeEvent(window, 'scroll', onScroll);
-      removeEvent(document.getElementById('App'), 'scroll', onScroll);
-    };
-  });
 
   useEffect(() => {
     if (typeof document.hidden !== 'undefined') {
