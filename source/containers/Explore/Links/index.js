@@ -11,18 +11,11 @@ import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
 Main.propTypes = {
   fetchLinks: PropTypes.func.isRequired,
   fetchMoreLinks: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   links: PropTypes.array.isRequired,
   loadMoreLinksButtonShown: PropTypes.bool.isRequired
 };
 
-function Main({
-  fetchLinks,
-  fetchMoreLinks,
-  history,
-  links,
-  loadMoreLinksButtonShown
-}) {
+function Main({ fetchLinks, fetchMoreLinks, links, loadMoreLinksButtonShown }) {
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const [loaded, setLoaded] = useState(!!links.length);
   const mounted = useRef(true);
@@ -38,7 +31,7 @@ function Main({
     mounted.current = true;
     init();
     async function init() {
-      if (!loaded || history.action === 'PUSH') {
+      if (!loaded) {
         const { results: links, loadMoreButton } = await loadUploads({
           type: 'url',
           numberToLoad: 20

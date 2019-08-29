@@ -13,18 +13,18 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import {
   loadUploads,
   searchContent,
-  uploadFeaturedChallenges
+  uploadFeaturedSubjects
 } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
-SelectFeaturedChallengesModal.propTypes = {
+SelectFeaturedSubjectsModal.propTypes = {
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   selectedChallenges: PropTypes.array.isRequired
 };
 
-function SelectFeaturedChallengesModal({
+function SelectFeaturedSubjectsModal({
   dispatch,
   selectedChallenges,
   onHide,
@@ -252,7 +252,7 @@ function SelectFeaturedChallengesModal({
 
   async function handleSubmit() {
     setSubmitting(true);
-    await uploadFeaturedChallenges({ dispatch, selected });
+    await uploadFeaturedSubjects({ dispatch, selected });
     onSubmit(selected.map(selectedId => challengeObjs[selectedId]));
   }
 }
@@ -260,4 +260,4 @@ function SelectFeaturedChallengesModal({
 export default connect(
   null,
   dispatch => ({ dispatch })
-)(SelectFeaturedChallengesModal);
+)(SelectFeaturedSubjectsModal);

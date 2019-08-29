@@ -66,7 +66,7 @@ function Videos({
     init();
 
     async function init() {
-      if (history.action === 'PUSH' || !loaded) {
+      if (!loaded) {
         getPlaylists();
         const { results: videos, loadMoreButton } = await loadUploads({
           type: 'video'

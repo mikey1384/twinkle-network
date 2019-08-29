@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
@@ -16,6 +16,7 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
+import { socket } from 'constants/io';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
@@ -27,9 +28,32 @@ Explore.propTypes = {
 };
 
 function Explore({ history, location, mobileNavbarShown, searchText }) {
+  const [key, setKey] = useState(0);
+  const mounted = useRef(true);
+  const disconnected = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    function onConnect() {
+      if (disconnected.current && mounted.current) {
+        setKey(key => key + 1);
+      }
+      disconnected.current = false;
+    }
+    function onDisconnect() {
+      disconnected.current = true;
+    }
+    return function cleanUp() {
+      socket.removeListener('connect', onConnect);
+      socket.removeListener('disconnect', onDisconnect);
+      mounted.current = false;
+    };
+  });
   return (
     <ErrorBoundary>
       <div
+        key={key}
         className={css`
           width: 100%;
           display: flex;
