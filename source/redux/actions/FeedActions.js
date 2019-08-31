@@ -156,6 +156,12 @@ export const loadTags = ({ type, contentId, tags }) => ({
   tags
 });
 
+export const showFeedComments = ({ feedId, shown }) => ({
+  type: FEED.SHOW_COMMENTS,
+  feedId,
+  shown
+});
+
 export const setRewardLevel = ({ type, contentId, rewardLevel }) => ({
   type: FEED.SET_REWARD_LEVEL,
   contentType: type,
@@ -168,7 +174,7 @@ export const setCurrentSection = section => ({
   section
 });
 
-export const showFeedComments = (data, feedId) => ({
+export const loadFeedComments = (data, feedId) => ({
   type: FEED.LOAD_COMMENTS,
   data,
   feedId

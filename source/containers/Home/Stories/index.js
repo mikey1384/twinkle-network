@@ -26,6 +26,7 @@ import {
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
+  loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
@@ -78,6 +79,7 @@ Stories.propTypes = {
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
+  loadFeedComments: PropTypes.func.isRequired,
   storyFeeds: PropTypes.array.isRequired,
   subFilter: PropTypes.string.isRequired,
   toggleHideWatched: PropTypes.func.isRequired,
@@ -140,6 +142,7 @@ function Stories({
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
+  loadFeedComments,
   storyFeeds = [],
   subFilter,
   toggleHideWatched,
@@ -327,8 +330,11 @@ function Stories({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
+                    onSetCommentsShown={shown =>
+                      showFeedComments({ feedId: feed.feedId, shown })
+                    }
                     onSetRewardLevel={setRewardLevel}
-                    onShowComments={showFeedComments}
+                    onLoadComments={loadFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={userId}
                   />
@@ -494,6 +500,7 @@ export default connect(
     feedContentEdit,
     feedCommentEdit,
     feedRewardCommentEdit,
+    loadFeedComments,
     loadMoreFeedComments,
     loadMoreFeedReplies,
     loadRepliesOfReply,

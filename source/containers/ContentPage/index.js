@@ -148,7 +148,7 @@ function Content({
                 onReplySubmit={onUploadReply}
                 onSetCommentsShown={showComments}
                 onSetRewardLevel={onSetRewardLevel}
-                onShowComments={onLoadComments}
+                onLoadComments={onLoadComments}
                 onTargetCommentSubmit={onTargetCommentSubmit}
               />
             ) : (

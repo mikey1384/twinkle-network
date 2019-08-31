@@ -665,6 +665,15 @@ export default function FeedReducer(state = defaultState, action) {
               };
         })
       };
+    case FEED.SHOW_COMMENTS:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed =>
+          feed.feedId === action.feedId
+            ? { ...feed, commentsShown: action.shown }
+            : feed
+        )
+      };
     case FEED.UPLOAD_CONTENT:
       return {
         ...state,

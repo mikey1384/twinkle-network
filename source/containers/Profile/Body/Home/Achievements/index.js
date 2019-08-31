@@ -94,7 +94,7 @@ export default function Achievements({
               onReplySubmit({ ...data, feedId: contentObj.feedId })
             }
             onSetRewardLevel={onSetRewardLevel}
-            onShowComments={onShowComments}
+            onLoadComments={onLoadComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
           />
         ))}
@@ -277,7 +277,7 @@ export default function Achievements({
     });
   }
 
-  function onShowComments(data, feedId) {
+  function onLoadComments(data, feedId) {
     dispatch({
       type: 'LOAD_COMMENTS',
       data,

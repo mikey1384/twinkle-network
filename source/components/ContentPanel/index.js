@@ -18,7 +18,6 @@ import { loadContent } from 'helpers/requestHelpers';
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
-  commentsShown: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
   inputAtBottom: PropTypes.bool,
   userId: PropTypes.number,
@@ -41,7 +40,7 @@ ContentPanel.propTypes = {
   onReplySubmit: PropTypes.func.isRequired,
   onSetCommentsShown: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func,
-  onShowComments: PropTypes.func.isRequired,
+  onLoadComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
   onTargetCommentSubmit: PropTypes.func.isRequired,
   style: PropTypes.object
@@ -50,9 +49,8 @@ ContentPanel.propTypes = {
 export default function ContentPanel({
   autoExpand,
   commentsLoadLimit,
-  commentsShown,
   contentObj,
-  contentObj: { contentId, feedId, newPost, secretShown, type },
+  contentObj: { commentsShown, contentId, feedId, newPost, secretShown, type },
   inputAtBottom,
   onAddTags,
   onAddTagToContents,
@@ -74,7 +72,7 @@ export default function ContentPanel({
   onReplySubmit,
   onSetCommentsShown,
   onSetRewardLevel,
-  onShowComments,
+  onLoadComments,
   onTargetCommentSubmit,
   style = {},
   userId
@@ -126,7 +124,7 @@ export default function ContentPanel({
         onLoadRepliesOfReply,
         onReplySubmit,
         onSetRewardLevel,
-        onShowComments,
+        onLoadComments,
         onTargetCommentSubmit
       }}
     >

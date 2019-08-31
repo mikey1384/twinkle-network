@@ -4,11 +4,13 @@ import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 GoBack.propTypes = {
+  history: PropTypes.object.isRequired,
   profileTheme: PropTypes.string
 };
-function GoBack({ profileTheme }) {
+function GoBack({ history, profileTheme }) {
   const themeColor = profileTheme || 'logoBlue';
   return (
     <div
@@ -36,6 +38,7 @@ function GoBack({ profileTheme }) {
           }
         }
       `}
+      onClick={() => history.goBack()}
     >
       <span>
         <Icon icon="arrow-left" /> Go Back
@@ -46,4 +49,4 @@ function GoBack({ profileTheme }) {
 
 export default connect(state => ({
   profileTheme: state.UserReducer.profileTheme
-}))(GoBack);
+}))(withRouter(GoBack));

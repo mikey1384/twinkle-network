@@ -58,6 +58,7 @@ Body.propTypes = {
   onEditContent: PropTypes.func.isRequired,
   onEditRewardComment: PropTypes.func.isRequired,
   onLikeContent: PropTypes.func.isRequired,
+  onLoadComments: PropTypes.func.isRequired,
   onLoadMoreComments: PropTypes.func.isRequired,
   onLoadMoreReplies: PropTypes.func.isRequired,
   onLoadTags: PropTypes.func,
@@ -66,12 +67,11 @@ Body.propTypes = {
   onSetCommentsHidden: PropTypes.func.isRequired,
   onSetCommentsShown: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func,
-  onShowComments: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
 };
 
 function Body({
-  onShowComments,
+  onLoadComments,
   commentsLoadLimit,
   contentObj,
   contentObj: {
@@ -141,10 +141,6 @@ function Body({
   const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
-    onSetCommentsShown(false);
-  }, [contentObj.id]);
-
-  useEffect(() => {
     setXpRewardInterfaceShown(false);
   }, [myId]);
 
@@ -161,7 +157,7 @@ function Body({
         limit: commentsLoadLimit
       });
       if (mounted.current) {
-        onShowComments(data);
+        onLoadComments(data);
         onSetCommentsShown(true);
       }
     }
@@ -544,7 +540,7 @@ function Body({
       id: contentId,
       limit: commentsLoadLimit
     });
-    onShowComments(data, feedId);
+    onLoadComments(data, feedId);
     onSetCommentsShown(true);
   }
 

@@ -29,7 +29,7 @@ import {
   loadTags,
   setCurrentSection,
   setRewardLevel,
-  showFeedComments,
+  loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
 } from 'redux/actions/FeedActions';
@@ -69,7 +69,7 @@ Posts.propTypes = {
   selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
-  showFeedComments: PropTypes.func.isRequired,
+  loadFeedComments: PropTypes.func.isRequired,
   uploadTargetContentComment: PropTypes.func.isRequired,
   uploadFeedComment: PropTypes.func.isRequired
 };
@@ -115,7 +115,7 @@ function Posts({
   scrollPositions,
   selectedTheme,
   setCurrentSection,
-  showFeedComments,
+  loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment,
   setRewardLevel
@@ -244,7 +244,7 @@ function Posts({
                       handleUploadFeedComment({ feed, data })
                     }
                     onSetRewardLevel={setRewardLevel}
-                    onShowComments={showFeedComments}
+                    onLoadComments={loadFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={myId}
                   />
@@ -394,7 +394,7 @@ export default connect(
     recordScrollPosition,
     setCurrentSection,
     setRewardLevel,
-    showFeedComments,
+    loadFeedComments,
     uploadFeedComment,
     uploadTargetContentComment
   }
