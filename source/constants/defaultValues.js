@@ -5,7 +5,7 @@ export const rewardValue = {
 import { Color } from './css';
 
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.0.67';
+export const clientVersion = '1.0.68';
 export const charLimit = {
   chat: {
     subject: 200,
