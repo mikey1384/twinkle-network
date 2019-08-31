@@ -65,6 +65,7 @@ function Explore({
       mounted.current = false;
     };
   });
+
   return (
     <ErrorBoundary>
       <div

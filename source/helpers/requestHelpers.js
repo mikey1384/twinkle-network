@@ -248,7 +248,7 @@ export const loadComments = async ({ id, type, lastCommentId, limit }) => {
 
 export const loadFeaturedSubjects = async () => {
   try {
-    const { data } = await request.get(`${URL}/content/featured/challenges`);
+    const { data } = await request.get(`${URL}/content/featured/subjects`);
     return Promise.resolve(data);
   } catch (error) {
     console.error(error.response || error);
@@ -683,7 +683,7 @@ export const uploadContent = async ({
 export const uploadFeaturedSubjects = async ({ dispatch, selected }) => {
   try {
     const challenges = await request.post(
-      `${URL}/content/featured/challenges`,
+      `${URL}/content/featured/subjects`,
       { selectedChallenges: selected },
       auth()
     );
