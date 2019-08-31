@@ -110,6 +110,7 @@ function ChessModal({
           }}
         >
           <Chess
+            isFromModal
             channelId={channelId}
             chessCountdownObj={chessCountdownObj}
             interactable={!parsedState?.isDraw}
