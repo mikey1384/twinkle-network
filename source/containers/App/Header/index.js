@@ -5,7 +5,7 @@ import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { matchPath, withRouter } from 'react-router';
 import { logout } from 'redux/actions/UserActions';
 import {
   clearChatLoadedState,
@@ -113,6 +113,11 @@ function Header({
   const prevUserIdRef = useRef(userId);
   const [exploreCategory, setExploreCategory] = useState('');
   const [homeLink, setHomeLink] = useState('/');
+  const match = matchPath(pathname, {
+    path: '/subjects/:id',
+    exact: true
+  });
+  console.log(match);
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
     if (!exploreCategory) {
