@@ -18,6 +18,7 @@ import { loadContent } from 'helpers/requestHelpers';
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
+  commentsShown: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
   inputAtBottom: PropTypes.bool,
   userId: PropTypes.number,
@@ -38,6 +39,7 @@ ContentPanel.propTypes = {
   onLoadTags: PropTypes.func,
   onLoadRepliesOfReply: PropTypes.func,
   onReplySubmit: PropTypes.func.isRequired,
+  onSetCommentsShown: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func,
   onShowComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
@@ -48,6 +50,7 @@ ContentPanel.propTypes = {
 export default function ContentPanel({
   autoExpand,
   commentsLoadLimit,
+  commentsShown,
   contentObj,
   contentObj: { contentId, feedId, newPost, secretShown, type },
   inputAtBottom,
@@ -69,6 +72,7 @@ export default function ContentPanel({
   onLoadTags,
   onLoadRepliesOfReply,
   onReplySubmit,
+  onSetCommentsShown,
   onSetRewardLevel,
   onShowComments,
   onTargetCommentSubmit,
@@ -78,6 +82,7 @@ export default function ContentPanel({
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const [videoShown, setVideoShown] = useState(false);
+  const [commentsHidden, setCommentsHidden] = useState(true);
   const loading = useRef(false);
   const mounted = useRef(true);
   useEffect(() => {
@@ -164,12 +169,16 @@ export default function ContentPanel({
                 <div className="body">
                   <Body
                     autoExpand={autoExpand}
+                    commentsHidden={commentsHidden}
+                    commentsShown={commentsShown}
                     contentObj={contentObj}
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
                     myId={userId}
                     secretShown={secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
+                    onSetCommentsHidden={setCommentsHidden}
+                    onSetCommentsShown={onSetCommentsShown}
                   />
                 </div>
               </>

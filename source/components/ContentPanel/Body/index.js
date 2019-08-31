@@ -40,6 +40,8 @@ Body.propTypes = {
   canEditRewardLevel: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
   canStar: PropTypes.bool,
+  commentsHidden: PropTypes.bool,
+  commentsShown: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
   inputAtBottom: PropTypes.bool,
@@ -61,6 +63,8 @@ Body.propTypes = {
   onLoadTags: PropTypes.func,
   onLoadRepliesOfReply: PropTypes.func,
   onReplySubmit: PropTypes.func.isRequired,
+  onSetCommentsHidden: PropTypes.func.isRequired,
+  onSetCommentsShown: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func,
   onShowComments: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
@@ -99,6 +103,8 @@ function Body({
   canEdit,
   canEditRewardLevel,
   canStar,
+  commentsHidden,
+  commentsShown,
   dispatch,
   inputAtBottom,
   myId,
@@ -120,14 +126,14 @@ function Body({
   onLoadTags,
   onLoadRepliesOfReply,
   onReplySubmit,
+  onSetCommentsHidden,
+  onSetCommentsShown,
   onSetRewardLevel,
   secretShown
 }) {
-  const [commentsHidden, setCommentsHidden] = useState(true);
   const [edited, setEdited] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [commentsShown, setCommentsShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const mounted = useRef(true);
@@ -135,7 +141,7 @@ function Body({
   const CommentInputAreaRef = useRef(null);
 
   useEffect(() => {
-    setCommentsShown(false);
+    onSetCommentsShown(false);
   }, [contentObj.id]);
 
   useEffect(() => {
@@ -156,7 +162,7 @@ function Body({
       });
       if (mounted.current) {
         onShowComments(data);
-        setCommentsShown(true);
+        onSetCommentsShown(true);
       }
     }
     return function cleanUp() {
@@ -175,7 +181,7 @@ function Body({
       !!targetObj?.subject?.secretAnswer &&
       !secretShown &&
       targetObj?.subject?.uploader.id !== myId;
-    setCommentsHidden(
+    onSetCommentsHidden(
       contentSecretHidden || rootContentSecretHidden || subjectSecretHidden
     );
   }, [contentObj.id, secretShown, myId]);
@@ -539,7 +545,7 @@ function Body({
       limit: commentsLoadLimit
     });
     onShowComments(data, feedId);
-    setCommentsShown(true);
+    onSetCommentsShown(true);
   }
 
   async function onLikeClick(likes) {

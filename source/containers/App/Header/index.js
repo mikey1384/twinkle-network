@@ -166,15 +166,16 @@ function Header({
       clearRecentChessMessage();
       changeSocketStatus(true);
       checkVersion();
-      getNumberOfUnreadMessages();
       if (userId) {
+        getNumberOfUnreadMessages();
         socket.emit('bind_uid_to_socket', userId, username);
+        if (section === 'talk') {
+          const data = await loadChat();
+          initChat(data);
+        }
       }
       if (section !== 'talk') {
         clearChatLoadedState();
-      } else {
-        const data = await loadChat();
-        initChat(data);
       }
     }
     function onDisconnect() {

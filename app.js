@@ -6,6 +6,7 @@ import createStoreWithMiddlewares from './store';
 import App from 'containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
+import { faArrowLeft } from '@fortawesome/pro-solid-svg-icons/faArrowLeft';
 import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
 import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
 import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
@@ -49,6 +50,7 @@ library.add(
   faBars,
   faBolt,
   faBook,
+  faArrowLeft,
   faCameraAlt,
   faCaretDown,
   faCertificate,

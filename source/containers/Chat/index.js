@@ -108,10 +108,12 @@ function Chat({
 
   useEffect(() => {
     mounted.current = true;
-    if (!loaded) {
+    if (!loaded && userId) {
       init();
     } else {
-      updateChatLastRead({ channelId: selectedChannelId, dispatch });
+      if (userId) {
+        updateChatLastRead({ channelId: selectedChannelId, dispatch });
+      }
       clearNumUnreads();
     }
 

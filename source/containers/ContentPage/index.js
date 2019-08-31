@@ -7,22 +7,28 @@ import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import GoBack from 'components/GoBack';
 import { connect } from 'react-redux';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { showComments } from 'redux/actions/ContentActions';
 
 Content.propTypes = {
+  commentsShown: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  showComments: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
 function Content({
+  commentsShown,
   history,
   match: {
     params: { contentId },
     url
   },
+  showComments,
   userId
 }) {
   const type = url.split('/')[1].slice(0, -1);
@@ -89,14 +95,21 @@ function Content({
   }, [contentId, url]);
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%'
+      }}
+    >
+      <GoBack />
       <div
         className={css`
           width: 100%;
           display: flex;
           justify-content: center;
-          margin-top: 1rem;
           margin-bottom: 1rem;
+          margin-top: 1rem;
           padding-bottom: 20rem;
         `}
       >
@@ -114,6 +127,7 @@ function Content({
               <ContentPanel
                 key={contentObj.type + contentObj.contentId}
                 autoExpand
+                commentsShown={commentsShown}
                 inputAtBottom={contentObj.type === 'comment'}
                 commentsLoadLimit={5}
                 contentObj={contentObj}
@@ -132,6 +146,7 @@ function Content({
                 onLoadMoreReplies={onLoadMoreReplies}
                 onLoadRepliesOfReply={onLoadRepliesOfReply}
                 onReplySubmit={onUploadReply}
+                onSetCommentsShown={showComments}
                 onSetRewardLevel={onSetRewardLevel}
                 onShowComments={onLoadComments}
                 onTargetCommentSubmit={onTargetCommentSubmit}
@@ -148,6 +163,10 @@ function Content({
   );
 }
 
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(Content);
+export default connect(
+  state => ({
+    userId: state.UserReducer.userId,
+    commentsShown: state.ContentReducer.commentsShown
+  }),
+  { showComments }
+)(Content);
