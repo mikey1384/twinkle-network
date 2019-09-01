@@ -46,21 +46,21 @@ function ChessModal({
   const [newChessState, setNewChessState] = useState();
   const [loaded, setLoaded] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
+  const prevChannelId = useRef(channelId);
   const loading = useRef(null);
 
   useEffect(() => {
     init();
     async function init() {
       loading.current = true;
-      console.log(channelId);
-      const message = await fetchCurrentChessState({
+      const chessMessage = await fetchCurrentChessState({
         channelId,
         recentChessMessage
       });
-      setMessage(message);
-      setUploaderId(message?.userId);
-      setInitialState(message?.chessState);
-      setViewTimeStamp(message?.moveViewTimeStamp);
+      setMessage(chessMessage);
+      setUploaderId(chessMessage?.userId);
+      setInitialState(chessMessage?.chessState);
+      setViewTimeStamp(chessMessage?.moveViewTimeStamp);
       loading.current = false;
       setLoaded(true);
     }
@@ -69,6 +69,16 @@ function ChessModal({
       setInitialState(undefined);
     };
   }, []);
+
+  useEffect(() => {
+    if (!prevChannelId.current) {
+      prevChannelId.current = channelId;
+      return;
+    }
+    if (prevChannelId.current !== channelId) {
+      onHide();
+    }
+  }, [channelId]);
 
   useEffect(() => {
     if (!loading.current) {
@@ -100,6 +110,7 @@ function ChessModal({
           }}
         >
           <Chess
+            isFromModal
             channelId={channelId}
             chessCountdownObj={chessCountdownObj}
             interactable={!parsedState?.isDraw}
