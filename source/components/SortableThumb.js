@@ -6,7 +6,8 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import VideoThumbImage from 'components/VideoThumbImage';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 SortableThumb.propTypes = {
   id: PropTypes.number.isRequired,
@@ -40,9 +41,14 @@ export default function SortableThumb({ id, onMove, video }) {
     <div
       ref={drag(drop(Draggable))}
       key={video.id}
+      className={css`
+        width: 16%;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 32%;
+        }
+      `}
       style={{
         opacity: isDragging ? 0.5 : 1,
-        width: '16%',
         margin: '0.3%',
         cursor: 'pointer',
         boxShadow: `0 0 5px ${Color.darkerGray()}`,

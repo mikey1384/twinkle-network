@@ -6,8 +6,9 @@ import Embedly from 'components/Embedly';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
+import { css } from 'emotion';
 
 Selectable.propTypes = {
   item: PropTypes.object,
@@ -32,8 +33,13 @@ function Selectable({
 
   return (
     <ErrorBoundary
+      className={`unselectable ${css`
+        width: 16%;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 32%;
+        }
+      `}`}
       style={{
-        width: '16%',
         margin: '0.3%',
         cursor: 'pointer',
         boxShadow: `0 0 5px ${
@@ -42,7 +48,6 @@ function Selectable({
         border: selected && `0.5rem solid ${Color[themeColor]()}`,
         background: Color.whiteGray()
       }}
-      className="unselectable"
     >
       <div
         style={{
