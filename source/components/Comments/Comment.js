@@ -320,6 +320,7 @@ function Comment({
                         : '1rem'
                   }}
                   onSubmit={submitReply}
+                  parent={parent}
                   numReplies={replies.length}
                   rootCommentId={comment.commentId}
                   targetCommentId={comment.id}

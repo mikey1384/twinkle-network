@@ -268,12 +268,13 @@ function Reply({
             />
             <ReplyInputArea
               innerRef={ReplyInputAreaRef}
+              onSubmit={submitReply}
+              parent={parent}
+              rootCommentId={reply.commentId}
               style={{
                 marginTop:
                   stars.length > 0 || reply.likes.length > 0 ? '0.5rem' : '1rem'
               }}
-              onSubmit={submitReply}
-              rootCommentId={reply.commentId}
               targetCommentId={reply.id}
             />
           </section>

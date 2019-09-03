@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 import createStoreWithMiddlewares from './store';
-import App from 'containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
 import { faArrowLeft } from '@fortawesome/pro-solid-svg-icons/faArrowLeft';
@@ -45,6 +44,8 @@ import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
+import App from 'containers/App';
+import { ContextProvider } from 'context';
 library.add(
   faAlignJustify,
   faBars,
@@ -91,9 +92,11 @@ library.add(
 const store = createStoreWithMiddlewares();
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Route component={App} />
-    </BrowserRouter>
+    <ContextProvider>
+      <BrowserRouter>
+        <Route component={App} />
+      </BrowserRouter>
+    </ContextProvider>
   </Provider>,
   document.getElementById('react-view')
 );

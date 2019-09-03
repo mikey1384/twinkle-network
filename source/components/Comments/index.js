@@ -266,11 +266,12 @@ function Comments({
         autoFocus={autoFocus}
         InputFormRef={CommentInputAreaRef}
         innerRef={inputAreaInnerRef}
-        numInputRows={numInputRows}
-        style={style}
         inputTypeLabel={inputTypeLabel}
+        numInputRows={numInputRows}
         onSubmit={submitComment}
+        parent={parent}
         rootCommentId={parent.type === 'comment' ? parent.commentId : null}
+        style={style}
         targetCommentId={parent.type === 'comment' ? parent.id : null}
       />
     );

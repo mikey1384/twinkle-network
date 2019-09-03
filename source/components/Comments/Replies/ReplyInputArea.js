@@ -7,6 +7,7 @@ ReplyInputArea.propTypes = {
   rootCommentId: PropTypes.number,
   innerRef: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
+  parent: PropTypes.object.isRequired,
   rows: PropTypes.number,
   style: PropTypes.object,
   targetCommentId: PropTypes.number
@@ -15,6 +16,7 @@ ReplyInputArea.propTypes = {
 export default function ReplyInputArea({
   innerRef,
   onSubmit,
+  parent,
   rootCommentId,
   style,
   targetCommentId,
@@ -28,8 +30,9 @@ export default function ReplyInputArea({
           onSubmit={text =>
             onSubmit({ content: text, rootCommentId, targetCommentId })
           }
-          rows={rows}
+          parent={parent}
           placeholder="Enter your reply..."
+          rows={rows}
         />
       </div>
     </ErrorBoundary>

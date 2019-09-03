@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -9,12 +9,14 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
+import { Context } from 'context';
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,
   formGroupStyle: PropTypes.object,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   onSubmit: PropTypes.func.isRequired,
+  parent: PropTypes.object.isRequired,
   placeholder: PropTypes.string,
   rows: PropTypes.number,
   style: PropTypes.object,
@@ -27,12 +29,16 @@ export default function InputForm({
   formGroupStyle = {},
   innerRef,
   onSubmit,
+  parent,
   placeholder,
   rows,
   style = {}
 }) {
   const [submitting, setSubmitting] = useState(false);
-  const [text, setText] = useState('');
+  const {
+    state: { text },
+    dispatch
+  } = useContext(Context);
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',
     text
@@ -56,7 +62,7 @@ export default function InputForm({
           minRows={rows}
           value={text}
           placeholder={placeholder}
-          onChange={event => setText(event.target.value)}
+          onChange={handleOnChange}
           onKeyUp={handleKeyUp}
         />
         {commentExceedsCharLimit && (
@@ -90,15 +96,29 @@ export default function InputForm({
 
   function handleKeyUp(event) {
     if (event.key === ' ') {
-      setText(addEmoji(event.target.value));
+      return dispatch({
+        type: 'ENTER_TEXT',
+        text: addEmoji(event.target.value)
+      });
     }
+  }
+
+  function handleOnChange(event) {
+    console.log(parent);
+    return dispatch({
+      type: 'ENTER_TEXT',
+      text: event.target.value
+    });
   }
 
   async function handleSubmit() {
     setSubmitting(true);
     try {
       await onSubmit(finalizeEmoji(text));
-      setText('');
+      dispatch({
+        type: 'ENTER_TEXT',
+        text: ''
+      });
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
