@@ -36,9 +36,9 @@ export default function InputForm({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const {
-    state: { text },
-    dispatch
+    [parent.type]: { state, dispatch }
   } = useContext(Context);
+  const text = state[parent.id] || '';
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',
     text
@@ -98,15 +98,16 @@ export default function InputForm({
     if (event.key === ' ') {
       return dispatch({
         type: 'ENTER_TEXT',
+        contentId: parent.id,
         text: addEmoji(event.target.value)
       });
     }
   }
 
   function handleOnChange(event) {
-    console.log(parent);
     return dispatch({
       type: 'ENTER_TEXT',
+      contentId: parent.id,
       text: event.target.value
     });
   }
@@ -117,6 +118,7 @@ export default function InputForm({
       await onSubmit(finalizeEmoji(text));
       dispatch({
         type: 'ENTER_TEXT',
+        contentId: parent.id,
         text: ''
       });
       setSubmitting(false);

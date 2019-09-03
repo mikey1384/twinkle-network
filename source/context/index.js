@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 
 export const Context = createContext();
 
-const initialState = {
-  text: ''
-};
+const initialSubjectState = {};
 function reducer(state, action) {
+  console.log(state, action);
   switch (action.type) {
     case 'ENTER_TEXT':
-      return { ...state, text: action.text };
+      return {
+        ...state,
+        [action.contentId]: action.text
+      };
     default:
       return state;
   }
@@ -20,7 +22,10 @@ ContextProvider.propTypes = {
 };
 
 export function ContextProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const value = { state, dispatch };
+  const [subjectState, subjectDispatch] = useReducer(
+    reducer,
+    initialSubjectState
+  );
+  const value = { subject: { state: subjectState, dispatch: subjectDispatch } };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
