@@ -60,6 +60,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:alien\:)/gi, '👽')
     .replace(/(\:heart\:)/gi, '❤️')
     .replace(/(\:zzz\:)/gi, '💤')
+    .replace(/(\:smile\:)/gi, '😊')
     .replace(/(\:thumbs\:)/gi, '👍')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:ok\:)/gi, '👌')
