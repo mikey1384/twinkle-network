@@ -19,12 +19,13 @@ import {
   turnChatOff,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { loadChat, uploadFileOnChat } from 'helpers/requestHelpers';
+import { auth, loadChat, uploadFileOnChat } from 'helpers/requestHelpers';
 import { changePageVisibility } from 'redux/actions/ViewActions';
 import {
   initSession,
   openSigninModal,
-  closeSigninModal
+  closeSigninModal,
+  logout
 } from 'redux/actions/UserActions';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { siteContent } from './Styles';
@@ -55,7 +56,9 @@ App.propTypes = {
   initChat: PropTypes.func.isRequired,
   initSession: PropTypes.func.isRequired,
   location: PropTypes.object,
+  logout: PropTypes.func.isRequired,
   loggedIn: PropTypes.bool,
+  pageVisible: PropTypes.bool,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   resetChat: PropTypes.func.isRequired,
@@ -79,6 +82,8 @@ function App({
   location,
   loggedIn,
   history,
+  logout,
+  pageVisible,
   postFileUploadStatus,
   postUploadComplete,
   resetChat,
@@ -97,14 +102,22 @@ function App({
   const SearchBoxRef = useRef(null);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
+  const authRef = useRef(null);
 
   useEffect(() => {
-    initSession(location.pathname);
+    if (!auth()?.headers?.authorization) {
+      logout();
+    } else if (
+      authRef.current?.headers?.authorization !== auth()?.headers?.authorization
+    ) {
+      initSession(location.pathname);
+      authRef.current = auth();
+    }
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
-  }, []);
+  }, [pageVisible]);
 
   useEffect(() => {
     if (typeof document.hidden !== 'undefined') {
@@ -340,6 +353,7 @@ export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
     chatMode: state.ChatReducer.chatMode,
+    pageVisible: state.ViewReducer.pageVisible,
     searchMode: state.SearchReducer.searchMode,
     searchText: state.SearchReducer.searchText,
     signinModalShown: state.UserReducer.signinModalShown,
@@ -353,6 +367,7 @@ export default connect(
     initSession: pathname => dispatch(initSession(pathname)),
     turnChatOff: () => dispatch(turnChatOff()),
     initChat: data => dispatch(initChat(data)),
+    logout: () => dispatch(logout()),
     postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
     postUploadComplete: params => dispatch(postUploadComplete(params)),
     resetChat: () => dispatch(resetChat()),
