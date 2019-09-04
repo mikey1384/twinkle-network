@@ -20,17 +20,18 @@ import {
   changePageVisibility,
   recordScrollPosition
 } from 'redux/actions/ViewActions';
+import { auth, uploadFileOnChat } from 'helpers/requestHelpers';
 import {
   initSession,
   openSigninModal,
-  closeSigninModal
+  closeSigninModal,
+  logout
 } from 'redux/actions/UserActions';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { uploadFileOnChat } from 'helpers/requestHelpers';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -50,6 +51,8 @@ App.propTypes = {
   history: PropTypes.object,
   initSession: PropTypes.func.isRequired,
   location: PropTypes.object,
+  logout: PropTypes.func.isRequired,
+  pageVisible: PropTypes.bool,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   sendFirstDirectMessage: PropTypes.func.isRequired,
@@ -66,6 +69,8 @@ function App({
   initSession,
   location,
   history,
+  logout,
+  pageVisible,
   postFileUploadStatus,
   postUploadComplete,
   signinModalShown,
@@ -78,15 +83,22 @@ function App({
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
+  const authRef = useRef(null);
 
   useEffect(() => {
-    initSession(location.pathname);
+    if (!auth()?.headers?.authorization) {
+      logout();
+    } else if (
+      authRef.current?.headers?.authorization !== auth()?.headers?.authorization
+    ) {
+      initSession(location.pathname);
+    }
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
-    changePageVisibility(!document[hiddenRef.current]);
-  }, []);
+    authRef.current = auth();
+  }, [pageVisible]);
 
   useEffect(() => {
     if (typeof document.hidden !== 'undefined') {
@@ -287,7 +299,6 @@ function App({
 
 export default connect(
   state => ({
-    loggedIn: state.UserReducer.loggedIn,
     scrollPositions: state.ViewReducer.scrollPositions,
     signinModalShown: state.UserReducer.signinModalShown,
     updateDetail: state.NotiReducer.updateDetail,
@@ -299,6 +310,7 @@ export default connect(
     openSigninModal: () => dispatch(openSigninModal()),
     initSession: pathname => dispatch(initSession(pathname)),
     initChat: data => dispatch(initChat(data)),
+    logout: () => dispatch(logout()),
     postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
     postUploadComplete: params => dispatch(postUploadComplete(params)),
     sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
