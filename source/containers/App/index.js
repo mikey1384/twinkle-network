@@ -111,6 +111,8 @@ function App({
       authRef.current?.headers?.authorization !== auth()?.headers?.authorization
     ) {
       initSession(location.pathname);
+      resetChat();
+      turnChatOff();
       authRef.current = auth();
     }
     window.ga('send', 'pageview', location.pathname);
@@ -338,8 +340,8 @@ function App({
     setChatLoading(false);
   }
 
-  async function handleChatUnmount() {
-    await resetChat();
+  function handleChatUnmount() {
+    resetChat();
     turnChatOff();
   }
 

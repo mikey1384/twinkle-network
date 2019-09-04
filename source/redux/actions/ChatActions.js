@@ -385,12 +385,9 @@ export const reloadChatSubject = subjectId => async dispatch => {
   }
 };
 
-export const resetChat = () => dispatch => {
-  dispatch({
-    type: CHAT.RESET
-  });
-  return Promise.resolve();
-};
+export const resetChat = () => ({
+  type: CHAT.RESET
+});
 
 export const searchChat = text => async dispatch => {
   try {
