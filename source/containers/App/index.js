@@ -113,12 +113,12 @@ function App({
       initSession(location.pathname);
       resetChat();
       turnChatOff();
-      authRef.current = auth();
     }
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
+    authRef.current = auth();
   }, [pageVisible]);
 
   useEffect(() => {
