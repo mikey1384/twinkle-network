@@ -86,6 +86,10 @@ function App({
   const authRef = useRef(null);
 
   useEffect(() => {
+    changePageVisibility(true);
+  }, []);
+
+  useEffect(() => {
     if (!auth()?.headers?.authorization) {
       logout();
     } else if (
@@ -299,6 +303,7 @@ function App({
 
 export default connect(
   state => ({
+    pageVisible: state.ViewReducer.pageVisible,
     scrollPositions: state.ViewReducer.scrollPositions,
     signinModalShown: state.UserReducer.signinModalShown,
     updateDetail: state.NotiReducer.updateDetail,
