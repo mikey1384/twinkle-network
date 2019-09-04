@@ -105,6 +105,10 @@ function App({
   const authRef = useRef(null);
 
   useEffect(() => {
+    changePageVisibility(true);
+  }, []);
+
+  useEffect(() => {
     if (!auth()?.headers?.authorization) {
       logout();
     } else if (
