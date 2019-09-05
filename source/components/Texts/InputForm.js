@@ -94,33 +94,29 @@ export default function InputForm({
     </div>
   );
 
+  function handleEnterText(text) {
+    return dispatch({
+      type: 'ENTER_TEXT',
+      contentId: parent.id,
+      text
+    });
+  }
+
   function handleKeyUp(event) {
     if (event.key === ' ') {
-      return dispatch({
-        type: 'ENTER_TEXT',
-        contentId: parent.id,
-        text: addEmoji(event.target.value)
-      });
+      handleEnterText(addEmoji(event.target.value));
     }
   }
 
   function handleOnChange(event) {
-    return dispatch({
-      type: 'ENTER_TEXT',
-      contentId: parent.id,
-      text: event.target.value
-    });
+    handleEnterText(event.target.value);
   }
 
   async function handleSubmit() {
     setSubmitting(true);
     try {
       await onSubmit(finalizeEmoji(text));
-      dispatch({
-        type: 'ENTER_TEXT',
-        contentId: parent.id,
-        text: ''
-      });
+      handleEnterText('');
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
