@@ -243,7 +243,7 @@ export default function Board({
           !squares[58].isPiece &&
           !squares[59].isPiece &&
           squares[56].type === 'rook' &&
-          !squares[7].moved &&
+          !squares[56].moved &&
           squares[60].type === 'king' &&
           squares[60].state !== 'check' &&
           squares[60].state !== 'checkmate' &&
