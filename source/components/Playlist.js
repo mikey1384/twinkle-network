@@ -9,22 +9,26 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
 import { loadPlaylistVideos } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 Playlist.propTypes = {
   onLinkClick: PropTypes.func,
   onLoad: PropTypes.func,
-  playlistId: PropTypes.number.isRequired
+  playlistId: PropTypes.number.isRequired,
+  profileTheme: PropTypes.string
 };
 
-export default function Playlist({
+function Playlist({
   onLinkClick = () => {},
   onLoad,
-  playlistId
+  playlistId,
+  profileTheme
 }) {
   const [videos, setVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     handleLoadPlaylistVideos();
@@ -76,16 +80,14 @@ export default function Playlist({
               <VideoThumbImage
                 rewardLevel={video.rewardLevel}
                 videoId={video.id}
-                src={`https://img.youtube.com/vi/${
-                  video.content
-                }/mqdefault.jpg`}
+                src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
               />
             </Link>
           </div>
           <div style={{ width: '60%' }}>
             <Link
               style={{
-                color: video.byUser ? Color.brown() : Color.blue(),
+                color: video.byUser ? Color[themeColor]() : Color.blue(),
                 fontSize: '2rem',
                 fontWeight: 'bold',
                 lineHeight: 1.5
@@ -124,3 +126,7 @@ export default function Playlist({
     setLoading(false);
   }
 }
+
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(Playlist);

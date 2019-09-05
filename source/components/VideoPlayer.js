@@ -28,7 +28,7 @@ const xp = rewardValue.star;
 VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
-  rewardLevel: PropTypes.number,
+  currentVideoSlot: PropTypes.number,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
   hasHqThumb: PropTypes.number,
@@ -37,7 +37,8 @@ VideoPlayer.propTypes = {
   stretch: PropTypes.bool,
   onEdit: PropTypes.bool,
   pageVisible: PropTypes.bool,
-  currentVideoSlot: PropTypes.number,
+  profileTheme: PropTypes.string,
+  rewardLevel: PropTypes.number,
   style: PropTypes.object,
   twinkleXP: PropTypes.number,
   uploader: PropTypes.object.isRequired,
@@ -58,6 +59,7 @@ function VideoPlayer({
   minimized,
   onEdit,
   pageVisible,
+  profileTheme,
   stretch,
   style = {},
   twinkleXP,
@@ -81,6 +83,7 @@ function VideoPlayer({
   const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
+  const themeColor = profileTheme || 'logoBlue';
   const rewardAmountRef = useRef(rewardLevel * xp);
   const userIsLevel2 = twinkleXP >= 1000000;
   const requiredDurationCap = userIsLevel2
@@ -201,7 +204,7 @@ function VideoPlayer({
       {byUser && (
         <div
           style={{
-            background: Color.brown(),
+            background: Color[themeColor](0.9),
             color: '#fff',
             padding: '0.5rem',
             fontWeight: 'bold',
@@ -499,9 +502,10 @@ function VideoPlayer({
 
 export default connect(
   state => ({
+    currentVideoSlot: state.VideoReducer.currentVideoSlot,
     userId: state.UserReducer.userId,
     pageVisible: state.ViewReducer.pageVisible,
-    currentVideoSlot: state.VideoReducer.currentVideoSlot,
+    profileTheme: state.UserReducer.profileTheme,
     twinkleXP: state.UserReducer.twinkleXP
   }),
   {
