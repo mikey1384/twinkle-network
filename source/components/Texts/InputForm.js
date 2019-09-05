@@ -13,6 +13,7 @@ import { Context } from 'context';
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,
+  className: PropTypes.string,
   formGroupStyle: PropTypes.object,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   onSubmit: PropTypes.func.isRequired,
@@ -20,7 +21,7 @@ InputForm.propTypes = {
   placeholder: PropTypes.string,
   rows: PropTypes.number,
   style: PropTypes.object,
-  className: PropTypes.string
+  targetCommentId: PropTypes.number
 };
 
 export default function InputForm({
@@ -32,13 +33,14 @@ export default function InputForm({
   parent,
   placeholder,
   rows,
-  style = {}
+  style = {},
+  targetCommentId
 }) {
   const [submitting, setSubmitting] = useState(false);
   const {
-    [parent.type]: { state, dispatch }
+    [targetCommentId ? 'comment' : parent.type]: { state, dispatch }
   } = useContext(Context);
-  const text = state[parent.id] || '';
+  const text = state[targetCommentId || parent.id] || '';
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',
     text
@@ -97,7 +99,7 @@ export default function InputForm({
   function handleEnterText(text) {
     return dispatch({
       type: 'ENTER_TEXT',
-      contentId: parent.id,
+      contentId: targetCommentId || parent.id,
       text
     });
   }

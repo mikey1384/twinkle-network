@@ -7,7 +7,6 @@ import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import GoBack from 'components/GoBack';
 import { connect } from 'react-redux';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -102,7 +101,6 @@ function Content({
         width: '100%'
       }}
     >
-      <GoBack />
       <div
         className={css`
           width: 100%;

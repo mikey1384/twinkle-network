@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
+import { matchPath } from 'react-router';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { getSectionFromPathname } from 'helpers';
 
 MainNavs.propTypes = {
-  exploreCategory: PropTypes.string,
   chatLoading: PropTypes.bool,
   homeLink: PropTypes.string,
   isAtExploreTab: PropTypes.bool,
@@ -15,11 +16,11 @@ MainNavs.propTypes = {
   numNewPosts: PropTypes.number,
   onMobileMenuOpen: PropTypes.func.isRequired,
   pathname: PropTypes.string,
+  searchFilter: PropTypes.string,
   totalRewardAmount: PropTypes.number
 };
 
 export default function MainNavs({
-  exploreCategory,
   chatLoading,
   homeLink,
   isAtExploreTab,
@@ -29,8 +30,29 @@ export default function MainNavs({
   numNewPosts,
   onMobileMenuOpen,
   pathname,
+  searchFilter,
   totalRewardAmount
 }) {
+  const [exploreCategory, setExploreCategory] = useState('');
+  const subjectPageMatch = matchPath(pathname, {
+    path: '/subjects/:id',
+    exact: true
+  });
+  useEffect(() => {
+    const { section } = getSectionFromPathname(pathname);
+    if (subjectPageMatch) return setExploreCategory(pathname.substring(1));
+    if (!exploreCategory) {
+      setExploreCategory(
+        ['videos', 'subjects', 'links'].includes(searchFilter)
+          ? searchFilter
+          : 'subjects'
+      );
+    } else {
+      if (['links', 'videos', 'subjects'].includes(section)) {
+        setExploreCategory(section);
+      }
+    }
+  }, [pathname, subjectPageMatch]);
   return (
     <div
       className={css`
@@ -70,10 +92,10 @@ export default function MainNavs({
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav
-          to={`/${exploreCategory}`}
+          to={subjectPageMatch ? '/subjects' : `/${exploreCategory}`}
           pathname={pathname}
           className="desktop"
-          imgLabel="search"
+          imgLabel={subjectPageMatch ? 'arrow-left' : 'search'}
         >
           EXPLORE
         </HeaderNav>

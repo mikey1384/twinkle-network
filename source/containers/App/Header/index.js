@@ -5,7 +5,7 @@ import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
-import { matchPath, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 import { logout } from 'redux/actions/UserActions';
 import {
   clearChatLoadedState,
@@ -111,26 +111,9 @@ function Header({
   versionMatch
 }) {
   const prevUserIdRef = useRef(userId);
-  const [exploreCategory, setExploreCategory] = useState('');
   const [homeLink, setHomeLink] = useState('/');
-  const match = matchPath(pathname, {
-    path: '/subjects/:id',
-    exact: true
-  });
-  console.log(match);
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
-    if (!exploreCategory) {
-      setExploreCategory(
-        ['videos', 'subjects', 'links'].includes(searchFilter)
-          ? searchFilter
-          : 'subjects'
-      );
-    } else {
-      if (['links', 'videos', 'subjects'].includes(section)) {
-        setExploreCategory(section);
-      }
-    }
     if (section === 'users') {
       setHomeLink('/users');
     }
@@ -289,7 +272,7 @@ function Header({
             isAtExploreTab={['links', 'videos', 'subjects'].includes(
               getSectionFromPathname(pathname)?.section
             )}
-            exploreCategory={exploreCategory}
+            searchFilter={searchFilter}
             homeLink={homeLink}
             chatLoading={chatLoading}
             isUsername={isUsername}

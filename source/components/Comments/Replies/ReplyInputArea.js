@@ -33,6 +33,7 @@ export default function ReplyInputArea({
           parent={parent}
           placeholder="Enter your reply..."
           rows={rows}
+          targetCommentId={targetCommentId}
         />
       </div>
     </ErrorBoundary>
