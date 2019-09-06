@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
+import { Context } from 'context';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
@@ -34,13 +35,45 @@ export default function MainNavs({
   totalRewardAmount
 }) {
   const [exploreCategory, setExploreCategory] = useState('');
+  const [subExploreLink, setSubExploreLink] = useState('');
+  const {
+    navbar: {
+      state: { subSection },
+      dispatch
+    }
+  } = useContext(Context);
   const subjectPageMatch = matchPath(pathname, {
     path: '/subjects/:id',
     exact: true
   });
+  const videoPageMatch = matchPath(pathname, {
+    path: '/videos/:id',
+    exact: true
+  });
+  const linkPageMatch = matchPath(pathname, {
+    path: '/links/:id',
+    exact: true
+  });
+  const commentPageMatch = matchPath(pathname, {
+    path: '/comments/:id',
+    exact: true
+  });
+  const pageMatch =
+    !!subjectPageMatch ||
+    !!videoPageMatch ||
+    !!linkPageMatch ||
+    !!commentPageMatch;
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
-    if (subjectPageMatch) return setExploreCategory(pathname.substring(1));
+    if (pageMatch) {
+      if (subSection !== section) {
+        dispatch({
+          type: 'SET_SUBSECTION',
+          subSection: section
+        });
+      }
+      setSubExploreLink(pathname.substring(1));
+    }
     if (!exploreCategory) {
       setExploreCategory(
         ['videos', 'subjects', 'links'].includes(searchFilter)
@@ -53,6 +86,14 @@ export default function MainNavs({
       }
     }
   }, [pathname, subjectPageMatch]);
+  const subSectionIconType =
+    subSection === 'videos'
+      ? 'film'
+      : subSection === 'links'
+      ? 'book'
+      : subSection === 'subjects'
+      ? 'bolt'
+      : 'comment-alt';
   return (
     <div
       className={css`
@@ -92,14 +133,26 @@ export default function MainNavs({
       </HeaderNav>
       <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
         <HeaderNav
-          to={subjectPageMatch ? '/subjects' : `/${exploreCategory}`}
+          to={`/${exploreCategory}`}
           pathname={pathname}
           className="desktop"
-          imgLabel={subjectPageMatch ? 'arrow-left' : 'search'}
+          imgLabel="search"
         >
           EXPLORE
         </HeaderNav>
       </div>
+      {subSection && (
+        <div style={{ marginRight: '2rem' }}>
+          <HeaderNav
+            to={`/${subExploreLink}`}
+            pathname={pathname}
+            className="desktop"
+            imgLabel={subSectionIconType}
+          >
+            {subSection.substring(0, subSection.length - 1).toUpperCase()}
+          </HeaderNav>
+        </div>
+      )}
       <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
         Loading...
       </div>

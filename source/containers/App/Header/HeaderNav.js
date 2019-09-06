@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { getSectionFromPathname } from 'helpers';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -43,7 +42,7 @@ function HeaderNav({
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
-      getSectionFromPathname(pathname)?.section
+      pathname.substring(1)
     );
   const activeColor = alert
     ? alertColor
@@ -58,7 +57,7 @@ function HeaderNav({
   return (
     <Route
       path={to}
-      exact={isHome && !isUsername}
+      exact={!isUsername}
       children={({ match }) => (
         <div
           onClick={() => {
