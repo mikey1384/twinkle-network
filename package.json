@@ -36,6 +36,7 @@
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "brotli-webpack-plugin": "^1.1.0",
     "connect-history-api-fallback": "^1.6.0",
+    "core-js": "^3.2.1",
     "cross-env": "^5.2.0",
     "d3-ease": "^1.0.5",
     "dotenv": "^8.1.0",

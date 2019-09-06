@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
+import 'core-js/features/string/pad-start';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { initialiseChessBoard, getPositionId } from './helpers/model.js';
