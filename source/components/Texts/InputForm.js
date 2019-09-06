@@ -98,7 +98,7 @@ export default function InputForm({
 
   function handleEnterText(text) {
     return dispatch({
-      type: 'ENTER_TEXT',
+      type: 'ENTER_COMMENT',
       contentId: targetCommentId || parent.id,
       text
     });

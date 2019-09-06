@@ -1,37 +1,17 @@
 import React, { createContext, useReducer } from 'react';
+import CommentReducer from './CommentReducer';
+import InputReducer from './InputReducer';
 import PropTypes from 'prop-types';
+import {
+  initialHomeInputState,
+  initialCommentState,
+  initialUrlState,
+  initialSubjectState,
+  initialUserState,
+  initialVideoState
+} from './initialStates';
 
 export const Context = createContext();
-
-const initialNavbarState = {
-  subSection: ''
-};
-const initialSubjectState = {};
-const initialCommentState = {};
-const initialVideoState = {};
-const initialUrlState = {};
-function inputReducer(state, action) {
-  switch (action.type) {
-    case 'ENTER_TEXT':
-      return {
-        ...state,
-        [action.contentId]: action.text
-      };
-    default:
-      return state;
-  }
-}
-function navbarReducer(state, action) {
-  switch (action.type) {
-    case 'SET_SUBSECTION':
-      return {
-        ...state,
-        subSection: action.subSection
-      };
-    default:
-      return state;
-  }
-}
 
 ContextProvider.propTypes = {
   children: PropTypes.node
@@ -39,28 +19,35 @@ ContextProvider.propTypes = {
 
 export function ContextProvider({ children }) {
   const [subjectState, subjectDispatch] = useReducer(
-    inputReducer,
+    CommentReducer,
     initialSubjectState
   );
   const [commentState, commentDispatch] = useReducer(
-    inputReducer,
+    CommentReducer,
     initialCommentState
   );
   const [videoState, videoDispatch] = useReducer(
-    inputReducer,
+    CommentReducer,
     initialVideoState
   );
-  const [urlState, urlDispatch] = useReducer(inputReducer, initialUrlState);
-  const [navbarState, navbarDispatch] = useReducer(
-    navbarReducer,
-    initialNavbarState
+  const [urlState, urlDispatch] = useReducer(CommentReducer, initialUrlState);
+  const [userState, userDispatch] = useReducer(
+    CommentReducer,
+    initialUserState
   );
+
+  const [homeInputState, homeInputDispatch] = useReducer(
+    InputReducer,
+    initialHomeInputState
+  );
+
   const value = {
-    navbar: { state: navbarState, dispatch: navbarDispatch },
     subject: { state: subjectState, dispatch: subjectDispatch },
     comment: { state: commentState, dispatch: commentDispatch },
     video: { state: videoState, dispatch: videoDispatch },
-    url: { state: urlState, dispatch: urlDispatch }
+    url: { state: urlState, dispatch: urlDispatch },
+    input: { state: homeInputState, dispatch: homeInputDispatch },
+    user: { state: userState, dispatch: userDispatch }
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

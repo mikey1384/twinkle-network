@@ -13,12 +13,14 @@ import SecretAnswer from 'components/SecretAnswer';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { withRouter } from 'react-router';
 
 MainContent.propTypes = {
   changeSpoilerStatus: PropTypes.func,
   commentsHidden: PropTypes.bool,
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
+  history: PropTypes.object.isRequired,
   isEditing: PropTypes.bool.isRequired,
   myId: PropTypes.number,
   onAddTags: PropTypes.func,
@@ -35,11 +37,12 @@ MainContent.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-export default function MainContent({
+function MainContent({
   changeSpoilerStatus,
   commentsHidden,
   contentObj,
   contentId,
+  history,
   isEditing,
   myId,
   onAddTags,
@@ -248,7 +251,7 @@ export default function MainContent({
     ) {
       const subjectId = targetObj?.subject ? targetObj.subject.id : rootObj.id;
       return (
-        <HiddenComment onClick={() => window.open(`/subjects/${subjectId}`)} />
+        <HiddenComment onClick={() => history.push(`/subjects/${subjectId}`)} />
       );
     }
     return (
@@ -264,3 +267,5 @@ export default function MainContent({
     );
   }
 }
+
+export default withRouter(MainContent);

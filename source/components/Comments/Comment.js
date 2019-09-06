@@ -24,6 +24,7 @@ import { commentContainer } from './Styles';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { connect } from 'react-redux';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
+import { withRouter } from 'react-router';
 
 Comment.propTypes = {
   authLevel: PropTypes.number,
@@ -47,6 +48,7 @@ Comment.propTypes = {
     uploader: PropTypes.object.isRequired
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
   pageVisible: PropTypes.bool,
@@ -61,6 +63,7 @@ function Comment({
   canStar,
   comment,
   dispatch,
+  history,
   innerRef,
   isPreview,
   userId,
@@ -217,7 +220,7 @@ function Comment({
                   {isHidden ? (
                     <HiddenComment
                       onClick={() =>
-                        window.open(`/subjects/${targetObj.subject.id}`)
+                        history.push(`/subjects/${targetObj.subject.id}`)
                       }
                     />
                   ) : (
@@ -416,4 +419,4 @@ export default connect(
     pageVisible: state.ViewReducer.pageVisible
   }),
   dispatch => ({ dispatch })
-)(Comment);
+)(withRouter(Comment));

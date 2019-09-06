@@ -14,11 +14,13 @@ import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
 import { loadContent } from 'helpers/requestHelpers';
+import { withRouter } from 'react-router';
 
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
   contentObj: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   inputAtBottom: PropTypes.bool,
   userId: PropTypes.number,
   onAddTags: PropTypes.func,
@@ -46,11 +48,12 @@ ContentPanel.propTypes = {
   style: PropTypes.object
 };
 
-export default function ContentPanel({
+function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentObj,
   contentObj: { commentsShown, contentId, feedId, newPost, secretShown, type },
+  history,
   inputAtBottom,
   onAddTags,
   onAddTagToContents,
@@ -218,7 +221,7 @@ export default function ContentPanel({
                 }}
                 expandable
                 onClick={() =>
-                  window.open(`/subjects/${contentObj.targetObj.subject.id}`)
+                  history.push(`/subjects/${contentObj.targetObj.subject.id}`)
                 }
                 contentObj={contentObj.targetObj.subject}
                 onChangeSpoilerStatus={onChangeSpoilerStatus}
@@ -232,7 +235,7 @@ export default function ContentPanel({
                 position: 'relative'
               }}
               expandable
-              onClick={() => window.open(`/videos/${contentObj.rootObj.id}`)}
+              onClick={() => history.push(`/videos/${contentObj.rootObj.id}`)}
               contentObj={contentObj.rootObj}
             />
           )}
@@ -301,3 +304,5 @@ export default function ContentPanel({
     </Context.Provider>
   );
 }
+
+export default withRouter(ContentPanel);

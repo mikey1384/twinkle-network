@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
@@ -20,6 +20,7 @@ import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
+import { Context } from 'context';
 
 SubjectInput.propTypes = {
   canEditRewardLevel: PropTypes.bool,
@@ -28,18 +29,20 @@ SubjectInput.propTypes = {
 };
 
 function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
-  const [attachment, setAttachment] = useState(undefined);
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
-  const [details, setDetails] = useState({
-    title: '',
-    description: '',
-    secretAnswer: '',
-    rewardLevel: 0
-  });
-  const { title, description, rewardLevel, secretAnswer } = details;
-  const [descriptionInputShown, setDescriptionInputShown] = useState(false);
+  const {
+    input: {
+      state: { subject },
+      dispatch: inputDispatch
+    }
+  } = useContext(Context);
+  const {
+    attachment,
+    descriptionInputShown,
+    details: { title, description, secretAnswer, rewardLevel },
+    hasSecretAnswer
+  } = subject;
   const [submitting, setSubmitting] = useState(false);
-  const [hasSecretAnswer, setHasSecretAnswer] = useState(false);
   const titleExceedsCharLimit = exceedsCharLimit({
     inputType: 'title',
     contentType: 'subject',
@@ -73,8 +76,8 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             value={title}
             onChange={onInputChange}
             onKeyUp={event => {
-              setDetails({
-                ...details,
+              inputDispatch({
+                type: 'ENTER_SUBJECT_TITLE',
                 title: addEmoji(event.target.value)
               });
             }}
@@ -85,7 +88,12 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
           {attachment ? (
             <Attachment
               attachment={attachment}
-              onClose={() => setAttachment(undefined)}
+              onClose={() =>
+                inputDispatch({
+                  type: 'SET_SUBJECT_ATTACHMENT',
+                  attachment: undefined
+                })
+              }
             />
           ) : (
             <Button
@@ -128,15 +136,15 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             minRows={4}
             placeholder="Enter Description (Optional, you don't need to write this)"
             onChange={event =>
-              setDetails({
-                ...details,
+              inputDispatch({
+                type: 'ENTER_SUBJECT_DESCRIPTION',
                 description: addEmoji(event.target.value)
               })
             }
             onKeyUp={event => {
               if (event.key === ' ') {
-                setDetails({
-                  ...details,
+                inputDispatch({
+                  type: 'ENTER_SUBJECT_DESCRIPTION',
                   description: addEmoji(event.target.value)
                 });
               }
@@ -169,15 +177,15 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 minRows={4}
                 placeholder="Enter the Secret Message"
                 onChange={event =>
-                  setDetails({
-                    ...details,
+                  inputDispatch({
+                    type: 'ENTER_SECRET_ANSWER',
                     secretAnswer: addEmoji(event.target.value)
                   })
                 }
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    setDetails({
-                      ...details,
+                    inputDispatch({
+                      type: 'ENTER_SECRET_ANSWER',
                       secretAnswer: addEmoji(event.target.value)
                     });
                   }
@@ -210,10 +218,10 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 }}
                 rewardLevel={rewardLevel}
                 onSetRewardLevel={rewardLevel =>
-                  setDetails(form => ({
-                    ...form,
+                  inputDispatch({
+                    type: 'SET_SUBJECT_REWARD_LEVEL',
                     rewardLevel
-                  }))
+                  })
                 }
               />
             </div>
@@ -223,7 +231,10 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
               checked={hasSecretAnswer}
               label="Secret Message"
               onChange={() =>
-                setHasSecretAnswer(hasSecretAnswer => !hasSecretAnswer)
+                inputDispatch({
+                  type: 'SET_HAS_SECRET_ANSWER',
+                  hasSecretAnswer: !hasSecretAnswer
+                })
               }
               style={{ marginRight: '1rem' }}
             />
@@ -243,7 +254,10 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         <AttachContentModal
           onHide={() => setAttachContentModalShown(false)}
           onConfirm={content => {
-            setAttachment(content);
+            inputDispatch({
+              type: 'SET_SUBJECT_ATTACHMENT',
+              attachment: content
+            });
             setAttachContentModalShown(false);
           }}
         />
@@ -264,13 +278,19 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   }
 
   function onInputChange(text) {
-    setDetails({
-      ...details,
+    inputDispatch({
+      type: 'ENTER_SUBJECT_TITLE',
       title: text
     });
-    setDescriptionInputShown(!!text.length);
+    inputDispatch({
+      type: 'SET_SUBJECT_DESCRIPTION_INPUT_SHOWN',
+      shown: !!text.length
+    });
     if (!text.length) {
-      setHasSecretAnswer(false);
+      inputDispatch({
+        type: 'SET_HAS_SECRET_ANSWER',
+        hasSecretAnswer: false
+      });
     }
   }
 
@@ -294,11 +314,10 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         dispatch
       });
       uploadFeedContent(data);
-      setAttachment(undefined);
-      setDetails({ title: '', description: '', secretAnswer: '' });
-      setDescriptionInputShown(false);
+      inputDispatch({
+        type: 'SUBJECT_INPUT_RESET'
+      });
       setSubmitting(false);
-      setHasSecretAnswer(false);
     } catch (error) {
       setSubmitting(false);
       console.error(error);

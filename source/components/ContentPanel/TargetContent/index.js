@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from '../Context';
-import withContext from 'components/Wrappers/withContext';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -22,6 +21,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled } from 'helpers';
 import { uploadComment } from 'helpers/requestHelpers';
 import { css } from 'emotion';
+import { withRouter } from 'react-router';
 
 TargetContent.propTypes = {
   authLevel: PropTypes.number,
@@ -29,13 +29,8 @@ TargetContent.propTypes = {
   className: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   feedId: PropTypes.number,
+  history: PropTypes.object.isRequired,
   myId: PropTypes.number,
-  onAttachStar: PropTypes.func.isRequired,
-  onDeleteComment: PropTypes.func.isRequired,
-  onEditComment: PropTypes.func.isRequired,
-  onEditRewardComment: PropTypes.func.isRequired,
-  onLikeContent: PropTypes.func.isRequired,
-  onTargetCommentSubmit: PropTypes.func.isRequired,
   profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
@@ -51,13 +46,8 @@ function TargetContent({
   className,
   dispatch,
   feedId,
+  history,
   myId,
-  onAttachStar,
-  onDeleteComment,
-  onEditComment,
-  onEditRewardComment,
-  onLikeContent,
-  onTargetCommentSubmit,
   rootObj,
   profilePicId,
   rootType,
@@ -71,6 +61,14 @@ function TargetContent({
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [mouseEntered, setMouseEntered] = useState(false);
   const InputFormRef = useRef(null);
+  const {
+    onAttachStar,
+    onDeleteComment,
+    onEditComment,
+    onEditRewardComment,
+    onLikeContent,
+    onTargetCommentSubmit
+  } = useContext(Context);
 
   let userLikedThis = false;
   let userIsUploader;
@@ -182,7 +180,7 @@ function TargetContent({
                   <div style={{ marginTop: '1rem' }}>
                     {contentHidden ? (
                       <HiddenComment
-                        onClick={() => window.open(`/subjects/${subject.id}`)}
+                        onClick={() => history.push(`/subjects/${subject.id}`)}
                       />
                     ) : (
                       <LongText>{comment.content}</LongText>
@@ -293,6 +291,7 @@ function TargetContent({
                   }}
                   autoFocus
                   onSubmit={onSubmit}
+                  parent={{ type: 'comment', id: comment.id }}
                   rows={4}
                   placeholder={`Write a reply...`}
                 />
@@ -378,4 +377,4 @@ export default connect(
     profilePicId: state.UserReducer.profilePicId
   }),
   dispatch => ({ dispatch })
-)(withContext({ Component: TargetContent, Context }));
+)(withRouter(TargetContent));

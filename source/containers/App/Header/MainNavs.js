@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
-import { Context } from 'context';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
@@ -36,12 +35,7 @@ export default function MainNavs({
 }) {
   const [exploreCategory, setExploreCategory] = useState('');
   const [subExploreLink, setSubExploreLink] = useState('');
-  const {
-    navbar: {
-      state: { subSection },
-      dispatch
-    }
-  } = useContext(Context);
+  const [subSection, setSubSection] = useState('');
   const subjectPageMatch = matchPath(pathname, {
     path: '/subjects/:id',
     exact: true
@@ -67,10 +61,7 @@ export default function MainNavs({
     const { section } = getSectionFromPathname(pathname);
     if (pageMatch) {
       if (subSection !== section) {
-        dispatch({
-          type: 'SET_SUBSECTION',
-          subSection: section
-        });
+        setSubSection(section);
       }
       setSubExploreLink(pathname.substring(1));
     }
