@@ -4,7 +4,7 @@ const defaultState = {
   commentsShown: false
 };
 
-export default function ViewReducer(state = defaultState, action) {
+export default function ContentReducer(state = defaultState, action) {
   switch (action.type) {
     case CONTENT.SHOW_COMMENTS:
       return {

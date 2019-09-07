@@ -93,6 +93,9 @@ export default function Achievements({
             onReplySubmit={data =>
               onReplySubmit({ ...data, feedId: contentObj.feedId })
             }
+            onSetCommentsShown={shown =>
+              onSetCommentsShown({ feedId: contentObj.feedId, shown })
+            }
             onSetRewardLevel={onSetRewardLevel}
             onLoadComments={onLoadComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
@@ -265,6 +268,14 @@ export default function Achievements({
       type: 'UPLOAD_REPLY',
       commentId,
       data
+    });
+  }
+
+  function onSetCommentsShown({ feedId, shown }) {
+    dispatch({
+      type: 'SHOW_COMMENTS',
+      feedId,
+      shown
     });
   }
 
@@ -871,6 +882,15 @@ function reducer(state, action) {
                   : undefined
               };
         })
+      };
+    case 'SHOW_COMMENTS':
+      return {
+        ...state,
+        notables: state.notables.map(contentObj =>
+          contentObj.feedId === action.feedId
+            ? { ...contentObj, commentsShown: action.shown }
+            : contentObj
+        )
       };
     case 'UPLOAD_COMMENT':
       return {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
@@ -14,6 +14,7 @@ import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import { uploadFeedContent } from 'redux/actions/FeedActions';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
+import { Context } from 'context';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -30,19 +31,21 @@ ContentInput.propTypes = {
 };
 
 function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
-  const [alreadyPosted, setAlreadyPosted] = useState(false);
-  const [descriptionFieldShown, setDescriptionFieldShown] = useState(false);
-  const [titleFieldShown, setTitleFieldShown] = useState(false);
-  const [form, setForm] = useState({
-    url: '',
-    isVideo: false,
-    title: '',
-    description: '',
-    rewardLevel: 0
-  });
+  const {
+    input: {
+      state: { content },
+      dispatch: inputDispatch
+    }
+  } = useContext(Context);
+  const {
+    alreadyPosted,
+    descriptionFieldShown,
+    form,
+    titleFieldShown,
+    urlHelper,
+    urlError
+  } = content;
   const [submitting, setSubmitting] = useState(false);
-  const [urlHelper, setUrlHelper] = useState('');
-  const [urlError, setUrlError] = useState('');
   const UrlFieldRef = useRef(null);
   const checkContentExistsTimerRef = useRef(null);
   const showHelperMessageTimerRef = useRef(null);
@@ -89,11 +92,14 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       <Checkbox
         label={'YouTube Video:'}
         onClick={() => {
-          setForm({
-            ...form,
+          inputDispatch({
+            type: 'SET_IS_VIDEO',
             isVideo: !form.isVideo
           });
-          setUrlError('');
+          inputDispatch({
+            type: 'SET_URL_ERROR',
+            urlError: ''
+          });
         }}
         style={{ marginTop: '1rem' }}
         checked={form.isVideo}
@@ -129,12 +135,17 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
               </span>
               <Input
                 value={form.title}
-                onChange={text => setForm({ ...form, title: text })}
+                onChange={text =>
+                  inputDispatch({
+                    type: 'SET_CONTENT_TITLE',
+                    title: text
+                  })
+                }
                 placeholder="Enter Title Here"
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    setForm({
-                      ...form,
+                    inputDispatch({
+                      type: 'SET_CONTENT_TITLE',
                       title: addEmoji(event.target.value)
                     });
                   }
@@ -158,12 +169,15 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
                 onChange={event =>
-                  setForm({ ...form, description: event.target.value })
+                  inputDispatch({
+                    type: 'SET_CONTENT_DESCRIPTION',
+                    description: event.target.value
+                  })
                 }
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    setForm({
-                      ...form,
+                    inputDispatch({
+                      type: 'SET_CONTENT_DESCRIPTION',
                       description: addEmoji(event.target.value)
                     });
                   }
@@ -202,10 +216,10 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
               }}
               rewardLevel={form.rewardLevel}
               onSetRewardLevel={rewardLevel =>
-                setForm(form => ({
-                  ...form,
+                inputDispatch({
+                  type: 'SET_CONTENT_REWARD_LEVEL',
                   rewardLevel
-                }))
+                })
               }
             />
           </div>
@@ -256,7 +270,10 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       urlError = 'That is not a valid YouTube url';
     }
     if (urlError) {
-      setUrlError(urlError);
+      inputDispatch({
+        type: 'SET_URL_ERROR',
+        urlError
+      });
       UrlFieldRef.current.focus();
       return scrollElementToCenter(UrlFieldRef.current);
     }
@@ -268,19 +285,10 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         description: finalizeEmoji(form.description),
         dispatch
       });
-      setAlreadyPosted(false);
-      setTitleFieldShown(false);
-      setDescriptionFieldShown(false);
-      setForm({
-        url: '',
-        isVideo: false,
-        title: '',
-        description: '',
-        rewardLevel: 0
+      inputDispatch({
+        type: 'RESET_CONTENT_INPUT'
       });
       setSubmitting(false);
-      setUrlHelper('');
-      setUrlError('');
       uploadFeedContent(data);
       document.getElementById('App').scrollTop = 0;
     } catch (error) {
@@ -293,17 +301,34 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     clearTimeout(checkContentExistsTimerRef.current);
     clearTimeout(showHelperMessageTimerRef.current);
     const urlIsValid = isValidUrl(url);
-    setAlreadyPosted(false);
-    setForm({
-      ...form,
-      url,
+    inputDispatch({
+      type: 'SET_ALREADY_POSTED',
+      alreadyPosted: false
+    });
+    inputDispatch({
+      type: 'SET_CONTENT_URL',
+      url
+    });
+    inputDispatch({
+      type: 'SET_IS_VIDEO',
       isVideo: isValidYoutubeUrl(url)
     });
-
-    setTitleFieldShown(urlIsValid);
-    setDescriptionFieldShown(urlIsValid);
-    setUrlError('');
-    setUrlHelper('');
+    inputDispatch({
+      type: 'SET_CONTENT_TITLE_FIELD_SHOWN',
+      shown: urlIsValid
+    });
+    inputDispatch({
+      type: 'SET_CONTENT_DESCRIPTION_FIELD_SHOWN',
+      shown: urlIsValid
+    });
+    inputDispatch({
+      type: 'SET_URL_ERROR',
+      urlError: ''
+    });
+    inputDispatch({
+      type: 'SET_URL_HELPER',
+      urlHelper: ''
+    });
     if (urlIsValid) {
       checkContentExistsTimerRef.current = setTimeout(
         () => handleCheckIfContentExists(url),
@@ -311,14 +336,16 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       );
     }
     showHelperMessageTimerRef.current = setTimeout(() => {
-      setUrlHelper(
-        urlIsValid || stringIsEmpty(url)
-          ? ''
-          : `A URL is a website's internet address. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
-      );
+      inputDispatch({
+        type: 'SET_URL_HELPER',
+        urlHelper:
+          urlIsValid || stringIsEmpty(url)
+            ? ''
+            : `A URL is a website's internet address. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
+      });
       const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
-      setForm(form => ({
-        ...form,
+      inputDispatch({
+        type: 'SET_CONTENT_TITLE',
         title:
           !urlIsValid &&
           !stringIsEmpty(url) &&
@@ -326,8 +353,11 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
           !regex.test(url)
             ? url
             : form.title
-      }));
-      setTitleFieldShown(!stringIsEmpty(url));
+      });
+      inputDispatch({
+        type: 'SET_CONTENT_TITLE_FIELD_SHOWN',
+        shown: !stringIsEmpty(url)
+      });
     }, 300);
   }
 
@@ -337,7 +367,10 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       url,
       type: isVideo ? 'video' : 'url'
     });
-    return setAlreadyPosted(exists ? content : false);
+    return inputDispatch({
+      type: 'SET_ALREADY_POSTED',
+      alreadyPosted: exists ? content : false
+    });
   }
 }
 

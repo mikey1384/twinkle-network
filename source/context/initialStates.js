@@ -10,7 +10,20 @@ export const initialHomeInputState = {
     },
     hasSecretAnswer: false
   },
-  content: {}
+  content: {
+    alreadyPosted: false,
+    descriptionFieldShown: false,
+    form: {
+      url: '',
+      isVideo: false,
+      title: '',
+      description: '',
+      rewardLevel: 0
+    },
+    titleFieldShown: false,
+    urlHelper: '',
+    urlError: ''
+  }
 };
 
 export const initialSubjectState = {};
