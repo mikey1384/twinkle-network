@@ -93,11 +93,11 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         label={'YouTube Video:'}
         onClick={() => {
           inputDispatch({
-            type: 'SET_IS_VIDEO',
+            type: 'SET_CONTENT_IS_VIDEO',
             isVideo: !form.isVideo
           });
           inputDispatch({
-            type: 'SET_URL_ERROR',
+            type: 'SET_CONTENT_URL_ERROR',
             urlError: ''
           });
         }}
@@ -271,7 +271,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     }
     if (urlError) {
       inputDispatch({
-        type: 'SET_URL_ERROR',
+        type: 'SET_CONTENT_URL_ERROR',
         urlError
       });
       UrlFieldRef.current.focus();
@@ -302,7 +302,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     clearTimeout(showHelperMessageTimerRef.current);
     const urlIsValid = isValidUrl(url);
     inputDispatch({
-      type: 'SET_ALREADY_POSTED',
+      type: 'SET_CONTENT_ALREADY_POSTED',
       alreadyPosted: false
     });
     inputDispatch({
@@ -310,7 +310,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       url
     });
     inputDispatch({
-      type: 'SET_IS_VIDEO',
+      type: 'SET_CONTENT_IS_VIDEO',
       isVideo: isValidYoutubeUrl(url)
     });
     inputDispatch({
@@ -322,11 +322,11 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       shown: urlIsValid
     });
     inputDispatch({
-      type: 'SET_URL_ERROR',
+      type: 'SET_CONTENT_URL_ERROR',
       urlError: ''
     });
     inputDispatch({
-      type: 'SET_URL_HELPER',
+      type: 'SET_CONTENT_URL_HELPER',
       urlHelper: ''
     });
     if (urlIsValid) {
@@ -337,7 +337,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     }
     showHelperMessageTimerRef.current = setTimeout(() => {
       inputDispatch({
-        type: 'SET_URL_HELPER',
+        type: 'SET_CONTENT_URL_HELPER',
         urlHelper:
           urlIsValid || stringIsEmpty(url)
             ? ''
@@ -368,7 +368,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       type: isVideo ? 'video' : 'url'
     });
     return inputDispatch({
-      type: 'SET_ALREADY_POSTED',
+      type: 'SET_CONTENT_ALREADY_POSTED',
       alreadyPosted: exists ? content : false
     });
   }

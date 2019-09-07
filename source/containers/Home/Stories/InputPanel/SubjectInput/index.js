@@ -77,7 +77,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             onChange={onInputChange}
             onKeyUp={event => {
               inputDispatch({
-                type: 'ENTER_SUBJECT_TITLE',
+                type: 'SET_SUBJECT_TITLE',
                 title: addEmoji(event.target.value)
               });
             }}
@@ -137,14 +137,14 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             placeholder="Enter Description (Optional, you don't need to write this)"
             onChange={event =>
               inputDispatch({
-                type: 'ENTER_SUBJECT_DESCRIPTION',
+                type: 'SET_SUBJECT_DESCRIPTION',
                 description: addEmoji(event.target.value)
               })
             }
             onKeyUp={event => {
               if (event.key === ' ') {
                 inputDispatch({
-                  type: 'ENTER_SUBJECT_DESCRIPTION',
+                  type: 'SET_SUBJECT_DESCRIPTION',
                   description: addEmoji(event.target.value)
                 });
               }
@@ -178,14 +178,14 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 placeholder="Enter the Secret Message"
                 onChange={event =>
                   inputDispatch({
-                    type: 'ENTER_SECRET_ANSWER',
+                    type: 'SET_SECRET_ANSWER',
                     secretAnswer: addEmoji(event.target.value)
                   })
                 }
                 onKeyUp={event => {
                   if (event.key === ' ') {
                     inputDispatch({
-                      type: 'ENTER_SECRET_ANSWER',
+                      type: 'SET_SECRET_ANSWER',
                       secretAnswer: addEmoji(event.target.value)
                     });
                   }
@@ -279,7 +279,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
 
   function onInputChange(text) {
     inputDispatch({
-      type: 'ENTER_SUBJECT_TITLE',
+      type: 'SET_SUBJECT_TITLE',
       title: text
     });
     inputDispatch({
@@ -315,7 +315,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       });
       uploadFeedContent(data);
       inputDispatch({
-        type: 'SUBJECT_INPUT_RESET'
+        type: 'RESET_SUBJECT_INPUT'
       });
       setSubmitting(false);
     } catch (error) {
