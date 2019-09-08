@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import { Color } from 'constants/css';
 import Input from 'components/Texts/Input';
 import { css } from 'emotion';
+import { addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 
 const MAX_CHAR = 150;
 
@@ -51,13 +52,13 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           <Input
             autoFocus
             value={firstLine}
-            onChange={setFirstLine}
+            onChange={text => setFirstLine(addEmoji(text))}
             placeholder="Write something"
             type="text"
           />
-          <small style={{ color: firstLine.length > MAX_CHAR && 'red' }}>{`(${
-            firstLine.length
-          }/${MAX_CHAR} characters)`}</small>
+          <small
+            style={{ color: firstLine.length > MAX_CHAR && 'red' }}
+          >{`(${firstLine.length}/${MAX_CHAR} characters)`}</small>
           <p>
             {
               "If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student, which english academy do you go to? What's your teacher's name? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "
@@ -73,13 +74,13 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           </label>
           <Input
             value={secondLine}
-            onChange={setSecondLine}
+            onChange={text => setSecondLine(addEmoji(text))}
             placeholder="Write something"
             type="text"
           />
-          <small style={{ color: secondLine.length > MAX_CHAR && 'red' }}>{`(${
-            secondLine.length
-          }/${MAX_CHAR} characters)`}</small>
+          <small
+            style={{ color: secondLine.length > MAX_CHAR && 'red' }}
+          >{`(${secondLine.length}/${MAX_CHAR} characters)`}</small>
           <p>
             {`What do you love doing? What do you normally do when you play with your friends? What would you do all day if your parents allowed you to do anything you want? Don't like these questions? Then feel free to write anything you want (ideally about your favorite activity)`}
           </p>
@@ -93,14 +94,14 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           </label>
           <Input
             value={thirdLine}
-            onChange={setThirdLine}
+            onChange={text => setThirdLine(addEmoji(text))}
             className="form-control"
             placeholder="Write something"
             type="text"
           />
-          <small style={{ color: thirdLine.length > MAX_CHAR && 'red' }}>{`(${
-            thirdLine.length
-          }/${MAX_CHAR} characters)`}</small>
+          <small
+            style={{ color: thirdLine.length > MAX_CHAR && 'red' }}
+          >{`(${thirdLine.length}/${MAX_CHAR} characters)`}</small>
           <p>
             {
               "Which school do you go to? (Example: Daechi elementary school) What grade are you in? If you've finished school, which was the last school you've attended? What is your favorite school subject? Or, write anything you wish"
@@ -114,7 +115,13 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
         </Button>
         <Button
           color="blue"
-          onClick={() => onSubmit({ firstLine, secondLine, thirdLine })}
+          onClick={() =>
+            onSubmit({
+              firstLine: finalizeEmoji(firstLine),
+              secondLine: finalizeEmoji(secondLine),
+              thirdLine: finalizeEmoji(thirdLine)
+            })
+          }
           type="submit"
           disabled={
             firstLine.length > MAX_CHAR ||

@@ -50,44 +50,50 @@ export default function FallenPieces({
     <>
       {whiteFallenPiecesCompressed.length > 0 && (
         <div style={{ display: 'flex', marginBottom: '1rem' }}>
-          {whiteFallenPiecesCompressed.map((piece, index) => (
-            <Square
-              key={index}
-              piece={getPiece({ piece, myColor })}
-              className={css`
-                height: 4rem;
-                width: 4rem;
-                @media (max-width: ${mobileMaxWidth}) {
-                  height: 3rem;
-                  width: 3rem;
-                }
-              `}
-              img={getPiece({ piece, myColor }).img}
-              count={piece.count}
-              color="white"
-            />
-          ))}
+          {whiteFallenPiecesCompressed.map((piece, index) => {
+            const fallenPiece = getPiece({ piece, myColor });
+            return (
+              <Square
+                key={index}
+                piece={fallenPiece}
+                className={css`
+                  height: 4rem;
+                  width: 4rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    height: 3rem;
+                    width: 3rem;
+                  }
+                `}
+                img={fallenPiece.img}
+                count={piece.count}
+                color="white"
+              />
+            );
+          })}
         </div>
       )}
       {blackFallenPiecesCompressed.length > 0 && (
         <div style={{ display: 'flex', marginBottom: '1rem' }}>
-          {blackFallenPiecesCompressed.map((piece, index) => (
-            <Square
-              key={index}
-              piece={getPiece({ piece, myColor })}
-              className={css`
-                height: 4rem;
-                width: 4rem;
-                @media (max-width: ${mobileMaxWidth}) {
-                  height: 3rem;
-                  width: 3rem;
-                }
-              `}
-              img={getPiece({ piece, myColor }).img}
-              count={piece.count}
-              color="black"
-            />
-          ))}
+          {blackFallenPiecesCompressed.map((piece, index) => {
+            const fallenPiece = getPiece({ piece, myColor });
+            return (
+              <Square
+                key={index}
+                piece={fallenPiece}
+                className={css`
+                  height: 4rem;
+                  width: 4rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    height: 3rem;
+                    width: 3rem;
+                  }
+                `}
+                img={fallenPiece.img}
+                count={piece.count}
+                color="black"
+              />
+            );
+          })}
         </div>
       )}
     </>
