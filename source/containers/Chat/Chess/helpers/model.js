@@ -386,7 +386,7 @@ export function isPossibleAndLegal({
     return false;
   }
   return (
-    getPiece({ piece: squares[src], myColor })?.isMovePossible({
+    getPiece({ piece: squares[src], myColor })?.isMovePossible?.({
       color: squares[src].color,
       src,
       dest,

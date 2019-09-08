@@ -41,16 +41,14 @@ export default function Board({
         const squareRows = [];
         for (let j = 0; j < 8; j++) {
           const index = i * 8 + j;
+          const piece = squares[index]
+            ? getPiece({ piece: squares[index], myColor, interactable })
+            : {};
           squareRows.push(
             <Square
               key={index}
               className={squares[index]?.state}
-              img={
-                squares[index]
-                  ? getPiece({ piece: squares[index], myColor, interactable })
-                      .img
-                  : undefined
-              }
+              img={piece.img}
               shade={
                 (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
                   ? 'light'
