@@ -6,6 +6,7 @@ import ImageEditModal from 'components/Modals/ImageEditModal';
 import BioEditModal from 'components/Modals/BioEditModal';
 import {
   removeStatusMsg,
+  showProfileComments,
   updateStatusMsg,
   uploadProfilePic,
   uploadBio
@@ -35,6 +36,7 @@ ProfilePanel.propTypes = {
   openDirectMessageChannel: PropTypes.func,
   profile: PropTypes.object,
   removeStatusMsg: PropTypes.func,
+  showProfileComments: PropTypes.func.isRequired,
   userId: PropTypes.number,
   uploadBio: PropTypes.func,
   uploadProfilePic: PropTypes.func,
@@ -47,7 +49,8 @@ function ProfilePanel({
   initChat,
   loaded,
   profile,
-  profile: { id, numMessages },
+  profile: { id, commentsShown, numMessages },
+  showProfileComments,
   userId,
   expandable,
   isCreator,
@@ -60,7 +63,6 @@ function ProfilePanel({
 }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [comments, setComments] = useState([]);
-  const [commentsShown, setCommentsShown] = useState(false);
   const [commentsLoadMoreButton, setCommentsLoadMoreButton] = useState(false);
   const [imageUri, setImageUri] = useState();
   const [processing, setProcessing] = useState(false);
@@ -277,15 +279,11 @@ function ProfilePanel({
                   display: 'flex'
                 }}
               >
-                {renderMessagesButton()}
-                <Button
-                  style={{ marginLeft: '0.5rem' }}
-                  color="green"
-                  onClick={handleTalkClick}
-                >
+                <Button color="green" onClick={handleTalkClick}>
                   <Icon icon="comments" />
                   <span style={{ marginLeft: '0.7rem' }}>Talk</span>
                 </Button>
+                {renderMessagesButton()}
               </div>
             )}
             {profile.lastActive && !profile.online && profile.id !== userId && (
@@ -486,7 +484,7 @@ function ProfilePanel({
         limit: 5
       });
       setComments(comments);
-      setCommentsShown(true);
+      showProfileComments({ id: profile.id, shown: true });
       setCommentsLoadMoreButton(loadMoreButton);
     }
   }
@@ -557,10 +555,10 @@ function ProfilePanel({
     );
   }
 
-  function renderMessagesButton(props = {}) {
+  function renderMessagesButton() {
     return (
       <Button
-        {...props}
+        style={{ marginLeft: '1rem' }}
         disabled={commentsShown && id === userId}
         color="logoBlue"
         onClick={onMessagesButtonClick}
@@ -602,6 +600,7 @@ export default connect(
   dispatch => ({
     dispatch,
     initChat: params => dispatch(initChat(params)),
+    showProfileComments: params => dispatch(showProfileComments(params)),
     removeStatusMsg: params => dispatch(removeStatusMsg(params)),
     updateStatusMsg: params => dispatch(updateStatusMsg(params)),
     uploadProfilePic: params => dispatch(uploadProfilePic(params)),

@@ -196,6 +196,17 @@ export default function UserReducer(state = defaultState, action) {
               : profile.profilePicId
         }))
       };
+    case USER.SHOW_PROFILE_COMMENTS:
+      return {
+        ...state,
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          commentsShown:
+            profile.id === action.profileId
+              ? action.shown
+              : profile.commentsShown
+        }))
+      };
     case USER.EDIT_STATUS_MSG:
       return {
         ...state,

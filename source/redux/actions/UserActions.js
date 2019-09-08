@@ -165,6 +165,12 @@ export const setProfileInfo = data => ({
   data
 });
 
+export const showProfileComments = ({ id, shown }) => ({
+  type: USER.SHOW_PROFILE_COMMENTS,
+  profileId: id,
+  shown
+});
+
 export const signup = params => async dispatch => {
   try {
     const { data } = await request.post(`${API_URL}/signup`, params);
