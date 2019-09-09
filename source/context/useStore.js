@@ -10,7 +10,7 @@ import {
   initialContentState
 } from './initialStates';
 
-export default function useRedux() {
+export default function useStore() {
   const [commentState, commentDispatch] = useReducer(
     CommentReducer,
     initialCommentState

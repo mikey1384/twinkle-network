@@ -1,5 +1,5 @@
 import React, { createContext } from 'react';
-import useRedux from './useRedux';
+import useStore from './useStore';
 import PropTypes from 'prop-types';
 
 export const Context = createContext();
@@ -9,5 +9,5 @@ ContextProvider.propTypes = {
 };
 
 export function ContextProvider({ children }) {
-  return <Context.Provider value={useRedux()}>{children}</Context.Provider>;
+  return <Context.Provider value={useStore()}>{children}</Context.Provider>;
 }
