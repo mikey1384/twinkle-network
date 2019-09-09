@@ -97,6 +97,14 @@ export default function InputReducer(state, action) {
           urlHelper: action.urlHelper
         }
       };
+    case 'SET_HAS_SECRET_ANSWER':
+      return {
+        ...state,
+        subject: {
+          ...state.subject,
+          hasSecretAnswer: action.hasSecretAnswer
+        }
+      };
     case 'SET_SECRET_ANSWER':
       return {
         ...state,
@@ -106,6 +114,14 @@ export default function InputReducer(state, action) {
             ...state.subject.details,
             secretAnswer: action.secretAnswer
           }
+        }
+      };
+    case 'SET_SUBJECT_ATTACHMENT':
+      return {
+        ...state,
+        subject: {
+          ...state.subject,
+          attachment: action.attachment
         }
       };
     case 'SET_SUBJECT_DESCRIPTION':
@@ -119,6 +135,14 @@ export default function InputReducer(state, action) {
           }
         }
       };
+    case 'SET_SUBJECT_DESCRIPTION_FIELD_SHOWN':
+      return {
+        ...state,
+        subject: {
+          ...state.subject,
+          descriptionFieldShown: action.shown
+        }
+      };
     case 'SET_SUBJECT_TITLE':
       return {
         ...state,
@@ -128,30 +152,6 @@ export default function InputReducer(state, action) {
             ...state.subject.details,
             title: action.title
           }
-        }
-      };
-    case 'SET_SUBJECT_DESCRIPTION_INPUT_SHOWN':
-      return {
-        ...state,
-        subject: {
-          ...state.subject,
-          descriptionInputShown: action.shown
-        }
-      };
-    case 'SET_HAS_SECRET_ANSWER':
-      return {
-        ...state,
-        subject: {
-          ...state.subject,
-          hasSecretAnswer: action.hasSecretAnswer
-        }
-      };
-    case 'SET_SUBJECT_ATTACHMENT':
-      return {
-        ...state,
-        subject: {
-          ...state.subject,
-          attachment: action.attachment
         }
       };
     case 'SET_SUBJECT_REWARD_LEVEL':

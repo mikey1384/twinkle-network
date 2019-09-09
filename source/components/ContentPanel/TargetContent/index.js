@@ -6,7 +6,7 @@ import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
-import InputForm from 'components/Texts/InputForm';
+import InputForm from 'components/Forms/InputForm';
 import Comment from './Comment';
 import LongText from 'components/Texts/LongText';
 import ContentLink from 'components/ContentLink';

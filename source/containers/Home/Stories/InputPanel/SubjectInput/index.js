@@ -31,14 +31,23 @@ SubjectInput.propTypes = {
 function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const {
-    input: {
+    homeInput: {
       state: { subject },
-      dispatch: inputDispatch
+      actions: {
+        onSetHasSecretAnswer,
+        onResetSubjectInput,
+        onSetSecretAnswer,
+        onSetSubjectAttachment,
+        onSetSubjectDescription,
+        onSetSubjectDescriptionFieldShown,
+        onSetSubjectRewardLevel,
+        onSetSubjectTitle
+      }
     }
   } = useContext(Context);
   const {
     attachment,
-    descriptionInputShown,
+    descriptionFieldShown,
     details: { title, description, secretAnswer, rewardLevel },
     hasSecretAnswer
   } = subject;
@@ -76,10 +85,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             value={title}
             onChange={onInputChange}
             onKeyUp={event => {
-              inputDispatch({
-                type: 'SET_SUBJECT_TITLE',
-                title: addEmoji(event.target.value)
-              });
+              onSetSubjectTitle(addEmoji(event.target.value));
             }}
             style={titleExceedsCharLimit?.style}
           />
@@ -88,12 +94,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
           {attachment ? (
             <Attachment
               attachment={attachment}
-              onClose={() =>
-                inputDispatch({
-                  type: 'SET_SUBJECT_ATTACHMENT',
-                  attachment: undefined
-                })
-              }
+              onClose={() => onSetSubjectAttachment(undefined)}
             />
           ) : (
             <Button
@@ -124,7 +125,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
           {titleExceedsCharLimit?.message}
         </span>
       </div>
-      {descriptionInputShown && (
+      {descriptionFieldShown && (
         <div style={{ position: 'relative' }}>
           <Textarea
             type="text"
@@ -136,17 +137,11 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             minRows={4}
             placeholder="Enter Description (Optional, you don't need to write this)"
             onChange={event =>
-              inputDispatch({
-                type: 'SET_SUBJECT_DESCRIPTION',
-                description: addEmoji(event.target.value)
-              })
+              onSetSubjectDescription(addEmoji(event.target.value))
             }
             onKeyUp={event => {
               if (event.key === ' ') {
-                inputDispatch({
-                  type: 'SET_SUBJECT_DESCRIPTION',
-                  description: addEmoji(event.target.value)
-                });
+                onSetSubjectDescription(addEmoji(event.target.value));
               }
             }}
           />
@@ -177,17 +172,11 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 minRows={4}
                 placeholder="Enter the Secret Message"
                 onChange={event =>
-                  inputDispatch({
-                    type: 'SET_SECRET_ANSWER',
-                    secretAnswer: addEmoji(event.target.value)
-                  })
+                  onSetSecretAnswer(addEmoji(event.target.value))
                 }
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    inputDispatch({
-                      type: 'SET_SECRET_ANSWER',
-                      secretAnswer: addEmoji(event.target.value)
-                    });
+                    onSetSecretAnswer(addEmoji(event.target.value));
                   }
                 }}
               />
@@ -217,12 +206,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                   fontSize: '3rem'
                 }}
                 rewardLevel={rewardLevel}
-                onSetRewardLevel={rewardLevel =>
-                  inputDispatch({
-                    type: 'SET_SUBJECT_REWARD_LEVEL',
-                    rewardLevel
-                  })
-                }
+                onSetRewardLevel={onSetSubjectRewardLevel}
               />
             </div>
           )}
@@ -230,12 +214,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
             <SwitchButton
               checked={hasSecretAnswer}
               label="Secret Message"
-              onChange={() =>
-                inputDispatch({
-                  type: 'SET_HAS_SECRET_ANSWER',
-                  hasSecretAnswer: !hasSecretAnswer
-                })
-              }
+              onChange={() => onSetHasSecretAnswer(!hasSecretAnswer)}
               style={{ marginRight: '1rem' }}
             />
             <Button
@@ -254,10 +233,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         <AttachContentModal
           onHide={() => setAttachContentModalShown(false)}
           onConfirm={content => {
-            inputDispatch({
-              type: 'SET_SUBJECT_ATTACHMENT',
-              attachment: content
-            });
+            onSetSubjectAttachment(content);
             setAttachContentModalShown(false);
           }}
         />
@@ -278,19 +254,10 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   }
 
   function onInputChange(text) {
-    inputDispatch({
-      type: 'SET_SUBJECT_TITLE',
-      title: text
-    });
-    inputDispatch({
-      type: 'SET_SUBJECT_DESCRIPTION_INPUT_SHOWN',
-      shown: !!text.length
-    });
+    onSetSubjectTitle(text);
+    onSetSubjectDescriptionFieldShown(!!text.length);
     if (!text.length) {
-      inputDispatch({
-        type: 'SET_HAS_SECRET_ANSWER',
-        hasSecretAnswer: false
-      });
+      onSetHasSecretAnswer(false);
     }
   }
 
@@ -314,9 +281,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         dispatch
       });
       uploadFeedContent(data);
-      inputDispatch({
-        type: 'RESET_SUBJECT_INPUT'
-      });
+      onResetSubjectInput();
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);

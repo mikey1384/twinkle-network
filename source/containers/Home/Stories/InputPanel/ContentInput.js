@@ -32,9 +32,21 @@ ContentInput.propTypes = {
 
 function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
   const {
-    input: {
+    homeInput: {
       state: { content },
-      dispatch: inputDispatch
+      actions: {
+        onResetContentInput,
+        onSetContentAlreadyPosted,
+        onSetContentIsVideo,
+        onSetContentDescription,
+        onSetContentDescriptionFieldShown,
+        onSetContentRewardLevel,
+        onSetContentTitle,
+        onSetContentTitleFieldShown,
+        onSetContentUrl,
+        onSetContentUrlError,
+        onSetContentUrlHelper
+      }
     }
   } = useContext(Context);
   const {
@@ -92,14 +104,8 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       <Checkbox
         label={'YouTube Video:'}
         onClick={() => {
-          inputDispatch({
-            type: 'SET_CONTENT_IS_VIDEO',
-            isVideo: !form.isVideo
-          });
-          inputDispatch({
-            type: 'SET_CONTENT_URL_ERROR',
-            urlError: ''
-          });
+          onSetContentIsVideo(form.isVideo);
+          onSetContentUrlError(urlError);
         }}
         style={{ marginTop: '1rem' }}
         checked={form.isVideo}
@@ -135,19 +141,11 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
               </span>
               <Input
                 value={form.title}
-                onChange={text =>
-                  inputDispatch({
-                    type: 'SET_CONTENT_TITLE',
-                    title: text
-                  })
-                }
+                onChange={onSetContentTitle}
                 placeholder="Enter Title Here"
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    inputDispatch({
-                      type: 'SET_CONTENT_TITLE',
-                      title: addEmoji(event.target.value)
-                    });
+                    onSetContentTitle(addEmoji(event.target.value));
                   }
                 }}
                 style={{
@@ -168,18 +166,10 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 value={form.description}
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event =>
-                  inputDispatch({
-                    type: 'SET_CONTENT_DESCRIPTION',
-                    description: event.target.value
-                  })
-                }
+                onChange={event => onSetContentDescription(event.target.value)}
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    inputDispatch({
-                      type: 'SET_CONTENT_DESCRIPTION',
-                      description: addEmoji(event.target.value)
-                    });
+                    onSetContentDescription(addEmoji(event.target.value));
                   }
                 }}
                 style={{
@@ -215,12 +205,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 fontSize: '3rem'
               }}
               rewardLevel={form.rewardLevel}
-              onSetRewardLevel={rewardLevel =>
-                inputDispatch({
-                  type: 'SET_CONTENT_REWARD_LEVEL',
-                  rewardLevel
-                })
-              }
+              onSetRewardLevel={onSetContentRewardLevel}
             />
           </div>
         )}
@@ -270,10 +255,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       urlError = 'That is not a valid YouTube url';
     }
     if (urlError) {
-      inputDispatch({
-        type: 'SET_CONTENT_URL_ERROR',
-        urlError
-      });
+      onSetContentUrlError(urlError);
       UrlFieldRef.current.focus();
       return scrollElementToCenter(UrlFieldRef.current);
     }
@@ -285,9 +267,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         description: finalizeEmoji(form.description),
         dispatch
       });
-      inputDispatch({
-        type: 'RESET_CONTENT_INPUT'
-      });
+      onResetContentInput();
       setSubmitting(false);
       uploadFeedContent(data);
       document.getElementById('App').scrollTop = 0;
@@ -301,34 +281,13 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     clearTimeout(checkContentExistsTimerRef.current);
     clearTimeout(showHelperMessageTimerRef.current);
     const urlIsValid = isValidUrl(url);
-    inputDispatch({
-      type: 'SET_CONTENT_ALREADY_POSTED',
-      alreadyPosted: false
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_URL',
-      url
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_IS_VIDEO',
-      isVideo: isValidYoutubeUrl(url)
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_TITLE_FIELD_SHOWN',
-      shown: urlIsValid
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_DESCRIPTION_FIELD_SHOWN',
-      shown: urlIsValid
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_URL_ERROR',
-      urlError: ''
-    });
-    inputDispatch({
-      type: 'SET_CONTENT_URL_HELPER',
-      urlHelper: ''
-    });
+    onSetContentAlreadyPosted(false);
+    onSetContentUrl(url);
+    onSetContentIsVideo(isValidYoutubeUrl(url));
+    onSetContentTitleFieldShown(urlIsValid);
+    onSetContentDescriptionFieldShown(urlIsValid);
+    onSetContentUrlError('');
+    onSetContentUrlHelper('');
     if (urlIsValid) {
       checkContentExistsTimerRef.current = setTimeout(
         () => handleCheckIfContentExists(url),
@@ -336,28 +295,18 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       );
     }
     showHelperMessageTimerRef.current = setTimeout(() => {
-      inputDispatch({
-        type: 'SET_CONTENT_URL_HELPER',
-        urlHelper:
-          urlIsValid || stringIsEmpty(url)
-            ? ''
-            : `A URL is a website's internet address. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
-      });
+      onSetContentUrlHelper(
+        urlIsValid || stringIsEmpty(url)
+          ? ''
+          : `A URL is a website's internet address. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
+      );
       const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
-      inputDispatch({
-        type: 'SET_CONTENT_TITLE',
-        title:
-          !urlIsValid &&
-          !stringIsEmpty(url) &&
-          url.length > 3 &&
-          !regex.test(url)
-            ? url
-            : form.title
-      });
-      inputDispatch({
-        type: 'SET_CONTENT_TITLE_FIELD_SHOWN',
-        shown: !stringIsEmpty(url)
-      });
+      onSetContentTitle(
+        !urlIsValid && !stringIsEmpty(url) && url.length > 3 && !regex.test(url)
+          ? url
+          : form.title
+      );
+      onSetContentTitleFieldShown(!stringIsEmpty(url));
     }, 300);
   }
 
@@ -367,10 +316,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       url,
       type: isVideo ? 'video' : 'url'
     });
-    return inputDispatch({
-      type: 'SET_CONTENT_ALREADY_POSTED',
-      alreadyPosted: exists ? content : false
-    });
+    return onSetContentAlreadyPosted(exists ? content : false);
   }
 }
 

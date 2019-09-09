@@ -1,7 +1,7 @@
 export const initialHomeInputState = {
   subject: {
     attachment: undefined,
-    descriptionInputShown: false,
+    descriptionFieldShown: false,
     details: {
       title: '',
       description: '',
@@ -26,8 +26,13 @@ export const initialHomeInputState = {
   }
 };
 
-export const initialSubjectState = {};
+export const initialContentState = {
+  stars: [],
+  childComments: [],
+  likes: [],
+  subjects: [],
+  commentsLoadMoreButton: false,
+  subjectsLoadMoreButton: false
+};
+
 export const initialCommentState = {};
-export const initialVideoState = {};
-export const initialUrlState = {};
-export const initialUserState = {};

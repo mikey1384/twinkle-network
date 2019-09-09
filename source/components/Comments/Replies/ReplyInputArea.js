@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import InputForm from 'components/Texts/InputForm';
+import InputForm from 'components/Forms/InputForm';
 
 ReplyInputArea.propTypes = {
   rootCommentId: PropTypes.number,

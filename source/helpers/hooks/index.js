@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
-
-export { default as useContentObj } from './useContentObj';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 
 export function useInterval(callback, interval, tracked) {

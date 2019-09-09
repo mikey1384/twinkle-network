@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useContentObj } from 'helpers/hooks';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import Comments from 'components/Comments';
@@ -32,9 +31,9 @@ import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
+import { Context } from 'context';
 
 Home.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   profile: PropTypes.shape({
     email: PropTypes.string,
     emailVerified: PropTypes.bool,
@@ -56,6 +55,7 @@ Home.propTypes = {
     youtubeName: PropTypes.string,
     youtubeUrl: PropTypes.string
   }).isRequired,
+  reduxDispatch: PropTypes.func.isRequired,
   removeStatusMsg: PropTypes.func.isRequired,
   selectedTheme: PropTypes.string.isRequired,
   setGreeting: PropTypes.func.isRequired,
@@ -65,7 +65,7 @@ Home.propTypes = {
 };
 
 function Home({
-  dispatch,
+  reduxDispatch,
   profile,
   profile: {
     email,
@@ -100,22 +100,12 @@ function Home({
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
   const StatusInputRef = useRef(null);
-
   const {
-    contentObj: { childComments, commentsLoadMoreButton },
-    onAttachStar,
-    onDeleteComment,
-    onEditComment,
-    onEditRewardComment,
-    onInitContent,
-    onLikeComment,
-    onLoadComments,
-    onLoadMoreComments,
-    onLoadMoreReplies,
-    onLoadRepliesOfReply,
-    onUploadComment,
-    onUploadReply
-  } = useContentObj({});
+    contentPage: {
+      state: { childComments, commentsLoadMoreButton },
+      dispatch
+    }
+  } = useContext(Context);
 
   useEffect(() => {
     mounted.current = true;
@@ -167,7 +157,7 @@ function Home({
         title={greeting || 'Welcome!'}
         canEdit={id === userId}
         placeholder="Enter a message for your visitors"
-        onEditTitle={onEditGreeting}
+        onEditTitle={handleEditGreeting}
       >
         <div
           style={{
@@ -214,7 +204,7 @@ function Home({
                     setEditedStatusMsg('');
                     setEditedStatusColor('');
                   }}
-                  onStatusSubmit={onStatusMsgSubmit}
+                  onStatusSubmit={handleStatusMsgSubmit}
                 />
               )}
               {(!stringIsEmpty(statusMsg) || editedStatusMsg) && (
@@ -418,7 +408,7 @@ function Home({
       />
       {confirmModalShown && (
         <ConfirmModal
-          onConfirm={onRemoveStatus}
+          onConfirm={handleRemoveStatus}
           onHide={() => setConfirmModalShown(false)}
           title={`Remove Status Message`}
         />
@@ -467,18 +457,23 @@ function Home({
     </div>
   );
 
-  async function onEditGreeting(greeting) {
-    await uploadGreeting({ greeting, dispatch });
+  async function handleEditGreeting(greeting) {
+    await uploadGreeting({ greeting, dispatch: reduxDispatch });
     setGreeting(greeting);
   }
 
-  async function onRemoveStatus() {
+  async function handleUploadBio(params) {
+    await uploadBio({ ...params, profileId: profile.id });
+    setBioEditModalShown(false);
+  }
+
+  async function handleRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());
     removeStatusMsg(userId);
     setConfirmModalShown(false);
   }
 
-  async function onStatusMsgSubmit() {
+  async function handleStatusMsgSubmit() {
     const statusMsg = finalizeEmoji(editedStatusMsg);
     const statusColor = editedStatusColor || profile.statusColor;
     const { data } = await request.post(
@@ -494,16 +489,103 @@ function Home({
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
   }
 
-  async function handleUploadBio(params) {
-    await uploadBio({ ...params, profileId: profile.id });
-    setBioEditModalShown(false);
+  function onAttachStar(data) {
+    dispatch({
+      type: 'ATTACH_STAR',
+      data
+    });
+  }
+
+  function onDeleteComment(commentId) {
+    dispatch({
+      type: 'DELETE_COMMENT',
+      commentId
+    });
+  }
+
+  function onEditComment({ commentId, editedComment }) {
+    dispatch({
+      type: 'EDIT_COMMENT',
+      commentId,
+      editedComment
+    });
+  }
+
+  function onEditRewardComment({ id, text }) {
+    dispatch({
+      type: 'EDIT_REWARD_COMMENT',
+      id,
+      text
+    });
+  }
+
+  function onInitContent({ content }) {
+    dispatch({
+      type: 'INIT_CONTENT',
+      content
+    });
+  }
+
+  function onLikeComment({ commentId, likes }) {
+    dispatch({
+      type: 'LIKE_COMMENT',
+      commentId,
+      likes
+    });
+  }
+
+  function onLoadComments({ comments, loadMoreButton }) {
+    dispatch({
+      type: 'LOAD_COMMENTS',
+      comments,
+      loadMoreButton
+    });
+  }
+
+  function onLoadMoreComments(data) {
+    dispatch({
+      type: 'LOAD_MORE_COMMENTS',
+      data
+    });
+  }
+
+  function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
+    dispatch({
+      type: 'LOAD_MORE_REPLIES',
+      commentId,
+      replies,
+      loadMoreButton
+    });
+  }
+
+  function onLoadRepliesOfReply({ replies, commentId, replyId }) {
+    dispatch({
+      type: 'LOAD_REPLIES_OF_REPLY',
+      replies,
+      commentId,
+      replyId
+    });
+  }
+
+  function onUploadComment(data) {
+    dispatch({
+      type: 'UPLOAD_COMMENT',
+      data
+    });
+  }
+
+  function onUploadReply(data) {
+    dispatch({
+      type: 'UPLOAD_REPLY',
+      data
+    });
   }
 }
 
 export default connect(
   state => ({ userId: state.UserReducer.userId }),
   dispatch => ({
-    dispatch,
+    reduxDispatch: dispatch,
     uploadBio: params => dispatch(uploadBio(params)),
     removeStatusMsg: userId => dispatch(removeStatusMsg(userId)),
     setGreeting: greeting => dispatch(setGreeting(greeting)),

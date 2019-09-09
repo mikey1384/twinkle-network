@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import InputForm from 'components/Texts/InputForm';
+import InputForm from 'components/Forms/InputForm';
 
 CommentInputArea.propTypes = {
   autoFocus: PropTypes.bool,
