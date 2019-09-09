@@ -32,13 +32,13 @@ export default function useStore() {
       state: commentState,
       actions: CommentActions(commentDispatch)
     },
-    homeInput: {
-      state: homeInputState,
-      actions: InputActions(homeInputDispatch)
-    },
     contentPage: {
       state: contentPageState,
       actions: ContentActions(contentPageDispatch)
+    },
+    homeInput: {
+      state: homeInputState,
+      actions: InputActions(homeInputDispatch)
     }
   };
 }

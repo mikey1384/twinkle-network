@@ -3,7 +3,7 @@ export default function CommentReducer(state, action) {
     case 'ENTER_COMMENT':
       return {
         ...state,
-        [action.contentId]: action.text
+        [action.contentType + action.contentId]: action.text
       };
     default:
       return state;
