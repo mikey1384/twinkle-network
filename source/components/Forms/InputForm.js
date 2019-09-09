@@ -38,7 +38,7 @@ export default function InputForm({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const {
-    comment: {
+    commentInput: {
       state,
       actions: { onEnterComment }
     }

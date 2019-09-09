@@ -27,13 +27,8 @@ export default function useStore() {
     initialContentState
   );
 
-  const [linkPageState, linkPageDispatch] = useReducer({
-    ContentReducer,
-    initialContentState
-  });
-
   return {
-    comment: {
+    commentInput: {
       state: commentState,
       actions: CommentActions(commentDispatch)
     },
@@ -44,10 +39,6 @@ export default function useStore() {
     contentPage: {
       state: contentPageState,
       actions: ContentActions(contentPageDispatch)
-    },
-    linkPage: {
-      state: linkPageState,
-      dispatch: ContentActions(linkPageDispatch)
     }
   };
 }
