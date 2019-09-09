@@ -27,8 +27,10 @@ import {
   loadMoreFeedReplies,
   loadRepliesOfReply,
   loadTags,
+  showFeedComments,
   setCurrentSection,
   setRewardLevel,
+  showTCReplyInput,
   loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -55,6 +57,7 @@ Posts.propTypes = {
   fetchMoreFeeds: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   loaded: PropTypes.bool.isRequired,
+  loadFeedComments: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   loadMoreFeedComments: PropTypes.func.isRequired,
   loadMoreFeedReplies: PropTypes.func.isRequired,
@@ -68,8 +71,9 @@ Posts.propTypes = {
   scrollPositions: PropTypes.object.isRequired,
   selectedTheme: PropTypes.string,
   setCurrentSection: PropTypes.func.isRequired,
+  showTCReplyInput: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
-  loadFeedComments: PropTypes.func.isRequired,
+  showFeedComments: PropTypes.func.isRequired,
   uploadTargetContentComment: PropTypes.func.isRequired,
   uploadFeedComment: PropTypes.func.isRequired
 };
@@ -115,6 +119,8 @@ function Posts({
   scrollPositions,
   selectedTheme,
   setCurrentSection,
+  showFeedComments,
+  showTCReplyInput,
   loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment,
@@ -243,7 +249,11 @@ function Posts({
                     onReplySubmit={data =>
                       handleUploadFeedComment({ feed, data })
                     }
+                    onSetCommentsShown={shown =>
+                      showFeedComments({ feedId: feed.feedId, shown })
+                    }
                     onSetRewardLevel={setRewardLevel}
+                    onShowTCReplyInput={showTCReplyInput}
                     onLoadComments={loadFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={myId}
@@ -394,6 +404,8 @@ export default connect(
     recordScrollPosition,
     setCurrentSection,
     setRewardLevel,
+    showFeedComments,
+    showTCReplyInput,
     loadFeedComments,
     uploadFeedComment,
     uploadTargetContentComment

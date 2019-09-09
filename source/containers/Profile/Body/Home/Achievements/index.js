@@ -96,7 +96,9 @@ export default function Achievements({
             onSetCommentsShown={shown =>
               onSetCommentsShown({ feedId: contentObj.feedId, shown })
             }
+            onShowTCReplyInput={onShowTCReplyInput}
             onSetRewardLevel={onSetRewardLevel}
+            onShow
             onLoadComments={onLoadComments}
             onTargetCommentSubmit={onTargetCommentSubmit}
           />
@@ -276,6 +278,13 @@ export default function Achievements({
       type: 'SHOW_COMMENTS',
       feedId,
       shown
+    });
+  }
+
+  function onShowTCReplyInput(feedId) {
+    dispatch({
+      type: 'SHOW_TC_REPLY_INPUT',
+      feedId
     });
   }
 
@@ -889,6 +898,21 @@ function reducer(state, action) {
         notables: state.notables.map(contentObj =>
           contentObj.feedId === action.feedId
             ? { ...contentObj, commentsShown: action.shown }
+            : contentObj
+        )
+      };
+    case 'SHOW_TC_REPLY_INPUT':
+      return {
+        ...state,
+        notables: state.notables.map(contentObj =>
+          contentObj.feedId === action.feedId
+            ? {
+                ...contentObj,
+                targetObj: {
+                  ...contentObj.targetObj,
+                  replyInputShown: true
+                }
+              }
             : contentObj
         )
       };

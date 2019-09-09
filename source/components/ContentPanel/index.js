@@ -42,6 +42,7 @@ ContentPanel.propTypes = {
   onReplySubmit: PropTypes.func.isRequired,
   onSetCommentsShown: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func,
+  onShowTCReplyInput: PropTypes.func.isRequired,
   onLoadComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
   onTargetCommentSubmit: PropTypes.func.isRequired,
@@ -75,6 +76,7 @@ function ContentPanel({
   onReplySubmit,
   onSetCommentsShown,
   onSetRewardLevel,
+  onShowTCReplyInput,
   onLoadComments,
   onTargetCommentSubmit,
   style = {},
@@ -120,6 +122,7 @@ function ContentPanel({
         onEditComment,
         onEditContent,
         onEditRewardComment,
+        onLoadComments,
         onLikeContent,
         onLoadMoreComments,
         onLoadMoreReplies,
@@ -127,7 +130,6 @@ function ContentPanel({
         onLoadRepliesOfReply,
         onReplySubmit,
         onSetRewardLevel,
-        onLoadComments,
         onTargetCommentSubmit
       }}
     >
@@ -204,6 +206,7 @@ function ContentPanel({
               rootType={contentObj.rootType}
               secretShown={secretShown}
               feedId={feedId}
+              onShowTCReplyInput={onShowTCReplyInput}
             />
           )}
           {contentObj.loaded && contentObj.targetObj?.subject && (

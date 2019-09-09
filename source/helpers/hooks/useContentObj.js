@@ -496,6 +496,13 @@ export default function useContentObj(props) {
     }));
   }
 
+  function onSetCommentsShown() {
+    setContentObj(contentObj => ({
+      ...contentObj,
+      commentsShown: true
+    }));
+  }
+
   function onSetRewardLevel({ rewardLevel }) {
     setContentObj(contentObj => ({
       ...contentObj,
@@ -514,6 +521,15 @@ export default function useContentObj(props) {
             }
           : subject;
       })
+    }));
+  }
+
+  function onShowTCReplyInput() {
+    setContentObj(contentObj => ({
+      ...contentObj,
+      targetObj: contentObj.targetObj
+        ? { ...contentObj.targetObj, replyInputShown: true }
+        : { replyInputShown: true }
     }));
   }
 
@@ -637,8 +653,10 @@ export default function useContentObj(props) {
     onLoadRepliesOfReply,
     onLoadSubjectComments,
     onLoadTags,
+    onSetCommentsShown,
     onSetRewardLevel,
     onSetSubjectRewardLevel,
+    onShowTCReplyInput,
     onTargetCommentSubmit,
     onUploadComment,
     onUploadReply,

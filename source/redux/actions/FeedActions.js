@@ -162,6 +162,11 @@ export const showFeedComments = ({ feedId, shown }) => ({
   shown
 });
 
+export const showTCReplyInput = feedId => ({
+  type: FEED.SHOW_TC_REPLY_INPUT,
+  feedId
+});
+
 export const setRewardLevel = ({ type, contentId, rewardLevel }) => ({
   type: FEED.SET_REWARD_LEVEL,
   contentType: type,

@@ -10,24 +10,19 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { showComments } from 'redux/actions/ContentActions';
 
-Content.propTypes = {
-  commentsShown: PropTypes.bool.isRequired,
+ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  showComments: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
-function Content({
-  commentsShown,
+function ContentPage({
   history,
   match: {
     params: { contentId },
     url
   },
-  showComments,
   userId
 }) {
   const type = url.split('/')[1].slice(0, -1);
@@ -45,7 +40,9 @@ function Content({
     onLoadMoreComments,
     onLoadMoreReplies,
     onLoadRepliesOfReply,
+    onSetCommentsShown,
     onSetRewardLevel,
+    onShowTCReplyInput,
     onTargetCommentSubmit,
     onUploadComment,
     onUploadReply
@@ -125,7 +122,6 @@ function Content({
               <ContentPanel
                 key={contentObj.type + contentObj.contentId}
                 autoExpand
-                commentsShown={commentsShown}
                 inputAtBottom={contentObj.type === 'comment'}
                 commentsLoadLimit={5}
                 contentObj={contentObj}
@@ -144,8 +140,9 @@ function Content({
                 onLoadMoreReplies={onLoadMoreReplies}
                 onLoadRepliesOfReply={onLoadRepliesOfReply}
                 onReplySubmit={onUploadReply}
-                onSetCommentsShown={showComments}
+                onSetCommentsShown={onSetCommentsShown}
                 onSetRewardLevel={onSetRewardLevel}
+                onShowTCReplyInput={onShowTCReplyInput}
                 onLoadComments={onLoadComments}
                 onTargetCommentSubmit={onTargetCommentSubmit}
               />
@@ -161,10 +158,6 @@ function Content({
   );
 }
 
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    commentsShown: state.ContentReducer.commentsShown
-  }),
-  { showComments }
-)(Content);
+export default connect(state => ({
+  userId: state.UserReducer.userId
+}))(ContentPage);

@@ -26,6 +26,7 @@ import {
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
+  showTCReplyInput,
   loadFeedComments,
   uploadFeedComment,
   uploadTargetContentComment
@@ -79,6 +80,7 @@ Stories.propTypes = {
   setCurrentSection: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
+  showTCReplyInput: PropTypes.func.isRequired,
   loadFeedComments: PropTypes.func.isRequired,
   storyFeeds: PropTypes.array.isRequired,
   subFilter: PropTypes.string.isRequired,
@@ -142,6 +144,7 @@ function Stories({
   setCurrentSection,
   setRewardLevel,
   showFeedComments,
+  showTCReplyInput,
   loadFeedComments,
   storyFeeds = [],
   subFilter,
@@ -334,6 +337,7 @@ function Stories({
                       showFeedComments({ feedId: feed.feedId, shown })
                     }
                     onSetRewardLevel={setRewardLevel}
+                    onShowTCReplyInput={showTCReplyInput}
                     onLoadComments={loadFeedComments}
                     onTargetCommentSubmit={uploadTargetContentComment}
                     userId={userId}
@@ -510,6 +514,7 @@ export default connect(
     setCurrentSection,
     setRewardLevel,
     showFeedComments,
+    showTCReplyInput,
     toggleHideWatched,
     uploadFeedComment,
     uploadTargetContentComment

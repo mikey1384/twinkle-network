@@ -35,6 +35,7 @@ TargetContent.propTypes = {
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
   secretShown: PropTypes.bool,
+  onShowTCReplyInput: PropTypes.func.isRequired,
   style: PropTypes.object,
   targetObj: PropTypes.object,
   username: PropTypes.string
@@ -52,12 +53,18 @@ function TargetContent({
   profilePicId,
   rootType,
   secretShown,
+  onShowTCReplyInput,
   style,
-  targetObj: { comment, comment: { comments = [] } = {}, subject, type },
+  targetObj: {
+    comment,
+    comment: { comments = [] } = {},
+    replyInputShown,
+    subject,
+    type
+  },
   username
 }) {
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [replyInputShown, setReplyInputShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [mouseEntered, setMouseEntered] = useState(false);
   const InputFormRef = useRef(null);
@@ -349,7 +356,7 @@ function TargetContent({
   }
 
   function onReplyClick() {
-    if (!replyInputShown) return setReplyInputShown(true);
+    if (!replyInputShown) return onShowTCReplyInput(feedId);
     InputFormRef.current.focus();
   }
 
@@ -376,5 +383,7 @@ export default connect(
     username: state.UserReducer.username,
     profilePicId: state.UserReducer.profilePicId
   }),
-  dispatch => ({ dispatch })
+  dispatch => ({
+    dispatch
+  })
 )(withRouter(TargetContent));

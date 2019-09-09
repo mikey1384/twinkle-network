@@ -674,6 +674,21 @@ export default function FeedReducer(state = defaultState, action) {
             : feed
         )
       };
+    case FEED.SHOW_TC_REPLY_INPUT:
+      return {
+        ...state,
+        [currentSection]: state[currentSection].map(feed =>
+          feed.feedId === action.feedId
+            ? {
+                ...feed,
+                targetObj: {
+                  ...feed.targetObj,
+                  replyInputShown: true
+                }
+              }
+            : feed
+        )
+      };
     case FEED.UPLOAD_CONTENT:
       return {
         ...state,
