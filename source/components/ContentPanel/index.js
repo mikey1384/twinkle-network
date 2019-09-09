@@ -87,14 +87,12 @@ function ContentPanel({
   const [videoShown, setVideoShown] = useState(false);
   const [commentsHidden, setCommentsHidden] = useState(true);
   const loading = useRef(false);
-  const mounted = useRef(true);
   useEffect(() => {
-    mounted.current = true;
-    if (!contentObj.loaded && !loading.current) {
+    if (!contentObj.loaded && !loading.current && contentId) {
       onMount();
     }
     async function onMount() {
-      if (!newPost && mounted.current) {
+      if (!newPost) {
         loading.current = true;
         onInitContent({
           content: await loadContent({ contentId, type }),
@@ -103,9 +101,6 @@ function ContentPanel({
         loading.current = false;
       }
     }
-    return function cleanUp() {
-      mounted.current = false;
-    };
   }, [contentObj]);
   const isThreaded = !!contentObj.targetObj;
   return (

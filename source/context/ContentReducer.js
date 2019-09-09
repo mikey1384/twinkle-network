@@ -5,6 +5,11 @@ export default function ContentPageReducer(state, action) {
         ...state,
         ...action.content
       };
+    case 'ADD_TAGS':
+      return {
+        ...state,
+        tags: state.tags.concat(action.tags)
+      };
     case 'ATTACH_STAR':
       return {
         ...state,
@@ -476,6 +481,11 @@ export default function ContentPageReducer(state, action) {
           return subject;
         })
       };
+    case 'SET_BY_USER_STATUS':
+      return {
+        ...state,
+        byUser: action.byUser
+      };
     case 'SET_COMMENTS_SHOWN':
       return {
         ...state,
@@ -497,6 +507,11 @@ export default function ContentPageReducer(state, action) {
               }
             : subject;
         })
+      };
+    case 'SET_VIDEO_QUESTIONS':
+      return {
+        ...state,
+        questions: action.questions
       };
     case 'SHOW_TC_REPLY_INPUT':
       return {

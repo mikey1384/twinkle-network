@@ -70,7 +70,31 @@ function LinkPage({
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [loading, setLoading] = useState(true);
   const {
-    contentPage: { state, dispatch }
+    contentPage: {
+      state,
+      actions: {
+        onAttachStar,
+        onDeleteComment,
+        onDeleteSubject,
+        onEditComment,
+        onEditContent,
+        onEditRewardComment,
+        onEditSubject,
+        onInitContent,
+        onLikeComment,
+        onLikeContent,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadMoreSubjectComments,
+        onLoadMoreSubjectReplies,
+        onLoadMoreSubjects,
+        onLoadSubjectComments,
+        onSetSubjectRewardLevel,
+        onUploadComment,
+        onUploadReply,
+        onUploadSubject
+      }
+    }
   } = useContext(Context);
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
@@ -378,9 +402,11 @@ function LinkPage({
         editedUrl: content
       } = params;
       onEditContent({
-        content: processedURL(content),
-        title,
-        description
+        data: {
+          content: processedURL(content),
+          title,
+          description
+        }
       });
       editLinkPage({ id: Number(id), title, content: processedURL(content) });
     } catch (error) {
@@ -406,168 +432,6 @@ function LinkPage({
     updateNumComments({
       id,
       updateType: 'increase'
-    });
-  }
-
-  function onAttachStar(data) {
-    dispatch({
-      type: 'ATTACH_STAR',
-      data
-    });
-  }
-
-  function onDeleteComment(commentId) {
-    dispatch({
-      type: 'DELETE_COMMENT',
-      commentId
-    });
-  }
-
-  function onDeleteSubject(subjectId) {
-    dispatch({
-      type: 'DELETE_SUBJECT',
-      subjectId
-    });
-  }
-
-  function onEditComment({ commentId, editedComment }) {
-    dispatch({
-      type: 'EDIT_COMMENT',
-      commentId,
-      editedComment
-    });
-  }
-
-  function onEditContent(params) {
-    dispatch({
-      type: 'EDIT_CONTENT',
-      data: params
-    });
-  }
-
-  function onEditRewardComment({ id, text }) {
-    dispatch({
-      type: 'EDIT_REWARD_COMMENT',
-      id,
-      text
-    });
-  }
-
-  function onEditSubject({ editedSubject, subjectId }) {
-    dispatch({
-      type: 'EDIT_SUBJECT',
-      editedSubject,
-      subjectId
-    });
-  }
-
-  function onInitContent({ content }) {
-    dispatch({
-      type: 'INIT_CONTENT',
-      content
-    });
-  }
-
-  function onLikeComment({ commentId, likes }) {
-    dispatch({
-      type: 'LIKE_COMMENT',
-      commentId,
-      likes
-    });
-  }
-
-  function onLikeContent({ likes, type, contentId }) {
-    dispatch({
-      type: 'LIKE_CONTENT',
-      likes,
-      contentType: type,
-      contentId: Number(contentId)
-    });
-  }
-
-  function onLoadMoreComments(data) {
-    dispatch({
-      type: 'LOAD_MORE_COMMENTS',
-      data
-    });
-  }
-
-  function onLoadMoreSubjectComments({
-    data: { comments, loadMoreButton },
-    subjectId
-  }) {
-    dispatch({
-      type: 'LOAD_MORE_SUBJECT_COMMENTS',
-      comments,
-      loadMoreButton,
-      subjectId
-    });
-  }
-
-  function onLoadMoreSubjectReplies({ commentId, loadMoreButton, replies }) {
-    dispatch({
-      type: 'LOAD_MORE_SUBJECT_REPLIES',
-      commentId,
-      loadMoreButton,
-      replies
-    });
-  }
-
-  function onLoadMoreSubjects({ results, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_MORE_SUBJECTS',
-      results,
-      loadMoreButton
-    });
-  }
-
-  function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_MORE_REPLIES',
-      commentId,
-      replies,
-      loadMoreButton
-    });
-  }
-
-  function onLoadSubjectComments({
-    data: { comments, loadMoreButton },
-    subjectId
-  }) {
-    dispatch({
-      type: 'LOAD_SUBJECT_COMMENTS',
-      comments,
-      loadMoreButton,
-      subjectId
-    });
-  }
-
-  function onSetSubjectRewardLevel({ contentId, rewardLevel }) {
-    dispatch({
-      type: 'SET_SUBJECT_REWARD_LEVEL',
-      contentId: Number(contentId),
-      rewardLevel
-    });
-  }
-
-  function onUploadComment(data) {
-    dispatch({
-      type: 'UPLOAD_COMMENT',
-      data
-    });
-  }
-
-  function onUploadReply(data) {
-    dispatch({
-      type: 'UPLOAD_REPLY',
-      data
-    });
-  }
-
-  function onUploadSubject(subject) {
-    dispatch({
-      type: 'UPLOAD_SUBJECT',
-      subject
     });
   }
 }

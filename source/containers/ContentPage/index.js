@@ -27,7 +27,29 @@ function ContentPage({
 }) {
   const type = url.split('/')[1].slice(0, -1);
   const {
-    contentPage: { state, dispatch }
+    contentPage: {
+      state,
+      actions: {
+        onAttachStar,
+        onChangeSpoilerStatus,
+        onDeleteComment,
+        onEditComment,
+        onEditContent,
+        onEditRewardComment,
+        onInitContent,
+        onLikeContent,
+        onLoadComments,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadRepliesOfReply,
+        onSetCommentsShown,
+        onSetRewardLevel,
+        onShowTCReplyInput,
+        onTargetCommentSubmit,
+        onUploadComment,
+        onUploadReply
+      }
+    }
   } = useContext(Context);
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,
@@ -133,139 +155,6 @@ function ContentPage({
       </div>
     </ErrorBoundary>
   );
-
-  function onAttachStar(data) {
-    dispatch({
-      type: 'ATTACH_STAR',
-      data
-    });
-  }
-
-  function onChangeSpoilerStatus(shown) {
-    dispatch({
-      type: 'CHANGE_SPOILER_STATUS',
-      shown
-    });
-  }
-
-  function onDeleteComment(commentId) {
-    dispatch({
-      type: 'DELETE_COMMENT',
-      commentId
-    });
-  }
-
-  function onEditComment({ commentId, editedComment }) {
-    dispatch({
-      type: 'EDIT_COMMENT',
-      commentId,
-      editedComment
-    });
-  }
-
-  function onEditContent(data) {
-    dispatch({
-      type: 'EDIT_CONTENT',
-      data
-    });
-  }
-
-  function onEditRewardComment({ id, text }) {
-    dispatch({
-      type: 'EDIT_REWARD_COMMENT',
-      id,
-      text
-    });
-  }
-
-  function onInitContent({ content }) {
-    dispatch({
-      type: 'INIT_CONTENT',
-      content
-    });
-  }
-
-  function onLikeContent({ likes, type, contentId }) {
-    dispatch({
-      type: 'LIKE_CONTENT',
-      likes,
-      contentType: type,
-      contentId
-    });
-  }
-
-  function onLoadComments({ comments, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_COMMENTS',
-      comments,
-      loadMoreButton
-    });
-  }
-
-  function onLoadMoreComments(data) {
-    dispatch({
-      type: 'LOAD_MORE_COMMENTS',
-      data
-    });
-  }
-
-  function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_MORE_REPLIES',
-      commentId,
-      replies,
-      loadMoreButton
-    });
-  }
-
-  function onLoadRepliesOfReply({ replies, commentId, replyId }) {
-    dispatch({
-      type: 'LOAD_REPLIES_OF_REPLY',
-      replies,
-      commentId,
-      replyId
-    });
-  }
-
-  function onSetCommentsShown() {
-    dispatch({
-      type: 'SET_COMMENTS_SHOWN'
-    });
-  }
-
-  function onSetRewardLevel({ rewardLevel }) {
-    dispatch({
-      type: 'SET_REWARD_LEVEL',
-      rewardLevel
-    });
-  }
-
-  function onShowTCReplyInput() {
-    dispatch({
-      type: 'SHOW_TC_REPLY_INPUT'
-    });
-  }
-
-  function onTargetCommentSubmit(data) {
-    dispatch({
-      type: 'UPLOAD_TARGET_COMMENT',
-      data
-    });
-  }
-
-  function onUploadComment(data) {
-    dispatch({
-      type: 'UPLOAD_COMMENT',
-      data
-    });
-  }
-
-  function onUploadReply(data) {
-    dispatch({
-      type: 'UPLOAD_REPLY',
-      data
-    });
-  }
 }
 
 export default connect(state => ({

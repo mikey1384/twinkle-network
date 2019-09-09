@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useContentObj } from 'helpers/hooks';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -17,14 +16,20 @@ import Comments from 'components/Comments';
 import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
+import request from 'axios';
+import URL from 'constants/URL';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from 'components/Subjects';
 import RewardStatus from 'components/RewardStatus';
-import request from 'axios';
+import Loading from 'components/Loading';
+import Details from './Details';
+import NavMenu from './NavMenu';
+import PageTab from './PageTab';
+import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { Context } from 'context';
 import {
   auth,
   fetchPlaylistsContaining,
@@ -32,11 +37,6 @@ import {
   loadComments,
   loadSubjects
 } from 'helpers/requestHelpers';
-import URL from 'constants/URL';
-import Loading from 'components/Loading';
-import Details from './Details';
-import NavMenu from './NavMenu';
-import PageTab from './PageTab';
 
 VideoPage.propTypes = {
   authLevel: PropTypes.number,
@@ -80,53 +80,57 @@ function VideoPage({
   const [videoUnavailable, setVideoUnavailable] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
+
   const {
-    contentObj,
-    contentObj: {
-      byUser,
-      childComments: comments,
-      commentsLoadMoreButton,
-      content,
-      description,
-      rewardLevel,
-      hasHqThumb,
-      likes,
-      questions,
-      stars,
-      subjects,
-      subjectsLoadMoreButton,
-      tags,
-      timeStamp,
-      title,
-      uploader,
-      views
-    },
-    setContentObj,
-    onAddTags,
-    onAttachStar,
-    onDeleteComment,
-    onDeleteSubject,
-    onEditComment,
-    onEditRewardComment,
-    onEditSubject,
-    onInitContent,
-    onLikeComment,
-    onLikeContent,
-    onLoadSubjectComments,
-    onLoadMoreComments,
-    onLoadMoreReplies,
-    onLoadMoreSubjects,
-    onLoadMoreSubjectComments,
-    onLoadMoreSubjectReplies,
-    onSetRewardLevel,
-    onSetSubjectRewardLevel,
-    onUploadComment,
-    onUploadReply,
-    onUploadSubject
-  } = useContentObj({
-    type: 'video',
-    contentId: Number(videoId)
-  });
+    contentPage: {
+      state: {
+        byUser,
+        childComments: comments,
+        commentsLoadMoreButton,
+        content,
+        description,
+        rewardLevel,
+        hasHqThumb,
+        likes,
+        questions,
+        stars,
+        subjects,
+        subjectsLoadMoreButton,
+        tags,
+        timeStamp,
+        title,
+        uploader,
+        views
+      },
+      actions: {
+        onAddTags,
+        onAttachStar,
+        onDeleteComment,
+        onDeleteSubject,
+        onEditComment,
+        onEditContent,
+        onEditRewardComment,
+        onEditSubject,
+        onInitContent,
+        onLikeComment,
+        onLikeContent,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadMoreSubjectComments,
+        onLoadMoreSubjectReplies,
+        onLoadMoreSubjects,
+        onLoadSubjectComments,
+        onSetByUserStatus,
+        onSetRewardLevel,
+        onSetSubjectRewardLevel,
+        onSetVideoQuestions,
+        onUploadComment,
+        onUploadReply,
+        onUploadSubject
+      }
+    }
+  } = useContext(Context);
+
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
     mounted.current = true;
@@ -440,11 +444,12 @@ function VideoPage({
     try {
       await request.post(`${URL}/video/edit/page`, params, auth());
       const url = fetchedVideoCodeFromURL(params.url);
-      setContentObj({
-        ...contentObj,
-        title: params.title,
-        description: params.description,
-        content: url
+      onEditContent({
+        data: {
+          title: params.title,
+          description: params.description,
+          content: url
+        }
       });
       editVideoThumbs({
         videoId: Number(params.videoId),
@@ -457,10 +462,7 @@ function VideoPage({
   }
 
   function handleChangeByUserStatus({ contentId, byUser }) {
-    setContentObj({
-      ...contentObj,
-      byUser: byUser
-    });
+    onSetByUserStatus(byUser);
     changeByUserStatusForThumbs({ videoId: Number(contentId), byUser });
   }
 
@@ -555,10 +557,7 @@ function VideoPage({
           correctChoice: question.correctChoice
         };
       });
-      setContentObj({
-        ...contentObj,
-        questions
-      });
+      onSetVideoQuestions(questions);
       setQuestionsBuilderShown(false);
       setCurrentSlide(0);
       setUserAnswers({});

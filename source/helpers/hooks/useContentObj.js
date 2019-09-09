@@ -14,13 +14,6 @@ export default function useContentObj(props) {
     ...props
   });
 
-  function onAddTags({ tags }) {
-    setContentObj(contentObj => ({
-      ...contentObj,
-      tags: contentObj.tags.concat(tags)
-    }));
-  }
-
   function onLoadSubjects({ results, loadMoreButton }) {
     setContentObj(contentObj => ({
       ...contentObj,
@@ -39,7 +32,6 @@ export default function useContentObj(props) {
   return {
     contentObj,
     setContentObj,
-    onAddTags,
     onLoadSubjects,
     onLoadTags
   };

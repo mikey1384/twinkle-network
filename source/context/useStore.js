@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import CommentActions from './CommentActions';
 import CommentReducer from './CommentReducer';
+import ContentActions from './ContentActions';
 import ContentReducer from './ContentReducer';
 import InputActions from './InputActions';
 import InputReducer from './InputReducer';
@@ -42,11 +43,11 @@ export default function useStore() {
     },
     contentPage: {
       state: contentPageState,
-      dispatch: contentPageDispatch
+      actions: ContentActions(contentPageDispatch)
     },
     linkPage: {
       state: linkPageState,
-      dispatch: linkPageDispatch
+      dispatch: ContentActions(linkPageDispatch)
     }
   };
 }
