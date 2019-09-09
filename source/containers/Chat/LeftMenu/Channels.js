@@ -130,7 +130,7 @@ export default function Channels({
     );
 
   function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
-    const messageSender = sender
+    const messageSender = sender?.id
       ? sender.id === userId
         ? 'You'
         : sender.username
