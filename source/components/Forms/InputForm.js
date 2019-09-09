@@ -43,11 +43,9 @@ export default function InputForm({
       actions: { onEnterComment }
     }
   } = useContext(Context);
-  const text =
-    state[
-      (targetCommentId ? 'comment' : parent.type) +
-        (targetCommentId || parent.id)
-    ] || '';
+  const contentType = targetCommentId ? 'comment' : parent.type;
+  const contentId = targetCommentId || parent.id;
+  const text = state[contentType + contentId] || '';
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',
     text
@@ -105,8 +103,8 @@ export default function InputForm({
 
   function handleEnterText(text) {
     onEnterComment({
-      type: targetCommentId ? 'comment' : parent.type,
-      contentId: targetCommentId || parent.id,
+      type: contentType,
+      contentId,
       text
     });
   }
