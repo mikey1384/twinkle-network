@@ -36,18 +36,26 @@ export default function AttachContentModal({ onConfirm, onHide }) {
         {section === 'start' && <StartScreen navigateTo={setSection} />}
         {section === 'selectVideo' && (
           <SelectAttachmentScreen
-            type="video"
+            contentType="video"
             onSelect={video =>
-              setSelected({ type: 'video', id: video.id, title: video.title })
+              setSelected({
+                contentType: 'video',
+                id: video.id,
+                title: video.title
+              })
             }
             onDeselect={() => setSelected(undefined)}
           />
         )}
         {section === 'selectLink' && (
           <SelectAttachmentScreen
-            type="url"
+            contentType="url"
             onSelect={link =>
-              setSelected({ type: 'url', id: link.id, title: link.title })
+              setSelected({
+                contentType: 'url',
+                id: link.id,
+                title: link.title
+              })
             }
             onDeselect={() => setSelected(undefined)}
           />

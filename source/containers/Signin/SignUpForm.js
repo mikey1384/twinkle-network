@@ -65,7 +65,6 @@ export default function SignUpForm({ showLoginForm, signup }) {
                   onSubmit();
                 }
               }}
-              type="text"
             />
           </section>
           <section>
@@ -100,7 +99,6 @@ export default function SignUpForm({ showLoginForm, signup }) {
                   onSubmit();
                 }
               }}
-              type="text"
             />
           </section>
           <section>
@@ -118,7 +116,6 @@ export default function SignUpForm({ showLoginForm, signup }) {
                   onSubmit();
                 }
               }}
-              type="text"
             />
           </section>
           {false && (
@@ -136,7 +133,6 @@ export default function SignUpForm({ showLoginForm, signup }) {
                     onSubmit();
                   }
                 }}
-                type="text"
               />
             </section>
           )}

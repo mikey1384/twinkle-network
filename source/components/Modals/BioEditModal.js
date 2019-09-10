@@ -54,7 +54,6 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
             value={firstLine}
             onChange={text => setFirstLine(addEmoji(text))}
             placeholder="Write something"
-            type="text"
           />
           <small
             style={{ color: firstLine.length > MAX_CHAR && 'red' }}
@@ -76,7 +75,6 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
             value={secondLine}
             onChange={text => setSecondLine(addEmoji(text))}
             placeholder="Write something"
-            type="text"
           />
           <small
             style={{ color: secondLine.length > MAX_CHAR && 'red' }}
@@ -95,9 +93,7 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           <Input
             value={thirdLine}
             onChange={text => setThirdLine(addEmoji(text))}
-            className="form-control"
             placeholder="Write something"
-            type="text"
           />
           <small
             style={{ color: thirdLine.length > MAX_CHAR && 'red' }}

@@ -153,12 +153,12 @@ function VideoPage({
           return;
         }
         const subjectsObj = await loadSubjects({
-          type: 'video',
+          contentType: 'video',
           contentId: initialVideoId
         });
         const commentsObj = await loadComments({
-          id: initialVideoId,
-          type: 'video'
+          contentType: 'video',
+          contentId: initialVideoId
         });
         const tags = await fetchPlaylistsContaining({
           videoId: initialVideoId

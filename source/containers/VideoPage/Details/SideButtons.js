@@ -56,7 +56,7 @@ export default function SideButtons({
               byUser={byUser}
               contentId={Number(videoId)}
               style={{ position: 'absolute', top: 0, left: 0 }}
-              type="video"
+              contentType="video"
               rewardLevel={rewardLevel}
               onSetRewardLevel={setRewardLevel}
               onToggleByUser={onToggleByUser}

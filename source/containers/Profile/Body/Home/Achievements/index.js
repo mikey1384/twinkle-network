@@ -62,7 +62,7 @@ export default function Achievements({
           <ContentPanel
             key={contentObj.feedId}
             style={{ marginBottom: '1rem', zIndex: notables.length - index }}
-            inputAtBottom={contentObj.type === 'comment'}
+            inputAtBottom={contentObj.contentType === 'comment'}
             commentsLoadLimit={5}
             contentObj={contentObj}
             userId={myId}
@@ -73,7 +73,7 @@ export default function Achievements({
             onCommentSubmit={data =>
               onCommentSubmit({
                 contentId: contentObj.contentId,
-                contentType: contentObj.type,
+                contentType: contentObj.contentType,
                 comment: data
               })
             }
@@ -116,8 +116,8 @@ export default function Achievements({
     </ErrorBoundary>
   );
 
-  function onAddTags({ type, contentId, tags }) {
-    dispatch({ type: 'ADD_TAGS', contentId, tags, contentType: type });
+  function onAddTags({ contentType, contentId, tags }) {
+    dispatch({ type: 'ADD_TAGS', contentId, tags, contentType });
   }
 
   function onAddTagToContents({ contentIds, contentType, tagId, tagTitle }) {
@@ -130,10 +130,10 @@ export default function Achievements({
     });
   }
 
-  function onLoadTags({ type, contentId, tags }) {
+  function onLoadTags({ contentType, contentId, tags }) {
     dispatch({
       type: 'LOAD_TAGS',
-      contentType: type,
+      contentType,
       contentId,
       tags
     });
@@ -184,11 +184,11 @@ export default function Achievements({
     });
   }
 
-  function onDeleteContent({ contentId, type }) {
+  function onDeleteContent({ contentId, contentType }) {
     dispatch({
       type: 'DELETE_CONTENT',
       contentId,
-      contentType: type
+      contentType
     });
   }
 
@@ -217,11 +217,11 @@ export default function Achievements({
     });
   }
 
-  function onLikeContent({ likes, type, contentId }) {
+  function onLikeContent({ likes, contentType, contentId }) {
     dispatch({
       type: 'LIKE_CONTENT',
       likes,
-      contentType: type,
+      contentType,
       contentId
     });
   }
@@ -288,10 +288,10 @@ export default function Achievements({
     });
   }
 
-  function onSetRewardLevel({ type, contentId, rewardLevel }) {
+  function onSetRewardLevel({ contentType, contentId, rewardLevel }) {
     dispatch({
       type: 'SET_REWARD_LEVEL',
-      contentType: type,
+      contentType,
       contentId,
       rewardLevel
     });
@@ -319,7 +319,7 @@ function reducer(state, action) {
     case 'ADD_TAGS':
       return {
         notables: state.notables.map(notable =>
-          notable.type === action.contentType &&
+          notable.contentType === action.contentType &&
           notable.contentId === action.contentId
             ? {
                 ...notable,
@@ -333,7 +333,7 @@ function reducer(state, action) {
         notables: state.notables.map(notable => ({
           ...notable,
           tags:
-            notable.type === action.contentType &&
+            notable.contentType === action.contentType &&
             action.contentIds.includes(notable.contentId)
               ? (notable.tags || []).concat({
                   id: action.tagId,
@@ -349,7 +349,7 @@ function reducer(state, action) {
             ? {
                 ...contentObj,
                 stars:
-                  action.data.contentType === contentObj.type
+                  action.data.contentType === contentObj.contentType
                     ? contentObj.stars
                       ? contentObj.stars.concat(action.data)
                       : [action.data]
@@ -398,7 +398,7 @@ function reducer(state, action) {
       return {
         notables: state.notables.map(contentObj => {
           const contentMatches =
-            contentObj.type === 'subject' &&
+            contentObj.contentType === 'subject' &&
             contentObj.contentId === action.subjectId;
           const targetContentMatches =
             contentObj.targetObj?.subject?.id === action.subjectId;
@@ -432,7 +432,7 @@ function reducer(state, action) {
       return {
         notables: state.notables.reduce((prev, contentObj) => {
           if (
-            contentObj.type === 'comment' &&
+            contentObj.contentType === 'comment' &&
             (contentObj.contentId === action.commentId ||
               contentObj.commentId === action.commentId ||
               contentObj.replyId === action.commentId)
@@ -480,7 +480,7 @@ function reducer(state, action) {
         notables: state.notables
           .filter(
             contentObj =>
-              contentObj.type !== action.contentType ||
+              contentObj.contentType !== action.contentType ||
               contentObj.contentId !== action.contentId
           )
           .map(contentObj =>
@@ -524,7 +524,7 @@ function reducer(state, action) {
       return {
         notables: state.notables.map(contentObj => {
           return contentObj.id === action.commentId &&
-            contentObj.type === 'comment'
+            contentObj.contentType === 'comment'
             ? {
                 ...contentObj,
                 content: action.editedComment
@@ -581,7 +581,7 @@ function reducer(state, action) {
       return {
         notables: state.notables.map(contentObj => {
           const contentMatches =
-            contentObj.type === action.contentType &&
+            contentObj.contentType === action.contentType &&
             contentObj.contentId === action.contentId;
           const rootContentMatches =
             contentObj.rootType === action.contentType &&
@@ -610,7 +610,7 @@ function reducer(state, action) {
                         ? contentObj.targetObj[action.contentType].id ===
                           action.contentId
                           ? {
-                              ...contentObj.targetObj[action.data.type],
+                              ...contentObj.targetObj[action.data.contentType],
                               ...action.data
                             }
                           : contentObj.targetObj[action.contentType]
@@ -708,7 +708,7 @@ function reducer(state, action) {
         notables: state.notables.map(contentObj => ({
           ...contentObj,
           likes:
-            contentObj.type === action.contentType &&
+            contentObj.contentType === action.contentType &&
             contentObj.id === action.contentId
               ? action.likes
               : contentObj.likes,
@@ -851,7 +851,7 @@ function reducer(state, action) {
         notables: state.notables.map(notable => ({
           ...notable,
           tags:
-            notable.type === action.contentType &&
+            notable.contentType === action.contentType &&
             notable.contentId === action.contentId
               ? action.tags
               : notable.tags
@@ -860,7 +860,7 @@ function reducer(state, action) {
     case 'SET_REWARD_LEVEL':
       return {
         notables: state.notables.map(contentObj => {
-          return contentObj.type === action.contentType &&
+          return contentObj.contentType === action.contentType &&
             contentObj.id === action.contentId
             ? {
                 ...contentObj,
@@ -920,17 +920,17 @@ function reducer(state, action) {
       return {
         notables: state.notables.map(contentObj => {
           if (
-            (contentObj.type === 'comment' &&
+            (contentObj.contentType === 'comment' &&
               contentObj.id === action.commentId) ||
-            (contentObj.type !== 'comment' &&
+            (contentObj.contentType !== 'comment' &&
               !action.commentId &&
-              contentObj.type === action.contentType &&
+              contentObj.contentType === action.contentType &&
               contentObj.id === action.contentId)
           ) {
             return {
               ...contentObj,
               childComments:
-                contentObj.type === 'comment'
+                contentObj.contentType === 'comment'
                   ? (contentObj.childComments || []).concat([action.comment])
                   : [action.comment].concat(contentObj.childComments || [])
             };

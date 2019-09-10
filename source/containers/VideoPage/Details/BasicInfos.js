@@ -51,14 +51,12 @@ export default function BasicInfos({
       {onEdit ? (
         <div>
           <Input
-            type="text"
             placeholder={edit.video}
             value={editedUrl}
             onChange={onUrlChange}
             style={urlExceedsCharLimit(editedUrl)?.style}
           />
           <Input
-            type="text"
             placeholder={edit.title}
             value={editedTitle}
             onChange={onTitleChange}

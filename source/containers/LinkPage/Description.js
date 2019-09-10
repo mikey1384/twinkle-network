@@ -118,7 +118,6 @@ function Description({
           {onEdit ? (
             <>
               <Input
-                type="text"
                 className={css`
                   width: 80%;
                 `}
@@ -166,7 +165,7 @@ function Description({
             marginRight: '-1rem'
           }}
           contentId={Number(linkId)}
-          type="url"
+          contentType="url"
           url={url}
           uploaderId={uploaderId}
         />

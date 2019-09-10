@@ -113,15 +113,15 @@ function Home({
     async function initComments() {
       try {
         const { comments, loadMoreButton } = await loadComments({
-          id,
-          type: 'user',
+          contentId: id,
+          contentType: 'user',
           limit: 5
         });
         if (mounted.current) {
           onInitContent({
             content: {
               id: userId,
-              type: 'user',
+              contentType: 'user',
               childComments: comments,
               commentsLoadMoreButton: loadMoreButton
             }
@@ -440,7 +440,7 @@ function Home({
             onPreviewClick={onLoadComments}
             onReplySubmit={onUploadReply}
             onRewardCommentEdit={onEditRewardComment}
-            parent={{ ...profile, type: 'user' }}
+            parent={{ ...profile, contentType: 'user' }}
             userId={userId}
           />
         </SectionPanel>

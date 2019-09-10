@@ -241,7 +241,7 @@ function Comments({
         : 'undefined';
       try {
         const data = await loadComments({
-          id: parent.id,
+          contentId: parent.id,
           contentType: parent.contentType,
           lastCommentId,
           limit: commentsLoadLimit

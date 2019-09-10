@@ -128,7 +128,6 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       {descriptionFieldShown && (
         <div style={{ position: 'relative' }}>
           <Textarea
-            type="text"
             style={{
               marginTop: '1rem',
               ...(descriptionExceedsCharLimit?.style || null)
@@ -163,7 +162,6 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
               </span>
               <Textarea
                 autoFocus
-                type="text"
                 style={{
                   marginTop: '0.5rem',
                   ...(secretAnswerExceedsCharLimit || null)

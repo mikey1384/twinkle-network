@@ -153,7 +153,7 @@ function Body({
     async function loadInitialComments() {
       const data = await loadComments({
         contentType,
-        id: contentId,
+        contentId,
         limit: commentsLoadLimit
       });
       if (mounted.current) {
@@ -541,7 +541,7 @@ function Body({
   async function onExpandComments() {
     const data = await loadComments({
       contentType,
-      id: contentId,
+      contentId,
       limit: commentsLoadLimit
     });
     onLoadComments(data, feedId);

@@ -50,14 +50,14 @@ export default function Attachment({ attachment, onClose }) {
         style={{ cursor: 'pointer', textAlign: 'center' }}
         onClick={() =>
           window.open(
-            `/${attachment.type === 'url' ? 'links' : 'videos'}/${
+            `/${attachment.contentType === 'url' ? 'links' : 'videos'}/${
               attachment.id
             }`
           )
         }
       >
         <div style={{ fontSize: '1.5rem' }}>
-          {attachment.type === 'video' ? (
+          {attachment.contentType === 'video' ? (
             <Icon icon="film" />
           ) : (
             <Icon icon="link" />

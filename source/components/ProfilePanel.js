@@ -79,7 +79,7 @@ function ProfilePanel({
     async function handleLoadComments() {
       try {
         const { comments } = await loadComments({
-          id: profile.id,
+          contentId: profile.id,
           contentType: 'user',
           limit: 1
         });
@@ -479,7 +479,7 @@ function ProfilePanel({
   async function onExpandComments() {
     if (!commentsShown) {
       const { comments, loadMoreButton } = await loadComments({
-        id: profile.id,
+        contentId: profile.id,
         contentType: 'user',
         limit: 5
       });

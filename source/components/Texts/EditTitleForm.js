@@ -40,7 +40,6 @@ export default function EditTitleForm({
           ...inputStyle
         }}
         autoFocus={autoFocus}
-        type="text"
         placeholder={edit.title}
         value={title}
         onChange={text => setTitle(text)}

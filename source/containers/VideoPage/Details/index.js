@@ -121,7 +121,7 @@ function Details({
         changingPage={changingPage}
         style={{ marginBottom: '1rem' }}
         contentId={Number(videoId)}
-        type="video"
+        contentType="video"
         url={content}
         uploaderId={uploader.id}
         videoCode={content}

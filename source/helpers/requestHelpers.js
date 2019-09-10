@@ -232,12 +232,17 @@ export const loadContent = async ({ contentId, contentType }) => {
   }
 };
 
-export const loadComments = async ({ id, type, lastCommentId, limit }) => {
+export const loadComments = async ({
+  contentId,
+  type,
+  lastCommentId,
+  limit
+}) => {
   try {
     const {
       data: { comments, loadMoreButton }
     } = await request.get(
-      `${URL}/content/comments?contentId=${id}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
+      `${URL}/content/comments?contentId=${contentId}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
     );
     return Promise.resolve({ comments, loadMoreButton });
   } catch (error) {

@@ -11,10 +11,14 @@ import { loadUploads, searchContent } from 'helpers/requestHelpers';
 SelectAttachmentScreen.propTypes = {
   onSelect: PropTypes.func.isRequired,
   onDeselect: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired
+  contentType: PropTypes.string.isRequired
 };
 
-export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
+export default function SelectAttachmentScreen({
+  onSelect,
+  onDeselect,
+  contentType
+}) {
   const [allUploads, setAllUploads] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchedUploads, setSearchedUploads] = useState([]);
@@ -35,7 +39,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
     async function initScreen() {
       const { results, loadMoreButton } = await loadUploads({
         limit: 18,
-        type
+        contentType
       });
       if (mounted.current) {
         setAllUploads(results.map(result => result.id));
@@ -62,7 +66,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
         contentObjs={contentObjs.current}
         loading={!loaded || (!stringIsEmpty(searchText) && searching)}
         loadingMore={loadingMore}
-        type={type}
+        contentType={contentType}
         uploads={!stringIsEmpty(searchText) ? searchedUploads : allUploads}
         selectedUploads={selectedUpload}
         loadMoreButton={
@@ -85,7 +89,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
     setLoadingMore(true);
     if (!stringIsEmpty(searchText)) {
       const { results, loadMoreButton } = await searchContent({
-        filter: type,
+        filter: contentType,
         searchText,
         shownResults: searchedUploads.map(
           uploadId => contentObjs.current[uploadId]
@@ -103,7 +107,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
     } else {
       const { results, loadMoreButton } = await loadUploads({
         limit: 18,
-        type,
+        contentType,
         contentId: allUploads[allUploads.length - 1]
       });
       contentObjs.current = {
@@ -120,7 +124,7 @@ export default function SelectAttachmentScreen({ onSelect, onDeselect, type }) {
 
   async function onSearch(text) {
     const { results: searchedUploads, loadMoreButton } = await searchContent({
-      filter: type,
+      filter: contentType,
       searchText: text
     });
     contentObjs.current = {

@@ -106,18 +106,18 @@ function LinkPage({
       try {
         const { data } = await request.get(`${URL}/url/page?linkId=${linkId}`);
         const subjectsObj = await loadSubjects({
-          type: 'url',
+          contentType: 'url',
           contentId: linkId
         });
         const commentsObj = await loadComments({
-          id: linkId,
-          type: 'url',
+          contentId: linkId,
+          contentType: 'url',
           limit: 5
         });
         onInitContent({
           ...data,
           contentId: Number(linkId),
-          type: 'url',
+          contentType: 'url',
           childComments: commentsObj?.comments || [],
           commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
           subjects: subjectsObj?.results || [],
@@ -309,7 +309,7 @@ function LinkPage({
         onSubjectDelete={onDeleteSubject}
         setSubjectRewardLevel={onSetSubjectRewardLevel}
         uploadSubject={onUploadSubject}
-        type="url"
+        contentType="url"
         commentActions={{
           attachStar: onAttachStar,
           editRewardComment: onEditRewardComment,
@@ -337,7 +337,7 @@ function LinkPage({
         onLoadMoreReplies={onLoadMoreReplies}
         onReplySubmit={handleUploadReply}
         onRewardCommentEdit={onEditRewardComment}
-        parent={{ type: 'url', id }}
+        parent={{ contentType: 'url', id }}
         className={css`
           padding: 1rem;
           width: 60%;
@@ -413,7 +413,7 @@ function LinkPage({
   }
 
   function handleLikeLink(likes) {
-    onLikeContent({ likes, type: 'url', contentId: linkId });
+    onLikeContent({ likes, contentType: 'url', contentId: linkId });
     likeLink({ likes, id });
   }
 
