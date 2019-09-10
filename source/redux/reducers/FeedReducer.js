@@ -19,7 +19,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed =>
-          feed.type === action.contentType &&
+          feed.contentType === action.contentType &&
           feed.contentId === action.contentId
             ? {
                 ...feed,
@@ -34,7 +34,7 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection].map(feed => ({
           ...feed,
           tags:
-            feed.type === action.contentType &&
+            feed.contentType === action.contentType &&
             action.contentIds.includes(feed.contentId)
               ? (feed.tags || []).concat(action.tag)
               : feed.tags
@@ -46,7 +46,7 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection].map(feed => {
           const isComment = action.data.contentType === 'comment';
           const contentMatches =
-            action.data.contentType === feed.type &&
+            action.data.contentType === feed.contentType &&
             action.data.contentId === feed.id;
           return {
             ...feed,
@@ -98,14 +98,15 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection].map(feed => ({
           ...feed,
           likes:
-            feed.type === action.data.type && feed.id === action.data.contentId
+            feed.contentType === action.data.contentType &&
+            feed.id === action.data.contentId
               ? action.data.likes
               : feed.likes,
           rootObj: feed.rootObj
             ? {
                 ...feed.rootObj,
                 likes:
-                  feed.rootType === action.data.type &&
+                  feed.rootType === action.data.contentType &&
                   feed.rootId === action.data.contentId
                     ? action.data.likes
                     : feed.rootObj.likes
@@ -117,7 +118,7 @@ export default function FeedReducer(state = defaultState, action) {
                 comment:
                   feed.targetObj.comment &&
                   feed.targetObj.comment.id === action.data.contentId &&
-                  action.data.type === 'comment'
+                  action.data.contentType === 'comment'
                     ? {
                         ...feed.targetObj.comment,
                         likes: action.data.likes
@@ -126,7 +127,7 @@ export default function FeedReducer(state = defaultState, action) {
               }
             : undefined,
           childComments:
-            action.data.type === 'comment'
+            action.data.contentType === 'comment'
               ? feed.childComments?.map(comment => ({
                   ...comment,
                   likes:
@@ -156,7 +157,7 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'video' && feed.contentId === action.contentId;
+            feed.contentType === 'video' && feed.contentId === action.contentId;
           return {
             ...feed,
             byUser: contentMatches ? action.byUser : feed.byUser
@@ -173,7 +174,8 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           const contentMatches =
-            feed.type === 'subject' && feed.contentId === action.subjectId;
+            feed.contentType === 'subject' &&
+            feed.contentId === action.subjectId;
           const targetContentMatches =
             feed.targetObj?.subject?.id === action.subjectId;
           return contentMatches
@@ -212,7 +214,7 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].reduce((prev, feed) => {
           if (
-            feed.type === 'comment' &&
+            feed.contentType === 'comment' &&
             (feed.contentId === action.commentId ||
               feed.commentId === action.commentId ||
               feed.replyId === action.commentId)
@@ -258,7 +260,7 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection]
           .filter(
             feed =>
-              feed.type !== action.contentType ||
+              feed.contentType !== action.contentType ||
               feed.contentId !== action.contentId
           )
           .map(feed =>
@@ -299,7 +301,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
-          return feed.id === action.commentId && feed.type === 'comment'
+          return feed.id === action.commentId && feed.contentType === 'comment'
             ? {
                 ...feed,
                 content: action.editedComment
@@ -357,7 +359,7 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           const contentMatches =
-            feed.type === action.contentType &&
+            feed.contentType === action.contentType &&
             feed.contentId === action.contentId;
           const rootContentMatches =
             feed.rootType === action.contentType &&
@@ -475,9 +477,11 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           let contentMatches =
-            feed.type === 'subject' && feed.contentId === action.contentId;
+            feed.contentType === 'subject' &&
+            feed.contentId === action.contentId;
           let subjectIdMatches =
-            feed.type === 'comment' && feed.subjectId === action.contentId;
+            feed.contentType === 'comment' &&
+            feed.subjectId === action.contentId;
           return {
             ...feed,
             contentTitle: contentMatches
@@ -592,7 +596,7 @@ export default function FeedReducer(state = defaultState, action) {
         [currentSection]: state[currentSection].map(feed => ({
           ...feed,
           tags:
-            feed.type === action.contentType &&
+            feed.contentType === action.contentType &&
             feed.contentId === action.contentId
               ? action.tags
               : feed.tags
@@ -633,7 +637,7 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
-          return feed.type === action.contentType &&
+          return feed.contentType === action.contentType &&
             feed.id === action.contentId
             ? {
                 ...feed,
@@ -700,16 +704,16 @@ export default function FeedReducer(state = defaultState, action) {
         ...state,
         [currentSection]: state[currentSection].map(feed => {
           if (
-            (feed.type === 'comment' && feed.id === commentId) ||
-            (feed.type !== 'comment' &&
+            (feed.contentType === 'comment' && feed.id === commentId) ||
+            (feed.contentType !== 'comment' &&
               !commentId &&
-              feed.type === action.contentType &&
+              feed.contentType === action.contentType &&
               feed.id === action.contentId)
           ) {
             return {
               ...feed,
               childComments:
-                feed.type === 'comment'
+                feed.contentType === 'comment'
                   ? (feed.childComments || []).concat([action.comment])
                   : [action.comment].concat(feed.childComments || [])
             };

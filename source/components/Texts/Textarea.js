@@ -6,13 +6,20 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 Textarea.propTypes = {
   className: PropTypes.string,
-  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  type: PropTypes.string
 };
 
-export default function Textarea({ className, innerRef, ...props }) {
+export default function Textarea({
+  className,
+  innerRef,
+  type = 'text',
+  ...props
+}) {
   return (
     <TextareaAutosize
       {...props}
+      type={type}
       inputRef={innerRef}
       className={`${className} ${css`
         width: 100%;

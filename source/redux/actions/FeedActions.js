@@ -3,10 +3,10 @@ import { auth, handleError } from 'helpers/requestHelpers';
 import FEED from '../constants/Feed';
 import URL from 'constants/URL';
 
-export const addTags = ({ type, contentId, tags }) => ({
+export const addTags = ({ contentType, contentId, tags }) => ({
   type: FEED.ADD_TAGS,
   contentId,
-  contentType: type,
+  contentType,
   tags
 });
 
@@ -49,9 +49,9 @@ export const changeSubFilter = filter => ({
   filter
 });
 
-export const contentFeedLike = ({ likes, contentId, type }) => ({
+export const contentFeedLike = ({ likes, contentId, contentType }) => ({
   type: FEED.LIKE_CONTENT,
-  data: { contentId, type, likes }
+  data: { contentId, contentType, likes }
 });
 
 export const feedCommentDelete = commentId => ({
@@ -59,9 +59,9 @@ export const feedCommentDelete = commentId => ({
   commentId
 });
 
-export const feedContentDelete = ({ type, contentId }) => ({
+export const feedContentDelete = ({ contentType, contentId }) => ({
   type: FEED.DELETE_CONTENT,
-  contentType: type,
+  contentType,
   contentId
 });
 
@@ -149,10 +149,10 @@ export const loadRepliesOfReply = ({ replies, commentId, replyId }) => ({
   replyId
 });
 
-export const loadTags = ({ type, contentId, tags }) => ({
+export const loadTags = ({ contentType, contentId, tags }) => ({
   type: FEED.LOAD_TAGS,
   contentId,
-  contentType: type,
+  contentType,
   tags
 });
 
@@ -167,9 +167,9 @@ export const showTCReplyInput = feedId => ({
   feedId
 });
 
-export const setRewardLevel = ({ type, contentId, rewardLevel }) => ({
+export const setRewardLevel = ({ contentType, contentId, rewardLevel }) => ({
   type: FEED.SET_REWARD_LEVEL,
-  contentType: type,
+  contentType,
   contentId,
   rewardLevel
 });
@@ -190,10 +190,10 @@ export const uploadFeedContent = data => ({
   data
 });
 
-export const uploadFeedComment = ({ data, type, contentId }) => ({
+export const uploadFeedComment = ({ data, contentType, contentId }) => ({
   type: FEED.UPLOAD_COMMENT,
   comment: data,
-  contentType: type,
+  contentType,
   contentId
 });
 

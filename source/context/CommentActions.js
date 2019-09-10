@@ -1,10 +1,10 @@
 export default function CommentActions(dispatch) {
   return {
-    onEnterComment({ contentId, text, type }) {
+    onEnterComment({ contentId, text, contentType }) {
       return dispatch({
         type: 'ENTER_COMMENT',
         contentId,
-        contentType: type,
+        contentType,
         text
       });
     }

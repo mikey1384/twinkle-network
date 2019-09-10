@@ -37,11 +37,11 @@ function NotiItem({
           </span>{' '}
           <span>your</span>{' '}
           <ContentLink
-            contentType={targetObj.type}
+            contentType={targetObj.contentType}
             content={{
               id: targetObj.id,
               title: `${
-                targetObj.type === 'url' ? 'link' : targetObj.type
+                targetObj.contentType === 'url' ? 'link' : targetObj.contentType
               } (${truncateText({ text: targetObj.content, limit: 100 })})`
             }}
           />
@@ -72,11 +72,11 @@ function NotiItem({
           </span>{' '}
           for your{' '}
           <ContentLink
-            contentType={targetObj.type}
+            contentType={targetObj.contentType}
             content={{
               id: targetObj.id,
               title: `${
-                targetObj.type === 'url' ? 'link' : targetObj.type
+                targetObj.contentType === 'url' ? 'link' : targetObj.contentType
               } (${truncateText({ text: targetObj.content, limit: 100 })})`
             }}
           />
@@ -92,7 +92,7 @@ function NotiItem({
               id: actionObj.id,
               title: isReply
                 ? 'replied to'
-                : targetObj.type === 'user'
+                : targetObj.contentType === 'user'
                 ? 'left a message on'
                 : 'commented on'
             }}
@@ -105,7 +105,7 @@ function NotiItem({
                 ? 'comment'
                 : isSubjectResponse
                 ? 'subject'
-                : targetObj.type
+                : targetObj.contentType
             }
             content={{
               id: isReply
@@ -119,13 +119,13 @@ function NotiItem({
                   ? 'comment'
                   : isSubjectResponse
                   ? 'subject'
-                  : targetObj.type === 'user'
+                  : targetObj.contentType === 'user'
                   ? 'profile'
-                  : targetObj.type === 'url'
+                  : targetObj.contentType === 'url'
                   ? 'link'
-                  : targetObj.type
+                  : targetObj.contentType
               }${
-                !isReply && targetObj.type === 'user'
+                !isReply && targetObj.contentType === 'user'
                   ? ''
                   : ` (${truncateText({
                       text: isReply
@@ -170,11 +170,11 @@ function NotiItem({
           />{' '}
           <span>to your </span>
           <ContentLink
-            contentType={targetObj.type}
+            contentType={targetObj.contentType}
             content={{
               id: targetObj.id,
               title: `${
-                targetObj.type === 'url' ? 'link' : targetObj.type
+                targetObj.contentType === 'url' ? 'link' : targetObj.contentType
               } (${truncateText({ text: targetObj.content, limit: 100 })})`
             }}
           />

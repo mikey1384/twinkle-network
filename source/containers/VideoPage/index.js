@@ -348,7 +348,7 @@ function VideoPage({
               setSubjectRewardLevel={onSetSubjectRewardLevel}
               uploadSubject={onUploadSubject}
               contentId={videoId}
-              type="video"
+              contentType="video"
               rootRewardLevel={rewardLevel}
               commentActions={{
                 attachStar: onAttachStar,
@@ -393,7 +393,7 @@ function VideoPage({
                 onReplySubmit={onUploadReply}
                 onRewardCommentEdit={onEditRewardComment}
                 parent={{
-                  type: 'video',
+                  contentType: 'video',
                   rewardLevel,
                   id: Number(videoId),
                   uploader
@@ -465,7 +465,7 @@ function VideoPage({
   }
 
   function handleLikeVideo(likes, videoId) {
-    onLikeContent({ likes, type: 'video', contentId: videoId });
+    onLikeContent({ likes, contentType: 'video', contentId: videoId });
     likeVideo({ likes, videoId });
   }
 

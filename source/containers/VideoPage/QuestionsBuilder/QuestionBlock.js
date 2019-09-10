@@ -153,7 +153,6 @@ export default function QuestionBlock({
           ) : (
             <Textarea
               autoFocus
-              type="text"
               placeholder="Enter Question..."
               value={cleanString(editedQuestionTitle)}
               onChange={event => {

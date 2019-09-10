@@ -17,7 +17,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         stars:
           action.data.contentId === state.contentId &&
-          action.data.contentType === state.type
+          action.data.contentType === state.contentType
             ? (state.stars || []).concat(action.data)
             : state.stars || [],
         childComments: state.childComments?.map(comment => {
@@ -310,7 +310,8 @@ export default function ContentPageReducer(state, action) {
       return {
         ...state,
         likes:
-          state.id === action.contentId && state.type === action.contentType
+          state.id === action.contentId &&
+          state.contentType === action.contentType
             ? action.likes
             : state.likes,
         childComments:
@@ -372,7 +373,7 @@ export default function ContentPageReducer(state, action) {
       return {
         ...state,
         childComments:
-          state.type === 'comment'
+          state.contentType === 'comment'
             ? (comments || []).concat(state.childComments)
             : (state.childComments || []).concat(comments),
         commentsLoadMoreButton: loadMoreButton
@@ -526,7 +527,7 @@ export default function ContentPageReducer(state, action) {
       return {
         ...state,
         childComments:
-          state.type === 'comment'
+          state.contentType === 'comment'
             ? (state.childComments || []).concat([action.data])
             : [action.data].concat(state.childComments),
         subjects: state.subjects?.map(subject =>

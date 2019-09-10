@@ -268,14 +268,14 @@ function ContentListItem({
                   marginBottom: contentObj.secretAnswer ? '1rem' : ''
                 }}
               >
-                {contentObj.rootObj?.type === 'video' && (
+                {contentObj.rootObj?.contentType === 'video' && (
                   <VideoThumbImage
                     rewardLevel={contentObj.rootObj.rewardLevel}
                     videoId={contentObj.rootObj.id}
                     src={`https://img.youtube.com/vi/${contentObj.rootObj.content}/mqdefault.jpg`}
                   />
                 )}
-                {contentObj.rootObj?.type === 'url' && (
+                {contentObj.rootObj?.contentType === 'url' && (
                   <Embedly
                     imageOnly
                     noLink

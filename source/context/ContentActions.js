@@ -1,10 +1,10 @@
 export default function ContentActions(dispatch) {
   return {
-    onAddTags({ tags, type, contentId }) {
+    onAddTags({ tags, contentType, contentId }) {
       return dispatch({
         type: 'ADD_TAGS',
         tags,
-        contentType: type,
+        contentType,
         contentId: Number(contentId)
       });
     },
@@ -63,11 +63,11 @@ export default function ContentActions(dispatch) {
         subjectId
       });
     },
-    onInitContent({ contentId, type, ...data }) {
+    onInitContent({ contentId, contentType, ...data }) {
       return dispatch({
         type: 'INIT_CONTENT',
         contentId: Number(contentId),
-        contentType: type,
+        contentType,
         data
       });
     },
@@ -78,11 +78,11 @@ export default function ContentActions(dispatch) {
         likes
       });
     },
-    onLikeContent({ likes, type, contentId }) {
+    onLikeContent({ likes, contentType, contentId }) {
       return dispatch({
         type: 'LIKE_CONTENT',
         likes,
-        contentType: type,
+        contentType,
         contentId: Number(contentId)
       });
     },

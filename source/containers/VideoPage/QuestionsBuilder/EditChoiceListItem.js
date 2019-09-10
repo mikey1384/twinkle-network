@@ -23,7 +23,6 @@ export default function EditChoiceListItem({
     <nav>
       <main>
         <Textarea
-          type="text"
           onChange={event => onEdit({ choiceId, text: event.target.value })}
           value={text}
           placeholder={placeholder}

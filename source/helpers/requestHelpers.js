@@ -45,12 +45,14 @@ export const addVideoToPlaylists = async ({
   }
 };
 
-export const checkIfContentExists = async ({ url, videoCode, type }) => {
+export const checkIfContentExists = async ({ url, videoCode, contentType }) => {
   try {
     const {
       data: { exists, content }
     } = await request.get(
-      `${URL}/content/checkUrl?url=${encodeURIComponent(url)}&type=${type}${
+      `${URL}/content/checkUrl?url=${encodeURIComponent(
+        url
+      )}&contentType=${contentType}${
         videoCode ? `&videoCode=${videoCode}` : ''
       }`
     );
@@ -74,10 +76,13 @@ export const checkIfUserResponded = async subjectId => {
   }
 };
 
-export const deleteContent = async ({ id, type, dispatch }) => {
+export const deleteContent = async ({ id, contentType, dispatch }) => {
   try {
-    await request.delete(`${URL}/content?contentId=${id}&type=${type}`, auth());
-    return Promise.resolve({ contentId: id, type });
+    await request.delete(
+      `${URL}/content?contentId=${id}&contentType=${contentType}`,
+      auth()
+    );
+    return Promise.resolve({ contentId: id, contentType });
   } catch (error) {
     return handleError(error, dispatch);
   }
@@ -173,11 +178,11 @@ export const fetchCurrentChessState = async ({
   }
 };
 
-export const likeContent = async ({ id, type, dispatch }) => {
+export const likeContent = async ({ id, contentType, dispatch }) => {
   try {
     const {
       data: { likes }
-    } = await request.post(`${URL}/content/like`, { id, type }, auth());
+    } = await request.post(`${URL}/content/like`, { id, contentType }, auth());
     return Promise.resolve(likes);
   } catch (error) {
     return handleError(error, dispatch);
@@ -234,7 +239,7 @@ export const loadContent = async ({ contentId, contentType }) => {
 
 export const loadComments = async ({
   contentId,
-  type,
+  contentType,
   lastCommentId,
   limit
 }) => {
@@ -242,7 +247,7 @@ export const loadComments = async ({
     const {
       data: { comments, loadMoreButton }
     } = await request.get(
-      `${URL}/content/comments?contentId=${contentId}&type=${type}&lastCommentId=${lastCommentId}&limit=${limit}`
+      `${URL}/content/comments?contentId=${contentId}&contentType=${contentType}&lastCommentId=${lastCommentId}&limit=${limit}`
     );
     return Promise.resolve({ comments, loadMoreButton });
   } catch (error) {
@@ -338,10 +343,14 @@ export const loadReplies = async ({ lastReplyId, commentId }) => {
   }
 };
 
-export const loadSubjects = async ({ type, contentId, lastSubjectId }) => {
+export const loadSubjects = async ({
+  contentType,
+  contentId,
+  lastSubjectId
+}) => {
   try {
     const { data } = await request.get(
-      `${URL}/content/subjects?contentId=${contentId}&type=${type}&lastSubjectId=${lastSubjectId}`
+      `${URL}/content/subjects?contentId=${contentId}&contentType=${contentType}&lastSubjectId=${lastSubjectId}`
     );
     return Promise.resolve(data);
   } catch (error) {
@@ -436,13 +445,13 @@ export const loadUploads = async ({
   contentId,
   includeRoot,
   excludeContentIds = [],
-  type
+  contentType
 }) => {
   try {
     const {
       data: { results, loadMoreButton }
     } = await request.get(
-      `${URL}/content/uploads?numberToLoad=${limit}&type=${type}&contentId=${contentId}${
+      `${URL}/content/uploads?numberToLoad=${limit}&contentType=${contentType}&contentId=${contentId}${
         excludeContentIds.length > 0
           ? `&${queryStringForArray({
               array: excludeContentIds,
@@ -566,12 +575,12 @@ export const updateRewardLevel = async ({
   rewardLevel,
   contentId,
   dispatch,
-  type
+  contentType
 }) => {
   try {
     await request.put(
       `${URL}/content/rewardLevel`,
-      { rewardLevel, contentId, type },
+      { rewardLevel, contentId, contentType },
       auth()
     );
     return Promise.resolve();
@@ -747,7 +756,7 @@ export const uploadFileOnChat = async ({
 };
 
 export const uploadSubject = async ({
-  type,
+  contentType,
   contentId,
   title,
   description,
@@ -758,7 +767,7 @@ export const uploadSubject = async ({
   try {
     const { data } = await request.post(
       `${URL}/content/subjects`,
-      { title, description, contentId, rewardLevel, secretAnswer, type },
+      { title, description, contentId, rewardLevel, secretAnswer, contentType },
       auth()
     );
     return Promise.resolve(data);

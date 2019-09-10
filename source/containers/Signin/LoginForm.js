@@ -30,7 +30,6 @@ export default function LoginForm({ login, showSignUpForm }) {
                 setUsername(text);
               }}
               placeholder="Enter your username"
-              type="text"
               onKeyPress={event => {
                 if (
                   !stringIsEmpty(username) &&
