@@ -312,8 +312,21 @@ export function isGameOver({ squares, enPassantTarget, myColor }) {
               myColor
             })
           ) {
-            if (checkers.length === 1) return false;
-            if (!blockPoints.includes(square)) blockPoints.push(square);
+            const newSquares = returnBoardAfterMove({
+              src: piece.index,
+              dest: square,
+              myColor,
+              squares
+            });
+            const potentialKingSlayers = kingWillBeCapturedBy({
+              kingIndex,
+              squares: newSquares,
+              myColor
+            });
+            if (potentialKingSlayers.length === 0) {
+              if (checkers.length === 1) return false;
+              if (!blockPoints.includes(square)) blockPoints.push(square);
+            }
           }
         }
       }
