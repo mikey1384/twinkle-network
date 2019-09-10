@@ -57,14 +57,12 @@ function AddLinkModal({ onHide, uploadLink }) {
           value={form.url}
           onChange={handleUrlFieldChange}
           placeholder="Paste the Link's Internet Address (URL) here"
-          type="text"
         />
         <Input
           style={{ marginTop: '1rem', ...(titleExceedsCharLimit?.style || {}) }}
           value={form.title}
           onChange={text => setForm({ ...form, title: text })}
           placeholder="Enter Title"
-          type="text"
           onKeyUp={event => {
             if (event.key === ' ') {
               setForm({

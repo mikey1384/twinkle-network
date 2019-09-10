@@ -20,6 +20,7 @@ MainContent.propTypes = {
   commentsHidden: PropTypes.bool,
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
+  contentType: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   isEditing: PropTypes.bool.isRequired,
   myId: PropTypes.number,
@@ -33,8 +34,7 @@ MainContent.propTypes = {
   urlRelated: PropTypes.object,
   rootType: PropTypes.string,
   secretAnswerShown: PropTypes.bool,
-  targetObj: PropTypes.object,
-  type: PropTypes.string.isRequired
+  targetObj: PropTypes.object
 };
 
 function MainContent({
@@ -56,16 +56,19 @@ function MainContent({
   targetObj,
   urlRelated,
   rootType,
-  type
+  contentType
 }) {
   return (
     <ErrorBoundary>
       <div>
-        {(type === 'video' || (type === 'subject' && rootType === 'video')) && (
+        {(contentType === 'video' ||
+          (contentType === 'subject' && rootType === 'video')) && (
           <VideoPlayer
             stretch
             rewardLevel={
-              type === 'subject' ? rootObj.rewardLevel : contentObj.rewardLevel
+              contentType === 'subject'
+                ? rootObj.rewardLevel
+                : contentObj.rewardLevel
             }
             byUser={!!(rootObj.byUser || contentObj.byUser)}
             onEdit={isEditing}
@@ -76,12 +79,16 @@ function MainContent({
                 : contentObj.hasHqThumb
             }
             uploader={rootObj.uploader || contentObj.uploader}
-            videoId={type === 'video' ? contentObj.id : contentObj.rootId}
-            videoCode={type === 'video' ? contentObj.content : rootObj.content}
+            videoId={
+              contentType === 'video' ? contentObj.id : contentObj.rootId
+            }
+            videoCode={
+              contentType === 'video' ? contentObj.content : rootObj.content
+            }
             style={{ paddingBottom: '0.5rem' }}
           />
         )}
-        {type === 'subject' &&
+        {contentType === 'subject' &&
           !contentObj.rootObj.id &&
           !!contentObj.rewardLevel && (
             <RewardLevelBar
@@ -99,17 +106,17 @@ function MainContent({
               rewardLevel={contentObj.rewardLevel}
             />
           )}
-        {(type === 'url' || type === 'video') && (
+        {(contentType === 'url' || contentType === 'video') && (
           <AlreadyPosted
             style={{ marginTop: '-0.5rem' }}
             uploaderId={(contentObj.uploader || {}).id}
             contentId={contentId}
-            type={type}
+            contentType={contentType}
             url={contentObj.content}
-            videoCode={type === 'video' ? contentObj.content : undefined}
+            videoCode={contentType === 'video' ? contentObj.content : undefined}
           />
         )}
-        {type === 'video' && (
+        {contentType === 'video' && (
           <TagStatus
             onAddTags={onAddTags}
             onAddTagToContents={onAddTagToContents}
@@ -121,7 +128,7 @@ function MainContent({
         <div
           style={{
             marginTop: '1rem',
-            marginBottom: type !== 'video' && !commentsHidden && '1rem',
+            marginBottom: contentType !== 'video' && !commentsHidden && '1rem',
             padding: '1rem',
             whiteSpace: 'pre-wrap',
             overflowWrap: 'break-word',
@@ -130,8 +137,8 @@ function MainContent({
         >
           {!isEditing && (
             <>
-              {type === 'comment' && renderComment()}
-              {type === 'subject' && (
+              {contentType === 'comment' && renderComment()}
+              {contentType === 'subject' && (
                 <div
                   style={{
                     whiteSpace: 'pre-wrap',
@@ -162,18 +169,20 @@ function MainContent({
               )}
               <div
                 style={{
-                  marginTop: type === 'url' ? '-1rem' : 0,
+                  marginTop: contentType === 'url' ? '-1rem' : 0,
                   whiteSpace: 'pre-wrap',
                   overflowWrap: 'break-word',
                   wordBreak: 'break-word',
                   marginBottom:
-                    type === 'url' || type === 'subject' ? '1rem' : '0.5rem'
+                    contentType === 'url' || contentType === 'subject'
+                      ? '1rem'
+                      : '0.5rem'
                 }}
               >
                 <LongText>
                   {!stringIsEmpty(contentObj.description)
                     ? contentObj.description
-                    : type === 'video' || type === 'url'
+                    : contentType === 'video' || contentType === 'url'
                     ? contentObj.title
                     : ''}
                 </LongText>
@@ -199,14 +208,16 @@ function MainContent({
               onEditContent={onEditContent}
               secretAnswer={contentObj.secretAnswer}
               style={{
-                marginTop: (type === 'video' || type === 'subject') && '1rem'
+                marginTop:
+                  (contentType === 'video' || contentType === 'subject') &&
+                  '1rem'
               }}
               title={contentObj.title}
-              type={type}
+              contentType={contentType}
             />
           )}
         </div>
-        {!isEditing && type === 'url' && (
+        {!isEditing && contentType === 'url' && (
           <Embedly
             title={cleanString(contentObj.title)}
             url={contentObj.content}
@@ -215,7 +226,7 @@ function MainContent({
             {...urlRelated}
           />
         )}
-        {type === 'subject' &&
+        {contentType === 'subject' &&
           !!contentObj.rewardLevel &&
           !!contentObj.rootObj.id && (
             <RewardLevelBar

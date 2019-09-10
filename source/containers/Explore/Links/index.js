@@ -54,7 +54,7 @@ function Links({
     async function init() {
       if (!loaded) {
         const { results: links, loadMoreButton } = await loadUploads({
-          type: 'url',
+          contentType: 'url',
           numberToLoad: 20
         });
         fetchLinks({ links, loadMoreButton });
@@ -96,7 +96,7 @@ function Links({
 
   async function handleLoadMoreLinks() {
     const { results: links, loadMoreButton } = await loadUploads({
-      type: 'url',
+      contentType: 'url',
       numberToLoad: 20,
       contentId: lastId.current
     });

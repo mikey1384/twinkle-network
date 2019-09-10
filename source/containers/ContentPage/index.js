@@ -25,7 +25,7 @@ function ContentPage({
   },
   userId
 }) {
-  const type = url.split('/')[1].slice(0, -1);
+  const contentType = url.split('/')[1].slice(0, -1);
   const {
     contentPage: {
       state,
@@ -67,14 +67,14 @@ function ContentPage({
         const {
           data: { exists }
         } = await request.get(
-          `${URL}/content/check?contentId=${contentId}&type=${type}`
+          `${URL}/content/check?contentId=${contentId}&contentType=${contentType}`
         );
         if (mounted.current) {
           setContentStatus({
             loaded: true,
             exists
           });
-          onInitContent({ content: { contentId, type } });
+          onInitContent({ contentId: contentId, contentType });
         }
       } catch (error) {
         console.error(error);
@@ -119,9 +119,9 @@ function ContentPage({
           {loaded ? (
             exists ? (
               <ContentPanel
-                key={state.type + state.contentId}
+                key={state.contentType + state.contentId}
                 autoExpand
-                inputAtBottom={state.type === 'comment'}
+                inputAtBottom={state.contentType === 'comment'}
                 commentsLoadLimit={5}
                 contentObj={state}
                 userId={userId}

@@ -23,7 +23,7 @@ Embedly.propTypes = {
   siteUrl: PropTypes.string,
   style: PropTypes.object,
   thumbUrl: PropTypes.string,
-  type: PropTypes.string,
+  contentType: PropTypes.string,
   title: PropTypes.string,
   url: PropTypes.string
 };
@@ -42,7 +42,7 @@ export default function Embedly({
   siteUrl,
   small,
   style,
-  type = 'url',
+  contentType = 'url',
   url,
   ...props
 }) {
@@ -83,7 +83,11 @@ export default function Embedly({
         setLoading(true);
         const {
           data: { image, title, description, site }
-        } = await request.put(`${API_URL}/embed`, { url, contentId, type });
+        } = await request.put(`${API_URL}/embed`, {
+          url,
+          contentId,
+          contentType
+        });
         if (mounted.current) {
           setImageUrl(
             url && getFileInfoFromFileName(url) === 'image'

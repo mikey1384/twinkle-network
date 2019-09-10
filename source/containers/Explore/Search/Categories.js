@@ -61,10 +61,10 @@ function Categories({
           }
         `}
       >
-        {['subjects', 'videos', 'links'].map(type =>
-          filter === type ? (
-            <nav key={type}>
-              <p>Explore {type}</p>
+        {['subjects', 'videos', 'links'].map(contentType =>
+          filter === contentType ? (
+            <nav key={contentType}>
+              <p>Explore {contentType}</p>
               <div
                 style={{
                   display: 'flex',
@@ -74,7 +74,7 @@ function Categories({
               >
                 <Checkbox
                   backgroundColor="#fff"
-                  label={`Always explore ${type} first:`}
+                  label={`Always explore ${contentType} first:`}
                   textIsClickable
                   style={{
                     width: 'auto',
@@ -87,8 +87,8 @@ function Categories({
               </div>
             </nav>
           ) : (
-            <Link key={type} to={type}>
-              Explore {type}
+            <Link key={contentType} to={contentType}>
+              Explore {contentType}
             </Link>
           )
         )}

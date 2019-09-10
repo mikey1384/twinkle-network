@@ -93,7 +93,7 @@ function Body({
     rootObj = {},
     targetObj = {},
     thumbUrl,
-    type,
+    contentType,
     uploader = {},
     views
   },
@@ -152,7 +152,7 @@ function Body({
 
     async function loadInitialComments() {
       const data = await loadComments({
-        type: type,
+        contentType,
         id: contentId,
         limit: commentsLoadLimit
       });
@@ -193,7 +193,7 @@ function Body({
     (canEdit || canDelete) && authLevel > uploader.authLevel;
   const userCanRewardThis = canStar && authLevel > uploader.authLevel;
   const editButtonShown = myId === uploader.id || userCanEditThis;
-  const secretLocked = type === 'comment' && commentsHidden;
+  const secretLocked = contentType === 'comment' && commentsHidden;
   const urlRelated = edited
     ? {}
     : {
@@ -206,7 +206,7 @@ function Body({
   return (
     <ErrorBoundary>
       <div>
-        {type === 'comment' && attachedVideoShown && (
+        {contentType === 'comment' && attachedVideoShown && (
           <VideoPlayer
             stretch
             autoplay
@@ -224,7 +224,7 @@ function Body({
           changeSpoilerStatus={onChangeSpoilerStatus}
           contentId={contentId}
           contentObj={contentObj}
-          type={type}
+          contentType={contentType}
           commentsHidden={commentsHidden}
           contentTitle={title || rootObj.title}
           onAddTags={onAddTags}
@@ -256,7 +256,7 @@ function Body({
             <div className="buttons-bar">
               <div className="left">
                 <LikeButton
-                  contentType={type}
+                  contentType={contentType}
                   contentId={contentId}
                   key="likeButton"
                   onClick={onLikeClick}
@@ -271,9 +271,9 @@ function Body({
                 >
                   <Icon icon="comment-alt" />
                   <span style={{ marginLeft: '0.7rem' }}>
-                    {type === 'video' || type === 'url'
+                    {contentType === 'video' || contentType === 'url'
                       ? 'Comment'
-                      : type === 'subject'
+                      : contentType === 'subject'
                       ? 'Respond'
                       : 'Reply'}
                   </span>
@@ -288,7 +288,7 @@ function Body({
                     transparent
                     direction="right"
                     style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                    size={type !== 'subject' ? 'sm' : null}
+                    size={contentType !== 'subject' ? 'sm' : null}
                     text="Edit"
                     menuProps={renderEditMenuItems()}
                   />
@@ -312,14 +312,14 @@ function Body({
                 style={{ position: 'relative', marginRight: 0 }}
               >
                 {canEditRewardLevel &&
-                  (type === 'subject' || type === 'video') && (
+                  (contentType === 'subject' || contentType === 'video') && (
                     <StarButton
                       byUser={!!contentObj.byUser}
                       contentId={contentObj.id}
                       rewardLevel={rewardLevel}
                       onSetRewardLevel={onSetRewardLevel}
                       onToggleByUser={onToggleByUser}
-                      type={type}
+                      contentType={contentType}
                       uploader={uploader}
                     />
                   )}
@@ -340,7 +340,7 @@ function Body({
                 likes={likes}
                 onLinkClick={() => setUserListModalShown(true)}
               />
-              {views > 10 && type === 'video' && (
+              {views > 10 && contentType === 'video' && (
                 <div
                   style={{
                     fontWeight: 'bold',
@@ -356,7 +356,7 @@ function Body({
         )}
         {xpRewardInterfaceShown && (
           <XPRewardInterface
-            contentType={type}
+            contentType={contentType}
             contentId={contentId}
             rewardLevel={determineRewardLevel({
               contentObj,
@@ -373,7 +373,7 @@ function Body({
           />
         )}
         <RewardStatus
-          contentType={type}
+          contentType={contentType}
           rewardLevel={determineRewardLevel({
             contentObj,
             rootObj,
@@ -391,13 +391,12 @@ function Body({
               margin-right: 0px;
             }
           `}
-          type={type}
         />
         <Comments
           autoFocus={false}
           autoExpand={
             (autoExpand && !secretLocked) ||
-            (type === 'subject' && commentsHidden)
+            (contentType === 'subject' && commentsHidden)
           }
           comments={childComments}
           commentsLoadLimit={commentsLoadLimit}
@@ -406,17 +405,21 @@ function Body({
           inputAreaInnerRef={CommentInputAreaRef}
           inputAtBottom={inputAtBottom}
           loadMoreButton={commentsLoadMoreButton}
-          inputTypeLabel={type === 'comment' ? 'reply' : 'comment'}
+          inputTypeLabel={contentType === 'comment' ? 'reply' : 'comment'}
           numPreviews={1}
           onAttachStar={onAttachStar}
           onCommentSubmit={handleCommentSubmit}
           onDelete={onDeleteComment}
           onEditDone={onEditComment}
           onLikeClick={({ commentId, likes }) =>
-            onLikeContent({ likes, contentId: commentId, type: 'comment' })
+            onLikeContent({
+              likes,
+              contentId: commentId,
+              contentType: 'comment'
+            })
           }
           onLoadMoreComments={data =>
-            onLoadMoreComments({ data, contentType: type, feedId })
+            onLoadMoreComments({ data, contentType, feedId })
           }
           onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
           onPreviewClick={onExpandComments}
@@ -435,7 +438,7 @@ function Body({
         {userListModalShown && (
           <UserListModal
             onHide={() => setUserListModalShown(false)}
-            title={`People who liked this ${type}`}
+            title={`People who liked this ${contentType}`}
             users={likes}
             description="(You)"
           />
@@ -445,7 +448,8 @@ function Body({
         <ConfirmModal
           onConfirm={deleteThisContent}
           onHide={() => setConfirmModalShown(false)}
-          title={`Remove ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+          title={`Remove ${contentType.charAt(0).toUpperCase() +
+            contentType.slice(1)}`}
         />
       )}
     </ErrorBoundary>
@@ -466,7 +470,7 @@ function Body({
   async function handleCommentSubmit(params) {
     onCommentSubmit(params);
     if (contentObj.secretAnswer) {
-      if (type === 'subject') {
+      if (contentType === 'subject') {
         if (!commentsShown) {
           await onExpandComments();
         }
@@ -525,18 +529,18 @@ function Body({
   }
 
   async function deleteThisContent() {
-    await deleteContent({ type, id, dispatch });
-    onDeleteContent({ type, contentId: id });
+    await deleteContent({ contentType, id, dispatch });
+    onDeleteContent({ contentType, contentId: id });
   }
 
   async function editThisContent(params) {
     const data = await editContent({ params, dispatch });
-    onEditContent({ data, contentType: type, contentId });
+    onEditContent({ data, contentType, contentId });
   }
 
   async function onExpandComments() {
     const data = await loadComments({
-      type,
+      contentType,
       id: contentId,
       limit: commentsLoadLimit
     });
@@ -545,7 +549,7 @@ function Body({
   }
 
   async function onLikeClick(likes) {
-    onLikeContent({ likes, type, contentId });
+    onLikeContent({ likes, contentType, contentId });
     if (!commentsShown) {
       await onExpandComments();
       if (Number(numChildComments) === 0 && !isMobile(navigator)) {

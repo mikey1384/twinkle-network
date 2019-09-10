@@ -82,7 +82,7 @@ function Videos({
       if (!loaded) {
         getPlaylists();
         const { results: videos, loadMoreButton } = await loadUploads({
-          type: 'video'
+          contentType: 'video'
         });
         getInitialVideos({ videos, loadMoreButton });
       }

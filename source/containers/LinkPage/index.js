@@ -115,15 +115,13 @@ function LinkPage({
           limit: 5
         });
         onInitContent({
-          content: {
-            ...data,
-            contentId: Number(linkId),
-            type: 'url',
-            childComments: commentsObj?.comments || [],
-            commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
-            subjects: subjectsObj?.results || [],
-            subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
-          }
+          ...data,
+          contentId: Number(linkId),
+          type: 'url',
+          childComments: commentsObj?.comments || [],
+          commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
+          subjects: subjectsObj?.results || [],
+          subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
         });
         setLoading(false);
       } catch (error) {

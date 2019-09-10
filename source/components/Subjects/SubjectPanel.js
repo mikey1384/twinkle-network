@@ -37,6 +37,7 @@ SubjectPanel.propTypes = {
   canEdit: PropTypes.bool,
   canEditRewardLevel: PropTypes.bool,
   comments: PropTypes.array.isRequired,
+  contentType: PropTypes.string.isRequired,
   description: PropTypes.string,
   rewardLevel: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
@@ -62,7 +63,6 @@ SubjectPanel.propTypes = {
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   title: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string.isRequired,
   uploaderAuthLevel: PropTypes.number.isRequired,
@@ -76,6 +76,7 @@ function SubjectPanel({
   canEdit,
   canEditRewardLevel,
   contentId,
+  contentType,
   description,
   dispatch,
   id,
@@ -103,8 +104,7 @@ function SubjectPanel({
   onUploadReply,
   rootRewardLevel,
   secretAnswer,
-  setSubjectRewardLevel,
-  type
+  setSubjectRewardLevel
 }) {
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
@@ -167,7 +167,7 @@ function SubjectPanel({
             {canEditRewardLevel && (
               <StarButton
                 contentId={id}
-                type="subject"
+                contentType="subject"
                 rewardLevel={rewardLevel}
                 onSetRewardLevel={setSubjectRewardLevel}
               />
@@ -202,7 +202,6 @@ function SubjectPanel({
           <form onSubmit={event => event.preventDefault()}>
             <Input
               autoFocus
-              type="text"
               placeholder="Enter Title..."
               value={editedTitle}
               onChange={text => {
@@ -325,9 +324,9 @@ function SubjectPanel({
                 rootObj: {
                   id: contentId,
                   rewardLevel: rootRewardLevel,
-                  type
+                  type: contentType
                 },
-                type: 'subject'
+                contentType: 'subject'
               }}
             />
           </div>
@@ -391,7 +390,11 @@ function SubjectPanel({
   async function onExpand() {
     setExpanded(true);
     try {
-      const data = await loadComments({ type: 'subject', id, limit: 10 });
+      const data = await loadComments({
+        contentType: 'subject',
+        id,
+        limit: 10
+      });
       CommentsRef.current.focus();
       onLoadSubjectComments({ data, subjectId: id });
     } catch (error) {

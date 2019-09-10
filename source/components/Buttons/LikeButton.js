@@ -43,7 +43,7 @@ function LikeButton({
             setDisabled(true);
             const likes = await likeContent({
               id: contentId,
-              type: contentType,
+              contentType,
               dispatch
             });
             setDisabled(false);

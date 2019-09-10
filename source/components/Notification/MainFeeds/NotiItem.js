@@ -37,7 +37,7 @@ function NotiItem({
           </span>{' '}
           <span>your</span>{' '}
           <ContentLink
-            type={targetObj.type}
+            contentType={targetObj.type}
             content={{
               id: targetObj.id,
               title: `${
@@ -72,7 +72,7 @@ function NotiItem({
           </span>{' '}
           for your{' '}
           <ContentLink
-            type={targetObj.type}
+            contentType={targetObj.type}
             content={{
               id: targetObj.id,
               title: `${
@@ -87,7 +87,7 @@ function NotiItem({
       notificationMessage = (
         <>
           <ContentLink
-            type="comment"
+            contentType="comment"
             content={{
               id: actionObj.id,
               title: isReply
@@ -100,7 +100,7 @@ function NotiItem({
           />{' '}
           your{' '}
           <ContentLink
-            type={
+            contentType={
               isReply
                 ? 'comment'
                 : isSubjectResponse
@@ -140,7 +140,7 @@ function NotiItem({
           />
           :{' '}
           <ContentLink
-            type="comment"
+            contentType="comment"
             content={{
               id: actionObj.id,
               title: `"${truncateText({
@@ -158,7 +158,7 @@ function NotiItem({
         <>
           <span>added a </span>
           <ContentLink
-            type="subject"
+            contentType="subject"
             content={{
               id: actionObj.id,
               title: `subject (${truncateText({
@@ -170,7 +170,7 @@ function NotiItem({
           />{' '}
           <span>to your </span>
           <ContentLink
-            type={targetObj.type}
+            contentType={targetObj.type}
             content={{
               id: targetObj.id,
               title: `${

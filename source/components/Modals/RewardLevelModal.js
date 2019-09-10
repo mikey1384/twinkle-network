@@ -9,19 +9,19 @@ import { updateRewardLevel } from 'helpers/requestHelpers';
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
+  contentType: PropTypes.string.isRequired,
   rewardLevel: PropTypes.number,
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired
+  onSubmit: PropTypes.func.isRequired
 };
 
 function RewardLevelModal({
   contentId,
+  contentType,
   dispatch,
   rewardLevel: initialRewardLevel = 0,
   onSubmit,
-  type,
   onHide
 }) {
   const [disabled, setDisabled] = useState(false);
@@ -57,8 +57,8 @@ function RewardLevelModal({
 
   async function submit() {
     setDisabled(true);
-    await updateRewardLevel({ contentId, type, rewardLevel, dispatch });
-    onSubmit({ contentId, rewardLevel, type });
+    await updateRewardLevel({ contentId, contentType, rewardLevel, dispatch });
+    onSubmit({ contentId, rewardLevel, contentType });
   }
 }
 

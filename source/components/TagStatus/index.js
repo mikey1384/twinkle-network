@@ -40,7 +40,7 @@ function TagStatus({
     async function loadTags() {
       const tags = await fetchPlaylistsContaining({ videoId: contentId });
       if (mounted.current) {
-        onLoadTags({ tags, contentId, type: 'video' });
+        onLoadTags({ tags, contentId, contentType: 'video' });
       }
     }
     return function cleanUp() {
@@ -120,7 +120,7 @@ function TagStatus({
   );
 
   function onTagSubmit(selectedTags) {
-    onAddTags({ tags: selectedTags, type: 'video', contentId });
+    onAddTags({ tags: selectedTags, contentType: 'video', contentId });
     setTagModalShown(false);
   }
 }

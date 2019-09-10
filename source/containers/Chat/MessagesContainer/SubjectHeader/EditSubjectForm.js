@@ -103,7 +103,6 @@ export default function EditSubjectForm({
             >
               <Input
                 autoFocus={autoFocus}
-                type="text"
                 placeholder={edit.subject}
                 value={title}
                 onChange={onInputChange}

@@ -5,6 +5,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 
 SelectUploadsForm.propTypes = {
+  contentType: PropTypes.string,
   loaded: PropTypes.bool,
   loading: PropTypes.bool,
   loadingMore: PropTypes.bool,
@@ -13,23 +14,22 @@ SelectUploadsForm.propTypes = {
   onSelect: PropTypes.func.isRequired,
   onDeselect: PropTypes.func.isRequired,
   selectedUploads: PropTypes.array.isRequired,
-  type: PropTypes.string,
   uploads: PropTypes.array.isRequired,
   contentObjs: PropTypes.object.isRequired
 };
 
 export default function SelectUploadsForm({
-  loaded = true,
-  uploads,
-  selectedUploads,
   contentObjs,
+  contentType = 'video',
+  loaded = true,
   loading,
   loadingMore,
+  loadMoreUploads,
   loadMoreButton,
   onSelect,
   onDeselect,
-  loadMoreUploads,
-  type = 'video'
+  selectedUploads,
+  uploads
 }) {
   return (
     <div
@@ -64,7 +64,7 @@ export default function SelectUploadsForm({
               selected={selectedUploads.includes(uploadId)}
               onSelect={onSelect}
               onDeselect={onDeselect}
-              type={type}
+              contentType={contentType}
             />
           );
         })

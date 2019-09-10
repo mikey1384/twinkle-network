@@ -3,7 +3,9 @@ export default function ContentPageReducer(state, action) {
     case 'INIT_CONTENT':
       return {
         ...state,
-        ...action.content
+        ...action.data,
+        contentId: action.contentId,
+        contentType: action.contentType
       };
     case 'ADD_TAGS':
       return {

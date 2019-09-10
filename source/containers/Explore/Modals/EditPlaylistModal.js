@@ -75,7 +75,7 @@ function EditPlaylistModal({
     async function init() {
       const { results: modalVids, loadMoreButton: loadMoreShown } =
         modalType === 'change'
-          ? await loadUploads({ type: 'video', limit: 18 })
+          ? await loadUploads({ contentType: 'video', limit: 18 })
           : await loadPlaylistVideos({
               playlistId,
               limit: 18
@@ -413,7 +413,7 @@ function EditPlaylistModal({
         results: loadedVideos,
         loadMoreButton: changeLoadMoreButton
       } = await loadUploads({
-        type: 'video',
+        contentType: 'video',
         limit: 18,
         contentId: modalVideos[modalVideos.length - 1]
       });

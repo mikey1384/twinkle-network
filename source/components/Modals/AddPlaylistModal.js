@@ -72,7 +72,7 @@ function AddPlaylistModal({
     loadVideos();
     async function loadVideos() {
       const { results: loadedVideos, loadMoreButton } = await loadUploads({
-        type: 'video',
+        contentType: 'video',
         limit: 18,
         excludeContentIds: existingVideoIds
       });
@@ -328,7 +328,7 @@ function AddPlaylistModal({
       setSearchLoadMoreButton(loadMoreButton);
     } else {
       const { results: loadedVideos, loadMoreButton } = await loadUploads({
-        type: 'video',
+        contentType: 'video',
         limit: 18,
         contentId: allVideos[allVideos.length - 1]
       });

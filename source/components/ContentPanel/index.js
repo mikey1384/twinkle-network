@@ -53,7 +53,14 @@ function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentObj,
-  contentObj: { commentsShown, contentId, feedId, newPost, secretShown, type },
+  contentObj: {
+    commentsShown,
+    contentId,
+    feedId,
+    newPost,
+    secretShown,
+    contentType
+  },
   history,
   inputAtBottom,
   onAddTags,
@@ -95,7 +102,7 @@ function ContentPanel({
       if (!newPost) {
         loading.current = true;
         onInitContent({
-          content: await loadContent({ contentId, type }),
+          ...(await loadContent({ contentId, contentType })),
           feedId
         });
         loading.current = false;
@@ -227,7 +234,7 @@ function ContentPanel({
               />
             </div>
           )}
-          {type === 'comment' && contentObj.rootType === 'video' && (
+          {contentType === 'comment' && contentObj.rootType === 'video' && (
             <ContentListItem
               style={{
                 position: 'relative'
@@ -237,7 +244,7 @@ function ContentPanel({
               contentObj={contentObj.rootObj}
             />
           )}
-          {(type === 'comment' || type === 'subject') &&
+          {(contentType === 'comment' || contentType === 'subject') &&
             contentObj.rootType === 'url' && (
               <div
                 onTouchStart={() => setUrlMouseEntered(true)}
@@ -269,7 +276,7 @@ function ContentPanel({
                 />
               </div>
             )}
-          {type === 'comment' && contentObj.rootType === 'user' && (
+          {contentType === 'comment' && contentObj.rootType === 'user' && (
             <div
               onTouchStart={() => setProfileMouseEntered(true)}
               onMouseEnter={() => setProfileMouseEntered(true)}

@@ -29,7 +29,6 @@ ContentListItem.propTypes = {
 function ContentListItem({
   onClick = () => {},
   contentObj,
-  contentObj: { type: contentObjType },
   contentType,
   expandable,
   onChangeSpoilerStatus,
@@ -41,7 +40,6 @@ function ContentListItem({
   userId
 }) {
   const themeColor = profileTheme || 'logoBlue';
-  const type = contentObjType || contentType;
   const [mouseEntered, setMouseEntered] = useState(false);
   const [localScopeSecretShown, setLocalScopeSecretShown] = useState(false);
 
@@ -83,7 +81,9 @@ function ContentListItem({
         to={
           expandable || selectable
             ? ''
-            : `/${type === 'url' ? 'link' : type}s/${contentObj.id}`
+            : `/${contentType === 'url' ? 'link' : contentType}s/${
+                contentObj.id
+              }`
         }
       >
         <div style={{ padding: '1rem' }}>
@@ -92,10 +92,10 @@ function ContentListItem({
               display: 'flex',
               width: '100%',
               fontSize: '1.3rem',
-              minHeight: type === 'subject' ? '10rem' : ''
+              minHeight: contentType === 'subject' ? '10rem' : ''
             }}
           >
-            {type === 'video' && (
+            {contentType === 'video' && (
               <div
                 style={{
                   display: 'flex',
@@ -106,20 +106,21 @@ function ContentListItem({
                 <VideoThumbImage
                   rewardLevel={contentObj.rewardLevel}
                   videoId={contentObj.id}
-                  src={`https://img.youtube.com/vi/${
-                    contentObj.content
-                  }/mqdefault.jpg`}
+                  src={`https://img.youtube.com/vi/${contentObj.content}/mqdefault.jpg`}
                 />
               </div>
             )}
             <div
               style={{
-                width: type !== 'subject' && type !== 'url' ? '75%' : '100%',
+                width:
+                  contentType !== 'subject' && contentType !== 'url'
+                    ? '75%'
+                    : '100%',
                 padding: '1rem 0',
-                ...(type === 'url' ? { paddingTop: '0.5rem' } : {})
+                ...(contentType === 'url' ? { paddingTop: '0.5rem' } : {})
               }}
             >
-              {type === 'video' && (
+              {contentType === 'video' && (
                 <>
                   <div style={{ marginLeft: '1rem' }}>
                     <p
@@ -159,7 +160,7 @@ function ContentListItem({
                   </div>
                 </>
               )}
-              {type === 'book' && (
+              {contentType === 'book' && (
                 <div
                   style={{
                     display: 'flex'
@@ -197,7 +198,7 @@ function ContentListItem({
                   </div>
                 </div>
               )}
-              {type === 'subject' && (
+              {contentType === 'subject' && (
                 <div
                   style={{
                     display: 'flex'
@@ -235,7 +236,7 @@ function ContentListItem({
                   </div>
                 </div>
               )}
-              {type === 'url' && (
+              {contentType === 'url' && (
                 <div>
                   <span
                     style={{
@@ -258,7 +259,7 @@ function ContentListItem({
                 </div>
               )}
             </div>
-            {type === 'subject' && contentObj.rootObj?.id && (
+            {contentType === 'subject' && contentObj.rootObj?.id && (
               <div
                 style={{
                   display: 'flex',
@@ -271,9 +272,7 @@ function ContentListItem({
                   <VideoThumbImage
                     rewardLevel={contentObj.rootObj.rewardLevel}
                     videoId={contentObj.rootObj.id}
-                    src={`https://img.youtube.com/vi/${
-                      contentObj.rootObj.content
-                    }/mqdefault.jpg`}
+                    src={`https://img.youtube.com/vi/${contentObj.rootObj.content}/mqdefault.jpg`}
                   />
                 )}
                 {contentObj.rootObj?.type === 'url' && (
@@ -289,7 +288,7 @@ function ContentListItem({
               </div>
             )}
           </div>
-          {type === 'subject' && contentObj.secretAnswer && (
+          {contentType === 'subject' && contentObj.secretAnswer && (
             <SecretAnswer
               answer={contentObj.secretAnswer}
               subjectId={contentObj.id}
@@ -302,7 +301,7 @@ function ContentListItem({
             />
           )}
         </div>
-        {!!contentObj.rewardLevel && type === 'subject' && (
+        {!!contentObj.rewardLevel && contentType === 'subject' && (
           <div
             style={{
               marginLeft: '-1px',

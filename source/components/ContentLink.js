@@ -15,21 +15,21 @@ ContentLink.propTypes = {
   }).isRequired,
   profileTheme: PropTypes.string,
   style: PropTypes.object,
-  type: PropTypes.string
+  contentType: PropTypes.string
 };
 
 function ContentLink({
   style,
   content: { byUser, id, content, title, username },
   profileTheme,
-  type
+  contentType
 }) {
   const themeColor = profileTheme || 'logoBlue';
   let destination = '';
-  if (type === 'url') {
+  if (contentType === 'url') {
     destination = 'links';
   } else {
-    destination = type + 's';
+    destination = contentType + 's';
   }
   title = title || content || username;
   return title ? (
@@ -37,10 +37,12 @@ function ContentLink({
       style={{
         fontWeight: 'bold',
         color:
-          type === 'video' && byUser ? Color[themeColor](0.9) : Color.blue(),
+          contentType === 'video' && byUser
+            ? Color[themeColor](0.9)
+            : Color.blue(),
         ...style
       }}
-      to={`/${destination}/${type === 'user' ? username : id}`}
+      to={`/${destination}/${contentType === 'user' ? username : id}`}
     >
       {removeLineBreaks(title)}
     </Link>

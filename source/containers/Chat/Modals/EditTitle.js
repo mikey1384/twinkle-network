@@ -24,7 +24,6 @@ export default function EditTitleModal({ onDone, onHide, ...props }) {
         >
           <Input
             autoFocus
-            type="text"
             placeholder={edit.title}
             value={title}
             onChange={setTitle}

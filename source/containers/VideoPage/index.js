@@ -166,15 +166,13 @@ function VideoPage({
         if (mounted.current) {
           setVideoId(initialVideoId);
           onInitContent({
-            content: {
-              ...data,
-              tags,
-              contentId: Number(initialVideoId),
-              childComments: commentsObj?.comments || [],
-              commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
-              subjects: subjectsObj?.results || [],
-              subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
-            }
+            ...data,
+            tags,
+            contentId: Number(initialVideoId),
+            childComments: commentsObj?.comments || [],
+            commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
+            subjects: subjectsObj?.results || [],
+            subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
           });
           setChangingPage(false);
           setVideoLoading(false);

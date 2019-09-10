@@ -125,7 +125,7 @@ function AllVideosPanel({
       loadMoreButton: loadMoreShown
     } = stringIsEmpty(searchText)
       ? await loadUploads({
-          type: 'video',
+          contentType: 'video',
           contentId: lastId
         })
       : await searchContent({

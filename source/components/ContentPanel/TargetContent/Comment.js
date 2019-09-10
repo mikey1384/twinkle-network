@@ -129,7 +129,7 @@ function Comment({
   );
 
   async function deleteComment() {
-    await deleteContent({ id: comment.id, type: 'comment', dispatch });
+    await deleteContent({ id: comment.id, contentType: 'comment', dispatch });
     setConfirmModalShown(false);
     onDelete(comment.id);
   }
@@ -139,7 +139,7 @@ function Comment({
       params: {
         editedComment,
         contentId: comment.id,
-        type: 'comment'
+        contentType: 'comment'
       },
       dispatch
     });

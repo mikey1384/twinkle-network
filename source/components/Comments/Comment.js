@@ -123,7 +123,7 @@ function Comment({
   }
 
   const isCommentForContentSubject =
-    parent.type !== 'subject' &&
+    parent.contentType !== 'subject' &&
     !parent.subjectId &&
     targetObj &&
     targetObj.subject;
@@ -186,7 +186,7 @@ function Comment({
               <UsernameText className="username" user={uploader} />{' '}
               <small className="timestamp">
                 <Link to={`/comments/${comment.id}`}>
-                  {parent.type === 'user' ? 'messag' : 'comment'}
+                  {parent.contentType === 'user' ? 'messag' : 'comment'}
                   ed {timeSince(comment.timeStamp)}
                 </Link>
               </small>
@@ -362,13 +362,13 @@ function Comment({
   );
 
   function determineRewardLevel({ parent, targetObj }) {
-    if (parent.type === 'subject' && parent.rewardLevel > 0) {
+    if (parent.contentType === 'subject' && parent.rewardLevel > 0) {
       return parent.rewardLevel;
     }
     if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
       return parent.rootObj.rewardLevel;
     }
-    if (parent.type === 'video' || parent.type === 'url') {
+    if (parent.contentType === 'video' || parent.contentType === 'url') {
       if (targetObj.subject?.rewardLevel) {
         return targetObj.subject?.rewardLevel;
       }
@@ -389,7 +389,7 @@ function Comment({
 
   async function editDone(editedComment) {
     await editContent({
-      params: { editedComment, contentId: comment.id, type: 'comment' },
+      params: { editedComment, contentId: comment.id, contentType: 'comment' },
       dispatch
     });
     onEditDone({ editedComment, commentId: comment.id });

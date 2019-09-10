@@ -220,10 +220,10 @@ export const loadDMChannel = async ({ dispatch, recepient }) => {
   }
 };
 
-export const loadContent = async ({ contentId, type }) => {
+export const loadContent = async ({ contentId, contentType }) => {
   try {
     const { data } = await request.get(
-      `${URL}/content?contentId=${contentId}&type=${type}`
+      `${URL}/content?contentId=${contentId}&contentType=${contentType}`
     );
     return Promise.resolve(data);
   } catch (error) {

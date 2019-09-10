@@ -172,7 +172,7 @@ function MainFeeds({
                       id: contentId,
                       title: contentType
                     }}
-                    type={contentType}
+                    contentType={contentType}
                   />
                 </div>
                 <small>{timeSince(timeStamp)}</small>

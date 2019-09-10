@@ -18,7 +18,7 @@ Subjects.propTypes = {
   rootRewardLevel: PropTypes.number,
   setSubjectRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
-  type: PropTypes.string,
+  contentType: PropTypes.string,
   uploadSubject: PropTypes.func.isRequired,
   commentActions: PropTypes.shape({
     attachStar: PropTypes.func.isRequired,
@@ -38,8 +38,8 @@ export default function Subjects({
   subjects,
   loadMoreButton,
   style = {},
-  type,
   contentId,
+  contentType,
   uploadSubject,
   onLoadMoreSubjects,
   onLoadSubjectComments,
@@ -80,7 +80,7 @@ export default function Subjects({
       <div className={className} style={style}>
         <SubjectInputArea
           contentId={contentId}
-          type={type}
+          contentType={contentType}
           onUploadSubject={uploadSubject}
         />
         <div style={{ margin: '1rem 0' }}>
@@ -90,7 +90,7 @@ export default function Subjects({
                 key={subject.id}
                 contentId={Number(contentId)}
                 rootRewardLevel={rootRewardLevel}
-                type={type}
+                contentType={contentType}
                 {...subject}
               />
             ))}
@@ -111,7 +111,7 @@ export default function Subjects({
 
   async function loadMoreSubjects() {
     const data = await loadSubjects({
-      type,
+      contentType,
       contentId,
       lastSubjectId: subjects[subjects.length - 1].id
     });

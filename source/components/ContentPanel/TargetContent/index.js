@@ -174,7 +174,7 @@ function TargetContent({
                               : 'responded'
                           }:`
                         }}
-                        type="comment"
+                        contentType="comment"
                         style={{ color: Color.green() }}
                       />
                     </div>
@@ -298,7 +298,7 @@ function TargetContent({
                   }}
                   autoFocus
                   onSubmit={onSubmit}
-                  parent={{ type: 'comment', id: comment.id }}
+                  parent={{ contentType: 'comment', id: comment.id }}
                   rows={4}
                   placeholder={`Write a reply...`}
                 />
@@ -352,7 +352,7 @@ function TargetContent({
   }
 
   function onLikeClick(likes) {
-    onLikeContent({ likes, type: 'comment', contentId: comment.id });
+    onLikeContent({ likes, contentType: 'comment', contentId: comment.id });
   }
 
   function onReplyClick() {
@@ -364,7 +364,7 @@ function TargetContent({
     const data = await uploadComment({
       content,
       parent: {
-        type: rootType,
+        contentType: rootType,
         id: rootObj.id
       },
       rootCommentId: comment.commentId,

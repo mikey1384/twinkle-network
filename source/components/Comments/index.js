@@ -44,7 +44,7 @@ Comments.propTypes = {
   parent: PropTypes.shape({
     commentId: PropTypes.number,
     id: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired
+    contentType: PropTypes.string.isRequired
   }).isRequired,
   style: PropTypes.object,
   userId: PropTypes.number
@@ -242,7 +242,7 @@ function Comments({
       try {
         const data = await loadComments({
           id: parent.id,
-          type: parent.type,
+          contentType: parent.contentType,
           lastCommentId,
           limit: commentsLoadLimit
         });
@@ -256,7 +256,7 @@ function Comments({
 
   async function deleteComment(commentId) {
     setDeleting(true);
-    await deleteContent({ id: commentId, type: 'comment', dispatch });
+    await deleteContent({ id: commentId, contentType: 'comment', dispatch });
     onDelete(commentId);
   }
 
@@ -270,9 +270,11 @@ function Comments({
         numInputRows={numInputRows}
         onSubmit={submitComment}
         parent={parent}
-        rootCommentId={parent.type === 'comment' ? parent.commentId : null}
+        rootCommentId={
+          parent.contentType === 'comment' ? parent.commentId : null
+        }
         style={style}
-        targetCommentId={parent.type === 'comment' ? parent.id : null}
+        targetCommentId={parent.contentType === 'comment' ? parent.id : null}
       />
     );
   }

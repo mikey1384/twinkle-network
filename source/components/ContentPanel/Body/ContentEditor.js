@@ -18,26 +18,26 @@ ContentEditor.propTypes = {
   comment: PropTypes.string,
   content: PropTypes.string,
   contentId: PropTypes.number.isRequired,
+  contentType: PropTypes.string.isRequired,
   description: PropTypes.string,
   onDismiss: PropTypes.func.isRequired,
   onEditContent: PropTypes.func.isRequired,
   secretAnswer: PropTypes.string,
   style: PropTypes.object,
-  title: PropTypes.string,
-  type: PropTypes.string.isRequired
+  title: PropTypes.string
 };
 
 export default function ContentEditor({
   comment,
   content,
   contentId,
+  contentType,
   description,
   onDismiss,
   onEditContent,
   secretAnswer = '',
   style,
-  title,
-  type
+  title
 }) {
   const [editForm, setEditForm] = useState({
     editedContent: content || '',
@@ -46,7 +46,7 @@ export default function ContentEditor({
     editedSecretAnswer: secretAnswer || '',
     editedTitle: title || '',
     editedUrl:
-      type === 'video'
+      contentType === 'video'
         ? `https://www.youtube.com/watch?v=${content}`
         : content || ''
   });
@@ -60,24 +60,26 @@ export default function ContentEditor({
   } = editForm;
   const urlError =
     !stringIsEmpty(editedUrl) &&
-    !(type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl));
+    !(contentType === 'video'
+      ? isValidYoutubeUrl(editedUrl)
+      : isValidUrl(editedUrl));
   const descriptionExceedsCharLimit = exceedsCharLimit({
-    contentType: type,
+    contentType,
     inputType: 'description',
-    text: type === 'comment' ? editedComment : editedDescription
+    text: contentType === 'comment' ? editedComment : editedDescription
   });
   const secretAnswerExceedsCharLimit = exceedsCharLimit({
     inputType: 'description',
-    contentType: type,
+    contentType,
     text: editedSecretAnswer
   });
   const titleExceedsCharLimit = exceedsCharLimit({
-    contentType: type,
+    contentType,
     inputType: 'title',
     text: editedTitle
   });
   const urlExceedsCharLimit = exceedsCharLimit({
-    contentType: type,
+    contentType,
     inputType: 'url',
     text: editedUrl
   });
@@ -93,7 +95,7 @@ export default function ContentEditor({
       `}
     >
       <form onSubmit={onSubmit}>
-        {(type === 'video' || type === 'url') && (
+        {(contentType === 'video' || contentType === 'url') && (
           <div
             className={css`
               margin-bottom: 1rem;
@@ -108,7 +110,7 @@ export default function ContentEditor({
                   editedUrl: text
                 })
               }
-              placeholder={edit[type]}
+              placeholder={edit[contentType]}
               value={editedUrl}
               style={urlExceedsCharLimit?.style}
             />
@@ -119,7 +121,7 @@ export default function ContentEditor({
             )}
           </div>
         )}
-        {type !== 'comment' && (
+        {contentType !== 'comment' && (
           <>
             <Input
               autoFocus
@@ -146,19 +148,23 @@ export default function ContentEditor({
         )}
         <div style={{ position: 'relative', marginTop: '1rem' }}>
           <Textarea
-            autoFocus={type === 'comment'}
+            autoFocus={contentType === 'comment'}
             minRows={4}
             onChange={event => {
               const { value } = event.target;
               setEditForm({
                 ...editForm,
-                [type === 'comment'
+                [contentType === 'comment'
                   ? 'editedComment'
                   : 'editedDescription']: value
               });
             }}
-            placeholder={edit[type === 'comment' ? 'comment' : 'description']}
-            value={type === 'comment' ? editedComment : editedDescription}
+            placeholder={
+              edit[contentType === 'comment' ? 'comment' : 'description']
+            }
+            value={
+              contentType === 'comment' ? editedComment : editedDescription
+            }
             style={descriptionExceedsCharLimit?.style}
           />
           {descriptionExceedsCharLimit && (
@@ -167,7 +173,7 @@ export default function ContentEditor({
             </small>
           )}
         </div>
-        {type === 'subject' && (
+        {contentType === 'subject' && (
           <div style={{ position: 'relative', marginTop: '1rem' }}>
             <span style={{ fontWeight: 'bold' }}>Secret Message</span>
             <Textarea
@@ -221,9 +227,13 @@ export default function ContentEditor({
 
   function determineButtonDisabled() {
     const contentUrl =
-      type === 'video' ? `https://www.youtube.com/watch?v=${content}` : content;
+      contentType === 'video'
+        ? `https://www.youtube.com/watch?v=${content}`
+        : content;
     const isValid =
-      type === 'video' ? isValidYoutubeUrl(editedUrl) : isValidUrl(editedUrl);
+      contentType === 'video'
+        ? isValidYoutubeUrl(editedUrl)
+        : isValidUrl(editedUrl);
     if (titleExceedsCharLimit) {
       return true;
     }
@@ -233,11 +243,14 @@ export default function ContentEditor({
     if (secretAnswerExceedsCharLimit) {
       return true;
     }
-    if ((type === 'vidoe' || type === 'url') && urlExceedsCharLimit) {
+    if (
+      (contentType === 'vidoe' || contentType === 'url') &&
+      urlExceedsCharLimit
+    ) {
       return true;
     }
 
-    switch (type) {
+    switch (contentType) {
       case 'video':
       case 'url':
         if (
@@ -285,7 +298,7 @@ export default function ContentEditor({
       editedSecretAnswer: finalizeEmoji(editedSecretAnswer),
       editedTitle: finalizeEmoji(editedTitle)
     };
-    await onEditContent({ ...post, contentId, type });
+    await onEditContent({ ...post, contentId, contentType });
     onDismiss();
   }
 }

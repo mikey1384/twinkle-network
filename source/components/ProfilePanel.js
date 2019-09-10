@@ -80,7 +80,7 @@ function ProfilePanel({
       try {
         const { comments } = await loadComments({
           id: profile.id,
-          type: 'user',
+          contentType: 'user',
           limit: 1
         });
         if (mounted.current) {
@@ -347,7 +347,7 @@ function ProfilePanel({
           onPreviewClick={onExpandComments}
           onReplySubmit={onReplySubmit}
           onRewardCommentEdit={onEditRewardComment}
-          parent={{ ...profile, type: 'user' }}
+          parent={{ ...profile, contentType: 'user' }}
           style={{ marginTop: '1rem' }}
           userId={userId}
         />
@@ -480,7 +480,7 @@ function ProfilePanel({
     if (!commentsShown) {
       const { comments, loadMoreButton } = await loadComments({
         id: profile.id,
-        type: 'user',
+        contentType: 'user',
         limit: 5
       });
       setComments(comments);

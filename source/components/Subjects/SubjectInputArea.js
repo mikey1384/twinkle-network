@@ -12,18 +12,18 @@ SubjectInputArea.propTypes = {
   onUploadSubject: PropTypes.func.isRequired,
   contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
+  contentType: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string,
-  type: PropTypes.string.isRequired
+  profileTheme: PropTypes.string
 };
 
 function SubjectInputArea({
   canEditRewardLevel,
   contentId,
+  contentType,
   dispatch,
   onUploadSubject,
-  profileTheme,
-  type
+  profileTheme
 }) {
   const [subjectFormShown, setSubjectFormShown] = useState(false);
   const themeColor = profileTheme || 'logoBlue';
@@ -76,7 +76,7 @@ function SubjectInputArea({
       contentId,
       rewardLevel,
       secretAnswer,
-      type
+      contentType
     });
     setSubjectFormShown(false);
     onUploadSubject(data);

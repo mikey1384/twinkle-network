@@ -191,12 +191,12 @@ function Reply({
                       <span style={{ marginLeft: '0.7rem' }}>
                         {reply.numReplies > 1 &&
                         !replyButtonClicked &&
-                        parent.type === 'comment'
+                        parent.contentType === 'comment'
                           ? 'Replies'
                           : 'Reply'}
                         {reply.numReplies > 0 &&
                         !replyButtonClicked &&
-                        parent.type === 'comment'
+                        parent.contentType === 'comment'
                           ? ` (${reply.numReplies})`
                           : ''}
                       </span>
@@ -299,13 +299,13 @@ function Reply({
   );
 
   function determineRewardLevel({ parent, subject }) {
-    if (parent.type === 'subject' && parent.rewardLevel > 0) {
+    if (parent.contentType === 'subject' && parent.rewardLevel > 0) {
       return parent.rewardLevel;
     }
     if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
       return parent.rootObj.rewardLevel;
     }
-    if (parent.type === 'video' || parent.type === 'url') {
+    if (parent.contentType === 'video' || parent.contentType === 'url') {
       if (subject?.rewardLevel) {
         return subject?.rewardLevel;
       }
@@ -329,7 +329,7 @@ function Reply({
       params: {
         editedComment: editedReply,
         contentId: reply.id,
-        type: 'comment'
+        contentType: 'comment'
       },
       dispatch
     });
@@ -344,7 +344,11 @@ function Reply({
   async function replyButtonClick() {
     setReplyButtonClicked(true);
     ReplyInputAreaRef.current.focus();
-    if (numReplies > 0 && !replyButtonClicked && parent.type === 'comment') {
+    if (
+      numReplies > 0 &&
+      !replyButtonClicked &&
+      parent.contentType === 'comment'
+    ) {
       const { replies } = await loadReplies({
         commentId: id
       });

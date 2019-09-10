@@ -103,7 +103,7 @@ export default function TextMessage({
             forChat
             url={extractedUrl}
             contentId={messageId}
-            type="chat"
+            contentType="chat"
             objectFit="contain"
             imageHeight="25vw"
             imageMobileHeight="60vw"

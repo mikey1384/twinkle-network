@@ -9,7 +9,8 @@ Input.propTypes = {
   className: PropTypes.string,
   hasError: PropTypes.bool,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string
 };
 
 export default function Input({
@@ -17,12 +18,14 @@ export default function Input({
   hasError,
   inputRef,
   onChange,
+  type = 'text',
   ...props
 }) {
   return (
     <ErrorBoundary>
       <input
         {...props}
+        type={type}
         className={`${css`
           border: 1px solid ${Color.darkerBorderGray()};
           width: 100%;

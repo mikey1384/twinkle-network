@@ -13,6 +13,7 @@ Heading.propTypes = {
   contentObj: PropTypes.shape({
     id: PropTypes.number,
     commentId: PropTypes.number,
+    contentType: PropTypes.string,
     replyId: PropTypes.number,
     rootObj: PropTypes.object,
     rootId: PropTypes.number,
@@ -21,7 +22,6 @@ Heading.propTypes = {
     targetObj: PropTypes.object,
     timeStamp: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
       .isRequired,
-    type: PropTypes.string,
     uploader: PropTypes.object
   }).isRequired
 };
@@ -31,13 +31,13 @@ function Heading({
   contentObj,
   contentObj: {
     commentId,
+    contentType,
     id,
     replyId,
     rootObj = {},
     rootType,
     targetObj = {},
     timeStamp,
-    type,
     uploader = {}
   }
 }) {
@@ -79,12 +79,13 @@ function Heading({
         : rootType === 'subject'
         ? 'a subject'
         : rootType;
-    switch (type) {
+    switch (contentType) {
       case 'video':
         return (
           <>
             <UsernameText user={uploader} color={Color.blue()} /> uploaded a
-            video: <ContentLink content={contentObj} type={type} />{' '}
+            video:{' '}
+            <ContentLink content={contentObj} contentType={contentType} />{' '}
           </>
         );
       case 'comment':
@@ -93,11 +94,11 @@ function Heading({
             <UsernameText user={uploader} color={Color.blue()} />{' '}
             <ContentLink
               content={{ id, title: action }}
-              type={type}
+              contentType={contentType}
               style={{ color: Color.green() }}
             />
             {renderTargetAction()} {contentLabel}:{' '}
-            <ContentLink content={rootObj} type={rootType} />{' '}
+            <ContentLink content={rootObj} contentType={rootType} />{' '}
           </>
         );
       case 'url':
@@ -105,7 +106,7 @@ function Heading({
           <>
             <UsernameText user={uploader} color={Color.blue()} /> shared a
             link:&nbsp;
-            <ContentLink content={contentObj} type={type} />{' '}
+            <ContentLink content={contentObj} contentType={contentType} />{' '}
           </>
         );
       case 'subject':
@@ -114,13 +115,13 @@ function Heading({
             <UsernameText user={uploader} color={Color.blue()} /> started a{' '}
             <ContentLink
               content={{ id, title: 'subject ' }}
-              type={type}
+              contentType={contentType}
               style={{ color: Color.green() }}
             />
             {rootObj.id && (
               <>
                 on {contentLabel}:{' '}
-                <ContentLink content={rootObj} type={rootType} />{' '}
+                <ContentLink content={rootObj} contentType={rootType} />{' '}
               </>
             )}
           </>
@@ -149,7 +150,7 @@ function Heading({
                 ? 'message '
                 : 'comment '
             }}
-            type="comment"
+            contentType="comment"
             style={{ color: Color.green() }}
           />
           {!replyId && rootType === 'user' ? 'to' : 'on'}

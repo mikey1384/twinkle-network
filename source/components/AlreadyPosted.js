@@ -8,7 +8,7 @@ import { checkIfContentExists } from 'helpers/requestHelpers';
 AlreadyPosted.propTypes = {
   changingPage: PropTypes.bool,
   contentId: PropTypes.number.isRequired,
-  type: PropTypes.string.isRequired,
+  contentType: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   style: PropTypes.object,
   uploaderId: PropTypes.number,
@@ -19,7 +19,7 @@ export default function AlreadyPosted({
   changingPage,
   contentId,
   style,
-  type,
+  contentType,
   uploaderId,
   url,
   videoCode
@@ -33,7 +33,7 @@ export default function AlreadyPosted({
     async function checkExists() {
       setLoading(true);
       const { content } = await checkIfContentExists({
-        type,
+        contentType,
         url,
         videoCode
       });
@@ -71,7 +71,9 @@ export default function AlreadyPosted({
       This content has{' '}
       <Link
         style={{ fontWeight: 'bold' }}
-        to={`/${type === 'url' ? 'link' : 'video'}s/${existingContent.id}`}
+        to={`/${contentType === 'url' ? 'link' : 'video'}s/${
+          existingContent.id
+        }`}
       >
         already been posted before
         {uploaderId !== existingContent.uploader ? ' by someone else' : ''}

@@ -1,21 +1,27 @@
 export default function ContentActions(dispatch) {
   return {
-    onAddTags({ tags }) {
+    onAddTags({ tags, type, contentId }) {
       return dispatch({
         type: 'ADD_TAGS',
-        tags
+        tags,
+        contentType: type,
+        contentId: Number(contentId)
       });
     },
     onAttachStar(data) {
       return dispatch({
         type: 'ATTACH_STAR',
-        data
+        data,
+        contentId: data.contentId,
+        contentType: data.contentType
       });
     },
-    onChangeSpoilerStatus(shown) {
+    onChangeSpoilerStatus({ shown, subjectId }) {
       return dispatch({
         type: 'CHANGE_SPOILER_STATUS',
-        shown
+        shown,
+        contentId: subjectId,
+        contentType: 'subject'
       });
     },
     onDeleteComment(commentId) {
@@ -57,10 +63,12 @@ export default function ContentActions(dispatch) {
         subjectId
       });
     },
-    onInitContent({ content }) {
+    onInitContent({ contentId, type, ...data }) {
       return dispatch({
         type: 'INIT_CONTENT',
-        content
+        contentId: Number(contentId),
+        contentType: type,
+        data
       });
     },
     onLikeComment({ commentId, likes }) {

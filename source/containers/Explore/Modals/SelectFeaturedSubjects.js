@@ -55,7 +55,7 @@ function SelectFeaturedSubjectsModal({
         loadMoreButton: loadMoreShown
       } = await loadUploads({
         limit: 10,
-        type: 'subject',
+        contentType: 'subject',
         includeRoot: true
       });
       setChallengeObjs({
@@ -216,7 +216,7 @@ function SelectFeaturedSubjectsModal({
     const options = stringIsEmpty(searchText)
       ? {
           limit: 10,
-          type: 'subject',
+          contentType: 'subject',
           includeRoot: true,
           excludeContentIds: challenges
         }

@@ -49,7 +49,6 @@ export default function TitleDescriptionForm({
         <Input
           autoFocus={autoFocus}
           placeholder={titlePlaceholder}
-          type="text"
           value={title}
           style={{
             borderColor: title.length > titleMaxChar && 'red',

@@ -86,14 +86,13 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         value={form.url}
         onChange={onUrlFieldChange}
         placeholder="Copy and paste a URL address here"
-        type="text"
       />
       {alreadyPosted && (
         <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
           This content has{' '}
           <Link
             style={{ fontWeight: 'bold' }}
-            to={`/${alreadyPosted.type === 'url' ? 'link' : 'video'}s/${
+            to={`/${alreadyPosted.contentType === 'url' ? 'link' : 'video'}s/${
               alreadyPosted.id
             }`}
           >
@@ -151,7 +150,6 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
                 style={{
                   ...(titleExceedsCharLimit?.style || {})
                 }}
-                type="text"
               />
               {titleExceedsCharLimit && (
                 <small style={{ color: 'red' }}>
@@ -314,7 +312,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
     const isVideo = isValidYoutubeUrl(url);
     const { exists, content } = await checkIfContentExists({
       url,
-      type: isVideo ? 'video' : 'url'
+      contentType: isVideo ? 'video' : 'url'
     });
     return onSetContentAlreadyPosted(exists ? content : false);
   }

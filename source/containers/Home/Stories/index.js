@@ -310,7 +310,7 @@ function Stories({
                     }}
                     commentsLoadLimit={5}
                     contentObj={feed}
-                    inputAtBottom={feed.type === 'comment'}
+                    inputAtBottom={feed.contentType === 'comment'}
                     onInitContent={fetchFeed}
                     onAddTags={addTags}
                     onAddTagToContents={addTagToContents}
@@ -466,7 +466,7 @@ function Stories({
   function handleUploadFeedComment({ feed, data }) {
     uploadFeedComment({
       data,
-      type: feed.type,
+      contentType: feed.contentType,
       contentId: feed.contentId
     });
   }

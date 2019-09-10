@@ -16,16 +16,16 @@ Selectable.propTypes = {
   onSelect: PropTypes.func,
   onDeselect: PropTypes.func,
   profileTheme: PropTypes.string,
-  type: PropTypes.string
+  contentType: PropTypes.string
 };
 
 function Selectable({
+  contentType = 'video',
   item = {},
-  selected,
   onSelect,
   onDeselect,
   profileTheme,
-  type = 'video'
+  selected
 }) {
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
@@ -65,7 +65,7 @@ function Selectable({
         }}
       >
         <div style={{ width: '100%' }}>
-          {type === 'video' ? (
+          {contentType === 'video' ? (
             <VideoThumbImage
               height="65%"
               videoId={item.id}

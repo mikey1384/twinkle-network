@@ -19,13 +19,14 @@ StarButton.propTypes = {
   onSetRewardLevel: PropTypes.func,
   onToggleByUser: PropTypes.func,
   style: PropTypes.object,
-  type: PropTypes.string.isRequired,
+  contentType: PropTypes.string.isRequired,
   uploader: PropTypes.object
 };
 
 function StarButton({
   byUser,
   contentId,
+  contentType,
   rewardLevel,
   direction = 'left',
   dispatch,
@@ -33,8 +34,7 @@ function StarButton({
   onSetRewardLevel,
   onToggleByUser,
   uploader,
-  style,
-  type
+  style
 }) {
   const [rewardLevelModalShown, setRewardLevelModalShown] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
@@ -71,7 +71,7 @@ function StarButton({
       </div>
       {rewardLevelModalShown && (
         <RewardLevelModal
-          type={type}
+          contentType={contentType}
           contentId={contentId}
           rewardLevel={rewardLevel}
           onSubmit={async data => {
@@ -85,7 +85,7 @@ function StarButton({
   );
 
   function onClick() {
-    if (type === 'video') {
+    if (contentType === 'video') {
       return setMenuShown(!menuShown);
     }
     return setRewardLevelModalShown(true);

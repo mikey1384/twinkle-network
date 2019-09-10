@@ -72,7 +72,6 @@ function AddVideoModal({
               value={form.url}
               onChange={handleUrlFieldChange}
               placeholder="Paste video's YouTube url here"
-              type="text"
               style={urlHasError()}
             />
             {urlError && (
@@ -92,7 +91,6 @@ function AddVideoModal({
               value={form.title}
               onChange={text => setForm({ ...form, title: text })}
               placeholder="Enter Title"
-              type="text"
               onKeyUp={event => {
                 if (event.key === ' ') {
                   setForm({
