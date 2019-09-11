@@ -305,6 +305,7 @@ function Chat({
   }
 
   function handleChessSpoilerClick() {
+    if (selectedChannelId !== currentChannel.id) return;
     socket.emit('viewed_chess_move', selectedChannelId);
     socket.emit('start_chess_timer', currentChannel);
     setChessModalShown(true);
