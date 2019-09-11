@@ -1,4 +1,4 @@
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 export const MessageStyle = {
@@ -11,6 +11,10 @@ export const MessageStyle = {
   profilePic: css`
     width: 5.5vw;
     height: 5.5vw;
+    @media (max-width: ${mobileMaxWidth}) {
+      width: 6vw;
+      height: 6vw;
+    }
   `,
   contentWrapper: css`
     margin-left: 1rem;
