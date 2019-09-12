@@ -9,11 +9,11 @@ export const MessageStyle = {
     position: relative;
   `,
   profilePic: css`
-    width: 7rem;
-    height: 7rem;
+    width: 5.5vw;
+    height: 5.5vw;
     @media (max-width: ${mobileMaxWidth}) {
-      width: 5rem;
-      height: 5rem;
+      width: 6vw;
+      height: 6vw;
     }
   `,
   contentWrapper: css`
