@@ -339,7 +339,7 @@ function Stories({
                     onSetRewardLevel={setRewardLevel}
                     onShowTCReplyInput={showTCReplyInput}
                     onLoadComments={loadFeedComments}
-                    onTargetCommentSubmit={uploadTargetContentComment}
+                    onUploadTargetComment={uploadTargetContentComment}
                     userId={userId}
                   />
                 );

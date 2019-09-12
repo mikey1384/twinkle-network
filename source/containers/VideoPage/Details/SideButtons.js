@@ -109,6 +109,6 @@ export default function SideButtons({
   );
 
   function onToggleByUser(byUser) {
-    changeByUserStatus({ byUser, contentId: videoId });
+    changeByUserStatus({ byUser, contentId: videoId, contentType: 'video' });
   }
 }

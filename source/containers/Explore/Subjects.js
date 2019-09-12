@@ -42,8 +42,8 @@ function Subjects({
     init();
     async function init() {
       if (!loaded) {
-        const challenges = await loadFeaturedSubjects();
-        getFeaturedSubjects(challenges);
+        const subjects = await loadFeaturedSubjects();
+        getFeaturedSubjects(subjects);
       }
     }
   }, [loaded]);
@@ -69,11 +69,11 @@ function Subjects({
           emptyMessage="No featured subjects for now..."
           loaded={loaded}
         >
-          {featuredSubjects.map(challenge => (
+          {featuredSubjects.map(subject => (
             <ContentListItem
-              key={challenge.id}
+              key={subject.id}
               style={{ marginBottom: '1rem' }}
-              contentObj={challenge}
+              contentObj={subject}
             />
           ))}
         </SectionPanel>

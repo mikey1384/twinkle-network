@@ -115,6 +115,6 @@ export default function Subjects({
       contentId,
       lastSubjectId: subjects[subjects.length - 1].id
     });
-    onLoadMoreSubjects(data);
+    onLoadMoreSubjects({ ...data, contentId, contentType });
   }
 }

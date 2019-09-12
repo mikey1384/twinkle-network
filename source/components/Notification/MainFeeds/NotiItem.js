@@ -27,8 +27,7 @@ function NotiItem({
   let notificationMessage;
   const isReply = targetComment?.userId === myId;
   const isSubjectResponse = targetSubject?.userId === myId;
-
-  switch (actionObj.type) {
+  switch (actionObj.contentType) {
     case 'like':
       notificationMessage = (
         <>

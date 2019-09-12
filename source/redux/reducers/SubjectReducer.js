@@ -15,7 +15,7 @@ export default function SubjectReducer(state = defaultState, action) {
     case SUBJECT.LOAD_FEATURED_SUBJECTS:
       return {
         ...state,
-        featuredSubjects: action.challenges,
+        featuredSubjects: action.subjects,
         loaded: true
       };
     default:

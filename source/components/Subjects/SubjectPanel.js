@@ -396,7 +396,7 @@ function SubjectPanel({
         limit: 10
       });
       CommentsRef.current.focus();
-      onLoadSubjectComments({ data, subjectId: id });
+      onLoadSubjectComments({ ...data, subjectId: id, contentType, contentId });
     } catch (error) {
       console.error(error.response || error);
     }

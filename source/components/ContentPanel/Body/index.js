@@ -157,8 +157,8 @@ function Body({
         limit: commentsLoadLimit
       });
       if (mounted.current) {
-        onLoadComments(data);
-        onSetCommentsShown(true);
+        onLoadComments({ ...data, contentId, contentType });
+        onSetCommentsShown({ contentId, contentType });
       }
     }
     return function cleanUp() {
@@ -421,7 +421,9 @@ function Body({
           onLoadMoreComments={data =>
             onLoadMoreComments({ data, contentType, feedId })
           }
-          onLoadMoreReplies={data => onLoadMoreReplies(data, feedId)}
+          onLoadMoreReplies={data =>
+            onLoadMoreReplies({ ...data, contentType, contentId })
+          }
           onPreviewClick={onExpandComments}
           onLoadRepliesOfReply={onLoadRepliesOfReply}
           onReplySubmit={onReplySubmit}
@@ -544,8 +546,8 @@ function Body({
       contentId,
       limit: commentsLoadLimit
     });
-    onLoadComments(data, feedId);
-    onSetCommentsShown(true);
+    onLoadComments({ ...data, contentId, contentType });
+    onSetCommentsShown({ contentId, contentType });
   }
 
   async function onLikeClick(likes) {

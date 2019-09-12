@@ -459,8 +459,8 @@ function VideoPage({
     }
   }
 
-  function handleChangeByUserStatus({ contentId, byUser }) {
-    onSetByUserStatus(byUser);
+  function handleChangeByUserStatus({ contentId, contentType, byUser }) {
+    onSetByUserStatus({ contentId, contentType, byUser });
     changeByUserStatusForThumbs({ videoId: Number(contentId), byUser });
   }
 
@@ -513,8 +513,8 @@ function VideoPage({
     }));
   }
 
-  function handleSetRewardLevel({ contentId, rewardLevel }) {
-    onSetRewardLevel({ contentId, rewardLevel });
+  function handleSetRewardLevel({ contentId, contentType, rewardLevel }) {
+    onSetRewardLevel({ contentType, contentId, rewardLevel });
     setRewardLevel({ videoId: Number(contentId), rewardLevel });
   }
 
@@ -555,7 +555,11 @@ function VideoPage({
           correctChoice: question.correctChoice
         };
       });
-      onSetVideoQuestions(questions);
+      onSetVideoQuestions({
+        contentType: 'video',
+        contentId: videoId,
+        questions
+      });
       setQuestionsBuilderShown(false);
       setCurrentSlide(0);
       setUserAnswers({});

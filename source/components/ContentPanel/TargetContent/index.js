@@ -27,8 +27,9 @@ TargetContent.propTypes = {
   authLevel: PropTypes.number,
   canStar: PropTypes.bool,
   className: PropTypes.string,
+  contentId: PropTypes.number,
+  contentType: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
-  feedId: PropTypes.number,
   history: PropTypes.object.isRequired,
   myId: PropTypes.number,
   profilePicId: PropTypes.number,
@@ -45,8 +46,9 @@ function TargetContent({
   authLevel,
   canStar,
   className,
+  contentId,
+  contentType,
   dispatch,
-  feedId,
   history,
   myId,
   rootObj,
@@ -74,7 +76,7 @@ function TargetContent({
     onEditComment,
     onEditRewardComment,
     onLikeContent,
-    onTargetCommentSubmit
+    onUploadTargetComment
   } = useContext(Context);
 
   let userLikedThis = false;
@@ -356,7 +358,7 @@ function TargetContent({
   }
 
   function onReplyClick() {
-    if (!replyInputShown) return onShowTCReplyInput(feedId);
+    if (!replyInputShown) return onShowTCReplyInput({ contentId, contentType });
     InputFormRef.current.focus();
   }
 
@@ -371,7 +373,7 @@ function TargetContent({
       targetCommentId: comment.id,
       dispatch
     });
-    onTargetCommentSubmit(data, feedId);
+    onUploadTargetComment({ ...data, contentId, contentType });
   }
 }
 

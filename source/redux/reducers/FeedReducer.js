@@ -521,7 +521,9 @@ export default function FeedReducer(state = defaultState, action) {
       return {
         ...state,
         [currentSection]: state[currentSection].map(feed =>
-          feed.feedId === action.feedId ? { ...feed, ...action.data } : feed
+          feed.feedId === action.data.feedId
+            ? { ...feed, ...action.data }
+            : feed
         )
       };
     case FEED.LOAD_MORE_REPLIES:

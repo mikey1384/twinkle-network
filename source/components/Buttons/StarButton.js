@@ -75,7 +75,7 @@ function StarButton({
           contentId={contentId}
           rewardLevel={rewardLevel}
           onSubmit={async data => {
-            await onSetRewardLevel(data);
+            await onSetRewardLevel({ ...data, contentType, contentId });
             setRewardLevelModalShown(false);
           }}
           onHide={() => setRewardLevelModalShown(false)}

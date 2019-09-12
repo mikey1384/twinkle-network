@@ -191,7 +191,7 @@ function Details({
               rewardLevel={rewardLevel}
               likes={likes}
               likeVideo={likeVideo}
-              setRewardLevel={handleSetRewardLevel}
+              setRewardLevel={setRewardLevel}
               uploader={uploader}
               userId={userId}
               videoId={videoId}
@@ -325,10 +325,6 @@ function Details({
     if (textIsOverflown(TitleRef.current)) {
       setTitleHovered(true);
     }
-  }
-
-  function handleSetRewardLevel(params) {
-    setRewardLevel(params);
   }
 
   function descriptionExceedsCharLimit(description) {

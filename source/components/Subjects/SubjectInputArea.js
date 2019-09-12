@@ -79,7 +79,7 @@ function SubjectInputArea({
       contentType
     });
     setSubjectFormShown(false);
-    onUploadSubject(data);
+    onUploadSubject({ ...data, contentType, contentId });
   }
 }
 

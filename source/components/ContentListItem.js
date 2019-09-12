@@ -14,7 +14,6 @@ import { css } from 'emotion';
 ContentListItem.propTypes = {
   comments: PropTypes.array,
   contentObj: PropTypes.object.isRequired,
-  contentType: PropTypes.string,
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
   onChangeSpoilerStatus: PropTypes.func,
@@ -29,7 +28,7 @@ ContentListItem.propTypes = {
 function ContentListItem({
   onClick = () => {},
   contentObj,
-  contentType,
+  contentObj: { contentType },
   expandable,
   onChangeSpoilerStatus,
   profileTheme,

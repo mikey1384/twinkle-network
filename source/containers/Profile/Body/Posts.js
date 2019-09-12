@@ -74,7 +74,7 @@ Posts.propTypes = {
   showTCReplyInput: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func,
   showFeedComments: PropTypes.func.isRequired,
-  uploadTargetContentComment: PropTypes.func.isRequired,
+  onUploadTargetComment: PropTypes.func.isRequired,
   uploadFeedComment: PropTypes.func.isRequired
 };
 
@@ -123,7 +123,7 @@ function Posts({
   showTCReplyInput,
   loadFeedComments,
   uploadFeedComment,
-  uploadTargetContentComment,
+  onUploadTargetComment,
   setRewardLevel
 }) {
   const [loading, setLoading] = useState(false);
@@ -255,7 +255,7 @@ function Posts({
                     onSetRewardLevel={setRewardLevel}
                     onShowTCReplyInput={showTCReplyInput}
                     onLoadComments={loadFeedComments}
-                    onTargetCommentSubmit={uploadTargetContentComment}
+                    onUploadTargetComment={onUploadTargetComment}
                     userId={myId}
                   />
                 );

@@ -86,126 +86,189 @@ export default function ContentActions(dispatch) {
         contentId: Number(contentId)
       });
     },
-    onLoadComments({ comments, loadMoreButton }) {
+    onLoadComments({ comments, loadMoreButton, contentId, contentType }) {
       return dispatch({
         type: 'LOAD_COMMENTS',
         comments,
-        loadMoreButton
+        loadMoreButton,
+        contentId,
+        contentType
       });
     },
-    onLoadMoreComments(data) {
+    onLoadMoreComments({ comments, loadMoreButton, contentId, contentType }) {
       return dispatch({
         type: 'LOAD_MORE_COMMENTS',
-        data
+        comments,
+        loadMoreButton,
+        contentId,
+        contentType
       });
     },
-    onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
+    onLoadMoreReplies({
+      commentId,
+      replies,
+      loadMoreButton,
+      contentType,
+      contentId
+    }) {
       return dispatch({
         type: 'LOAD_MORE_REPLIES',
         commentId,
         replies,
-        loadMoreButton
+        loadMoreButton,
+        contentType,
+        contentId
       });
     },
     onLoadMoreSubjectComments({
-      data: { comments, loadMoreButton },
+      comments,
+      loadMoreButton,
+      contentId,
+      contentType,
       subjectId
     }) {
       return dispatch({
         type: 'LOAD_MORE_SUBJECT_COMMENTS',
         comments,
         loadMoreButton,
-        subjectId
+        subjectId,
+        contentId,
+        contentType
       });
     },
-    onLoadMoreSubjectReplies({ commentId, loadMoreButton, replies }) {
+    onLoadMoreSubjectReplies({
+      commentId,
+      loadMoreButton,
+      replies,
+      contentId,
+      contentType
+    }) {
       return dispatch({
         type: 'LOAD_MORE_SUBJECT_REPLIES',
         commentId,
         loadMoreButton,
-        replies
+        replies,
+        contentId,
+        contentType
       });
     },
-    onLoadMoreSubjects({ results, loadMoreButton }) {
+    onLoadMoreSubjects({ results, loadMoreButton, contentId, contentType }) {
       return dispatch({
         type: 'LOAD_MORE_SUBJECTS',
         results,
-        loadMoreButton
+        loadMoreButton,
+        contentId,
+        contentType
       });
     },
-    onLoadRepliesOfReply({ replies, commentId, replyId }) {
+    onLoadRepliesOfReply({
+      replies,
+      commentId,
+      replyId,
+      contentType,
+      contentId
+    }) {
       return dispatch({
         type: 'LOAD_REPLIES_OF_REPLY',
         replies,
         commentId,
-        replyId
+        replyId,
+        contentType,
+        contentId
       });
     },
-    onLoadSubjectComments({ data: { comments, loadMoreButton }, subjectId }) {
+    onLoadSubjectComments({
+      comments,
+      loadMoreButton,
+      subjectId,
+      contentType,
+      contentId
+    }) {
       return dispatch({
         type: 'LOAD_SUBJECT_COMMENTS',
         comments,
         loadMoreButton,
-        subjectId
+        subjectId,
+        contentType,
+        contentId
       });
     },
-    onSetByUserStatus(byUser) {
+    onSetByUserStatus({ byUser, contentId, contentType }) {
       return dispatch({
         type: 'SET_BY_USER_STATUS',
-        byUser
+        byUser,
+        contentId,
+        contentType
       });
     },
-    onSetCommentsShown() {
+    onSetCommentsShown({ contentId, contentType }) {
       return dispatch({
-        type: 'SET_COMMENTS_SHOWN'
+        type: 'SET_COMMENTS_SHOWN',
+        contentId,
+        contentType
       });
     },
-    onSetRewardLevel({ rewardLevel }) {
+    onSetRewardLevel({ rewardLevel, contentType, contentId }) {
       return dispatch({
         type: 'SET_REWARD_LEVEL',
-        rewardLevel
+        rewardLevel,
+        contentType,
+        contentId
       });
     },
-    onSetSubjectRewardLevel({ contentId, rewardLevel }) {
+    onSetSubjectRewardLevel({ contentId, contentType, rewardLevel }) {
       return dispatch({
         type: 'SET_SUBJECT_REWARD_LEVEL',
+        rewardLevel,
         contentId: Number(contentId),
-        rewardLevel
+        contentType
       });
     },
-    onSetVideoQuestions(questions) {
+    onSetVideoQuestions({ questions, contentType, contentId }) {
       return dispatch({
         type: 'SET_VIDEO_QUESTIONS',
-        questions
+        questions,
+        contentType,
+        contentId
       });
     },
-    onShowTCReplyInput() {
+    onShowTCReplyInput({ contentId, contentType }) {
       return dispatch({
-        type: 'SHOW_TC_REPLY_INPUT'
+        type: 'SHOW_TC_REPLY_INPUT',
+        contentId,
+        contentType
       });
     },
-    onTargetCommentSubmit(data) {
-      return dispatch({
-        type: 'UPLOAD_TARGET_COMMENT',
-        data
-      });
-    },
-    onUploadComment(data) {
+    onUploadComment({ contentId, contentType, ...data }) {
       return dispatch({
         type: 'UPLOAD_COMMENT',
-        data
+        data,
+        contentId,
+        contentType
       });
     },
-    onUploadReply(data) {
+    onUploadReply({ contentId, contentType, ...data }) {
       return dispatch({
         type: 'UPLOAD_REPLY',
-        data
+        data,
+        contentId,
+        contentType
       });
     },
-    onUploadSubject(subject) {
+    onUploadSubject({ contentType, contentId, ...subject }) {
       return dispatch({
         type: 'UPLOAD_SUBJECT',
-        subject
+        subject,
+        contentId,
+        contentType
+      });
+    },
+    onUploadTargetComment({ contentType, contentId, ...data }) {
+      return dispatch({
+        type: 'UPLOAD_TARGET_COMMENT',
+        data,
+        contentType,
+        contentId
       });
     }
   };

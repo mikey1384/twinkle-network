@@ -26,13 +26,6 @@ export const initialHomeInputState = {
   }
 };
 
-export const initialContentState = {
-  stars: [],
-  childComments: [],
-  likes: [],
-  subjects: [],
-  commentsLoadMoreButton: false,
-  subjectsLoadMoreButton: false
-};
+export const initialContentState = {};
 
 export const initialCommentState = {};

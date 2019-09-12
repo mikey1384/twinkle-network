@@ -45,7 +45,7 @@ function ContentPage({
         onSetCommentsShown,
         onSetRewardLevel,
         onShowTCReplyInput,
-        onTargetCommentSubmit,
+        onUploadTargetComment,
         onUploadComment,
         onUploadReply
       }
@@ -55,6 +55,7 @@ function ContentPage({
     loaded: false,
     exists: false
   });
+  const contentState = state?.[contentType + contentId] || {};
   const mounted = useRef(null);
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
@@ -119,11 +120,11 @@ function ContentPage({
           {loaded ? (
             exists ? (
               <ContentPanel
-                key={state.contentType + state.contentId}
+                key={contentType + contentId}
                 autoExpand
-                inputAtBottom={state.contentType === 'comment'}
+                inputAtBottom={contentState.contentType === 'comment'}
                 commentsLoadLimit={5}
-                contentObj={state}
+                contentObj={contentState}
                 userId={userId}
                 onAttachStar={onAttachStar}
                 onChangeSpoilerStatus={onChangeSpoilerStatus}
@@ -143,7 +144,7 @@ function ContentPage({
                 onSetRewardLevel={onSetRewardLevel}
                 onShowTCReplyInput={onShowTCReplyInput}
                 onLoadComments={onLoadComments}
-                onTargetCommentSubmit={onTargetCommentSubmit}
+                onUploadTargetComment={onUploadTargetComment}
               />
             ) : (
               <NotFound />

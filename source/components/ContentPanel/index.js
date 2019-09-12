@@ -45,7 +45,7 @@ ContentPanel.propTypes = {
   onShowTCReplyInput: PropTypes.func.isRequired,
   onLoadComments: PropTypes.func.isRequired,
   onByUserStatusChange: PropTypes.func,
-  onTargetCommentSubmit: PropTypes.func.isRequired,
+  onUploadTargetComment: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
@@ -85,7 +85,7 @@ function ContentPanel({
   onSetRewardLevel,
   onShowTCReplyInput,
   onLoadComments,
-  onTargetCommentSubmit,
+  onUploadTargetComment,
   style = {},
   userId
 }) {
@@ -101,8 +101,9 @@ function ContentPanel({
     async function onMount() {
       if (!newPost) {
         loading.current = true;
+        const data = await loadContent({ contentId, contentType });
         onInitContent({
-          ...(await loadContent({ contentId, contentType })),
+          ...data,
           feedId
         });
         loading.current = false;
@@ -110,6 +111,7 @@ function ContentPanel({
     }
   }, [contentObj]);
   const isThreaded = !!contentObj.targetObj;
+
   return (
     <Context.Provider
       value={{
@@ -132,7 +134,7 @@ function ContentPanel({
         onLoadRepliesOfReply,
         onReplySubmit,
         onSetRewardLevel,
-        onTargetCommentSubmit
+        onUploadTargetComment
       }}
     >
       <ErrorBoundary>
@@ -207,7 +209,8 @@ function ContentPanel({
               rootId={contentObj.rootId}
               rootType={contentObj.rootType}
               secretShown={secretShown}
-              feedId={feedId}
+              contentId={contentId}
+              contentType={contentType}
               onShowTCReplyInput={onShowTCReplyInput}
             />
           )}

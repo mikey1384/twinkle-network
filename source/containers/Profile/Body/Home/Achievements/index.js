@@ -86,7 +86,11 @@ export default function Achievements({
             onInitContent={onInitContent}
             onLoadMoreComments={onLoadMoreComments}
             onLoadMoreReplies={data =>
-              onLoadMoreReplies({ ...data, feedId: contentObj.feedId })
+              onLoadMoreReplies({
+                ...data,
+                contentType: contentObj.contentType,
+                contentId: contentObj.contentId
+              })
             }
             onLoadRepliesOfReply={onLoadRepliesOfReply}
             onLoadTags={onLoadTags}
@@ -100,7 +104,7 @@ export default function Achievements({
             onSetRewardLevel={onSetRewardLevel}
             onShow
             onLoadComments={onLoadComments}
-            onTargetCommentSubmit={onTargetCommentSubmit}
+            onUploadTargetComment={onUploadTargetComment}
           />
         ))}
         {loadMoreButton && (
@@ -297,15 +301,14 @@ export default function Achievements({
     });
   }
 
-  function onLoadComments(data, feedId) {
+  function onLoadComments(data) {
     dispatch({
       type: 'LOAD_COMMENTS',
-      data,
-      feedId
+      data
     });
   }
 
-  function onTargetCommentSubmit(data, feedId) {
+  function onUploadTargetComment(data, feedId) {
     dispatch({
       type: 'UPLOAD_TARGET_COMMENT',
       data,

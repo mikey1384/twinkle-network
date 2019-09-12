@@ -353,7 +353,13 @@ function Reply({
         commentId: id
       });
       if (replies.length > 0) {
-        loadRepliesOfReply({ replies, commentId, replyId: id });
+        loadRepliesOfReply({
+          replies,
+          commentId,
+          replyId: id,
+          contentId: parent.id,
+          contentType: parent.contentType
+        });
       }
     }
   }

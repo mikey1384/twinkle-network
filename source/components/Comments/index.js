@@ -217,7 +217,11 @@ function Comments({
       targetCommentId,
       dispatch
     });
-    onCommentSubmit(data);
+    onCommentSubmit({
+      ...data,
+      contentId: parent.id,
+      contentType: parent.contentType
+    });
   }
 
   async function submitReply({ content, rootCommentId, targetCommentId }) {
@@ -229,7 +233,11 @@ function Comments({
       targetCommentId,
       dispatch
     });
-    onReplySubmit(data);
+    onReplySubmit({
+      ...data,
+      contentId: parent.id,
+      contentType: parent.contentType
+    });
   }
 
   async function loadMoreComments() {
@@ -246,7 +254,13 @@ function Comments({
           lastCommentId,
           limit: commentsLoadLimit
         });
-        if (data) onLoadMoreComments(data);
+        if (data) {
+          onLoadMoreComments({
+            ...data,
+            contentId: parent.id,
+            contentType: parent.contentType
+          });
+        }
         setIsLoading(false);
       } catch (error) {
         console.error(error.response || error);

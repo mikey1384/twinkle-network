@@ -417,8 +417,8 @@ function LinkPage({
     likeLink({ likes, id });
   }
 
-  function handleUploadComment(data) {
-    onUploadComment(data);
+  function handleUploadComment(params) {
+    onUploadComment(params);
     updateNumComments({
       id,
       updateType: 'increase'

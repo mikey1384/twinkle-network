@@ -108,7 +108,11 @@ export default function Replies({
       setLoadingMoreReplies(true);
       const lastReplyId = replies[0] ? replies[0].id : 'undefined';
       const data = await loadReplies({ lastReplyId, commentId: comment.id });
-      onLoadMoreReplies(data);
+      onLoadMoreReplies({
+        ...data,
+        contentType: parent.contentType,
+        contentId: parent.id
+      });
       setLoadingMoreReplies(false);
     } catch (error) {
       console.error(error.response, error);
