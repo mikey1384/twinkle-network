@@ -34,6 +34,11 @@ export default function HomeReducer(state, action) {
         feeds: state.feeds.concat(action.feeds),
         loadMoreButton: action.loadMoreButton
       };
+    case 'LOAD_NEW_FEEDS':
+      return {
+        ...state,
+        feeds: action.data.concat(state.feeds)
+      };
     default:
       return state;
   }

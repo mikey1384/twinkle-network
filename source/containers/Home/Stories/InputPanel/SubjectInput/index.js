@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { uploadFeedContent } from 'redux/actions/FeedActions';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
@@ -24,13 +23,15 @@ import { Context } from 'context';
 
 SubjectInput.propTypes = {
   canEditRewardLevel: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired,
-  uploadFeedContent: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired
 };
 
-function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
+function SubjectInput({ canEditRewardLevel, dispatch }) {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const {
+    home: {
+      actions: { onLoadNewFeeds }
+    },
     homeInput: {
       state: { subject },
       actions: {
@@ -278,7 +279,7 @@ function SubjectInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
         rewardLevel,
         dispatch
       });
-      uploadFeedContent(data);
+      onLoadNewFeeds([data]);
       onResetSubjectInput();
       setSubmitting(false);
     } catch (error) {
@@ -293,7 +294,6 @@ export default connect(
     canEditRewardLevel: state.UserReducer.canEditRewardLevel
   }),
   dispatch => ({
-    dispatch,
-    uploadFeedContent: params => dispatch(uploadFeedContent(params))
+    dispatch
   })
 )(SubjectInput);

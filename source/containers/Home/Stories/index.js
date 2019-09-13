@@ -9,7 +9,6 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
-import { fetchNewFeeds } from 'redux/actions/FeedActions';
 import { toggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import { connect } from 'react-redux';
@@ -19,7 +18,6 @@ import { socket } from 'constants/io';
 import { Context } from 'context';
 
 Stories.propTypes = {
-  fetchNewFeeds: PropTypes.func.isRequired,
   hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   location: PropTypes.object.isRequired,
   numNewPosts: PropTypes.number.isRequired,
@@ -51,7 +49,6 @@ const categoryObj = {
 };
 
 function Stories({
-  fetchNewFeeds,
   hideWatched,
   location,
   numNewPosts,
@@ -78,7 +75,8 @@ function Stories({
         onChangeSubFilter,
         onDeleteFeed,
         onLoadFeeds,
-        onLoadMoreFeeds
+        onLoadMoreFeeds,
+        onLoadNewFeeds
       }
     },
     content: {
@@ -385,7 +383,7 @@ function Stories({
           destinationVar: 'shownFeeds'
         })
       });
-      if (data) fetchNewFeeds(data);
+      if (data) onLoadNewFeeds(data);
       setLoadingNewFeeds(false);
     }
   }
@@ -419,7 +417,6 @@ export default connect(
     subFilter: state.FeedReducer.subFilter
   }),
   {
-    fetchNewFeeds,
     resetNumNewPosts,
     recordScrollPosition,
     toggleHideWatched

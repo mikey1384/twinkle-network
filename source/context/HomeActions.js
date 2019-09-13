@@ -33,6 +33,11 @@ export default function HomeActions(dispatch) {
         loadMoreButton
       });
     },
-    onLoadNewFeeds(data) {}
+    onLoadNewFeeds(data) {
+      return dispatch({
+        type: 'LOAD_NEW_FEEDS',
+        data
+      });
+    }
   };
 }

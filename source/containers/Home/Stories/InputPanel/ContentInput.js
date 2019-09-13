@@ -12,7 +12,6 @@ import {
 } from 'helpers/stringHelpers';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { uploadFeedContent } from 'redux/actions/FeedActions';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import { Context } from 'context';
 import Textarea from 'components/Texts/Textarea';
@@ -26,12 +25,14 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 ContentInput.propTypes = {
   canEditRewardLevel: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired,
-  uploadFeedContent: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired
 };
 
-function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
+function ContentInput({ canEditRewardLevel, dispatch }) {
   const {
+    home: {
+      actions: { onLoadNewFeeds }
+    },
     homeInput: {
       state: { content },
       actions: {
@@ -267,7 +268,7 @@ function ContentInput({ canEditRewardLevel, dispatch, uploadFeedContent }) {
       });
       onResetContentInput();
       setSubmitting(false);
-      uploadFeedContent(data);
+      onLoadNewFeeds([data]);
       document.getElementById('App').scrollTop = 0;
     } catch (error) {
       setSubmitting(false);
@@ -325,7 +326,6 @@ export default connect(
     profileTheme: state.UserReducer.profileTheme
   }),
   dispatch => ({
-    dispatch,
-    uploadFeedContent: params => dispatch(uploadFeedContent(params))
+    dispatch
   })
 )(ContentInput);

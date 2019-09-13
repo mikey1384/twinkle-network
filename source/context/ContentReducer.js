@@ -608,6 +608,7 @@ export default function ContentPageReducer(state, action) {
       };
     case 'SET_COMMENTS_SHOWN':
       return {
+        ...state,
         [contentKey]: {
           ...prevContentState,
           commentsShown: true
@@ -615,6 +616,7 @@ export default function ContentPageReducer(state, action) {
       };
     case 'SET_REWARD_LEVEL':
       return {
+        ...state,
         [contentKey]: {
           ...prevContentState,
           rewardLevel: action.rewardLevel
@@ -648,9 +650,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          targetObj: state.targetObj
-            ? { ...state.targetObj, replyInputShown: true }
-            : { replyInputShown: true }
+          targetObj: { ...prevContentState.targetObj, replyInputShown: true }
         }
       };
     case 'UPLOAD_COMMENT':
