@@ -326,7 +326,8 @@ function Chat({
     if (
       selectedChannelId !== currentChannel.id ||
       senderId === userId ||
-      loading
+      channelLoading ||
+      creatingNewDMChannel
     ) {
       return;
     }
