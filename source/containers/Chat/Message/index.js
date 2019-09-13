@@ -320,7 +320,7 @@ function Message({
     try {
       await setChessMoveViewTimeStamp({ channelId, message, dispatch });
       updateChessMoveViewTimeStamp();
-      onChessSpoilerClick();
+      onChessSpoilerClick(userId);
     } catch (error) {
       console.error(error);
     }
