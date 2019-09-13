@@ -168,7 +168,7 @@ function ChessModal({
       await setChessMoveViewTimeStamp({ channelId, message, dispatch });
       setSpoilerOff(true);
       updateChessMoveViewTimeStamp();
-      onSpoilerClick();
+      onSpoilerClick(message.userId);
     } catch (error) {
       console.error(error);
     }

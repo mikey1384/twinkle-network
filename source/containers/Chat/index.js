@@ -322,10 +322,20 @@ function Chat({
     }
   }
 
-  function handleChessSpoilerClick() {
-    if (selectedChannelId !== currentChannel.id) return;
+  function handleChessSpoilerClick(senderId) {
+    if (
+      selectedChannelId !== currentChannel.id ||
+      senderId === userId ||
+      loading
+    ) {
+      return;
+    }
     socket.emit('viewed_chess_move', selectedChannelId);
-    socket.emit('start_chess_timer', { currentChannel, targetUserId: userId });
+    socket.emit('start_chess_timer', {
+      currentChannel,
+      targetUserId: userId,
+      winnerId: senderId
+    });
     setChessModalShown(true);
   }
 
