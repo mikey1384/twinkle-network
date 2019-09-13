@@ -2,7 +2,7 @@ export default function ContentPageReducer(state, action) {
   const contentKey =
     action.contentType && action.contentId
       ? action.contentType + action.contentId
-      : '';
+      : 'temp';
   const prevContentState = state[contentKey] || {
     stars: [],
     childComments: [],
@@ -355,7 +355,7 @@ export default function ContentPageReducer(state, action) {
               })
             };
           }),
-          subjects: state.subjects.map(subject => {
+          subjects: prevContentState.subjects.map(subject => {
             return {
               ...subject,
               comments: subject.comments.map(comment => {

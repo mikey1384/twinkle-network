@@ -392,7 +392,7 @@ function SubjectPanel({
     try {
       const data = await loadComments({
         contentType: 'subject',
-        contentId,
+        contentId: id,
         limit: 10
       });
       CommentsRef.current.focus();

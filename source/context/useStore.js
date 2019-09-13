@@ -3,10 +3,13 @@ import CommentActions from './CommentActions';
 import CommentReducer from './CommentReducer';
 import ContentActions from './ContentActions';
 import ContentReducer from './ContentReducer';
+import HomeActions from './HomeActions';
+import HomeReducer from './HomeReducer';
 import InputActions from './InputActions';
 import InputReducer from './InputReducer';
 import {
   initialHomeInputState,
+  initialHomeState,
   initialCommentState,
   initialContentState
 } from './initialStates';
@@ -17,14 +20,16 @@ export default function useStore() {
     initialCommentState
   );
 
+  const [contentState, contentDispatch] = useReducer(
+    ContentReducer,
+    initialContentState
+  );
+
+  const [homeState, homeDispatch] = useReducer(HomeReducer, initialHomeState);
+
   const [homeInputState, homeInputDispatch] = useReducer(
     InputReducer,
     initialHomeInputState
-  );
-
-  const [contentPageState, contentPageDispatch] = useReducer(
-    ContentReducer,
-    initialContentState
   );
 
   return {
@@ -32,9 +37,13 @@ export default function useStore() {
       state: commentState,
       actions: CommentActions(commentDispatch)
     },
-    contentPage: {
-      state: contentPageState,
-      actions: ContentActions(contentPageDispatch)
+    content: {
+      state: contentState,
+      actions: ContentActions(contentDispatch)
+    },
+    home: {
+      state: homeState,
+      actions: HomeActions(homeDispatch)
     },
     homeInput: {
       state: homeInputState,

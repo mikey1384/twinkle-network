@@ -25,7 +25,11 @@ export const initialHomeInputState = {
     urlError: ''
   }
 };
-
-export const initialContentState = {};
-
+export const initialHomeState = {
+  category: 'uploads',
+  feeds: [],
+  loadMoreButton: false,
+  subFilter: 'all'
+};
 export const initialCommentState = {};
+export const initialContentState = {};

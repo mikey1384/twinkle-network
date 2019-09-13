@@ -8,6 +8,11 @@ export default function ContentActions(dispatch) {
         contentId: Number(contentId)
       });
     },
+    onAddTagToContents() {
+      return dispatch({
+        type: 'ADD_TAG_TO_CONTENTS'
+      });
+    },
     onAttachStar(data) {
       return dispatch({
         type: 'ATTACH_STAR',

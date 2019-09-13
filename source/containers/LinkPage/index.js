@@ -70,7 +70,7 @@ function LinkPage({
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [loading, setLoading] = useState(true);
   const {
-    contentPage: {
+    content: {
       state,
       actions: {
         onAttachStar,
@@ -96,6 +96,7 @@ function LinkPage({
       }
     }
   } = useContext(Context);
+  const contentState = state['url' + linkId] || {};
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
     document.getElementById('App').scrollTop = 0;
@@ -116,6 +117,7 @@ function LinkPage({
         });
         onInitContent({
           ...data,
+          loaded: true,
           contentId: Number(linkId),
           contentType: 'url',
           childComments: commentsObj?.comments || [],
@@ -142,7 +144,8 @@ function LinkPage({
     content,
     description,
     id,
-    likes,
+    likes = [],
+    loaded,
     subjects,
     subjectsLoadMoreButton,
     stars,
@@ -152,7 +155,7 @@ function LinkPage({
     uploaderName,
     uploaderAuthLevel,
     ...embedlyProps
-  } = state;
+  } = contentState;
   let userLikedThis = false;
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === myId) userLikedThis = true;
@@ -161,7 +164,7 @@ function LinkPage({
     (canEdit || canDelete) && authLevel > uploaderAuthLevel;
   const userIsUploader = uploader === myId;
 
-  return id && !loading ? (
+  return loaded && !loading ? (
     <div
       className={css`
         margin-top: 1rem;

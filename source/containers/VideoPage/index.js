@@ -82,26 +82,8 @@ function VideoPage({
   const CommentInputAreaRef = useRef(null);
 
   const {
-    contentPage: {
-      state: {
-        byUser,
-        childComments: comments,
-        commentsLoadMoreButton,
-        content,
-        description,
-        rewardLevel,
-        hasHqThumb,
-        likes,
-        questions,
-        stars,
-        subjects,
-        subjectsLoadMoreButton,
-        tags,
-        timeStamp,
-        title,
-        uploader,
-        views
-      },
+    content: {
+      state,
       actions: {
         onAddTags,
         onAttachStar,
@@ -130,6 +112,28 @@ function VideoPage({
       }
     }
   } = useContext(Context);
+
+  const contentState = state['video' + videoId] || {};
+
+  const {
+    byUser,
+    childComments: comments,
+    commentsLoadMoreButton,
+    content,
+    description,
+    rewardLevel,
+    hasHqThumb,
+    likes,
+    questions,
+    stars,
+    subjects,
+    subjectsLoadMoreButton,
+    tags,
+    timeStamp,
+    title,
+    uploader,
+    views
+  } = contentState;
 
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {

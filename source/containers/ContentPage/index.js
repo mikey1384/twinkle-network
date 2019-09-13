@@ -27,7 +27,7 @@ function ContentPage({
 }) {
   const contentType = url.split('/')[1].slice(0, -1);
   const {
-    contentPage: {
+    content: {
       state,
       actions: {
         onAttachStar,
