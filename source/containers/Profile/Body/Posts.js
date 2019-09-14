@@ -1,131 +1,94 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
 import ContentPanel from 'components/ContentPanel';
+import Loading from 'components/Loading';
+import SideMenu from './SideMenu';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import {
-  addTags,
-  addTagToContents,
-  attachStar,
-  changeByUserStatus,
-  changeSpoilerStatus,
-  contentFeedLike,
-  feedCommentDelete,
-  feedCommentEdit,
-  feedContentDelete,
-  feedContentEdit,
-  feedRewardCommentEdit,
-  fetchFeed,
-  fetchFeeds,
-  fetchMoreFeeds,
-  loadMoreFeedComments,
-  loadMoreFeedReplies,
-  loadRepliesOfReply,
-  loadTags,
-  showFeedComments,
-  setCurrentSection,
-  setRewardLevel,
-  showTCReplyInput,
-  loadFeedComments,
-  uploadFeedComment,
-  uploadTargetContentComment
-} from 'redux/actions/FeedActions';
 import { recordScrollPosition } from 'redux/actions/ViewActions';
-import Loading from 'components/Loading';
-import SideMenu from './SideMenu';
 import { connect } from 'react-redux';
+import { Context } from 'context';
 
 Posts.propTypes = {
-  addTags: PropTypes.func.isRequired,
-  addTagToContents: PropTypes.func.isRequired,
-  attachStar: PropTypes.func.isRequired,
-  changeByUserStatus: PropTypes.func.isRequired,
-  changeSpoilerStatus: PropTypes.func.isRequired,
-  contentFeedLike: PropTypes.func.isRequired,
-  fetchFeed: PropTypes.func.isRequired,
-  feedCommentDelete: PropTypes.func.isRequired,
-  feedContentDelete: PropTypes.func.isRequired,
-  feedCommentEdit: PropTypes.func.isRequired,
-  feedContentEdit: PropTypes.func.isRequired,
-  feedRewardCommentEdit: PropTypes.func.isRequired,
-  fetchFeeds: PropTypes.func.isRequired,
-  fetchMoreFeeds: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  loaded: PropTypes.bool.isRequired,
-  loadFeedComments: PropTypes.func.isRequired,
-  loadMoreButton: PropTypes.bool.isRequired,
-  loadMoreFeedComments: PropTypes.func.isRequired,
-  loadMoreFeedReplies: PropTypes.func.isRequired,
-  loadRepliesOfReply: PropTypes.func.isRequired,
-  loadTags: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   myId: PropTypes.number,
-  profileFeeds: PropTypes.array.isRequired,
   recordScrollPosition: PropTypes.func.isRequired,
   scrollPositions: PropTypes.object.isRequired,
-  selectedTheme: PropTypes.string,
-  setCurrentSection: PropTypes.func.isRequired,
-  showTCReplyInput: PropTypes.func.isRequired,
-  setRewardLevel: PropTypes.func,
-  showFeedComments: PropTypes.func.isRequired,
-  onUploadTargetComment: PropTypes.func.isRequired,
-  uploadFeedComment: PropTypes.func.isRequired
+  selectedTheme: PropTypes.string
 };
 
 const filterTable = {
   all: 'all',
   comments: 'comment',
   likes: 'like',
-  posts: 'post',
+  subjects: 'subject',
   videos: 'video',
   links: 'url'
 };
 
 function Posts({
-  addTags,
-  addTagToContents,
-  attachStar,
-  changeByUserStatus,
-  changeSpoilerStatus,
-  contentFeedLike,
-  feedCommentDelete,
-  feedContentDelete,
-  feedCommentEdit,
-  feedContentEdit,
-  feedRewardCommentEdit,
-  fetchFeed,
-  fetchFeeds,
-  fetchMoreFeeds,
   history,
-  loadMoreFeedComments,
-  loadMoreFeedReplies,
-  loaded,
-  loadMoreButton,
-  loadRepliesOfReply,
-  loadTags,
   location,
   match: {
     params: { section, username }
   },
   myId,
-  profileFeeds,
   recordScrollPosition,
   scrollPositions,
-  selectedTheme,
-  setCurrentSection,
-  showFeedComments,
-  showTCReplyInput,
-  loadFeedComments,
-  uploadFeedComment,
-  onUploadTargetComment,
-  setRewardLevel
+  selectedTheme
 }) {
+  const {
+    profile: {
+      state: {
+        posts: {
+          [section]: profileFeeds,
+          [`${section}LoadMoreButton`]: loadMoreButton,
+          [`${section}Loaded`]: loaded
+        }
+      },
+      actions: { onDeleteFeed, onLoadPosts, onLoadMorePosts }
+    },
+    content: {
+      state,
+      actions: {
+        onAddTags,
+        onAddTagToContents,
+        onAttachStar,
+        onChangeSpoilerStatus,
+        onDeleteComment,
+        onEditComment,
+        onEditContent,
+        onEditRewardComment,
+        onInitContent,
+        onLikeContent,
+        onLoadComments,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadRepliesOfReply,
+        onLoadTags,
+        onSetByUserStatus,
+        onSetCommentsShown,
+        onSetRewardLevel,
+        onShowTCReplyInput,
+        onUploadTargetComment,
+        onUploadComment,
+        onUploadReply
+      }
+    }
+  } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
@@ -149,7 +112,6 @@ function Posts({
 
   useEffect(() => {
     mounted.current = true;
-    setCurrentSection('profileFeeds');
     return function cleanUp() {
       mounted.current = false;
     };
@@ -172,7 +134,7 @@ function Posts({
       >
         {[
           { key: 'all', label: 'All' },
-          { key: 'post', label: 'Subjects' },
+          { key: 'subject', label: 'Subjects' },
           { key: 'video', label: 'Videos' },
           { key: 'url', label: 'Links' }
         ].map(type => {
@@ -217,44 +179,43 @@ function Posts({
           >
             {profileFeeds.length > 0 &&
               profileFeeds.map((feed, index) => {
+                const contentKey = feed?.contentType + feed?.contentId;
+                const contentState = state[contentKey] || {
+                  contentId: feed?.contentId,
+                  contentType: feed?.contentType
+                };
                 return (
                   <ContentPanel
-                    key={filterTable[section] + feed.feedId}
+                    key={filterTable[section] + contentKey}
                     style={{
                       marginBottom: '1rem',
                       zIndex: profileFeeds.length - index
                     }}
                     commentsLoadLimit={5}
-                    contentObj={feed}
-                    inputAtBottom={feed.contentType === 'comment'}
-                    onInitContent={fetchFeed}
-                    onAddTags={addTags}
-                    onAddTagToContents={addTagToContents}
-                    onAttachStar={attachStar}
-                    onByUserStatusChange={changeByUserStatus}
-                    onChangeSpoilerStatus={changeSpoilerStatus}
-                    onCommentSubmit={data =>
-                      handleUploadFeedComment({ feed, data })
-                    }
-                    onDeleteComment={feedCommentDelete}
-                    onDeleteContent={feedContentDelete}
-                    onEditComment={feedCommentEdit}
-                    onEditContent={feedContentEdit}
-                    onEditRewardComment={feedRewardCommentEdit}
-                    onLikeContent={contentFeedLike}
-                    onLoadMoreComments={loadMoreFeedComments}
-                    onLoadMoreReplies={loadMoreFeedReplies}
-                    onLoadRepliesOfReply={loadRepliesOfReply}
-                    onLoadTags={loadTags}
-                    onReplySubmit={data =>
-                      handleUploadFeedComment({ feed, data })
-                    }
-                    onSetCommentsShown={shown =>
-                      showFeedComments({ feedId: feed.feedId, shown })
-                    }
-                    onSetRewardLevel={setRewardLevel}
-                    onShowTCReplyInput={showTCReplyInput}
-                    onLoadComments={loadFeedComments}
+                    contentObj={contentState}
+                    inputAtBottom={contentState.contentType === 'comment'}
+                    onInitContent={onInitContent}
+                    onAddTags={onAddTags}
+                    onAddTagToContents={onAddTagToContents}
+                    onAttachStar={onAttachStar}
+                    onByUserStatusChange={onSetByUserStatus}
+                    onChangeSpoilerStatus={onChangeSpoilerStatus}
+                    onCommentSubmit={onUploadComment}
+                    onDeleteComment={onDeleteComment}
+                    onDeleteContent={onDeleteFeed}
+                    onEditComment={onEditComment}
+                    onEditContent={onEditContent}
+                    onEditRewardComment={onEditRewardComment}
+                    onLikeContent={onLikeContent}
+                    onLoadMoreComments={onLoadMoreComments}
+                    onLoadMoreReplies={onLoadMoreReplies}
+                    onLoadRepliesOfReply={onLoadRepliesOfReply}
+                    onLoadTags={onLoadTags}
+                    onReplySubmit={onUploadReply}
+                    onSetCommentsShown={onSetCommentsShown}
+                    onSetRewardLevel={onSetRewardLevel}
+                    onShowTCReplyInput={onShowTCReplyInput}
+                    onLoadComments={onLoadComments}
                     onUploadTargetComment={onUploadTargetComment}
                     userId={myId}
                   />
@@ -293,7 +254,7 @@ function Posts({
               menuItems={[
                 { key: 'all', label: 'All' },
                 { key: 'comment', label: 'Comments' },
-                { key: 'post', label: 'Subjects' },
+                { key: 'subject', label: 'Subjects' },
                 { key: 'video', label: 'Videos' },
                 { key: 'url', label: 'Links' }
               ]}
@@ -308,15 +269,15 @@ function Posts({
 
   async function loadMoreFeeds() {
     try {
-      await fetchMoreFeeds({
+      const { data } = await loadFeeds({
+        filter: filterTable[section],
         shownFeeds: queryStringForArray({
           array: profileFeeds,
           originVar: section === 'likes' ? 'likeId' : 'feedId',
           destinationVar: 'shownFeeds'
-        }),
-        filter: filterTable[section],
-        username
+        })
       });
+      onLoadMorePosts({ ...data, section });
       if (mounted.current) {
         setLoading(false);
       }
@@ -333,7 +294,7 @@ function Posts({
       filter: filterTable[tabName]
     });
     if (loadedFilter === selectedFilter.current) {
-      fetchFeeds(data);
+      onLoadPosts({ ...data, section: tabName });
       setScrollHeight(0);
       setLoadingFeeds(false);
     }
@@ -351,7 +312,7 @@ function Posts({
     switch (section) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
-      case 'posts':
+      case 'subjects':
         return `${username} has not uploaded a subject, yet`;
       case 'comments':
         return `${username} has not uploaded a comment, yet`;
@@ -363,51 +324,12 @@ function Posts({
         return `${username} doesn't like any content so far`;
     }
   }
-
-  function handleUploadFeedComment({ feed, data }) {
-    uploadFeedComment({
-      data,
-      contentType: feed.contentType,
-      contentId: feed.contentId
-    });
-  }
 }
 
 export default connect(
   state => ({
-    profileFeeds: state.FeedReducer.profileFeeds,
-    loaded: state.FeedReducer.loaded,
     myId: state.UserReducer.userId,
-    loadMoreButton: state.FeedReducer.profileFeedsLoadMoreButton,
-    homeComponentConnected: state.FeedReducer.homeComponentConnected,
     scrollPositions: state.ViewReducer.scrollPositions
   }),
-  {
-    addTags,
-    addTagToContents,
-    attachStar,
-    changeByUserStatus,
-    changeSpoilerStatus,
-    contentFeedLike,
-    fetchFeed,
-    fetchFeeds,
-    fetchMoreFeeds,
-    feedCommentDelete,
-    feedContentDelete,
-    feedCommentEdit,
-    feedContentEdit,
-    feedRewardCommentEdit,
-    loadMoreFeedComments,
-    loadMoreFeedReplies,
-    loadRepliesOfReply,
-    loadTags,
-    recordScrollPosition,
-    setCurrentSection,
-    setRewardLevel,
-    showFeedComments,
-    showTCReplyInput,
-    loadFeedComments,
-    uploadFeedComment,
-    uploadTargetContentComment
-  }
+  { recordScrollPosition }
 )(Posts);

@@ -1,24 +1,40 @@
 export default function HomeActions(dispatch) {
   return {
-    onDeleteNotable({ contentType, contentId }) {
+    onDeleteFeed({ contentType, contentId }) {
       return dispatch({
-        type: 'DELETE_NOTABLE',
+        type: 'DELETE_FEED',
         contentType,
         contentId
       });
     },
-    onLoadNotables({ notables, loadMoreButton }) {
+    onLoadNotables({ feeds, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_NOTABLES',
-        notables,
+        feeds,
         loadMoreButton
       });
     },
-    onLoadMoreNotables({ notables, loadMoreButton }) {
+    onLoadMoreNotables({ feeds, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_MORE_NOTABLES',
-        notables,
+        feeds,
         loadMoreButton
+      });
+    },
+    onLoadPosts({ feeds, loadMoreButton, section }) {
+      return dispatch({
+        type: 'LOAD_POSTS',
+        feeds,
+        loadMoreButton,
+        section
+      });
+    },
+    onLoadMorePosts({ feeds, loadMoreButton, section }) {
+      return dispatch({
+        type: 'LOAD_MORE_POSTS',
+        feeds,
+        loadMoreButton,
+        section
       });
     }
   };

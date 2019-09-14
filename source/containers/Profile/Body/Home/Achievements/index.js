@@ -25,8 +25,10 @@ export default function Achievements({
 }) {
   const {
     profile: {
-      state: { notables = [], loadMoreButton },
-      actions: { onDeleteNotable, onLoadNotables, onLoadMoreNotables }
+      state: {
+        notables: { feeds, loadMoreButton }
+      },
+      actions: { onDeleteFeed, onLoadNotables, onLoadMoreNotables }
     },
     content: {
       state,
@@ -67,7 +69,7 @@ export default function Achievements({
         userId: id
       });
       if (mounted.current) {
-        onLoadNotables({ notables: results, loadMoreButton });
+        onLoadNotables({ feeds: results, loadMoreButton });
         setLoading(false);
       }
     }
@@ -83,12 +85,12 @@ export default function Achievements({
         title="Notable Activities"
         loaded={!loading}
       >
-        {notables.length === 0 && (
+        {feeds.length === 0 && (
           <div
             style={{ fontSize: '2rem', textAlign: 'center' }}
           >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
         )}
-        {notables.map((notable, index) => {
+        {feeds.map((notable, index) => {
           const contentKey = notable?.contentType + notable?.contentId;
           const contentState = state[contentKey] || {
             contentId: notable?.contentId,
@@ -97,7 +99,7 @@ export default function Achievements({
           return (
             <ContentPanel
               key={contentKey}
-              style={{ marginBottom: '1rem', zIndex: notables.length - index }}
+              style={{ marginBottom: '1rem', zIndex: feeds.length - index }}
               inputAtBottom={contentState.contentType === 'comment'}
               commentsLoadLimit={5}
               contentObj={contentState}
@@ -109,7 +111,7 @@ export default function Achievements({
               onChangeSpoilerStatus={onChangeSpoilerStatus}
               onCommentSubmit={onUploadComment}
               onDeleteComment={onDeleteComment}
-              onDeleteContent={onDeleteNotable}
+              onDeleteContent={onDeleteFeed}
               onEditComment={onEditComment}
               onEditContent={onEditContent}
               onEditRewardComment={onEditRewardComment}
@@ -145,8 +147,8 @@ export default function Achievements({
   async function handleLoadMoreNotables() {
     const { results, loadMoreButton } = await loadMoreNotableContents({
       userId: profile.id,
-      notables
+      notables: feeds
     });
-    onLoadMoreNotables({ notables: results, loadMoreButton });
+    onLoadMoreNotables({ feeds: results, loadMoreButton });
   }
 }
