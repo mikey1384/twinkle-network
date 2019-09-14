@@ -214,6 +214,7 @@ function App({
         chatLoading={chatLoading}
         history={history}
         onChatButtonClick={onChatButtonClick}
+        onInitChat={handleInitChat}
         turnChatOff={turnChatOff}
         searchBoxRef={SearchBoxRef}
         showUpdateNotice={match => setUpdateNoticeShown(!match)}
