@@ -8,9 +8,13 @@ export default function ContentActions(dispatch) {
         contentId: Number(contentId)
       });
     },
-    onAddTagToContents() {
+    onAddTagToContents({ contentIds, contentType, tagId, tagTitle }) {
       return dispatch({
-        type: 'ADD_TAG_TO_CONTENTS'
+        type: 'ADD_TAG_TO_CONTENTS',
+        contentIds,
+        contentType,
+        tagId,
+        tagTitle
       });
     },
     onAttachStar(data) {
@@ -196,6 +200,14 @@ export default function ContentActions(dispatch) {
         subjectId,
         contentType,
         contentId
+      });
+    },
+    onLoadTags({ contentType, contentId, tags }) {
+      return dispatch({
+        type: 'LOAD_TAGS',
+        contentId,
+        contentType,
+        tags
       });
     },
     onSetByUserStatus({ byUser, contentId, contentType }) {

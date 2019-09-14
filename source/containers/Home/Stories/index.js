@@ -59,14 +59,6 @@ function Stories({
   userId,
   username
 }) {
-  const [displayOrder, setDisplayOrder] = useState('desc');
-  const [loadingFeeds, setLoadingFeeds] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
-  const [feedsOutdated, setFeedsOutdated] = useState(false);
-  const mounted = useRef(true);
-  const categoryRef = useRef(null);
-  const ContainerRef = useRef(null);
   const {
     home: {
       state: { category, feeds, loadMoreButton, loaded, subFilter },
@@ -83,6 +75,7 @@ function Stories({
       state,
       actions: {
         onAddTags,
+        onAddTagToContents,
         onAttachStar,
         onChangeSpoilerStatus,
         onDeleteComment,
@@ -95,6 +88,7 @@ function Stories({
         onLoadMoreComments,
         onLoadMoreReplies,
         onLoadRepliesOfReply,
+        onLoadTags,
         onSetByUserStatus,
         onSetCommentsShown,
         onSetRewardLevel,
@@ -105,6 +99,14 @@ function Stories({
       }
     }
   } = useContext(Context);
+  const [displayOrder, setDisplayOrder] = useState('desc');
+  const [loadingFeeds, setLoadingFeeds] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
+  const [feedsOutdated, setFeedsOutdated] = useState(false);
+  const mounted = useRef(true);
+  const categoryRef = useRef(null);
+  const ContainerRef = useRef(null);
 
   useScrollPosition({
     scrollPositions,
@@ -260,7 +262,7 @@ function Stories({
                     inputAtBottom={feed?.contentType === 'comment'}
                     onInitContent={onInitContent}
                     onAddTags={onAddTags}
-                    onAddTagToContents={() => console.log('add tag to content')}
+                    onAddTagToContents={onAddTagToContents}
                     onAttachStar={onAttachStar}
                     onByUserStatusChange={onSetByUserStatus}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
@@ -274,7 +276,7 @@ function Stories({
                     onLoadMoreComments={onLoadMoreComments}
                     onLoadMoreReplies={onLoadMoreReplies}
                     onLoadRepliesOfReply={onLoadRepliesOfReply}
-                    onLoadTags={() => console.log('load tags')}
+                    onLoadTags={onLoadTags}
                     onReplySubmit={onUploadReply}
                     onSetCommentsShown={onSetCommentsShown}
                     onSetRewardLevel={onSetRewardLevel}

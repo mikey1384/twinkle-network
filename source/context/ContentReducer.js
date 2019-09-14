@@ -8,6 +8,7 @@ export default function ContentPageReducer(state, action) {
     childComments: [],
     likes: [],
     subjects: [],
+    tags: [],
     commentsLoadMoreButton: false,
     subjectsLoadMoreButton: false
   };
@@ -27,9 +28,26 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          tags: prevContentState.concat(action.tags)
+          tags: prevContentState.tags.concat(action.tags)
         }
       };
+    case 'ADD_TAG_TO_CONTENTS': {
+      const newState = { ...state };
+      const contentKeys = Object.keys(newState);
+      for (let contentKey of contentKeys) {
+        const prevContentState = newState[contentKey];
+        newState[contentKey] = {
+          ...prevContentState,
+          tags:
+            prevContentState.contentType === action.contentType &&
+            action.contentIds.includes(prevContentState.contentId)
+              ? (prevContentState.tags || []).concat(action.tag)
+              : prevContentState.tags
+        };
+      }
+      return newState;
+    }
+
     case 'ATTACH_STAR':
       return {
         ...state,
@@ -596,6 +614,14 @@ export default function ContentPageReducer(state, action) {
             }
             return subject;
           })
+        }
+      };
+    case 'LOAD_TAGS':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          tags: action.tags
         }
       };
     case 'SET_BY_USER_STATUS':
