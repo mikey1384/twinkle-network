@@ -57,6 +57,11 @@ Header.propTypes = {
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
+<<<<<<< HEAD
+=======
+  closeSearch: PropTypes.func.isRequired,
+  onInitChat: PropTypes.func.isRequired,
+>>>>>>> master
   onMobileMenuOpen: PropTypes.func,
   pageVisible: PropTypes.bool,
   receiveMessage: PropTypes.func.isRequired,
@@ -82,6 +87,7 @@ function Header({
   clearRecentChessMessage,
   getNumberOfUnreadMessages,
   history,
+  onInitChat,
   increaseNumNewPosts,
   increaseNumNewNotis,
   increaseNumberOfUnreadMessages,
@@ -152,6 +158,7 @@ function Header({
       console.log('connected to socket');
       const { section } = getSectionFromPathname(pathname);
       clearRecentChessMessage();
+      if (chatMode) onInitChat();
       changeSocketStatus(true);
       checkVersion();
       if (userId) {
