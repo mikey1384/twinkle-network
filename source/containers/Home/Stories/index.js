@@ -414,8 +414,7 @@ export default connect(
     numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    scrollPositions: state.ViewReducer.scrollPositions,
-    subFilter: state.FeedReducer.subFilter
+    scrollPositions: state.ViewReducer.scrollPositions
   }),
   {
     resetNumNewPosts,
