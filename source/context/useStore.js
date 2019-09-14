@@ -7,11 +7,14 @@ import HomeActions from './HomeActions';
 import HomeReducer from './HomeReducer';
 import InputActions from './InputActions';
 import InputReducer from './InputReducer';
+import ProfileActions from './ProfileActions';
+import ProfileReducer from './ProfileReducer';
 import {
   initialHomeInputState,
   initialHomeState,
   initialCommentState,
-  initialContentState
+  initialContentState,
+  initialProfileState
 } from './initialStates';
 
 export default function useStore() {
@@ -32,6 +35,11 @@ export default function useStore() {
     initialHomeInputState
   );
 
+  const [profileState, profileDispatch] = useReducer(
+    ProfileReducer,
+    initialProfileState
+  );
+
   return {
     commentInput: {
       state: commentState,
@@ -48,6 +56,10 @@ export default function useStore() {
     homeInput: {
       state: homeInputState,
       actions: InputActions(homeInputDispatch)
+    },
+    profile: {
+      state: profileState,
+      actions: ProfileActions(profileDispatch)
     }
   };
 }

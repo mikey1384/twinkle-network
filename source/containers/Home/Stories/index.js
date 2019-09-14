@@ -369,7 +369,6 @@ function Stories({
         filter === categoryObj.uploads.filter &&
         categoryRef.current === 'uploads'
       ) {
-        console.log(data);
         onLoadFeeds(data);
       }
       return;

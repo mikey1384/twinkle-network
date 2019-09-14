@@ -101,9 +101,22 @@ function Home({
   const CommentInputAreaRef = useRef(null);
   const StatusInputRef = useRef(null);
   const {
-    contentPage: {
-      state: { childComments, commentsLoadMoreButton },
-      dispatch
+    content: {
+      state,
+      actions: {
+        onAttachStar,
+        onDeleteComment,
+        onEditComment,
+        onEditRewardComment,
+        onInitContent,
+        onLikeComment,
+        onLoadComments,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadRepliesOfReply,
+        onUploadComment,
+        onUploadReply
+      }
     }
   } = useContext(Context);
 
@@ -119,12 +132,10 @@ function Home({
         });
         if (mounted.current) {
           onInitContent({
-            content: {
-              id: userId,
-              contentType: 'user',
-              childComments: comments,
-              commentsLoadMoreButton: loadMoreButton
-            }
+            contentId: profile.id,
+            contentType: 'user',
+            childComments: comments,
+            commentsLoadMoreButton: loadMoreButton
           });
           setEditedStatusColor(statusColor);
         }
@@ -141,6 +152,11 @@ function Home({
   const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
   const usernameColor = Color[selectedTheme]();
   let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
+  const contentState = state['user' + profile.id] || {
+    contentId: profile.id,
+    contentType: 'user'
+  };
+  const { childComments = [], commentsLoadMoreButton = false } = contentState;
 
   return (
     <div
@@ -487,98 +503,6 @@ function Home({
     setEditedStatusColor('');
     setEditedStatusMsg('');
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
-  }
-
-  function onAttachStar(data) {
-    dispatch({
-      type: 'ATTACH_STAR',
-      data
-    });
-  }
-
-  function onDeleteComment(commentId) {
-    dispatch({
-      type: 'DELETE_COMMENT',
-      commentId
-    });
-  }
-
-  function onEditComment({ commentId, editedComment }) {
-    dispatch({
-      type: 'EDIT_COMMENT',
-      commentId,
-      editedComment
-    });
-  }
-
-  function onEditRewardComment({ id, text }) {
-    dispatch({
-      type: 'EDIT_REWARD_COMMENT',
-      id,
-      text
-    });
-  }
-
-  function onInitContent({ content }) {
-    dispatch({
-      type: 'INIT_CONTENT',
-      content
-    });
-  }
-
-  function onLikeComment({ commentId, likes }) {
-    dispatch({
-      type: 'LIKE_COMMENT',
-      commentId,
-      likes
-    });
-  }
-
-  function onLoadComments({ comments, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_COMMENTS',
-      comments,
-      loadMoreButton
-    });
-  }
-
-  function onLoadMoreComments(data) {
-    dispatch({
-      type: 'LOAD_MORE_COMMENTS',
-      data
-    });
-  }
-
-  function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
-    dispatch({
-      type: 'LOAD_MORE_REPLIES',
-      commentId,
-      replies,
-      loadMoreButton
-    });
-  }
-
-  function onLoadRepliesOfReply({ replies, commentId, replyId }) {
-    dispatch({
-      type: 'LOAD_REPLIES_OF_REPLY',
-      replies,
-      commentId,
-      replyId
-    });
-  }
-
-  function onUploadComment(data) {
-    dispatch({
-      type: 'UPLOAD_COMMENT',
-      data
-    });
-  }
-
-  function onUploadReply(data) {
-    dispatch({
-      type: 'UPLOAD_REPLY',
-      data
-    });
   }
 }
 

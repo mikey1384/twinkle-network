@@ -193,7 +193,6 @@ function Header({
         });
       }
     }
-
     function onReceiveUploadProgress({ channelId, path, percentage }) {
       updateApiServerToS3Progress({
         progress: percentage / 100,

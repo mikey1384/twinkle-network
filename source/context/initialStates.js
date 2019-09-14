@@ -1,3 +1,5 @@
+export const initialCommentState = {};
+export const initialContentState = {};
 export const initialHomeInputState = {
   subject: {
     attachment: undefined,
@@ -31,5 +33,7 @@ export const initialHomeState = {
   loadMoreButton: false,
   subFilter: 'all'
 };
-export const initialCommentState = {};
-export const initialContentState = {};
+export const initialProfileState = {
+  notables: [],
+  loadMoreButton: false
+};
