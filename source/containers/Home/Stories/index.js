@@ -35,7 +35,7 @@ const categoryObj = {
     orderBy: 'lastInteraction'
   },
   challenges: {
-    filter: 'post',
+    filter: 'subject',
     orderBy: 'rewardLevel'
   },
   responses: {

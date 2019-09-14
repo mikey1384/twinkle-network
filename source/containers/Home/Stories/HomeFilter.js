@@ -114,7 +114,7 @@ export default function HomeFilter({
                   />
                 }
               >
-                {['all', 'post'].map(type => {
+                {['all', 'subject'].map(type => {
                   const displayLabel =
                     type === 'all' ? 'All Posts' : 'Subjects';
                   return (
