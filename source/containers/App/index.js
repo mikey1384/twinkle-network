@@ -277,7 +277,11 @@ function App({
           </div>
         )}
         {chatMode && loggedIn && (
-          <Chat onFileUpload={handleFileUpload} onUnmount={handleChatUnmount} />
+          <Chat
+            onFileUpload={handleFileUpload}
+            onUnmount={handleChatUnmount}
+            initing={chatLoading}
+          />
         )}
         {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
       </Suspense>
@@ -332,13 +336,11 @@ function App({
   }
 
   async function onChatButtonClick() {
-    setChatLoading(true);
     try {
       await (chatMode ? turnChatOff() : handleInitChat());
     } catch (error) {
       setChatLoading(false);
     }
-    setChatLoading(false);
   }
 
   function handleChatUnmount() {
@@ -347,8 +349,10 @@ function App({
   }
 
   async function handleInitChat() {
+    setChatLoading(true);
     const data = await loadChat({ dispatch });
     initChat(data);
+    setChatLoading(false);
   }
 }
 

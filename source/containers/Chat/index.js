@@ -22,6 +22,7 @@ Chat.propTypes = {
   dispatch: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
+  initing: PropTypes.bool,
   loadMoreButton: PropTypes.bool,
   loadMoreChannels: PropTypes.func.isRequired,
   loadMoreMessages: PropTypes.func,
@@ -54,6 +55,7 @@ function Chat({
   dispatch,
   enterChannelWithId,
   enterEmptyChat,
+  initing,
   loadMoreButton,
   loadMoreChannels,
   loadMoreMessages,
@@ -266,7 +268,7 @@ function Chat({
           channelName={channelName}
           chessCountdownObj={chessCountdownObj}
           chessOpponent={partner}
-          loading={loading || creatingNewDMChannel}
+          loading={initing || loading || creatingNewDMChannel}
           currentChannel={currentChannel}
           currentChannelId={selectedChannelId}
           loadMoreButton={loadMoreButton}
