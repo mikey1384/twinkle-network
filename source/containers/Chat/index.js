@@ -9,6 +9,7 @@ import ChessModal from './Modals/ChessModal';
 import Context from './Context';
 import Loading from 'components/Loading';
 import {
+  createNewChat,
   loadChat,
   loadChatChannel,
   loadDMChannel,
@@ -489,7 +490,9 @@ function Chat({
       return setCreateNewChannelModalShown(false);
     }
 
-    const data = await createNewChannel(params);
+    const data = await createNewChat({ ...params, dispatch });
+    createNewChannel(data);
+
     const users = params.selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', data.message.channelId);
     socket.emit('send_group_chat_invitation', users, data);

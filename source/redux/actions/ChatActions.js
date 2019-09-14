@@ -51,22 +51,10 @@ export const clearUserSearchResults = () => ({
   type: CHAT.CLEAR_USER_SEARCH_RESULTS
 });
 
-export const createNewChannel = params => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/channel`,
-      { params },
-      auth()
-    );
-    dispatch({
-      type: CHAT.CREATE_NEW_CHANNEL,
-      data
-    });
-    return Promise.resolve(data);
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const createNewChannel = data => ({
+  type: CHAT.CREATE_NEW_CHANNEL,
+  data
+});
 
 export const deleteMessage = ({
   fileName = '',

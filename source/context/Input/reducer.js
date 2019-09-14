@@ -1,4 +1,4 @@
-import { initialHomeInputState } from './initialStates';
+import { initialHomeInputState } from '../initialStates';
 
 export default function InputReducer(state, action) {
   switch (action.type) {

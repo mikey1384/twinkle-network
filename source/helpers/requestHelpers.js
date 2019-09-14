@@ -76,6 +76,23 @@ export const checkIfUserResponded = async subjectId => {
   }
 };
 
+export const createNewChat = async ({
+  channelName,
+  selectedUsers,
+  dispatch
+}) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/chat/channel`,
+      { channelName, selectedUsers },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const deleteContent = async ({ id, contentType, dispatch }) => {
   try {
     await request.delete(

@@ -1,14 +1,14 @@
 import { useReducer } from 'react';
-import CommentActions from './CommentActions';
-import CommentReducer from './CommentReducer';
-import ContentActions from './ContentActions';
-import ContentReducer from './ContentReducer';
-import HomeActions from './HomeActions';
-import HomeReducer from './HomeReducer';
-import InputActions from './InputActions';
-import InputReducer from './InputReducer';
-import ProfileActions from './ProfileActions';
-import ProfileReducer from './ProfileReducer';
+import CommentActions from './Comment/actions';
+import CommentReducer from './Comment/reducer';
+import ContentActions from './Content/actions';
+import ContentReducer from './Content/reducer';
+import HomeActions from './Home/actions';
+import HomeReducer from './Home/reducer';
+import InputActions from './Input/actions';
+import InputReducer from './Input/reducer';
+import ProfileActions from './Profile/actions';
+import ProfileReducer from './Profile/reducer';
 import {
   initialHomeInputState,
   initialHomeState,
