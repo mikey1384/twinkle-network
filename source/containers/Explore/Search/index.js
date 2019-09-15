@@ -1,10 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
-import { setResults } from 'redux/actions/SearchActions';
-import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
@@ -12,46 +10,44 @@ import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
+import { Context } from 'context';
+import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 
 Search.propTypes = {
   history: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
+  defaultSearchFilter: PropTypes.string,
   pathname: PropTypes.string.isRequired,
-  searchScrollPosition: PropTypes.number,
-  searchText: PropTypes.string.isRequired,
-  searchFilter: PropTypes.string,
-  setResults: PropTypes.func.isRequired,
   style: PropTypes.object,
   updateDefaultSearchFilter: PropTypes.func.isRequired
 };
 
 function Search({
   dispatch,
+  defaultSearchFilter,
   history,
   pathname,
-  searchScrollPosition,
-  searchText,
-  searchFilter,
-  setResults,
   style,
   updateDefaultSearchFilter
 }) {
+  const {
+    explore: {
+      state: {
+        search: { searchText }
+      },
+      actions: { onLoadSearchResults }
+    }
+  } = useContext(Context);
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
-  const SearchPageRef = useRef(null);
   const SearchBoxRef = useRef(null);
   useEffect(() => {
-    setTimeout(() => {
-      if (SearchPageRef.current) {
-        SearchPageRef.current.scrollTop = searchScrollPosition;
-      }
-    }, 10);
     if (
       !stringIsEmpty(prevSearchText.current) &&
       prevSearchText.current.length >= 2 &&
       (stringIsEmpty(searchText) || searchText.length < 2)
     ) {
-      setResults({ results: [], loadMoreButton: false });
+      onLoadSearchResults({ results: [], loadMoreButton: false });
     }
     prevSearchText.current = searchText;
   }, [searchText]);
@@ -61,7 +57,7 @@ function Search({
       {stringIsEmpty(searchText) && (
         <Categories
           style={{ marginTop: '7rem', marginBottom: '4rem' }}
-          defaultFilter={searchFilter}
+          defaultFilter={defaultSearchFilter}
           filter={category}
           setDefaultSearchFilter={handleSetDefaultSearchFilter}
         />
@@ -102,7 +98,7 @@ function Search({
   );
 
   async function handleSetDefaultSearchFilter() {
-    if (category === searchFilter) return;
+    if (category === defaultSearchFilter) return;
     await setDefaultSearchFilter({
       filter: category,
       dispatch
@@ -117,13 +113,11 @@ function Search({
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    searchScrollPosition: state.SearchReducer.searchScrollPosition,
-    searchFilter: state.UserReducer.searchFilter
+    defaultSearchFilter: state.UserReducer.searchFilter
   }),
   dispatch => ({
     dispatch,
-    setResults: data => dispatch(setResults(data)),
-    updateDefaultSearchFilter: filter =>
-      dispatch(updateDefaultSearchFilter(filter))
+    updateDefaultSearchFilter: params =>
+      dispatch(updateDefaultSearchFilter(params))
   })
 )(Search);

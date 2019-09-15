@@ -25,17 +25,10 @@ Explore.propTypes = {
   clearLinksLoaded: PropTypes.func.isRequired,
   clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  searchText: PropTypes.string
+  location: PropTypes.object.isRequired
 };
 
-function Explore({
-  clearLinksLoaded,
-  clearVideosLoaded,
-  history,
-  location,
-  searchText
-}) {
+function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
   const {
     explore: {
       actions: { onReloadSubjects }
@@ -126,7 +119,6 @@ function Explore({
         >
           <Search
             history={history}
-            searchText={searchText}
             pathname={location.pathname}
             style={{
               width: '100%',
@@ -176,8 +168,7 @@ function Explore({
 
 export default connect(
   state => ({
-    userId: state.UserReducer.userId,
-    searchText: state.SearchReducer.searchText
+    userId: state.UserReducer.userId
   }),
   {
     clearLinksLoaded,

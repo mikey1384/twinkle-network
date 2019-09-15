@@ -1,26 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ContentListItem from 'components/ContentListItem';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Link from 'components/Link';
-import { setResults } from 'redux/actions/SearchActions';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import { Color } from 'constants/css';
+import { Context } from 'context';
 
 Results.propTypes = {
   filter: PropTypes.string.isRequired,
-  searchText: PropTypes.string.isRequired
+  searchText: PropTypes.string
 };
 
-function Results({ filter, searchText }) {
+export default function Results({ filter, searchText }) {
+  const {
+    explore: {
+      state: {
+        search: { results, loadMoreButton }
+      },
+      actions: { onLoadSearchResults, onLoadMoreSearchResults }
+    }
+  } = useContext(Context);
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);
-  const [results, setResults] = useState([]);
-  const [loadMoreButton, setLoadMoreButton] = useState(false);
   const prevFilter = useRef(filter);
   const prevSearchText = useRef(searchText);
   const timerRef = useRef(null);
@@ -35,7 +40,7 @@ function Results({ filter, searchText }) {
   useEffect(() => {
     if (!stringIsEmpty(searchText) && searchText.length > 1) {
       if (firstRun && results.length === 0) {
-        setResults({ filter, results: [], loadMoreButton: false });
+        onLoadSearchResults({ filter, results: [], loadMoreButton: false });
       }
       setFirstRun(false);
       if (
@@ -56,8 +61,7 @@ function Results({ filter, searchText }) {
         filter === 'links' ? 'url' : filter.substring(0, filter.length - 1),
       searchText
     });
-    setLoadMoreButton(loadMoreButton);
-    setResults(results);
+    onLoadSearchResults({ filter, results, loadMoreButton });
     return setSearching(false);
   }
   const availableFilters = ['videos', 'links', 'subjects'].filter(
@@ -134,16 +138,7 @@ function Results({ filter, searchText }) {
       searchText,
       shownResults: results
     });
-    setResults(results => results.concat(moreResults));
-    setLoadMoreButton(loadMoreButton);
+    onLoadMoreSearchResults({ results: moreResults, loadMoreButton });
     setLoadingMore(false);
   }
 }
-
-export default connect(
-  state => ({
-    loadMoreButton: state.SearchReducer.loadMoreButton,
-    results: state.SearchReducer.results
-  }),
-  { setResults }
-)(Results);

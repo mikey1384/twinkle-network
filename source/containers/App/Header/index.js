@@ -60,7 +60,7 @@ Header.propTypes = {
   receiveMessage: PropTypes.func.isRequired,
   receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
   resetChat: PropTypes.func,
-  searchFilter: PropTypes.string,
+  defaultSearchFilter: PropTypes.string,
   selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
@@ -96,7 +96,7 @@ function Header({
   receiveMessage,
   receiveMessageOnDifferentChannel,
   resetChat,
-  searchFilter,
+  defaultSearchFilter,
   selectedChannelId,
   showUpdateNotice,
   style = {},
@@ -290,7 +290,7 @@ function Header({
             isAtExploreTab={['links', 'videos', 'subjects'].includes(
               getSectionFromPathname(pathname)?.section
             )}
-            searchFilter={searchFilter}
+            defaultSearchFilter={defaultSearchFilter}
             homeLink={homeLink}
             chatLoading={chatLoading}
             isUsername={isUsername}
@@ -329,7 +329,7 @@ function Header({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    searchFilter: state.UserReducer.searchFilter,
+    defaultSearchFilter: state.UserReducer.searchFilter,
     selectedChannelId: state.ChatReducer.selectedChannelId,
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,

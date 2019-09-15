@@ -1,29 +1,27 @@
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import SearchInput from 'components/Texts/SearchInput';
-import { changeSearch } from 'redux/actions/SearchActions';
+import { Context } from 'context';
 
 SearchBox.propTypes = {
   category: PropTypes.string,
   className: PropTypes.string,
-  changeSearch: PropTypes.func.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   profileTheme: PropTypes.string,
-  searchText: PropTypes.string.isRequired,
   style: PropTypes.object
 };
 
-function SearchBox({
-  category,
-  changeSearch,
-  className,
-  innerRef,
-  profileTheme,
-  searchText,
-  style
-}) {
+function SearchBox({ category, className, innerRef, profileTheme, style }) {
+  const {
+    explore: {
+      state: {
+        search: { searchText }
+      },
+      actions: { onChangeSearchInput }
+    }
+  } = useContext(Context);
   const themeColor = profileTheme || 'logoBlue';
   return (
     <SearchInput
@@ -33,18 +31,12 @@ function SearchBox({
       borderColor={themeColor}
       innerRef={innerRef}
       placeholder={`Search ${category}...`}
-      onChange={changeSearch}
+      onChange={onChangeSearchInput}
       value={searchText}
     />
   );
 }
 
-export default connect(
-  state => ({
-    profileTheme: state.UserReducer.profileTheme,
-    searchText: state.SearchReducer.searchText
-  }),
-  {
-    changeSearch
-  }
-)(withRouter(SearchBox));
+export default connect(state => ({
+  profileTheme: state.UserReducer.profileTheme
+}))(withRouter(SearchBox));

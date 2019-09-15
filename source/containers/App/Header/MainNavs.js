@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
@@ -16,7 +16,7 @@ MainNavs.propTypes = {
   numNewPosts: PropTypes.number,
   onMobileMenuOpen: PropTypes.func.isRequired,
   pathname: PropTypes.string,
-  searchFilter: PropTypes.string,
+  defaultSearchFilter: PropTypes.string,
   totalRewardAmount: PropTypes.number
 };
 
@@ -30,12 +30,13 @@ export default function MainNavs({
   numNewPosts,
   onMobileMenuOpen,
   pathname,
-  searchFilter,
+  defaultSearchFilter,
   totalRewardAmount
 }) {
-  const [exploreCategory, setExploreCategory] = useState('');
+  const [exploreCategory, setExploreCategory] = useState('subjects');
   const [subExploreLink, setSubExploreLink] = useState('');
   const [subSection, setSubSection] = useState('');
+  const loaded = useRef(false);
   const subjectPageMatch = matchPath(pathname, {
     path: '/subjects/:id',
     exact: true
@@ -65,18 +66,19 @@ export default function MainNavs({
       }
       setSubExploreLink(pathname.substring(1));
     }
-    if (!exploreCategory) {
+    if (!loaded.current && defaultSearchFilter) {
       setExploreCategory(
-        ['videos', 'subjects', 'links'].includes(searchFilter)
-          ? searchFilter
+        ['videos', 'subjects', 'links'].includes(defaultSearchFilter)
+          ? defaultSearchFilter
           : 'subjects'
       );
+      loaded.current = true;
     } else {
       if (['links', 'videos', 'subjects'].includes(section)) {
         setExploreCategory(section);
       }
     }
-  }, [pathname, subjectPageMatch]);
+  }, [defaultSearchFilter, pathname, subjectPageMatch]);
   const subSectionIconType =
     subSection === 'videos'
       ? 'film'

@@ -4,6 +4,11 @@ export const initialExploreState = {
   subjects: {
     featured: [],
     loaded: false
+  },
+  search: {
+    results: [],
+    loadMoreButton: false,
+    searchText: ''
   }
 };
 export const initialHomeInputState = {
