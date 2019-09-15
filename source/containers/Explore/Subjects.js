@@ -7,31 +7,26 @@ import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { loadFeaturedSubjects } from 'helpers/requestHelpers';
-import { getFeaturedSubjects } from 'redux/actions/SubjectActions';
 import { connect } from 'react-redux';
 import { Context } from 'context';
 
 Subjects.propTypes = {
   canPinPlaylists: PropTypes.bool,
-  featuredSubjects: PropTypes.array.isRequired,
-  getFeaturedSubjects: PropTypes.func.isRequired,
-  loaded: PropTypes.bool,
   location: PropTypes.object.isRequired,
   userId: PropTypes.number
 };
 
-function Subjects({
-  canPinPlaylists,
-  featuredSubjects,
-  getFeaturedSubjects,
-  loaded,
-  location,
-  userId
-}) {
+function Subjects({ canPinPlaylists, location, userId }) {
   const {
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
+    },
+    explore: {
+      state: {
+        subjects: { loaded, featured }
+      },
+      actions: { onLoadFeaturedSubjects }
     }
   } = useContext(Context);
   useScrollPosition({
@@ -45,7 +40,7 @@ function Subjects({
     async function init() {
       if (!loaded) {
         const subjects = await loadFeaturedSubjects();
-        getFeaturedSubjects(subjects);
+        onLoadFeaturedSubjects(subjects);
       }
     }
   }, [loaded]);
@@ -67,11 +62,11 @@ function Subjects({
               </Button>
             ) : null
           }
-          isEmpty={featuredSubjects.length === 0}
+          isEmpty={featured.length === 0}
           emptyMessage="No featured subjects for now..."
           loaded={loaded}
         >
-          {featuredSubjects.map(subject => (
+          {featured.map(subject => (
             <ContentListItem
               key={subject.id}
               style={{ marginBottom: '1rem' }}
@@ -81,10 +76,10 @@ function Subjects({
         </SectionPanel>
         {modalShown && (
           <SelectFeaturedSubjects
-            selectedChallenges={featuredSubjects}
+            subjects={featured}
             onHide={() => setModalShown(false)}
             onSubmit={selectedChallenges => {
-              getFeaturedSubjects(selectedChallenges);
+              onLoadFeaturedSubjects(selectedChallenges);
               setModalShown(false);
             }}
           />
@@ -94,12 +89,7 @@ function Subjects({
   );
 }
 
-export default connect(
-  state => ({
-    canPinPlaylists: state.UserReducer.canPinPlaylists,
-    loaded: state.SubjectReducer.loaded,
-    featuredSubjects: state.SubjectReducer.featuredSubjects,
-    userId: state.UserReducer.userId
-  }),
-  { getFeaturedSubjects }
-)(Subjects);
+export default connect(state => ({
+  canPinPlaylists: state.UserReducer.canPinPlaylists,
+  userId: state.UserReducer.userId
+}))(Subjects);

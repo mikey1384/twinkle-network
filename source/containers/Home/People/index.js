@@ -46,8 +46,10 @@ function People({
   searchUsers
 }) {
   const {
-    state: { scrollPositions },
-    actions: { onRecordScrollPosition }
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
+    }
   } = useContext(Context);
   const themeColor = profileTheme || 'logoBlue';
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';

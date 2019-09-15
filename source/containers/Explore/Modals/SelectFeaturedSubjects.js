@@ -21,15 +21,10 @@ SelectFeaturedSubjectsModal.propTypes = {
   dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  selectedChallenges: PropTypes.array.isRequired
+  subjects: PropTypes.array.isRequired
 };
 
-function SelectFeaturedSubjectsModal({
-  dispatch,
-  selectedChallenges,
-  onHide,
-  onSubmit
-}) {
+function SelectFeaturedSubjectsModal({ dispatch, subjects, onHide, onSubmit }) {
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -48,7 +43,7 @@ function SelectFeaturedSubjectsModal({
   useEffect(() => {
     init();
     async function init() {
-      const selectedIds = selectedChallenges.map(({ id }) => id);
+      const selectedIds = subjects.map(({ id }) => id);
       setSelected(selectedIds);
       const {
         results: challengesArray,
@@ -60,7 +55,7 @@ function SelectFeaturedSubjectsModal({
       });
       setChallengeObjs({
         ...objectify(challengesArray),
-        ...objectify(selectedChallenges)
+        ...objectify(subjects)
       });
       setChallenges(challengesArray.map(challenge => challenge.id));
       setLoadMoreButton(loadMoreShown);

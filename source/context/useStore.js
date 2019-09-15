@@ -3,6 +3,8 @@ import CommentActions from './Comment/actions';
 import CommentReducer from './Comment/reducer';
 import ContentActions from './Content/actions';
 import ContentReducer from './Content/reducer';
+import ExploreActions from './Explore/actions';
+import ExploreReducer from './Explore/reducer';
 import HomeActions from './Home/actions';
 import HomeReducer from './Home/reducer';
 import InputActions from './Input/actions';
@@ -12,10 +14,11 @@ import ProfileReducer from './Profile/reducer';
 import ViewActions from './View/actions';
 import ViewReducer from './View/reducer';
 import {
-  initialHomeInputState,
-  initialHomeState,
   initialCommentState,
   initialContentState,
+  initialExploreState,
+  initialHomeInputState,
+  initialHomeState,
   initialProfileState,
   initialViewState
 } from './initialStates';
@@ -29,6 +32,11 @@ export default function useStore() {
   const [contentState, contentDispatch] = useReducer(
     ContentReducer,
     initialContentState
+  );
+
+  const [exploreState, exploreDispatch] = useReducer(
+    ExploreReducer,
+    initialExploreState
   );
 
   const [homeState, homeDispatch] = useReducer(HomeReducer, initialHomeState);
@@ -53,6 +61,10 @@ export default function useStore() {
     content: {
       state: contentState,
       actions: ContentActions(contentDispatch)
+    },
+    explore: {
+      state: exploreState,
+      actions: ExploreActions(exploreDispatch)
     },
     home: {
       state: homeState,

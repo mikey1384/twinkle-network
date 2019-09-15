@@ -1,5 +1,11 @@
 export const initialCommentState = {};
 export const initialContentState = {};
+export const initialExploreState = {
+  subjects: {
+    featured: [],
+    loaded: false
+  }
+};
 export const initialHomeInputState = {
   subject: {
     attachment: undefined,

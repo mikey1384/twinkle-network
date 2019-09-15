@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
@@ -16,14 +16,13 @@ import {
   openAddPlaylistModal,
   openAddVideoModal
 } from 'redux/actions/VideoActions';
-import { clearSubjectsLoaded } from 'redux/actions/SubjectActions';
 import { socket } from 'constants/io';
+import { Context } from 'context';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
 Explore.propTypes = {
   clearLinksLoaded: PropTypes.func.isRequired,
-  clearSubjectsLoaded: PropTypes.func.isRequired,
   clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
@@ -32,12 +31,16 @@ Explore.propTypes = {
 
 function Explore({
   clearLinksLoaded,
-  clearSubjectsLoaded,
   clearVideosLoaded,
   history,
   location,
   searchText
 }) {
+  const {
+    explore: {
+      actions: { onReloadSubjects }
+    }
+  } = useContext(Context);
   const mounted = useRef(true);
   const disconnected = useRef(false);
   useEffect(() => {
@@ -47,7 +50,7 @@ function Explore({
     function onConnect() {
       if (disconnected.current && mounted.current) {
         clearLinksLoaded();
-        clearSubjectsLoaded();
+        onReloadSubjects();
         clearVideosLoaded();
       }
       disconnected.current = false;
@@ -178,7 +181,6 @@ export default connect(
   }),
   {
     clearLinksLoaded,
-    clearSubjectsLoaded,
     clearVideosLoaded,
     openAddPlaylistModal,
     openAddVideoModal
