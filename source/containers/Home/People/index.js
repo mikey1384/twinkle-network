@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
@@ -9,7 +9,6 @@ import {
   fetchMoreUsers,
   searchUsers
 } from 'redux/actions/UserActions';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
@@ -17,6 +16,7 @@ import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
+import { Context } from 'context';
 
 People.propTypes = {
   clearUserSearch: PropTypes.func.isRequired,
@@ -27,8 +27,6 @@ People.propTypes = {
   location: PropTypes.object.isRequired,
   profiles: PropTypes.array.isRequired,
   profileTheme: PropTypes.string,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object.isRequired,
   searchedProfiles: PropTypes.array.isRequired,
   searchUsers: PropTypes.func.isRequired,
   userId: PropTypes.number
@@ -43,12 +41,14 @@ function People({
   loadMoreButton,
   profiles,
   profileTheme,
-  recordScrollPosition,
   userId,
-  scrollPositions,
   searchedProfiles,
   searchUsers
 }) {
+  const {
+    state: { scrollPositions },
+    actions: { onRecordScrollPosition }
+  } = useContext(Context);
   const themeColor = profileTheme || 'logoBlue';
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';
@@ -76,7 +76,7 @@ function People({
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: `/users`
   });
 
@@ -210,7 +210,6 @@ export default connect(
     loadMoreButton: state.UserReducer.loadMoreButton,
     profiles: state.UserReducer.profiles,
     profileTheme: state.UserReducer.profileTheme,
-    scrollPositions: state.ViewReducer.scrollPositions,
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId
   }),
@@ -218,7 +217,6 @@ export default connect(
     clearUserSearch,
     fetchUsers,
     fetchMoreUsers,
-    recordScrollPosition,
     searchUsers
   }
 )(People);

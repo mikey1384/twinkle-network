@@ -2,13 +2,11 @@ import React, { Suspense, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
-import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from './Subjects';
 import Notification from 'components/Notification';
 import WorkMenuItems from './WorkMenuItems';
 import Search from './Search';
-import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
@@ -29,7 +27,6 @@ Explore.propTypes = {
   clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  mobileNavbarShown: PropTypes.bool.isRequired,
   searchText: PropTypes.string
 };
 
@@ -39,7 +36,6 @@ function Explore({
   clearVideosLoaded,
   history,
   location,
-  mobileNavbarShown,
   searchText
 }) {
   const mounted = useRef(true);
@@ -171,46 +167,6 @@ function Explore({
           location={location.pathname.substring(1)}
         />
       </div>
-      <div
-        style={{ display: mobileNavbarShown ? '' : 'none' }}
-        className={css`
-          display: none;
-          > a {
-            color: ${Color.gray()};
-            &:hover {
-              color: ${Color.gray()};
-            }
-          }
-          > a.active {
-            color: ${Color.black()};
-            &:hover {
-              color: ${Color.black()};
-            }
-          }
-          @media (max-width: ${mobileMaxWidth}) {
-            display: flex;
-            z-index: 5;
-            position: fixed;
-            bottom: 9rem;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 3rem;
-            width: 100%;
-            height: 5rem;
-            background: #fff;
-          }
-        `}
-      >
-        <NavLink to="/featured" activeClassName="active">
-          <Icon icon="bolt" />
-        </NavLink>
-        <NavLink to="/videos" activeClassName="active">
-          <Icon icon="film" />
-        </NavLink>
-        <NavLink to="/links" activeClassName="active">
-          <Icon icon="book" />
-        </NavLink>
-      </div>
     </ErrorBoundary>
   );
 }
@@ -218,7 +174,6 @@ function Explore({
 export default connect(
   state => ({
     userId: state.UserReducer.userId,
-    mobileNavbarShown: state.ViewReducer.mobileNavbarShown,
     searchText: state.SearchReducer.searchText
   }),
   {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -17,9 +17,9 @@ import {
   setSearchedPlaylists,
   postPlaylist
 } from 'redux/actions/VideoActions';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
+import { Context } from 'context';
 
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
@@ -34,8 +34,6 @@ Videos.propTypes = {
   openAddPlaylistModal: PropTypes.func.isRequired,
   playlists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object.isRequired,
   searchedPlaylists: PropTypes.array.isRequired,
   setSearchedPlaylists: PropTypes.func.isRequired,
   postPlaylist: PropTypes.func.isRequired,
@@ -56,16 +54,20 @@ function Videos({
   playlists: allPlaylists = [],
   postPlaylist,
   playlistsLoaded,
-  recordScrollPosition,
-  scrollPositions,
   searchedPlaylists,
   setSearchedPlaylists,
   userId
 }) {
+  const {
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
+    }
+  } = useContext(Context);
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: '/videos'
   });
   const { handleSearch, searching, searchText } = useSearch({
@@ -158,7 +160,6 @@ export default connect(
       state.VideoReducer.loadMoreSearchedPlaylistsButton,
     playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
     playlists: state.VideoReducer.allPlaylists,
-    scrollPositions: state.ViewReducer.scrollPositions,
     searchedPlaylists: state.VideoReducer.searchedPlaylists,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId
@@ -171,7 +172,6 @@ export default connect(
     setSearchedPlaylists,
     closeAddPlaylistModal,
     closeAddVideoModal,
-    postPlaylist,
-    recordScrollPosition
+    postPlaylist
   }
 )(Videos);

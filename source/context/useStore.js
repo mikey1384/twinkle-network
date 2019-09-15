@@ -9,12 +9,15 @@ import InputActions from './Input/actions';
 import InputReducer from './Input/reducer';
 import ProfileActions from './Profile/actions';
 import ProfileReducer from './Profile/reducer';
+import ViewActions from './View/actions';
+import ViewReducer from './View/reducer';
 import {
   initialHomeInputState,
   initialHomeState,
   initialCommentState,
   initialContentState,
-  initialProfileState
+  initialProfileState,
+  initialViewState
 } from './initialStates';
 
 export default function useStore() {
@@ -40,6 +43,8 @@ export default function useStore() {
     initialProfileState
   );
 
+  const [viewState, viewDispatch] = useReducer(ViewReducer, initialViewState);
+
   return {
     commentInput: {
       state: commentState,
@@ -60,6 +65,10 @@ export default function useStore() {
     profile: {
       state: profileState,
       actions: ProfileActions(profileDispatch)
+    },
+    view: {
+      state: viewState,
+      actions: ViewActions(viewDispatch)
     }
   };
 }

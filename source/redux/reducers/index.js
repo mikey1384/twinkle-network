@@ -5,4 +5,3 @@ export { default as NotiReducer } from './NotiReducer';
 export { default as SearchReducer } from './SearchReducer';
 export { default as UserReducer } from './UserReducer';
 export { default as VideoReducer } from './VideoReducer';
-export { default as ViewReducer } from './ViewReducer';

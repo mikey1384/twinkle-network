@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -21,9 +20,7 @@ Stories.propTypes = {
   hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   location: PropTypes.object.isRequired,
   numNewPosts: PropTypes.number.isRequired,
-  recordScrollPosition: PropTypes.func.isRequired,
   resetNumNewPosts: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object.isRequired,
   toggleHideWatched: PropTypes.func.isRequired,
   username: PropTypes.string,
   userId: PropTypes.number
@@ -52,9 +49,7 @@ function Stories({
   hideWatched,
   location,
   numNewPosts,
-  recordScrollPosition,
   resetNumNewPosts,
-  scrollPositions,
   toggleHideWatched,
   userId,
   username
@@ -97,6 +92,10 @@ function Stories({
         onUploadComment,
         onUploadReply
       }
+    },
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
     }
   } = useContext(Context);
   const [displayOrder, setDisplayOrder] = useState('desc');
@@ -111,7 +110,7 @@ function Stories({
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: `/`
   });
 
@@ -413,12 +412,10 @@ export default connect(
     hideWatched: state.UserReducer.hideWatched,
     numNewPosts: state.NotiReducer.numNewPosts,
     userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    scrollPositions: state.ViewReducer.scrollPositions
+    username: state.UserReducer.username
   }),
   {
     resetNumNewPosts,
-    recordScrollPosition,
     toggleHideWatched
   }
 )(Stories);

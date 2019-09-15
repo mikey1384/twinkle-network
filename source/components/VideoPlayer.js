@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import request from 'axios';
@@ -18,6 +18,7 @@ import {
 import { changeUserXP } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
+import { Context } from 'context';
 import URL from 'constants/URL';
 
 const CONTENT_URL = `${URL}/content`;
@@ -36,7 +37,6 @@ VideoPlayer.propTypes = {
   minimized: PropTypes.bool,
   stretch: PropTypes.bool,
   onEdit: PropTypes.bool,
-  pageVisible: PropTypes.bool,
   profileTheme: PropTypes.string,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
@@ -58,7 +58,6 @@ function VideoPlayer({
   hasHqThumb,
   minimized,
   onEdit,
-  pageVisible,
   profileTheme,
   stretch,
   style = {},
@@ -68,6 +67,11 @@ function VideoPlayer({
   videoCode,
   videoId
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(Context);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [xpLoaded, setXpLoaded] = useState(false);
@@ -504,7 +508,6 @@ export default connect(
   state => ({
     currentVideoSlot: state.VideoReducer.currentVideoSlot,
     userId: state.UserReducer.userId,
-    pageVisible: state.ViewReducer.pageVisible,
     profileTheme: state.UserReducer.profileTheme,
     twinkleXP: state.UserReducer.twinkleXP
   }),

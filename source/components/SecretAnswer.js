@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { connect } from 'react-redux';
 import { borderRadius, Color } from 'constants/css';
 import { checkIfUserResponded } from 'helpers/requestHelpers';
+import { Context } from 'context';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
   changeSpoilerStatus: PropTypes.func.isRequired,
   shown: PropTypes.bool,
   onClick: PropTypes.func,
-  pageVisible: PropTypes.bool,
   style: PropTypes.object,
   subjectId: PropTypes.number,
   userId: PropTypes.number
@@ -23,10 +23,14 @@ function SecretAnswer({
   userId,
   onClick,
   changeSpoilerStatus,
-  pageVisible,
   style,
   subjectId
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(Context);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -76,6 +80,5 @@ function SecretAnswer({
 }
 
 export default connect(state => ({
-  pageVisible: state.ViewReducer.pageVisible,
   userId: state.UserReducer.userId
 }))(SecretAnswer);

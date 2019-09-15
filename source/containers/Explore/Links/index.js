@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import AddLinkModal from './AddLinkModal';
@@ -8,7 +8,7 @@ import LinkGroup from './LinkGroup';
 import { loadUploads } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
+import { Context } from 'context';
 
 Links.propTypes = {
   fetchLinks: PropTypes.func.isRequired,
@@ -16,9 +16,7 @@ Links.propTypes = {
   links: PropTypes.array.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreLinksButtonShown: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired
 };
 
 function Links({
@@ -27,10 +25,14 @@ function Links({
   links,
   loaded,
   loadMoreLinksButtonShown,
-  location,
-  recordScrollPosition,
-  scrollPositions
+  location
 }) {
+  const {
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
+    }
+  } = useContext(Context);
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);
   const lastId = useRef(null);
@@ -38,7 +40,7 @@ function Links({
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: '/links'
   });
 
@@ -109,12 +111,10 @@ export default connect(
     loaded: state.LinkReducer.loaded,
     links: state.LinkReducer.links,
     loadMoreLinksButtonShown: state.LinkReducer.loadMoreLinksButtonShown,
-    notificationLoaded: state.NotiReducer.loaded,
-    scrollPositions: state.ViewReducer.scrollPositions
+    notificationLoaded: state.NotiReducer.loaded
   }),
   {
     fetchLinks,
-    fetchMoreLinks,
-    recordScrollPosition
+    fetchMoreLinks
   }
 )(Links);

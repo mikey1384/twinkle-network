@@ -104,12 +104,6 @@ export default function ChatReducer(state = defaultState, action) {
             : message
         )
       };
-    case CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH:
-      return {
-        ...state,
-        numUnreads: Math.max(state.numUnreads - state.msgsWhileInvisible, 0),
-        msgsWhileInvisible: 0
-      };
     case CHAT.CREATE_NEW_CHANNEL:
       return {
         ...state,

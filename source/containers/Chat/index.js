@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as ChatActions from 'redux/actions/ChatActions';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
@@ -6,8 +6,8 @@ import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
 import ChessModal from './Modals/ChessModal';
-import Context from './Context';
 import Loading from 'components/Loading';
+import LocalContext from './Context';
 import {
   createNewChat,
   loadChat,
@@ -21,6 +21,7 @@ import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { objectify } from 'helpers';
+import { Context as AppContext } from 'context';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -40,7 +41,6 @@ Chat.propTypes = {
   notifyThatMemberLeftChannel: PropTypes.func,
   onFileUpload: PropTypes.func,
   openDirectMessageChannel: PropTypes.func,
-  pageVisible: PropTypes.bool,
   profilePicId: PropTypes.number,
   recepientId: PropTypes.number,
   receiveMessage: PropTypes.func,
@@ -74,7 +74,6 @@ function Chat({
   notifyThatMemberLeftChannel,
   onFileUpload,
   openDirectMessageChannel,
-  pageVisible,
   recepientId,
   profilePicId,
   receiveFirstMsg,
@@ -89,6 +88,11 @@ function Chat({
   userId,
   username
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(AppContext);
   const [channelLoading, setChannelLoading] = useState(false);
   const [
     currentChannelOnlineMembers,
@@ -230,7 +234,7 @@ function Chat({
   }, [currentChannel, selectedChannelId]);
 
   return (
-    <Context.Provider
+    <LocalContext.Provider
       value={{
         selectedChannelId,
         onFileUpload
@@ -313,7 +317,7 @@ function Chat({
           <Loading />
         )}
       </div>
-    </Context.Provider>
+    </LocalContext.Provider>
   );
 
   function handleChessModalShown() {
@@ -548,7 +552,6 @@ export default connect(
     loaded: state.ChatReducer.loaded,
     userId: state.UserReducer.userId,
     username: state.UserReducer.username,
-    pageVisible: state.ViewReducer.pageVisible,
     profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     selectedChannelId: state.ChatReducer.selectedChannelId,

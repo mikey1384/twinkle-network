@@ -65,7 +65,7 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
 export function useScrollPosition({
   scrollPositions,
   pathname,
-  recordScrollPosition,
+  onRecordScrollPosition,
   currentSection
 }) {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
@@ -86,7 +86,7 @@ export function useScrollPosition({
         document.getElementById('App').scrollTop,
         BodyRef.current.scrollTop
       );
-      recordScrollPosition({ section: currentSection, position });
+      onRecordScrollPosition({ section: currentSection, position });
     }
     return function cleanUp() {
       removeEvent(window, 'scroll', onScroll);

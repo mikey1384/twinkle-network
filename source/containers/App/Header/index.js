@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -28,12 +28,12 @@ import {
 } from 'redux/actions/NotiActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
-import { desktopMinWidth } from 'constants/css';
+import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
-import { container } from './Styles';
 import { loadChat } from 'helpers/requestHelpers';
 import { getSectionFromPathname } from 'helpers';
+import { Context } from 'context';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
@@ -51,14 +51,12 @@ Header.propTypes = {
   location: PropTypes.object,
   loggedIn: PropTypes.bool,
   logout: PropTypes.func,
-  mobileNavbarShown: PropTypes.bool,
   notifyChatSubjectChange: PropTypes.func,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
-  pageVisible: PropTypes.bool,
   receiveMessage: PropTypes.func.isRequired,
   receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
   resetChat: PropTypes.func,
@@ -89,14 +87,12 @@ function Header({
   location: { pathname },
   logout,
   loggedIn,
-  mobileNavbarShown,
   notifyChatSubjectChange,
   numChatUnreads,
   numNewNotis,
   numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
-  pageVisible,
   receiveMessage,
   receiveMessageOnDifferentChannel,
   resetChat,
@@ -110,6 +106,11 @@ function Header({
   username,
   versionMatch
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(Context);
   const prevUserIdRef = useRef(userId);
   const [homeLink, setHomeLink] = useState('/');
   useEffect(() => {
@@ -249,9 +250,27 @@ function Header({
   return (
     <ErrorBoundary>
       <nav
-        className={`unselectable ${container} ${
-          mobileNavbarShown ? '' : 'desktop'
-        }`}
+        className={`unselectable ${css`
+          z-index: 30000;
+          position: relative;
+          font-family: sans-serif, Arial, Helvetica;
+          font-size: 1.7rem;
+          background: #fff;
+          display: flex;
+          box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
+          align-items: center;
+          width: 100%;
+          margin-bottom: 0px;
+          height: 4.5rem;
+          @media (min-width: ${desktopMinWidth}) {
+            top: 0;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            bottom: 0;
+            height: 9rem;
+            border-top: 1px solid ${Color.borderGray()};
+          }
+        `}`}
         style={{
           justifyContent: 'space-around',
           position: 'fixed',
@@ -310,13 +329,11 @@ function Header({
 export default connect(
   state => ({
     loggedIn: state.UserReducer.loggedIn,
-    pageVisible: state.ViewReducer.pageVisible,
     searchFilter: state.UserReducer.searchFilter,
     selectedChannelId: state.ChatReducer.selectedChannelId,
     username: state.UserReducer.username,
     userType: state.UserReducer.userType,
     userId: state.UserReducer.userId,
-    mobileNavbarShown: state.ViewReducer.mobileNavbarShown,
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,

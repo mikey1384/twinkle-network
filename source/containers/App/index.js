@@ -1,5 +1,11 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
@@ -16,10 +22,6 @@ import {
   sendFirstDirectMessage,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import {
-  changePageVisibility,
-  recordScrollPosition
-} from 'redux/actions/ViewActions';
 import { auth, uploadFileOnChat } from 'helpers/requestHelpers';
 import {
   initSession,
@@ -32,6 +34,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
+import { Context } from 'context';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -45,14 +48,12 @@ const Verify = React.lazy(() => import('containers/Verify'));
 const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
-  changePageVisibility: PropTypes.func.isRequired,
   closeSigninModal: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object,
   initSession: PropTypes.func.isRequired,
   location: PropTypes.object,
   logout: PropTypes.func.isRequired,
-  pageVisible: PropTypes.bool,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   sendFirstDirectMessage: PropTypes.func.isRequired,
@@ -63,14 +64,12 @@ App.propTypes = {
 };
 
 function App({
-  changePageVisibility,
   closeSigninModal,
   dispatch,
   initSession,
   location,
   history,
   logout,
-  pageVisible,
   postFileUploadStatus,
   postUploadComplete,
   signinModalShown,
@@ -79,6 +78,12 @@ function App({
   updateDetail,
   username
 }) {
+  const {
+    view: {
+      state: { pageVisible },
+      actions: { onChangePageVisibility }
+    }
+  } = useContext(Context);
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);
@@ -113,7 +118,7 @@ function App({
     }
     addEvent(document, visibilityChangeRef.current, handleVisibilityChange);
     function handleVisibilityChange() {
-      changePageVisibility(!document[hiddenRef.current]);
+      onChangePageVisibility(!document[hiddenRef.current]);
     }
     return function cleanUp() {
       removeEvent(
@@ -299,8 +304,6 @@ function App({
 
 export default connect(
   state => ({
-    pageVisible: state.ViewReducer.pageVisible,
-    scrollPositions: state.ViewReducer.scrollPositions,
     signinModalShown: state.UserReducer.signinModalShown,
     updateDetail: state.NotiReducer.updateDetail,
     username: state.UserReducer.username
@@ -316,8 +319,6 @@ export default connect(
     postUploadComplete: params => dispatch(postUploadComplete(params)),
     sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
     updateClientToApiServerProgress: params =>
-      dispatch(updateClientToApiServerProgress(params)),
-    changePageVisibility: visible => dispatch(changePageVisibility(visible)),
-    recordScrollPosition: params => dispatch(recordScrollPosition(params))
+      dispatch(updateClientToApiServerProgress(params))
   })
 )(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);

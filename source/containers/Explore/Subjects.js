@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -8,8 +8,8 @@ import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { loadFeaturedSubjects } from 'helpers/requestHelpers';
 import { getFeaturedSubjects } from 'redux/actions/SubjectActions';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
+import { Context } from 'context';
 
 Subjects.propTypes = {
   canPinPlaylists: PropTypes.bool,
@@ -17,8 +17,6 @@ Subjects.propTypes = {
   getFeaturedSubjects: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   location: PropTypes.object.isRequired,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object,
   userId: PropTypes.number
 };
 
@@ -28,14 +26,18 @@ function Subjects({
   getFeaturedSubjects,
   loaded,
   location,
-  recordScrollPosition,
-  scrollPositions,
   userId
 }) {
+  const {
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
+    }
+  } = useContext(Context);
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: '/subjects'
   });
   useEffect(() => {
@@ -97,8 +99,7 @@ export default connect(
     canPinPlaylists: state.UserReducer.canPinPlaylists,
     loaded: state.SubjectReducer.loaded,
     featuredSubjects: state.SubjectReducer.featuredSubjects,
-    scrollPositions: state.ViewReducer.scrollPositions,
     userId: state.UserReducer.userId
   }),
-  { getFeaturedSubjects, recordScrollPosition }
+  { getFeaturedSubjects }
 )(Subjects);

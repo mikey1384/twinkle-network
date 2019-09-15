@@ -35,10 +35,6 @@ export const enterChannelWithId = ({ data, showOnTop }) => ({
   showOnTop
 });
 
-export const resetMsgUnreadsOnTabSwitch = () => ({
-  type: CHAT.RESET_MSG_UNREADS_ON_TAB_SWITCH
-});
-
 export const clearChatSearchResults = () => ({
   type: CHAT.CLEAR_CHAT_SEARCH_RESULTS
 });

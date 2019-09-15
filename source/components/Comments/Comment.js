@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import Context from './Context';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
@@ -25,6 +24,8 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { connect } from 'react-redux';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
+import LocalContext from './Context';
+import { Context as AppContext } from 'context';
 
 Comment.propTypes = {
   authLevel: PropTypes.number,
@@ -51,7 +52,6 @@ Comment.propTypes = {
   history: PropTypes.object.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
-  pageVisible: PropTypes.bool,
   parent: PropTypes.object,
   userId: PropTypes.number
 };
@@ -67,10 +67,14 @@ function Comment({
   innerRef,
   isPreview,
   userId,
-  pageVisible,
   parent,
   comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(AppContext);
   const {
     onAttachStar,
     onDelete,
@@ -79,7 +83,7 @@ function Comment({
     onLoadMoreReplies,
     onReplySubmit,
     onRewardCommentEdit
-  } = useContext(Context);
+  } = useContext(LocalContext);
   const [onEdit, setOnEdit] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -87,7 +91,6 @@ function Comment({
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
   const [secretShown, setSecretShown] = useState(false);
-
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
   const mounted = useRef(true);
@@ -415,8 +418,7 @@ export default connect(
     authLevel: state.UserReducer.authLevel,
     canDelete: state.UserReducer.canDelete,
     canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar,
-    pageVisible: state.ViewReducer.pageVisible
+    canStar: state.UserReducer.canStar
   }),
   dispatch => ({ dispatch })
 )(withRouter(Comment));

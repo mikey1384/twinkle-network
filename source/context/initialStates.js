@@ -59,3 +59,7 @@ export const initialProfileState = {
     linksLoadMoreButton: false
   }
 };
+export const initialViewState = {
+  pageVisible: true,
+  scrollPositions: {}
+};

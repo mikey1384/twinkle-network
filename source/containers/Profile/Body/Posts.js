@@ -16,7 +16,6 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { recordScrollPosition } from 'redux/actions/ViewActions';
 import { connect } from 'react-redux';
 import { Context } from 'context';
 
@@ -25,8 +24,6 @@ Posts.propTypes = {
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   myId: PropTypes.number,
-  recordScrollPosition: PropTypes.func.isRequired,
-  scrollPositions: PropTypes.object.isRequired,
   selectedTheme: PropTypes.string
 };
 
@@ -46,21 +43,9 @@ function Posts({
     params: { section, username }
   },
   myId,
-  recordScrollPosition,
-  scrollPositions,
   selectedTheme
 }) {
   const {
-    profile: {
-      state: {
-        posts: {
-          [section]: profileFeeds,
-          [`${section}LoadMoreButton`]: loadMoreButton,
-          [`${section}Loaded`]: loaded
-        }
-      },
-      actions: { onDeleteFeed, onLoadPosts, onLoadMorePosts }
-    },
     content: {
       state,
       actions: {
@@ -87,6 +72,20 @@ function Posts({
         onUploadComment,
         onUploadReply
       }
+    },
+    profile: {
+      state: {
+        posts: {
+          [section]: profileFeeds,
+          [`${section}LoadMoreButton`]: loadMoreButton,
+          [`${section}Loaded`]: loaded
+        }
+      },
+      actions: { onDeleteFeed, onLoadPosts, onLoadMorePosts }
+    },
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
     }
   } = useContext(Context);
   const [loading, setLoading] = useState(false);
@@ -96,7 +95,7 @@ function Posts({
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    recordScrollPosition,
+    onRecordScrollPosition,
     currentSection: `/users/${username}/${
       filterTable[section] === 'url' ? 'link' : filterTable[section]
     }${filterTable[section] === 'all' ? '' : 's'}`
@@ -326,10 +325,6 @@ function Posts({
   }
 }
 
-export default connect(
-  state => ({
-    myId: state.UserReducer.userId,
-    scrollPositions: state.ViewReducer.scrollPositions
-  }),
-  { recordScrollPosition }
-)(Posts);
+export default connect(state => ({
+  myId: state.UserReducer.userId
+}))(Posts);
