@@ -17,6 +17,7 @@ import {
 } from 'redux/actions/NotiActions';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
+import { updateUserXP } from 'helpers/requestHelpers';
 import { changeUserXP } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
@@ -26,6 +27,7 @@ import { rewardValue } from 'constants/defaultValues';
 MainFeeds.propTypes = {
   clearRewards: PropTypes.func.isRequired,
   changeUserXP: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   fetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object.isRequired,
   loadMoreNotifications: PropTypes.func.isRequired,
@@ -46,6 +48,7 @@ function MainFeeds({
   activeTab,
   changeUserXP,
   clearRewards,
+  dispatch,
   fetchNotifications,
   loadMore,
   loadMoreNotifications,
@@ -199,9 +202,12 @@ function MainFeeds({
   async function onCollectReward() {
     setOriginalTotalReward(totalRewardAmount);
     setOriginalTwinkleXP(twinkleXP);
-    await changeUserXP({
-      action: 'collect'
+    const { xp, alreadyDone, rank } = await updateUserXP({
+      action: 'collect',
+      dispatch
     });
+    if (alreadyDone) return;
+    changeUserXP({ xp, rank });
     clearRewards();
   }
 
@@ -229,11 +235,12 @@ export default connect(
     twinkleXP: state.UserReducer.twinkleXP,
     userId: state.UserReducer.userId
   }),
-  {
-    changeUserXP,
-    clearRewards,
-    fetchNotifications,
-    loadMoreNotifications,
-    loadMoreRewards
-  }
+  dispatch => ({
+    dispatch,
+    changeUserXP: params => dispatch(changeUserXP(params)),
+    clearRewards: params => dispatch(clearRewards(params)),
+    fetchNotifications: params => dispatch(fetchNotifications(params)),
+    loadMoreNotifications: params => dispatch(loadMoreNotifications(params)),
+    loadMoreRewards: params => dispatch(loadMoreRewards(params))
+  })
 )(MainFeeds);

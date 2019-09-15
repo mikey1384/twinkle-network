@@ -615,6 +615,21 @@ export const setTheme = async ({ color, dispatch }) => {
   }
 };
 
+export const updateUserXP = async ({ action, target, targetId, dispatch }) => {
+  try {
+    const {
+      data: { xp, alreadyDone, rank }
+    } = await request.post(
+      `${URL}/user/xp`,
+      { action, target, targetId },
+      auth()
+    );
+    return Promise.resolve({ xp, alreadyDone, rank });
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const startNewDMChannel = async ({ dispatch, ...params }) => {
   try {
     const { data } = await request.post(

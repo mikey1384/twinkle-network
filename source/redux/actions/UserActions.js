@@ -19,21 +19,11 @@ export const changeProfileTheme = theme => ({
   theme
 });
 
-export const changeUserXP = params => async dispatch => {
-  try {
-    const {
-      data: { xp, alreadyDone, rank }
-    } = await request.post(`${API_URL}/xp`, params, auth());
-    if (alreadyDone) return;
-    return dispatch({
-      type: USER.CHANGE_XP,
-      xp,
-      rank
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const changeUserXP = ({ xp, rank }) => ({
+  type: USER.CHANGE_XP,
+  xp,
+  rank
+});
 
 export const checkValidUsername = username => async dispatch => {
   try {

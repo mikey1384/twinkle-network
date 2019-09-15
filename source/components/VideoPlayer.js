@@ -72,6 +72,7 @@ function VideoPlayer({
       state: { pageVisible }
     }
   } = useContext(Context);
+  const maxRequiredDuration = 300;
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [xpLoaded, setXpLoaded] = useState(false);
@@ -80,6 +81,7 @@ function VideoPlayer({
   const [imageUrl, setImageUrl] = useState('');
   const [progress, setProgress] = useState(0);
   const [playerShown, setPlayerShown] = useState(false);
+  const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
@@ -89,10 +91,6 @@ function VideoPlayer({
   const rewardingXP = useRef(false);
   const themeColor = profileTheme || 'logoBlue';
   const rewardAmountRef = useRef(rewardLevel * xp);
-  const userIsLevel2 = twinkleXP >= 1000000;
-  const requiredDurationCap = userIsLevel2
-    ? 300
-    : 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
     mounted.current = true;
@@ -102,6 +100,15 @@ function VideoPlayer({
       mounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
+    const userIsLevel2 = twinkleXP >= 1000000;
+    requiredDurationCap.current =
+      (userIsLevel2
+        ? maxRequiredDuration
+        : 60 + Math.min(twinkleXP, 120000) / 1000) || maxRequiredDuration;
+  }, [userId]);
 
   useEffect(() => {
     rewardAmountRef.current = rewardLevel * xp;
@@ -295,7 +302,7 @@ function VideoPlayer({
               youtube: { preload: true }
             }}
             onReady={onVideoReady}
-            onPlay={onVideoPlay}
+            onPlay={() => onVideoPlay(requiredDurationCap.current)}
             onPause={onVideoStop}
             onEnded={onVideoStop}
           />
@@ -383,7 +390,7 @@ function VideoPlayer({
       ?.getDuration();
   }
 
-  function onVideoPlay() {
+  function onVideoPlay(requiredDurationCap) {
     setStarted(true);
     if (!playing) {
       setPlaying(true);
@@ -396,7 +403,10 @@ function VideoPlayer({
       }
       if (userId) {
         clearInterval(timerRef.current);
-        timerRef.current = setInterval(increaseProgress, intervalLength);
+        timerRef.current = setInterval(
+          () => increaseProgress(requiredDurationCap),
+          intervalLength
+        );
       }
     }
     const authorization = auth();
@@ -420,7 +430,7 @@ function VideoPlayer({
     emptyCurrentVideoSlot();
   }
 
-  async function increaseProgress() {
+  async function increaseProgress(requiredDurationCap) {
     if (!!rewardLevel && !xpEarned && !justEarned) {
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
