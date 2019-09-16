@@ -64,6 +64,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:thumbs\:)/gi, '👍')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:ok\:)/gi, '👌')
+    .replace(/(\:okay\:)/gi, '👌')
     .replace(/(\:hi\:)/gi, '👋')
     .replace(/(\:hello\:)/gi, '👋')
     .replace(/(\:mad\:)/gi, '😡')
@@ -112,7 +113,9 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:money\:)/gi, '💰')
     .replace(/(\:chess\:)/gi, '♟️')
     .replace(/(\:potato\:)/gi, '🥔')
-    .replace(/(\:dolphin\:)/gi, '🐬');
+    .replace(/(\:dolphin\:)/gi, '🐬')
+    .replace(/(\:yes\:)/gi, '👌')
+    .replace(/(\:yep\:)/gi, '👌');
 }
 
 export function addEmoji(string) {
