@@ -25,46 +25,23 @@ export const changeUserXP = ({ xp, rank }) => ({
   rank
 });
 
-export const checkValidUsername = username => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/username/check?username=${username}`
-    );
-    if (data.pageNotExists) {
-      return dispatch({
-        type: USER.NOT_EXIST
-      });
-    }
-    dispatch({
-      type: USER.SHOW_PROFILE,
-      data: data.user
-    });
-  } catch (error) {
-    dispatch({
-      type: USER.NOT_EXIST
-    });
-    handleError(error, dispatch);
-  }
-};
+export const onUserNotExist = () => ({
+  type: USER.NOT_EXIST
+});
+
+export const onShowProfile = user => ({
+  type: USER.SHOW_PROFILE,
+  data: user
+});
 
 export const clearUserSearch = () => ({
   type: USER.CLEAR_SEARCH
 });
 
-export const fetchUsers = orderBy => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/users${orderBy ? `?orderBy=${orderBy}` : ''}`
-    );
-    dispatch({
-      type: USER.LOAD_USERS,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const fetchUsers = data => ({
+  type: USER.LOAD_USERS,
+  data
+});
 
 export const fetchMoreUsers = ({
   orderBy,

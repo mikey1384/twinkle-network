@@ -63,6 +63,18 @@ export const checkIfContentExists = async ({ url, videoCode, contentType }) => {
   }
 };
 
+export const checkIfUserExists = async username => {
+  try {
+    const {
+      data: { pageNotExists, user }
+    } = await request.get(`${URL}/user/username/check?username=${username}`);
+    return Promise.resolve({ pageNotExists, user });
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
 export const checkIfUserResponded = async subjectId => {
   try {
     const { data } = await request.get(
@@ -484,6 +496,17 @@ export const loadUploads = async ({
   }
 };
 
+export const loadUsers = async ({ orderBy, dispatch }) => {
+  try {
+    const { data } = await request.get(
+      `${URL}/user/users${orderBy ? `?orderBy=${orderBy}` : ''}`
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const reorderPlaylistVideos = async ({
   dispatch,
   originalVideoIds,
@@ -615,13 +638,20 @@ export const setTheme = async ({ color, dispatch }) => {
   }
 };
 
-export const updateUserXP = async ({ action, target, targetId, dispatch }) => {
+export const updateUserXP = async ({
+  amount,
+  action,
+  target,
+  targetId,
+  type,
+  dispatch
+}) => {
   try {
     const {
       data: { xp, alreadyDone, rank }
     } = await request.post(
       `${URL}/user/xp`,
-      { action, target, targetId },
+      { amount, action, target, targetId, type },
       auth()
     );
     return Promise.resolve({ xp, alreadyDone, rank });

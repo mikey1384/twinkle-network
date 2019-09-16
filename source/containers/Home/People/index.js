@@ -14,12 +14,14 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
+import { loadUsers } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { Context } from 'context';
 
 People.propTypes = {
   clearUserSearch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   fetchMoreUsers: PropTypes.func.isRequired,
   fetchUsers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -34,6 +36,7 @@ People.propTypes = {
 
 function People({
   clearUserSearch,
+  dispatch,
   fetchUsers,
   fetchMoreUsers,
   history,
@@ -95,7 +98,8 @@ function People({
     init();
     async function init() {
       if (profiles.length === 0) {
-        await fetchUsers();
+        const data = await loadUsers({ dispatch });
+        fetchUsers(data);
       }
       if (mounted.current) {
         setLoaded(true);
@@ -187,7 +191,11 @@ function People({
 
   async function handleSetOrderBy(label) {
     setLoaded(false);
-    await fetchUsers(label === RANKING_FILTER_LABEL ? 'twinkleXP' : '');
+    const data = await loadUsers({
+      orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : '',
+      dispatch
+    });
+    fetchUsers(data);
     setOrderBy(label);
     setLoaded(true);
   }
@@ -215,10 +223,11 @@ export default connect(
     searchedProfiles: state.UserReducer.searchedProfiles,
     userId: state.UserReducer.userId
   }),
-  {
-    clearUserSearch,
-    fetchUsers,
-    fetchMoreUsers,
-    searchUsers
-  }
+  dispatch => ({
+    dispatch,
+    clearUserSearch: params => dispatch(clearUserSearch(params)),
+    fetchUsers: params => dispatch(fetchUsers(params)),
+    fetchMoreUsers: params => dispatch(fetchMoreUsers(params)),
+    searchUsers: params => dispatch(searchUsers(params))
+  })
 )(People);

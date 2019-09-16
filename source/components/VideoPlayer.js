@@ -8,7 +8,7 @@ import Spinner from 'components/Spinner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
-import { auth } from 'helpers/requestHelpers';
+import { auth, updateUserXP } from 'helpers/requestHelpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import {
   addVideoView,
@@ -30,6 +30,7 @@ VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
   currentVideoSlot: PropTypes.number,
+  dispatch: PropTypes.func.isRequired,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
   hasHqThumb: PropTypes.number,
@@ -52,6 +53,7 @@ function VideoPlayer({
   byUser,
   changeUserXP,
   currentVideoSlot,
+  dispatch,
   emptyCurrentVideoSlot,
   fillCurrentVideoSlot,
   rewardLevel,
@@ -451,13 +453,16 @@ function VideoPlayer({
       rewardingXP.current = true;
       try {
         await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth());
-        await changeUserXP({
-          type: 'increase',
+        const { alreadyDone, xp, rank } = await updateUserXP({
           action: 'watch',
           target: 'video',
+          amount: rewardAmountRef.current,
           targetId: videoId,
-          amount: rewardAmountRef.current
+          type: 'increase',
+          dispatch
         });
+        if (alreadyDone) return;
+        changeUserXP({ xp, rank });
         setJustEarned(true);
         rewardingXP.current = false;
       } catch (error) {
@@ -520,10 +525,11 @@ export default connect(
     profileTheme: state.UserReducer.profileTheme,
     twinkleXP: state.UserReducer.twinkleXP
   }),
-  {
-    addVideoView,
-    changeUserXP,
-    fillCurrentVideoSlot,
-    emptyCurrentVideoSlot
-  }
+  dispatch => ({
+    dispatch,
+    addVideoView: params => dispatch(addVideoView(params)),
+    changeUserXP: params => dispatch(changeUserXP(params)),
+    fillCurrentVideoSlot: params => dispatch(fillCurrentVideoSlot(params)),
+    emptyCurrentVideoSlot: params => dispatch(emptyCurrentVideoSlot(params))
+  })
 )(VideoPlayer);

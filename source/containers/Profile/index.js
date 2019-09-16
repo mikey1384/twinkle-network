@@ -8,20 +8,22 @@ import { css } from 'emotion';
 import { connect } from 'react-redux';
 import {
   changeProfileTheme,
-  checkValidUsername
+  onUserNotExist,
+  onShowProfile
 } from 'redux/actions/UserActions';
-import { setTheme } from 'helpers/requestHelpers';
+import { checkIfUserExists, setTheme } from 'helpers/requestHelpers';
 import { Context } from 'context';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
 Profile.propTypes = {
   changeProfileTheme: PropTypes.func.isRequired,
-  checkValidUsername: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  onUserNotExist: PropTypes.func.isRequired,
+  onShowProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   userId: PropTypes.number,
   username: PropTypes.string
@@ -29,13 +31,14 @@ Profile.propTypes = {
 
 function Profile({
   changeProfileTheme,
-  checkValidUsername,
   dispatch,
   history,
   location,
   match,
   profile,
   profile: { unavailable },
+  onUserNotExist,
+  onShowProfile,
   userId,
   username
 }) {
@@ -60,7 +63,15 @@ function Profile({
     }
     async function init() {
       setLoading(true);
-      await checkValidUsername(match.params.username);
+      try {
+        const { pageNotExists, user } = await checkIfUserExists(
+          match.params.username
+        );
+        if (pageNotExists) return onUserNotExist();
+        onShowProfile(user);
+      } catch (error) {
+        onUserNotExist();
+      }
       setLoading(false);
     }
   }, [match.params.username]);
@@ -132,6 +143,7 @@ export default connect(
   dispatch => ({
     dispatch,
     changeProfileTheme: theme => dispatch(changeProfileTheme(theme)),
-    checkValidUsername: username => dispatch(checkValidUsername(username))
+    onUserNotExist: params => dispatch(onUserNotExist(params)),
+    onShowProfile: params => dispatch(onShowProfile(params))
   })
 )(Profile);
