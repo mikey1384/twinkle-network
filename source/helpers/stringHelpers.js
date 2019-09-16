@@ -111,7 +111,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:computer\:)/gi, '🖥')
     .replace(/(\:money\:)/gi, '💰')
     .replace(/(\:chess\:)/gi, '♟️')
-    .replace(/(\:potato\:)/gi, '🥔');
+    .replace(/(\:potato\:)/gi, '🥔')
+    .replace(/(\:dolphin\:)/gi, '🐬');
 }
 
 export function addEmoji(string) {
