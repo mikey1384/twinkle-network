@@ -72,7 +72,7 @@ function VideoPlayer({
       state: { pageVisible }
     }
   } = useContext(Context);
-  const maxRequiredDuration = 300;
+  const maxRequiredDuration = 250;
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [xpLoaded, setXpLoaded] = useState(false);
@@ -103,11 +103,10 @@ function VideoPlayer({
 
   useEffect(() => {
     PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
-    const userIsLevel2 = twinkleXP >= 1000000;
-    requiredDurationCap.current =
-      (userIsLevel2
-        ? maxRequiredDuration
-        : 60 + Math.min(twinkleXP, 120000) / 1000) || maxRequiredDuration;
+    const userIsLevel2 = twinkleXP >= 2000000;
+    requiredDurationCap.current = userIsLevel2
+      ? Math.min(twinkleXP / 10000, maxRequiredDuration)
+      : 60 + Math.min(twinkleXP / 1000, 120) || maxRequiredDuration;
   }, [userId]);
 
   useEffect(() => {
