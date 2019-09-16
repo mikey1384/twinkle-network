@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import request from 'axios';
@@ -18,6 +18,7 @@ import {
 import { changeUserXP } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
+import { Context } from 'context';
 import URL from 'constants/URL';
 
 const CONTENT_URL = `${URL}/content`;
@@ -28,7 +29,6 @@ const xp = rewardValue.star;
 VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
-  chatMode: PropTypes.bool,
   currentVideoSlot: PropTypes.number,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
@@ -37,7 +37,6 @@ VideoPlayer.propTypes = {
   minimized: PropTypes.bool,
   stretch: PropTypes.bool,
   onEdit: PropTypes.bool,
-  pageVisible: PropTypes.bool,
   profileTheme: PropTypes.string,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
@@ -52,7 +51,6 @@ function VideoPlayer({
   addVideoView,
   byUser,
   changeUserXP,
-  chatMode,
   currentVideoSlot,
   emptyCurrentVideoSlot,
   fillCurrentVideoSlot,
@@ -60,7 +58,6 @@ function VideoPlayer({
   hasHqThumb,
   minimized,
   onEdit,
-  pageVisible,
   profileTheme,
   stretch,
   style = {},
@@ -70,6 +67,12 @@ function VideoPlayer({
   videoCode,
   videoId
 }) {
+  const {
+    view: {
+      state: { pageVisible }
+    }
+  } = useContext(Context);
+  const maxRequiredDuration = 250;
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
   const [xpLoaded, setXpLoaded] = useState(false);
@@ -78,6 +81,7 @@ function VideoPlayer({
   const [imageUrl, setImageUrl] = useState('');
   const [progress, setProgress] = useState(0);
   const [playerShown, setPlayerShown] = useState(false);
+  const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
@@ -87,10 +91,6 @@ function VideoPlayer({
   const rewardingXP = useRef(false);
   const themeColor = profileTheme || 'logoBlue';
   const rewardAmountRef = useRef(rewardLevel * xp);
-  const userIsLevel2 = twinkleXP >= 1000000;
-  const requiredDurationCap = userIsLevel2
-    ? 300
-    : 60 + Math.min(twinkleXP, 120000) / 1000;
 
   useEffect(() => {
     mounted.current = true;
@@ -100,6 +100,14 @@ function VideoPlayer({
       mounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
+    const userIsLevel2 = twinkleXP >= 2000000;
+    requiredDurationCap.current = userIsLevel2
+      ? Math.min(twinkleXP / 10000, maxRequiredDuration)
+      : 60 + Math.min(twinkleXP / 1000, 120) || maxRequiredDuration;
+  }, [userId]);
 
   useEffect(() => {
     rewardAmountRef.current = rewardLevel * xp;
@@ -188,7 +196,7 @@ function VideoPlayer({
       onVideoStop();
       PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
-  }, [pageVisible, chatMode]);
+  }, [pageVisible]);
 
   const meterColor = xpEarned
     ? Color.green()
@@ -293,7 +301,7 @@ function VideoPlayer({
               youtube: { preload: true }
             }}
             onReady={onVideoReady}
-            onPlay={onVideoPlay}
+            onPlay={() => onVideoPlay(requiredDurationCap.current)}
             onPause={onVideoStop}
             onEnded={onVideoStop}
           />
@@ -381,7 +389,7 @@ function VideoPlayer({
       ?.getDuration();
   }
 
-  function onVideoPlay() {
+  function onVideoPlay(requiredDurationCap) {
     setStarted(true);
     if (!playing) {
       setPlaying(true);
@@ -394,7 +402,10 @@ function VideoPlayer({
       }
       if (userId) {
         clearInterval(timerRef.current);
-        timerRef.current = setInterval(increaseProgress, intervalLength);
+        timerRef.current = setInterval(
+          () => increaseProgress(requiredDurationCap),
+          intervalLength
+        );
       }
     }
     const authorization = auth();
@@ -418,7 +429,7 @@ function VideoPlayer({
     emptyCurrentVideoSlot();
   }
 
-  async function increaseProgress() {
+  async function increaseProgress(requiredDurationCap) {
     if (!!rewardLevel && !xpEarned && !justEarned) {
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
@@ -504,10 +515,8 @@ function VideoPlayer({
 
 export default connect(
   state => ({
-    chatMode: state.ChatReducer.chatMode,
     currentVideoSlot: state.VideoReducer.currentVideoSlot,
     userId: state.UserReducer.userId,
-    pageVisible: state.ViewReducer.pageVisible,
     profileTheme: state.UserReducer.profileTheme,
     twinkleXP: state.UserReducer.twinkleXP
   }),
