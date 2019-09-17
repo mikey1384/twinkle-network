@@ -324,7 +324,7 @@ function Stories({
         filter:
           category === 'uploads' ? subFilter : categoryObj[category].filter,
         order: displayOrder,
-        orderBy: categoryObj.videos.orderBy,
+        orderBy: categoryObj[category].orderBy,
         shownFeeds: queryStringForArray({
           array: feeds,
           originVar: 'feedId',

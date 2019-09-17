@@ -1,7 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import Context from './Context';
-import withContext from 'components/Wrappers/withContext';
+import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
@@ -9,7 +7,7 @@ import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 
 Heading.propTypes = {
-  action: PropTypes.string,
+  action: PropTypes.string.isRequired,
   contentObj: PropTypes.shape({
     id: PropTypes.number,
     commentId: PropTypes.number,
@@ -26,7 +24,7 @@ Heading.propTypes = {
   }).isRequired
 };
 
-function Heading({
+export default function Heading({
   action,
   contentObj,
   contentObj: {
@@ -160,5 +158,3 @@ function Heading({
     return null;
   }
 }
-
-export default withContext({ Component: Heading, Context });
