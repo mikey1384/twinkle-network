@@ -33,6 +33,7 @@ import {
 import URL from 'constants/URL';
 import Loading from 'components/Loading';
 import Description from './Description';
+import { loadContent } from '../../helpers/requestHelpers';
 
 LinkPage.propTypes = {
   authLevel: PropTypes.number,
@@ -105,7 +106,10 @@ function LinkPage({
     initLinkPage();
     async function initLinkPage() {
       try {
-        const { data } = await request.get(`${URL}/url/page?linkId=${linkId}`);
+        const data = await loadContent({
+          contentId: linkId,
+          contentType: 'url'
+        });
         const subjectsObj = await loadSubjects({
           contentType: 'url',
           contentId: linkId
@@ -152,8 +156,6 @@ function LinkPage({
     timeStamp,
     title,
     uploader,
-    uploaderName,
-    uploaderAuthLevel,
     ...embedlyProps
   } = contentState;
   let userLikedThis = false;
@@ -161,8 +163,8 @@ function LinkPage({
     if (likes[i].id === myId) userLikedThis = true;
   }
   const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploaderAuthLevel;
-  const userIsUploader = uploader === myId;
+    (canEdit || canDelete) && authLevel > uploader?.authLevel;
+  const userIsUploader = uploader?.id === myId;
 
   return loaded && !loading ? (
     <div
@@ -195,9 +197,8 @@ function LinkPage({
         <Description
           key={'description' + id}
           content={content}
-          uploaderAuthLevel={uploaderAuthLevel}
-          uploaderId={uploader}
-          uploaderName={uploaderName}
+          uploaderAuthLevel={uploader.authLevel}
+          uploader={uploader}
           timeStamp={timeStamp}
           myId={myId}
           title={title}
@@ -225,7 +226,6 @@ function LinkPage({
             fontSize: '1.4rem'
           }}
           stars={stars}
-          uploaderName={uploaderName}
         />
         <div
           style={{
@@ -287,7 +287,7 @@ function LinkPage({
               contentType="url"
               contentId={Number(id)}
               noPadding
-              uploaderId={uploader}
+              uploaderId={uploader.id}
               onRewardSubmit={data => {
                 setXpRewardInterfaceShown(false);
                 onAttachStar(data);

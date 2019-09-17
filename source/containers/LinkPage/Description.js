@@ -31,8 +31,7 @@ Description.propTypes = {
     .isRequired,
   title: PropTypes.string.isRequired,
   userCanEditThis: PropTypes.bool,
-  uploaderId: PropTypes.number,
-  uploaderName: PropTypes.string,
+  uploader: PropTypes.object,
   userIsUploader: PropTypes.bool,
   url: PropTypes.string.isRequired
 };
@@ -47,8 +46,7 @@ function Description({
   linkId,
   timeStamp,
   title,
-  uploaderName,
-  uploaderId,
+  uploader,
   url,
   userCanEditThis,
   userIsUploader
@@ -145,9 +143,7 @@ function Description({
         </div>
         <div>
           <small>
-            Added by{' '}
-            <UsernameText user={{ id: uploaderId, username: uploaderName }} /> (
-            {timeSince(timeStamp)})
+            Added by <UsernameText user={uploader} /> ({timeSince(timeStamp)})
           </small>
         </div>
       </div>
@@ -167,7 +163,7 @@ function Description({
           contentId={Number(linkId)}
           contentType="url"
           url={url}
-          uploaderId={uploaderId}
+          uploaderId={uploader.id}
         />
         {onEdit ? (
           <div>
