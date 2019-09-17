@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
@@ -13,7 +13,7 @@ import {
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
-import { Context, InputContext } from 'context';
+import { useAppContext, useInputContext } from 'context';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -33,7 +33,7 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
     home: {
       actions: { onLoadNewFeeds }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const {
     homeInput: {
       state: { content },
@@ -51,7 +51,7 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
         onSetContentUrlHelper
       }
     }
-  } = useContext(InputContext);
+  } = useInputContext();
   const {
     alreadyPosted,
     descriptionFieldShown,

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as ChatActions from 'redux/actions/ChatActions';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
@@ -21,7 +21,7 @@ import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { objectify } from 'helpers';
-import { Context as AppContext } from 'context';
+import { useAppContext } from 'context';
 
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
@@ -92,7 +92,7 @@ function Chat({
     view: {
       state: { pageVisible }
     }
-  } = useContext(AppContext);
+  } = useAppContext();
   const [channelLoading, setChannelLoading] = useState(false);
   const [
     currentChannelOnlineMembers,

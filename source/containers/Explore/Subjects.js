@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -8,7 +8,7 @@ import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { loadFeaturedSubjects } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Subjects.propTypes = {
   canPinPlaylists: PropTypes.bool,
@@ -28,7 +28,7 @@ function Subjects({ canPinPlaylists, location, userId }) {
       },
       actions: { onLoadFeaturedSubjects }
     }
-  } = useContext(Context);
+  } = useAppContext();
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,

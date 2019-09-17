@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
@@ -17,7 +17,7 @@ import {
   openAddVideoModal
 } from 'redux/actions/VideoActions';
 import { socket } from 'constants/io';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
@@ -33,7 +33,7 @@ function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
     explore: {
       actions: { onReloadSubjects }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const mounted = useRef(true);
   const disconnected = useRef(false);
   useEffect(() => {

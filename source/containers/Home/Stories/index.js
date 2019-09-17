@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import InputPanel from './InputPanel';
@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import { socket } from 'constants/io';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Stories.propTypes = {
   hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
@@ -97,7 +97,7 @@ function Stories({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -19,7 +19,7 @@ import {
 } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
@@ -63,7 +63,7 @@ function Videos({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,

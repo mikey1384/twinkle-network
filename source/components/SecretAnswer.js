@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { connect } from 'react-redux';
 import { borderRadius, Color } from 'constants/css';
 import { checkIfUserResponded } from 'helpers/requestHelpers';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
@@ -30,7 +30,7 @@ function SecretAnswer({
     view: {
       state: { pageVisible }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;

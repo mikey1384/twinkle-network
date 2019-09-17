@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import request from 'axios';
@@ -18,7 +18,7 @@ import {
 import { changeUserXP } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 const CONTENT_URL = `${URL}/content`;
@@ -73,7 +73,7 @@ function VideoPlayer({
     view: {
       state: { pageVisible }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const maxRequiredDuration = 250;
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);

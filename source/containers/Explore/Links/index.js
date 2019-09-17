@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import AddLinkModal from './AddLinkModal';
@@ -8,7 +8,7 @@ import LinkGroup from './LinkGroup';
 import { loadUploads } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Links.propTypes = {
   fetchLinks: PropTypes.func.isRequired,
@@ -32,7 +32,7 @@ function Links({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);
   const lastId = useRef(null);

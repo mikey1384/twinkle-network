@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ContentPanel from 'components/ContentPanel';
 import NotFound from 'components/NotFound';
@@ -6,7 +6,7 @@ import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import { connect } from 'react-redux';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -50,7 +50,7 @@ function ContentPage({
         onUploadReply
       }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,
     exists: false

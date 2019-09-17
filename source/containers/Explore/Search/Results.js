@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ContentListItem from 'components/ContentListItem';
@@ -7,7 +7,7 @@ import Link from 'components/Link';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { searchContent } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Results.propTypes = {
   filter: PropTypes.string.isRequired,
@@ -22,7 +22,7 @@ export default function Results({ filter, searchText }) {
       },
       actions: { onLoadSearchResults, onLoadMoreSearchResults }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);

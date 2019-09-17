@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -29,7 +29,7 @@ import PageTab from './PageTab';
 import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import {
   auth,
   fetchPlaylistsContaining,
@@ -111,7 +111,7 @@ function VideoPage({
         onUploadSubject
       }
     }
-  } = useContext(Context);
+  } = useAppContext();
 
   const contentState = state['video' + videoId] || {};
 

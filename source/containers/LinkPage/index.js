@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Embedly from 'components/Embedly';
@@ -13,7 +13,7 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import request from 'axios';
 import NotFound from 'components/NotFound';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import {
   editLinkPage,
   likeLink,
@@ -95,7 +95,7 @@ function LinkPage({
         onUploadSubject
       }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const contentState = state['url' + linkId] || {};
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {

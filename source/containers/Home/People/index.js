@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
@@ -17,7 +17,7 @@ import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { loadUsers } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 People.propTypes = {
   clearUserSearch: PropTypes.func.isRequired,
@@ -53,7 +53,7 @@ function People({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const themeColor = profileTheme || 'logoBlue';
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useScrollPosition } from 'helpers/hooks';
 import Cover from './Cover';
@@ -12,7 +12,7 @@ import {
   onShowProfile
 } from 'redux/actions/UserActions';
 import { checkIfUserExists, setTheme } from 'helpers/requestHelpers';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
@@ -47,7 +47,7 @@ function Profile({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
   useScrollPosition({

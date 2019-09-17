@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import Comments from 'components/Comments';
@@ -31,7 +31,7 @@ import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Home.propTypes = {
   profile: PropTypes.shape({
@@ -118,7 +118,7 @@ function Home({
         onUploadReply
       }
     }
-  } = useContext(Context);
+  } = useAppContext();
 
   useEffect(() => {
     mounted.current = true;

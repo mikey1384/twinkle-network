@@ -1,11 +1,5 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, {
-  Suspense,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
@@ -34,7 +28,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -83,7 +77,7 @@ function App({
       state: { pageVisible },
       actions: { onChangePageVisibility }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);

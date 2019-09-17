@@ -45,7 +45,7 @@ import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 import App from 'containers/App';
-import { ContextProvider } from 'context';
+import { AppContextProvider } from 'context';
 library.add(
   faAlignJustify,
   faBars,
@@ -93,9 +93,9 @@ const store = createStoreWithMiddlewares();
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <ContextProvider>
+      <AppContextProvider>
         <Route component={App} />
-      </ContextProvider>
+      </AppContextProvider>
     </BrowserRouter>
   </Provider>,
   document.getElementById('react-view')

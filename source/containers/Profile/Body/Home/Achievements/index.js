@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
@@ -9,7 +9,7 @@ import {
   loadNotableContent,
   loadMoreNotableContents
 } from 'helpers/requestHelpers';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -57,7 +57,7 @@ export default function Achievements({
         onUploadReply
       }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [loading, setLoading] = useState(true);
   const mounted = useRef(true);
 

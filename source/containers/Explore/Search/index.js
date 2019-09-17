@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
@@ -10,7 +10,7 @@ import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 
 Search.propTypes = {
@@ -37,7 +37,7 @@ function Search({
       },
       actions: { onLoadSearchResults }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
   const SearchBoxRef = useRef(null);

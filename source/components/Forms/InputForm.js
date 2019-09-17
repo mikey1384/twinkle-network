@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -9,7 +9,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { InputContext } from 'context';
+import { useInputContext } from 'context';
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,
@@ -42,7 +42,7 @@ export default function InputForm({
       state,
       actions: { onEnterComment }
     }
-  } = useContext(InputContext);
+  } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.id;
   const text = state[contentType + contentId] || '';

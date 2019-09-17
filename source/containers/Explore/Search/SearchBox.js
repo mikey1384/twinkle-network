@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import SearchInput from 'components/Texts/SearchInput';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 SearchBox.propTypes = {
   category: PropTypes.string,
@@ -21,7 +21,7 @@ function SearchBox({ category, className, innerRef, profileTheme, style }) {
       },
       actions: { onChangeSearchInput }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const themeColor = profileTheme || 'logoBlue';
   return (
     <SearchInput

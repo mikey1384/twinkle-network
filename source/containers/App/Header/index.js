@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -33,7 +33,7 @@ import { socket } from 'constants/io';
 import { recordUserAction } from 'helpers/userDataHelpers';
 import { loadChat } from 'helpers/requestHelpers';
 import { getSectionFromPathname } from 'helpers';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
@@ -110,7 +110,7 @@ function Header({
     view: {
       state: { pageVisible }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const prevUserIdRef = useRef(userId);
   const [homeLink, setHomeLink] = useState('/');
   useEffect(() => {

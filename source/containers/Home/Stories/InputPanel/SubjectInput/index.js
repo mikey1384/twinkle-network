@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Button from 'components/Button';
@@ -19,7 +19,7 @@ import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
-import { Context, InputContext } from 'context';
+import { useAppContext, useInputContext } from 'context';
 
 SubjectInput.propTypes = {
   canEditRewardLevel: PropTypes.bool,
@@ -32,7 +32,7 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
     home: {
       actions: { onLoadNewFeeds }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const {
     homeInput: {
       state: { subject },
@@ -47,7 +47,7 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
         onSetSubjectTitle
       }
     }
-  } = useContext(InputContext);
+  } = useInputContext();
   const {
     attachment,
     descriptionFieldShown,

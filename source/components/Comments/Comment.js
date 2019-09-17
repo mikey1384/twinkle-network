@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
 import LocalContext from './Context';
-import { Context as AppContext } from 'context';
+import { useAppContext } from 'context';
 
 Comment.propTypes = {
   authLevel: PropTypes.number,
@@ -74,7 +74,7 @@ function Comment({
     view: {
       state: { pageVisible }
     }
-  } = useContext(AppContext);
+  } = useAppContext();
   const {
     onAttachStar,
     onDelete,

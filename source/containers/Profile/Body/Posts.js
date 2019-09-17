@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useContext,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -17,7 +11,7 @@ import { mobileMaxWidth } from 'constants/css';
 import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
-import { Context } from 'context';
+import { useAppContext } from 'context';
 
 Posts.propTypes = {
   history: PropTypes.object.isRequired,
@@ -87,7 +81,7 @@ function Posts({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     }
-  } = useContext(Context);
+  } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
