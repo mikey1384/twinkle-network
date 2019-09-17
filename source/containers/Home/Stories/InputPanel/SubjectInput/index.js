@@ -19,7 +19,7 @@ import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
 import { uploadContent } from 'helpers/requestHelpers';
-import { Context } from 'context';
+import { Context, InputContext } from 'context';
 
 SubjectInput.propTypes = {
   canEditRewardLevel: PropTypes.bool,
@@ -31,7 +31,9 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
   const {
     home: {
       actions: { onLoadNewFeeds }
-    },
+    }
+  } = useContext(Context);
+  const {
     homeInput: {
       state: { subject },
       actions: {
@@ -45,7 +47,7 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
         onSetSubjectTitle
       }
     }
-  } = useContext(Context);
+  } = useContext(InputContext);
   const {
     attachment,
     descriptionFieldShown,

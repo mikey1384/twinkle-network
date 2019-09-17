@@ -10,7 +10,7 @@ export default function useInfiniteScroll({
   onScrollToBottom
 }) {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  const prevFeedsLength = useRef(feedsLength);
+  const prevFeedsLength = useRef(0);
   const [scrollHeight, setScrollHeight] = useState(0);
   const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
 

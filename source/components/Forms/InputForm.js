@@ -9,7 +9,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { Context } from 'context';
+import { InputContext } from 'context';
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,
@@ -42,7 +42,7 @@ export default function InputForm({
       state,
       actions: { onEnterComment }
     }
-  } = useContext(Context);
+  } = useContext(InputContext);
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.id;
   const text = state[contentType + contentId] || '';

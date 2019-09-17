@@ -13,7 +13,7 @@ import {
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
-import { Context } from 'context';
+import { Context, InputContext } from 'context';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -32,7 +32,9 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
   const {
     home: {
       actions: { onLoadNewFeeds }
-    },
+    }
+  } = useContext(Context);
+  const {
     homeInput: {
       state: { content },
       actions: {
@@ -49,7 +51,7 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
         onSetContentUrlHelper
       }
     }
-  } = useContext(Context);
+  } = useContext(InputContext);
   const {
     alreadyPosted,
     descriptionFieldShown,

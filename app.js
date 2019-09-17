@@ -92,11 +92,11 @@ library.add(
 const store = createStoreWithMiddlewares();
 ReactDOM.render(
   <Provider store={store}>
-    <ContextProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ContextProvider>
         <Route component={App} />
-      </BrowserRouter>
-    </ContextProvider>
+      </ContextProvider>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('react-view')
 );
