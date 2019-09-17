@@ -496,10 +496,12 @@ export const loadUploads = async ({
   }
 };
 
-export const loadUsers = async ({ orderBy, dispatch }) => {
+export const loadUsers = async ({ orderBy, shownUsersIds, dispatch }) => {
   try {
     const { data } = await request.get(
-      `${URL}/user/users${orderBy ? `?orderBy=${orderBy}` : ''}`
+      `${URL}/user/users${orderBy ? `?orderBy=${orderBy}` : ''}${
+        shownUsersIds ? `${orderBy ? '&' : '?'}${shownUsersIds}` : ''
+      }`
     );
     return Promise.resolve(data);
   } catch (error) {

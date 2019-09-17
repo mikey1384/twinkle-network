@@ -116,6 +116,7 @@ function Stories({
 
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: feeds.length > 0,
+    feedsLength: feeds.length,
     loadable: loadMoreButton,
     loading: loadingMore,
     onScrollToBottom: () => setLoadingMore(true),

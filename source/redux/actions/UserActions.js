@@ -43,23 +43,10 @@ export const fetchUsers = data => ({
   data
 });
 
-export const fetchMoreUsers = ({
-  orderBy,
-  shownUsersIds
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/users?${shownUsersIds}${orderBy ? `&orderBy=${orderBy}` : ''}`
-    );
-    dispatch({
-      type: USER.LOAD_MORE_USERS,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const fetchMoreUsers = data => ({
+  type: USER.LOAD_MORE_USERS,
+  data
+});
 
 export const initSession = pathname => async dispatch => {
   if (token() === null) {

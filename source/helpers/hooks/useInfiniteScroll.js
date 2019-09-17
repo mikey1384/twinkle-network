@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 
 export default function useInfiniteScroll({
+  feedsLength,
   scrollable,
   loadable,
   loading,
@@ -9,6 +10,7 @@ export default function useInfiniteScroll({
   onScrollToBottom
 }) {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
+  const prevFeedsLength = useRef(feedsLength);
   const [scrollHeight, setScrollHeight] = useState(0);
   const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
 
@@ -21,6 +23,18 @@ export default function useInfiniteScroll({
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
   }, [scrollHeight]);
+
+  useEffect(() => {
+    if (feedsLength < prevFeedsLength.current) {
+      setScrollHeight(
+        Math.max(
+          document.getElementById('App').scrollHeight,
+          BodyRef.current.scrollTop
+        )
+      );
+    }
+    prevFeedsLength.current = feedsLength;
+  }, [feedsLength]);
 
   useEffect(() => {
     if (loading) {

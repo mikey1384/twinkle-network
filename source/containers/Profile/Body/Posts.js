@@ -102,6 +102,7 @@ function Posts({
   });
 
   const [setScrollHeight] = useInfiniteScroll({
+    feedsLength: profileFeeds.length,
     scrollable: profileFeeds.length > 0,
     loadable: loadMoreButton,
     loading,

@@ -74,6 +74,7 @@ function People({
     scrollable: profiles.length > 0 && stringIsEmpty(searchText),
     loadable: loadMoreButton,
     loading,
+    feedsLength: profiles.length,
     onScrollToBottom: () => setLoading(true),
     onLoad: loadMoreProfiles
   });
@@ -201,7 +202,7 @@ function People({
   }
 
   async function loadMoreProfiles() {
-    await fetchMoreUsers({
+    const data = await loadUsers({
       shownUsersIds: queryStringForArray({
         array: profiles,
         originVar: 'id',
@@ -209,6 +210,7 @@ function People({
       }),
       orderBy: orderBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
+    fetchMoreUsers(data);
     if (mounted.current) {
       setLoading(false);
     }
