@@ -6,14 +6,15 @@ import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import { signup } from 'helpers/requestHelpers';
 import Banner from 'components/Banner';
 
 SignUpForm.propTypes = {
-  signup: PropTypes.func.isRequired,
+  onSignUp: PropTypes.func.isRequired,
   showLoginForm: PropTypes.func.isRequired
 };
 
-export default function SignUpForm({ showLoginForm, signup }) {
+export default function SignUpForm({ showLoginForm, onSignUp }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -211,7 +212,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
     }
 
     try {
-      await signup({
+      const data = await signup({
         username,
         password,
         firstname,
@@ -219,6 +220,7 @@ export default function SignUpForm({ showLoginForm, signup }) {
         lastname,
         email
       });
+      onSignUp(data);
     } catch (error) {
       setErrorMessage(error);
     }

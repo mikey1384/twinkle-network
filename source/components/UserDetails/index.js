@@ -10,25 +10,28 @@ import request from 'axios';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
-import { auth } from 'helpers/requestHelpers';
+import { auth, uploadBio } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
+import { connect } from 'react-redux';
 import URL from 'constants/URL';
 
 UserDetails.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   noLink: PropTypes.bool,
   profile: PropTypes.object.isRequired,
   removeStatusMsg: PropTypes.func,
   style: PropTypes.object,
   unEditable: PropTypes.bool,
   updateStatusMsg: PropTypes.func,
-  uploadBio: PropTypes.func,
+  onUploadBio: PropTypes.func,
   userId: PropTypes.number,
   small: PropTypes.bool
 };
 
-export default function UserDetails({
+function UserDetails({
+  dispatch,
   noLink,
   profile,
   removeStatusMsg,
@@ -36,7 +39,7 @@ export default function UserDetails({
   style = {},
   unEditable,
   updateStatusMsg,
-  uploadBio,
+  onUploadBio,
   userId
 }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
@@ -222,8 +225,18 @@ export default function UserDetails({
 
   async function handleUploadBio(params) {
     if (typeof uploadBio === 'function') {
-      await uploadBio({ ...params, profileId: profile.id });
+      const data = await uploadBio({
+        ...params,
+        profileId: profile.id,
+        dispatch
+      });
+      onUploadBio(data);
       setBioEditModalShown(false);
     }
   }
 }
+
+export default connect(
+  null,
+  dispatch => ({ dispatch })
+)(UserDetails);

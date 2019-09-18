@@ -7,7 +7,7 @@ import {
   clearUserSearch,
   fetchUsers,
   fetchMoreUsers,
-  searchUsers
+  onSearchUsers
 } from 'redux/actions/UserActions';
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -30,7 +30,7 @@ People.propTypes = {
   profiles: PropTypes.array.isRequired,
   profileTheme: PropTypes.string,
   searchedProfiles: PropTypes.array.isRequired,
-  searchUsers: PropTypes.func.isRequired,
+  onSearchUsers: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
@@ -46,7 +46,7 @@ function People({
   profileTheme,
   userId,
   searchedProfiles,
-  searchUsers
+  onSearchUsers
 }) {
   const {
     view: {
@@ -61,7 +61,7 @@ function People({
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
-    onSearch: searchUsers,
+    onSearch: onSearchUsers,
     onClear: clearUserSearch
   });
   const mounted = useRef(true);
@@ -230,6 +230,6 @@ export default connect(
     clearUserSearch: params => dispatch(clearUserSearch(params)),
     fetchUsers: params => dispatch(fetchUsers(params)),
     fetchMoreUsers: params => dispatch(fetchMoreUsers(params)),
-    searchUsers: params => dispatch(searchUsers(params))
+    onSearchUsers: params => dispatch(onSearchUsers(params))
   })
 )(People);

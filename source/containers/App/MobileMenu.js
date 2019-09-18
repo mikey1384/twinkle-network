@@ -7,27 +7,30 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { uploadProfilePic } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
-import { logout, uploadProfilePic } from 'redux/actions/UserActions';
+import { logout, onUploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 
 MobileMenu.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   location: PropTypes.object,
   logout: PropTypes.func.isRequired,
   history: PropTypes.object,
-  uploadProfilePic: PropTypes.func,
+  onUploadProfilePic: PropTypes.func,
   username: PropTypes.string,
   onClose: PropTypes.func.isRequired
 };
 
 function MobileMenu({
+  dispatch,
   location,
   history,
   logout,
   username,
   onClose,
-  uploadProfilePic
+  onUploadProfilePic
 }) {
   const [marginLeft, setMarginLeft] = useState('-100%');
   useEffect(() => {
@@ -145,7 +148,8 @@ function MobileMenu({
       ...imageEditStatus,
       processing: true
     });
-    await uploadProfilePic(image);
+    const data = await uploadProfilePic({ image, dispatch });
+    onUploadProfilePic(data);
     setImageEditStatus({
       imageUri: null,
       processing: false,
@@ -158,5 +162,9 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId
   }),
-  { logout, uploadProfilePic }
+  dispatch => ({
+    dispatch,
+    logout: params => dispatch(logout(params)),
+    onUploadProfilePic: params => dispatch(onUploadProfilePic(params))
+  })
 )(MobileMenu);

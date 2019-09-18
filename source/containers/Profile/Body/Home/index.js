@@ -16,10 +16,15 @@ import {
   removeStatusMsg,
   updateStatusMsg,
   setGreeting,
-  uploadBio
+  onUploadBio
 } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
-import { auth, loadComments, uploadGreeting } from 'helpers/requestHelpers';
+import {
+  auth,
+  loadComments,
+  uploadGreeting,
+  uploadBio
+} from 'helpers/requestHelpers';
 import {
   addEmoji,
   finalizeEmoji,
@@ -60,7 +65,7 @@ Home.propTypes = {
   selectedTheme: PropTypes.string.isRequired,
   setGreeting: PropTypes.func.isRequired,
   updateStatusMsg: PropTypes.func.isRequired,
-  uploadBio: PropTypes.func.isRequired,
+  onUploadBio: PropTypes.func.isRequired,
   userId: PropTypes.number
 };
 
@@ -90,7 +95,7 @@ function Home({
   selectedTheme,
   setGreeting,
   updateStatusMsg,
-  uploadBio,
+  onUploadBio,
   userId
 }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
@@ -479,7 +484,12 @@ function Home({
   }
 
   async function handleUploadBio(params) {
-    await uploadBio({ ...params, profileId: profile.id });
+    const data = await uploadBio({
+      ...params,
+      profileId: profile.id,
+      dispatch: reduxDispatch
+    });
+    onUploadBio(data);
     setBioEditModalShown(false);
   }
 
@@ -510,7 +520,7 @@ export default connect(
   state => ({ userId: state.UserReducer.userId }),
   dispatch => ({
     reduxDispatch: dispatch,
-    uploadBio: params => dispatch(uploadBio(params)),
+    onUploadBio: params => dispatch(onUploadBio(params)),
     removeStatusMsg: userId => dispatch(removeStatusMsg(userId)),
     setGreeting: greeting => dispatch(setGreeting(greeting)),
     updateStatusMsg: data => dispatch(updateStatusMsg(data))

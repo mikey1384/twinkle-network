@@ -8,7 +8,7 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
-import { toggleHideWatched } from 'redux/actions/UserActions';
+import { onToggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import { connect } from 'react-redux';
 import { queryStringForArray } from 'helpers/stringHelpers';
@@ -21,7 +21,7 @@ Stories.propTypes = {
   location: PropTypes.object.isRequired,
   numNewPosts: PropTypes.number.isRequired,
   resetNumNewPosts: PropTypes.func.isRequired,
-  toggleHideWatched: PropTypes.func.isRequired,
+  onToggleHideWatched: PropTypes.func.isRequired,
   username: PropTypes.string,
   userId: PropTypes.number
 };
@@ -50,7 +50,7 @@ function Stories({
   location,
   numNewPosts,
   resetNumNewPosts,
-  toggleHideWatched,
+  onToggleHideWatched,
   userId,
   username
 }) {
@@ -200,7 +200,7 @@ function Stories({
           selectedFilter={subFilter}
           applyFilter={applyFilter}
           setDisplayOrder={handleDisplayOrder}
-          toggleHideWatched={toggleHideWatched}
+          onToggleHideWatched={onToggleHideWatched}
           userId={userId}
         />
         <InputPanel />
@@ -417,6 +417,6 @@ export default connect(
   }),
   {
     resetNumNewPosts,
-    toggleHideWatched
+    onToggleHideWatched
   }
 )(Stories);

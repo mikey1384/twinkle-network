@@ -6,6 +6,8 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { toggleHideWatched } from 'helpers/requestHelpers';
+import { connect } from 'react-redux';
 
 const categoryObj = {
   uploads: {
@@ -26,22 +28,24 @@ HomeFilter.propTypes = {
   category: PropTypes.string.isRequired,
   changeCategory: PropTypes.func.isRequired,
   displayOrder: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
   hideWatched: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   setDisplayOrder: PropTypes.func.isRequired,
   selectedFilter: PropTypes.string.isRequired,
   userId: PropTypes.number,
-  toggleHideWatched: PropTypes.func.isRequired
+  onToggleHideWatched: PropTypes.func.isRequired
 };
 
-export default function HomeFilter({
+function HomeFilter({
   applyFilter,
   category,
   changeCategory,
+  dispatch,
   displayOrder,
   hideWatched,
   selectedFilter,
   setDisplayOrder,
-  toggleHideWatched,
+  onToggleHideWatched,
   userId
 }) {
   const [activeTab, setActiveTab] = useState();
@@ -153,7 +157,7 @@ export default function HomeFilter({
                   <SwitchButton
                     checked={!!hideWatched}
                     label="Hide Watched"
-                    onChange={toggleHideWatched}
+                    onChange={handleToggleHideWatched}
                   />
                 )}
               </div>
@@ -163,4 +167,14 @@ export default function HomeFilter({
       )}
     </ErrorBoundary>
   );
+
+  async function handleToggleHideWatched() {
+    const hideWatched = await toggleHideWatched(dispatch);
+    onToggleHideWatched(hideWatched);
+  }
 }
+
+export default connect(
+  null,
+  dispatch => ({ dispatch })
+)(HomeFilter);

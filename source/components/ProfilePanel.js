@@ -8,8 +8,8 @@ import {
   removeStatusMsg,
   showProfileComments,
   updateStatusMsg,
-  uploadProfilePic,
-  uploadBio
+  onUploadProfilePic,
+  onUploadBio
 } from 'redux/actions/UserActions';
 import AlertModal from 'components/Modals/AlertModal';
 import RankBar from 'components/RankBar';
@@ -22,7 +22,13 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { loadChat, loadDMChannel, loadComments } from 'helpers/requestHelpers';
+import {
+  loadChat,
+  loadDMChannel,
+  loadComments,
+  uploadBio,
+  uploadProfilePic
+} from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 
 ProfilePanel.propTypes = {
@@ -38,8 +44,8 @@ ProfilePanel.propTypes = {
   removeStatusMsg: PropTypes.func,
   showProfileComments: PropTypes.func.isRequired,
   userId: PropTypes.number,
-  uploadBio: PropTypes.func,
-  uploadProfilePic: PropTypes.func,
+  onUploadBio: PropTypes.func,
+  onUploadProfilePic: PropTypes.func,
   username: PropTypes.string
 };
 
@@ -57,8 +63,8 @@ function ProfilePanel({
   openDirectMessageChannel,
   removeStatusMsg,
   updateStatusMsg,
-  uploadBio,
-  uploadProfilePic,
+  onUploadBio,
+  onUploadProfilePic,
   username
 }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
@@ -242,7 +248,7 @@ function ProfilePanel({
               profile={profile}
               removeStatusMsg={removeStatusMsg}
               updateStatusMsg={updateStatusMsg}
-              uploadBio={uploadBio}
+              onUploadBio={onUploadBio}
               userId={userId}
             />
             {canEdit && (
@@ -577,13 +583,19 @@ function ProfilePanel({
   }
 
   async function handleUploadBio(params) {
-    await uploadBio({ ...params, profileId: profile.id });
+    const data = await uploadBio({
+      ...params,
+      profileId: profile.id,
+      dispatch
+    });
+    onUploadBio(data);
     setBioEditModalShown(false);
   }
 
   async function uploadImage(image) {
     setProcessing(true);
-    await uploadProfilePic(image);
+    const data = await uploadProfilePic({ image, dispatch });
+    onUploadProfilePic(data);
     setImageUri(undefined);
     setProcessing(false);
     setImageEditModalShown(false);
@@ -603,8 +615,8 @@ export default connect(
     showProfileComments: params => dispatch(showProfileComments(params)),
     removeStatusMsg: params => dispatch(removeStatusMsg(params)),
     updateStatusMsg: params => dispatch(updateStatusMsg(params)),
-    uploadProfilePic: params => dispatch(uploadProfilePic(params)),
-    uploadBio: params => dispatch(uploadBio(params)),
+    onUploadProfilePic: params => dispatch(onUploadProfilePic(params)),
+    onUploadBio: params => dispatch(onUploadBio(params)),
     openDirectMessageChannel: params =>
       dispatch(openDirectMessageChannel(params))
   })

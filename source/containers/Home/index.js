@@ -8,19 +8,21 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ProfileWidget from 'components/ProfileWidget';
 import HomeMenuItems from 'components/HomeMenuItems';
 import Notification from 'components/Notification';
-import { uploadProfilePic } from 'redux/actions/UserActions';
+import { uploadProfilePic } from 'helpers/requestHelpers';
+import { onUploadProfilePic } from 'redux/actions/UserActions';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
 const People = React.lazy(() => import('./People'));
 const Stories = React.lazy(() => import('./Stories'));
 
 Home.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  uploadProfilePic: PropTypes.func.isRequired
+  onUploadProfilePic: PropTypes.func.isRequired
 };
 
-function Home({ history, location, uploadProfilePic }) {
+function Home({ dispatch, history, location, onUploadProfilePic }) {
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
@@ -89,7 +91,8 @@ function Home({ history, location, uploadProfilePic }) {
 
   async function uploadImage(image) {
     setProcessing(true);
-    await uploadProfilePic(image);
+    const data = await uploadProfilePic({ dispatch, image });
+    onUploadProfilePic(data);
     setImageUri(null);
     setProcessing(false);
     setImageEditModalShown(false);
@@ -98,5 +101,8 @@ function Home({ history, location, uploadProfilePic }) {
 
 export default connect(
   null,
-  { uploadProfilePic }
+  dispatch => ({
+    dispatch,
+    onUploadProfilePic: params => dispatch(onUploadProfilePic(params))
+  })
 )(Home);

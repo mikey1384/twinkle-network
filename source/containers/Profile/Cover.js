@@ -6,13 +6,15 @@ import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { uploadProfilePic } from 'redux/actions/UserActions';
+import { onUploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
+import { uploadProfilePic } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 
 Cover.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   profile: PropTypes.shape({
     id: PropTypes.number.isRequired,
     online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
@@ -26,11 +28,12 @@ Cover.propTypes = {
   onSelectTheme: PropTypes.func.isRequired,
   onSetTheme: PropTypes.func.isRequired,
   selectedTheme: PropTypes.string,
-  uploadProfilePic: PropTypes.func,
+  onUploadProfilePic: PropTypes.func,
   userId: PropTypes.number
 };
 
 function Cover({
+  dispatch,
   userId,
   profile: {
     id,
@@ -44,7 +47,7 @@ function Cover({
   },
   onSelectTheme,
   onSetTheme,
-  uploadProfilePic,
+  onUploadProfilePic,
   selectedTheme
 }) {
   const [alertModalShown, setAlertModalShown] = useState(false);
@@ -274,7 +277,8 @@ function Cover({
 
   async function uploadImage(image) {
     setProcessing(true);
-    await uploadProfilePic(image);
+    const data = await uploadProfilePic({ image, dispatch });
+    onUploadProfilePic(data);
     setImageUri(null);
     setProcessing(false);
     setImageEditModalShown(false);
@@ -285,7 +289,8 @@ export default connect(
   state => ({
     userId: state.UserReducer.userId
   }),
-  {
-    uploadProfilePic
-  }
+  dispatch => ({
+    dispatch,
+    onUploadProfilePic: params => dispatch(onUploadProfilePic(params))
+  })
 )(Cover);

@@ -78,8 +78,8 @@ function Subjects({ canPinPlaylists, location, userId }) {
           <SelectFeaturedSubjects
             subjects={featured}
             onHide={() => setModalShown(false)}
-            onSubmit={selectedChallenges => {
-              onLoadFeaturedSubjects(selectedChallenges);
+            onSubmit={selectedSubjects => {
+              onLoadFeaturedSubjects(selectedSubjects);
               setModalShown(false);
             }}
           />

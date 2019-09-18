@@ -5,13 +5,14 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
+import { login } from 'helpers/requestHelpers';
 
 LoginForm.propTypes = {
-  login: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
   showSignUpForm: PropTypes.func.isRequired
 };
 
-export default function LoginForm({ login, showSignUpForm }) {
+export default function LoginForm({ onLogin, showSignUpForm }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -89,7 +90,8 @@ export default function LoginForm({ login, showSignUpForm }) {
 
   async function onSubmit() {
     try {
-      await login({ username, password });
+      const data = await login({ username, password });
+      onLogin(data);
     } catch (error) {
       setErrorMessage(error);
     }

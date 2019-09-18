@@ -207,6 +207,22 @@ export const fetchCurrentChessState = async ({
   }
 };
 
+export const initSession = async pathname => {
+  if (token() === null) {
+    request.post(`${URL}/user/recordAnonTraffic`, { pathname });
+    return {};
+  }
+  try {
+    const { data } = await request.get(
+      `${URL}/user/session?pathname=${pathname}`,
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+  }
+};
+
 export const likeContent = async ({ id, contentType, dispatch }) => {
   try {
     const {
@@ -527,6 +543,19 @@ export const reorderPlaylistVideos = async ({
   }
 };
 
+export const login = async params => {
+  try {
+    const { data } = await request.post(`${URL}/user/login`, params);
+    localStorage.setItem('token', data.token);
+    return Promise.resolve(data);
+  } catch (error) {
+    if (error.response.status === 401) {
+      return Promise.reject('Incorrect username/password combination');
+    }
+    return Promise.reject('There was an error');
+  }
+};
+
 export const reportBug = async ({ error, info }) => {
   const errorStack = await StackTrace.fromError(error);
   await StackTrace.report(errorStack, `${URL}/user/error`, {
@@ -557,6 +586,18 @@ export const searchContent = async ({
       }`
     );
     return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
+};
+
+export const searchUsers = async query => {
+  try {
+    const { data: users } = await request.get(
+      `${URL}/user/users/search?queryString=${query}`
+    );
+    return Promise.resolve(users);
   } catch (error) {
     console.error(error.response || error);
     return Promise.reject(error);
@@ -604,6 +645,39 @@ export const setDefaultSearchFilter = async ({ filter, dispatch }) => {
   }
 };
 
+export const setTheme = async ({ color, dispatch }) => {
+  try {
+    await request.put(`${URL}/user/theme`, { color }, auth());
+    return Promise.resolve();
+  } catch (error) {
+    return handleError(error, dispatch);
+  }
+};
+
+export const signup = async params => {
+  try {
+    const { data } = await request.post(`${URL}/user/signup`, params);
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+    }
+    return Promise.resolve(data);
+  } catch (error) {
+    console.error(error.response || error);
+    return Promise.reject(error.response?.data || error);
+  }
+};
+
+export const toggleHideWatched = async dispatch => {
+  try {
+    const {
+      data: { hideWatched }
+    } = await request.put(`${URL}/user/hideWatched`, {}, auth());
+    return Promise.resolve(hideWatched);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const updateChatLastRead = async ({ channelId, dispatch }) => {
   try {
     await request.post(`${URL}/chat/lastRead`, { channelId }, auth());
@@ -625,15 +699,6 @@ export const updateRewardLevel = async ({
       { rewardLevel, contentId, contentType },
       auth()
     );
-    return Promise.resolve();
-  } catch (error) {
-    return handleError(error, dispatch);
-  }
-};
-
-export const setTheme = async ({ color, dispatch }) => {
-  try {
-    await request.put(`${URL}/user/theme`, { color }, auth());
     return Promise.resolve();
   } catch (error) {
     return handleError(error, dispatch);
@@ -675,6 +740,15 @@ export const startNewDMChannel = async ({ dispatch, ...params }) => {
   }
 };
 
+export const uploadBio = async ({ dispatch, ...params }) => {
+  try {
+    const { data } = await request.post(`${URL}/user/bio`, params, auth());
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
+  }
+};
+
 export const uploadProfileInfo = async ({
   dispatch,
   email,
@@ -697,6 +771,19 @@ export const uploadProfileInfo = async ({
   } catch (error) {
     console.error(error);
     return handleError(error, dispatch);
+  }
+};
+
+export const uploadProfilePic = async ({ image, dispatch }) => {
+  try {
+    const { data } = await request.post(
+      `${URL}/user/picture`,
+      { image },
+      auth()
+    );
+    return Promise.resolve(data);
+  } catch (error) {
+    handleError(error, dispatch);
   }
 };
 
@@ -762,7 +849,7 @@ export const uploadFeaturedSubjects = async ({ dispatch, selected }) => {
   try {
     const challenges = await request.post(
       `${URL}/content/featured/subjects`,
-      { selectedChallenges: selected },
+      { selectedSubjects: selected },
       auth()
     );
     return Promise.resolve(challenges);

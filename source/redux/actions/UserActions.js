@@ -1,9 +1,4 @@
-import request from 'axios';
-import { token, auth, handleError } from 'helpers/requestHelpers';
 import USER from '../constants/User';
-import URL from 'constants/URL';
-
-const API_URL = `${URL}/user`;
 
 export const clearProfiles = () => ({
   type: USER.CLEAR
@@ -48,39 +43,15 @@ export const fetchMoreUsers = data => ({
   data
 });
 
-export const initSession = pathname => async dispatch => {
-  if (token() === null) {
-    return request.post(`${API_URL}/recordAnonTraffic`, { pathname });
-  }
-  try {
-    const { data } = await request.get(
-      `${API_URL}/session?pathname=${pathname}`,
-      auth()
-    );
-    dispatch({
-      type: USER.INIT_SESSION,
-      data: { ...data, loggedIn: true }
-    });
-  } catch (error) {
-    console.error(error.response || error);
-  }
-};
+export const onInitSession = data => ({
+  type: USER.INIT_SESSION,
+  data: { ...data, loggedIn: true }
+});
 
-export const login = params => async dispatch => {
-  try {
-    const { data } = await request.post(`${API_URL}/login`, params);
-    localStorage.setItem('token', data.token);
-    dispatch({
-      type: USER.LOGIN,
-      data
-    });
-  } catch (error) {
-    if (error.response.status === 401) {
-      return Promise.reject('Incorrect username/password combination');
-    }
-    return Promise.reject('There was an error');
-  }
-};
+export const onLogin = data => ({
+  type: USER.LOGIN,
+  data
+});
 
 export const logout = () => {
   localStorage.removeItem('token');
@@ -94,20 +65,10 @@ export const removeStatusMsg = userId => ({
   userId
 });
 
-export const searchUsers = query => async dispatch => {
-  try {
-    const { data: users } = await request.get(
-      `${API_URL}/users/search?queryString=${query}`
-    );
-    dispatch({
-      type: USER.SEARCH,
-      users
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onSearchUsers = users => ({
+  type: USER.SEARCH,
+  users
+});
 
 export const setGreeting = greeting => ({
   type: USER.SET_GREETING,
@@ -125,35 +86,15 @@ export const showProfileComments = ({ id, shown }) => ({
   shown
 });
 
-export const signup = params => async dispatch => {
-  try {
-    const { data } = await request.post(`${API_URL}/signup`, params);
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-    }
-    dispatch({
-      type: USER.SIGNUP,
-      data
-    });
-  } catch (error) {
-    console.error(error.response || error);
-    return Promise.reject(error.response?.data || error);
-  }
-};
+export const onSignUp = data => ({
+  type: USER.SIGNUP,
+  data
+});
 
-export const toggleHideWatched = () => async dispatch => {
-  try {
-    const {
-      data: { hideWatched }
-    } = await request.put(`${API_URL}/hideWatched`, {}, auth());
-    dispatch({
-      type: USER.TOGGLE_HIDE_WATCHED,
-      hideWatched
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onToggleHideWatched = hideWatched => ({
+  type: USER.TOGGLE_HIDE_WATCHED,
+  hideWatched
+});
 
 export const unmountProfile = () => ({
   type: USER.UNMOUNT_PROFILE
@@ -166,36 +107,16 @@ export const updateStatusMsg = ({ statusColor, statusMsg, userId }) => ({
   userId
 });
 
-export const uploadBio = params => async dispatch => {
-  try {
-    const { data } = await request.post(`${API_URL}/bio`, params, auth());
-    dispatch({
-      type: USER.EDIT_BIO,
-      bio: data.bio,
-      userId: data.userId
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onUploadBio = data => ({
+  type: USER.EDIT_BIO,
+  bio: data.bio,
+  userId: data.userId
+});
 
-export const uploadProfilePic = image => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/picture`,
-      { image },
-      auth()
-    );
-    dispatch({
-      type: USER.EDIT_PROFILE_PICTURE,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onUploadProfilePic = data => ({
+  type: USER.EDIT_PROFILE_PICTURE,
+  data
+});
 
 export const openSigninModal = () => ({
   type: USER.OPEN_SIGNIN_MODAL

@@ -16,9 +16,9 @@ import {
   sendFirstDirectMessage,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { auth, uploadFileOnChat } from 'helpers/requestHelpers';
+import { auth, initSession, uploadFileOnChat } from 'helpers/requestHelpers';
 import {
-  initSession,
+  onInitSession,
   openSigninModal,
   closeSigninModal,
   logout
@@ -45,7 +45,7 @@ App.propTypes = {
   closeSigninModal: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object,
-  initSession: PropTypes.func.isRequired,
+  onInitSession: PropTypes.func.isRequired,
   location: PropTypes.object,
   logout: PropTypes.func.isRequired,
   postFileUploadStatus: PropTypes.func.isRequired,
@@ -60,7 +60,7 @@ App.propTypes = {
 function App({
   closeSigninModal,
   dispatch,
-  initSession,
+  onInitSession,
   location,
   history,
   logout,
@@ -90,13 +90,17 @@ function App({
     } else if (
       authRef.current?.headers?.authorization !== auth()?.headers?.authorization
     ) {
-      initSession(location.pathname);
+      init();
     }
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
     authRef.current = auth();
+    async function init() {
+      const data = await initSession(location.pathname);
+      if (data.userId) onInitSession(data);
+    }
   }, [pageVisible]);
 
   useEffect(() => {
@@ -306,7 +310,7 @@ export default connect(
     dispatch,
     closeSigninModal: () => dispatch(closeSigninModal()),
     openSigninModal: () => dispatch(openSigninModal()),
-    initSession: pathname => dispatch(initSession(pathname)),
+    onInitSession: pathname => dispatch(onInitSession(pathname)),
     initChat: data => dispatch(initChat(data)),
     logout: () => dispatch(logout()),
     postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
