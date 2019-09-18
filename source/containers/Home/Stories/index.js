@@ -245,14 +245,14 @@ function Stories({
                 </Banner>
               )}
               {feeds.map((feed, index) => {
-                const contentKey = feed?.contentType + feed?.contentId;
+                const contentKey = feed.contentType + feed.contentId;
                 const contentState = state[contentKey] || {
-                  contentId: feed?.contentId,
-                  contentType: feed?.contentType
+                  contentId: feed.contentId,
+                  contentType: feed.contentType
                 };
                 return (
                   <ContentPanel
-                    key={category + subFilter + contentKey}
+                    key={category + subFilter + feed.feedId}
                     style={{
                       marginBottom: '1rem',
                       zIndex: feeds.length - index

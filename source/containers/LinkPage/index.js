@@ -197,7 +197,6 @@ function LinkPage({
         <Description
           key={'description' + id}
           content={content}
-          uploaderAuthLevel={uploader.authLevel}
           uploader={uploader}
           timeStamp={timeStamp}
           myId={myId}

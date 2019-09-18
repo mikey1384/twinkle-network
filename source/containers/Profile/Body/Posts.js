@@ -173,14 +173,14 @@ function Posts({
           >
             {profileFeeds.length > 0 &&
               profileFeeds.map((feed, index) => {
-                const contentKey = feed?.contentType + feed?.contentId;
+                const contentKey = feed.contentType + feed.contentId;
                 const contentState = state[contentKey] || {
-                  contentId: feed?.contentId,
-                  contentType: feed?.contentType
+                  contentId: feed.contentId,
+                  contentType: feed.contentType
                 };
                 return (
                   <ContentPanel
-                    key={filterTable[section] + contentKey}
+                    key={filterTable[section] + feed.feedId}
                     style={{
                       marginBottom: '1rem',
                       zIndex: profileFeeds.length - index

@@ -104,6 +104,7 @@ function ContentPanel({
         const data = await loadContent({ contentId, contentType });
         onInitContent({
           ...data,
+          loaded: true,
           feedId
         });
         loading.current = false;
@@ -111,7 +112,6 @@ function ContentPanel({
     }
   }, [contentObj]);
   const isThreaded = !!contentObj.targetObj;
-
   return (
     <Context.Provider
       value={{
