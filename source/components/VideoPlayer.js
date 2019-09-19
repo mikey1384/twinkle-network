@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
-import request from 'axios';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
@@ -17,10 +16,7 @@ import {
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
 import { useAppContext } from 'context';
-import URL from 'constants/URL';
 
-const CONTENT_URL = `${URL}/content`;
-const VIDEO_URL = `${URL}/video`;
 const intervalLength = 2000;
 const xp = rewardValue.star;
 
@@ -64,8 +60,10 @@ function VideoPlayer({
     },
     requestHelpers: {
       checkXPEarned,
+      fetchVideoThumbUrl,
       updateCurrentlyWatching,
       updateUserXP,
+      updateTotalViewDuration,
       updateVideoXPEarned
     },
     view: {
@@ -131,20 +129,9 @@ function VideoPlayer({
     }
 
     async function fetchVideoThumb() {
-      try {
-        const {
-          data: { payload }
-        } = await request.put(`${CONTENT_URL}/videoThumb`, {
-          videoCode,
-          videoId
-        });
-        if (mounted.current) {
-          setImageUrl(
-            payload || `https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`
-          );
-        }
-      } catch (error) {
-        console.error(error.response || error);
+      const thumbUrl = await fetchVideoThumbUrl({ videoCode, videoId });
+      if (mounted.current) {
+        setImageUrl(thumbUrl);
       }
     }
   }, [rewardLevel, userId]);
@@ -466,34 +453,24 @@ function VideoPlayer({
           : 0
       );
     }
-    const authorization = auth();
-    const authExists = !!authorization.headers.authorization;
-    if (authExists) {
-      try {
-        const {
-          data: { currentlyWatchingAnotherVideo, success }
-        } = await request.put(
-          `${VIDEO_URL}/duration`,
-          {
-            videoId,
-            rewardLevel,
-            xpEarned,
-            watchCode: watchCodeRef.current
-          },
-          authorization
-        );
-        if (success) return;
-        if (
-          currentlyWatchingAnotherVideo &&
-          !xpEarned &&
-          !!rewardLevel &&
-          !justEarned
-        ) {
-          PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
-        }
-      } catch (error) {
-        console.error(error.response || error);
-      }
+    const {
+      notLoggedIn,
+      success,
+      currentlyWatchingAnotherVideo
+    } = await updateTotalViewDuration({
+      videoId,
+      rewardLevel,
+      xpEarned,
+      watchCode: watchCodeRef.current
+    });
+    if (success || notLoggedIn) return;
+    if (
+      currentlyWatchingAnotherVideo &&
+      !xpEarned &&
+      !!rewardLevel &&
+      !justEarned
+    ) {
+      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
     }
   }
 }

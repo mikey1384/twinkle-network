@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { stringIsEmpty } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { login } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 LoginForm.propTypes = {
-  onLogin: PropTypes.func.isRequired,
-  showSignUpForm: PropTypes.func.isRequired
+  onShowSignupForm: PropTypes.func.isRequired
 };
 
-export default function LoginForm({ onLogin, showSignUpForm }) {
+export default function LoginForm({ onShowSignupForm }) {
+  const {
+    user: {
+      actions: { onLogin }
+    }
+  } = useAppContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -72,7 +77,7 @@ export default function LoginForm({ onLogin, showSignUpForm }) {
             marginRight: '1.5rem'
           }}
           transparent
-          onClick={showSignUpForm}
+          onClick={onShowSignupForm}
         >
           {"Wait, I don't think I have an account, yet"}
         </Button>

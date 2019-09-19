@@ -2,59 +2,43 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
-import { connect } from 'react-redux';
-import {
-  clearUserSearch,
-  fetchUsers,
-  fetchMoreUsers,
-  onSearchUsers
-} from 'redux/actions/UserActions';
 import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
-import { loadUsers } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { useAppContext } from 'context';
 
 People.propTypes = {
-  clearUserSearch: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  fetchMoreUsers: PropTypes.func.isRequired,
-  fetchUsers: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  loadMoreButton: PropTypes.bool,
-  location: PropTypes.object.isRequired,
-  profiles: PropTypes.array.isRequired,
-  profileTheme: PropTypes.string,
-  searchedProfiles: PropTypes.array.isRequired,
-  onSearchUsers: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  location: PropTypes.object.isRequired
 };
 
-function People({
-  clearUserSearch,
-  dispatch,
-  fetchUsers,
-  fetchMoreUsers,
-  history,
-  location,
-  loadMoreButton,
-  profiles,
-  profileTheme,
-  userId,
-  searchedProfiles,
-  onSearchUsers
-}) {
+export default function People({ history, location }) {
   const {
+    user: {
+      actions: {
+        onClearUserSearch,
+        onLoadUsers,
+        onLoadMoreUsers,
+        onSearchUsers
+      },
+      state: {
+        loadMoreButton,
+        profiles,
+        profileTheme,
+        searchedProfiles,
+        userId
+      }
+    },
     view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    }
+      actions: { onRecordScrollPosition },
+      state: { scrollPositions }
+    },
+    requestHelpers: { loadUsers }
   } = useAppContext();
-  const themeColor = profileTheme || 'logoBlue';
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';
   const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
@@ -62,7 +46,7 @@ function People({
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: onSearchUsers,
-    onClear: clearUserSearch
+    onClear: onClearUserSearch
   });
   const mounted = useRef(true);
   const dropdownLabel =
@@ -88,10 +72,9 @@ function People({
 
   useEffect(() => {
     mounted.current = true;
-
     return function cleanUp() {
       mounted.current = false;
-      clearUserSearch();
+      onClearUserSearch();
     };
   }, [searchText]);
 
@@ -99,8 +82,8 @@ function People({
     init();
     async function init() {
       if (profiles.length === 0) {
-        const data = await loadUsers({ dispatch });
-        fetchUsers(data);
+        const data = await loadUsers();
+        onLoadUsers(data);
       }
       if (mounted.current) {
         setLoaded(true);
@@ -117,8 +100,8 @@ function People({
           }
         `}
         style={{ zIndex: 0 }}
-        addonColor={themeColor}
-        borderColor={themeColor}
+        addonColor={profileTheme}
+        borderColor={profileTheme}
         placeholder="Search Users"
         onChange={handleSearch}
         value={searchText}
@@ -193,10 +176,9 @@ function People({
   async function handleSetOrderBy(label) {
     setLoaded(false);
     const data = await loadUsers({
-      orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : '',
-      dispatch
+      orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
-    fetchUsers(data);
+    onLoadUsers(data);
     setOrderBy(label);
     setLoaded(true);
   }
@@ -210,26 +192,9 @@ function People({
       }),
       orderBy: orderBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
-    fetchMoreUsers(data);
+    onLoadMoreUsers(data);
     if (mounted.current) {
       setLoading(false);
     }
   }
 }
-
-export default connect(
-  state => ({
-    loadMoreButton: state.UserReducer.loadMoreButton,
-    profiles: state.UserReducer.profiles,
-    profileTheme: state.UserReducer.profileTheme,
-    searchedProfiles: state.UserReducer.searchedProfiles,
-    userId: state.UserReducer.userId
-  }),
-  dispatch => ({
-    dispatch,
-    clearUserSearch: params => dispatch(clearUserSearch(params)),
-    fetchUsers: params => dispatch(fetchUsers(params)),
-    fetchMoreUsers: params => dispatch(fetchMoreUsers(params)),
-    onSearchUsers: params => dispatch(onSearchUsers(params))
-  })
-)(People);

@@ -1,3 +1,5 @@
+import { initialUserState } from '../initialStates';
+
 export default function UserReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_DEFAULT_FILTER':
@@ -20,6 +22,127 @@ export default function UserReducer(state, action) {
         twinkleXP: action.xp,
         rank: action.rank
       };
+    case 'CLEAR_USER_SEARCH':
+      return {
+        ...state,
+        searchedProfiles: []
+      };
+    case 'CLOSE_SIGNIN_MODAL':
+      return {
+        ...state,
+        signinModalShown: false
+      };
+    case 'DELETE_STATUS_MSG':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          statusMsg: '',
+          statusColor: ''
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId
+            ? { statusMsg: '', statusColor: '' }
+            : {})
+        }))
+      };
+    case 'EDIT_BIO':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          ...action.bio
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId ? action.bio : {})
+        }))
+      };
+    case 'EDIT_PROFILE_PICTURE':
+      return {
+        ...state,
+        profilePicId: action.data.imageId,
+        profile: {
+          ...state.profile,
+          profilePicId:
+            state.profile.id === action.data.userId
+              ? action.data.imageId
+              : state.profile.profilePicId
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          profilePicId:
+            profile.id === action.data.userId
+              ? action.data.imageId
+              : profile.profilePicId
+        }))
+      };
+    case 'EDIT_STATUS_MSG':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          statusMsg: action.statusMsg,
+          statusColor: action.statusColor
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId
+            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
+            : {})
+        }))
+      };
+    case 'INIT_SESSION':
+      return {
+        ...state,
+        ...action.data,
+        isCreator: action.data.userType === 'creator'
+      };
+    case 'LOAD_USERS': {
+      let loadMoreButton = false;
+      if (action.data.length > 20) {
+        action.data.pop();
+        loadMoreButton = true;
+      }
+      return {
+        ...state,
+        profiles: action.data,
+        loadMoreButton
+      };
+    }
+    case 'LOAD_MORE_USERS': {
+      let loadMoreButton = false;
+      if (action.data.length > 5) {
+        action.data.pop();
+        loadMoreButton = true;
+      }
+      return {
+        ...state,
+        profiles: state.profiles.concat(action.data),
+        loadMoreButton
+      };
+    }
+    case 'LOGOUT':
+      return {
+        ...initialUserState,
+        profile: state.profile,
+        profiles: state.profiles,
+        searchedProfiles: state.searchedProfiles
+      };
+    case 'LOGOUT_AND_OPEN_SIGNIN_MODAL':
+      return {
+        ...initialUserState,
+        signinModalShown: true,
+        profile: state.profile,
+        profiles: state.profiles,
+        searchedProfiles: state.searchedProfiles
+      };
+    case 'SEARCH_USERS':
+      return {
+        ...state,
+        searchedProfiles: action.users
+      };
     case 'USER_NOT_EXIST':
       return {
         ...state,
@@ -35,46 +158,6 @@ export default function UserReducer(state, action) {
 /*
 export function UserReducerClone(state = defaultState, action) {
   switch (action.type) {
-    case USER.CLEAR_SEARCH:
-      return {
-        ...state,
-        searchedProfiles: []
-      };
-    case USER.INIT_SESSION:
-      return {
-        ...state,
-        ...action.data,
-        isCreator: action.data.userType === 'creator'
-      };
-    case USER.LOAD_USERS: {
-      let loadMoreButton = false;
-      if (action.data.length > 20) {
-        action.data.pop();
-        loadMoreButton = true;
-      }
-      return {
-        ...state,
-        profiles: action.data,
-        loadMoreButton
-      };
-    }
-    case USER.LOAD_MORE_USERS: {
-      let loadMoreButton = false;
-      if (action.data.length > 5) {
-        action.data.pop();
-        loadMoreButton = true;
-      }
-      return {
-        ...state,
-        profiles: state.profiles.concat(action.data),
-        loadMoreButton
-      };
-    }
-    case USER.SEARCH:
-      return {
-        ...state,
-        searchedProfiles: action.users
-      };
     case USER.SHOW_PROFILE:
       return {
         ...state,
@@ -87,21 +170,6 @@ export function UserReducerClone(state = defaultState, action) {
         loggedIn: true,
         signinModalShown: false,
         isCreator: action.data.userType === 'creator'
-      };
-    case USER.LOGOUT:
-      return {
-        authLevel: 0,
-        canDelete: false,
-        canEdit: false,
-        canEditRewardLevel: false,
-        canStar: false,
-        canEditPlaylists: false,
-        canPinPlaylists: false,
-        isCreator: false,
-        loggedIn: false,
-        profile: state.profile,
-        profiles: state.profiles,
-        searchedProfiles: state.searchedProfiles
       };
     case USER.SET_GREETING:
       return {
@@ -132,57 +200,6 @@ export function UserReducerClone(state = defaultState, action) {
         ...state,
         signinModalShown: true
       };
-    case USER.CLOSE_SIGNIN_MODAL:
-      return {
-        ...state,
-        signinModalShown: false
-      };
-    case USER.DELETE_STATUS_MSG:
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          statusMsg: '',
-          statusColor: ''
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId
-            ? { statusMsg: '', statusColor: '' }
-            : {})
-        }))
-      };
-    case USER.EDIT_BIO:
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          ...action.bio
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId ? action.bio : {})
-        }))
-      };
-    case USER.EDIT_PROFILE_PICTURE:
-      return {
-        ...state,
-        profilePicId: action.data.imageId,
-        profile: {
-          ...state.profile,
-          profilePicId:
-            state.profile.id === action.data.userId
-              ? action.data.imageId
-              : state.profile.profilePicId
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          profilePicId:
-            profile.id === action.data.userId
-              ? action.data.imageId
-              : profile.profilePicId
-        }))
-      };
     case USER.SHOW_PROFILE_COMMENTS:
       return {
         ...state,
@@ -192,21 +209,6 @@ export function UserReducerClone(state = defaultState, action) {
             profile.id === action.profileId
               ? action.shown
               : profile.commentsShown
-        }))
-      };
-    case USER.EDIT_STATUS_MSG:
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          statusMsg: action.statusMsg,
-          statusColor: action.statusColor
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId
-            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
-            : {})
         }))
       };
     case USER.TOGGLE_HIDE_WATCHED:

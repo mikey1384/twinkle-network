@@ -4,13 +4,6 @@ import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import BioEditModal from 'components/Modals/BioEditModal';
-import {
-  removeStatusMsg,
-  showProfileComments,
-  updateStatusMsg,
-  onUploadProfilePic,
-  onUploadBio
-} from 'redux/actions/UserActions';
 import AlertModal from 'components/Modals/AlertModal';
 import RankBar from 'components/RankBar';
 import Icon from 'components/Icon';
@@ -22,51 +15,44 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import {
-  loadChat,
-  loadDMChannel,
-  loadComments,
-  uploadBio,
-  uploadProfilePic
-} from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
+import { useAppContext } from 'context';
 
 ProfilePanel.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   expandable: PropTypes.bool,
   history: PropTypes.object,
   loaded: PropTypes.bool,
   initChat: PropTypes.func.isRequired,
-  isCreator: PropTypes.bool,
-  updateStatusMsg: PropTypes.func,
   openDirectMessageChannel: PropTypes.func,
-  profile: PropTypes.object,
-  removeStatusMsg: PropTypes.func,
-  showProfileComments: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  onUploadBio: PropTypes.func,
-  onUploadProfilePic: PropTypes.func,
-  username: PropTypes.string
+  showProfileComments: PropTypes.func.isRequired
 };
 
 function ProfilePanel({
-  dispatch,
   history,
   initChat,
   loaded,
-  profile,
-  profile: { id, commentsShown, numMessages },
   showProfileComments,
-  userId,
   expandable,
-  isCreator,
-  openDirectMessageChannel,
-  removeStatusMsg,
-  updateStatusMsg,
-  onUploadBio,
-  onUploadProfilePic,
-  username
+  openDirectMessageChannel
 }) {
+  const {
+    user: {
+      actions: {
+        onRemoveStatusMsg,
+        onUpdateStatusMsg,
+        onUploadBio,
+        onUploadProfilePic
+      },
+      state: { isCreator, profile, userId, username }
+    },
+    requestHelpers: {
+      loadChat,
+      loadDMChannel,
+      loadComments,
+      uploadBio,
+      uploadProfilePic
+    }
+  } = useAppContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentsLoadMoreButton, setCommentsLoadMoreButton] = useState(false);
@@ -101,7 +87,13 @@ function ProfilePanel({
     };
   }, [profile.id]);
   const canEdit = userId === profile.id || isCreator;
-  const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
+  const {
+    commentsShown,
+    numMessages,
+    profileFirstRow,
+    profileSecondRow,
+    profileThirdRow
+  } = profile;
   const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
   return (
@@ -246,8 +238,8 @@ function ProfilePanel({
           >
             <UserDetails
               profile={profile}
-              removeStatusMsg={removeStatusMsg}
-              updateStatusMsg={updateStatusMsg}
+              removeStatusMsg={onRemoveStatusMsg}
+              updateStatusMsg={onUpdateStatusMsg}
               onUploadBio={onUploadBio}
               userId={userId}
             />
@@ -389,7 +381,7 @@ function ProfilePanel({
       const initialData = await loadChat();
       initChat(initialData);
     }
-    const data = await loadDMChannel({ recepient: profile, dispatch });
+    const data = await loadDMChannel({ recepient: profile });
     openDirectMessageChannel({
       user: { id: userId, username },
       recepient: profile,
@@ -565,15 +557,15 @@ function ProfilePanel({
     return (
       <Button
         style={{ marginLeft: '1rem' }}
-        disabled={commentsShown && id === userId}
+        disabled={commentsShown && profile.id === userId}
         color="logoBlue"
         onClick={onMessagesButtonClick}
       >
         <Icon icon="comment-alt" />
         <span style={{ marginLeft: '0.7rem' }}>
-          {id === userId ? '' : 'Leave '}
+          {profile.id === userId ? '' : 'Leave '}
           Message
-          {id === userId && Number(numMessages) > 0 && !commentsShown
+          {profile.id === userId && Number(numMessages) > 0 && !commentsShown
             ? `${numMessages > 1 ? 's' : ''}`
             : ''}
           {Number(numMessages) > 0 && !commentsShown ? ` (${numMessages})` : ''}
@@ -585,8 +577,7 @@ function ProfilePanel({
   async function handleUploadBio(params) {
     const data = await uploadBio({
       ...params,
-      profileId: profile.id,
-      dispatch
+      profileId: profile.id
     });
     onUploadBio(data);
     setBioEditModalShown(false);
@@ -594,7 +585,7 @@ function ProfilePanel({
 
   async function uploadImage(image) {
     setProcessing(true);
-    const data = await uploadProfilePic({ image, dispatch });
+    const data = await uploadProfilePic({ image });
     onUploadProfilePic(data);
     setImageUri(undefined);
     setProcessing(false);
@@ -604,20 +595,7 @@ function ProfilePanel({
 
 export default connect(
   state => ({
-    loaded: state.ChatReducer.loaded,
-    isCreator: state.UserReducer.isCreator,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    loaded: state.ChatReducer.loaded
   }),
-  dispatch => ({
-    dispatch,
-    initChat: params => dispatch(initChat(params)),
-    showProfileComments: params => dispatch(showProfileComments(params)),
-    removeStatusMsg: params => dispatch(removeStatusMsg(params)),
-    updateStatusMsg: params => dispatch(updateStatusMsg(params)),
-    onUploadProfilePic: params => dispatch(onUploadProfilePic(params)),
-    onUploadBio: params => dispatch(onUploadBio(params)),
-    openDirectMessageChannel: params =>
-      dispatch(openDirectMessageChannel(params))
-  })
+  { initChat, openDirectMessageChannel }
 )(withRouter(ProfilePanel));

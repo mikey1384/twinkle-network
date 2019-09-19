@@ -4,10 +4,10 @@ import { queryStringForArray } from 'helpers/stringHelpers';
 import StackTrace from 'stacktrace-js';
 import URL from 'constants/URL';
 
-export const token = () =>
+const token = () =>
   typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
 
-export const auth = () => ({
+const auth = () => ({
   headers: {
     authorization: token()
   }
@@ -15,6 +15,7 @@ export const auth = () => ({
 
 export default function requestHelpers(handleError) {
   return {
+    auth,
     async addVideoToPlaylists({ videoId, playlistIds }) {
       try {
         await request.post(
@@ -173,6 +174,21 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async fetchVideoThumbUrl({ videoCode, videoId }) {
+      try {
+        const {
+          data: { payload }
+        } = await request.put(`${URL}/video/videoThumb`, {
+          videoCode,
+          videoId
+        });
+        return Promise.resolve(
+          payload || `https://img.youtube.com/vi/${videoCode}/mqdefault.jpg`
+        );
+      } catch (error) {
+        console.error(error.response || error);
       }
     },
     async initSession(pathname) {
@@ -439,7 +455,7 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async loadUsers({ orderBy, shownUsersIds }) {
+    async loadUsers({ orderBy, shownUsersIds } = {}) {
       try {
         const { data } = await request.get(
           `${URL}/user/users${orderBy ? `?orderBy=${orderBy}` : ''}${
@@ -639,6 +655,36 @@ export default function requestHelpers(handleError) {
         } catch (error) {
           return handleError(error);
         }
+      }
+    },
+    async updateTotalViewDuration({
+      videoId,
+      rewardLevel,
+      xpEarned,
+      watchCode
+    }) {
+      const authorization = auth();
+      const authExists = !!authorization.headers.authorization;
+      if (authExists) {
+        try {
+          const {
+            data: { currentlyWatchingAnotherVideo, success }
+          } = await request.put(
+            `${URL}/video/duration`,
+            {
+              videoId,
+              rewardLevel,
+              xpEarned,
+              watchCode
+            },
+            authorization
+          );
+          return Promise.resolve({ currentlyWatchingAnotherVideo, success });
+        } catch (error) {
+          console.error(error.response || error);
+        }
+      } else {
+        return { notLoggedIn: true };
       }
     },
     async updateVideoXPEarned(videoId) {

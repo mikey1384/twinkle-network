@@ -16,13 +16,6 @@ import {
   sendFirstDirectMessage,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
-import { auth, initSession, uploadFileOnChat } from 'helpers/requestHelpers';
-import {
-  onInitSession,
-  openSigninModal,
-  closeSigninModal,
-  logout
-} from 'redux/actions/UserActions';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -42,41 +35,36 @@ const Verify = React.lazy(() => import('containers/Verify'));
 const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
-  closeSigninModal: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object,
-  onInitSession: PropTypes.func.isRequired,
   location: PropTypes.object,
-  logout: PropTypes.func.isRequired,
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   signinModalShown: PropTypes.bool,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
-  updateDetail: PropTypes.string,
-  username: PropTypes.string
+  updateDetail: PropTypes.string
 };
 
 function App({
-  closeSigninModal,
-  dispatch,
-  onInitSession,
   location,
   history,
-  logout,
   postFileUploadStatus,
   postUploadComplete,
   signinModalShown,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
-  updateDetail,
-  username
+  updateDetail
 }) {
   const {
+    user: {
+      state: { username },
+      actions: { onCloseSigninModal, onInitSession, onLogout }
+    },
     view: {
       state: { pageVisible },
       actions: { onChangePageVisibility }
-    }
+    },
+    requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
@@ -86,7 +74,7 @@ function App({
 
   useEffect(() => {
     if (!auth()?.headers?.authorization) {
-      logout();
+      onLogout();
     } else if (
       authRef.current?.headers?.authorization !== auth()?.headers?.authorization
     ) {
@@ -247,7 +235,7 @@ function App({
         </Suspense>
       </div>
       <Suspense fallback={<Loading />}>
-        {signinModalShown && <SigninModal show onHide={closeSigninModal} />}
+        {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
       </Suspense>
     </div>
   );
@@ -272,7 +260,6 @@ function App({
     const { messageId, members, message } = await uploadFileOnChat({
       channelId,
       content,
-      dispatch,
       selectedFile: fileToUpload,
       onUploadProgress: handleUploadProgress,
       recepientId,
@@ -302,21 +289,13 @@ function App({
 
 export default connect(
   state => ({
-    signinModalShown: state.UserReducer.signinModalShown,
-    updateDetail: state.NotiReducer.updateDetail,
-    username: state.UserReducer.username
+    updateDetail: state.NotiReducer.updateDetail
   }),
-  dispatch => ({
-    dispatch,
-    closeSigninModal: () => dispatch(closeSigninModal()),
-    openSigninModal: () => dispatch(openSigninModal()),
-    onInitSession: pathname => dispatch(onInitSession(pathname)),
-    initChat: data => dispatch(initChat(data)),
-    logout: () => dispatch(logout()),
-    postFileUploadStatus: params => dispatch(postFileUploadStatus(params)),
-    postUploadComplete: params => dispatch(postUploadComplete(params)),
-    sendFirstDirectMessage: params => dispatch(sendFirstDirectMessage(params)),
-    updateClientToApiServerProgress: params =>
-      dispatch(updateClientToApiServerProgress(params))
-  })
+  {
+    initChat,
+    postFileUploadStatus,
+    postUploadComplete,
+    sendFirstDirectMessage,
+    updateClientToApiServerProgress
+  }
 )(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);

@@ -30,19 +30,19 @@ function Signin({ dispatch, onHide }) {
         <>
           {currentPage === 'main' && (
             <Main
-              showLoginForm={() => setCurrentPage('login')}
-              showSignUpForm={() => setCurrentPage('signUp')}
+              onShowLoginForm={() => setCurrentPage('login')}
+              onShowSignupForm={() => setCurrentPage('signUp')}
             />
           )}
           {currentPage === 'login' && (
             <LoginForm
-              showSignUpForm={() => setCurrentPage('signUp')}
+              onShowSignupForm={() => setCurrentPage('signUp')}
               {...bindActionCreators(UserActions, dispatch)}
             />
           )}
           {currentPage === 'signUp' && (
             <SignUpForm
-              showLoginForm={() => setCurrentPage('login')}
+              onShowLoginForm={() => setCurrentPage('login')}
               {...bindActionCreators(UserActions, dispatch)}
             />
           )}

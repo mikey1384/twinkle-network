@@ -11,10 +11,10 @@ import Banner from 'components/Banner';
 
 SignUpForm.propTypes = {
   onSignUp: PropTypes.func.isRequired,
-  showLoginForm: PropTypes.func.isRequired
+  onShowLoginForm: PropTypes.func.isRequired
 };
 
-export default function SignUpForm({ showLoginForm, onSignUp }) {
+export default function SignUpForm({ onShowLoginForm, onSignUp }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -168,7 +168,7 @@ export default function SignUpForm({ showLoginForm, onSignUp }) {
             fontSize: '1.5rem',
             marginRight: '1rem'
           }}
-          onClick={showLoginForm}
+          onClick={onShowLoginForm}
         >
           Wait, I already have an account!
         </Button>

@@ -81,6 +81,7 @@ export const initialUserState = {
   isCreator: false,
   loggedIn: false,
   profile: {},
+  profileTheme: 'logoBlue',
   profiles: [],
   defaultSearchFilter: '',
   searchedProfiles: [],
