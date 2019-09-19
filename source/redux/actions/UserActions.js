@@ -1,34 +1,5 @@
 import USER from '../constants/User';
 
-export const clearProfiles = () => ({
-  type: USER.CLEAR
-});
-
-export const updateDefaultSearchFilter = filter => ({
-  type: USER.CHANGE_DEFAULT_FILTER,
-  filter
-});
-
-export const changeProfileTheme = theme => ({
-  type: USER.CHANGE_PROFILE_THEME,
-  theme
-});
-
-export const changeUserXP = ({ xp, rank }) => ({
-  type: USER.CHANGE_XP,
-  xp,
-  rank
-});
-
-export const onUserNotExist = () => ({
-  type: USER.NOT_EXIST
-});
-
-export const onShowProfile = user => ({
-  type: USER.SHOW_PROFILE,
-  data: user
-});
-
 export const clearUserSearch = () => ({
   type: USER.CLEAR_SEARCH
 });

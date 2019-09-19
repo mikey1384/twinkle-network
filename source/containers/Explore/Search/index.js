@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import TopFilter from './TopFilter';
@@ -11,31 +10,24 @@ import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
 import { useAppContext } from 'context';
-import { updateDefaultSearchFilter } from 'redux/actions/UserActions';
 
 Search.propTypes = {
   history: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
-  defaultSearchFilter: PropTypes.string,
   pathname: PropTypes.string.isRequired,
-  style: PropTypes.object,
-  updateDefaultSearchFilter: PropTypes.func.isRequired
+  style: PropTypes.object
 };
 
-function Search({
-  dispatch,
-  defaultSearchFilter,
-  history,
-  pathname,
-  style,
-  updateDefaultSearchFilter
-}) {
+export default function Search({ history, pathname, style }) {
   const {
     explore: {
       state: {
         search: { searchText }
       },
       actions: { onLoadSearchResults }
+    },
+    user: {
+      state: { defaultSearchFilter },
+      actions: { onChangeDefaultSearchFilter }
     }
   } = useAppContext();
   const category = getSectionFromPathname(pathname)?.section;
@@ -103,21 +95,9 @@ function Search({
       filter: category,
       dispatch
     });
-    updateDefaultSearchFilter(category);
+    onChangeDefaultSearchFilter(category);
     if (stringIsEmpty(searchText)) {
       SearchBoxRef.current.focus();
     }
   }
 }
-
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    defaultSearchFilter: state.UserReducer.searchFilter
-  }),
-  dispatch => ({
-    dispatch,
-    updateDefaultSearchFilter: params =>
-      dispatch(updateDefaultSearchFilter(params))
-  })
-)(Search);

@@ -8,14 +8,18 @@ import HomeActions from './Home/actions';
 import HomeReducer from './Home/reducer';
 import ProfileActions from './Profile/actions';
 import ProfileReducer from './Profile/reducer';
+import UserActions from './User/actions';
+import UserReducer from './User/reducer';
 import ViewActions from './View/actions';
 import ViewReducer from './View/reducer';
+import requestHelpers from './requestHelpers';
 import { InputContextProvider } from './InputContext';
 import {
   initialContentState,
   initialExploreState,
   initialHomeState,
   initialProfileState,
+  initialUserState,
   initialViewState
 } from './initialStates';
 
@@ -39,6 +43,7 @@ export function AppContextProvider({ children }) {
     ProfileReducer,
     initialProfileState
   );
+  const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
   const [viewState, viewDispatch] = useReducer(ViewReducer, initialViewState);
   return (
     <AppContext.Provider
@@ -59,13 +64,34 @@ export function AppContextProvider({ children }) {
           state: profileState,
           actions: ProfileActions(profileDispatch)
         },
+        user: {
+          state: userState,
+          actions: UserActions(userDispatch)
+        },
         view: {
           state: viewState,
           actions: ViewActions(viewDispatch)
-        }
+        },
+        requestHelpers: requestHelpers(handleError)
       }}
     >
       <InputContextProvider>{children}</InputContextProvider>
     </AppContext.Provider>
   );
+
+  function handleError(error) {
+    if (error.response) {
+      const { status } = error.response;
+      if (status === 401) {
+        userDispatch({
+          type: 'LOGOUT_AND_OPEN_SIGN_IN_MODAL'
+        });
+      }
+      if (status === 301) {
+        window.location.reload();
+      }
+    }
+    console.error(error.response || error);
+    return Promise.reject(error);
+  }
 }

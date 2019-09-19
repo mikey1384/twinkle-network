@@ -70,6 +70,22 @@ export const initialProfileState = {
     linksLoadMoreButton: false
   }
 };
+export const initialUserState = {
+  authLevel: 0,
+  canDelete: false,
+  canEdit: false,
+  canEditRewardLevel: false,
+  canStar: false,
+  canEditPlaylists: false,
+  canPinPlaylists: false,
+  isCreator: false,
+  loggedIn: false,
+  profile: {},
+  profiles: [],
+  defaultSearchFilter: '',
+  searchedProfiles: [],
+  loadMoreButton: false
+};
 export const initialViewState = {
   pageVisible: true,
   scrollPositions: {}

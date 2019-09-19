@@ -18,7 +18,6 @@ const defaultState = {
 };
 
 export default function UserReducer(state = defaultState, action) {
-  let loadMoreButton = false;
   switch (action.type) {
     case USER.CLEAR:
       return {
@@ -56,7 +55,8 @@ export default function UserReducer(state = defaultState, action) {
         ...action.data,
         isCreator: action.data.userType === 'creator'
       };
-    case USER.LOAD_USERS:
+    case USER.LOAD_USERS: {
+      let loadMoreButton = false;
       if (action.data.length > 20) {
         action.data.pop();
         loadMoreButton = true;
@@ -66,7 +66,9 @@ export default function UserReducer(state = defaultState, action) {
         profiles: action.data,
         loadMoreButton
       };
-    case USER.LOAD_MORE_USERS:
+    }
+    case USER.LOAD_MORE_USERS: {
+      let loadMoreButton = false;
       if (action.data.length > 5) {
         action.data.pop();
         loadMoreButton = true;
@@ -76,6 +78,7 @@ export default function UserReducer(state = defaultState, action) {
         profiles: state.profiles.concat(action.data),
         loadMoreButton
       };
+    }
     case USER.SEARCH:
       return {
         ...state,

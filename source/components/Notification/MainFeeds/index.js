@@ -17,17 +17,14 @@ import {
 } from 'redux/actions/NotiActions';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { updateUserXP } from 'helpers/requestHelpers';
-import { changeUserXP } from 'redux/actions/UserActions';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
+import { useAppContext } from 'context';
 
 MainFeeds.propTypes = {
   clearRewards: PropTypes.func.isRequired,
-  changeUserXP: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   fetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object.isRequired,
   loadMoreNotifications: PropTypes.func.isRequired,
@@ -35,34 +32,33 @@ MainFeeds.propTypes = {
   numNewNotis: PropTypes.number,
   activeTab: PropTypes.string,
   notifications: PropTypes.array.isRequired,
-  rank: PropTypes.number,
   rewards: PropTypes.array,
   selectNotiTab: PropTypes.func.isRequired,
   style: PropTypes.object,
-  totalRewardAmount: PropTypes.number,
-  twinkleXP: PropTypes.number,
-  userId: PropTypes.number
+  totalRewardAmount: PropTypes.number
 };
 
 function MainFeeds({
   activeTab,
-  changeUserXP,
   clearRewards,
-  dispatch,
   fetchNotifications,
   loadMore,
   loadMoreNotifications,
   loadMoreRewards,
   notifications,
   numNewNotis,
-  rank,
   rewards,
   selectNotiTab,
   style,
-  totalRewardAmount,
-  twinkleXP,
-  userId
+  totalRewardAmount
 }) {
+  const {
+    user: {
+      state: { userId, rank, twinkleXP },
+      action: { onChangeUserXP }
+    },
+    requestHelpers: { updateUserXP }
+  } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
@@ -203,11 +199,10 @@ function MainFeeds({
     setOriginalTotalReward(totalRewardAmount);
     setOriginalTwinkleXP(twinkleXP);
     const { xp, alreadyDone, rank } = await updateUserXP({
-      action: 'collect',
-      dispatch
+      action: 'collect'
     });
     if (alreadyDone) return;
-    changeUserXP({ xp, rank });
+    onChangeUserXP({ xp, rank });
     clearRewards();
   }
 
@@ -230,17 +225,7 @@ function MainFeeds({
 export default connect(
   state => ({
     numNewNotis: state.NotiReducer.numNewNotis,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    rank: state.UserReducer.rank,
-    twinkleXP: state.UserReducer.twinkleXP,
-    userId: state.UserReducer.userId
+    totalRewardAmount: state.NotiReducer.totalRewardAmount
   }),
-  dispatch => ({
-    dispatch,
-    changeUserXP: params => dispatch(changeUserXP(params)),
-    clearRewards: params => dispatch(clearRewards(params)),
-    fetchNotifications: params => dispatch(fetchNotifications(params)),
-    loadMoreNotifications: params => dispatch(loadMoreNotifications(params)),
-    loadMoreRewards: params => dispatch(loadMoreRewards(params))
-  })
+  { clearRewards, fetchNotifications, loadMoreNotifications, loadMoreRewards }
 )(MainFeeds);

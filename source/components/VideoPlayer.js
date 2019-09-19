@@ -8,14 +8,12 @@ import Spinner from 'components/Spinner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { connect } from 'react-redux';
-import { auth, updateUserXP } from 'helpers/requestHelpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import {
   addVideoView,
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
 } from 'redux/actions/VideoActions';
-import { changeUserXP } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
 import { useAppContext } from 'context';
@@ -30,20 +28,15 @@ VideoPlayer.propTypes = {
   addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
   currentVideoSlot: PropTypes.number,
-  dispatch: PropTypes.func.isRequired,
   emptyCurrentVideoSlot: PropTypes.func,
   fillCurrentVideoSlot: PropTypes.func,
   hasHqThumb: PropTypes.number,
-  changeUserXP: PropTypes.func,
   minimized: PropTypes.bool,
   stretch: PropTypes.bool,
   onEdit: PropTypes.bool,
-  profileTheme: PropTypes.string,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
-  twinkleXP: PropTypes.number,
   uploader: PropTypes.object.isRequired,
-  userId: PropTypes.number,
   videoCode: PropTypes.string.isRequired,
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
@@ -51,25 +44,30 @@ VideoPlayer.propTypes = {
 function VideoPlayer({
   addVideoView,
   byUser,
-  changeUserXP,
   currentVideoSlot,
-  dispatch,
   emptyCurrentVideoSlot,
   fillCurrentVideoSlot,
   rewardLevel,
   hasHqThumb,
   minimized,
   onEdit,
-  profileTheme,
   stretch,
   style = {},
-  twinkleXP,
-  userId,
   uploader,
   videoCode,
   videoId
 }) {
   const {
+    user: {
+      actions: { onChangeUserXP },
+      state: { profileTheme, twinkleXP, userId }
+    },
+    requestHelpers: {
+      checkXPEarned,
+      updateCurrentlyWatching,
+      updateUserXP,
+      updateVideoXPEarned
+    },
     view: {
       state: { pageVisible }
     }
@@ -121,23 +119,14 @@ function VideoPlayer({
     }
 
     if (!!rewardLevel && userId) {
-      checkXpEarned();
+      handleCheckXPEarned();
     }
 
-    async function checkXpEarned() {
-      try {
-        const {
-          data: { xpEarned }
-        } = await request.get(
-          `${VIDEO_URL}/xpEarned?videoId=${videoId}`,
-          auth()
-        );
-        if (mounted.current) {
-          setXpEarned(!!xpEarned);
-          setXpLoaded(true);
-        }
-      } catch (error) {
-        console.error(error.response || error);
+    async function handleCheckXPEarned() {
+      const xpEarned = await checkXPEarned(videoId);
+      if (mounted.current) {
+        setXpEarned(!!xpEarned);
+        setXpLoaded(true);
       }
     }
 
@@ -410,18 +399,10 @@ function VideoPlayer({
         );
       }
     }
-    const authorization = auth();
-    const authExists = !!authorization.headers.authorization;
-    if (authExists && !!rewardLevel && !(justEarned || xpEarned)) {
-      try {
-        request.put(
-          `${VIDEO_URL}/currentlyWatching`,
-          { watchCode: watchCodeRef.current },
-          authorization
-        );
-      } catch (error) {
-        console.error(error.response || error);
-      }
+    if (!!rewardLevel && !(justEarned || xpEarned)) {
+      updateCurrentlyWatching({
+        watchCode: watchCodeRef.current
+      });
     }
   }
 
@@ -452,17 +433,16 @@ function VideoPlayer({
     ) {
       rewardingXP.current = true;
       try {
-        await request.put(`${VIDEO_URL}/xpEarned`, { videoId }, auth());
+        await updateVideoXPEarned(videoId);
         const { alreadyDone, xp, rank } = await updateUserXP({
           action: 'watch',
           target: 'video',
           amount: rewardAmountRef.current,
           targetId: videoId,
-          type: 'increase',
-          dispatch
+          type: 'increase'
         });
         if (alreadyDone) return;
-        changeUserXP({ xp, rank });
+        onChangeUserXP({ xp, rank });
         setJustEarned(true);
         rewardingXP.current = false;
       } catch (error) {
@@ -520,16 +500,11 @@ function VideoPlayer({
 
 export default connect(
   state => ({
-    currentVideoSlot: state.VideoReducer.currentVideoSlot,
-    userId: state.UserReducer.userId,
-    profileTheme: state.UserReducer.profileTheme,
-    twinkleXP: state.UserReducer.twinkleXP
+    currentVideoSlot: state.VideoReducer.currentVideoSlot
   }),
-  dispatch => ({
-    dispatch,
-    addVideoView: params => dispatch(addVideoView(params)),
-    changeUserXP: params => dispatch(changeUserXP(params)),
-    fillCurrentVideoSlot: params => dispatch(fillCurrentVideoSlot(params)),
-    emptyCurrentVideoSlot: params => dispatch(emptyCurrentVideoSlot(params))
-  })
+  {
+    addVideoView,
+    fillCurrentVideoSlot,
+    emptyCurrentVideoSlot
+  }
 )(VideoPlayer);

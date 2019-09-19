@@ -5,48 +5,27 @@ import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
-import {
-  changeProfileTheme,
-  onUserNotExist,
-  onShowProfile
-} from 'redux/actions/UserActions';
-import { checkIfUserExists, setTheme } from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
 Profile.propTypes = {
-  changeProfileTheme: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  onUserNotExist: PropTypes.func.isRequired,
-  onShowProfile: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  match: PropTypes.object.isRequired
 };
 
-function Profile({
-  changeProfileTheme,
-  dispatch,
-  history,
-  location,
-  match,
-  profile,
-  profile: { unavailable },
-  onUserNotExist,
-  onShowProfile,
-  userId,
-  username
-}) {
+export default function Profile({ history, location, match }) {
   const {
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
-    }
+    },
+    user: {
+      state: { userId, username, profile },
+      actions: { onChangeProfileTheme, onShowProfile, onUserNotExist }
+    },
+    requestHelpers: { checkIfUserExists, setTheme }
   } = useAppContext();
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
@@ -77,7 +56,11 @@ function Profile({
   }, [match.params.username]);
 
   useEffect(() => {
-    if (match.params.username === 'undefined' && userId && unavailable) {
+    if (
+      match.params.username === 'undefined' &&
+      userId &&
+      profile.unavailable
+    ) {
       history.push(`/${username}`);
     }
     setSelectedTheme(profile?.profileTheme || 'logoBlue');
@@ -85,7 +68,7 @@ function Profile({
 
   return (
     <ErrorBoundary style={{ minHeight: '10rem' }}>
-      {!unavailable ? (
+      {!profile.unavailable ? (
         <>
           {loading && <Loading text="Loading Profile..." />}
           {!loading && profile.id && (
@@ -129,21 +112,7 @@ function Profile({
   );
 
   async function onSetTheme() {
-    await setTheme({ color: selectedTheme, dispatch });
-    changeProfileTheme(selectedTheme);
+    await setTheme({ color: selectedTheme });
+    onChangeProfileTheme(selectedTheme);
   }
 }
-
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profile: state.UserReducer.profile
-  }),
-  dispatch => ({
-    dispatch,
-    changeProfileTheme: theme => dispatch(changeProfileTheme(theme)),
-    onUserNotExist: params => dispatch(onUserNotExist(params)),
-    onShowProfile: params => dispatch(onShowProfile(params))
-  })
-)(Profile);
