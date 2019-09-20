@@ -6,37 +6,26 @@ import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { onUploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
-import { uploadProfilePic } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 Cover.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  profile: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    profilePicId: PropTypes.number,
-    profileTheme: PropTypes.string,
-    realName: PropTypes.string,
-    twinkleXP: PropTypes.number,
-    username: PropTypes.string,
-    userType: PropTypes.string
-  }),
   onSelectTheme: PropTypes.func.isRequired,
   onSetTheme: PropTypes.func.isRequired,
-  selectedTheme: PropTypes.string,
-  onUploadProfilePic: PropTypes.func,
-  userId: PropTypes.number
+  selectedTheme: PropTypes.string
 };
 
-function Cover({
-  dispatch,
-  userId,
-  profile: {
-    id,
+function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
+  const {
+    user: {
+      state: { profile, userId },
+      actions: { onUploadProfilePic }
+    },
+    requestHelpers: { uploadProfilePic }
+  } = useAppContext();
+  const {
     profilePicId,
     online,
     profileTheme,
@@ -44,12 +33,7 @@ function Cover({
     twinkleXP,
     username,
     userType
-  },
-  onSelectTheme,
-  onSetTheme,
-  onUploadProfilePic,
-  selectedTheme
-}) {
+  } = profile;
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
@@ -123,7 +107,7 @@ function Cover({
           )}
           <p>({realName})</p>
         </div>
-        {id === userId && (
+        {profile.id === userId && (
           <div
             style={{
               background: colorSelectorShown && '#fff',
@@ -221,10 +205,12 @@ function Cover({
           }
         `}
         style={{ position: 'absolute' }}
-        userId={id}
-        onClick={userId === id ? () => FileInputRef.current.click() : undefined}
+        userId={profile.id}
+        onClick={
+          userId === profile.id ? () => FileInputRef.current.click() : undefined
+        }
         profilePicId={profilePicId}
-        online={userId === id || !!online}
+        online={userId === profile.id || !!online}
         large
       />
       {imageEditModalShown && (
@@ -277,20 +263,10 @@ function Cover({
 
   async function uploadImage(image) {
     setProcessing(true);
-    const data = await uploadProfilePic({ image, dispatch });
+    const data = await uploadProfilePic({ image });
     onUploadProfilePic(data);
     setImageUri(null);
     setProcessing(false);
     setImageEditModalShown(false);
   }
 }
-
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
-  dispatch => ({
-    dispatch,
-    onUploadProfilePic: params => dispatch(onUploadProfilePic(params))
-  })
-)(Cover);

@@ -21,17 +21,12 @@ import { Link } from 'react-router-dom';
 import { checkIfUserResponded, editContent } from 'helpers/requestHelpers';
 import { commentContainer } from './Styles';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { connect } from 'react-redux';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
 import LocalContext from './Context';
 import { useAppContext } from 'context';
 
 Comment.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canStar: PropTypes.bool,
   comment: PropTypes.shape({
     commentId: PropTypes.number,
     content: PropTypes.string.isRequired,
@@ -48,29 +43,24 @@ Comment.propTypes = {
       .isRequired,
     uploader: PropTypes.object.isRequired
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
-  parent: PropTypes.object,
-  userId: PropTypes.number
+  parent: PropTypes.object
 };
 
 function Comment({
-  authLevel,
-  canDelete,
-  canEdit,
-  canStar,
   comment,
-  dispatch,
   history,
   innerRef,
   isPreview,
-  userId,
   parent,
   comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
 }) {
   const {
+    user: {
+      state: { authLevel, canDelete, canEdit, canStar, userId }
+    },
     view: {
       state: { pageVisible }
     }
@@ -392,8 +382,7 @@ function Comment({
 
   async function editDone(editedComment) {
     await editContent({
-      params: { editedComment, contentId: comment.id, contentType: 'comment' },
-      dispatch
+      params: { editedComment, contentId: comment.id, contentType: 'comment' }
     });
     onEditDone({ editedComment, commentId: comment.id });
     setOnEdit(false);
@@ -413,12 +402,4 @@ function Comment({
   }
 }
 
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar
-  }),
-  dispatch => ({ dispatch })
-)(withRouter(Comment));
+export default withRouter(Comment);

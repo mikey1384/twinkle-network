@@ -3,40 +3,28 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { openSigninModal } from 'redux/actions/UserActions';
-import { connect } from 'react-redux';
+import Loading from 'components/Loading';
 import { container } from './Styles';
 import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
-import Loading from 'components/Loading';
+import { useAppContext } from 'context';
 const WelcomeMessage = React.lazy(() => import('./WelcomeMessage'));
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
-  loadImage: PropTypes.func,
-  openSigninModal: PropTypes.func,
-  profilePicId: PropTypes.number,
-  profileTheme: PropTypes.string,
-  realName: PropTypes.string,
-  showAlert: PropTypes.func,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  onLoadImage: PropTypes.func,
+  onShowAlert: PropTypes.func
 };
 
-function ProfileWidget({
-  history,
-  loadImage,
-  openSigninModal,
-  profilePicId,
-  profileTheme,
-  realName,
-  showAlert,
-  userId,
-  username
-}) {
+export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
+  const {
+    user: {
+      state: { profilePicId, profileTheme, realName, userId, username },
+      actions: { onOpenSigninModal }
+    }
+  } = useAppContext();
   const FileInputRef = useRef(null);
   const themeColor = profileTheme || 'logoBlue';
-
   return (
     <ErrorBoundary>
       <div
@@ -106,7 +94,10 @@ function ProfileWidget({
               />
             }
           >
-            <WelcomeMessage userId={userId} openSigninModal={openSigninModal} />
+            <WelcomeMessage
+              userId={userId}
+              openSigninModal={onOpenSigninModal}
+            />
           </Suspense>
 
           <input
@@ -126,22 +117,10 @@ function ProfileWidget({
     const maxSize = 5000;
     const file = event.target.files[0];
     if (file.size / 1000 > maxSize) {
-      return showAlert();
+      return onShowAlert();
     }
-    reader.onload = loadImage;
+    reader.onload = onLoadImage;
     reader.readAsDataURL(file);
     event.target.value = null;
   }
 }
-
-export default connect(
-  state => ({
-    realName: state.UserReducer.realName,
-    twinkleXP: state.UserReducer.twinkleXP,
-    username: state.UserReducer.username,
-    userId: state.UserReducer.userId,
-    profilePicId: state.UserReducer.profilePicId,
-    profileTheme: state.UserReducer.profileTheme
-  }),
-  { openSigninModal }
-)(ProfileWidget);

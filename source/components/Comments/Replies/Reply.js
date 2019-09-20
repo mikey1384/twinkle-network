@@ -17,7 +17,6 @@ import LongText from 'components/Texts/LongText';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { commentContainer } from '../Styles';
-import { connect } from 'react-redux';
 import { determineXpButtonDisabled } from 'helpers';
 import { editContent, loadReplies } from 'helpers/requestHelpers';
 import { Link } from 'react-router-dom';
@@ -58,7 +57,7 @@ Reply.propTypes = {
   userId: PropTypes.number
 };
 
-function Reply({
+export default function Reply({
   comment,
   authLevel,
   canDelete,
@@ -364,13 +363,3 @@ function Reply({
     }
   }
 }
-
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar
-  }),
-  dispatch => ({ dispatch })
-)(Reply);

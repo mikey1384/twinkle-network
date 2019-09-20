@@ -7,31 +7,24 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { uploadProfilePic } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
-import { connect } from 'react-redux';
-import { logout, onUploadProfilePic } from 'redux/actions/UserActions';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 MobileMenu.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   location: PropTypes.object,
-  logout: PropTypes.func.isRequired,
   history: PropTypes.object,
-  onUploadProfilePic: PropTypes.func,
-  username: PropTypes.string,
   onClose: PropTypes.func.isRequired
 };
 
-function MobileMenu({
-  dispatch,
-  location,
-  history,
-  logout,
-  username,
-  onClose,
-  onUploadProfilePic
-}) {
+export default function MobileMenu({ location, history, onClose }) {
+  const {
+    user: {
+      state: { username },
+      actions: { onLogout, onUploadProfilePic }
+    },
+    requestHelpers: { uploadProfilePic }
+  } = useAppContext();
   const [marginLeft, setMarginLeft] = useState('-100%');
   useEffect(() => {
     if (marginLeft !== '-100%') {
@@ -75,8 +68,8 @@ function MobileMenu({
       >
         <ProfileWidget
           history={history}
-          showAlert={() => setAlertModalShown(true)}
-          loadImage={upload =>
+          onShowAlert={() => setAlertModalShown(true)}
+          onLoadImage={upload =>
             setImageEditStatus({
               ...imageEditStatus,
               imageEditModalShown: true,
@@ -100,7 +93,7 @@ function MobileMenu({
               font-size: 3rem;
               padding: 1rem;
             `}
-            onClick={logout}
+            onClick={onLogout}
           >
             Log out
           </div>
@@ -148,7 +141,7 @@ function MobileMenu({
       ...imageEditStatus,
       processing: true
     });
-    const data = await uploadProfilePic({ image, dispatch });
+    const data = await uploadProfilePic({ image });
     onUploadProfilePic(data);
     setImageEditStatus({
       imageUri: null,
@@ -157,14 +150,3 @@ function MobileMenu({
     });
   }
 }
-
-export default connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
-  dispatch => ({
-    dispatch,
-    logout: params => dispatch(logout(params)),
-    onUploadProfilePic: params => dispatch(onUploadProfilePic(params))
-  })
-)(MobileMenu);

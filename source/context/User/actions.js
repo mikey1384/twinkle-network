@@ -59,6 +59,11 @@ export default function UserActions(dispatch) {
         type: 'LOGOUT'
       };
     },
+    onOpenSigninModal() {
+      return {
+        type: 'OPEN_SIGNIN_MODAL'
+      };
+    },
     onRemoveStatusMsg(userId) {
       return {
         type: 'DELETE_STATUS_MSG',
@@ -88,6 +93,12 @@ export default function UserActions(dispatch) {
         type: 'SHOW_PROFILE_COMMENTS',
         profileId
       });
+    },
+    onToggleHideWatched(hideWatched) {
+      return {
+        type: 'TOGGLE_HIDE_WATCHED',
+        hideWatched
+      };
     },
     onUpdateBio(data) {
       return {

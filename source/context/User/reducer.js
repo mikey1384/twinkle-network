@@ -119,6 +119,11 @@ export default function UserReducer(state, action) {
         profiles: state.profiles,
         searchedProfiles: state.searchedProfiles
       };
+    case 'OPEN_SIGNIN_MODAL':
+      return {
+        ...state,
+        signinModalShown: true
+      };
     case 'SEARCH_USERS':
       return {
         ...state,
@@ -144,6 +149,11 @@ export default function UserReducer(state, action) {
         ...action.data,
         loggedIn: true,
         signinModalShown: false
+      };
+    case 'TOGGLE_HIDE_WATCHED':
+      return {
+        ...state,
+        hideWatched: action.hideWatched
       };
     case 'UPDATE_BIO':
       return {
@@ -200,22 +210,3 @@ export default function UserReducer(state, action) {
       return state;
   }
 }
-
-/*
-export function UserReducerClone(state = defaultState, action) {
-  switch (action.type) {
-    case USER.OPEN_SIGNIN_MODAL:
-      return {
-        ...state,
-        signinModalShown: true
-      };
-    case USER.TOGGLE_HIDE_WATCHED:
-      return {
-        ...state,
-        hideWatched: action.hideWatched
-      };
-    default:
-      return state;
-  }
-}
-*/

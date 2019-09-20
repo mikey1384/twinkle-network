@@ -6,7 +6,6 @@ import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { logout } from 'redux/actions/UserActions';
 import {
   clearChatLoadedState,
   clearRecentChessMessage,
@@ -30,8 +29,6 @@ import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { recordUserAction } from 'helpers/userDataHelpers';
-import { loadChat } from 'helpers/requestHelpers';
 import { getSectionFromPathname } from 'helpers';
 import { useAppContext } from 'context';
 
@@ -49,8 +46,6 @@ Header.propTypes = {
   increaseNumberOfUnreadMessages: PropTypes.func,
   initChat: PropTypes.func.isRequired,
   location: PropTypes.object,
-  loggedIn: PropTypes.bool,
-  logout: PropTypes.func,
   notifyChatSubjectChange: PropTypes.func,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
@@ -59,15 +54,12 @@ Header.propTypes = {
   onMobileMenuOpen: PropTypes.func,
   receiveMessage: PropTypes.func.isRequired,
   receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
-  resetChat: PropTypes.func,
   defaultSearchFilter: PropTypes.string,
   selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
   updateApiServerToS3Progress: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string,
   versionMatch: PropTypes.bool
 };
 
@@ -85,8 +77,6 @@ function Header({
   increaseNumberOfUnreadMessages,
   initChat,
   location: { pathname },
-  logout,
-  loggedIn,
   notifyChatSubjectChange,
   numChatUnreads,
   numNewNotis,
@@ -95,21 +85,22 @@ function Header({
   onMobileMenuOpen,
   receiveMessage,
   receiveMessageOnDifferentChannel,
-  resetChat,
   defaultSearchFilter,
   selectedChannelId,
   showUpdateNotice,
   style = {},
   totalRewardAmount,
   updateApiServerToS3Progress,
-  userId,
-  username,
   versionMatch
 }) {
   const {
+    user: {
+      state: { userId, username }
+    },
     view: {
       state: { pageVisible }
-    }
+    },
+    requestHelpers: { loadChat }
   } = useAppContext();
   const prevUserIdRef = useRef(userId);
   const [homeLink, setHomeLink] = useState('/');
@@ -310,30 +301,16 @@ function Header({
               }
             `}`}
             history={history}
-            loggedIn={loggedIn}
-            logout={onLogout}
-            title={username}
           />
         </div>
       </nav>
     </ErrorBoundary>
   );
-
-  function onLogout() {
-    recordUserAction({ action: 'logout' });
-    logout();
-    resetChat();
-  }
 }
 
 export default connect(
   state => ({
-    loggedIn: state.UserReducer.loggedIn,
-    defaultSearchFilter: state.UserReducer.searchFilter,
     selectedChannelId: state.ChatReducer.selectedChannelId,
-    username: state.UserReducer.username,
-    userType: state.UserReducer.userType,
-    userId: state.UserReducer.userId,
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
     numChatUnreads: state.ChatReducer.numUnreads,
@@ -351,7 +328,6 @@ export default connect(
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
     initChat,
-    logout,
     notifyChatSubjectChange,
     receiveMessage,
     receiveMessageOnDifferentChannel,

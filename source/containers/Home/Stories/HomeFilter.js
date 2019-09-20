@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAppContext } from 'context';
 import { PropTypes } from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -38,6 +39,13 @@ function HomeFilter({
   selectedFilter,
   setDisplayOrder
 }) {
+  const {
+    user: {
+      state: { hideWatched, userId },
+      actions: { onToggleHideWatched }
+    },
+    requestHelpers: { toggleHideWatched }
+  } = useAppContext();
   const [activeTab, setActiveTab] = useState();
   useEffect(() => setActiveTab(category), [category]);
   return (

@@ -2,32 +2,22 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { openSigninModal } from 'redux/actions/UserActions';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
   className: PropTypes.string,
-  loggedIn: PropTypes.bool,
-  logout: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  openSigninModal: PropTypes.func.isRequired,
-  style: PropTypes.object,
-  title: PropTypes.string,
-  username: PropTypes.string
+  style: PropTypes.object
 };
 
-function AccountMenu({
-  buttonStyle = {},
-  className,
-  history,
-  loggedIn,
-  openSigninModal,
-  title,
-  logout,
-  style,
-  username
-}) {
+function AccountMenu({ buttonStyle = {}, className, history, style }) {
+  const {
+    user: {
+      state: { loggedIn, username },
+      actions: { onLogout, onOpenSigninModal }
+    }
+  } = useAppContext();
   return (
     <div style={style}>
       {loggedIn ? (
@@ -46,7 +36,7 @@ function AccountMenu({
                 textOverflow: 'ellipsis'
               }}
             >
-              {title}
+              {username}
             </div>
           }
           shape="button"
@@ -59,14 +49,14 @@ function AccountMenu({
             },
             {
               label: 'Log out',
-              onClick: logout
+              onClick: onLogout
             }
           ]}
         />
       ) : (
         <Button
           className={className}
-          onClick={openSigninModal}
+          onClick={onOpenSigninModal}
           style={{ marginLeft: '1rem', ...buttonStyle }}
           color="green"
           filled
@@ -85,10 +75,3 @@ function AccountMenu({
     </div>
   );
 }
-
-export default connect(
-  state => ({
-    username: state.UserReducer.username
-  }),
-  { openSigninModal }
-)(AccountMenu);
