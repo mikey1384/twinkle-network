@@ -47,18 +47,6 @@ export default function UserReducer(state, action) {
             : {})
         }))
       };
-    case 'EDIT_BIO':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          ...action.bio
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId ? action.bio : {})
-        }))
-      };
     case 'EDIT_PROFILE_PICTURE':
       return {
         ...state,
@@ -76,21 +64,6 @@ export default function UserReducer(state, action) {
             profile.id === action.data.userId
               ? action.data.imageId
               : profile.profilePicId
-        }))
-      };
-    case 'EDIT_STATUS_MSG':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          statusMsg: action.statusMsg,
-          statusColor: action.statusColor
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId
-            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
-            : {})
         }))
       };
     case 'INIT_SESSION':
@@ -123,6 +96,14 @@ export default function UserReducer(state, action) {
         loadMoreButton
       };
     }
+    case 'LOGIN':
+      return {
+        ...state,
+        ...action.data,
+        loggedIn: true,
+        signinModalShown: false,
+        isCreator: action.data.userType === 'creator'
+      };
     case 'LOGOUT':
       return {
         ...initialUserState,
@@ -143,6 +124,71 @@ export default function UserReducer(state, action) {
         ...state,
         searchedProfiles: action.users
       };
+    case 'SHOW_PROFILE':
+      return {
+        ...state,
+        profile: action.data
+      };
+    case 'SHOW_PROFILE_COMMENTS':
+      return {
+        ...state,
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          commentsShown:
+            profile.id === action.profileId ? true : profile.commentsShown
+        }))
+      };
+    case 'SIGNUP':
+      return {
+        ...state,
+        ...action.data,
+        loggedIn: true,
+        signinModalShown: false
+      };
+    case 'UPDATE_BIO':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          ...action.bio
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId ? action.bio : {})
+        }))
+      };
+    case 'UPDATE_GREETING':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          greeting: action.greeting
+        }
+      };
+    case 'UPDATE_PROFILE_INFO':
+      return {
+        ...state,
+        ...action.data,
+        profile: {
+          ...state.profile,
+          ...action.data
+        }
+      };
+    case 'UPDATE_STATUS_MSG':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          statusMsg: action.statusMsg,
+          statusColor: action.statusColor
+        },
+        profiles: state.profiles.map(profile => ({
+          ...profile,
+          ...(profile.id === action.userId
+            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
+            : {})
+        }))
+      };
     case 'USER_NOT_EXIST':
       return {
         ...state,
@@ -158,68 +204,15 @@ export default function UserReducer(state, action) {
 /*
 export function UserReducerClone(state = defaultState, action) {
   switch (action.type) {
-    case USER.SHOW_PROFILE:
-      return {
-        ...state,
-        profile: action.data
-      };
-    case USER.LOGIN:
-      return {
-        ...state,
-        ...action.data,
-        loggedIn: true,
-        signinModalShown: false,
-        isCreator: action.data.userType === 'creator'
-      };
-    case USER.SET_GREETING:
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          greeting: action.greeting
-        }
-      };
-    case USER.SET_PROFILE_INFO:
-      return {
-        ...state,
-        ...action.data,
-        profile: {
-          ...state.profile,
-          ...action.data
-        }
-      };
-    case USER.SIGNUP:
-      return {
-        ...state,
-        ...action.data,
-        loggedIn: true,
-        signinModalShown: false
-      };
     case USER.OPEN_SIGNIN_MODAL:
       return {
         ...state,
         signinModalShown: true
       };
-    case USER.SHOW_PROFILE_COMMENTS:
-      return {
-        ...state,
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          commentsShown:
-            profile.id === action.profileId
-              ? action.shown
-              : profile.commentsShown
-        }))
-      };
     case USER.TOGGLE_HIDE_WATCHED:
       return {
         ...state,
         hideWatched: action.hideWatched
-      };
-    case USER.UNMOUNT_PROFILE:
-      return {
-        ...state,
-        profile: {}
       };
     default:
       return state;

@@ -8,22 +8,17 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
-import { onToggleHideWatched } from 'redux/actions/UserActions';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
-import { connect } from 'react-redux';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import { socket } from 'constants/io';
+import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 Stories.propTypes = {
-  hideWatched: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   location: PropTypes.object.isRequired,
   numNewPosts: PropTypes.number.isRequired,
-  resetNumNewPosts: PropTypes.func.isRequired,
-  onToggleHideWatched: PropTypes.func.isRequired,
-  username: PropTypes.string,
-  userId: PropTypes.number
+  resetNumNewPosts: PropTypes.func.isRequired
 };
 
 const categoryObj = {
@@ -45,15 +40,7 @@ const categoryObj = {
   }
 };
 
-function Stories({
-  hideWatched,
-  location,
-  numNewPosts,
-  resetNumNewPosts,
-  onToggleHideWatched,
-  userId,
-  username
-}) {
+function Stories({ location, numNewPosts, resetNumNewPosts }) {
   const {
     home: {
       state: { category, feeds, loadMoreButton, loaded, subFilter },
@@ -92,6 +79,9 @@ function Stories({
         onUploadComment,
         onUploadReply
       }
+    },
+    user: {
+      state: { hideWatched, userId, username }
     },
     view: {
       state: { scrollPositions },
@@ -196,12 +186,9 @@ function Stories({
           category={category}
           changeCategory={handleChangeCategory}
           displayOrder={displayOrder}
-          hideWatched={hideWatched}
           selectedFilter={subFilter}
           applyFilter={applyFilter}
           setDisplayOrder={handleDisplayOrder}
-          onToggleHideWatched={onToggleHideWatched}
-          userId={userId}
         />
         <InputPanel />
         <div style={{ width: '100%' }}>
@@ -410,13 +397,9 @@ function Stories({
 
 export default connect(
   state => ({
-    hideWatched: state.UserReducer.hideWatched,
-    numNewPosts: state.NotiReducer.numNewPosts,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    numNewPosts: state.NotiReducer.numNewPosts
   }),
   {
-    resetNumNewPosts,
-    onToggleHideWatched
+    resetNumNewPosts
   }
 )(Stories);

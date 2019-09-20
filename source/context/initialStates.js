@@ -78,6 +78,7 @@ export const initialUserState = {
   canStar: false,
   canEditPlaylists: false,
   canPinPlaylists: false,
+  hideWatched: false,
   isCreator: false,
   loggedIn: false,
   profile: {},

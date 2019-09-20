@@ -8,13 +8,18 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { signup } from 'helpers/requestHelpers';
 import Banner from 'components/Banner';
+import { useAppContext } from 'context';
 
 SignUpForm.propTypes = {
-  onSignUp: PropTypes.func.isRequired,
   onShowLoginForm: PropTypes.func.isRequired
 };
 
-export default function SignUpForm({ onShowLoginForm, onSignUp }) {
+export default function SignUpForm({ onShowLoginForm }) {
+  const {
+    user: {
+      actions: { onSignup }
+    }
+  } = useAppContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -220,7 +225,7 @@ export default function SignUpForm({ onShowLoginForm, onSignUp }) {
         lastname,
         email
       });
-      onSignUp(data);
+      onSignup(data);
     } catch (error) {
       setErrorMessage(error);
     }

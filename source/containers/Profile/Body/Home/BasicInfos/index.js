@@ -7,21 +7,14 @@ import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
-import {
-  loadChat,
-  loadDMChannel,
-  uploadProfileInfo,
-  sendVerificationEmail
-} from 'helpers/requestHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
-import { setProfileInfo } from 'redux/actions/UserActions';
 import { withRouter } from 'react-router';
+import { useAppContext } from 'context';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
   history: PropTypes.object,
@@ -39,13 +32,11 @@ BasicInfos.propTypes = {
   website: PropTypes.string,
   youtubeName: PropTypes.string,
   youtubeUrl: PropTypes.string,
-  setProfileInfo: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
 function BasicInfos({
   className,
-  dispatch,
   email,
   emailVerified,
   history,
@@ -58,7 +49,6 @@ function BasicInfos({
   openDirectMessageChannel,
   profileTheme,
   selectedTheme,
-  setProfileInfo,
   userId,
   username,
   website,
@@ -66,6 +56,17 @@ function BasicInfos({
   youtubeUrl,
   style
 }) {
+  const {
+    user: {
+      actions: { onUpdateProfileInfo }
+    },
+    requestHelpers: {
+      loadChat,
+      loadDMChannel,
+      uploadProfileInfo,
+      sendVerificationEmail
+    }
+  } = useAppContext();
   const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [verificationEmailSent, setVerificationEmailSent] = useState(false);
@@ -286,8 +287,7 @@ function BasicInfos({
       initChat(initialData);
     }
     const data = await loadDMChannel({
-      recepient: { id: userId, username },
-      dispatch
+      recepient: { id: userId, username }
     });
     openDirectMessageChannel({
       user: { id: myId },
@@ -309,20 +309,19 @@ function BasicInfos({
     youtubeUrl
   }) {
     const data = await uploadProfileInfo({
-      dispatch,
       email,
       website,
       youtubeName,
       youtubeUrl
     });
-    setProfileInfo(data);
+    onUpdateProfileInfo(data);
     if (mounted.current) {
       setOnEdit(false);
     }
   }
 
   function onVerifyEmail() {
-    sendVerificationEmail({ dispatch });
+    sendVerificationEmail();
     setEmailCheckHighlighted(false);
     setVerificationEmailSent(true);
   }
@@ -350,11 +349,5 @@ export default connect(
   state => ({
     loaded: state.ChatReducer.loaded
   }),
-  dispatch => ({
-    dispatch,
-    initChat: params => dispatch(initChat(params)),
-    openDirectMessageChannel: params =>
-      dispatch(openDirectMessageChannel(params)),
-    setProfileInfo: data => dispatch(setProfileInfo(data))
-  })
+  { initChat, openDirectMessageChannel }
 )(withRouter(BasicInfos));

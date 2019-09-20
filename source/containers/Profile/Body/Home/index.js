@@ -13,19 +13,6 @@ import BioEditModal from 'components/Modals/BioEditModal';
 import DropDownButton from 'components/Buttons/DropdownButton';
 import { css } from 'emotion';
 import {
-  removeStatusMsg,
-  updateStatusMsg,
-  setGreeting,
-  onUploadBio
-} from 'redux/actions/UserActions';
-import { connect } from 'react-redux';
-import {
-  auth,
-  loadComments,
-  uploadGreeting,
-  uploadBio
-} from 'helpers/requestHelpers';
-import {
   addEmoji,
   finalizeEmoji,
   renderText,
@@ -39,40 +26,41 @@ import Achievements from './Achievements';
 import { useAppContext } from 'context';
 
 Home.propTypes = {
-  profile: PropTypes.shape({
-    email: PropTypes.string,
-    emailVerified: PropTypes.bool,
-    id: PropTypes.number,
-    joinDate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    greeting: PropTypes.string,
-    lastActive: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    online: PropTypes.number,
-    profileFirstRow: PropTypes.string,
-    profileSecondRow: PropTypes.string,
-    profileThirdRow: PropTypes.string,
-    profileTheme: PropTypes.string,
-    rank: PropTypes.number,
-    statusColor: PropTypes.string,
-    statusMsg: PropTypes.string,
-    twinkleXP: PropTypes.number,
-    username: PropTypes.string.isRequired,
-    website: PropTypes.string,
-    youtubeName: PropTypes.string,
-    youtubeUrl: PropTypes.string
-  }).isRequired,
-  reduxDispatch: PropTypes.func.isRequired,
-  removeStatusMsg: PropTypes.func.isRequired,
-  selectedTheme: PropTypes.string.isRequired,
-  setGreeting: PropTypes.func.isRequired,
-  updateStatusMsg: PropTypes.func.isRequired,
-  onUploadBio: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  selectedTheme: PropTypes.string.isRequired
 };
 
-function Home({
-  reduxDispatch,
-  profile,
-  profile: {
+export default function Home({ selectedTheme }) {
+  const {
+    user: {
+      state: { profile, userId },
+      actions: { onRemoveStatusMsg, onUpdateGreeting, onUpdateBio }
+    },
+    content: {
+      state,
+      actions: {
+        onAttachStar,
+        onDeleteComment,
+        onEditComment,
+        onEditRewardComment,
+        onInitContent,
+        onLikeComment,
+        onLoadComments,
+        onLoadMoreComments,
+        onLoadMoreReplies,
+        onLoadRepliesOfReply,
+        onUploadComment,
+        onUploadReply
+      }
+    },
+    requestHelpers: {
+      auth,
+      loadComments,
+      onUpdateStatusMsg,
+      uploadGreeting,
+      uploadBio
+    }
+  } = useAppContext();
+  const {
     email,
     emailVerified,
     greeting,
@@ -90,14 +78,7 @@ function Home({
     website,
     youtubeName,
     youtubeUrl
-  },
-  removeStatusMsg,
-  selectedTheme,
-  setGreeting,
-  updateStatusMsg,
-  onUploadBio,
-  userId
-}) {
+  } = profile;
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedStatusColor, setEditedStatusColor] = useState(statusColor);
@@ -105,25 +86,6 @@ function Home({
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
   const StatusInputRef = useRef(null);
-  const {
-    content: {
-      state,
-      actions: {
-        onAttachStar,
-        onDeleteComment,
-        onEditComment,
-        onEditRewardComment,
-        onInitContent,
-        onLikeComment,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onUploadComment,
-        onUploadReply
-      }
-    }
-  } = useAppContext();
 
   useEffect(() => {
     mounted.current = true;
@@ -479,23 +441,22 @@ function Home({
   );
 
   async function handleEditGreeting(greeting) {
-    await uploadGreeting({ greeting, dispatch: reduxDispatch });
-    setGreeting(greeting);
+    await uploadGreeting({ greeting });
+    onUpdateGreeting(greeting);
   }
 
   async function handleUploadBio(params) {
     const data = await uploadBio({
       ...params,
-      profileId: profile.id,
-      dispatch: reduxDispatch
+      profileId: profile.id
     });
-    onUploadBio(data);
+    onUpdateBio(data);
     setBioEditModalShown(false);
   }
 
   async function handleRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());
-    removeStatusMsg(userId);
+    onRemoveStatusMsg(userId);
     setConfirmModalShown(false);
   }
 
@@ -512,17 +473,6 @@ function Home({
     );
     setEditedStatusColor('');
     setEditedStatusMsg('');
-    if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
+    if (typeof updateStatusMsg === 'function') onUpdateStatusMsg(data);
   }
 }
-
-export default connect(
-  state => ({ userId: state.UserReducer.userId }),
-  dispatch => ({
-    reduxDispatch: dispatch,
-    onUploadBio: params => dispatch(onUploadBio(params)),
-    removeStatusMsg: userId => dispatch(removeStatusMsg(userId)),
-    setGreeting: greeting => dispatch(setGreeting(greeting)),
-    updateStatusMsg: data => dispatch(updateStatusMsg(data))
-  })
-)(Home);

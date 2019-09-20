@@ -47,6 +47,12 @@ export default function UserActions(dispatch) {
         data
       };
     },
+    onLogin(data) {
+      return {
+        type: 'LOGIN',
+        data
+      };
+    },
     onLogout() {
       localStorage.removeItem('token');
       return {
@@ -65,31 +71,55 @@ export default function UserActions(dispatch) {
         users
       };
     },
+    onSignup(data) {
+      return {
+        type: 'SIGNUP',
+        data
+      };
+    },
     onShowProfile(user) {
       return dispatch({
         type: 'SHOW_PROFILE',
         data: user
       });
     },
-    onUpdateStatusMsg({ statusColor, statusMsg, userId }) {
-      return {
-        type: 'EDIT_STATUS_MSG',
-        statusColor,
-        statusMsg,
-        userId
-      };
+    onShowProfileComments(profileId) {
+      return dispatch({
+        type: 'SHOW_PROFILE_COMMENTS',
+        profileId
+      });
     },
-    onUploadBio(data) {
+    onUpdateBio(data) {
       return {
-        type: 'EDIT_BIO',
+        type: 'UPDATE_BIO',
         bio: data.bio,
         userId: data.userId
+      };
+    },
+    onUpdateGreeting(greeting) {
+      return {
+        type: 'UPDATE_GREETING',
+        greeting
+      };
+    },
+    onUpdateProfileInfo(data) {
+      return {
+        type: 'UPDATE_PROFILE_INFO',
+        data
       };
     },
     onUploadProfilePic(data) {
       return {
         type: 'EDIT_PROFILE_PICTURE',
         data
+      };
+    },
+    onUpdateStatusMsg({ statusColor, statusMsg, userId }) {
+      return {
+        type: 'UPDATE_STATUS_MSG',
+        statusColor,
+        statusMsg,
+        userId
       };
     },
     onUserNotExist() {

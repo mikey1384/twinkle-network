@@ -25,7 +25,7 @@ UserDetails.propTypes = {
   style: PropTypes.object,
   unEditable: PropTypes.bool,
   updateStatusMsg: PropTypes.func,
-  onUploadBio: PropTypes.func,
+  onUpdateBio: PropTypes.func,
   userId: PropTypes.number,
   small: PropTypes.bool
 };
@@ -39,7 +39,7 @@ function UserDetails({
   style = {},
   unEditable,
   updateStatusMsg,
-  onUploadBio,
+  onUpdateBio,
   userId
 }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
@@ -230,7 +230,7 @@ function UserDetails({
         profileId: profile.id,
         dispatch
       });
-      onUploadBio(data);
+      onUpdateBio(data);
       setBioEditModalShown(false);
     }
   }

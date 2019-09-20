@@ -23,15 +23,13 @@ ProfilePanel.propTypes = {
   history: PropTypes.object,
   loaded: PropTypes.bool,
   initChat: PropTypes.func.isRequired,
-  openDirectMessageChannel: PropTypes.func,
-  showProfileComments: PropTypes.func.isRequired
+  openDirectMessageChannel: PropTypes.func
 };
 
 function ProfilePanel({
   history,
   initChat,
   loaded,
-  showProfileComments,
   expandable,
   openDirectMessageChannel
 }) {
@@ -39,8 +37,9 @@ function ProfilePanel({
     user: {
       actions: {
         onRemoveStatusMsg,
+        onShowProfileComments,
         onUpdateStatusMsg,
-        onUploadBio,
+        onUpdateBio,
         onUploadProfilePic
       },
       state: { isCreator, profile, userId, username }
@@ -240,7 +239,7 @@ function ProfilePanel({
               profile={profile}
               removeStatusMsg={onRemoveStatusMsg}
               updateStatusMsg={onUpdateStatusMsg}
-              onUploadBio={onUploadBio}
+              onUpdateBio={onUpdateBio}
               userId={userId}
             />
             {canEdit && (
@@ -482,7 +481,7 @@ function ProfilePanel({
         limit: 5
       });
       setComments(comments);
-      showProfileComments({ id: profile.id, shown: true });
+      onShowProfileComments(profile.id);
       setCommentsLoadMoreButton(loadMoreButton);
     }
   }
@@ -579,7 +578,7 @@ function ProfilePanel({
       ...params,
       profileId: profile.id
     });
-    onUploadBio(data);
+    onUpdateBio(data);
     setBioEditModalShown(false);
   }
 

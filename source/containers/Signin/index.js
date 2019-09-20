@@ -5,16 +5,12 @@ import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import Main from './Main';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as UserActions from 'redux/actions/UserActions';
 
 Signin.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
-function Signin({ dispatch, onHide }) {
+export default function Signin({ onHide }) {
   const [currentPage, setCurrentPage] = useState('main');
 
   return (
@@ -35,21 +31,13 @@ function Signin({ dispatch, onHide }) {
             />
           )}
           {currentPage === 'login' && (
-            <LoginForm
-              onShowSignupForm={() => setCurrentPage('signUp')}
-              {...bindActionCreators(UserActions, dispatch)}
-            />
+            <LoginForm onShowSignupForm={() => setCurrentPage('signUp')} />
           )}
           {currentPage === 'signUp' && (
-            <SignUpForm
-              onShowLoginForm={() => setCurrentPage('login')}
-              {...bindActionCreators(UserActions, dispatch)}
-            />
+            <SignUpForm onShowLoginForm={() => setCurrentPage('login')} />
           )}
         </>
       </Modal>
     </ErrorBoundary>
   );
 }
-
-export default connect()(Signin);
