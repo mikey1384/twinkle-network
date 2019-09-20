@@ -104,6 +104,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:penguin\:)/gi, '🐧')
     .replace(/(\:perfect\:)/gi, '💯')
     .replace(/(\:pig\:)/gi, '🐷')
+    .replace(/(\:pizza\:)/gi, '🍕')
     .replace(/(\:potato\:)/gi, '🥔')
     .replace(/(\:rabbit\:)/gi, '🐰')
     .replace(/(\:sad\:)/gi, '😭')
