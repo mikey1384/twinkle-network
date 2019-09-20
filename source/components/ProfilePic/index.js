@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { borderRadius, Color, innerBorderRadius } from 'constants/css';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 ProfilePic.propTypes = {
   className: PropTypes.string,
   isProfilePage: PropTypes.bool,
   large: PropTypes.bool,
-  myId: PropTypes.number,
   onClick: PropTypes.func,
   online: PropTypes.bool,
   profilePicId: PropTypes.number,
@@ -17,17 +16,21 @@ ProfilePic.propTypes = {
   userId: PropTypes.number
 };
 
-function ProfilePic({
+export default function ProfilePic({
   className,
   isProfilePage,
   large,
-  myId,
   onClick = () => {},
   userId,
   online,
   profilePicId,
   style
 }) {
+  const {
+    user: {
+      state: { userId: myId }
+    }
+  } = useAppContext();
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
 
@@ -90,7 +93,3 @@ function ProfilePic({
     </div>
   );
 }
-
-export default connect(state => ({
-  myId: state.UserReducer.userId
-}))(ProfilePic);

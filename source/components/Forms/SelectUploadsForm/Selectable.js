@@ -7,29 +7,31 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 Selectable.propTypes = {
   item: PropTypes.object,
   selected: PropTypes.bool,
   onSelect: PropTypes.func,
   onDeselect: PropTypes.func,
-  profileTheme: PropTypes.string,
   contentType: PropTypes.string
 };
 
-function Selectable({
+export default function Selectable({
   contentType = 'video',
   item = {},
   onSelect,
   onDeselect,
-  profileTheme,
   selected
 }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
-  const themeColor = profileTheme || 'logoBlue';
 
   return (
     <ErrorBoundary
@@ -43,9 +45,9 @@ function Selectable({
         margin: '0.3%',
         cursor: 'pointer',
         boxShadow: `0 0 5px ${
-          selected ? Color[themeColor]() : Color.darkerGray()
+          selected ? Color[profileTheme]() : Color.darkerGray()
         }`,
-        border: selected && `0.5rem solid ${Color[themeColor]()}`,
+        border: selected && `0.5rem solid ${Color[profileTheme]()}`,
         background: Color.whiteGray()
       }}
     >
@@ -127,7 +129,3 @@ function Selectable({
     }
   }
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(Selectable);

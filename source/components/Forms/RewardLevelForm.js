@@ -2,29 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 RewardLevelForm.propTypes = {
   rewardLevel: PropTypes.number.isRequired,
   onSetRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
-  profileTheme: PropTypes.string,
   themed: PropTypes.bool
 };
 
-function RewardLevelForm({
+export default function RewardLevelForm({
   themed,
   rewardLevel,
   onSetRewardLevel,
-  profileTheme,
   style
 }) {
-  const themeColor = profileTheme || 'logoBlue';
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   return (
     <div
       style={{
         ...style,
-        background: themed ? Color[themeColor]() : '',
+        background: themed ? Color[profileTheme]() : '',
         color: themed ? '#fff' : ''
       }}
     >
@@ -75,7 +77,3 @@ function RewardLevelForm({
     </div>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(RewardLevelForm);

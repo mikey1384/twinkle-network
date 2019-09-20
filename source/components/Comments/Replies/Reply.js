@@ -18,20 +18,15 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { commentContainer } from '../Styles';
 import { determineXpButtonDisabled } from 'helpers';
-import { editContent, loadReplies } from 'helpers/requestHelpers';
 import { Link } from 'react-router-dom';
 import { timeSince } from 'helpers/timeStampHelpers';
+import { useAppContext } from 'context';
 
 Reply.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canStar: PropTypes.bool,
   comment: PropTypes.shape({
     id: PropTypes.number.isRequired
   }),
   subject: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
   innerRef: PropTypes.func,
   deleteReply: PropTypes.func.isRequired,
   loadRepliesOfReply: PropTypes.func,
@@ -53,17 +48,11 @@ Reply.propTypes = {
       .isRequired,
     uploader: PropTypes.object.isRequired
   }),
-  submitReply: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  submitReply: PropTypes.func.isRequired
 };
 
 export default function Reply({
   comment,
-  authLevel,
-  canDelete,
-  canEdit,
-  canStar,
-  dispatch,
   innerRef = () => {},
   deleteReply,
   loadRepliesOfReply,
@@ -71,9 +60,14 @@ export default function Reply({
   reply,
   reply: { commentId, id, numReplies, likes = [], stars = [], uploader },
   submitReply,
-  subject,
-  userId
+  subject
 }) {
+  const {
+    user: {
+      state: { authLevel, canDelete, canEdit, canStar, userId }
+    },
+    requestHelpers: { editContent, loadReplies }
+  } = useAppContext();
   const {
     onAttachStar,
     onEditDone,
@@ -329,8 +323,7 @@ export default function Reply({
         editedComment: editedReply,
         contentId: reply.id,
         contentType: 'comment'
-      },
-      dispatch
+      }
     });
     onEditDone({ editedComment: editedReply, commentId: reply.id });
     setOnEdit(false);

@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
-import { connect } from 'react-redux';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -17,12 +17,11 @@ HeaderNav.propTypes = {
   isUsername: PropTypes.bool,
   onClick: PropTypes.func,
   pathname: PropTypes.string,
-  profileTheme: PropTypes.string,
   style: PropTypes.object,
   to: PropTypes.string
 };
 
-function HeaderNav({
+export default function HeaderNav({
   active,
   alert,
   alertColor,
@@ -34,11 +33,14 @@ function HeaderNav({
   isUsername,
   onClick = () => {},
   pathname,
-  profileTheme,
   style
 }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  const themeColor = profileTheme || 'logoBlue';
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
@@ -46,13 +48,13 @@ function HeaderNav({
     );
   const activeColor = alert
     ? alertColor
-    : Color[themeColor](
-        themeColor === 'black' || themeColor === 'vantaBlack' ? 0.8 : 0.6
+    : Color[profileTheme](
+        profileTheme === 'black' || profileTheme === 'vantaBlack' ? 0.8 : 0.6
       );
   const hoverColor = alert
     ? alertColor
-    : Color[themeColor](
-        themeColor === 'black' || themeColor === 'vantaBlack' ? 0.6 : 0.4
+    : Color[profileTheme](
+        profileTheme === 'black' || profileTheme === 'vantaBlack' ? 0.6 : 0.4
       );
   return (
     <Route
@@ -167,7 +169,3 @@ function HeaderNav({
     />
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(HeaderNav);

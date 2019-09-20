@@ -16,6 +16,7 @@ import { css } from 'emotion';
 import { charLimit } from 'constants/defaultValues';
 import { editVideoTitle, deleteVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 VideoThumb.propTypes = {
   arrayIndex: PropTypes.number,
@@ -26,7 +27,6 @@ VideoThumb.propTypes = {
   editable: PropTypes.bool,
   editVideoTitle: PropTypes.func,
   lastVideoId: PropTypes.number,
-  profileTheme: PropTypes.string,
   style: PropTypes.object,
   to: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
@@ -49,17 +49,20 @@ function VideoThumb({
   editable,
   editVideoTitle,
   lastVideoId,
-  profileTheme,
   style,
   to,
   user,
   video
 }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
-  const themeColor = profileTheme || 'logoBlue';
   const menuProps = [];
   if (editable) {
     menuProps.push({
@@ -158,7 +161,9 @@ function VideoThumb({
               >
                 <a
                   style={{
-                    color: video.byUser ? Color[themeColor](0.9) : Color.blue()
+                    color: video.byUser
+                      ? Color[profileTheme](0.9)
+                      : Color.blue()
                   }}
                   href={`/${to}`}
                   onClick={onLinkClick}
@@ -237,10 +242,7 @@ function VideoThumb({
 }
 
 export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    profileTheme: state.UserReducer.profileTheme
-  }),
+  null,
   {
     editVideoTitle,
     deleteVideo

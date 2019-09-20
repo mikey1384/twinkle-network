@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 FilterBar.propTypes = {
   children: PropTypes.node,
@@ -12,11 +12,10 @@ FilterBar.propTypes = {
   dropdownButton: PropTypes.node,
   innerRef: PropTypes.func,
   inverted: PropTypes.bool,
-  profileTheme: PropTypes.string,
   style: PropTypes.object
 };
 
-function FilterBar({
+export default function FilterBar({
   color,
   bordered,
   className,
@@ -24,10 +23,14 @@ function FilterBar({
   innerRef,
   inverted,
   dropdownButton,
-  profileTheme,
   style
 }) {
-  const themeColor = color || profileTheme || 'logoBlue';
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
+  const themeColor = color || profileTheme;
   const selectedOpacity = 1;
   return (
     <div
@@ -153,7 +156,3 @@ function FilterBar({
     </div>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(FilterBar);

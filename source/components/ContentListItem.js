@@ -6,10 +6,10 @@ import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
-import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 ContentListItem.propTypes = {
   comments: PropTypes.array,
@@ -17,7 +17,6 @@ ContentListItem.propTypes = {
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
   onChangeSpoilerStatus: PropTypes.func,
-  profileTheme: PropTypes.string,
   secretShown: PropTypes.bool,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
@@ -25,20 +24,21 @@ ContentListItem.propTypes = {
   userId: PropTypes.number
 };
 
-function ContentListItem({
+export default function ContentListItem({
   onClick = () => {},
   contentObj,
   contentObj: { contentType },
   expandable,
   onChangeSpoilerStatus,
-  profileTheme,
   secretShown,
   selectable,
   selected,
   style,
   userId
 }) {
-  const themeColor = profileTheme || 'logoBlue';
+  const {
+    user: { state: profileTheme }
+  } = useAppContext();
   const [mouseEntered, setMouseEntered] = useState(false);
   const [localScopeSecretShown, setLocalScopeSecretShown] = useState(false);
 
@@ -50,8 +50,8 @@ function ContentListItem({
       style={{
         cursor: 'pointer',
         borderRadius,
-        boxShadow: selected ? `0 0 5px ${Color[themeColor](0.8)}` : null,
-        border: selected ? `0.5rem solid ${Color[themeColor](0.8)}` : null,
+        boxShadow: selected ? `0 0 5px ${Color[profileTheme](0.8)}` : null,
+        border: selected ? `0.5rem solid ${Color[profileTheme](0.8)}` : null,
         ...style
       }}
       className={css`
@@ -325,8 +325,3 @@ function ContentListItem({
     setLocalScopeSecretShown(status.shown);
   }
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme,
-  userId: state.UserReducer.userId
-}))(ContentListItem);

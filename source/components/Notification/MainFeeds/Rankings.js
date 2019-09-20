@@ -10,9 +10,9 @@ import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import { auth } from 'helpers/requestHelpers';
 import { Color, borderRadius } from 'constants/css';
 import { getRanks } from 'redux/actions/NotiActions';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;
@@ -20,24 +20,18 @@ const API_URL = `${URL}/user`;
 Rankings.propTypes = {
   all: PropTypes.array.isRequired,
   loaded: PropTypes.bool,
-  myId: PropTypes.number,
-  rank: PropTypes.number,
   getRanks: PropTypes.func.isRequired,
   rankModifier: PropTypes.number.isRequired,
-  top30s: PropTypes.array.isRequired,
-  twinkleXP: PropTypes.number
+  top30s: PropTypes.array.isRequired
 };
 
-function Rankings({
-  all,
-  loaded,
-  getRanks,
-  myId,
-  rank,
-  rankModifier,
-  top30s,
-  twinkleXP
-}) {
+function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
+  const {
+    user: {
+      state: { rank, twinkleXP, userId }
+    },
+    requestHelpers: { auth }
+  } = useAppContext();
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
@@ -47,7 +41,7 @@ function Rankings({
   useEffect(() => {
     mounted.current = true;
     userChangedTab.current = false;
-    if ((!loading.current && mounted.current) || (!prevId.current && myId)) {
+    if ((!loading.current && mounted.current) || (!prevId.current && userId)) {
       setAllSelected(true);
       loadRankings();
     }
@@ -61,7 +55,7 @@ function Rankings({
           getRanks({ all, top30s, rankModifier: modifier });
         }
         loading.current = false;
-        prevId.current = myId;
+        prevId.current = userId;
       } catch (error) {
         console.error(error.response || error);
       }
@@ -69,18 +63,18 @@ function Rankings({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [twinkleXP, myId]);
+  }, [twinkleXP, userId]);
 
   useEffect(() => {
-    setAllSelected(!!myId);
-  }, [myId]);
+    setAllSelected(!!userId);
+  }, [userId]);
 
   const users = allSelected ? all : top30s;
   const modifier = allSelected ? rankModifier : 0;
 
   return (
     <ErrorBoundary>
-      {!!myId && (
+      {!!userId && (
         <FilterBar
           bordered
           style={{
@@ -109,10 +103,10 @@ function Rankings({
         </FilterBar>
       )}
       {!loaded && <Loading />}
-      {loaded && allSelected && !!myId && (
-        <MyRank myId={myId} rank={rank} twinkleXP={twinkleXP} />
+      {loaded && allSelected && !!userId && (
+        <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
       )}
-      {loaded && allSelected && users.length === 0 && !!myId && (
+      {loaded && allSelected && users.length === 0 && !!userId && (
         <div
           style={{
             background: '#fff',
@@ -150,7 +144,7 @@ function Rankings({
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   background:
-                    user.id === myId && rank > 3
+                    user.id === userId && rank > 3
                       ? Color.highlightGray()
                       : '#fff'
                 }}
@@ -188,7 +182,7 @@ function Rankings({
                         (rank <= 10 ? Color.logoBlue() : Color.darkGray())
                       }
                       user={{ ...user, username: user.username }}
-                      userId={myId}
+                      userId={userId}
                       style={{ display: 'block', marginTop: '0.5rem' }}
                     />
                   </div>
@@ -211,11 +205,8 @@ function Rankings({
 export default connect(
   state => ({
     all: state.NotiReducer.allRanks,
-    myId: state.UserReducer.userId,
-    rank: state.UserReducer.rank,
     rankModifier: state.NotiReducer.rankModifier,
     top30s: state.NotiReducer.top30s,
-    twinkleXP: state.UserReducer.twinkleXP,
     loaded: state.NotiReducer.rankingsLoaded
   }),
   {

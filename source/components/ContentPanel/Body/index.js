@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Context from '../Context';
-import withContext from 'components/Wrappers/withContext';
+import LocalContext from '../Context';
 import LikeButton from 'components/Buttons/LikeButton';
 import StarButton from 'components/Buttons/StarButton';
 import Button from 'components/Button';
@@ -18,61 +17,31 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { connect } from 'react-redux';
 import {
   determineXpButtonDisabled,
   isMobile,
   scrollElementToCenter
 } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import {
-  deleteContent,
-  editContent,
-  loadComments
-} from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 Body.propTypes = {
   autoExpand: PropTypes.bool,
   attachedVideoShown: PropTypes.bool,
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canEditRewardLevel: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
-  canStar: PropTypes.bool,
   commentsHidden: PropTypes.bool,
   commentsShown: PropTypes.bool,
-  commentsLoadLimit: PropTypes.number,
-  dispatch: PropTypes.func.isRequired,
   inputAtBottom: PropTypes.bool,
   myId: PropTypes.number,
-  onAddTags: PropTypes.func,
-  onAddTagToContents: PropTypes.func,
-  onAttachStar: PropTypes.func.isRequired,
-  onByUserStatusChange: PropTypes.func,
-  onChangeSpoilerStatus: PropTypes.func,
-  onCommentSubmit: PropTypes.func.isRequired,
-  onDeleteComment: PropTypes.func.isRequired,
-  onDeleteContent: PropTypes.func.isRequired,
-  onEditComment: PropTypes.func.isRequired,
-  onEditContent: PropTypes.func.isRequired,
-  onEditRewardComment: PropTypes.func.isRequired,
-  onLikeContent: PropTypes.func.isRequired,
-  onLoadComments: PropTypes.func.isRequired,
-  onLoadMoreComments: PropTypes.func.isRequired,
-  onLoadMoreReplies: PropTypes.func.isRequired,
-  onLoadTags: PropTypes.func,
-  onLoadRepliesOfReply: PropTypes.func,
-  onReplySubmit: PropTypes.func.isRequired,
-  onSetCommentsHidden: PropTypes.func.isRequired,
-  onSetCommentsShown: PropTypes.func.isRequired,
-  onSetRewardLevel: PropTypes.func,
+  onChangeSpoilerStatus: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
 };
 
-function Body({
-  onLoadComments,
-  commentsLoadLimit,
+export default function Body({
+  attachedVideoShown,
+  autoExpand,
+  commentsHidden,
+  commentsShown,
   contentObj,
   contentObj: {
     actualDescription,
@@ -97,40 +66,40 @@ function Body({
     uploader = {},
     views
   },
-  autoExpand,
-  authLevel,
-  canDelete,
-  canEdit,
-  canEditRewardLevel,
-  canStar,
-  commentsHidden,
-  commentsShown,
-  dispatch,
   inputAtBottom,
   myId,
-  attachedVideoShown,
-  onAddTags,
-  onAddTagToContents,
-  onAttachStar,
-  onByUserStatusChange,
   onChangeSpoilerStatus,
-  onCommentSubmit,
-  onDeleteComment,
-  onDeleteContent,
-  onEditComment,
-  onEditContent,
-  onEditRewardComment,
-  onLikeContent,
-  onLoadMoreComments,
-  onLoadMoreReplies,
-  onLoadTags,
-  onLoadRepliesOfReply,
-  onReplySubmit,
-  onSetCommentsHidden,
-  onSetCommentsShown,
-  onSetRewardLevel,
   secretShown
 }) {
+  const {
+    user: {
+      state: { authLevel, canDelete, canEdit, canEditRewardLevel, canStar }
+    },
+    requestHelpers: { deleteContent, editContent, loadComments }
+  } = useAppContext();
+  const {
+    commentsLoadLimit,
+    onAddTags,
+    onAddTagToContents,
+    onAttachStar,
+    onByUserStatusChange,
+    onCommentSubmit,
+    onDeleteComment,
+    onDeleteContent,
+    onEditComment,
+    onEditContent,
+    onEditRewardComment,
+    onLoadComments,
+    onLikeContent,
+    onLoadMoreComments,
+    onLoadMoreReplies,
+    onLoadTags,
+    onLoadRepliesOfReply,
+    onReplySubmit,
+    onSetCommentsHidden,
+    onSetCommentsShown,
+    onSetRewardLevel
+  } = useContext(LocalContext);
   const [edited, setEdited] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
@@ -531,12 +500,12 @@ function Body({
   }
 
   async function deleteThisContent() {
-    await deleteContent({ contentType, id, dispatch });
+    await deleteContent({ contentType, id });
     onDeleteContent({ contentType, contentId: id });
   }
 
   async function editThisContent(params) {
-    const data = await editContent({ params, dispatch });
+    const data = await editContent({ params });
     onEditContent({ data, contentType, contentId });
   }
 
@@ -564,14 +533,3 @@ function Body({
     onByUserStatusChange({ byUser, contentId });
   }
 }
-
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
-    canStar: state.UserReducer.canStar
-  }),
-  dispatch => ({ dispatch })
-)(withContext({ Component: Body, Context }));

@@ -13,6 +13,7 @@ import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -22,7 +23,6 @@ Notification.propTypes = {
   fetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object,
   location: PropTypes.string,
-  myId: PropTypes.number,
   numNewNotis: PropTypes.number,
   notifications: PropTypes.array,
   rewards: PropTypes.array,
@@ -38,29 +38,33 @@ function Notification({
   fetchNotifications,
   loadMore,
   location,
-  myId,
   numNewNotis,
   notifications,
   rewards,
   style,
   totalRewardAmount
 }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
   const userChangedTab = useRef(false);
   useEffect(() => {
     userChangedTab.current = false;
-    if (myId) {
+    if (userId) {
       fetchNotifications();
     } else {
       clearNotifications();
       fetchNotifications();
     }
-  }, [myId]);
+  }, [userId]);
 
   useEffect(() => {
     if (!userChangedTab.current) {
-      if (!myId) {
+      if (!userId) {
         setActiveTab('rankings');
       } else {
         const tab =
@@ -75,7 +79,7 @@ function Notification({
       }
     }
     setRewardTabShown(rewards.length > 0);
-  }, [myId, notifications]);
+  }, [userId, notifications]);
 
   useEffect(() => {
     socket.on('new_reward', fetchNotifications);
@@ -158,7 +162,7 @@ function Notification({
               setActiveTab('notification');
             }}
             style={{
-              marginTop: loaded && myId && notifications.length > 0 && '1rem'
+              marginTop: loaded && userId && notifications.length > 0 && '1rem'
             }}
           />
         </section>
@@ -169,7 +173,6 @@ function Notification({
 
 export default connect(
   state => ({
-    myId: state.UserReducer.userId,
     loadMore: state.NotiReducer.loadMore,
     notifications: state.NotiReducer.notifications,
     numNewNotis: state.NotiReducer.numNewNotis,

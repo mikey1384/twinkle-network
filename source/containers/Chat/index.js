@@ -1,6 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import * as ChatActions from 'redux/actions/ChatActions';
+import {
+  clearNumUnreads,
+  clearRecentChessMessage,
+  initChat,
+  receiveMessage,
+  receiveMessageOnDifferentChannel,
+  receiveFirstMsg,
+  enterChannelWithId,
+  enterEmptyChat,
+  loadMoreChannels,
+  loadMoreMessages,
+  createNewChannel,
+  sendFirstDirectMessage,
+  submitMessage,
+  notifyThatMemberLeftChannel,
+  openDirectMessageChannel,
+  updateChessMoveViewTimeStamp,
+  updateSelectedChannelId
+} from 'redux/actions/ChatActions';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
@@ -8,14 +26,6 @@ import MessagesContainer from './MessagesContainer';
 import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
 import LocalContext from './Context';
-import {
-  createNewChat,
-  loadChat,
-  loadChatChannel,
-  loadDMChannel,
-  startNewDMChannel,
-  updateChatLastRead
-} from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
@@ -29,7 +39,6 @@ Chat.propTypes = {
   clearNumUnreads: PropTypes.func.isRequired,
   createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func,
   enterEmptyChat: PropTypes.func,
   initChat: PropTypes.func.isRequired,
@@ -51,9 +60,7 @@ Chat.propTypes = {
   submitMessage: PropTypes.func,
   subjectId: PropTypes.number,
   updateChessMoveViewTimeStamp: PropTypes.func.isRequired,
-  updateSelectedChannelId: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  updateSelectedChannelId: PropTypes.func.isRequired
 };
 
 function Chat({
@@ -62,7 +69,6 @@ function Chat({
   clearNumUnreads,
   currentChannel,
   createNewChannel,
-  dispatch,
   enterChannelWithId,
   enterEmptyChat,
   initChat,
@@ -84,13 +90,22 @@ function Chat({
   subjectId,
   submitMessage,
   updateChessMoveViewTimeStamp,
-  updateSelectedChannelId,
-  userId,
-  username
+  updateSelectedChannelId
 }) {
   const {
+    user: {
+      state: { userId, username }
+    },
     view: {
       state: { pageVisible }
+    },
+    requestHelpers: {
+      createNewChat,
+      loadChat,
+      loadChatChannel,
+      loadDMChannel,
+      startNewDMChannel,
+      updateChatLastRead
     }
   } = useAppContext();
   const [channelLoading, setChannelLoading] = useState(false);
@@ -117,7 +132,7 @@ function Chat({
       init();
     } else {
       if (userId) {
-        updateChatLastRead({ channelId: selectedChannelId, dispatch });
+        updateChatLastRead({ channelId: selectedChannelId });
       }
       clearNumUnreads();
     }
@@ -353,8 +368,7 @@ function Chat({
       const { members, message } = await startNewDMChannel({
         content,
         userId,
-        recepientId,
-        dispatch
+        recepientId
       });
       sendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
@@ -455,8 +469,7 @@ function Chat({
         const { members, message } = await startNewDMChannel({
           ...params,
           content,
-          recepientId,
-          dispatch
+          recepientId
         });
         sendFirstDirectMessage({ members, message });
         socket.emit('join_chat_channel', message.channelId);
@@ -478,14 +491,14 @@ function Chat({
       return enterEmptyChat();
     }
     updateSelectedChannelId(id);
-    const data = await loadChatChannel({ channelId: id, dispatch });
+    const data = await loadChatChannel({ channelId: id });
     enterChannelWithId({ data });
   }
 
   async function onCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
       const recepient = params.selectedUsers[0];
-      const data = await loadDMChannel({ recepient, dispatch });
+      const data = await loadDMChannel({ recepient });
       openDirectMessageChannel({
         user: { id: userId, username },
         recepient,
@@ -494,7 +507,7 @@ function Chat({
       return setCreateNewChannelModalShown(false);
     }
 
-    const data = await createNewChat({ ...params, dispatch });
+    const data = await createNewChat(params);
     createNewChannel(data);
 
     const users = params.selectedUsers.map(user => user.id);
@@ -550,9 +563,6 @@ function Chat({
 export default connect(
   state => ({
     loaded: state.ChatReducer.loaded,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
     currentChannel: state.ChatReducer.currentChannel,
     selectedChannelId: state.ChatReducer.selectedChannelId,
     channels: state.ChatReducer.channels,
@@ -562,32 +572,23 @@ export default connect(
     recepientId: state.ChatReducer.recepientId,
     subjectId: state.ChatReducer.subject.id
   }),
-  dispatch => ({
-    dispatch,
-    clearNumUnreads: () => dispatch(ChatActions.clearNumUnreads()),
-    clearRecentChessMessage: () =>
-      dispatch(ChatActions.clearRecentChessMessage()),
-    initChat: data => dispatch(ChatActions.initChat(data)),
-    receiveMessage: params => dispatch(ChatActions.receiveMessage(params)),
-    receiveMessageOnDifferentChannel: params =>
-      dispatch(ChatActions.receiveMessageOnDifferentChannel(params)),
-    receiveFirstMsg: params => dispatch(ChatActions.receiveFirstMsg(params)),
-    enterChannelWithId: params =>
-      dispatch(ChatActions.enterChannelWithId(params)),
-    enterEmptyChat: params => dispatch(ChatActions.enterEmptyChat(params)),
-    loadMoreChannels: params => dispatch(ChatActions.loadMoreChannels(params)),
-    loadMoreMessages: params => dispatch(ChatActions.loadMoreMessages(params)),
-    createNewChannel: params => dispatch(ChatActions.createNewChannel(params)),
-    sendFirstDirectMessage: params =>
-      dispatch(ChatActions.sendFirstDirectMessage(params)),
-    submitMessage: params => dispatch(ChatActions.submitMessage(params)),
-    notifyThatMemberLeftChannel: params =>
-      dispatch(ChatActions.notifyThatMemberLeftChannel(params)),
-    openDirectMessageChannel: params =>
-      dispatch(ChatActions.openDirectMessageChannel(params)),
-    updateChessMoveViewTimeStamp: params =>
-      dispatch(ChatActions.updateChessMoveViewTimeStamp(params)),
-    updateSelectedChannelId: channelId =>
-      dispatch(ChatActions.updateSelectedChannelId(channelId))
-  })
+  {
+    clearNumUnreads,
+    clearRecentChessMessage,
+    initChat,
+    receiveMessage,
+    receiveMessageOnDifferentChannel,
+    receiveFirstMsg,
+    enterChannelWithId,
+    enterEmptyChat,
+    loadMoreChannels,
+    loadMoreMessages,
+    createNewChannel,
+    sendFirstDirectMessage,
+    submitMessage,
+    notifyThatMemberLeftChannel,
+    openDirectMessageChannel,
+    updateChessMoveViewTimeStamp,
+    updateSelectedChannelId
+  }
 )(Chat);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import UsernameText from 'components/Texts/UsernameText';
@@ -11,16 +11,9 @@ import Icon from 'components/Icon';
 import Input from 'components/Texts/Input';
 import RewardLevelBar from 'components/RewardLevelBar';
 import Link from 'components/Link';
-import withContext from 'components/Wrappers/withContext';
 import SecretAnswer from 'components/SecretAnswer';
 import StarButton from 'components/Buttons/StarButton';
-import Context from './Context';
-import { connect } from 'react-redux';
-import {
-  deleteSubject,
-  editSubject,
-  loadComments
-} from 'helpers/requestHelpers';
+import LocalContext from './Context';
 import {
   cleanString,
   stringIsEmpty,
@@ -29,37 +22,18 @@ import {
 } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
+import { useAppContext } from 'context';
 
 SubjectPanel.propTypes = {
-  attachStar: PropTypes.func.isRequired,
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canEditRewardLevel: PropTypes.bool,
   comments: PropTypes.array.isRequired,
   contentType: PropTypes.string.isRequired,
   description: PropTypes.string,
   rewardLevel: PropTypes.number,
-  dispatch: PropTypes.func.isRequired,
-  editRewardComment: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
-  onLoadSubjectComments: PropTypes.func.isRequired,
-  onLoadMoreComments: PropTypes.func.isRequired,
   loadMoreCommentsButton: PropTypes.bool.isRequired,
-  myId: PropTypes.number,
   numComments: PropTypes.string,
-  onDelete: PropTypes.func.isRequired,
-  onEditDone: PropTypes.func.isRequired,
-  onSubjectDelete: PropTypes.func.isRequired,
-  onSubjectEditDone: PropTypes.func.isRequired,
-  onLikeClick: PropTypes.func.isRequired,
-  onLoadMoreReplies: PropTypes.func.isRequired,
-  onUploadComment: PropTypes.func.isRequired,
-  onUploadReply: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string,
   rootRewardLevel: PropTypes.number,
   secretAnswer: PropTypes.string,
-  setSubjectRewardLevel: PropTypes.func.isRequired,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   title: PropTypes.string.isRequired,
@@ -69,43 +43,51 @@ SubjectPanel.propTypes = {
   contentId: PropTypes.number.isRequired
 };
 
-function SubjectPanel({
-  attachStar,
-  authLevel,
-  canDelete,
-  canEdit,
-  canEditRewardLevel,
+export default function SubjectPanel({
   contentId,
   contentType,
   description,
-  dispatch,
   id,
   title,
   rewardLevel,
-  editRewardComment,
   uploaderAuthLevel,
   username,
   userId,
   timeStamp,
   numComments,
-  myId,
-  profileTheme,
   comments,
   loadMoreCommentsButton,
-  onLikeClick,
-  onLoadMoreComments,
-  onDelete,
-  onEditDone,
-  onLoadMoreReplies,
-  onLoadSubjectComments,
-  onSubjectDelete,
-  onSubjectEditDone,
-  onUploadComment,
-  onUploadReply,
   rootRewardLevel,
-  secretAnswer,
-  setSubjectRewardLevel
+  secretAnswer
 }) {
+  const {
+    user: {
+      state: {
+        authLevel,
+        canDelete,
+        canEdit,
+        canEditRewardLevel,
+        profileTheme,
+        userId: myId
+      }
+    },
+    requestHelpers: { deleteSubject, editSubject, loadComments }
+  } = useAppContext();
+  const {
+    attachStar,
+    editRewardComment,
+    onDelete,
+    onEditDone,
+    onLikeClick,
+    onLoadMoreComments,
+    onLoadMoreReplies,
+    onSubjectEditDone,
+    onSubjectDelete,
+    onLoadSubjectComments,
+    setSubjectRewardLevel,
+    onUploadComment,
+    onUploadReply
+  } = useContext(LocalContext);
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -120,7 +102,6 @@ function SubjectPanel({
   const userHasHigherAuthLevel = authLevel > uploaderAuthLevel;
   const userCanEditThis = (canEdit || canDelete) && userHasHigherAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
-  const themeColor = profileTheme || 'logoBlue';
   const CommentsRef = useRef(null);
 
   useEffect(() => {
@@ -283,7 +264,7 @@ function SubjectPanel({
             >
               <Button
                 skeuomorphic
-                color={themeColor}
+                color={profileTheme}
                 style={{ fontSize: '2rem' }}
                 onClick={onExpand}
               >
@@ -379,7 +360,7 @@ function SubjectPanel({
 
   async function deleteThis() {
     try {
-      await deleteSubject({ subjectId: id, dispatch });
+      await deleteSubject({ subjectId: id });
       setConfirmModalShown(false);
       onSubjectDelete(id);
     } catch (error) {
@@ -407,23 +388,10 @@ function SubjectPanel({
       subjectId: id,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
-      editedSecretAnswer: finalizeEmoji(editedSecretAnswer),
-      dispatch
+      editedSecretAnswer: finalizeEmoji(editedSecretAnswer)
     });
     onSubjectEditDone({ editedSubject, subjectId: id });
     setOnEdit(false);
     setEditDoneButtonDisabled(true);
   }
 }
-
-export default connect(
-  state => ({
-    myId: state.UserReducer.userId,
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
-    profileTheme: state.UserReducer.profileTheme
-  }),
-  dispatch => ({ dispatch })
-)(withContext({ Component: SubjectPanel, Context }));

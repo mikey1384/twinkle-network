@@ -8,38 +8,31 @@ import LongText from 'components/Texts/LongText';
 import EditTextArea from 'components/Texts/EditTextArea';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import request from 'axios';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { auth, handleError } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
-import URL from 'constants/URL';
-
-const API_URL = `${URL}/user`;
+import { useAppContext } from 'context';
 
 Comment.propTypes = {
-  authLevel: PropTypes.number,
-  canEdit: PropTypes.bool,
-  handleError: PropTypes.func.isRequired,
   maxRewardableStars: PropTypes.number.isRequired,
-  myId: PropTypes.number,
   noMarginForEditButton: PropTypes.bool,
   onEditDone: PropTypes.func,
   star: PropTypes.object.isRequired
 };
 
 function Comment({
-  authLevel,
-  canEdit,
-  handleError,
   maxRewardableStars,
-  myId,
   noMarginForEditButton,
   onEditDone = () => {},
   star
 }) {
+  const {
+    user: {
+      state: { authLevel, canEdit, userId }
+    },
+    requestHelpers: { editRewardComment }
+  } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
-  const userIsUploader = star.rewarderId === myId;
+  const userIsUploader = star.rewarderId === userId;
   const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
@@ -100,7 +93,7 @@ function Comment({
                   id: star.rewarderId,
                   username: star.rewarderUsername
                 }}
-                userId={myId}
+                userId={userId}
               />{' '}
               <span
                 style={{
@@ -160,26 +153,8 @@ function Comment({
   );
 
   async function submitEdit(editedComment) {
-    try {
-      await request.put(
-        `${API_URL}/reward`,
-        { editedComment, contentId: star.id },
-        auth()
-      );
-      onEditDone({ id: star.id, text: editedComment });
-      setOnEdit(false);
-    } catch (error) {
-      handleError(error);
-    }
+    await editRewardComment({ editedComment, contentId: star.id });
+    onEditDone({ id: star.id, text: editedComment });
+    setOnEdit(false);
   }
 }
-
-export default connect(
-  state => ({
-    canEdit: state.UserReducer.canEdit,
-    authLevel: state.UserReducer.authLevel
-  }),
-  dispatch => ({
-    handleError: error => handleError(error, dispatch)
-  })
-)(Comment);

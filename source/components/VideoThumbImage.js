@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
-import { auth } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/video`;
@@ -17,18 +16,22 @@ VideoThumbImage.propTypes = {
   rewardLevel: PropTypes.number,
   playIcon: PropTypes.bool,
   src: PropTypes.string.isRequired,
-  userId: PropTypes.number,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
-function VideoThumbImage({
+export default function VideoThumbImage({
   rewardLevel,
   height = '55%',
   playIcon,
   src,
-  userId,
   videoId
 }) {
+  const {
+    user: {
+      state: { userId }
+    },
+    requestHelpers: { auth }
+  } = useAppContext();
   const [xpEarned, setXpEarned] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
@@ -126,7 +129,3 @@ function VideoThumbImage({
     </div>
   );
 }
-
-export default connect(state => ({ userId: state.UserReducer.userId }))(
-  VideoThumbImage
-);

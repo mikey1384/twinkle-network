@@ -6,12 +6,12 @@ import SearchInput from 'components/Texts/SearchInput';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import Loading from 'components/Loading';
-import { useOutsideClick } from 'helpers/hooks';
 import { profileThemes } from 'constants/defaultValues';
-import { connect } from 'react-redux';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { useOutsideClick } from 'helpers/hooks';
+import { useAppContext } from 'context';
 
 SectionPanel.propTypes = {
   canEdit: PropTypes.bool,
@@ -24,7 +24,6 @@ SectionPanel.propTypes = {
   isSearching: PropTypes.bool,
   loaded: PropTypes.bool,
   loadMore: PropTypes.func,
-  profileTheme: PropTypes.string,
   children: PropTypes.node,
   loadMoreButtonShown: PropTypes.bool,
   onEditTitle: PropTypes.func,
@@ -52,16 +51,20 @@ function SectionPanel({
   onEditTitle,
   onSearch,
   placeholder = 'Enter Title',
-  profileTheme,
   searchPlaceholder,
   searchQuery = '',
   style = {},
   title
 }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
-  const themeColor = customColorTheme || profileTheme || 'logoBlue';
+  const themeColor = customColorTheme || profileTheme;
   const TitleInputRef = useRef(null);
   useOutsideClick(TitleInputRef, () => {
     setOnEdit(false);
@@ -250,7 +253,3 @@ function SectionPanel({
     }
   }
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(SectionPanel);

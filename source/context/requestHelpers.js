@@ -122,6 +122,18 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async editRewardComment({ editedComment, contentId }) {
+      try {
+        await request.put(
+          `${URL}/user/reward`,
+          { editedComment, contentId },
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async editSubject({
       subjectId,
       editedTitle,

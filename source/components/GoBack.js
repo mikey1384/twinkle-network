@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { useAppContext } from 'context';
 
 GoBack.propTypes = {
-  history: PropTypes.object.isRequired,
-  profileTheme: PropTypes.string
+  history: PropTypes.object.isRequired
 };
-function GoBack({ history, profileTheme }) {
-  const themeColor = profileTheme || 'logoBlue';
+function GoBack({ history }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   return (
     <div
       className={css`
@@ -27,7 +30,7 @@ function GoBack({ history, profileTheme }) {
         align-items: center;
         transition: background 0.4s;
         &:hover {
-          background: ${Color[themeColor]()};
+          background: ${Color[profileTheme]()};
           color: #fff;
         }
         @media (max-width: ${mobileMaxWidth}) {
@@ -47,6 +50,4 @@ function GoBack({ history, profileTheme }) {
   );
 }
 
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(withRouter(GoBack));
+export default withRouter(GoBack);

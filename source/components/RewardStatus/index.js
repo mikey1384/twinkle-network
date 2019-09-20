@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { connect } from 'react-redux';
 import { addCommasToNumber, stringIsEmpty } from 'helpers/stringHelpers';
 import { returnMaxStars } from 'constants/defaultValues';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Starmarks from './Starmarks';
+import { useAppContext } from 'context';
 
 RewardStatus.propTypes = {
   className: PropTypes.string,
   rewardLevel: PropTypes.number,
-  userId: PropTypes.number,
   noMarginForEditButton: PropTypes.bool,
   onCommentEdit: PropTypes.func,
   stars: PropTypes.array,
@@ -26,9 +25,13 @@ function RewardStatus({
   noMarginForEditButton,
   onCommentEdit,
   stars = [],
-  userId,
   style
 }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   const [loaded, setLoaded] = useState(2);
   const finalStar = stars.length > 0 ? stars[stars.length - 1] : {};
   const starsWithComment = stars.filter(
@@ -67,7 +70,8 @@ function RewardStatus({
         <div style={{ fontSize: '1.5rem' }}>
           {rewardedStars} Twinkle
           {rewardedStars > 1 ? 's' : ''} (
-          {addCommasToNumber(rewardedStars * 200)} XP) rewarded out of max {maxStars}
+          {addCommasToNumber(rewardedStars * 200)} XP) rewarded out of max{' '}
+          {maxStars}
         </div>
       </div>
       {loaded < stars.length && (
@@ -101,7 +105,3 @@ function RewardStatus({
     </ErrorBoundary>
   );
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(RewardStatus);

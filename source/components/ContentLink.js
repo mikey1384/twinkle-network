@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { removeLineBreaks } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 ContentLink.propTypes = {
   content: PropTypes.shape({
@@ -13,18 +13,18 @@ ContentLink.propTypes = {
     title: PropTypes.string,
     username: PropTypes.string
   }).isRequired,
-  profileTheme: PropTypes.string,
   style: PropTypes.object,
   contentType: PropTypes.string
 };
 
-function ContentLink({
+export default function ContentLink({
   style,
   content: { byUser, id, content, title, username },
-  profileTheme,
   contentType
 }) {
-  const themeColor = profileTheme || 'logoBlue';
+  const {
+    requestHelpers: { profileTheme }
+  } = useAppContext();
   let destination = '';
   if (contentType === 'url') {
     destination = 'links';
@@ -38,7 +38,7 @@ function ContentLink({
         fontWeight: 'bold',
         color:
           contentType === 'video' && byUser
-            ? Color[themeColor](0.9)
+            ? Color[profileTheme](0.9)
             : Color.blue(),
         ...style
       }}
@@ -52,7 +52,3 @@ function ContentLink({
     </span>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(ContentLink);

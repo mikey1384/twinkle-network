@@ -3,15 +3,19 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 Profile.propTypes = {
-  profile: PropTypes.object.isRequired,
-  userId: PropTypes.number
+  profile: PropTypes.object.isRequired
 };
 
-function Profile({ profile, userId }) {
+export default function Profile({ profile }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   return (
     <div
       style={{
@@ -72,7 +76,3 @@ function Profile({ profile, userId }) {
     </div>
   );
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(Profile);

@@ -4,25 +4,22 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
-import { loadChat, loadDMChannel } from 'helpers/requestHelpers';
 import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
+import { useAppContext } from 'context';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string,
   users: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired }))
     .isRequired
 };
@@ -31,17 +28,20 @@ function UserListModal({
   description = '',
   descriptionColor = Color.green(),
   descriptionShown,
-  dispatch,
   history,
   initChat,
   loaded,
   onHide,
   openDirectMessageChannel,
   title,
-  userId,
-  username,
   users
 }) {
+  const {
+    user: {
+      state: { userId, username }
+    },
+    requestHelpers: { loadChat, loadDMChannel }
+  } = useAppContext();
   const otherUsers = users.filter(user => user.id !== userId);
   let userArray = [];
   for (let i = 0; i < users.length; i++) {
@@ -112,7 +112,7 @@ function UserListModal({
         const initialData = await loadChat();
         initChat(initialData);
       }
-      const data = await loadDMChannel({ recepient: user, dispatch });
+      const data = await loadDMChannel({ recepient: user });
       openDirectMessageChannel({
         user: { id: userId, username },
         recepient: user,
@@ -125,14 +125,7 @@ function UserListModal({
 
 export default connect(
   state => ({
-    loaded: state.ChatReducer.loaded,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    loaded: state.ChatReducer.loaded
   }),
-  dispatch => ({
-    dispatch,
-    initChat: params => dispatch(initChat(params)),
-    openDirectMessageChannel: params =>
-      dispatch(openDirectMessageChannel(params))
-  })
+  { initChat, openDirectMessageChannel }
 )(withRouter(UserListModal));

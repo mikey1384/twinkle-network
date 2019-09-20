@@ -3,23 +3,20 @@ import PropTypes from 'prop-types';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import TagModal from './TagModal';
 import { hashify } from 'helpers/stringHelpers';
-import { fetchPlaylistsContaining } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
+import { useAppContext } from 'context';
 
 TagStatus.propTypes = {
   onAddTags: PropTypes.func.isRequired,
   onAddTagToContents: PropTypes.func,
   onLoadTags: PropTypes.func,
-  canEditPlaylists: PropTypes.bool,
   contentId: PropTypes.number.isRequired,
   style: PropTypes.object,
   tags: PropTypes.array.isRequired
 };
 
-function TagStatus({
-  canEditPlaylists,
+export default function TagStatus({
   contentId,
   onAddTags,
   onAddTagToContents,
@@ -27,6 +24,10 @@ function TagStatus({
   style,
   tags
 }) {
+  const {
+    user: { state: canEditPlaylists },
+    requestHelpers: { fetchPlaylistsContaining }
+  } = useAppContext();
   const [shownPlaylistId, setShownPlaylistId] = useState();
   const [shownPlaylistTitle, setShownPlaylistTitle] = useState('');
   const [tagModalShown, setTagModalShown] = useState(false);
@@ -124,7 +125,3 @@ function TagStatus({
     setTagModalShown(false);
   }
 }
-
-export default connect(state => ({
-  canEditPlaylists: state.UserReducer.canEditPlaylists
-}))(TagStatus);

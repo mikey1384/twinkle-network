@@ -133,6 +133,8 @@ function ContentPanel({
         onLoadTags,
         onLoadRepliesOfReply,
         onReplySubmit,
+        onSetCommentsHidden: setCommentsHidden,
+        onSetCommentsShown,
         onSetRewardLevel,
         onUploadTargetComment
       }}
@@ -184,8 +186,6 @@ function ContentPanel({
                     myId={userId}
                     secretShown={secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
-                    onSetCommentsHidden={setCommentsHidden}
-                    onSetCommentsShown={onSetCommentsShown}
                   />
                 </div>
               </>

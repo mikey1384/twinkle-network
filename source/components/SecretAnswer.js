@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
-import { connect } from 'react-redux';
 import { borderRadius, Color } from 'constants/css';
 import { checkIfUserResponded } from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
@@ -13,20 +12,21 @@ SecretAnswer.propTypes = {
   shown: PropTypes.bool,
   onClick: PropTypes.func,
   style: PropTypes.object,
-  subjectId: PropTypes.number,
-  userId: PropTypes.number
+  subjectId: PropTypes.number
 };
 
-function SecretAnswer({
+export default function SecretAnswer({
   answer,
   shown,
-  userId,
   onClick,
   changeSpoilerStatus,
   style,
   subjectId
 }) {
   const {
+    user: {
+      state: { userId }
+    },
     view: {
       state: { pageVisible }
     }
@@ -78,7 +78,3 @@ function SecretAnswer({
     </ErrorBoundary>
   );
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(SecretAnswer);

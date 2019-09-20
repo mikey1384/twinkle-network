@@ -3,37 +3,37 @@ import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { connect } from 'react-redux';
 import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
-import { loadChat, loadDMChannel } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
+import { useAppContext } from 'context';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   style: PropTypes.object,
   openDirectMessageChannel: PropTypes.func.isRequired,
-  user: PropTypes.object,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  user: PropTypes.object
 };
 
 function UsernameText({
   className,
   color,
-  dispatch,
   history,
   initChat,
   loaded,
   openDirectMessageChannel,
   style = {},
-  user = {},
-  userId,
-  username
+  user = {}
 }) {
+  const {
+    user: {
+      state: { userId, username }
+    },
+    requestHelpers: { loadChat, loadDMChannel }
+  } = useAppContext();
   const [menuShown, setMenuShown] = useState(false);
   return (
     <div
@@ -87,7 +87,7 @@ function UsernameText({
         const initialData = await loadChat();
         initChat(initialData);
       }
-      const data = await loadDMChannel({ recepient: user, dispatch });
+      const data = await loadDMChannel({ recepient: user });
       openDirectMessageChannel({
         user: { id: userId, username },
         recepient: user,
@@ -106,14 +106,7 @@ function UsernameText({
 
 export default connect(
   state => ({
-    loaded: state.ChatReducer.loaded,
-    username: state.UserReducer.username,
-    userId: state.UserReducer.userId
+    loaded: state.ChatReducer.loaded
   }),
-  dispatch => ({
-    dispatch,
-    initChat: params => dispatch(initChat(params)),
-    openDirectMessageChannel: params =>
-      dispatch(openDirectMessageChannel(params))
-  })
+  { initChat, openDirectMessageChannel }
 )(withRouter(UsernameText));

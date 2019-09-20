@@ -14,8 +14,7 @@ import FilterBar from 'components/FilterBar';
 import Button from 'components/Button';
 import request from 'axios';
 import { returnMaxStars } from 'constants/defaultValues';
-import { auth } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 XPRewardInterface.propTypes = {
@@ -24,7 +23,6 @@ XPRewardInterface.propTypes = {
   rewardLevel: PropTypes.number,
   stars: PropTypes.array,
   uploaderId: PropTypes.number.isRequired,
-  userId: PropTypes.number,
   noPadding: PropTypes.bool,
   onRewardSubmit: PropTypes.func.isRequired
 };
@@ -36,9 +34,14 @@ function XPRewardInterface({
   noPadding,
   onRewardSubmit,
   stars = [],
-  uploaderId,
-  userId
+  uploaderId
 }) {
+  const {
+    user: {
+      state: { userId }
+    },
+    requestHelpers: { auth }
+  } = useAppContext();
   const [rewardExplanation, setRewardExplanation] = useState('');
   const [rewarding, setRewarding] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(0);
@@ -172,7 +175,3 @@ function XPRewardInterface({
     }
   }
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(XPRewardInterface);

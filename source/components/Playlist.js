@@ -9,26 +9,22 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
 import { loadPlaylistVideos } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 Playlist.propTypes = {
   onLinkClick: PropTypes.func,
   onLoad: PropTypes.func,
-  playlistId: PropTypes.number.isRequired,
-  profileTheme: PropTypes.string
+  playlistId: PropTypes.number.isRequired
 };
 
-function Playlist({
-  onLinkClick = () => {},
-  onLoad,
-  playlistId,
-  profileTheme
-}) {
+function Playlist({ onLinkClick = () => {}, onLoad, playlistId }) {
+  const {
+    user: { state: profileTheme }
+  } = useAppContext();
   const [videos, setVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     handleLoadPlaylistVideos();
@@ -87,7 +83,7 @@ function Playlist({
           <div style={{ width: '60%' }}>
             <Link
               style={{
-                color: video.byUser ? Color[themeColor]() : Color.blue(),
+                color: video.byUser ? Color[profileTheme]() : Color.blue(),
                 fontSize: '2rem',
                 fontWeight: 'bold',
                 lineHeight: 1.5
@@ -126,7 +122,3 @@ function Playlist({
     setLoading(false);
   }
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(Playlist);

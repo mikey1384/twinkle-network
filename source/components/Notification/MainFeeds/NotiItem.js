@@ -4,17 +4,15 @@ import UsernameText from 'components/Texts/UsernameText';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { truncateText } from 'helpers/stringHelpers';
+import { useAppContext } from 'context';
 
 NotiItem.propTypes = {
-  myId: PropTypes.number.isRequired,
   notification: PropTypes.object.isRequired
 };
 
-function NotiItem({
-  myId,
+export default function NotiItem({
   notification: {
     actionObj = {},
     targetComment = {},
@@ -24,9 +22,14 @@ function NotiItem({
     user = {}
   }
 }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   let notificationMessage;
-  const isReply = targetComment?.userId === myId;
-  const isSubjectResponse = targetSubject?.userId === myId;
+  const isReply = targetComment?.userId === userId;
+  const isSubjectResponse = targetSubject?.userId === userId;
   switch (actionObj.contentType) {
     case 'like':
       notificationMessage = (
@@ -196,7 +199,3 @@ function NotiItem({
     </ErrorBoundary>
   );
 }
-
-export default connect(state => ({
-  myId: state.UserReducer.userId
-}))(NotiItem);

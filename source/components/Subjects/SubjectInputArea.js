@@ -3,30 +3,28 @@ import PropTypes from 'prop-types';
 import TitleDescriptionForm from 'components/Forms/TitleDescriptionForm';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { uploadSubject } from 'helpers/requestHelpers';
 import { charLimit } from 'constants/defaultValues';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 SubjectInputArea.propTypes = {
-  canEditRewardLevel: PropTypes.bool,
   onUploadSubject: PropTypes.func.isRequired,
   contentId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
     .isRequired,
-  contentType: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string
+  contentType: PropTypes.string.isRequired
 };
 
-function SubjectInputArea({
-  canEditRewardLevel,
+export default function SubjectInputArea({
   contentId,
   contentType,
-  dispatch,
-  onUploadSubject,
-  profileTheme
+  onUploadSubject
 }) {
+  const {
+    user: {
+      state: { canEditRewardLevel, profileTheme }
+    },
+    requestHelpers: { uploadSubject }
+  } = useAppContext();
   const [subjectFormShown, setSubjectFormShown] = useState(false);
-  const themeColor = profileTheme || 'logoBlue';
   return (
     <div
       style={{
@@ -55,7 +53,7 @@ function SubjectInputArea({
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               skeuomorphic
-              color={themeColor}
+              color={profileTheme}
               style={{ fontSize: '2rem' }}
               onClick={() => setSubjectFormShown(true)}
             >
@@ -72,7 +70,6 @@ function SubjectInputArea({
     const data = await uploadSubject({
       title,
       description,
-      dispatch,
       contentId,
       rewardLevel,
       secretAnswer,
@@ -82,11 +79,3 @@ function SubjectInputArea({
     onUploadSubject({ ...data, contentType, contentId });
   }
 }
-
-export default connect(
-  state => ({
-    profileTheme: state.UserReducer.profileTheme,
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel
-  }),
-  dispatch => ({ dispatch })
-)(SubjectInputArea);

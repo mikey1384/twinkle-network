@@ -1,6 +1,6 @@
 import React, { useRef, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import Context from '../Context';
+import LocalContext from '../Context';
 import UsernameText from 'components/Texts/UsernameText';
 import Button from 'components/Button';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -15,42 +15,32 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HiddenComment from 'components/HiddenComment';
 import Icon from 'components/Icon';
-import { connect } from 'react-redux';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled } from 'helpers';
-import { uploadComment } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
+import { useAppContext } from 'context';
 
 TargetContent.propTypes = {
-  authLevel: PropTypes.number,
-  canStar: PropTypes.bool,
   className: PropTypes.string,
   contentId: PropTypes.number,
   contentType: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  myId: PropTypes.number,
   profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
   secretShown: PropTypes.bool,
   onShowTCReplyInput: PropTypes.func.isRequired,
   style: PropTypes.object,
-  targetObj: PropTypes.object,
-  username: PropTypes.string
+  targetObj: PropTypes.object
 };
 
 function TargetContent({
-  authLevel,
-  canStar,
   className,
   contentId,
   contentType,
-  dispatch,
   history,
-  myId,
   rootObj,
   profilePicId,
   rootType,
@@ -63,9 +53,14 @@ function TargetContent({
     replyInputShown,
     subject,
     type
-  },
-  username
+  }
 }) {
+  const {
+    user: {
+      state: { authLevel, canStar, userId, username }
+    },
+    requestHelpers: { uploadComment }
+  } = useAppContext();
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [mouseEntered, setMouseEntered] = useState(false);
@@ -77,21 +72,21 @@ function TargetContent({
     onEditRewardComment,
     onLikeContent,
     onUploadTargetComment
-  } = useContext(Context);
+  } = useContext(LocalContext);
 
   let userLikedThis = false;
   let userIsUploader;
   let userCanStarThis;
   let uploader = {};
   const hasSecretAnswer = subject?.secretAnswer;
-  const userUploadedTheSubject = subject?.uploader?.id === myId;
+  const userUploadedTheSubject = subject?.uploader?.id === userId;
 
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
     for (let i = 0; i < comment.likes.length; i++) {
-      if (comment.likes[i].id === myId) userLikedThis = true;
+      if (comment.likes[i].id === userId) userLikedThis = true;
     }
-    userIsUploader = myId === comment.uploader.id;
+    userIsUploader = userId === comment.uploader.id;
     userCanStarThis =
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
   }
@@ -228,7 +223,7 @@ function TargetContent({
                           font-size: 1.2rem;
                           line-height: 1;
                         `}
-                        userId={myId}
+                        userId={userId}
                         likes={comment.likes}
                         onLinkClick={() => setUserListModalShown(true)}
                       />
@@ -312,7 +307,7 @@ function TargetContent({
                       key={comment.id}
                       comment={comment}
                       username={username}
-                      userId={myId}
+                      userId={userId}
                       profilePicId={profilePicId}
                       onDelete={onDeleteComment}
                       onEditDone={onEditComment}
@@ -338,7 +333,7 @@ function TargetContent({
     return determineXpButtonDisabled({
       rewardLevel: determineRewardLevel({ rootObj, rootType, subject }),
       stars: comment.stars,
-      myId,
+      myId: userId,
       xpRewardInterfaceShown
     });
   }
@@ -370,22 +365,10 @@ function TargetContent({
         id: rootObj.id
       },
       rootCommentId: comment.commentId,
-      targetCommentId: comment.id,
-      dispatch
+      targetCommentId: comment.id
     });
     onUploadTargetComment({ ...data, contentId, contentType });
   }
 }
 
-export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canStar: state.UserReducer.canStar,
-    myId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId
-  }),
-  dispatch => ({
-    dispatch
-  })
-)(withRouter(TargetContent));
+export default withRouter(TargetContent);
