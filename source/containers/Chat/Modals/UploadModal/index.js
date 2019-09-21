@@ -8,28 +8,22 @@ import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
 import { submitMessage } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 UploadModal.propTypes = {
   channelId: PropTypes.number,
   fileObj: PropTypes.object,
   onHide: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string,
-  profilePicId: PropTypes.number,
   subjectId: PropTypes.number,
   submitMessage: PropTypes.func.isRequired
 };
 
-function UploadModal({
-  channelId,
-  fileObj,
-  onHide,
-  subjectId,
-  submitMessage,
-  userId,
-  username,
-  profilePicId
-}) {
+function UploadModal({ channelId, fileObj, onHide, subjectId, submitMessage }) {
+  const {
+    user: {
+      state: { profilePicId, userId, username }
+    }
+  } = useAppContext();
   const [caption, setCaption] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
@@ -88,11 +82,7 @@ function UploadModal({
 }
 
 export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId
-  }),
+  null,
   {
     submitMessage
   }

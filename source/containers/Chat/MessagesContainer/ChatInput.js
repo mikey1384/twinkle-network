@@ -4,13 +4,13 @@ import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { isMobile } from 'helpers';
-import { connect } from 'react-redux';
 import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
   exceedsCharLimit
 } from 'helpers/stringHelpers';
+import { useAppContext } from 'context';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -19,20 +19,23 @@ ChatInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
-  onPlusButtonClick: PropTypes.func.isRequired,
-  profileTheme: PropTypes.string
+  onPlusButtonClick: PropTypes.func.isRequired
 };
 
-function ChatInput({
+export default function ChatInput({
   currentChannelId,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
-  onPlusButtonClick,
-  profileTheme
+  onPlusButtonClick
 }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   const TextareaRef = useRef(null);
   const [message, setMessage] = useState('');
   useEffect(() => {
@@ -41,7 +44,6 @@ function ChatInput({
       TextareaRef.current.focus();
     }
   }, [currentChannelId]);
-  const themeColor = profileTheme || 'logoBlue';
   const messageExceedsCharLimit = exceedsCharLimit({
     inputType: 'message',
     contentType: 'chat',
@@ -62,7 +64,7 @@ function ChatInput({
               disabled={loading}
               skeuomorphic
               onClick={onChessButtonClick}
-              color={themeColor}
+              color={profileTheme}
             >
               <Icon size="lg" icon={['fas', 'chess']} />
               <span style={{ marginLeft: '0.7rem' }}>Chess</span>
@@ -97,7 +99,7 @@ function ChatInput({
             disabled={loading}
             skeuomorphic
             onClick={onPlusButtonClick}
-            color={themeColor}
+            color={profileTheme}
           >
             <Icon size="lg" icon="plus" />
           </Button>
@@ -132,7 +134,3 @@ function ChatInput({
     }
   }
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(ChatInput);

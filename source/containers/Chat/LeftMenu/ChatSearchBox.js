@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
-import { loadChatChannel } from 'helpers/requestHelpers';
 import {
   searchChat,
   clearChatSearchResults,
@@ -12,30 +11,31 @@ import {
   openNewChatTab,
   updateSelectedChannelId
 } from 'redux/actions/ChatActions';
+import { useAppContext } from 'context';
 
 ChatSearchBox.propTypes = {
   clearSearchResults: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func.isRequired,
   openNewChatTab: PropTypes.func.isRequired,
   searchChat: PropTypes.func.isRequired,
   searchResults: PropTypes.array.isRequired,
-  updateSelectedChannelId: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  updateSelectedChannelId: PropTypes.func.isRequired
 };
 
 function ChatSearchBox({
   clearSearchResults,
-  dispatch,
   enterChannelWithId,
   openNewChatTab,
   searchChat,
   searchResults,
-  updateSelectedChannelId,
-  userId,
-  username
+  updateSelectedChannelId
 }) {
+  const {
+    user: {
+      state: { userId, username }
+    },
+    requestHelpers: { loadChatChannel }
+  } = useAppContext();
   const { handleSearch, searching, searchText, setSearchText } = useSearch({
     onSearch: searchChat,
     onClear: clearSearchResults
@@ -72,8 +72,7 @@ function ChatSearchBox({
     if (item.primary || !!item.channelId) {
       updateSelectedChannelId(item.channelId);
       const data = await loadChatChannel({
-        channelId: item.channelId,
-        dispatch
+        channelId: item.channelId
       });
       enterChannelWithId({ data, showOnTop: true });
     } else {
@@ -89,17 +88,13 @@ function ChatSearchBox({
 
 export default connect(
   state => ({
-    searchResults: state.ChatReducer.chatSearchResults,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username
+    searchResults: state.ChatReducer.chatSearchResults
   }),
-  dispatch => ({
-    dispatch,
-    searchChat: params => dispatch(searchChat(params)),
-    clearSearchResults: params => dispatch(clearChatSearchResults(params)),
-    enterChannelWithId: params => dispatch(enterChannelWithId(params)),
-    openNewChatTab: params => dispatch(openNewChatTab(params)),
-    updateSelectedChannelId: channelId =>
-      dispatch(updateSelectedChannelId(channelId))
-  })
+  {
+    searchChat,
+    clearSearchResults: clearChatSearchResults,
+    enterChannelWithId,
+    openNewChatTab,
+    updateSelectedChannelId
+  }
 )(ChatSearchBox);

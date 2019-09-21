@@ -11,7 +11,6 @@ import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
-import { setChessMoveViewTimeStamp } from 'helpers/requestHelpers';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import {
   editMessage,
@@ -20,22 +19,16 @@ import {
   updateRecentChessMessage
 } from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
+import { useAppContext } from 'context';
 
 Message.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   chessOpponent: PropTypes.object,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
   message: PropTypes.object,
   style: PropTypes.object,
-  myId: PropTypes.number,
-  myProfilePicId: PropTypes.number,
-  myUsername: PropTypes.string,
   onDelete: PropTypes.func,
   onEditDone: PropTypes.func,
   saveMessage: PropTypes.func,
@@ -55,15 +48,11 @@ Message.propTypes = {
 };
 
 function Message({
-  authLevel,
-  canDelete,
-  canEdit,
   channelId,
   channelName,
   checkScrollIsAtTheBottom,
   chessCountdownObj,
   chessOpponent,
-  dispatch,
   index,
   isLastMsg,
   isNotification,
@@ -92,9 +81,6 @@ function Message({
     linkTitle,
     linkDescription
   },
-  myId,
-  myProfilePicId,
-  myUsername,
   onChessBoardClick,
   onDelete,
   onEditDone,
@@ -109,6 +95,19 @@ function Message({
   updateChessMoveViewTimeStamp,
   updateRecentChessMessage
 }) {
+  const {
+    user: {
+      state: {
+        authLevel,
+        canDelete,
+        canEdit,
+        userId: myId,
+        username: myUsername,
+        profilePicId: myProfilePicId
+      }
+    },
+    requestHelpers: { setChessMoveViewTimeStamp }
+  } = useAppContext();
   let { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
@@ -318,7 +317,7 @@ function Message({
 
   async function handleSpoilerClick() {
     try {
-      await setChessMoveViewTimeStamp({ channelId, message, dispatch });
+      await setChessMoveViewTimeStamp({ channelId, message });
       updateChessMoveViewTimeStamp();
       onChessSpoilerClick(userId);
     } catch (error) {
@@ -329,21 +328,12 @@ function Message({
 
 export default connect(
   state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    myId: state.UserReducer.userId,
-    myUsername: state.UserReducer.username,
-    myProfilePicId: state.UserReducer.profilePicId,
     socketConnected: state.NotiReducer.socketConnected
   }),
-  dispatch => ({
-    dispatch,
-    onEditDone: params => dispatch(editMessage(params)),
-    saveMessage: params => dispatch(saveMessage(params)),
-    updateChessMoveViewTimeStamp: params =>
-      dispatch(updateChessMoveViewTimeStamp(params)),
-    updateRecentChessMessage: message =>
-      dispatch(updateRecentChessMessage(message))
-  })
+  {
+    onEditDone: editMessage,
+    saveMessage,
+    updateChessMoveViewTimeStamp,
+    updateRecentChessMessage
+  }
 )(Message);

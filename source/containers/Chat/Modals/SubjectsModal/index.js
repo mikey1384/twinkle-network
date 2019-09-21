@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { connect } from 'react-redux';
 import request from 'axios';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import SubjectItem from './SubjectItem';
@@ -10,18 +9,23 @@ import { Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 import SubjectMsgsModal from '../SubjectMsgsModal';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
 
 SubjectsModal.propTypes = {
   currentSubjectId: PropTypes.number,
-  userId: PropTypes.number,
   onHide: PropTypes.func,
   selectSubject: PropTypes.func
 };
 
-function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
+function SubjectsModal({ currentSubjectId, onHide, selectSubject }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   const [loaded, setLoaded] = useState(false);
   const [mySubjects, setMySubjects] = useState({
     subjects: [],
@@ -201,7 +205,3 @@ function SubjectsModal({ currentSubjectId, onHide, selectSubject, userId }) {
     }
   }
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(SubjectsModal);

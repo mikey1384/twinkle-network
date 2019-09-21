@@ -11,7 +11,7 @@ import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,
@@ -21,8 +21,7 @@ LeftMenu.propTypes = {
   loadMoreChannels: PropTypes.func.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired,
-  showUserListModal: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired
+  showUserListModal: PropTypes.func.isRequired
 };
 
 function LeftMenu({
@@ -33,9 +32,13 @@ function LeftMenu({
   loadMoreChannels,
   onChannelEnter,
   onNewButtonClick,
-  showUserListModal,
-  userId
+  showUserListModal
 }) {
+  const {
+    user: {
+      state: { userId }
+    }
+  } = useAppContext();
   const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
@@ -239,7 +242,3 @@ function LeftMenu({
     }`;
   }
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(LeftMenu);

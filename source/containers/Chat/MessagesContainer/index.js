@@ -23,9 +23,9 @@ import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import EditTitleModal from '../Modals/EditTitle';
+import { useAppContext } from 'context';
 
 MessagesContainer.propTypes = {
-  authLevel: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
@@ -44,17 +44,13 @@ MessagesContainer.propTypes = {
   onMessageSubmit: PropTypes.func.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
   onShowChessModal: PropTypes.func.isRequired,
-  profilePicId: PropTypes.number,
   recepientId: PropTypes.number,
   selectedChannelId: PropTypes.number,
   socketConnected: PropTypes.bool,
-  subjectId: PropTypes.number,
-  username: PropTypes.string,
-  userId: PropTypes.number.isRequired
+  subjectId: PropTypes.number
 };
 
 function MessagesContainer({
-  authLevel,
   channelName,
   chessCountdownObj,
   chessOpponent,
@@ -73,14 +69,16 @@ function MessagesContainer({
   onMessageSubmit,
   onSendFileMessage,
   onShowChessModal,
-  profilePicId,
   recepientId,
   selectedChannelId,
   socketConnected,
-  subjectId,
-  username,
-  userId
+  subjectId
 }) {
+  const {
+    user: {
+      state: { authLevel, profilePicId, userId, username }
+    }
+  } = useAppContext();
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',
@@ -512,10 +510,6 @@ function MessagesContainer({
 
 export default connect(
   state => ({
-    authLevel: state.UserReducer.authLevel,
-    profilePicId: state.UserReducer.profilePicId,
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
     socketConnected: state.NotiReducer.socketConnected
   }),
   { deleteMessage, editChannelTitle, hideChat, leaveChannel }

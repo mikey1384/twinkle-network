@@ -2,20 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
 import { borderRadius, Color } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
+import { useAppContext } from 'context';
 
 FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,
   fileType: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  profileTheme: PropTypes.string,
   src: PropTypes.string.isRequired
 };
 
-function FileInfo({ fileName, fileType, fileSize, profileTheme, src }) {
-  const themeColor = profileTheme || 'logoBlue';
+function FileInfo({ fileName, fileType, fileSize, src }) {
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   return (
     <div
       style={{
@@ -28,9 +31,9 @@ function FileInfo({ fileName, fileType, fileSize, profileTheme, src }) {
       <div style={{ display: 'flex', width: '100%' }}>
         <div>
           {fileType === 'other' ? (
-            <Icon color={themeColor} size="7x" icon="file" />
+            <Icon color={profileTheme} size="7x" icon="file" />
           ) : (
-            <Icon color={themeColor} size="7x" icon={`file-${fileType}`} />
+            <Icon color={profileTheme} size="7x" icon={`file-${fileType}`} />
           )}
         </div>
         <div
@@ -80,7 +83,3 @@ function FileInfo({ fileName, fileType, fileSize, profileTheme, src }) {
     </div>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(FileInfo);

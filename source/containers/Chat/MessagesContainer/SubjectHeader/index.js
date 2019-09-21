@@ -23,12 +23,10 @@ import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 SubjectHeader.propTypes = {
   clearSubjectSearchResults: PropTypes.func,
-  userId: PropTypes.number,
-  username: PropTypes.string,
-  profilePicId: PropTypes.number,
   subject: PropTypes.object,
   changeChatSubject: PropTypes.func,
   loadChatSubject: PropTypes.func,
@@ -42,7 +40,6 @@ function SubjectHeader({
   changeChatSubject,
   clearSubjectSearchResults,
   loadChatSubject,
-  profilePicId,
   reloadChatSubject,
   subject: {
     content = defaultChatSubject,
@@ -54,10 +51,13 @@ function SubjectHeader({
   },
   searchChatSubject,
   subjectSearchResults,
-  uploadChatSubject,
-  userId,
-  username
+  uploadChatSubject
 }) {
+  const {
+    user: {
+      state: { profilePicId, userId, username }
+    }
+  } = useAppContext();
   const [loaded, setLoaded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
@@ -276,9 +276,6 @@ function SubjectHeader({
 
 export default connect(
   state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    profilePicId: state.UserReducer.profilePicId,
     subject: state.ChatReducer.subject,
     subjectSearchResults: state.ChatReducer.subjectSearchResults
   }),
