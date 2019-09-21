@@ -1,24 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { timeSince } from 'helpers/timeStampHelpers';
 import UsernameText from 'components/Texts/UsernameText';
 import UserListModal from 'components/Modals/UserListModal';
+import DropdownButton from 'components/Buttons/DropdownButton';
+import EditTitleForm from 'components/Texts/EditTitleForm';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Link } from 'react-router-dom';
 import { editTitle, deleteLink } from 'redux/actions/LinkActions';
 import { connect } from 'react-redux';
-import DropdownButton from 'components/Buttons/DropdownButton';
-import EditTitleForm from 'components/Texts/EditTitleForm';
 import { cleanString } from 'helpers/stringHelpers';
-import ConfirmModal from 'components/Modals/ConfirmModal';
+import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 import request from 'axios';
 import URL from 'constants/URL';
 
 LinkItem.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
   deleteLink: PropTypes.func.isRequired,
   editTitle: PropTypes.func.isRequired,
   link: PropTypes.shape({
@@ -32,8 +30,7 @@ LinkItem.propTypes = {
       .isRequired,
     uploader: PropTypes.object.isRequired,
     likes: PropTypes.array.isRequired
-  }).isRequired,
-  userId: PropTypes.number
+  }).isRequired
 };
 
 const API_URL = `${URL}/content`;
@@ -51,13 +48,14 @@ function LinkItem({
     timeStamp,
     uploader
   },
-  authLevel,
-  canEdit,
-  canDelete,
   deleteLink,
-  editTitle,
-  userId
+  editTitle
 }) {
+  const {
+    user: {
+      state: { authLevel, canDelete, canEdit, userId }
+    }
+  } = useAppContext();
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     thumbUrl ? thumbUrl.replace('http://', 'https://') : '/img/link.png'
@@ -262,11 +260,6 @@ function LinkItem({
 }
 
 export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    userId: state.UserReducer.userId
-  }),
+  null,
   { deleteLink, editTitle }
 )(LinkItem);

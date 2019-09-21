@@ -7,6 +7,7 @@ import EditTitleForm from 'components/Texts/EditTitleForm';
 import EditPlaylistModal from './Modals/EditPlaylistModal';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import Link from 'components/Link';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { editPlaylistTitle, deletePlaylist } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
@@ -14,19 +15,16 @@ import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
-import Link from 'components/Link';
+import { useAppContext } from 'context';
 
 PlaylistCarousel.propTypes = {
   arrayIndex: PropTypes.number.isRequired,
-  canEdit: PropTypes.bool,
-  canEditPlaylists: PropTypes.bool,
   clickSafe: PropTypes.bool.isRequired,
   deletePlaylist: PropTypes.func.isRequired,
   userIsUploader: PropTypes.bool,
   editPlaylistTitle: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   playlist: PropTypes.array.isRequired,
-  profileTheme: PropTypes.string,
   showAllButton: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   uploader: PropTypes.string.isRequired,
@@ -39,20 +37,22 @@ const cellSpacing = 12;
 
 function PlaylistCarousel({
   arrayIndex,
-  canEdit,
-  canEditPlaylists,
   clickSafe,
   deletePlaylist,
   editPlaylistTitle,
   id: playlistId,
   numPlaylistVids,
   playlist,
-  profileTheme,
   showAllButton,
   title,
   uploader,
   userIsUploader
 }) {
+  const {
+    user: {
+      state: { canEdit, canEditPlaylists, profileTheme }
+    }
+  } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [changePLVideosModalShown, setChangePLVideosModalShown] = useState(
     false
@@ -110,7 +110,7 @@ function PlaylistCarousel({
               text-decoration: none;
               &:hover {
                 transition: color 0.3s;
-                color: ${Color[profileTheme || 'logoBlue']()};
+                color: ${Color[profileTheme]()};
               }
             }
           }
@@ -258,10 +258,7 @@ function PlaylistCarousel({
 
 export default connect(
   state => ({
-    canEdit: state.UserReducer.canEdit,
-    canEditPlaylists: state.UserReducer.canEditPlaylists,
-    clickSafe: state.VideoReducer.clickSafe,
-    profileTheme: state.UserReducer.profileTheme
+    clickSafe: state.VideoReducer.clickSafe
   }),
   {
     editPlaylistTitle,

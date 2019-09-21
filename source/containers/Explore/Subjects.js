@@ -6,17 +6,13 @@ import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
-import { loadFeaturedSubjects } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 Subjects.propTypes = {
-  canPinPlaylists: PropTypes.bool,
-  location: PropTypes.object.isRequired,
-  userId: PropTypes.number
+  location: PropTypes.object.isRequired
 };
 
-function Subjects({ canPinPlaylists, location, userId }) {
+export default function Subjects({ location }) {
   const {
     view: {
       state: { scrollPositions },
@@ -27,7 +23,11 @@ function Subjects({ canPinPlaylists, location, userId }) {
         subjects: { loaded, featured }
       },
       actions: { onLoadFeaturedSubjects }
-    }
+    },
+    user: {
+      state: { userId, canPinPlaylists }
+    },
+    requestHelpers: { loadFeaturedSubjects }
   } = useAppContext();
   useScrollPosition({
     scrollPositions,
@@ -88,8 +88,3 @@ function Subjects({ canPinPlaylists, location, userId }) {
     </div>
   );
 }
-
-export default connect(state => ({
-  canPinPlaylists: state.UserReducer.canPinPlaylists,
-  userId: state.UserReducer.userId
-}))(Subjects);

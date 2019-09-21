@@ -7,25 +7,21 @@ import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { useAppContext } from 'context';
-import { connect } from 'react-redux';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  userId: PropTypes.number
+  history: PropTypes.object.isRequired
 };
 
-function ContentPage({
+export default function ContentPage({
   history,
   match: {
     params: { contentId },
     url
-  },
-  userId
+  }
 }) {
-  const contentType = url.split('/')[1].slice(0, -1);
   const {
     content: {
       state,
@@ -49,8 +45,12 @@ function ContentPage({
         onUploadComment,
         onUploadReply
       }
+    },
+    user: {
+      state: { userId }
     }
   } = useAppContext();
+  const contentType = url.split('/')[1].slice(0, -1);
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,
     exists: false
@@ -157,7 +157,3 @@ function ContentPage({
     </ErrorBoundary>
   );
 }
-
-export default connect(state => ({
-  userId: state.UserReducer.userId
-}))(ContentPage);

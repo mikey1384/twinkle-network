@@ -6,7 +6,6 @@ import FeaturedPlaylistPanel from './Panels/FeaturedPlaylistsPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { loadUploads, searchContent } from 'helpers/requestHelpers';
 import {
   closeAddPlaylistModal,
   closeAddVideoModal,
@@ -36,8 +35,7 @@ Videos.propTypes = {
   playlistsLoaded: PropTypes.bool.isRequired,
   searchedPlaylists: PropTypes.array.isRequired,
   setSearchedPlaylists: PropTypes.func.isRequired,
-  postPlaylist: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  postPlaylist: PropTypes.func.isRequired
 };
 
 function Videos({
@@ -55,14 +53,17 @@ function Videos({
   postPlaylist,
   playlistsLoaded,
   searchedPlaylists,
-  setSearchedPlaylists,
-  userId
+  setSearchedPlaylists
 }) {
   const {
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
-    }
+    },
+    user: {
+      state: { userId }
+    },
+    requestHelpers: { loadUploads, searchContent }
   } = useAppContext();
   useScrollPosition({
     scrollPositions,
@@ -160,9 +161,7 @@ export default connect(
       state.VideoReducer.loadMoreSearchedPlaylistsButton,
     playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
     playlists: state.VideoReducer.allPlaylists,
-    searchedPlaylists: state.VideoReducer.searchedPlaylists,
-    userType: state.UserReducer.userType,
-    userId: state.UserReducer.userId
+    searchedPlaylists: state.VideoReducer.searchedPlaylists
   }),
   {
     getPlaylists,

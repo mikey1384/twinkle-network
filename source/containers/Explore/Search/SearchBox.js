@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import SearchInput from 'components/Texts/SearchInput';
 import { useAppContext } from 'context';
@@ -9,26 +8,27 @@ SearchBox.propTypes = {
   category: PropTypes.string,
   className: PropTypes.string,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  profileTheme: PropTypes.string,
   style: PropTypes.object
 };
 
-function SearchBox({ category, className, innerRef, profileTheme, style }) {
+function SearchBox({ category, className, innerRef, style }) {
   const {
     explore: {
       state: {
         search: { searchText }
       },
       actions: { onChangeSearchInput }
+    },
+    user: {
+      state: { profileTheme }
     }
   } = useAppContext();
-  const themeColor = profileTheme || 'logoBlue';
   return (
     <SearchInput
       className={className}
       style={style}
-      addonColor={themeColor}
-      borderColor={themeColor}
+      addonColor={profileTheme}
+      borderColor={profileTheme}
       innerRef={innerRef}
       placeholder={`Search ${category}...`}
       onChange={onChangeSearchInput}
@@ -37,6 +37,4 @@ function SearchBox({ category, className, innerRef, profileTheme, style }) {
   );
 }
 
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(withRouter(SearchBox));
+export default withRouter(SearchBox);

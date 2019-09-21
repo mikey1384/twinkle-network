@@ -13,7 +13,9 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
 import request from 'axios';
 import NotFound from 'components/NotFound';
-import { useAppContext } from 'context';
+import URL from 'constants/URL';
+import Loading from 'components/Loading';
+import Description from './Description';
 import {
   editLinkPage,
   likeLink,
@@ -24,52 +26,26 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
-import {
-  auth,
-  handleError,
-  loadComments,
-  loadSubjects
-} from 'helpers/requestHelpers';
-import URL from 'constants/URL';
-import Loading from 'components/Loading';
-import Description from './Description';
-import { loadContent } from '../../helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 LinkPage.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canStar: PropTypes.bool,
   editLinkPage: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   likeLink: PropTypes.func.isRequired,
-  reduxDispatch: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  myId: PropTypes.number,
   updateNumComments: PropTypes.func.isRequired
 };
 
 function LinkPage({
-  authLevel,
-  canDelete,
-  canEdit,
-  canStar,
-  reduxDispatch,
   history,
   likeLink,
   location,
   match: {
     params: { linkId }
   },
-  myId,
   updateNumComments
 }) {
-  const [notFound, setNotFound] = useState(false);
-  const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [likesModalShown, setLikesModalShown] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const [loading, setLoading] = useState(true);
   const {
     content: {
       state,
@@ -95,8 +71,17 @@ function LinkPage({
         onUploadReply,
         onUploadSubject
       }
-    }
+    },
+    user: {
+      state: { authLevel, canDelete, canEdit, canStar, userId }
+    },
+    requestHelpers: { editContent, loadComments, loadContent, loadSubjects }
   } = useAppContext();
+  const [notFound, setNotFound] = useState(false);
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [likesModalShown, setLikesModalShown] = useState(false);
+  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+  const [loading, setLoading] = useState(true);
   const contentState = state['url' + linkId] || {};
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
@@ -160,11 +145,11 @@ function LinkPage({
   } = contentState;
   let userLikedThis = false;
   for (let i = 0; i < likes.length; i++) {
-    if (likes[i].id === myId) userLikedThis = true;
+    if (likes[i].id === userId) userLikedThis = true;
   }
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader?.authLevel;
-  const userIsUploader = uploader?.id === myId;
+  const userIsUploader = uploader?.id === userId;
 
   return loaded && !loading ? (
     <div
@@ -199,7 +184,7 @@ function LinkPage({
           content={content}
           uploader={uploader}
           timeStamp={timeStamp}
-          myId={myId}
+          myId={userId}
           title={title}
           url={content}
           userCanEditThis={userCanEditThis}
@@ -250,7 +235,7 @@ function LinkPage({
                 color="pink"
                 filled
                 disabled={determineXpButtonDisabled({
-                  myId,
+                  myId: userId,
                   xpRewardInterfaceShown,
                   stars
                 })}
@@ -263,7 +248,7 @@ function LinkPage({
                 <Icon icon="certificate" />
                 <span style={{ marginLeft: '0.7rem' }}>
                   {determineXpButtonDisabled({
-                    myId,
+                    myId: userId,
                     xpRewardInterfaceShown,
                     stars
                   }) || 'Reward'}
@@ -275,7 +260,7 @@ function LinkPage({
             key={'likes' + id}
             style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
             likes={likes}
-            userId={myId}
+            userId={userId}
             onLinkClick={() => setLikesModalShown(true)}
           />
         </div>
@@ -348,7 +333,7 @@ function LinkPage({
             width: 100%;
           }
         `}
-        userId={myId}
+        userId={userId}
       />
       {confirmModalShown && (
         <ConfirmModal
@@ -362,7 +347,7 @@ function LinkPage({
         <UserListModal
           key={'userlist' + id}
           users={likes}
-          userId={myId}
+          userId={userId}
           title="People who liked this"
           description="(You)"
           onHide={() => setLikesModalShown(false)}
@@ -380,7 +365,7 @@ function LinkPage({
       await request.delete(`${URL}/url?linkId=${id}`, auth());
       history.push('/links');
     } catch (error) {
-      handleError(error, reduxDispatch);
+      handleError(error);
     }
   }
 
@@ -393,25 +378,19 @@ function LinkPage({
   }
 
   async function handleEditLinkPage(params) {
-    try {
-      await request.put(`${URL}/url/page`, params, auth());
-      const {
-        linkId: id,
-        editedTitle: title,
-        editedDescription: description,
-        editedUrl: content
-      } = params;
-      onEditContent({
-        data: {
-          content: processedURL(content),
-          title,
-          description
-        }
-      });
-      editLinkPage({ id: Number(id), title, content: processedURL(content) });
-    } catch (error) {
-      handleError(error, reduxDispatch);
-    }
+    await editContent(params);
+    const {
+      linkId: id,
+      editedTitle: title,
+      editedDescription: description,
+      editedUrl: content
+    } = params;
+    onEditContent({
+      content: processedURL(content),
+      title,
+      description
+    });
+    editLinkPage({ id: Number(id), title, content: processedURL(content) });
   }
 
   function handleLikeLink(likes) {
@@ -438,17 +417,7 @@ function LinkPage({
 
 export default connect(
   state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar,
-    pageProps: state.LinkReducer.linkPage,
-    myId: state.UserReducer.userId
+    pageProps: state.LinkReducer.linkPage
   }),
-  dispatch => ({
-    reduxDispatch: dispatch,
-    editLinkPage: params => dispatch(editLinkPage(params)),
-    likeLink: likes => dispatch(likeLink(likes)),
-    updateNumComments: params => dispatch(updateNumComments(params))
-  })
+  { editLinkPage, likeLink, updateNumComments }
 )(LinkPage);

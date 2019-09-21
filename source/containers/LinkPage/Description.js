@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { timeSince } from 'helpers/timeStampHelpers';
 import LongText from 'components/Texts/LongText';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
 import AlreadyPosted from 'components/AlreadyPosted';
+import { timeSince } from 'helpers/timeStampHelpers';
 import {
   cleanString,
   exceedsCharLimit,
@@ -16,12 +16,10 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 
 Description.propTypes = {
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
   content: PropTypes.string,
   description: PropTypes.string,
   linkId: PropTypes.number.isRequired,
@@ -36,9 +34,7 @@ Description.propTypes = {
   url: PropTypes.string.isRequired
 };
 
-function Description({
-  canDelete,
-  canEdit,
+export default function Description({
   content,
   description,
   onDelete,
@@ -51,6 +47,11 @@ function Description({
   userCanEditThis,
   userIsUploader
 }) {
+  const {
+    user: {
+      state: { canDelete, canEdit }
+    }
+  } = useAppContext();
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
   const [editedUrl, setEditedUrl] = useState(content);
   const [editedDescription, setEditedDescription] = useState(description);
@@ -253,13 +254,9 @@ function Description({
       editedUrl,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
-      linkId
+      contentId: linkId,
+      contentType: 'url'
     });
     setOnEdit(false);
   }
 }
-
-export default connect(state => ({
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit
-}))(Description);

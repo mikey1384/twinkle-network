@@ -505,7 +505,7 @@ export default function Body({
   }
 
   async function editThisContent(params) {
-    const data = await editContent({ params });
+    const data = await editContent(params);
     onEditContent({ data, contentType, contentId });
   }
 

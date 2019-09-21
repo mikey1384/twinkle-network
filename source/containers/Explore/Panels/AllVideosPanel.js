@@ -1,43 +1,41 @@
 import React, { useState } from 'react';
-import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import VideoThumb from 'components/VideoThumb';
-import { connect } from 'react-redux';
-import { getMoreVideos } from 'redux/actions/VideoActions';
-import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
+import SectionPanel from 'components/SectionPanel';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { getMoreVideos } from 'redux/actions/VideoActions';
 import { last } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { loadUploads, searchContent } from 'helpers/requestHelpers';
+import { useSearch } from 'helpers/hooks';
+import { useAppContext } from 'context';
 
 AllVideosPanel.propTypes = {
-  authLevel: PropTypes.number,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
   getMoreVideos: PropTypes.func.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   onAddVideoClick: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  userId: PropTypes.number,
   videos: PropTypes.array.isRequired
 };
 
 function AllVideosPanel({
-  authLevel,
-  canDelete,
-  canEdit,
   getMoreVideos,
   innerRef,
   loadMoreButton,
   loaded,
   onAddVideoClick,
   title = 'All Videos',
-  videos: allVideos,
-  userId
+  videos: allVideos
 }) {
+  const {
+    user: {
+      state: { authLevel, canDelete, canEdit, userId }
+    },
+    requestHelpers: { loadUploads, searchContent }
+  } = useAppContext();
   const [searchedVideos, setSearchedVideos] = useState([]);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
@@ -156,10 +154,6 @@ function AllVideosPanel({
 
 export default connect(
   state => ({
-    authLevel: state.UserReducer.authLevel,
-    canDelete: state.UserReducer.canDelete,
-    canEdit: state.UserReducer.canEdit,
-    canStar: state.UserReducer.canStar,
     loaded: state.VideoReducer.loaded,
     loadMoreButton: state.VideoReducer.loadMoreVideosButton,
     videos: state.VideoReducer.allVideoThumbs

@@ -167,9 +167,7 @@ function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
 }
 
 export default connect(
-  state => ({
-    userId: state.UserReducer.userId
-  }),
+  null,
   {
     clearLinksLoaded,
     clearVideosLoaded,

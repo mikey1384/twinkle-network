@@ -1,6 +1,4 @@
 import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
 import {
   exceedsCharLimit,
@@ -12,7 +10,6 @@ import {
 } from 'helpers/stringHelpers';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { checkIfContentExists, uploadContent } from 'helpers/requestHelpers';
 import { useAppContext, useInputContext } from 'context';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
@@ -23,16 +20,15 @@ import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
-ContentInput.propTypes = {
-  canEditRewardLevel: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
-};
-
-function ContentInput({ canEditRewardLevel, dispatch }) {
+export default function ContentInput() {
   const {
     home: {
       actions: { onLoadNewFeeds }
-    }
+    },
+    user: {
+      state: { canEditRewardLevel }
+    },
+    requestHelpers: { checkIfContentExists, uploadContent }
   } = useAppContext();
   const {
     homeInput: {
@@ -265,8 +261,7 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
       const data = await uploadContent({
         ...form,
         title: finalizeEmoji(form.title),
-        description: finalizeEmoji(form.description),
-        dispatch
+        description: finalizeEmoji(form.description)
       });
       onResetContentInput();
       setSubmitting(false);
@@ -320,14 +315,3 @@ function ContentInput({ canEditRewardLevel, dispatch }) {
     return onSetContentAlreadyPosted(exists ? content : false);
   }
 }
-
-export default connect(
-  state => ({
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel,
-    username: state.UserReducer.username,
-    profileTheme: state.UserReducer.profileTheme
-  }),
-  dispatch => ({
-    dispatch
-  })
-)(ContentInput);

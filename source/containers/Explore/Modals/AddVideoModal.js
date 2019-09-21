@@ -1,8 +1,5 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { uploadContent } from 'helpers/requestHelpers';
-import { uploadVideo } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
 import {
   exceedsCharLimit,
   isValidYoutubeUrl,
@@ -15,26 +12,23 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
+import { uploadVideo } from 'redux/actions/VideoActions';
+import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 AddVideoModal.propTypes = {
-  canEditRewardLevel: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   focusVideoPanelAfterUpload: PropTypes.func.isRequired,
-  uploadVideo: PropTypes.func.isRequired,
-  userId: PropTypes.number,
-  username: PropTypes.string
+  uploadVideo: PropTypes.func.isRequired
 };
 
-function AddVideoModal({
-  canEditRewardLevel,
-  dispatch,
-  focusVideoPanelAfterUpload,
-  onHide,
-  uploadVideo,
-  userId,
-  username
-}) {
+function AddVideoModal({ focusVideoPanelAfterUpload, onHide, uploadVideo }) {
+  const {
+    user: {
+      state: { canEditRewardLevel, userId, username }
+    },
+    requestHelpers: { uploadContent }
+  } = useAppContext();
   const [urlError, setUrlError] = useState('');
   const [form, setForm] = useState({
     url: '',
@@ -182,8 +176,7 @@ function AddVideoModal({
       isVideo: true,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description),
-      rewardLevel,
-      dispatch
+      rewardLevel
     });
     uploadVideo({
       id: data.contentId,
@@ -220,13 +213,6 @@ function AddVideoModal({
 }
 
 export default connect(
-  state => ({
-    userId: state.UserReducer.userId,
-    username: state.UserReducer.username,
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel
-  }),
-  dispatch => ({
-    dispatch,
-    uploadVideo: params => dispatch(uploadVideo(params))
-  })
+  null,
+  { uploadVideo }
 )(AddVideoModal);

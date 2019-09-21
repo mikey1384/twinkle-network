@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
@@ -18,20 +16,18 @@ import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
-import { uploadContent } from 'helpers/requestHelpers';
 import { useAppContext, useInputContext } from 'context';
 
-SubjectInput.propTypes = {
-  canEditRewardLevel: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
-};
-
-function SubjectInput({ canEditRewardLevel, dispatch }) {
+export default function SubjectInput() {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const {
     home: {
       actions: { onLoadNewFeeds }
-    }
+    },
+    user: {
+      state: { canEditRewardLevel }
+    },
+    requestHelpers: { uploadContent }
   } = useAppContext();
   const {
     homeInput: {
@@ -278,8 +274,7 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
         title,
         description: finalizeEmoji(description),
         secretAnswer: hasSecretAnswer ? secretAnswer : '',
-        rewardLevel,
-        dispatch
+        rewardLevel
       });
       onLoadNewFeeds([data]);
       onResetSubjectInput();
@@ -290,12 +285,3 @@ function SubjectInput({ canEditRewardLevel, dispatch }) {
     }
   }
 }
-
-export default connect(
-  state => ({
-    canEditRewardLevel: state.UserReducer.canEditRewardLevel
-  }),
-  dispatch => ({
-    dispatch
-  })
-)(SubjectInput);

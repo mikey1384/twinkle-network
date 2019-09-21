@@ -4,24 +4,26 @@ import Checkbox from 'components/Checkbox';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 Categories.propTypes = {
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
-  profileTheme: PropTypes.string,
   setDefaultSearchFilter: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
-function Categories({
+export default function Categories({
   defaultFilter,
   filter,
-  profileTheme,
   setDefaultSearchFilter,
   style
 }) {
-  const themeColor = profileTheme || 'logoBlue';
+  const {
+    user: {
+      state: { profileTheme }
+    }
+  } = useAppContext();
   return (
     <div
       style={{
@@ -39,7 +41,7 @@ function Categories({
           display: flex;
           justify-content: center;
           align-items: center;
-          color: ${Color[themeColor]()};
+          color: ${Color[profileTheme]()};
           > nav {
             text-align: center;
             > p {
@@ -96,7 +98,3 @@ function Categories({
     </div>
   );
 }
-
-export default connect(state => ({
-  profileTheme: state.UserReducer.profileTheme
-}))(Categories);

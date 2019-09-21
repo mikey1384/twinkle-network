@@ -319,11 +319,9 @@ export default function Reply({
 
   async function editDone(editedReply) {
     await editContent({
-      params: {
-        editedComment: editedReply,
-        contentId: reply.id,
-        contentType: 'comment'
-      }
+      editedComment: editedReply,
+      contentId: reply.id,
+      contentType: 'comment'
     });
     onEditDone({ editedComment: editedReply, commentId: reply.id });
     setOnEdit(false);

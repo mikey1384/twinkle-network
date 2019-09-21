@@ -114,7 +114,7 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async editContent({ params }) {
+    async editContent(params) {
       try {
         const { data } = await request.put(`${URL}/content`, params, auth());
         return Promise.resolve(data);

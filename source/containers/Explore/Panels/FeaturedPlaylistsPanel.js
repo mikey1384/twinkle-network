@@ -5,7 +5,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
-import { loadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import {
   closeReorderFeaturedPlaylists,
@@ -14,9 +13,9 @@ import {
   openReorderFeaturedPlaylists,
   openSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
+import { useAppContext } from 'context';
 
 FeaturedPlaylistsPanel.propTypes = {
-  canPinPlaylists: PropTypes.bool,
   closeReorderFeaturedPlaylists: PropTypes.func.isRequired,
   closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   featuredPlaylists: PropTypes.array.isRequired,
@@ -28,12 +27,10 @@ FeaturedPlaylistsPanel.propTypes = {
   playlistsLoaded: PropTypes.bool.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   reorderFeaturedPlaylistsShown: PropTypes.bool.isRequired,
-  selectPlaylistsToPinModalShown: PropTypes.bool.isRequired,
-  userId: PropTypes.number
+  selectPlaylistsToPinModalShown: PropTypes.bool.isRequired
 };
 
 function FeaturedPlaylistsPanel({
-  canPinPlaylists,
   closeReorderFeaturedPlaylists,
   closeSelectPlaylistsToPinModal,
   featuredPlaylists,
@@ -45,9 +42,14 @@ function FeaturedPlaylistsPanel({
   playlistsLoaded,
   playlistsToPin,
   reorderFeaturedPlaylistsShown,
-  selectPlaylistsToPinModalShown,
-  userId
+  selectPlaylistsToPinModalShown
 }) {
+  const {
+    user: {
+      state: { canPinPlaylists, userId }
+    },
+    requestHelpers: { loadFeaturedPlaylists }
+  } = useAppContext();
   useEffect(() => {
     init();
     async function init() {
@@ -57,7 +59,6 @@ function FeaturedPlaylistsPanel({
       }
     }
   }, [loaded]);
-
   const menuButtons = [
     {
       label: 'Select Playlists',
@@ -111,7 +112,6 @@ function FeaturedPlaylistsPanel({
 
 export default connect(
   state => ({
-    canPinPlaylists: state.UserReducer.canPinPlaylists,
     loaded: state.VideoReducer.loaded,
     loadMorePlaylistsToPinButton:
       state.VideoReducer.loadMorePlaylistsToPinButton,
@@ -121,8 +121,7 @@ export default connect(
     reorderFeaturedPlaylistsShown:
       state.VideoReducer.reorderFeaturedPlaylistsShown,
     selectPlaylistsToPinModalShown:
-      state.VideoReducer.selectPlaylistsToPinModalShown,
-    userId: state.UserReducer.userId
+      state.VideoReducer.selectPlaylistsToPinModalShown
   }),
   {
     closeReorderFeaturedPlaylists,

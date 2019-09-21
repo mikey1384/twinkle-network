@@ -136,12 +136,9 @@ function Comment({
 
   async function editComment(editedComment) {
     await editContent({
-      params: {
-        editedComment,
-        contentId: comment.id,
-        contentType: 'comment'
-      },
-      dispatch
+      editedComment,
+      contentId: comment.id,
+      contentType: 'comment'
     });
     onEditDone({ editedComment, commentId: comment.id });
     setOnEdit(false);
