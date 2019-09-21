@@ -18,18 +18,14 @@ import BasicInfos from './BasicInfos';
 import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
-import { connect } from 'react-redux';
 import { Color } from 'constants/css';
+import { useAppContext } from 'context';
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,
   attachStar: PropTypes.func.isRequired,
-  authLevel: PropTypes.number,
   changeByUserStatus: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
-  canDelete: PropTypes.bool,
-  canEdit: PropTypes.bool,
-  canStar: PropTypes.bool,
   changingPage: PropTypes.bool,
   content: PropTypes.string.isRequired,
   description: PropTypes.string,
@@ -54,11 +50,7 @@ Details.propTypes = {
 function Details({
   addTags,
   attachStar,
-  authLevel,
   byUser,
-  canDelete,
-  canEdit,
-  canStar,
   changeByUserStatus,
   changingPage,
   content,
@@ -80,6 +72,11 @@ function Details({
   videoId,
   videoViews
 }) {
+  const {
+    user: {
+      state: { authLevel, canDelete, canEdit, canStar }
+    }
+  } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [titleHovered, setTitleHovered] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
@@ -351,10 +348,3 @@ function Details({
     });
   }
 }
-
-export default connect(state => ({
-  authLevel: state.UserReducer.authLevel,
-  canDelete: state.UserReducer.canDelete,
-  canEdit: state.UserReducer.canEdit,
-  canStar: state.UserReducer.canStar
-}))(Details);

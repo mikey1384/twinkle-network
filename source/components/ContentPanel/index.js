@@ -13,7 +13,7 @@ import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
-import { loadContent } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 import { withRouter } from 'react-router';
 
 ContentPanel.propTypes = {
@@ -22,7 +22,6 @@ ContentPanel.propTypes = {
   contentObj: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   inputAtBottom: PropTypes.bool,
-  userId: PropTypes.number,
   onAddTags: PropTypes.func,
   onAddTagToContents: PropTypes.func,
   onAttachStar: PropTypes.func.isRequired,
@@ -86,9 +85,11 @@ function ContentPanel({
   onShowTCReplyInput,
   onLoadComments,
   onUploadTargetComment,
-  style = {},
-  userId
+  style = {}
 }) {
+  const {
+    requestHelpers: { loadContent }
+  } = useAppContext();
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const [videoShown, setVideoShown] = useState(false);
@@ -160,7 +161,6 @@ function ContentPanel({
               <>
                 <Heading
                   contentObj={contentObj}
-                  myId={userId}
                   action={
                     contentObj.commentId
                       ? contentObj.targetObj.comment.notFound
@@ -183,7 +183,6 @@ function ContentPanel({
                     contentObj={contentObj}
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
-                    myId={userId}
                     secretShown={secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
                   />

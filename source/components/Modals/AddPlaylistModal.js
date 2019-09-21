@@ -17,17 +17,11 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import {
-  loadUploads,
-  searchContent,
-  uploadPlaylist
-} from 'helpers/requestHelpers';
 import { isMobile, objectify } from 'helpers';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 AddPlaylistModal.propTypes = {
-  dispatch: PropTypes.func,
   existingVideoIds: PropTypes.array,
   focusPlaylistPanelAfterUpload: PropTypes.func,
   modalOverModal: PropTypes.bool,
@@ -38,8 +32,7 @@ AddPlaylistModal.propTypes = {
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-function AddPlaylistModal({
-  dispatch,
+export default function AddPlaylistModal({
   existingVideoIds = [],
   focusPlaylistPanelAfterUpload,
   onHide,
@@ -47,6 +40,9 @@ function AddPlaylistModal({
   modalOverModal,
   title: initialTitle = ''
 }) {
+  const {
+    requestHelpers: { loadUploads, searchContent, uploadPlaylist }
+  } = useAppContext();
   const [loaded, setLoaded] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [section, setSection] = useState(0);
@@ -294,7 +290,6 @@ function AddPlaylistModal({
     setIsUploading(true);
     try {
       const data = await uploadPlaylist({
-        dispatch,
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),
         selectedVideos
@@ -355,8 +350,3 @@ function AddPlaylistModal({
     setSearchLoadMoreButton(loadMoreButton);
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(AddPlaylistModal);

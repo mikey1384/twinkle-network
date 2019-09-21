@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { likeContent } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 LikeButton.propTypes = {
   className: PropTypes.string,
@@ -29,6 +29,9 @@ function LikeButton({
   onClick,
   targetLabel
 }) {
+  const {
+    requestHelpers: { likeContent }
+  } = useAppContext();
   const [disabled, setDisabled] = useState(false);
   return (
     <ErrorBoundary>

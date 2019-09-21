@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import SubjectPanel from './SubjectPanel';
 import SubjectInputArea from './SubjectInputArea';
 import Button from 'components/Button';
-import Context from './Context';
-import { loadSubjects } from 'helpers/requestHelpers';
+import LocalContext from './Context';
+import { useAppContext } from 'context';
 
 Subjects.propTypes = {
   className: PropTypes.string,
@@ -59,8 +59,11 @@ export default function Subjects({
     onUploadReply
   }
 }) {
+  const {
+    requestHelpers: { loadSubjects }
+  } = useAppContext();
   return (
-    <Context.Provider
+    <LocalContext.Provider
       value={{
         attachStar,
         editRewardComment,
@@ -106,7 +109,7 @@ export default function Subjects({
           )}
         </div>
       </div>
-    </Context.Provider>
+    </LocalContext.Provider>
   );
 
   async function loadMoreSubjects() {

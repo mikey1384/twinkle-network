@@ -6,11 +6,11 @@ import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { loadChat, loadChatChannel } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { enterChannelWithId, initChat } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 import { withRouter } from 'react-router';
 
 ChatFeeds.propTypes = {
@@ -44,6 +44,9 @@ function ChatFeeds({
   userId,
   username
 }) {
+  const {
+    requestHelpers: { loadChat, loadChatChannel }
+  } = useAppContext();
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)

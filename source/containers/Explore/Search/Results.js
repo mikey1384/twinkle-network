@@ -5,7 +5,6 @@ import ContentListItem from 'components/ContentListItem';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Link from 'components/Link';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { searchContent } from 'helpers/requestHelpers';
 import { Color } from 'constants/css';
 import { useAppContext } from 'context';
 
@@ -21,7 +20,8 @@ export default function Results({ filter, searchText }) {
         search: { results, loadMoreButton }
       },
       actions: { onLoadSearchResults, onLoadMoreSearchResults }
-    }
+    },
+    requestHelpers: { searchContent }
   } = useAppContext();
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);

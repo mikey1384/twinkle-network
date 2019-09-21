@@ -32,7 +32,6 @@ Body.propTypes = {
   commentsHidden: PropTypes.bool,
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
-  myId: PropTypes.number,
   onChangeSpoilerStatus: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
 };
@@ -67,13 +66,19 @@ export default function Body({
     views
   },
   inputAtBottom,
-  myId,
   onChangeSpoilerStatus,
   secretShown
 }) {
   const {
     user: {
-      state: { authLevel, canDelete, canEdit, canEditRewardLevel, canStar }
+      state: {
+        authLevel,
+        canDelete,
+        canEdit,
+        canEditRewardLevel,
+        canStar,
+        userId
+      }
     },
     requestHelpers: { deleteContent, editContent, loadComments }
   } = useAppContext();
@@ -111,7 +116,7 @@ export default function Body({
 
   useEffect(() => {
     setXpRewardInterfaceShown(false);
-  }, [myId]);
+  }, [userId]);
 
   useEffect(() => {
     mounted.current = true;
@@ -139,17 +144,17 @@ export default function Body({
     const contentSecretHidden =
       !!contentObj.secretAnswer &&
       !secretShown &&
-      contentObj.uploader.id !== myId;
+      contentObj.uploader.id !== userId;
     const rootContentSecretHidden =
-      !!rootObj.secretAnswer && !secretShown && rootObj.uploader.id !== myId;
+      !!rootObj.secretAnswer && !secretShown && rootObj.uploader.id !== userId;
     const subjectSecretHidden =
       !!targetObj?.subject?.secretAnswer &&
       !secretShown &&
-      targetObj?.subject?.uploader.id !== myId;
+      targetObj?.subject?.uploader.id !== userId;
     onSetCommentsHidden(
       contentSecretHidden || rootContentSecretHidden || subjectSecretHidden
     );
-  }, [contentObj.id, secretShown, myId]);
+  }, [contentObj.id, secretShown, userId]);
 
   useEffect(() => {
     if (prevContent.current && prevContent.current !== contentObj.content) {
@@ -161,7 +166,7 @@ export default function Body({
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader.authLevel;
   const userCanRewardThis = canStar && authLevel > uploader.authLevel;
-  const editButtonShown = myId === uploader.id || userCanEditThis;
+  const editButtonShown = userId === uploader.id || userCanEditThis;
   const secretLocked = contentType === 'comment' && commentsHidden;
   const urlRelated = edited
     ? {}
@@ -199,7 +204,7 @@ export default function Body({
           onAddTags={onAddTags}
           onAddTagToContents={onAddTagToContents}
           isEditing={isEditing}
-          myId={myId}
+          myId={userId}
           onEditContent={editThisContent}
           onEditDismiss={() => setIsEditing(false)}
           onClickSecretAnswer={onCommentButtonClick}
@@ -262,7 +267,7 @@ export default function Body({
                     menuProps={renderEditMenuItems()}
                   />
                 )}
-                {userCanRewardThis && myId !== uploader.id && (
+                {userCanRewardThis && userId !== uploader.id && (
                   <Button
                     color="pink"
                     disabled={xpButtonDisabled()}
@@ -305,7 +310,7 @@ export default function Body({
             >
               <Likers
                 className="content-panel__likes"
-                userId={myId}
+                userId={userId}
                 likes={likes}
                 onLinkClick={() => setUserListModalShown(true)}
               />
@@ -404,7 +409,7 @@ export default function Body({
             paddingBottom:
               childComments.length > 0 || commentsShown ? '0.5rem' : 0
           }}
-          userId={myId}
+          userId={userId}
         />
         {userListModalShown && (
           <UserListModal
@@ -452,13 +457,13 @@ export default function Body({
 
   function renderEditMenuItems() {
     const editMenuItems = [];
-    if (myId === uploader.id || canEdit) {
+    if (userId === uploader.id || canEdit) {
       editMenuItems.push({
         label: 'Edit',
         onClick: () => setIsEditing(true)
       });
     }
-    if (myId === uploader.id || canDelete) {
+    if (userId === uploader.id || canDelete) {
       editMenuItems.push({
         label: 'Remove',
         onClick: () => setConfirmModalShown(true)
@@ -470,7 +475,7 @@ export default function Body({
   function determineUserLikedThis(likes) {
     let userLikedThis = false;
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].id === myId) userLikedThis = true;
+      if (likes[i].id === userId) userLikedThis = true;
     }
     return userLikedThis;
   }
@@ -484,7 +489,7 @@ export default function Body({
         rootType,
         targetObj
       }),
-      myId,
+      myId: userId,
       xpRewardInterfaceShown
     });
   }

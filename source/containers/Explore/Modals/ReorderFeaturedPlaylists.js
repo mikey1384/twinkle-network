@@ -4,13 +4,12 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import { objectify } from 'helpers';
-import { uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import { isEqual } from 'lodash';
+import { useAppContext } from 'context';
 
 ReorderFeaturedPlaylists.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   pinnedPlaylists: PropTypes.array.isRequired,
   playlistIds: PropTypes.array.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -19,11 +18,13 @@ ReorderFeaturedPlaylists.propTypes = {
 
 function ReorderFeaturedPlaylists({
   changePinnedPlaylists,
-  dispatch,
   onHide,
   pinnedPlaylists: playlists,
   playlistIds: initialPlaylistIds
 }) {
+  const {
+    requestHelpers: { uploadFeaturedPlaylists }
+  } = useAppContext();
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
   const [disabled, setDisabled] = useState(false);
   const listItemObj = objectify(playlists);
@@ -68,7 +69,6 @@ function ReorderFeaturedPlaylists({
   async function handleSubmit() {
     setDisabled(true);
     const newSelectedPlaylists = await uploadFeaturedPlaylists({
-      dispatch,
       selectedPlaylists: playlistIds
     });
     changePinnedPlaylists(newSelectedPlaylists);
@@ -78,9 +78,5 @@ function ReorderFeaturedPlaylists({
 
 export default connect(
   null,
-  dispatch => ({
-    dispatch,
-    changePinnedPlaylists: selectedPlaylists =>
-      dispatch(changePinnedPlaylists(selectedPlaylists))
-  })
+  { changePinnedPlaylists }
 )(ReorderFeaturedPlaylists);

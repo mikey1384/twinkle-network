@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Context from '../Context';
+import LocalContext from '../Context';
 import Reply from './Reply';
-import { scrollElementToCenter } from 'helpers';
-import { loadReplies } from 'helpers/requestHelpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import { scrollElementToCenter } from 'helpers';
+import { useAppContext } from 'context';
 
 Replies.propTypes = {
   comment: PropTypes.shape({
@@ -36,7 +36,10 @@ export default function Replies({
     onLoadMoreReplies,
     onLoadRepliesOfReply,
     onReplySubmit
-  } = useContext(Context);
+  } = useContext(LocalContext);
+  const {
+    requestHelpers: { loadReplies }
+  } = useAppContext();
   const [deleting, setDeleting] = useState(false);
   const [replying, setReplying] = useState(false);
   const [loadingMoreReplies, setLoadingMoreReplies] = useState(false);

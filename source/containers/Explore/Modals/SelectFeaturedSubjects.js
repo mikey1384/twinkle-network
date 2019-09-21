@@ -10,21 +10,22 @@ import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import {
-  loadUploads,
-  searchContent,
-  uploadFeaturedSubjects
-} from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 SelectFeaturedSubjectsModal.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   subjects: PropTypes.array.isRequired
 };
 
-function SelectFeaturedSubjectsModal({ dispatch, subjects, onHide, onSubmit }) {
+export default function SelectFeaturedSubjectsModal({
+  subjects,
+  onHide,
+  onSubmit
+}) {
+  const {
+    requestHelpers: { loadUploads, searchContent, uploadFeaturedSubjects }
+  } = useAppContext();
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -247,12 +248,7 @@ function SelectFeaturedSubjectsModal({ dispatch, subjects, onHide, onSubmit }) {
 
   async function handleSubmit() {
     setSubmitting(true);
-    await uploadFeaturedSubjects({ dispatch, selected });
+    await uploadFeaturedSubjects({ selected });
     onSubmit(selected.map(selectedId => challengeObjs[selectedId]));
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(SelectFeaturedSubjectsModal);

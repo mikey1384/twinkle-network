@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { checkIfContentExists } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 AlreadyPosted.propTypes = {
   changingPage: PropTypes.bool,
@@ -24,6 +24,9 @@ export default function AlreadyPosted({
   url,
   videoCode
 }) {
+  const {
+    requestHelpers: { checkIfContentExists }
+  } = useAppContext();
   const [existingContent, setExistingContent] = useState({});
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);

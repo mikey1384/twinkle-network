@@ -4,26 +4,26 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
-import { connect } from 'react-redux';
-import { updateRewardLevel } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
   contentType: PropTypes.string.isRequired,
   rewardLevel: PropTypes.number,
-  dispatch: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 
-function RewardLevelModal({
+export default function RewardLevelModal({
   contentId,
   contentType,
-  dispatch,
   rewardLevel: initialRewardLevel = 0,
   onSubmit,
   onHide
 }) {
+  const {
+    requestHelpers: { updateRewardLevel }
+  } = useAppContext();
   const [disabled, setDisabled] = useState(false);
   const [rewardLevel, setRewardLevel] = useState(initialRewardLevel);
   return (
@@ -57,14 +57,7 @@ function RewardLevelModal({
 
   async function submit() {
     setDisabled(true);
-    await updateRewardLevel({ contentId, contentType, rewardLevel, dispatch });
+    await updateRewardLevel({ contentId, contentType, rewardLevel });
     onSubmit({ contentId, rewardLevel, contentType });
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({
-    dispatch
-  })
-)(RewardLevelModal);

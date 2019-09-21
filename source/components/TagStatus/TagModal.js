@@ -4,13 +4,11 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
-import { addVideoToPlaylists, searchContent } from 'helpers/requestHelpers';
 import { capitalize, hashify } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 TagModal.propTypes = {
   currentPlaylists: PropTypes.array.isRequired,
-  dispatch: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   onHide: PropTypes.func.isRequired,
   videoId: PropTypes.number.isRequired,
@@ -18,15 +16,17 @@ TagModal.propTypes = {
   onSubmit: PropTypes.func.isRequired
 };
 
-function TagModal({
+export default function TagModal({
   currentPlaylists,
-  dispatch,
   title,
   onAddPlaylist,
   onHide,
   onSubmit,
   videoId
 }) {
+  const {
+    requestHelpers: { addVideoToPlaylists, searchContent }
+  } = useAppContext();
   const [addPlaylistModalShown, setAddPlaylistModalShown] = useState(false);
   const [notFoundMessageShown, setNotFoundMessageShown] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -131,7 +131,6 @@ function TagModal({
   async function handleSubmit() {
     setDisabled(true);
     await addVideoToPlaylists({
-      dispatch,
       videoId,
       playlistIds: selectedPlaylists.map(playlist => playlist.id)
     });
@@ -152,8 +151,3 @@ function TagModal({
     }
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(TagModal);

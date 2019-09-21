@@ -5,7 +5,6 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
-import { loadUploads } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
 import { useAppContext } from 'context';
@@ -31,7 +30,8 @@ function Links({
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
-    }
+    },
+    requestHelpers: { loadUploads }
   } = useAppContext();
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);

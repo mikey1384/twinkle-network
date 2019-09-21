@@ -5,10 +5,6 @@ import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import {
-  loadNotableContent,
-  loadMoreNotableContents
-} from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
 
 Achievements.propTypes = {
@@ -56,7 +52,8 @@ export default function Achievements({
         onUploadComment,
         onUploadReply
       }
-    }
+    },
+    requestHelpers: { loadMoreNotableContents, loadNotableContent }
   } = useAppContext();
   const [loading, setLoading] = useState(true);
   const mounted = useRef(true);

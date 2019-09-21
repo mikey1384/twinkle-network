@@ -13,13 +13,12 @@ import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { searchContent, uploadFeaturedPlaylists } from 'helpers/requestHelpers';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
+import { useAppContext } from 'context';
 
 SelectPlaylistsToPinModal.propTypes = {
   changePinnedPlaylists: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool.isRequired,
   loadMorePlaylist: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -30,7 +29,6 @@ SelectPlaylistsToPinModal.propTypes = {
 
 function SelectPlaylistsToPinModal({
   changePinnedPlaylists,
-  dispatch,
   loadMoreButton,
   loadMorePlaylist,
   onHide,
@@ -38,6 +36,9 @@ function SelectPlaylistsToPinModal({
   playlistsToPin,
   selectedPlaylists: initialSelectedPlaylists
 }) {
+  const {
+    requestHelpers: { searchContent, uploadFeaturedPlaylists }
+  } = useAppContext();
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [searchedPlaylists, setSearchedPlaylists] = useState([]);
@@ -251,7 +252,6 @@ function SelectPlaylistsToPinModal({
   async function handleSubmit() {
     setDisabled(true);
     const newFeaturedPlaylists = await uploadFeaturedPlaylists({
-      dispatch,
       selectedPlaylists
     });
     changePinnedPlaylists(newFeaturedPlaylists);
@@ -269,11 +269,5 @@ function SelectPlaylistsToPinModal({
 
 export default connect(
   null,
-  dispatch => ({
-    dispatch,
-    loadMorePlaylist: lastPlaylistId =>
-      dispatch(loadMorePlaylistList(lastPlaylistId)),
-    changePinnedPlaylists: selectedPlaylists =>
-      dispatch(changePinnedPlaylists(selectedPlaylists))
-  })
+  { loadMorePlaylistList, changePinnedPlaylists }
 )(SelectPlaylistsToPinModal);

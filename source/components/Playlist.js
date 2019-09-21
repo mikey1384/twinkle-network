@@ -8,7 +8,6 @@ import NotFound from 'components/NotFound';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
-import { loadPlaylistVideos } from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
 
 Playlist.propTypes = {
@@ -19,7 +18,8 @@ Playlist.propTypes = {
 
 function Playlist({ onLinkClick = () => {}, onLoad, playlistId }) {
   const {
-    user: { state: profileTheme }
+    user: { state: profileTheme },
+    requestHelpers: { loadPlaylistVideos }
   } = useAppContext();
   const [videos, setVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);

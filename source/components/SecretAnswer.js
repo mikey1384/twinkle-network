@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
-import { checkIfUserResponded } from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
 
 SecretAnswer.propTypes = {
@@ -29,7 +28,8 @@ export default function SecretAnswer({
     },
     view: {
       state: { pageVisible }
-    }
+    },
+    requestHelpers: { checkIfUserResponded }
   } = useAppContext();
   const mounted = useRef(true);
   useEffect(() => {

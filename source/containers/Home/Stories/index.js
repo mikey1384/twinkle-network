@@ -10,7 +10,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { loadFeeds, loadNewFeeds } from 'helpers/requestHelpers';
 import { socket } from 'constants/io';
 import { connect } from 'react-redux';
 import { useAppContext } from 'context';
@@ -86,7 +85,8 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
-    }
+    },
+    requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingFeeds, setLoadingFeeds] = useState(false);

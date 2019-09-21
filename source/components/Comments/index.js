@@ -5,14 +5,9 @@ import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
 import Button from 'components/Button';
 import { scrollElementToCenter } from 'helpers';
-import {
-  deleteContent,
-  loadComments,
-  uploadComment
-} from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { useAppContext } from 'context';
 
 Comments.propTypes = {
   autoExpand: PropTypes.bool,
@@ -23,7 +18,6 @@ Comments.propTypes = {
   commentsShown: PropTypes.bool,
   comments: PropTypes.array.isRequired,
   commentsLoadLimit: PropTypes.number,
-  dispatch: PropTypes.func.isRequired,
   inputAreaInnerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   inputAtBottom: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
@@ -50,7 +44,7 @@ Comments.propTypes = {
   userId: PropTypes.number
 };
 
-function Comments({
+export default function Comments({
   autoFocus,
   autoExpand,
   comments = [],
@@ -58,7 +52,6 @@ function Comments({
   commentsLoadLimit,
   commentsShown,
   className,
-  dispatch,
   inputAreaInnerRef,
   inputAtBottom,
   inputTypeLabel,
@@ -81,11 +74,13 @@ function Comments({
   style,
   userId
 }) {
+  const {
+    requestHelpers: { deleteContent, loadComments, uploadComment }
+  } = useAppContext();
   const [deleting, setDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [commentSubmitted, setCommentSubmitted] = useState(false);
   const [prevComments, setPrevComments] = useState(comments);
-
   const ContainerRef = useRef(null);
   const CommentInputAreaRef = useRef(null);
   const CommentRefs = {};
@@ -214,8 +209,7 @@ function Comments({
       content,
       parent,
       rootCommentId,
-      targetCommentId,
-      dispatch
+      targetCommentId
     });
     onCommentSubmit({
       ...data,
@@ -230,8 +224,7 @@ function Comments({
       content,
       parent,
       rootCommentId,
-      targetCommentId,
-      dispatch
+      targetCommentId
     });
     onReplySubmit({
       ...data,
@@ -270,7 +263,7 @@ function Comments({
 
   async function deleteComment(commentId) {
     setDeleting(true);
-    await deleteContent({ id: commentId, contentType: 'comment', dispatch });
+    await deleteContent({ id: commentId, contentType: 'comment' });
     onDelete(commentId);
   }
 
@@ -312,8 +305,3 @@ function Comments({
     );
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(Comments);

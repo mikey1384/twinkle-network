@@ -6,7 +6,7 @@ import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { loadUploads, searchContent } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 SelectAttachmentScreen.propTypes = {
   onSelect: PropTypes.func.isRequired,
@@ -19,6 +19,9 @@ export default function SelectAttachmentScreen({
   onDeselect,
   contentType
 }) {
+  const {
+    requestHelpers: { loadUploads, searchContent }
+  } = useAppContext();
   const [allUploads, setAllUploads] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchedUploads, setSearchedUploads] = useState([]);

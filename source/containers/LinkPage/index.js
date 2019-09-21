@@ -11,9 +11,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import Icon from 'components/Icon';
-import request from 'axios';
 import NotFound from 'components/NotFound';
-import URL from 'constants/URL';
 import Loading from 'components/Loading';
 import Description from './Description';
 import {
@@ -75,7 +73,13 @@ function LinkPage({
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
     },
-    requestHelpers: { editContent, loadComments, loadContent, loadSubjects }
+    requestHelpers: {
+      deleteContent,
+      editContent,
+      loadComments,
+      loadContent,
+      loadSubjects
+    }
   } = useAppContext();
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -361,12 +365,8 @@ function LinkPage({
   );
 
   async function handleDeleteLink() {
-    try {
-      await request.delete(`${URL}/url?linkId=${id}`, auth());
-      history.push('/links');
-    } catch (error) {
-      handleError(error);
-    }
+    await deleteContent({ id, contentType: 'url' });
+    history.push('/links');
   }
 
   function handleDeleteComment(data) {

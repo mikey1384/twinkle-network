@@ -10,15 +10,13 @@ import request from 'axios';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
-import { auth, uploadBio } from 'helpers/requestHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 UserDetails.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   noLink: PropTypes.bool,
   profile: PropTypes.object.isRequired,
   removeStatusMsg: PropTypes.func,
@@ -31,7 +29,6 @@ UserDetails.propTypes = {
 };
 
 function UserDetails({
-  dispatch,
   noLink,
   profile,
   removeStatusMsg,
@@ -42,6 +39,9 @@ function UserDetails({
   onUpdateBio,
   userId
 }) {
+  const {
+    requestHelpers: { auth, uploadBio }
+  } = useAppContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedStatusMsg, setEditedStatusMsg] = useState('');
@@ -227,16 +227,10 @@ function UserDetails({
     if (typeof uploadBio === 'function') {
       const data = await uploadBio({
         ...params,
-        profileId: profile.id,
-        dispatch
+        profileId: profile.id
       });
       onUpdateBio(data);
       setBioEditModalShown(false);
     }
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(UserDetails);

@@ -6,15 +6,13 @@ import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
 import RewardLevelModal from 'components/Modals/RewardLevelModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { setByUser } from 'helpers/requestHelpers';
-import { connect } from 'react-redux';
+import { useAppContext } from 'context';
 
 StarButton.propTypes = {
   byUser: PropTypes.bool,
   contentId: PropTypes.number,
   rewardLevel: PropTypes.number,
   direction: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
   filled: PropTypes.bool,
   onSetRewardLevel: PropTypes.func,
   onToggleByUser: PropTypes.func,
@@ -23,19 +21,21 @@ StarButton.propTypes = {
   uploader: PropTypes.object
 };
 
-function StarButton({
+export default function StarButton({
   byUser,
   contentId,
   contentType,
   rewardLevel,
   direction = 'left',
-  dispatch,
   filled,
   onSetRewardLevel,
   onToggleByUser,
   uploader,
   style
 }) {
+  const {
+    requestHelpers: { setByUser }
+  } = useAppContext();
   const [rewardLevelModalShown, setRewardLevelModalShown] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
   const StarButtonRef = useRef(null);
@@ -97,13 +97,8 @@ function StarButton({
   }
 
   async function toggleByUser() {
-    const byUser = await setByUser({ contentId, dispatch });
+    const byUser = await setByUser({ contentId });
     onToggleByUser(byUser);
     setMenuShown(false);
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(StarButton);

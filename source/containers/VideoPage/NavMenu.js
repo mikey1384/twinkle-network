@@ -16,6 +16,7 @@ import Notification from 'components/Notification';
 import request from 'axios';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 NavMenu.propTypes = {
@@ -23,9 +24,7 @@ NavMenu.propTypes = {
   fetchNotifications: PropTypes.func.isRequired,
   numNewNotis: PropTypes.number,
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  profileTheme: PropTypes.string,
   totalRewardAmount: PropTypes.number,
-  userId: PropTypes.number,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
 
@@ -34,11 +33,14 @@ function NavMenu({
   fetchNotifications,
   numNewNotis,
   playlistId,
-  profileTheme,
   totalRewardAmount,
-  userId,
   videoId
 }) {
+  const {
+    user: {
+      state: { profileTheme, userId }
+    }
+  } = useAppContext();
   const [nextVideos, setNextVideos] = useState([]);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [otherVideos, setOtherVideos] = useState([]);
@@ -52,7 +54,6 @@ function NavMenu({
   ] = useState(false);
   const [videoTabActive, setVideoTabActive] = useState(true);
   const mounted = useRef(true);
-  const themeColor = profileTheme || 'logoBlue';
 
   useEffect(() => {
     mounted.current = true;
@@ -284,7 +285,7 @@ function NavMenu({
               arePlaylistVideos ? `?playlist=${playlistId}` : ''
             }`}
             style={{
-              color: video.byUser ? Color[themeColor](0.9) : Color.blue()
+              color: video.byUser ? Color[profileTheme](0.9) : Color.blue()
             }}
           >
             {cleanString(video.title)}
@@ -308,9 +309,7 @@ function NavMenu({
 export default connect(
   state => ({
     numNewNotis: state.NotiReducer.numNewNotis,
-    profileTheme: state.UserReducer.profileTheme,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    userId: state.UserReducer.userId
+    totalRewardAmount: state.NotiReducer.totalRewardAmount
   }),
   {
     clearNotifications,

@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import StackTrace from 'stacktrace-js';
 import { Color } from 'constants/css';
-import { reportBug } from 'helpers/requestHelpers';
+import { clientVersion } from 'constants/defaultValues';
+import URL from 'constants/URL';
+
+const token = () =>
+  typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+
+const auth = () => ({
+  headers: {
+    authorization: token()
+  }
+});
 
 export default class ErrorBoundary extends Component {
   static propTypes = {
@@ -12,9 +23,15 @@ export default class ErrorBoundary extends Component {
 
   state = { hasError: false };
 
-  componentDidCatch(error, info) {
+  async componentDidCatch(error, info) {
     this.setState({ hasError: true });
-    reportBug({ error, info });
+    const errorStack = await StackTrace.fromError(error);
+    await StackTrace.report(errorStack, `${URL}/user/error`, {
+      clientVersion,
+      message: error.message,
+      info: info?.componentStack,
+      token: auth()?.headers?.authorization
+    });
     console.log(error);
   }
 

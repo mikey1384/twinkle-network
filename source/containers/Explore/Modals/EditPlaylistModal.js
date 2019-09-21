@@ -14,20 +14,13 @@ import TouchBackend from 'react-dnd-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';
-import LoadMoreButton from 'components/Buttons/LoadMoreButton';
-import {
-  editPlaylistVideos,
-  loadUploads,
-  loadPlaylistVideos,
-  reorderPlaylistVideos,
-  searchContent
-} from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 EditPlaylistModal.propTypes = {
   changePlaylistVideos: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   modalType: PropTypes.string.isRequired,
   numPlaylistVids: PropTypes.number.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -38,12 +31,20 @@ const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
 function EditPlaylistModal({
   changePlaylistVideos,
-  dispatch,
   modalType,
   numPlaylistVids,
   onHide,
   playlistId
 }) {
+  const {
+    requestHelpers: {
+      editPlaylistVideos,
+      loadPlaylistVideos,
+      loadUploads,
+      reorderPlaylistVideos,
+      searchContent
+    }
+  } = useAppContext();
   const [addedVideos, setAddedVideos] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modalVideos, setModalVideos] = useState([]);
@@ -317,12 +318,10 @@ function EditPlaylistModal({
       modalType === 'change'
         ? await editPlaylistVideos({
             addedVideoIds: addedVideos,
-            dispatch,
             removedVideoIds,
             playlistId
           })
         : await reorderPlaylistVideos({
-            dispatch,
             originalVideoIds: initialSelectedVideos.current,
             reorderedVideoIds: modalVideos.filter(
               videoId =>
@@ -546,8 +545,5 @@ function EditPlaylistModal({
 
 export default connect(
   null,
-  dispatch => ({
-    dispatch,
-    changePlaylistVideos: params => dispatch(changePlaylistVideos(params))
-  })
+  { changePlaylistVideos }
 )(EditPlaylistModal);

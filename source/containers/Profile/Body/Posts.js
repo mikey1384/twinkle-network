@@ -10,14 +10,12 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 Posts.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  myId: PropTypes.number,
   selectedTheme: PropTypes.string
 };
 
@@ -36,7 +34,6 @@ function Posts({
   match: {
     params: { section, username }
   },
-  myId,
   selectedTheme
 }) {
   const {
@@ -211,7 +208,6 @@ function Posts({
                     onShowTCReplyInput={onShowTCReplyInput}
                     onLoadComments={onLoadComments}
                     onUploadTargetComment={onUploadTargetComment}
-                    userId={myId}
                   />
                 );
               })}
@@ -319,7 +315,3 @@ function Posts({
     }
   }
 }
-
-export default connect(state => ({
-  myId: state.UserReducer.userId
-}))(Posts);

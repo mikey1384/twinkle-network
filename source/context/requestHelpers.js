@@ -1,7 +1,5 @@
 import request from 'axios';
-import { clientVersion } from 'constants/defaultValues';
-import { queryStringForArray } from 'helpers/stringHelpers';
-import StackTrace from 'stacktrace-js';
+import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
 import URL from 'constants/URL';
 
 const token = () =>
@@ -507,16 +505,6 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async reportBug({ error, info }) {
-      const errorStack = await StackTrace.fromError(error);
-      await StackTrace.report(errorStack, `${URL}/user/error`, {
-        clientVersion,
-        message: error.message,
-        info: info?.componentStack,
-        token: auth()?.headers?.authorization
-      });
-      return Promise.resolve();
-    },
     async searchContent({ filter, limit, searchText, shownResults }) {
       try {
         const { data } = await request.get(
@@ -715,43 +703,6 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async uploadProfileInfo({ email, website, youtubeName, youtubeUrl }) {
-      try {
-        const { data } = await request.put(
-          `${URL}/user/info`,
-          {
-            email,
-            website,
-            youtubeName,
-            youtubeUrl
-          },
-          auth()
-        );
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
-    async uploadProfilePic({ image }) {
-      try {
-        const { data } = await request.post(
-          `${URL}/user/picture`,
-          { image },
-          auth()
-        );
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
-    async uploadGreeting({ greeting }) {
-      try {
-        await request.put(`${URL}/user/greeting`, { greeting }, auth());
-        return Promise.resolve();
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async uploadComment({ content, parent, rootCommentId, targetCommentId }) {
       try {
         const { data } = await request.post(
@@ -844,6 +795,84 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async uploadGreeting({ greeting }) {
+      try {
+        await request.put(`${URL}/user/greeting`, { greeting }, auth());
+        return Promise.resolve();
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async uploadProfileInfo({ email, website, youtubeName, youtubeUrl }) {
+      try {
+        const { data } = await request.put(
+          `${URL}/user/info`,
+          {
+            email,
+            website,
+            youtubeName,
+            youtubeUrl
+          },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async uploadProfilePic({ image }) {
+      try {
+        const { data } = await request.post(
+          `${URL}/user/picture`,
+          { image },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async uploadQuestions({ questions, videoId }) {
+      const data = {
+        videoId,
+        questions: questions.map(question => {
+          const choices = question.choiceIds
+            .map(id => ({ id, label: question.choicesObj[id] }))
+            .filter(choice => choice.label && !stringIsEmpty(choice.label));
+          return {
+            videoId,
+            title: question.title,
+            correctChoice:
+              choices.map(choice => choice.id).indexOf(question.correctChoice) +
+              1,
+            choice1: choices[0].label,
+            choice2: choices[1].label,
+            choice3: choices[2]?.label,
+            choice4: choices[3]?.label,
+            choice5: choices[4]?.label
+          };
+        })
+      };
+      try {
+        await request.post(`${URL}/video/questions`, data, auth());
+        const questions = data.questions.map(question => {
+          return {
+            title: question.title,
+            choices: [
+              question.choice1,
+              question.choice2,
+              question.choice3,
+              question.choice4,
+              question.choice5
+            ],
+            correctChoice: question.correctChoice
+          };
+        });
+        return Promise.resolve(questions);
+      } catch (error) {
+        handleError(error);
       }
     },
     async uploadSubject({

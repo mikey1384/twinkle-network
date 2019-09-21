@@ -18,7 +18,6 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
-import { checkIfUserResponded, editContent } from 'helpers/requestHelpers';
 import { commentContainer } from './Styles';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
@@ -63,7 +62,8 @@ function Comment({
     },
     view: {
       state: { pageVisible }
-    }
+    },
+    requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
   const {
     onAttachStar,

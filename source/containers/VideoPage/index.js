@@ -26,37 +26,23 @@ import Loading from 'components/Loading';
 import Details from './Details';
 import NavMenu from './NavMenu';
 import PageTab from './PageTab';
-import { fetchedVideoCodeFromURL, stringIsEmpty } from 'helpers/stringHelpers';
+import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useAppContext } from 'context';
-import {
-  auth,
-  fetchPlaylistsContaining,
-  handleError,
-  loadComments,
-  loadSubjects
-} from 'helpers/requestHelpers';
 
 VideoPage.propTypes = {
-  authLevel: PropTypes.number,
-  canEdit: PropTypes.bool,
   changeByUserStatusForThumbs: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
   editVideoThumbs: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   likeVideo: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  setRewardLevel: PropTypes.func.isRequired,
-  userId: PropTypes.number
+  setRewardLevel: PropTypes.func.isRequired
 };
 
 function VideoPage({
-  authLevel,
-  canEdit,
   changeByUserStatusForThumbs,
-  dispatch,
   editVideoThumbs,
   history,
   likeVideo,
@@ -64,8 +50,7 @@ function VideoPage({
   match: {
     params: { videoId: initialVideoId }
   },
-  setRewardLevel,
-  userId
+  setRewardLevel
 }) {
   const [changingPage, setChangingPage] = useState(false);
   const [watchTabActive, setWatchTabActive] = useState(true);
@@ -110,6 +95,17 @@ function VideoPage({
         onUploadReply,
         onUploadSubject
       }
+    },
+    user: {
+      state: { authLevel, canEdit, userId }
+    },
+    requestHelpers: {
+      deleteContent,
+      editContent,
+      fetchPlaylistsContaining,
+      loadComments,
+      loadSubjects,
+      uploadQuestions
     }
   } = useAppContext();
 
@@ -437,30 +433,26 @@ function VideoPage({
   );
 
   async function handleDeleteVideo() {
-    await request.delete(`${URL}/video?videoId=${videoId}`, auth());
+    await deleteContent({ id: videoId, contentType: 'video' });
     history.push('/videos');
   }
 
   async function handleEditVideoPage(params) {
     setOnEdit(false);
-    try {
-      await request.post(`${URL}/video/edit/page`, params, auth());
-      const url = fetchedVideoCodeFromURL(params.url);
-      onEditContent({
-        data: {
-          title: params.title,
-          description: params.description,
-          content: url
-        }
-      });
-      editVideoThumbs({
-        videoId: Number(params.videoId),
+    await editContent(params);
+    const url = fetchedVideoCodeFromURL(params.url);
+    onEditContent({
+      data: {
         title: params.title,
-        url
-      });
-    } catch (error) {
-      handleError(error, dispatch);
-    }
+        description: params.description,
+        content: url
+      }
+    });
+    editVideoThumbs({
+      videoId: Number(params.videoId),
+      title: params.title,
+      url
+    });
   }
 
   function handleChangeByUserStatus({ contentId, contentType, byUser }) {
@@ -523,69 +515,19 @@ function VideoPage({
   }
 
   async function handleUploadQuestions(questions) {
-    const data = {
-      videoId,
-      questions: questions.map(question => {
-        const choices = question.choiceIds
-          .map(id => ({ id, label: question.choicesObj[id] }))
-          .filter(choice => choice.label && !stringIsEmpty(choice.label));
-        return {
-          videoId,
-          title: question.title,
-          correctChoice:
-            choices.map(choice => choice.id).indexOf(question.correctChoice) +
-            1,
-          choice1: choices[0].label,
-          choice2: choices[1].label,
-          choice3: choices[2]?.label,
-          choice4: choices[3]?.label,
-          choice5: choices[4]?.label,
-          creator: userId
-        };
-      })
-    };
-    try {
-      await request.post(`${URL}/video/questions`, data, auth());
-      const questions = data.questions.map(question => {
-        return {
-          title: question.title,
-          choices: [
-            question.choice1,
-            question.choice2,
-            question.choice3,
-            question.choice4,
-            question.choice5
-          ],
-          correctChoice: question.correctChoice
-        };
-      });
-      onSetVideoQuestions({
-        contentType: 'video',
-        contentId: videoId,
-        questions
-      });
-      setQuestionsBuilderShown(false);
-      setCurrentSlide(0);
-      setUserAnswers({});
-    } catch (error) {
-      handleError(error, dispatch);
-    }
+    const data = await uploadQuestions(questions);
+    onSetVideoQuestions({
+      contentType: 'video',
+      contentId: videoId,
+      questions: data
+    });
+    setQuestionsBuilderShown(false);
+    setCurrentSlide(0);
+    setUserAnswers({});
   }
 }
 
 export default connect(
-  state => ({
-    authLevel: state.UserReducer.authLevel,
-    canEdit: state.UserReducer.canEdit,
-    userType: state.UserReducer.userType,
-    userId: state.UserReducer.userId
-  }),
-  dispatch => ({
-    dispatch,
-    changeByUserStatusForThumbs: params =>
-      dispatch(changeByUserStatusForThumbs(params)),
-    editVideoThumbs: params => dispatch(editVideoThumbs(params)),
-    likeVideo: params => dispatch(likeVideo(params)),
-    setRewardLevel: params => dispatch(setRewardLevel(params))
-  })
+  null,
+  { changeByUserStatusForThumbs, editVideoThumbs, likeVideo, setRewardLevel }
 )(VideoPage);

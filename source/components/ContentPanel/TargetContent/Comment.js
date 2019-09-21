@@ -9,7 +9,7 @@ import LongText from 'components/Texts/LongText';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { editContent, deleteContent } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 import { connect } from 'react-redux';
 
 Comment.propTypes = {
@@ -36,6 +36,9 @@ function Comment({
   userId,
   username
 }) {
+  const {
+    requestHelpers: { deleteContent, editContent }
+  } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   return (

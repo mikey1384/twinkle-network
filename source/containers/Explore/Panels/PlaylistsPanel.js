@@ -6,7 +6,7 @@ import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { getMorePlaylists } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
-import { loadPlaylists, searchContent } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 PlaylistsPanel.propTypes = {
   buttonGroup: PropTypes.func,
@@ -37,6 +37,9 @@ function PlaylistsPanel({
   title = 'All Playlists',
   userId
 }) {
+  const {
+    requestHelpers: { loadPlaylists, searchContent }
+  } = useAppContext();
   return (
     <SectionPanel
       innerRef={innerRef}

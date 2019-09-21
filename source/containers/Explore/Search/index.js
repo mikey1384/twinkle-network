@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { setDefaultSearchFilter } from 'helpers/requestHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
@@ -28,7 +27,8 @@ export default function Search({ history, pathname, style }) {
     user: {
       state: { defaultSearchFilter },
       actions: { onChangeDefaultSearchFilter }
-    }
+    },
+    requestHelpers: { setDefaultSearchFilter }
   } = useAppContext();
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
@@ -92,8 +92,7 @@ export default function Search({ history, pathname, style }) {
   async function handleSetDefaultSearchFilter() {
     if (category === defaultSearchFilter) return;
     await setDefaultSearchFilter({
-      filter: category,
-      dispatch
+      filter: category
     });
     onChangeDefaultSearchFilter(category);
     if (stringIsEmpty(searchText)) {
