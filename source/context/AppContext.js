@@ -83,7 +83,7 @@ export function AppContextProvider({ children }) {
     if (error.response) {
       const { status } = error.response;
       if (status === 401) {
-        userDispatch({
+        return userDispatch({
           type: 'LOGOUT_AND_OPEN_SIGNIN_MODAL'
         });
       }

@@ -40,7 +40,6 @@ App.propTypes = {
   postFileUploadStatus: PropTypes.func.isRequired,
   postUploadComplete: PropTypes.func.isRequired,
   sendFirstDirectMessage: PropTypes.func.isRequired,
-  signinModalShown: PropTypes.bool,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
   updateDetail: PropTypes.string
 };
@@ -50,14 +49,13 @@ function App({
   history,
   postFileUploadStatus,
   postUploadComplete,
-  signinModalShown,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
   updateDetail
 }) {
   const {
     user: {
-      state: { username },
+      state: { signinModalShown, username },
       actions: { onCloseSigninModal, onInitSession, onLogout }
     },
     view: {

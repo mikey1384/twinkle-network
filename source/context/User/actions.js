@@ -13,74 +13,74 @@ export default function UserActions(dispatch) {
       });
     },
     onChangeUserXP({ xp, rank }) {
-      return {
+      return dispatch({
         type: 'CHANGE_XP',
         xp,
         rank
-      };
+      });
     },
     onClearUserSearch() {
-      return {
+      return dispatch({
         type: 'CLEAR_USER_SEARCH'
-      };
+      });
     },
     onCloseSigninModal() {
-      return {
+      return dispatch({
         type: 'CLOSE_SIGNIN_MODAL'
-      };
+      });
     },
     onInitSession(data) {
-      return {
+      return dispatch({
         type: 'INIT_SESSION',
         data: { ...data, loggedIn: true }
-      };
+      });
     },
     onLoadUsers(data) {
-      return {
+      return dispatch({
         type: 'LOAD_USERS',
         data
-      };
+      });
     },
     onLoadMoreUsers(data) {
-      return {
+      return dispatch({
         type: 'LOAD_MORE_USERS',
         data
-      };
+      });
     },
     onLogin(data) {
-      return {
+      return dispatch({
         type: 'LOGIN',
         data
-      };
+      });
     },
     onLogout() {
       localStorage.removeItem('token');
-      return {
+      return dispatch({
         type: 'LOGOUT'
-      };
+      });
     },
     onOpenSigninModal() {
-      return {
+      return dispatch({
         type: 'OPEN_SIGNIN_MODAL'
-      };
+      });
     },
     onRemoveStatusMsg(userId) {
-      return {
+      return dispatch({
         type: 'DELETE_STATUS_MSG',
         userId
-      };
+      });
     },
     onSearchUsers(users) {
-      return {
+      return dispatch({
         type: 'SEARCH_USERS',
         users
-      };
+      });
     },
     onSignup(data) {
-      return {
+      return dispatch({
         type: 'SIGNUP',
         data
-      };
+      });
     },
     onShowProfile(user) {
       return dispatch({
@@ -95,43 +95,43 @@ export default function UserActions(dispatch) {
       });
     },
     onToggleHideWatched(hideWatched) {
-      return {
+      return dispatch({
         type: 'TOGGLE_HIDE_WATCHED',
         hideWatched
-      };
+      });
     },
     onUpdateBio(data) {
-      return {
+      return dispatch({
         type: 'UPDATE_BIO',
         bio: data.bio,
         userId: data.userId
-      };
+      });
     },
     onUpdateGreeting(greeting) {
-      return {
+      return dispatch({
         type: 'UPDATE_GREETING',
         greeting
-      };
+      });
     },
     onUpdateProfileInfo(data) {
-      return {
+      return dispatch({
         type: 'UPDATE_PROFILE_INFO',
         data
-      };
+      });
     },
     onUploadProfilePic(data) {
-      return {
+      return dispatch({
         type: 'EDIT_PROFILE_PICTURE',
         data
-      };
+      });
     },
     onUpdateStatusMsg({ statusColor, statusMsg, userId }) {
-      return {
+      return dispatch({
         type: 'UPDATE_STATUS_MSG',
         statusColor,
         statusMsg,
         userId
-      };
+      });
     },
     onUserNotExist() {
       return dispatch({

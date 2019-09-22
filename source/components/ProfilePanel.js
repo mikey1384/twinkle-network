@@ -23,7 +23,8 @@ ProfilePanel.propTypes = {
   history: PropTypes.object,
   loaded: PropTypes.bool,
   initChat: PropTypes.func.isRequired,
-  openDirectMessageChannel: PropTypes.func
+  openDirectMessageChannel: PropTypes.func,
+  profile: PropTypes.object
 };
 
 function ProfilePanel({
@@ -31,7 +32,8 @@ function ProfilePanel({
   initChat,
   loaded,
   expandable,
-  openDirectMessageChannel
+  openDirectMessageChannel,
+  profile
 }) {
   const {
     user: {
@@ -42,7 +44,7 @@ function ProfilePanel({
         onUpdateBio,
         onUploadProfilePic
       },
-      state: { isCreator, profile, userId, username }
+      state: { isCreator, userId, username }
     },
     requestHelpers: {
       loadChat,
