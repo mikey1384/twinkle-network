@@ -27,7 +27,7 @@ const filterTable = {
   links: 'url'
 };
 
-function Posts({
+export default function Posts({
   history,
   location,
   match: {

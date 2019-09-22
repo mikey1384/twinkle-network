@@ -27,7 +27,7 @@ XPRewardInterface.propTypes = {
   onRewardSubmit: PropTypes.func.isRequired
 };
 
-function XPRewardInterface({
+export default function XPRewardInterface({
   contentId,
   contentType,
   rewardLevel,

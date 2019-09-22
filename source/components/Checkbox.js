@@ -13,7 +13,7 @@ Checkbox.propTypes = {
   textIsClickable: PropTypes.bool
 };
 
-function Checkbox({
+export default function Checkbox({
   backgroundColor = Color.backgroundGray(),
   checked,
   label,

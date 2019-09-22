@@ -35,7 +35,7 @@ SectionPanel.propTypes = {
   style: PropTypes.object
 };
 
-function SectionPanel({
+export default function SectionPanel({
   button,
   canEdit,
   children,

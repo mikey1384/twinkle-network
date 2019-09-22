@@ -23,7 +23,7 @@ export const changeRankingsLoadedStatus = loaded => ({
   loaded
 });
 
-export const onFetchNotification = data => ({
+export const onFetchNotifications = data => ({
   type: NOTI.LOAD,
   data
 });

@@ -19,7 +19,7 @@ RewardStatus.propTypes = {
   style: PropTypes.object
 };
 
-function RewardStatus({
+export default function RewardStatus({
   className,
   rewardLevel,
   noMarginForEditButton,

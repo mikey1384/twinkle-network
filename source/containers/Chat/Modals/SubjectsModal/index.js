@@ -20,7 +20,11 @@ SubjectsModal.propTypes = {
   selectSubject: PropTypes.func
 };
 
-function SubjectsModal({ currentSubjectId, onHide, selectSubject }) {
+export default function SubjectsModal({
+  currentSubjectId,
+  onHide,
+  selectSubject
+}) {
   const {
     user: {
       state: { userId }

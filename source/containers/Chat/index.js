@@ -4,7 +4,7 @@ import {
   clearNumUnreads,
   clearRecentChessMessage,
   initChat,
-  receiveMessage,
+  onReceiveMessage,
   receiveMessageOnDifferentChannel,
   receiveFirstMsg,
   enterChannelWithId,
@@ -52,7 +52,7 @@ Chat.propTypes = {
   openDirectMessageChannel: PropTypes.func,
   profilePicId: PropTypes.number,
   recepientId: PropTypes.number,
-  receiveMessage: PropTypes.func,
+  onReceiveMessage: PropTypes.func,
   receiveMessageOnDifferentChannel: PropTypes.func,
   receiveFirstMsg: PropTypes.func,
   selectedChannelId: PropTypes.number,
@@ -83,7 +83,7 @@ function Chat({
   recepientId,
   profilePicId,
   receiveFirstMsg,
-  receiveMessage,
+  onReceiveMessage,
   receiveMessageOnDifferentChannel,
   selectedChannelId,
   sendFirstDirectMessage,
@@ -532,7 +532,7 @@ function Chat({
     let messageIsForCurrentChannel = message.channelId === selectedChannelId;
     let senderIsNotTheUser = message.userId !== userId;
     if (messageIsForCurrentChannel && senderIsNotTheUser) {
-      receiveMessage({ message, pageVisible });
+      onReceiveMessage({ message, pageVisible });
     }
     if (!messageIsForCurrentChannel) {
       receiveMessageOnDifferentChannel({
@@ -588,7 +588,7 @@ export default connect(
     clearNumUnreads,
     clearRecentChessMessage,
     initChat,
-    receiveMessage,
+    onReceiveMessage,
     receiveMessageOnDifferentChannel,
     receiveFirstMsg,
     enterChannelWithId,

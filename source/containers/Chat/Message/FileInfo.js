@@ -13,7 +13,7 @@ FileInfo.propTypes = {
   src: PropTypes.string.isRequired
 };
 
-function FileInfo({ fileName, fileType, fileSize, src }) {
+export default function FileInfo({ fileName, fileType, fileSize, src }) {
   const {
     user: {
       state: { profileTheme }

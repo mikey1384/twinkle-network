@@ -47,7 +47,7 @@ Details.propTypes = {
   videoViews: PropTypes.number.isRequired
 };
 
-function Details({
+export default function Details({
   addTags,
   attachStar,
   byUser,

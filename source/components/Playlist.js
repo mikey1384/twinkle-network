@@ -16,7 +16,11 @@ Playlist.propTypes = {
   playlistId: PropTypes.number.isRequired
 };
 
-function Playlist({ onLinkClick = () => {}, onLoad, playlistId }) {
+export default function Playlist({
+  onLinkClick = () => {},
+  onLoad,
+  playlistId
+}) {
   const {
     user: { state: profileTheme },
     requestHelpers: { loadPlaylistVideos }

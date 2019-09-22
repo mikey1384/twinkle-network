@@ -17,7 +17,7 @@ Cover.propTypes = {
   selectedTheme: PropTypes.string
 };
 
-function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
+export default function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
   const {
     user: {
       state: { profile, userId },

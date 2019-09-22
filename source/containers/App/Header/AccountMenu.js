@@ -11,7 +11,12 @@ AccountMenu.propTypes = {
   style: PropTypes.object
 };
 
-function AccountMenu({ buttonStyle = {}, className, history, style }) {
+export default function AccountMenu({
+  buttonStyle = {},
+  className,
+  history,
+  style
+}) {
   const {
     user: {
       state: { loggedIn, username },

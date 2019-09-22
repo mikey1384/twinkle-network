@@ -24,7 +24,7 @@ LeftMenu.propTypes = {
   showUserListModal: PropTypes.func.isRequired
 };
 
-function LeftMenu({
+export default function LeftMenu({
   channels,
   channelLoadMoreButtonShown,
   currentChannel,

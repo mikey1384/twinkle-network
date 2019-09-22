@@ -19,7 +19,7 @@ Comment.propTypes = {
   star: PropTypes.object.isRequired
 };
 
-function Comment({
+export default function Comment({
   maxRewardableStars,
   noMarginForEditButton,
   onEditDone = () => {},

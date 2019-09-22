@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
-import { searchUsers } from '../requestHelpers';
+import request from 'axios';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 
 export function useInterval(callback, interval, tracked) {
@@ -55,7 +55,9 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
     }
     setSearching(true);
     timerRef.current = setTimeout(async () => {
-      const users = await searchUsers(text);
+      const { data: users } = await request.get(
+        `${URL}/user/users/search?queryString=${text}`
+      );
       onSearch(users);
       setSearching(false);
     }, 500);

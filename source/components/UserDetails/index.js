@@ -28,7 +28,7 @@ UserDetails.propTypes = {
   small: PropTypes.bool
 };
 
-function UserDetails({
+export default function UserDetails({
   noLink,
   profile,
   removeStatusMsg,

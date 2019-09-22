@@ -31,7 +31,7 @@ HomeFilter.propTypes = {
   selectedFilter: PropTypes.string.isRequired
 };
 
-function HomeFilter({
+export default function HomeFilter({
   applyFilter,
   category,
   changeCategory,
