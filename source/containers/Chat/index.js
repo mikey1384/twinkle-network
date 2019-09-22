@@ -9,8 +9,8 @@ import {
   receiveFirstMsg,
   enterChannelWithId,
   enterEmptyChat,
-  loadMoreChannels,
-  loadMoreMessages,
+  onLoadMoreChannels,
+  onLoadMoreMessages,
   createNewChannel,
   sendFirstDirectMessage,
   submitMessage,
@@ -44,8 +44,8 @@ Chat.propTypes = {
   initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool,
-  loadMoreChannels: PropTypes.func.isRequired,
-  loadMoreMessages: PropTypes.func,
+  onLoadMoreChannels: PropTypes.func.isRequired,
+  onLoadMoreMessages: PropTypes.func,
   messages: PropTypes.array,
   notifyThatMemberLeftChannel: PropTypes.func,
   onFileUpload: PropTypes.func,
@@ -74,8 +74,8 @@ function Chat({
   initChat,
   loaded,
   loadMoreButton,
-  loadMoreChannels,
-  loadMoreMessages,
+  onLoadMoreChannels,
+  onLoadMoreMessages,
   messages,
   notifyThatMemberLeftChannel,
   onFileUpload,
@@ -104,6 +104,8 @@ function Chat({
       loadChat,
       loadChatChannel,
       loadDMChannel,
+      loadMoreChannels,
+      loadMoreChatMessages,
       startNewDMChannel,
       updateChatLastRead
     }
@@ -291,7 +293,7 @@ function Chat({
               channelLoadMoreButtonShown={channelLoadMoreButtonShown}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
-              loadMoreChannels={loadMoreChannels}
+              loadMoreChannels={handleLoadMoreChannels}
               onChannelEnter={onChannelEnter}
               onNewButtonClick={onNewButtonClick}
               showUserListModal={() => setUserListModalShown(true)}
@@ -305,7 +307,7 @@ function Chat({
               currentChannelId={selectedChannelId}
               loadMoreButton={loadMoreButton}
               messages={messages}
-              loadMoreMessages={loadMoreMessages}
+              loadMoreMessages={handleLoadMoreMessages}
               onShowChessModal={handleChessModalShown}
               onChessBoardClick={handleChessModalShown}
               onChessSpoilerClick={handleChessSpoilerClick}
@@ -358,6 +360,16 @@ function Chat({
       winnerId: senderId
     });
     setChessModalShown(true);
+  }
+
+  async function handleLoadMoreChannels(params) {
+    const data = await loadMoreChannels(params);
+    onLoadMoreChannels(data);
+  }
+
+  async function handleLoadMoreMessages(params) {
+    const data = await loadMoreChatMessages(params);
+    onLoadMoreMessages(data);
   }
 
   async function handleMessageSubmit(content) {
@@ -581,8 +593,8 @@ export default connect(
     receiveFirstMsg,
     enterChannelWithId,
     enterEmptyChat,
-    loadMoreChannels,
-    loadMoreMessages,
+    onLoadMoreChannels,
+    onLoadMoreMessages,
     createNewChannel,
     sendFirstDirectMessage,
     submitMessage,

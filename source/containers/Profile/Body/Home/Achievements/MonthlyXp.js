@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import BarChart from './BarChart';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { loadMonthlyXp } from 'helpers/requestHelpers';
+import { useAppContext } from 'context';
 
 MonthlyXp.propTypes = {
   selectedTheme: PropTypes.string,
@@ -11,6 +11,9 @@ MonthlyXp.propTypes = {
 };
 
 export default function MonthlyXp({ selectedTheme, userId }) {
+  const {
+    requestHelpers: { loadMonthlyXp }
+  } = useAppContext();
   const [data, setData] = useState();
   const [loaded, setLoaded] = useState(false);
   const mounted = useRef(true);

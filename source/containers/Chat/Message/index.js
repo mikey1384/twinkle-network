@@ -13,8 +13,8 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import {
-  editMessage,
-  saveMessage,
+  onEditMessage,
+  onSaveMessage,
   updateChessMoveViewTimeStamp,
   updateRecentChessMessage
 } from 'redux/actions/ChatActions';
@@ -30,8 +30,8 @@ Message.propTypes = {
   message: PropTypes.object,
   style: PropTypes.object,
   onDelete: PropTypes.func,
-  onEditDone: PropTypes.func,
-  saveMessage: PropTypes.func,
+  onEditMessage: PropTypes.func,
+  onSaveMessage: PropTypes.func,
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
@@ -83,12 +83,12 @@ function Message({
   },
   onChessBoardClick,
   onDelete,
-  onEditDone,
+  onEditMessage,
   onChessSpoilerClick,
   onReceiveNewMessage,
   onSendFileMessage,
   recepientId,
-  saveMessage,
+  onSaveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
   socketConnected,
@@ -106,7 +106,7 @@ function Message({
         profilePicId: myProfilePicId
       }
     },
-    requestHelpers: { setChessMoveViewTimeStamp }
+    requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
   } = useAppContext();
   let { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
@@ -128,7 +128,11 @@ function Message({
       !message.isSubject &&
       !message.isNotification
     ) {
-      saveMessage({ message: post, index });
+      handleSaveMessage();
+    }
+    async function handleSaveMessage() {
+      const messageId = await saveMessage(post);
+      onSaveMessage({ messageId, index });
     }
   }, []);
   useEffect(() => {
@@ -311,7 +315,8 @@ function Message({
   }
 
   async function handleEditDone(editedMessage) {
-    await onEditDone({ editedMessage, messageId });
+    await editMessage({ editedMessage, messageId });
+    onEditMessage({ editedMessage, messageId });
     setOnEdit(false);
   }
 
@@ -331,8 +336,8 @@ export default connect(
     socketConnected: state.NotiReducer.socketConnected
   }),
   {
-    onEditDone: editMessage,
-    saveMessage,
+    onEditMessage,
+    onSaveMessage,
     updateChessMoveViewTimeStamp,
     updateRecentChessMessage
   }

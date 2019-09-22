@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  deleteMessage,
-  editChannelTitle,
-  leaveChannel,
-  hideChat
+  onDeleteMessage,
+  onEditChannelTitle,
+  onLeaveChannel,
+  enterChannelWithId,
+  onHideChat
 } from 'redux/actions/ChatActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
@@ -29,10 +30,10 @@ MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
-  deleteMessage: PropTypes.func.isRequired,
-  editChannelTitle: PropTypes.func.isRequired,
-  hideChat: PropTypes.func.isRequired,
-  leaveChannel: PropTypes.func.isRequired,
+  enterChannelWithId: PropTypes.func.isRequired,
+  onDeleteMessage: PropTypes.func.isRequired,
+  onEditChannelTitle: PropTypes.func.isRequired,
+  onLeaveChannel: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
@@ -54,15 +55,15 @@ function MessagesContainer({
   channelName,
   chessCountdownObj,
   chessOpponent,
-  deleteMessage,
-  editChannelTitle,
-  leaveChannel,
+  enterChannelWithId,
+  onDeleteMessage,
+  onEditChannelTitle,
+  onLeaveChannel,
   loadMoreButton,
   loading,
   loadMoreMessages,
   currentChannel,
   currentChannelId,
-  hideChat,
   messages,
   onChessBoardClick,
   onChessSpoilerClick,
@@ -77,6 +78,13 @@ function MessagesContainer({
   const {
     user: {
       state: { authLevel, profilePicId, userId, username }
+    },
+    requestHelpers: {
+      deleteMessage,
+      editChannelTitle,
+      hideChat,
+      leaveChannel,
+      loadChatChannel
     }
   } = useAppContext();
   const [deleteModal, setDeleteModal] = useState({
@@ -115,7 +123,7 @@ function MessagesContainer({
       ? 1000 * mb
       : 50 * mb;
   const menuProps = currentChannel.twoPeople
-    ? [{ label: 'Hide Chat', onClick: () => hideChat(selectedChannelId) }]
+    ? [{ label: 'Hide Chat', onClick: handleHideChat }]
     : [
         {
           label: 'Invite People',
@@ -398,7 +406,7 @@ function MessagesContainer({
         <ConfirmModal
           title="Leave Channel"
           onHide={() => setLeaveConfirmModalShown(false)}
-          onConfirm={onLeaveChannel}
+          onConfirm={handleLeaveChannel}
         />
       )}
     </div>
@@ -410,17 +418,23 @@ function MessagesContainer({
 
   async function handleDelete() {
     const { fileName, filePath, messageId } = deleteModal;
-    try {
-      await deleteMessage({ fileName, filePath, messageId });
-      setDeleteModal({
-        shown: false,
-        fileName: '',
-        filePath: '',
-        messageId: null
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteMessage({ fileName, filePath, messageId });
+    onDeleteMessage(messageId);
+    setDeleteModal({
+      shown: false,
+      fileName: '',
+      filePath: '',
+      messageId: null
+    });
+  }
+
+  async function handleHideChat() {
+    await hideChat(selectedChannelId);
+    onHideChat(selectedChannelId);
+    const data = await loadChatChannel({
+      channelId: GENERAL_CHAT_ID
+    });
+    enterChannelWithId({ data, showOnTop: true });
   }
 
   async function handleLoadMoreButtonClick() {
@@ -482,6 +496,7 @@ function MessagesContainer({
 
   async function onEditTitleDone(title) {
     await editChannelTitle({ title, channelId: selectedChannelId });
+    onEditChannelTitle({ title, channelId: selectedChannelId });
     setEditTitleModalShown(false);
   }
 
@@ -496,14 +511,17 @@ function MessagesContainer({
     setInviteUsersModalShown(false);
   }
 
-  function onLeaveChannel() {
-    leaveChannel(selectedChannelId);
+  async function handleLeaveChannel() {
+    await leaveChannel(selectedChannelId);
+    onLeaveChannel(selectedChannelId);
     socket.emit('leave_chat_channel', {
       channelId: selectedChannelId,
       userId,
       username,
       profilePicId
     });
+    const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
+    enterChannelWithId({ data, showOnTop: true });
     setLeaveConfirmModalShown(false);
   }
 }
@@ -512,5 +530,5 @@ export default connect(
   state => ({
     socketConnected: state.NotiReducer.socketConnected
   }),
-  { deleteMessage, editChannelTitle, hideChat, leaveChannel }
+  { enterChannelWithId, onDeleteMessage, onEditChannelTitle, onLeaveChannel }
 )(MessagesContainer);

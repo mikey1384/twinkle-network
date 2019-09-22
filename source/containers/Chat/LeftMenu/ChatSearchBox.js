@@ -5,7 +5,7 @@ import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
 import {
-  searchChat,
+  onSearchChat,
   clearChatSearchResults,
   enterChannelWithId,
   openNewChatTab,
@@ -17,7 +17,7 @@ ChatSearchBox.propTypes = {
   clearSearchResults: PropTypes.func.isRequired,
   enterChannelWithId: PropTypes.func.isRequired,
   openNewChatTab: PropTypes.func.isRequired,
-  searchChat: PropTypes.func.isRequired,
+  onSearchChat: PropTypes.func.isRequired,
   searchResults: PropTypes.array.isRequired,
   updateSelectedChannelId: PropTypes.func.isRequired
 };
@@ -26,7 +26,7 @@ function ChatSearchBox({
   clearSearchResults,
   enterChannelWithId,
   openNewChatTab,
-  searchChat,
+  onSearchChat,
   searchResults,
   updateSelectedChannelId
 }) {
@@ -34,10 +34,10 @@ function ChatSearchBox({
     user: {
       state: { userId, username }
     },
-    requestHelpers: { loadChatChannel }
+    requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
   const { handleSearch, searching, searchText, setSearchText } = useSearch({
-    onSearch: searchChat,
+    onSearch: handleSearchChat,
     onClear: clearSearchResults
   });
 
@@ -68,6 +68,11 @@ function ChatSearchBox({
     </div>
   );
 
+  async function handleSearchChat(text) {
+    const data = await searchChat(text);
+    onSearchChat(data);
+  }
+
   async function onSelect(item) {
     if (item.primary || !!item.channelId) {
       updateSelectedChannelId(item.channelId);
@@ -91,7 +96,7 @@ export default connect(
     searchResults: state.ChatReducer.chatSearchResults
   }),
   {
-    searchChat,
+    onSearchChat,
     clearSearchResults: clearChatSearchResults,
     enterChannelWithId,
     openNewChatTab,

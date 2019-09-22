@@ -112,12 +112,43 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async deleteMessage({ fileName = '', filePath = '', messageId }) {
+      try {
+        await request.delete(
+          `${URL}/chat/message?messageId=${messageId}&filePath=${filePath}&fileName=${fileName}`,
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async editChannelTitle(params) {
+      try {
+        await request.post(`${URL}/chat/title`, params, auth());
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async editContent(params) {
       try {
         const { data } = await request.put(`${URL}/content`, params, auth());
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async editMessage({ editedMessage, messageId }) {
+      try {
+        await request.put(
+          `${URL}/chat/message`,
+          { editedMessage, messageId },
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
       }
     },
     async editRewardComment({ editedComment, contentId }) {
@@ -201,6 +232,25 @@ export default function requestHelpers(handleError) {
         console.error(error.response || error);
       }
     },
+    async getNumberOfUnreadMessages() {
+      if (auth() === null) return;
+      try {
+        const {
+          data: { numUnreads }
+        } = await request.get(`${URL}/chat/numUnreads`, auth());
+        return Promise.resolve(numUnreads);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async hideChat(channelId) {
+      try {
+        await request.post(`${URL}/chat/hideChat`, { channelId }, auth());
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async initSession(pathname) {
       if (token() === null) {
         request.post(`${URL}/user/recordAnonTraffic`, { pathname });
@@ -214,6 +264,28 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async inviteUsersToChannel(params) {
+      try {
+        const {
+          data: { message }
+        } = await request.post(`${URL}/chat/invite`, params, auth());
+        return Promise.resolve({ ...params, message });
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async leaveChannel(channelId) {
+      const timeStamp = Math.floor(Date.now() / 1000);
+      try {
+        await request.delete(
+          `${URL}/chat/channel?channelId=${channelId}&timeStamp=${timeStamp}`,
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
       }
     },
     async likeContent({ id, contentType }) {
@@ -250,6 +322,36 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async loadMoreChannels({ currentChannelId, channelIds }) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
+          auth()
+        );
+        Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadMoreChatMessages({ userId, messageId, channelId }) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadChatSubject() {
+      try {
+        const { data } = await request.get(`${URL}/chat/chatSubject`);
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
       }
     },
     async loadDMChannel({ recepient }) {
@@ -477,6 +579,20 @@ export default function requestHelpers(handleError) {
         handleError(error);
       }
     },
+    async reloadChatSubject(subjectId) {
+      try {
+        const {
+          data: { subject, message }
+        } = await request.put(
+          `${URL}/chat/chatSubject/reload`,
+          { subjectId },
+          auth()
+        );
+        return Promise.resolve({ subject, message });
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async reorderPlaylistVideos({
       originalVideoIds,
       reorderedVideoIds,
@@ -493,6 +609,27 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async searchChat(text) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/search/chat?text=${text}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async searchChatSubject(text) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/search/subject?text=${text}`
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async login(params) {
       try {
         const { data } = await request.post(`${URL}/user/login`, params);
@@ -503,6 +640,16 @@ export default function requestHelpers(handleError) {
           return Promise.reject('Incorrect username/password combination');
         }
         return handleError(error);
+      }
+    },
+    async saveMessage(message) {
+      try {
+        const {
+          data: { messageId }
+        } = await request.post(`${URL}/chat`, { message }, auth());
+        return Promise.resolve(messageId);
+      } catch (error) {
+        handleError(error);
       }
     },
     async searchContent({ filter, limit, searchText, shownResults }) {
@@ -531,6 +678,16 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(users);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async searchUserToInvite(text) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/search/users?text=${text}`
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
       }
     },
     async setByUser({ contentId }) {
@@ -628,6 +785,18 @@ export default function requestHelpers(handleError) {
         return Promise.resolve({ xp, alreadyDone, rank });
       } catch (error) {
         return handleError(error, dispatch);
+      }
+    },
+    async uploadChatSubject(content) {
+      try {
+        const { data } = await request.post(
+          `${URL}/chat/chatSubject`,
+          { content },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
       }
     },
     async startNewDMChannel(params) {

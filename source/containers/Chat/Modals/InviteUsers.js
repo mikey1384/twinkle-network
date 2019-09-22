@@ -6,31 +6,35 @@ import TagForm from 'components/Forms/TagForm';
 import { connect } from 'react-redux';
 import {
   clearUserSearchResults,
-  searchUserToInvite,
-  inviteUsersToChannel
+  onSearchUserToInvite,
+  onInviteUsersToChannel
 } from 'redux/actions/ChatActions';
+import { useAppContext } from 'context';
 
 InviteUsersModal.propTypes = {
   clearSearchResults: PropTypes.func.isRequired,
   currentChannel: PropTypes.object.isRequired,
-  inviteUsersToChannel: PropTypes.func.isRequired,
+  onInviteUsersToChannel: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number.isRequired,
   searchResults: PropTypes.array.isRequired,
-  searchUserToInvite: PropTypes.func.isRequired
+  onSearchUserToInvite: PropTypes.func.isRequired
 };
 
 function InviteUsersModal({
   clearSearchResults,
-  inviteUsersToChannel,
-  searchUserToInvite,
+  onInviteUsersToChannel,
+  onSearchUserToInvite,
   searchResults,
   selectedChannelId,
   onDone,
   onHide,
   currentChannel
 }) {
+  const {
+    requestHelpers: { inviteUsersToChannel, searchUserToInvite }
+  } = useAppContext();
   const [selectedUsers, setSelectedUsers] = useState([]);
   const currentMembersUID = currentChannel.members.map(member => member.id);
 
@@ -43,7 +47,7 @@ function InviteUsersModal({
           itemLabel="username"
           searchResults={searchResults}
           filter={result => !currentMembersUID.includes(result.id)}
-          onSearch={searchUserToInvite}
+          onSearch={handleSearchUserToInvite}
           onClear={clearSearchResults}
           onAddItem={onAddUser}
           onRemoveItem={onRemoveUser}
@@ -82,11 +86,17 @@ function InviteUsersModal({
   }
 
   async function handleDone() {
-    const message = await inviteUsersToChannel({
+    const data = await inviteUsersToChannel({
       selectedUsers,
       channelId: selectedChannelId
     });
-    onDone(selectedUsers.map(user => user.id), message);
+    onInviteUsersToChannel(data);
+    onDone(selectedUsers.map(user => user.id), data.message);
+  }
+
+  async function handleSearchUserToInvite(text) {
+    const data = await searchUserToInvite(text);
+    onSearchUserToInvite(data);
   }
 }
 
@@ -96,7 +106,7 @@ export default connect(
   }),
   {
     clearSearchResults: clearUserSearchResults,
-    searchUserToInvite,
-    inviteUsersToChannel
+    onSearchUserToInvite,
+    onInviteUsersToChannel
   }
 )(InviteUsersModal);

@@ -1,10 +1,4 @@
-import request from 'axios';
-import { GENERAL_CHAT_ID } from 'constants/database';
-import { auth, handleError, loadChatChannel } from 'helpers/requestHelpers';
 import CHAT from '../constants/Chat';
-import URL from 'constants/URL';
-
-const API_URL = `${URL}/chat`;
 
 export const clearChatLoadedState = () => ({
   type: CHAT.CLEAR_LOADED_STATE
@@ -52,25 +46,10 @@ export const createNewChannel = data => ({
   data
 });
 
-export const deleteMessage = ({
-  fileName = '',
-  filePath = '',
+export const onDeleteMessage = messageId => ({
+  type: CHAT.DELETE_MESSAGE,
   messageId
-}) => async dispatch => {
-  try {
-    await request.delete(
-      `${API_URL}/message?messageId=${messageId}&filePath=${filePath}&fileName=${fileName}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.DELETE_MESSAGE,
-      messageId
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+});
 
 export const displayAttachedFile = ({
   channelId,
@@ -95,69 +74,29 @@ export const displayAttachedFile = ({
   };
 };
 
-export const editChannelTitle = params => async dispatch => {
-  try {
-    await request.post(`${API_URL}/title`, params, auth());
-    dispatch({
-      type: CHAT.APPLY_CHANGED_CHANNEL_TITLE,
-      data: params
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onEditChannelTitle = params => ({
+  type: CHAT.APPLY_CHANGED_CHANNEL_TITLE,
+  data: params
+});
 
-export const editMessage = ({ editedMessage, messageId }) => async dispatch => {
-  try {
-    await request.put(
-      `${API_URL}/message`,
-      { editedMessage, messageId },
-      auth()
-    );
-    dispatch({
-      type: CHAT.EDIT_MESSAGE,
-      data: { editedMessage, messageId }
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onEditMessage = ({ editedMessage, messageId }) => ({
+  type: CHAT.EDIT_MESSAGE,
+  data: { editedMessage, messageId }
+});
 
 export const enterEmptyChat = () => ({
   type: CHAT.ENTER_EMPTY_CHAT
 });
 
-export const getNumberOfUnreadMessages = () => async dispatch => {
-  if (auth() === null) return;
-  try {
-    const { data } = await request.get(`${API_URL}/numUnreads`, auth());
-    dispatch({
-      type: CHAT.GET_NUM_UNREAD_MSGS,
-      numUnreads: data.numUnreads
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onGetNumberOfUnreadMessages = numUnreads => ({
+  type: CHAT.GET_NUM_UNREAD_MSGS,
+  numUnreads
+});
 
-export const hideChat = channelId => async dispatch => {
-  try {
-    await request.post(`${API_URL}/hideChat`, { channelId }, auth());
-    dispatch({
-      type: CHAT.HIDE_CHAT,
-      channelId
-    });
-    const data = await loadChatChannel({
-      channelId: GENERAL_CHAT_ID,
-      dispatch
-    });
-    dispatch(enterChannelWithId({ data, showOnTop: true }));
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onHideChat = channelId => ({
+  type: CHAT.HIDE_CHAT,
+  channelId
+});
 
 export const increaseNumberOfUnreadMessages = () => ({
   type: CHAT.INCREASE_NUM_UNREAD_MSGS
@@ -168,96 +107,30 @@ export const initChat = data => ({
   data
 });
 
-export const inviteUsersToChannel = params => async dispatch => {
-  try {
-    const {
-      data: { message }
-    } = await request.post(`${API_URL}/invite`, params, auth());
-    dispatch({
-      type: CHAT.INVITE_USERS_TO_CHANNEL,
-      data: {
-        ...params,
-        message
-      }
-    });
-    return Promise.resolve(message);
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onInviteUsersToChannel = data => ({
+  type: CHAT.INVITE_USERS_TO_CHANNEL,
+  data
+});
 
-export const loadChatSubject = () => async dispatch => {
-  try {
-    const { data } = await request.get(`${API_URL}/chatSubject`);
-    dispatch({
-      type: CHAT.LOAD_SUBJECT,
-      subject: data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onLoadChatSubject = data => ({
+  type: CHAT.LOAD_SUBJECT,
+  subject: data
+});
 
-export const loadMoreChannels = ({
-  currentChannelId,
-  channelIds
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.LOAD_MORE_CHANNELS,
-      data
-    });
-    Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onLoadMoreChannels = data => ({
+  type: CHAT.LOAD_MORE_CHANNELS,
+  data
+});
 
-export const loadMoreMessages = ({
-  userId,
-  messageId,
+export const onLoadMoreMessages = data => ({
+  type: CHAT.LOAD_MORE_MESSAGES,
+  data
+});
+
+export const onLeaveChannel = channelId => ({
+  type: CHAT.LEAVE_CHANNEL,
   channelId
-}) => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.LOAD_MORE_MESSAGES,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
-
-export const leaveChannel = channelId => async dispatch => {
-  const timeStamp = Math.floor(Date.now() / 1000);
-  try {
-    await request.delete(
-      `${API_URL}/channel?channelId=${channelId}&timeStamp=${timeStamp}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.LEAVE_CHANNEL,
-      channelId
-    });
-    const data = await loadChatChannel({
-      channelId: GENERAL_CHAT_ID,
-      dispatch
-    });
-    dispatch(enterChannelWithId({ data, showOnTop: true }));
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+});
 
 export const notifyThatMemberLeftChannel = data => ({
   type: CHAT.NOTIFY_MEMBER_LEFT,
@@ -296,22 +169,14 @@ export const postUploadComplete = ({ channelId, messageId, path, result }) => ({
   result
 });
 
-export const receiveMessage = ({ message, pageVisible }) => async dispatch => {
-  const { channelId } = message;
-  try {
-    await request.post(`${API_URL}/lastRead`, { channelId }, auth());
-    dispatch({
-      type: CHAT.RECEIVE_MESSAGE,
-      pageVisible,
-      message: {
-        ...message,
-        timeStamp: Math.floor(Date.now() / 1000)
-      }
-    });
-  } catch (error) {
-    handleError(error, dispatch);
+export const onReceiveMessage = ({ pageVisible, message }) => ({
+  type: CHAT.RECEIVE_MESSAGE,
+  pageVisible,
+  message: {
+    ...message,
+    timeStamp: Math.floor(Date.now() / 1000)
   }
-};
+});
 
 export const receiveMessageOnDifferentChannel = ({
   channel,
@@ -331,72 +196,30 @@ export const receiveFirstMsg = ({ data, duplicate, pageVisible }) => ({
   pageVisible
 });
 
-export const reloadChatSubject = subjectId => async dispatch => {
-  try {
-    const {
-      data: { subject, message }
-    } = await request.put(
-      `${API_URL}/chatSubject/reload`,
-      { subjectId },
-      auth()
-    );
-    dispatch({
-      type: CHAT.RELOAD_SUBJECT,
-      subject,
-      message
-    });
-    return Promise.resolve({ subject, message });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onReloadChatSubject = ({ subject, message }) => ({
+  type: CHAT.RELOAD_SUBJECT,
+  subject,
+  message
+});
 
 export const resetChat = () => ({
   type: CHAT.RESET
 });
 
-export const searchChat = text => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/search/chat?text=${text}`,
-      auth()
-    );
-    dispatch({
-      type: CHAT.SEARCH,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onSearchChat = data => ({
+  type: CHAT.SEARCH,
+  data
+});
 
-export const searchChatSubject = text => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${API_URL}/search/subject?text=${text}`
-    );
-    dispatch({
-      type: CHAT.SEARCH_SUBJECT,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onSearchChatSubject = data => ({
+  type: CHAT.SEARCH_SUBJECT,
+  data
+});
 
-export const searchUserToInvite = text => async dispatch => {
-  try {
-    const { data } = await request.get(`${API_URL}/search/users?text=${text}`);
-    dispatch({
-      type: CHAT.SEARCH_USERS_FOR_CHANNEL,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onSearchUserToInvite = data => ({
+  type: CHAT.SEARCH_USERS_FOR_CHANNEL,
+  data
+});
 
 export const sendFirstDirectMessage = ({ members, message }) => ({
   type: CHAT.CREATE_NEW_DM_CHANNEL,
@@ -412,18 +235,11 @@ export const submitMessage = params => ({
   }
 });
 
-export const saveMessage = ({ message, index }) => async dispatch => {
-  try {
-    const { data } = await request.post(API_URL, { message }, auth());
-    dispatch({
-      type: CHAT.ADD_ID_TO_NEW_MESSAGE,
-      messageIndex: index,
-      messageId: data.messageId
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onSaveMessage = ({ index, messageId }) => ({
+  type: CHAT.ADD_ID_TO_NEW_MESSAGE,
+  messageIndex: index,
+  messageId
+});
 
 export const updateApiServerToS3Progress = ({ progress, channelId, path }) => ({
   type: CHAT.UPDATE_API_SERVER_TO_S3_PROGRESS,
@@ -459,19 +275,7 @@ export const updateSelectedChannelId = channelId => ({
   channelId
 });
 
-export const uploadChatSubject = content => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${API_URL}/chatSubject`,
-      { content },
-      auth()
-    );
-    dispatch({
-      type: CHAT.NEW_SUBJECT,
-      data
-    });
-    return Promise.resolve(data.subjectId);
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onUploadChatSubject = data => ({
+  type: CHAT.NEW_SUBJECT,
+  data
+});

@@ -8,7 +8,6 @@ import Loading from 'components/Loading';
 import SideMenu from './SideMenu';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { loadFeeds } from 'helpers/requestHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { useAppContext } from 'context';
 
@@ -77,7 +76,8 @@ function Posts({
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
-    }
+    },
+    requestHelper: { loadFeeds }
   } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);

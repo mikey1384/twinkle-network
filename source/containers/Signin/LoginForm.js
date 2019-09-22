@@ -5,7 +5,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { login } from 'helpers/requestHelpers';
 import { useAppContext } from 'context';
 
 LoginForm.propTypes = {
@@ -16,7 +15,8 @@ export default function LoginForm({ onShowSignupForm }) {
   const {
     user: {
       actions: { onLogin }
-    }
+    },
+    requestHelpers: { login }
   } = useAppContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

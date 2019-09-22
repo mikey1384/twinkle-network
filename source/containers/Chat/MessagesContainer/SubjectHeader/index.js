@@ -11,11 +11,11 @@ import { cleanString } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 import {
   clearSubjectSearchResults,
-  loadChatSubject,
-  reloadChatSubject,
-  uploadChatSubject,
+  onLoadChatSubject,
+  onReloadChatSubject,
+  onUploadChatSubject,
   changeChatSubject,
-  searchChatSubject
+  onSearchChatSubject
 } from 'redux/actions/ChatActions';
 import { textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -29,18 +29,18 @@ SubjectHeader.propTypes = {
   clearSubjectSearchResults: PropTypes.func,
   subject: PropTypes.object,
   changeChatSubject: PropTypes.func,
-  loadChatSubject: PropTypes.func,
-  reloadChatSubject: PropTypes.func,
-  searchChatSubject: PropTypes.func,
+  onLoadChatSubject: PropTypes.func,
+  onReloadChatSubject: PropTypes.func,
+  onSearchChatSubject: PropTypes.func,
   subjectSearchResults: PropTypes.array,
-  uploadChatSubject: PropTypes.func
+  onUploadChatSubject: PropTypes.func
 };
 
 function SubjectHeader({
   changeChatSubject,
   clearSubjectSearchResults,
-  loadChatSubject,
-  reloadChatSubject,
+  onLoadChatSubject,
+  onReloadChatSubject,
   subject: {
     content = defaultChatSubject,
     id: subjectId,
@@ -49,13 +49,19 @@ function SubjectHeader({
     timeStamp,
     reloadTimeStamp
   },
-  searchChatSubject,
+  onSearchChatSubject,
   subjectSearchResults,
-  uploadChatSubject
+  onUploadChatSubject
 }) {
   const {
     user: {
       state: { profilePicId, userId, username }
+    },
+    requestHelpers: {
+      loadChatSubject,
+      reloadChatSubject,
+      searchChatSubject,
+      uploadChatSubject
     }
   } = useAppContext();
   const [loaded, setLoaded] = useState(false);
@@ -85,7 +91,8 @@ function SubjectHeader({
   useEffect(() => {
     initialLoad();
     async function initialLoad() {
-      await loadChatSubject();
+      const data = await loadChatSubject();
+      onLoadChatSubject(data);
       if (mounted.current) {
         setLoaded(true);
       }
@@ -178,12 +185,12 @@ function SubjectHeader({
               currentSubjectId={subjectId}
               title={subjectTitle}
               onEditSubmit={onSubjectSubmit}
-              onChange={text => searchChatSubject(text)}
+              onChange={handleSearchChatSubject}
               onClickOutSide={() => {
                 setOnEdit(false);
                 clearSubjectSearchResults();
               }}
-              reloadChatSubject={onReloadChatSubject}
+              reloadChatSubject={handleReloadChatSubject}
               searchResults={subjectSearchResults}
             />
           )}
@@ -205,19 +212,26 @@ function SubjectHeader({
     }
   }
 
-  async function onReloadChatSubject(subjectId) {
+  async function handleReloadChatSubject(subjectId) {
     const { message, subject } = await reloadChatSubject(subjectId);
+    onReloadChatSubject({ message, subject });
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
     clearSubjectSearchResults();
   }
 
+  async function handleSearchChatSubject(text) {
+    const data = await searchChatSubject(text);
+    onSearchChatSubject(data);
+  }
+
   async function onSubjectSubmit(text) {
     const content = `${text[0].toUpperCase()}${text.slice(1)}`;
-    const subjectId = await uploadChatSubject(text);
+    const data = await uploadChatSubject(text);
+    onUploadChatSubject(data);
     const timeStamp = Math.floor(Date.now() / 1000);
     const subject = {
-      id: subjectId,
+      id: data.subjectId,
       userId,
       username,
       reloadedBy: null,
@@ -282,9 +296,9 @@ export default connect(
   {
     clearSubjectSearchResults,
     changeChatSubject,
-    loadChatSubject,
-    reloadChatSubject,
-    uploadChatSubject,
-    searchChatSubject
+    onLoadChatSubject,
+    onReloadChatSubject,
+    onUploadChatSubject,
+    onSearchChatSubject
   }
 )(SubjectHeader);

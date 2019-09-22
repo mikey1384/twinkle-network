@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import {
-  searchUserToInvite,
+  onSearchUserToInvite,
   clearUserSearchResults
 } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
+import { useAppContext } from 'context';
 
 CreateNewChannelModal.propTypes = {
   clearSearchResults: PropTypes.func.isRequired,
@@ -16,7 +17,7 @@ CreateNewChannelModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
   searchResults: PropTypes.array.isRequired,
-  searchUserToInvite: PropTypes.func.isRequired
+  onSearchUserToInvite: PropTypes.func.isRequired
 };
 
 function CreateNewChannelModal({
@@ -24,9 +25,12 @@ function CreateNewChannelModal({
   onHide,
   clearSearchResults,
   onDone,
-  searchUserToInvite,
+  onSearchUserToInvite,
   searchResults
 }) {
+  const {
+    requestHelpers: { searchUserToInvite }
+  } = useAppContext();
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -39,7 +43,7 @@ function CreateNewChannelModal({
           itemLabel="username"
           searchResults={searchResults}
           filter={result => result.id !== userId}
-          onSearch={searchUserToInvite}
+          onSearch={handleSearchUserToInvite}
           onClear={clearSearchResults}
           channelName={channelName}
           onAddItem={onAddUser}
@@ -84,6 +88,11 @@ function CreateNewChannelModal({
     </Modal>
   );
 
+  async function handleSearchUserToInvite(text) {
+    const data = await searchUserToInvite(text);
+    onSearchUserToInvite(data);
+  }
+
   function onAddUser(user) {
     setSelectedUsers(selectedUsers.concat([user]));
   }
@@ -103,6 +112,6 @@ export default connect(
   }),
   {
     clearSearchResults: clearUserSearchResults,
-    searchUserToInvite
+    onSearchUserToInvite
   }
 )(CreateNewChannelModal);

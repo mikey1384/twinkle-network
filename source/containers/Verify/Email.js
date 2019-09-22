@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import { verifyEmail } from 'helpers/requestHelpers';
 import Link from 'components/Link';
+import { useAppContext } from 'context';
 
 Email.propTypes = {
   match: PropTypes.object.isRequired
 };
 
 export default function Email({ match }) {
+  const {
+    requestHelpers: { verifyEmail }
+  } = useAppContext();
   const [loaded, setLoaded] = useState(false);
   const [verified, setVerified] = useState(false);
   const [expired, setExpired] = useState(false);

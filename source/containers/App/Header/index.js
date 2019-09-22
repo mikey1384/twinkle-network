@@ -9,10 +9,10 @@ import { withRouter } from 'react-router';
 import {
   clearChatLoadedState,
   clearRecentChessMessage,
-  getNumberOfUnreadMessages,
+  onGetNumberOfUnreadMessages,
   initChat,
   increaseNumberOfUnreadMessages,
-  receiveMessage,
+  onReceiveMessage,
   receiveMessageOnDifferentChannel,
   resetChat,
   updateApiServerToS3Progress
@@ -39,7 +39,7 @@ Header.propTypes = {
   checkVersion: PropTypes.func,
   clearChatLoadedState: PropTypes.func.isRequired,
   clearRecentChessMessage: PropTypes.func.isRequired,
-  getNumberOfUnreadMessages: PropTypes.func.isRequired,
+  onGetNumberOfUnreadMessages: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
@@ -52,7 +52,7 @@ Header.propTypes = {
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
-  receiveMessage: PropTypes.func.isRequired,
+  onReceiveMessage: PropTypes.func.isRequired,
   receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
   defaultSearchFilter: PropTypes.string,
   selectedChannelId: PropTypes.number,
@@ -70,7 +70,7 @@ function Header({
   checkVersion,
   clearChatLoadedState,
   clearRecentChessMessage,
-  getNumberOfUnreadMessages,
+  onGetNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
@@ -83,7 +83,7 @@ function Header({
   numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
-  receiveMessage,
+  onReceiveMessage,
   receiveMessageOnDifferentChannel,
   defaultSearchFilter,
   selectedChannelId,
@@ -100,7 +100,7 @@ function Header({
     view: {
       state: { pageVisible }
     },
-    requestHelpers: { loadChat }
+    requestHelpers: { getNumberOfUnreadMessages, loadChat, updateChatLastRead }
   } = useAppContext();
   const prevUserIdRef = useRef(userId);
   const [homeLink, setHomeLink] = useState('/');
@@ -117,7 +117,7 @@ function Header({
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('chat_invitation', onChatInvitation);
-    socket.on('receive_message', onReceiveMessage);
+    socket.on('receive_message', handleReceiveMessage);
     socket.on('new_post', increaseNumNewPosts);
     socket.on('new_notification', increaseNumNewNotis);
     socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
@@ -147,7 +147,7 @@ function Header({
       changeSocketStatus(true);
       checkVersion();
       if (userId) {
-        getNumberOfUnreadMessages();
+        handleGetNumberOfUnreadMessages();
         socket.emit('bind_uid_to_socket', userId, username);
         if (section === 'talk') {
           const data = await loadChat();
@@ -157,12 +157,17 @@ function Header({
       if (section !== 'talk') {
         clearChatLoadedState();
       }
+
+      async function handleGetNumberOfUnreadMessages() {
+        const numUnreads = await getNumberOfUnreadMessages();
+        onGetNumberOfUnreadMessages(numUnreads);
+      }
     }
     function onDisconnect() {
       console.log('disconnected from socket');
       changeSocketStatus(false);
     }
-    function onReceiveMessage(message, channel) {
+    async function handleReceiveMessage(message, channel) {
       const { section } = getSectionFromPathname(pathname);
       if (
         message.channelId !== GENERAL_CHAT_ID &&
@@ -175,7 +180,8 @@ function Header({
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
-        receiveMessage({ message, pageVisible });
+        await updateChatLastRead({ channelId: message.channelId });
+        onReceiveMessage({ message, pageVisible });
       }
       if (!messageIsForCurrentChannel) {
         receiveMessageOnDifferentChannel({
@@ -323,13 +329,13 @@ export default connect(
     checkVersion,
     clearChatLoadedState,
     clearRecentChessMessage,
-    getNumberOfUnreadMessages,
+    onGetNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
     initChat,
     notifyChatSubjectChange,
-    receiveMessage,
+    onReceiveMessage,
     receiveMessageOnDifferentChannel,
     resetChat,
     updateApiServerToS3Progress

@@ -6,7 +6,6 @@ import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { signup } from 'helpers/requestHelpers';
 import Banner from 'components/Banner';
 import { useAppContext } from 'context';
 
@@ -18,7 +17,8 @@ export default function SignUpForm({ onShowLoginForm }) {
   const {
     user: {
       actions: { onSignup }
-    }
+    },
+    requestHelpers: { signup }
   } = useAppContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
