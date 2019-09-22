@@ -55,7 +55,7 @@ function MainFeeds({
   const {
     user: {
       state: { userId, rank, twinkleXP },
-      action: { onChangeUserXP }
+      actions: { onChangeUserXP }
     },
     requestHelpers: {
       fetchNotifications,
