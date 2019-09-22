@@ -20,7 +20,7 @@ import {
 import {
   changeRankingsLoadedStatus,
   changeSocketStatus,
-  checkVersion,
+  onCheckVersion,
   notifyChatSubjectChange,
   increaseNumNewPosts,
   increaseNumNewNotis
@@ -36,7 +36,7 @@ Header.propTypes = {
   chatLoading: PropTypes.bool,
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
-  checkVersion: PropTypes.func,
+  onCheckVersion: PropTypes.func,
   clearChatLoadedState: PropTypes.func.isRequired,
   clearRecentChessMessage: PropTypes.func.isRequired,
   onGetNumberOfUnreadMessages: PropTypes.func.isRequired,
@@ -67,7 +67,7 @@ function Header({
   changeRankingsLoadedStatus,
   chatLoading,
   changeSocketStatus,
-  checkVersion,
+  onCheckVersion,
   clearChatLoadedState,
   clearRecentChessMessage,
   onGetNumberOfUnreadMessages,
@@ -100,7 +100,12 @@ function Header({
     view: {
       state: { pageVisible }
     },
-    requestHelpers: { getNumberOfUnreadMessages, loadChat, updateChatLastRead }
+    requestHelpers: {
+      checkVersion,
+      getNumberOfUnreadMessages,
+      loadChat,
+      updateChatLastRead
+    }
   } = useAppContext();
   const prevUserIdRef = useRef(userId);
   const [homeLink, setHomeLink] = useState('/');
@@ -145,7 +150,7 @@ function Header({
       const { section } = getSectionFromPathname(pathname);
       clearRecentChessMessage();
       changeSocketStatus(true);
-      checkVersion();
+      handleCheckVersion();
       if (userId) {
         handleGetNumberOfUnreadMessages();
         socket.emit('bind_uid_to_socket', userId, username);
@@ -156,6 +161,11 @@ function Header({
       }
       if (section !== 'talk') {
         clearChatLoadedState();
+      }
+
+      async function handleCheckVersion() {
+        const data = await checkVersion();
+        onCheckVersion(data);
       }
 
       async function handleGetNumberOfUnreadMessages() {
@@ -326,7 +336,7 @@ export default connect(
   {
     changeRankingsLoadedStatus,
     changeSocketStatus,
-    checkVersion,
+    onCheckVersion,
     clearChatLoadedState,
     clearRecentChessMessage,
     onGetNumberOfUnreadMessages,

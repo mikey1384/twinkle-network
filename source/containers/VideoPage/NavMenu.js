@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   clearNotifications,
-  fetchNotifications
+  onFetchNotifications
 } from 'redux/actions/NotiActions';
 import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -21,7 +21,7 @@ import URL from 'constants/URL';
 
 NavMenu.propTypes = {
   clearNotifications: PropTypes.func.isRequired,
-  fetchNotifications: PropTypes.func.isRequired,
+  onFetchNotifications: PropTypes.func.isRequired,
   numNewNotis: PropTypes.number,
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalRewardAmount: PropTypes.number,
@@ -30,7 +30,7 @@ NavMenu.propTypes = {
 
 function NavMenu({
   clearNotifications,
-  fetchNotifications,
+  onFetchNotifications,
   numNewNotis,
   playlistId,
   totalRewardAmount,
@@ -39,7 +39,8 @@ function NavMenu({
   const {
     user: {
       state: { profileTheme, userId }
-    }
+    },
+    requestHelpers: { fetchNotifications }
   } = useAppContext();
   const [nextVideos, setNextVideos] = useState([]);
   const [relatedVideos, setRelatedVideos] = useState([]);
@@ -57,7 +58,7 @@ function NavMenu({
 
   useEffect(() => {
     mounted.current = true;
-    socket.on('new_reward', fetchNotifications);
+    socket.on('new_reward', handleFetchNotifications);
     loadRightMenuVideos();
     async function loadRightMenuVideos() {
       try {
@@ -94,7 +95,7 @@ function NavMenu({
     }
 
     return function cleanUp() {
-      socket.removeListener('new_reward', fetchNotifications);
+      socket.removeListener('new_reward', handleFetchNotifications);
       mounted.current = false;
     };
   }, [videoId]);
@@ -105,7 +106,7 @@ function NavMenu({
 
   useEffect(() => {
     if (userId) {
-      fetchNotifications();
+      handleFetchNotifications();
     } else {
       clearNotifications();
     }
@@ -221,6 +222,11 @@ function NavMenu({
     </ErrorBoundary>
   );
 
+  async function handleFetchNotifications() {
+    const data = await fetchNotifications();
+    onFetchNotifications(data);
+  }
+
   async function loadMorePlaylistVideos() {
     setPlaylistVideosLoading(true);
     const shownVideos = queryStringForArray({
@@ -313,6 +319,6 @@ export default connect(
   }),
   {
     clearNotifications,
-    fetchNotifications
+    onFetchNotifications
   }
 )(NavMenu);

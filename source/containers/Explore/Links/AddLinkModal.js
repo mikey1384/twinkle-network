@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { uploadLink } from 'redux/actions/LinkActions';
+import { onUploadLink } from 'redux/actions/LinkActions';
 import { connect } from 'react-redux';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
@@ -14,13 +14,17 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
+import { useAppContext } from 'context';
 
 AddLinkModal.propTypes = {
   onHide: PropTypes.func,
-  uploadLink: PropTypes.func
+  onUploadLink: PropTypes.func
 };
 
-function AddLinkModal({ onHide, uploadLink }) {
+function AddLinkModal({ onHide, onUploadLink }) {
+  const {
+    requestHelpers: { uploadContent }
+  } = useAppContext();
   const [urlError, setUrlError] = useState('');
   const [form, setForm] = useState({
     url: '',
@@ -126,11 +130,12 @@ function AddLinkModal({ onHide, uploadLink }) {
       setUrlError('That is not a valid url');
       return UrlFieldRef.current.focus();
     }
-    await uploadLink({
+    const linkItem = await uploadContent({
       url,
       title: finalizeEmoji(title),
       description: finalizeEmoji(description)
     });
+    onUploadLink(linkItem);
     onHide();
   }
 
@@ -165,5 +170,5 @@ function AddLinkModal({ onHide, uploadLink }) {
 
 export default connect(
   null,
-  { uploadLink: uploadLink }
+  { onUploadLink }
 )(AddLinkModal);

@@ -6,7 +6,7 @@ import ChatFeeds from './ChatFeeds';
 import { defaultChatSubject } from 'constants/defaultValues';
 import {
   clearNotifications,
-  fetchNotifications
+  onFetchNotifications
 } from 'redux/actions/NotiActions';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { container } from './Styles';
@@ -20,7 +20,7 @@ Notification.propTypes = {
   className: PropTypes.string,
   clearNotifications: PropTypes.func.isRequired,
   currentChatSubject: PropTypes.object,
-  fetchNotifications: PropTypes.func.isRequired,
+  onFetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object,
   location: PropTypes.string,
   numNewNotis: PropTypes.number,
@@ -35,7 +35,7 @@ function Notification({
   className,
   clearNotifications,
   currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
-  fetchNotifications,
+  onFetchNotifications,
   loadMore,
   location,
   numNewNotis,
@@ -47,7 +47,8 @@ function Notification({
   const {
     user: {
       state: { userId }
-    }
+    },
+    requestHelpers: { fetchNotifications }
   } = useAppContext();
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
@@ -55,10 +56,10 @@ function Notification({
   useEffect(() => {
     userChangedTab.current = false;
     if (userId) {
-      fetchNotifications();
+      handleFetchNotifications();
     } else {
       clearNotifications();
-      fetchNotifications();
+      handleFetchNotifications();
     }
   }, [userId]);
 
@@ -82,9 +83,9 @@ function Notification({
   }, [userId, notifications]);
 
   useEffect(() => {
-    socket.on('new_reward', fetchNotifications);
+    socket.on('new_reward', handleFetchNotifications);
     return function cleanUp() {
-      socket.removeListener('new_reward', fetchNotifications);
+      socket.removeListener('new_reward', handleFetchNotifications);
     };
   });
 
@@ -169,6 +170,11 @@ function Notification({
       </div>
     </ErrorBoundary>
   );
+
+  async function handleFetchNotifications() {
+    const data = await fetchNotifications();
+    onFetchNotifications(data);
+  }
 }
 
 export default connect(
@@ -180,5 +186,5 @@ export default connect(
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     currentChatSubject: state.NotiReducer.currentChatSubject
   }),
-  { clearNotifications, fetchNotifications }
+  { clearNotifications, onFetchNotifications }
 )(Notification);

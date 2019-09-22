@@ -10,7 +10,7 @@ import {
   closeAddPlaylistModal,
   closeAddVideoModal,
   getInitialVideos,
-  getPlaylists,
+  onLoadPlaylists,
   openAddVideoModal,
   openAddPlaylistModal,
   setSearchedPlaylists,
@@ -23,8 +23,7 @@ import { useAppContext } from 'context';
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
   closeAddPlaylistModal: PropTypes.func.isRequired,
-  getInitialVideos: PropTypes.func.isRequired,
-  getPlaylists: PropTypes.func.isRequired,
+  onLoadPlaylists: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsButton: PropTypes.bool.isRequired,
@@ -41,8 +40,7 @@ Videos.propTypes = {
 function Videos({
   addPlaylistModalShown,
   closeAddPlaylistModal,
-  getPlaylists,
-  getInitialVideos,
+  onLoadPlaylists,
   history,
   loaded,
   loadMorePlaylistsButton,
@@ -63,7 +61,7 @@ function Videos({
     user: {
       state: { userId }
     },
-    requestHelpers: { loadUploads, searchContent }
+    requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
   useScrollPosition({
     scrollPositions,
@@ -83,11 +81,11 @@ function Videos({
 
     async function init() {
       if (!loaded) {
-        getPlaylists();
-        const { results: videos, loadMoreButton } = await loadUploads({
-          contentType: 'video'
+        const { results, loadMoreButton } = await loadPlaylists();
+        onLoadPlaylists({
+          playlists: results,
+          loadMoreButton
         });
-        getInitialVideos({ videos, loadMoreButton });
       }
     }
   }, [loaded]);
@@ -164,7 +162,7 @@ export default connect(
     searchedPlaylists: state.VideoReducer.searchedPlaylists
   }),
   {
-    getPlaylists,
+    onLoadPlaylists,
     getInitialVideos,
     openAddVideoModal,
     openAddPlaylistModal,

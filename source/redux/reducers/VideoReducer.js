@@ -147,17 +147,17 @@ export default function VideoReducer(state = defaultState, action) {
         pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
           ...playlist,
           title:
-            playlist.id === action.playlistId ? action.data : playlist.title
+            playlist.id === action.playlistId ? action.title : playlist.title
         })),
         allPlaylists: state.allPlaylists.map(playlist => ({
           ...playlist,
           title:
-            playlist.id === action.playlistId ? action.data : playlist.title
+            playlist.id === action.playlistId ? action.title : playlist.title
         })),
         searchedPlaylists: state.searchedPlaylists.map(playlist => ({
           ...playlist,
           title:
-            playlist.id === action.playlistId ? action.data : playlist.title
+            playlist.id === action.playlistId ? action.title : playlist.title
         }))
       };
     case VIDEO.EDIT_TITLE:
@@ -165,7 +165,7 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         allVideoThumbs: state.allVideoThumbs.map(thumb => ({
           ...thumb,
-          title: thumb.id === action.videoId ? action.data : thumb.title
+          title: thumb.id === action.videoId ? action.title : thumb.title
         }))
       };
     case VIDEO.EDIT_THUMBS:
@@ -309,23 +309,6 @@ export default function VideoReducer(state = defaultState, action) {
               allPlaylists: state.allPlaylists.concat(action.playlists),
               loadMorePlaylistsButton: action.loadMoreButton
             })
-      };
-    case VIDEO.LOAD_MORE_PL_LIST:
-      if (action.data.result.length > 10) {
-        action.data.result.pop();
-        loadMorePlaylistsToPinButton = true;
-      }
-      return {
-        ...state,
-        playlistsToPin: state.playlistsToPin.concat(
-          action.data.result.map(item => {
-            return {
-              title: item.title,
-              id: item.id
-            };
-          })
-        ),
-        loadMorePlaylistsToPinButton
       };
     case VIDEO.OPEN_MODAL:
       return {

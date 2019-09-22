@@ -1,15 +1,4 @@
-import request from 'axios';
-import { auth, handleError } from 'helpers/requestHelpers';
 import VIDEO from '../constants/Video';
-import URL from 'constants/URL';
-
-export const addVideoView = params => dispatch => {
-  try {
-    request.post(`${URL}/video/view`, params);
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
 
 export const changeByUserStatusForThumbs = ({ videoId, byUser }) => ({
   type: VIDEO.CHANGE_BY_USER_STATUS,
@@ -55,80 +44,33 @@ export const closeSelectPlaylistsToPinModal = () => ({
   type: VIDEO.CLOSE_SELECT_PL_TO_PIN_MODAL
 });
 
-export const deletePlaylist = playlistId => async dispatch => {
-  try {
-    await request.delete(`${URL}/playlist?playlistId=${playlistId}`, auth());
-    dispatch({
-      type: VIDEO.DELETE_PLAYLIST,
-      data: playlistId
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onDeletePlaylist = playlistId => ({
+  type: VIDEO.DELETE_PLAYLIST,
+  data: playlistId
+});
 
-export const deleteVideo = ({
-  videoId,
+export const onDeleteVideo = ({ arrayIndex, data }) => ({
+  type: VIDEO.DELETE,
   arrayIndex,
-  lastVideoId
-}) => async dispatch => {
-  try {
-    const { data } = await request.delete(
-      `${URL}/video?videoId=${videoId}&lastVideoId=${lastVideoId}`,
-      auth()
-    );
-    dispatch({
-      type: VIDEO.DELETE,
-      arrayIndex,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+  data
+});
 
-export const editPlaylistTitle = (params, arrayNumber) => async dispatch => {
-  try {
-    const { data } = await request.put(`${URL}/playlist/title`, params, auth());
-    if (data.result) {
-      dispatch({
-        type: VIDEO.EDIT_PLAYLIST_TITLE,
-        arrayNumber,
-        playlistId: params.playlistId,
-        data: data.result
-      });
-    }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onEditPlaylistTitle = ({ playlistId, title }) => ({
+  type: VIDEO.EDIT_PLAYLIST_TITLE,
+  playlistId,
+  title
+});
 
 export const editVideoThumbs = params => ({
   type: VIDEO.EDIT_THUMBS,
   params
 });
 
-export const editVideoTitle = params => async dispatch => {
-  try {
-    const { data } = await request.post(
-      `${URL}/video/edit/title`,
-      params,
-      auth()
-    );
-    if (data.result) {
-      dispatch({
-        type: VIDEO.EDIT_TITLE,
-        videoId: params.videoId,
-        data: data.result
-      });
-    }
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onEditVideoTitle = ({ videoId, title }) => ({
+  type: VIDEO.EDIT_TITLE,
+  videoId,
+  title
+});
 
 export const emptyCurrentVideoSlot = () => ({
   type: VIDEO.EMPTY_CURRENT_VIDEO_SLOT
@@ -158,20 +100,11 @@ export const getPinnedPlaylists = playlists => ({
   playlists
 });
 
-export const getPlaylists = () => async dispatch => {
-  try {
-    const {
-      data: { results, loadMoreButton }
-    } = await request.get(`${URL}/playlist`);
-    dispatch({
-      type: VIDEO.LOAD_PLAYLISTS,
-      playlists: results,
-      loadMoreButton
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onLoadPlaylists = ({ playlists, loadMoreButton }) => ({
+  type: VIDEO.LOAD_PLAYLISTS,
+  playlists,
+  loadMoreButton
+});
 
 export const getMorePlaylists = ({ playlists, isSearch, loadMoreButton }) => ({
   type: VIDEO.LOAD_MORE_PLAYLISTS,
@@ -186,20 +119,10 @@ export const likeVideo = ({ likes, videoId }) => ({
   videoId
 });
 
-export const loadMorePlaylistList = playlistId => async dispatch => {
-  try {
-    const { data } = await request.get(
-      `${URL}/playlist/list?playlistId=${playlistId}`
-    );
-    dispatch({
-      type: VIDEO.LOAD_MORE_PL_LIST,
-      data
-    });
-    return Promise.resolve();
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onLoadMorePlaylistList = data => ({
+  type: VIDEO.LOAD_MORE_PL_LIST,
+  data
+});
 
 export const openAddPlaylistModal = () => ({
   type: VIDEO.OPEN_PLAYLIST_MODAL
@@ -213,17 +136,10 @@ export const openReorderFeaturedPlaylists = () => ({
   type: VIDEO.OPEN_REORDER_PINNED_PL_MODAL
 });
 
-export const openSelectPlaylistsToPinModal = () => async dispatch => {
-  try {
-    const { data } = await request.get(`${URL}/playlist/list`);
-    return dispatch({
-      type: VIDEO.OPEN_SELECT_PL_TO_PIN_MODAL,
-      data
-    });
-  } catch (error) {
-    handleError(error, dispatch);
-  }
-};
+export const onOpenSelectPlaylistsToPinModal = data => ({
+  type: VIDEO.OPEN_SELECT_PL_TO_PIN_MODAL,
+  data
+});
 
 export const postPlaylist = data => ({
   type: VIDEO.UPLOAD_PLAYLIST,

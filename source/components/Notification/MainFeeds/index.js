@@ -11,9 +11,9 @@ import MyRank from './MyRank';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import {
   clearRewards,
-  fetchNotifications,
-  loadMoreNotifications,
-  loadMoreRewards
+  onFetchNotifications,
+  onLoadMoreNotifications,
+  onLoadMoreRewards
 } from 'redux/actions/NotiActions';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
@@ -25,10 +25,10 @@ import { useAppContext } from 'context';
 
 MainFeeds.propTypes = {
   clearRewards: PropTypes.func.isRequired,
-  fetchNotifications: PropTypes.func.isRequired,
+  onFetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object.isRequired,
-  loadMoreNotifications: PropTypes.func.isRequired,
-  loadMoreRewards: PropTypes.func.isRequired,
+  onLoadMoreNotifications: PropTypes.func.isRequired,
+  onLoadMoreRewards: PropTypes.func.isRequired,
   numNewNotis: PropTypes.number,
   activeTab: PropTypes.string,
   notifications: PropTypes.array.isRequired,
@@ -41,10 +41,10 @@ MainFeeds.propTypes = {
 function MainFeeds({
   activeTab,
   clearRewards,
-  fetchNotifications,
+  onFetchNotifications,
   loadMore,
-  loadMoreNotifications,
-  loadMoreRewards,
+  onLoadMoreNotifications,
+  onLoadMoreRewards,
   notifications,
   numNewNotis,
   rewards,
@@ -57,7 +57,12 @@ function MainFeeds({
       state: { userId, rank, twinkleXP },
       action: { onChangeUserXP }
     },
-    requestHelpers: { updateUserXP }
+    requestHelpers: {
+      fetchNotifications,
+      loadMoreNotifications,
+      loadMoreRewards,
+      updateUserXP
+    }
   } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
@@ -207,16 +212,21 @@ function MainFeeds({
   }
 
   async function onNewNotiAlertClick() {
-    await fetchNotifications();
+    const data = await fetchNotifications();
+    onFetchNotifications(data);
     selectNotiTab();
   }
 
   async function onLoadMore() {
     setLoading(true);
     if (activeTab === 'notification') {
-      await loadMoreNotifications(notifications[notifications.length - 1].id);
+      const data = await loadMoreNotifications(
+        notifications[notifications.length - 1].id
+      );
+      onLoadMoreNotifications(data);
     } else {
-      await loadMoreRewards(rewards[rewards.length - 1].id);
+      const data = await loadMoreRewards(rewards[rewards.length - 1].id);
+      onLoadMoreRewards(data);
     }
     setLoading(false);
   }
@@ -227,5 +237,10 @@ export default connect(
     numNewNotis: state.NotiReducer.numNewNotis,
     totalRewardAmount: state.NotiReducer.totalRewardAmount
   }),
-  { clearRewards, fetchNotifications, loadMoreNotifications, loadMoreRewards }
+  {
+    clearRewards,
+    onFetchNotifications,
+    onLoadMoreNotifications,
+    onLoadMoreRewards
+  }
 )(MainFeeds);

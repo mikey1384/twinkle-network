@@ -1,5 +1,6 @@
 import request from 'axios';
 import { queryStringForArray, stringIsEmpty } from 'helpers/stringHelpers';
+import { clientVersion } from 'constants/defaultValues';
 import URL from 'constants/URL';
 
 const token = () =>
@@ -24,6 +25,13 @@ export default function requestHelpers(handleError) {
         return Promise.resolve();
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async addVideoView(params) {
+      try {
+        request.post(`${URL}/video/view`, params);
+      } catch (error) {
+        handleError(error);
       }
     },
     async checkIfContentExists({ url, videoCode, contentType }) {
@@ -65,6 +73,16 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async checkVersion() {
+      try {
+        const { data } = await request.get(
+          `${URL}/notification/version?version=${clientVersion}`
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async checkXPEarned(videoId) {
       try {
         const {
@@ -101,6 +119,28 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async deleteMessage({ fileName = '', filePath = '', messageId }) {
+      try {
+        await request.delete(
+          `${URL}/chat/message?messageId=${messageId}&filePath=${filePath}&fileName=${fileName}`,
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async deletePlaylist(playlistId) {
+      try {
+        await request.delete(
+          `${URL}/playlist?playlistId=${playlistId}`,
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
     async deleteSubject({ subjectId }) {
       try {
         await request.delete(
@@ -112,13 +152,13 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async deleteMessage({ fileName = '', filePath = '', messageId }) {
+    async deleteVideo({ videoId, lastVideoId }) {
       try {
-        await request.delete(
-          `${URL}/chat/message?messageId=${messageId}&filePath=${filePath}&fileName=${fileName}`,
+        const { data } = await request.delete(
+          `${URL}/video?videoId=${videoId}&lastVideoId=${lastVideoId}`,
           auth()
         );
-        return Promise.resolve();
+        return Promise.resolve(data);
       } catch (error) {
         handleError(error);
       }
@@ -131,9 +171,29 @@ export default function requestHelpers(handleError) {
         handleError(error);
       }
     },
-    async editContent(params) {
+    async editContent({
+      contentId,
+      editedComment,
+      editedDescription,
+      editedSecretAnswer,
+      editedTitle,
+      editedUrl,
+      contentType
+    }) {
       try {
-        const { data } = await request.put(`${URL}/content`, params, auth());
+        const { data } = await request.put(
+          `${URL}/content`,
+          {
+            contentId,
+            editedComment,
+            editedDescription,
+            editedSecretAnswer,
+            editedTitle,
+            editedUrl,
+            contentType
+          },
+          auth()
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
@@ -147,6 +207,16 @@ export default function requestHelpers(handleError) {
           auth()
         );
         return Promise.resolve();
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async editPlaylistTitle(params) {
+      try {
+        const {
+          data: { title }
+        } = await request.put(`${URL}/playlist/title`, params, auth());
+        return Promise.resolve(title);
       } catch (error) {
         handleError(error);
       }
@@ -215,6 +285,24 @@ export default function requestHelpers(handleError) {
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
+      }
+    },
+    async fetchNotifications() {
+      try {
+        if (auth().headers.authorization === null) {
+          const { data } = await request.get(`${URL}/notification/chatSubject`);
+          return Promise.resolve({
+            notifications: [],
+            rewards: [],
+            totalRewardAmount: 0,
+            currentChatSubject: data
+          });
+        } else {
+          const { data } = await request.get(`${URL}/notification`, auth());
+          return Promise.resolve(data);
+        }
+      } catch (error) {
+        handleError(error);
       }
     },
     async fetchVideoThumbUrl({ videoCode, videoId }) {
@@ -339,6 +427,46 @@ export default function requestHelpers(handleError) {
       try {
         const { data } = await request.get(
           `${URL}/chat/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadMoreNotifications(lastId) {
+      try {
+        const { data } = await request.get(
+          `${URL}/notification?lastId=${lastId}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadPlaylistList() {
+      try {
+        const { data } = await request.get(`${URL}/playlist/list`);
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadMorePlaylistList(playlistId) {
+      try {
+        const { data } = await request.get(
+          `${URL}/playlist/list?playlistId=${playlistId}`
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        handleError(error);
+      }
+    },
+    async loadMoreRewards(lastId) {
+      try {
+        const { data } = await request.get(
+          `${URL}/notification/more/rewards?lastId=${lastId}`,
           auth()
         );
         return Promise.resolve(data);

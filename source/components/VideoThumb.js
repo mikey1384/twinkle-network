@@ -14,7 +14,7 @@ import { textIsOverflown } from 'helpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { charLimit } from 'constants/defaultValues';
-import { editVideoTitle, deleteVideo } from 'redux/actions/VideoActions';
+import { onEditVideoTitle, onDeleteVideo } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
@@ -23,9 +23,9 @@ VideoThumb.propTypes = {
   className: PropTypes.string,
   clickSafe: PropTypes.bool,
   deletable: PropTypes.bool,
-  deleteVideo: PropTypes.func.isRequired,
+  onDeleteVideo: PropTypes.func.isRequired,
   editable: PropTypes.bool,
-  editVideoTitle: PropTypes.func,
+  onEditVideoTitle: PropTypes.func,
   lastVideoId: PropTypes.number,
   style: PropTypes.object,
   to: PropTypes.string.isRequired,
@@ -45,9 +45,9 @@ function VideoThumb({
   className,
   clickSafe,
   deletable,
-  deleteVideo,
+  onDeleteVideo,
   editable,
-  editVideoTitle,
+  onEditVideoTitle,
   lastVideoId,
   style,
   to,
@@ -57,7 +57,8 @@ function VideoThumb({
   const {
     user: {
       state: { profileTheme }
-    }
+    },
+    requestHelpers: { deleteVideo, editContent }
   } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -213,7 +214,12 @@ function VideoThumb({
 
   async function onEditedTitleSubmit(title) {
     const videoId = video.id;
-    await editVideoTitle({ title, videoId });
+    await editContent({
+      contentType: 'video',
+      contentId: videoId,
+      editedTitle: title
+    });
+    onEditVideoTitle({ videoId, title });
     setOnEdit(false);
   }
 
@@ -225,9 +231,10 @@ function VideoThumb({
     setConfirmModalShown(true);
   }
 
-  function onDeleteConfirm() {
+  async function onDeleteConfirm() {
     const videoId = video.id;
-    deleteVideo({ videoId, arrayIndex, lastVideoId });
+    const data = await deleteVideo({ videoId, lastVideoId });
+    onDeleteVideo({ arrayIndex, data });
   }
 
   function onHideModal() {
@@ -244,7 +251,7 @@ function VideoThumb({
 export default connect(
   null,
   {
-    editVideoTitle,
-    deleteVideo
+    onEditVideoTitle,
+    onDeleteVideo
   }
 )(VideoThumb);

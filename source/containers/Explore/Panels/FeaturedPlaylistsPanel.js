@@ -9,9 +9,10 @@ import { connect } from 'react-redux';
 import {
   closeReorderFeaturedPlaylists,
   closeSelectPlaylistsToPinModal,
+  onLoadMorePlaylistList,
   getPinnedPlaylists,
   openReorderFeaturedPlaylists,
-  openSelectPlaylistsToPinModal
+  onOpenSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
 import { useAppContext } from 'context';
 
@@ -22,8 +23,9 @@ FeaturedPlaylistsPanel.propTypes = {
   getPinnedPlaylists: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
+  onLoadMorePlaylistList: PropTypes.func.isRequired,
   openReorderFeaturedPlaylists: PropTypes.func.isRequired,
-  openSelectPlaylistsToPinModal: PropTypes.func.isRequired,
+  onOpenSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   reorderFeaturedPlaylistsShown: PropTypes.bool.isRequired,
@@ -36,9 +38,10 @@ function FeaturedPlaylistsPanel({
   featuredPlaylists,
   getPinnedPlaylists,
   loaded,
+  onLoadMorePlaylistList,
   loadMorePlaylistsToPinButton,
   openReorderFeaturedPlaylists,
-  openSelectPlaylistsToPinModal,
+  onOpenSelectPlaylistsToPinModal,
   playlistsLoaded,
   playlistsToPin,
   reorderFeaturedPlaylistsShown,
@@ -48,7 +51,11 @@ function FeaturedPlaylistsPanel({
     user: {
       state: { canPinPlaylists, userId }
     },
-    requestHelpers: { loadFeaturedPlaylists }
+    requestHelpers: {
+      loadFeaturedPlaylists,
+      loadPlaylistList,
+      loadMorePlaylistList
+    }
   } = useAppContext();
   useEffect(() => {
     init();
@@ -62,7 +69,7 @@ function FeaturedPlaylistsPanel({
   const menuButtons = [
     {
       label: 'Select Playlists',
-      onClick: openSelectPlaylistsToPinModal,
+      onClick: handleOpenSelectPlaylistsToPinModal,
       skeuomorphic: true,
       color: 'darkerGray'
     }
@@ -95,6 +102,7 @@ function FeaturedPlaylistsPanel({
           selectedPlaylists={featuredPlaylists.map(playlist => {
             return playlist.id;
           })}
+          loadMorePlaylists={handleLoadMorePlaylistList}
           loadMoreButton={loadMorePlaylistsToPinButton}
           onHide={closeSelectPlaylistsToPinModal}
         />
@@ -108,6 +116,16 @@ function FeaturedPlaylistsPanel({
       )}
     </ErrorBoundary>
   );
+
+  async function handleLoadMorePlaylistList(playlistId) {
+    const data = await loadMorePlaylistList(playlistId);
+    onLoadMorePlaylistList(data);
+  }
+
+  async function handleOpenSelectPlaylistsToPinModal() {
+    const data = await loadPlaylistList();
+    onOpenSelectPlaylistsToPinModal(data);
+  }
 }
 
 export default connect(
@@ -124,10 +142,11 @@ export default connect(
       state.VideoReducer.selectPlaylistsToPinModalShown
   }),
   {
+    onLoadMorePlaylistList,
     closeReorderFeaturedPlaylists,
     closeSelectPlaylistsToPinModal,
     getPinnedPlaylists,
     openReorderFeaturedPlaylists,
-    openSelectPlaylistsToPinModal
+    onOpenSelectPlaylistsToPinModal
   }
 )(FeaturedPlaylistsPanel);

@@ -9,7 +9,6 @@ import { Color } from 'constants/css';
 import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import {
-  addVideoView,
   fillCurrentVideoSlot,
   emptyCurrentVideoSlot
 } from 'redux/actions/VideoActions';
@@ -21,7 +20,6 @@ const intervalLength = 2000;
 const xp = rewardValue.star;
 
 VideoPlayer.propTypes = {
-  addVideoView: PropTypes.func.isRequired,
   byUser: PropTypes.bool,
   currentVideoSlot: PropTypes.number,
   emptyCurrentVideoSlot: PropTypes.func,
@@ -38,7 +36,6 @@ VideoPlayer.propTypes = {
 };
 
 function VideoPlayer({
-  addVideoView,
   byUser,
   currentVideoSlot,
   emptyCurrentVideoSlot,
@@ -58,16 +55,17 @@ function VideoPlayer({
       actions: { onChangeUserXP },
       state: { profileTheme, twinkleXP, userId }
     },
+    view: {
+      state: { pageVisible }
+    },
     requestHelpers: {
+      addVideoView,
       checkXPEarned,
       fetchVideoThumbUrl,
       updateCurrentlyWatching,
       updateUserXP,
       updateTotalViewDuration,
       updateVideoXPEarned
-    },
-    view: {
-      state: { pageVisible }
     }
   } = useAppContext();
   const maxRequiredDuration = 250;
@@ -480,7 +478,6 @@ export default connect(
     currentVideoSlot: state.VideoReducer.currentVideoSlot
   }),
   {
-    addVideoView,
     fillCurrentVideoSlot,
     emptyCurrentVideoSlot
   }

@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import CheckListGroup from 'components/CheckListGroup';
-import {
-  loadMorePlaylistList,
-  changePinnedPlaylists
-} from 'redux/actions/VideoActions';
+import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import FilterBar from 'components/FilterBar';
 import Banner from 'components/Banner';
 import SearchInput from 'components/Texts/SearchInput';
@@ -269,5 +266,5 @@ function SelectPlaylistsToPinModal({
 
 export default connect(
   null,
-  { loadMorePlaylistList, changePinnedPlaylists }
+  { changePinnedPlaylists }
 )(SelectPlaylistsToPinModal);

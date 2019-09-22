@@ -9,7 +9,10 @@ import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Link from 'components/Link';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { editPlaylistTitle, deletePlaylist } from 'redux/actions/VideoActions';
+import {
+  onEditPlaylistTitle,
+  onDeletePlaylist
+} from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
@@ -18,11 +21,10 @@ import { charLimit } from 'constants/defaultValues';
 import { useAppContext } from 'context';
 
 PlaylistCarousel.propTypes = {
-  arrayIndex: PropTypes.number.isRequired,
   clickSafe: PropTypes.bool.isRequired,
-  deletePlaylist: PropTypes.func.isRequired,
+  onDeletePlaylist: PropTypes.func.isRequired,
   userIsUploader: PropTypes.bool,
-  editPlaylistTitle: PropTypes.func.isRequired,
+  onEditPlaylistTitle: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   playlist: PropTypes.array.isRequired,
   showAllButton: PropTypes.bool.isRequired,
@@ -36,10 +38,9 @@ const mobileNumSlides = 4;
 const cellSpacing = 12;
 
 function PlaylistCarousel({
-  arrayIndex,
   clickSafe,
-  deletePlaylist,
-  editPlaylistTitle,
+  onDeletePlaylist,
+  onEditPlaylistTitle,
   id: playlistId,
   numPlaylistVids,
   playlist,
@@ -51,7 +52,8 @@ function PlaylistCarousel({
   const {
     user: {
       state: { canEdit, canEditPlaylists, profileTheme }
-    }
+    },
+    requestHelpers: { deletePlaylist, editPlaylistTitle }
   } = useAppContext();
   const [onEdit, setOnEdit] = useState(false);
   const [changePLVideosModalShown, setChangePLVideosModalShown] = useState(
@@ -246,13 +248,15 @@ function PlaylistCarousel({
   }
 
   async function handleEditedTitleSubmit(title) {
-    await editPlaylistTitle({ title, playlistId }, arrayIndex);
+    await editPlaylistTitle({ title, playlistId });
+    onEditPlaylistTitle({ playlistId, title });
     setOnEdit(false);
   }
 
   async function handleDeleteConfirm() {
     setDeleteConfirmModalShown(false);
-    deletePlaylist(playlistId);
+    await deletePlaylist(playlistId);
+    onDeletePlaylist(playlistId);
   }
 }
 
@@ -261,7 +265,7 @@ export default connect(
     clickSafe: state.VideoReducer.clickSafe
   }),
   {
-    editPlaylistTitle,
-    deletePlaylist
+    onEditPlaylistTitle,
+    onDeletePlaylist
   }
 )(PlaylistCarousel);

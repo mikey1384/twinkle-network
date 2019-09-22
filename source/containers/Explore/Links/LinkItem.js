@@ -6,7 +6,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Link } from 'react-router-dom';
-import { editTitle, deleteLink } from 'redux/actions/LinkActions';
+import { onEditTitle, onDeleteLink } from 'redux/actions/LinkActions';
 import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -17,8 +17,8 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 LinkItem.propTypes = {
-  deleteLink: PropTypes.func.isRequired,
-  editTitle: PropTypes.func.isRequired,
+  onDeleteLink: PropTypes.func.isRequired,
+  onEditTitle: PropTypes.func.isRequired,
   link: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
@@ -48,13 +48,14 @@ function LinkItem({
     timeStamp,
     uploader
   },
-  deleteLink,
-  editTitle
+  onDeleteLink,
+  onEditTitle
 }) {
   const {
     user: {
       state: { authLevel, canDelete, canEdit, userId }
-    }
+    },
+    requestHelpers: { deleteContent, editContent }
   } = useAppContext();
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [imageUrl, setImageUrl] = useState(
@@ -245,12 +246,14 @@ function LinkItem({
     </nav>
   );
 
-  function handleDelete() {
-    deleteLink(id);
+  async function handleDelete() {
+    await deleteContent({ id, contentType: 'url' });
+    onDeleteLink(id);
   }
 
   async function handleEditedTitleSubmit(text) {
-    await editTitle({ title: text, id });
+    await editContent({ editedTitle: text, contentId: id, contentType: 'url' });
+    onEditTitle({ title: text, id });
     setOnEdit(false);
   }
 
@@ -261,5 +264,5 @@ function LinkItem({
 
 export default connect(
   null,
-  { deleteLink, editTitle }
+  { onDeleteLink, onEditTitle }
 )(LinkItem);
