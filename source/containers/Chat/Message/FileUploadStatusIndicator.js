@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
-import { displayAttachedFile } from 'redux/actions/ChatActions';
-import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { useAppContext } from 'context';
 
@@ -11,8 +9,6 @@ FileUploadStatusIndicator.propTypes = {
   channelId: PropTypes.number.isRequired,
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   content: PropTypes.string,
-  displayAttachedFile: PropTypes.func.isRequired,
-  filesBeingUploaded: PropTypes.object.isRequired,
   fileToUpload: PropTypes.object.isRequired,
   filePath: PropTypes.string.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
@@ -25,8 +21,6 @@ function FileUploadStatusIndicator({
   channelId,
   checkScrollIsAtTheBottom,
   content,
-  displayAttachedFile,
-  filesBeingUploaded,
   fileToUpload,
   filePath,
   onSendFileMessage,
@@ -35,6 +29,10 @@ function FileUploadStatusIndicator({
   subjectId
 }) {
   const {
+    chat: {
+      state: { filesBeingUploaded },
+      actions: { onDisplayAttachedFile }
+    },
     user: {
       state: { authLevel, userId, username }
     }
@@ -81,7 +79,7 @@ function FileUploadStatusIndicator({
         profilePicId,
         scrollAtBottom: checkScrollIsAtTheBottom()
       };
-      displayAttachedFile(params);
+      onDisplayAttachedFile(params);
       if (channelId) {
         onSendFileMessage(params);
       }
@@ -105,10 +103,3 @@ function FileUploadStatusIndicator({
     </div>
   );
 }
-
-export default connect(
-  state => ({
-    filesBeingUploaded: state.ChatReducer.filesBeingUploaded
-  }),
-  { displayAttachedFile }
-)(FileUploadStatusIndicator);

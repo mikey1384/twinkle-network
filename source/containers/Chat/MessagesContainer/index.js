@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  onDeleteMessage,
-  onEditChannelTitle,
-  onLeaveChannel,
-  enterChannelWithId,
-  onHideChat
-} from 'redux/actions/ChatActions';
+import { onLeaveChannel, onHideChat } from 'redux/actions/ChatActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
@@ -30,9 +24,6 @@ MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
-  enterChannelWithId: PropTypes.func.isRequired,
-  onDeleteMessage: PropTypes.func.isRequired,
-  onEditChannelTitle: PropTypes.func.isRequired,
   onLeaveChannel: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
@@ -55,9 +46,6 @@ function MessagesContainer({
   channelName,
   chessCountdownObj,
   chessOpponent,
-  enterChannelWithId,
-  onDeleteMessage,
-  onEditChannelTitle,
   onLeaveChannel,
   loadMoreButton,
   loading,
@@ -76,6 +64,9 @@ function MessagesContainer({
   subjectId
 }) {
   const {
+    chat: {
+      actions: { onDeleteMessage, onEditChannelTitle, onEnterChannelWithId }
+    },
     user: {
       state: { authLevel, profilePicId, userId, username }
     },
@@ -399,7 +390,7 @@ function MessagesContainer({
         <EditTitleModal
           title={channelName}
           onHide={() => setEditTitleModalShown(false)}
-          onDone={onEditTitleDone}
+          onDone={handleEditChannelTitle}
         />
       )}
       {leaveConfirmModalShown && (
@@ -428,13 +419,19 @@ function MessagesContainer({
     });
   }
 
+  async function handleEditChannelTitle(title) {
+    await editChannelTitle({ title, channelId: selectedChannelId });
+    onEditChannelTitle({ title, channelId: selectedChannelId });
+    setEditTitleModalShown(false);
+  }
+
   async function handleHideChat() {
     await hideChat(selectedChannelId);
     onHideChat(selectedChannelId);
     const data = await loadChatChannel({
       channelId: GENERAL_CHAT_ID
     });
-    enterChannelWithId({ data, showOnTop: true });
+    onEnterChannelWithId({ data, showOnTop: true });
   }
 
   async function handleLoadMoreButtonClick() {
@@ -494,12 +491,6 @@ function MessagesContainer({
     event.target.value = null;
   }
 
-  async function onEditTitleDone(title) {
-    await editChannelTitle({ title, channelId: selectedChannelId });
-    onEditChannelTitle({ title, channelId: selectedChannelId });
-    setEditTitleModalShown(false);
-  }
-
   function onInviteUsersDone(users, message) {
     socket.emit('new_chat_message', {
       ...message,
@@ -521,7 +512,7 @@ function MessagesContainer({
       profilePicId
     });
     const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-    enterChannelWithId({ data, showOnTop: true });
+    onEnterChannelWithId({ data, showOnTop: true });
     setLeaveConfirmModalShown(false);
   }
 }
@@ -530,5 +521,5 @@ export default connect(
   state => ({
     socketConnected: state.NotiReducer.socketConnected
   }),
-  { enterChannelWithId, onDeleteMessage, onEditChannelTitle, onLeaveChannel }
+  { onLeaveChannel }
 )(MessagesContainer);

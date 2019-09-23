@@ -624,16 +624,20 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async loadPlaylists({ shownPlaylists }) {
+    async loadPlaylists({ shownPlaylists } = {}) {
       try {
         const {
           data: { results, loadMoreButton }
         } = await request.get(
-          `${URL}/playlist/?${queryStringForArray({
-            array: shownPlaylists,
-            originVar: 'id',
-            destinationVar: 'shownPlaylists'
-          })}`
+          `${URL}/playlist${
+            shownPlaylists
+              ? `/?${queryStringForArray({
+                  array: shownPlaylists,
+                  originVar: 'id',
+                  destinationVar: 'shownPlaylists'
+                })}`
+              : ''
+          }`
         );
         return Promise.resolve({ results, loadMoreButton });
       } catch (error) {
@@ -840,7 +844,7 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async setDefaultSearchFilter({ filter }) {
+    async setDefaultSearchFilter(filter) {
       try {
         const { data } = await request.post(
           `${URL}/user/searchFilter`,

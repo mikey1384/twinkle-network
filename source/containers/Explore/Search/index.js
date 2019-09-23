@@ -51,7 +51,7 @@ export default function Search({ history, pathname, style }) {
           style={{ marginTop: '7rem', marginBottom: '4rem' }}
           defaultFilter={defaultSearchFilter}
           filter={category}
-          setDefaultSearchFilter={handleSetDefaultSearchFilter}
+          onSetDefaultSearchFilter={handleSetDefaultSearchFilter}
         />
       )}
       <SearchBox
@@ -91,9 +91,7 @@ export default function Search({ history, pathname, style }) {
 
   async function handleSetDefaultSearchFilter() {
     if (category === defaultSearchFilter) return;
-    await setDefaultSearchFilter({
-      filter: category
-    });
+    await setDefaultSearchFilter(category);
     onChangeDefaultSearchFilter(category);
     if (stringIsEmpty(searchText)) {
       SearchBoxRef.current.focus();

@@ -8,7 +8,7 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext } from 'context';
 
 LoginForm.propTypes = {
-  onShowSignupForm: PropTypes.func.isRequired
+  onShowSignupForm: PropTypes.func
 };
 
 export default function LoginForm({ onShowSignupForm }) {

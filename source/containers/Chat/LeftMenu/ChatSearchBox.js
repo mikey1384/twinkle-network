@@ -6,31 +6,29 @@ import SearchInput from 'components/Texts/SearchInput';
 import { connect } from 'react-redux';
 import {
   onSearchChat,
-  clearChatSearchResults,
-  enterChannelWithId,
-  openNewChatTab,
   updateSelectedChannelId
 } from 'redux/actions/ChatActions';
 import { useAppContext } from 'context';
 
 ChatSearchBox.propTypes = {
-  clearSearchResults: PropTypes.func.isRequired,
-  enterChannelWithId: PropTypes.func.isRequired,
-  openNewChatTab: PropTypes.func.isRequired,
   onSearchChat: PropTypes.func.isRequired,
   searchResults: PropTypes.array.isRequired,
   updateSelectedChannelId: PropTypes.func.isRequired
 };
 
 function ChatSearchBox({
-  clearSearchResults,
-  enterChannelWithId,
-  openNewChatTab,
   onSearchChat,
   searchResults,
   updateSelectedChannelId
 }) {
   const {
+    chat: {
+      actions: {
+        onClearChatSearchResults,
+        onEnterChannelWithId,
+        onOpenNewChatTab
+      }
+    },
     user: {
       state: { userId, username }
     },
@@ -38,7 +36,7 @@ function ChatSearchBox({
   } = useAppContext();
   const { handleSearch, searching, searchText, setSearchText } = useSearch({
     onSearch: handleSearchChat,
-    onClear: clearSearchResults
+    onClear: onClearChatSearchResults
   });
 
   return (
@@ -60,7 +58,7 @@ function ChatSearchBox({
         }
         onClickOutSide={() => {
           setSearchText('');
-          clearSearchResults();
+          onClearChatSearchResults();
         }}
         onSelect={onSelect}
       />
@@ -79,15 +77,15 @@ function ChatSearchBox({
       const data = await loadChatChannel({
         channelId: item.channelId
       });
-      enterChannelWithId({ data, showOnTop: true });
+      onEnterChannelWithId({ data, showOnTop: true });
     } else {
-      openNewChatTab({
+      onOpenNewChatTab({
         user: { username, id: userId },
         recepient: { username: item.label, id: item.id }
       });
     }
     setSearchText('');
-    clearSearchResults();
+    onClearChatSearchResults();
   }
 }
 
@@ -97,9 +95,6 @@ export default connect(
   }),
   {
     onSearchChat,
-    clearSearchResults: clearChatSearchResults,
-    enterChannelWithId,
-    openNewChatTab,
     updateSelectedChannelId
   }
 )(ChatSearchBox);

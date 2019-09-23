@@ -77,7 +77,7 @@ export default function Posts({
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
     },
-    requestHelper: { loadFeeds }
+    requestHelpers: { loadFeeds }
   } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);

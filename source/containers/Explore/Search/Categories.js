@@ -9,14 +9,14 @@ import { useAppContext } from 'context';
 Categories.propTypes = {
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
-  setDefaultSearchFilter: PropTypes.func.isRequired,
+  onSetDefaultSearchFilter: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
 export default function Categories({
   defaultFilter,
   filter,
-  setDefaultSearchFilter,
+  onSetDefaultSearchFilter,
   style
 }) {
   const {
@@ -84,7 +84,7 @@ export default function Categories({
                     marginBottom: '0.5rem'
                   }}
                   checked={filter === defaultFilter}
-                  onClick={setDefaultSearchFilter}
+                  onClick={onSetDefaultSearchFilter}
                 />
               </div>
             </nav>

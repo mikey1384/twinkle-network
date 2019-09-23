@@ -9,7 +9,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
-import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { withRouter } from 'react-router';
 import { useAppContext } from 'context';
 
@@ -18,7 +18,6 @@ BasicInfos.propTypes = {
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
   history: PropTypes.object,
-  initChat: PropTypes.func,
   loaded: PropTypes.bool,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profileTheme: PropTypes.string,
@@ -40,7 +39,6 @@ function BasicInfos({
   email,
   emailVerified,
   history,
-  initChat,
   loaded,
   online,
   joinDate,
@@ -57,6 +55,9 @@ function BasicInfos({
   style
 }) {
   const {
+    chat: {
+      actions: { onInitChat }
+    },
     user: {
       actions: { onUpdateProfileInfo }
     },
@@ -284,7 +285,7 @@ function BasicInfos({
   async function handleTalkButtonClick() {
     if (!loaded) {
       const initialData = await loadChat();
-      initChat(initialData);
+      onInitChat(initialData);
     }
     const data = await loadDMChannel({
       recepient: { id: userId, username }
@@ -349,5 +350,5 @@ export default connect(
   state => ({
     loaded: state.ChatReducer.loaded
   }),
-  { initChat, openDirectMessageChannel }
+  { openDirectMessageChannel }
 )(withRouter(BasicInfos));

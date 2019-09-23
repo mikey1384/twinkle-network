@@ -10,7 +10,6 @@ import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
-  initChat,
   postFileUploadStatus,
   postUploadComplete,
   sendFirstDirectMessage,
@@ -71,7 +70,7 @@ function App({
   const authRef = useRef(null);
 
   useEffect(() => {
-    if (!auth()?.headers?.authorization) {
+    if (!auth()?.headers?.authorization && !signinModalShown) {
       onLogout();
     } else if (
       authRef.current?.headers?.authorization !== auth()?.headers?.authorization
@@ -290,7 +289,6 @@ export default connect(
     updateDetail: state.NotiReducer.updateDetail
   }),
   {
-    initChat,
     postFileUploadStatus,
     postUploadComplete,
     sendFirstDirectMessage,

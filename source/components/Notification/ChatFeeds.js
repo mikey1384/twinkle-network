@@ -6,8 +6,6 @@ import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { connect } from 'react-redux';
-import { enterChannelWithId, initChat } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useAppContext } from 'context';
@@ -15,10 +13,7 @@ import { withRouter } from 'react-router';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
-  dispatch: PropTypes.func.isRequired,
-  enterChannelWithId: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   reloadedBy: PropTypes.number,
   reloaderName: PropTypes.string,
@@ -31,10 +26,7 @@ ChatFeeds.propTypes = {
 
 function ChatFeeds({
   content,
-  dispatch,
-  enterChannelWithId,
   history,
-  initChat,
   loaded,
   reloadedBy,
   reloaderName,
@@ -45,6 +37,9 @@ function ChatFeeds({
   username
 }) {
   const {
+    chat: {
+      actions: { onEnterChannelWithId, onInitChat }
+    },
     requestHelpers: { loadChat, loadChatChannel }
   } = useAppContext();
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
@@ -105,11 +100,11 @@ function ChatFeeds({
 
   async function initChatFromThis() {
     if (!loaded) {
-      const data = await loadChat({ dispatch, channelId: 2 });
-      initChat(data);
+      const data = await loadChat({ channelId: 2 });
+      onInitChat(data);
     } else {
-      const data = await loadChatChannel({ channelId: 2, dispatch });
-      enterChannelWithId({ data });
+      const data = await loadChatChannel({ channelId: 2 });
+      onEnterChannelWithId({ data });
     }
     history.push('/talk');
   }
@@ -138,13 +133,4 @@ function ChatFeeds({
   }
 }
 
-export default connect(
-  state => ({
-    loaded: state.ChatReducer.loaded
-  }),
-  dispatch => ({
-    dispatch,
-    enterChannelWithId: params => dispatch(enterChannelWithId(params)),
-    initChat: data => dispatch(initChat(data))
-  })
-)(withRouter(ChatFeeds));
+export default withRouter(ChatFeeds);

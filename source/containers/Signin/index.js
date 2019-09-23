@@ -12,7 +12,6 @@ Signin.propTypes = {
 
 export default function Signin({ onHide }) {
   const [currentPage, setCurrentPage] = useState('main');
-
   return (
     <ErrorBoundary>
       <Modal show onHide={onHide}>
@@ -27,7 +26,7 @@ export default function Signin({ onHide }) {
           {currentPage === 'main' && (
             <Main
               onShowLoginForm={() => setCurrentPage('login')}
-              onShowSignupForm={() => setCurrentPage('signUp')}
+              onShowSignUpForm={() => setCurrentPage('signUp')}
             />
           )}
           {currentPage === 'login' && (

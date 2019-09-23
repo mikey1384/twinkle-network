@@ -13,7 +13,6 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import {
-  onEditMessage,
   onSaveMessage,
   updateChessMoveViewTimeStamp,
   updateRecentChessMessage
@@ -30,7 +29,6 @@ Message.propTypes = {
   message: PropTypes.object,
   style: PropTypes.object,
   onDelete: PropTypes.func,
-  onEditMessage: PropTypes.func,
   onSaveMessage: PropTypes.func,
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
@@ -83,7 +81,6 @@ function Message({
   },
   onChessBoardClick,
   onDelete,
-  onEditMessage,
   onChessSpoilerClick,
   onReceiveNewMessage,
   onSendFileMessage,
@@ -96,6 +93,9 @@ function Message({
   updateRecentChessMessage
 }) {
   const {
+    chat: {
+      actions: { onEditMessage }
+    },
     user: {
       state: {
         authLevel,
@@ -336,7 +336,6 @@ export default connect(
     socketConnected: state.NotiReducer.socketConnected
   }),
   {
-    onEditMessage,
     onSaveMessage,
     updateChessMoveViewTimeStamp,
     updateRecentChessMessage

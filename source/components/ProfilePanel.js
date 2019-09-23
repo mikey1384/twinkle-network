@@ -10,7 +10,7 @@ import Icon from 'components/Icon';
 import Comments from 'components/Comments';
 import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
-import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -22,20 +22,21 @@ ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
   history: PropTypes.object,
   loaded: PropTypes.bool,
-  initChat: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func,
   profile: PropTypes.object
 };
 
 function ProfilePanel({
   history,
-  initChat,
   loaded,
   expandable,
   openDirectMessageChannel,
   profile
 }) {
   const {
+    chat: {
+      actions: { onInitChat }
+    },
     user: {
       actions: {
         onRemoveStatusMsg,
@@ -380,7 +381,7 @@ function ProfilePanel({
   async function handleTalkClick() {
     if (!loaded) {
       const initialData = await loadChat();
-      initChat(initialData);
+      onInitChat(initialData);
     }
     const data = await loadDMChannel({ recepient: profile });
     openDirectMessageChannel({
@@ -598,5 +599,5 @@ export default connect(
   state => ({
     loaded: state.ChatReducer.loaded
   }),
-  { initChat, openDirectMessageChannel }
+  { openDirectMessageChannel }
 )(withRouter(ProfilePanel));

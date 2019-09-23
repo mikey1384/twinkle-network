@@ -1,17 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  clearNumUnreads,
-  clearRecentChessMessage,
-  initChat,
   onReceiveMessage,
   receiveMessageOnDifferentChannel,
   receiveFirstMsg,
-  enterChannelWithId,
-  enterEmptyChat,
   onLoadMoreChannels,
   onLoadMoreMessages,
-  createNewChannel,
   sendFirstDirectMessage,
   submitMessage,
   notifyThatMemberLeftChannel,
@@ -36,12 +30,7 @@ import { useAppContext } from 'context';
 Chat.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool,
   channels: PropTypes.array.isRequired,
-  clearNumUnreads: PropTypes.func.isRequired,
-  createNewChannel: PropTypes.func,
   currentChannel: PropTypes.object,
-  enterChannelWithId: PropTypes.func,
-  enterEmptyChat: PropTypes.func,
-  initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool,
   onLoadMoreChannels: PropTypes.func.isRequired,
@@ -66,12 +55,7 @@ Chat.propTypes = {
 function Chat({
   channels,
   channelLoadMoreButtonShown,
-  clearNumUnreads,
   currentChannel,
-  createNewChannel,
-  enterChannelWithId,
-  enterEmptyChat,
-  initChat,
   loaded,
   loadMoreButton,
   onLoadMoreChannels,
@@ -93,6 +77,15 @@ function Chat({
   updateSelectedChannelId
 }) {
   const {
+    chat: {
+      actions: {
+        onClearNumUnreads,
+        onCreateNewChannel,
+        onEnterChannelWithId,
+        onInitChat,
+        onEnterEmptyChat
+      }
+    },
     user: {
       state: { userId, username }
     },
@@ -136,12 +129,12 @@ function Chat({
       if (userId) {
         updateChatLastRead({ channelId: selectedChannelId });
       }
-      clearNumUnreads();
+      onClearNumUnreads();
     }
 
     async function init() {
       const data = await loadChat();
-      initChat(data);
+      onInitChat(data);
     }
     return function cleanUp() {
       mounted.current = false;
@@ -276,7 +269,7 @@ function Chat({
               <CreateNewChannelModal
                 userId={userId}
                 onHide={() => setCreateNewChannelModalShown(false)}
-                onDone={onCreateNewChannel}
+                onDone={handleCreateNewChannel}
               />
             )}
             {userListModalShown && (
@@ -500,14 +493,14 @@ function Chat({
   async function onChannelEnter(id) {
     if (id === 0) {
       setCurrentChannelOnlineMembers([]);
-      return enterEmptyChat();
+      return onEnterEmptyChat();
     }
     updateSelectedChannelId(id);
     const data = await loadChatChannel({ channelId: id });
-    enterChannelWithId({ data });
+    onEnterChannelWithId({ data });
   }
 
-  async function onCreateNewChannel(params) {
+  async function handleCreateNewChannel(params) {
     if (params.selectedUsers.length === 1) {
       const recepient = params.selectedUsers[0];
       const data = await loadDMChannel({ recepient });
@@ -520,7 +513,7 @@ function Chat({
     }
 
     const data = await createNewChat(params);
-    createNewChannel(data);
+    onCreateNewChannel(data);
 
     const users = params.selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', data.message.channelId);
@@ -585,17 +578,11 @@ export default connect(
     subjectId: state.ChatReducer.subject.id
   }),
   {
-    clearNumUnreads,
-    clearRecentChessMessage,
-    initChat,
     onReceiveMessage,
     receiveMessageOnDifferentChannel,
     receiveFirstMsg,
-    enterChannelWithId,
-    enterEmptyChat,
     onLoadMoreChannels,
     onLoadMoreMessages,
-    createNewChannel,
     sendFirstDirectMessage,
     submitMessage,
     notifyThatMemberLeftChannel,

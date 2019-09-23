@@ -1,93 +1,5 @@
 import CHAT from '../constants/Chat';
 
-export const clearChatLoadedState = () => ({
-  type: CHAT.CLEAR_LOADED_STATE
-});
-
-export const clearNumUnreads = () => ({
-  type: CHAT.CLEAR_NUM_UNREADS
-});
-
-export const clearRecentChessMessage = () => ({
-  type: CHAT.CLEAR_RECENT_CHESS_MESSAGE
-});
-
-export const openNewChatTab = ({ user, recepient }) => ({
-  type: CHAT.OPEN_NEW_TAB,
-  user,
-  recepient
-});
-
-export const changeChatSubject = subject => ({
-  type: CHAT.CHANGE_SUBJECT,
-  subject
-});
-
-export const enterChannelWithId = ({ data, showOnTop }) => ({
-  type: CHAT.ENTER_CHANNEL,
-  data,
-  showOnTop
-});
-
-export const clearChatSearchResults = () => ({
-  type: CHAT.CLEAR_CHAT_SEARCH_RESULTS
-});
-
-export const clearSubjectSearchResults = () => ({
-  type: CHAT.CLEAR_SUBJECT_SEARCH_RESULTS
-});
-
-export const clearUserSearchResults = () => ({
-  type: CHAT.CLEAR_USER_SEARCH_RESULTS
-});
-
-export const createNewChannel = data => ({
-  type: CHAT.CREATE_NEW_CHANNEL,
-  data
-});
-
-export const onDeleteMessage = messageId => ({
-  type: CHAT.DELETE_MESSAGE,
-  messageId
-});
-
-export const displayAttachedFile = ({
-  channelId,
-  filePath,
-  userId,
-  username,
-  profilePicId,
-  scrollAtBottom,
-  uploaderAuthLevel
-}) => {
-  return {
-    type: CHAT.DISPLAY_ATTACHED_FILE,
-    channelId,
-    filePath,
-    fileInfo: {
-      userId,
-      username,
-      profilePicId,
-      scrollAtBottom,
-      uploaderAuthLevel
-    }
-  };
-};
-
-export const onEditChannelTitle = params => ({
-  type: CHAT.APPLY_CHANGED_CHANNEL_TITLE,
-  data: params
-});
-
-export const onEditMessage = ({ editedMessage, messageId }) => ({
-  type: CHAT.EDIT_MESSAGE,
-  data: { editedMessage, messageId }
-});
-
-export const enterEmptyChat = () => ({
-  type: CHAT.ENTER_EMPTY_CHAT
-});
-
 export const onGetNumberOfUnreadMessages = numUnreads => ({
   type: CHAT.GET_NUM_UNREAD_MSGS,
   numUnreads
@@ -100,11 +12,6 @@ export const onHideChat = channelId => ({
 
 export const increaseNumberOfUnreadMessages = () => ({
   type: CHAT.INCREASE_NUM_UNREAD_MSGS
-});
-
-export const initChat = data => ({
-  type: CHAT.INIT,
-  data
 });
 
 export const onInviteUsersToChannel = data => ({

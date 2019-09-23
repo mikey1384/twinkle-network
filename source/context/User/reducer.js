@@ -1,11 +1,13 @@
 import { initialUserState } from '../initialStates';
 
+const DEFAULT_PROFILE_THEME = 'logoBlue';
+
 export default function UserReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_DEFAULT_FILTER':
       return {
         ...state,
-        searchFilter: action.filter
+        defaultSearchFilter: action.filter
       };
     case 'CHANGE_PROFILE_THEME':
       return {
@@ -70,6 +72,8 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         ...action.data,
+        defaultSearchFilter: action.data.searchFilter,
+        profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
         isCreator: action.data.userType === 'creator'
       };
     case 'LOAD_USERS': {
@@ -100,8 +104,10 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         ...action.data,
+        defaultSearchFilter: action.data.searchFilter,
         loggedIn: true,
         signinModalShown: false,
+        profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
         isCreator: action.data.userType === 'creator'
       };
     case 'LOGOUT':
@@ -147,6 +153,7 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         ...action.data,
+        profileTheme: DEFAULT_PROFILE_THEME,
         loggedIn: true,
         signinModalShown: false
       };

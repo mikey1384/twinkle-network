@@ -7,10 +7,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
-  clearChatLoadedState,
-  clearRecentChessMessage,
   onGetNumberOfUnreadMessages,
-  initChat,
   increaseNumberOfUnreadMessages,
   onReceiveMessage,
   receiveMessageOnDifferentChannel,
@@ -37,14 +34,11 @@ Header.propTypes = {
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   onCheckVersion: PropTypes.func,
-  clearChatLoadedState: PropTypes.func.isRequired,
-  clearRecentChessMessage: PropTypes.func.isRequired,
   onGetNumberOfUnreadMessages: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
   increaseNumberOfUnreadMessages: PropTypes.func,
-  initChat: PropTypes.func.isRequired,
   location: PropTypes.object,
   notifyChatSubjectChange: PropTypes.func,
   numChatUnreads: PropTypes.number,
@@ -54,7 +48,6 @@ Header.propTypes = {
   onMobileMenuOpen: PropTypes.func,
   onReceiveMessage: PropTypes.func.isRequired,
   receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
-  defaultSearchFilter: PropTypes.string,
   selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
@@ -68,14 +61,11 @@ function Header({
   chatLoading,
   changeSocketStatus,
   onCheckVersion,
-  clearChatLoadedState,
-  clearRecentChessMessage,
   onGetNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
   increaseNumberOfUnreadMessages,
-  initChat,
   location: { pathname },
   notifyChatSubjectChange,
   numChatUnreads,
@@ -85,7 +75,6 @@ function Header({
   onMobileMenuOpen,
   onReceiveMessage,
   receiveMessageOnDifferentChannel,
-  defaultSearchFilter,
   selectedChannelId,
   showUpdateNotice,
   style = {},
@@ -94,8 +83,11 @@ function Header({
   versionMatch
 }) {
   const {
+    chat: {
+      actions: { onClearChatLoadedState, onClearRecentChessMessage, onInitChat }
+    },
     user: {
-      state: { userId, username }
+      state: { defaultSearchFilter, userId, username }
     },
     view: {
       state: { pageVisible }
@@ -148,7 +140,7 @@ function Header({
     async function onConnect() {
       console.log('connected to socket');
       const { section } = getSectionFromPathname(pathname);
-      clearRecentChessMessage();
+      onClearRecentChessMessage();
       changeSocketStatus(true);
       handleCheckVersion();
       if (userId) {
@@ -156,11 +148,11 @@ function Header({
         socket.emit('bind_uid_to_socket', userId, username);
         if (section === 'talk') {
           const data = await loadChat();
-          initChat(data);
+          onInitChat(data);
         }
       }
       if (section !== 'talk') {
-        clearChatLoadedState();
+        onClearChatLoadedState();
       }
 
       async function handleCheckVersion() {
@@ -337,13 +329,10 @@ export default connect(
     changeRankingsLoadedStatus,
     changeSocketStatus,
     onCheckVersion,
-    clearChatLoadedState,
-    clearRecentChessMessage,
     onGetNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
     increaseNumberOfUnreadMessages,
-    initChat,
     notifyChatSubjectChange,
     onReceiveMessage,
     receiveMessageOnDifferentChannel,

@@ -66,7 +66,6 @@
     "react-router-dom": "^5.0.1",
     "react-textarea-autosize": "^7.1.0-1",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.1.0",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "stacktrace-js": "^2.0.0",

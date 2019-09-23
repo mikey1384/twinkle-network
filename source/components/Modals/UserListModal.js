@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
-import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { connect } from 'react-redux';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
@@ -15,7 +15,6 @@ UserListModal.propTypes = {
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
   history: PropTypes.object.isRequired,
-  initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   openDirectMessageChannel: PropTypes.func.isRequired,
@@ -29,7 +28,6 @@ function UserListModal({
   descriptionColor = Color.green(),
   descriptionShown,
   history,
-  initChat,
   loaded,
   onHide,
   openDirectMessageChannel,
@@ -37,6 +35,9 @@ function UserListModal({
   users
 }) {
   const {
+    chat: {
+      actions: { onInitChat }
+    },
     user: {
       state: { userId, username }
     },
@@ -110,7 +111,7 @@ function UserListModal({
       onHide();
       if (!loaded) {
         const initialData = await loadChat();
-        initChat(initialData);
+        onInitChat(initialData);
       }
       const data = await loadDMChannel({ recepient: user });
       openDirectMessageChannel({
@@ -127,5 +128,5 @@ export default connect(
   state => ({
     loaded: state.ChatReducer.loaded
   }),
-  { initChat, openDirectMessageChannel }
+  { openDirectMessageChannel }
 )(withRouter(UserListModal));

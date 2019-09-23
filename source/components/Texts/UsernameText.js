@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { connect } from 'react-redux';
-import { initChat, openDirectMessageChannel } from 'redux/actions/ChatActions';
+import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
 import { useAppContext } from 'context';
@@ -11,7 +11,6 @@ UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
   history: PropTypes.object.isRequired,
-  initChat: PropTypes.func.isRequired,
   loaded: PropTypes.bool,
   style: PropTypes.object,
   openDirectMessageChannel: PropTypes.func.isRequired,
@@ -22,13 +21,15 @@ function UsernameText({
   className,
   color,
   history,
-  initChat,
   loaded,
   openDirectMessageChannel,
   style = {},
   user = {}
 }) {
   const {
+    chat: {
+      actions: { onInitChat }
+    },
     user: {
       state: { userId, username }
     },
@@ -85,7 +86,7 @@ function UsernameText({
     if (user.id !== userId) {
       if (!loaded) {
         const initialData = await loadChat();
-        initChat(initialData);
+        onInitChat(initialData);
       }
       const data = await loadDMChannel({ recepient: user });
       openDirectMessageChannel({
@@ -108,5 +109,5 @@ export default connect(
   state => ({
     loaded: state.ChatReducer.loaded
   }),
-  { initChat, openDirectMessageChannel }
+  { openDirectMessageChannel }
 )(withRouter(UsernameText));

@@ -10,11 +10,9 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 import {
-  clearSubjectSearchResults,
   onLoadChatSubject,
   onReloadChatSubject,
   onUploadChatSubject,
-  changeChatSubject,
   onSearchChatSubject
 } from 'redux/actions/ChatActions';
 import { textIsOverflown } from 'helpers';
@@ -26,9 +24,7 @@ import { css } from 'emotion';
 import { useAppContext } from 'context';
 
 SubjectHeader.propTypes = {
-  clearSubjectSearchResults: PropTypes.func,
   subject: PropTypes.object,
-  changeChatSubject: PropTypes.func,
   onLoadChatSubject: PropTypes.func,
   onReloadChatSubject: PropTypes.func,
   onSearchChatSubject: PropTypes.func,
@@ -37,8 +33,6 @@ SubjectHeader.propTypes = {
 };
 
 function SubjectHeader({
-  changeChatSubject,
-  clearSubjectSearchResults,
   onLoadChatSubject,
   onReloadChatSubject,
   subject: {
@@ -54,6 +48,9 @@ function SubjectHeader({
   onUploadChatSubject
 }) {
   const {
+    chat: {
+      actions: { onChangeChatSubject, onClearSubjectSearchResults }
+    },
     user: {
       state: { profilePicId, userId, username }
     },
@@ -77,9 +74,8 @@ function SubjectHeader({
 
   useEffect(() => {
     function onSubjectChange({ subject }) {
-      changeChatSubject(subject);
+      onChangeChatSubject(subject);
     }
-
     mounted.current = true;
     socket.on('subject_change', onSubjectChange);
     return function cleanUp() {
@@ -188,7 +184,7 @@ function SubjectHeader({
               onChange={handleSearchChatSubject}
               onClickOutSide={() => {
                 setOnEdit(false);
-                clearSubjectSearchResults();
+                onClearSubjectSearchResults();
               }}
               reloadChatSubject={handleReloadChatSubject}
               searchResults={subjectSearchResults}
@@ -217,7 +213,7 @@ function SubjectHeader({
     onReloadChatSubject({ message, subject });
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
-    clearSubjectSearchResults();
+    onClearSubjectSearchResults();
   }
 
   async function handleSearchChatSubject(text) {
@@ -294,8 +290,6 @@ export default connect(
     subjectSearchResults: state.ChatReducer.subjectSearchResults
   }),
   {
-    clearSubjectSearchResults,
-    changeChatSubject,
     onLoadChatSubject,
     onReloadChatSubject,
     onUploadChatSubject,

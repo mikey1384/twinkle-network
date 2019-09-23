@@ -1,3 +1,21 @@
+export const initialChatState = {
+  loaded: false,
+  selectedChannelId: null,
+  currentChannel: {},
+  channels: [],
+  messages: [],
+  userSearchResults: [],
+  chatSearchResults: [],
+  loadMoreMessages: false,
+  channelLoadMoreButton: false,
+  numUnreads: 0,
+  msgsWhileInvisible: 0,
+  recepientId: null,
+  recentChessMessage: undefined,
+  subject: {},
+  subjectSearchResults: [],
+  filesBeingUploaded: {}
+};
 export const initialCommentState = {};
 export const initialContentState = {};
 export const initialExploreState = {
@@ -78,14 +96,15 @@ export const initialUserState = {
   canStar: false,
   canEditPlaylists: false,
   canPinPlaylists: false,
+  defaultSearchFilter: '',
   hideWatched: false,
   isCreator: false,
   loggedIn: false,
   profile: {},
   profileTheme: 'logoBlue',
   profiles: [],
-  defaultSearchFilter: '',
   searchedProfiles: [],
+  signinModalShown: false,
   loadMoreButton: false
 };
 export const initialViewState = {

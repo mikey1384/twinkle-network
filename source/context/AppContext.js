@@ -1,5 +1,7 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
+import ChatActions from './Chat/actions';
+import ChatReducer from './Chat/reducer';
 import ContentActions from './Content/actions';
 import ContentReducer from './Content/reducer';
 import ExploreActions from './Explore/actions';
@@ -20,7 +22,8 @@ import {
   initialHomeState,
   initialProfileState,
   initialUserState,
-  initialViewState
+  initialViewState,
+  initialChatState
 } from './initialStates';
 
 export const AppContext = createContext();
@@ -30,6 +33,7 @@ AppContextProvider.propTypes = {
 };
 
 export function AppContextProvider({ children }) {
+  const [chatState, chatDispatch] = useReducer(ChatReducer, initialChatState);
   const [contentState, contentDispatch] = useReducer(
     ContentReducer,
     initialContentState
@@ -48,6 +52,10 @@ export function AppContextProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
+        chat: {
+          state: chatState,
+          actions: ChatActions(chatDispatch)
+        },
         content: {
           state: contentState,
           actions: ContentActions(contentDispatch)
@@ -83,6 +91,7 @@ export function AppContextProvider({ children }) {
     if (error.response) {
       const { status } = error.response;
       if (status === 401) {
+        localStorage.removeItem('token');
         return userDispatch({
           type: 'LOGOUT_AND_OPEN_SIGNIN_MODAL'
         });
