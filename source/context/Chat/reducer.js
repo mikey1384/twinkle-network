@@ -185,6 +185,26 @@ export default function ChatReducer(state, action) {
         messages: [],
         loadMoreMessages: false
       };
+    case 'GET_NUM_UNREAD_MSGS':
+      return {
+        ...state,
+        numUnreads: action.numUnreads
+      };
+    case 'HIDE_CHAT':
+      return {
+        ...state,
+        channels: state.channels.map(channel => {
+          return {
+            ...channel,
+            isHidden: channel.id === action.channelId
+          };
+        })
+      };
+    case 'INCREASE_NUM_UNREAD_MSGS':
+      return {
+        ...state,
+        numUnreads: state.numUnreads + 1
+      };
     case 'INIT_CHAT': {
       let loadMoreMessages = false;
       let originalNumUnreads = 0;
@@ -228,6 +248,25 @@ export default function ChatReducer(state, action) {
         loadMoreMessages
       };
     }
+    case 'INVITE_USERS_TO_CHANNEL':
+      return {
+        ...state,
+        currentChannel: {
+          ...state.currentChannel,
+          members: state.currentChannel.members.concat(
+            action.data.selectedUsers.map(user => ({
+              userId: user.id,
+              username: user.username
+            }))
+          )
+        },
+        messages: state.messages.concat([action.data.message])
+      };
+    case 'LOAD_SUBJECT':
+      return {
+        ...state,
+        subject: action.subject
+      };
     case 'OPEN_NEW_TAB':
       return {
         ...state,

@@ -62,51 +62,12 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [{ ...action.message }]
       };
-    case CHAT.GET_NUM_UNREAD_MSGS:
-      return {
-        ...state,
-        numUnreads: action.numUnreads
-      };
-    case CHAT.HIDE_CHAT:
-      return {
-        ...state,
-        channels: state.channels.map(channel => {
-          return {
-            ...channel,
-            isHidden: channel.id === action.channelId
-          };
-        })
-      };
-    case CHAT.INCREASE_NUM_UNREAD_MSGS:
-      return {
-        ...state,
-        numUnreads: state.numUnreads + 1
-      };
-    case CHAT.INVITE_USERS_TO_CHANNEL:
-      return {
-        ...state,
-        currentChannel: {
-          ...state.currentChannel,
-          members: state.currentChannel.members.concat(
-            action.data.selectedUsers.map(user => ({
-              userId: user.id,
-              username: user.username
-            }))
-          )
-        },
-        messages: state.messages.concat([action.data.message])
-      };
     case CHAT.LEAVE_CHANNEL:
       return {
         ...state,
         channels: state.channels.filter(
           channel => channel.id !== action.channelId
         )
-      };
-    case CHAT.LOAD_SUBJECT:
-      return {
-        ...state,
-        subject: action.subject
       };
     case CHAT.LOAD_MORE_CHANNELS: {
       let channelLoadMoreButton = false;

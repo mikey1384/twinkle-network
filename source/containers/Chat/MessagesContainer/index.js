@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { onLeaveChannel, onHideChat } from 'redux/actions/ChatActions';
+import { onLeaveChannel } from 'redux/actions/ChatActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
@@ -65,7 +65,12 @@ function MessagesContainer({
 }) {
   const {
     chat: {
-      actions: { onDeleteMessage, onEditChannelTitle, onEnterChannelWithId }
+      actions: {
+        onDeleteMessage,
+        onEditChannelTitle,
+        onEnterChannelWithId,
+        onHideChat
+      }
     },
     user: {
       state: { authLevel, profilePicId, userId, username }

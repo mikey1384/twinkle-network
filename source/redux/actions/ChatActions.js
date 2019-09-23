@@ -1,29 +1,5 @@
 import CHAT from '../constants/Chat';
 
-export const onGetNumberOfUnreadMessages = numUnreads => ({
-  type: CHAT.GET_NUM_UNREAD_MSGS,
-  numUnreads
-});
-
-export const onHideChat = channelId => ({
-  type: CHAT.HIDE_CHAT,
-  channelId
-});
-
-export const increaseNumberOfUnreadMessages = () => ({
-  type: CHAT.INCREASE_NUM_UNREAD_MSGS
-});
-
-export const onInviteUsersToChannel = data => ({
-  type: CHAT.INVITE_USERS_TO_CHANNEL,
-  data
-});
-
-export const onLoadChatSubject = data => ({
-  type: CHAT.LOAD_SUBJECT,
-  subject: data
-});
-
 export const onLoadMoreChannels = data => ({
   type: CHAT.LOAD_MORE_CHANNELS,
   data

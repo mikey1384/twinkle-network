@@ -94,10 +94,39 @@ export default function ChatActions(dispatch) {
         type: 'ENTER_EMPTY_CHAT'
       });
     },
+    onGetNumberOfUnreadMessages(numUnreads) {
+      return dispatch({
+        type: 'GET_NUM_UNREAD_MSGS',
+        numUnreads
+      });
+    },
+    onHideChat(channelId) {
+      return dispatch({
+        type: 'HIDE_CHAT',
+        channelId
+      });
+    },
+    onIncreaseNumberOfUnreadMessages() {
+      return dispatch({
+        type: 'INCREASE_NUM_UNREAD_MSGS'
+      });
+    },
     onInitChat(data) {
       return dispatch({
         type: 'INIT_CHAT',
         data
+      });
+    },
+    onInviteUsersToChannel(data) {
+      return dispatch({
+        type: 'INVITE_USERS_TO_CHANNEL',
+        data
+      });
+    },
+    onLoadChatSubject(data) {
+      return dispatch({
+        type: 'LOAD_SUBJECT',
+        subject: data
       });
     },
     onOpenNewChatTab({ user, recepient }) {

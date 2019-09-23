@@ -7,8 +7,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
-  onGetNumberOfUnreadMessages,
-  increaseNumberOfUnreadMessages,
   onReceiveMessage,
   receiveMessageOnDifferentChannel,
   resetChat,
@@ -34,11 +32,9 @@ Header.propTypes = {
   changeRankingsLoadedStatus: PropTypes.func.isRequired,
   changeSocketStatus: PropTypes.func,
   onCheckVersion: PropTypes.func,
-  onGetNumberOfUnreadMessages: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   increaseNumNewPosts: PropTypes.func,
   increaseNumNewNotis: PropTypes.func,
-  increaseNumberOfUnreadMessages: PropTypes.func,
   location: PropTypes.object,
   notifyChatSubjectChange: PropTypes.func,
   numChatUnreads: PropTypes.number,
@@ -61,11 +57,9 @@ function Header({
   chatLoading,
   changeSocketStatus,
   onCheckVersion,
-  onGetNumberOfUnreadMessages,
   history,
   increaseNumNewPosts,
   increaseNumNewNotis,
-  increaseNumberOfUnreadMessages,
   location: { pathname },
   notifyChatSubjectChange,
   numChatUnreads,
@@ -84,7 +78,13 @@ function Header({
 }) {
   const {
     chat: {
-      actions: { onClearChatLoadedState, onClearRecentChessMessage, onInitChat }
+      actions: {
+        onClearChatLoadedState,
+        onClearRecentChessMessage,
+        onGetNumberOfUnreadMessages,
+        onIncreaseNumberOfUnreadMessages,
+        onInitChat
+      }
     },
     user: {
       state: { defaultSearchFilter, userId, username }
@@ -176,7 +176,7 @@ function Header({
         message.userId !== userId &&
         section !== 'talk'
       ) {
-        increaseNumberOfUnreadMessages();
+        onIncreaseNumberOfUnreadMessages();
       }
 
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
@@ -329,10 +329,8 @@ export default connect(
     changeRankingsLoadedStatus,
     changeSocketStatus,
     onCheckVersion,
-    onGetNumberOfUnreadMessages,
     increaseNumNewPosts,
     increaseNumNewNotis,
-    increaseNumberOfUnreadMessages,
     notifyChatSubjectChange,
     onReceiveMessage,
     receiveMessageOnDifferentChannel,

@@ -10,7 +10,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { connect } from 'react-redux';
 import {
-  onLoadChatSubject,
   onReloadChatSubject,
   onUploadChatSubject,
   onSearchChatSubject
@@ -25,7 +24,6 @@ import { useAppContext } from 'context';
 
 SubjectHeader.propTypes = {
   subject: PropTypes.object,
-  onLoadChatSubject: PropTypes.func,
   onReloadChatSubject: PropTypes.func,
   onSearchChatSubject: PropTypes.func,
   subjectSearchResults: PropTypes.array,
@@ -33,7 +31,6 @@ SubjectHeader.propTypes = {
 };
 
 function SubjectHeader({
-  onLoadChatSubject,
   onReloadChatSubject,
   subject: {
     content = defaultChatSubject,
@@ -49,7 +46,11 @@ function SubjectHeader({
 }) {
   const {
     chat: {
-      actions: { onChangeChatSubject, onClearSubjectSearchResults }
+      actions: {
+        onChangeChatSubject,
+        onClearSubjectSearchResults,
+        onLoadChatSubject
+      }
     },
     user: {
       state: { profilePicId, userId, username }
@@ -290,7 +291,6 @@ export default connect(
     subjectSearchResults: state.ChatReducer.subjectSearchResults
   }),
   {
-    onLoadChatSubject,
     onReloadChatSubject,
     onUploadChatSubject,
     onSearchChatSubject

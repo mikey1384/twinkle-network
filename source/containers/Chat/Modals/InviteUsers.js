@@ -4,15 +4,11 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import { connect } from 'react-redux';
-import {
-  onSearchUserToInvite,
-  onInviteUsersToChannel
-} from 'redux/actions/ChatActions';
+import { onSearchUserToInvite } from 'redux/actions/ChatActions';
 import { useAppContext } from 'context';
 
 InviteUsersModal.propTypes = {
   currentChannel: PropTypes.object.isRequired,
-  onInviteUsersToChannel: PropTypes.func.isRequired,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number.isRequired,
@@ -21,7 +17,6 @@ InviteUsersModal.propTypes = {
 };
 
 function InviteUsersModal({
-  onInviteUsersToChannel,
   onSearchUserToInvite,
   searchResults,
   selectedChannelId,
@@ -31,7 +26,7 @@ function InviteUsersModal({
 }) {
   const {
     chat: {
-      actions: { onClearUserSearchResults }
+      actions: { onClearUserSearchResults, onInviteUsersToChannel }
     },
     requestHelpers: { inviteUsersToChannel, searchUserToInvite }
   } = useAppContext();
@@ -105,7 +100,6 @@ export default connect(
     searchResults: state.ChatReducer.userSearchResults
   }),
   {
-    onSearchUserToInvite,
-    onInviteUsersToChannel
+    onSearchUserToInvite
   }
 )(InviteUsersModal);
