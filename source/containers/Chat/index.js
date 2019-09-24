@@ -1,15 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  onReceiveMessage,
-  receiveMessageOnDifferentChannel,
   receiveFirstMsg,
-  onLoadMoreChannels,
-  onLoadMoreMessages,
   sendFirstDirectMessage,
   submitMessage,
-  notifyThatMemberLeftChannel,
-  openDirectMessageChannel,
   updateChessMoveViewTimeStamp,
   updateSelectedChannelId
 } from 'redux/actions/ChatActions';
@@ -33,16 +27,10 @@ Chat.propTypes = {
   currentChannel: PropTypes.object,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool,
-  onLoadMoreChannels: PropTypes.func.isRequired,
-  onLoadMoreMessages: PropTypes.func,
   messages: PropTypes.array,
-  notifyThatMemberLeftChannel: PropTypes.func,
   onFileUpload: PropTypes.func,
-  openDirectMessageChannel: PropTypes.func,
   profilePicId: PropTypes.number,
   recepientId: PropTypes.number,
-  onReceiveMessage: PropTypes.func,
-  receiveMessageOnDifferentChannel: PropTypes.func,
   receiveFirstMsg: PropTypes.func,
   selectedChannelId: PropTypes.number,
   sendFirstDirectMessage: PropTypes.func,
@@ -58,17 +46,11 @@ function Chat({
   currentChannel,
   loaded,
   loadMoreButton,
-  onLoadMoreChannels,
-  onLoadMoreMessages,
   messages,
-  notifyThatMemberLeftChannel,
   onFileUpload,
-  openDirectMessageChannel,
   recepientId,
   profilePicId,
   receiveFirstMsg,
-  onReceiveMessage,
-  receiveMessageOnDifferentChannel,
   selectedChannelId,
   sendFirstDirectMessage,
   subjectId,
@@ -83,7 +65,13 @@ function Chat({
         onCreateNewChannel,
         onEnterChannelWithId,
         onInitChat,
-        onEnterEmptyChat
+        onEnterEmptyChat,
+        onLoadMoreChannels,
+        onLoadMoreMessages,
+        onNotifyThatMemberLeftChannel,
+        onOpenDirectMessageChannel,
+        onReceiveMessage,
+        onReceiveMessageOnDifferentChannel
       }
     },
     user: {
@@ -190,7 +178,7 @@ function Chat({
       if (forCurrentChannel) {
         if (data.leftChannel) {
           const { userId, username, profilePicId } = data.leftChannel;
-          notifyThatMemberLeftChannel({
+          onNotifyThatMemberLeftChannel({
             channelId: data.channelId,
             userId,
             username,
@@ -504,7 +492,7 @@ function Chat({
     if (params.selectedUsers.length === 1) {
       const recepient = params.selectedUsers[0];
       const data = await loadDMChannel({ recepient });
-      openDirectMessageChannel({
+      onOpenDirectMessageChannel({
         user: { id: userId, username },
         recepient,
         channelData: data
@@ -528,7 +516,7 @@ function Chat({
       onReceiveMessage({ message, pageVisible });
     }
     if (!messageIsForCurrentChannel) {
-      receiveMessageOnDifferentChannel({
+      onReceiveMessageOnDifferentChannel({
         senderIsNotTheUser,
         pageVisible,
         channel: {
@@ -578,15 +566,9 @@ export default connect(
     subjectId: state.ChatReducer.subject.id
   }),
   {
-    onReceiveMessage,
-    receiveMessageOnDifferentChannel,
     receiveFirstMsg,
-    onLoadMoreChannels,
-    onLoadMoreMessages,
     sendFirstDirectMessage,
     submitMessage,
-    notifyThatMemberLeftChannel,
-    openDirectMessageChannel,
     updateChessMoveViewTimeStamp,
     updateSelectedChannelId
   }

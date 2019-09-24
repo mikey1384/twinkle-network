@@ -7,8 +7,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
-  onReceiveMessage,
-  receiveMessageOnDifferentChannel,
   resetChat,
   updateApiServerToS3Progress
 } from 'redux/actions/ChatActions';
@@ -42,8 +40,6 @@ Header.propTypes = {
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
-  onReceiveMessage: PropTypes.func.isRequired,
-  receiveMessageOnDifferentChannel: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
@@ -67,8 +63,6 @@ function Header({
   numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
-  onReceiveMessage,
-  receiveMessageOnDifferentChannel,
   selectedChannelId,
   showUpdateNotice,
   style = {},
@@ -83,7 +77,9 @@ function Header({
         onClearRecentChessMessage,
         onGetNumberOfUnreadMessages,
         onIncreaseNumberOfUnreadMessages,
-        onInitChat
+        onInitChat,
+        onReceiveMessage,
+        onReceiveMessageOnDifferentChannel
       }
     },
     user: {
@@ -186,7 +182,7 @@ function Header({
         onReceiveMessage({ message, pageVisible });
       }
       if (!messageIsForCurrentChannel) {
-        receiveMessageOnDifferentChannel({
+        onReceiveMessageOnDifferentChannel({
           channel,
           senderIsNotTheUser,
           pageVisible
@@ -332,8 +328,6 @@ export default connect(
     increaseNumNewPosts,
     increaseNumNewNotis,
     notifyChatSubjectChange,
-    onReceiveMessage,
-    receiveMessageOnDifferentChannel,
     resetChat,
     updateApiServerToS3Progress
   }

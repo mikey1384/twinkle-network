@@ -123,10 +123,42 @@ export default function ChatActions(dispatch) {
         data
       });
     },
+    onLeaveChannel(channelId) {
+      return dispatch({
+        type: 'LEAVE_CHANNEL',
+        channelId
+      });
+    },
     onLoadChatSubject(data) {
       return dispatch({
         type: 'LOAD_SUBJECT',
         subject: data
+      });
+    },
+    onLoadMoreChannels(data) {
+      return dispatch({
+        type: 'LOAD_MORE_CHANNELS',
+        data
+      });
+    },
+    onLoadMoreMessages(data) {
+      return dispatch({
+        type: 'LOAD_MORE_MESSAGES',
+        data
+      });
+    },
+    onNotifyThatMemberLeftChannel(data) {
+      return dispatch({
+        type: 'NOTIFY_MEMBER_LEFT',
+        data
+      });
+    },
+    onOpenDirectMessageChannel({ user, recepient, channelData }) {
+      return dispatch({
+        type: 'OPEN_DM',
+        user,
+        recepient,
+        ...channelData
       });
     },
     onOpenNewChatTab({ user, recepient }) {
@@ -134,6 +166,55 @@ export default function ChatActions(dispatch) {
         type: 'OPEN_NEW_TAB',
         user,
         recepient
+      });
+    },
+    onPostFileUploadStatus({
+      channelId,
+      content,
+      fileName,
+      filePath,
+      fileToUpload
+    }) {
+      return dispatch({
+        type: 'POST_FILE_UPLOAD_STATUS',
+        channelId,
+        file: {
+          content,
+          fileName,
+          filePath,
+          fileToUpload
+        }
+      });
+    },
+    onPostUploadComplete({ channelId, messageId, path, result }) {
+      return dispatch({
+        type: 'POST_UPLOAD_COMPLETE',
+        channelId,
+        messageId,
+        path,
+        result
+      });
+    },
+    onReceiveMessage({ pageVisible, message }) {
+      return dispatch({
+        type: 'RECEIVE_MESSAGE',
+        pageVisible,
+        message: {
+          ...message,
+          timeStamp: Math.floor(Date.now() / 1000)
+        }
+      });
+    },
+    onReceiveMessageOnDifferentChannel({
+      channel,
+      senderIsNotTheUser,
+      pageVisible
+    }) {
+      return dispatch({
+        type: 'RECEIVE_MSG_ON_DIFF_CHANNEL',
+        channel,
+        senderIsNotTheUser,
+        pageVisible
       });
     }
   };

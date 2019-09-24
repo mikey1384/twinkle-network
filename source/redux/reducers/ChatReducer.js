@@ -62,121 +62,6 @@ export default function ChatReducer(state = defaultState, action) {
         },
         messages: [{ ...action.message }]
       };
-    case CHAT.LEAVE_CHANNEL:
-      return {
-        ...state,
-        channels: state.channels.filter(
-          channel => channel.id !== action.channelId
-        )
-      };
-    case CHAT.LOAD_MORE_CHANNELS: {
-      let channelLoadMoreButton = false;
-      if (action.data.length > 20) {
-        action.data.pop();
-        channelLoadMoreButton = true;
-      }
-      return {
-        ...state,
-        channelLoadMoreButton,
-        channels: state.channels.concat(action.data)
-      };
-    }
-    case CHAT.LOAD_MORE_MESSAGES: {
-      let loadMoreMessages = false;
-      if (action.data.length === 21) {
-        action.data.pop();
-        loadMoreMessages = true;
-      }
-      action.data.reverse();
-      return {
-        ...state,
-        loadMoreMessages,
-        messages: action.data.concat(state.messages)
-      };
-    }
-    case CHAT.NOTIFY_MEMBER_LEFT:
-      let timeStamp = Math.floor(Date.now() / 1000);
-      return {
-        ...state,
-        channels: state.channels.map(channel =>
-          channel.id === action.data.channelId
-            ? {
-                ...channel,
-                lastUpdate: timeStamp,
-                lastMessage: {
-                  content: 'Left the channel',
-                  sender: {
-                    id: action.data.userId,
-                    username: action.data.username
-                  }
-                },
-                numUnreads: 0
-              }
-            : channel
-        ),
-        currentChannel: {
-          ...state.currentChannel,
-          members: state.currentChannel.members.filter(
-            member => member.userId !== action.data.userId
-          )
-        },
-        messages: state.messages.concat([
-          {
-            id: null,
-            channelId: action.data.channelId,
-            content: 'Left the channel',
-            timeStamp: timeStamp,
-            isNotification: true,
-            username: action.data.username,
-            userId: action.data.userId,
-            profilePicId: action.data.profilePicId
-          }
-        ])
-      };
-    case CHAT.OPEN_DM: {
-      let loadMoreMessages = false;
-      if (action.messages.length > 20) {
-        action.messages.pop();
-        loadMoreMessages = true;
-      }
-      return {
-        ...state,
-        loaded: true,
-        recentChessMessage: undefined,
-        subject: {},
-        channels: [
-          {
-            id: action.channelId,
-            channelName: action.recepient.username,
-            lastMessage: action.lastMessage,
-            lastUpdate: action.lastUpdate,
-            members: [action.user, action.recepient],
-            numUnreads: 0
-          }
-        ].concat(
-          state.channels.filter(channel => channel.id !== action.channelId)
-        ),
-        selectedChannelId: action.channelId,
-        currentChannel: {
-          id: action.channelId,
-          twoPeople: true,
-          members: [action.user, action.recepient]
-        },
-        messages: action.messages.reverse(),
-        loadMoreMessages,
-        recepientId: action.recepient.id
-      };
-    }
-    case CHAT.POST_FILE_UPLOAD_STATUS:
-      return {
-        ...state,
-        filesBeingUploaded: {
-          ...state.filesBeingUploaded,
-          [action.channelId]: state.filesBeingUploaded[
-            action.channelId
-          ]?.concat(action.file) || [action.file]
-        }
-      };
     case CHAT.RECEIVE_FIRST_MSG:
       return {
         ...state,
@@ -230,55 +115,6 @@ export default function ChatReducer(state = defaultState, action) {
           state.channels.filter((channel, index) =>
             action.duplicate ? index !== 0 : true
           )
-        )
-      };
-    case CHAT.RECEIVE_MESSAGE:
-      return {
-        ...state,
-        numUnreads: action.pageVisible
-          ? state.numUnreads
-          : state.numUnreads + 1,
-        msgsWhileInvisible: action.pageVisible
-          ? 0
-          : state.msgsWhileInvisible + 1,
-        messages: state.messages.concat([action.message]),
-        channels: state.channels.map(channel => {
-          if (channel.id === action.message.channelId) {
-            return {
-              ...channel,
-              lastMessage: {
-                fileName: action.message.fileName || '',
-                gameWinnerId: action.message.gameWinnerId,
-                content: action.message.content,
-                sender: {
-                  id: action.message.userId,
-                  username: action.message.username
-                }
-              },
-              lastUpdate: action.message.timeStamp,
-              numUnreads: 0,
-              isHidden: false
-            };
-          }
-          return channel;
-        })
-      };
-    case CHAT.RECEIVE_MSG_ON_DIFF_CHANNEL:
-      for (let i = 0; i < state.channels.length; i++) {
-        if (state.channels[i].id === action.channel.id) {
-          action.channel.numUnreads = state.channels[i].numUnreads + 1;
-        }
-      }
-      return {
-        ...state,
-        numUnreads: action.pageVisible
-          ? state.numUnreads
-          : state.numUnreads + 1,
-        msgsWhileInvisible: action.pageVisible
-          ? 0
-          : state.msgsWhileInvisible + 1,
-        channels: [action.channel].concat(
-          state.channels.filter(channel => channel.id !== action.channel.id)
         )
       };
     case CHAT.RELOAD_SUBJECT:
@@ -356,23 +192,6 @@ export default function ChatReducer(state = defaultState, action) {
             ...action.data.subject
           }
         ])
-      };
-    case CHAT.POST_UPLOAD_COMPLETE:
-      return {
-        ...state,
-        filesBeingUploaded: {
-          ...state.filesBeingUploaded,
-          [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
-            file =>
-              file.filePath === action.path
-                ? {
-                    ...file,
-                    id: action.messageId,
-                    uploadComplete: action.result
-                  }
-                : file
-          )
-        }
       };
     case CHAT.RESET:
       return defaultState;

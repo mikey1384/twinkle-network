@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { onLeaveChannel } from 'redux/actions/ChatActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
@@ -24,7 +23,6 @@ MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
-  onLeaveChannel: PropTypes.func.isRequired,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
@@ -46,7 +44,6 @@ function MessagesContainer({
   channelName,
   chessCountdownObj,
   chessOpponent,
-  onLeaveChannel,
   loadMoreButton,
   loading,
   loadMoreMessages,
@@ -69,7 +66,8 @@ function MessagesContainer({
         onDeleteMessage,
         onEditChannelTitle,
         onEnterChannelWithId,
-        onHideChat
+        onHideChat,
+        onLeaveChannel
       }
     },
     user: {
@@ -522,9 +520,6 @@ function MessagesContainer({
   }
 }
 
-export default connect(
-  state => ({
-    socketConnected: state.NotiReducer.socketConnected
-  }),
-  { onLeaveChannel }
-)(MessagesContainer);
+export default connect(state => ({
+  socketConnected: state.NotiReducer.socketConnected
+}))(MessagesContainer);

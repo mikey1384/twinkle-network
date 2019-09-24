@@ -10,8 +10,6 @@ import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
-  postFileUploadStatus,
-  postUploadComplete,
   sendFirstDirectMessage,
   updateClientToApiServerProgress
 } from 'redux/actions/ChatActions';
@@ -36,8 +34,6 @@ const Chat = React.lazy(() => import('containers/Chat'));
 App.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
-  postFileUploadStatus: PropTypes.func.isRequired,
-  postUploadComplete: PropTypes.func.isRequired,
   sendFirstDirectMessage: PropTypes.func.isRequired,
   updateClientToApiServerProgress: PropTypes.func.isRequired,
   updateDetail: PropTypes.string
@@ -46,13 +42,14 @@ App.propTypes = {
 function App({
   location,
   history,
-  postFileUploadStatus,
-  postUploadComplete,
   sendFirstDirectMessage,
   updateClientToApiServerProgress,
   updateDetail
 }) {
   const {
+    chat: {
+      actions: { onPostFileUploadStatus, onPostUploadComplete }
+    },
     user: {
       state: { signinModalShown, username },
       actions: { onCloseSigninModal, onInitSession, onLogout }
@@ -246,7 +243,7 @@ function App({
     recepientId,
     subjectId
   }) {
-    postFileUploadStatus({
+    onPostFileUploadStatus({
       channelId,
       content,
       fileName,
@@ -268,7 +265,7 @@ function App({
       socket.emit('join_chat_channel', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
     }
-    postUploadComplete({
+    onPostUploadComplete({
       path: filePath,
       channelId,
       messageId,
@@ -289,8 +286,6 @@ export default connect(
     updateDetail: state.NotiReducer.updateDetail
   }),
   {
-    postFileUploadStatus,
-    postUploadComplete,
     sendFirstDirectMessage,
     updateClientToApiServerProgress
   }

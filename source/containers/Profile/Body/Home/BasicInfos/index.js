@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import InfoEditForm from './InfoEditForm';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
-import { openDirectMessageChannel } from 'redux/actions/ChatActions';
 import { withRouter } from 'react-router';
 import { useAppContext } from 'context';
 
@@ -18,13 +16,11 @@ BasicInfos.propTypes = {
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
   history: PropTypes.object,
-  loaded: PropTypes.bool,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
   lastActive: PropTypes.string,
   myId: PropTypes.number,
-  openDirectMessageChannel: PropTypes.func.isRequired,
   selectedTheme: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
@@ -39,12 +35,10 @@ function BasicInfos({
   email,
   emailVerified,
   history,
-  loaded,
   online,
   joinDate,
   lastActive,
   myId,
-  openDirectMessageChannel,
   profileTheme,
   selectedTheme,
   userId,
@@ -56,7 +50,8 @@ function BasicInfos({
 }) {
   const {
     chat: {
-      actions: { onInitChat }
+      state: { loaded },
+      actions: { onInitChat, onOpenDirectMessageChannel }
     },
     user: {
       actions: { onUpdateProfileInfo }
@@ -290,7 +285,7 @@ function BasicInfos({
     const data = await loadDMChannel({
       recepient: { id: userId, username }
     });
-    openDirectMessageChannel({
+    onOpenDirectMessageChannel({
       user: { id: myId },
       recepient: { id: userId, username },
       channelData: data
@@ -346,9 +341,4 @@ function BasicInfos({
   }
 }
 
-export default connect(
-  state => ({
-    loaded: state.ChatReducer.loaded
-  }),
-  { openDirectMessageChannel }
-)(withRouter(BasicInfos));
+export default withRouter(BasicInfos);
