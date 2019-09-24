@@ -19,6 +19,11 @@ export const initialChatState = {
 export const initialCommentState = {};
 export const initialContentState = {};
 export const initialExploreState = {
+  links: {
+    loaded: false,
+    links: [],
+    loadMoreLinksButtonShown: false
+  },
   subjects: {
     featured: [],
     loaded: false
@@ -61,6 +66,25 @@ export const initialHomeState = {
   feeds: [],
   loadMoreButton: false,
   subFilter: 'all'
+};
+export const initialNotiState = {
+  versionMatch: true,
+  notifications: [],
+  rewards: [],
+  currentChatSubject: {},
+  loadMore: {
+    notifications: false,
+    rewards: false
+  },
+  numNewNotis: 0,
+  numNewPosts: 0,
+  rankingsLoaded: false,
+  allRanks: [],
+  top30s: [],
+  socketConnected: false,
+  rankModifier: 0,
+  totalRewardAmount: 0,
+  updateDetail: ''
 };
 export const initialProfileState = {
   notables: {

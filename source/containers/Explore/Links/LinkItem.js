@@ -6,8 +6,6 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Link } from 'react-router-dom';
-import { onEditTitle, onDeleteLink } from 'redux/actions/LinkActions';
-import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
@@ -17,8 +15,6 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 LinkItem.propTypes = {
-  onDeleteLink: PropTypes.func.isRequired,
-  onEditTitle: PropTypes.func.isRequired,
   link: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
@@ -36,7 +32,7 @@ LinkItem.propTypes = {
 const API_URL = `${URL}/content`;
 const fallbackImage = '/img/link.png';
 
-function LinkItem({
+export default function LinkItem({
   link: {
     id,
     numComments,
@@ -47,11 +43,12 @@ function LinkItem({
     title,
     timeStamp,
     uploader
-  },
-  onDeleteLink,
-  onEditTitle
+  }
 }) {
   const {
+    explore: {
+      actions: { onDeleteLink, onEditLinkTitle }
+    },
     user: {
       state: { authLevel, canDelete, canEdit, userId }
     },
@@ -253,7 +250,7 @@ function LinkItem({
 
   async function handleEditedTitleSubmit(text) {
     await editContent({ editedTitle: text, contentId: id, contentType: 'url' });
-    onEditTitle({ title: text, id });
+    onEditLinkTitle({ title: text, id });
     setOnEdit(false);
   }
 
@@ -261,8 +258,3 @@ function LinkItem({
     setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
   }
 }
-
-export default connect(
-  null,
-  { onDeleteLink, onEditTitle }
-)(LinkItem);

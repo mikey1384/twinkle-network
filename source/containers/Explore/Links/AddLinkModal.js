@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { onUploadLink } from 'redux/actions/LinkActions';
-import { connect } from 'react-redux';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import {
@@ -17,12 +15,14 @@ import {
 import { useAppContext } from 'context';
 
 AddLinkModal.propTypes = {
-  onHide: PropTypes.func,
-  onUploadLink: PropTypes.func
+  onHide: PropTypes.func
 };
 
-function AddLinkModal({ onHide, onUploadLink }) {
+export default function AddLinkModal({ onHide }) {
   const {
+    explore: {
+      actions: { onUploadLink }
+    },
     requestHelpers: { uploadContent }
   } = useAppContext();
   const [urlError, setUrlError] = useState('');
@@ -167,8 +167,3 @@ function AddLinkModal({ onHide, onUploadLink }) {
     return urlExceedsCharLimit?.style;
   }
 }
-
-export default connect(
-  null,
-  { onUploadLink }
-)(AddLinkModal);

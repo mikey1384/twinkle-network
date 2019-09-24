@@ -8,6 +8,8 @@ import ExploreActions from './Explore/actions';
 import ExploreReducer from './Explore/reducer';
 import HomeActions from './Home/actions';
 import HomeReducer from './Home/reducer';
+import NotiActions from './Notification/actions';
+import NotiReducer from './Notification/reducer';
 import ProfileActions from './Profile/actions';
 import ProfileReducer from './Profile/reducer';
 import UserActions from './User/actions';
@@ -20,6 +22,7 @@ import {
   initialContentState,
   initialExploreState,
   initialHomeState,
+  initialNotiState,
   initialProfileState,
   initialUserState,
   initialViewState,
@@ -43,6 +46,7 @@ export function AppContextProvider({ children }) {
     initialExploreState
   );
   const [homeState, homeDispatch] = useReducer(HomeReducer, initialHomeState);
+  const [notiState, notiDispatch] = useReducer(NotiReducer, initialNotiState);
   const [profileState, profileDispatch] = useReducer(
     ProfileReducer,
     initialProfileState
@@ -67,6 +71,10 @@ export function AppContextProvider({ children }) {
         home: {
           state: homeState,
           actions: HomeActions(homeDispatch)
+        },
+        notification: {
+          state: notiState,
+          actions: NotiActions(notiDispatch)
         },
         profile: {
           state: profileState,

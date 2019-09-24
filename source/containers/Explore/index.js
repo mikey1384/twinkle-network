@@ -10,7 +10,6 @@ import Search from './Search';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
-import { clearLinksLoaded } from 'redux/actions/LinkActions';
 import {
   clearVideosLoaded,
   openAddPlaylistModal,
@@ -22,16 +21,15 @@ const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
 Explore.propTypes = {
-  clearLinksLoaded: PropTypes.func.isRequired,
   clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
-function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
+function Explore({ clearVideosLoaded, history, location }) {
   const {
     explore: {
-      actions: { onReloadSubjects }
+      actions: { onClearLinksLoaded, onReloadSubjects }
     }
   } = useAppContext();
   const mounted = useRef(true);
@@ -42,7 +40,7 @@ function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
     socket.on('disconnect', onDisconnect);
     function onConnect() {
       if (disconnected.current && mounted.current) {
-        clearLinksLoaded();
+        onClearLinksLoaded();
         onReloadSubjects();
         clearVideosLoaded();
       }
@@ -169,7 +167,6 @@ function Explore({ clearLinksLoaded, clearVideosLoaded, history, location }) {
 export default connect(
   null,
   {
-    clearLinksLoaded,
     clearVideosLoaded,
     openAddPlaylistModal,
     openAddVideoModal

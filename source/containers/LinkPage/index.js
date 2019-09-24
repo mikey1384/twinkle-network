@@ -14,12 +14,6 @@ import Icon from 'components/Icon';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 import Description from './Description';
-import {
-  editLinkPage,
-  likeLink,
-  updateNumComments
-} from 'redux/actions/LinkActions';
-import { connect } from 'react-redux';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
@@ -27,22 +21,17 @@ import { processedURL } from 'helpers/stringHelpers';
 import { useAppContext } from 'context';
 
 LinkPage.propTypes = {
-  editLinkPage: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  likeLink: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  updateNumComments: PropTypes.func.isRequired
+  match: PropTypes.object.isRequired
 };
 
-function LinkPage({
+export default function LinkPage({
   history,
-  likeLink,
   location,
   match: {
     params: { linkId }
-  },
-  updateNumComments
+  }
 }) {
   const {
     content: {
@@ -69,6 +58,9 @@ function LinkPage({
         onUploadReply,
         onUploadSubject
       }
+    },
+    explore: {
+      actions: { onEditLinkPage, onLikeLink, onUpdateNumLinkComments }
     },
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
@@ -371,7 +363,7 @@ function LinkPage({
 
   function handleDeleteComment(data) {
     onDeleteComment(data);
-    updateNumComments({
+    onUpdateNumLinkComments({
       id,
       updateType: 'decrease'
     });
@@ -390,17 +382,17 @@ function LinkPage({
       title,
       description
     });
-    editLinkPage({ id: Number(id), title, content: processedURL(content) });
+    onEditLinkPage({ id: Number(id), title, content: processedURL(content) });
   }
 
   function handleLikeLink(likes) {
     onLikeContent({ likes, contentType: 'url', contentId: linkId });
-    likeLink({ likes, id });
+    onLikeLink({ likes, id });
   }
 
   function handleUploadComment(params) {
     onUploadComment(params);
-    updateNumComments({
+    onUpdateNumLinkComments({
       id,
       updateType: 'increase'
     });
@@ -408,16 +400,9 @@ function LinkPage({
 
   function handleUploadReply(data) {
     onUploadReply(data);
-    updateNumComments({
+    onUpdateNumLinkComments({
       id,
       updateType: 'increase'
     });
   }
 }
-
-export default connect(
-  state => ({
-    pageProps: state.LinkReducer.linkPage
-  }),
-  { editLinkPage, likeLink, updateNumComments }
-)(LinkPage);

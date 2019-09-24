@@ -6,27 +6,20 @@ import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
 import { connect } from 'react-redux';
-import { fetchLinks, fetchMoreLinks } from 'redux/actions/LinkActions';
 import { useAppContext } from 'context';
 
 Links.propTypes = {
-  fetchLinks: PropTypes.func.isRequired,
-  fetchMoreLinks: PropTypes.func.isRequired,
-  links: PropTypes.array.isRequired,
-  loaded: PropTypes.bool.isRequired,
-  loadMoreLinksButtonShown: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired
 };
 
-function Links({
-  fetchLinks,
-  fetchMoreLinks,
-  links,
-  loaded,
-  loadMoreLinksButtonShown,
-  location
-}) {
+function Links({ location }) {
   const {
+    explore: {
+      state: {
+        links: { loaded, links, loadMoreLinksButtonShown }
+      },
+      actions: { onFetchLinks, onFetchMoreLinks }
+    },
     view: {
       state: { scrollPositions },
       actions: { onRecordScrollPosition }
@@ -59,7 +52,7 @@ function Links({
           contentType: 'url',
           numberToLoad: 20
         });
-        fetchLinks({ links, loadMoreButton });
+        onFetchLinks({ links, loadMoreButton });
       }
     }
 
@@ -102,19 +95,10 @@ function Links({
       numberToLoad: 20,
       contentId: lastId.current
     });
-    return fetchMoreLinks({ links, loadMoreButton });
+    return onFetchMoreLinks({ links, loadMoreButton });
   }
 }
 
-export default connect(
-  state => ({
-    loaded: state.LinkReducer.loaded,
-    links: state.LinkReducer.links,
-    loadMoreLinksButtonShown: state.LinkReducer.loadMoreLinksButtonShown,
-    notificationLoaded: state.NotiReducer.loaded
-  }),
-  {
-    fetchLinks,
-    fetchMoreLinks
-  }
-)(Links);
+export default connect(state => ({
+  notificationLoaded: state.NotiReducer.loaded
+}))(Links);
