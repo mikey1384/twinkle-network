@@ -205,6 +205,14 @@ export default function ChatActions(dispatch) {
         }
       });
     },
+    onReceiveFirstMsg({ data, duplicate, pageVisible }) {
+      return dispatch({
+        type: 'RECEIVE_FIRST_MSG',
+        data,
+        duplicate,
+        pageVisible
+      });
+    },
     onReceiveMessageOnDifferentChannel({
       channel,
       senderIsNotTheUser,
@@ -215,6 +223,93 @@ export default function ChatActions(dispatch) {
         channel,
         senderIsNotTheUser,
         pageVisible
+      });
+    },
+    onReloadChatSubject({ subject, message }) {
+      return dispatch({
+        type: 'RELOAD_SUBJECT',
+        subject,
+        message
+      });
+    },
+    onSearchChat(data) {
+      return dispatch({
+        type: 'SEARCH',
+        data
+      });
+    },
+    onSearchChatSubject(data) {
+      return dispatch({
+        type: 'SEARCH_SUBJECT',
+        data
+      });
+    },
+    onSearchUserToInvite(data) {
+      return dispatch({
+        type: 'SEARCH_USERS_FOR_CHANNEL',
+        data
+      });
+    },
+    onSendFirstDirectMessage({ members, message }) {
+      return dispatch({
+        type: 'CREATE_NEW_DM_CHANNEL',
+        members,
+        message
+      });
+    },
+    onSaveMessage({ index, messageId }) {
+      return dispatch({
+        type: 'ADD_ID_TO_NEW_MESSAGE',
+        messageIndex: index,
+        messageId
+      });
+    },
+    onSubmitMessage(params) {
+      return dispatch({
+        type: 'SUBMIT_MESSAGE',
+        message: {
+          ...params,
+          timeStamp: Math.floor(Date.now() / 1000)
+        }
+      });
+    },
+    onUpdateApiServerToS3Progress({ progress, channelId, path }) {
+      return dispatch({
+        type: 'UPDATE_API_SERVER_TO_S3_PROGRESS',
+        progress,
+        channelId,
+        path
+      });
+    },
+    onUpdateChessMoveViewTimeStamp() {
+      return dispatch({
+        type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
+      });
+    },
+    onUpdateClientToApiServerProgress({ progress, channelId, path }) {
+      return dispatch({
+        type: 'UPDATE_CLIENT_TO_API_SERVER_PROGRESS',
+        progress,
+        channelId,
+        path
+      });
+    },
+    onUpdateRecentChessMessage(message) {
+      return dispatch({
+        type: 'UPDATE_RECENT_CHESS_MESSAGE',
+        message
+      });
+    },
+    onUpdateSelectedChannelId(channelId) {
+      return dispatch({
+        type: 'UPDATE_SELECTED_CHANNEL_ID',
+        channelId
+      });
+    },
+    onUploadChatSubject(data) {
+      return dispatch({
+        type: 'NEW_SUBJECT',
+        data
       });
     }
   };

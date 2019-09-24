@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { onSearchUserToInvite } from 'redux/actions/ChatActions';
-import { connect } from 'react-redux';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
 import { useAppContext } from 'context';
@@ -11,21 +9,14 @@ import { useAppContext } from 'context';
 CreateNewChannelModal.propTypes = {
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
-  searchResults: PropTypes.array.isRequired,
-  onSearchUserToInvite: PropTypes.func.isRequired
+  userId: PropTypes.number.isRequired
 };
 
-function CreateNewChannelModal({
-  userId,
-  onHide,
-  onDone,
-  onSearchUserToInvite,
-  searchResults
-}) {
+export default function CreateNewChannelModal({ userId, onHide, onDone }) {
   const {
     chat: {
-      actions: { onClearUserSearchResults }
+      state: { userSearchResults },
+      actions: { onClearUserSearchResults, onSearchUserToInvite }
     },
     requestHelpers: { searchUserToInvite }
   } = useAppContext();
@@ -39,7 +30,7 @@ function CreateNewChannelModal({
         <TagForm
           title="People"
           itemLabel="username"
-          searchResults={searchResults}
+          searchResults={userSearchResults}
           filter={result => result.id !== userId}
           onSearch={handleSearchUserToInvite}
           onClear={onClearUserSearchResults}
@@ -103,12 +94,3 @@ function CreateNewChannelModal({
     onDone({ userId, channelName, selectedUsers });
   }
 }
-
-export default connect(
-  state => ({
-    searchResults: state.ChatReducer.userSearchResults
-  }),
-  {
-    onSearchUserToInvite
-  }
-)(CreateNewChannelModal);

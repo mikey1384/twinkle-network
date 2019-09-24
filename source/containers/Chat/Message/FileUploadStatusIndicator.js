@@ -17,7 +17,7 @@ FileUploadStatusIndicator.propTypes = {
   subjectId: PropTypes.number
 };
 
-function FileUploadStatusIndicator({
+export default function FileUploadStatusIndicator({
   channelId,
   checkScrollIsAtTheBottom,
   content,

@@ -885,7 +885,7 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async updateChatLastRead({ channelId }) {
+    async updateChatLastRead(channelId) {
       try {
         await request.post(`${URL}/chat/lastRead`, { channelId }, auth());
         return Promise.resolve();

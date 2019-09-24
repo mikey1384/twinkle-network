@@ -6,20 +6,20 @@ import Loading from 'components/Loading';
 import File from './File';
 import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
-import { submitMessage } from 'redux/actions/ChatActions';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 UploadModal.propTypes = {
   channelId: PropTypes.number,
   fileObj: PropTypes.object,
   onHide: PropTypes.func.isRequired,
-  subjectId: PropTypes.number,
-  submitMessage: PropTypes.func.isRequired
+  subjectId: PropTypes.number
 };
 
-function UploadModal({ channelId, fileObj, onHide, subjectId, submitMessage }) {
+export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   const {
+    chat: {
+      actions: { onSubmitMessage }
+    },
     user: {
       state: { profilePicId, userId, username }
     }
@@ -65,8 +65,8 @@ function UploadModal({ channelId, fileObj, onHide, subjectId, submitMessage }) {
     </Modal>
   );
 
-  async function handleSubmit() {
-    submitMessage({
+  function handleSubmit() {
+    onSubmitMessage({
       content: finalizeEmoji(caption),
       channelId,
       fileToUpload: selectedFile,
@@ -80,10 +80,3 @@ function UploadModal({ channelId, fileObj, onHide, subjectId, submitMessage }) {
     onHide();
   }
 }
-
-export default connect(
-  null,
-  {
-    submitMessage
-  }
-)(UploadModal);

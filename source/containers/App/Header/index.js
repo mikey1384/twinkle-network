@@ -7,10 +7,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {
-  resetChat,
-  updateApiServerToS3Progress
-} from 'redux/actions/ChatActions';
-import {
   changeRankingsLoadedStatus,
   changeSocketStatus,
   onCheckVersion,
@@ -35,16 +31,13 @@ Header.propTypes = {
   increaseNumNewNotis: PropTypes.func,
   location: PropTypes.object,
   notifyChatSubjectChange: PropTypes.func,
-  numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
-  selectedChannelId: PropTypes.number,
   showUpdateNotice: PropTypes.func,
   style: PropTypes.object,
   totalRewardAmount: PropTypes.number,
-  updateApiServerToS3Progress: PropTypes.func.isRequired,
   versionMatch: PropTypes.bool
 };
 
@@ -58,20 +51,18 @@ function Header({
   increaseNumNewNotis,
   location: { pathname },
   notifyChatSubjectChange,
-  numChatUnreads,
   numNewNotis,
   numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
-  selectedChannelId,
   showUpdateNotice,
   style = {},
   totalRewardAmount,
-  updateApiServerToS3Progress,
   versionMatch
 }) {
   const {
     chat: {
+      state: { selectedChannelId, numUnreads },
       actions: {
         onClearChatLoadedState,
         onClearRecentChessMessage,
@@ -79,7 +70,8 @@ function Header({
         onIncreaseNumberOfUnreadMessages,
         onInitChat,
         onReceiveMessage,
-        onReceiveMessageOnDifferentChannel
+        onReceiveMessageOnDifferentChannel,
+        onUpdateApiServerToS3Progress
       }
     },
     user: {
@@ -178,7 +170,7 @@ function Header({
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
-        await updateChatLastRead({ channelId: message.channelId });
+        await updateChatLastRead(message.channelId);
         onReceiveMessage({ message, pageVisible });
       }
       if (!messageIsForCurrentChannel) {
@@ -190,7 +182,7 @@ function Header({
       }
     }
     function onReceiveUploadProgress({ channelId, path, percentage }) {
-      updateApiServerToS3Progress({
+      onUpdateApiServerToS3Progress({
         progress: percentage / 100,
         channelId,
         path
@@ -202,14 +194,14 @@ function Header({
   });
 
   useEffect(() => {
-    const newNotiNum = numNewPosts + numNewNotis + numChatUnreads;
+    const newNotiNum = numNewPosts + numNewNotis + numUnreads;
     const { section } = getSectionFromPathname(pathname);
     document.title = `${
       newNotiNum > 0 && !['links', 'videos', 'subjects'].includes(section)
         ? '(' + newNotiNum + ') '
         : ''
     }Twinkle`;
-  }, [numNewNotis, numNewPosts, numChatUnreads, pathname]);
+  }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {
     socket.connect();
@@ -289,7 +281,7 @@ function Header({
             homeLink={homeLink}
             chatLoading={chatLoading}
             isUsername={isUsername}
-            numChatUnreads={numChatUnreads}
+            numChatUnreads={numUnreads}
             numNewNotis={numNewNotis}
             numNewPosts={numNewPosts}
             onChatButtonClick={onChatButtonClick}
@@ -314,10 +306,8 @@ function Header({
 
 export default connect(
   state => ({
-    selectedChannelId: state.ChatReducer.selectedChannelId,
     numNewNotis: state.NotiReducer.numNewNotis,
     numNewPosts: state.NotiReducer.numNewPosts,
-    numChatUnreads: state.ChatReducer.numUnreads,
     totalRewardAmount: state.NotiReducer.totalRewardAmount,
     versionMatch: state.NotiReducer.versionMatch
   }),
@@ -327,8 +317,6 @@ export default connect(
     onCheckVersion,
     increaseNumNewPosts,
     increaseNumNewNotis,
-    notifyChatSubjectChange,
-    resetChat,
-    updateApiServerToS3Progress
+    notifyChatSubjectChange
   }
 )(withRouter(Header));

@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
-import { updateChessMoveViewTimeStamp } from 'redux/actions/ChatActions';
 import { Color } from 'constants/css';
 import { useAppContext } from 'context';
-import { connect } from 'react-redux';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -16,12 +14,10 @@ ChessModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
-  opponentName: PropTypes.string,
-  recentChessMessage: PropTypes.object,
-  updateChessMoveViewTimeStamp: PropTypes.func.isRequired
+  opponentName: PropTypes.string
 };
 
-function ChessModal({
+export default function ChessModal({
   channelId,
   chessCountdownObj,
   myId,
@@ -29,11 +25,13 @@ function ChessModal({
   onHide,
   onSpoilerClick,
   opponentId,
-  opponentName,
-  recentChessMessage,
-  updateChessMoveViewTimeStamp
+  opponentName
 }) {
   const {
+    chat: {
+      state: { recentChessMessage },
+      actions: { onUpdateChessMoveViewTimeStamp }
+    },
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
   const [initialState, setInitialState] = useState();
@@ -165,7 +163,7 @@ function ChessModal({
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
       setSpoilerOff(true);
-      updateChessMoveViewTimeStamp();
+      onUpdateChessMoveViewTimeStamp();
       onSpoilerClick(message.userId);
     } catch (error) {
       console.error(error);
@@ -177,10 +175,3 @@ function ChessModal({
     onHide();
   }
 }
-
-export default connect(
-  state => ({
-    recentChessMessage: state.ChatReducer.recentChessMessage
-  }),
-  { updateChessMoveViewTimeStamp }
-)(ChessModal);

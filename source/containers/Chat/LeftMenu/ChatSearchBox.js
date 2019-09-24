@@ -1,32 +1,19 @@
 import React from 'react';
 import { useSearch } from 'helpers/hooks';
-import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { connect } from 'react-redux';
-import {
-  onSearchChat,
-  updateSelectedChannelId
-} from 'redux/actions/ChatActions';
 import { useAppContext } from 'context';
 
-ChatSearchBox.propTypes = {
-  onSearchChat: PropTypes.func.isRequired,
-  searchResults: PropTypes.array.isRequired,
-  updateSelectedChannelId: PropTypes.func.isRequired
-};
-
-function ChatSearchBox({
-  onSearchChat,
-  searchResults,
-  updateSelectedChannelId
-}) {
+export default function ChatSearchBox() {
   const {
     chat: {
+      state: { chatSearchResults },
       actions: {
         onClearChatSearchResults,
         onEnterChannelWithId,
-        onOpenNewChatTab
+        onOpenNewChatTab,
+        onSearchChat,
+        onUpdateSelectedChannelId
       }
     },
     user: {
@@ -45,7 +32,7 @@ function ChatSearchBox({
         placeholder="Play chess or talk with..."
         onChange={handleSearch}
         value={searchText}
-        searchResults={searchResults}
+        searchResults={chatSearchResults}
         renderItemLabel={item =>
           !item.primary || (item.primary && item.twoPeople) ? (
             <span>
@@ -73,7 +60,7 @@ function ChatSearchBox({
 
   async function onSelect(item) {
     if (item.primary || !!item.channelId) {
-      updateSelectedChannelId(item.channelId);
+      onUpdateSelectedChannelId(item.channelId);
       const data = await loadChatChannel({
         channelId: item.channelId
       });
@@ -88,13 +75,3 @@ function ChatSearchBox({
     onClearChatSearchResults();
   }
 }
-
-export default connect(
-  state => ({
-    searchResults: state.ChatReducer.chatSearchResults
-  }),
-  {
-    onSearchChat,
-    updateSelectedChannelId
-  }
-)(ChatSearchBox);

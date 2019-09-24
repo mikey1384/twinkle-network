@@ -9,10 +9,6 @@ import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {
-  sendFirstDirectMessage,
-  updateClientToApiServerProgress
-} from 'redux/actions/ChatActions';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -34,21 +30,18 @@ const Chat = React.lazy(() => import('containers/Chat'));
 App.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
-  sendFirstDirectMessage: PropTypes.func.isRequired,
-  updateClientToApiServerProgress: PropTypes.func.isRequired,
   updateDetail: PropTypes.string
 };
 
-function App({
-  location,
-  history,
-  sendFirstDirectMessage,
-  updateClientToApiServerProgress,
-  updateDetail
-}) {
+function App({ location, history, updateDetail }) {
   const {
     chat: {
-      actions: { onPostFileUploadStatus, onPostUploadComplete }
+      actions: {
+        onPostFileUploadStatus,
+        onPostUploadComplete,
+        onSendFirstDirectMessage,
+        onUpdateClientToApiServerProgress
+      }
     },
     user: {
       state: { signinModalShown, username },
@@ -206,7 +199,7 @@ function App({
             <Route path="/playlists" component={PlaylistPage} />
             <Route
               path="/talk"
-              component={() => <Chat onFileUpload={handleFileUpload} />}
+              render={() => <Chat onFileUpload={handleFileUpload} />}
             />
             <Route path="/verify" component={Verify} />
             <Route path="/privacy" component={Privacy} />
@@ -261,7 +254,7 @@ function App({
       subjectId
     });
     if (members) {
-      sendFirstDirectMessage({ members, message });
+      onSendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
     }
@@ -272,7 +265,7 @@ function App({
       result: !!messageId
     });
     function handleUploadProgress({ loaded, total }) {
-      updateClientToApiServerProgress({
+      onUpdateClientToApiServerProgress({
         channelId,
         path: filePath,
         progress: loaded / total
@@ -281,12 +274,6 @@ function App({
   }
 }
 
-export default connect(
-  state => ({
-    updateDetail: state.NotiReducer.updateDetail
-  }),
-  {
-    sendFirstDirectMessage,
-    updateClientToApiServerProgress
-  }
-)(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);
+export default connect(state => ({
+  updateDetail: state.NotiReducer.updateDetail
+}))(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);

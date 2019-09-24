@@ -1,12 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  receiveFirstMsg,
-  sendFirstDirectMessage,
-  submitMessage,
-  updateChessMoveViewTimeStamp,
-  updateSelectedChannelId
-} from 'redux/actions/ChatActions';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
@@ -17,49 +10,28 @@ import LocalContext from './Context';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { connect } from 'react-redux';
 import { objectify } from 'helpers';
 import { useAppContext } from 'context';
 
 Chat.propTypes = {
-  channelLoadMoreButtonShown: PropTypes.bool,
-  channels: PropTypes.array.isRequired,
-  currentChannel: PropTypes.object,
-  loaded: PropTypes.bool.isRequired,
-  loadMoreButton: PropTypes.bool,
-  messages: PropTypes.array,
   onFileUpload: PropTypes.func,
-  profilePicId: PropTypes.number,
-  recepientId: PropTypes.number,
-  receiveFirstMsg: PropTypes.func,
-  selectedChannelId: PropTypes.number,
-  sendFirstDirectMessage: PropTypes.func,
-  submitMessage: PropTypes.func,
-  subjectId: PropTypes.number,
-  updateChessMoveViewTimeStamp: PropTypes.func.isRequired,
-  updateSelectedChannelId: PropTypes.func.isRequired
+  profilePicId: PropTypes.number
 };
 
-function Chat({
-  channels,
-  channelLoadMoreButtonShown,
-  currentChannel,
-  loaded,
-  loadMoreButton,
-  messages,
-  onFileUpload,
-  recepientId,
-  profilePicId,
-  receiveFirstMsg,
-  selectedChannelId,
-  sendFirstDirectMessage,
-  subjectId,
-  submitMessage,
-  updateChessMoveViewTimeStamp,
-  updateSelectedChannelId
-}) {
+export default function Chat({ onFileUpload, profilePicId }) {
   const {
     chat: {
+      state: {
+        loaded,
+        currentChannel,
+        selectedChannelId,
+        channels,
+        messages,
+        channelLoadMoreButton,
+        loadMoreMessages,
+        recepientId,
+        subject
+      },
       actions: {
         onClearNumUnreads,
         onCreateNewChannel,
@@ -71,7 +43,12 @@ function Chat({
         onNotifyThatMemberLeftChannel,
         onOpenDirectMessageChannel,
         onReceiveMessage,
-        onReceiveMessageOnDifferentChannel
+        onReceiveFirstMsg,
+        onReceiveMessageOnDifferentChannel,
+        onSendFirstDirectMessage,
+        onSubmitMessage,
+        onUpdateChessMoveViewTimeStamp,
+        onUpdateSelectedChannelId
       }
     },
     user: {
@@ -115,7 +92,7 @@ function Chat({
       init();
     } else {
       if (userId) {
-        updateChatLastRead({ channelId: selectedChannelId });
+        updateChatLastRead(selectedChannelId);
       }
       onClearNumUnreads();
     }
@@ -160,7 +137,7 @@ function Chat({
 
     function onNotifyMoveViewed(channelId) {
       if (channelId === selectedChannelId) {
-        updateChessMoveViewTimeStamp();
+        onUpdateChessMoveViewTimeStamp();
       }
     }
 
@@ -271,7 +248,7 @@ function Chat({
             )}
             <LeftMenu
               channels={channels}
-              channelLoadMoreButtonShown={channelLoadMoreButtonShown}
+              channelLoadMoreButtonShown={channelLoadMoreButton}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={handleLoadMoreChannels}
@@ -286,7 +263,7 @@ function Chat({
               loading={channelLoading || creatingNewDMChannel}
               currentChannel={currentChannel}
               currentChannelId={selectedChannelId}
-              loadMoreButton={loadMoreButton}
+              loadMoreButton={loadMoreMessages}
               messages={messages}
               loadMoreMessages={handleLoadMoreMessages}
               onShowChessModal={handleChessModalShown}
@@ -296,7 +273,7 @@ function Chat({
               onSendFileMessage={handleSendFileMessage}
               recepientId={recepientId}
               selectedChannelId={selectedChannelId}
-              subjectId={subjectId}
+              subjectId={subject.id}
             />
             {chessModalShown && (
               <ChessModal
@@ -363,7 +340,7 @@ function Chat({
         userId,
         recepientId
       });
-      sendFirstDirectMessage({ members, message });
+      onSendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
       setCreatingNewDMChannel(false);
@@ -375,10 +352,10 @@ function Chat({
       profilePicId,
       content,
       channelId: selectedChannelId,
-      subjectId
+      subjectId: subject.id
     };
     try {
-      submitMessage(params);
+      onSubmitMessage(params);
       socket.emit('new_chat_message', params, {
         ...currentChannel,
         numUnreads: 1,
@@ -427,7 +404,7 @@ function Chat({
     const content = 'Made a chess move';
     try {
       if (selectedChannelId) {
-        submitMessage({
+        onSubmitMessage({
           ...params,
           profilePicId,
           username,
@@ -464,7 +441,7 @@ function Chat({
           content,
           recepientId
         });
-        sendFirstDirectMessage({ members, message });
+        onSendFirstDirectMessage({ members, message });
         socket.emit('join_chat_channel', message.channelId);
         socket.emit('send_bi_chat_invitation', recepientId, message);
         return;
@@ -483,7 +460,7 @@ function Chat({
       setCurrentChannelOnlineMembers([]);
       return onEnterEmptyChat();
     }
-    updateSelectedChannelId(id);
+    onUpdateSelectedChannelId(id);
     const data = await loadChatChannel({ channelId: id });
     onEnterChannelWithId({ data });
   }
@@ -548,28 +525,7 @@ function Chat({
         duplicate = true;
       }
     }
-    receiveFirstMsg({ data, duplicate, pageVisible });
+    onReceiveFirstMsg({ data, duplicate, pageVisible });
     socket.emit('join_chat_channel', data.channelId);
   }
 }
-
-export default connect(
-  state => ({
-    loaded: state.ChatReducer.loaded,
-    currentChannel: state.ChatReducer.currentChannel,
-    selectedChannelId: state.ChatReducer.selectedChannelId,
-    channels: state.ChatReducer.channels,
-    messages: state.ChatReducer.messages,
-    channelLoadMoreButtonShown: state.ChatReducer.channelLoadMoreButton,
-    loadMoreButton: state.ChatReducer.loadMoreMessages,
-    recepientId: state.ChatReducer.recepientId,
-    subjectId: state.ChatReducer.subject.id
-  }),
-  {
-    receiveFirstMsg,
-    sendFirstDirectMessage,
-    submitMessage,
-    updateChessMoveViewTimeStamp,
-    updateSelectedChannelId
-  }
-)(Chat);

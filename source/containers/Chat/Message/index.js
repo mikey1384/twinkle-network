@@ -12,11 +12,6 @@ import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { connect } from 'react-redux';
 import { fetchURLFromText } from 'helpers/stringHelpers';
-import {
-  onSaveMessage,
-  updateChessMoveViewTimeStamp,
-  updateRecentChessMessage
-} from 'redux/actions/ChatActions';
 import { MessageStyle } from '../Styles';
 import { useAppContext } from 'context';
 
@@ -29,7 +24,6 @@ Message.propTypes = {
   message: PropTypes.object,
   style: PropTypes.object,
   onDelete: PropTypes.func,
-  onSaveMessage: PropTypes.func,
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
@@ -40,9 +34,7 @@ Message.propTypes = {
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func,
-  socketConnected: PropTypes.bool,
-  updateChessMoveViewTimeStamp: PropTypes.func,
-  updateRecentChessMessage: PropTypes.func
+  socketConnected: PropTypes.bool
 };
 
 function Message({
@@ -85,16 +77,18 @@ function Message({
   onReceiveNewMessage,
   onSendFileMessage,
   recepientId,
-  onSaveMessage,
   setScrollToBottom,
   showSubjectMsgsModal,
-  socketConnected,
-  updateChessMoveViewTimeStamp,
-  updateRecentChessMessage
+  socketConnected
 }) {
   const {
     chat: {
-      actions: { onEditMessage }
+      actions: {
+        onEditMessage,
+        onSaveMessage,
+        onUpdateChessMoveViewTimeStamp,
+        onUpdateRecentChessMessage
+      }
     },
     user: {
       state: {
@@ -119,7 +113,7 @@ function Message({
   }
   useEffect(() => {
     if (!message.id && message.isChessMsg) {
-      updateRecentChessMessage(message);
+      onUpdateRecentChessMessage(message);
     }
     if (
       message.userId === myId &&
@@ -323,7 +317,7 @@ function Message({
   async function handleSpoilerClick() {
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
-      updateChessMoveViewTimeStamp();
+      onUpdateChessMoveViewTimeStamp();
       onChessSpoilerClick(userId);
     } catch (error) {
       console.error(error);
@@ -331,13 +325,6 @@ function Message({
   }
 }
 
-export default connect(
-  state => ({
-    socketConnected: state.NotiReducer.socketConnected
-  }),
-  {
-    onSaveMessage,
-    updateChessMoveViewTimeStamp,
-    updateRecentChessMessage
-  }
-)(Message);
+export default connect(state => ({
+  socketConnected: state.NotiReducer.socketConnected
+}))(Message);

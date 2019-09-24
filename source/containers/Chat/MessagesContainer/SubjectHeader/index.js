@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useInterval } from 'helpers/hooks';
-import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -8,12 +7,6 @@ import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
-import { connect } from 'react-redux';
-import {
-  onReloadChatSubject,
-  onUploadChatSubject,
-  onSearchChatSubject
-} from 'redux/actions/ChatActions';
 import { textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
@@ -22,34 +15,27 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useAppContext } from 'context';
 
-SubjectHeader.propTypes = {
-  subject: PropTypes.object,
-  onReloadChatSubject: PropTypes.func,
-  onSearchChatSubject: PropTypes.func,
-  subjectSearchResults: PropTypes.array,
-  onUploadChatSubject: PropTypes.func
-};
-
-function SubjectHeader({
-  onReloadChatSubject,
-  subject: {
-    content = defaultChatSubject,
-    id: subjectId,
-    uploader = {},
-    reloader = {},
-    timeStamp,
-    reloadTimeStamp
-  },
-  onSearchChatSubject,
-  subjectSearchResults,
-  onUploadChatSubject
-}) {
+export default function SubjectHeader() {
   const {
     chat: {
+      state: {
+        subject: {
+          content = defaultChatSubject,
+          id: subjectId,
+          uploader = {},
+          reloader = {},
+          timeStamp,
+          reloadTimeStamp
+        },
+        subjectSearchResults
+      },
       actions: {
         onChangeChatSubject,
         onClearSubjectSearchResults,
-        onLoadChatSubject
+        onLoadChatSubject,
+        onReloadChatSubject,
+        onSearchChatSubject,
+        onUploadChatSubject
       }
     },
     user: {
@@ -284,15 +270,3 @@ function SubjectHeader({
     );
   }
 }
-
-export default connect(
-  state => ({
-    subject: state.ChatReducer.subject,
-    subjectSearchResults: state.ChatReducer.subjectSearchResults
-  }),
-  {
-    onReloadChatSubject,
-    onUploadChatSubject,
-    onSearchChatSubject
-  }
-)(SubjectHeader);
