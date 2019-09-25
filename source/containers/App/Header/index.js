@@ -4,61 +4,32 @@ import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import {
-  changeRankingsLoadedStatus,
-  changeSocketStatus,
-  onCheckVersion,
-  notifyChatSubjectChange,
-  increaseNumNewPosts,
-  increaseNumNewNotis
-} from 'redux/actions/NotiActions';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
 import { useAppContext } from 'context';
+import { withRouter } from 'react-router';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
-  changeRankingsLoadedStatus: PropTypes.func.isRequired,
-  changeSocketStatus: PropTypes.func,
-  onCheckVersion: PropTypes.func,
   history: PropTypes.object.isRequired,
-  increaseNumNewPosts: PropTypes.func,
-  increaseNumNewNotis: PropTypes.func,
   location: PropTypes.object,
-  notifyChatSubjectChange: PropTypes.func,
-  numNewNotis: PropTypes.number,
-  numNewPosts: PropTypes.number,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
   showUpdateNotice: PropTypes.func,
-  style: PropTypes.object,
-  totalRewardAmount: PropTypes.number,
-  versionMatch: PropTypes.bool
+  style: PropTypes.object
 };
 
 function Header({
-  changeRankingsLoadedStatus,
   chatLoading,
-  changeSocketStatus,
-  onCheckVersion,
   history,
-  increaseNumNewPosts,
-  increaseNumNewNotis,
   location: { pathname },
-  notifyChatSubjectChange,
-  numNewNotis,
-  numNewPosts,
   onChatButtonClick,
   onMobileMenuOpen,
   showUpdateNotice,
-  style = {},
-  totalRewardAmount,
-  versionMatch
+  style = {}
 }) {
   const {
     chat: {
@@ -68,10 +39,21 @@ function Header({
         onClearRecentChessMessage,
         onGetNumberOfUnreadMessages,
         onIncreaseNumberOfUnreadMessages,
+        onIncreaseNumNewPosts,
         onInitChat,
+        onNotifyChatSubjectChange,
         onReceiveMessage,
         onReceiveMessageOnDifferentChannel,
         onUpdateApiServerToS3Progress
+      }
+    },
+    notification: {
+      state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
+      actions: {
+        onChangeRankingsLoadedStatus,
+        onChangeSocketStatus,
+        onCheckVersion,
+        onIncreaseNumNewNotis
       }
     },
     user: {
@@ -103,8 +85,8 @@ function Header({
     socket.on('disconnect', onDisconnect);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('receive_message', handleReceiveMessage);
-    socket.on('new_post', increaseNumNewPosts);
-    socket.on('new_notification', increaseNumNewNotis);
+    socket.on('new_post', onIncreaseNumNewPosts);
+    socket.on('new_notification', onIncreaseNumNewNotis);
     socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
     socket.on('subject_change', onSubjectChange);
 
@@ -112,8 +94,8 @@ function Header({
       socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
-      socket.removeListener('new_post', increaseNumNewPosts);
-      socket.removeListener('new_notification', increaseNumNewNotis);
+      socket.removeListener('new_post', onIncreaseNumNewPosts);
+      socket.removeListener('new_notification', onIncreaseNumNewNotis);
       socket.removeListener(
         'receive_chat_file_upload_progress',
         onReceiveUploadProgress
@@ -129,7 +111,7 @@ function Header({
       console.log('connected to socket');
       const { section } = getSectionFromPathname(pathname);
       onClearRecentChessMessage();
-      changeSocketStatus(true);
+      onChangeSocketStatus(true);
       handleCheckVersion();
       if (userId) {
         handleGetNumberOfUnreadMessages();
@@ -155,7 +137,7 @@ function Header({
     }
     function onDisconnect() {
       console.log('disconnected from socket');
-      changeSocketStatus(false);
+      onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
       const { section } = getSectionFromPathname(pathname);
@@ -189,7 +171,7 @@ function Header({
       });
     }
     function onSubjectChange({ subject }) {
-      notifyChatSubjectChange(subject);
+      onNotifyChatSubjectChange(subject);
     }
   });
 
@@ -213,7 +195,7 @@ function Header({
   useEffect(() => {
     socket.disconnect();
     socket.connect();
-    changeRankingsLoadedStatus(false);
+    onChangeRankingsLoadedStatus(false);
     if (userId) {
       socket.emit('bind_uid_to_socket', userId, username);
       socket.emit('enter_my_notification_channel', userId);
@@ -304,19 +286,4 @@ function Header({
   );
 }
 
-export default connect(
-  state => ({
-    numNewNotis: state.NotiReducer.numNewNotis,
-    numNewPosts: state.NotiReducer.numNewPosts,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    versionMatch: state.NotiReducer.versionMatch
-  }),
-  {
-    changeRankingsLoadedStatus,
-    changeSocketStatus,
-    onCheckVersion,
-    increaseNumNewPosts,
-    increaseNumNewNotis,
-    notifyChatSubjectChange
-  }
-)(withRouter(Header));
+export default withRouter(Header);

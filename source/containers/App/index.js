@@ -8,7 +8,6 @@ import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
 import { Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -29,11 +28,10 @@ const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
   history: PropTypes.object,
-  location: PropTypes.object,
-  updateDetail: PropTypes.string
+  location: PropTypes.object
 };
 
-function App({ location, history, updateDetail }) {
+function App({ location, history }) {
   const {
     chat: {
       actions: {
@@ -42,6 +40,9 @@ function App({ location, history, updateDetail }) {
         onSendFirstDirectMessage,
         onUpdateClientToApiServerProgress
       }
+    },
+    notification: {
+      state: { updateDetail }
     },
     user: {
       state: { signinModalShown, username },
@@ -274,6 +275,4 @@ function App({ location, history, updateDetail }) {
   }
 }
 
-export default connect(state => ({
-  updateDetail: state.NotiReducer.updateDetail
-}))(process.env.NODE_ENV === 'development' ? hot(module)(App) : App);
+export default process.env.NODE_ENV === 'development' ? hot(module)(App) : App;

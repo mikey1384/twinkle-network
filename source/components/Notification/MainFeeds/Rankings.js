@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import request from 'axios';
 import UsernameText from 'components/Texts/UsernameText';
@@ -8,25 +7,19 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
-import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { getRanks } from 'redux/actions/NotiActions';
 import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
-Rankings.propTypes = {
-  all: PropTypes.array.isRequired,
-  loaded: PropTypes.bool,
-  getRanks: PropTypes.func.isRequired,
-  rankModifier: PropTypes.number.isRequired,
-  top30s: PropTypes.array.isRequired
-};
-
-function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
+export default function Rankings() {
   const {
+    notification: {
+      state: { allRanks, rankModifier, top30s, rankingsLoaded },
+      actions: { onGetRanks }
+    },
     user: {
       state: { rank, twinkleXP, userId }
     },
@@ -52,7 +45,7 @@ function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
           data: { all, rankModifier: modifier, top30s }
         } = await request.get(`${API_URL}/leaderBoard`, auth());
         if (mounted.current) {
-          getRanks({ all, top30s, rankModifier: modifier });
+          onGetRanks({ all, top30s, rankModifier: modifier });
         }
         loading.current = false;
         prevId.current = userId;
@@ -69,7 +62,7 @@ function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
     setAllSelected(!!userId);
   }, [userId]);
 
-  const users = allSelected ? all : top30s;
+  const users = allSelected ? allRanks : top30s;
   const modifier = allSelected ? rankModifier : 0;
 
   return (
@@ -102,11 +95,11 @@ function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
           </nav>
         </FilterBar>
       )}
-      {!loaded && <Loading />}
-      {loaded && allSelected && !!userId && (
+      {!rankingsLoaded && <Loading />}
+      {rankingsLoaded && allSelected && !!userId && (
         <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
       )}
-      {loaded && allSelected && users.length === 0 && !!userId && (
+      {rankingsLoaded && allSelected && users.length === 0 && !!userId && (
         <div
           style={{
             background: '#fff',
@@ -119,7 +112,7 @@ function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
           or leaving comments
         </div>
       )}
-      {loaded && users.length > 0 && (
+      {rankingsLoaded && users.length > 0 && (
         <RoundList style={{ marginTop: 0 }}>
           {users.map(user => {
             const rank = !user.twinkleXP
@@ -201,15 +194,3 @@ function Rankings({ all, loaded, getRanks, rankModifier, top30s }) {
     </ErrorBoundary>
   );
 }
-
-export default connect(
-  state => ({
-    all: state.NotiReducer.allRanks,
-    rankModifier: state.NotiReducer.rankModifier,
-    top30s: state.NotiReducer.top30s,
-    loaded: state.NotiReducer.rankingsLoaded
-  }),
-  {
-    getRanks
-  }
-)(Rankings);

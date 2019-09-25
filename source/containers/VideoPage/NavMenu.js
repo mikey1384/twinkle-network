@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import {
-  clearNotifications,
-  onFetchNotifications
-} from 'redux/actions/NotiActions';
 import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
@@ -20,23 +15,16 @@ import { useAppContext } from 'context';
 import URL from 'constants/URL';
 
 NavMenu.propTypes = {
-  clearNotifications: PropTypes.func.isRequired,
-  onFetchNotifications: PropTypes.func.isRequired,
-  numNewNotis: PropTypes.number,
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  totalRewardAmount: PropTypes.number,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
 };
 
-function NavMenu({
-  clearNotifications,
-  onFetchNotifications,
-  numNewNotis,
-  playlistId,
-  totalRewardAmount,
-  videoId
-}) {
+export default function NavMenu({ playlistId, videoId }) {
   const {
+    notification: {
+      state: { numNewNotis, totalRewardAmount },
+      action: { onClearNotifications, onFetchNotifications }
+    },
     user: {
       state: { profileTheme, userId }
     },
@@ -108,7 +96,7 @@ function NavMenu({
     if (userId) {
       handleFetchNotifications();
     } else {
-      clearNotifications();
+      onClearNotifications();
     }
   }, [userId]);
 
@@ -311,14 +299,3 @@ function NavMenu({
     ));
   }
 }
-
-export default connect(
-  state => ({
-    numNewNotis: state.NotiReducer.numNewNotis,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount
-  }),
-  {
-    clearNotifications,
-    onFetchNotifications
-  }
-)(NavMenu);

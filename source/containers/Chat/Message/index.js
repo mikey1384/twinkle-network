@@ -10,7 +10,6 @@ import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { connect } from 'react-redux';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { MessageStyle } from '../Styles';
 import { useAppContext } from 'context';
@@ -33,11 +32,10 @@ Message.propTypes = {
   onReceiveNewMessage: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
-  setScrollToBottom: PropTypes.func,
-  socketConnected: PropTypes.bool
+  setScrollToBottom: PropTypes.func
 };
 
-function Message({
+export default function Message({
   channelId,
   channelName,
   checkScrollIsAtTheBottom,
@@ -78,8 +76,7 @@ function Message({
   onSendFileMessage,
   recepientId,
   setScrollToBottom,
-  showSubjectMsgsModal,
-  socketConnected
+  showSubjectMsgsModal
 }) {
   const {
     chat: {
@@ -89,6 +86,9 @@ function Message({
         onUpdateChessMoveViewTimeStamp,
         onUpdateRecentChessMessage
       }
+    },
+    notification: {
+      state: { socketConnected }
     },
     user: {
       state: {
@@ -324,7 +324,3 @@ function Message({
     }
   }
 }
-
-export default connect(state => ({
-  socketConnected: state.NotiReducer.socketConnected
-}))(Message);

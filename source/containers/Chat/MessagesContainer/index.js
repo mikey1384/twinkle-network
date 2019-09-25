@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
@@ -36,11 +35,10 @@ MessagesContainer.propTypes = {
   onShowChessModal: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   selectedChannelId: PropTypes.number,
-  socketConnected: PropTypes.bool,
   subjectId: PropTypes.number
 };
 
-function MessagesContainer({
+export default function MessagesContainer({
   channelName,
   chessCountdownObj,
   chessOpponent,
@@ -57,7 +55,6 @@ function MessagesContainer({
   onShowChessModal,
   recepientId,
   selectedChannelId,
-  socketConnected,
   subjectId
 }) {
   const {
@@ -69,6 +66,9 @@ function MessagesContainer({
         onHideChat,
         onLeaveChannel
       }
+    },
+    notification: {
+      state: { socketConnected }
     },
     user: {
       state: { authLevel, profilePicId, userId, username }
@@ -519,7 +519,3 @@ function MessagesContainer({
     setLeaveConfirmModalShown(false);
   }
 }
-
-export default connect(state => ({
-  socketConnected: state.NotiReducer.socketConnected
-}))(MessagesContainer);

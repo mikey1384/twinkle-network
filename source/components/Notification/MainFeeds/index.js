@@ -9,50 +9,40 @@ import Rankings from './Rankings';
 import NotiItem from './NotiItem';
 import MyRank from './MyRank';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import {
-  clearRewards,
-  onFetchNotifications,
-  onLoadMoreNotifications,
-  onLoadMoreRewards
-} from 'redux/actions/NotiActions';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
 import { useAppContext } from 'context';
 
 MainFeeds.propTypes = {
-  clearRewards: PropTypes.func.isRequired,
-  onFetchNotifications: PropTypes.func.isRequired,
   loadMore: PropTypes.object.isRequired,
-  onLoadMoreNotifications: PropTypes.func.isRequired,
-  onLoadMoreRewards: PropTypes.func.isRequired,
-  numNewNotis: PropTypes.number,
   activeTab: PropTypes.string,
   notifications: PropTypes.array.isRequired,
   rewards: PropTypes.array,
   selectNotiTab: PropTypes.func.isRequired,
-  style: PropTypes.object,
-  totalRewardAmount: PropTypes.number
+  style: PropTypes.object
 };
 
-function MainFeeds({
+export default function MainFeeds({
   activeTab,
-  clearRewards,
-  onFetchNotifications,
   loadMore,
-  onLoadMoreNotifications,
-  onLoadMoreRewards,
   notifications,
-  numNewNotis,
   rewards,
   selectNotiTab,
-  style,
-  totalRewardAmount
+  style
 }) {
   const {
+    notification: {
+      state: { numNewNotis, totalRewardAmount },
+      actions: {
+        onClearRewards,
+        onFetchNotifications,
+        onLoadMoreNotifications,
+        onLoadMoreRewards
+      }
+    },
     user: {
       state: { userId, rank, twinkleXP },
       actions: { onChangeUserXP }
@@ -208,7 +198,7 @@ function MainFeeds({
     });
     if (alreadyDone) return;
     onChangeUserXP({ xp, rank });
-    clearRewards();
+    onClearRewards();
   }
 
   async function onNewNotiAlertClick() {
@@ -231,16 +221,3 @@ function MainFeeds({
     setLoading(false);
   }
 }
-
-export default connect(
-  state => ({
-    numNewNotis: state.NotiReducer.numNewNotis,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount
-  }),
-  {
-    clearRewards,
-    onFetchNotifications,
-    onLoadMoreNotifications,
-    onLoadMoreRewards
-  }
-)(MainFeeds);

@@ -8,16 +8,12 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
-import { resetNumNewPosts } from 'redux/actions/NotiActions';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 Stories.propTypes = {
-  location: PropTypes.object.isRequired,
-  numNewPosts: PropTypes.number.isRequired,
-  resetNumNewPosts: PropTypes.func.isRequired
+  location: PropTypes.object.isRequired
 };
 
 const categoryObj = {
@@ -39,7 +35,7 @@ const categoryObj = {
   }
 };
 
-function Stories({ location, numNewPosts, resetNumNewPosts }) {
+export default function Stories({ location }) {
   const {
     home: {
       state: { category, feeds, loadMoreButton, loaded, subFilter },
@@ -78,6 +74,10 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
         onUploadComment,
         onUploadReply
       }
+    },
+    notification: {
+      state: { numNewPosts },
+      actions: { onResetNumNewPosts }
     },
     user: {
       state: { hideWatched, userId, username }
@@ -152,7 +152,7 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
       categoryRef.current = 'uploads';
       onChangeCategory('uploads');
       onChangeSubFilter('all');
-      resetNumNewPosts();
+      onResetNumNewPosts();
       try {
         const { data } = await loadFeeds();
         onLoadFeeds(data);
@@ -348,7 +348,7 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
 
   async function handleFetchNewFeeds() {
     if (category !== 'uploads' || displayOrder === 'asc') {
-      resetNumNewPosts();
+      onResetNumNewPosts();
       categoryRef.current = 'uploads';
       onChangeCategory('uploads');
       const { data, filter } = await loadFeeds();
@@ -362,7 +362,7 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
     }
     if (!loadingNewFeeds) {
       setLoadingNewFeeds(true);
-      resetNumNewPosts();
+      onResetNumNewPosts();
       const data = await loadNewFeeds({
         lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
         shownFeeds: queryStringForArray({
@@ -394,12 +394,3 @@ function Stories({ location, numNewPosts, resetNumNewPosts }) {
     }
   }
 }
-
-export default connect(
-  state => ({
-    numNewPosts: state.NotiReducer.numNewPosts
-  }),
-  {
-    resetNumNewPosts
-  }
-)(Stories);

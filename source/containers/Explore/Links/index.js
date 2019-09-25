@@ -5,14 +5,13 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 Links.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-function Links({ location }) {
+export default function Links({ location }) {
   const {
     explore: {
       state: {
@@ -98,7 +97,3 @@ function Links({ location }) {
     return onFetchMoreLinks({ links, loadMoreButton });
   }
 }
-
-export default connect(state => ({
-  notificationLoaded: state.NotiReducer.loaded
-}))(Links);

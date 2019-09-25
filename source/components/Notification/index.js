@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
 import { defaultChatSubject } from 'constants/defaultValues';
-import {
-  clearNotifications,
-  onFetchNotifications
-} from 'redux/actions/NotiActions';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
@@ -18,33 +13,23 @@ import { useAppContext } from 'context';
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   className: PropTypes.string,
-  clearNotifications: PropTypes.func.isRequired,
-  currentChatSubject: PropTypes.object,
-  onFetchNotifications: PropTypes.func.isRequired,
-  loadMore: PropTypes.object,
   location: PropTypes.string,
-  numNewNotis: PropTypes.number,
-  notifications: PropTypes.array,
-  rewards: PropTypes.array,
-  style: PropTypes.object,
-  totalRewardAmount: PropTypes.number
+  style: PropTypes.object
 };
 
-function Notification({
-  children,
-  className,
-  clearNotifications,
-  currentChatSubject: { content = defaultChatSubject, loaded, ...subject },
-  onFetchNotifications,
-  loadMore,
-  location,
-  numNewNotis,
-  notifications,
-  rewards,
-  style,
-  totalRewardAmount
-}) {
+export default function Notification({ children, className, location, style }) {
   const {
+    notification: {
+      state: {
+        loadMore,
+        notifications,
+        numNewNotis,
+        rewards,
+        totalRewardAmount,
+        currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
+      },
+      actions: { onClearNotifications, onFetchNotifications }
+    },
     user: {
       state: { userId }
     },
@@ -58,7 +43,7 @@ function Notification({
     if (userId) {
       handleFetchNotifications();
     } else {
-      clearNotifications();
+      onClearNotifications();
       handleFetchNotifications();
     }
   }, [userId]);
@@ -176,15 +161,3 @@ function Notification({
     onFetchNotifications(data);
   }
 }
-
-export default connect(
-  state => ({
-    loadMore: state.NotiReducer.loadMore,
-    notifications: state.NotiReducer.notifications,
-    numNewNotis: state.NotiReducer.numNewNotis,
-    rewards: state.NotiReducer.rewards,
-    totalRewardAmount: state.NotiReducer.totalRewardAmount,
-    currentChatSubject: state.NotiReducer.currentChatSubject
-  }),
-  { clearNotifications, onFetchNotifications }
-)(Notification);
