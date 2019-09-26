@@ -7,8 +7,6 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import {
-  closeAddPlaylistModal,
-  closeAddVideoModal,
   getInitialVideos,
   onLoadPlaylists,
   openAddVideoModal,
@@ -22,7 +20,6 @@ import { useAppContext } from 'context';
 
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
-  closeAddPlaylistModal: PropTypes.func.isRequired,
   onLoadPlaylists: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   loaded: PropTypes.bool.isRequired,
@@ -39,7 +36,6 @@ Videos.propTypes = {
 
 function Videos({
   addPlaylistModalShown,
-  closeAddPlaylistModal,
   onLoadPlaylists,
   history,
   loaded,
@@ -54,12 +50,15 @@ function Videos({
   setSearchedPlaylists
 }) {
   const {
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
+    explore: {
+      actions: { onCloseAddPlaylistModal }
     },
     user: {
       state: { userId }
+    },
+    view: {
+      state: { scrollPositions },
+      actions: { onRecordScrollPosition }
     },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
@@ -130,7 +129,7 @@ function Videos({
       {addPlaylistModalShown && (
         <AddPlaylistModal
           postPlaylist={postPlaylist}
-          onHide={closeAddPlaylistModal}
+          onHide={onCloseAddPlaylistModal}
           focusPlaylistPanelAfterUpload={() =>
             scrollElementToCenter(AllPlaylistsPanelRef.current, 150)
           }
@@ -167,8 +166,6 @@ export default connect(
     openAddVideoModal,
     openAddPlaylistModal,
     setSearchedPlaylists,
-    closeAddPlaylistModal,
-    closeAddVideoModal,
     postPlaylist
   }
 )(Videos);

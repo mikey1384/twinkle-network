@@ -155,7 +155,6 @@ function AllVideosPanel({
 export default connect(
   state => ({
     loaded: state.VideoReducer.loaded,
-    loadMoreButton: state.VideoReducer.loadMoreVideosButton,
     videos: state.VideoReducer.allVideoThumbs
   }),
   {

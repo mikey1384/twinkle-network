@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  changeByUserStatusForThumbs,
   editVideoThumbs,
   likeVideo,
   setRewardLevel
@@ -32,7 +31,6 @@ import { css } from 'emotion';
 import { useAppContext } from 'context';
 
 VideoPage.propTypes = {
-  changeByUserStatusForThumbs: PropTypes.func.isRequired,
   editVideoThumbs: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   likeVideo: PropTypes.func.isRequired,
@@ -42,7 +40,6 @@ VideoPage.propTypes = {
 };
 
 function VideoPage({
-  changeByUserStatusForThumbs,
   editVideoThumbs,
   history,
   likeVideo,
@@ -95,6 +92,9 @@ function VideoPage({
         onUploadReply,
         onUploadSubject
       }
+    },
+    explore: {
+      actions: { onChangeVideoByUserStatus }
     },
     user: {
       state: { authLevel, canEdit, userId }
@@ -457,7 +457,7 @@ function VideoPage({
 
   function handleChangeByUserStatus({ contentId, contentType, byUser }) {
     onSetByUserStatus({ contentId, contentType, byUser });
-    changeByUserStatusForThumbs({ videoId: Number(contentId), byUser });
+    onChangeVideoByUserStatus({ videoId: Number(contentId), byUser });
   }
 
   function handleLikeVideo(likes, videoId) {
@@ -529,5 +529,5 @@ function VideoPage({
 
 export default connect(
   null,
-  { changeByUserStatusForThumbs, editVideoThumbs, likeVideo, setRewardLevel }
+  { editVideoThumbs, likeVideo, setRewardLevel }
 )(VideoPage);

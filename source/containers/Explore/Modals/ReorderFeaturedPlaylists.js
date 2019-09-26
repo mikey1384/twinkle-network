@@ -4,25 +4,24 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import { objectify } from 'helpers';
-import { connect } from 'react-redux';
-import { changePinnedPlaylists } from 'redux/actions/VideoActions';
 import { isEqual } from 'lodash';
 import { useAppContext } from 'context';
 
 ReorderFeaturedPlaylists.propTypes = {
   pinnedPlaylists: PropTypes.array.isRequired,
   playlistIds: PropTypes.array.isRequired,
-  onHide: PropTypes.func.isRequired,
-  changePinnedPlaylists: PropTypes.func.isRequired
+  onHide: PropTypes.func.isRequired
 };
 
-function ReorderFeaturedPlaylists({
-  changePinnedPlaylists,
+export default function ReorderFeaturedPlaylists({
   onHide,
   pinnedPlaylists: playlists,
   playlistIds: initialPlaylistIds
 }) {
   const {
+    explore: {
+      actions: { onChangePinnedPlaylists }
+    },
     requestHelpers: { uploadFeaturedPlaylists }
   } = useAppContext();
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
@@ -71,12 +70,7 @@ function ReorderFeaturedPlaylists({
     const newSelectedPlaylists = await uploadFeaturedPlaylists({
       selectedPlaylists: playlistIds
     });
-    changePinnedPlaylists(newSelectedPlaylists);
+    onChangePinnedPlaylists(newSelectedPlaylists);
     onHide();
   }
 }
-
-export default connect(
-  null,
-  { changePinnedPlaylists }
-)(ReorderFeaturedPlaylists);

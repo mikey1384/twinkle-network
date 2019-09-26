@@ -7,8 +7,6 @@ import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
 import { connect } from 'react-redux';
 import {
-  closeReorderFeaturedPlaylists,
-  closeSelectPlaylistsToPinModal,
   onLoadMorePlaylistList,
   getPinnedPlaylists,
   openReorderFeaturedPlaylists,
@@ -17,8 +15,6 @@ import {
 import { useAppContext } from 'context';
 
 FeaturedPlaylistsPanel.propTypes = {
-  closeReorderFeaturedPlaylists: PropTypes.func.isRequired,
-  closeSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   featuredPlaylists: PropTypes.array.isRequired,
   getPinnedPlaylists: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,
@@ -33,8 +29,6 @@ FeaturedPlaylistsPanel.propTypes = {
 };
 
 function FeaturedPlaylistsPanel({
-  closeReorderFeaturedPlaylists,
-  closeSelectPlaylistsToPinModal,
   featuredPlaylists,
   getPinnedPlaylists,
   loaded,
@@ -48,6 +42,12 @@ function FeaturedPlaylistsPanel({
   selectPlaylistsToPinModalShown
 }) {
   const {
+    explore: {
+      actions: {
+        onCloseReorderFeaturedPlaylists,
+        onCloseSelectPlaylistsToPinModal
+      }
+    },
     user: {
       state: { canPinPlaylists, userId }
     },
@@ -104,14 +104,14 @@ function FeaturedPlaylistsPanel({
           })}
           loadMorePlaylists={handleLoadMorePlaylistList}
           loadMoreButton={loadMorePlaylistsToPinButton}
-          onHide={closeSelectPlaylistsToPinModal}
+          onHide={onCloseSelectPlaylistsToPinModal}
         />
       )}
       {reorderFeaturedPlaylistsShown && (
         <ReorderFeaturedPlaylists
           pinnedPlaylists={featuredPlaylists}
           playlistIds={featuredPlaylists.map(playlist => playlist.id)}
-          onHide={closeReorderFeaturedPlaylists}
+          onHide={onCloseReorderFeaturedPlaylists}
         />
       )}
     </ErrorBoundary>
@@ -143,8 +143,6 @@ export default connect(
   }),
   {
     onLoadMorePlaylistList,
-    closeReorderFeaturedPlaylists,
-    closeSelectPlaylistsToPinModal,
     getPinnedPlaylists,
     openReorderFeaturedPlaylists,
     onOpenSelectPlaylistsToPinModal

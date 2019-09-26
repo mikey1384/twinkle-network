@@ -3,8 +3,6 @@ import VIDEO from '../constants/Video';
 const defaultState = {
   loaded: false,
   allVideoThumbs: [],
-  loadMoreVideosButton: false,
-  allVideosLoaded: false,
   addVideoModalShown: false,
   currentVideoSlot: null,
 
@@ -26,100 +24,10 @@ const defaultState = {
 export default function VideoReducer(state = defaultState, action) {
   let loadMorePlaylistsToPinButton = false;
   switch (action.type) {
-    case VIDEO.CHANGE_BY_USER_STATUS:
-      return {
-        ...state,
-        allVideoThumbs: state.allVideoThumbs.map(video =>
-          video.id === action.videoId
-            ? {
-                ...video,
-                byUser: action.byUser
-              }
-            : video
-        ),
-        pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
-          ...playlist,
-          playlist: playlist.playlist.map(video =>
-            video.videoId === action.videoId
-              ? {
-                  ...video,
-                  byUser: action.byUser
-                }
-              : video
-          )
-        })),
-        allPlaylists: state.allPlaylists.map(playlist => ({
-          ...playlist,
-          playlist: playlist.playlist.map(video =>
-            video.videoId === action.videoId
-              ? {
-                  ...video,
-                  byUser: action.byUser
-                }
-              : video
-          )
-        })),
-        searchedPlaylists: state.searchedPlaylists.map(playlist => ({
-          ...playlist,
-          playlist: playlist.playlist.map(video =>
-            video.videoId === action.videoId
-              ? {
-                  ...video,
-                  byUser: action.byUser
-                }
-              : video
-          )
-        }))
-      };
     case VIDEO.CHANGE_PINNED_PLAYLISTS:
       return {
         ...state,
         pinnedPlaylists: action.data
-      };
-    case VIDEO.CHANGE_PLAYLIST_VIDEOS:
-      return {
-        ...state,
-        pinnedPlaylists: state.pinnedPlaylists.map(playlist =>
-          playlist.id === action.playlist.id
-            ? { ...playlist, ...action.playlist }
-            : playlist
-        ),
-        allPlaylists: state.allPlaylists.map(playlist =>
-          playlist.id === action.playlist.id
-            ? { ...playlist, ...action.playlist }
-            : playlist
-        ),
-        searchedPlaylists: state.searchedPlaylists.map(playlist =>
-          playlist.id === action.playlist.id
-            ? { ...playlist, ...action.playlist }
-            : playlist
-        )
-      };
-    case VIDEO.CLEAR_LOADED:
-      return {
-        ...state,
-        loaded: false
-      };
-    case VIDEO.CLOSE_MODAL:
-      return {
-        ...state,
-        addVideoModalShown: false
-      };
-    case VIDEO.CLOSE_PLAYLIST_MODAL:
-      return {
-        ...state,
-        addPlaylistModalShown: false
-      };
-    case VIDEO.CLOSE_REORDER_PINNED_PL_MODAL:
-      return {
-        ...state,
-        reorderFeaturedPlaylistsShown: false
-      };
-    case VIDEO.CLOSE_SELECT_PL_TO_PIN_MODAL:
-      return {
-        ...state,
-        loadMorePlaylistsToPinButton: false,
-        selectPlaylistsToPinModalShown: false
       };
     case VIDEO.DELETE:
       const newVideoThumbs = state.allVideoThumbs;
@@ -127,19 +35,6 @@ export default function VideoReducer(state = defaultState, action) {
       return {
         ...state,
         allVideoThumbs: newVideoThumbs.concat(action.data)
-      };
-    case VIDEO.DELETE_PLAYLIST:
-      return {
-        ...state,
-        pinnedPlaylists: state.pinnedPlaylists.filter(
-          playlist => playlist.id !== action.data
-        ),
-        allPlaylists: state.allPlaylists.filter(
-          playlist => playlist.id !== action.data
-        ),
-        searchedPlaylists: state.searchedPlaylists.filter(
-          playlist => playlist.id !== action.data
-        )
       };
     case VIDEO.EDIT_PLAYLIST_TITLE:
       return {
@@ -275,12 +170,7 @@ export default function VideoReducer(state = defaultState, action) {
     case VIDEO.LOAD:
       return {
         ...state,
-        loaded: true,
-        allVideoThumbs: action.initialRun
-          ? action.videos
-          : state.allVideoThumbs.concat(action.videos),
-        loadMoreVideosButton: action.loadMoreButton,
-        allVideosLoaded: !action.loadMoreButton
+        loaded: true
       };
     case VIDEO.LOAD_FEATURED_PLAYLISTS:
       return {
@@ -389,26 +279,6 @@ export default function VideoReducer(state = defaultState, action) {
         ...state,
         searchedPlaylists: action.playlists,
         loadMoreSearchedPlaylistsButton: action.loadMoreButton
-      };
-    case VIDEO.TURN_OFF_CLICK_SAFE:
-      return {
-        ...state,
-        clickSafe: false
-      };
-    case VIDEO.TURN_ON_CLICK_SAFE:
-      return {
-        ...state,
-        clickSafe: true
-      };
-    case VIDEO.UPLOAD:
-      const newState = [action.data].concat(state.allVideoThumbs);
-      if (!state.allVideosLoaded) {
-        newState.pop();
-      }
-      return {
-        ...state,
-        allVideoThumbs: newState,
-        addVideoModalShown: false
       };
     case VIDEO.UPLOAD_PLAYLIST:
       return {

@@ -11,10 +11,65 @@ export default function ExploreActions(dispatch) {
         type: 'CLEAR_LINKS_LOADED'
       });
     },
+    onChangePinnedPlaylists(playlists) {
+      return dispatch({
+        type: 'CHANGE_PINNED_PLAYLISTS',
+        data: playlists
+      });
+    },
+    onChangePlaylistVideos(playlist) {
+      return dispatch({
+        type: 'CHANGE_PLAYLIST_VIDEOS',
+        playlist
+      });
+    },
+    onChangeVideoByUserStatus({ videoId, byUser }) {
+      return dispatch({
+        type: 'CHANGE_VIDEO_BY_USER_STATUS',
+        videoId,
+        byUser
+      });
+    },
+    onClearVideosLoaded() {
+      return dispatch({
+        type: 'CLEAR_VIDEOS_LOADED'
+      });
+    },
+    onClickSafeOff() {
+      return dispatch({
+        type: 'TURN_OFF_CLICK_SAFE'
+      });
+    },
+    onClickSafeOn() {
+      return dispatch({
+        type: 'TURN_ON_CLICK_SAFE'
+      });
+    },
+    onCloseAddPlaylistModal() {
+      return dispatch({
+        type: 'CLOSE_PLAYLIST_MODAL'
+      });
+    },
+    onCloseReorderFeaturedPlaylists() {
+      return dispatch({
+        type: 'CLOSE_REORDER_PINNED_PL_MODAL'
+      });
+    },
+    onCloseSelectPlaylistsToPinModal() {
+      return dispatch({
+        type: 'CLOSE_SELECT_PL_TO_PIN_MODAL'
+      });
+    },
     onDeleteLink(linkId) {
       return dispatch({
         type: 'DELETE_LINK',
         linkId
+      });
+    },
+    onDeletePlaylist(playlistId) {
+      return dispatch({
+        type: 'DELETE_PLAYLIST',
+        data: playlistId
       });
     },
     onEditLinkPage({ id, title, content }) {

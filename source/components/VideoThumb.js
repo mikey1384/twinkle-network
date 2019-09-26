@@ -1,8 +1,5 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import DropdownButton from './Buttons/DropdownButton';
-import EditTitleForm from './Texts/EditTitleForm';
-import ConfirmModal from './Modals/ConfirmModal';
 import UsernameText from './Texts/UsernameText';
 import Link from 'components/Link';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -13,20 +10,11 @@ import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { charLimit } from 'constants/defaultValues';
-import { onEditVideoTitle, onDeleteVideo } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 VideoThumb.propTypes = {
-  arrayIndex: PropTypes.number,
   className: PropTypes.string,
   clickSafe: PropTypes.bool,
-  deletable: PropTypes.bool,
-  onDeleteVideo: PropTypes.func.isRequired,
-  editable: PropTypes.bool,
-  onEditVideoTitle: PropTypes.func,
-  lastVideoId: PropTypes.number,
   style: PropTypes.object,
   to: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
@@ -40,43 +28,14 @@ VideoThumb.propTypes = {
   }).isRequired
 };
 
-function VideoThumb({
-  arrayIndex,
-  className,
-  clickSafe,
-  deletable,
-  onDeleteVideo,
-  editable,
-  onEditVideoTitle,
-  lastVideoId,
-  style,
-  to,
-  user,
-  video
-}) {
+function VideoThumb({ className, clickSafe, style, to, user, video }) {
   const {
     user: {
       state: { profileTheme }
-    },
-    requestHelpers: { deleteVideo, editContent }
+    }
   } = useAppContext();
-  const [onEdit, setOnEdit] = useState(false);
-  const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
-  const menuProps = [];
-  if (editable) {
-    menuProps.push({
-      label: 'Edit',
-      onClick: onEditTitle
-    });
-  }
-  if (deletable || editable) {
-    menuProps.push({
-      label: 'Remove',
-      onClick: onDeleteClick
-    });
-  }
 
   return (
     <ErrorBoundary style={style}>
@@ -96,19 +55,6 @@ function VideoThumb({
           }
         `}`}
       >
-        {(deletable || editable) && (
-          <DropdownButton
-            style={{
-              position: 'absolute',
-              zIndex: '1'
-            }}
-            direction="left"
-            skeuomorphic
-            color="darkerGray"
-            noBorderRadius
-            menuProps={menuProps}
-          />
-        )}
         <div style={{ width: '100%' }}>
           <Link to={`/${to}`} onClickAsync={onLinkClick}>
             <VideoThumbImage
@@ -129,61 +75,39 @@ function VideoThumb({
             padding: '0 1rem'
           }}
         >
-          {onEdit ? (
-            <div
+          <div
+            onMouseOver={onMouseOver}
+            onMouseLeave={() => setOnTitleHover(false)}
+            style={{ width: '100%' }}
+          >
+            <p
+              ref={ThumbLabelRef}
               style={{
-                paddingTop: '0.5rem',
-                paddingBottom: '0.5rem'
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                lineHeight: 'normal'
               }}
             >
-              <EditTitleForm
-                autoFocus
-                inputStyle={{ fontSize: '1.3rem' }}
-                maxLength={charLimit.video.title}
-                title={video.title}
-                onEditSubmit={onEditedTitleSubmit}
-                onClickOutSide={onEditTitleCancel}
-              />
-            </div>
-          ) : (
-            <div
-              onMouseOver={onMouseOver}
-              onMouseLeave={() => setOnTitleHover(false)}
-              style={{ width: '100%' }}
-            >
-              <p
-                ref={ThumbLabelRef}
+              <a
                 style={{
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  lineHeight: 'normal'
+                  color: video.byUser ? Color[profileTheme](0.9) : Color.blue()
                 }}
+                href={`/${to}`}
+                onClick={onLinkClick}
               >
-                <a
-                  style={{
-                    color: video.byUser
-                      ? Color[profileTheme](0.9)
-                      : Color.blue()
-                  }}
-                  href={`/${to}`}
-                  onClick={onLinkClick}
-                >
-                  {cleanString(video.title)}
-                </a>
-              </p>
-              <FullTextReveal
-                show={onTitleHover}
-                text={cleanString(video.title)}
-              />
-            </div>
-          )}
+                {cleanString(video.title)}
+              </a>
+            </p>
+            <FullTextReveal
+              show={onTitleHover}
+              text={cleanString(video.title)}
+            />
+          </div>
           <div style={{ width: '100%', fontSize: '1.2rem' }}>
-            {!onEdit && (
-              <div className="username">
-                Added by <UsernameText user={user} />
-              </div>
-            )}
+            <div className="username">
+              Added by <UsernameText user={user} />
+            </div>
             {video.likes?.length > 0 && (
               <div style={{ marginTop: '0.5rem' }}>
                 <Icon icon="thumbs-up" />
@@ -194,64 +118,14 @@ function VideoThumb({
           </div>
         </div>
       </div>
-      {confirmModalShown && (
-        <ConfirmModal
-          title="Remove Video"
-          onHide={onHideModal}
-          onConfirm={onDeleteConfirm}
-        />
-      )}
     </ErrorBoundary>
   );
-
   function onLinkClick() {
     return Promise.resolve(clickSafe);
   }
-
-  function onEditTitle() {
-    setOnEdit(true);
-  }
-
-  async function onEditedTitleSubmit(title) {
-    const videoId = video.id;
-    await editContent({
-      contentType: 'video',
-      contentId: videoId,
-      editedTitle: title
-    });
-    onEditVideoTitle({ videoId, title });
-    setOnEdit(false);
-  }
-
-  function onEditTitleCancel() {
-    setOnEdit(false);
-  }
-
-  function onDeleteClick() {
-    setConfirmModalShown(true);
-  }
-
-  async function onDeleteConfirm() {
-    const videoId = video.id;
-    const data = await deleteVideo({ videoId, lastVideoId });
-    onDeleteVideo({ arrayIndex, data });
-  }
-
-  function onHideModal() {
-    setConfirmModalShown(false);
-  }
-
   function onMouseOver() {
     if (textIsOverflown(ThumbLabelRef.current)) {
       setOnTitleHover(true);
     }
   }
 }
-
-export default connect(
-  null,
-  {
-    onEditVideoTitle,
-    onDeleteVideo
-  }
-)(VideoThumb);

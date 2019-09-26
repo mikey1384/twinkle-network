@@ -6,11 +6,10 @@ import ProgressBar from 'components/ProgressBar';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import * as d3Ease from 'd3-ease';
-import { connect } from 'react-redux';
-import { clickSafeOn, clickSafeOff } from 'redux/actions/VideoActions';
 import { Animate } from 'react-move';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import { useAppContext } from 'context';
 
 Carousel.propTypes = {
   afterSlide: PropTypes.func,
@@ -19,9 +18,6 @@ Carousel.propTypes = {
   children: PropTypes.array.isRequired,
   cellSpacing: PropTypes.number,
   className: PropTypes.string,
-  clickSafe: PropTypes.bool,
-  clickSafeOn: PropTypes.func,
-  clickSafeOff: PropTypes.func,
   framePadding: PropTypes.string,
   onFinish: PropTypes.func,
   onShowAll: PropTypes.func,
@@ -37,16 +33,13 @@ Carousel.propTypes = {
   userIsUploader: PropTypes.bool
 };
 
-function Carousel({
+export default function Carousel({
   allowDrag = true,
   afterSlide = () => {},
   beforeSlide = () => {},
   className,
-  clickSafe,
   cellSpacing = 0,
   children,
-  clickSafeOn,
-  clickSafeOff,
   framePadding = '0px',
   onFinish,
   onShowAll,
@@ -61,6 +54,14 @@ function Carousel({
   userCanEditThis,
   userIsUploader
 }) {
+  const {
+    explore: {
+      state: {
+        videos: { clickSafe }
+      },
+      actions: { onClickSafeOff, onClickSafeOn }
+    }
+  } = useAppContext();
   const DEFAULT_DURATION = 300;
   const DEFAULT_EASING = 'easeCircleOut';
   const DEFAULT_EDGE_EASING = 'easeElasticOut';
@@ -396,9 +397,9 @@ function Carousel({
 
   function handleSwipe() {
     if (typeof touchObject.length !== 'undefined' && touchObject.length > 44) {
-      clickSafeOn();
+      onClickSafeOn();
     } else {
-      clickSafeOff();
+      onClickSafeOff();
     }
     if (touchObject.length > slideWidth / slidesToShow / 5) {
       if (touchObject.direction === 1) {
@@ -478,10 +479,3 @@ function Carousel({
     return 0;
   }
 }
-
-export default connect(
-  state => ({
-    clickSafe: state.VideoReducer.clickSafe
-  }),
-  { clickSafeOn, clickSafeOff }
-)(Carousel);

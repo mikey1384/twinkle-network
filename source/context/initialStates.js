@@ -35,10 +35,6 @@ export const initialExploreState = {
   },
   videos: {
     loaded: false,
-    allVideoThumbs: [],
-    loadMoreVideosButton: false,
-    allVideosLoaded: false,
-    addVideoModalShown: false,
     currentVideoSlot: null,
     addPlaylistModalShown: false,
     allPlaylists: [],

@@ -3,8 +3,6 @@ import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import { connect } from 'react-redux';
-import { changePlaylistVideos } from 'redux/actions/VideoActions';
 import Loading from 'components/Loading';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import SortableThumb from 'components/SortableThumb';
@@ -20,7 +18,6 @@ import { isMobile, objectify } from 'helpers';
 import { useAppContext } from 'context';
 
 EditPlaylistModal.propTypes = {
-  changePlaylistVideos: PropTypes.func.isRequired,
   modalType: PropTypes.string.isRequired,
   numPlaylistVids: PropTypes.number.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -29,14 +26,16 @@ EditPlaylistModal.propTypes = {
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-function EditPlaylistModal({
-  changePlaylistVideos,
+export default function EditPlaylistModal({
   modalType,
   numPlaylistVids,
   onHide,
   playlistId
 }) {
   const {
+    explore: {
+      actions: { onChangePlaylistVideos }
+    },
     requestHelpers: {
       editPlaylistVideos,
       loadPlaylistVideos,
@@ -329,7 +328,7 @@ function EditPlaylistModal({
             ),
             playlistId
           });
-    await changePlaylistVideos(playlist);
+    onChangePlaylistVideos(playlist);
     onHide();
   }
 
@@ -542,8 +541,3 @@ function EditPlaylistModal({
     setIsLoading(false);
   }
 }
-
-export default connect(
-  null,
-  { changePlaylistVideos }
-)(EditPlaylistModal);
