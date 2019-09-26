@@ -32,6 +32,27 @@ export const initialExploreState = {
     results: [],
     loadMoreButton: false,
     searchText: ''
+  },
+  videos: {
+    loaded: false,
+    allVideoThumbs: [],
+    loadMoreVideosButton: false,
+    allVideosLoaded: false,
+    addVideoModalShown: false,
+    currentVideoSlot: null,
+    addPlaylistModalShown: false,
+    allPlaylists: [],
+    searchedPlaylists: [],
+    pinnedPlaylists: [],
+    allPlaylistsLoaded: false,
+    pinnedPlaylistsLoaded: false,
+    loadMorePlaylistsButton: false,
+    selectPlaylistsToPinModalShown: false,
+    loadMorePlaylistsToPinButton: false,
+    loadMoreSearchedPlaylistsButton: false,
+    playlistsToPin: [],
+    reorderFeaturedPlaylistsShown: false,
+    clickSafe: true
   }
 };
 export const initialHomeInputState = {
@@ -130,27 +151,6 @@ export const initialUserState = {
   searchedProfiles: [],
   signinModalShown: false,
   loadMoreButton: false
-};
-export const initialVideoState = {
-  loaded: false,
-  allVideoThumbs: [],
-  loadMoreVideosButton: false,
-  allVideosLoaded: false,
-  addVideoModalShown: false,
-  currentVideoSlot: null,
-  addPlaylistModalShown: false,
-  allPlaylists: [],
-  searchedPlaylists: [],
-  pinnedPlaylists: [],
-  allPlaylistsLoaded: false,
-  pinnedPlaylistsLoaded: false,
-  loadMorePlaylistsButton: false,
-  selectPlaylistsToPinModalShown: false,
-  loadMorePlaylistsToPinButton: false,
-  loadMoreSearchedPlaylistsButton: false,
-  playlistsToPin: [],
-  reorderFeaturedPlaylistsShown: false,
-  clickSafe: true
 };
 export const initialViewState = {
   pageVisible: true,
