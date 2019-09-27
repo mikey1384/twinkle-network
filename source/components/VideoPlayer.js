@@ -6,12 +6,7 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
-import { connect } from 'react-redux';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import {
-  fillCurrentVideoSlot,
-  emptyCurrentVideoSlot
-} from 'redux/actions/VideoActions';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
 import { useAppContext } from 'context';
@@ -21,9 +16,6 @@ const xp = rewardValue.star;
 
 VideoPlayer.propTypes = {
   byUser: PropTypes.bool,
-  currentVideoSlot: PropTypes.number,
-  emptyCurrentVideoSlot: PropTypes.func,
-  fillCurrentVideoSlot: PropTypes.func,
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
   stretch: PropTypes.bool,
@@ -35,11 +27,8 @@ VideoPlayer.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-function VideoPlayer({
+export default function VideoPlayer({
   byUser,
-  currentVideoSlot,
-  emptyCurrentVideoSlot,
-  fillCurrentVideoSlot,
   rewardLevel,
   hasHqThumb,
   minimized,
@@ -51,6 +40,12 @@ function VideoPlayer({
   videoId
 }) {
   const {
+    explore: {
+      state: {
+        videos: { currentVideoSlot }
+      },
+      actions: { onEmptyCurrentVideoSlot, onFillCurrentVideoSlot }
+    },
     user: {
       actions: { onChangeUserXP },
       state: { profileTheme, twinkleXP, userId }
@@ -374,7 +369,7 @@ function VideoPlayer({
         addVideoView({ videoId, userId });
       }
       if (!currentVideoSlot) {
-        fillCurrentVideoSlot(watchCodeRef.current);
+        onFillCurrentVideoSlot(watchCodeRef.current);
       }
       if (userId) {
         clearInterval(timerRef.current);
@@ -394,7 +389,7 @@ function VideoPlayer({
   function onVideoStop() {
     setPlaying(false);
     clearInterval(timerRef.current);
-    emptyCurrentVideoSlot();
+    onEmptyCurrentVideoSlot();
   }
 
   async function increaseProgress(requiredDurationCap) {
@@ -472,13 +467,3 @@ function VideoPlayer({
     }
   }
 }
-
-export default connect(
-  state => ({
-    currentVideoSlot: state.VideoReducer.currentVideoSlot
-  }),
-  {
-    fillCurrentVideoSlot,
-    emptyCurrentVideoSlot
-  }
-)(VideoPlayer);

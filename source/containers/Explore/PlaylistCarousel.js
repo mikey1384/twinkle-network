@@ -9,8 +9,6 @@ import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Link from 'components/Link';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { onEditPlaylistTitle } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
 import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -19,7 +17,6 @@ import { useAppContext } from 'context';
 
 PlaylistCarousel.propTypes = {
   userIsUploader: PropTypes.bool,
-  onEditPlaylistTitle: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   playlist: PropTypes.array.isRequired,
   showAllButton: PropTypes.bool.isRequired,
@@ -32,8 +29,7 @@ const defaultNumSlides = 5;
 const mobileNumSlides = 4;
 const cellSpacing = 12;
 
-function PlaylistCarousel({
-  onEditPlaylistTitle,
+export default function PlaylistCarousel({
   id: playlistId,
   numPlaylistVids,
   playlist,
@@ -47,7 +43,7 @@ function PlaylistCarousel({
       state: {
         videos: { clickSafe }
       },
-      actions: { onDeletePlaylist }
+      actions: { onDeletePlaylist, onEditPlaylistTitle }
     },
     user: {
       state: { canEdit, canEditPlaylists, profileTheme }
@@ -72,7 +68,6 @@ function PlaylistCarousel({
 
   useEffect(() => {
     addEvent(window, 'resize', onResize);
-
     function onResize() {
       setNumSlides(
         document.documentElement.clientWidth <= 991
@@ -258,10 +253,3 @@ function PlaylistCarousel({
     onDeletePlaylist(playlistId);
   }
 }
-
-export default connect(
-  null,
-  {
-    onEditPlaylistTitle
-  }
-)(PlaylistCarousel);

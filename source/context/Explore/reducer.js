@@ -162,6 +162,85 @@ export default function ExploreReducer(state, action) {
           }))
         }
       };
+    case 'EDIT_PLAYLIST_TITLE':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist => ({
+            ...playlist,
+            title:
+              playlist.id === action.playlistId ? action.title : playlist.title
+          })),
+          allPlaylists: state.videos.allPlaylists.map(playlist => ({
+            ...playlist,
+            title:
+              playlist.id === action.playlistId ? action.title : playlist.title
+          })),
+          searchedPlaylists: state.videos.searchedPlaylists.map(playlist => ({
+            ...playlist,
+            title:
+              playlist.id === action.playlistId ? action.title : playlist.title
+          }))
+        }
+      };
+    case 'EDIT_VIDEO_THUMBS':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.params.videoId
+                ? {
+                    ...video,
+                    video_title: action.params.title,
+                    content: action.params.url
+                  }
+                : video
+            )
+          })),
+          allPlaylists: state.videos.allPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.params.videoId
+                ? {
+                    ...video,
+                    video_title: action.params.title,
+                    content: action.params.url
+                  }
+                : video
+            )
+          })),
+          searchedPlaylists: state.videos.searchedPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.params.videoId
+                ? {
+                    ...video,
+                    video_title: action.params.title,
+                    content: action.params.url
+                  }
+                : video
+            )
+          }))
+        }
+      };
+    case 'EMPTY_CURRENT_VIDEO_SLOT':
+      return {
+        videos: {
+          ...state.videos,
+          currentVideoSlot: null
+        }
+      };
+    case 'FILL_CURRENT_VIDEO_SLOT':
+      return {
+        videos: {
+          ...state.videos,
+          currentVideoSlot: action.videoId
+        }
+      };
     case 'LIKE_LINK':
       return {
         ...state,
@@ -203,6 +282,15 @@ export default function ExploreReducer(state, action) {
           ...state.subjects,
           featured: action.subjects,
           loaded: true
+        }
+      };
+    case 'LOAD_FEATURED_PLAYLISTS':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          pinnedPlaylists: action.playlists,
+          pinnedPlaylistsLoaded: true
         }
       };
     case 'LOAD_SEARCH_RESULTS':

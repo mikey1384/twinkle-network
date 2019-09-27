@@ -7,7 +7,6 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import {
-  getInitialVideos,
   onLoadPlaylists,
   openAddVideoModal,
   openAddPlaylistModal,
@@ -22,7 +21,6 @@ Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
   onLoadPlaylists: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsButton: PropTypes.bool.isRequired,
   loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
@@ -38,7 +36,6 @@ function Videos({
   addPlaylistModalShown,
   onLoadPlaylists,
   history,
-  loaded,
   loadMorePlaylistsButton,
   loadMoreSearchedPlaylistsButton,
   location,
@@ -79,15 +76,13 @@ function Videos({
     init();
 
     async function init() {
-      if (!loaded) {
-        const { results, loadMoreButton } = await loadPlaylists();
-        onLoadPlaylists({
-          playlists: results,
-          loadMoreButton
-        });
-      }
+      const { results, loadMoreButton } = await loadPlaylists();
+      onLoadPlaylists({
+        playlists: results,
+        loadMoreButton
+      });
     }
-  }, [loaded]);
+  }, []);
 
   const playlists = !stringIsEmpty(searchText)
     ? searchedPlaylists
@@ -152,7 +147,6 @@ export default connect(
   state => ({
     addPlaylistModalShown: state.VideoReducer.addPlaylistModalShown,
     addVideoModalShown: state.VideoReducer.addVideoModalShown,
-    loaded: state.VideoReducer.loaded,
     loadMorePlaylistsButton: state.VideoReducer.loadMorePlaylistsButton,
     loadMoreSearchedPlaylistsButton:
       state.VideoReducer.loadMoreSearchedPlaylistsButton,
@@ -162,7 +156,6 @@ export default connect(
   }),
   {
     onLoadPlaylists,
-    getInitialVideos,
     openAddVideoModal,
     openAddPlaylistModal,
     setSearchedPlaylists,

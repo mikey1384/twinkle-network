@@ -1,11 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  editVideoThumbs,
-  likeVideo,
-  setRewardLevel
-} from 'redux/actions/VideoActions';
+import { likeVideo, setRewardLevel } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
 import VideoPlayer from 'components/VideoPlayer';
@@ -31,7 +27,6 @@ import { css } from 'emotion';
 import { useAppContext } from 'context';
 
 VideoPage.propTypes = {
-  editVideoThumbs: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   likeVideo: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
@@ -40,7 +35,6 @@ VideoPage.propTypes = {
 };
 
 function VideoPage({
-  editVideoThumbs,
   history,
   likeVideo,
   location: { search },
@@ -94,7 +88,7 @@ function VideoPage({
       }
     },
     explore: {
-      actions: { onChangeVideoByUserStatus }
+      actions: { onChangeVideoByUserStatus, onEditVideoThumbs }
     },
     user: {
       state: { authLevel, canEdit, userId }
@@ -448,7 +442,7 @@ function VideoPage({
         content: url
       }
     });
-    editVideoThumbs({
+    onEditVideoThumbs({
       videoId: Number(params.videoId),
       title: params.title,
       url
@@ -529,5 +523,5 @@ function VideoPage({
 
 export default connect(
   null,
-  { editVideoThumbs, likeVideo, setRewardLevel }
+  { likeVideo, setRewardLevel }
 )(VideoPage);

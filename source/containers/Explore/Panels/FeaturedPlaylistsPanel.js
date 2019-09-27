@@ -8,7 +8,6 @@ import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
 import { connect } from 'react-redux';
 import {
   onLoadMorePlaylistList,
-  getPinnedPlaylists,
   openReorderFeaturedPlaylists,
   onOpenSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
@@ -16,8 +15,6 @@ import { useAppContext } from 'context';
 
 FeaturedPlaylistsPanel.propTypes = {
   featuredPlaylists: PropTypes.array.isRequired,
-  getPinnedPlaylists: PropTypes.func.isRequired,
-  loaded: PropTypes.bool.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
   onLoadMorePlaylistList: PropTypes.func.isRequired,
   openReorderFeaturedPlaylists: PropTypes.func.isRequired,
@@ -30,8 +27,6 @@ FeaturedPlaylistsPanel.propTypes = {
 
 function FeaturedPlaylistsPanel({
   featuredPlaylists,
-  getPinnedPlaylists,
-  loaded,
   onLoadMorePlaylistList,
   loadMorePlaylistsToPinButton,
   openReorderFeaturedPlaylists,
@@ -45,7 +40,8 @@ function FeaturedPlaylistsPanel({
     explore: {
       actions: {
         onCloseReorderFeaturedPlaylists,
-        onCloseSelectPlaylistsToPinModal
+        onCloseSelectPlaylistsToPinModal,
+        onGetPinnedPlaylists
       }
     },
     user: {
@@ -60,12 +56,10 @@ function FeaturedPlaylistsPanel({
   useEffect(() => {
     init();
     async function init() {
-      if (!loaded) {
-        const playlists = await loadFeaturedPlaylists();
-        getPinnedPlaylists(playlists);
-      }
+      const playlists = await loadFeaturedPlaylists();
+      onGetPinnedPlaylists(playlists);
     }
-  }, [loaded]);
+  }, []);
   const menuButtons = [
     {
       label: 'Select Playlists',
@@ -130,7 +124,6 @@ function FeaturedPlaylistsPanel({
 
 export default connect(
   state => ({
-    loaded: state.VideoReducer.loaded,
     loadMorePlaylistsToPinButton:
       state.VideoReducer.loadMorePlaylistsToPinButton,
     featuredPlaylists: state.VideoReducer.pinnedPlaylists,
@@ -143,7 +136,6 @@ export default connect(
   }),
   {
     onLoadMorePlaylistList,
-    getPinnedPlaylists,
     openReorderFeaturedPlaylists,
     onOpenSelectPlaylistsToPinModal
   }

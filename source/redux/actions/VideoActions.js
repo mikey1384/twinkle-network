@@ -1,50 +1,5 @@
 import VIDEO from '../constants/Video';
 
-export const onEditPlaylistTitle = ({ playlistId, title }) => ({
-  type: VIDEO.EDIT_PLAYLIST_TITLE,
-  playlistId,
-  title
-});
-
-export const editVideoThumbs = params => ({
-  type: VIDEO.EDIT_THUMBS,
-  params
-});
-
-export const onEditVideoTitle = ({ videoId, title }) => ({
-  type: VIDEO.EDIT_TITLE,
-  videoId,
-  title
-});
-
-export const emptyCurrentVideoSlot = () => ({
-  type: VIDEO.EMPTY_CURRENT_VIDEO_SLOT
-});
-
-export const fillCurrentVideoSlot = videoId => ({
-  type: VIDEO.FILL_CURRENT_VIDEO_SLOT,
-  videoId
-});
-
-export const getInitialVideos = ({ loadMoreButton, videos }) => ({
-  type: VIDEO.LOAD,
-  initialRun: true,
-  loadMoreButton,
-  videos
-});
-
-export const getMoreVideos = ({ videos, loadMoreButton }) => ({
-  type: VIDEO.LOAD,
-  initialRun: false,
-  loadMoreButton,
-  videos
-});
-
-export const getPinnedPlaylists = playlists => ({
-  type: VIDEO.LOAD_FEATURED_PLAYLISTS,
-  playlists
-});
-
 export const onLoadPlaylists = ({ playlists, loadMoreButton }) => ({
   type: VIDEO.LOAD_PLAYLISTS,
   playlists,

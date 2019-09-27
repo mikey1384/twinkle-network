@@ -86,6 +86,30 @@ export default function ExploreActions(dispatch) {
         data: params
       });
     },
+    onEditPlaylistTitle({ playlistId, title }) {
+      return dispatch({
+        type: 'EDIT_PLAYLIST_TITLE',
+        playlistId,
+        title
+      });
+    },
+    onEditVideoThumbs(params) {
+      return dispatch({
+        type: 'EDIT_VIDEO_THUMBS',
+        params
+      });
+    },
+    onEmptyCurrentVideoSlot() {
+      return dispatch({
+        type: 'EMPTY_CURRENT_VIDEO_SLOT'
+      });
+    },
+    onFillCurrentVideoSlot(videoId) {
+      return dispatch({
+        type: 'FILL_CURRENT_VIDEO_SLOT',
+        videoId
+      });
+    },
     onFetchLinks({ links, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_LINKS',
@@ -98,6 +122,12 @@ export default function ExploreActions(dispatch) {
         type: 'LOAD_MORE_LINKS',
         links,
         loadMoreButton
+      });
+    },
+    onGetPinnedPlaylists(playlists) {
+      return dispatch({
+        type: 'LOAD_FEATURED_PLAYLISTS',
+        playlists
       });
     },
     onLikeLink({ id, likes }) {
