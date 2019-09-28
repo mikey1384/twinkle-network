@@ -10,7 +10,7 @@ SideButtons.propTypes = {
   canStar: PropTypes.bool.isRequired,
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
-  likeVideo: PropTypes.func.isRequired,
+  onLikeVideo: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
@@ -25,7 +25,7 @@ export default function SideButtons({
   changeByUserStatus,
   rewardLevel,
   likes,
-  likeVideo,
+  onLikeVideo,
   setRewardLevel,
   style,
   uploader,
@@ -73,7 +73,7 @@ export default function SideButtons({
             minWidth: '50%',
             maxWidth: '13vw'
           }}
-          onClick={likeVideo}
+          onClick={onLikeVideo}
           liked={(likes => {
             let liked = false;
             if (likes) {

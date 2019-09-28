@@ -14,7 +14,6 @@ import { useAppContext } from 'context';
 
 SelectPlaylistsToPinModal.propTypes = {
   loadMoreButton: PropTypes.bool.isRequired,
-  loadMorePlaylist: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
   pinnedPlaylists: PropTypes.array.isRequired,
@@ -23,7 +22,6 @@ SelectPlaylistsToPinModal.propTypes = {
 
 export default function SelectPlaylistsToPinModal({
   loadMoreButton,
-  loadMorePlaylist,
   onHide,
   pinnedPlaylists,
   playlistsToPin,
@@ -188,10 +186,9 @@ export default function SelectPlaylistsToPinModal({
     </Modal>
   );
 
-  async function handleLoadMore(lastPlaylistId) {
+  async function handleLoadMore() {
     setLoadingMore(true);
     if (stringIsEmpty(searchText)) {
-      await loadMorePlaylist(lastPlaylistId);
       return setLoadingMore(false);
     }
     const { loadMoreButton: loadMoreShown, results } = await searchContent({

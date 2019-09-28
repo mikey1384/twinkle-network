@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { likeVideo, setRewardLevel } from 'redux/actions/VideoActions';
+import { setRewardLevel } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
 import VideoPlayer from 'components/VideoPlayer';
@@ -28,7 +28,6 @@ import { useAppContext } from 'context';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
-  likeVideo: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   setRewardLevel: PropTypes.func.isRequired
@@ -36,7 +35,6 @@ VideoPage.propTypes = {
 
 function VideoPage({
   history,
-  likeVideo,
   location: { search },
   match: {
     params: { videoId: initialVideoId }
@@ -88,7 +86,7 @@ function VideoPage({
       }
     },
     explore: {
-      actions: { onChangeVideoByUserStatus, onEditVideoThumbs }
+      actions: { onChangeVideoByUserStatus, onEditVideoThumbs, onLikeVideo }
     },
     user: {
       state: { authLevel, canEdit, userId }
@@ -303,7 +301,7 @@ function VideoPage({
                 changingPage={changingPage}
                 rewardLevel={rewardLevel}
                 likes={likes}
-                likeVideo={handleLikeVideo}
+                onLikeVideo={handleLikeVideo}
                 content={content}
                 description={description}
                 changeByUserStatus={handleChangeByUserStatus}
@@ -456,7 +454,7 @@ function VideoPage({
 
   function handleLikeVideo(likes, videoId) {
     onLikeContent({ likes, contentType: 'video', contentId: videoId });
-    likeVideo({ likes, videoId });
+    onLikeVideo({ likes, videoId });
   }
 
   function numberCorrect() {
@@ -523,5 +521,5 @@ function VideoPage({
 
 export default connect(
   null,
-  { likeVideo, setRewardLevel }
+  { setRewardLevel }
 )(VideoPage);

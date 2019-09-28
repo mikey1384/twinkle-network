@@ -6,25 +6,17 @@ import FeaturedPlaylistPanel from './Panels/FeaturedPlaylistsPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import {
-  onLoadPlaylists,
-  openAddVideoModal,
-  openAddPlaylistModal,
-  setSearchedPlaylists,
-  postPlaylist
-} from 'redux/actions/VideoActions';
+import { setSearchedPlaylists, postPlaylist } from 'redux/actions/VideoActions';
 import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
 import { useAppContext } from 'context';
 
 Videos.propTypes = {
   addPlaylistModalShown: PropTypes.bool.isRequired,
-  onLoadPlaylists: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   loadMorePlaylistsButton: PropTypes.bool.isRequired,
   loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
-  openAddPlaylistModal: PropTypes.func.isRequired,
   playlists: PropTypes.array.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
   searchedPlaylists: PropTypes.array.isRequired,
@@ -34,12 +26,10 @@ Videos.propTypes = {
 
 function Videos({
   addPlaylistModalShown,
-  onLoadPlaylists,
   history,
   loadMorePlaylistsButton,
   loadMoreSearchedPlaylistsButton,
   location,
-  openAddPlaylistModal,
   playlists: allPlaylists = [],
   postPlaylist,
   playlistsLoaded,
@@ -48,7 +38,11 @@ function Videos({
 }) {
   const {
     explore: {
-      actions: { onCloseAddPlaylistModal }
+      actions: {
+        onCloseAddPlaylistModal,
+        onLoadPlaylists,
+        onOpenAddPlaylistModal
+      }
     },
     user: {
       state: { userId }
@@ -100,7 +94,7 @@ function Videos({
             buttons={[
               {
                 label: '+ Add Playlist',
-                onClick: openAddPlaylistModal,
+                onClick: onOpenAddPlaylistModal,
                 skeuomorphic: true,
                 color: 'darkerGray',
                 disabled: !userId
@@ -155,9 +149,6 @@ export default connect(
     searchedPlaylists: state.VideoReducer.searchedPlaylists
   }),
   {
-    onLoadPlaylists,
-    openAddVideoModal,
-    openAddPlaylistModal,
     setSearchedPlaylists,
     postPlaylist
   }

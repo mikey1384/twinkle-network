@@ -4,8 +4,6 @@ import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { getMorePlaylists } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 PlaylistsPanel.propTypes = {
@@ -13,7 +11,6 @@ PlaylistsPanel.propTypes = {
   buttonGroupShown: PropTypes.bool,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   isSearching: PropTypes.bool,
-  getMorePlaylists: PropTypes.func.isRequired,
   loaded: PropTypes.bool.isRequired,
   loadMoreButton: PropTypes.bool,
   onSearch: PropTypes.func,
@@ -26,7 +23,6 @@ PlaylistsPanel.propTypes = {
 function PlaylistsPanel({
   buttonGroupShown = true,
   buttonGroup,
-  getMorePlaylists,
   isSearching,
   innerRef,
   loaded,
@@ -38,6 +34,9 @@ function PlaylistsPanel({
   userId
 }) {
   const {
+    explore: {
+      actions: { onLoadMorePlaylists }
+    },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
   return (
@@ -78,7 +77,7 @@ function PlaylistsPanel({
           searchText: searchQuery,
           limit: 3
         });
-    getMorePlaylists({
+    onLoadMorePlaylists({
       playlists: results,
       isSearch: !!searchQuery,
       loadMoreButton
@@ -86,7 +85,4 @@ function PlaylistsPanel({
   }
 }
 
-export default connect(
-  null,
-  { getMorePlaylists }
-)(withRouter(PlaylistsPanel));
+export default withRouter(PlaylistsPanel);

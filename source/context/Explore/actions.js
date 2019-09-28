@@ -137,6 +137,13 @@ export default function ExploreActions(dispatch) {
         likes
       });
     },
+    onLikeVideo({ likes, videoId }) {
+      return dispatch({
+        type: 'LIKE_VIDEO',
+        likes,
+        videoId
+      });
+    },
     onLoadFeaturedSubjects(subjects) {
       return dispatch({
         type: 'LOAD_FEATURED_SUBJECTS',
@@ -151,12 +158,32 @@ export default function ExploreActions(dispatch) {
         loadMoreButton
       });
     },
+    onLoadPlaylists({ playlists, loadMoreButton }) {
+      return dispatch({
+        type: 'LOAD_PLAYLISTS',
+        playlists,
+        loadMoreButton
+      });
+    },
+    onLoadMorePlaylists({ playlists, isSearch, loadMoreButton }) {
+      return dispatch({
+        type: 'LOAD_MORE_PLAYLISTS',
+        playlists,
+        isSearch,
+        loadMoreButton
+      });
+    },
     onLoadSearchResults({ filter, results, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_SEARCH_RESULTS',
         filter,
         results,
         loadMoreButton
+      });
+    },
+    openAddPlaylistModal() {
+      return dispatch({
+        type: 'OPEN_PLAYLIST_MODAL'
       });
     },
     onReloadSubjects() {

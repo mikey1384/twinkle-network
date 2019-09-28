@@ -31,11 +31,11 @@ Details.propTypes = {
   description: PropTypes.string,
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
-  likeVideo: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onEditCancel: PropTypes.func.isRequired,
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
+  onLikeVideo: PropTypes.func.isRequired,
   setRewardLevel: PropTypes.func.isRequired,
   tags: PropTypes.array,
   stars: PropTypes.array,
@@ -55,7 +55,6 @@ export default function Details({
   changingPage,
   content,
   rewardLevel,
-  likeVideo,
   userId,
   uploader,
   title,
@@ -65,6 +64,7 @@ export default function Details({
   onEditCancel,
   onEditStart,
   onEditFinish,
+  onLikeVideo,
   tags = [],
   setRewardLevel,
   stars,
@@ -187,7 +187,7 @@ export default function Details({
               changeByUserStatus={changeByUserStatus}
               rewardLevel={rewardLevel}
               likes={likes}
-              likeVideo={likeVideo}
+              onLikeVideo={onLikeVideo}
               setRewardLevel={setRewardLevel}
               uploader={uploader}
               userId={userId}

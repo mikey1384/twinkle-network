@@ -10,11 +10,7 @@ import Search from './Search';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { connect } from 'react-redux';
-import {
-  clearVideosLoaded,
-  openAddPlaylistModal,
-  openAddVideoModal
-} from 'redux/actions/VideoActions';
+import { clearVideosLoaded } from 'redux/actions/VideoActions';
 import { socket } from 'constants/io';
 import { useAppContext } from 'context';
 const Videos = React.lazy(() => import('./Videos'));
@@ -167,8 +163,6 @@ function Explore({ clearVideosLoaded, history, location }) {
 export default connect(
   null,
   {
-    clearVideosLoaded,
-    openAddPlaylistModal,
-    openAddVideoModal
+    clearVideosLoaded
   }
 )(Explore);

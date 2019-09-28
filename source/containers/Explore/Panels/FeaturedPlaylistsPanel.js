@@ -7,7 +7,6 @@ import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
 import { connect } from 'react-redux';
 import {
-  onLoadMorePlaylistList,
   openReorderFeaturedPlaylists,
   onOpenSelectPlaylistsToPinModal
 } from 'redux/actions/VideoActions';
@@ -16,7 +15,6 @@ import { useAppContext } from 'context';
 FeaturedPlaylistsPanel.propTypes = {
   featuredPlaylists: PropTypes.array.isRequired,
   loadMorePlaylistsToPinButton: PropTypes.bool.isRequired,
-  onLoadMorePlaylistList: PropTypes.func.isRequired,
   openReorderFeaturedPlaylists: PropTypes.func.isRequired,
   onOpenSelectPlaylistsToPinModal: PropTypes.func.isRequired,
   playlistsLoaded: PropTypes.bool.isRequired,
@@ -27,7 +25,6 @@ FeaturedPlaylistsPanel.propTypes = {
 
 function FeaturedPlaylistsPanel({
   featuredPlaylists,
-  onLoadMorePlaylistList,
   loadMorePlaylistsToPinButton,
   openReorderFeaturedPlaylists,
   onOpenSelectPlaylistsToPinModal,
@@ -47,11 +44,7 @@ function FeaturedPlaylistsPanel({
     user: {
       state: { canPinPlaylists, userId }
     },
-    requestHelpers: {
-      loadFeaturedPlaylists,
-      loadPlaylistList,
-      loadMorePlaylistList
-    }
+    requestHelpers: { loadFeaturedPlaylists, loadPlaylistList }
   } = useAppContext();
   useEffect(() => {
     init();
@@ -96,7 +89,6 @@ function FeaturedPlaylistsPanel({
           selectedPlaylists={featuredPlaylists.map(playlist => {
             return playlist.id;
           })}
-          loadMorePlaylists={handleLoadMorePlaylistList}
           loadMoreButton={loadMorePlaylistsToPinButton}
           onHide={onCloseSelectPlaylistsToPinModal}
         />
@@ -110,11 +102,6 @@ function FeaturedPlaylistsPanel({
       )}
     </ErrorBoundary>
   );
-
-  async function handleLoadMorePlaylistList(playlistId) {
-    const data = await loadMorePlaylistList(playlistId);
-    onLoadMorePlaylistList(data);
-  }
 
   async function handleOpenSelectPlaylistsToPinModal() {
     const data = await loadPlaylistList();
@@ -135,7 +122,6 @@ export default connect(
       state.VideoReducer.selectPlaylistsToPinModalShown
   }),
   {
-    onLoadMorePlaylistList,
     openReorderFeaturedPlaylists,
     onOpenSelectPlaylistsToPinModal
   }
