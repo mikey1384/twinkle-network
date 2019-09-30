@@ -12,7 +12,7 @@ import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { MessageStyle } from '../Styles';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,

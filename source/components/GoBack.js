@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 GoBack.propTypes = {
   history: PropTypes.object.isRequired

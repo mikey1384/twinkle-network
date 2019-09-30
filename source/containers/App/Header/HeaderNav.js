@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,

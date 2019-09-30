@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { capitalize, hashify } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 TagModal.propTypes = {
   currentPlaylists: PropTypes.array.isRequired,

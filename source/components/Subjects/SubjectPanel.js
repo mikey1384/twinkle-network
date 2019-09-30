@@ -22,7 +22,7 @@ import {
 } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SubjectPanel.propTypes = {
   comments: PropTypes.array.isRequired,

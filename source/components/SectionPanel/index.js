@@ -11,7 +11,7 @@ import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useOutsideClick } from 'helpers/hooks';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SectionPanel.propTypes = {
   canEdit: PropTypes.bool,

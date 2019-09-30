@@ -8,7 +8,7 @@ import NotFound from 'components/NotFound';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Playlist.propTypes = {
   onLinkClick: PropTypes.func,

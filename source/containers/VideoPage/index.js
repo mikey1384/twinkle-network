@@ -22,7 +22,7 @@ import PageTab from './PageTab';
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,

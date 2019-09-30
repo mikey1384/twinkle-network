@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 PlaylistsPanel.propTypes = {
   buttonGroup: PropTypes.func,

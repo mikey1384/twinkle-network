@@ -5,7 +5,7 @@ import TagModal from './TagModal';
 import { hashify } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 TagStatus.propTypes = {
   onAddTags: PropTypes.func.isRequired,

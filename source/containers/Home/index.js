@@ -9,7 +9,7 @@ import HomeMenuItems from 'components/HomeMenuItems';
 import Notification from 'components/Notification';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 const People = React.lazy(() => import('./People'));
 const Stories = React.lazy(() => import('./Stories'));
 

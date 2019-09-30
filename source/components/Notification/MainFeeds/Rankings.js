@@ -9,7 +9,7 @@ import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;

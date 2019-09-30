@@ -10,7 +10,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Comment.propTypes = {
   maxRewardableStars: PropTypes.number.isRequired,

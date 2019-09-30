@@ -14,7 +14,7 @@ import FilterBar from 'components/FilterBar';
 import Button from 'components/Button';
 import request from 'axios';
 import { returnMaxStars } from 'constants/defaultValues';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 XPRewardInterface.propTypes = {

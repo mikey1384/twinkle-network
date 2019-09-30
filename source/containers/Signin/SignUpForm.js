@@ -7,7 +7,7 @@ import Input from 'components/Texts/Input';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import Banner from 'components/Banner';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SignUpForm.propTypes = {
   onShowLoginForm: PropTypes.func.isRequired

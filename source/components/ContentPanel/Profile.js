@@ -4,7 +4,7 @@ import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Profile.propTypes = {
   profile: PropTypes.object.isRequired

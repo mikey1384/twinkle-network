@@ -7,7 +7,7 @@ import Loading from 'components/Loading';
 import { container } from './Styles';
 import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 const WelcomeMessage = React.lazy(() => import('./WelcomeMessage'));
 
 ProfileWidget.propTypes = {

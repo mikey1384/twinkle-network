@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 FileUploadStatusIndicator.propTypes = {
   channelId: PropTypes.number.isRequired,

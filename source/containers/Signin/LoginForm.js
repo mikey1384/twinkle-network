@@ -5,7 +5,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 LoginForm.propTypes = {
   onShowSignupForm: PropTypes.func

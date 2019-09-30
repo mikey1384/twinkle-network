@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,

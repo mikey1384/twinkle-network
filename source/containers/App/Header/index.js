@@ -9,7 +9,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 Header.propTypes = {

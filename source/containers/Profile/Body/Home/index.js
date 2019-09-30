@@ -23,7 +23,7 @@ import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Home.propTypes = {
   selectedTheme: PropTypes.string.isRequired

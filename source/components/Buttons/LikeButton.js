@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 LikeButton.propTypes = {
   className: PropTypes.string,

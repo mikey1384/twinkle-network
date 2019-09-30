@@ -4,7 +4,7 @@ import SubjectPanel from './SubjectPanel';
 import SubjectInputArea from './SubjectInputArea';
 import Button from 'components/Button';
 import LocalContext from './Context';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Subjects.propTypes = {
   className: PropTypes.string,

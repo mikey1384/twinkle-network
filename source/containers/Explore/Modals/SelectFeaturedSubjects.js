@@ -10,7 +10,7 @@ import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SelectFeaturedSubjectsModal.propTypes = {
   onHide: PropTypes.func.isRequired,

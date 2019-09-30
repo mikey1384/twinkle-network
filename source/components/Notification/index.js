@@ -8,7 +8,7 @@ import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),

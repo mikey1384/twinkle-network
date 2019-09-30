@@ -20,7 +20,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled } from 'helpers';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 TargetContent.propTypes = {
   className: PropTypes.string,

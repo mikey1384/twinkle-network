@@ -43,7 +43,7 @@ import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 import App from 'containers/App';
-import { AppContextProvider } from 'context';
+import { AppContextProvider } from 'contexts';
 library.add(
   faAlignJustify,
   faBars,

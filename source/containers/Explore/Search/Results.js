@@ -6,7 +6,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Link from 'components/Link';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Results.propTypes = {
   filter: PropTypes.string.isRequired,

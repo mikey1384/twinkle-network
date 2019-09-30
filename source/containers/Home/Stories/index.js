@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Stories.propTypes = {
   location: PropTypes.object.isRequired

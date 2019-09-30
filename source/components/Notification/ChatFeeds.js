@@ -8,7 +8,7 @@ import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 ChatFeeds.propTypes = {

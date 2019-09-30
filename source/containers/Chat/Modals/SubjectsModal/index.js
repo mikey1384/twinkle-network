@@ -9,7 +9,7 @@ import { Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 import SubjectMsgsModal from '../SubjectMsgsModal';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;

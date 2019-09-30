@@ -16,7 +16,7 @@ import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
-import { useAppContext, useInputContext } from 'context';
+import { useAppContext, useInputContext } from 'contexts';
 
 export default function SubjectInput() {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);

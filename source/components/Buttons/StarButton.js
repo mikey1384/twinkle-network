@@ -6,7 +6,7 @@ import Icon from 'components/Icon';
 import DropdownList from 'components/DropdownList';
 import RewardLevelModal from 'components/Modals/RewardLevelModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 StarButton.propTypes = {
   byUser: PropTypes.bool,

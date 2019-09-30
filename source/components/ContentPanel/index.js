@@ -13,7 +13,7 @@ import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 ContentPanel.propTypes = {

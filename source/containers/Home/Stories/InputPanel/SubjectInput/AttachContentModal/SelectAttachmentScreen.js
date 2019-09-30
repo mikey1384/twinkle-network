@@ -6,7 +6,7 @@ import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SelectAttachmentScreen.propTypes = {
   onSelect: PropTypes.func.isRequired,

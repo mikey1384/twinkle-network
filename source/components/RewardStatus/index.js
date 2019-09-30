@@ -8,7 +8,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Starmarks from './Starmarks';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 RewardStatus.propTypes = {
   className: PropTypes.string,

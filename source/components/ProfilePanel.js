@@ -14,7 +14,7 @@ import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,

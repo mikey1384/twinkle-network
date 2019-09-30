@@ -9,7 +9,7 @@ import LongText from 'components/Texts/LongText';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Comment.propTypes = {
   comment: PropTypes.shape({

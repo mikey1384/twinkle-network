@@ -12,7 +12,7 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 AddLinkModal.propTypes = {
   onHide: PropTypes.func

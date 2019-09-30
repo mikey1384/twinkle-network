@@ -19,7 +19,7 @@ import {
 } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 AddPlaylistModal.propTypes = {
   existingVideoIds: PropTypes.array,

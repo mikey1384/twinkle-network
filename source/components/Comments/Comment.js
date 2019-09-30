@@ -23,7 +23,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
 import LocalContext from './Context';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Comment.propTypes = {
   comment: PropTypes.shape({

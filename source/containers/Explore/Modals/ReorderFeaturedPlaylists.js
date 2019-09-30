@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import { objectify } from 'helpers';
 import { isEqual } from 'lodash';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ReorderFeaturedPlaylists.propTypes = {
   playlistIds: PropTypes.array.isRequired,

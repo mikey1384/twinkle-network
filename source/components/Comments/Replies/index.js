@@ -4,7 +4,7 @@ import LocalContext from '../Context';
 import Reply from './Reply';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { scrollElementToCenter } from 'helpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Replies.propTypes = {
   comment: PropTypes.shape({

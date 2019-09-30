@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import SearchInput from 'components/Texts/SearchInput';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SearchBox.propTypes = {
   category: PropTypes.string,

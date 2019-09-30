@@ -10,7 +10,7 @@ import {
   finalizeEmoji,
   exceedsCharLimit
 } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,

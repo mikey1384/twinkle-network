@@ -8,7 +8,7 @@ import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Search.propTypes = {
   history: PropTypes.object,

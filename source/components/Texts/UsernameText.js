@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 UsernameText.propTypes = {
   className: PropTypes.string,

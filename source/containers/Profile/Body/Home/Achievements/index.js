@@ -5,7 +5,7 @@ import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,

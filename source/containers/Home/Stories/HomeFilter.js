@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import { PropTypes } from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';

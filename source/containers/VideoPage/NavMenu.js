@@ -11,7 +11,7 @@ import Notification from 'components/Notification';
 import request from 'axios';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 NavMenu.propTypes = {

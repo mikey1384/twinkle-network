@@ -14,7 +14,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 MainFeeds.propTypes = {
   loadMore: PropTypes.object.isRequired,

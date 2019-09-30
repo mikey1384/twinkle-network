@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import { scrollElementToCenter } from 'helpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Comments.propTypes = {
   autoExpand: PropTypes.bool,

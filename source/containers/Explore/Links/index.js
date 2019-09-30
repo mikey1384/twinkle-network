@@ -5,7 +5,7 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Links.propTypes = {
   location: PropTypes.object.isRequired

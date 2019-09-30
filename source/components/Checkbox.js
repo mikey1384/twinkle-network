@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Checkbox.propTypes = {
   backgroundColor: PropTypes.string,

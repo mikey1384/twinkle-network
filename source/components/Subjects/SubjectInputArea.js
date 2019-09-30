@@ -4,7 +4,7 @@ import TitleDescriptionForm from 'components/Forms/TitleDescriptionForm';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { charLimit } from 'constants/defaultValues';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SubjectInputArea.propTypes = {
   onUploadSubject: PropTypes.func.isRequired,

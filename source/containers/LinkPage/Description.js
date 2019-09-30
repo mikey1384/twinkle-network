@@ -17,7 +17,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Description.propTypes = {
   content: PropTypes.string,

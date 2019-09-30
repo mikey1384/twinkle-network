@@ -5,7 +5,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/video`;

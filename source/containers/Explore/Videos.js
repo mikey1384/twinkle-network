@@ -7,7 +7,7 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Videos.propTypes = {
   history: PropTypes.object.isRequired,

@@ -20,7 +20,7 @@ import { commentContainer } from '../Styles';
 import { determineXpButtonDisabled } from 'helpers';
 import { Link } from 'react-router-dom';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Reply.propTypes = {
   comment: PropTypes.shape({

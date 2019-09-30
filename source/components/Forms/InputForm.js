@@ -9,7 +9,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { useInputContext } from 'context';
+import { useInputContext } from 'contexts';
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,

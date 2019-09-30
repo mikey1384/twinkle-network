@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import BarChart from './BarChart';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 MonthlyXp.propTypes = {
   selectedTheme: PropTypes.string,

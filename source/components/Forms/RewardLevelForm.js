@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 RewardLevelForm.propTypes = {
   rewardLevel: PropTypes.number.isRequired,

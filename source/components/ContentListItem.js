@@ -9,7 +9,7 @@ import SecretAnswer from 'components/SecretAnswer';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ContentListItem.propTypes = {
   comments: PropTypes.array,

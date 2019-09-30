@@ -9,7 +9,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 const intervalLength = 2000;
 const xp = rewardValue.star;

@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { borderRadius, Color } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,

@@ -9,7 +9,7 @@ import * as d3Ease from 'd3-ease';
 import { Animate } from 'react-move';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Carousel.propTypes = {
   afterSlide: PropTypes.func,

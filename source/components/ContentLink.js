@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { removeLineBreaks } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ContentLink.propTypes = {
   content: PropTypes.shape({

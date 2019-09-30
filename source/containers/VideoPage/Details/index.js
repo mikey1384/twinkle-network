@@ -19,7 +19,7 @@ import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
 import { Color } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,

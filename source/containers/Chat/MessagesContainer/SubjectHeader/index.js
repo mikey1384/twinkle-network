@@ -13,7 +13,7 @@ import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 export default function SubjectHeader() {
   const {

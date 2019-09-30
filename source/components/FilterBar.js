@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 FilterBar.propTypes = {
   children: PropTypes.node,

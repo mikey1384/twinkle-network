@@ -10,7 +10,7 @@ import {
 } from 'helpers/stringHelpers';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { useAppContext, useInputContext } from 'context';
+import { useAppContext, useInputContext } from 'contexts';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';

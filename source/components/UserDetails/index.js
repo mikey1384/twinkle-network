@@ -13,7 +13,7 @@ import Bio from 'components/Texts/Bio';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
 
 UserDetails.propTypes = {

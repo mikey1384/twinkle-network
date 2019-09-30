@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,

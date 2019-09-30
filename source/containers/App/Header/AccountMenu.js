@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,

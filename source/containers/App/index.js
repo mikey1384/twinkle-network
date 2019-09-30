@@ -13,7 +13,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 SwitchButton.propTypes = {
   color: PropTypes.string,

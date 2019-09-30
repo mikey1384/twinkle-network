@@ -23,7 +23,7 @@ import {
   scrollElementToCenter
 } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Body.propTypes = {
   autoExpand: PropTypes.bool,

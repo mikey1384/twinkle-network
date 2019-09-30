@@ -6,7 +6,7 @@ import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { truncateText } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 NotiItem.propTypes = {
   notification: PropTypes.object.isRequired

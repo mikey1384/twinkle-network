@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import Link from 'components/Link';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Email.propTypes = {
   match: PropTypes.object.isRequired

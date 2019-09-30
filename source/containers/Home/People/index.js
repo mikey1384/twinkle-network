@@ -9,7 +9,7 @@ import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 People.propTypes = {
   history: PropTypes.object.isRequired,

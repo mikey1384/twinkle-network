@@ -10,7 +10,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 VideoThumb.propTypes = {
   className: PropTypes.string,

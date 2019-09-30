@@ -11,7 +11,7 @@ import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,

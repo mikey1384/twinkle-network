@@ -1,7 +1,7 @@
 import React from 'react';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 export default function Spinner() {
   const {

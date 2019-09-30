@@ -9,7 +9,7 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 MobileMenu.propTypes = {
   location: PropTypes.object,

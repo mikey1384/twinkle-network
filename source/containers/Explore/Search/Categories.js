@@ -4,7 +4,7 @@ import Checkbox from 'components/Checkbox';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Categories.propTypes = {
   defaultFilter: PropTypes.string,

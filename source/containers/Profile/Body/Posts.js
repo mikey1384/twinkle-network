@@ -9,7 +9,7 @@ import SideMenu from './SideMenu';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Posts.propTypes = {
   history: PropTypes.object.isRequired,

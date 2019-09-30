@@ -9,7 +9,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { borderRadius, mobileMaxWidth } from 'constants/css';
 import { profileThemes } from 'constants/defaultValues';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Cover.propTypes = {
   onSelectTheme: PropTypes.func.isRequired,

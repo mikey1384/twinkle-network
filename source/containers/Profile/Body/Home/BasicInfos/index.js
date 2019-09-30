@@ -9,7 +9,7 @@ import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,

@@ -18,7 +18,7 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,

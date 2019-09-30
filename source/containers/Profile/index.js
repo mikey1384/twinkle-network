@@ -5,7 +5,7 @@ import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 

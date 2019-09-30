@@ -6,7 +6,7 @@ import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Subjects.propTypes = {
   location: PropTypes.object.isRequired

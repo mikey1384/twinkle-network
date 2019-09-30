@@ -16,7 +16,7 @@ import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import EditTitleModal from '../Modals/EditTitle';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,

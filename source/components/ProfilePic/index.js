@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { borderRadius, Color, innerBorderRadius } from 'constants/css';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 ProfilePic.propTypes = {
   className: PropTypes.string,

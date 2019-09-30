@@ -8,7 +8,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 Selectable.propTypes = {
   item: PropTypes.object,

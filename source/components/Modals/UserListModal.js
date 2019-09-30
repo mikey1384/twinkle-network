@@ -6,7 +6,7 @@ import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'context';
+import { useAppContext } from 'contexts';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
