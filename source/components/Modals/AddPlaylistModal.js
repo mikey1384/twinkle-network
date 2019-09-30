@@ -26,7 +26,7 @@ AddPlaylistModal.propTypes = {
   focusPlaylistPanelAfterUpload: PropTypes.func,
   modalOverModal: PropTypes.bool,
   onHide: PropTypes.func,
-  postPlaylist: PropTypes.func,
+  onUploadPlaylist: PropTypes.func,
   title: PropTypes.string
 };
 
@@ -36,8 +36,8 @@ export default function AddPlaylistModal({
   existingVideoIds = [],
   focusPlaylistPanelAfterUpload,
   onHide,
-  postPlaylist,
   modalOverModal,
+  onUploadPlaylist,
   title: initialTitle = ''
 }) {
   const {
@@ -294,7 +294,8 @@ export default function AddPlaylistModal({
         description: finalizeEmoji(description),
         selectedVideos
       });
-      await postPlaylist(data);
+      await uploadPlaylist(data);
+      onUploadPlaylist(data);
       focusPlaylistPanelAfterUpload?.();
       onHide();
     } catch (error) {

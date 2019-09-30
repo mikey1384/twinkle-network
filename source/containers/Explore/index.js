@@ -9,23 +9,20 @@ import WorkMenuItems from './WorkMenuItems';
 import Search from './Search';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { connect } from 'react-redux';
-import { clearVideosLoaded } from 'redux/actions/VideoActions';
 import { socket } from 'constants/io';
 import { useAppContext } from 'context';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
 Explore.propTypes = {
-  clearVideosLoaded: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
-function Explore({ clearVideosLoaded, history, location }) {
+export default function Explore({ history, location }) {
   const {
     explore: {
-      actions: { onClearLinksLoaded, onReloadSubjects }
+      actions: { onClearLinksLoaded, onClearVideosLoaded, onReloadSubjects }
     }
   } = useAppContext();
   const mounted = useRef(true);
@@ -38,7 +35,7 @@ function Explore({ clearVideosLoaded, history, location }) {
       if (disconnected.current && mounted.current) {
         onClearLinksLoaded();
         onReloadSubjects();
-        clearVideosLoaded();
+        onClearVideosLoaded();
       }
       disconnected.current = false;
     }
@@ -159,10 +156,3 @@ function Explore({ clearVideosLoaded, history, location }) {
     </ErrorBoundary>
   );
 }
-
-export default connect(
-  null,
-  {
-    clearVideosLoaded
-  }
-)(Explore);

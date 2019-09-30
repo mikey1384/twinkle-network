@@ -23,7 +23,7 @@ export default function NavMenu({ playlistId, videoId }) {
   const {
     notification: {
       state: { numNewNotis, totalRewardAmount },
-      action: { onClearNotifications, onFetchNotifications }
+      actions: { onClearNotifications, onFetchNotifications }
     },
     user: {
       state: { profileTheme, userId }

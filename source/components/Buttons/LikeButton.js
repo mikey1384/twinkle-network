@@ -3,14 +3,12 @@ import React, { useState } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { connect } from 'react-redux';
 import { useAppContext } from 'context';
 
 LikeButton.propTypes = {
   className: PropTypes.string,
   contentType: PropTypes.string.isRequired,
   contentId: PropTypes.number.isRequired,
-  dispatch: PropTypes.func.isRequired,
   liked: PropTypes.bool.isRequired,
   filled: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
@@ -18,11 +16,10 @@ LikeButton.propTypes = {
   targetLabel: PropTypes.string
 };
 
-function LikeButton({
+export default function LikeButton({
   className,
   contentId,
   contentType,
-  dispatch,
   filled,
   style,
   liked,
@@ -46,8 +43,7 @@ function LikeButton({
             setDisabled(true);
             const likes = await likeContent({
               id: contentId,
-              contentType,
-              dispatch
+              contentType
             });
             setDisabled(false);
             onClick(likes, contentId);
@@ -66,8 +62,3 @@ function LikeButton({
     </ErrorBoundary>
   );
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(LikeButton);

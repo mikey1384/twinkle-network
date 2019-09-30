@@ -11,8 +11,8 @@ SideButtons.propTypes = {
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   onLikeVideo: PropTypes.func.isRequired,
+  onSetRewardLevel: PropTypes.func.isRequired,
   changeByUserStatus: PropTypes.func.isRequired,
-  setRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
   uploader: PropTypes.object.isRequired,
   userId: PropTypes.number,
@@ -26,7 +26,7 @@ export default function SideButtons({
   rewardLevel,
   likes,
   onLikeVideo,
-  setRewardLevel,
+  onSetRewardLevel,
   style,
   uploader,
   userId,
@@ -58,7 +58,7 @@ export default function SideButtons({
               style={{ position: 'absolute', top: 0, left: 0 }}
               contentType="video"
               rewardLevel={rewardLevel}
-              onSetRewardLevel={setRewardLevel}
+              onSetRewardLevel={onSetRewardLevel}
               onToggleByUser={onToggleByUser}
               uploader={uploader}
             />

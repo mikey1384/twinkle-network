@@ -10,7 +10,6 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { useAppContext } from 'context';
-import { connect } from 'react-redux';
 
 Comment.propTypes = {
   comment: PropTypes.shape({
@@ -18,7 +17,6 @@ Comment.propTypes = {
     content: PropTypes.string,
     timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
   profilePicId: PropTypes.number,
@@ -26,10 +24,9 @@ Comment.propTypes = {
   username: PropTypes.string.isRequired
 };
 
-function Comment({
+export default function Comment({
   comment,
   comment: { content, timeStamp },
-  dispatch,
   onDelete,
   onEditDone,
   profilePicId,
@@ -132,7 +129,7 @@ function Comment({
   );
 
   async function deleteComment() {
-    await deleteContent({ id: comment.id, contentType: 'comment', dispatch });
+    await deleteContent({ id: comment.id, contentType: 'comment' });
     setConfirmModalShown(false);
     onDelete(comment.id);
   }
@@ -147,8 +144,3 @@ function Comment({
     setOnEdit(false);
   }
 }
-
-export default connect(
-  null,
-  dispatch => ({ dispatch })
-)(Comment);

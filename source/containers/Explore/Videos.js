@@ -2,46 +2,37 @@ import React, { useEffect, useRef } from 'react';
 import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
-import FeaturedPlaylistPanel from './Panels/FeaturedPlaylistsPanel';
+import FeaturedPlaylistsPanel from './Panels/FeaturedPlaylistsPanel';
 import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { setSearchedPlaylists, postPlaylist } from 'redux/actions/VideoActions';
-import { connect } from 'react-redux';
 import { scrollElementToCenter } from 'helpers';
 import { useAppContext } from 'context';
 
 Videos.propTypes = {
-  addPlaylistModalShown: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
-  loadMorePlaylistsButton: PropTypes.bool.isRequired,
-  loadMoreSearchedPlaylistsButton: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired,
-  playlists: PropTypes.array.isRequired,
-  playlistsLoaded: PropTypes.bool.isRequired,
-  searchedPlaylists: PropTypes.array.isRequired,
-  setSearchedPlaylists: PropTypes.func.isRequired,
-  postPlaylist: PropTypes.func.isRequired
+  location: PropTypes.object.isRequired
 };
 
-function Videos({
-  addPlaylistModalShown,
-  history,
-  loadMorePlaylistsButton,
-  loadMoreSearchedPlaylistsButton,
-  location,
-  playlists: allPlaylists = [],
-  postPlaylist,
-  playlistsLoaded,
-  searchedPlaylists,
-  setSearchedPlaylists
-}) {
+export default function Videos({ history, location }) {
   const {
     explore: {
+      state: {
+        videos: {
+          addPlaylistModalShown,
+          loadMorePlaylistsButton,
+          loadMoreSearchedPlaylistsButton,
+          allPlaylistsLoaded,
+          allPlaylists,
+          searchedPlaylists
+        }
+      },
       actions: {
         onCloseAddPlaylistModal,
         onLoadPlaylists,
-        onOpenAddPlaylistModal
+        onOpenAddPlaylistModal,
+        onSetSearchedPlaylists,
+        onUploadPlaylist
       }
     },
     user: {
@@ -62,7 +53,7 @@ function Videos({
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: searchPlaylist,
     onClear: () =>
-      setSearchedPlaylists({ playlists: [], loadMoreButton: false })
+      onSetSearchedPlaylists({ playlists: [], loadMoreButton: false })
   });
   const AllPlaylistsPanelRef = useRef(null);
 
@@ -84,7 +75,7 @@ function Videos({
 
   return (
     <div>
-      <FeaturedPlaylistPanel history={history} />
+      <FeaturedPlaylistsPanel history={history} />
       <PlaylistsPanel
         key={'allplaylists'}
         innerRef={AllPlaylistsPanelRef}
@@ -110,14 +101,14 @@ function Videos({
         }
         userId={userId}
         playlists={playlists}
-        loaded={playlistsLoaded}
+        loaded={allPlaylistsLoaded}
         isSearching={searching}
         onSearch={handleSearch}
         searchQuery={searchText}
       />
       {addPlaylistModalShown && (
         <AddPlaylistModal
-          postPlaylist={postPlaylist}
+          onUploadPlaylist={onUploadPlaylist}
           onHide={onCloseAddPlaylistModal}
           focusPlaylistPanelAfterUpload={() =>
             scrollElementToCenter(AllPlaylistsPanelRef.current, 150)
@@ -133,23 +124,6 @@ function Videos({
       searchText: text,
       limit: 3
     });
-    setSearchedPlaylists({ playlists: results, loadMoreButton });
+    onSetSearchedPlaylists({ playlists: results, loadMoreButton });
   }
 }
-
-export default connect(
-  state => ({
-    addPlaylistModalShown: state.VideoReducer.addPlaylistModalShown,
-    addVideoModalShown: state.VideoReducer.addVideoModalShown,
-    loadMorePlaylistsButton: state.VideoReducer.loadMorePlaylistsButton,
-    loadMoreSearchedPlaylistsButton:
-      state.VideoReducer.loadMoreSearchedPlaylistsButton,
-    playlistsLoaded: state.VideoReducer.allPlaylistsLoaded,
-    playlists: state.VideoReducer.allPlaylists,
-    searchedPlaylists: state.VideoReducer.searchedPlaylists
-  }),
-  {
-    setSearchedPlaylists,
-    postPlaylist
-  }
-)(Videos);

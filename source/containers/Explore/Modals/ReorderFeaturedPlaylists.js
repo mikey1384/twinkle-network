@@ -8,29 +8,30 @@ import { isEqual } from 'lodash';
 import { useAppContext } from 'context';
 
 ReorderFeaturedPlaylists.propTypes = {
-  pinnedPlaylists: PropTypes.array.isRequired,
   playlistIds: PropTypes.array.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
 export default function ReorderFeaturedPlaylists({
   onHide,
-  pinnedPlaylists: playlists,
   playlistIds: initialPlaylistIds
 }) {
   const {
     explore: {
-      actions: { onChangePinnedPlaylists }
+      state: {
+        videos: { featuredPlaylists }
+      },
+      actions: { onChangeFeaturedPlaylists }
     },
     requestHelpers: { uploadFeaturedPlaylists }
   } = useAppContext();
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
   const [disabled, setDisabled] = useState(false);
-  const listItemObj = objectify(playlists);
+  const listItemObj = objectify(featuredPlaylists);
 
   return (
     <Modal onHide={onHide}>
-      <header>Reorder Pinned Playlists</header>
+      <header>Reorder Featured Playlists</header>
       <main>
         <SortableListGroup
           listItemObj={listItemObj}
@@ -44,8 +45,10 @@ export default function ReorderFeaturedPlaylists({
         </Button>
         <Button
           disabled={
-            isEqual(playlistIds, playlists.map(playlist => playlist.id)) ||
-            disabled
+            isEqual(
+              playlistIds,
+              featuredPlaylists.map(playlist => playlist.id)
+            ) || disabled
           }
           color="blue"
           onClick={handleSubmit}
@@ -70,7 +73,7 @@ export default function ReorderFeaturedPlaylists({
     const newSelectedPlaylists = await uploadFeaturedPlaylists({
       selectedPlaylists: playlistIds
     });
-    onChangePinnedPlaylists(newSelectedPlaylists);
+    onChangeFeaturedPlaylists(newSelectedPlaylists);
     onHide();
   }
 }

@@ -309,7 +309,7 @@ export default function requestHelpers(handleError) {
       try {
         const {
           data: { payload }
-        } = await request.put(`${URL}/video/videoThumb`, {
+        } = await request.put(`${URL}/content/videoThumb`, {
           videoCode,
           videoId
         });

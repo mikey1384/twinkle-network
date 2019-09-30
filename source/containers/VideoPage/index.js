@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { setRewardLevel } from 'redux/actions/VideoActions';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
 import VideoPlayer from 'components/VideoPlayer';
@@ -29,17 +27,15 @@ import { useAppContext } from 'context';
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  setRewardLevel: PropTypes.func.isRequired
+  match: PropTypes.object.isRequired
 };
 
-function VideoPage({
+export default function VideoPage({
   history,
   location: { search },
   match: {
     params: { videoId: initialVideoId }
-  },
-  setRewardLevel
+  }
 }) {
   const [changingPage, setChangingPage] = useState(false);
   const [watchTabActive, setWatchTabActive] = useState(true);
@@ -80,6 +76,7 @@ function VideoPage({
         onSetRewardLevel,
         onSetSubjectRewardLevel,
         onSetVideoQuestions,
+        onSetThumbRewardLevel,
         onUploadComment,
         onUploadReply,
         onUploadSubject
@@ -309,7 +306,7 @@ function VideoPage({
                 onEditCancel={() => setOnEdit(false)}
                 onEditFinish={handleEditVideoPage}
                 onDelete={() => setConfirmModalShown(true)}
-                setRewardLevel={handleSetRewardLevel}
+                onSetRewardLevel={handleSetRewardLevel}
                 stars={stars}
                 tags={tags}
                 title={title}
@@ -432,11 +429,11 @@ function VideoPage({
   async function handleEditVideoPage(params) {
     setOnEdit(false);
     await editContent(params);
-    const url = fetchedVideoCodeFromURL(params.url);
+    const url = fetchedVideoCodeFromURL(params.editedUrl);
     onEditContent({
       data: {
-        title: params.title,
-        description: params.description,
+        title: params.editedTitle,
+        description: params.editedDescription,
         content: url
       }
     });
@@ -503,7 +500,7 @@ function VideoPage({
 
   function handleSetRewardLevel({ contentId, contentType, rewardLevel }) {
     onSetRewardLevel({ contentType, contentId, rewardLevel });
-    setRewardLevel({ videoId: Number(contentId), rewardLevel });
+    onSetThumbRewardLevel({ videoId: Number(contentId), rewardLevel });
   }
 
   async function handleUploadQuestions(questions) {
@@ -518,8 +515,3 @@ function VideoPage({
     setUserAnswers({});
   }
 }
-
-export default connect(
-  null,
-  { setRewardLevel }
-)(VideoPage);

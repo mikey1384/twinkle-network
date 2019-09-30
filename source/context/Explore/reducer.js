@@ -5,7 +5,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist =>
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist =>
             playlist.id === action.playlist.id
               ? { ...playlist, ...action.playlist }
               : playlist
@@ -22,6 +22,14 @@ export default function ExploreReducer(state, action) {
           )
         }
       };
+    case 'CHANGE_FEATURED_PLAYLISTS':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          featuredPlaylists: action.data
+        }
+      };
     case 'CHANGE_SEARCH_INPUT':
       return {
         ...state,
@@ -35,7 +43,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist => ({
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.videoId
@@ -108,7 +116,7 @@ export default function ExploreReducer(state, action) {
         videos: {
           ...state.videos,
           loadMorePlaylistsToPinButton: false,
-          selectPlaylistsToPinModalShown: false
+          selectPlaylistsToFeatureModalShown: false
         }
       };
     case 'DELETE_LINK':
@@ -124,7 +132,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: state.videos.pinnedPlaylists.filter(
+          featuredPlaylists: state.videos.featuredPlaylists.filter(
             playlist => playlist.id !== action.data
           ),
           allPlaylists: state.videos.allPlaylists.filter(
@@ -167,7 +175,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist => ({
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist => ({
             ...playlist,
             title:
               playlist.id === action.playlistId ? action.title : playlist.title
@@ -189,7 +197,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: state.videos.pinnedPlaylists.map(playlist => ({
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.params.videoId
@@ -229,6 +237,7 @@ export default function ExploreReducer(state, action) {
       };
     case 'EMPTY_CURRENT_VIDEO_SLOT':
       return {
+        ...state,
         videos: {
           ...state.videos,
           currentVideoSlot: null
@@ -236,6 +245,7 @@ export default function ExploreReducer(state, action) {
       };
     case 'FILL_CURRENT_VIDEO_SLOT':
       return {
+        ...state,
         videos: {
           ...state.videos,
           currentVideoSlot: action.videoId
@@ -269,7 +279,7 @@ export default function ExploreReducer(state, action) {
                 }
               : video;
           }),
-          pinnedPlaylists: state.pinnedPlaylists.map(playlist => ({
+          featuredPlaylists: state.featuredPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.videoId
@@ -337,8 +347,8 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          pinnedPlaylists: action.playlists,
-          pinnedPlaylistsLoaded: true
+          featuredPlaylists: action.playlists,
+          featuredPlaylistsLoaded: true
         }
       };
     case 'LOAD_PLAYLISTS':
@@ -395,12 +405,88 @@ export default function ExploreReducer(state, action) {
           addPlaylistModalShown: true
         }
       };
+    case 'OPEN_REORDER_PINNED_PL_MODAL':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          reorderFeaturedPlaylistsShown: true
+        }
+      };
+    case 'OPEN_SELECT_PL_TO_PIN_MODAL': {
+      let loadMorePlaylistsToPinButton = false;
+      if (action.data.result.length > 10) {
+        action.data.result.pop();
+        loadMorePlaylistsToPinButton = true;
+      }
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          playlistsToPin: action.data.result.map(item => ({
+            title: item.title,
+            id: item.id
+          })),
+          loadMorePlaylistsToPinButton,
+          selectPlaylistsToFeatureModalShown: true
+        }
+      };
+    }
     case 'RELOAD_SUBJECTS':
       return {
         ...state,
         subjects: {
           ...state.subjects,
           loaded: false
+        }
+      };
+    case 'SET_REWARD_LEVEL':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          featuredPlaylists: state.featuredPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.videoId
+                ? {
+                    ...video,
+                    rewardLevel: action.rewardLevel
+                  }
+                : video
+            )
+          })),
+          allPlaylists: state.allPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.videoId
+                ? {
+                    ...video,
+                    rewardLevel: action.rewardLevel
+                  }
+                : video
+            )
+          })),
+          searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.map(video =>
+              video.videoId === action.videoId
+                ? {
+                    ...video,
+                    rewardLevel: action.rewardLevel
+                  }
+                : video
+            )
+          }))
+        }
+      };
+    case 'SET_SEARCHED_PLAYLISTS':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          searchedPlaylists: action.playlists,
+          loadMoreSearchedPlaylistsButton: action.loadMoreButton
         }
       };
     case 'TURN_OFF_CLICK_SAFE':
@@ -443,6 +529,16 @@ export default function ExploreReducer(state, action) {
         links: {
           ...state.links,
           links: [action.linkItem].concat(state.links.links)
+        }
+      };
+    case 'UPLOAD_PLAYLIST':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          allPlaylists: [action.data].concat(state.allPlaylists),
+          loadMoreButton: state.loadMoreButton,
+          addPlaylistModalShown: false
         }
       };
     default:

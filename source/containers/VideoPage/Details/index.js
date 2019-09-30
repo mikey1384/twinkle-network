@@ -36,7 +36,7 @@ Details.propTypes = {
   onEditFinish: PropTypes.func.isRequired,
   onEditStart: PropTypes.func.isRequired,
   onLikeVideo: PropTypes.func.isRequired,
-  setRewardLevel: PropTypes.func.isRequired,
+  onSetRewardLevel: PropTypes.func.isRequired,
   tags: PropTypes.array,
   stars: PropTypes.array,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -66,7 +66,7 @@ export default function Details({
   onEditFinish,
   onLikeVideo,
   tags = [],
-  setRewardLevel,
+  onSetRewardLevel,
   stars,
   timeStamp,
   videoId,
@@ -188,7 +188,7 @@ export default function Details({
               rewardLevel={rewardLevel}
               likes={likes}
               onLikeVideo={onLikeVideo}
-              setRewardLevel={setRewardLevel}
+              onSetRewardLevel={onSetRewardLevel}
               uploader={uploader}
               userId={userId}
               videoId={videoId}
@@ -304,10 +304,12 @@ export default function Details({
 
   async function handleEditFinish() {
     const params = {
-      url: editedUrl,
+      contentId: videoId,
+      contentType: 'video',
+      editedUrl,
       videoId,
-      title: finalizeEmoji(editedTitle),
-      description: finalizeEmoji(editedDescription)
+      editedTitle: finalizeEmoji(editedTitle),
+      editedDescription: finalizeEmoji(editedDescription)
     };
     await onEditFinish(params);
     setOnEdit(false);

@@ -28,7 +28,14 @@ VideoThumb.propTypes = {
   }).isRequired
 };
 
-function VideoThumb({ className, clickSafe, style, to, user, video }) {
+export default function VideoThumb({
+  className,
+  clickSafe,
+  style,
+  to,
+  user,
+  video
+}) {
   const {
     user: {
       state: { profileTheme }

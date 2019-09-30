@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
-import createStoreWithMiddlewares from './store';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
 import { faArrowLeft } from '@fortawesome/pro-solid-svg-icons/faArrowLeft';
@@ -89,14 +87,11 @@ library.add(
   faUsers
 );
 
-const store = createStoreWithMiddlewares();
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <AppContextProvider>
-        <Route component={App} />
-      </AppContextProvider>
-    </BrowserRouter>
-  </Provider>,
+  <BrowserRouter>
+    <AppContextProvider>
+      <Route component={App} />
+    </AppContextProvider>
+  </BrowserRouter>,
   document.getElementById('react-view')
 );

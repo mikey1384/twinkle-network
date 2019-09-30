@@ -11,9 +11,9 @@ export default function ExploreActions(dispatch) {
         type: 'CLEAR_LINKS_LOADED'
       });
     },
-    onChangePinnedPlaylists(playlists) {
+    onChangeFeaturedPlaylists(playlists) {
       return dispatch({
-        type: 'CHANGE_PINNED_PLAYLISTS',
+        type: 'CHANGE_FEATURED_PLAYLISTS',
         data: playlists
       });
     },
@@ -124,7 +124,7 @@ export default function ExploreActions(dispatch) {
         loadMoreButton
       });
     },
-    onGetPinnedPlaylists(playlists) {
+    onLoadFeaturedPlaylists(playlists) {
       return dispatch({
         type: 'LOAD_FEATURED_PLAYLISTS',
         playlists
@@ -181,9 +181,34 @@ export default function ExploreActions(dispatch) {
         loadMoreButton
       });
     },
-    openAddPlaylistModal() {
+    onOpenAddPlaylistModal() {
       return dispatch({
         type: 'OPEN_PLAYLIST_MODAL'
+      });
+    },
+    onOpenReorderFeaturedPlaylists() {
+      return dispatch({
+        type: 'OPEN_REORDER_PINNED_PL_MODAL'
+      });
+    },
+    onOpenSelectPlaylistsToPinModal(data) {
+      return dispatch({
+        type: 'OPEN_SELECT_PL_TO_PIN_MODAL',
+        data
+      });
+    },
+    onSetSearchedPlaylists({ playlists, loadMoreButton }) {
+      return dispatch({
+        type: 'SET_SEARCHED_PLAYLISTS',
+        playlists,
+        loadMoreButton
+      });
+    },
+    onSetThumbRewardLevel({ videoId, rewardLevel }) {
+      return dispatch({
+        type: 'SET_REWARD_LEVEL',
+        videoId,
+        rewardLevel
       });
     },
     onReloadSubjects() {
@@ -202,6 +227,12 @@ export default function ExploreActions(dispatch) {
       return dispatch({
         type: 'UPLOAD_LINK',
         linkItem
+      });
+    },
+    onUploadPlaylist(data) {
+      return dispatch({
+        type: 'UPLOAD_PLAYLIST',
+        data
       });
     }
   };

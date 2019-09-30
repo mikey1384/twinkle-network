@@ -80,7 +80,7 @@ export default function TagModal({
           <AddPlaylistModal
             modalOverModal
             existingVideoIds={[videoId]}
-            postPlaylist={addPlaylist}
+            onUploadPlaylist={handleAddPlaylist}
             onHide={() => {
               setNotFoundMessageShown(false);
               setAddPlaylistModalShown(false);
@@ -105,7 +105,7 @@ export default function TagModal({
     </Modal>
   );
 
-  function addPlaylist(playlist) {
+  function handleAddPlaylist(playlist) {
     onAddPlaylist({
       videoIds: playlist?.playlist
         ?.map(video => video.videoId)

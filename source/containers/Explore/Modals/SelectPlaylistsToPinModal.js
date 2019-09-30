@@ -16,20 +16,21 @@ SelectPlaylistsToPinModal.propTypes = {
   loadMoreButton: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
   playlistsToPin: PropTypes.array.isRequired,
-  pinnedPlaylists: PropTypes.array.isRequired,
   selectedPlaylists: PropTypes.array.isRequired
 };
 
 export default function SelectPlaylistsToPinModal({
   loadMoreButton,
   onHide,
-  pinnedPlaylists,
   playlistsToPin,
   selectedPlaylists: initialSelectedPlaylists
 }) {
   const {
     explore: {
-      actions: { onChangePinnedPlaylists }
+      state: {
+        videos: { featuredPlaylists }
+      },
+      actions: { onChangeFeaturedPlaylists }
     },
     requestHelpers: { searchContent, uploadFeaturedPlaylists }
   } = useAppContext();
@@ -48,7 +49,7 @@ export default function SelectPlaylistsToPinModal({
     onClear: () => setSearchedPlaylists([])
   });
   useEffect(() => {
-    pinnedPlaylistsObjectRef.current = pinnedPlaylists.reduce(
+    pinnedPlaylistsObjectRef.current = featuredPlaylists.reduce(
       (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
       {}
     );
@@ -247,7 +248,7 @@ export default function SelectPlaylistsToPinModal({
     const newFeaturedPlaylists = await uploadFeaturedPlaylists({
       selectedPlaylists
     });
-    onChangePinnedPlaylists(newFeaturedPlaylists);
+    onChangeFeaturedPlaylists(newFeaturedPlaylists);
     onHide();
   }
 
