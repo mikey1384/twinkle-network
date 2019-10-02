@@ -8,6 +8,8 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
+import { css } from 'emotion';
+import { borderRadius, Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
 import { useAppContext } from 'contexts';
@@ -80,7 +82,7 @@ export default function Stories({ location }) {
       actions: { onResetNumNewPosts }
     },
     user: {
-      state: { hideWatched, userId, username }
+      state: { hideWatched, profileTheme, userId, username }
     },
     view: {
       state: { scrollPositions },
@@ -93,14 +95,21 @@ export default function Stories({ location }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [feedsOutdated, setFeedsOutdated] = useState(false);
+  const [backToTopShown, setBackToTopShown] = useState(false);
   const mounted = useRef(true);
+  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+  const timeOutRef = useRef(null);
 
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    onRecordScrollPosition,
+    onRecordScrollPosition: event => {
+      setBackToTopShown(false);
+      clearTimeout(timeOutRef.current);
+      onRecordScrollPosition(event);
+    },
     currentSection: `/`
   });
 
@@ -112,6 +121,16 @@ export default function Stories({ location }) {
     onScrollToBottom: () => setLoadingMore(true),
     onLoad: loadMoreFeeds
   });
+
+  useEffect(() => {
+    if (!loadingMore) {
+      timeOutRef.current = setTimeout(
+        () =>
+          setBackToTopShown(scrollPositions['/'] && scrollPositions['/'] !== 0),
+        200
+      );
+    }
+  }, [scrollPositions['/']]);
 
   useEffect(() => {
     mounted.current = true;
@@ -181,7 +200,7 @@ export default function Stories({ location }) {
 
   return (
     <ErrorBoundary>
-      <div ref={ContainerRef}>
+      <div style={{ width: '100%' }} ref={ContainerRef}>
         <HomeFilter
           category={category}
           changeCategory={handleChangeCategory}
@@ -285,6 +304,41 @@ export default function Stories({ location }) {
               )}
             </>
           )}
+        </div>
+      </div>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '1rem',
+          zIndex: 1000,
+          width: '100%',
+          left: 0,
+          display: 'flex',
+          justifyContent: 'center'
+        }}
+      >
+        <div
+          onClick={() => {
+            document.getElementById('App').scrollTop = 0;
+            BodyRef.current.scrollTop = 0;
+          }}
+          className={css`
+            transition: background 0.2s, visibility 0s, opacity 0.3s;
+            color: #fff;
+            background: ${Color[profileTheme](0.4)};
+            visibility: ${backToTopShown ? 'visible' : 'hidden'};
+            opacity: ${backToTopShown ? 1 : 0};
+            border-radius: ${borderRadius};
+            padding: 0.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            &:hover {
+              background: ${Color[profileTheme](0.9)};
+            }
+          `}
+        >
+          Back to Top
         </div>
       </div>
     </ErrorBoundary>

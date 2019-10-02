@@ -14,7 +14,6 @@ HeaderNav.propTypes = {
   children: PropTypes.node,
   imgLabel: PropTypes.string,
   isHome: PropTypes.bool,
-  isUsername: PropTypes.bool,
   onClick: PropTypes.func,
   pathname: PropTypes.string,
   style: PropTypes.object,
@@ -30,7 +29,6 @@ export default function HeaderNav({
   children,
   imgLabel,
   isHome,
-  isUsername,
   onClick = () => {},
   pathname,
   style
@@ -59,7 +57,7 @@ export default function HeaderNav({
   return (
     <Route
       path={to}
-      exact={!isUsername}
+      exact
       children={({ match }) => (
         <div
           onClick={() => {

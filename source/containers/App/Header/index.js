@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -70,16 +70,6 @@ function Header({
     }
   } = useAppContext();
   const prevUserIdRef = useRef(userId);
-  const [homeLink, setHomeLink] = useState('/');
-  useEffect(() => {
-    const { section } = getSectionFromPathname(pathname);
-    if (section === 'users') {
-      setHomeLink('/users');
-    }
-    if (section === 'home' || numNewPosts > 0) {
-      setHomeLink('/');
-    }
-  }, [pathname]);
   useEffect(() => {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -211,11 +201,6 @@ function Header({
     showUpdateNotice(versionMatch);
   }, [versionMatch]);
 
-  const isUsername =
-    !['links', 'videos', 'talk', 'comments', 'subjects'].includes(
-      getSectionFromPathname(pathname)?.section
-    ) && pathname.length > 1;
-
   return (
     <ErrorBoundary>
       <nav
@@ -260,9 +245,7 @@ function Header({
               getSectionFromPathname(pathname)?.section
             )}
             defaultSearchFilter={defaultSearchFilter}
-            homeLink={homeLink}
             chatLoading={chatLoading}
-            isUsername={isUsername}
             numChatUnreads={numUnreads}
             numNewNotis={numNewNotis}
             numNewPosts={numNewPosts}

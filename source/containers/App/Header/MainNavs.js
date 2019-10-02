@@ -8,9 +8,7 @@ import { getSectionFromPathname } from 'helpers';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
-  homeLink: PropTypes.string,
   isAtExploreTab: PropTypes.bool,
-  isUsername: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
@@ -22,9 +20,7 @@ MainNavs.propTypes = {
 
 export default function MainNavs({
   chatLoading,
-  homeLink,
   isAtExploreTab,
-  isUsername,
   numChatUnreads,
   numNewNotis,
   numNewPosts,
@@ -34,9 +30,27 @@ export default function MainNavs({
   totalRewardAmount
 }) {
   const [exploreCategory, setExploreCategory] = useState('subjects');
-  const [subExploreLink, setSubExploreLink] = useState('');
-  const [subSection, setSubSection] = useState('');
+  const [explorePath, setExplorePath] = useState('');
+  const [exploreSubNav, setExploreSubNav] = useState('');
+  const [profileNav, setProfileNav] = useState('');
+  const [homeNav, setHomeNav] = useState('/');
   const loaded = useRef(false);
+  const commentPageMatch = matchPath(pathname, {
+    path: '/comments/:id',
+    exact: true
+  });
+  const homeMatch = matchPath(pathname, {
+    path: '/',
+    exact: true
+  });
+  const usersMatch = matchPath(pathname, {
+    path: '/users',
+    exact: true
+  });
+  const linkPageMatch = matchPath(pathname, {
+    path: '/links/:id',
+    exact: true
+  });
   const subjectPageMatch = matchPath(pathname, {
     path: '/subjects/:id',
     exact: true
@@ -45,26 +59,30 @@ export default function MainNavs({
     path: '/videos/:id',
     exact: true
   });
-  const linkPageMatch = matchPath(pathname, {
-    path: '/links/:id',
-    exact: true
-  });
-  const commentPageMatch = matchPath(pathname, {
-    path: '/comments/:id',
-    exact: true
-  });
-  const pageMatch =
+  const explorePageMatch =
     !!subjectPageMatch ||
     !!videoPageMatch ||
     !!linkPageMatch ||
     !!commentPageMatch;
+  const profilePageMatch = matchPath(pathname, {
+    path: '/users/:userId',
+    exact: true
+  });
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
-    if (pageMatch) {
-      if (subSection !== section) {
-        setSubSection(section);
+    if (homeMatch) {
+      setHomeNav('/');
+    } else if (usersMatch) {
+      setHomeNav('/users');
+    }
+    if (explorePageMatch) {
+      if (exploreSubNav !== section) {
+        setExploreSubNav(section);
       }
-      setSubExploreLink(pathname.substring(1));
+      setExplorePath(pathname.substring(1));
+    }
+    if (profilePageMatch) {
+      setProfileNav(pathname);
     }
     if (!loaded.current && defaultSearchFilter) {
       setExploreCategory(
@@ -80,11 +98,11 @@ export default function MainNavs({
     }
   }, [defaultSearchFilter, pathname, subjectPageMatch]);
   const subSectionIconType =
-    subSection === 'videos'
+    exploreSubNav === 'videos'
       ? 'film'
-      : subSection === 'links'
+      : exploreSubNav === 'links'
       ? 'book'
-      : subSection === 'subjects'
+      : exploreSubNav === 'subjects'
       ? 'bolt'
       : 'comment-alt';
   return (
@@ -109,18 +127,27 @@ export default function MainNavs({
         className="mobile"
         imgLabel="home"
         alert={numNewPosts > 0}
-        isUsername={isUsername}
       >
         Home
       </HeaderNav>
+      {profileNav && (
+        <HeaderNav
+          to={profileNav}
+          pathname={pathname}
+          className="desktop"
+          style={{ marginRight: '2rem' }}
+          imgLabel="user"
+        >
+          PROFILE
+        </HeaderNav>
+      )}
       <HeaderNav
-        to={homeLink}
+        to={homeNav}
         isHome
         pathname={pathname}
         className="desktop"
         imgLabel="home"
         alert={!isAtExploreTab && numNewPosts > 0}
-        isUsername={isUsername}
       >
         HOME{!isAtExploreTab && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
       </HeaderNav>
@@ -134,15 +161,15 @@ export default function MainNavs({
           EXPLORE
         </HeaderNav>
       </div>
-      {subSection && (
+      {exploreSubNav && (
         <div style={{ marginRight: '2rem' }}>
           <HeaderNav
-            to={`/${subExploreLink}`}
+            to={`/${explorePath}`}
             pathname={pathname}
             className="desktop"
             imgLabel={subSectionIconType}
           >
-            {subSection.substring(0, subSection.length - 1).toUpperCase()}
+            {exploreSubNav.substring(0, exploreSubNav.length - 1).toUpperCase()}
           </HeaderNav>
         </div>
       )}
@@ -156,7 +183,6 @@ export default function MainNavs({
           className="desktop"
           imgLabel="comments"
           alert={!isAtExploreTab && numChatUnreads > 0}
-          isUsername={isUsername}
         >
           TALK
         </HeaderNav>
