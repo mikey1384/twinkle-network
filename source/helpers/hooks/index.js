@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
 import request from 'axios';
+import URL from 'constants/URL';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 
 export function useInterval(callback, interval, tracked) {

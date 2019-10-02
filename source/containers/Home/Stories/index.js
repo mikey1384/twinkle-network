@@ -100,16 +100,12 @@ export default function Stories({ location }) {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
-  const timeOutRef = useRef(null);
+  const prevScrollPos = useRef(null);
 
   useScrollPosition({
     scrollPositions,
     pathname: location.pathname,
-    onRecordScrollPosition: event => {
-      setBackToTopShown(false);
-      clearTimeout(timeOutRef.current);
-      onRecordScrollPosition(event);
-    },
+    onRecordScrollPosition,
     currentSection: `/`
   });
 
@@ -123,13 +119,12 @@ export default function Stories({ location }) {
   });
 
   useEffect(() => {
-    if (!loadingMore) {
-      timeOutRef.current = setTimeout(
-        () =>
-          setBackToTopShown(scrollPositions['/'] && scrollPositions['/'] !== 0),
-        200
-      );
-    }
+    setBackToTopShown(
+      scrollPositions['/'] &&
+        scrollPositions['/'] <= prevScrollPos.current &&
+        scrollPositions['/'] > 1000
+    );
+    prevScrollPos.current = scrollPositions['/'];
   }, [scrollPositions['/']]);
 
   useEffect(() => {
@@ -309,7 +304,7 @@ export default function Stories({ location }) {
       <div
         style={{
           position: 'fixed',
-          bottom: '1rem',
+          top: '5.5rem',
           zIndex: 1000,
           width: '100%',
           left: 0,
@@ -323,7 +318,7 @@ export default function Stories({ location }) {
             BodyRef.current.scrollTop = 0;
           }}
           className={css`
-            transition: background 0.2s, visibility 0s, opacity 0.3s;
+            transition: background 0.2s, visibility 0s, opacity 0.2s;
             color: #fff;
             background: ${Color[profileTheme](0.4)};
             visibility: ${backToTopShown ? 'visible' : 'hidden'};

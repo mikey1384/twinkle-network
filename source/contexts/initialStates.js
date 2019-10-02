@@ -139,13 +139,14 @@ export const initialUserState = {
   defaultSearchFilter: '',
   hideWatched: false,
   isCreator: false,
+  loadMoreButton: false,
   loggedIn: false,
   profile: {},
   profileTheme: 'logoBlue',
   profiles: [],
+  profilesLoaded: false,
   searchedProfiles: [],
-  signinModalShown: false,
-  loadMoreButton: false
+  signinModalShown: false
 };
 export const initialViewState = {
   pageVisible: true,

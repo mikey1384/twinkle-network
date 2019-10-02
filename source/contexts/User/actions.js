@@ -82,6 +82,12 @@ export default function UserActions(dispatch) {
         data
       });
     },
+    onSetProfilesLoaded(loaded) {
+      return dispatch({
+        type: 'SET_PROFILES_LOADED',
+        loaded
+      });
+    },
     onShowProfile(user) {
       return dispatch({
         type: 'SHOW_PROFILE',

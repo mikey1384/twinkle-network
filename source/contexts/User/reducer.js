@@ -157,6 +157,11 @@ export default function UserReducer(state, action) {
         loggedIn: true,
         signinModalShown: false
       };
+    case 'SET_PROFILES_LOADED':
+      return {
+        ...state,
+        profilesLoaded: action.loaded
+      };
     case 'TOGGLE_HIDE_WATCHED':
       return {
         ...state,

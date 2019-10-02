@@ -20,12 +20,14 @@ export default function People({ history, location }) {
   const {
     user: {
       actions: {
+        onSetProfilesLoaded,
         onClearUserSearch,
         onLoadUsers,
         onLoadMoreUsers,
         onSearchUsers
       },
       state: {
+        profilesLoaded,
         loadMoreButton,
         profiles,
         profileTheme,
@@ -42,7 +44,6 @@ export default function People({ history, location }) {
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';
   const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
-  const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: onSearchUsers,
@@ -84,9 +85,7 @@ export default function People({ history, location }) {
       if (profiles.length === 0) {
         const data = await loadUsers();
         onLoadUsers(data);
-      }
-      if (mounted.current) {
-        setLoaded(true);
+        onSetProfilesLoaded(true);
       }
     }
   }, [history.action]);
@@ -123,10 +122,10 @@ export default function People({ history, location }) {
           orderByText={orderBy}
           dropdownLabel={dropdownLabel}
         />
-        {(!loaded || (!stringIsEmpty(searchText) && searching)) && (
+        {(!profilesLoaded || (!stringIsEmpty(searchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
-        {loaded &&
+        {profilesLoaded &&
           stringIsEmpty(searchText) &&
           profiles.map(profile => (
             <ProfilePanel
@@ -161,7 +160,7 @@ export default function People({ history, location }) {
               No Users Found
             </div>
           )}
-        {stringIsEmpty(searchText) && loaded && loadMoreButton && (
+        {stringIsEmpty(searchText) && profilesLoaded && loadMoreButton && (
           <LoadMoreButton
             filled
             color="lightBlue"
@@ -174,13 +173,13 @@ export default function People({ history, location }) {
   );
 
   async function handleSetOrderBy(label) {
-    setLoaded(false);
+    onSetProfilesLoaded(false);
     const data = await loadUsers({
       orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
     onLoadUsers(data);
     setOrderBy(label);
-    setLoaded(true);
+    onSetProfilesLoaded(true);
   }
 
   async function loadMoreProfiles() {
