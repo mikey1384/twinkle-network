@@ -89,7 +89,6 @@ export default function People({ history, location }) {
       }
     }
   }, [history.action]);
-
   return (
     <div style={{ height: '100%' }}>
       <SearchInput

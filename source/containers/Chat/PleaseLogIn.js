@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from 'components/Button';
+import { Color } from 'constants/css';
 import { useAppContext } from 'contexts';
 
 export default function PleaseLogIn() {
@@ -21,13 +22,30 @@ export default function PleaseLogIn() {
     >
       <div
         style={{
+          color: Color.black(),
           textAlign: 'center',
           fontSize: '3rem',
-          fontWeight: 'bold',
           marginTop: '-5rem'
         }}
       >
-        <p>To chat and play chess with Twinkle students and teachers:</p>
+        <p>
+          Do you want to{' '}
+          <span style={{ color: Color.vantaBlack(), fontWeight: 'bold' }}>
+            chat
+          </span>{' '}
+          and play{' '}
+          <span style={{ color: Color.vantaBlack(), fontWeight: 'bold' }}>
+            chess
+          </span>{' '}
+          with{' '}
+          <span style={{ color: Color.logoBlue(), fontWeight: 'bold' }}>
+            Twin
+          </span>
+          <span style={{ color: Color.logoGreen(), fontWeight: 'bold' }}>
+            kle
+          </span>{' '}
+          students and teachers?
+        </p>
       </div>
       <div style={{ marginTop: '2rem' }}>
         <Button
