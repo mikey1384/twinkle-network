@@ -17,12 +17,12 @@ export default function ContentActions(dispatch) {
         tagTitle
       });
     },
-    onAttachStar(data) {
+    onAttachStar({ data, contentId, contentType }) {
       return dispatch({
         type: 'ATTACH_STAR',
         data,
-        contentId: data.contentId,
-        contentType: data.contentType
+        contentId,
+        contentType
       });
     },
     onChangeSpoilerStatus({ shown, subjectId }) {

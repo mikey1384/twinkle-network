@@ -20,8 +20,7 @@ ContentListItem.propTypes = {
   secretShown: PropTypes.bool,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
-  style: PropTypes.object,
-  userId: PropTypes.number
+  style: PropTypes.object
 };
 
 export default function ContentListItem({
@@ -33,11 +32,12 @@ export default function ContentListItem({
   secretShown,
   selectable,
   selected,
-  style,
-  userId
+  style
 }) {
   const {
-    user: { state: profileTheme }
+    user: {
+      state: { profileTheme, userId }
+    }
   } = useAppContext();
   const [mouseEntered, setMouseEntered] = useState(false);
   const [localScopeSecretShown, setLocalScopeSecretShown] = useState(false);

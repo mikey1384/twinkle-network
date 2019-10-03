@@ -288,7 +288,11 @@ function Comment({
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   setXpRewardInterfaceShown(false);
-                  onAttachStar(data);
+                  onAttachStar({
+                    data,
+                    contentId: comment.id,
+                    contentType: 'comment'
+                  });
                 }}
               />
             )}

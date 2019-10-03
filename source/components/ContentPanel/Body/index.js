@@ -342,7 +342,7 @@ export default function Body({
             stars={stars}
             onRewardSubmit={data => {
               setXpRewardInterfaceShown(false);
-              onAttachStar(data);
+              onAttachStar({data, contentId, contentType});
             }}
           />
         )}

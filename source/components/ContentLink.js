@@ -23,7 +23,9 @@ export default function ContentLink({
   contentType
 }) {
   const {
-    requestHelpers: { profileTheme }
+    user: {
+      state: { profileTheme }
+    }
   } = useAppContext();
   let destination = '';
   if (contentType === 'url') {

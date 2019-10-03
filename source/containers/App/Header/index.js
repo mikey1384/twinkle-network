@@ -71,9 +71,9 @@ function Header({
   } = useAppContext();
   const prevUserIdRef = useRef(userId);
   useEffect(() => {
+    socket.on('chat_invitation', onChatInvitation);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('chat_invitation', onChatInvitation);
     socket.on('receive_message', handleReceiveMessage);
     socket.on('new_post', onIncreaseNumNewPosts);
     socket.on('new_notification', onIncreaseNumNewNotis);
@@ -90,7 +90,7 @@ function Header({
         'receive_chat_file_upload_progress',
         onReceiveUploadProgress
       );
-      socket.removeListener('receive_message', onReceiveMessage);
+      socket.removeListener('receive_message', handleReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
     };
 

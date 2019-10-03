@@ -15,11 +15,10 @@ import { objectify } from 'helpers';
 import { useAppContext } from 'contexts';
 
 Chat.propTypes = {
-  onFileUpload: PropTypes.func,
-  profilePicId: PropTypes.number
+  onFileUpload: PropTypes.func
 };
 
-export default function Chat({ onFileUpload, profilePicId }) {
+export default function Chat({ onFileUpload }) {
   const {
     chat: {
       state: {
@@ -53,7 +52,7 @@ export default function Chat({ onFileUpload, profilePicId }) {
       }
     },
     user: {
-      state: { userId, username }
+      state: { profilePicId, userId, username }
     },
     view: {
       state: { pageVisible }

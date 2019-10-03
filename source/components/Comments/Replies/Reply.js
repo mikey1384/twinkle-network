@@ -244,7 +244,11 @@ export default function Reply({
                 uploaderId={uploader.id}
                 onRewardSubmit={data => {
                   setXpRewardInterfaceShown(false);
-                  onAttachStar(data);
+                  onAttachStar({
+                    data,
+                    contentId: reply.id,
+                    contentType: 'comment'
+                  });
                 }}
               />
             )}

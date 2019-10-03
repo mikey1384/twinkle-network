@@ -270,7 +270,7 @@ export default function LinkPage({
               uploaderId={uploader.id}
               onRewardSubmit={data => {
                 setXpRewardInterfaceShown(false);
-                onAttachStar(data);
+                onAttachStar({ data, contentId: linkId, contentType: 'url' });
               }}
             />
           </div>

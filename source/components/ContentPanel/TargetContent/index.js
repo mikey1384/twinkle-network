@@ -258,7 +258,7 @@ function TargetContent({
                   stars={comment.stars}
                   onRewardSubmit={data => {
                     setXpRewardInterfaceShown(false);
-                    onAttachStar(data);
+                    onAttachStar({ data, contentId, contentType });
                   }}
                 />
               )}
