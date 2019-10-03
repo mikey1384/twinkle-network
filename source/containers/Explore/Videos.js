@@ -51,7 +51,7 @@ export default function Videos({ history, location }) {
     currentSection: '/videos'
   });
   const { handleSearch, searching, searchText } = useSearch({
-    onSearch: searchPlaylist,
+    onSearch: handleSearchPlaylist,
     onClear: () =>
       onSetSearchedPlaylists({ playlists: [], loadMoreButton: false })
   });
@@ -118,7 +118,7 @@ export default function Videos({ history, location }) {
     </div>
   );
 
-  async function searchPlaylist(text) {
+  async function handleSearchPlaylist(text) {
     const { results, loadMoreButton } = await searchContent({
       filter: 'playlist',
       searchText: text,

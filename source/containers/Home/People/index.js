@@ -10,6 +10,8 @@ import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { useAppContext } from 'contexts';
+import request from 'axios';
+import URL from 'constants/URL';
 
 People.propTypes = {
   history: PropTypes.object.isRequired,
@@ -46,7 +48,7 @@ export default function People({ history, location }) {
   const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching, searchText } = useSearch({
-    onSearch: onSearchUsers,
+    onSearch: handleSearchUsers,
     onClear: onClearUserSearch
   });
   const mounted = useRef(true);
@@ -170,6 +172,13 @@ export default function People({ history, location }) {
       </div>
     </div>
   );
+
+  async function handleSearchUsers(text) {
+    const { data: users } = await request.get(
+      `${URL}/user/users/search?queryString=${text}`
+    );
+    onSearchUsers(users);
+  }
 
   async function handleSetOrderBy(label) {
     onSetProfilesLoaded(false);
