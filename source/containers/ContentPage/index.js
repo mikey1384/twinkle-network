@@ -46,6 +46,9 @@ export default function ContentPage({
         onUploadReply
       }
     },
+    explore: {
+      actions: { onDeleteSubject }
+    },
     home: {
       actions: { onDeleteFeed: onDeleteHomeFeed }
     },
@@ -167,6 +170,9 @@ export default function ContentPage({
   );
 
   function handleDeleteContent() {
+    if (contentType === 'subject') {
+      onDeleteSubject(contentId);
+    }
     onDeleteHomeFeed({ contentType, contentId });
     onDeleteProfileFeed({ contentType, contentId });
     onSetExploreSubNav('');

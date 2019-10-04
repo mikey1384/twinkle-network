@@ -69,7 +69,13 @@ export default function ExploreActions(dispatch) {
     onDeletePlaylist(playlistId) {
       return dispatch({
         type: 'DELETE_PLAYLIST',
-        data: playlistId
+        playlistId
+      });
+    },
+    onDeleteSubject(subjectId) {
+      return dispatch({
+        type: 'DELETE_SUBJECT',
+        subjectId: Number(subjectId)
       });
     },
     onDeleteVideo(videoId) {

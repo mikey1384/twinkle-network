@@ -133,13 +133,23 @@ export default function ExploreReducer(state, action) {
         videos: {
           ...state.videos,
           featuredPlaylists: state.videos.featuredPlaylists.filter(
-            playlist => playlist.id !== action.data
+            playlist => playlist.id !== action.playlistId
           ),
           allPlaylists: state.videos.allPlaylists.filter(
-            playlist => playlist.id !== action.data
+            playlist => playlist.id !== action.playlistId
           ),
           searchedPlaylists: state.videos.searchedPlaylists.filter(
-            playlist => playlist.id !== action.data
+            playlist => playlist.id !== action.playlistId
+          )
+        }
+      };
+    case 'DELETE_SUBJECT':
+      return {
+        ...state,
+        subjects: {
+          ...state.subjects,
+          featured: state.subjects.featured.filter(
+            subject => subject.id !== action.subjectId
           )
         }
       };

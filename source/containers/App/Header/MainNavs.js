@@ -110,7 +110,7 @@ export default function MainNavs({
         onSetExploreCategory(section);
       }
     }
-  }, [defaultSearchFilter, pathname, subjectPageMatch]);
+  }, [defaultSearchFilter, pathname]);
   const subSectionIconType =
     exploreSubNav === 'videos'
       ? 'film'

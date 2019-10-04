@@ -60,6 +60,11 @@ export default function Categories({
             cursor: pointer;
             text-transform: capitalize;
             color: ${Color.gray()};
+            transition: color 0.1s;
+            &:hover {
+              text-decoration: none;
+              color: ${Color[profileTheme]()};
+            }
           }
         `}
       >
