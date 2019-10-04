@@ -199,7 +199,7 @@ function App({ location, history }) {
             <Route path="/subjects" component={Explore} />
             <Route path="/playlists" component={PlaylistPage} />
             <Route
-              path="/talk"
+              path="/chat"
               render={() => <Chat onFileUpload={handleFileUpload} />}
             />
             <Route path="/verify" component={Verify} />

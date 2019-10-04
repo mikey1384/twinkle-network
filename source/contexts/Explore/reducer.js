@@ -184,7 +184,7 @@ export default function ExploreReducer(state, action) {
         links: {
           ...state.links,
           links: state.links.links.map(link =>
-            action.id === link.id
+            link.id === action.id
               ? {
                   ...link,
                   title: action.title,

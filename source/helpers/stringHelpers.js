@@ -149,19 +149,20 @@ export function cleanString(string) {
 }
 
 export function exceedsCharLimit({ inputType, contentType, text }) {
+  const targetText = text || '';
   const limit =
     contentType === 'comment' ||
     contentType === 'rewardComment' ||
     contentType === 'statusMsg'
       ? charLimit[contentType]
       : charLimit[contentType][inputType];
-  return text.length > limit
+  return targetText.length > limit
     ? {
         style: {
           color: 'red',
           borderColor: 'red'
         },
-        message: `${text.length}/${limit} Characters`
+        message: `${targetText.length}/${limit} Characters`
       }
     : undefined;
 }

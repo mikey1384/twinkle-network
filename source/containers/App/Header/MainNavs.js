@@ -197,13 +197,13 @@ export default function MainNavs({
       </div>
       <div>
         <HeaderNav
-          to="/talk"
+          to="/chat"
           pathname={pathname}
           className="desktop"
           imgLabel="comments"
           alert={!isAtExploreTab && numChatUnreads > 0}
         >
-          TALK
+          CHAT
         </HeaderNav>
       </div>
     </div>

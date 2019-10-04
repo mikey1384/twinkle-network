@@ -385,17 +385,25 @@ export default function LinkPage({
   async function handleEditLinkPage(params) {
     await editContent(params);
     const {
-      linkId: id,
+      contentId,
       editedTitle: title,
       editedDescription: description,
       editedUrl: content
     } = params;
     onEditContent({
-      content: processedURL(content),
-      title,
-      description
+      data: {
+        content: processedURL(content),
+        title,
+        description
+      },
+      contentType: 'url',
+      contentId
     });
-    onEditLinkPage({ id: Number(id), title, content: processedURL(content) });
+    onEditLinkPage({
+      id: Number(contentId),
+      title,
+      content: processedURL(content)
+    });
   }
 
   function handleLikeLink(likes) {

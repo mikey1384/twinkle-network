@@ -5,7 +5,7 @@ import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
@@ -15,6 +15,7 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 LinkItem.propTypes = {
+  history: PropTypes.object.isRequired,
   link: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
@@ -32,7 +33,8 @@ LinkItem.propTypes = {
 const API_URL = `${URL}/content`;
 const fallbackImage = '/img/link.png';
 
-export default function LinkItem({
+function LinkItem({
+  history,
   link: {
     id,
     numComments,
@@ -120,6 +122,10 @@ export default function LinkItem({
       `}
     >
       <div
+        onMouseUp={() => {
+          if (!onEdit) history.push(`/links/${id}`);
+        }}
+        style={{ cursor: !onEdit && 'pointer' }}
         className={css`
           position: relative;
           width: 20%;
@@ -130,21 +136,24 @@ export default function LinkItem({
           }
         `}
       >
-        <Link to={`/links/${id}`}>
-          <img
-            className={css`
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-            `}
-            src={imageUrl}
-            onError={handleImageLoadError}
-            alt=""
-          />
-        </Link>
+        <img
+          className={css`
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          `}
+          src={imageUrl}
+          onError={handleImageLoadError}
+          alt=""
+        />
       </div>
-      <section>
+      <section
+        onMouseUp={() => {
+          if (!onEdit) history.push(`/links/${id}`);
+        }}
+        style={{ cursor: !onEdit && 'pointer' }}
+      >
         <div
           className={css`
             display: flex;
@@ -164,7 +173,17 @@ export default function LinkItem({
                 }
               `}
             >
-              {!onEdit && <Link to={`/links/${id}`}>{cleanString(title)}</Link>}
+              {!onEdit && (
+                <span
+                  style={{
+                    color: Color.blue(),
+                    fontSize: '2rem',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {cleanString(title)}
+                </span>
+              )}
               {onEdit && (
                 <EditTitleForm
                   autoFocus
@@ -214,17 +233,17 @@ export default function LinkItem({
             )}
           </div>
         </div>
-        <div>
-          {!onEdit && editButtonShown && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              direction="left"
-              menuProps={editMenuItems}
-            />
-          )}
-        </div>
       </section>
+      {!onEdit && editButtonShown && (
+        <div>
+          <DropdownButton
+            skeuomorphic
+            color="darkerGray"
+            direction="left"
+            menuProps={editMenuItems}
+          />
+        </div>
+      )}
       {confirmModalShown && (
         <ConfirmModal
           title="Remove Link"
@@ -258,3 +277,5 @@ export default function LinkItem({
     setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
   }
 }
+
+export default withRouter(LinkItem);
