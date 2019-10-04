@@ -100,7 +100,7 @@ export default function ChessModal({
       <main style={{ padding: 0 }}>
         <div
           style={{
-            backgroundColor: Color.subtitleGray(),
+            backgroundColor: Color.lightGray(),
             position: 'relative',
             width: '100%'
           }}

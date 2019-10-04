@@ -112,7 +112,7 @@ function ContentPanel({
       }
     }
   }, [contentObj]);
-  const isThreaded = !!contentObj.targetObj;
+
   return (
     <Context.Provider
       value={{
@@ -151,8 +151,7 @@ function ContentPanel({
           <div
             style={{
               position: 'relative',
-              zIndex: 3,
-              boxShadow: isThreaded ? `0 4px 10px -3px ${Color.black(0.8)}` : ''
+              zIndex: 3
             }}
             className={container}
           >
@@ -194,14 +193,7 @@ function ContentPanel({
             <TargetContent
               style={{
                 position: 'relative',
-                zIndex: 2,
-                boxShadow:
-                  contentObj.targetObj?.subject ||
-                  contentObj.rootType === 'video' ||
-                  contentObj.rootType === 'url' ||
-                  contentObj.rootType === 'user'
-                    ? `0 4px 10px -3px ${Color.black(0.8)}`
-                    : ''
+                zIndex: 2
               }}
               targetObj={contentObj.targetObj}
               rootObj={contentObj.rootObj}
@@ -219,12 +211,7 @@ function ContentPanel({
                 comments={contentObj.childComments}
                 style={{
                   zIndex: 1,
-                  position: 'relative',
-                  boxShadow:
-                    contentObj.rootType === 'video' ||
-                    contentObj.rootType === 'url'
-                      ? `0 4px 10px -3px ${Color.black(0.8)}`
-                      : ''
+                  position: 'relative'
                 }}
                 expandable
                 onClick={() =>

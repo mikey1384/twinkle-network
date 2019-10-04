@@ -52,9 +52,11 @@ export default function ContentActions(dispatch) {
         editedComment
       });
     },
-    onEditContent({ data }) {
+    onEditContent({ data, contentType, contentId }) {
       return dispatch({
         type: 'EDIT_CONTENT',
+        contentType,
+        contentId,
         data
       });
     },

@@ -151,7 +151,7 @@ export default function Chess({
       `}
       style={{
         position: 'relative',
-        background: Color.lightGray(),
+        background: Color.lighterGray(),
         ...style
       }}
     >

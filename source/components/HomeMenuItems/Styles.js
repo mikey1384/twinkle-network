@@ -12,7 +12,7 @@ export const container = css`
     cursor: pointer;
     display: flex;
     align-items: center;
-    color: ${Color.darkerGray()};
+    color: ${Color.gray()};
     justify-content: center;
     > a {
       margin-left: -2rem;
@@ -21,7 +21,7 @@ export const container = css`
       display: flex;
       align-items: center;
       justify-content: center;
-      color: ${Color.darkerGray()};
+      color: ${Color.darkGray()};
       text-decoration: none;
     }
     .homemenu__label {
@@ -36,7 +36,6 @@ export const container = css`
     }
   }
   > nav.active {
-    background-color: #fff;
     font-weight: bold;
     color: ${Color.black()};
     a {

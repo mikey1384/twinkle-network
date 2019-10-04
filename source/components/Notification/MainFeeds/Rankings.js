@@ -125,7 +125,7 @@ export default function Rankings() {
               rank === 1
                 ? Color.gold()
                 : rank === 2
-                ? Color.lightGray()
+                ? Color.lighterGray()
                 : rank === 3
                 ? Color.orange()
                 : undefined;

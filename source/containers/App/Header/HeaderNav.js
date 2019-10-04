@@ -4,7 +4,6 @@ import Icon from 'components/Icon';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -33,27 +32,14 @@ export default function HeaderNav({
   pathname,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
       pathname.substring(1)
     );
-  const activeColor = alert
-    ? alertColor
-    : Color[profileTheme](
-        profileTheme === 'black' || profileTheme === 'vantaBlack' ? 0.8 : 0.6
-      );
-  const hoverColor = alert
-    ? alertColor
-    : Color[profileTheme](
-        profileTheme === 'black' || profileTheme === 'vantaBlack' ? 0.6 : 0.4
-      );
+  const activeColor = alert ? alertColor : Color.darkGray();
+  const hoverColor = alert ? alertColor : Color.darkGray();
   return (
     <Route
       path={to}
@@ -71,12 +57,12 @@ export default function HeaderNav({
             align-items: center;
             justify-content: center;
             .chat {
-              color: ${Color.gray()};
+              color: ${Color.lightGray()};
             }
             a {
               text-decoration: none;
               font-weight: bold;
-              color: ${Color.gray()};
+              color: ${Color.lightGray()};
               align-items: center;
               line-height: 1;
             }
@@ -105,13 +91,13 @@ export default function HeaderNav({
               }
               > a.active {
                 > svg {
-                  color: ${Color.black()}!important;
+                  color: ${Color.darkGray()}!important;
                 }
               }
               &:hover {
                 > a {
                   > svg {
-                    color: ${Color.gray()};
+                    color: ${Color.lightGray()};
                   }
                 }
               }

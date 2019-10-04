@@ -47,48 +47,72 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
-
-    case 'ATTACH_STAR':
-      return {
-        ...state,
-        [contentKey]: {
+    case 'ATTACH_STAR': {
+      const newState = { ...state };
+      const contentKeys = Object.keys(newState);
+      for (let contentKey of contentKeys) {
+        const prevContentState = newState[contentKey];
+        const contentMatches =
+          prevContentState.contentId === action.contentId &&
+          prevContentState.contentType === action.contentType;
+        newState[contentKey] = {
           ...prevContentState,
-          stars: (prevContentState.stars || []).concat(action.data),
-          childComments: prevContentState.childComments?.map(comment => {
+          stars: contentMatches
+            ? (prevContentState.stars || []).concat(action.data)
+            : prevContentState.stars,
+          childComments:
+            action.contentType === 'comment'
+              ? prevContentState.childComments?.map(comment => {
+                  const commentMatches = comment.id === action.contentId;
+                  return {
+                    ...comment,
+                    stars: commentMatches
+                      ? (comment.stars || []).concat(action.data)
+                      : comment.stars,
+                    replies: comment.replies.map(reply => {
+                      const replyMatches = reply.id === action.contentId;
+                      return {
+                        ...reply,
+                        stars: replyMatches
+                          ? (reply.stars || []).concat(action.data)
+                          : reply.stars
+                      };
+                    })
+                  };
+                })
+              : prevContentState.childComments,
+          subjects: prevContentState.subjects?.map(subject => {
+            const subjectMatches =
+              subject.id === action.contentId &&
+              action.contentType === 'subject';
             return {
-              ...comment,
-              stars:
-                comment.id === action.data.contentId &&
-                action.data.contentType === 'comment'
-                  ? (comment.stars || []).concat(action.data)
-                  : comment.stars || [],
-              replies: comment.replies.map(reply => ({
-                ...reply,
-                stars:
-                  reply.id === action.data.contentId &&
-                  action.data.contentType === 'comment'
-                    ? (reply.stars || []).concat(action.data)
-                    : reply.stars || []
-              }))
+              ...subject,
+              stars: subjectMatches
+                ? (subject.stars || []).concat(action.data)
+                : subject.stars,
+              comments:
+                action.contentType === 'comment'
+                  ? subject.comments.map(comment => {
+                      const commentMatches = comment.id === action.contentId;
+                      return {
+                        ...comment,
+                        stars: commentMatches
+                          ? (comment.stars || []).concat(action.data)
+                          : comment.stars,
+                        replies: comment.replies.map(reply => {
+                          const replyMatches = reply.id === action.contentId;
+                          return {
+                            ...reply,
+                            stars: replyMatches
+                              ? (reply.stars || []).concat(action.data)
+                              : reply.stars
+                          };
+                        })
+                      };
+                    })
+                  : subject.comments
             };
           }),
-          subjects: prevContentState.subjects?.map(subject => ({
-            ...subject,
-            comments: subject.comments.map(comment => ({
-              ...comment,
-              stars:
-                comment.id === action.data.contentId
-                  ? comment.stars?.concat(action.data)
-                  : comment.stars || [],
-              replies: comment.replies.map(reply => ({
-                ...reply,
-                stars:
-                  reply.id === action.data.contentId
-                    ? reply.stars?.concat(action.data)
-                    : reply.stars || []
-              }))
-            }))
-          })),
           targetObj: prevContentState.targetObj
             ? {
                 ...prevContentState.targetObj,
@@ -97,23 +121,38 @@ export default function ContentPageReducer(state, action) {
                       ...prevContentState.targetObj.comment,
                       stars:
                         prevContentState.targetObj.comment.id ===
-                          action.data.contentId &&
-                        action.data.contentType === 'comment'
+                          action.contentId && action.contentType === 'comment'
                           ? (
                               prevContentState.targetObj.comment.stars || []
                             ).concat(action.data)
                           : prevContentState.targetObj.comment.stars
                     }
+                  : undefined,
+                subject: prevContentState.targetObj.subject
+                  ? {
+                      ...prevContentState.targetObj.subject,
+                      stars:
+                        prevContentState.targetObj.subject.id ===
+                          action.contentId && action.contentType === 'subject'
+                          ? (
+                              prevContentState.targetObj.subject.stars || []
+                            ).concat(action.data)
+                          : prevContentState.targetObj.subject.stars
+                    }
                   : undefined
               }
             : undefined
-        }
-      };
+        };
+      }
+      return newState;
+    }
     case 'CHANGE_SPOILER_STATUS':
       return {
         ...state,
         [contentKey]: {
           ...prevContentState,
+          contentId: action.contentId,
+          contentType: action.contentType,
           secretShown: action.shown,
           targetObj: prevContentState.targetObj
             ? {
@@ -253,14 +292,83 @@ export default function ContentPageReducer(state, action) {
       const contentKeys = Object.keys(newState);
       for (let contentKey of contentKeys) {
         const prevContentState = newState[contentKey];
+        const contentMatches =
+          prevContentState.contentId === action.contentId &&
+          prevContentState.contentType === action.contentType;
         newState[contentKey] = {
           ...prevContentState,
-          ...action.data
+          ...(contentMatches ? action.data : {}),
+          childComments:
+            action.contentType === 'comment'
+              ? prevContentState.childComments?.map(comment => {
+                  const commentMatches = comment.id === action.contentId;
+                  return {
+                    ...comment,
+                    ...(commentMatches ? action.data : {}),
+                    replies: comment.replies.map(reply => {
+                      const replyMatches = reply.id === action.contentId;
+                      return {
+                        ...reply,
+                        ...(replyMatches ? action.data : {})
+                      };
+                    })
+                  };
+                })
+              : prevContentState.childComments,
+          subjects: prevContentState.subjects?.map(subject => {
+            const subjectMatches =
+              subject.id === action.contentId &&
+              action.contentType === 'subject';
+            return {
+              ...subject,
+              ...(subjectMatches ? action.data : {}),
+              comments:
+                action.contentType === 'comment'
+                  ? subject.comments.map(comment => {
+                      const commentMatches = comment.id === action.contentId;
+                      return {
+                        ...comment,
+                        ...(commentMatches ? action.data : {}),
+                        replies: comment.replies.map(reply => {
+                          const replyMatches = reply.id === action.contentId;
+                          return {
+                            ...reply,
+                            ...(replyMatches ? action.data : {})
+                          };
+                        })
+                      };
+                    })
+                  : subject.comments
+            };
+          }),
+          targetObj: prevContentState.targetObj
+            ? {
+                ...prevContentState.targetObj,
+                comment: prevContentState.targetObj.comment
+                  ? {
+                      ...prevContentState.targetObj.comment,
+                      ...(prevContentState.targetObj.comment.id ===
+                        action.contentId && action.contentType === 'comment'
+                        ? action.data
+                        : {})
+                    }
+                  : undefined,
+                subject: prevContentState.targetObj.subject
+                  ? {
+                      ...prevContentState.targetObj.subject,
+                      ...(prevContentState.targetObj.subject.id ===
+                        action.contentId && action.contentType === 'subject'
+                        ? action.data
+                        : {})
+                    }
+                  : undefined
+              }
+            : undefined
         };
       }
       return newState;
     }
-    case 'EDIT_REWARD_COMMENT':
+    case 'EDIT_REWARD_COMMENT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);
       for (let contentKey of contentKeys) {
@@ -333,6 +441,7 @@ export default function ContentPageReducer(state, action) {
         };
       }
       return newState;
+    }
     case 'EDIT_SUBJECT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);

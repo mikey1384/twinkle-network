@@ -23,7 +23,7 @@ export default function StatusMsg({
         font-size: 1.7rem;
         padding: 1rem;
         margin-top: 1rem;
-        box-shadow: 0 5px 5px ${Color.lightGray()};
+        box-shadow: 0 5px 5px ${Color.lighterGray()};
         overflow-wrap: break-word;
         word-break: break-word;
         > a {

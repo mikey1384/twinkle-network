@@ -22,7 +22,7 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
   return (
     <div
       style={{
-        background: Color.lightGray(),
+        background: Color.lighterGray(),
         padding: '1rem',
         width: '70%',
         borderRadius

@@ -79,7 +79,7 @@ export default function Explore({ history, location }) {
               text-align: center;
               width: 100%;
               justify-content: center;
-              color: ${Color.gray()};
+              color: ${Color.darkGray()};
               text-decoration: none;
             }
             > a:hover {
@@ -89,7 +89,6 @@ export default function Explore({ history, location }) {
             > a.active {
               font-weight: bold;
               color: ${Color.black()};
-              background: #fff;
             }
             @media (max-width: ${mobileMaxWidth}) {
               display: none;

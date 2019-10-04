@@ -33,7 +33,7 @@ export default function Textarea({
           border: 1px solid ${Color.logoBlue()};
           box-shadow: 0px 0px 3px ${Color.logoBlue(0.8)};
           ::placeholder {
-            color: ${Color.lightGray()};
+            color: ${Color.lighterGray()};
           }
         }
         ::placeholder {

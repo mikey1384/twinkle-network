@@ -5,6 +5,7 @@ import { matchPath } from 'react-router';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
+import { truncateText } from 'helpers/stringHelpers';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
@@ -65,8 +66,7 @@ export default function MainNavs({
     !!linkPageMatch ||
     !!commentPageMatch;
   const profilePageMatch = matchPath(pathname, {
-    path: '/users/:userId',
-    exact: true
+    path: '/users/:userId'
   });
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
@@ -105,6 +105,11 @@ export default function MainNavs({
       : exploreSubNav === 'subjects'
       ? 'bolt'
       : 'comment-alt';
+  let profileUsername = '';
+  if (profileNav) {
+    const splitProfileNav = profileNav.split('/users/')[1].split('/');
+    profileUsername = splitProfileNav[0];
+  }
   return (
     <div
       className={css`
@@ -138,7 +143,7 @@ export default function MainNavs({
           style={{ marginRight: '2rem' }}
           imgLabel="user"
         >
-          PROFILE
+          {truncateText({ text: profileUsername.toUpperCase(), limit: 7 })}
         </HeaderNav>
       )}
       <HeaderNav

@@ -293,7 +293,7 @@ export default function Chat({ onFileUpload }) {
               )}
             </>
           ) : (
-            <Loading />
+            <Loading text="Loading Twinkle Chat..." />
           )}
         </div>
       ) : (

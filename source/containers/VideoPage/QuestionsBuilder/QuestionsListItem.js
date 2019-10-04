@@ -42,7 +42,7 @@ export default function QuestionsListItem({
       style={{
         background: '#fff',
         opacity,
-        color: (!listItem.title || listItem.deleted) && Color.lightGray,
+        color: (!listItem.title || listItem.deleted) && Color.lighterGray,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

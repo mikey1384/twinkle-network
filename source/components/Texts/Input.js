@@ -35,7 +35,7 @@ export default function Input({
           &:focus {
             outline: none;
             ::placeholder {
-              color: ${Color.lightGray()};
+              color: ${Color.lighterGray()};
             }
           }
           ::placeholder {

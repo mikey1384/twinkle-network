@@ -37,7 +37,7 @@ function UsernameText({ className, color, history, style = {}, user = {} }) {
           fontWeight: 'bold',
           color: user.username
             ? color || Color.darkerGray()
-            : Color.lightGray(),
+            : Color.lighterGray(),
           ...style
         }}
         onClick={onUsernameClick}

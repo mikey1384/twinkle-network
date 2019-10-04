@@ -8,8 +8,6 @@ import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
-import { css } from 'emotion';
-import { borderRadius, Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
 import { useAppContext } from 'contexts';
@@ -82,7 +80,7 @@ export default function Stories({ location }) {
       actions: { onResetNumNewPosts }
     },
     user: {
-      state: { hideWatched, profileTheme, userId, username }
+      state: { hideWatched, userId, username }
     },
     view: {
       state: { scrollPositions },
@@ -95,12 +93,9 @@ export default function Stories({ location }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [feedsOutdated, setFeedsOutdated] = useState(false);
-  const [backToTopShown, setBackToTopShown] = useState(false);
   const mounted = useRef(true);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
-  const prevScrollPos = useRef(null);
 
   useScrollPosition({
     scrollPositions,
@@ -117,15 +112,6 @@ export default function Stories({ location }) {
     onScrollToBottom: () => setLoadingMore(true),
     onLoad: loadMoreFeeds
   });
-
-  useEffect(() => {
-    setBackToTopShown(
-      scrollPositions['/'] &&
-        scrollPositions['/'] <= prevScrollPos.current &&
-        scrollPositions['/'] > 1000
-    );
-    prevScrollPos.current = scrollPositions['/'];
-  }, [scrollPositions['/']]);
 
   useEffect(() => {
     mounted.current = true;
@@ -299,41 +285,6 @@ export default function Stories({ location }) {
               )}
             </>
           )}
-        </div>
-      </div>
-      <div
-        style={{
-          position: 'fixed',
-          top: '5.5rem',
-          zIndex: 1000,
-          width: '100%',
-          left: 0,
-          display: 'flex',
-          justifyContent: 'center'
-        }}
-      >
-        <div
-          onClick={() => {
-            document.getElementById('App').scrollTop = 0;
-            BodyRef.current.scrollTop = 0;
-          }}
-          className={css`
-            transition: background 0.2s, visibility 0s, opacity 0.2s;
-            color: #fff;
-            background: ${Color[profileTheme](0.4)};
-            visibility: ${backToTopShown ? 'visible' : 'hidden'};
-            opacity: ${backToTopShown ? 1 : 0};
-            border-radius: ${borderRadius};
-            padding: 0.5rem 2rem;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            &:hover {
-              background: ${Color[profileTheme](0.9)};
-            }
-          `}
-        >
-          Back to Top
         </div>
       </div>
     </ErrorBoundary>

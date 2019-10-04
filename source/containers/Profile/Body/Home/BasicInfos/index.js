@@ -150,7 +150,7 @@ function BasicInfos({
                     color:
                       emailVerified || emailCheckHighlighted
                         ? Color[selectedTheme]()
-                        : Color.lightGray()
+                        : Color.lighterGray()
                   }}
                   icon="check-circle"
                   onClick={
