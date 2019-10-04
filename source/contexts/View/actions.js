@@ -12,6 +12,36 @@ export default function ViewActions(dispatch) {
         section,
         position
       });
+    },
+    onSetExploreCategory(category) {
+      return dispatch({
+        type: 'SET_EXPLORE_CATEGORY',
+        category
+      });
+    },
+    onSetExploreSubNav(nav) {
+      return dispatch({
+        type: 'SET_EXPLORE_SUB_NAV',
+        nav
+      });
+    },
+    onSetExplorePath(path) {
+      return dispatch({
+        type: 'SET_EXPLORE_PATH',
+        path
+      });
+    },
+    onSetHomeNav(nav) {
+      return dispatch({
+        type: 'SET_HOME_NAV',
+        nav
+      });
+    },
+    onSetProfileNav(nav) {
+      return dispatch({
+        type: 'SET_PROFILE_NAV',
+        nav
+      });
     }
   };
 }

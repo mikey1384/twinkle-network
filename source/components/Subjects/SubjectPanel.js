@@ -119,6 +119,7 @@ export default function SubjectPanel({
     <div
       style={{
         background: '#fff',
+        border: `1px solid ${Color.borderGray()}`,
         marginTop: '1rem',
         fontSize: '1.5rem'
       }}

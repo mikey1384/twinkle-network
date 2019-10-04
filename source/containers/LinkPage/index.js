@@ -15,7 +15,7 @@ import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 import Description from './Description';
 import { css } from 'emotion';
-import { mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
 import { useAppContext } from 'contexts';
@@ -60,10 +60,24 @@ export default function LinkPage({
       }
     },
     explore: {
-      actions: { onEditLinkPage, onLikeLink, onUpdateNumLinkComments }
+      actions: {
+        onDeleteLink,
+        onEditLinkPage,
+        onLikeLink,
+        onUpdateNumLinkComments
+      }
+    },
+    home: {
+      actions: { onDeleteFeed: onDeleteHomeFeed }
+    },
+    profile: {
+      actions: { onDeleteFeed: onDeleteProfileFeed }
     },
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
+    },
+    view: {
+      actions: { onSetExploreSubNav }
     },
     requestHelpers: {
       deleteContent,
@@ -86,40 +100,31 @@ export default function LinkPage({
     setLoading(true);
     initLinkPage();
     async function initLinkPage() {
-      try {
-        const data = await loadContent({
-          contentId: linkId,
-          contentType: 'url'
-        });
-        const subjectsObj = await loadSubjects({
-          contentType: 'url',
-          contentId: linkId
-        });
-        const commentsObj = await loadComments({
-          contentId: linkId,
-          contentType: 'url',
-          limit: 5
-        });
-        onInitContent({
-          ...data,
-          loaded: true,
-          contentId: Number(linkId),
-          contentType: 'url',
-          childComments: commentsObj?.comments || [],
-          commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
-          subjects: subjectsObj?.results || [],
-          subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
-        });
-        setLoading(false);
-      } catch (error) {
-        if (error.response) {
-          const { data = {} } = error.response;
-          if (data.notFound) {
-            setNotFound(true);
-          }
-        }
-        console.error(error.response || error);
-      }
+      const data = await loadContent({
+        contentId: linkId,
+        contentType: 'url'
+      });
+      if (data.notFound) return setNotFound(true);
+      const subjectsObj = await loadSubjects({
+        contentType: 'url',
+        contentId: linkId
+      });
+      const commentsObj = await loadComments({
+        contentId: linkId,
+        contentType: 'url',
+        limit: 5
+      });
+      onInitContent({
+        ...data,
+        loaded: true,
+        contentId: Number(linkId),
+        contentType: 'url',
+        childComments: commentsObj?.comments || [],
+        commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
+        subjects: subjectsObj?.results || [],
+        subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
+      });
+      setLoading(false);
     }
   }, [location.pathname]);
 
@@ -169,6 +174,7 @@ export default function LinkPage({
         className={css`
           width: 60%;
           background-color: #fff;
+          border: 1px solid ${Color.borderGray()};
           padding-bottom: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100%;
@@ -203,6 +209,8 @@ export default function LinkPage({
           contentType="url"
           onCommentEdit={onEditRewardComment}
           style={{
+            marginLeft: -1,
+            marginRight: -1,
             fontSize: '1.4rem'
           }}
           stars={stars}
@@ -322,6 +330,7 @@ export default function LinkPage({
         onRewardCommentEdit={onEditRewardComment}
         parent={{ contentType: 'url', id }}
         className={css`
+          border: 1px solid ${Color.borderGray()};
           padding: 1rem;
           width: 60%;
           background: #fff;
@@ -358,6 +367,10 @@ export default function LinkPage({
 
   async function handleDeleteLink() {
     await deleteContent({ id, contentType: 'url' });
+    onDeleteLink(id);
+    onDeleteHomeFeed({ contentType: 'url', contentId: id });
+    onDeleteProfileFeed({ contentType: 'url', contentId: id });
+    onSetExploreSubNav('');
     history.push('/links');
   }
 

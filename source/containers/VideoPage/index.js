@@ -83,10 +83,24 @@ export default function VideoPage({
       }
     },
     explore: {
-      actions: { onChangeVideoByUserStatus, onEditVideoThumbs, onLikeVideo }
+      actions: {
+        onChangeVideoByUserStatus,
+        onDeleteVideo,
+        onEditVideoThumbs,
+        onLikeVideo
+      }
+    },
+    home: {
+      actions: { onDeleteFeed: onDeleteHomeFeed }
+    },
+    profile: {
+      actions: { onDeleteFeed: onDeleteProfileFeed }
     },
     user: {
       state: { authLevel, canEdit, userId }
+    },
+    view: {
+      actions: { onSetExploreSubNav }
     },
     requestHelpers: {
       deleteContent,
@@ -423,6 +437,10 @@ export default function VideoPage({
 
   async function handleDeleteVideo() {
     await deleteContent({ id: videoId, contentType: 'video' });
+    onDeleteVideo(videoId);
+    onDeleteHomeFeed({ contentType: 'video', contentId: videoId });
+    onDeleteProfileFeed({ contentType: 'video', contentId: videoId });
+    onSetExploreSubNav('');
     history.push('/videos');
   }
 

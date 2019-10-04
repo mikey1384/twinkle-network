@@ -35,7 +35,7 @@ export default function SideMenu({
             padding: 1rem;
             font-size: 2rem;
             font-weight: bold;
-            color: ${Color.darkGray()};
+            color: ${Color.gray()};
             &:hover {
               color: ${Color.black()};
             }
@@ -53,8 +53,7 @@ export default function SideMenu({
             onClick={() => onMenuClick({ item: key })}
             style={{
               cursor: 'pointer',
-              color: selectedKey === key ? Color.black() : null,
-              background: selectedKey === key ? '#fff' : null
+              color: selectedKey === key ? Color.black() : null
             }}
           >
             {label}

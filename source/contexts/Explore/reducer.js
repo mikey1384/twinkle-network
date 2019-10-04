@@ -143,6 +143,31 @@ export default function ExploreReducer(state, action) {
           )
         }
       };
+    case 'DELETE_VIDEO':
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.filter(
+              video => video.videoId !== action.videoId
+            )
+          })),
+          allPlaylists: state.videos.allPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.filter(
+              video => video.videoId !== action.videoId
+            )
+          })),
+          searchedPlaylists: state.videos.searchedPlaylists.map(playlist => ({
+            ...playlist,
+            playlist: playlist.playlist.filter(
+              video => video.videoId !== action.videoId
+            )
+          }))
+        }
+      };
     case 'EDIT_LINK_PAGE':
       return {
         ...state,
@@ -528,7 +553,16 @@ export default function ExploreReducer(state, action) {
         ...state,
         links: {
           ...state.links,
-          links: [action.linkItem].concat(state.links.links)
+          links: [
+            {
+              id: action.linkItem.contentId,
+              content: action.linkItem.content,
+              likes: [],
+              timeStamp: action.linkItem.lastInteraction,
+              title: action.linkItem.title,
+              uploader: action.linkItem.uploader
+            }
+          ].concat(state.links.links)
         }
       };
     case 'UPLOAD_PLAYLIST':

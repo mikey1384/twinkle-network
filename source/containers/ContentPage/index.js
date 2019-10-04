@@ -46,8 +46,17 @@ export default function ContentPage({
         onUploadReply
       }
     },
+    home: {
+      actions: { onDeleteFeed: onDeleteHomeFeed }
+    },
+    profile: {
+      actions: { onDeleteFeed: onDeleteProfileFeed }
+    },
     user: {
       state: { userId }
+    },
+    view: {
+      actions: { onSetExploreSubNav }
     }
   } = useAppContext();
   const contentType = url.split('/')[1].slice(0, -1);
@@ -130,7 +139,7 @@ export default function ContentPage({
                 onChangeSpoilerStatus={onChangeSpoilerStatus}
                 onCommentSubmit={onUploadComment}
                 onDeleteComment={onDeleteComment}
-                onDeleteContent={() => history.push('/')}
+                onDeleteContent={handleDeleteContent}
                 onEditComment={onEditComment}
                 onEditContent={onEditContent}
                 onEditRewardComment={onEditRewardComment}
@@ -156,4 +165,11 @@ export default function ContentPage({
       </div>
     </ErrorBoundary>
   );
+
+  function handleDeleteContent() {
+    onDeleteHomeFeed({ contentType, contentId });
+    onDeleteProfileFeed({ contentType, contentId });
+    onSetExploreSubNav('');
+    history.push('/');
+  }
 }

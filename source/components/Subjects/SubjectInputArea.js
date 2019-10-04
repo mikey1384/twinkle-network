@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { charLimit } from 'constants/defaultValues';
 import { useAppContext } from 'contexts';
+import { Color } from 'constants/css';
 
 SubjectInputArea.propTypes = {
   onUploadSubject: PropTypes.func.isRequired,
@@ -29,6 +30,7 @@ export default function SubjectInputArea({
     <div
       style={{
         background: '#fff',
+        border: `1px solid ${Color.borderGray()}`,
         fontSize: '1.5rem',
         marginTop: '1rem'
       }}

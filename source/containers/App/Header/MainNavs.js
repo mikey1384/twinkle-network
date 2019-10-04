@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
@@ -6,6 +6,7 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import { truncateText } from 'helpers/stringHelpers';
+import { useAppContext } from 'contexts';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
@@ -30,11 +31,24 @@ export default function MainNavs({
   defaultSearchFilter,
   totalRewardAmount
 }) {
-  const [exploreCategory, setExploreCategory] = useState('subjects');
-  const [explorePath, setExplorePath] = useState('');
-  const [exploreSubNav, setExploreSubNav] = useState('');
-  const [profileNav, setProfileNav] = useState('');
-  const [homeNav, setHomeNav] = useState('/');
+  const {
+    view: {
+      state: {
+        exploreCategory,
+        explorePath,
+        exploreSubNav,
+        profileNav,
+        homeNav
+      },
+      actions: {
+        onSetExploreCategory,
+        onSetExplorePath,
+        onSetExploreSubNav,
+        onSetProfileNav,
+        onSetHomeNav
+      }
+    }
+  } = useAppContext();
   const loaded = useRef(false);
   const commentPageMatch = matchPath(pathname, {
     path: '/comments/:id',
@@ -71,21 +85,21 @@ export default function MainNavs({
   useEffect(() => {
     const { section } = getSectionFromPathname(pathname);
     if (homeMatch) {
-      setHomeNav('/');
+      onSetHomeNav('/');
     } else if (usersMatch) {
-      setHomeNav('/users');
+      onSetHomeNav('/users');
     }
     if (explorePageMatch) {
       if (exploreSubNav !== section) {
-        setExploreSubNav(section);
+        onSetExploreSubNav(section);
       }
-      setExplorePath(pathname.substring(1));
+      onSetExplorePath(pathname.substring(1));
     }
     if (profilePageMatch) {
-      setProfileNav(pathname);
+      onSetProfileNav(pathname);
     }
     if (!loaded.current && defaultSearchFilter) {
-      setExploreCategory(
+      onSetExploreCategory(
         ['videos', 'subjects', 'links'].includes(defaultSearchFilter)
           ? defaultSearchFilter
           : 'subjects'
@@ -93,7 +107,7 @@ export default function MainNavs({
       loaded.current = true;
     } else {
       if (['links', 'videos', 'subjects'].includes(section)) {
-        setExploreCategory(section);
+        onSetExploreCategory(section);
       }
     }
   }, [defaultSearchFilter, pathname, subjectPageMatch]);

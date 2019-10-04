@@ -150,5 +150,10 @@ export const initialUserState = {
 };
 export const initialViewState = {
   pageVisible: true,
-  scrollPositions: {}
+  scrollPositions: {},
+  exploreCategory: 'subjects',
+  explorePath: '',
+  exploreSubNav: '',
+  profileNav: '',
+  homeNav: '/'
 };

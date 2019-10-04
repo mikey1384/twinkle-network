@@ -72,6 +72,12 @@ export default function ExploreActions(dispatch) {
         data: playlistId
       });
     },
+    onDeleteVideo(videoId) {
+      return dispatch({
+        type: 'DELETE_VIDEO',
+        videoId
+      });
+    },
     onEditLinkPage({ id, title, content }) {
       return dispatch({
         type: 'EDIT_LINK_PAGE',
