@@ -83,7 +83,7 @@ export function useScrollPosition({
           );
           onRecordScrollPosition({ section: prevPath.current, position });
         }
-      }, 200);
+      }, 300);
     }
     return function cleanUp() {
       removeEvent(window, 'scroll', onScroll);
