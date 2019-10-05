@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useScrollPosition } from 'helpers/hooks';
-import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
@@ -8,16 +6,8 @@ import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { useAppContext } from 'contexts';
 
-Subjects.propTypes = {
-  location: PropTypes.object.isRequired
-};
-
-export default function Subjects({ location }) {
+export default function Subjects() {
   const {
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    },
     explore: {
       state: {
         subjects: { loaded, featured }
@@ -29,12 +19,6 @@ export default function Subjects({ location }) {
     },
     requestHelpers: { loadFeaturedSubjects }
   } = useAppContext();
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: '/subjects'
-  });
   useEffect(() => {
     init();
     async function init() {

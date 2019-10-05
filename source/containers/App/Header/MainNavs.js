@@ -6,7 +6,7 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import { truncateText } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useViewContext } from 'contexts';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
@@ -32,23 +32,15 @@ export default function MainNavs({
   totalRewardAmount
 }) {
   const {
-    view: {
-      state: {
-        exploreCategory,
-        explorePath,
-        exploreSubNav,
-        profileNav,
-        homeNav
-      },
-      actions: {
-        onSetExploreCategory,
-        onSetExplorePath,
-        onSetExploreSubNav,
-        onSetProfileNav,
-        onSetHomeNav
-      }
+    state: { exploreCategory, explorePath, exploreSubNav, profileNav, homeNav },
+    actions: {
+      onSetExploreCategory,
+      onSetExplorePath,
+      onSetExploreSubNav,
+      onSetProfileNav,
+      onSetHomeNav
     }
-  } = useAppContext();
+  } = useViewContext();
   const loaded = useRef(false);
   const commentPageMatch = matchPath(pathname, {
     path: '/comments/:id',

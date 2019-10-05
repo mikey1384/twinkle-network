@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useScrollPosition } from 'helpers/hooks';
 import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -17,10 +16,6 @@ Profile.propTypes = {
 
 export default function Profile({ history, location, match }) {
   const {
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    },
     user: {
       state: { userId, username, profile },
       actions: { onChangeProfileTheme, onShowProfile, onUserNotExist }
@@ -29,13 +24,6 @@ export default function Profile({ history, location, match }) {
   } = useAppContext();
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: `/users/${username}`
-  });
-
   useEffect(() => {
     if (history.action === 'PUSH' || !profile.id) {
       init();

@@ -128,6 +128,9 @@ export const initialProfileState = {
     linksLoadMoreButton: false
   }
 };
+export const initialScrollState = {
+  scrollPositions: {}
+};
 export const initialUserState = {
   authLevel: 0,
   canDelete: false,
@@ -150,7 +153,6 @@ export const initialUserState = {
 };
 export const initialViewState = {
   pageVisible: true,
-  scrollPositions: {},
   exploreCategory: 'subjects',
   explorePath: '',
   exploreSubNav: '',

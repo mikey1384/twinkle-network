@@ -9,7 +9,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 const intervalLength = 2000;
 const xp = rewardValue.star;
@@ -50,9 +50,6 @@ export default function VideoPlayer({
       actions: { onChangeUserXP },
       state: { profileTheme, twinkleXP, userId }
     },
-    view: {
-      state: { pageVisible }
-    },
     requestHelpers: {
       addVideoView,
       checkXPEarned,
@@ -63,6 +60,9 @@ export default function VideoPlayer({
       updateVideoXPEarned
     }
   } = useAppContext();
+  const {
+    state: { pageVisible }
+  } = useViewContext();
   const maxRequiredDuration = 250;
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);

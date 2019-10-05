@@ -13,7 +13,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -48,12 +48,12 @@ function App({ location, history }) {
       state: { signinModalShown, username },
       actions: { onCloseSigninModal, onInitSession, onLogout }
     },
-    view: {
-      state: { pageVisible },
-      actions: { onChangePageVisibility }
-    },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
+  const {
+    state: { pageVisible },
+    actions: { onChangePageVisibility }
+  } = useViewContext();
   const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);

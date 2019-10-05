@@ -22,7 +22,7 @@ import PageTab from './PageTab';
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -99,9 +99,6 @@ export default function VideoPage({
     user: {
       state: { authLevel, canEdit, userId }
     },
-    view: {
-      actions: { onSetExploreSubNav }
-    },
     requestHelpers: {
       deleteContent,
       editContent,
@@ -111,6 +108,9 @@ export default function VideoPage({
       uploadQuestions
     }
   } = useAppContext();
+  const {
+    actions: { onSetExploreSubNav }
+  } = useViewContext();
 
   const contentState = state['video' + videoId] || {};
 

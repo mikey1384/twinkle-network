@@ -1,4 +1,4 @@
-export default function InputReducer(state, action) {
+export default function ViewReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_PAGE_VISIBILITY':
       return {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
+import { useInfiniteScroll, useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import ProfilePanel from 'components/ProfilePanel';
@@ -14,11 +14,10 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 People.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired
 };
 
-export default function People({ history, location }) {
+export default function People({ history }) {
   const {
     user: {
       actions: {
@@ -36,10 +35,6 @@ export default function People({ history, location }) {
         searchedProfiles,
         userId
       }
-    },
-    view: {
-      actions: { onRecordScrollPosition },
-      state: { scrollPositions }
     },
     requestHelpers: { loadUsers }
   } = useAppContext();
@@ -64,13 +59,6 @@ export default function People({ history, location }) {
     feedsLength: profiles.length,
     onScrollToBottom: () => setLoading(true),
     onLoad: loadMoreProfiles
-  });
-
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: `/users`
   });
 
   useEffect(() => {

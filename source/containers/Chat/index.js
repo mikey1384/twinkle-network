@@ -12,7 +12,7 @@ import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -54,9 +54,6 @@ export default function Chat({ onFileUpload }) {
     user: {
       state: { profilePicId, userId, username }
     },
-    view: {
-      state: { pageVisible }
-    },
     requestHelpers: {
       createNewChat,
       loadChat,
@@ -68,6 +65,9 @@ export default function Chat({ onFileUpload }) {
       updateChatLastRead
     }
   } = useAppContext();
+  const {
+    state: { pageVisible }
+  } = useViewContext();
   const [channelLoading, setChannelLoading] = useState(false);
   const [
     currentChannelOnlineMembers,

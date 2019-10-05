@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -9,7 +10,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useScrollContext, useViewContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 Header.propTypes = {
@@ -59,9 +60,6 @@ function Header({
     user: {
       state: { defaultSearchFilter, userId, username }
     },
-    view: {
-      state: { pageVisible }
-    },
     requestHelpers: {
       checkVersion,
       getNumberOfUnreadMessages,
@@ -69,6 +67,20 @@ function Header({
       updateChatLastRead
     }
   } = useAppContext();
+  const {
+    state: { pageVisible }
+  } = useViewContext();
+  const {
+    state: { scrollPositions },
+    actions: { onRecordScrollPosition }
+  } = useScrollContext();
+
+  useScrollPosition({
+    scrollPositions,
+    pathname,
+    onRecordScrollPosition
+  });
+
   const prevUserIdRef = useRef(userId);
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);

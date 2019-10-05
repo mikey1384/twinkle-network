@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
-import PropTypes from 'prop-types';
+import { useInfiniteScroll } from 'helpers/hooks';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -11,10 +10,6 @@ import HomeFilter from './HomeFilter';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
 import { useAppContext } from 'contexts';
-
-Stories.propTypes = {
-  location: PropTypes.object.isRequired
-};
 
 const categoryObj = {
   uploads: {
@@ -35,7 +30,7 @@ const categoryObj = {
   }
 };
 
-export default function Stories({ location }) {
+export default function Stories() {
   const {
     home: {
       state: { category, feeds, loadMoreButton, loaded, subFilter },
@@ -82,10 +77,6 @@ export default function Stories({ location }) {
     user: {
       state: { hideWatched, userId, username }
     },
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    },
     requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
   const [displayOrder, setDisplayOrder] = useState('desc');
@@ -96,14 +87,6 @@ export default function Stories({ location }) {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
-
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: `/`
-  });
-
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,

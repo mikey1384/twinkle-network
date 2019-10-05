@@ -6,7 +6,7 @@ import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
@@ -57,11 +57,11 @@ export default function ContentPage({
     },
     user: {
       state: { userId }
-    },
-    view: {
-      actions: { onSetExploreSubNav }
     }
   } = useAppContext();
+  const {
+    actions: { onSetExploreSubNav }
+  } = useViewContext();
   const contentType = url.split('/')[1].slice(0, -1);
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,

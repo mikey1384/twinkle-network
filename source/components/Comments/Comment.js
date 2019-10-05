@@ -22,8 +22,8 @@ import { commentContainer } from './Styles';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
-import LocalContext from './Context';
 import { useAppContext } from 'contexts';
+import LocalContext from './Context';
 
 Comment.propTypes = {
   comment: PropTypes.shape({
@@ -59,9 +59,6 @@ function Comment({
   const {
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
-    },
-    view: {
-      state: { pageVisible }
     },
     requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
@@ -146,7 +143,7 @@ function Comment({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [pageVisible, userId]);
+  }, [userId]);
 
   return (
     <>

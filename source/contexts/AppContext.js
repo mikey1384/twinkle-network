@@ -14,10 +14,10 @@ import ProfileActions from './Profile/actions';
 import ProfileReducer from './Profile/reducer';
 import UserActions from './User/actions';
 import UserReducer from './User/reducer';
-import ViewActions from './View/actions';
-import ViewReducer from './View/reducer';
 import requestHelpers from './requestHelpers';
 import { InputContextProvider } from './InputContext';
+import { ScrollContextProvider } from './ScrollContext';
+import { ViewContextProvider } from './ViewContext';
 import {
   initialContentState,
   initialExploreState,
@@ -25,7 +25,6 @@ import {
   initialNotiState,
   initialProfileState,
   initialUserState,
-  initialViewState,
   initialChatState
 } from './initialStates';
 
@@ -52,7 +51,6 @@ export function AppContextProvider({ children }) {
     initialProfileState
   );
   const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
-  const [viewState, viewDispatch] = useReducer(ViewReducer, initialViewState);
   return (
     <AppContext.Provider
       value={{
@@ -84,14 +82,14 @@ export function AppContextProvider({ children }) {
           state: userState,
           actions: UserActions(userDispatch)
         },
-        view: {
-          state: viewState,
-          actions: ViewActions(viewDispatch)
-        },
         requestHelpers: requestHelpers(handleError)
       }}
     >
-      <InputContextProvider>{children}</InputContextProvider>
+      <ViewContextProvider>
+        <InputContextProvider>
+          <ScrollContextProvider>{children}</ScrollContextProvider>
+        </InputContextProvider>
+      </ViewContextProvider>
     </AppContext.Provider>
   );
 

@@ -1,17 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useScrollPosition } from 'helpers/hooks';
-import PropTypes from 'prop-types';
 import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
 import { useAppContext } from 'contexts';
 
-Links.propTypes = {
-  location: PropTypes.object.isRequired
-};
-
-export default function Links({ location }) {
+export default function Links() {
   const {
     explore: {
       state: {
@@ -19,22 +13,11 @@ export default function Links({ location }) {
       },
       actions: { onFetchLinks, onFetchMoreLinks }
     },
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    },
     requestHelpers: { loadUploads }
   } = useAppContext();
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);
   const lastId = useRef(null);
-
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: '/links'
-  });
 
   useEffect(() => {
     if (links.length > 0) {

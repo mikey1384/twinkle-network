@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
-  changeSpoilerStatus: PropTypes.func.isRequired,
   shown: PropTypes.bool,
   onClick: PropTypes.func,
   style: PropTypes.object,
@@ -18,33 +17,35 @@ export default function SecretAnswer({
   answer,
   shown,
   onClick,
-  changeSpoilerStatus,
   style,
   subjectId
 }) {
   const {
+    content: {
+      actions: { onChangeSpoilerStatus }
+    },
     user: {
       state: { userId }
     },
-    view: {
-      state: { pageVisible }
-    },
     requestHelpers: { checkIfUserResponded }
   } = useAppContext();
+  const {
+    state: { pageVisible }
+  } = useViewContext();
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     if (userId) {
       init();
     } else {
-      changeSpoilerStatus({ shown: false, subjectId });
+      onChangeSpoilerStatus({ shown: false, subjectId });
     }
 
     async function init() {
       if (!shown) {
         const { responded } = await checkIfUserResponded(subjectId);
         if (mounted.current) {
-          changeSpoilerStatus({ shown: responded, subjectId });
+          onChangeSpoilerStatus({ shown: responded, subjectId });
         }
       }
     }

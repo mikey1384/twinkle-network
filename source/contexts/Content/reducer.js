@@ -146,7 +146,39 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
-    case 'CHANGE_SPOILER_STATUS':
+    case 'CHANGE_SPOILER_STATUS': {
+      const newState = { ...state };
+      const contentKeys = Object.keys(newState);
+      for (let contentKey of contentKeys) {
+        const prevContentState = newState[contentKey];
+        const contentMatches =
+          prevContentState.contentId === action.contentId &&
+          prevContentState.contentType === action.contentType;
+        const targetSubjectMatches =
+          prevContentState.targetObj?.subject?.id === action.contentId;
+        newState[contentKey] = {
+          ...prevContentState,
+          ...(contentMatches || targetSubjectMatches
+            ? {
+                secretShown: action.shown
+              }
+            : {}),
+          targetObj: prevContentState.targetObj
+            ? {
+                ...prevContentState.targetObj,
+                subject: targetSubjectMatches
+                  ? {
+                      ...prevContentState.targetObj.subject,
+                      secretShown: action.shown
+                    }
+                  : prevContentState.targetObj.subject
+              }
+            : undefined
+        };
+      }
+      return newState;
+    }
+    case 'CHANGE_SPOILER_STATUS_OLD':
       return {
         ...state,
         [contentKey]: {

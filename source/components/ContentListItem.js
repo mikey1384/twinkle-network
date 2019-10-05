@@ -16,8 +16,6 @@ ContentListItem.propTypes = {
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
   onClick: PropTypes.func,
-  onChangeSpoilerStatus: PropTypes.func,
-  secretShown: PropTypes.bool,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
   style: PropTypes.object
@@ -26,10 +24,8 @@ ContentListItem.propTypes = {
 export default function ContentListItem({
   onClick = () => {},
   contentObj,
-  contentObj: { contentType },
+  contentObj: { id: contentId, contentType },
   expandable,
-  onChangeSpoilerStatus,
-  secretShown,
   selectable,
   selected,
   style
@@ -40,8 +36,6 @@ export default function ContentListItem({
     }
   } = useAppContext();
   const [mouseEntered, setMouseEntered] = useState(false);
-  const [localScopeSecretShown, setLocalScopeSecretShown] = useState(false);
-
   return (
     <div
       onTouchStart={() => setMouseEntered(true)}
@@ -104,7 +98,7 @@ export default function ContentListItem({
               >
                 <VideoThumbImage
                   rewardLevel={contentObj.rewardLevel}
-                  videoId={contentObj.id}
+                  videoId={contentId}
                   src={`https://img.youtube.com/vi/${contentObj.content}/mqdefault.jpg`}
                 />
               </div>
@@ -252,7 +246,7 @@ export default function ContentListItem({
                     style={{ marginTop: '0.5rem' }}
                     title={cleanString(contentObj.title)}
                     url={contentObj.content}
-                    contentId={contentObj.id}
+                    contentId={contentId}
                     {...contentObj}
                   />
                 </div>
@@ -290,12 +284,9 @@ export default function ContentListItem({
           {contentType === 'subject' && contentObj.secretAnswer && (
             <SecretAnswer
               answer={contentObj.secretAnswer}
-              subjectId={contentObj.id}
-              changeSpoilerStatus={handleChangeSpoilerStatus}
+              subjectId={contentId}
               shown={
-                secretShown ||
-                localScopeSecretShown ||
-                contentObj.uploader.id === userId
+                contentObj.secretShown || contentObj.uploader.id === userId
               }
             />
           )}
@@ -317,11 +308,4 @@ export default function ContentListItem({
       </Link>
     </div>
   );
-
-  function handleChangeSpoilerStatus(status) {
-    if (onChangeSpoilerStatus) {
-      return onChangeSpoilerStatus(status);
-    }
-    setLocalScopeSecretShown(status.shown);
-  }
 }

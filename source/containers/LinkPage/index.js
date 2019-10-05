@@ -18,7 +18,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -76,9 +76,6 @@ export default function LinkPage({
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
     },
-    view: {
-      actions: { onSetExploreSubNav }
-    },
     requestHelpers: {
       deleteContent,
       editContent,
@@ -87,6 +84,9 @@ export default function LinkPage({
       loadSubjects
     }
   } = useAppContext();
+  const {
+    actions: { onSetExploreSubNav }
+  } = useViewContext();
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);

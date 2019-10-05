@@ -13,6 +13,7 @@ export default function useInfiniteScroll({
   const prevFeedsLength = useRef(0);
   const [scrollHeight, setScrollHeight] = useState(0);
   const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
+  const timerRef = useRef(null);
 
   useEffect(() => {
     addEvent(window, 'scroll', onScroll);
@@ -43,32 +44,34 @@ export default function useInfiniteScroll({
   }, [loading]);
 
   function onScroll() {
-    if (
-      document.getElementById('App').scrollHeight > scrollHeight ||
-      BodyRef.current.scrollTop > scrollHeight
-    ) {
-      setScrollHeight(
-        Math.max(
-          document.getElementById('App').scrollHeight,
-          BodyRef.current.scrollTop
-        )
-      );
-    }
-    if (scrollable && scrollHeight !== 0) {
-      scrollPositionRef.current = {
-        desktop: document.getElementById('App').scrollTop,
-        mobile: BodyRef.current.scrollTop
-      };
+    timerRef.current = setTimeout(() => {
       if (
-        loadable &&
-        (scrollPositionRef.current.desktop >=
-          scrollHeight - window.innerHeight - 1000 ||
-          scrollPositionRef.current.mobile >=
-            scrollHeight - window.innerHeight - 1000)
+        document.getElementById('App').scrollHeight > scrollHeight ||
+        BodyRef.current.scrollTop > scrollHeight
       ) {
-        onScrollToBottom();
+        setScrollHeight(
+          Math.max(
+            document.getElementById('App').scrollHeight,
+            BodyRef.current.scrollTop
+          )
+        );
       }
-    }
+      if (scrollable && scrollHeight !== 0) {
+        scrollPositionRef.current = {
+          desktop: document.getElementById('App').scrollTop,
+          mobile: BodyRef.current.scrollTop
+        };
+        if (
+          loadable &&
+          (scrollPositionRef.current.desktop >=
+            scrollHeight - window.innerHeight - 1000 ||
+            scrollPositionRef.current.mobile >=
+              scrollHeight - window.innerHeight - 1000)
+        ) {
+          onScrollToBottom();
+        }
+      }
+    }, 200);
   }
   return [setScrollHeight];
 }

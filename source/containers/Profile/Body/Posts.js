@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
+import { useInfiniteScroll } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
@@ -73,24 +73,12 @@ export default function Posts({
       },
       actions: { onDeleteFeed, onLoadPosts, onLoadMorePosts }
     },
-    view: {
-      state: { scrollPositions },
-      actions: { onRecordScrollPosition }
-    },
     requestHelpers: { loadFeeds }
   } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
   const selectedFilter = useRef('all');
-  useScrollPosition({
-    scrollPositions,
-    pathname: location.pathname,
-    onRecordScrollPosition,
-    currentSection: `/users/${username}/${
-      filterTable[section] === 'url' ? 'link' : filterTable[section]
-    }${filterTable[section] === 'all' ? '' : 's'}`
-  });
 
   const [setScrollHeight] = useInfiniteScroll({
     feedsLength: profileFeeds.length,
