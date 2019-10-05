@@ -173,6 +173,7 @@ export default function Posts({
                     commentsLoadLimit={5}
                     contentObj={contentState}
                     inputAtBottom={contentState.contentType === 'comment'}
+                    numPreviewComments={1}
                     onInitContent={onInitContent}
                     onAddTags={onAddTags}
                     onAddTagToContents={onAddTagToContents}

@@ -32,6 +32,7 @@ Body.propTypes = {
   commentsHidden: PropTypes.bool,
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
+  numPreviewComments: PropTypes.number,
   onChangeSpoilerStatus: PropTypes.func.isRequired,
   secretShown: PropTypes.bool
 };
@@ -66,6 +67,7 @@ export default function Body({
     views
   },
   inputAtBottom,
+  numPreviewComments,
   onChangeSpoilerStatus,
   secretShown
 }) {
@@ -120,19 +122,18 @@ export default function Body({
 
   useEffect(() => {
     mounted.current = true;
-    if (autoExpand && !commentsShown) {
-      loadInitialComments();
+    if ((autoExpand && !commentsShown) || numPreviewComments > 0) {
+      loadInitialComments(numPreviewComments);
     }
 
-    async function loadInitialComments() {
+    async function loadInitialComments(numPreviewComments) {
       const data = await loadComments({
         contentType,
         contentId,
-        limit: commentsLoadLimit
+        limit: numPreviewComments || commentsLoadLimit
       });
       if (mounted.current) {
         onLoadComments({ ...data, contentId, contentType });
-        onSetCommentsShown({ contentId, contentType });
       }
     }
     return function cleanUp() {
@@ -380,7 +381,7 @@ export default function Body({
           inputAtBottom={inputAtBottom}
           loadMoreButton={commentsLoadMoreButton}
           inputTypeLabel={contentType === 'comment' ? 'reply' : 'comment'}
-          numPreviews={1}
+          numPreviews={numPreviewComments}
           onAttachStar={onAttachStar}
           onCommentSubmit={handleCommentSubmit}
           onDelete={onDeleteComment}

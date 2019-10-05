@@ -230,6 +230,7 @@ export default function Stories() {
                     commentsLoadLimit={5}
                     contentObj={contentState}
                     inputAtBottom={feed?.contentType === 'comment'}
+                    numPreviewComments={1}
                     onInitContent={onInitContent}
                     onAddTags={onAddTags}
                     onAddTagToContents={onAddTagToContents}

@@ -126,12 +126,10 @@ export default function Comments({
       scrollElementToCenter(CommentInputAreaRef.current);
     }
   }, [commentsShown]);
-
   const previewComments =
-    numPreviews > 0 && !autoExpand && !commentsShown
+    numPreviews > 0 && !commentsShown
       ? comments.filter((comment, index) => index < numPreviews)
       : [];
-
   return (
     <Context.Provider
       value={{
@@ -287,7 +285,7 @@ export default function Comments({
   }
 
   function renderLoadMoreButton() {
-    return (
+    return commentsShown ? (
       <Button
         filled
         color="lightBlue"
@@ -302,6 +300,6 @@ export default function Comments({
       >
         Load More
       </Button>
-    );
+    ) : null;
   }
 }

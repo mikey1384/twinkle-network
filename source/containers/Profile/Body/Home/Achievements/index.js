@@ -9,14 +9,12 @@ import { useAppContext } from 'contexts';
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,
-  selectedTheme: PropTypes.string,
-  myId: PropTypes.number
+  selectedTheme: PropTypes.string
 };
 
 export default function Achievements({
   profile,
   profile: { id, username },
-  myId,
   selectedTheme
 }) {
   const {
@@ -100,7 +98,7 @@ export default function Achievements({
               inputAtBottom={contentState.contentType === 'comment'}
               commentsLoadLimit={5}
               contentObj={contentState}
-              userId={myId}
+              numPreviewComments={1}
               onAddTags={onAddTags}
               onAddTagToContents={onAddTagToContents}
               onByUserStatusChange={onSetByUserStatus}

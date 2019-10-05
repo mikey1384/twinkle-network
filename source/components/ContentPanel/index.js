@@ -22,6 +22,7 @@ ContentPanel.propTypes = {
   contentObj: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   inputAtBottom: PropTypes.bool,
+  numPreviewComments: PropTypes.number,
   onAddTags: PropTypes.func,
   onAddTagToContents: PropTypes.func,
   onAttachStar: PropTypes.func.isRequired,
@@ -62,6 +63,7 @@ function ContentPanel({
   },
   history,
   inputAtBottom,
+  numPreviewComments = 0,
   onAddTags,
   onAddTagToContents,
   onAttachStar,
@@ -182,6 +184,7 @@ function ContentPanel({
                     contentObj={contentObj}
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
+                    numPreviewComments={numPreviewComments}
                     secretShown={secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
                   />

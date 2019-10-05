@@ -178,27 +178,6 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
-    case 'CHANGE_SPOILER_STATUS_OLD':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          contentId: action.contentId,
-          contentType: action.contentType,
-          secretShown: action.shown,
-          targetObj: prevContentState.targetObj
-            ? {
-                ...prevContentState.targetObj,
-                subject: prevContentState.targetObj.subject
-                  ? {
-                      ...prevContentState.targetObj.subject,
-                      secretShown: action.shown
-                    }
-                  : undefined
-              }
-            : undefined
-        }
-      };
     case 'DELETE_COMMENT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);
@@ -781,14 +760,49 @@ export default function ContentPageReducer(state, action) {
           commentsShown: true
         }
       };
-    case 'SET_REWARD_LEVEL':
-      return {
-        ...state,
-        [contentKey]: {
+    case 'SET_REWARD_LEVEL': {
+      const newState = { ...state };
+      const contentKeys = Object.keys(newState);
+      for (let contentKey of contentKeys) {
+        const prevContentState = newState[contentKey];
+        const contentMatches =
+          prevContentState.contentId === action.contentId &&
+          prevContentState.contentType === action.contentType;
+        newState[contentKey] = {
           ...prevContentState,
-          rewardLevel: action.rewardLevel
-        }
-      };
+          rewardLevel: contentMatches
+            ? action.rewardLevel
+            : prevContentState.rewardLevel,
+          subjects: prevContentState.subjects?.map(subject => {
+            const subjectMatches =
+              subject.id === action.contentId &&
+              action.contentType === 'subject';
+            return {
+              ...subject,
+              rewardLevel: subjectMatches
+                ? action.rewardLevel
+                : subject.rewardLevel
+            };
+          }),
+          targetObj: prevContentState.targetObj
+            ? {
+                ...prevContentState.targetObj,
+                subject: prevContentState.targetObj.subject
+                  ? {
+                      ...prevContentState.targetObj.subject,
+                      rewardLevel:
+                        prevContentState.targetObj.subject.id ===
+                          action.contentId && action.contentType === 'subject'
+                          ? action.rewardLevel
+                          : prevContentState.targetObj.subject.rewardLevel
+                    }
+                  : undefined
+              }
+            : undefined
+        };
+      }
+      return newState;
+    }
     case 'SET_SUBJECT_REWARD_LEVEL':
       return {
         ...state,
