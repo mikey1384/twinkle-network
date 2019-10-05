@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
-import Spinner from 'components/Spinner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import Spinner from 'components/Spinner';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
@@ -40,6 +40,20 @@ export default function VideoPlayer({
   videoId
 }) {
   const {
+    content: {
+      state,
+      actions: {
+        onSetVideoImageUrl,
+        onSetVideoPlaying,
+        onSetVideoStarted,
+        onSetVideoXpEarned,
+        onSetVideoXpJustEarned,
+        onSetVideoXpLoaded,
+        onSetVideoXpProgress,
+        onSetXpVideoWatchTime,
+        onSetVideoCurrentTime
+      }
+    },
     explore: {
       state: {
         videos: { currentVideoSlot }
@@ -63,30 +77,45 @@ export default function VideoPlayer({
   const {
     state: { pageVisible }
   } = useViewContext();
-  const maxRequiredDuration = 250;
-  const [playing, setPlaying] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [xpLoaded, setXpLoaded] = useState(false);
-  const [xpEarned, setXpEarned] = useState(false);
-  const [justEarned, setJustEarned] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const [progress, setProgress] = useState(0);
+  const contentState = state['video' + videoId];
+  const {
+    currentTime = 0,
+    playing,
+    started,
+    xpLoaded,
+    xpEarned,
+    justEarned,
+    imageUrl = '',
+    progress = 0,
+    watchTime = 0
+  } = contentState;
   const [playerShown, setPlayerShown] = useState(false);
+  const [alreadyEarned, setAlreadyEarned] = useState(false);
+  const maxRequiredDuration = 250;
   const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
+  const startPositionRef = useRef(0);
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
   const totalDurationRef = useRef(0);
+  const userIdRef = useRef(null);
   const watchCodeRef = useRef(Math.floor(Math.random() * 10000));
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
   const themeColor = profileTheme || 'logoBlue';
   const rewardAmountRef = useRef(rewardLevel * xp);
-
   useEffect(() => {
     mounted.current = true;
+    startPositionRef.current = currentTime;
+    timeWatchedRef.current = watchTime;
     return function cleanUp() {
+      onSetVideoCurrentTime({
+        videoId,
+        currentTime:
+          PlayerRef.current?.getInternalPlayer()?.getCurrentTime() || 0
+      });
       onVideoStop();
+      onSetVideoStarted({ videoId, started: false });
       clearInterval(timerRef.current);
       mounted.current = false;
     };
@@ -98,40 +127,46 @@ export default function VideoPlayer({
     requiredDurationCap.current = userIsLevel2
       ? Math.min(twinkleXP / 10000, maxRequiredDuration)
       : 60 + Math.min(twinkleXP / 1000, 120) || maxRequiredDuration;
+    userIdRef.current = userId;
   }, [userId]);
 
   useEffect(() => {
     rewardAmountRef.current = rewardLevel * xp;
-    if (videoCode && typeof hasHqThumb !== 'number') {
+    if (!imageUrl && videoCode && typeof hasHqThumb !== 'number') {
       fetchVideoThumb();
     } else {
       const imageName = hasHqThumb ? 'maxresdefault' : 'mqdefault';
-      setImageUrl(`https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`);
+      onSetVideoImageUrl({
+        videoId,
+        url: `https://img.youtube.com/vi/${videoCode}/${imageName}.jpg`
+      });
     }
 
-    if (!!rewardLevel && userId) {
+    if (!!rewardLevel && userId && !xpLoaded) {
       handleCheckXPEarned();
     }
 
     async function handleCheckXPEarned() {
       const xpEarned = await checkXPEarned(videoId);
       if (mounted.current) {
-        setXpEarned(!!xpEarned);
-        setXpLoaded(true);
+        onSetVideoXpEarned({ videoId, earned: !!xpEarned });
+        onSetVideoXpLoaded({ videoId, loaded: true });
       }
     }
 
     async function fetchVideoThumb() {
       const thumbUrl = await fetchVideoThumbUrl({ videoCode, videoId });
       if (mounted.current) {
-        setImageUrl(thumbUrl);
+        onSetVideoImageUrl({
+          videoId,
+          url: thumbUrl
+        });
       }
     }
   }, [rewardLevel, userId]);
 
   useEffect(() => {
     if (onEdit === true) onVideoStop();
-    setStarted(false);
   }, [onEdit]);
 
   useEffect(() => {
@@ -139,17 +174,23 @@ export default function VideoPlayer({
   }, [justEarned]);
 
   useEffect(() => {
-    if (!userId) {
-      timeWatchedRef.current = 0;
-      setXpEarned(false);
-      setJustEarned(false);
-      setXpLoaded(false);
+    if (userId && xpEarned && !playing) {
+      setAlreadyEarned(true);
     }
-  }, [userId]);
+    if (!userId) {
+      setAlreadyEarned(false);
+      onSetVideoXpEarned({ videoId, earned: false });
+      onSetVideoXpJustEarned({ videoId, justEarned: false });
+      onSetVideoXpLoaded({ videoId, loaded: false });
+    }
+  }, [userId, xpEarned, playing]);
 
   useEffect(() => {
     const newImageName = hasHqThumb ? 'maxresdefault' : 'mqdefault';
-    setImageUrl(`https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`);
+    onSetVideoImageUrl({
+      videoId,
+      url: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
+    });
   }, [videoCode]);
 
   useEffect(() => {
@@ -157,7 +198,7 @@ export default function VideoPlayer({
       currentVideoSlot && currentVideoSlot !== watchCodeRef.current;
     if (started && userWatchingMultipleVideo) {
       onVideoStop();
-      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
+      PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
   }, [currentVideoSlot]);
 
@@ -165,7 +206,7 @@ export default function VideoPlayer({
     const alreadyEarned = xpEarned || justEarned;
     if (started && !!rewardLevel && userId && !alreadyEarned) {
       onVideoStop();
-      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
+      PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
   }, [pageVisible]);
 
@@ -180,6 +221,9 @@ export default function VideoPlayer({
     : rewardLevel === 2
     ? Color.pink()
     : Color.logoBlue();
+  const videoUrl = `https://www.youtube.com/watch?v=${videoCode}${
+    startPositionRef.current > 0 ? `?t=${startPositionRef.current}` : ''
+  }`;
   return (
     <ErrorBoundary style={style}>
       {byUser && (
@@ -229,11 +273,6 @@ export default function VideoPlayer({
           right: started && minimized && '1rem',
           cursor: !onEdit && !started && 'pointer'
         }}
-        onClick={() => {
-          if (!onEdit && !started) {
-            setStarted(true);
-          }
-        }}
       >
         {!minimized && !started && (
           <>
@@ -242,6 +281,7 @@ export default function VideoPlayer({
               src={imageUrl}
               onTouchStart={() => setPlayerShown(true)}
               onMouseEnter={() => setPlayerShown(true)}
+              onClick={() => setPlayerShown(true)}
               className={css`
                 position: absolute;
                 width: 100%;
@@ -265,14 +305,16 @@ export default function VideoPlayer({
             `}
             width="100%"
             height="100%"
-            url={`https://www.youtube.com/watch?v=${videoCode}`}
-            playing={started}
+            url={videoUrl}
+            playing={playing}
             controls
-            config={{
-              youtube: { preload: true }
-            }}
             onReady={onVideoReady}
-            onPlay={() => onVideoPlay(requiredDurationCap.current)}
+            onPlay={() =>
+              onVideoPlay({
+                requiredDurationCap: requiredDurationCap.current,
+                userId: userIdRef.current
+              })
+            }
             onPause={onVideoStop}
             onEnded={onVideoStop}
           />
@@ -310,7 +352,7 @@ export default function VideoPlayer({
           />
         ) : null}
       </div>
-      {(!userId || xpLoaded) && !!rewardLevel && (!started || xpEarned) && (
+      {(!userId || xpLoaded) && !!rewardLevel && (!started || alreadyEarned) && (
         <div
           style={{
             background: meterColor,
@@ -323,15 +365,15 @@ export default function VideoPlayer({
             justifyContent: 'center'
           }}
         >
-          {!xpEarned && (
+          {!alreadyEarned && (
             <div>
               {[...Array(rewardLevel)].map((elem, index) => (
                 <Icon key={index} icon="star" />
               ))}
             </div>
           )}
-          <div style={{ marginLeft: !xpEarned ? '0.7rem' : 0 }}>
-            {xpEarned
+          <div style={{ marginLeft: alreadyEarned ? '0.7rem' : 0 }}>
+            {alreadyEarned
               ? 'You have already earned XP from this video'
               : ` Watch this video and earn ${addCommasToNumber(
                   rewardLevel * xp
@@ -339,7 +381,7 @@ export default function VideoPlayer({
           </div>
         </div>
       )}
-      {!xpEarned && !!rewardLevel && userId && started && (
+      {!alreadyEarned && !!rewardLevel && userId && started && (
         <ProgressBar
           progress={progress}
           noBorderRadius={stretch}
@@ -360,10 +402,10 @@ export default function VideoPlayer({
       ?.getDuration();
   }
 
-  function onVideoPlay(requiredDurationCap) {
-    setStarted(true);
+  function onVideoPlay({ requiredDurationCap, userId }) {
+    onSetVideoStarted({ videoId, started: true });
     if (!playing) {
-      setPlaying(true);
+      onSetVideoPlaying({ videoId, playing: true });
       const time = PlayerRef.current.getCurrentTime();
       if (Math.floor(time) === 0) {
         addVideoView({ videoId, userId });
@@ -371,10 +413,10 @@ export default function VideoPlayer({
       if (!currentVideoSlot) {
         onFillCurrentVideoSlot(watchCodeRef.current);
       }
-      if (userId) {
-        clearInterval(timerRef.current);
+      clearInterval(timerRef.current);
+      if (!xpEarned && !justEarned) {
         timerRef.current = setInterval(
-          () => increaseProgress(requiredDurationCap),
+          () => increaseProgress({ requiredDurationCap, userId }),
           intervalLength
         );
       }
@@ -387,13 +429,16 @@ export default function VideoPlayer({
   }
 
   function onVideoStop() {
-    setPlaying(false);
+    onSetVideoPlaying({ videoId, playing: false });
     clearInterval(timerRef.current);
     onEmptyCurrentVideoSlot();
   }
 
-  async function increaseProgress(requiredDurationCap) {
-    if (!!rewardLevel && !xpEarned && !justEarned) {
+  async function increaseProgress({ requiredDurationCap, userId }) {
+    if (!totalDurationRef.current) {
+      onVideoReady();
+    }
+    if (!!rewardLevel && !xpEarned && !justEarned && userId) {
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
       }
@@ -409,7 +454,8 @@ export default function VideoPlayer({
       rewardAmountRef.current &&
       timeWatchedRef.current >= requiredViewDuration &&
       !rewardingXP.current &&
-      (!justEarned || xpEarned)
+      (!justEarned || xpEarned) &&
+      userId
     ) {
       rewardingXP.current = true;
       try {
@@ -423,47 +469,54 @@ export default function VideoPlayer({
         });
         if (alreadyDone) return;
         onChangeUserXP({ xp, rank });
-        setJustEarned(true);
+        onSetVideoXpJustEarned({ videoId, justEarned: true });
+        onSetVideoXpEarned({ videoId, earned: true });
         rewardingXP.current = false;
       } catch (error) {
         console.error(error.response || error);
       }
     }
-    if (!xpEarned) {
+    if (!xpEarned && userId) {
       timeWatchedRef.current = timeWatchedRef.current + intervalLength / 1000;
+      onSetXpVideoWatchTime({
+        videoId,
+        watchTime: timeWatchedRef.current
+      });
       let requiredViewDuration =
         totalDurationRef.current < requiredDurationCap + 10
           ? Math.floor(totalDurationRef.current / 2) * 2 - 20
           : requiredDurationCap;
-      setProgress(
-        xpEarned
-          ? 100
-          : requiredViewDuration > 0
-          ? Math.floor(
-              (Math.min(timeWatchedRef.current, requiredViewDuration) * 100) /
-                requiredViewDuration
-            )
-          : 0
-      );
+      onSetVideoXpProgress({
+        videoId,
+        progress:
+          requiredViewDuration > 0
+            ? Math.floor(
+                (Math.min(timeWatchedRef.current, requiredViewDuration) * 100) /
+                  requiredViewDuration
+              )
+            : 0
+      });
     }
-    const {
-      notLoggedIn,
-      success,
-      currentlyWatchingAnotherVideo
-    } = await updateTotalViewDuration({
-      videoId,
-      rewardLevel,
-      xpEarned,
-      watchCode: watchCodeRef.current
-    });
-    if (success || notLoggedIn) return;
-    if (
-      currentlyWatchingAnotherVideo &&
-      !xpEarned &&
-      !!rewardLevel &&
-      !justEarned
-    ) {
-      PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
+    if (userId) {
+      const {
+        notLoggedIn,
+        success,
+        currentlyWatchingAnotherVideo
+      } = await updateTotalViewDuration({
+        videoId,
+        rewardLevel,
+        xpEarned,
+        watchCode: watchCodeRef.current
+      });
+      if (success || notLoggedIn) return;
+      if (
+        currentlyWatchingAnotherVideo &&
+        !xpEarned &&
+        !!rewardLevel &&
+        !justEarned
+      ) {
+        PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
+      }
     }
   }
 }

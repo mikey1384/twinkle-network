@@ -30,7 +30,7 @@ export default function AccountMenu({
           className={className}
           buttonStyle={buttonStyle}
           transparent
-          listStyle={{ marginTop: '0.5rem' }}
+          listStyle={{ marginTop: '0.2rem' }}
           direction="left"
           text={
             <div

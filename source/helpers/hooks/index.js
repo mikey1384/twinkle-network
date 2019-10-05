@@ -86,6 +86,7 @@ export function useScrollPosition({
       }, 300);
     }
     return function cleanUp() {
+      clearTimeout(timerRef.current);
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };

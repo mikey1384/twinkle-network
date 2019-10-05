@@ -243,12 +243,84 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onSetVideoCurrentTime({ videoId, currentTime }) {
+      return dispatch({
+        type: 'SET_VIDEO_CURRENT_TIME',
+        contentType: 'video',
+        contentId: videoId,
+        currentTime
+      });
+    },
+    onSetVideoImageUrl({ videoId, url }) {
+      return dispatch({
+        type: 'SET_VIDEO_IMAGE_URL',
+        contentType: 'video',
+        contentId: videoId,
+        url
+      });
+    },
+    onSetVideoPlaying({ videoId, playing }) {
+      return dispatch({
+        type: 'SET_VIDEO_PLAYING',
+        contentType: 'video',
+        contentId: videoId,
+        playing
+      });
+    },
     onSetVideoQuestions({ questions, contentType, contentId }) {
       return dispatch({
         type: 'SET_VIDEO_QUESTIONS',
         questions,
         contentType,
         contentId
+      });
+    },
+    onSetVideoXpEarned({ videoId, earned }) {
+      return dispatch({
+        type: 'SET_VIDEO_XP_EARNED',
+        contentType: 'video',
+        contentId: videoId,
+        earned
+      });
+    },
+    onSetVideoXpJustEarned({ videoId, justEarned }) {
+      return dispatch({
+        type: 'SET_VIDEO_XP_JUST_EARNED',
+        contentType: 'video',
+        contentId: videoId,
+        justEarned
+      });
+    },
+    onSetVideoStarted({ videoId, started }) {
+      return dispatch({
+        type: 'SET_VIDEO_STARTED',
+        contentType: 'video',
+        contentId: videoId,
+        started
+      });
+    },
+    onSetVideoXpLoaded({ videoId, loaded }) {
+      return dispatch({
+        type: 'SET_VIDEO_XP_LOADED',
+        contentType: 'video',
+        contentId: videoId,
+        loaded
+      });
+    },
+    onSetVideoXpProgress({ videoId, progress }) {
+      return dispatch({
+        type: 'SET_VIDEO_XP_PROGRESS',
+        contentType: 'video',
+        contentId: videoId,
+        progress
+      });
+    },
+    onSetXpVideoWatchTime({ videoId, watchTime }) {
+      return dispatch({
+        type: 'SET_XP_VIDEO_WATCH_TIME',
+        contentType: 'video',
+        contentId: videoId,
+        watchTime
       });
     },
     onShowTCReplyInput({ contentId, contentType }) {

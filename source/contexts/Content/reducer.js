@@ -818,12 +818,84 @@ export default function ContentPageReducer(state, action) {
           })
         }
       };
+    case 'SET_VIDEO_IMAGE_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          imageUrl: action.url
+        }
+      };
+    case 'SET_VIDEO_CURRENT_TIME':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          currentTime: action.currentTime
+        }
+      };
     case 'SET_VIDEO_QUESTIONS':
       return {
         ...state,
         [contentKey]: {
           ...prevContentState,
           questions: action.questions
+        }
+      };
+    case 'SET_VIDEO_PLAYING':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          playing: action.playing
+        }
+      };
+    case 'SET_VIDEO_STARTED':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          started: action.started
+        }
+      };
+    case 'SET_VIDEO_XP_EARNED':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          xpEarned: action.earned
+        }
+      };
+    case 'SET_VIDEO_XP_JUST_EARNED':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          justEarned: action.justEarned
+        }
+      };
+    case 'SET_VIDEO_XP_LOADED':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          xpLoaded: action.loaded
+        }
+      };
+    case 'SET_VIDEO_XP_PROGRESS':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          progress: action.progress
+        }
+      };
+    case 'SET_XP_VIDEO_WATCH_TIME':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          watchTime: action.watchTime
         }
       };
     case 'SHOW_TC_REPLY_INPUT':
