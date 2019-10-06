@@ -160,7 +160,7 @@ export default function ContentPageReducer(state, action) {
           ...prevContentState,
           ...(contentMatches || targetSubjectMatches
             ? {
-                spoilerStatusChecked: true,
+                spoilerStatusChecked: action.checked,
                 secretShown: action.shown
               }
             : {}),
@@ -181,7 +181,8 @@ export default function ContentPageReducer(state, action) {
         newState['subject' + action.contentId] = {
           contentType: 'subject',
           contentId: action.contentId,
-          spoilerStatusChecked: true
+          spoilerStatusChecked: action.checked,
+          secretShown: action.shown
         };
       }
       return newState;

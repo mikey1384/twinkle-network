@@ -92,7 +92,7 @@ export default function Notification({ children, className, location, style }) {
               {...subject}
             />
           )}
-          {notifications.length > 0 && (
+          {notifications.length > 0 && userId && (
             <FilterBar
               bordered
               style={{

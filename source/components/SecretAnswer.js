@@ -30,14 +30,14 @@ export default function SecretAnswer({
     state,
     actions: { onChangeSpoilerStatus }
   } = useContentContext();
-
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     if (userId && !state['subject' + subjectId]?.spoilerStatusChecked) {
       init();
-    } else {
-      onChangeSpoilerStatus({ shown: false, subjectId });
+    }
+    if (!userId) {
+      onChangeSpoilerStatus({ shown: false, subjectId, checked: false });
     }
 
     async function init() {
@@ -46,7 +46,8 @@ export default function SecretAnswer({
         if (mounted.current) {
           onChangeSpoilerStatus({
             shown: responded,
-            subjectId
+            subjectId,
+            checked: true
           });
         }
       }

@@ -25,10 +25,11 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
-    onChangeSpoilerStatus({ shown, subjectId }) {
+    onChangeSpoilerStatus({ checked, shown, subjectId }) {
       return dispatch({
         type: 'CHANGE_SPOILER_STATUS',
         shown,
+        checked,
         contentId: subjectId,
         contentType: 'subject'
       });

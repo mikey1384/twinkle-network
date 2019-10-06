@@ -109,17 +109,23 @@ export default function VideoPlayer({
     startPositionRef.current = currentTime;
     timeWatchedRef.current = watchTime;
     return function cleanUp() {
-      onSetVideoCurrentTime({
-        videoId,
-        currentTime:
-          PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() || 0
-      });
       onVideoStop();
       onSetVideoStarted({ videoId, started: false });
       clearInterval(timerRef.current);
       mounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    return function setCurrentTimeBeforeUnmount() {
+      onSetVideoCurrentTime({
+        videoId,
+        currentTime: justEarned
+          ? 0
+          : PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() || 0
+      });
+    };
+  }, [justEarned]);
 
   useEffect(() => {
     PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
@@ -352,34 +358,61 @@ export default function VideoPlayer({
           />
         ) : null}
       </div>
-      {(!userId || xpLoaded) && !!rewardLevel && (!started || alreadyEarned) && (
+      {startPositionRef.current > 0 && !started ? (
         <div
           style={{
-            background: meterColor,
+            background: Color.darkBlue(),
             padding: '0.5rem',
             color: '#fff',
             fontSize: '1.5rem',
             fontWeight: 'bold',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            if (!playerShown) {
+              setPlayerShown(true);
+            } else {
+              PlayerRef.current?.getInternalPlayer()?.playVideo();
+            }
           }}
         >
-          {!alreadyEarned && (
-            <div>
-              {[...Array(rewardLevel)].map((elem, index) => (
-                <Icon key={index} icon="star" />
-              ))}
-            </div>
-          )}
-          <div style={{ marginLeft: alreadyEarned ? '0.7rem' : 0 }}>
-            {alreadyEarned
-              ? 'You have already earned XP from this video'
-              : ` Watch this video and earn ${addCommasToNumber(
-                  rewardLevel * xp
-                )} XP`}
-          </div>
+          Continue Watching...
         </div>
+      ) : (
+        (!userId || xpLoaded) &&
+        !!rewardLevel &&
+        (!started || alreadyEarned) && (
+          <div
+            style={{
+              background: meterColor,
+              padding: '0.5rem',
+              color: '#fff',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            {!alreadyEarned && (
+              <div>
+                {[...Array(rewardLevel)].map((elem, index) => (
+                  <Icon key={index} icon="star" />
+                ))}
+              </div>
+            )}
+            <div style={{ marginLeft: '0.7rem' }}>
+              {alreadyEarned
+                ? 'You have already earned XP from this video'
+                : `Watch this video and earn ${addCommasToNumber(
+                    rewardLevel * xp
+                  )} XP`}
+            </div>
+          </div>
+        )
       )}
       {!alreadyEarned && !!rewardLevel && userId && started && (
         <ProgressBar
