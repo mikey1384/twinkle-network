@@ -20,7 +20,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled } from 'helpers';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 TargetContent.propTypes = {
   className: PropTypes.string,
@@ -30,7 +30,6 @@ TargetContent.propTypes = {
   profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
-  secretShown: PropTypes.bool,
   onShowTCReplyInput: PropTypes.func.isRequired,
   style: PropTypes.object,
   targetObj: PropTypes.object
@@ -44,7 +43,6 @@ function TargetContent({
   rootObj,
   profilePicId,
   rootType,
-  secretShown,
   onShowTCReplyInput,
   style,
   targetObj: {
@@ -61,6 +59,7 @@ function TargetContent({
     },
     requestHelpers: { uploadComment }
   } = useAppContext();
+  const { state } = useContentContext();
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [mouseEntered, setMouseEntered] = useState(false);
@@ -73,13 +72,14 @@ function TargetContent({
     onLikeContent,
     onUploadTargetComment
   } = useContext(LocalContext);
-
   let userLikedThis = false;
   let userIsUploader;
   let userCanStarThis;
   let uploader = {};
   const hasSecretAnswer = subject?.secretAnswer;
-  const userUploadedTheSubject = subject?.uploader?.id === userId;
+  const secretShown =
+    state['subject' + subject?.id]?.secretShown ||
+    subject?.uploader?.id === userId;
 
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
@@ -91,11 +91,7 @@ function TargetContent({
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
   }
 
-  const contentHidden =
-    hasSecretAnswer &&
-    !secretShown &&
-    !userIsUploader &&
-    !userUploadedTheSubject;
+  const contentHidden = hasSecretAnswer && !secretShown;
 
   return (
     <ErrorBoundary

@@ -3,7 +3,7 @@ export default function ContentPageReducer(state, action) {
     action.contentType && action.contentId
       ? action.contentType + action.contentId
       : 'temp';
-  const prevContentState = state[contentKey] || {
+  const defaultState = {
     stars: [],
     childComments: [],
     likes: [],
@@ -12,6 +12,7 @@ export default function ContentPageReducer(state, action) {
     commentsLoadMoreButton: false,
     subjectsLoadMoreButton: false
   };
+  const prevContentState = state[contentKey] || defaultState;
   switch (action.type) {
     case 'INIT_CONTENT':
       return {
@@ -179,6 +180,7 @@ export default function ContentPageReducer(state, action) {
       }
       if (!newState['subject' + action.contentId]) {
         newState['subject' + action.contentId] = {
+          ...defaultState,
           contentType: 'subject',
           contentId: action.contentId,
           spoilerStatusChecked: action.checked,

@@ -7,18 +7,18 @@ import { useAppContext, useContentContext } from 'contexts';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
-  shown: PropTypes.bool,
   onClick: PropTypes.func,
   style: PropTypes.object,
-  subjectId: PropTypes.number
+  subjectId: PropTypes.number,
+  uploaderId: PropTypes.number
 };
 
 export default function SecretAnswer({
   answer,
-  shown,
   onClick,
   style,
-  subjectId
+  subjectId,
+  uploaderId
 }) {
   const {
     user: {
@@ -30,18 +30,30 @@ export default function SecretAnswer({
     state,
     actions: { onChangeSpoilerStatus }
   } = useContentContext();
+  const secretShown =
+    state['subject' + subjectId]?.secretShown || uploaderId === userId;
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     if (userId && !state['subject' + subjectId]?.spoilerStatusChecked) {
       init();
     }
+    if (
+      state['subject' + subjectId]?.spoilerStatusChecked &&
+      state['subject' + subjectId]?.secretShown
+    ) {
+      onChangeSpoilerStatus({
+        shown: true,
+        subjectId,
+        checked: true
+      });
+    }
     if (!userId) {
       onChangeSpoilerStatus({ shown: false, subjectId, checked: false });
     }
 
     async function init() {
-      if (!shown) {
+      if (!secretShown) {
         const { responded } = await checkIfUserResponded(subjectId);
         if (mounted.current) {
           onChangeSpoilerStatus({
@@ -57,25 +69,26 @@ export default function SecretAnswer({
       mounted.current = false;
     };
   }, [state['subject' + subjectId]?.spoilerStatusChecked, userId]);
-
   return (
     <ErrorBoundary>
       <div
-        onClick={shown ? () => {} : onClick}
+        onClick={secretShown ? () => {} : onClick}
         style={{
-          cursor: shown ? '' : 'pointer',
+          cursor: secretShown ? '' : 'pointer',
           fontSize: '1.7rem',
-          background: shown ? Color.ivory() : Color.darkerGray(),
-          border: `1px solid ${shown ? Color.borderGray() : Color.black()}`,
+          background: secretShown ? Color.ivory() : Color.darkerGray(),
+          border: `1px solid ${
+            secretShown ? Color.borderGray() : Color.black()
+          }`,
           borderRadius,
-          color: shown ? Color.black() : '#fff',
-          textAlign: shown ? '' : 'center',
+          color: secretShown ? Color.black() : '#fff',
+          textAlign: secretShown ? '' : 'center',
           padding: '1rem',
           ...style
         }}
       >
-        {shown && <LongText>{answer}</LongText>}
-        {!shown && (
+        {secretShown && <LongText>{answer}</LongText>}
+        {!secretShown && (
           <span>Submit your response to view the secret message. Tap here</span>
         )}
       </div>

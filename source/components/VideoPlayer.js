@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
@@ -27,7 +27,7 @@ VideoPlayer.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-export default function VideoPlayer({
+function VideoPlayer({
   byUser,
   rewardLevel,
   hasHqThumb,
@@ -230,6 +230,7 @@ export default function VideoPlayer({
   const videoUrl = `https://www.youtube.com/watch?v=${videoCode}${
     startPositionRef.current > 0 ? `?t=${startPositionRef.current}` : ''
   }`;
+
   return (
     <ErrorBoundary style={style}>
       {byUser && (
@@ -553,3 +554,5 @@ export default function VideoPlayer({
     }
   }
 }
+
+export default memo(VideoPlayer);

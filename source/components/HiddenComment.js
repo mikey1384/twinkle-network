@@ -5,6 +5,7 @@ import { borderRadius, Color } from 'constants/css';
 HiddenComment.propTypes = {
   onClick: PropTypes.func
 };
+
 export default function HiddenComment({ onClick }) {
   return (
     <div

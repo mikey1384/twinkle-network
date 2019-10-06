@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -270,4 +270,4 @@ function Header({
   );
 }
 
-export default withRouter(Header);
+export default memo(withRouter(Header));

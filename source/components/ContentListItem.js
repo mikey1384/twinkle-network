@@ -32,7 +32,7 @@ export default function ContentListItem({
 }) {
   const {
     user: {
-      state: { profileTheme, userId }
+      state: { profileTheme }
     }
   } = useAppContext();
   const [mouseEntered, setMouseEntered] = useState(false);
@@ -285,9 +285,7 @@ export default function ContentListItem({
             <SecretAnswer
               answer={contentObj.secretAnswer}
               subjectId={contentId}
-              shown={
-                contentObj.secretShown || contentObj.uploader.id === userId
-              }
+              uploaderId={contentObj.uploader.id}
             />
           )}
         </div>

@@ -38,7 +38,6 @@ MainContent.propTypes = {
 };
 
 function MainContent({
-  changeSpoilerStatus,
   commentsHidden,
   contentObj,
   contentId,
@@ -52,7 +51,6 @@ function MainContent({
   onEditDismiss,
   onLoadTags,
   rootObj,
-  secretAnswerShown,
   targetObj,
   urlRelated,
   rootType,
@@ -191,9 +189,8 @@ function MainContent({
                 <SecretAnswer
                   answer={contentObj.secretAnswer}
                   onClick={onClickSecretAnswer}
-                  changeSpoilerStatus={changeSpoilerStatus}
-                  shown={secretAnswerShown || contentObj.uploader.id === myId}
                   subjectId={contentObj.id}
+                  uploaderId={contentObj.uploader.id}
                 />
               )}
             </>
@@ -258,7 +255,7 @@ function MainContent({
       ((targetObj?.subject?.secretAnswer &&
         targetObj?.subject?.uploader.id !== myId) ||
         (rootObj.secretAnswer && rootObj.uploader.id !== myId)) &&
-      !secretAnswerShown
+      (!targetObj?.subject?.secretShown && !rootObj.secretShown)
     ) {
       const subjectId = targetObj?.subject ? targetObj.subject.id : rootObj.id;
       return (

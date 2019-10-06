@@ -22,7 +22,7 @@ import { commentContainer } from './Styles';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 import LocalContext from './Context';
 
 Comment.propTypes = {
@@ -63,6 +63,10 @@ function Comment({
     requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
   const {
+    state,
+    actions: { onChangeSpoilerStatus }
+  } = useContentContext();
+  const {
     onAttachStar,
     onDelete,
     onEditDone,
@@ -77,7 +81,6 @@ function Comment({
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
-  const [secretShown, setSecretShown] = useState(false);
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
   const mounted = useRef(true);
@@ -118,24 +121,38 @@ function Comment({
     targetObj &&
     targetObj.subject;
   const hasSecretAnswer = targetObj?.subject?.secretAnswer;
-  const isHidden =
-    hasSecretAnswer && !secretShown && targetObj.subject.uploader.id !== userId;
+  const secretShown =
+    state['subject' + targetObj?.subject?.id]?.secretShown ||
+    targetObj?.subject?.uploader?.id === userId;
+  const isHidden = hasSecretAnswer && !secretShown;
 
   useEffect(() => {
     mounted.current = true;
     if (mounted.current) {
-      if (userId) {
+      if (
+        userId &&
+        !state['subject' + targetObj?.subject?.id]?.spoilerStatusChecked
+      ) {
         checkSecretShown();
-      } else {
-        setSecretShown(false);
+      }
+      if (!userId) {
+        onChangeSpoilerStatus({
+          shown: false,
+          subjectId: targetObj.subject.id,
+          checked: false
+        });
       }
     }
 
     async function checkSecretShown() {
-      if (hasSecretAnswer && !secretShown) {
+      if (hasSecretAnswer && !secretShown && targetObj?.subject) {
         const { responded } = await checkIfUserResponded(targetObj.subject.id);
         if (mounted.current) {
-          setSecretShown(responded);
+          onChangeSpoilerStatus({
+            shown: responded,
+            subjectId: targetObj.subject.id,
+            checked: true
+          });
         }
       }
     }
@@ -200,7 +217,7 @@ function Comment({
                   autoFocus
                   text={comment.content}
                   onCancel={() => setOnEdit(false)}
-                  onEditDone={editDone}
+                  onEditDone={handleEditDone}
                 />
               ) : (
                 <div>
@@ -381,7 +398,7 @@ function Comment({
     return 0;
   }
 
-  async function editDone(editedComment) {
+  async function handleEditDone(editedComment) {
     await editContent({
       editedComment,
       contentId: comment.id,

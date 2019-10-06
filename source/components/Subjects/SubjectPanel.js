@@ -175,9 +175,8 @@ export default function SubjectPanel({
             style={{ marginTop: '1rem' }}
             answer={secretAnswer}
             subjectId={id}
-            changeSpoilerStatus={({ shown }) => setSecretShown(shown)}
-            shown={secretShown || userId === myId}
             onClick={onExpand}
+            uploaderId={userId}
           />
         )}
         {onEdit && (

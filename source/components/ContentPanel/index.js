@@ -168,7 +168,6 @@ function ContentPanel({
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
                     numPreviewComments={numPreviewComments}
-                    secretShown={contentState.secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
                   />
                 </div>
@@ -185,7 +184,6 @@ function ContentPanel({
               rootObj={contentState.rootObj}
               rootId={contentState.rootId}
               rootType={contentState.rootType}
-              secretShown={contentState.secretShown}
               contentId={contentId}
               contentType={contentType}
               onShowTCReplyInput={onShowTCReplyInput}
@@ -205,7 +203,6 @@ function ContentPanel({
                 }
                 contentObj={contentState.targetObj.subject}
                 onChangeSpoilerStatus={onChangeSpoilerStatus}
-                secretShown={contentState.secretShown}
               />
             </div>
           )}

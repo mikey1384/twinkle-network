@@ -33,8 +33,7 @@ Body.propTypes = {
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
   numPreviewComments: PropTypes.number,
-  onChangeSpoilerStatus: PropTypes.func.isRequired,
-  secretShown: PropTypes.bool
+  onChangeSpoilerStatus: PropTypes.func.isRequired
 };
 
 export default function Body({
@@ -69,8 +68,7 @@ export default function Body({
   },
   inputAtBottom,
   numPreviewComments,
-  onChangeSpoilerStatus,
-  secretShown
+  onChangeSpoilerStatus
 }) {
   const {
     user: {
@@ -146,6 +144,10 @@ export default function Body({
   }, []);
 
   useEffect(() => {
+    const secretShown =
+      !!contentObj?.secretShown ||
+      !!targetObj?.subject?.secretShown ||
+      !!rootObj?.secretShown;
     const contentSecretHidden =
       !!contentObj.secretAnswer &&
       !secretShown &&
@@ -159,7 +161,13 @@ export default function Body({
     onSetCommentsHidden(
       contentSecretHidden || rootContentSecretHidden || subjectSecretHidden
     );
-  }, [contentObj.id, secretShown, userId]);
+  }, [
+    contentObj.id,
+    contentObj?.secretShown,
+    targetObj?.subject?.secretShown,
+    rootObj?.secretShown,
+    userId
+  ]);
 
   useEffect(() => {
     if (prevContent.current && prevContent.current !== contentObj.content) {
@@ -216,7 +224,6 @@ export default function Body({
           onLoadTags={onLoadTags}
           rootObj={rootObj}
           rootType={rootType}
-          secretAnswerShown={secretShown}
           targetObj={targetObj}
           urlRelated={urlRelated}
         />
