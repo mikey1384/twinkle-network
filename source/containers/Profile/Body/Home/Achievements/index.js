@@ -24,33 +24,6 @@ export default function Achievements({
       },
       actions: { onDeleteFeed, onLoadNotables, onLoadMoreNotables }
     },
-    content: {
-      state,
-      actions: {
-        onAddTags,
-        onAddTagToContents,
-        onAttachStar,
-        onChangeSpoilerStatus,
-        onDeleteComment,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onInitContent,
-        onLikeContent,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onLoadTags,
-        onSetByUserStatus,
-        onSetCommentsShown,
-        onSetRewardLevel,
-        onShowTCReplyInput,
-        onUploadTargetComment,
-        onUploadComment,
-        onUploadReply
-      }
-    },
     requestHelpers: { loadMoreNotableContents, loadNotableContent }
   } = useAppContext();
   const [loading, setLoading] = useState(true);
@@ -86,43 +59,16 @@ export default function Achievements({
           >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
         )}
         {feeds.map((notable, index) => {
-          const contentKey = notable?.contentType + notable?.contentId;
-          const contentState = state[contentKey] || {
-            contentId: notable?.contentId,
-            contentType: notable?.contentType
-          };
+          const { contentId, contentType } = notable;
           return (
             <ContentPanel
-              key={contentKey}
+              key={contentType + contentId}
               style={{ marginBottom: '1rem', zIndex: feeds.length - index }}
-              inputAtBottom={contentState.contentType === 'comment'}
+              contentId={contentId}
+              contentType={contentType}
               commentsLoadLimit={5}
-              contentObj={contentState}
               numPreviewComments={1}
-              onAddTags={onAddTags}
-              onAddTagToContents={onAddTagToContents}
-              onByUserStatusChange={onSetByUserStatus}
-              onAttachStar={onAttachStar}
-              onChangeSpoilerStatus={onChangeSpoilerStatus}
-              onCommentSubmit={onUploadComment}
-              onDeleteComment={onDeleteComment}
               onDeleteContent={onDeleteFeed}
-              onEditComment={onEditComment}
-              onEditContent={onEditContent}
-              onEditRewardComment={onEditRewardComment}
-              onLikeContent={onLikeContent}
-              onInitContent={onInitContent}
-              onLoadMoreComments={onLoadMoreComments}
-              onLoadMoreReplies={onLoadMoreReplies}
-              onLoadRepliesOfReply={onLoadRepliesOfReply}
-              onLoadTags={onLoadTags}
-              onReplySubmit={onUploadReply}
-              onSetCommentsShown={onSetCommentsShown}
-              onShowTCReplyInput={onShowTCReplyInput}
-              onSetRewardLevel={onSetRewardLevel}
-              onShow
-              onLoadComments={onLoadComments}
-              onUploadTargetComment={onUploadTargetComment}
             />
           );
         })}

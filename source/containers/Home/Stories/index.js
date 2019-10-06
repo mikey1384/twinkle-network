@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll } from 'helpers/hooks';
+import PropTypes from 'prop-types';
+import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import InputPanel from './InputPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -9,7 +10,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 const categoryObj = {
   uploads: {
@@ -30,7 +31,11 @@ const categoryObj = {
   }
 };
 
-export default function Stories() {
+Stories.propTypes = {
+  location: PropTypes.object
+};
+
+export default function Stories({ location }) {
   const {
     home: {
       state: { category, feeds, loadMoreButton, loaded, subFilter },
@@ -43,33 +48,6 @@ export default function Stories() {
         onLoadNewFeeds
       }
     },
-    content: {
-      state,
-      actions: {
-        onAddTags,
-        onAddTagToContents,
-        onAttachStar,
-        onChangeSpoilerStatus,
-        onDeleteComment,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onInitContent,
-        onLikeContent,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onLoadTags,
-        onSetByUserStatus,
-        onSetCommentsShown,
-        onSetRewardLevel,
-        onShowTCReplyInput,
-        onUploadTargetComment,
-        onUploadComment,
-        onUploadReply
-      }
-    },
     notification: {
       state: { numNewPosts },
       actions: { onResetNumNewPosts }
@@ -79,6 +57,10 @@ export default function Stories() {
     },
     requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -87,6 +69,11 @@ export default function Stories() {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   const [setScrollHeight] = useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,
@@ -156,7 +143,7 @@ export default function Stories() {
         filter: categoryObj.videos.filter,
         orderBy: categoryObj.videos.orderBy
       });
-      if (category === 'videos') {
+      if (category === 'videos' && mounted.current) {
         onLoadFeeds(data);
       }
     }
@@ -214,50 +201,21 @@ export default function Stories() {
                   {numNewPosts > 1 ? 's' : ''}
                 </Banner>
               )}
-              {feeds.map((feed, index) => {
-                const contentKey = feed.contentType + feed.contentId;
-                const contentState = state[contentKey] || {
-                  contentId: feed.contentId,
-                  contentType: feed.contentType
-                };
-                return (
-                  <ContentPanel
-                    key={category + subFilter + feed.feedId}
-                    style={{
-                      marginBottom: '1rem',
-                      zIndex: feeds.length - index
-                    }}
-                    commentsLoadLimit={5}
-                    contentObj={contentState}
-                    inputAtBottom={feed?.contentType === 'comment'}
-                    numPreviewComments={1}
-                    onInitContent={onInitContent}
-                    onAddTags={onAddTags}
-                    onAddTagToContents={onAddTagToContents}
-                    onAttachStar={onAttachStar}
-                    onByUserStatusChange={onSetByUserStatus}
-                    onChangeSpoilerStatus={onChangeSpoilerStatus}
-                    onCommentSubmit={onUploadComment}
-                    onDeleteComment={onDeleteComment}
-                    onDeleteContent={onDeleteFeed}
-                    onEditComment={onEditComment}
-                    onEditContent={onEditContent}
-                    onEditRewardComment={onEditRewardComment}
-                    onLikeContent={onLikeContent}
-                    onLoadMoreComments={onLoadMoreComments}
-                    onLoadMoreReplies={onLoadMoreReplies}
-                    onLoadRepliesOfReply={onLoadRepliesOfReply}
-                    onLoadTags={onLoadTags}
-                    onReplySubmit={onUploadReply}
-                    onSetCommentsShown={onSetCommentsShown}
-                    onSetRewardLevel={onSetRewardLevel}
-                    onShowTCReplyInput={onShowTCReplyInput}
-                    onLoadComments={onLoadComments}
-                    onUploadTargetComment={onUploadTargetComment}
-                    userId={userId}
-                  />
-                );
-              })}
+              {feeds.map((feed, index) => (
+                <ContentPanel
+                  key={category + subFilter + feed.feedId}
+                  style={{
+                    marginBottom: '1rem',
+                    zIndex: feeds.length - index
+                  }}
+                  contentId={feed.contentId}
+                  contentType={feed.contentType}
+                  commentsLoadLimit={5}
+                  numPreviewComments={1}
+                  onDeleteContent={onDeleteFeed}
+                  userId={userId}
+                />
+              ))}
               {loadMoreButton && (
                 <LoadMoreButton
                   style={{ marginBottom: '1rem' }}
@@ -281,7 +239,11 @@ export default function Stories() {
     onChangeCategory('uploads');
     onChangeSubFilter(filter);
     const { data, filter: newFilter } = await loadFeeds({ filter });
-    if (filter === newFilter && categoryRef.current === 'uploads') {
+    if (
+      filter === newFilter &&
+      categoryRef.current === 'uploads' &&
+      mounted.current
+    ) {
       onLoadFeeds(data);
       setDisplayOrder('desc');
       setScrollHeight(0);
@@ -302,8 +264,10 @@ export default function Stories() {
           destinationVar: 'shownFeeds'
         })
       });
-      onLoadMoreFeeds(data);
-      setLoadingMore(false);
+      if (mounted.current) {
+        onLoadMoreFeeds(data);
+        setLoadingMore(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -319,14 +283,16 @@ export default function Stories() {
       filter: categoryObj[newCategory].filter,
       orderBy: categoryObj[newCategory].orderBy
     });
-    if (
-      loadedFilter === categoryObj[categoryRef.current].filter &&
-      categoryRef.current === newCategory
-    ) {
-      onLoadFeeds(data);
-      setDisplayOrder('desc');
-      setScrollHeight(0);
-      setLoadingFeeds(false);
+    if (mounted.current) {
+      if (
+        loadedFilter === categoryObj[categoryRef.current].filter &&
+        categoryRef.current === newCategory
+      ) {
+        onLoadFeeds(data);
+        setDisplayOrder('desc');
+        setScrollHeight(0);
+        setLoadingFeeds(false);
+      }
     }
   }
 
@@ -338,7 +304,8 @@ export default function Stories() {
       const { data, filter } = await loadFeeds();
       if (
         filter === categoryObj.uploads.filter &&
-        categoryRef.current === 'uploads'
+        categoryRef.current === 'uploads' &&
+        mounted.current
       ) {
         onLoadFeeds(data);
       }
@@ -355,7 +322,7 @@ export default function Stories() {
           destinationVar: 'shownFeeds'
         })
       });
-      if (data) onLoadNewFeeds(data);
+      if (data && mounted.current) onLoadNewFeeds(data);
       setLoadingNewFeeds(false);
     }
   }
@@ -370,7 +337,7 @@ export default function Stories() {
       orderBy: categoryObj[category].orderBy,
       filter: initialFilter
     });
-    if (filter === initialFilter) {
+    if (filter === initialFilter && mounted.current) {
       onLoadFeeds(data);
       setDisplayOrder(newDisplayOrder);
       setScrollHeight(0);

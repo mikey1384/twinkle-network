@@ -2,8 +2,6 @@ import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import ChatActions from './Chat/actions';
 import ChatReducer from './Chat/reducer';
-import ContentActions from './Content/actions';
-import ContentReducer from './Content/reducer';
 import ExploreActions from './Explore/actions';
 import ExploreReducer from './Explore/reducer';
 import HomeActions from './Home/actions';
@@ -16,10 +14,9 @@ import UserActions from './User/actions';
 import UserReducer from './User/reducer';
 import requestHelpers from './requestHelpers';
 import { InputContextProvider } from './InputContext';
-import { ScrollContextProvider } from './ScrollContext';
+import { ContentContextProvider } from './ContentContext';
 import { ViewContextProvider } from './ViewContext';
 import {
-  initialContentState,
   initialExploreState,
   initialHomeState,
   initialNotiState,
@@ -36,10 +33,6 @@ AppContextProvider.propTypes = {
 
 export function AppContextProvider({ children }) {
   const [chatState, chatDispatch] = useReducer(ChatReducer, initialChatState);
-  const [contentState, contentDispatch] = useReducer(
-    ContentReducer,
-    initialContentState
-  );
   const [exploreState, exploreDispatch] = useReducer(
     ExploreReducer,
     initialExploreState
@@ -57,10 +50,6 @@ export function AppContextProvider({ children }) {
         chat: {
           state: chatState,
           actions: ChatActions(chatDispatch)
-        },
-        content: {
-          state: contentState,
-          actions: ContentActions(contentDispatch)
         },
         explore: {
           state: exploreState,
@@ -87,7 +76,7 @@ export function AppContextProvider({ children }) {
     >
       <ViewContextProvider>
         <InputContextProvider>
-          <ScrollContextProvider>{children}</ScrollContextProvider>
+          <ContentContextProvider>{children}</ContentContextProvider>
         </InputContextProvider>
       </ViewContextProvider>
     </AppContext.Provider>

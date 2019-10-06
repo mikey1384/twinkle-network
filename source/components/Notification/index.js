@@ -28,7 +28,7 @@ export default function Notification({ children, className, location, style }) {
         totalRewardAmount,
         currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
       },
-      actions: { onClearNotifications, onFetchNotifications }
+      actions: { onFetchNotifications }
     },
     user: {
       state: { userId }
@@ -40,12 +40,7 @@ export default function Notification({ children, className, location, style }) {
   const userChangedTab = useRef(false);
   useEffect(() => {
     userChangedTab.current = false;
-    if (userId) {
-      handleFetchNotifications();
-    } else {
-      onClearNotifications();
-      handleFetchNotifications();
-    }
+    handleFetchNotifications();
   }, [userId]);
 
   useEffect(() => {

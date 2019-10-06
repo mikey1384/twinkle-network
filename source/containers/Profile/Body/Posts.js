@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll } from 'helpers/hooks';
+import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
@@ -9,7 +9,7 @@ import SideMenu from './SideMenu';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 Posts.propTypes = {
   history: PropTypes.object.isRequired,
@@ -36,33 +36,6 @@ export default function Posts({
   selectedTheme
 }) {
   const {
-    content: {
-      state,
-      actions: {
-        onAddTags,
-        onAddTagToContents,
-        onAttachStar,
-        onChangeSpoilerStatus,
-        onDeleteComment,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onInitContent,
-        onLikeContent,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onLoadTags,
-        onSetByUserStatus,
-        onSetCommentsShown,
-        onSetRewardLevel,
-        onShowTCReplyInput,
-        onUploadTargetComment,
-        onUploadComment,
-        onUploadReply
-      }
-    },
     profile: {
       state: {
         posts: {
@@ -75,6 +48,15 @@ export default function Posts({
     },
     requestHelpers: { loadFeeds }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   const [loading, setLoading] = useState(false);
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
@@ -98,7 +80,7 @@ export default function Posts({
 
   useEffect(() => {
     if (history.action === 'PUSH' || profileFeeds.length === 0) {
-      loadTab(section);
+      handleLoadTab(section);
     }
   }, [location]);
 
@@ -158,11 +140,7 @@ export default function Posts({
           >
             {profileFeeds.length > 0 &&
               profileFeeds.map((feed, index) => {
-                const contentKey = feed.contentType + feed.contentId;
-                const contentState = state[contentKey] || {
-                  contentId: feed.contentId,
-                  contentType: feed.contentType
-                };
+                const { contentId, contentType } = feed;
                 return (
                   <ContentPanel
                     key={filterTable[section] + feed.feedId}
@@ -170,33 +148,11 @@ export default function Posts({
                       marginBottom: '1rem',
                       zIndex: profileFeeds.length - index
                     }}
+                    contentId={contentId}
+                    contentType={contentType}
                     commentsLoadLimit={5}
-                    contentObj={contentState}
-                    inputAtBottom={contentState.contentType === 'comment'}
                     numPreviewComments={1}
-                    onInitContent={onInitContent}
-                    onAddTags={onAddTags}
-                    onAddTagToContents={onAddTagToContents}
-                    onAttachStar={onAttachStar}
-                    onByUserStatusChange={onSetByUserStatus}
-                    onChangeSpoilerStatus={onChangeSpoilerStatus}
-                    onCommentSubmit={onUploadComment}
-                    onDeleteComment={onDeleteComment}
                     onDeleteContent={onDeleteFeed}
-                    onEditComment={onEditComment}
-                    onEditContent={onEditContent}
-                    onEditRewardComment={onEditRewardComment}
-                    onLikeContent={onLikeContent}
-                    onLoadMoreComments={onLoadMoreComments}
-                    onLoadMoreReplies={onLoadMoreReplies}
-                    onLoadRepliesOfReply={onLoadRepliesOfReply}
-                    onLoadTags={onLoadTags}
-                    onReplySubmit={onUploadReply}
-                    onSetCommentsShown={onSetCommentsShown}
-                    onSetRewardLevel={onSetRewardLevel}
-                    onShowTCReplyInput={onShowTCReplyInput}
-                    onLoadComments={onLoadComments}
-                    onUploadTargetComment={onUploadTargetComment}
                   />
                 );
               })}
@@ -249,6 +205,7 @@ export default function Posts({
   async function loadMoreFeeds() {
     try {
       const { data } = await loadFeeds({
+        username,
         filter: filterTable[section],
         shownFeeds: queryStringForArray({
           array: profileFeeds,
@@ -265,7 +222,7 @@ export default function Posts({
     }
   }
 
-  async function loadTab(tabName) {
+  async function handleLoadTab(tabName) {
     selectedFilter.current = filterTable[tabName];
     setLoadingFeeds(true);
     const { data, filter: loadedFilter } = await loadFeeds({

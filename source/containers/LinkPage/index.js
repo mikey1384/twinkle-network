@@ -18,7 +18,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useContentContext, useViewContext } from 'contexts';
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -34,31 +34,6 @@ export default function LinkPage({
   }
 }) {
   const {
-    content: {
-      state,
-      actions: {
-        onAttachStar,
-        onDeleteComment,
-        onDeleteSubject,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onEditSubject,
-        onInitContent,
-        onLikeComment,
-        onLikeContent,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadMoreSubjectComments,
-        onLoadMoreSubjectReplies,
-        onLoadMoreSubjects,
-        onLoadSubjectComments,
-        onSetSubjectRewardLevel,
-        onUploadComment,
-        onUploadReply,
-        onUploadSubject
-      }
-    },
     explore: {
       actions: {
         onDeleteLink,
@@ -84,6 +59,31 @@ export default function LinkPage({
       loadSubjects
     }
   } = useAppContext();
+  const {
+    state,
+    actions: {
+      onAttachStar,
+      onDeleteComment,
+      onDeleteSubject,
+      onEditComment,
+      onEditContent,
+      onEditRewardComment,
+      onEditSubject,
+      onInitContent,
+      onLikeComment,
+      onLikeContent,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onLoadMoreSubjectComments,
+      onLoadMoreSubjectReplies,
+      onLoadMoreSubjects,
+      onLoadSubjectComments,
+      onSetSubjectRewardLevel,
+      onUploadComment,
+      onUploadReply,
+      onUploadSubject
+    }
+  } = useContentContext();
   const {
     actions: { onSetExploreSubNav }
   } = useViewContext();

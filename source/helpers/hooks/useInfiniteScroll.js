@@ -9,6 +9,7 @@ export default function useInfiniteScroll({
   onLoad,
   onScrollToBottom
 }) {
+  const mounted = useRef(true);
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const prevFeedsLength = useRef(0);
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -16,10 +17,12 @@ export default function useInfiniteScroll({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    mounted.current = true;
     addEvent(window, 'scroll', onScroll);
     addEvent(document.getElementById('App'), 'scroll', onScroll);
 
     return function cleanUp() {
+      mounted.current = false;
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
@@ -46,8 +49,9 @@ export default function useInfiniteScroll({
   function onScroll() {
     timerRef.current = setTimeout(() => {
       if (
-        document.getElementById('App').scrollHeight > scrollHeight ||
-        BodyRef.current.scrollTop > scrollHeight
+        (document.getElementById('App').scrollHeight > scrollHeight ||
+          BodyRef.current.scrollTop > scrollHeight) &&
+        mounted.current
       ) {
         setScrollHeight(
           Math.max(

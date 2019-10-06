@@ -22,7 +22,7 @@ import PageTab from './PageTab';
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useContentContext, useViewContext } from 'contexts';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -52,36 +52,6 @@ export default function VideoPage({
   const CommentInputAreaRef = useRef(null);
 
   const {
-    content: {
-      state,
-      actions: {
-        onAddTags,
-        onAttachStar,
-        onDeleteComment,
-        onDeleteSubject,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onEditSubject,
-        onInitContent,
-        onLikeComment,
-        onLikeContent,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadMoreSubjectComments,
-        onLoadMoreSubjectReplies,
-        onLoadMoreSubjects,
-        onLoadSubjectComments,
-        onSetByUserStatus,
-        onSetRewardLevel,
-        onSetSubjectRewardLevel,
-        onSetVideoQuestions,
-        onSetThumbRewardLevel,
-        onUploadComment,
-        onUploadReply,
-        onUploadSubject
-      }
-    },
     explore: {
       actions: {
         onChangeVideoByUserStatus,
@@ -108,6 +78,36 @@ export default function VideoPage({
       uploadQuestions
     }
   } = useAppContext();
+  const {
+    state,
+    actions: {
+      onAddTags,
+      onAttachStar,
+      onDeleteComment,
+      onDeleteSubject,
+      onEditComment,
+      onEditContent,
+      onEditRewardComment,
+      onEditSubject,
+      onInitContent,
+      onLikeComment,
+      onLikeContent,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onLoadMoreSubjectComments,
+      onLoadMoreSubjectReplies,
+      onLoadMoreSubjects,
+      onLoadSubjectComments,
+      onSetByUserStatus,
+      onSetRewardLevel,
+      onSetSubjectRewardLevel,
+      onSetVideoQuestions,
+      onSetThumbRewardLevel,
+      onUploadComment,
+      onUploadReply,
+      onUploadSubject
+    }
+  } = useContentContext();
   const {
     actions: { onSetExploreSubNav }
   } = useViewContext();

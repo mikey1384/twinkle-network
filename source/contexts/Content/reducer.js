@@ -160,6 +160,7 @@ export default function ContentPageReducer(state, action) {
           ...prevContentState,
           ...(contentMatches || targetSubjectMatches
             ? {
+                spoilerStatusChecked: true,
                 secretShown: action.shown
               }
             : {}),
@@ -174,6 +175,13 @@ export default function ContentPageReducer(state, action) {
                   : prevContentState.targetObj.subject
               }
             : undefined
+        };
+      }
+      if (!newState['subject' + action.contentId]) {
+        newState['subject' + action.contentId] = {
+          contentType: 'subject',
+          contentId: action.contentId,
+          spoilerStatusChecked: true
         };
       }
       return newState;
@@ -592,6 +600,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
+          commentsLoaded: true,
           childComments: action.comments,
           commentsLoadMoreButton: action.loadMoreButton
         }

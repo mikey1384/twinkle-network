@@ -23,29 +23,6 @@ export default function ContentPage({
   }
 }) {
   const {
-    content: {
-      state,
-      actions: {
-        onAttachStar,
-        onChangeSpoilerStatus,
-        onDeleteComment,
-        onEditComment,
-        onEditContent,
-        onEditRewardComment,
-        onInitContent,
-        onLikeContent,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onSetCommentsShown,
-        onSetRewardLevel,
-        onShowTCReplyInput,
-        onUploadTargetComment,
-        onUploadComment,
-        onUploadReply
-      }
-    },
     explore: {
       actions: { onDeleteSubject }
     },
@@ -67,7 +44,6 @@ export default function ContentPage({
     loaded: false,
     exists: false
   });
-  const contentState = state?.[contentType + contentId] || {};
   const mounted = useRef(null);
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
@@ -87,7 +63,6 @@ export default function ContentPage({
             loaded: true,
             exists
           });
-          onInitContent({ contentId: contentId, contentType });
         }
       } catch (error) {
         console.error(error);
@@ -134,29 +109,11 @@ export default function ContentPage({
               <ContentPanel
                 key={contentType + contentId}
                 autoExpand
-                inputAtBottom={contentState.contentType === 'comment'}
                 commentsLoadLimit={5}
-                contentObj={contentState}
+                contentId={Number(contentId)}
+                contentType={contentType}
                 userId={userId}
-                onAttachStar={onAttachStar}
-                onChangeSpoilerStatus={onChangeSpoilerStatus}
-                onCommentSubmit={onUploadComment}
-                onDeleteComment={onDeleteComment}
                 onDeleteContent={handleDeleteContent}
-                onEditComment={onEditComment}
-                onEditContent={onEditContent}
-                onEditRewardComment={onEditRewardComment}
-                onLikeContent={onLikeContent}
-                onInitContent={onInitContent}
-                onLoadMoreComments={onLoadMoreComments}
-                onLoadMoreReplies={onLoadMoreReplies}
-                onLoadRepliesOfReply={onLoadRepliesOfReply}
-                onReplySubmit={onUploadReply}
-                onSetCommentsShown={onSetCommentsShown}
-                onSetRewardLevel={onSetRewardLevel}
-                onShowTCReplyInput={onShowTCReplyInput}
-                onLoadComments={onLoadComments}
-                onUploadTargetComment={onUploadTargetComment}
               />
             ) : (
               <NotFound />

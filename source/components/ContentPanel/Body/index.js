@@ -46,6 +46,7 @@ export default function Body({
   contentObj: {
     actualDescription,
     actualTitle,
+    commentsLoaded,
     contentId,
     rewardLevel,
     feedId,
@@ -122,7 +123,10 @@ export default function Body({
 
   useEffect(() => {
     mounted.current = true;
-    if ((autoExpand && !commentsShown) || numPreviewComments > 0) {
+    if (
+      ((autoExpand && !commentsShown) || numPreviewComments > 0) &&
+      !commentsLoaded
+    ) {
       loadInitialComments(numPreviewComments);
     }
 
@@ -252,7 +256,7 @@ export default function Body({
                       ? 'Respond'
                       : 'Reply'}
                   </span>
-                  {numChildComments > 0 && !commentsShown && (
+                  {numChildComments > 0 && !commentsShown && !autoExpand && (
                     <span style={{ marginLeft: '0.5rem' }}>
                       ({numChildComments})
                     </span>

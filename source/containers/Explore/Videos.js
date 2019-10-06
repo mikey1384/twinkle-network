@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useSearch } from 'helpers/hooks';
+import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import FeaturedPlaylistsPanel from './Panels/FeaturedPlaylistsPanel';
@@ -7,13 +7,14 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 
 Videos.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
-export default function Videos({ history }) {
+export default function Videos({ history, location }) {
   const {
     explore: {
       state: {
@@ -39,6 +40,15 @@ export default function Videos({ history }) {
     },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   const { handleSearch, searching, searchText } = useSearch({
     onSearch: handleSearchPlaylist,
     onClear: () =>

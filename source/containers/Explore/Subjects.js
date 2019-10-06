@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
-import { useAppContext } from 'contexts';
+import { useScrollPosition } from 'helpers/hooks';
+import { useAppContext, useViewContext } from 'contexts';
 
-export default function Subjects() {
+Subjects.propTypes = {
+  location: PropTypes.object.isRequired
+};
+
+export default function Subjects({ location }) {
   const {
     explore: {
       state: {
@@ -19,6 +25,15 @@ export default function Subjects() {
     },
     requestHelpers: { loadFeaturedSubjects }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   useEffect(() => {
     init();
     async function init() {

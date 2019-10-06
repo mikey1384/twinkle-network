@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useSearch } from 'helpers/hooks';
+import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import ProfilePanel from 'components/ProfilePanel';
@@ -9,15 +9,16 @@ import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 import request from 'axios';
 import URL from 'constants/URL';
 
 People.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
-export default function People({ history }) {
+export default function People({ location, history }) {
   const {
     user: {
       actions: {
@@ -38,6 +39,15 @@ export default function People({ history }) {
     },
     requestHelpers: { loadUsers }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';
   const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);

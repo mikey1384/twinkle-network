@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
@@ -21,21 +21,20 @@ export default function SecretAnswer({
   subjectId
 }) {
   const {
-    content: {
-      actions: { onChangeSpoilerStatus }
-    },
     user: {
       state: { userId }
     },
     requestHelpers: { checkIfUserResponded }
   } = useAppContext();
   const {
-    state: { pageVisible }
-  } = useViewContext();
+    state,
+    actions: { onChangeSpoilerStatus }
+  } = useContentContext();
+
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    if (userId) {
+    if (userId && !state['subject' + subjectId]?.spoilerStatusChecked) {
       init();
     } else {
       onChangeSpoilerStatus({ shown: false, subjectId });
@@ -45,7 +44,10 @@ export default function SecretAnswer({
       if (!shown) {
         const { responded } = await checkIfUserResponded(subjectId);
         if (mounted.current) {
-          onChangeSpoilerStatus({ shown: responded, subjectId });
+          onChangeSpoilerStatus({
+            shown: responded,
+            subjectId
+          });
         }
       }
     }
@@ -53,7 +55,7 @@ export default function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [pageVisible, userId]);
+  }, [state['subject' + subjectId]?.spoilerStatusChecked, userId]);
 
   return (
     <ErrorBoundary>

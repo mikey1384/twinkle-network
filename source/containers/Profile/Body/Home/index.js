@@ -23,34 +23,19 @@ import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
-import { useAppContext } from 'contexts';
+import { useScrollPosition } from 'helpers/hooks';
+import { useAppContext, useContentContext, useViewContext } from 'contexts';
 
 Home.propTypes = {
+  location: PropTypes.object,
   selectedTheme: PropTypes.string.isRequired
 };
 
-export default function Home({ selectedTheme }) {
+export default function Home({ location, selectedTheme }) {
   const {
     user: {
       state: { profile, userId },
       actions: { onRemoveStatusMsg, onUpdateGreeting, onUpdateBio }
-    },
-    content: {
-      state,
-      actions: {
-        onAttachStar,
-        onDeleteComment,
-        onEditComment,
-        onEditRewardComment,
-        onInitContent,
-        onLikeComment,
-        onLoadComments,
-        onLoadMoreComments,
-        onLoadMoreReplies,
-        onLoadRepliesOfReply,
-        onUploadComment,
-        onUploadReply
-      }
     },
     requestHelpers: {
       auth,
@@ -60,6 +45,32 @@ export default function Home({ selectedTheme }) {
       uploadBio
     }
   } = useAppContext();
+  const {
+    actions: { onRecordScrollPosition },
+    state: { scrollPositions }
+  } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
+  const {
+    state,
+    actions: {
+      onAttachStar,
+      onDeleteComment,
+      onEditComment,
+      onEditRewardComment,
+      onInitContent,
+      onLikeComment,
+      onLoadComments,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onLoadRepliesOfReply,
+      onUploadComment,
+      onUploadReply
+    }
+  } = useContentContext();
   const {
     email,
     emailVerified,

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Context from './Context';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Heading from './Heading';
@@ -13,107 +13,90 @@ import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
   commentsLoadLimit: PropTypes.number,
-  contentObj: PropTypes.object.isRequired,
+  contentId: PropTypes.number.isRequired,
+  contentType: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
-  inputAtBottom: PropTypes.bool,
   numPreviewComments: PropTypes.number,
-  onAddTags: PropTypes.func,
-  onAddTagToContents: PropTypes.func,
-  onAttachStar: PropTypes.func.isRequired,
-  onChangeSpoilerStatus: PropTypes.func.isRequired,
-  onCommentSubmit: PropTypes.func.isRequired,
-  onDeleteComment: PropTypes.func.isRequired,
   onDeleteContent: PropTypes.func.isRequired,
-  onEditComment: PropTypes.func.isRequired,
-  onEditContent: PropTypes.func.isRequired,
-  onEditRewardComment: PropTypes.func.isRequired,
-  onInitContent: PropTypes.func.isRequired,
-  onLikeContent: PropTypes.func.isRequired,
-  onLoadMoreComments: PropTypes.func.isRequired,
-  onLoadMoreReplies: PropTypes.func.isRequired,
-  onLoadTags: PropTypes.func,
-  onLoadRepliesOfReply: PropTypes.func,
-  onReplySubmit: PropTypes.func.isRequired,
-  onSetCommentsShown: PropTypes.func.isRequired,
-  onSetRewardLevel: PropTypes.func,
-  onShowTCReplyInput: PropTypes.func.isRequired,
-  onLoadComments: PropTypes.func.isRequired,
-  onByUserStatusChange: PropTypes.func,
-  onUploadTargetComment: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
 function ContentPanel({
   autoExpand,
   commentsLoadLimit,
-  contentObj,
-  contentObj: {
-    commentsShown,
-    contentId,
-    feedId,
-    newPost,
-    secretShown,
-    contentType
-  },
+  contentId,
+  contentType,
   history,
-  inputAtBottom,
   numPreviewComments = 0,
-  onAddTags,
-  onAddTagToContents,
-  onAttachStar,
-  onByUserStatusChange,
-  onChangeSpoilerStatus,
-  onCommentSubmit,
-  onDeleteComment,
   onDeleteContent,
-  onEditComment,
-  onEditContent,
-  onEditRewardComment,
-  onInitContent,
-  onLikeContent,
-  onLoadMoreComments,
-  onLoadMoreReplies,
-  onLoadTags,
-  onLoadRepliesOfReply,
-  onReplySubmit,
-  onSetCommentsShown,
-  onSetRewardLevel,
-  onShowTCReplyInput,
-  onLoadComments,
-  onUploadTargetComment,
   style = {}
 }) {
   const {
     requestHelpers: { loadContent }
   } = useAppContext();
+  const {
+    state: { [contentType + contentId]: contentState = {} },
+    actions: {
+      onAddTags,
+      onAddTagToContents,
+      onAttachStar,
+      onChangeSpoilerStatus,
+      onDeleteComment,
+      onEditComment,
+      onEditContent,
+      onEditRewardComment,
+      onInitContent,
+      onLikeContent,
+      onLoadComments,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onLoadRepliesOfReply,
+      onLoadTags,
+      onSetByUserStatus,
+      onSetCommentsShown,
+      onSetRewardLevel,
+      onShowTCReplyInput,
+      onUploadTargetComment,
+      onUploadComment,
+      onUploadReply
+    }
+  } = useContentContext();
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const [videoShown, setVideoShown] = useState(false);
   const [commentsHidden, setCommentsHidden] = useState(true);
+  const mounted = useRef(true);
   const loading = useRef(false);
+  const inputAtBottom = contentType === 'comment';
   useEffect(() => {
-    if (!contentObj.loaded && !loading.current && contentId) {
+    mounted.current = true;
+    if (!contentState.loaded && !loading.current && contentId) {
       onMount();
     }
     async function onMount() {
-      if (!newPost) {
+      if (!contentState.newPost) {
         loading.current = true;
         const data = await loadContent({ contentId, contentType });
-        onInitContent({
-          ...data,
-          loaded: true,
-          feedId
-        });
-        loading.current = false;
+        if (mounted.current) {
+          onInitContent({
+            ...data,
+            loaded: true,
+            feedId: contentState.feedId
+          });
+          loading.current = false;
+        }
       }
     }
-  }, [contentObj]);
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, [contentState.loaded]);
 
   return (
     <Context.Provider
@@ -122,8 +105,8 @@ function ContentPanel({
         onAddTags,
         onAddTagToContents,
         onAttachStar,
-        onByUserStatusChange,
-        onCommentSubmit,
+        onByUserStatusChange: onSetByUserStatus,
+        onCommentSubmit: onUploadComment,
         onDeleteComment,
         onDeleteContent,
         onEditComment,
@@ -135,7 +118,7 @@ function ContentPanel({
         onLoadMoreReplies,
         onLoadTags,
         onLoadRepliesOfReply,
-        onReplySubmit,
+        onReplySubmit: onUploadReply,
         onSetCommentsHidden: setCommentsHidden,
         onSetCommentsShown,
         onSetRewardLevel,
@@ -145,7 +128,7 @@ function ContentPanel({
       <ErrorBoundary>
         <div
           style={{
-            height: !contentObj.loaded && '15rem',
+            height: !contentState.loaded && '15rem',
             position: 'relative',
             ...style
           }}
@@ -157,19 +140,19 @@ function ContentPanel({
             }}
             className={container}
           >
-            {!contentObj.loaded && <Loading />}
-            {contentObj.loaded && (
+            {!contentState.loaded && <Loading />}
+            {contentState.loaded && (
               <>
                 <Heading
-                  contentObj={contentObj}
+                  contentObj={contentState}
                   action={
-                    contentObj.commentId
-                      ? contentObj.targetObj.comment.notFound
+                    contentState.commentId
+                      ? contentState.targetObj.comment.notFound
                         ? 'replied on'
                         : 'replied to'
-                      : contentObj.rootType === 'subject'
+                      : contentState.rootType === 'subject'
                       ? 'responded to'
-                      : contentObj.rootType === 'user'
+                      : contentState.rootType === 'user'
                       ? 'left a message to'
                       : 'commented on'
                   }
@@ -180,64 +163,64 @@ function ContentPanel({
                   <Body
                     autoExpand={autoExpand}
                     commentsHidden={commentsHidden}
-                    commentsShown={commentsShown}
-                    contentObj={contentObj}
+                    commentsShown={contentState.commentsShown}
+                    contentObj={contentState}
                     inputAtBottom={inputAtBottom}
                     attachedVideoShown={videoShown}
                     numPreviewComments={numPreviewComments}
-                    secretShown={secretShown}
+                    secretShown={contentState.secretShown}
                     onChangeSpoilerStatus={onChangeSpoilerStatus}
                   />
                 </div>
               </>
             )}
           </div>
-          {contentObj.loaded && contentObj.targetObj?.comment && (
+          {contentState.loaded && contentState.targetObj?.comment && (
             <TargetContent
               style={{
                 position: 'relative',
                 zIndex: 2
               }}
-              targetObj={contentObj.targetObj}
-              rootObj={contentObj.rootObj}
-              rootId={contentObj.rootId}
-              rootType={contentObj.rootType}
-              secretShown={secretShown}
+              targetObj={contentState.targetObj}
+              rootObj={contentState.rootObj}
+              rootId={contentState.rootId}
+              rootType={contentState.rootType}
+              secretShown={contentState.secretShown}
               contentId={contentId}
               contentType={contentType}
               onShowTCReplyInput={onShowTCReplyInput}
             />
           )}
-          {contentObj.loaded && contentObj.targetObj?.subject && (
+          {contentState.loaded && contentState.targetObj?.subject && (
             <div>
               <ContentListItem
-                comments={contentObj.childComments}
+                comments={contentState.childComments}
                 style={{
                   zIndex: 1,
                   position: 'relative'
                 }}
                 expandable
                 onClick={() =>
-                  history.push(`/subjects/${contentObj.targetObj.subject.id}`)
+                  history.push(`/subjects/${contentState.targetObj.subject.id}`)
                 }
-                contentObj={contentObj.targetObj.subject}
+                contentObj={contentState.targetObj.subject}
                 onChangeSpoilerStatus={onChangeSpoilerStatus}
-                secretShown={secretShown}
+                secretShown={contentState.secretShown}
               />
             </div>
           )}
-          {contentType === 'comment' && contentObj.rootType === 'video' && (
+          {contentType === 'comment' && contentState.rootType === 'video' && (
             <ContentListItem
               style={{
                 position: 'relative'
               }}
               expandable
-              onClick={() => history.push(`/videos/${contentObj.rootObj.id}`)}
-              contentObj={contentObj.rootObj}
+              onClick={() => history.push(`/videos/${contentState.rootObj.id}`)}
+              contentObj={contentState.rootObj}
             />
           )}
           {(contentType === 'comment' || contentType === 'subject') &&
-            contentObj.rootType === 'url' && (
+            contentState.rootType === 'url' && (
               <div
                 onTouchStart={() => setUrlMouseEntered(true)}
                 onMouseEnter={() => setUrlMouseEntered(true)}
@@ -258,17 +241,17 @@ function ContentPanel({
               >
                 <Embedly
                   small
-                  title={cleanString(contentObj.rootObj.title)}
-                  url={contentObj.rootObj.content}
-                  contentId={contentObj.rootId}
-                  thumbUrl={contentObj.rootObj.thumbUrl}
-                  actualTitle={contentObj.rootObj.actualTitle}
-                  actualDescription={contentObj.rootObj.actualDescription}
-                  siteUrl={contentObj.rootObj.siteUrl}
+                  title={cleanString(contentState.rootObj.title)}
+                  url={contentState.rootObj.content}
+                  contentId={contentState.rootId}
+                  thumbUrl={contentState.rootObj.thumbUrl}
+                  actualTitle={contentState.rootObj.actualTitle}
+                  actualDescription={contentState.rootObj.actualDescription}
+                  siteUrl={contentState.rootObj.siteUrl}
                 />
               </div>
             )}
-          {contentType === 'comment' && contentObj.rootType === 'user' && (
+          {contentType === 'comment' && contentState.rootType === 'user' && (
             <div
               onTouchStart={() => setProfileMouseEntered(true)}
               onMouseEnter={() => setProfileMouseEntered(true)}
@@ -290,10 +273,10 @@ function ContentPanel({
                 }
               `}
               onClick={() =>
-                window.open(`/users/${contentObj.rootObj.username}`)
+                window.open(`/users/${contentState.rootObj.username}`)
               }
             >
-              <Profile profile={contentObj.rootObj} />
+              <Profile profile={contentState.rootObj} />
             </div>
           )}
         </div>
@@ -302,4 +285,4 @@ function ContentPanel({
   );
 }
 
-export default withRouter(ContentPanel);
+export default withRouter(memo(ContentPanel));

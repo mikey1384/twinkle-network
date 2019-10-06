@@ -63,42 +63,26 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
 }
 
 export function useScrollPosition({
-  scrollPositions,
+  onRecordScrollPosition,
   pathname,
-  onRecordScrollPosition
+  scrollPositions = {}
 }) {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  const timerRef = useRef(null);
-  const prevPath = useRef('');
-  const noRecord = useRef(false);
-  useEffect(() => {
-    addEvent(window, 'scroll', onScroll);
-    addEvent(document.getElementById('App'), 'scroll', onScroll);
-    function onScroll() {
-      timerRef.current = setTimeout(() => {
-        if (!noRecord.current) {
-          const position = Math.max(
-            document.getElementById('App').scrollTop,
-            BodyRef.current.scrollTop
-          );
-          onRecordScrollPosition({ section: prevPath.current, position });
-        }
-      }, 300);
-    }
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-      removeEvent(window, 'scroll', onScroll);
-      removeEvent(document.getElementById('App'), 'scroll', onScroll);
-    };
-  });
 
   useEffect(() => {
-    noRecord.current = true;
     setTimeout(() => {
       document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
       BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
     }, 0);
-    prevPath.current = pathname;
-    noRecord.current = false;
+
+    return function recordScrollPositionAndCleanUp() {
+      const position = Math.max(
+        document.getElementById('App').scrollTop,
+        BodyRef.current.scrollTop
+      );
+      onRecordScrollPosition({ section: pathname, position });
+      document.getElementById('App').scrollTop = 0;
+      BodyRef.current.scrollTop = 0;
+    };
   }, [pathname]);
 }

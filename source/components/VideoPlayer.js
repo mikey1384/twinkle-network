@@ -9,7 +9,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useContentContext, useViewContext } from 'contexts';
 
 const intervalLength = 2000;
 const xp = rewardValue.star;
@@ -40,20 +40,6 @@ export default function VideoPlayer({
   videoId
 }) {
   const {
-    content: {
-      state,
-      actions: {
-        onSetVideoImageUrl,
-        onSetVideoPlaying,
-        onSetVideoStarted,
-        onSetVideoXpEarned,
-        onSetVideoXpJustEarned,
-        onSetVideoXpLoaded,
-        onSetVideoXpProgress,
-        onSetXpVideoWatchTime,
-        onSetVideoCurrentTime
-      }
-    },
     explore: {
       state: {
         videos: { currentVideoSlot }
@@ -77,7 +63,21 @@ export default function VideoPlayer({
   const {
     state: { pageVisible }
   } = useViewContext();
-  const contentState = state['video' + videoId];
+  const {
+    state,
+    actions: {
+      onSetVideoImageUrl,
+      onSetVideoPlaying,
+      onSetVideoStarted,
+      onSetVideoXpEarned,
+      onSetVideoXpJustEarned,
+      onSetVideoXpLoaded,
+      onSetVideoXpProgress,
+      onSetXpVideoWatchTime,
+      onSetVideoCurrentTime
+    }
+  } = useContentContext();
+  const contentState = state['video' + videoId] || {};
   const {
     currentTime = 0,
     playing,
@@ -112,7 +112,7 @@ export default function VideoPlayer({
       onSetVideoCurrentTime({
         videoId,
         currentTime:
-          PlayerRef.current?.getInternalPlayer()?.getCurrentTime() || 0
+          PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() || 0
       });
       onVideoStop();
       onSetVideoStarted({ videoId, started: false });

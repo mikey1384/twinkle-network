@@ -1,7 +1,7 @@
 export {
   useAppContext,
   useInputContext,
-  useScrollContext,
+  useContentContext,
   useViewContext
 } from './hooks';
 export { AppContextProvider } from './AppContext';

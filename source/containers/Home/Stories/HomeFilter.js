@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppContext } from 'contexts';
 import { PropTypes } from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -47,7 +47,15 @@ export default function HomeFilter({
     requestHelpers: { toggleHideWatched }
   } = useAppContext();
   const [activeTab, setActiveTab] = useState();
-  useEffect(() => setActiveTab(category), [category]);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    setActiveTab(category);
+
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, [category]);
   return (
     <ErrorBoundary>
       <FilterBar
@@ -168,6 +176,8 @@ export default function HomeFilter({
 
   async function handleToggleHideWatched() {
     const hideWatched = await toggleHideWatched();
-    onToggleHideWatched(hideWatched);
+    if (mounted.current) {
+      onToggleHideWatched(hideWatched);
+    }
   }
 }

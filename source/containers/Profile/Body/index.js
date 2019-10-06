@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
 import FilterBar from 'components/FilterBar';
-import Routes from './Routes';
+import Home from './Home';
+import Posts from './Posts';
+import { Switch, Route } from 'react-router-dom';
 import { css } from 'emotion';
 
 Body.propTypes = {
@@ -10,7 +12,8 @@ Body.propTypes = {
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.shape({
-    id: PropTypes.number.isRequired
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string
   }),
   selectedTheme: PropTypes.string
 };
@@ -95,13 +98,31 @@ export default function Body({
             }
           `}
         >
-          <Routes
-            history={history}
-            location={location}
-            match={match}
-            profile={profile}
-            selectedTheme={selectedTheme}
-          />
+          <Switch>
+            <Route
+              exact
+              path={`${match.path}`}
+              render={() => (
+                <Home
+                  location={location}
+                  profile={profile}
+                  selectedTheme={selectedTheme}
+                />
+              )}
+            />
+            <Route
+              path={`${match.path}/:section`}
+              render={({ match }) => (
+                <Posts
+                  history={history}
+                  match={match}
+                  username={profile.username}
+                  location={location}
+                  selectedTheme={selectedTheme}
+                />
+              )}
+            />
+          </Switch>
         </div>
       </div>
     </div>
