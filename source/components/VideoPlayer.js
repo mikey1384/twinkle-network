@@ -38,7 +38,6 @@ export default function VideoPlayer({
   hasHqThumb,
   minimized,
   onEdit,
-  stretch,
   style = {},
   uploader,
   videoCode,
@@ -303,6 +302,7 @@ export default function VideoPlayer({
                   right: 0;
                   left: 0;
                   bottom: 0;
+                  cursor: pointer;
                 `}
               />
             </>
@@ -424,7 +424,6 @@ export default function VideoPlayer({
         {!alreadyEarned && !!rewardLevel && userId && started && (
           <ProgressBar
             progress={progress}
-            noBorderRadius={stretch}
             color={justEarned ? Color.green() : meterColor}
             text={
               justEarned
@@ -435,7 +434,22 @@ export default function VideoPlayer({
         )}
       </ErrorBoundary>
     ),
-    [contentState, playerShown, alreadyEarned]
+    [
+      contentState,
+      playerShown,
+      alreadyEarned,
+      byUser,
+      rewardLevel,
+      hasHqThumb,
+      minimized,
+      onEdit,
+      uploader,
+      videoCode,
+      videoId,
+      profileTheme,
+      twinkleXP,
+      userId
+    ]
   );
 
   function onVideoReady() {

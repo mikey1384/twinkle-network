@@ -20,6 +20,7 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           ...action.data,
+          loaded: true,
           contentId: action.contentId,
           contentType: action.contentType
         }
@@ -729,6 +730,16 @@ export default function ContentPageReducer(state, action) {
             }
             return comment;
           })
+        }
+      };
+    case 'LOAD_SUBJECTS':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          subjectsLoaded: true,
+          subjects: action.subjects,
+          subjectsLoadMoreButton: action.loadMoreButton
         }
       };
     case 'LOAD_SUBJECT_COMMENTS':

@@ -307,6 +307,6 @@ export default function ContentListItem({
         </Link>
       </div>
     ),
-    [contentObj, mouseEntered, selected]
+    [contentObj, mouseEntered, selected, onClick]
   );
 }

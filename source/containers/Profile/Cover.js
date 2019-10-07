@@ -7,8 +7,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
-import { borderRadius, mobileMaxWidth } from 'constants/css';
-import { profileThemes } from 'constants/defaultValues';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext } from 'contexts';
 
 Cover.propTypes = {
@@ -52,8 +51,7 @@ export default function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
           color: '#fff',
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',
-          backgroundColor:
-            profileThemes[selectedTheme || profileTheme || 'logoBlue'].color
+          backgroundColor: Color[selectedTheme || profileTheme || 'logoBlue']()
         }}
         className={css`
           height: 26rem;

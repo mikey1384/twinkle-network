@@ -86,7 +86,6 @@ function ContentPanel({
         if (mounted.current) {
           onInitContent({
             ...data,
-            loaded: true,
             feedId: contentState.feedId
           });
           loading.current = false;

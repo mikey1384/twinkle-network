@@ -196,6 +196,15 @@ export default function ContentActions(dispatch) {
         contentId
       });
     },
+    onLoadSubjects({ contentId, contentType, subjects, loadMoreButton }) {
+      return dispatch({
+        type: 'LOAD_SUBJECTS',
+        contentId,
+        contentType,
+        subjects,
+        loadMoreButton
+      });
+    },
     onLoadSubjectComments({
       comments,
       loadMoreButton,

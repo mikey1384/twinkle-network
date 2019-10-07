@@ -6,7 +6,6 @@ import SearchInput from 'components/Texts/SearchInput';
 import Input from 'components/Texts/Input';
 import Icon from 'components/Icon';
 import Loading from 'components/Loading';
-import { profileThemes } from 'constants/defaultValues';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -85,7 +84,7 @@ export default function SectionPanel({
           grid-template-areas: 'title search buttons';
           grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
           background: #fff;
-          color: ${profileThemes[themeColor].color};
+          color: ${Color[themeColor]()};
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};
           padding: 1rem;

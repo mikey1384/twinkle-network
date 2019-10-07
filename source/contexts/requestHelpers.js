@@ -594,10 +594,12 @@ export default function requestHelpers(handleError) {
     },
     async loadSubjects({ contentType, contentId, lastSubjectId }) {
       try {
-        const { data } = await request.get(
+        const {
+          data: { results, loadMoreButton }
+        } = await request.get(
           `${URL}/content/subjects?contentId=${contentId}&contentType=${contentType}&lastSubjectId=${lastSubjectId}`
         );
-        return Promise.resolve(data);
+        return Promise.resolve({ results, loadMoreButton });
       } catch (error) {
         return handleError(error);
       }

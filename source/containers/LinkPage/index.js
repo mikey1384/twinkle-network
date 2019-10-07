@@ -122,7 +122,6 @@ export default function LinkPage({
       });
       onInitContent({
         ...data,
-        loaded: true,
         contentId: Number(linkId),
         contentType: 'url',
         childComments: commentsObj?.comments || [],

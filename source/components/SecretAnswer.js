@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
@@ -30,18 +30,15 @@ export default function SecretAnswer({
     state,
     actions: { onChangeSpoilerStatus }
   } = useContentContext();
-  const secretShown =
-    state['subject' + subjectId]?.secretShown || uploaderId === userId;
+  const contentState = state['subject' + subjectId] || {};
+  const secretShown = contentState.secretShown || uploaderId === userId;
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    if (userId && !state['subject' + subjectId]?.spoilerStatusChecked) {
+    if (userId && !contentState.spoilerStatusChecked) {
       init();
     }
-    if (
-      state['subject' + subjectId]?.spoilerStatusChecked &&
-      state['subject' + subjectId]?.secretShown
-    ) {
+    if (contentState.spoilerStatusChecked && contentState.secretShown) {
       onChangeSpoilerStatus({
         shown: true,
         subjectId,
@@ -68,30 +65,35 @@ export default function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [state['subject' + subjectId]?.spoilerStatusChecked, userId]);
-  return (
-    <ErrorBoundary>
-      <div
-        onClick={secretShown ? () => {} : onClick}
-        style={{
-          cursor: secretShown ? '' : 'pointer',
-          fontSize: '1.7rem',
-          background: secretShown ? Color.ivory() : Color.darkerGray(),
-          border: `1px solid ${
-            secretShown ? Color.borderGray() : Color.black()
-          }`,
-          borderRadius,
-          color: secretShown ? Color.black() : '#fff',
-          textAlign: secretShown ? '' : 'center',
-          padding: '1rem',
-          ...style
-        }}
-      >
-        {secretShown && <LongText>{answer}</LongText>}
-        {!secretShown && (
-          <span>Submit your response to view the secret message. Tap here</span>
-        )}
-      </div>
-    </ErrorBoundary>
+  }, [contentState.spoilerStatusChecked, userId]);
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div
+          onClick={secretShown ? () => {} : onClick}
+          style={{
+            cursor: secretShown ? '' : 'pointer',
+            fontSize: '1.7rem',
+            background: secretShown ? Color.ivory() : Color.darkerGray(),
+            border: `1px solid ${
+              secretShown ? Color.borderGray() : Color.black()
+            }`,
+            borderRadius,
+            color: secretShown ? Color.black() : '#fff',
+            textAlign: secretShown ? '' : 'center',
+            padding: '1rem',
+            ...style
+          }}
+        >
+          {secretShown && <LongText>{answer}</LongText>}
+          {!secretShown && (
+            <span>
+              Submit your response to view the secret message. Tap here
+            </span>
+          )}
+        </div>
+      </ErrorBoundary>
+    ),
+    [contentState]
   );
 }

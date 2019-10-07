@@ -2,7 +2,6 @@ export const defaultChatSubject = 'Introduce yourself!';
 export const rewardValue = {
   star: 200
 };
-import { Color } from './css';
 
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
 export const clientVersion = '1.0.79';
@@ -35,53 +34,6 @@ export const charLimit = {
     title: 200,
     description: 10000,
     url: 300
-  }
-};
-
-export const profileThemes = {
-  black: {
-    color: Color.black(),
-    cover: Color.black()
-  },
-  darkBlue: {
-    color: Color.darkBlue(),
-    cover: Color.darkBlue()
-  },
-  logoBlue: {
-    color: Color.logoBlue(),
-    cover: Color.logoBlue()
-  },
-  green: {
-    color: Color.green(),
-    cover: Color.green()
-  },
-  orange: {
-    color: Color.orange(),
-    cover: Color.orange()
-  },
-  pink: {
-    color: Color.pink(),
-    cover: Color.pink()
-  },
-  purple: {
-    color: Color.purple(),
-    cover: Color.purple()
-  },
-  red: {
-    color: Color.red(),
-    cover: Color.red()
-  },
-  rose: {
-    color: Color.rose(),
-    cover: Color.rose()
-  },
-  vantaBlack: {
-    color: Color.vantaBlack(),
-    cover: Color.vantaBlack()
-  },
-  white: {
-    color: '#fff',
-    cover: '#fff'
   }
 };
 
