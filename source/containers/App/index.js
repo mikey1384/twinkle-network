@@ -75,7 +75,7 @@ function App({ location, history }) {
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
-      if (data.userId) onInitSession(data);
+      if (data?.userId) onInitSession(data);
     }
   }, [pageVisible]);
 

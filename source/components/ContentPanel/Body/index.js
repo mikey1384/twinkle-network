@@ -48,7 +48,6 @@ export default function Body({
     commentsLoaded,
     contentId,
     rewardLevel,
-    feedId,
     id,
     numChildComments,
     title,
@@ -135,7 +134,12 @@ export default function Body({
         limit: numPreviewComments || commentsLoadLimit
       });
       if (mounted.current) {
-        onLoadComments({ ...data, contentId, contentType });
+        onLoadComments({
+          ...data,
+          contentId,
+          contentType,
+          isPreview: numPreviewComments > 0
+        });
       }
     }
     return function cleanUp() {
@@ -404,12 +408,8 @@ export default function Body({
               contentType: 'comment'
             })
           }
-          onLoadMoreComments={data =>
-            onLoadMoreComments({ data, contentType, feedId })
-          }
-          onLoadMoreReplies={data =>
-            onLoadMoreReplies({ ...data, contentType, contentId })
-          }
+          onLoadMoreComments={onLoadMoreComments}
+          onLoadMoreReplies={onLoadMoreReplies}
           onPreviewClick={onExpandComments}
           onLoadRepliesOfReply={onLoadRepliesOfReply}
           onReplySubmit={onReplySubmit}

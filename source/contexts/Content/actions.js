@@ -98,13 +98,20 @@ export default function ContentActions(dispatch) {
         contentId: Number(contentId)
       });
     },
-    onLoadComments({ comments, loadMoreButton, contentId, contentType }) {
+    onLoadComments({
+      comments,
+      contentId,
+      contentType,
+      isPreview,
+      loadMoreButton
+    }) {
       return dispatch({
         type: 'LOAD_COMMENTS',
         comments,
-        loadMoreButton,
         contentId,
-        contentType
+        contentType,
+        isPreview,
+        loadMoreButton
       });
     },
     onLoadMoreComments({ comments, loadMoreButton, contentId, contentType }) {

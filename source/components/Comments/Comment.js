@@ -138,7 +138,7 @@ function Comment({
       if (!userId) {
         onChangeSpoilerStatus({
           shown: false,
-          subjectId: targetObj.subject.id,
+          subjectId: targetObj?.subject?.id,
           checked: false
         });
       }
@@ -146,11 +146,13 @@ function Comment({
 
     async function checkSecretShown() {
       if (hasSecretAnswer && !secretShown && targetObj?.subject) {
-        const { responded } = await checkIfUserResponded(targetObj.subject.id);
+        const { responded } = await checkIfUserResponded(
+          targetObj?.subject?.id
+        );
         if (mounted.current) {
           onChangeSpoilerStatus({
             shown: responded,
-            subjectId: targetObj.subject.id,
+            subjectId: targetObj?.subject?.id,
             checked: true
           });
         }
@@ -173,7 +175,7 @@ function Comment({
           <aside>
             <ProfilePic
               style={{ height: '5rem', width: '5rem' }}
-              userId={uploader.id}
+              userId={uploader?.id}
               profilePicId={uploader.profilePicId}
             />
           </aside>
@@ -227,7 +229,7 @@ function Comment({
                   {isHidden ? (
                     <HiddenComment
                       onClick={() =>
-                        history.push(`/subjects/${targetObj.subject.id}`)
+                        history.push(`/subjects/${targetObj?.subject?.id}`)
                       }
                     />
                   ) : (

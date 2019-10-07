@@ -603,7 +603,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          commentsLoaded: true,
+          commentsLoaded: !action.isPreview,
           childComments: action.comments,
           commentsLoadMoreButton: action.loadMoreButton
         }
@@ -615,8 +615,8 @@ export default function ContentPageReducer(state, action) {
           ...prevContentState,
           childComments:
             state.contentType === 'comment'
-              ? (action.comments || []).concat(state.childComments)
-              : (state.childComments || []).concat(action.comments),
+              ? (action.comments || []).concat(prevContentState.childComments)
+              : (prevContentState.childComments || []).concat(action.comments),
           commentsLoadMoreButton: action.loadMoreButton
         }
       };

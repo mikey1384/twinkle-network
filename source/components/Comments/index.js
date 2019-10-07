@@ -231,7 +231,7 @@ export default function Comments({
     });
   }
 
-  async function loadMoreComments() {
+  async function handleLoadMoreComments() {
     if (!isLoading) {
       setIsLoading(true);
       const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1;
@@ -245,13 +245,11 @@ export default function Comments({
           lastCommentId,
           limit: commentsLoadLimit
         });
-        if (data) {
-          onLoadMoreComments({
-            ...data,
-            contentId: parent.id,
-            contentType: parent.contentType
-          });
-        }
+        onLoadMoreComments({
+          ...data,
+          contentId: parent.id,
+          contentType: parent.contentType
+        });
         setIsLoading(false);
       } catch (error) {
         console.error(error.response || error);
@@ -285,12 +283,12 @@ export default function Comments({
   }
 
   function renderLoadMoreButton() {
-    return commentsShown ? (
+    return autoExpand || commentsShown ? (
       <Button
         filled
         color="lightBlue"
         disabled={isLoading}
-        onClick={loadMoreComments}
+        onClick={handleLoadMoreComments}
         style={{
           width: '100%',
           display: 'flex',

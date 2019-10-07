@@ -10,6 +10,7 @@ import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
 import HiddenComment from 'components/HiddenComment';
 import SecretAnswer from 'components/SecretAnswer';
+import Link from 'components/Link';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -144,18 +145,20 @@ function MainContent({
                     wordBreak: 'break-word'
                   }}
                 >
-                  <p
+                  <Link
                     style={{
                       fontWeight: 'bold',
                       fontSize: '2.2rem',
-                      marginBottom: '1rem',
-                      color: Color.green()
+                      color: Color.green(),
+                      textDecoration: 'none'
                     }}
+                    to={`/subjects/${contentId}`}
                   >
                     Subject:
-                  </p>
+                  </Link>
                   <p
                     style={{
+                      marginTop: '1rem',
                       marginBottom: '1rem',
                       fontWeight: 'bold',
                       fontSize: '2.2rem'

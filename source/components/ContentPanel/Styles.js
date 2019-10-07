@@ -34,6 +34,7 @@ export const container = css`
         align-items: center;
         .left {
           display: flex;
+          align-items: center;
           @media (max-width: ${mobileMaxWidth}) {
             button,
             span {
