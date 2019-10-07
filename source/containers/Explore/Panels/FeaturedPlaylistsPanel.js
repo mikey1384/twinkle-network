@@ -4,34 +4,34 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 export default function FeaturedPlaylistsPanel() {
   const {
-    explore: {
-      state: {
-        videos: {
-          featuredPlaylists,
-          loadMorePlaylistsToPinButton,
-          featuredPlaylistsLoaded,
-          playlistsToPin,
-          reorderFeaturedPlaylistsShown,
-          selectPlaylistsToFeatureModalShown
-        }
-      },
-      actions: {
-        onCloseReorderFeaturedPlaylists,
-        onCloseSelectPlaylistsToPinModal,
-        onLoadFeaturedPlaylists,
-        onOpenReorderFeaturedPlaylists,
-        onOpenSelectPlaylistsToPinModal
-      }
-    },
     user: {
       state: { canPinPlaylists, userId }
     },
     requestHelpers: { loadFeaturedPlaylists, loadPlaylistList }
   } = useAppContext();
+  const {
+    state: {
+      videos: {
+        featuredPlaylists,
+        loadMorePlaylistsToPinButton,
+        featuredPlaylistsLoaded,
+        playlistsToPin,
+        reorderFeaturedPlaylistsShown,
+        selectPlaylistsToFeatureModalShown
+      }
+    },
+    actions: {
+      onCloseReorderFeaturedPlaylists,
+      onCloseSelectPlaylistsToPinModal,
+      onLoadFeaturedPlaylists,
+      onOpenReorderFeaturedPlaylists,
+      onOpenSelectPlaylistsToPinModal
+    }
+  } = useExploreContext();
   useEffect(() => {
     init();
     async function init() {

@@ -9,7 +9,7 @@ import * as d3Ease from 'd3-ease';
 import { Animate } from 'react-move';
 import { Color } from 'constants/css';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { useAppContext } from 'contexts';
+import { useExploreContext } from 'contexts';
 
 Carousel.propTypes = {
   afterSlide: PropTypes.func,
@@ -55,13 +55,11 @@ export default function Carousel({
   userIsUploader
 }) {
   const {
-    explore: {
-      state: {
-        videos: { clickSafe }
-      },
-      actions: { onClickSafeOff, onClickSafeOn }
-    }
-  } = useAppContext();
+    state: {
+      videos: { clickSafe }
+    },
+    actions: { onClickSafeOff, onClickSafeOn }
+  } = useExploreContext();
   const DEFAULT_DURATION = 300;
   const DEFAULT_EASING = 'easeCircleOut';
   const DEFAULT_EDGE_EASING = 'easeElasticOut';

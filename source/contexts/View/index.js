@@ -1,10 +1,17 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import ViewActions from './View/actions';
-import ViewReducer from './View/reducer';
-import { initialViewState } from './initialStates';
+import ViewActions from './actions';
+import ViewReducer from './reducer';
 
 export const ViewContext = createContext();
+const initialViewState = {
+  pageVisible: true,
+  exploreCategory: 'subjects',
+  explorePath: '',
+  exploreSubNav: '',
+  profileNav: '',
+  homeNav: '/'
+};
 
 ViewContextProvider.propTypes = {
   children: PropTypes.node

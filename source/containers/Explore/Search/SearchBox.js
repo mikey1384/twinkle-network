@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import SearchInput from 'components/Texts/SearchInput';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 SearchBox.propTypes = {
   category: PropTypes.string,
@@ -13,16 +13,16 @@ SearchBox.propTypes = {
 
 function SearchBox({ category, className, innerRef, style }) {
   const {
-    explore: {
-      state: {
-        search: { searchText }
-      },
-      actions: { onChangeSearchInput }
-    },
     user: {
       state: { profileTheme }
     }
   } = useAppContext();
+  const {
+    state: {
+      search: { searchText }
+    },
+    actions: { onChangeSearchInput }
+  } = useExploreContext();
   return (
     <SearchInput
       className={className}

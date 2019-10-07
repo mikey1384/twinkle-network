@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 PlaylistsPanel.propTypes = {
   buttonGroup: PropTypes.func,
@@ -34,11 +34,11 @@ function PlaylistsPanel({
   userId
 }) {
   const {
-    explore: {
-      actions: { onLoadMorePlaylists }
-    },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
+  const {
+    actions: { onLoadMorePlaylists }
+  } = useExploreContext();
   return (
     <SectionPanel
       innerRef={innerRef}

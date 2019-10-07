@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
@@ -21,7 +21,7 @@ ContentListItem.propTypes = {
   style: PropTypes.object
 };
 
-export default function ContentListItem({
+function ContentListItem({
   onClick = () => {},
   contentObj,
   contentObj: { id: contentId, contentType },
@@ -307,3 +307,5 @@ export default function ContentListItem({
     </div>
   );
 }
+
+export default memo(ContentListItem);

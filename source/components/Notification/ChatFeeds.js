@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { useInterval } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
@@ -133,4 +133,4 @@ function ChatFeeds({
   }
 }
 
-export default withRouter(ChatFeeds);
+export default withRouter(memo(ChatFeeds));

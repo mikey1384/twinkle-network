@@ -10,9 +10,9 @@ import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
 import request from 'axios';
 import URL from 'constants/URL';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 LinkItem.propTypes = {
   history: PropTypes.object.isRequired,
@@ -48,14 +48,14 @@ function LinkItem({
   }
 }) {
   const {
-    explore: {
-      actions: { onDeleteLink, onEditLinkTitle }
-    },
     user: {
       state: { authLevel, canDelete, canEdit, userId }
     },
     requestHelpers: { deleteContent, editContent }
   } = useAppContext();
+  const {
+    actions: { onDeleteLink, onEditLinkTitle }
+  } = useExploreContext();
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     thumbUrl ? thumbUrl.replace('http://', 'https://') : '/img/link.png'

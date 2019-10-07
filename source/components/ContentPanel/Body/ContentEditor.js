@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
@@ -27,7 +27,7 @@ ContentEditor.propTypes = {
   title: PropTypes.string
 };
 
-export default function ContentEditor({
+function ContentEditor({
   comment,
   content,
   contentId,
@@ -302,3 +302,5 @@ export default function ContentEditor({
     onDismiss();
   }
 }
+
+export default memo(ContentEditor);

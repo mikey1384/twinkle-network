@@ -6,9 +6,14 @@ import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext, useViewContext } from 'contexts';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import {
+  useAppContext,
+  useHomeContext,
+  useViewContext,
+  useExploreContext
+} from '../../contexts';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
@@ -23,12 +28,6 @@ export default function ContentPage({
   }
 }) {
   const {
-    explore: {
-      actions: { onDeleteSubject }
-    },
-    home: {
-      actions: { onDeleteFeed: onDeleteHomeFeed }
-    },
     profile: {
       actions: { onDeleteFeed: onDeleteProfileFeed }
     },
@@ -37,8 +36,14 @@ export default function ContentPage({
     }
   } = useAppContext();
   const {
+    actions: { onDeleteSubject }
+  } = useExploreContext();
+  const {
     actions: { onSetExploreSubNav }
   } = useViewContext();
+  const {
+    actions: { onDeleteFeed: onDeleteHomeFeed }
+  } = useHomeContext();
   const contentType = url.split('/')[1].slice(0, -1);
   const [{ loaded, exists }, setContentStatus] = useState({
     loaded: false,

@@ -1,4 +1,4 @@
-import React, { useRef, useContext, useState } from 'react';
+import React, { memo, useRef, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import UsernameText from 'components/Texts/UsernameText';
@@ -371,4 +371,4 @@ function TargetContent({
   }
 }
 
-export default withRouter(TargetContent);
+export default withRouter(memo(TargetContent));

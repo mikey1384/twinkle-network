@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import Loading from 'components/Loading';
 import request from 'axios';
 import UsernameText from 'components/Texts/UsernameText';
@@ -14,7 +14,7 @@ import URL from 'constants/URL';
 
 const API_URL = `${URL}/user`;
 
-export default function Rankings() {
+function Rankings() {
   const {
     notification: {
       state: { allRanks, rankModifier, top30s, rankingsLoaded },
@@ -194,3 +194,5 @@ export default function Rankings() {
     </ErrorBoundary>
   );
 }
+
+export default memo(Rankings);

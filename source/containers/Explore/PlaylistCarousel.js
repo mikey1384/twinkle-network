@@ -13,7 +13,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../contexts';
 
 PlaylistCarousel.propTypes = {
   userIsUploader: PropTypes.bool,
@@ -39,17 +39,17 @@ export default function PlaylistCarousel({
   userIsUploader
 }) {
   const {
-    explore: {
-      state: {
-        videos: { clickSafe }
-      },
-      actions: { onDeletePlaylist, onEditPlaylistTitle }
-    },
     user: {
       state: { canEdit, canEditPlaylists, profileTheme }
     },
     requestHelpers: { deletePlaylist, editPlaylistTitle }
   } = useAppContext();
+  const {
+    state: {
+      videos: { clickSafe }
+    },
+    actions: { onDeletePlaylist, onEditPlaylistTitle }
+  } = useExploreContext();
   const [onEdit, setOnEdit] = useState(false);
   const [changePLVideosModalShown, setChangePLVideosModalShown] = useState(
     false

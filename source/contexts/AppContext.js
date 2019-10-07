@@ -2,10 +2,6 @@ import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import ChatActions from './Chat/actions';
 import ChatReducer from './Chat/reducer';
-import ExploreActions from './Explore/actions';
-import ExploreReducer from './Explore/reducer';
-import HomeActions from './Home/actions';
-import HomeReducer from './Home/reducer';
 import NotiActions from './Notification/actions';
 import NotiReducer from './Notification/reducer';
 import ProfileActions from './Profile/actions';
@@ -13,12 +9,12 @@ import ProfileReducer from './Profile/reducer';
 import UserActions from './User/actions';
 import UserReducer from './User/reducer';
 import requestHelpers from './requestHelpers';
-import { InputContextProvider } from './InputContext';
-import { ContentContextProvider } from './ContentContext';
-import { ViewContextProvider } from './ViewContext';
+import { ExploreContextProvider } from './Explore';
+import { HomeContextProvider } from './Home';
+import { InputContextProvider } from './Input';
+import { ContentContextProvider } from './Content';
+import { ViewContextProvider } from './View';
 import {
-  initialExploreState,
-  initialHomeState,
   initialNotiState,
   initialProfileState,
   initialUserState,
@@ -33,11 +29,6 @@ AppContextProvider.propTypes = {
 
 export function AppContextProvider({ children }) {
   const [chatState, chatDispatch] = useReducer(ChatReducer, initialChatState);
-  const [exploreState, exploreDispatch] = useReducer(
-    ExploreReducer,
-    initialExploreState
-  );
-  const [homeState, homeDispatch] = useReducer(HomeReducer, initialHomeState);
   const [notiState, notiDispatch] = useReducer(NotiReducer, initialNotiState);
   const [profileState, profileDispatch] = useReducer(
     ProfileReducer,
@@ -50,14 +41,6 @@ export function AppContextProvider({ children }) {
         chat: {
           state: chatState,
           actions: ChatActions(chatDispatch)
-        },
-        explore: {
-          state: exploreState,
-          actions: ExploreActions(exploreDispatch)
-        },
-        home: {
-          state: homeState,
-          actions: HomeActions(homeDispatch)
         },
         notification: {
           state: notiState,
@@ -74,11 +57,15 @@ export function AppContextProvider({ children }) {
         requestHelpers: requestHelpers(handleError)
       }}
     >
-      <ViewContextProvider>
-        <InputContextProvider>
-          <ContentContextProvider>{children}</ContentContextProvider>
-        </InputContextProvider>
-      </ViewContextProvider>
+      <HomeContextProvider>
+        <ExploreContextProvider>
+          <ViewContextProvider>
+            <InputContextProvider>
+              <ContentContextProvider>{children}</ContentContextProvider>
+            </InputContextProvider>
+          </ViewContextProvider>
+        </ExploreContextProvider>
+      </HomeContextProvider>
     </AppContext.Provider>
   );
 

@@ -8,7 +8,7 @@ import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 Search.propTypes = {
   history: PropTypes.object,
@@ -18,18 +18,18 @@ Search.propTypes = {
 
 export default function Search({ history, pathname, style }) {
   const {
-    explore: {
-      state: {
-        search: { searchText }
-      },
-      actions: { onLoadSearchResults }
-    },
     user: {
       state: { defaultSearchFilter },
       actions: { onChangeDefaultSearchFilter }
     },
     requestHelpers: { setDefaultSearchFilter }
   } = useAppContext();
+  const {
+    state: {
+      search: { searchText }
+    },
+    actions: { onLoadSearchResults }
+  } = useExploreContext();
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
   const SearchBoxRef = useRef(null);

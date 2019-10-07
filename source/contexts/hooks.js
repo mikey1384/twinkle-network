@@ -1,9 +1,17 @@
 import { useContext } from 'react';
 import { AppContext } from './AppContext';
-import { InputContext } from './InputContext';
-import { ViewContext } from './ViewContext';
-import { ContentContext } from './ContentContext';
+import { ExploreContext } from './Explore';
+import { ContentContext } from './Content';
+import { HomeContext } from './Home';
+import { InputContext } from './Input';
+import { ViewContext } from './View';
 
+export function useExploreContext() {
+  return useContext(ExploreContext);
+}
+export function useHomeContext() {
+  return useContext(HomeContext);
+}
 export function useInputContext() {
   return useContext(InputContext);
 }

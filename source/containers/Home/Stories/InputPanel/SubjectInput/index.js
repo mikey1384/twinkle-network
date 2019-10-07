@@ -16,32 +16,30 @@ import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
-import { useAppContext, useInputContext } from 'contexts';
+import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 
 export default function SubjectInput() {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const {
-    home: {
-      actions: { onLoadNewFeeds }
-    },
     user: {
       state: { canEditRewardLevel }
     },
     requestHelpers: { uploadContent }
   } = useAppContext();
   const {
-    homeInput: {
-      state: { subject },
-      actions: {
-        onSetHasSecretAnswer,
-        onResetSubjectInput,
-        onSetSecretAnswer,
-        onSetSubjectAttachment,
-        onSetSubjectDescription,
-        onSetSubjectDescriptionFieldShown,
-        onSetSubjectRewardLevel,
-        onSetSubjectTitle
-      }
+    actions: { onLoadNewFeeds }
+  } = useHomeContext();
+  const {
+    state: { subject },
+    actions: {
+      onSetHasSecretAnswer,
+      onResetSubjectInput,
+      onSetSecretAnswer,
+      onSetSubjectAttachment,
+      onSetSubjectDescription,
+      onSetSubjectDescriptionFieldShown,
+      onSetSubjectRewardLevel,
+      onSetSubjectTitle
     }
   } = useInputContext();
   const {

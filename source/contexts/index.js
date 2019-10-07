@@ -1,5 +1,7 @@
 export {
   useAppContext,
+  useExploreContext,
+  useHomeContext,
   useInputContext,
   useContentContext,
   useViewContext

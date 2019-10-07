@@ -1,5 +1,13 @@
 export default function InputActions(dispatch) {
   return {
+    onEnterComment({ contentId, text, contentType }) {
+      return dispatch({
+        type: 'ENTER_COMMENT',
+        contentId,
+        contentType,
+        text
+      });
+    },
     onResetContentInput() {
       return dispatch({
         type: 'RESET_CONTENT_INPUT'

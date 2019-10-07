@@ -38,10 +38,8 @@ export default function InputForm({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const {
-    commentInput: {
-      state,
-      actions: { onEnterComment }
-    }
+    state,
+    actions: { onEnterComment }
   } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.id;

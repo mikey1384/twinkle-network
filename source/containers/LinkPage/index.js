@@ -18,7 +18,13 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
 import { processedURL } from 'helpers/stringHelpers';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useHomeContext,
+  useViewContext,
+  useExploreContext
+} from '../../contexts';
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -34,17 +40,6 @@ export default function LinkPage({
   }
 }) {
   const {
-    explore: {
-      actions: {
-        onDeleteLink,
-        onEditLinkPage,
-        onLikeLink,
-        onUpdateNumLinkComments
-      }
-    },
-    home: {
-      actions: { onDeleteFeed: onDeleteHomeFeed }
-    },
     profile: {
       actions: { onDeleteFeed: onDeleteProfileFeed }
     },
@@ -59,6 +54,17 @@ export default function LinkPage({
       loadSubjects
     }
   } = useAppContext();
+  const {
+    actions: {
+      onDeleteLink,
+      onEditLinkPage,
+      onLikeLink,
+      onUpdateNumLinkComments
+    }
+  } = useExploreContext();
+  const {
+    actions: { onDeleteFeed: onDeleteHomeFeed }
+  } = useHomeContext();
   const {
     state,
     actions: {

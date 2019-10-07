@@ -22,7 +22,13 @@ import PageTab from './PageTab';
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useHomeContext,
+  useViewContext,
+  useExploreContext
+} from '../../contexts';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -52,17 +58,6 @@ export default function VideoPage({
   const CommentInputAreaRef = useRef(null);
 
   const {
-    explore: {
-      actions: {
-        onChangeVideoByUserStatus,
-        onDeleteVideo,
-        onEditVideoThumbs,
-        onLikeVideo
-      }
-    },
-    home: {
-      actions: { onDeleteFeed: onDeleteHomeFeed }
-    },
     profile: {
       actions: { onDeleteFeed: onDeleteProfileFeed }
     },
@@ -78,6 +73,17 @@ export default function VideoPage({
       uploadQuestions
     }
   } = useAppContext();
+  const {
+    actions: {
+      onChangeVideoByUserStatus,
+      onDeleteVideo,
+      onEditVideoThumbs,
+      onLikeVideo
+    }
+  } = useExploreContext();
+  const {
+    actions: { onDeleteFeed: onDeleteHomeFeed }
+  } = useHomeContext();
   const {
     state,
     actions: {

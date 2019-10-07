@@ -9,7 +9,12 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useExploreContext,
+  useViewContext
+} from 'contexts';
 
 const intervalLength = 2000;
 const xp = rewardValue.star;
@@ -40,12 +45,6 @@ function VideoPlayer({
   videoId
 }) {
   const {
-    explore: {
-      state: {
-        videos: { currentVideoSlot }
-      },
-      actions: { onEmptyCurrentVideoSlot, onFillCurrentVideoSlot }
-    },
     user: {
       actions: { onChangeUserXP },
       state: { profileTheme, twinkleXP, userId }
@@ -60,6 +59,12 @@ function VideoPlayer({
       updateVideoXPEarned
     }
   } = useAppContext();
+  const {
+    state: {
+      videos: { currentVideoSlot }
+    },
+    actions: { onEmptyCurrentVideoSlot, onFillCurrentVideoSlot }
+  } = useExploreContext();
   const {
     state: { pageVisible }
   } = useViewContext();

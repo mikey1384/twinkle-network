@@ -16,73 +16,6 @@ export const initialChatState = {
   subjectSearchResults: [],
   filesBeingUploaded: {}
 };
-export const initialCommentState = {};
-export const initialContentState = {};
-export const initialExploreState = {
-  links: {
-    loaded: false,
-    links: [],
-    loadMoreLinksButtonShown: false
-  },
-  subjects: {
-    featured: [],
-    loaded: false
-  },
-  search: {
-    results: [],
-    loadMoreButton: false,
-    searchText: ''
-  },
-  videos: {
-    addPlaylistModalShown: false,
-    allPlaylists: [],
-    allPlaylistsLoaded: false,
-    currentVideoSlot: null,
-    featuredPlaylists: [],
-    featuredPlaylistsLoaded: false,
-    searchedPlaylists: [],
-    loadMorePlaylistsButton: false,
-    selectPlaylistsToFeatureModalShown: false,
-    loadMorePlaylistsToPinButton: false,
-    loadMoreSearchedPlaylistsButton: false,
-    playlistsToPin: [],
-    reorderFeaturedPlaylistsShown: false,
-    clickSafe: true
-  }
-};
-export const initialHomeInputState = {
-  subject: {
-    attachment: undefined,
-    descriptionFieldShown: false,
-    details: {
-      title: '',
-      description: '',
-      secretAnswer: '',
-      rewardLevel: 0
-    },
-    hasSecretAnswer: false
-  },
-  content: {
-    alreadyPosted: false,
-    descriptionFieldShown: false,
-    form: {
-      url: '',
-      isVideo: false,
-      title: '',
-      description: '',
-      rewardLevel: 0
-    },
-    titleFieldShown: false,
-    urlHelper: '',
-    urlError: ''
-  }
-};
-export const initialHomeState = {
-  category: 'uploads',
-  feeds: [],
-  loadMoreButton: false,
-  subFilter: 'all'
-};
 export const initialNotiState = {
   versionMatch: true,
   notifications: [],
@@ -150,12 +83,4 @@ export const initialUserState = {
   profilesLoaded: false,
   searchedProfiles: [],
   signinModalShown: false
-};
-export const initialViewState = {
-  pageVisible: true,
-  exploreCategory: 'subjects',
-  explorePath: '',
-  exploreSubNav: '',
-  profileNav: '',
-  homeNav: '/'
 };

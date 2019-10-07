@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -19,7 +19,7 @@ RewardStatus.propTypes = {
   style: PropTypes.object
 };
 
-export default function RewardStatus({
+function RewardStatus({
   className,
   rewardLevel,
   noMarginForEditButton,
@@ -105,3 +105,5 @@ export default function RewardStatus({
     </ErrorBoundary>
   );
 }
+
+export default memo(RewardStatus);

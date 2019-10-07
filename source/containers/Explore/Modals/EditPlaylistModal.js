@@ -15,7 +15,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 EditPlaylistModal.propTypes = {
   modalType: PropTypes.string.isRequired,
@@ -33,9 +33,6 @@ export default function EditPlaylistModal({
   playlistId
 }) {
   const {
-    explore: {
-      actions: { onChangePlaylistVideos }
-    },
     requestHelpers: {
       editPlaylistVideos,
       loadPlaylistVideos,
@@ -44,6 +41,9 @@ export default function EditPlaylistModal({
       searchContent
     }
   } = useAppContext();
+  const {
+    actions: { onChangePlaylistVideos }
+  } = useExploreContext();
   const [addedVideos, setAddedVideos] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modalVideos, setModalVideos] = useState([]);

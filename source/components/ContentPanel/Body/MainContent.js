@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
@@ -279,4 +279,4 @@ function MainContent({
   }
 }
 
-export default withRouter(MainContent);
+export default withRouter(memo(MainContent));

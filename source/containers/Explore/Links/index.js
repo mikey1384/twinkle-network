@@ -4,8 +4,12 @@ import AddLinkModal from './AddLinkModal';
 import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
-import { useAppContext, useViewContext } from 'contexts';
 import { useScrollPosition } from 'helpers/hooks';
+import {
+  useAppContext,
+  useViewContext,
+  useExploreContext
+} from '../../../contexts';
 
 Links.propTypes = {
   location: PropTypes.object
@@ -13,14 +17,14 @@ Links.propTypes = {
 
 export default function Links({ location }) {
   const {
-    explore: {
-      state: {
-        links: { loaded, links, loadMoreLinksButtonShown }
-      },
-      actions: { onFetchLinks, onFetchMoreLinks }
-    },
     requestHelpers: { loadUploads }
   } = useAppContext();
+  const {
+    state: {
+      links: { loaded, links, loadMoreLinksButtonShown }
+    },
+    actions: { onFetchLinks, onFetchMoreLinks }
+  } = useExploreContext();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

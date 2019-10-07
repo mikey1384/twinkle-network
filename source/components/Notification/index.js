@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
@@ -17,7 +17,7 @@ Notification.propTypes = {
   style: PropTypes.object
 };
 
-export default function Notification({ children, className, location, style }) {
+function Notification({ children, className, location, style }) {
   const {
     notification: {
       state: {
@@ -156,3 +156,5 @@ export default function Notification({ children, className, location, style }) {
     onFetchNotifications(data);
   }
 }
+
+export default memo(Notification);

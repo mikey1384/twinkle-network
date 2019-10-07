@@ -7,7 +7,11 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
-import { useAppContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useViewContext,
+  useExploreContext
+} from '../../contexts';
 
 Videos.propTypes = {
   history: PropTypes.object.isRequired,
@@ -16,30 +20,30 @@ Videos.propTypes = {
 
 export default function Videos({ history, location }) {
   const {
-    explore: {
-      state: {
-        videos: {
-          addPlaylistModalShown,
-          loadMorePlaylistsButton,
-          loadMoreSearchedPlaylistsButton,
-          allPlaylistsLoaded,
-          allPlaylists,
-          searchedPlaylists
-        }
-      },
-      actions: {
-        onCloseAddPlaylistModal,
-        onLoadPlaylists,
-        onOpenAddPlaylistModal,
-        onSetSearchedPlaylists,
-        onUploadPlaylist
-      }
-    },
     user: {
       state: { userId }
     },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
+  const {
+    state: {
+      videos: {
+        addPlaylistModalShown,
+        loadMorePlaylistsButton,
+        loadMoreSearchedPlaylistsButton,
+        allPlaylistsLoaded,
+        allPlaylists,
+        searchedPlaylists
+      }
+    },
+    actions: {
+      onCloseAddPlaylistModal,
+      onLoadPlaylists,
+      onOpenAddPlaylistModal,
+      onSetSearchedPlaylists,
+      onUploadPlaylist
+    }
+  } = useExploreContext();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

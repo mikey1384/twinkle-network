@@ -10,7 +10,7 @@ import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isEqual } from 'lodash';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 SelectPlaylistsToPinModal.propTypes = {
   loadMoreButton: PropTypes.bool.isRequired,
@@ -26,14 +26,14 @@ export default function SelectPlaylistsToPinModal({
   selectedPlaylists: initialSelectedPlaylists
 }) {
   const {
-    explore: {
-      state: {
-        videos: { featuredPlaylists }
-      },
-      actions: { onChangeFeaturedPlaylists }
-    },
     requestHelpers: { searchContent, uploadFeaturedPlaylists }
   } = useAppContext();
+  const {
+    state: {
+      videos: { featuredPlaylists }
+    },
+    actions: { onChangeFeaturedPlaylists }
+  } = useExploreContext();
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
   const [searchedPlaylists, setSearchedPlaylists] = useState([]);

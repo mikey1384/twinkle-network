@@ -6,7 +6,11 @@ import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { useScrollPosition } from 'helpers/hooks';
-import { useAppContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useViewContext,
+  useExploreContext
+} from '../../contexts';
 
 Subjects.propTypes = {
   location: PropTypes.object.isRequired
@@ -14,17 +18,17 @@ Subjects.propTypes = {
 
 export default function Subjects({ location }) {
   const {
-    explore: {
-      state: {
-        subjects: { loaded, featured }
-      },
-      actions: { onLoadFeaturedSubjects }
-    },
     user: {
       state: { userId, canPinPlaylists }
     },
     requestHelpers: { loadFeaturedSubjects }
   } = useAppContext();
+  const {
+    state: {
+      subjects: { loaded, featured }
+    },
+    actions: { onLoadFeaturedSubjects }
+  } = useExploreContext();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

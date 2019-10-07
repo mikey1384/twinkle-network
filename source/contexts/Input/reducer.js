@@ -1,7 +1,12 @@
-import { initialHomeInputState } from '../initialStates';
+import { initialInputState } from '.';
 
 export default function InputReducer(state, action) {
   switch (action.type) {
+    case 'ENTER_COMMENT':
+      return {
+        ...state,
+        [action.contentType + action.contentId]: action.text
+      };
     case 'SET_CONTENT_ALREADY_POSTED':
       return {
         ...state,
@@ -168,12 +173,12 @@ export default function InputReducer(state, action) {
     case 'RESET_CONTENT_INPUT':
       return {
         ...state,
-        content: initialHomeInputState.content
+        content: initialInputState.content
       };
     case 'RESET_SUBJECT_INPUT':
       return {
         ...state,
-        subject: initialHomeInputState.subject
+        subject: initialInputState.subject
       };
     default:
       return state;

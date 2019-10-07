@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useHomeContext, useViewContext } from 'contexts';
 
 const categoryObj = {
   uploads: {
@@ -37,17 +37,6 @@ Stories.propTypes = {
 
 export default function Stories({ location }) {
   const {
-    home: {
-      state: { category, feeds, loadMoreButton, loaded, subFilter },
-      actions: {
-        onChangeCategory,
-        onChangeSubFilter,
-        onDeleteFeed,
-        onLoadFeeds,
-        onLoadMoreFeeds,
-        onLoadNewFeeds
-      }
-    },
     notification: {
       state: { numNewPosts },
       actions: { onResetNumNewPosts }
@@ -57,6 +46,17 @@ export default function Stories({ location }) {
     },
     requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
+  const {
+    state: { category, feeds, loadMoreButton, loaded, subFilter },
+    actions: {
+      onChangeCategory,
+      onChangeSubFilter,
+      onDeleteFeed,
+      onLoadFeeds,
+      onLoadMoreFeeds,
+      onLoadNewFeeds
+    }
+  } = useHomeContext();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

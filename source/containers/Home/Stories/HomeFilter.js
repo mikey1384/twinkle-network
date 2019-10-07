@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useAppContext } from 'contexts';
 import { PropTypes } from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -31,7 +31,7 @@ HomeFilter.propTypes = {
   selectedFilter: PropTypes.string.isRequired
 };
 
-export default function HomeFilter({
+function HomeFilter({
   applyFilter,
   category,
   changeCategory,
@@ -181,3 +181,5 @@ export default function HomeFilter({
     }
   }
 }
+
+export default memo(HomeFilter);

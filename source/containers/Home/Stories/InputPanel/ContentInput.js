@@ -10,7 +10,7 @@ import {
 } from 'helpers/stringHelpers';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
-import { useAppContext, useInputContext } from 'contexts';
+import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -22,30 +22,28 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 export default function ContentInput() {
   const {
-    home: {
-      actions: { onLoadNewFeeds }
-    },
     user: {
       state: { canEditRewardLevel }
     },
     requestHelpers: { checkIfContentExists, uploadContent }
   } = useAppContext();
   const {
-    homeInput: {
-      state: { content },
-      actions: {
-        onResetContentInput,
-        onSetContentAlreadyPosted,
-        onSetContentIsVideo,
-        onSetContentDescription,
-        onSetContentDescriptionFieldShown,
-        onSetContentRewardLevel,
-        onSetContentTitle,
-        onSetContentTitleFieldShown,
-        onSetContentUrl,
-        onSetContentUrlError,
-        onSetContentUrlHelper
-      }
+    actions: { onLoadNewFeeds }
+  } = useHomeContext();
+  const {
+    state: { content },
+    actions: {
+      onResetContentInput,
+      onSetContentAlreadyPosted,
+      onSetContentIsVideo,
+      onSetContentDescription,
+      onSetContentDescriptionFieldShown,
+      onSetContentRewardLevel,
+      onSetContentTitle,
+      onSetContentTitleFieldShown,
+      onSetContentUrl,
+      onSetContentUrlError,
+      onSetContentUrlHelper
     }
   } = useInputContext();
   const {

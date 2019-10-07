@@ -6,7 +6,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Link from 'components/Link';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 Results.propTypes = {
   filter: PropTypes.string.isRequired,
@@ -15,14 +15,14 @@ Results.propTypes = {
 
 export default function Results({ filter, searchText }) {
   const {
-    explore: {
-      state: {
-        search: { results, loadMoreButton }
-      },
-      actions: { onLoadSearchResults, onLoadMoreSearchResults }
-    },
     requestHelpers: { searchContent }
   } = useAppContext();
+  const {
+    state: {
+      search: { results, loadMoreButton }
+    },
+    actions: { onLoadSearchResults, onLoadMoreSearchResults }
+  } = useExploreContext();
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);

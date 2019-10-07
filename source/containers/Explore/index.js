@@ -10,7 +10,7 @@ import Search from './Search';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { useAppContext } from 'contexts';
+import { useExploreContext } from '../../contexts';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
@@ -21,10 +21,8 @@ Explore.propTypes = {
 
 export default function Explore({ history, location }) {
   const {
-    explore: {
-      actions: { onClearLinksLoaded, onClearVideosLoaded, onReloadSubjects }
-    }
-  } = useAppContext();
+    actions: { onClearLinksLoaded, onClearVideosLoaded, onReloadSubjects }
+  } = useExploreContext();
   const mounted = useRef(true);
   const disconnected = useRef(false);
   useEffect(() => {

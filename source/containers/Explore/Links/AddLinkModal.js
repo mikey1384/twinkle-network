@@ -12,7 +12,7 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 AddLinkModal.propTypes = {
   onHide: PropTypes.func
@@ -20,11 +20,11 @@ AddLinkModal.propTypes = {
 
 export default function AddLinkModal({ onHide }) {
   const {
-    explore: {
-      actions: { onUploadLink }
-    },
     requestHelpers: { uploadContent }
   } = useAppContext();
+  const {
+    actions: { onUploadLink }
+  } = useExploreContext();
   const [urlError, setUrlError] = useState('');
   const [form, setForm] = useState({
     url: '',

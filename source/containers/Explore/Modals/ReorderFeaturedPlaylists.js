@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import SortableListGroup from 'components/SortableListGroup';
 import { objectify } from 'helpers';
 import { isEqual } from 'lodash';
-import { useAppContext } from 'contexts';
+import { useAppContext, useExploreContext } from '../../../contexts';
 
 ReorderFeaturedPlaylists.propTypes = {
   playlistIds: PropTypes.array.isRequired,
@@ -17,14 +17,14 @@ export default function ReorderFeaturedPlaylists({
   playlistIds: initialPlaylistIds
 }) {
   const {
-    explore: {
-      state: {
-        videos: { featuredPlaylists }
-      },
-      actions: { onChangeFeaturedPlaylists }
-    },
     requestHelpers: { uploadFeaturedPlaylists }
   } = useAppContext();
+  const {
+    state: {
+      videos: { featuredPlaylists }
+    },
+    actions: { onChangeFeaturedPlaylists }
+  } = useExploreContext();
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
   const [disabled, setDisabled] = useState(false);
   const listItemObj = objectify(featuredPlaylists);
