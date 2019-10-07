@@ -4,6 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import { useAppContext } from 'contexts';
+import { useChatContext } from '../../../contexts';
 
 InviteUsersModal.propTypes = {
   currentChannel: PropTypes.object.isRequired,
@@ -19,16 +20,16 @@ export default function InviteUsersModal({
   currentChannel
 }) {
   const {
-    chat: {
-      state: { userSearchResults },
-      actions: {
-        onClearUserSearchResults,
-        onInviteUsersToChannel,
-        onSearchUserToInvite
-      }
-    },
     requestHelpers: { inviteUsersToChannel, searchUserToInvite }
   } = useAppContext();
+  const {
+    state: { userSearchResults },
+    actions: {
+      onClearUserSearchResults,
+      onInviteUsersToChannel,
+      onSearchUserToInvite
+    }
+  } = useChatContext();
   const [selectedUsers, setSelectedUsers] = useState([]);
   const currentMembersUID = currentChannel.members.map(member => member.id);
 

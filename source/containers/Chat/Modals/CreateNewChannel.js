@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
 import { useAppContext } from 'contexts';
+import { useChatContext } from '../../../contexts';
 
 CreateNewChannelModal.propTypes = {
   onDone: PropTypes.func.isRequired,
@@ -14,12 +15,12 @@ CreateNewChannelModal.propTypes = {
 
 export default function CreateNewChannelModal({ userId, onHide, onDone }) {
   const {
-    chat: {
-      state: { userSearchResults },
-      actions: { onClearUserSearchResults, onSearchUserToInvite }
-    },
     requestHelpers: { searchUserToInvite }
   } = useAppContext();
+  const {
+    state: { userSearchResults },
+    actions: { onClearUserSearchResults, onSearchUserToInvite }
+  } = useChatContext();
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
 

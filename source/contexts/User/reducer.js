@@ -1,4 +1,4 @@
-import { initialUserState } from '../initialStates';
+import { initialUserState } from '../AppContext';
 
 const DEFAULT_PROFILE_THEME = 'logoBlue';
 

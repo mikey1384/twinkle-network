@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import UsernameText from 'components/Texts/UsernameText';
@@ -14,7 +14,7 @@ import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
-import { useAppContext } from 'contexts';
+import { useAppContext, useNotiContext } from '../../../contexts';
 
 MainFeeds.propTypes = {
   loadMore: PropTypes.object.isRequired,
@@ -25,7 +25,7 @@ MainFeeds.propTypes = {
   style: PropTypes.object
 };
 
-function MainFeeds({
+export default function MainFeeds({
   activeTab,
   loadMore,
   notifications,
@@ -34,15 +34,6 @@ function MainFeeds({
   style
 }) {
   const {
-    notification: {
-      state: { numNewNotis, totalRewardAmount },
-      actions: {
-        onClearRewards,
-        onFetchNotifications,
-        onLoadMoreNotifications,
-        onLoadMoreRewards
-      }
-    },
     user: {
       state: { userId, rank, twinkleXP },
       actions: { onChangeUserXP }
@@ -54,6 +45,15 @@ function MainFeeds({
       updateUserXP
     }
   } = useAppContext();
+  const {
+    state: { numNewNotis, totalRewardAmount },
+    actions: {
+      onClearRewards,
+      onFetchNotifications,
+      onLoadMoreNotifications,
+      onLoadMoreRewards
+    }
+  } = useNotiContext();
   const [loading, setLoading] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
@@ -221,5 +221,3 @@ function MainFeeds({
     setLoading(false);
   }
 }
-
-export default memo(MainFeeds);

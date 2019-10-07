@@ -8,8 +8,8 @@ import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
 import { withRouter } from 'react-router';
+import { useAppContext, useChatContext } from '../../contexts';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
@@ -37,11 +37,11 @@ function ChatFeeds({
   username
 }) {
   const {
-    chat: {
-      actions: { onEnterChannelWithId, onInitChat }
-    },
     requestHelpers: { loadChat, loadChatChannel }
   } = useAppContext();
+  const {
+    actions: { onEnterChannelWithId, onInitChat }
+  } = useChatContext();
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
@@ -10,7 +10,7 @@ MyRank.propTypes = {
   twinkleXP: PropTypes.number
 };
 
-function MyRank({ myId, rank, twinkleXP }) {
+export default function MyRank({ myId, rank, twinkleXP }) {
   const rankedColor =
     rank === 1
       ? Color.gold()
@@ -84,5 +84,3 @@ function MyRank({ myId, rank, twinkleXP }) {
     </div>
   );
 }
-
-export default memo(MyRank);

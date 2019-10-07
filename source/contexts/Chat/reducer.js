@@ -1,4 +1,4 @@
-import { initialChatState } from '../initialStates';
+import { initialChatState } from '.';
 
 export default function ChatReducer(state, action) {
   switch (action.type) {

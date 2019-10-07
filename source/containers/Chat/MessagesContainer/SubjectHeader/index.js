@@ -14,30 +14,10 @@ import { charLimit, defaultChatSubject } from 'constants/defaultValues';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useAppContext } from 'contexts';
+import { useChatContext } from '../../../../contexts';
 
 export default function SubjectHeader() {
   const {
-    chat: {
-      state: {
-        subject: {
-          content = defaultChatSubject,
-          id: subjectId,
-          uploader = {},
-          reloader = {},
-          timeStamp,
-          reloadTimeStamp
-        },
-        subjectSearchResults
-      },
-      actions: {
-        onChangeChatSubject,
-        onClearSubjectSearchResults,
-        onLoadChatSubject,
-        onReloadChatSubject,
-        onSearchChatSubject,
-        onUploadChatSubject
-      }
-    },
     user: {
       state: { profilePicId, userId, username }
     },
@@ -48,6 +28,27 @@ export default function SubjectHeader() {
       uploadChatSubject
     }
   } = useAppContext();
+  const {
+    state: {
+      subject: {
+        content = defaultChatSubject,
+        id: subjectId,
+        uploader = {},
+        reloader = {},
+        timeStamp,
+        reloadTimeStamp
+      },
+      subjectSearchResults
+    },
+    actions: {
+      onChangeChatSubject,
+      onClearSubjectSearchResults,
+      onLoadChatSubject,
+      onReloadChatSubject,
+      onSearchChatSubject,
+      onUploadChatSubject
+    }
+  } = useChatContext();
   const [loaded, setLoaded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);

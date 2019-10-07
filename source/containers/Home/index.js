@@ -1,4 +1,4 @@
-import React, { memo, Suspense, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ImageEditModal from 'components/Modals/ImageEditModal';
@@ -18,7 +18,7 @@ Home.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-function Home({ history, location }) {
+export default function Home({ history, location }) {
   const {
     user: {
       actions: { onUploadProfilePic }
@@ -100,5 +100,3 @@ function Home({ history, location }) {
     setImageEditModalShown(false);
   }
 }
-
-export default memo(Home);

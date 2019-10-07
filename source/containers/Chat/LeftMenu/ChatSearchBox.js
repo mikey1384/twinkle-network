@@ -2,25 +2,25 @@ import React from 'react';
 import { useSearch } from 'helpers/hooks';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../../../contexts';
 
 export default function ChatSearchBox() {
   const {
-    chat: {
-      state: { chatSearchResults },
-      actions: {
-        onClearChatSearchResults,
-        onEnterChannelWithId,
-        onOpenNewChatTab,
-        onSearchChat,
-        onUpdateSelectedChannelId
-      }
-    },
     user: {
       state: { userId, username }
     },
     requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
+  const {
+    state: { chatSearchResults },
+    actions: {
+      onClearChatSearchResults,
+      onEnterChannelWithId,
+      onOpenNewChatTab,
+      onSearchChat,
+      onUpdateSelectedChannelId
+    }
+  } = useChatContext();
   const { handleSearch, searching, searchText, setSearchText } = useSearch({
     onSearch: handleSearchChat,
     onClear: onClearChatSearchResults

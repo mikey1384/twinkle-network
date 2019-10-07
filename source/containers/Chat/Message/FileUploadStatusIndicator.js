@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../../../contexts';
 
 FileUploadStatusIndicator.propTypes = {
   channelId: PropTypes.number.isRequired,
@@ -29,14 +29,14 @@ export default function FileUploadStatusIndicator({
   subjectId
 }) {
   const {
-    chat: {
-      state: { filesBeingUploaded },
-      actions: { onDisplayAttachedFile }
-    },
     user: {
       state: { authLevel, userId, username }
     }
   } = useAppContext();
+  const {
+    state: { filesBeingUploaded },
+    actions: { onDisplayAttachedFile }
+  } = useChatContext();
   const { onFileUpload } = useContext(LocalContext);
   useEffect(() => {
     if (

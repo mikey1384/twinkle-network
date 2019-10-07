@@ -14,7 +14,7 @@ import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../contexts';
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
@@ -24,10 +24,6 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ history, expandable, profile }) {
   const {
-    chat: {
-      state: { loaded },
-      actions: { onInitChat, onOpenDirectMessageChannel }
-    },
     user: {
       actions: {
         onRemoveStatusMsg,
@@ -46,6 +42,10 @@ function ProfilePanel({ history, expandable, profile }) {
       uploadProfilePic
     }
   } = useAppContext();
+  const {
+    state: { loaded },
+    actions: { onInitChat, onOpenDirectMessageChannel }
+  } = useChatContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentsLoadMoreButton, setCommentsLoadMoreButton] = useState(false);

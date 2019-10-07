@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Loading from 'components/Loading';
 import request from 'axios';
 import UsernameText from 'components/Texts/UsernameText';
@@ -7,24 +7,24 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
+import URL from 'constants/URL';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { useAppContext } from 'contexts';
-import URL from 'constants/URL';
+import { useAppContext, useNotiContext } from '../../../contexts';
 
 const API_URL = `${URL}/user`;
 
-function Rankings() {
+export default function Rankings() {
   const {
-    notification: {
-      state: { allRanks, rankModifier, top30s, rankingsLoaded },
-      actions: { onGetRanks }
-    },
     user: {
       state: { rank, twinkleXP, userId }
     },
     requestHelpers: { auth }
   } = useAppContext();
+  const {
+    state: { allRanks, rankModifier, top30s, rankingsLoaded },
+    actions: { onGetRanks }
+  } = useNotiContext();
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
@@ -194,5 +194,3 @@ function Rankings() {
     </ErrorBoundary>
   );
 }
-
-export default memo(Rankings);

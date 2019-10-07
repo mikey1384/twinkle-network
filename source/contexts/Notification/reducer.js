@@ -1,4 +1,4 @@
-import { initialNotiState } from '../initialStates';
+import { initialNotiState } from '.';
 
 export default function NotiReducer(state, action) {
   switch (action.type) {

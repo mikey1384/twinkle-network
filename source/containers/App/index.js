@@ -13,7 +13,12 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
-import { useAppContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useViewContext,
+  useNotiContext,
+  useChatContext
+} from '../../contexts';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
@@ -33,23 +38,23 @@ App.propTypes = {
 
 function App({ location, history }) {
   const {
-    chat: {
-      actions: {
-        onPostFileUploadStatus,
-        onPostUploadComplete,
-        onSendFirstDirectMessage,
-        onUpdateClientToApiServerProgress
-      }
-    },
-    notification: {
-      state: { updateDetail }
-    },
     user: {
       state: { signinModalShown, username },
       actions: { onCloseSigninModal, onInitSession, onLogout }
     },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
+  const {
+    actions: {
+      onPostFileUploadStatus,
+      onPostUploadComplete,
+      onSendFirstDirectMessage,
+      onUpdateClientToApiServerProgress
+    }
+  } = useChatContext();
+  const {
+    state: { updateDetail }
+  } = useNotiContext();
   const {
     state: { pageVisible },
     actions: { onChangePageVisibility }

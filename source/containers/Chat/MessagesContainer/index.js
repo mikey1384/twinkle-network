@@ -16,7 +16,11 @@ import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import EditTitleModal from '../Modals/EditTitle';
-import { useAppContext } from 'contexts';
+import {
+  useAppContext,
+  useNotiContext,
+  useChatContext
+} from '../../../contexts';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -58,18 +62,6 @@ export default function MessagesContainer({
   subjectId
 }) {
   const {
-    chat: {
-      actions: {
-        onDeleteMessage,
-        onEditChannelTitle,
-        onEnterChannelWithId,
-        onHideChat,
-        onLeaveChannel
-      }
-    },
-    notification: {
-      state: { socketConnected }
-    },
     user: {
       state: { authLevel, profilePicId, userId, username }
     },
@@ -81,6 +73,18 @@ export default function MessagesContainer({
       loadChatChannel
     }
   } = useAppContext();
+  const {
+    actions: {
+      onDeleteMessage,
+      onEditChannelTitle,
+      onEnterChannelWithId,
+      onHideChat,
+      onLeaveChannel
+    }
+  } = useChatContext();
+  const {
+    state: { socketConnected }
+  } = useNotiContext();
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',

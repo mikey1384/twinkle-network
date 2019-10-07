@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import CommentInputArea from './CommentInputArea';
@@ -44,7 +44,7 @@ Comments.propTypes = {
   userId: PropTypes.number
 };
 
-function Comments({
+export default function Comments({
   autoFocus,
   autoExpand,
   comments = [],
@@ -301,5 +301,3 @@ function Comments({
     ) : null;
   }
 }
-
-export default memo(Comments);

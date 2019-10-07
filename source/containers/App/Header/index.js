@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -9,8 +9,13 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
-import { useAppContext, useViewContext } from 'contexts';
 import { withRouter } from 'react-router';
+import {
+  useAppContext,
+  useViewContext,
+  useNotiContext,
+  useChatContext
+} from '../../../contexts';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,
@@ -32,30 +37,6 @@ function Header({
   style = {}
 }) {
   const {
-    chat: {
-      state: { selectedChannelId, numUnreads },
-      actions: {
-        onClearChatLoadedState,
-        onClearRecentChessMessage,
-        onGetNumberOfUnreadMessages,
-        onIncreaseNumberOfUnreadMessages,
-        onIncreaseNumNewPosts,
-        onInitChat,
-        onNotifyChatSubjectChange,
-        onReceiveMessage,
-        onReceiveMessageOnDifferentChannel,
-        onUpdateApiServerToS3Progress
-      }
-    },
-    notification: {
-      state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
-      actions: {
-        onChangeRankingsLoadedStatus,
-        onChangeSocketStatus,
-        onCheckVersion,
-        onIncreaseNumNewNotis
-      }
-    },
     user: {
       state: { defaultSearchFilter, userId, username }
     },
@@ -66,6 +47,30 @@ function Header({
       updateChatLastRead
     }
   } = useAppContext();
+  const {
+    state: { selectedChannelId, numUnreads },
+    actions: {
+      onClearChatLoadedState,
+      onClearRecentChessMessage,
+      onGetNumberOfUnreadMessages,
+      onIncreaseNumberOfUnreadMessages,
+      onIncreaseNumNewPosts,
+      onInitChat,
+      onNotifyChatSubjectChange,
+      onReceiveMessage,
+      onReceiveMessageOnDifferentChannel,
+      onUpdateApiServerToS3Progress
+    }
+  } = useChatContext();
+  const {
+    state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
+    actions: {
+      onChangeRankingsLoadedStatus,
+      onChangeSocketStatus,
+      onCheckVersion,
+      onIncreaseNumNewNotis
+    }
+  } = useNotiContext();
   const {
     state: { pageVisible }
   } = useViewContext();
@@ -270,4 +275,4 @@ function Header({
   );
 }
 
-export default memo(withRouter(Header));
+export default withRouter(Header);

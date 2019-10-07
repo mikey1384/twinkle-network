@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
 import { useAppContext } from 'contexts';
+import { useChatContext } from '../../../contexts';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -28,12 +29,12 @@ export default function ChessModal({
   opponentName
 }) {
   const {
-    chat: {
-      state: { recentChessMessage },
-      actions: { onUpdateChessMoveViewTimeStamp }
-    },
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
+  const {
+    state: { recentChessMessage },
+    actions: { onUpdateChessMoveViewTimeStamp }
+  } = useChatContext();
   const [initialState, setInitialState] = useState();
   const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const [viewTimeStamp, setViewTimeStamp] = useState();

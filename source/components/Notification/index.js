@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
@@ -8,7 +8,7 @@ import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useAppContext, useNotiContext } from '../../contexts';
 
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -17,24 +17,24 @@ Notification.propTypes = {
   style: PropTypes.object
 };
 
-function Notification({ children, className, location, style }) {
+export default function Notification({ children, className, location, style }) {
   const {
-    notification: {
-      state: {
-        loadMore,
-        notifications,
-        numNewNotis,
-        rewards,
-        totalRewardAmount,
-        currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
-      },
-      actions: { onFetchNotifications }
-    },
     user: {
       state: { userId }
     },
     requestHelpers: { fetchNotifications }
   } = useAppContext();
+  const {
+    state: {
+      loadMore,
+      notifications,
+      numNewNotis,
+      rewards,
+      totalRewardAmount,
+      currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
+    },
+    actions: { onFetchNotifications }
+  } = useNotiContext();
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
   const userChangedTab = useRef(false);
@@ -156,5 +156,3 @@ function Notification({ children, className, location, style }) {
     onFetchNotifications(data);
   }
 }
-
-export default memo(Notification);

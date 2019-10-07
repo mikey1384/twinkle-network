@@ -10,7 +10,8 @@ const initialViewState = {
   explorePath: '',
   exploreSubNav: '',
   profileNav: '',
-  homeNav: '/'
+  homeNav: '/',
+  scrollPositions: {}
 };
 
 ViewContextProvider.propTypes = {

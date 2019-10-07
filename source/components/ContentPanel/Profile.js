@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
@@ -10,7 +10,7 @@ Profile.propTypes = {
   profile: PropTypes.object.isRequired
 };
 
-function Profile({ profile }) {
+export default function Profile({ profile }) {
   const {
     user: {
       state: { userId }
@@ -76,5 +76,3 @@ function Profile({ profile }) {
     </div>
   );
 }
-
-export default memo(Profile);

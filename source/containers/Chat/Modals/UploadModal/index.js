@@ -7,6 +7,7 @@ import File from './File';
 import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
 import { useAppContext } from 'contexts';
+import { useChatContext } from '../../../../contexts';
 
 UploadModal.propTypes = {
   channelId: PropTypes.number,
@@ -17,13 +18,13 @@ UploadModal.propTypes = {
 
 export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   const {
-    chat: {
-      actions: { onSubmitMessage }
-    },
     user: {
       state: { profilePicId, userId, username }
     }
   } = useAppContext();
+  const {
+    actions: { onSubmitMessage }
+  } = useChatContext();
   const [caption, setCaption] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {

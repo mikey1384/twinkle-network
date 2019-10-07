@@ -9,10 +9,11 @@ import VideoThumbImage from 'components/VideoThumbImage';
 import FilterBar from 'components/FilterBar';
 import Notification from 'components/Notification';
 import request from 'axios';
+import URL from 'constants/URL';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
-import URL from 'constants/URL';
+import {} from 'contexts';
+import { useAppContext, useNotiContext } from '../../contexts';
 
 NavMenu.propTypes = {
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -21,15 +22,15 @@ NavMenu.propTypes = {
 
 export default function NavMenu({ playlistId, videoId }) {
   const {
-    notification: {
-      state: { numNewNotis, totalRewardAmount },
-      actions: { onClearNotifications, onFetchNotifications }
-    },
     user: {
       state: { profileTheme, userId }
     },
     requestHelpers: { fetchNotifications }
   } = useAppContext();
+  const {
+    state: { numNewNotis, totalRewardAmount },
+    actions: { onClearNotifications, onFetchNotifications }
+  } = useNotiContext();
   const [nextVideos, setNextVideos] = useState([]);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [otherVideos, setOtherVideos] = useState([]);

@@ -9,6 +9,7 @@ export const initialContentState = {};
 ContentContextProvider.propTypes = {
   children: PropTypes.node
 };
+
 export function ContentContextProvider({ children }) {
   const [contentState, contentDispatch] = useReducer(
     ContentReducer,

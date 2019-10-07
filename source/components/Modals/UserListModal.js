@@ -6,7 +6,7 @@ import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../../contexts';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
@@ -29,15 +29,15 @@ function UserListModal({
   users
 }) {
   const {
-    chat: {
-      state: { loaded },
-      actions: { onInitChat, onOpenDirectMessageChannel }
-    },
     user: {
       state: { userId, username }
     },
     requestHelpers: { loadChat, loadDMChannel }
   } = useAppContext();
+  const {
+    state: { loaded },
+    actions: { onInitChat, onOpenDirectMessageChannel }
+  } = useChatContext();
   const otherUsers = users.filter(user => user.id !== userId);
   let userArray = [];
   for (let i = 0; i < users.length; i++) {

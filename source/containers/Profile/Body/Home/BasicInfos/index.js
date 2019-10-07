@@ -9,7 +9,7 @@ import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../../../../../contexts';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
@@ -49,10 +49,6 @@ function BasicInfos({
   style
 }) {
   const {
-    chat: {
-      state: { loaded },
-      actions: { onInitChat, onOpenDirectMessageChannel }
-    },
     user: {
       actions: { onUpdateProfileInfo }
     },
@@ -63,6 +59,10 @@ function BasicInfos({
       sendVerificationEmail
     }
   } = useAppContext();
+  const {
+    state: { loaded },
+    actions: { onInitChat, onOpenDirectMessageChannel }
+  } = useChatContext();
   const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [verificationEmailSent, setVerificationEmailSent] = useState(false);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from '../../contexts';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
@@ -15,15 +15,15 @@ UsernameText.propTypes = {
 
 function UsernameText({ className, color, history, style = {}, user = {} }) {
   const {
-    chat: {
-      state: { loaded },
-      actions: { onInitChat, onOpenDirectMessageChannel }
-    },
     user: {
       state: { userId, username }
     },
     requestHelpers: { loadChat, loadDMChannel }
   } = useAppContext();
+  const {
+    state: { loaded },
+    actions: { onInitChat, onOpenDirectMessageChannel }
+  } = useChatContext();
   const [menuShown, setMenuShown] = useState(false);
   return (
     <div

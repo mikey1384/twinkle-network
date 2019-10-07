@@ -12,7 +12,7 @@ import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useViewContext, useChatContext } from '../../contexts';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -20,37 +20,6 @@ Chat.propTypes = {
 
 export default function Chat({ onFileUpload }) {
   const {
-    chat: {
-      state: {
-        loaded,
-        currentChannel,
-        selectedChannelId,
-        channels,
-        messages,
-        channelLoadMoreButton,
-        loadMoreMessages,
-        recepientId,
-        subject
-      },
-      actions: {
-        onClearNumUnreads,
-        onCreateNewChannel,
-        onEnterChannelWithId,
-        onInitChat,
-        onEnterEmptyChat,
-        onLoadMoreChannels,
-        onLoadMoreMessages,
-        onNotifyThatMemberLeftChannel,
-        onOpenDirectMessageChannel,
-        onReceiveMessage,
-        onReceiveFirstMsg,
-        onReceiveMessageOnDifferentChannel,
-        onSendFirstDirectMessage,
-        onSubmitMessage,
-        onUpdateChessMoveViewTimeStamp,
-        onUpdateSelectedChannelId
-      }
-    },
     user: {
       state: { profilePicId, userId, username }
     },
@@ -65,6 +34,37 @@ export default function Chat({ onFileUpload }) {
       updateChatLastRead
     }
   } = useAppContext();
+  const {
+    state: {
+      loaded,
+      currentChannel,
+      selectedChannelId,
+      channels,
+      messages,
+      channelLoadMoreButton,
+      loadMoreMessages,
+      recepientId,
+      subject
+    },
+    actions: {
+      onClearNumUnreads,
+      onCreateNewChannel,
+      onEnterChannelWithId,
+      onInitChat,
+      onEnterEmptyChat,
+      onLoadMoreChannels,
+      onLoadMoreMessages,
+      onNotifyThatMemberLeftChannel,
+      onOpenDirectMessageChannel,
+      onReceiveMessage,
+      onReceiveFirstMsg,
+      onReceiveMessageOnDifferentChannel,
+      onSendFirstDirectMessage,
+      onSubmitMessage,
+      onUpdateChessMoveViewTimeStamp,
+      onUpdateSelectedChannelId
+    }
+  } = useChatContext();
   const {
     state: { pageVisible }
   } = useViewContext();

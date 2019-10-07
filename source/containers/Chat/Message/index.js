@@ -12,7 +12,11 @@ import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { MessageStyle } from '../Styles';
-import { useAppContext } from 'contexts';
+import {
+  useAppContext,
+  useNotiContext,
+  useChatContext
+} from '../../../contexts';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
@@ -79,17 +83,6 @@ export default function Message({
   showSubjectMsgsModal
 }) {
   const {
-    chat: {
-      actions: {
-        onEditMessage,
-        onSaveMessage,
-        onUpdateChessMoveViewTimeStamp,
-        onUpdateRecentChessMessage
-      }
-    },
-    notification: {
-      state: { socketConnected }
-    },
     user: {
       state: {
         authLevel,
@@ -102,6 +95,17 @@ export default function Message({
     },
     requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
   } = useAppContext();
+  const {
+    actions: {
+      onEditMessage,
+      onSaveMessage,
+      onUpdateChessMoveViewTimeStamp,
+      onUpdateRecentChessMessage
+    }
+  } = useChatContext();
+  const {
+    state: { socketConnected }
+  } = useNotiContext();
   let { username, profilePicId, ...post } = message;
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);

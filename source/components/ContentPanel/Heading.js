@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -24,7 +24,7 @@ Heading.propTypes = {
   }).isRequired
 };
 
-function Heading({
+export default function Heading({
   action,
   contentObj,
   contentObj: {
@@ -158,5 +158,3 @@ function Heading({
     return null;
   }
 }
-
-export default memo(Heading);

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
@@ -18,7 +18,7 @@ People.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-function People({ location, history }) {
+export default function People({ location, history }) {
   const {
     user: {
       actions: {
@@ -203,5 +203,3 @@ function People({ location, history }) {
     }
   }
 }
-
-export default memo(People);

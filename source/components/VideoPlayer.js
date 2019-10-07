@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
@@ -32,7 +32,7 @@ VideoPlayer.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-function VideoPlayer({
+export default function VideoPlayer({
   byUser,
   rewardLevel,
   hasHqThumb,
@@ -236,203 +236,206 @@ function VideoPlayer({
     startPositionRef.current > 0 ? `?t=${startPositionRef.current}` : ''
   }`;
 
-  return (
-    <ErrorBoundary style={style}>
-      {byUser && (
-        <div
-          style={{
-            background: Color[themeColor](0.9),
-            color: '#fff',
-            padding: '0.5rem',
-            fontWeight: 'bold',
-            fontSize: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <div>
-            This video was made by {uploader.username}.{' '}
-            {uploader.youtubeUrl && (
-              <a
-                style={{
-                  color: '#fff',
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={uploader.youtubeUrl}
-              >
-                {`Visit ${uploader.username}'s`} YouTube Channel
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-      <div
-        className={`${css`
-          user-select: none;
-          position: relative;
-          padding-top: 56.25%;
-        `}${minimized ? ' desktop' : ''}`}
-        style={{
-          display: minimized && !started && 'none',
-          width: started && minimized && '39rem',
-          paddingTop: started && minimized && '22rem',
-          position: started && minimized && 'absolute',
-          bottom: started && minimized && '1rem',
-          right: started && minimized && '1rem',
-          cursor: !onEdit && !started && 'pointer'
-        }}
-      >
-        {!minimized && !started && (
-          <>
-            <img
-              alt=""
-              src={imageUrl}
-              onTouchStart={() => setPlayerShown(true)}
-              onMouseEnter={() => setPlayerShown(true)}
-              onClick={() => setPlayerShown(true)}
-              className={css`
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                right: 0;
-                left: 0;
-                bottom: 0;
-              `}
-            />
-          </>
-        )}
-        {!onEdit && (playerShown || started) && (
-          <ReactPlayer
-            ref={PlayerRef}
-            className={css`
-              position: absolute;
-              top: 0;
-              left: 0;
-              z-index: 1;
-            `}
-            width="100%"
-            height="100%"
-            url={videoUrl}
-            playing={playing}
-            controls
-            onReady={onVideoReady}
-            onPlay={() =>
-              onVideoPlay({
-                requiredDurationCap: requiredDurationCap.current,
-                userId: userIdRef.current
-              })
-            }
-            onPause={onVideoStop}
-            onEnded={onVideoStop}
-          />
-        )}
-        {!onEdit && !minimized && started ? (
-          <div
-            className={css`
-              position: absolute;
-              top: 0;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              font-size: 3rem;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            `}
-            style={style}
-          >
-            <Spinner />
-          </div>
-        ) : !onEdit ? (
-          <a
-            className={css`
-              position: absolute;
-              display: block;
-              background: url('/img/play-button-image.png');
-              background-size: contain;
-              height: 5rem;
-              width: 5rem;
-              top: 50%;
-              left: 50%;
-              margin: -2.5rem 0 0 -2.5rem;
-            `}
-          />
-        ) : null}
-      </div>
-      {startPositionRef.current > 0 && !started ? (
-        <div
-          style={{
-            background: Color.darkBlue(),
-            padding: '0.5rem',
-            color: '#fff',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer'
-          }}
-          onClick={() => {
-            if (!playerShown) {
-              setPlayerShown(true);
-            } else {
-              PlayerRef.current?.getInternalPlayer()?.playVideo();
-            }
-          }}
-        >
-          Continue Watching...
-        </div>
-      ) : (
-        (!userId || xpLoaded) &&
-        !!rewardLevel &&
-        (!started || alreadyEarned) && (
+  return useMemo(
+    () => (
+      <ErrorBoundary style={style}>
+        {byUser && (
           <div
             style={{
-              background: meterColor,
+              background: Color[themeColor](0.9),
+              color: '#fff',
+              padding: '0.5rem',
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div>
+              This video was made by {uploader.username}.{' '}
+              {uploader.youtubeUrl && (
+                <a
+                  style={{
+                    color: '#fff',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={uploader.youtubeUrl}
+                >
+                  {`Visit ${uploader.username}'s`} YouTube Channel
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+        <div
+          className={`${css`
+            user-select: none;
+            position: relative;
+            padding-top: 56.25%;
+          `}${minimized ? ' desktop' : ''}`}
+          style={{
+            display: minimized && !started && 'none',
+            width: started && minimized && '39rem',
+            paddingTop: started && minimized && '22rem',
+            position: started && minimized && 'absolute',
+            bottom: started && minimized && '1rem',
+            right: started && minimized && '1rem',
+            cursor: !onEdit && !started && 'pointer'
+          }}
+        >
+          {!minimized && !started && (
+            <>
+              <img
+                alt=""
+                src={imageUrl}
+                onTouchStart={() => setPlayerShown(true)}
+                onMouseEnter={() => setPlayerShown(true)}
+                onClick={() => setPlayerShown(true)}
+                className={css`
+                  position: absolute;
+                  width: 100%;
+                  height: 100%;
+                  top: 0;
+                  right: 0;
+                  left: 0;
+                  bottom: 0;
+                `}
+              />
+            </>
+          )}
+          {!onEdit && (playerShown || started) && (
+            <ReactPlayer
+              ref={PlayerRef}
+              className={css`
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+              `}
+              width="100%"
+              height="100%"
+              url={videoUrl}
+              playing={playing}
+              controls
+              onReady={onVideoReady}
+              onPlay={() =>
+                onVideoPlay({
+                  requiredDurationCap: requiredDurationCap.current,
+                  userId: userIdRef.current
+                })
+              }
+              onPause={onVideoStop}
+              onEnded={onVideoStop}
+            />
+          )}
+          {!onEdit && !minimized && started ? (
+            <div
+              className={css`
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                font-size: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              `}
+              style={style}
+            >
+              <Spinner />
+            </div>
+          ) : !onEdit ? (
+            <a
+              className={css`
+                position: absolute;
+                display: block;
+                background: url('/img/play-button-image.png');
+                background-size: contain;
+                height: 5rem;
+                width: 5rem;
+                top: 50%;
+                left: 50%;
+                margin: -2.5rem 0 0 -2.5rem;
+              `}
+            />
+          ) : null}
+        </div>
+        {startPositionRef.current > 0 && !started ? (
+          <div
+            style={{
+              background: Color.darkBlue(),
               padding: '0.5rem',
               color: '#fff',
               fontSize: '1.5rem',
               fontWeight: 'bold',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+            onClick={() => {
+              if (!playerShown) {
+                setPlayerShown(true);
+              } else {
+                PlayerRef.current?.getInternalPlayer()?.playVideo();
+              }
             }}
           >
-            {!alreadyEarned && (
-              <div>
-                {[...Array(rewardLevel)].map((elem, index) => (
-                  <Icon key={index} icon="star" />
-                ))}
-              </div>
-            )}
-            <div style={{ marginLeft: '0.7rem' }}>
-              {alreadyEarned
-                ? 'You have already earned XP from this video'
-                : `Watch this video and earn ${addCommasToNumber(
-                    rewardLevel * xp
-                  )} XP`}
-            </div>
+            Continue Watching...
           </div>
-        )
-      )}
-      {!alreadyEarned && !!rewardLevel && userId && started && (
-        <ProgressBar
-          progress={progress}
-          noBorderRadius={stretch}
-          color={justEarned ? Color.green() : meterColor}
-          text={
-            justEarned
-              ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`
-              : ''
-          }
-        />
-      )}
-    </ErrorBoundary>
+        ) : (
+          (!userId || xpLoaded) &&
+          !!rewardLevel &&
+          (!started || alreadyEarned) && (
+            <div
+              style={{
+                background: meterColor,
+                padding: '0.5rem',
+                color: '#fff',
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {!alreadyEarned && (
+                <div>
+                  {[...Array(rewardLevel)].map((elem, index) => (
+                    <Icon key={index} icon="star" />
+                  ))}
+                </div>
+              )}
+              <div style={{ marginLeft: '0.7rem' }}>
+                {alreadyEarned
+                  ? 'You have already earned XP from this video'
+                  : `Watch this video and earn ${addCommasToNumber(
+                      rewardLevel * xp
+                    )} XP`}
+              </div>
+            </div>
+          )
+        )}
+        {!alreadyEarned && !!rewardLevel && userId && started && (
+          <ProgressBar
+            progress={progress}
+            noBorderRadius={stretch}
+            color={justEarned ? Color.green() : meterColor}
+            text={
+              justEarned
+                ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`
+                : ''
+            }
+          />
+        )}
+      </ErrorBoundary>
+    ),
+    [contentState, playerShown, alreadyEarned]
   );
 
   function onVideoReady() {
@@ -559,5 +562,3 @@ function VideoPlayer({
     }
   }
 }
-
-export default memo(VideoPlayer);

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -12,7 +12,7 @@ NotiItem.propTypes = {
   notification: PropTypes.object.isRequired
 };
 
-function NotiItem({
+export default function NotiItem({
   notification: {
     actionObj = {},
     targetComment = {},
@@ -199,5 +199,3 @@ function NotiItem({
     </ErrorBoundary>
   );
 }
-
-export default memo(NotiItem);
