@@ -15,7 +15,7 @@ import {
   useViewContext,
   useNotiContext,
   useChatContext
-} from '../../../contexts';
+} from 'contexts';
 
 Header.propTypes = {
   chatLoading: PropTypes.bool,

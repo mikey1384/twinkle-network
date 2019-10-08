@@ -14,7 +14,7 @@ import { withRouter } from 'react-router';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { useAppContext, useChatContext } from '../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
@@ -380,7 +380,7 @@ function ProfilePanel({ history, expandable, profile }) {
       recepient: profile,
       channelData: data
     });
-    history.push('/talk');
+    history.push('/chat');
   }
 
   function onAttachStar(star) {

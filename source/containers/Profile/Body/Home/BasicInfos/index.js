@@ -9,7 +9,7 @@ import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { withRouter } from 'react-router';
-import { useAppContext, useChatContext } from '../../../../../contexts';
+import { useAppContext, useChatContext, useInputContext } from 'contexts';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
@@ -63,8 +63,13 @@ function BasicInfos({
     state: { loaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
+  const {
+    state: {
+      userInfo: { userInfoOnEdit }
+    },
+    actions: { onSetUserInfoOnEdit }
+  } = useInputContext();
   const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
-  const [onEdit, setOnEdit] = useState(false);
   const [verificationEmailSent, setVerificationEmailSent] = useState(false);
   const mounted = useRef(true);
 
@@ -90,148 +95,157 @@ function BasicInfos({
       <div style={{ marginBottom: '0.5rem' }}>
         Member since {moment.unix(joinDate).format('LL')}
       </div>
-      {onEdit && (
+      {userInfoOnEdit && userId === myId && (
         <InfoEditForm
           email={email}
           youtubeUrl={youtubeUrl}
           youtubeName={youtubeName}
           website={website}
-          onCancel={() => setOnEdit(false)}
+          onCancel={() => onSetUserInfoOnEdit(false)}
           onSubmit={onEditedInfoSubmit}
         />
       )}
-      {!onEdit && (email || youtubeUrl || website) && (
-        <div
-          className={css`
-            @media (max-width: ${mobileMaxWidth}) {
-              font-size: 1.4rem;
-            }
-          `}
-          style={{ textAlign: 'center' }}
-        >
-          {email && (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
+      {(!userInfoOnEdit || userId !== myId) &&
+        (email || youtubeUrl || website) && (
+          <div
+            className={css`
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.4rem;
+              }
+            `}
+            style={{ textAlign: 'center' }}
+          >
+            {email && (
+              <>
                 <div
                   style={{
-                    lineHeight:
-                      myId === userId && !emailVerified ? '0.5rem' : undefined
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                 >
-                  <a
-                    href={`mailto:${email}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <div
+                    style={{
+                      lineHeight:
+                        myId === userId && !emailVerified ? '0.5rem' : undefined
+                    }}
                   >
-                    {email}
-                  </a>
-                </div>
-                <Icon
-                  onMouseEnter={() =>
-                    setEmailCheckHighlighted(
-                      !verificationEmailSent && myId === userId
-                    )
-                  }
-                  onMouseLeave={() => setEmailCheckHighlighted(false)}
-                  className={css`
-                    margin-left: 0.5rem;
-                  `}
-                  style={{
-                    cursor:
-                      verificationEmailSent || myId !== userId || emailVerified
-                        ? 'default'
-                        : 'pointer',
-                    color:
-                      emailVerified || emailCheckHighlighted
-                        ? Color[selectedTheme]()
-                        : Color.lighterGray()
-                  }}
-                  icon="check-circle"
-                  onClick={
-                    myId !== userId || emailVerified ? () => {} : onVerifyEmail
-                  }
-                />
-              </div>
-              {myId === userId && !emailVerified && (
-                <div>
-                  <a
+                    <a
+                      href={`mailto:${email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {email}
+                    </a>
+                  </div>
+                  <Icon
                     onMouseEnter={() =>
-                      setEmailCheckHighlighted(!verificationEmailSent)
+                      setEmailCheckHighlighted(
+                        !verificationEmailSent && myId === userId
+                      )
                     }
                     onMouseLeave={() => setEmailCheckHighlighted(false)}
+                    className={css`
+                      margin-left: 0.5rem;
+                    `}
                     style={{
-                      textDecoration: emailCheckHighlighted
-                        ? 'underline'
-                        : undefined,
-                      cursor: 'pointer',
-                      fontSize: '1.2rem',
-                      color: Color[selectedTheme]()
+                      cursor:
+                        verificationEmailSent ||
+                        myId !== userId ||
+                        emailVerified
+                          ? 'default'
+                          : 'pointer',
+                      color:
+                        emailVerified || emailCheckHighlighted
+                          ? Color[selectedTheme]()
+                          : Color.lighterGray()
                     }}
-                    onClick={verificationEmailSent ? goToEmail : onVerifyEmail}
-                  >
-                    {verificationEmailSent
-                      ? 'Email has been sent. Tap here to check your inbox'
-                      : 'Please verify your email'}
-                  </a>
+                    icon="check-circle"
+                    onClick={
+                      myId !== userId || emailVerified
+                        ? () => {}
+                        : onVerifyEmail
+                    }
+                  />
                 </div>
-              )}
-              {myId !== userId && !emailVerified && (
-                <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
-                  {`This user's email has not been verified, yet`}
-                </div>
-              )}
-            </>
-          )}
-          {youtubeUrl && (
-            <div
-              style={{
-                marginTop: '0.5rem'
-              }}
-            >
-              <span>YouTube: </span>
-              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
-                {youtubeName || trimUrl(youtubeUrl)}
-              </a>
-            </div>
-          )}
-          {website && (
-            <div style={{ marginTop: '0.5rem' }}>
-              <span>Website: </span>
-              <a href={website} target="_blank" rel="noopener noreferrer">
-                {trimUrl(website)}
-              </a>
-            </div>
-          )}
-        </div>
-      )}
-      {!onEdit && myId === userId && (!email || !youtubeUrl || !website) && (
-        <div
-          style={{
-            height: '100%',
-            display: 'flex',
-            textAlign: 'center',
-            alignItems: 'center',
-            marginTop: email || youtubeUrl ? '1rem' : 0
-          }}
-        >
-          {renderEditMessage({ email, youtubeUrl, website })}
-        </div>
-      )}
+                {myId === userId && !emailVerified && (
+                  <div>
+                    <a
+                      onMouseEnter={() =>
+                        setEmailCheckHighlighted(!verificationEmailSent)
+                      }
+                      onMouseLeave={() => setEmailCheckHighlighted(false)}
+                      style={{
+                        textDecoration: emailCheckHighlighted
+                          ? 'underline'
+                          : undefined,
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        color: Color[selectedTheme]()
+                      }}
+                      onClick={
+                        verificationEmailSent ? goToEmail : onVerifyEmail
+                      }
+                    >
+                      {verificationEmailSent
+                        ? 'Email has been sent. Tap here to check your inbox'
+                        : 'Please verify your email'}
+                    </a>
+                  </div>
+                )}
+                {myId !== userId && !emailVerified && (
+                  <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
+                    {`This user's email has not been verified, yet`}
+                  </div>
+                )}
+              </>
+            )}
+            {youtubeUrl && (
+              <div
+                style={{
+                  marginTop: '0.5rem'
+                }}
+              >
+                <span>YouTube: </span>
+                <a href={youtubeUrl} target="_blank" rel="noopener noreferrer">
+                  {youtubeName || trimUrl(youtubeUrl)}
+                </a>
+              </div>
+            )}
+            {website && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <span>Website: </span>
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  {trimUrl(website)}
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+      {!userInfoOnEdit &&
+        myId === userId &&
+        (!email || !youtubeUrl || !website) && (
+          <div
+            style={{
+              height: '100%',
+              display: 'flex',
+              textAlign: 'center',
+              alignItems: 'center',
+              marginTop: email || youtubeUrl ? '1rem' : 0
+            }}
+          >
+            {renderEditMessage({ email, youtubeUrl, website })}
+          </div>
+        )}
       {myId === userId ? (
-        !onEdit ? (
+        !userInfoOnEdit ? (
           <Button
             style={{
               marginTop: !email || !youtubeUrl || !website ? 0 : '1rem',
               marginBottom: '0.5rem'
             }}
             transparent
-            onClick={() => setOnEdit(true)}
+            onClick={() => onSetUserInfoOnEdit(true)}
           >
             <Icon icon="pencil-alt" />
             <span style={{ marginLeft: '0.7rem' }}>Edit</span>
@@ -290,7 +304,7 @@ function BasicInfos({
       recepient: { id: userId, username },
       channelData: data
     });
-    history.push('/talk');
+    history.push('/chat');
   }
 
   function goToEmail() {
@@ -312,7 +326,7 @@ function BasicInfos({
     });
     onUpdateProfileInfo(data);
     if (mounted.current) {
-      setOnEdit(false);
+      onSetUserInfoOnEdit(false);
     }
   }
 

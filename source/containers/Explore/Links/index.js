@@ -5,11 +5,7 @@ import Button from 'components/Button';
 import SectionPanel from 'components/SectionPanel';
 import LinkGroup from './LinkGroup';
 import { useScrollPosition } from 'helpers/hooks';
-import {
-  useAppContext,
-  useViewContext,
-  useExploreContext
-} from '../../../contexts';
+import { useAppContext, useViewContext, useExploreContext } from 'contexts';
 
 Links.propTypes = {
   location: PropTypes.object

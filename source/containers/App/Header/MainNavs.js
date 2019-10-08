@@ -66,8 +66,13 @@ export default function MainNavs({
     path: '/videos/:id',
     exact: true
   });
+  const playlistsMatch = matchPath(pathname, {
+    path: '/playlists/:id',
+    exact: true
+  });
   const explorePageMatch =
     !!subjectPageMatch ||
+    !!playlistsMatch ||
     !!videoPageMatch ||
     !!linkPageMatch ||
     !!commentPageMatch;
@@ -104,7 +109,7 @@ export default function MainNavs({
     }
   }, [defaultSearchFilter, pathname]);
   const subSectionIconType =
-    exploreSubNav === 'videos'
+    exploreSubNav === 'videos' || exploreSubNav === 'playlists'
       ? 'film'
       : exploreSubNav === 'links'
       ? 'book'

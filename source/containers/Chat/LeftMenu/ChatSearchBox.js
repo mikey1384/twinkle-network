@@ -2,7 +2,7 @@ import React from 'react';
 import { useSearch } from 'helpers/hooks';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { useAppContext, useChatContext } from '../../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 export default function ChatSearchBox() {
   const {

@@ -1,32 +1,36 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ContentPanel from 'components/ContentPanel';
 import NotFound from 'components/NotFound';
-import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { mobileMaxWidth } from 'constants/css';
+import { useScrollPosition } from 'helpers/hooks';
 import { css } from 'emotion';
 import {
   useAppContext,
+  useContentContext,
   useHomeContext,
   useViewContext,
   useExploreContext
-} from '../../contexts';
+} from 'contexts';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
 export default function ContentPage({
+  location: { pathname },
   history,
   match: {
-    params: { contentId },
+    params: { contentId: initialContentId },
     url
   }
 }) {
+  const contentId = Number(initialContentId);
   const {
     profile: {
       actions: { onDeleteFeed: onDeleteProfileFeed }
@@ -39,23 +43,27 @@ export default function ContentPage({
     actions: { onDeleteSubject }
   } = useExploreContext();
   const {
-    actions: { onSetExploreSubNav }
+    actions: { onRecordScrollPosition, onSetExploreSubNav },
+    state: { scrollPositions }
   } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname,
+    scrollPositions
+  });
   const {
     actions: { onDeleteFeed: onDeleteHomeFeed }
   } = useHomeContext();
+  const { state } = useContentContext();
   const contentType = url.split('/')[1].slice(0, -1);
-  const [{ loaded, exists }, setContentStatus] = useState({
-    loaded: false,
-    exists: false
-  });
+  const contentState = state[contentType + contentId] || {};
+  const [exists, setExists] = useState(true);
   const mounted = useRef(null);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useEffect(() => {
     mounted.current = true;
-    document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
-    initContent();
+    if (!contentState.loaded) {
+      initContent();
+    }
     async function initContent() {
       try {
         const {
@@ -64,17 +72,11 @@ export default function ContentPage({
           `${URL}/content/check?contentId=${contentId}&contentType=${contentType}`
         );
         if (mounted.current) {
-          setContentStatus({
-            loaded: true,
-            exists
-          });
+          setExists(exists);
         }
       } catch (error) {
         console.error(error);
-        setContentStatus({
-          loaded: true,
-          exists: false
-        });
+        setExists(false);
       }
     }
     return function cleanUp() {
@@ -82,35 +84,35 @@ export default function ContentPage({
     };
   }, [contentId, url]);
 
-  return (
-    <ErrorBoundary
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%'
-      }}
-    >
-      <div
-        className={css`
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          margin-bottom: 1rem;
-          margin-top: 1rem;
-          padding-bottom: 20rem;
-        `}
+  return useMemo(
+    () => (
+      <ErrorBoundary
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%'
+        }}
       >
-        <section
+        <div
           className={css`
-            width: 65%;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-              min-height: 100vh;
-            }
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            padding-bottom: 20rem;
           `}
         >
-          {loaded ? (
-            exists ? (
+          <section
+            className={css`
+              width: 65%;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+                min-height: 100vh;
+              }
+            `}
+          >
+            {exists ? (
               <ContentPanel
                 key={contentType + contentId}
                 autoExpand
@@ -122,13 +124,12 @@ export default function ContentPage({
               />
             ) : (
               <NotFound />
-            )
-          ) : (
-            <Loading />
-          )}
-        </section>
-      </div>
-    </ErrorBoundary>
+            )}
+          </section>
+        </div>
+      </ErrorBoundary>
+    ),
+    [contentState, initialContentId, history, pathname, url]
   );
 
   function handleDeleteContent() {

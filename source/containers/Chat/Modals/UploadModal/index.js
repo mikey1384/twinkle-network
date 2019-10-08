@@ -6,8 +6,7 @@ import Loading from 'components/Loading';
 import File from './File';
 import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
-import { useChatContext } from '../../../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 UploadModal.propTypes = {
   channelId: PropTypes.number,

@@ -18,7 +18,7 @@ import {
   useViewContext,
   useNotiContext,
   useChatContext
-} from '../../contexts';
+} from 'contexts';
 
 const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));

@@ -84,7 +84,7 @@ export default function SubjectPanel({
     onSubjectEditDone,
     onSubjectDelete,
     onLoadSubjectComments,
-    setSubjectRewardLevel,
+    onSetRewardLevel,
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
@@ -146,12 +146,12 @@ export default function SubjectPanel({
             </Link>
           )}
           <div style={{ display: 'flex' }}>
-            {canEditRewardLevel && (
+            {canEditRewardLevel && !onEdit && (
               <StarButton
                 contentId={id}
                 contentType="subject"
                 rewardLevel={rewardLevel}
-                onSetRewardLevel={setSubjectRewardLevel}
+                onSetRewardLevel={onSetRewardLevel}
               />
             )}
             <div>
@@ -305,7 +305,7 @@ export default function SubjectPanel({
                 rootObj: {
                   id: contentId,
                   rewardLevel: rootRewardLevel,
-                  type: contentType
+                  contentType
                 },
                 contentType: 'subject'
               }}
@@ -351,7 +351,7 @@ export default function SubjectPanel({
 
   function handleCommentSubmit(params) {
     setSecretShown(true);
-    onUploadComment(params);
+    onUploadComment({ ...params, contentId, contentType });
   }
 
   function loadMoreComments(data) {

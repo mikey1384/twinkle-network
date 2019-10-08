@@ -12,7 +12,7 @@ import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
-import { useAppContext, useViewContext, useChatContext } from '../../contexts';
+import { useAppContext, useViewContext, useChatContext } from 'contexts';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func

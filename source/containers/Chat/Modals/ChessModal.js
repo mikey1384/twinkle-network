@@ -4,8 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
-import { useChatContext } from '../../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,

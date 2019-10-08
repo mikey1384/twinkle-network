@@ -10,7 +10,7 @@ import SearchInput from 'components/Texts/SearchInput';
 import Loading from 'components/Loading';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isEqual } from 'lodash';
-import { useAppContext, useExploreContext } from '../../../contexts';
+import { useAppContext, useExploreContext } from 'contexts';
 
 SelectPlaylistsToPinModal.propTypes = {
   loadMoreButton: PropTypes.bool.isRequired,

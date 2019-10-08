@@ -102,6 +102,61 @@ export default function InputReducer(state, action) {
           urlHelper: action.urlHelper
         }
       };
+    case 'SET_EDITED_EMAIL':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          editedEmail: action.editedEmail
+        }
+      };
+    case 'SET_EDITED_PROFILE_TITLE':
+      return {
+        ...state,
+        editedProfileTitle: action.editedProfileTitle
+      };
+    case 'SET_EDITED_STATUS_COLOR':
+      return {
+        ...state,
+        editedStatusColor: action.editedStatusColor
+      };
+    case 'SET_EDITED_STATUS_MSG':
+      return {
+        ...state,
+        editedStatusMsg: action.editedStatusMsg
+      };
+    case 'SET_EDITED_WEBSITE':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          editedWebsite: action.editedWebsite
+        }
+      };
+    case 'SET_EDITED_YOUTUBE_NAME':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          editedYoutubeName: action.editedYoutubeName
+        }
+      };
+    case 'SET_EDITED_YOUTUBE_URL':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          editedYoutubeUrl: action.editedYoutubeUrl
+        }
+      };
+    case 'SET_EMAIL_ERROR':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          emailError: action.emailError
+        }
+      };
     case 'SET_HAS_SECRET_ANSWER':
       return {
         ...state,
@@ -168,6 +223,32 @@ export default function InputReducer(state, action) {
             ...state.subject.details,
             rewardLevel: action.rewardLevel
           }
+        }
+      };
+    case 'SET_USER_INFO_ON_EDIT':
+      return {
+        ...state,
+        userInfo: action.onEdit
+          ? {
+              ...state.userInfo,
+              userInfoOnEdit: true
+            }
+          : {}
+      };
+    case 'SET_WEBSITE_ERROR':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          websiteError: action.websiteError
+        }
+      };
+    case 'SET_YOUTUBE_ERROR':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          youtubeError: action.youtubeError
         }
       };
     case 'RESET_CONTENT_INPUT':

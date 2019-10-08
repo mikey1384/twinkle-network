@@ -79,7 +79,7 @@ export default function Posts({
   }, []);
 
   useEffect(() => {
-    if (history.action === 'PUSH' || profileFeeds.length === 0) {
+    if (profileFeeds.length === 0) {
       handleLoadTab(section);
     }
   }, [location]);

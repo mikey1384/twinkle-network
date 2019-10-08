@@ -29,7 +29,8 @@ export const initialInputState = {
     titleFieldShown: false,
     urlHelper: '',
     urlError: ''
-  }
+  },
+  userInfo: {}
 };
 
 InputContextProvider.propTypes = {

@@ -605,6 +605,7 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           commentsLoaded: !action.isPreview,
+          previewLoaded: true,
           childComments: action.comments,
           commentsLoadMoreButton: action.loadMoreButton
         }
@@ -791,6 +792,9 @@ export default function ContentPageReducer(state, action) {
         const contentMatches =
           prevContentState.contentId === action.contentId &&
           prevContentState.contentType === action.contentType;
+        const rootMatches =
+          prevContentState.rootId === action.contentId &&
+          prevContentState.rootType === action.contentType;
         newState[contentKey] = {
           ...prevContentState,
           rewardLevel: contentMatches
@@ -807,6 +811,14 @@ export default function ContentPageReducer(state, action) {
                 : subject.rewardLevel
             };
           }),
+          rootObj: prevContentState.rootObj
+            ? {
+                ...prevContentState.rootObj,
+                rewardLevel: rootMatches
+                  ? action.rewardLevel
+                  : prevContentState.rootObj.rewardLevel
+              }
+            : undefined,
           targetObj: prevContentState.targetObj
             ? {
                 ...prevContentState.targetObj,

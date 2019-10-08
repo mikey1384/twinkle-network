@@ -16,7 +16,7 @@ Subjects.propTypes = {
   onSubjectDelete: PropTypes.func.isRequired,
   onLoadSubjectComments: PropTypes.func.isRequired,
   rootRewardLevel: PropTypes.number,
-  setSubjectRewardLevel: PropTypes.func.isRequired,
+  onSetRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
   contentType: PropTypes.string,
   uploadSubject: PropTypes.func.isRequired,
@@ -43,10 +43,10 @@ export default function Subjects({
   uploadSubject,
   onLoadMoreSubjects,
   onLoadSubjectComments,
+  onSetRewardLevel,
   onSubjectEditDone,
   onSubjectDelete,
   rootRewardLevel,
-  setSubjectRewardLevel,
   commentActions: {
     attachStar,
     editRewardComment,
@@ -75,7 +75,7 @@ export default function Subjects({
         onSubjectEditDone,
         onSubjectDelete,
         onLoadSubjectComments,
-        setSubjectRewardLevel,
+        onSetRewardLevel,
         onUploadComment,
         onUploadReply
       }}

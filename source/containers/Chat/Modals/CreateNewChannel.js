@@ -4,8 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
-import { useAppContext } from 'contexts';
-import { useChatContext } from '../../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 CreateNewChannelModal.propTypes = {
   onDone: PropTypes.func.isRequired,

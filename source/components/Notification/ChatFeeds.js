@@ -9,7 +9,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
-import { useAppContext, useChatContext } from '../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
@@ -106,7 +106,7 @@ function ChatFeeds({
       const data = await loadChatChannel({ channelId: 2 });
       onEnterChannelWithId({ data });
     }
-    history.push('/talk');
+    history.push('/chat');
   }
 
   function renderDetails() {

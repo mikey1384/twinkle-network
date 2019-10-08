@@ -25,7 +25,7 @@ export default function Profile({ history, location, match }) {
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (history.action === 'PUSH' || !profile.id) {
+    if (!profile.id || profile.username !== match.params.username) {
       init();
     }
     async function init() {
@@ -101,6 +101,6 @@ export default function Profile({ history, location, match }) {
 
   async function onSetTheme() {
     await setTheme({ color: selectedTheme });
-    onChangeProfileTheme(selectedTheme);
+    onChangeProfileTheme({ userId, theme: selectedTheme });
   }
 }

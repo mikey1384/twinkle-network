@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import StatusInput from './StatusInput';
@@ -13,8 +13,8 @@ import Bio from 'components/Texts/Bio';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
 import URL from 'constants/URL';
+import { useAppContext, useInputContext } from 'contexts';
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
@@ -42,14 +42,24 @@ export default function UserDetails({
   const {
     requestHelpers: { auth, uploadBio }
   } = useAppContext();
+  const {
+    state: { editedStatusColor, editedStatusMsg },
+    actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
+  } = useInputContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [editedStatusMsg, setEditedStatusMsg] = useState('');
-  const [editedStatusColor, setEditedStatusColor] = useState('');
+  useEffect(() => {
+    onSetEditedStatusColor('');
+  }, [userId]);
   const StatusInputRef = useRef(null);
-  const statusColor = editedStatusColor || profile.statusColor || 'logoBlue';
+  const statusColor =
+    (userId === profile.id
+      ? editedStatusColor || profile.statusColor
+      : profile.statusColor) || 'logoBlue';
   const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
   const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
+  const displayedStatusMsg =
+    userId === profile.id ? editedStatusMsg : profile.statusMsg;
 
   return (
     <ErrorBoundary
@@ -95,24 +105,24 @@ export default function UserDetails({
           profile={profile}
           statusColor={statusColor}
           editedStatusMsg={editedStatusMsg}
-          setColor={setEditedStatusColor}
+          setColor={onSetEditedStatusColor}
           onTextChange={event => {
-            setEditedStatusMsg(addEmoji(renderText(event.target.value)));
+            onSetEditedStatusMsg(addEmoji(renderText(event.target.value)));
             if (!event.target.value) {
-              setEditedStatusColor('');
+              onSetEditedStatusColor('');
             }
           }}
           onCancel={() => {
-            setEditedStatusMsg('');
-            setEditedStatusColor('');
+            onSetEditedStatusMsg('');
+            onSetEditedStatusColor('');
           }}
           onStatusSubmit={onStatusMsgSubmit}
         />
       )}
-      {(profile.statusMsg || editedStatusMsg) && (
+      {(profile.statusMsg || displayedStatusMsg) && (
         <StatusMsg
           statusColor={statusColor}
-          statusMsg={editedStatusMsg || profile.statusMsg}
+          statusMsg={displayedStatusMsg || profile.statusMsg}
         />
       )}
       {profile.statusMsg &&
@@ -129,7 +139,7 @@ export default function UserDetails({
             <Button
               transparent
               onClick={() => {
-                setEditedStatusMsg(profile.statusMsg);
+                onSetEditedStatusMsg(profile.statusMsg);
                 StatusInputRef.current.focus();
               }}
             >
@@ -218,8 +228,8 @@ export default function UserDetails({
       },
       auth()
     );
-    setEditedStatusColor('');
-    setEditedStatusMsg('');
+    onSetEditedStatusColor('');
+    onSetEditedStatusMsg('');
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
   }
 

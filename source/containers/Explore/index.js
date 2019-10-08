@@ -10,7 +10,7 @@ import Search from './Search';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { useExploreContext } from '../../contexts';
+import { useExploreContext } from 'contexts';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 

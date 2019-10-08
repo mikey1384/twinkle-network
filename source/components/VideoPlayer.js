@@ -95,10 +95,10 @@ export default function VideoPlayer({
   } = contentState;
   const [playerShown, setPlayerShown] = useState(false);
   const [alreadyEarned, setAlreadyEarned] = useState(false);
+  const [startingPosition, setStartingPosition] = useState(0);
   const maxRequiredDuration = 250;
   const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
-  const startPositionRef = useRef(0);
   const timerRef = useRef(null);
   const timeWatchedRef = useRef(0);
   const totalDurationRef = useRef(0);
@@ -110,7 +110,7 @@ export default function VideoPlayer({
   const rewardAmountRef = useRef(rewardLevel * xp);
   useEffect(() => {
     mounted.current = true;
-    startPositionRef.current = currentTime;
+    setStartingPosition(currentTime);
     timeWatchedRef.current = watchTime;
     return function cleanUp() {
       onVideoStop();
@@ -124,9 +124,10 @@ export default function VideoPlayer({
     return function setCurrentTimeBeforeUnmount() {
       onSetVideoCurrentTime({
         videoId,
-        currentTime: justEarned
-          ? 0
-          : PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() || 0
+        currentTime:
+          PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() ||
+          startingPosition ||
+          0
       });
     };
   }, [justEarned]);
@@ -176,7 +177,9 @@ export default function VideoPlayer({
   }, [rewardLevel, userId]);
 
   useEffect(() => {
-    if (onEdit === true) onVideoStop();
+    if (onEdit) {
+      onVideoStop();
+    }
   }, [onEdit]);
 
   useEffect(() => {
@@ -232,7 +235,7 @@ export default function VideoPlayer({
     ? Color.pink()
     : Color.logoBlue();
   const videoUrl = `https://www.youtube.com/watch?v=${videoCode}${
-    startPositionRef.current > 0 ? `?t=${startPositionRef.current}` : ''
+    startingPosition > 0 ? `?t=${startingPosition}` : ''
   }`;
 
   return useMemo(
@@ -286,7 +289,7 @@ export default function VideoPlayer({
             cursor: !onEdit && !started && 'pointer'
           }}
         >
-          {!minimized && !started && (
+          {((!minimized && !started) || onEdit) && (
             <>
               <img
                 alt=""
@@ -365,7 +368,7 @@ export default function VideoPlayer({
             />
           ) : null}
         </div>
-        {startPositionRef.current > 0 && !started ? (
+        {startingPosition > 0 && !started ? (
           <div
             style={{
               background: Color.darkBlue(),

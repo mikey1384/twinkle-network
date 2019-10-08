@@ -4,7 +4,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
-import { useAppContext, useExploreContext } from '../../../contexts';
+import { useAppContext, useExploreContext } from 'contexts';
 
 export default function FeaturedPlaylistsPanel() {
   const {

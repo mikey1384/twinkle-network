@@ -10,7 +10,6 @@ import ResultModal from './Modals/ResultModal';
 import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import request from 'axios';
-import URL from 'constants/URL';
 import queryString from 'query-string';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from 'components/Subjects';
@@ -19,6 +18,8 @@ import Loading from 'components/Loading';
 import Details from './Details';
 import NavMenu from './NavMenu';
 import PageTab from './PageTab';
+import URL from 'constants/URL';
+import { useScrollPosition } from 'helpers/hooks';
 import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -28,7 +29,7 @@ import {
   useHomeContext,
   useViewContext,
   useExploreContext
-} from '../../contexts';
+} from 'contexts';
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -38,7 +39,7 @@ VideoPage.propTypes = {
 
 export default function VideoPage({
   history,
-  location: { search },
+  location: { pathname, search },
   match: {
     params: { videoId: initialVideoId }
   }
@@ -77,7 +78,8 @@ export default function VideoPage({
       onChangeVideoByUserStatus,
       onDeleteVideo,
       onEditVideoThumbs,
-      onLikeVideo
+      onLikeVideo,
+      onSetThumbRewardLevel
     }
   } = useExploreContext();
   const {
@@ -108,17 +110,21 @@ export default function VideoPage({
       onLoadTags,
       onSetByUserStatus,
       onSetRewardLevel,
-      onSetSubjectRewardLevel,
       onSetVideoQuestions,
-      onSetThumbRewardLevel,
       onUploadComment,
       onUploadReply,
       onUploadSubject
     }
   } = useContentContext();
   const {
-    actions: { onSetExploreSubNav }
+    actions: { onRecordScrollPosition, onSetExploreSubNav },
+    state: { scrollPositions }
   } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname,
+    scrollPositions
+  });
 
   const contentState = state['video' + videoId] || {};
 
@@ -147,8 +153,8 @@ export default function VideoPage({
 
   useEffect(() => {
     mounted.current = true;
-    setCurrentSlide(0);
     setChangingPage(true);
+    setCurrentSlide(0);
     setWatchTabActive(true);
     setVideoUnavailable(false);
     if (!loaded) {
@@ -161,18 +167,19 @@ export default function VideoPage({
     if (!subjectsLoaded) {
       handleLoadSubjects();
     }
+    setChangingPage(false);
     async function handleLoadVideoPage() {
       try {
         const { data } = await request.get(
           `${URL}/video/page?videoId=${videoId}`
         );
-        if (data.notFound) {
-          return setVideoUnavailable(true);
-        }
         if (mounted.current) {
+          if (data.notFound) {
+            return setVideoUnavailable(true);
+          }
           onInitContent({
             ...data,
-            contentId: Number(videoId),
+            contentId: videoId,
             contentType: 'video'
           });
         }
@@ -202,12 +209,6 @@ export default function VideoPage({
         contentType: 'video',
         subjects: results,
         loadMoreButton
-      });
-      const tags = await fetchPlaylistsContaining({
-        videoId
-      });
-      onInitContent({
-        tags
       });
     }
     async function handleLoadTags() {
@@ -383,7 +384,7 @@ export default function VideoPage({
                 onLoadSubjectComments={onLoadSubjectComments}
                 onSubjectEditDone={onEditSubject}
                 onSubjectDelete={onDeleteSubject}
-                setSubjectRewardLevel={onSetSubjectRewardLevel}
+                onSetRewardLevel={onSetRewardLevel}
                 uploadSubject={onUploadSubject}
                 contentId={videoId}
                 contentType="video"
@@ -433,7 +434,7 @@ export default function VideoPage({
                   parent={{
                     contentType: 'video',
                     rewardLevel,
-                    id: Number(videoId),
+                    id: videoId,
                     uploader
                   }}
                   style={{ paddingTop: '1rem' }}
@@ -506,10 +507,12 @@ export default function VideoPage({
         title: params.editedTitle,
         description: params.editedDescription,
         content: url
-      }
+      },
+      contentType: 'video',
+      contentId: videoId
     });
     onEditVideoThumbs({
-      videoId: Number(params.videoId),
+      videoId,
       title: params.title,
       url
     });
@@ -517,7 +520,7 @@ export default function VideoPage({
 
   function handleChangeByUserStatus({ contentId, contentType, byUser }) {
     onSetByUserStatus({ contentId, contentType, byUser });
-    onChangeVideoByUserStatus({ videoId: Number(contentId), byUser });
+    onChangeVideoByUserStatus({ videoId, byUser });
   }
 
   function handleLikeVideo(likes, videoId) {
@@ -571,7 +574,7 @@ export default function VideoPage({
 
   function handleSetRewardLevel({ contentId, contentType, rewardLevel }) {
     onSetRewardLevel({ contentType, contentId, rewardLevel });
-    onSetThumbRewardLevel({ videoId: Number(contentId), rewardLevel });
+    onSetThumbRewardLevel({ videoId, rewardLevel });
   }
 
   async function handleUploadQuestions(questions) {

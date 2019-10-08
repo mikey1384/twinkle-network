@@ -480,7 +480,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          featuredPlaylists: state.featuredPlaylists.map(playlist => ({
+          featuredPlaylists: state.videos.featuredPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.videoId
@@ -491,7 +491,7 @@ export default function ExploreReducer(state, action) {
                 : video
             )
           })),
-          allPlaylists: state.allPlaylists.map(playlist => ({
+          allPlaylists: state.videos.allPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.videoId
@@ -502,7 +502,7 @@ export default function ExploreReducer(state, action) {
                 : video
             )
           })),
-          searchedPlaylists: state.searchedPlaylists.map(playlist => ({
+          searchedPlaylists: state.videos.searchedPlaylists.map(playlist => ({
             ...playlist,
             playlist: playlist.playlist.map(video =>
               video.videoId === action.videoId

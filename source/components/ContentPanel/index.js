@@ -95,7 +95,7 @@ function ContentPanel({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [contentState.loaded]);
+  }, [contentState]);
 
   return useMemo(
     () => (

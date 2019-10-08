@@ -10,7 +10,7 @@ import MyRank from './MyRank';
 import URL from 'constants/URL';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
-import { useAppContext, useNotiContext } from '../../../contexts';
+import { useAppContext, useNotiContext } from 'contexts';
 
 const API_URL = `${URL}/user`;
 

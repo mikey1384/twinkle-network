@@ -15,7 +15,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';
-import { useAppContext, useExploreContext } from '../../../contexts';
+import { useAppContext, useExploreContext } from 'contexts';
 
 EditPlaylistModal.propTypes = {
   modalType: PropTypes.string.isRequired,

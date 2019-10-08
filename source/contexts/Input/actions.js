@@ -78,6 +78,48 @@ export default function InputActions(dispatch) {
         urlHelper
       });
     },
+    onSetEditedEmail(editedEmail) {
+      return dispatch({
+        type: 'SET_EDITED_EMAIL',
+        editedEmail
+      });
+    },
+    onSetEditedWebsite(editedWebsite) {
+      return dispatch({
+        type: 'SET_EDITED_WEBSITE',
+        editedWebsite
+      });
+    },
+    onSetEmailError(emailError) {
+      return dispatch({
+        type: 'SET_EMAIL_ERROR',
+        emailError
+      });
+    },
+    onSetEditedStatusColor(editedStatusColor) {
+      return dispatch({
+        type: 'SET_EDITED_STATUS_COLOR',
+        editedStatusColor
+      });
+    },
+    onSetEditedStatusMsg(editedStatusMsg) {
+      return dispatch({
+        type: 'SET_EDITED_STATUS_MSG',
+        editedStatusMsg
+      });
+    },
+    onSetEditedYoutubeName(editedYoutubeName) {
+      return dispatch({
+        type: 'SET_EDITED_YOUTUBE_NAME',
+        editedYoutubeName
+      });
+    },
+    onSetEditedYoutubeUrl(editedYoutubeUrl) {
+      return dispatch({
+        type: 'SET_EDITED_YOUTUBE_URL',
+        editedYoutubeUrl
+      });
+    },
     onSetHasSecretAnswer(hasSecretAnswer) {
       return dispatch({
         type: 'SET_HAS_SECRET_ANSWER',
@@ -118,6 +160,24 @@ export default function InputActions(dispatch) {
       return dispatch({
         type: 'SET_SUBJECT_TITLE',
         title
+      });
+    },
+    onSetUserInfoOnEdit(onEdit) {
+      return dispatch({
+        type: 'SET_USER_INFO_ON_EDIT',
+        onEdit
+      });
+    },
+    onSetWebsiteError(websiteError) {
+      return dispatch({
+        type: 'SET_WEBSITE_ERROR',
+        websiteError
+      });
+    },
+    onSetYoutubeError(youtubeError) {
+      return dispatch({
+        type: 'SET_YOUTUBE_ERROR',
+        youtubeError
       });
     }
   };

@@ -6,11 +6,7 @@ import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
 import { useScrollPosition } from 'helpers/hooks';
-import {
-  useAppContext,
-  useViewContext,
-  useExploreContext
-} from '../../contexts';
+import { useAppContext, useViewContext, useExploreContext } from 'contexts';
 
 Subjects.propTypes = {
   location: PropTypes.object.isRequired

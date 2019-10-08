@@ -6,7 +6,7 @@ import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext, useChatContext } from '../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 UserListModal.propTypes = {
   description: PropTypes.string,
@@ -114,7 +114,7 @@ function UserListModal({
         recepient: user,
         channelData: data
       });
-      history.push('/talk');
+      history.push('/chat');
     }
   }
 }

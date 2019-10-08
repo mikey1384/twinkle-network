@@ -54,6 +54,7 @@ export default function Body({
     childComments = [],
     commentsLoadMoreButton = false,
     likes = [],
+    previewLoaded,
     rootId,
     rootType,
     siteUrl,
@@ -110,6 +111,7 @@ export default function Body({
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
+
   const mounted = useRef(true);
   const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
@@ -120,10 +122,7 @@ export default function Body({
 
   useEffect(() => {
     mounted.current = true;
-    if (
-      ((autoExpand && !commentsShown) || numPreviewComments > 0) &&
-      !commentsLoaded
-    ) {
+    if (!commentsLoaded && !(numPreviewComments > 0 && previewLoaded)) {
       loadInitialComments(numPreviewComments);
     }
 

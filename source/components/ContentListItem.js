@@ -307,6 +307,6 @@ export default function ContentListItem({
         </Link>
       </div>
     ),
-    [contentObj, mouseEntered, selected, onClick]
+    [contentObj, mouseEntered, selected, onClick, profileTheme]
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
 import Button from 'components/Button';
@@ -8,6 +8,7 @@ import {
   isValidYoutubeChannelUrl,
   stringIsEmpty
 } from 'helpers/stringHelpers';
+import { useInputContext } from 'contexts';
 
 InfoEditForm.propTypes = {
   email: PropTypes.string,
@@ -26,13 +27,27 @@ export default function InfoEditForm({
   youtubeName,
   youtubeUrl
 }) {
-  const [editedEmail, setEditedEmail] = useState(email || '');
-  const [emailError, setEmailError] = useState('');
-  const [editedWebsite, setEditedWebsite] = useState(website || '');
-  const [websiteError, setWebsiteError] = useState('');
-  const [editedYoutubeUrl, setEditedYoutubeUrl] = useState(youtubeUrl || '');
-  const [youtubeError, setYoutubeError] = useState('');
-  const [editedYoutubeName, setEditedYoutubeName] = useState(youtubeName || '');
+  const {
+    state: { userInfo },
+    actions: {
+      onSetEditedEmail,
+      onSetEmailError,
+      onSetEditedWebsite,
+      onSetWebsiteError,
+      onSetEditedYoutubeName,
+      onSetEditedYoutubeUrl,
+      onSetYoutubeError
+    }
+  } = useInputContext();
+  const {
+    editedEmail = email,
+    emailError,
+    editedWebsite = website,
+    websiteError,
+    editedYoutubeUrl = youtubeUrl,
+    youtubeError,
+    editedYoutubeName = youtubeName
+  } = userInfo;
   const timerRef = useRef(null);
 
   return (
@@ -58,7 +73,7 @@ export default function InfoEditForm({
           maxLength={50}
           placeholder="YouTube Channel Name"
           style={{ marginTop: '1rem' }}
-          onChange={text => setEditedYoutubeName(text)}
+          onChange={text => onSetEditedYoutubeName(text)}
           value={editedYoutubeName}
         />
       )}
@@ -109,8 +124,8 @@ export default function InfoEditForm({
   }
 
   function onEmailInputChange(text) {
-    setEditedEmail(text);
-    setEmailError('');
+    onSetEditedEmail(text);
+    onSetEmailError('');
     checkEmail(text);
   }
 
@@ -118,7 +133,7 @@ export default function InfoEditForm({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(
       () =>
-        setEmailError(
+        onSetEmailError(
           !stringIsEmpty(text) && !isValidEmail(text)
             ? 'That is not a valid email'
             : ''
@@ -128,8 +143,8 @@ export default function InfoEditForm({
   }
 
   function onWebsiteInputChange(text) {
-    setEditedWebsite(text);
-    setWebsiteError('');
+    onSetEditedWebsite(text);
+    onSetWebsiteError('');
     checkWebsiteUrl(text);
   }
 
@@ -137,7 +152,7 @@ export default function InfoEditForm({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(
       () =>
-        setWebsiteError(
+        onSetWebsiteError(
           !stringIsEmpty(text) && !isValidUrl(text)
             ? 'That is not a valid website address'
             : ''
@@ -147,8 +162,8 @@ export default function InfoEditForm({
   }
 
   function onYoutubeInputChange(text) {
-    setEditedYoutubeUrl(text);
-    setYoutubeError('');
+    onSetEditedYoutubeUrl(text);
+    onSetYoutubeError('');
     checkYoutubeUrl(text);
   }
 
@@ -156,7 +171,7 @@ export default function InfoEditForm({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(
       () =>
-        setYoutubeError(
+        onSetYoutubeError(
           !stringIsEmpty(text) && !isValidYoutubeChannelUrl(text)
             ? 'That is not a valid YouTube channel address'
             : ''

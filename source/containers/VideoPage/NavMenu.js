@@ -12,8 +12,7 @@ import request from 'axios';
 import URL from 'constants/URL';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import {} from 'contexts';
-import { useAppContext, useNotiContext } from '../../contexts';
+import { useAppContext, useNotiContext } from 'contexts';
 
 NavMenu.propTypes = {
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),

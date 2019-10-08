@@ -16,7 +16,12 @@ export default function UserReducer(state, action) {
         profile: {
           ...state.profile,
           profileTheme: action.theme
-        }
+        },
+        profiles: state.profiles.map(profile =>
+          profile.id === action.userId
+            ? { ...profile, profileTheme: action.theme }
+            : profile
+        )
       };
     case 'CHANGE_XP':
       return {

@@ -17,6 +17,7 @@ import Description from './Description';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
+import { useScrollPosition } from 'helpers/hooks';
 import { processedURL } from 'helpers/stringHelpers';
 import {
   useAppContext,
@@ -24,7 +25,7 @@ import {
   useHomeContext,
   useViewContext,
   useExploreContext
-} from '../../contexts';
+} from 'contexts';
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -36,9 +37,10 @@ export default function LinkPage({
   history,
   location,
   match: {
-    params: { linkId }
+    params: { linkId: initialLinkId }
   }
 }) {
+  const linkId = Number(initialLinkId);
   const {
     profile: {
       actions: { onDeleteFeed: onDeleteProfileFeed }
@@ -78,70 +80,45 @@ export default function LinkPage({
       onInitContent,
       onLikeComment,
       onLikeContent,
+      onLoadComments,
       onLoadMoreComments,
       onLoadMoreReplies,
       onLoadMoreSubjectComments,
       onLoadMoreSubjectReplies,
       onLoadMoreSubjects,
+      onLoadSubjects,
       onLoadSubjectComments,
-      onSetSubjectRewardLevel,
+      onSetRewardLevel,
       onUploadComment,
       onUploadReply,
       onUploadSubject
     }
   } = useContentContext();
   const {
-    actions: { onSetExploreSubNav }
+    actions: { onRecordScrollPosition, onSetExploreSubNav },
+    state: { scrollPositions }
   } = useViewContext();
+  useScrollPosition({
+    onRecordScrollPosition,
+    pathname: location.pathname,
+    scrollPositions
+  });
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const mounted = useRef(true);
   const contentState = state['url' + linkId] || {};
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  useEffect(() => {
-    document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
-    setLoading(true);
-    initLinkPage();
-    async function initLinkPage() {
-      const data = await loadContent({
-        contentId: linkId,
-        contentType: 'url'
-      });
-      if (data.notFound) return setNotFound(true);
-      const subjectsObj = await loadSubjects({
-        contentType: 'url',
-        contentId: linkId
-      });
-      const commentsObj = await loadComments({
-        contentId: linkId,
-        contentType: 'url',
-        limit: 5
-      });
-      onInitContent({
-        ...data,
-        contentId: Number(linkId),
-        contentType: 'url',
-        childComments: commentsObj?.comments || [],
-        commentsLoadMoreButton: commentsObj?.loadMoreButton || false,
-        subjects: subjectsObj?.results || [],
-        subjectsLoadMoreButton: subjectsObj?.loadMoreButton || false
-      });
-      setLoading(false);
-    }
-  }, [location.pathname]);
-
   const {
     childComments,
+    commentsLoaded,
     commentsLoadMoreButton,
     content,
     description,
-    id,
     likes = [],
     loaded,
     subjects,
+    subjectsLoaded,
     subjectsLoadMoreButton,
     stars,
     timeStamp,
@@ -149,6 +126,60 @@ export default function LinkPage({
     uploader,
     ...embedlyProps
   } = contentState;
+
+  useEffect(() => {
+    if (!loaded) {
+      handleLoadLinkPage();
+    }
+    if (!commentsLoaded) {
+      handleLoadComments();
+    }
+    if (!subjectsLoaded) {
+      handleLoadSubjects();
+    }
+    async function handleLoadLinkPage() {
+      const data = await loadContent({
+        contentId: linkId,
+        contentType: 'url'
+      });
+      if (mounted.current) {
+        if (data.notFound) return setNotFound(true);
+        onInitContent({
+          ...data,
+          contentId: linkId,
+          contentType: 'url'
+        });
+      }
+    }
+    async function handleLoadComments() {
+      const { comments: loadedComments, loadMoreButton } = await loadComments({
+        contentType: 'url',
+        contentId: linkId
+      });
+      onLoadComments({
+        comments: loadedComments,
+        contentId: linkId,
+        contentType: 'url',
+        loadMoreButton
+      });
+    }
+    async function handleLoadSubjects() {
+      const { results, loadMoreButton } = await loadSubjects({
+        contentType: 'url',
+        contentId: linkId
+      });
+      onLoadSubjects({
+        contentId: linkId,
+        contentType: 'url',
+        subjects: results,
+        loadMoreButton
+      });
+    }
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, [location.pathname]);
+
   let userLikedThis = false;
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === userId) userLikedThis = true;
@@ -157,7 +188,7 @@ export default function LinkPage({
     (canEdit || canDelete) && authLevel > uploader?.authLevel;
   const userIsUploader = uploader?.id === userId;
 
-  return loaded && !loading ? (
+  return loaded ? (
     <div
       className={css`
         margin-top: 1rem;
@@ -187,7 +218,7 @@ export default function LinkPage({
         `}
       >
         <Description
-          key={'description' + id}
+          key={'description' + linkId}
           content={content}
           uploader={uploader}
           timeStamp={timeStamp}
@@ -196,16 +227,16 @@ export default function LinkPage({
           url={content}
           userCanEditThis={userCanEditThis}
           description={description}
-          linkId={id}
+          linkId={linkId}
           onDelete={() => setConfirmModalShown(true)}
           onEditDone={handleEditLinkPage}
           userIsUploader={userIsUploader}
         />
         <Embedly
-          key={'link' + id}
+          key={'link' + linkId}
           title={title}
           style={{ marginTop: '2rem' }}
-          contentId={id}
+          contentId={linkId}
           url={content}
           loadingHeight="30rem"
           {...embedlyProps}
@@ -231,11 +262,11 @@ export default function LinkPage({
         >
           <div style={{ display: 'flex' }}>
             <LikeButton
-              key={'like' + id}
+              key={'like' + linkId}
               filled
               style={{ fontSize: '2rem' }}
               contentType="url"
-              contentId={id}
+              contentId={linkId}
               onClick={handleLikeLink}
               liked={userLikedThis}
             />
@@ -266,7 +297,7 @@ export default function LinkPage({
             )}
           </div>
           <Likers
-            key={'likes' + id}
+            key={'likes' + linkId}
             style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
             likes={likes}
             userId={userId}
@@ -278,7 +309,7 @@ export default function LinkPage({
             <XPRewardInterface
               stars={stars}
               contentType="url"
-              contentId={Number(id)}
+              contentId={linkId}
               noPadding
               uploaderId={uploader.id}
               onRewardSubmit={data => {
@@ -296,14 +327,14 @@ export default function LinkPage({
             width: 100%;
           }
         `}
-        contentId={id}
+        contentId={linkId}
         loadMoreButton={subjectsLoadMoreButton}
         subjects={subjects}
         onLoadMoreSubjects={onLoadMoreSubjects}
         onLoadSubjectComments={onLoadSubjectComments}
         onSubjectEditDone={onEditSubject}
         onSubjectDelete={onDeleteSubject}
-        setSubjectRewardLevel={onSetSubjectRewardLevel}
+        onSetRewardLevel={onSetRewardLevel}
         uploadSubject={onUploadSubject}
         contentType="url"
         commentActions={{
@@ -322,7 +353,7 @@ export default function LinkPage({
         autoExpand
         comments={childComments}
         inputTypeLabel="comment"
-        key={'comments' + id}
+        key={'comments' + linkId}
         loadMoreButton={commentsLoadMoreButton}
         onAttachStar={onAttachStar}
         onCommentSubmit={handleUploadComment}
@@ -333,7 +364,7 @@ export default function LinkPage({
         onLoadMoreReplies={onLoadMoreReplies}
         onReplySubmit={handleUploadReply}
         onRewardCommentEdit={onEditRewardComment}
-        parent={{ contentType: 'url', id }}
+        parent={{ contentType: 'url', id: linkId }}
         className={css`
           border: 1px solid ${Color.borderGray()};
           padding: 1rem;
@@ -347,7 +378,7 @@ export default function LinkPage({
       />
       {confirmModalShown && (
         <ConfirmModal
-          key={'confirm' + id}
+          key={'confirm' + linkId}
           title="Remove Link"
           onConfirm={handleDeleteLink}
           onHide={() => setConfirmModalShown(false)}
@@ -355,7 +386,7 @@ export default function LinkPage({
       )}
       {likesModalShown && (
         <UserListModal
-          key={'userlist' + id}
+          key={'userlist' + linkId}
           users={likes}
           userId={userId}
           title="People who liked this"
@@ -371,10 +402,10 @@ export default function LinkPage({
   );
 
   async function handleDeleteLink() {
-    await deleteContent({ id, contentType: 'url' });
-    onDeleteLink(id);
-    onDeleteHomeFeed({ contentType: 'url', contentId: id });
-    onDeleteProfileFeed({ contentType: 'url', contentId: id });
+    await deleteContent({ id: linkId, contentType: 'url' });
+    onDeleteLink(linkId);
+    onDeleteHomeFeed({ contentType: 'url', contentId: linkId });
+    onDeleteProfileFeed({ contentType: 'url', contentId: linkId });
     onSetExploreSubNav('');
     history.push('/links');
   }
@@ -382,7 +413,7 @@ export default function LinkPage({
   function handleDeleteComment(data) {
     onDeleteComment(data);
     onUpdateNumLinkComments({
-      id,
+      id: linkId,
       updateType: 'decrease'
     });
   }
@@ -405,7 +436,7 @@ export default function LinkPage({
       contentId
     });
     onEditLinkPage({
-      id: Number(contentId),
+      id: linkId,
       title,
       content: processedURL(content)
     });
@@ -413,13 +444,13 @@ export default function LinkPage({
 
   function handleLikeLink(likes) {
     onLikeContent({ likes, contentType: 'url', contentId: linkId });
-    onLikeLink({ likes, id });
+    onLikeLink({ likes, id: linkId });
   }
 
   function handleUploadComment(params) {
     onUploadComment(params);
     onUpdateNumLinkComments({
-      id,
+      id: linkId,
       updateType: 'increase'
     });
   }
@@ -427,7 +458,7 @@ export default function LinkPage({
   function handleUploadReply(data) {
     onUploadReply(data);
     onUpdateNumLinkComments({
-      id,
+      id: linkId,
       updateType: 'increase'
     });
   }

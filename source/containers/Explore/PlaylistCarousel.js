@@ -13,7 +13,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
-import { useAppContext, useExploreContext } from '../../contexts';
+import { useAppContext, useExploreContext } from 'contexts';
 
 PlaylistCarousel.propTypes = {
   userIsUploader: PropTypes.bool,

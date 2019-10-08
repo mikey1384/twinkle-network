@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
-import { useAppContext, useChatContext } from '../../contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
@@ -47,10 +47,9 @@ function UsernameText({ className, color, history, style = {}, user = {} }) {
       </span>
       {menuShown && (
         <DropdownList style={{ width: '100%' }}>
-          <li onClick={() => window.open(`/users/${user.username}`)}>
+          <li onClick={() => history.push(`/users/${user.username}`)}>
             <a
-              href={`/users/${user.username}`}
-              style={{ color: Color.darkerGray() }}
+              style={{ color: Color.darkerGray(), cursor: 'pointer' }}
               onClick={e => e.preventDefault()}
             >
               Profile
@@ -83,7 +82,7 @@ function UsernameText({ className, color, history, style = {}, user = {} }) {
         recepient: user,
         channelData: data
       });
-      history.push('/talk');
+      history.push('/chat');
     }
   }
 

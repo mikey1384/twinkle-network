@@ -12,7 +12,7 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import request from 'axios';
 import URL from 'constants/URL';
-import { useAppContext, useExploreContext } from '../../../contexts';
+import { useAppContext, useExploreContext } from 'contexts';
 
 LinkItem.propTypes = {
   history: PropTypes.object.isRequired,

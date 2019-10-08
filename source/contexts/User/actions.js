@@ -6,9 +6,10 @@ export default function UserActions(dispatch) {
         filter
       });
     },
-    onChangeProfileTheme(theme) {
+    onChangeProfileTheme({ userId, theme }) {
       return dispatch({
         type: 'CHANGE_PROFILE_THEME',
+        userId,
         theme
       });
     },

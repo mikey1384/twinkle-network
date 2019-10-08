@@ -24,7 +24,12 @@ import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
 import { useScrollPosition } from 'helpers/hooks';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useInputContext,
+  useViewContext
+} from 'contexts';
 
 Home.propTypes = {
   location: PropTypes.object,
@@ -72,6 +77,10 @@ export default function Home({ location, selectedTheme }) {
     }
   } = useContentContext();
   const {
+    state: { editedStatusMsg, editedStatusColor },
+    actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
+  } = useInputContext();
+  const {
     email,
     emailVerified,
     greeting,
@@ -92,11 +101,13 @@ export default function Home({ location, selectedTheme }) {
   } = profile;
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [editedStatusColor, setEditedStatusColor] = useState(statusColor);
-  const [editedStatusMsg, setEditedStatusMsg] = useState('');
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
   const StatusInputRef = useRef(null);
+
+  useEffect(() => {
+    onSetEditedStatusColor('');
+  }, [userId]);
 
   useEffect(() => {
     mounted.current = true;
@@ -115,7 +126,6 @@ export default function Home({ location, selectedTheme }) {
             childComments: comments,
             commentsLoadMoreButton: loadMoreButton
           });
-          setEditedStatusColor(statusColor);
         }
       } catch (error) {
         console.error(error);
@@ -135,6 +145,10 @@ export default function Home({ location, selectedTheme }) {
     contentType: 'user'
   };
   const { childComments = [], commentsLoadMoreButton = false } = contentState;
+  const displayedStatusColor =
+    userId === profile.id ? editedStatusColor : statusColor;
+  const displayedStatusMsg =
+    userId === profile.id ? editedStatusMsg : statusMsg;
 
   return (
     <div
@@ -185,23 +199,23 @@ export default function Home({ location, selectedTheme }) {
                   profile={profile}
                   statusColor={editedStatusColor || statusColor}
                   editedStatusMsg={editedStatusMsg}
-                  setColor={color => setEditedStatusColor(color)}
+                  setColor={color => onSetEditedStatusColor(color)}
                   onTextChange={event => {
-                    setEditedStatusMsg(
+                    onSetEditedStatusMsg(
                       addEmoji(renderText(event.target.value))
                     );
                     if (!event.target.value) {
-                      setEditedStatusColor('');
+                      onSetEditedStatusColor('');
                     }
                   }}
                   onCancel={() => {
-                    setEditedStatusMsg('');
-                    setEditedStatusColor('');
+                    onSetEditedStatusMsg('');
+                    onSetEditedStatusColor('');
                   }}
                   onStatusSubmit={handleStatusMsgSubmit}
                 />
               )}
-              {(!stringIsEmpty(statusMsg) || editedStatusMsg) && (
+              {(!stringIsEmpty(statusMsg) || displayedStatusMsg) && (
                 <StatusMsg
                   style={{
                     fontSize: '1.6rem',
@@ -210,8 +224,10 @@ export default function Home({ location, selectedTheme }) {
                     marginBottom:
                       profile.twinkleXP > 0 || bioExists ? '2rem' : 0
                   }}
-                  statusColor={editedStatusColor || statusColor || 'logoBlue'}
-                  statusMsg={editedStatusMsg || statusMsg}
+                  statusColor={
+                    displayedStatusColor || statusColor || 'logoBlue'
+                  }
+                  statusMsg={displayedStatusMsg || statusMsg}
                 />
               )}
               {userId === profile.id &&
@@ -229,7 +245,7 @@ export default function Home({ location, selectedTheme }) {
                     <Button
                       transparent
                       onClick={() => {
-                        setEditedStatusMsg(statusMsg);
+                        onSetEditedStatusMsg(statusMsg);
                         StatusInputRef.current.focus();
                       }}
                     >
@@ -482,8 +498,8 @@ export default function Home({ location, selectedTheme }) {
       },
       auth()
     );
-    setEditedStatusColor('');
-    setEditedStatusMsg('');
+    onSetEditedStatusColor('');
+    onSetEditedStatusMsg('');
     if (typeof updateStatusMsg === 'function') onUpdateStatusMsg(data);
   }
 }

@@ -34,9 +34,15 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
+        label {
+          font-weight: bold;
+        }
+        input {
+          margin-top: 0.5rem;
+        }
         small {
           font-size: 1.3rem;
-          color: ${Color.lightGray()};
+          color: ${Color.darkGray()};
         }
       `}
     >
@@ -44,10 +50,8 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
       <main style={{ width: '100%', justifyContent: 'flex-start' }}>
         <div>
           <label>
-            <strong>
-              Answer <b>one or multiple</b> questions below, or write anything
-              you want about yourself
-            </strong>
+            {`Write`} <b>anything you want</b>{' '}
+            {`about yourself. If can't think of anything to write then read the questions below, but you don't have to answer them`}
           </label>
           <Input
             autoFocus
@@ -60,16 +64,14 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
           >{`(${firstLine.length}/${MAX_CHAR} characters)`}</small>
           <p>
             {
-              "If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student, which english academy do you go to? What's your teacher's name? If you are not a student, what is your occupation? If you don't want to answer these questions, feel free to introduce yourself anyway you want "
+              "If you are a Twinkle student, which class are you in Twinkle? If you are a non-Twinkle student, which english academy do you go to? What's your teacher's name? If you are not a student, what is your occupation?"
             }
           </p>
         </div>
         <div>
           <label>
-            <strong>
-              Answer <b>one or multiple</b> questions below, or write anything
-              you want about yourself
-            </strong>
+            {`Write`} <b>anything you want</b>{' '}
+            {`about yourself. If can't think of anything to write then read the questions below, but you don't have to answer them`}
           </label>
           <Input
             value={secondLine}
@@ -85,10 +87,8 @@ export default function BioEditModal({ onHide, onSubmit, ...props }) {
         </div>
         <div>
           <label>
-            <strong>
-              Answer <b style={{ color: Color.green() }}>one or multiple</b>{' '}
-              questions below, or write anything you want about yourself
-            </strong>
+            {`Write`} <b>anything you want</b>{' '}
+            {`about yourself. If can't think of anything to write then read the questions below, but you don't have to answer them`}
           </label>
           <Input
             value={thirdLine}
