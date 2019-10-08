@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
@@ -51,10 +51,12 @@ export default function TagForm({
   subTitle,
   title
 }) {
-  const { handleSearch, searching, searchText, setSearchText } = useSearch({
+  const [searchText, setSearchText] = useState('');
+  const { handleSearch, searching } = useSearch({
     onSearch,
     onEmptyQuery: () => onNotFound?.({ messageShown: false }),
-    onClear
+    onClear,
+    onSetSearchText: setSearchText
   });
   const filteredResults = searchResults.filter(filter);
 

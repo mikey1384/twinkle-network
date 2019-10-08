@@ -165,6 +165,11 @@ export default function InputReducer(state, action) {
           hasSecretAnswer: action.hasSecretAnswer
         }
       };
+    case 'SET_SEARCH_TEXT':
+      return {
+        ...state,
+        [action.category + 'SearchText']: action.searchText
+      };
     case 'SET_SECRET_ANSWER':
       return {
         ...state,

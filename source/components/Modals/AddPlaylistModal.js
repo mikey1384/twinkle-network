@@ -55,10 +55,12 @@ export default function AddPlaylistModal({
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
-  const { handleSearch, searching, searchText } = useSearch({
+  const { handleSearch, searching } = useSearch({
     onSearch: searchVideo,
-    onClear: () => setSearchedVideos([])
+    onClear: () => setSearchedVideos([]),
+    onSetSearchText: setSearchText
   });
   const playlistVideoObjects = useRef({});
   const mounted = useRef(true);

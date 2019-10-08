@@ -7,7 +7,12 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
-import { useAppContext, useViewContext, useExploreContext } from 'contexts';
+import {
+  useAppContext,
+  useViewContext,
+  useExploreContext,
+  useInputContext
+} from 'contexts';
 
 Videos.propTypes = {
   history: PropTypes.object.isRequired,
@@ -41,6 +46,10 @@ export default function Videos({ history, location }) {
     }
   } = useExploreContext();
   const {
+    state: { playlistSearchText },
+    actions: { onSetSearchText }
+  } = useInputContext();
+  const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }
   } = useViewContext();
@@ -49,10 +58,12 @@ export default function Videos({ history, location }) {
     pathname: location.pathname,
     scrollPositions
   });
-  const { handleSearch, searching, searchText } = useSearch({
+  const { handleSearch, searching } = useSearch({
     onSearch: handleSearchPlaylist,
     onClear: () =>
-      onSetSearchedPlaylists({ playlists: [], loadMoreButton: false })
+      onSetSearchedPlaylists({ playlists: [], loadMoreButton: false }),
+    onSetSearchText: searchText =>
+      onSetSearchText({ category: 'playlist', searchText })
   });
   const AllPlaylistsPanelRef = useRef(null);
 
@@ -68,7 +79,7 @@ export default function Videos({ history, location }) {
     }
   }, []);
 
-  const playlists = !stringIsEmpty(searchText)
+  const playlists = !stringIsEmpty(playlistSearchText)
     ? searchedPlaylists
     : allPlaylists;
 
@@ -94,7 +105,7 @@ export default function Videos({ history, location }) {
         )}
         title="All Playlists"
         loadMoreButton={
-          !stringIsEmpty(searchText)
+          !stringIsEmpty(playlistSearchText)
             ? loadMoreSearchedPlaylistsButton
             : loadMorePlaylistsButton
         }
@@ -103,7 +114,7 @@ export default function Videos({ history, location }) {
         loaded={allPlaylistsLoaded}
         isSearching={searching}
         onSearch={handleSearch}
-        searchQuery={searchText}
+        searchQuery={playlistSearchText}
       />
       {addPlaylistModalShown && (
         <AddPlaylistModal

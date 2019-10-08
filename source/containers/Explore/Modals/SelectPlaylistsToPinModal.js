@@ -40,13 +40,15 @@ export default function SelectPlaylistsToPinModal({
   const [loadingMore, setLoadingMore] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const playlistsToPinObjectRef = useRef({});
   const pinnedPlaylistsObjectRef = useRef({});
   const searchedPlaylistsObjectRef = useRef({});
   const playlistObjectsRef = useRef({});
-  const { handleSearch, searchText, searching } = useSearch({
+  const { handleSearch, searching } = useSearch({
     onSearch: handlePlaylistSearch,
-    onClear: () => setSearchedPlaylists([])
+    onClear: () => setSearchedPlaylists([]),
+    onSetSearchText: setSearchText
   });
   useEffect(() => {
     pinnedPlaylistsObjectRef.current = featuredPlaylists.reduce(

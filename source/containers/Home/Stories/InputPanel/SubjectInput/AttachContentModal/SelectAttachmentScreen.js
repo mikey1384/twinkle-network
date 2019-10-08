@@ -29,11 +29,13 @@ export default function SelectAttachmentScreen({
   const [selectedUpload, setSelectedUpload] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const mounted = useRef(true);
   const contentObjs = useRef({});
-  const { handleSearch, searching, searchText } = useSearch({
+  const { handleSearch, searching } = useSearch({
     onSearch,
-    onClear: () => setSearchedUploads([])
+    onClear: () => setSearchedUploads([]),
+    onSetSearchText: setSearchText
   });
 
   useEffect(() => {

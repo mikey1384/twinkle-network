@@ -9,7 +9,7 @@ import PeopleFilterBar from './PeopleFilterBar';
 import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { useAppContext, useViewContext } from 'contexts';
+import { useAppContext, useInputContext, useViewContext } from 'contexts';
 import request from 'axios';
 import URL from 'constants/URL';
 
@@ -48,12 +48,18 @@ export default function People({ location, history }) {
     pathname: location.pathname,
     scrollPositions
   });
+  const {
+    state: { userSearchText },
+    actions: { onSetSearchText }
+  } = useInputContext();
   const LAST_ONLINE_FILTER_LABEL = 'Last Online';
   const RANKING_FILTER_LABEL = 'Ranking';
   const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
   const [loading, setLoading] = useState(false);
-  const { handleSearch, searching, searchText } = useSearch({
+  const { handleSearch, searching } = useSearch({
     onSearch: handleSearchUsers,
+    onSetSearchText: searchText =>
+      onSetSearchText({ category: 'user', searchText }),
     onClear: onClearUserSearch
   });
   const mounted = useRef(true);
@@ -63,7 +69,7 @@ export default function People({ location, history }) {
       : LAST_ONLINE_FILTER_LABEL;
 
   useInfiniteScroll({
-    scrollable: profiles.length > 0 && stringIsEmpty(searchText),
+    scrollable: profiles.length > 0 && stringIsEmpty(userSearchText),
     loadable: loadMoreButton,
     loading,
     feedsLength: profiles.length,
@@ -75,9 +81,8 @@ export default function People({ location, history }) {
     mounted.current = true;
     return function cleanUp() {
       mounted.current = false;
-      onClearUserSearch();
     };
-  }, [searchText]);
+  }, [userSearchText]);
 
   useEffect(() => {
     init();
@@ -102,7 +107,7 @@ export default function People({ location, history }) {
         borderColor={profileTheme}
         placeholder="Search Users"
         onChange={handleSearch}
-        value={searchText}
+        value={userSearchText}
       />
       <div
         style={{
@@ -121,11 +126,11 @@ export default function People({ location, history }) {
           orderByText={orderBy}
           dropdownLabel={dropdownLabel}
         />
-        {(!profilesLoaded || (!stringIsEmpty(searchText) && searching)) && (
+        {(!profilesLoaded || (!stringIsEmpty(userSearchText) && searching)) && (
           <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
         )}
         {profilesLoaded &&
-          stringIsEmpty(searchText) &&
+          stringIsEmpty(userSearchText) &&
           profiles.map(profile => (
             <ProfilePanel
               expandable
@@ -134,7 +139,7 @@ export default function People({ location, history }) {
               profile={profile}
             />
           ))}
-        {!stringIsEmpty(searchText) &&
+        {!stringIsEmpty(userSearchText) &&
           !searching &&
           searchedProfiles.map(profile => (
             <ProfilePanel
@@ -144,7 +149,7 @@ export default function People({ location, history }) {
               profile={profile}
             />
           ))}
-        {!stringIsEmpty(searchText) &&
+        {!stringIsEmpty(userSearchText) &&
           !searching &&
           searchedProfiles.length === 0 && (
             <div
@@ -159,7 +164,7 @@ export default function People({ location, history }) {
               No Users Found
             </div>
           )}
-        {stringIsEmpty(searchText) && profilesLoaded && loadMoreButton && (
+        {stringIsEmpty(userSearchText) && profilesLoaded && loadMoreButton && (
           <LoadMoreButton
             filled
             color="lightBlue"

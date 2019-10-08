@@ -39,14 +39,18 @@ export function useOutsideClick(ref, callback) {
   });
 }
 
-export function useSearch({ onSearch, onEmptyQuery, onClear }) {
+export function useSearch({
+  onSearch,
+  onEmptyQuery,
+  onClear,
+  onSetSearchText
+}) {
   const [searching, setSearching] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const timerRef = useRef(null);
 
   function handleSearch(text) {
     clearTimeout(timerRef.current);
-    setSearchText(text);
+    onSetSearchText(text);
     onClear?.();
     if (stringIsEmpty(text)) {
       onEmptyQuery?.();
@@ -59,7 +63,7 @@ export function useSearch({ onSearch, onEmptyQuery, onClear }) {
     }, 500);
   }
 
-  return { handleSearch, searching, searchText, setSearchText };
+  return { handleSearch, searching };
 }
 
 export function useScrollPosition({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
@@ -21,9 +21,11 @@ export default function ChatSearchBox() {
       onUpdateSelectedChannelId
     }
   } = useChatContext();
-  const { handleSearch, searching, searchText, setSearchText } = useSearch({
+  const [searchText, setSearchText] = useState('');
+  const { handleSearch, searching } = useSearch({
     onSearch: handleSearchChat,
-    onClear: onClearChatSearchResults
+    onClear: onClearChatSearchResults,
+    onSetSearchText: setSearchText
   });
 
   return (

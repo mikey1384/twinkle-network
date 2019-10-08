@@ -126,6 +126,13 @@ export default function InputActions(dispatch) {
         hasSecretAnswer
       });
     },
+    onSetSearchText({ category, searchText }) {
+      return dispatch({
+        type: 'SET_SEARCH_TEXT',
+        category,
+        searchText
+      });
+    },
     onSetSecretAnswer(secretAnswer) {
       return dispatch({
         type: 'SET_SECRET_ANSWER',

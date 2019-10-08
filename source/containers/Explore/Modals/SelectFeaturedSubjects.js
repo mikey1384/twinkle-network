@@ -36,9 +36,11 @@ export default function SelectFeaturedSubjectsModal({
   const [submitting, setSubmitting] = useState(false);
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [searchedChallenges, setSearchedChallenges] = useState([]);
-  const { handleSearch, searchText, searching } = useSearch({
+  const [searchText, setSearchText] = useState('');
+  const { handleSearch, searching } = useSearch({
     onSearch: handleChallengeSearch,
-    onClear: () => setSearchedChallenges([])
+    onClear: () => setSearchedChallenges([]),
+    onSetSearchText: setSearchText
   });
 
   useEffect(() => {
