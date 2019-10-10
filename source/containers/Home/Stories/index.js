@@ -1,13 +1,13 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useMemo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import InputPanel from './InputPanel';
-import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import Banner from 'components/Banner';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HomeFilter from './HomeFilter';
+import ContentPanel from 'components/ContentPanel';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
 import {
@@ -40,7 +40,7 @@ Stories.propTypes = {
   location: PropTypes.object
 };
 
-function Stories({ location }) {
+export default function Stories({ location }) {
   const {
     user: {
       state: { hideWatched, userId, username }
@@ -154,87 +154,107 @@ function Stories({ location }) {
     }
   }, [hideWatched]);
 
-  return (
-    <ErrorBoundary>
-      <div style={{ width: '100%' }} ref={ContainerRef}>
-        <HomeFilter
-          category={category}
-          changeCategory={handleChangeCategory}
-          displayOrder={displayOrder}
-          selectedFilter={subFilter}
-          applyFilter={applyFilter}
-          setDisplayOrder={handleDisplayOrder}
-        />
-        <InputPanel />
-        <div style={{ width: '100%' }}>
-          {loadingFeeds && <Loading text="Loading Feeds..." />}
-          {loaded && feeds.length === 0 && !loadingFeeds && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '15rem'
-              }}
-            >
-              <h1 style={{ textAlign: 'center' }}>
-                {username
-                  ? `Hello ${username}, be the first to post something`
-                  : 'Hi there!'}
-              </h1>
-            </div>
-          )}
-          {loaded && !loadingFeeds && feeds.length > 0 && (
-            <>
-              {feedsOutdated && (
-                <Banner
-                  color="gold"
-                  onClick={() => window.location.reload()}
-                  style={{ marginBottom: '1rem' }}
-                >
-                  Tap to See New Posts!
-                </Banner>
-              )}
-              {numNewPosts > 0 && (
-                <Banner
-                  color="gold"
-                  onClick={handleFetchNewFeeds}
-                  style={{ marginBottom: '1rem' }}
-                >
-                  Tap to See {numNewPosts} new Post
-                  {numNewPosts > 1 ? 's' : ''}
-                </Banner>
-              )}
-              {feeds.map((feed, index) => (
-                <ContentPanel
-                  key={category + subFilter + feed.feedId}
-                  style={{
-                    marginBottom: '1rem',
-                    zIndex: feeds.length - index
-                  }}
-                  contentId={feed.contentId}
-                  contentType={feed.contentType}
-                  commentsLoadLimit={5}
-                  numPreviewComments={1}
-                  onDeleteContent={onDeleteFeed}
-                  userId={userId}
-                />
-              ))}
-              {loadMoreButton && (
-                <LoadMoreButton
-                  style={{ marginBottom: '1rem' }}
-                  onClick={() => setLoadingMore(true)}
-                  loading={loadingMore}
-                  color="lightBlue"
-                  filled
-                />
-              )}
-            </>
-          )}
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div style={{ width: '100%' }} ref={ContainerRef}>
+          <HomeFilter
+            category={category}
+            changeCategory={handleChangeCategory}
+            displayOrder={displayOrder}
+            selectedFilter={subFilter}
+            applyFilter={applyFilter}
+            setDisplayOrder={handleDisplayOrder}
+          />
+          <InputPanel />
+          <div style={{ width: '100%' }}>
+            {loadingFeeds && <Loading text="Loading Feeds..." />}
+            {loaded && feeds.length === 0 && !loadingFeeds && (
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '15rem'
+                }}
+              >
+                <h1 style={{ textAlign: 'center' }}>
+                  {username
+                    ? `Hello ${username}, be the first to post something`
+                    : 'Hi there!'}
+                </h1>
+              </div>
+            )}
+            {loaded && !loadingFeeds && feeds.length > 0 && (
+              <>
+                {feedsOutdated && (
+                  <Banner
+                    color="gold"
+                    onClick={() => window.location.reload()}
+                    style={{ marginBottom: '1rem' }}
+                  >
+                    Tap to See New Posts!
+                  </Banner>
+                )}
+                {numNewPosts > 0 && (
+                  <Banner
+                    color="gold"
+                    onClick={handleFetchNewFeeds}
+                    style={{ marginBottom: '1rem' }}
+                  >
+                    Tap to See {numNewPosts} new Post
+                    {numNewPosts > 1 ? 's' : ''}
+                  </Banner>
+                )}
+                {feeds.map((feed, index) => (
+                  <ContentPanel
+                    key={
+                      category + subFilter + feed.contentId + feed.contentType
+                    }
+                    style={{
+                      marginBottom: '1rem',
+                      zIndex: feeds.length - index
+                    }}
+                    contentId={feed.contentId}
+                    contentType={feed.contentType}
+                    commentsLoadLimit={5}
+                    numPreviewComments={1}
+                    onDeleteContent={onDeleteFeed}
+                    userId={userId}
+                  />
+                ))}
+                {loadMoreButton && (
+                  <LoadMoreButton
+                    style={{ marginBottom: '1rem' }}
+                    onClick={() => setLoadingMore(true)}
+                    loading={loadingMore}
+                    color="lightBlue"
+                    filled
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    ),
+    [
+      feeds,
+      hideWatched,
+      userId,
+      username,
+      numNewPosts,
+      category,
+      loadMoreButton,
+      loaded,
+      subFilter,
+      displayOrder,
+      loadingFeeds,
+      loadingMore,
+      loadingNewFeeds,
+      feedsOutdated
+    ]
   );
 
   async function applyFilter(filter) {
@@ -350,5 +370,3 @@ function Stories({ location }) {
     }
   }
 }
-
-export default memo(Stories);

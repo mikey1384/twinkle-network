@@ -296,7 +296,6 @@ export default function AddPlaylistModal({
         description: finalizeEmoji(description),
         selectedVideos
       });
-      await uploadPlaylist(data);
       onUploadPlaylist(data);
       focusPlaylistPanelAfterUpload?.();
       onHide();

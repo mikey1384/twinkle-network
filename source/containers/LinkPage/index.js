@@ -123,8 +123,7 @@ export default function LinkPage({
     stars,
     timeStamp,
     title,
-    uploader,
-    ...embedlyProps
+    uploader
   } = contentState;
 
   useEffect(() => {
@@ -234,12 +233,9 @@ export default function LinkPage({
         />
         <Embedly
           key={'link' + linkId}
-          title={title}
           style={{ marginTop: '2rem' }}
           contentId={linkId}
-          url={content}
           loadingHeight="30rem"
-          {...embedlyProps}
         />
         <RewardStatus
           contentType="url"

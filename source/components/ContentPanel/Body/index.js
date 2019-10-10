@@ -43,8 +43,6 @@ export default function Body({
   commentsShown,
   contentObj,
   contentObj: {
-    actualDescription,
-    actualTitle,
     commentsLoaded,
     contentId,
     rewardLevel,
@@ -57,11 +55,9 @@ export default function Body({
     previewLoaded,
     rootId,
     rootType,
-    siteUrl,
     stars = [],
     rootObj = {},
     targetObj = {},
-    thumbUrl,
     contentType,
     uploader = {},
     views
@@ -106,7 +102,6 @@ export default function Body({
     onSetCommentsShown,
     onSetRewardLevel
   } = useContext(LocalContext);
-  const [edited, setEdited] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -173,9 +168,6 @@ export default function Body({
   ]);
 
   useEffect(() => {
-    if (prevContent.current && prevContent.current !== contentObj.content) {
-      setEdited(true);
-    }
     prevContent.current = contentObj.content;
   }, [contentObj.content]);
 
@@ -184,14 +176,6 @@ export default function Body({
   const userCanRewardThis = canStar && authLevel > uploader.authLevel;
   const editButtonShown = userId === uploader.id || userCanEditThis;
   const secretLocked = contentType === 'comment' && commentsHidden;
-  const urlRelated = edited
-    ? {}
-    : {
-        thumbUrl: thumbUrl || rootObj.thumbUrl,
-        actualTitle: actualTitle || rootObj.actualTitle,
-        actualDescription: actualDescription || rootObj.actualDescription,
-        siteUrl: siteUrl || rootObj.siteUrl
-      };
 
   return (
     <ErrorBoundary>
@@ -211,7 +195,6 @@ export default function Body({
           />
         )}
         <MainContent
-          changeSpoilerStatus={onChangeSpoilerStatus}
           contentId={contentId}
           contentObj={contentObj}
           contentType={contentType}
@@ -228,7 +211,6 @@ export default function Body({
           rootObj={rootObj}
           rootType={rootType}
           targetObj={targetObj}
-          urlRelated={urlRelated}
         />
         {!isEditing && !commentsHidden && (
           <div

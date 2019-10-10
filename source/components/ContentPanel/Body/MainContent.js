@@ -17,7 +17,6 @@ import { css } from 'emotion';
 import { withRouter } from 'react-router';
 
 MainContent.propTypes = {
-  changeSpoilerStatus: PropTypes.func,
   commentsHidden: PropTypes.bool,
   contentObj: PropTypes.object,
   contentId: PropTypes.number.isRequired,
@@ -32,9 +31,7 @@ MainContent.propTypes = {
   onEditDismiss: PropTypes.func.isRequired,
   onLoadTags: PropTypes.func,
   rootObj: PropTypes.object,
-  urlRelated: PropTypes.object,
   rootType: PropTypes.string,
-  secretAnswerShown: PropTypes.bool,
   targetObj: PropTypes.object
 };
 
@@ -53,7 +50,6 @@ function MainContent({
   onLoadTags,
   rootObj,
   targetObj,
-  urlRelated,
   rootType,
   contentType
 }) {
@@ -218,13 +214,7 @@ function MainContent({
           )}
         </div>
         {!isEditing && contentType === 'url' && (
-          <Embedly
-            title={cleanString(contentObj.title)}
-            url={contentObj.content}
-            contentId={contentObj.contentId}
-            loadingHeight="30rem"
-            {...urlRelated}
-          />
+          <Embedly contentId={contentObj.contentId} loadingHeight="30rem" />
         )}
         {contentType === 'subject' &&
           !!contentObj.rewardLevel &&

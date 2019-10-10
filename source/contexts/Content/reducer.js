@@ -169,12 +169,14 @@ export default function ContentPageReducer(state, action) {
           targetObj: prevContentState.targetObj
             ? {
                 ...prevContentState.targetObj,
-                subject: targetSubjectMatches
-                  ? {
-                      ...prevContentState.targetObj.subject,
-                      secretShown: action.shown
-                    }
-                  : prevContentState.targetObj.subject
+                subject: prevContentState.targetObj.subject
+                  ? targetSubjectMatches
+                    ? {
+                        ...prevContentState.targetObj.subject,
+                        secretShown: action.shown
+                      }
+                    : prevContentState.targetObj.subject
+                  : undefined
               }
             : undefined
         };
@@ -768,6 +770,22 @@ export default function ContentPageReducer(state, action) {
           tags: action.tags
         }
       };
+    case 'SET_ACTUAL_URL_DESCRIPTION':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          actualDescription: action.description
+        }
+      };
+    case 'SET_ACTUAL_URL_TITLE':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          actualTitle: action.title
+        }
+      };
     case 'SET_BY_USER_STATUS':
       return {
         ...state,
@@ -782,6 +800,22 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           commentsShown: true
+        }
+      };
+    case 'SET_EXISTING_CONTENT':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          existingContent: action.content
+        }
+      };
+    case 'SET_PREV_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          prevUrl: action.prevUrl
         }
       };
     case 'SET_REWARD_LEVEL': {
@@ -838,6 +872,14 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
+    case 'SET_SITE_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          siteUrl: action.siteUrl
+        }
+      };
     case 'SET_SUBJECT_REWARD_LEVEL':
       return {
         ...state,
@@ -851,6 +893,14 @@ export default function ContentPageReducer(state, action) {
                 }
               : subject;
           })
+        }
+      };
+    case 'SET_THUMB_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          thumbUrl: action.thumbUrl
         }
       };
     case 'SET_VIDEO_IMAGE_URL':

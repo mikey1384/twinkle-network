@@ -104,7 +104,6 @@ export default function TextMessage({
             url={extractedUrl}
             contentId={messageId}
             contentType="chat"
-            objectFit="contain"
             imageHeight="25vw"
             imageMobileHeight="60vw"
             siteUrl={linkUrl}

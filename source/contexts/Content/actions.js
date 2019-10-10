@@ -229,6 +229,22 @@ export default function ContentActions(dispatch) {
         tags
       });
     },
+    onSetActualDescription({ contentId, contentType, description }) {
+      return dispatch({
+        type: 'SET_ACTUAL_URL_DESCRIPTION',
+        contentId,
+        contentType,
+        description
+      });
+    },
+    onSetActualTitle({ contentId, contentType, title }) {
+      return dispatch({
+        type: 'SET_ACTUAL_URL_TITLE',
+        contentId,
+        contentType,
+        title
+      });
+    },
     onSetByUserStatus({ byUser, contentId, contentType }) {
       return dispatch({
         type: 'SET_BY_USER_STATUS',
@@ -244,6 +260,22 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onSetExistingContent({ contentId, contentType, content }) {
+      return dispatch({
+        type: 'SET_EXISTING_CONTENT',
+        contentId,
+        contentType,
+        content
+      });
+    },
+    onSetPrevUrl({ contentId, contentType, prevUrl }) {
+      return dispatch({
+        type: 'SET_PREV_URL',
+        contentId,
+        contentType,
+        prevUrl
+      });
+    },
     onSetRewardLevel({ rewardLevel, contentType, contentId }) {
       return dispatch({
         type: 'SET_REWARD_LEVEL',
@@ -252,12 +284,28 @@ export default function ContentActions(dispatch) {
         contentId
       });
     },
+    onSetSiteUrl({ contentId, contentType, siteUrl }) {
+      return dispatch({
+        type: 'SET_SITE_URL',
+        contentId,
+        contentType,
+        siteUrl
+      });
+    },
     onSetSubjectRewardLevel({ contentId, contentType, rewardLevel }) {
       return dispatch({
         type: 'SET_SUBJECT_REWARD_LEVEL',
         rewardLevel,
         contentId: Number(contentId),
         contentType
+      });
+    },
+    onSetThumbUrl({ contentId, contentType, thumbUrl }) {
+      return dispatch({
+        type: 'SET_THUMB_URL',
+        contentId,
+        contentType,
+        thumbUrl
       });
     },
     onSetVideoCurrentTime({ videoId, currentTime }) {

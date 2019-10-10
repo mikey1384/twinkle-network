@@ -403,13 +403,15 @@ export default function ExploreReducer(state, action) {
           ...state.videos,
           ...(action.isSearch
             ? {
-                searchedPlaylists: state.searchedPlaylists.concat(
+                searchedPlaylists: state.videos.searchedPlaylists.concat(
                   action.playlists
                 ),
                 loadMoreSearchedPlaylistsButton: action.loadMoreButton
               }
             : {
-                allPlaylists: state.allPlaylists.concat(action.playlists),
+                allPlaylists: state.videos.allPlaylists.concat(
+                  action.playlists
+                ),
                 loadMorePlaylistsButton: action.loadMoreButton
               })
         }
@@ -580,7 +582,7 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          allPlaylists: [action.data].concat(state.allPlaylists),
+          allPlaylists: [action.data].concat(state.videos.allPlaylists),
           loadMoreButton: state.loadMoreButton,
           addPlaylistModalShown: false
         }

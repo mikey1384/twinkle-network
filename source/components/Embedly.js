@@ -1,17 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
 import { css } from 'emotion';
-import { getFileInfoFromFileName } from 'helpers/stringHelpers';
+import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { useContentContext } from 'contexts';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/content`;
 
 Embedly.propTypes = {
-  actualDescription: PropTypes.string,
-  actualTitle: PropTypes.string,
   contentId: PropTypes.number,
   forChat: PropTypes.bool,
   small: PropTypes.bool,
@@ -20,41 +19,49 @@ Embedly.propTypes = {
   imageOnly: PropTypes.bool,
   loadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
-  siteUrl: PropTypes.string,
   style: PropTypes.object,
-  thumbUrl: PropTypes.string,
-  contentType: PropTypes.string,
-  title: PropTypes.string,
-  url: PropTypes.string
+  contentType: PropTypes.string
 };
 
 export default function Embedly({
-  thumbUrl,
-  actualTitle,
-  actualDescription,
   contentId,
+  contentType = 'url',
   forChat,
   imageHeight = '100%',
   imageMobileHeight = '100%',
   imageOnly,
   loadingHeight = '100%',
   noLink,
-  siteUrl,
   small,
-  style,
-  contentType = 'url',
-  url,
-  ...props
+  style
 }) {
+  const {
+    state,
+    actions: {
+      onSetActualDescription,
+      onSetActualTitle,
+      onSetPrevUrl,
+      onSetSiteUrl,
+      onSetThumbUrl
+    }
+  } = useContentContext();
+  const contentState = state[contentType + contentId] || {};
+  const {
+    actualDescription,
+    actualTitle,
+    description,
+    prevUrl,
+    thumbUrl,
+    siteUrl,
+    title,
+    content
+  } = contentState;
+  const url = content;
   const [imageUrl, setImageUrl] = useState(
     !thumbUrl && typeof siteUrl === 'string'
       ? '/img/link.png'
       : thumbUrl?.replace('http://', 'https://')
   );
-  const [title, setTitle] = useState(actualTitle);
-  const [description, setDescription] = useState(actualDescription);
-  const [site, setSite] = useState(siteUrl);
-  const [prevUrl, setPrevUrl] = useState(url);
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
@@ -71,13 +78,17 @@ export default function Embedly({
   `;
 
   useEffect(() => {
+    setImageUrl(
+      url && getFileInfoFromFileName(url)?.fileType === 'image' ? url : thumbUrl
+    );
+  }, [thumbUrl]);
+
+  useEffect(() => {
     mounted.current = true;
-    if (url && getFileInfoFromFileName(url)?.fileType === 'image') {
-      setImageUrl(url);
-    }
-    if (url && (typeof siteUrl !== 'string' || url !== prevUrl)) {
+    if (url && (typeof siteUrl !== 'string' || (prevUrl && url !== prevUrl))) {
       fetchUrlData();
     }
+    onSetPrevUrl({ contentId, contentType, prevUrl: url });
     async function fetchUrlData() {
       try {
         setLoading(true);
@@ -89,15 +100,14 @@ export default function Embedly({
           contentType
         });
         if (mounted.current) {
-          setImageUrl(
-            url && getFileInfoFromFileName(url) === 'image'
-              ? url
-              : image.url.replace('http://', 'https://')
-          );
-          setTitle(title);
-          setDescription(description);
-          setSite(site);
-          setPrevUrl(url);
+          onSetThumbUrl({
+            contentId,
+            contentType,
+            thumbUrl: image.url.replace('http://', 'https://')
+          });
+          onSetActualTitle({ contentId, contentType, title });
+          onSetActualDescription({ contentId, contentType, description });
+          onSetSiteUrl({ contentId, contentType, siteUrl: site });
           setLoading(false);
         }
       } catch (error) {
@@ -109,46 +119,49 @@ export default function Embedly({
     };
   }, [url]);
 
-  return (
-    <div
-      className={css`
-        width: 100%;
-        height: 100%;
-        > a {
-          text-decoration: none;
-        }
-        h3 {
-          font-size: 1.9rem;
-        }
-        p {
-          font-size: 1.4rem;
-          margin-top: 1rem;
-        }
-        @media (max-width: ${mobileMaxWidth}) {
+  return useMemo(
+    () => (
+      <div
+        className={css`
+          width: 100%;
+          height: 100%;
+          > a {
+            text-decoration: none;
+          }
           h3 {
-            font-size: ${forChat ? '1.4rem' : '1.9rem'};
+            font-size: 1.9rem;
           }
           p {
-            font-size: ${forChat ? '1.1rem' : '1.4rem'};
+            font-size: 1.4rem;
             margin-top: 1rem;
           }
-        }
-      `}
-      style={style}
-    >
-      {noLink ? (
-        <div className={contentCss}>{renderInner()}</div>
-      ) : (
-        <a
-          className={contentCss}
-          target="_blank"
-          rel="noopener noreferrer"
-          href={url}
-        >
-          {renderInner()}
-        </a>
-      )}
-    </div>
+          @media (max-width: ${mobileMaxWidth}) {
+            h3 {
+              font-size: ${forChat ? '1.4rem' : '1.9rem'};
+            }
+            p {
+              font-size: ${forChat ? '1.1rem' : '1.4rem'};
+              margin-top: 1rem;
+            }
+          }
+        `}
+        style={style}
+      >
+        {noLink ? (
+          <div className={contentCss}>{renderInner()}</div>
+        ) : (
+          <a
+            className={contentCss}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={url}
+          >
+            {renderInner()}
+          </a>
+        )}
+      </div>
+    ),
+    [contentState, loading]
   );
 
   function onImageLoadError() {
@@ -199,9 +212,9 @@ export default function Embedly({
               ${small ? '' : 'margin-top: 1rem;'};
             `}
           >
-            <h3>{title || props.title}</h3>
-            <p>{description}</p>
-            <p style={{ fontWeight: 'bold' }}>{site}</p>
+            <h3>{cleanString(actualTitle || title)}</h3>
+            <p>{cleanString(actualDescription || description)}</p>
+            <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
         )}
       </>

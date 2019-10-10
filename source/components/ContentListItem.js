@@ -245,10 +245,7 @@ export default function ContentListItem({
                       small
                       noLink
                       style={{ marginTop: '0.5rem' }}
-                      title={cleanString(contentObj.title)}
-                      url={contentObj.content}
                       contentId={contentId}
-                      {...contentObj}
                     />
                   </div>
                 )}
@@ -273,10 +270,7 @@ export default function ContentListItem({
                     <Embedly
                       imageOnly
                       noLink
-                      title={cleanString(contentObj.rootObj.title)}
-                      url={contentObj.rootObj?.content}
                       contentId={contentObj.rootObj?.id}
-                      {...contentObj.rootObj}
                     />
                   )}
                 </div>

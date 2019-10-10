@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 AlreadyPosted.propTypes = {
   changingPage: PropTypes.bool,
@@ -16,10 +16,10 @@ AlreadyPosted.propTypes = {
 };
 
 export default function AlreadyPosted({
-  changingPage,
   contentId,
-  style,
   contentType,
+  changingPage,
+  style,
   uploaderId,
   url,
   videoCode
@@ -27,12 +27,19 @@ export default function AlreadyPosted({
   const {
     requestHelpers: { checkIfContentExists }
   } = useAppContext();
-  const [existingContent, setExistingContent] = useState({});
+  const {
+    state,
+    actions: { onSetExistingContent }
+  } = useContentContext();
+  const contentState = state[contentType + contentId] || {};
+  const { existingContent } = contentState;
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    checkExists();
+    if (!existingContent) {
+      checkExists();
+    }
     async function checkExists() {
       setLoading(true);
       const { content } = await checkIfContentExists({
@@ -41,7 +48,7 @@ export default function AlreadyPosted({
         videoCode
       });
       if (mounted.current) {
-        setExistingContent(content);
+        onSetExistingContent({ contentId, contentType, content });
         setLoading(false);
       }
     }
@@ -49,38 +56,40 @@ export default function AlreadyPosted({
       mounted.current = false;
     };
   }, [url]);
-  return !changingPage &&
-    existingContent.id &&
-    !loading &&
-    existingContent.id !== contentId ? (
-    <div
-      style={{
-        fontSize: '1.6rem',
-        padding: '1rem',
-        color: uploaderId !== existingContent.uploader ? '#000' : '#fff',
-        backgroundColor:
-          uploaderId !== existingContent.uploader
-            ? Color.orange()
-            : Color.blue(),
-        ...style
-      }}
-      className={css`
-        > a {
-          color: ${uploaderId !== existingContent.uploader ? '#000' : '#fff'};
-          font-weight: bold;
-        }
-      `}
-    >
-      This content has{' '}
-      <Link
-        style={{ fontWeight: 'bold' }}
-        to={`/${contentType === 'url' ? 'link' : 'video'}s/${
-          existingContent.id
-        }`}
+  return useMemo(() => {
+    return !changingPage &&
+      !loading &&
+      existingContent &&
+      existingContent.id !== contentId ? (
+      <div
+        style={{
+          fontSize: '1.6rem',
+          padding: '1rem',
+          color: uploaderId !== existingContent.uploader ? '#000' : '#fff',
+          backgroundColor:
+            uploaderId !== existingContent.uploader
+              ? Color.orange()
+              : Color.blue(),
+          ...style
+        }}
+        className={css`
+          > a {
+            color: ${uploaderId !== existingContent.uploader ? '#000' : '#fff'};
+            font-weight: bold;
+          }
+        `}
       >
-        already been posted before
-        {uploaderId !== existingContent.uploader ? ' by someone else' : ''}
-      </Link>
-    </div>
-  ) : null;
+        This content has{' '}
+        <Link
+          style={{ fontWeight: 'bold' }}
+          to={`/${contentType === 'url' ? 'link' : 'video'}s/${
+            existingContent.id
+          }`}
+        >
+          already been posted before
+          {uploaderId !== existingContent.uploader ? ' by someone else' : ''}
+        </Link>
+      </div>
+    ) : null;
+  }, [contentState, changingPage, uploaderId, url, videoCode, existingContent]);
 }
