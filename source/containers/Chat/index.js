@@ -88,7 +88,7 @@ export default function Chat({ onFileUpload }) {
 
   useEffect(() => {
     mounted.current = true;
-    if (!loaded && userId) {
+    if (!loaded && userId && socket.connected) {
       init();
     } else {
       if (userId) {
@@ -104,7 +104,7 @@ export default function Chat({ onFileUpload }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, []);
+  }, [loaded, userId, socket.connected]);
 
   useEffect(() => {
     if (mounted.current) {

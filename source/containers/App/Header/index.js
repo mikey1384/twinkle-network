@@ -189,8 +189,6 @@ function Header({
   }, []);
 
   useEffect(() => {
-    socket.disconnect();
-    socket.connect();
     onChangeRankingsLoadedStatus(false);
     if (userId) {
       socket.emit('bind_uid_to_socket', userId, username);
@@ -201,6 +199,11 @@ function Header({
       }
     }
     prevUserIdRef.current = userId;
+
+    return function socketRefresh() {
+      socket.disconnect();
+      socket.connect();
+    };
   }, [userId]);
 
   useEffect(() => {

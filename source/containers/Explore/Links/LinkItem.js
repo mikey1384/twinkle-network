@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import UserListModal from 'components/Modals/UserListModal';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import Embedly from 'components/Embedly';
 import { withRouter } from 'react-router-dom';
 import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import request from 'axios';
-import URL from 'constants/URL';
-import { useAppContext, useExploreContext } from 'contexts';
+import { useAppContext, useContentContext, useExploreContext } from 'contexts';
 
 LinkItem.propTypes = {
   history: PropTypes.object.isRequired,
@@ -30,22 +29,9 @@ LinkItem.propTypes = {
   }).isRequired
 };
 
-const API_URL = `${URL}/content`;
-const fallbackImage = '/img/link.png';
-
 function LinkItem({
   history,
-  link: {
-    id,
-    numComments,
-    content,
-    likes,
-    siteUrl,
-    thumbUrl,
-    title,
-    timeStamp,
-    uploader
-  }
+  link: { id, numComments, likes, timeStamp, title, uploader, ...embedProps }
 }) {
   const {
     user: {
@@ -54,42 +40,29 @@ function LinkItem({
     requestHelpers: { deleteContent, editContent }
   } = useAppContext();
   const {
+    state,
     actions: { onDeleteLink, onEditLinkTitle }
   } = useExploreContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [imageUrl, setImageUrl] = useState(
-    thumbUrl ? thumbUrl.replace('http://', 'https://') : '/img/link.png'
-  );
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
-  const mounted = useRef(true);
-
   useEffect(() => {
-    mounted.current = true;
-    init();
-    async function init() {
-      if (content && !siteUrl) {
-        try {
-          const {
-            data: { image }
-          } = await request.put(`${API_URL}/embed`, {
-            url: content,
-            linkId: id
-          });
-          if (mounted.current) {
-            setImageUrl(image.url.replace('http://', 'https://'));
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
+    if (!state['url' + id]) {
+      onInitContent({
+        contentId: id,
+        contentType: 'url',
+        id,
+        likes,
+        timeStamp,
+        title,
+        uploader,
+        ...embedProps
+      });
     }
-
-    return function cleanUp() {
-      mounted.current = false;
-    };
-  }, [content]);
-
+  }, []);
   const userIsUploader = userId === uploader.id;
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader.authLevel;
@@ -132,20 +105,16 @@ function LinkItem({
           &:after {
             content: '';
             display: block;
-            padding-bottom: 100%;
+            padding-bottom: 35%;
           }
         `}
       >
-        <img
-          className={css`
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          `}
-          src={imageUrl}
-          onError={handleImageLoadError}
-          alt=""
+        <Embedly
+          imageOnly
+          noLink
+          style={{ width: '100%', height: '100%' }}
+          loadingHeight="6rem"
+          contentId={id}
         />
       </div>
       <section
@@ -271,10 +240,6 @@ function LinkItem({
     await editContent({ editedTitle: text, contentId: id, contentType: 'url' });
     onEditLinkTitle({ title: text, id });
     setOnEdit(false);
-  }
-
-  function handleImageLoadError() {
-    setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
   }
 }
 

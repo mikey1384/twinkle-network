@@ -42,6 +42,10 @@ export default function MainNavs({
     }
   } = useViewContext();
   const loaded = useRef(false);
+  const chatMatch = matchPath(pathname, {
+    path: '/chat',
+    exact: true
+  });
   const commentPageMatch = matchPath(pathname, {
     path: '/comments/:id',
     exact: true
@@ -198,7 +202,7 @@ export default function MainNavs({
           pathname={pathname}
           className="desktop"
           imgLabel="comments"
-          alert={!isAtExploreTab && numChatUnreads > 0}
+          alert={!chatMatch && numChatUnreads > 0}
         >
           CHAT
         </HeaderNav>

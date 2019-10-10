@@ -260,6 +260,14 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onSetEmbeddedUrl({ contentId, contentType, url }) {
+      return dispatch({
+        type: 'SET_EMBEDDED_URL',
+        contentId,
+        contentType,
+        url
+      });
+    },
     onSetExistingContent({ contentId, contentType, content }) {
       return dispatch({
         type: 'SET_EXISTING_CONTENT',

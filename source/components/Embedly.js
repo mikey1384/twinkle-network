@@ -12,7 +12,6 @@ const API_URL = `${URL}/content`;
 
 Embedly.propTypes = {
   contentId: PropTypes.number,
-  forChat: PropTypes.bool,
   small: PropTypes.bool,
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
@@ -26,7 +25,6 @@ Embedly.propTypes = {
 export default function Embedly({
   contentId,
   contentType = 'url',
-  forChat,
   imageHeight = '100%',
   imageMobileHeight = '100%',
   imageOnly,
@@ -35,6 +33,13 @@ export default function Embedly({
   small,
   style
 }) {
+  const translator = {
+    actualDescription:
+      contentType === 'url' ? 'actualDescription' : 'linkDescription',
+    actualTitle: contentType === 'url' ? 'actualTitle' : 'linkTitle',
+    siteUrl: contentType === 'url' ? 'siteUrl' : 'linkUrl',
+    url: contentType === 'url' ? 'content' : 'embeddedUrl'
+  };
   const {
     state,
     actions: {
@@ -47,21 +52,16 @@ export default function Embedly({
   } = useContentContext();
   const contentState = state[contentType + contentId] || {};
   const {
-    actualDescription,
-    actualTitle,
     description,
     prevUrl,
     thumbUrl,
-    siteUrl,
     title,
-    content
+    [translator.actualDescription]: actualDescription,
+    [translator.actualTitle]: actualTitle,
+    [translator.siteUrl]: siteUrl,
+    [translator.url]: url
   } = contentState;
-  const url = content;
-  const [imageUrl, setImageUrl] = useState(
-    !thumbUrl && typeof siteUrl === 'string'
-      ? '/img/link.png'
-      : thumbUrl?.replace('http://', 'https://')
-  );
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
@@ -76,12 +76,6 @@ export default function Embedly({
     overflow: hidden;
     ${!small ? 'flex-direction: column;' : ''};
   `;
-
-  useEffect(() => {
-    setImageUrl(
-      url && getFileInfoFromFileName(url)?.fileType === 'image' ? url : thumbUrl
-    );
-  }, [thumbUrl]);
 
   useEffect(() => {
     mounted.current = true;
@@ -105,8 +99,8 @@ export default function Embedly({
             contentType,
             thumbUrl: image.url.replace('http://', 'https://')
           });
-          onSetActualTitle({ contentId, contentType, title });
           onSetActualDescription({ contentId, contentType, description });
+          onSetActualTitle({ contentId, contentType, title });
           onSetSiteUrl({ contentId, contentType, siteUrl: site });
           setLoading(false);
         }
@@ -118,6 +112,14 @@ export default function Embedly({
       mounted.current = false;
     };
   }, [url]);
+
+  useEffect(() => {
+    setImageUrl(
+      url && getFileInfoFromFileName(url)?.fileType === 'image'
+        ? url
+        : thumbUrl || fallbackImage
+    );
+  }, [thumbUrl]);
 
   return useMemo(
     () => (
@@ -137,10 +139,10 @@ export default function Embedly({
           }
           @media (max-width: ${mobileMaxWidth}) {
             h3 {
-              font-size: ${forChat ? '1.4rem' : '1.9rem'};
+              font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
             }
             p {
-              font-size: ${forChat ? '1.1rem' : '1.4rem'};
+              font-size: ${contentType === 'chat' ? '1.1rem' : '1.4rem'};
               margin-top: 1rem;
             }
           }
@@ -171,7 +173,7 @@ export default function Embedly({
   function renderInner() {
     return (
       <>
-        {loading ? (
+        {!imageUrl || loading ? (
           <Loading style={{ height: loadingHeight }} />
         ) : (
           <section
@@ -194,7 +196,7 @@ export default function Embedly({
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                object-fit: ${forChat ? 'contain' : 'cover'};
+                object-fit: ${contentType === 'chat' ? 'contain' : 'cover'};
               `}
               src={imageUrl}
               onError={onImageLoadError}

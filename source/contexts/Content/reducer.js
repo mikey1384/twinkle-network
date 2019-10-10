@@ -775,7 +775,9 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          actualDescription: action.description
+          [action.contentType === 'url'
+            ? 'actualDescription'
+            : 'linkDescription']: action.description
         }
       };
     case 'SET_ACTUAL_URL_TITLE':
@@ -783,7 +785,17 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          actualTitle: action.title
+          [action.contentType === 'url'
+            ? 'actualTitle'
+            : 'linkTitle']: action.title
+        }
+      };
+    case 'SET_EMBEDDED_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          embeddedUrl: action.url
         }
       };
     case 'SET_BY_USER_STATUS':
@@ -877,7 +889,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          siteUrl: action.siteUrl
+          [action.contentType === 'url' ? 'siteUrl' : 'linkUrl']: action.siteUrl
         }
       };
     case 'SET_SUBJECT_REWARD_LEVEL':

@@ -12,7 +12,12 @@ import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { MessageStyle } from '../Styles';
-import { useAppContext, useNotiContext, useChatContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useNotiContext,
+  useChatContext
+} from 'contexts';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
@@ -64,10 +69,10 @@ export default function Message({
     isChessMsg,
     chessState,
     scrollAtBottom,
-    thumbUrl,
-    linkUrl,
+    linkDescription,
     linkTitle,
-    linkDescription
+    linkUrl,
+    thumbUrl
   },
   onChessBoardClick,
   onDelete,
@@ -93,6 +98,15 @@ export default function Message({
   } = useAppContext();
   const {
     actions: {
+      onSetEmbeddedUrl,
+      onSetActualDescription,
+      onSetActualTitle,
+      onSetSiteUrl,
+      onSetThumbUrl
+    }
+  } = useContentContext();
+  const {
+    actions: {
       onEditMessage,
       onSaveMessage,
       onUpdateChessMoveViewTimeStamp,
@@ -103,6 +117,7 @@ export default function Message({
     state: { socketConnected }
   } = useNotiContext();
   let { username, profilePicId, ...post } = message;
+  const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
@@ -151,6 +166,34 @@ export default function Message({
   }, [onEdit, editPadding]);
 
   useEffect(() => {
+    const url = fetchURLFromText(content);
+    if (url) {
+      setExtractedUrl(url);
+      onSetEmbeddedUrl({ contentId: messageId, contentType: 'chat', url });
+      onSetActualDescription({
+        contentId: messageId,
+        contentType: 'chat',
+        description: linkDescription
+      });
+      onSetActualTitle({
+        contentId: messageId,
+        contentType: 'chat',
+        title: linkTitle
+      });
+      onSetSiteUrl({
+        contentId: messageId,
+        contentType: 'chat',
+        siteUrl: linkUrl
+      });
+      onSetThumbUrl({
+        contentId: messageId,
+        contentType: 'chat',
+        thumbUrl
+      });
+    }
+  }, [content]);
+
+  useEffect(() => {
     if (isLastMsg && !message.id) {
       onReceiveNewMessage();
     }
@@ -191,8 +234,6 @@ export default function Message({
       />
     );
   }
-
-  const extractedUrl = fetchURLFromText(content);
 
   return (
     <ErrorBoundary>
@@ -268,10 +309,6 @@ export default function Message({
                   onEdit={onEdit}
                   onEditCancel={handleEditCancel}
                   onEditDone={handleEditDone}
-                  linkDescription={linkDescription}
-                  linkTitle={linkTitle}
-                  linkUrl={linkUrl}
-                  thumbUrl={thumbUrl}
                   showSubjectMsgsModal={showSubjectMsgsModal}
                   socketConnected={socketConnected}
                   subjectId={subjectId}

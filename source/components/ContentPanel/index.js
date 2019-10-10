@@ -4,6 +4,7 @@ import Context from './Context';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Heading from './Heading';
 import Loading from 'components/Loading';
+import ContentListItem from 'components/ContentListItem';
 import { css } from 'emotion';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
@@ -11,7 +12,6 @@ import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 const Body = React.lazy(() => import('./Body'));
 const TargetContent = React.lazy(() => import('./TargetContent'));
-const ContentListItem = React.lazy(() => import('components/ContentListItem'));
 const Embedly = React.lazy(() => import('components/Embedly'));
 const Profile = React.lazy(() => import('./Profile'));
 
