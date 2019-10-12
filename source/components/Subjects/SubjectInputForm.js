@@ -6,10 +6,13 @@ import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
+import { useInputContext } from 'contexts';
 
-TitleDescriptionForm.propTypes = {
+SubjectInputForm.propTypes = {
   autoFocus: PropTypes.bool,
   canEditRewardLevel: PropTypes.bool,
+  contentId: PropTypes.number,
+  contentType: PropTypes.string,
   descriptionMaxChar: PropTypes.number,
   descriptionPlaceholder: PropTypes.string,
   isSubject: PropTypes.bool,
@@ -20,9 +23,11 @@ TitleDescriptionForm.propTypes = {
   titlePlaceholder: PropTypes.string
 };
 
-export default function TitleDescriptionForm({
+export default function SubjectInputForm({
   autoFocus,
   canEditRewardLevel,
+  contentId,
+  contentType,
   isSubject,
   onClose,
   rows,
@@ -32,10 +37,17 @@ export default function TitleDescriptionForm({
   descriptionPlaceholder,
   onSubmit
 }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [rewardLevel, setRewardLevel] = useState(0);
-  const [secretAnswer, setSecretAnswer] = useState('');
+  const {
+    state,
+    actions: { onSetSubjectInputForm }
+  } = useInputContext();
+  const subjectInputForm = state['subject' + contentType + contentId] || {};
+  const {
+    title = '',
+    description = '',
+    rewardLevel = 0,
+    secretAnswer = ''
+  } = subjectInputForm;
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     return function cleanUp() {
@@ -54,8 +66,20 @@ export default function TitleDescriptionForm({
             borderColor: title.length > titleMaxChar && 'red',
             color: title.length > titleMaxChar && 'red'
           }}
-          onChange={text => setTitle(text)}
-          onKeyUp={event => setTitle(addEmoji(event.target.value))}
+          onChange={text =>
+            onSetSubjectInputForm({
+              contentId,
+              contentType,
+              form: { title: text }
+            })
+          }
+          onKeyUp={event =>
+            onSetSubjectInputForm({
+              contentId,
+              contentType,
+              form: { title: addEmoji(event.target.value) }
+            })
+          }
         />
         {title.length > titleMaxChar && (
           <small style={{ color: 'red', fontSize: '1.6rem' }}>
@@ -73,8 +97,20 @@ export default function TitleDescriptionForm({
             minRows={rows}
             placeholder={descriptionPlaceholder}
             value={description}
-            onChange={event => setDescription(event.target.value)}
-            onKeyUp={event => setDescription(addEmoji(event.target.value))}
+            onChange={event =>
+              onSetSubjectInputForm({
+                contentId,
+                contentType,
+                form: { description: event.target.value }
+              })
+            }
+            onKeyUp={event =>
+              onSetSubjectInputForm({
+                contentId,
+                contentType,
+                form: { description: addEmoji(event.target.value) }
+              })
+            }
           />
           {description.length > descriptionMaxChar && (
             <small style={{ color: 'red', fontSize: '1.3rem' }}>
@@ -95,8 +131,20 @@ export default function TitleDescriptionForm({
                 minRows={rows}
                 placeholder="Enter Secret Message... (Optional)"
                 value={secretAnswer}
-                onChange={event => setSecretAnswer(event.target.value)}
-                onKeyUp={event => setSecretAnswer(addEmoji(event.target.value))}
+                onChange={event =>
+                  onSetSubjectInputForm({
+                    contentId,
+                    contentType,
+                    form: { secretAnswer: event.target.value }
+                  })
+                }
+                onKeyUp={event =>
+                  onSetSubjectInputForm({
+                    contentId,
+                    contentType,
+                    form: { secretAnswer: addEmoji(event.target.value) }
+                  })
+                }
               />
               {secretAnswer.length > descriptionMaxChar && (
                 <small style={{ color: 'red', fontSize: '1.3rem' }}>
@@ -118,7 +166,13 @@ export default function TitleDescriptionForm({
                 fontSize: '3rem'
               }}
               rewardLevel={rewardLevel}
-              onSetRewardLevel={setRewardLevel}
+              onSetRewardLevel={rewardLevel =>
+                onSetSubjectInputForm({
+                  contentId,
+                  contentType,
+                  form: { rewardLevel }
+                })
+              }
             />
           )}
         </div>
@@ -160,10 +214,11 @@ export default function TitleDescriptionForm({
     event.preventDefault();
     setSubmitting(true);
     try {
-      setTitle('');
-      setDescription('');
-      setSecretAnswer('');
-      setRewardLevel(0);
+      onSetSubjectInputForm({
+        contentId,
+        contentType,
+        form: undefined
+      });
       await onSubmit({
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),

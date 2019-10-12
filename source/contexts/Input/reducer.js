@@ -232,6 +232,16 @@ export default function InputReducer(state, action) {
           descriptionFieldShown: action.shown
         }
       };
+    case 'SET_SUBJECT_INPUT_FORM':
+      return {
+        ...state,
+        ['subject' + contentKey]: action.form
+          ? {
+              ...(state['subject' + contentKey] || {}),
+              ...action.form
+            }
+          : undefined
+      };
     case 'SET_SUBJECT_TITLE':
       return {
         ...state,

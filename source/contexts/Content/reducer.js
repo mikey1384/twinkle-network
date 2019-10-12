@@ -902,6 +902,14 @@ export default function ContentPageReducer(state, action) {
           [action.contentType === 'url' ? 'siteUrl' : 'linkUrl']: action.siteUrl
         }
       };
+    case 'SET_SUBJECT_FORM_SHOWN':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          subjectFormShown: action.shown
+        }
+      };
     case 'SET_SUBJECT_REWARD_LEVEL':
       return {
         ...state,

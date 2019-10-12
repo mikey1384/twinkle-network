@@ -128,6 +128,12 @@ export default function InputActions(dispatch) {
         form
       });
     },
+    onSetHasSecretAnswer(hasSecretAnswer) {
+      return dispatch({
+        type: 'SET_HAS_SECRET_ANSWER',
+        hasSecretAnswer
+      });
+    },
     onSetRewardForm({ contentId, contentType, form }) {
       return dispatch({
         type: 'SET_REWARD_FORM',
@@ -136,10 +142,12 @@ export default function InputActions(dispatch) {
         form
       });
     },
-    onSetHasSecretAnswer(hasSecretAnswer) {
+    onSetSubjectInputForm({ contentId, contentType, form }) {
       return dispatch({
-        type: 'SET_HAS_SECRET_ANSWER',
-        hasSecretAnswer
+        type: 'SET_SUBJECT_INPUT_FORM',
+        contentId,
+        contentType,
+        form
       });
     },
     onSetSearchText({ category, searchText }) {

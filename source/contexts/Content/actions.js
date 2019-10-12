@@ -308,6 +308,14 @@ export default function ContentActions(dispatch) {
         siteUrl
       });
     },
+    onSetSubjectFormShown({ contentId, contentType, shown }) {
+      return dispatch({
+        type: 'SET_SUBJECT_FORM_SHOWN',
+        contentId,
+        contentType,
+        shown
+      });
+    },
     onSetSubjectRewardLevel({ contentId, contentType, rewardLevel }) {
       return dispatch({
         type: 'SET_SUBJECT_REWARD_LEVEL',

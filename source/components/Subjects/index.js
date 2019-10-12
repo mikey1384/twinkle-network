@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SubjectPanel from './SubjectPanel';
-import SubjectInputArea from './SubjectInputArea';
+import StartNewSubjectPanel from './StartNewSubjectPanel';
 import Button from 'components/Button';
 import LocalContext from './Context';
 import { useAppContext } from 'contexts';
@@ -81,7 +81,7 @@ export default function Subjects({
       }}
     >
       <div className={className} style={style}>
-        <SubjectInputArea
+        <StartNewSubjectPanel
           contentId={contentId}
           contentType={contentType}
           onUploadSubject={uploadSubject}
