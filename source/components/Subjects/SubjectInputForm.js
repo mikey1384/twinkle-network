@@ -186,7 +186,7 @@ export default function SubjectInputForm({
           <Button
             transparent
             style={{ fontSize: '1.7rem', marginRight: '1rem' }}
-            onClick={onClose}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
@@ -210,22 +210,30 @@ export default function SubjectInputForm({
     </ErrorBoundary>
   );
 
+  function handleCancel() {
+    onSetSubjectInputForm({
+      contentId,
+      contentType,
+      form: undefined
+    });
+    onClose();
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     setSubmitting(true);
     try {
-      onSetSubjectInputForm({
-        contentId,
-        contentType,
-        form: undefined
-      });
       await onSubmit({
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),
         rewardLevel,
         secretAnswer: finalizeEmoji(secretAnswer)
       });
-      return Promise.resolve();
+      onSetSubjectInputForm({
+        contentId,
+        contentType,
+        form: undefined
+      });
     } catch (error) {
       setSubmitting(false);
       console.error(error);
