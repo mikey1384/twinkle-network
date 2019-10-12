@@ -90,6 +90,7 @@ export default function SubjectPanel({
   } = useContext(LocalContext);
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
   const [editedDescription, setEditedDescription] = useState(description || '');
@@ -279,6 +280,7 @@ export default function SubjectPanel({
             </div>
             <Comments
               inputAreaInnerRef={CommentsRef}
+              isLoading={loadingComments}
               numInputRows={expanded ? 4 : 2}
               commentsLoadLimit={10}
               commentsHidden={
@@ -371,6 +373,7 @@ export default function SubjectPanel({
   async function onExpand() {
     setExpanded(true);
     try {
+      setLoadingComments(true);
       const data = await loadComments({
         contentType: 'subject',
         contentId: id,
@@ -378,6 +381,7 @@ export default function SubjectPanel({
       });
       CommentsRef.current.focus();
       onLoadSubjectComments({ ...data, subjectId: id, contentType, contentId });
+      setLoadingComments(false);
     } catch (error) {
       console.error(error.response || error);
     }

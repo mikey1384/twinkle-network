@@ -110,7 +110,7 @@ export default function Body({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-
+  const [loadingComments, setLoadingComments] = useState(false);
   const mounted = useRef(true);
   const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
@@ -122,6 +122,7 @@ export default function Body({
     }
 
     async function loadInitialComments(numPreviewComments) {
+      setLoadingComments(true);
       const data = await loadComments({
         contentType,
         contentId,
@@ -134,6 +135,7 @@ export default function Body({
           contentType,
           isPreview: numPreviewComments > 0
         });
+        setLoadingComments(false);
       }
     }
     return function cleanUp() {
@@ -398,6 +400,7 @@ export default function Body({
             inputAtBottom={inputAtBottom}
             loadMoreButton={commentsLoadMoreButton}
             inputTypeLabel={contentType === 'comment' ? 'reply' : 'comment'}
+            isLoading={loadingComments}
             numPreviews={numPreviewComments}
             onAttachStar={onAttachStar}
             onCommentSubmit={handleCommentSubmit}
@@ -446,6 +449,7 @@ export default function Body({
     ),
     [
       isEditing,
+      loadingComments,
       contentObj,
       attachedVideoShown,
       commentsHidden,
@@ -546,6 +550,7 @@ export default function Body({
   }
 
   async function handleExpandComments() {
+    setLoadingComments(true);
     const data = await loadComments({
       contentType,
       contentId,
@@ -553,6 +558,7 @@ export default function Body({
     });
     onLoadComments({ ...data, contentId, contentType });
     onSetCommentsShown({ contentId, contentType });
+    setLoadingComments(false);
   }
 
   async function onLikeClick(likes) {

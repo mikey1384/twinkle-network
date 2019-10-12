@@ -11,7 +11,8 @@ export default function ContentPageReducer(state, action) {
     subjects: [],
     tags: [],
     commentsLoadMoreButton: false,
-    subjectsLoadMoreButton: false
+    subjectsLoadMoreButton: false,
+    rootObj: {}
   };
   const prevContentState = state[contentKey] || defaultState;
   switch (action.type) {

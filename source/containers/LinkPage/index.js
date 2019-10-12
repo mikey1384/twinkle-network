@@ -122,6 +122,7 @@ export default function LinkPage({
     pathname: location.pathname,
     scrollPositions
   });
+  const [loadingComments, setLoadingComments] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);
@@ -152,6 +153,7 @@ export default function LinkPage({
       }
     }
     async function handleLoadComments() {
+      setLoadingComments(true);
       const { comments: loadedComments, loadMoreButton } = await loadComments({
         contentType: 'url',
         contentId: linkId
@@ -162,6 +164,7 @@ export default function LinkPage({
         contentType: 'url',
         loadMoreButton
       });
+      setLoadingComments(false);
     }
     async function handleLoadSubjects() {
       const { results, loadMoreButton } = await loadSubjects({
@@ -374,6 +377,7 @@ export default function LinkPage({
           <Comments
             autoExpand
             comments={childComments}
+            isLoading={loadingComments}
             inputTypeLabel="comment"
             key={'comments' + linkId}
             loadMoreButton={commentsLoadMoreButton}
@@ -422,7 +426,15 @@ export default function LinkPage({
       ) : (
         <Loading text="Loading Page..." />
       ),
-    [contentState, linkId, userId, notFound, confirmModalShown, likesModalShown]
+    [
+      contentState,
+      linkId,
+      loadingComments,
+      userId,
+      notFound,
+      confirmModalShown,
+      likesModalShown
+    ]
   );
 
   async function handleDeleteLink() {

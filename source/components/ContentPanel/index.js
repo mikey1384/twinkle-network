@@ -87,6 +87,13 @@ function ContentPanel({
             ...data,
             feedId: contentState.feedId
           });
+          if (data.rootObj) {
+            onInitContent({
+              contentId: data.rootId,
+              contentType: data.rootType,
+              ...data.rootObj
+            });
+          }
           loading.current = false;
         }
       }

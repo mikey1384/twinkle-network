@@ -57,7 +57,7 @@ function MainContent({
     <ErrorBoundary>
       <div>
         {(contentType === 'video' ||
-          (contentType === 'subject' && rootType === 'video')) && (
+          (contentType === 'subject' && rootType === 'video' && rootObj)) && (
           <VideoPlayer
             stretch
             rewardLevel={

@@ -99,6 +99,7 @@ export default function Home({ location, selectedTheme }) {
     youtubeName,
     youtubeUrl
   } = profile;
+  const [loadingComments, setLoadingComments] = useState(false);
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const mounted = useRef(true);
@@ -114,6 +115,7 @@ export default function Home({ location, selectedTheme }) {
     initComments();
     async function initComments() {
       try {
+        setLoadingComments(true);
         const { comments, loadMoreButton } = await loadComments({
           contentId: id,
           contentType: 'user',
@@ -126,6 +128,7 @@ export default function Home({ location, selectedTheme }) {
             childComments: comments,
             commentsLoadMoreButton: loadMoreButton
           });
+          setLoadingComments(false);
         }
       } catch (error) {
         console.error(error);
@@ -423,7 +426,9 @@ export default function Home({ location, selectedTheme }) {
           title={`Remove Status Message`}
         />
       )}
-      {(userId !== profile.id || childComments.length > 0) && (
+      {(userId !== profile.id ||
+        childComments.length > 0 ||
+        loadingComments) && (
         <SectionPanel
           customColorTheme={selectedTheme}
           loaded
@@ -436,6 +441,7 @@ export default function Home({ location, selectedTheme }) {
             contentId={id}
             inputAreaInnerRef={CommentInputAreaRef}
             inputTypeLabel={`message to ${username}`}
+            isLoading={loadingComments}
             loadMoreButton={commentsLoadMoreButton}
             noInput={id === userId}
             numPreviews={1}

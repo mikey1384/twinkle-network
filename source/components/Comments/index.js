@@ -4,6 +4,7 @@ import Context from './Context';
 import CommentInputArea from './CommentInputArea';
 import Comment from './Comment';
 import Button from 'components/Button';
+import Loading from 'components/Loading';
 import { scrollElementToCenter } from 'helpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -21,6 +22,7 @@ Comments.propTypes = {
   inputAreaInnerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   inputAtBottom: PropTypes.bool,
   inputTypeLabel: PropTypes.string,
+  isLoading: PropTypes.bool,
   loadMoreButton: PropTypes.bool.isRequired,
   numInputRows: PropTypes.number,
   noInput: PropTypes.bool,
@@ -55,6 +57,7 @@ export default function Comments({
   inputAreaInnerRef,
   inputAtBottom,
   inputTypeLabel,
+  isLoading,
   loadMoreButton,
   noInput,
   numInputRows,
@@ -78,7 +81,7 @@ export default function Comments({
     requestHelpers: { deleteContent, loadComments, uploadComment }
   } = useAppContext();
   const [deleting, setDeleting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [commentSubmitted, setCommentSubmitted] = useState(false);
   const [prevComments, setPrevComments] = useState(comments);
   const ContainerRef = useRef(null);
@@ -172,22 +175,24 @@ export default function Comments({
               width: '100%'
             }}
           >
+            {isLoading && <Loading />}
             {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
-            {(previewComments.length > 0 ? previewComments : comments).map(
-              (comment, index) => (
-                <Comment
-                  isPreview={previewComments.length > 0}
-                  index={index}
-                  innerRef={ref => {
-                    CommentRefs[comment.id] = ref;
-                  }}
-                  parent={parent}
-                  comment={comment}
-                  key={comment.id}
-                  userId={userId}
-                />
-              )
-            )}
+            {!isLoading &&
+              (previewComments.length > 0 ? previewComments : comments).map(
+                (comment, index) => (
+                  <Comment
+                    isPreview={previewComments.length > 0}
+                    index={index}
+                    innerRef={ref => {
+                      CommentRefs[comment.id] = ref;
+                    }}
+                    parent={parent}
+                    comment={comment}
+                    key={comment.id}
+                    userId={userId}
+                  />
+                )
+              )}
             {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
           </div>
         )}
@@ -232,8 +237,8 @@ export default function Comments({
   }
 
   async function handleLoadMoreComments() {
-    if (!isLoading) {
-      setIsLoading(true);
+    if (!isLoadingMore) {
+      setIsLoadingMore(true);
       const lastCommentLocation = inputAtBottom ? 0 : comments.length - 1;
       const lastCommentId = comments[lastCommentLocation]
         ? comments[lastCommentLocation].id
@@ -250,7 +255,7 @@ export default function Comments({
           contentId: parent.id,
           contentType: parent.contentType
         });
-        setIsLoading(false);
+        setIsLoadingMore(false);
       } catch (error) {
         console.error(error.response || error);
       }
@@ -283,11 +288,11 @@ export default function Comments({
   }
 
   function renderLoadMoreButton() {
-    return autoExpand || commentsShown ? (
+    return (autoExpand || commentsShown) && !isLoading ? (
       <Button
         filled
         color="lightBlue"
-        disabled={isLoading}
+        disabled={isLoadingMore}
         onClick={handleLoadMoreComments}
         style={{
           width: '100%',

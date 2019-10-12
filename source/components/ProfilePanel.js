@@ -48,6 +48,7 @@ function ProfilePanel({ history, expandable, profile }) {
   } = useChatContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [comments, setComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(false);
   const [commentsLoadMoreButton, setCommentsLoadMoreButton] = useState(false);
   const [imageUri, setImageUri] = useState();
   const [processing, setProcessing] = useState(false);
@@ -63,6 +64,7 @@ function ProfilePanel({ history, expandable, profile }) {
     handleLoadComments();
     async function handleLoadComments() {
       try {
+        setLoadingComments(true);
         const { comments } = await loadComments({
           contentId: profile.id,
           contentType: 'user',
@@ -70,6 +72,7 @@ function ProfilePanel({ history, expandable, profile }) {
         });
         if (mounted.current) {
           setComments(comments);
+          setLoadingComments(false);
         }
       } catch (error) {
         console.error(error);
@@ -325,6 +328,7 @@ function ProfilePanel({ history, expandable, profile }) {
           contentId={profile.id}
           inputAreaInnerRef={CommentInputAreaRef}
           inputTypeLabel={`message to ${profile.username}`}
+          isLoading={loadingComments}
           loadMoreButton={commentsLoadMoreButton}
           noInput={profile.id === userId}
           numPreviews={1}
@@ -469,6 +473,7 @@ function ProfilePanel({ history, expandable, profile }) {
 
   async function onExpandComments() {
     if (!commentsShown) {
+      setLoadingComments(true);
       const { comments, loadMoreButton } = await loadComments({
         contentId: profile.id,
         contentType: 'user',
@@ -477,6 +482,7 @@ function ProfilePanel({ history, expandable, profile }) {
       setComments(comments);
       onShowProfileComments(profile.id);
       setCommentsLoadMoreButton(loadMoreButton);
+      setLoadingComments(false);
     }
   }
 

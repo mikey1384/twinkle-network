@@ -48,6 +48,7 @@ export default function VideoPage({
   const [changingPage, setChangingPage] = useState(false);
   const [watchTabActive, setWatchTabActive] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loadingComments, setLoadingComments] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
   const [resultModalShown, setResultModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -188,6 +189,7 @@ export default function VideoPage({
       }
     }
     async function handleLoadComments() {
+      setLoadingComments(true);
       const { comments: loadedComments, loadMoreButton } = await loadComments({
         contentType: 'video',
         contentId: videoId
@@ -198,6 +200,7 @@ export default function VideoPage({
         contentType: 'video',
         loadMoreButton
       });
+      setLoadingComments(false);
     }
     async function handleLoadSubjects() {
       const { results, loadMoreButton } = await loadSubjects({
@@ -421,6 +424,7 @@ export default function VideoPage({
                   comments={comments}
                   inputAreaInnerRef={CommentInputAreaRef}
                   inputTypeLabel={'comment'}
+                  isLoading={loadingComments}
                   loadMoreButton={commentsLoadMoreButton}
                   onAttachStar={onAttachStar}
                   onCommentSubmit={onUploadComment}
@@ -473,6 +477,7 @@ export default function VideoPage({
     [
       changingPage,
       contentState,
+      loadingComments,
       watchTabActive,
       currentSlide,
       userAnswers,
