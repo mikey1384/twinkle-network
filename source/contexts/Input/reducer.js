@@ -179,6 +179,16 @@ export default function InputReducer(state, action) {
           hasSecretAnswer: action.hasSecretAnswer
         }
       };
+    case 'SET_REWARD_FORM':
+      return {
+        ...state,
+        ['reward' + contentKey]: action.form
+          ? {
+              ...(state['reward' + contentKey] || {}),
+              ...action.form
+            }
+          : undefined
+      };
     case 'SET_SEARCH_TEXT':
       return {
         ...state,

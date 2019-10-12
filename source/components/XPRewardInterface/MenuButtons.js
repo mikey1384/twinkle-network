@@ -6,21 +6,19 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 
 MenuButtons.propTypes = {
   maxStars: PropTypes.number.isRequired,
+  onSetRewardForm: PropTypes.func.isRequired,
   selectedAmount: PropTypes.number.isRequired,
-  setTwinkleTabActive: PropTypes.func.isRequired,
-  setSelectedAmount: PropTypes.func.isRequired,
   stars: PropTypes.array.isRequired,
-  twinkleTabActive: PropTypes.bool.isRequired,
+  starTabActive: PropTypes.bool.isRequired,
   userId: PropTypes.number
 };
 
 export default function MenuButtons({
   maxStars,
+  onSetRewardForm,
   selectedAmount,
-  setTwinkleTabActive,
-  setSelectedAmount,
   stars,
-  twinkleTabActive,
+  starTabActive,
   userId
 }) {
   let currentStars =
@@ -37,12 +35,12 @@ export default function MenuButtons({
   const maxRewardableStars = Math.ceil(maxStars / 2);
   const myRewardableStars = maxRewardableStars - prevRewardedStars;
   const remainingStars = maxStars - currentStars;
-  const multiplier = twinkleTabActive ? 1 : 5;
+  const multiplier = starTabActive ? 5 : 1;
   const buttons = [];
   for (
     let i = 1;
     i * multiplier <=
-    Math.min(remainingStars, myRewardableStars, twinkleTabActive ? 4 : 25);
+    Math.min(remainingStars, myRewardableStars, starTabActive ? 25 : 4);
     i++
   ) {
     buttons.push(
@@ -61,10 +59,14 @@ export default function MenuButtons({
           justifyContent: 'flex-start',
           marginTop: i !== 1 && '0.5rem'
         }}
-        onClick={() => setSelectedAmount(i * multiplier)}
+        onClick={() =>
+          onSetRewardForm({
+            selectedAmount: i * multiplier
+          })
+        }
         filled={selectedAmount === i * multiplier}
       >
-        {renderStars({ numStars: i, twinkleTabActive })}
+        {renderStars({ numStars: i, starTabActive })}
         <span style={{ marginLeft: '0.7rem' }}>
           Reward {i * multiplier === 1 ? 'a' : i * multiplier} Twinkle
           {i * multiplier > 1 ? 's' : ''} (
@@ -73,12 +75,16 @@ export default function MenuButtons({
       </Button>
     );
   }
-  if (twinkleTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
+  if (!starTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
     buttons.push(
       <Button
         color="orange"
         key={5}
-        onClick={() => setTwinkleTabActive(false)}
+        onClick={() =>
+          onSetRewardForm({
+            starTabActive: true
+          })
+        }
         style={{
           justifyContent: 'flex-start',
           marginTop: '0.5rem'
@@ -106,13 +112,13 @@ export default function MenuButtons({
     </div>
   );
 
-  function renderStars({ numStars, twinkleTabActive }) {
+  function renderStars({ numStars, starTabActive }) {
     const result = [];
     for (let i = 0; i < numStars; i++) {
       result.push(
         <Icon
           key={i}
-          icon={twinkleTabActive ? 'certificate' : 'star'}
+          icon={starTabActive ? 'star' : 'certificate'}
           style={{ marginLeft: i !== 0 && '0.2rem' }}
         />
       );

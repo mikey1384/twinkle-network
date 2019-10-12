@@ -31,7 +31,9 @@ export default function LongText({
   }, [children]);
 
   useEffect(() => {
-    truncateText(children || '');
+    if (ContainerRef.current?.clientWidth) {
+      truncateText(children || '');
+    }
   }, [children, ContainerRef.current?.clientWidth]);
 
   return (

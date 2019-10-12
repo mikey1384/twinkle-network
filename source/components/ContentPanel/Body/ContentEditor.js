@@ -117,7 +117,6 @@ export default function ContentEditor({
               `}
             >
               <Input
-                autoFocus
                 hasError={urlError}
                 onChange={text =>
                   onSetEditForm({
@@ -143,7 +142,6 @@ export default function ContentEditor({
           {contentType !== 'comment' && (
             <>
               <Input
-                autoFocus
                 onChange={text =>
                   onSetEditForm({
                     contentId,
@@ -175,7 +173,6 @@ export default function ContentEditor({
           )}
           <div style={{ position: 'relative', marginTop: '1rem' }}>
             <Textarea
-              autoFocus={contentType === 'comment'}
               minRows={4}
               onChange={event => {
                 const { value } = event.target;

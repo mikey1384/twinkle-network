@@ -1,4 +1,4 @@
-import React, { memo, useRef, useContext, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import UsernameText from 'components/Texts/UsernameText';
@@ -45,6 +45,7 @@ function TargetContent({
   rootType,
   onShowTCReplyInput,
   style,
+  targetObj,
   targetObj: {
     comment,
     comment: { comments = [] } = {},
@@ -59,9 +60,14 @@ function TargetContent({
     },
     requestHelpers: { uploadComment }
   } = useAppContext();
-  const { state } = useContentContext();
+  const {
+    state,
+    actions: { onSetXpRewardInterfaceShown }
+  } = useContentContext();
+  const commentState = state['comment' + comment.id] || {};
+  const { xpRewardInterfaceShown } = commentState;
+  const subjectState = state['subject' + subject?.id] || {};
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [mouseEntered, setMouseEntered] = useState(false);
   const InputFormRef = useRef(null);
   const {
@@ -74,12 +80,11 @@ function TargetContent({
   } = useContext(LocalContext);
   let userLikedThis = false;
   let userIsUploader;
-  let userCanStarThis;
+  let userCanRewardThis;
   let uploader = {};
   const hasSecretAnswer = subject?.secretAnswer;
   const secretShown =
-    state['subject' + subject?.id]?.secretShown ||
-    subject?.uploader?.id === userId;
+    subjectState.secretShown || subject?.uploader?.id === userId;
 
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
@@ -87,245 +92,283 @@ function TargetContent({
       if (comment.likes[i].id === userId) userLikedThis = true;
     }
     userIsUploader = userId === comment.uploader.id;
-    userCanStarThis =
+    userCanRewardThis =
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
   }
 
+  useEffect(() => {
+    onSetXpRewardInterfaceShown({
+      contentType: 'comment',
+      contentId: comment.id,
+      shown: xpRewardInterfaceShown && userCanRewardThis
+    });
+  }, [userId]);
+
   const contentHidden = hasSecretAnswer && !secretShown;
 
-  return (
-    <ErrorBoundary
-      onTouchStart={() => setMouseEntered(true)}
-      onMouseEnter={() => setMouseEntered(true)}
-      className={`${className} ${css`
-        font-size: 1.6rem;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-        word-break: break-word;
-        border-radius: ${borderRadius};
-        border: 1px solid ${Color.darkerBorderGray()};
-        padding: 2rem 0 1rem 0;
-        margin-top: ${mouseEntered ? '-0.5rem' : '-2rem'};
-        line-height: 1.5;
-        background: ${Color.whiteGray()};
-        transition: background 0.5s, margin-top 0.5s;
-        .buttons {
-          margin-top: 2rem;
-          display: flex;
-          width: 100%;
-          justify-content: space-between;
-          @media (max-width: ${mobileMaxWidth}) {
-            button,
-            span {
-              font-size: 1rem;
+  return useMemo(
+    () => (
+      <ErrorBoundary
+        onTouchStart={() => setMouseEntered(true)}
+        onMouseEnter={() => setMouseEntered(true)}
+        className={`${className} ${css`
+          font-size: 1.6rem;
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          border-radius: ${borderRadius};
+          border: 1px solid ${Color.darkerBorderGray()};
+          padding: 2rem 0 1rem 0;
+          margin-top: ${mouseEntered ? '-0.5rem' : '-2rem'};
+          line-height: 1.5;
+          background: ${Color.whiteGray()};
+          transition: background 0.5s, margin-top 0.5s;
+          .buttons {
+            margin-top: 2rem;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            @media (max-width: ${mobileMaxWidth}) {
+              button,
+              span {
+                font-size: 1rem;
+              }
             }
           }
-        }
-        .detail-block {
-          display: flex;
-          justify-content: space-between;
-        }
-        .timestamp {
-          color: ${Color.gray()};
-          font-size: 1.2rem;
-        }
-        &:hover {
-          background: #fff;
-        }
-      `}`}
-      style={style}
-    >
-      <div>
-        {comment &&
-          (comment.notFound ? (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <span>Comment removed / no longer available</span>
-            </div>
-          ) : (
-            <div style={{ marginTop: 0 }}>
-              <div style={{ padding: '0 1rem' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                >
-                  <div className="detail-block">
-                    <div>
-                      <UsernameText
-                        user={comment.uploader}
-                        color={Color.blue()}
-                      />{' '}
-                      <ContentLink
-                        content={{
-                          id: comment.id,
-                          title: `${
-                            type === 'reply'
-                              ? 'replied'
-                              : type === 'comment'
-                              ? 'commented'
-                              : 'responded'
-                          }:`
-                        }}
-                        contentType="comment"
-                        style={{ color: Color.green() }}
-                      />
-                    </div>
-                    <div>
-                      <span className="timestamp">
-                        ({timeSince(comment.timeStamp)})
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ marginTop: '1rem' }}>
-                    {contentHidden ? (
-                      <HiddenComment
-                        onClick={() => history.push(`/subjects/${subject.id}`)}
-                      />
-                    ) : (
-                      <LongText>{comment.content}</LongText>
-                    )}
-                  </div>
-                </div>
-                {!contentHidden && (
-                  <ErrorBoundary className="buttons">
-                    <div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          marginBottom: comment.likes.length > 0 ? '0.5rem' : 0
-                        }}
-                      >
-                        <LikeButton
+          .detail-block {
+            display: flex;
+            justify-content: space-between;
+          }
+          .timestamp {
+            color: ${Color.gray()};
+            font-size: 1.2rem;
+          }
+          &:hover {
+            background: #fff;
+          }
+        `}`}
+        style={style}
+      >
+        <div>
+          {comment &&
+            (comment.notFound ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                <span>Comment removed / no longer available</span>
+              </div>
+            ) : (
+              <div style={{ marginTop: 0 }}>
+                <div style={{ padding: '0 1rem' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <div className="detail-block">
+                      <div>
+                        <UsernameText
+                          user={comment.uploader}
+                          color={Color.blue()}
+                        />{' '}
+                        <ContentLink
+                          content={{
+                            id: comment.id,
+                            title: `${
+                              type === 'reply'
+                                ? 'replied'
+                                : type === 'comment'
+                                ? 'commented'
+                                : 'responded'
+                            }:`
+                          }}
                           contentType="comment"
-                          contentId={comment.id}
-                          onClick={handleLikeClick}
-                          liked={userLikedThis}
-                          small
+                          style={{ color: Color.green() }}
                         />
-                        <Button
-                          style={{ marginLeft: '1rem' }}
-                          transparent
-                          onClick={onReplyClick}
-                        >
-                          <Icon icon="comment-alt" />
-                          <span style={{ marginLeft: '0.7rem' }}>Reply</span>
-                        </Button>
                       </div>
-                      <Likers
-                        className={css`
-                          font-weight: bold;
-                          color: ${Color.darkerGray()};
-                          font-size: 1.2rem;
-                          line-height: 1;
-                        `}
-                        userId={userId}
-                        likes={comment.likes}
-                        onLinkClick={() => setUserListModalShown(true)}
-                      />
+                      <div>
+                        <span className="timestamp">
+                          ({timeSince(comment.timeStamp)})
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      {canStar && userCanStarThis && (
-                        <Button
-                          color="pink"
-                          disabled={xpButtonDisabled()}
-                          onClick={() => setXpRewardInterfaceShown(true)}
-                        >
-                          <Icon icon="certificate" />
-                          <span style={{ marginLeft: '0.7rem' }}>
-                            {xpButtonDisabled() || 'Reward'}
-                          </span>
-                        </Button>
+                    <div style={{ marginTop: '1rem' }}>
+                      {contentHidden ? (
+                        <HiddenComment
+                          onClick={() =>
+                            history.push(`/subjects/${subject.id}`)
+                          }
+                        />
+                      ) : (
+                        <LongText>{comment.content}</LongText>
                       )}
                     </div>
-                  </ErrorBoundary>
+                  </div>
+                  {!contentHidden && (
+                    <ErrorBoundary className="buttons">
+                      <div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            marginBottom:
+                              comment.likes.length > 0 ? '0.5rem' : 0
+                          }}
+                        >
+                          <LikeButton
+                            contentType="comment"
+                            contentId={comment.id}
+                            onClick={handleLikeClick}
+                            liked={userLikedThis}
+                            small
+                          />
+                          <Button
+                            style={{ marginLeft: '1rem' }}
+                            transparent
+                            onClick={onReplyClick}
+                          >
+                            <Icon icon="comment-alt" />
+                            <span style={{ marginLeft: '0.7rem' }}>Reply</span>
+                          </Button>
+                        </div>
+                        <Likers
+                          className={css`
+                            font-weight: bold;
+                            color: ${Color.darkerGray()};
+                            font-size: 1.2rem;
+                            line-height: 1;
+                          `}
+                          userId={userId}
+                          likes={comment.likes}
+                          onLinkClick={() => setUserListModalShown(true)}
+                        />
+                      </div>
+                      <div>
+                        {canStar && userCanRewardThis && (
+                          <Button
+                            color="pink"
+                            disabled={xpButtonDisabled()}
+                            onClick={() =>
+                              onSetXpRewardInterfaceShown({
+                                contentType: 'comment',
+                                contentId: comment.id,
+                                shown: true
+                              })
+                            }
+                          >
+                            <Icon icon="certificate" />
+                            <span style={{ marginLeft: '0.7rem' }}>
+                              {xpButtonDisabled() || 'Reward'}
+                            </span>
+                          </Button>
+                        )}
+                      </div>
+                    </ErrorBoundary>
+                  )}
+                </div>
+                {xpRewardInterfaceShown && (
+                  <XPRewardInterface
+                    contentType={'comment'}
+                    contentId={comment.id}
+                    rewardLevel={determineRewardLevel({
+                      rootObj,
+                      rootType,
+                      subject
+                    })}
+                    uploaderId={comment.uploader.id}
+                    stars={comment.stars}
+                    onRewardSubmit={data => {
+                      onSetXpRewardInterfaceShown({
+                        contentType: 'comment',
+                        contentId: comment.id,
+                        shown: false
+                      });
+                      onAttachStar({
+                        data,
+                        contentId: comment.id,
+                        contentType: 'comment'
+                      });
+                    }}
+                  />
                 )}
-              </div>
-              {xpRewardInterfaceShown && (
-                <XPRewardInterface
-                  contentType={'comment'}
-                  contentId={comment.id}
+                <RewardStatus
+                  className={css`
+                    margin-left: -1px;
+                    margin-right: -1px;
+                    @media (max-width: ${mobileMaxWidth}) {
+                      margin-left: 0px;
+                      margin-right: 0px;
+                    }
+                  `}
+                  style={{
+                    marginTop:
+                      comment.likes.length > 0 || xpRewardInterfaceShown
+                        ? '0.5rem'
+                        : '1rem'
+                  }}
                   rewardLevel={determineRewardLevel({
                     rootObj,
                     rootType,
                     subject
                   })}
-                  uploaderId={comment.uploader.id}
+                  onCommentEdit={onEditRewardComment}
                   stars={comment.stars}
-                  onRewardSubmit={data => {
-                    setXpRewardInterfaceShown(false);
-                    onAttachStar({
-                      data,
-                      contentId: comment.id,
-                      contentType: 'comment'
-                    });
-                  }}
+                  uploaderName={uploader.username}
                 />
-              )}
-              <RewardStatus
-                className={css`
-                  margin-left: -1px;
-                  margin-right: -1px;
-                  @media (max-width: ${mobileMaxWidth}) {
-                    margin-left: 0px;
-                    margin-right: 0px;
-                  }
-                `}
-                style={{
-                  marginTop:
-                    comment.likes.length > 0 || xpRewardInterfaceShown
-                      ? '0.5rem'
-                      : '1rem'
-                }}
-                rewardLevel={determineRewardLevel({
-                  rootObj,
-                  rootType,
-                  subject
-                })}
-                onCommentEdit={onEditRewardComment}
-                stars={comment.stars}
-                uploaderName={uploader.username}
-              />
-              {replyInputShown && !contentHidden && (
-                <InputForm
-                  innerRef={InputFormRef}
-                  style={{
-                    marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem',
-                    padding: '0 1rem'
-                  }}
-                  onSubmit={onSubmit}
-                  parent={{ contentType: 'comment', id: comment.id }}
-                  rows={4}
-                  placeholder={`Write a reply...`}
-                />
-              )}
-              {comments.length > 0 && (
-                <div style={{ padding: '0 1rem' }}>
-                  {comments.map(comment => (
-                    <Comment
-                      key={comment.id}
-                      comment={comment}
-                      username={username}
-                      userId={userId}
-                      profilePicId={profilePicId}
-                      onDelete={onDeleteComment}
-                      onEditDone={onEditComment}
-                    />
-                  ))}
-                </div>
-              )}
-              {userListModalShown && (
-                <UserListModal
-                  onHide={() => setUserListModalShown(false)}
-                  title="People who liked this comment"
-                  users={comment.likes}
-                  description="(You)"
-                />
-              )}
-            </div>
-          ))}
-      </div>
-    </ErrorBoundary>
+                {replyInputShown && !contentHidden && (
+                  <InputForm
+                    innerRef={InputFormRef}
+                    style={{
+                      marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem',
+                      padding: '0 1rem'
+                    }}
+                    onSubmit={onSubmit}
+                    parent={{ contentType: 'comment', id: comment.id }}
+                    rows={4}
+                    placeholder={`Write a reply...`}
+                  />
+                )}
+                {comments.length > 0 && (
+                  <div style={{ padding: '0 1rem' }}>
+                    {comments.map(comment => (
+                      <Comment
+                        key={comment.id}
+                        comment={comment}
+                        username={username}
+                        userId={userId}
+                        profilePicId={profilePicId}
+                        onDelete={onDeleteComment}
+                        onEditDone={onEditComment}
+                      />
+                    ))}
+                  </div>
+                )}
+                {userListModalShown && (
+                  <UserListModal
+                    onHide={() => setUserListModalShown(false)}
+                    title="People who liked this comment"
+                    users={comment.likes}
+                    description="(You)"
+                  />
+                )}
+              </div>
+            ))}
+        </div>
+      </ErrorBoundary>
+    ),
+    [
+      commentState,
+      subjectState,
+      history,
+      profilePicId,
+      targetObj,
+      userId,
+      userListModalShown,
+      mouseEntered,
+      userLikedThis,
+      userIsUploader,
+      userCanRewardThis,
+      uploader,
+      secretShown
+    ]
   );
 
   function xpButtonDisabled() {
@@ -376,4 +419,4 @@ function TargetContent({
   }
 }
 
-export default withRouter(memo(TargetContent));
+export default withRouter(TargetContent);

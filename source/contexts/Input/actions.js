@@ -128,6 +128,14 @@ export default function InputActions(dispatch) {
         form
       });
     },
+    onSetRewardForm({ contentId, contentType, form }) {
+      return dispatch({
+        type: 'SET_REWARD_FORM',
+        contentId,
+        contentType,
+        form
+      });
+    },
     onSetHasSecretAnswer(hasSecretAnswer) {
       return dispatch({
         type: 'SET_HAS_SECRET_ANSWER',

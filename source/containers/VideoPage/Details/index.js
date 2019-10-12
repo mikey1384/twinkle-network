@@ -78,16 +78,15 @@ export default function Details({
   } = useAppContext();
   const {
     state,
-    actions: { onSetIsEditing }
+    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const {
     state: inputState,
     actions: { onSetEditForm }
   } = useInputContext();
   const contentState = state['video' + videoId] || {};
-  const { isEditing } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = contentState;
   const [titleHovered, setTitleHovered] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const TitleRef = useRef(null);
 
   useEffect(() => {
@@ -102,7 +101,11 @@ export default function Details({
         }
       });
     }
-    setXpRewardInterfaceShown(false);
+    onSetXpRewardInterfaceShown({
+      contentId: videoId,
+      contentType: 'video',
+      shown: false
+    });
   }, [isEditing, title, description, content]);
   const editForm = inputState['edit' + 'video' + videoId] || {};
   const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
@@ -123,6 +126,18 @@ export default function Details({
       onClick: onDelete
     });
   }
+  useEffect(() => {
+    onSetXpRewardInterfaceShown({
+      contentType: 'video',
+      contentId: videoId,
+      shown:
+        xpRewardInterfaceShown &&
+        canStar &&
+        authLevel > uploader.authLevel &&
+        !userIsUploader
+    });
+  }, [userId]);
+
   return useMemo(
     () => (
       <div style={{ width: '100%' }}>
@@ -290,7 +305,13 @@ export default function Details({
                   xpRewardInterfaceShown,
                   stars
                 })}
-                onClick={() => setXpRewardInterfaceShown(true)}
+                onClick={() =>
+                  onSetXpRewardInterfaceShown({
+                    contentId: videoId,
+                    contentType: 'video',
+                    shown: true
+                  })
+                }
               >
                 <Icon icon="certificate" />
                 <span style={{ marginLeft: '0.7rem' }}>
@@ -313,7 +334,11 @@ export default function Details({
               noPadding
               uploaderId={uploader.id}
               onRewardSubmit={data => {
-                setXpRewardInterfaceShown(false);
+                onSetXpRewardInterfaceShown({
+                  contentId: videoId,
+                  contentType: 'video',
+                  shown: false
+                });
                 attachStar(data);
               }}
             />
@@ -334,7 +359,8 @@ export default function Details({
       stars,
       tags,
       userId,
-      videoId
+      videoId,
+      contentState
     ]
   );
 

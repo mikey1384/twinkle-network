@@ -64,10 +64,14 @@ function Comment({
   } = useAppContext();
   const {
     state,
-    actions: { onChangeSpoilerStatus, onSetIsEditing }
+    actions: {
+      onChangeSpoilerStatus,
+      onSetIsEditing,
+      onSetXpRewardInterfaceShown
+    }
   } = useContentContext();
   const contentState = state['comment' + comment.id] || {};
-  const { isEditing } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = contentState;
   const subjectState = state['subject' + targetObj?.subject?.id] || {};
   const {
     onAttachStar,
@@ -80,7 +84,6 @@ function Comment({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
   const ReplyInputAreaRef = useRef(null);
@@ -117,6 +120,14 @@ function Comment({
       onClick: () => setConfirmModalShown(true)
     });
   }
+  useEffect(() => {
+    onSetXpRewardInterfaceShown({
+      contentType: 'comment',
+      contentId: comment.id,
+      shown:
+        xpRewardInterfaceShown && userIsHigherAuth && canStar && !userIsUploader
+    });
+  }, [userId]);
   let userLikedThis = false;
   for (let i = 0; i < likes.length; i++) {
     if (likes[i].id === userId) userLikedThis = true;
@@ -220,7 +231,6 @@ function Comment({
                   )}
                 {isEditing ? (
                   <EditTextArea
-                    autoFocus
                     contentType="comment"
                     contentId={comment.id}
                     text={comment.content}
@@ -270,7 +280,13 @@ function Comment({
                             <Button
                               color="pink"
                               style={{ marginLeft: '0.7rem' }}
-                              onClick={() => setXpRewardInterfaceShown(true)}
+                              onClick={() =>
+                                onSetXpRewardInterfaceShown({
+                                  contentId: comment.id,
+                                  contentType: 'comment',
+                                  shown: true
+                                })
+                              }
                               disabled={determineXpButtonDisabled({
                                 rewardLevel: determineRewardLevel({
                                   parent,
@@ -315,7 +331,11 @@ function Comment({
                   contentId={comment.id}
                   uploaderId={uploader.id}
                   onRewardSubmit={data => {
-                    setXpRewardInterfaceShown(false);
+                    onSetXpRewardInterfaceShown({
+                      contentId: comment.id,
+                      contentType: 'comment',
+                      shown: false
+                    });
                     onAttachStar({
                       data,
                       contentId: comment.id,

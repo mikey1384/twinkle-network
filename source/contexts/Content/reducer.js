@@ -996,6 +996,14 @@ export default function ContentPageReducer(state, action) {
           progress: action.progress
         }
       };
+    case 'SET_XP_REWARD_INTERFACE_SHOWN':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          xpRewardInterfaceShown: action.shown
+        }
+      };
     case 'SET_XP_VIDEO_WATCH_TIME':
       return {
         ...state,

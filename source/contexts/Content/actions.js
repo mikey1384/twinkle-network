@@ -396,6 +396,14 @@ export default function ContentActions(dispatch) {
         progress
       });
     },
+    onSetXpRewardInterfaceShown({ contentId, contentType, shown }) {
+      return dispatch({
+        type: 'SET_XP_REWARD_INTERFACE_SHOWN',
+        contentId,
+        contentType,
+        shown
+      });
+    },
     onSetXpVideoWatchTime({ videoId, watchTime }) {
       return dispatch({
         type: 'SET_XP_VIDEO_WATCH_TIME',

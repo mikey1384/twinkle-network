@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import MenuButtons from './MenuButtons';
@@ -14,7 +14,7 @@ import FilterBar from 'components/FilterBar';
 import Button from 'components/Button';
 import request from 'axios';
 import { returnMaxStars } from 'constants/defaultValues';
-import { useAppContext } from 'contexts';
+import { useAppContext, useInputContext } from 'contexts';
 import URL from 'constants/URL';
 
 XPRewardInterface.propTypes = {
@@ -42,10 +42,18 @@ export default function XPRewardInterface({
     },
     requestHelpers: { auth }
   } = useAppContext();
-  const [rewardExplanation, setRewardExplanation] = useState('');
+  const {
+    state,
+    actions: { onSetRewardForm }
+  } = useInputContext();
+  const rewardForm = state['reward' + contentType + contentId] || {};
+  const {
+    comment = '',
+    selectedAmount = 0,
+    starTabActive = false,
+    prevRewardLevel
+  } = rewardForm;
   const [rewarding, setRewarding] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState(0);
-  const [twinkleTabActive, setTwinkleTabActive] = useState(true);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -56,97 +64,135 @@ export default function XPRewardInterface({
   }, []);
 
   useEffect(() => {
-    setSelectedAmount(0);
+    onSetRewardForm({
+      contentType,
+      contentId,
+      form: {
+        selectedAmount: rewardLevel !== prevRewardLevel ? 0 : selectedAmount,
+        prevRewardLevel: rewardLevel
+      }
+    });
   }, [rewardLevel]);
 
-  if (!userId || uploaderId === userId) return null;
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: noPadding ? '1rem 0 0 0' : '1rem',
-        fontSize: '1.6rem',
-        alignItems: 'center',
-        color: Color.blue()
-      }}
-    >
-      <FilterBar style={{ background: 'none' }}>
-        <nav
-          className={twinkleTabActive ? 'active' : ''}
-          onClick={() => {
-            setSelectedAmount(twinkleTabActive ? selectedAmount : 0);
-            setTwinkleTabActive(true);
+  return useMemo(
+    () =>
+      userId && uploaderId !== userId ? (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: noPadding ? '1rem 0 0 0' : '1rem',
+            fontSize: '1.6rem',
+            alignItems: 'center',
+            color: Color.blue()
           }}
         >
-          Reward Twinkles
-        </nav>
-        <nav
-          className={!twinkleTabActive ? 'active' : ''}
-          onClick={() => {
-            setSelectedAmount(twinkleTabActive ? 0 : selectedAmount);
-            setTwinkleTabActive(false);
-          }}
-        >
-          Reward Stars
-        </nav>
-      </FilterBar>
-      <section
-        style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
-      >
-        <MenuButtons
-          maxStars={returnMaxStars({ rewardLevel })}
-          selectedAmount={selectedAmount}
-          setTwinkleTabActive={setTwinkleTabActive}
-          setSelectedAmount={setSelectedAmount}
-          stars={stars}
-          twinkleTabActive={twinkleTabActive}
-          userId={userId}
-        />
-      </section>
-      <Textarea
-        autoFocus
-        className={css`
-          margin-top: 1rem;
-        `}
-        minRows={3}
-        value={rewardExplanation}
-        onChange={event => {
-          setRewardExplanation(addEmoji(event.target.value));
-        }}
-        placeholder={`Let the recipient know why you are rewarding XP for this ${
-          contentType === 'url' ? 'link' : contentType
-        } (optional)`}
-        style={exceedsCharLimit({
-          contentType: 'rewardComment',
-          text: rewardExplanation
-        })}
-      />
-      <section
-        style={{
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          width: '100%',
-          marginTop: '1rem'
-        }}
-      >
-        <Button
-          color="pink"
-          filled
-          disabled={
-            exceedsCharLimit({
+          <FilterBar style={{ background: 'none' }}>
+            <nav
+              className={!starTabActive ? 'active' : ''}
+              onClick={() => {
+                onSetRewardForm({
+                  contentType,
+                  contentId,
+                  form: {
+                    selectedAmount: !starTabActive ? selectedAmount : 0,
+                    starTabActive: false
+                  }
+                });
+              }}
+            >
+              Reward Twinkles
+            </nav>
+            <nav
+              className={starTabActive ? 'active' : ''}
+              onClick={() => {
+                onSetRewardForm({
+                  contentType,
+                  contentId,
+                  form: {
+                    selectedAmount: starTabActive ? selectedAmount : 0,
+                    starTabActive: true
+                  }
+                });
+              }}
+            >
+              Reward Stars
+            </nav>
+          </FilterBar>
+          <section
+            style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+          >
+            <MenuButtons
+              maxStars={returnMaxStars({ rewardLevel })}
+              selectedAmount={selectedAmount}
+              stars={stars}
+              starTabActive={starTabActive}
+              onSetRewardForm={form =>
+                onSetRewardForm({ contentType, contentId, form })
+              }
+              userId={userId}
+            />
+          </section>
+          <Textarea
+            className={css`
+              margin-top: 1rem;
+            `}
+            minRows={3}
+            value={comment}
+            onChange={event => {
+              onSetRewardForm({
+                contentType,
+                contentId,
+                form: {
+                  comment: addEmoji(event.target.value)
+                }
+              });
+            }}
+            placeholder={`Let the recipient know why you are rewarding XP for this ${
+              contentType === 'url' ? 'link' : contentType
+            } (optional)`}
+            style={exceedsCharLimit({
               contentType: 'rewardComment',
-              text: rewardExplanation
-            }) ||
-            rewarding ||
-            selectedAmount === 0
-          }
-          onClick={handleRewardSubmit}
-        >
-          Confirm
-        </Button>
-      </section>
-    </div>
+              text: comment
+            })}
+          />
+          <section
+            style={{
+              display: 'flex',
+              flexDirection: 'row-reverse',
+              width: '100%',
+              marginTop: '1rem'
+            }}
+          >
+            <Button
+              color="pink"
+              filled
+              disabled={
+                exceedsCharLimit({
+                  contentType: 'rewardComment',
+                  text: comment
+                }) ||
+                rewarding ||
+                selectedAmount === 0
+              }
+              onClick={handleRewardSubmit}
+            >
+              Confirm
+            </Button>
+          </section>
+        </div>
+      ) : null,
+    [
+      comment,
+      contentId,
+      contentType,
+      userId,
+      rewardLevel,
+      stars,
+      rewarding,
+      selectedAmount,
+      starTabActive
+    ]
   );
 
   async function handleRewardSubmit() {
@@ -156,7 +202,7 @@ export default function XPRewardInterface({
         `${URL}/user/reward`,
         {
           rewardExplanation: finalizeEmoji(
-            stringIsEmpty(rewardExplanation) ? '' : rewardExplanation
+            stringIsEmpty(comment) ? '' : comment
           ),
           amount: selectedAmount,
           contentType,
@@ -168,6 +214,11 @@ export default function XPRewardInterface({
       if (mounted.current) {
         setRewarding(false);
         onRewardSubmit(data);
+        onSetRewardForm({
+          contentId,
+          contentType,
+          form: undefined
+        });
       }
     } catch (error) {
       console.error({ error });

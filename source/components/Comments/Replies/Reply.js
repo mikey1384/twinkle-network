@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LocalContext from '../Context';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -70,10 +70,10 @@ export default function Reply({
   } = useAppContext();
   const {
     state,
-    actions: { onSetIsEditing }
+    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const contentState = state['comment' + reply.id] || {};
-  const { isEditing } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = contentState;
   const {
     onAttachStar,
     onEditDone,
@@ -82,15 +82,21 @@ export default function Reply({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const [replyButtonClicked, setReplyButtonClicked] = useState(false);
   const ReplyInputAreaRef = useRef(null);
-
   const userIsUploader = userId === uploader.id;
   const userIsHigherAuth = authLevel > uploader.authLevel;
   const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
   const editButtonShown = userIsUploader || userCanEditThis;
   const editMenuItems = [];
+  useEffect(() => {
+    onSetXpRewardInterfaceShown({
+      contentType: 'comment',
+      contentId: reply.id,
+      shown:
+        xpRewardInterfaceShown && userIsHigherAuth && canStar && !userIsUploader
+    });
+  }, [userId]);
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
@@ -160,7 +166,6 @@ export default function Reply({
                   <EditTextArea
                     contentId={reply.id}
                     contentType="comment"
-                    autoFocus
                     text={reply.content}
                     onCancel={() =>
                       onSetIsEditing({
@@ -207,7 +212,13 @@ export default function Reply({
                         <Button
                           color="pink"
                           style={{ marginLeft: '1rem' }}
-                          onClick={() => setXpRewardInterfaceShown(true)}
+                          onClick={() =>
+                            onSetXpRewardInterfaceShown({
+                              contentId: reply.id,
+                              contentType: 'comment',
+                              shown: true
+                            })
+                          }
                           disabled={determineXpButtonDisabled({
                             rewardLevel: determineRewardLevel({
                               parent,
@@ -252,7 +263,11 @@ export default function Reply({
                   contentId={reply.id}
                   uploaderId={uploader.id}
                   onRewardSubmit={data => {
-                    setXpRewardInterfaceShown(false);
+                    onSetXpRewardInterfaceShown({
+                      contentId: reply.id,
+                      contentType: 'comment',
+                      shown: false
+                    });
                     onAttachStar({
                       data,
                       contentId: reply.id,

@@ -130,7 +130,7 @@ export default function VideoPlayer({
           0
       });
     };
-  }, [justEarned]);
+  }, [justEarned, startingPosition]);
 
   useEffect(() => {
     PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();

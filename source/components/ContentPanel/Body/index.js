@@ -81,10 +81,10 @@ export default function Body({
   } = useAppContext();
   const {
     state,
-    actions: { onSetIsEditing }
+    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const contentState = state[contentType + contentId] || {};
-  const { isEditing } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = contentState;
   const {
     commentsLoadLimit,
     onAddTags,
@@ -110,15 +110,10 @@ export default function Body({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
 
   const mounted = useRef(true);
   const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
-
-  useEffect(() => {
-    setXpRewardInterfaceShown(false);
-  }, [userId]);
 
   useEffect(() => {
     mounted.current = true;
@@ -178,9 +173,17 @@ export default function Body({
 
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader.authLevel;
-  const userCanRewardThis = canStar && authLevel > uploader.authLevel;
+  const userCanRewardThis =
+    canStar && authLevel > uploader.authLevel && userId !== uploader.id;
   const editButtonShown = userId === uploader.id || userCanEditThis;
   const secretLocked = contentType === 'comment' && commentsHidden;
+  useEffect(() => {
+    onSetXpRewardInterfaceShown({
+      contentType,
+      contentId,
+      shown: xpRewardInterfaceShown && userCanRewardThis
+    });
+  }, [userId]);
 
   return useMemo(
     () => (
@@ -272,12 +275,18 @@ export default function Body({
                       menuProps={renderEditMenuItems()}
                     />
                   )}
-                  {userCanRewardThis && userId !== uploader.id && (
+                  {userCanRewardThis && (
                     <Button
                       color="pink"
                       disabled={xpButtonDisabled()}
                       style={{ marginLeft: '1rem' }}
-                      onClick={() => setXpRewardInterfaceShown(true)}
+                      onClick={() =>
+                        onSetXpRewardInterfaceShown({
+                          contentType,
+                          contentId,
+                          shown: true
+                        })
+                      }
                     >
                       <Icon icon="certificate" />
                       <span style={{ marginLeft: '0.7rem' }}>
@@ -346,7 +355,11 @@ export default function Body({
               uploaderId={uploader.id}
               stars={stars}
               onRewardSubmit={data => {
-                setXpRewardInterfaceShown(false);
+                onSetXpRewardInterfaceShown({
+                  contentType,
+                  contentId,
+                  shown: false
+                });
                 onAttachStar({ data, contentId, contentType });
               }}
             />
