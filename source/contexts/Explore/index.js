@@ -23,6 +23,7 @@ export const initialExploreState = {
     addPlaylistModalShown: false,
     allPlaylists: [],
     allPlaylistsLoaded: false,
+    allVideoThumbs: [],
     currentVideoSlot: null,
     featuredPlaylists: [],
     featuredPlaylistsLoaded: false,

@@ -65,9 +65,9 @@ export function AppContextProvider({ children }) {
           <ExploreContextProvider>
             <ViewContextProvider>
               <NotiContextProvider>
-                <InputContextProvider>
-                  <ContentContextProvider>{children}</ContentContextProvider>
-                </InputContextProvider>
+                <ContentContextProvider>
+                  <InputContextProvider>{children} </InputContextProvider>
+                </ContentContextProvider>
               </NotiContextProvider>
             </ViewContextProvider>
           </ExploreContextProvider>

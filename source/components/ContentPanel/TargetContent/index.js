@@ -17,7 +17,7 @@ import HiddenComment from 'components/HiddenComment';
 import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { determineXpButtonDisabled } from 'helpers';
+import { determineXpButtonDisabled, isMobile } from 'helpers';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
 import { useAppContext, useContentContext } from 'contexts';
@@ -199,7 +199,7 @@ function TargetContent({
                         <LikeButton
                           contentType="comment"
                           contentId={comment.id}
-                          onClick={onLikeClick}
+                          onClick={handleLikeClick}
                           liked={userLikedThis}
                           small
                         />
@@ -293,7 +293,6 @@ function TargetContent({
                     marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem',
                     padding: '0 1rem'
                   }}
-                  autoFocus
                   onSubmit={onSubmit}
                   parent={{ contentType: 'comment', id: comment.id }}
                   rows={4}
@@ -348,13 +347,19 @@ function TargetContent({
     return subject?.rewardLevel || rootRewardLevel;
   }
 
-  function onLikeClick(likes) {
+  function handleLikeClick(likes) {
+    if (comments.length === 0) {
+      onShowTCReplyInput({ contentId, contentType });
+      InputFormRef.current.focus();
+    }
     onLikeContent({ likes, contentType: 'comment', contentId: comment.id });
   }
 
   function onReplyClick() {
-    if (!replyInputShown) return onShowTCReplyInput({ contentId, contentType });
-    InputFormRef.current.focus();
+    if (!replyInputShown) onShowTCReplyInput({ contentId, contentType });
+    if (!isMobile(navigator)) {
+      setTimeout(() => InputFormRef.current.focus(), 0);
+    }
   }
 
   async function onSubmit(content) {

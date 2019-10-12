@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
+import { useInputContext } from 'contexts';
 import {
   exceedsCharLimit,
   stringIsEmpty,
@@ -12,6 +13,8 @@ import {
 EditTextArea.propTypes = {
   allowEmptyText: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  contentId: PropTypes.number,
+  contentType: PropTypes.string,
   disabled: PropTypes.bool,
   marginTop: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
@@ -24,6 +27,8 @@ EditTextArea.propTypes = {
 export default function EditTextArea({
   allowEmptyText,
   autoFocus = false,
+  contentId,
+  contentType,
   disabled,
   marginTop = '1rem',
   onCancel,
@@ -32,10 +37,26 @@ export default function EditTextArea({
   rows = 4,
   text
 }) {
-  const [editedText, setEditedText] = useState(text);
+  const {
+    state,
+    actions: { onSetEditForm }
+  } = useInputContext();
+  useEffect(() => {
+    if (!state['edit' + contentType + contentId]) {
+      onSetEditForm({
+        contentId,
+        contentType,
+        form: {
+          editedComment: text
+        }
+      });
+    }
+  }, []);
+  const editForm = state['edit' + contentType + contentId] || {};
+  const { editedComment } = editForm;
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',
-    text: editedText
+    text: editedComment
   });
 
   return (
@@ -49,7 +70,7 @@ export default function EditTextArea({
           ...(commentExceedsCharLimit?.style || {})
         }}
         minRows={rows}
-        value={editedText}
+        value={editedComment}
         onChange={onChange}
         onKeyUp={handleKeyUp}
       />
@@ -69,9 +90,9 @@ export default function EditTextArea({
           color="blue"
           onClick={onSubmit}
           disabled={
-            (!allowEmptyText && stringIsEmpty(editedText)) ||
+            (!allowEmptyText && stringIsEmpty(editedComment)) ||
             !!commentExceedsCharLimit ||
-            text === editedText ||
+            text === editedComment ||
             disabled
           }
         >
@@ -82,7 +103,7 @@ export default function EditTextArea({
           style={{
             marginRight: '1rem'
           }}
-          onClick={onCancel}
+          onClick={handleCancel}
         >
           Cancel
         </Button>
@@ -91,16 +112,42 @@ export default function EditTextArea({
   );
 
   function onChange(event) {
-    setEditedText(event.target.value);
+    onSetEditForm({
+      contentId,
+      contentType,
+      form: {
+        editedComment: event.target.value
+      }
+    });
+  }
+
+  function handleCancel() {
+    onSetEditForm({
+      contentId,
+      contentType,
+      form: undefined
+    });
+    onCancel();
   }
 
   function handleKeyUp(event) {
     if (event.key === ' ') {
-      setEditedText(addEmoji(event.target.value));
+      onSetEditForm({
+        contentId,
+        contentType,
+        form: {
+          editedComment: addEmoji(event.target.value)
+        }
+      });
     }
   }
 
   function onSubmit() {
-    return onEditDone(finalizeEmoji(editedText));
+    onSetEditForm({
+      contentId,
+      contentType,
+      form: undefined
+    });
+    onEditDone(finalizeEmoji(editedComment));
   }
 }

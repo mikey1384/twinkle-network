@@ -276,6 +276,14 @@ export default function ContentActions(dispatch) {
         content
       });
     },
+    onSetIsEditing({ contentId, contentType, isEditing }) {
+      return dispatch({
+        type: 'SET_IS_EDITING',
+        contentId,
+        contentType,
+        isEditing
+      });
+    },
     onSetPrevUrl({ contentId, contentType, prevUrl }) {
       return dispatch({
         type: 'SET_PREV_URL',

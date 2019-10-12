@@ -54,7 +54,6 @@ function Header({
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onIncreaseNumberOfUnreadMessages,
-      onIncreaseNumNewPosts,
       onInitChat,
       onNotifyChatSubjectChange,
       onReceiveMessage,
@@ -68,6 +67,7 @@ function Header({
       onChangeRankingsLoadedStatus,
       onChangeSocketStatus,
       onCheckVersion,
+      onIncreaseNumNewPosts,
       onIncreaseNumNewNotis
     }
   } = useNotiContext();

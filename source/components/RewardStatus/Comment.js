@@ -129,6 +129,8 @@ export default function Comment({
               {!onEdit && <LongText>{star.rewardComment}</LongText>}
               {onEdit && (
                 <EditTextArea
+                  contentId={star.id}
+                  contentType="reward"
                   allowEmptyText
                   autoFocus
                   rows={3}

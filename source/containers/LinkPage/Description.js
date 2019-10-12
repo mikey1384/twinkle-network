@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -9,7 +9,6 @@ import Input from 'components/Texts/Input';
 import AlreadyPosted from 'components/AlreadyPosted';
 import { timeSince } from 'helpers/timeStampHelpers';
 import {
-  cleanString,
   exceedsCharLimit,
   isValidUrl,
   stringIsEmpty,
@@ -17,7 +16,7 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext, useInputContext } from 'contexts';
 
 Description.propTypes = {
   content: PropTypes.string,
@@ -52,10 +51,32 @@ export default function Description({
       state: { canDelete, canEdit }
     }
   } = useAppContext();
-  const [editedTitle, setEditedTitle] = useState(cleanString(title));
-  const [editedUrl, setEditedUrl] = useState(content);
-  const [editedDescription, setEditedDescription] = useState(description);
-  const [onEdit, setOnEdit] = useState(false);
+  const {
+    state,
+    actions: { onSetIsEditing }
+  } = useContentContext();
+  const {
+    state: inputState,
+    actions: { onSetEditForm }
+  } = useInputContext();
+  const contentState = state['url' + linkId] || {};
+  const { isEditing } = contentState;
+  useEffect(() => {
+    if (!inputState['edit' + 'url' + linkId]) {
+      onSetEditForm({
+        contentId: linkId,
+        contentType: 'url',
+        form: {
+          editedDescription: description || '',
+          editedTitle: title || '',
+          editedUrl: content
+        }
+      });
+    }
+  }, [isEditing, title, description, content]);
+  const editForm = inputState['edit' + 'url' + linkId] || {};
+  const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
+
   const descriptionExceedsCharLimit = exceedsCharLimit({
     contentType: 'url',
     inputType: 'description',
@@ -76,7 +97,12 @@ export default function Description({
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
-      onClick: () => setOnEdit(true)
+      onClick: () =>
+        onSetIsEditing({
+          contentId: linkId,
+          contentType: 'url',
+          isEditing: true
+        })
     });
   }
   if (userIsUploader || canDelete) {
@@ -87,7 +113,7 @@ export default function Description({
   }
   return (
     <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
-      {editButtonShown && !onEdit && (
+      {editButtonShown && !isEditing && (
         <DropdownButton
           skeuomorphic
           color="darkerGray"
@@ -114,7 +140,7 @@ export default function Description({
             flexDirection: 'column'
           }}
         >
-          {onEdit ? (
+          {isEditing ? (
             <>
               <Input
                 className={css`
@@ -124,11 +150,23 @@ export default function Description({
                 placeholder="Enter Title..."
                 value={editedTitle}
                 onChange={text => {
-                  setEditedTitle(text);
+                  onSetEditForm({
+                    contentId: linkId,
+                    contentType: 'url',
+                    form: {
+                      editedTitle: text
+                    }
+                  });
                 }}
                 onKeyUp={event => {
                   if (event.key === ' ') {
-                    setEditedTitle(addEmoji(event.target.value));
+                    onSetEditForm({
+                      contentId: linkId,
+                      contentType: 'url',
+                      form: {
+                        editedTitle: addEmoji(event.target.value)
+                      }
+                    });
                   }
                 }}
               />
@@ -166,7 +204,7 @@ export default function Description({
           url={url}
           uploaderId={uploader.id}
         />
-        {onEdit ? (
+        {isEditing ? (
           <div>
             <Input
               placeholder="Enter URL"
@@ -176,7 +214,13 @@ export default function Description({
               style={urlExceedsCharLimit?.style}
               value={editedUrl}
               onChange={text => {
-                setEditedUrl(text);
+                onSetEditForm({
+                  contentId: linkId,
+                  contentType: 'url',
+                  form: {
+                    editedUrl: text
+                  }
+                });
               }}
             />
             <Textarea
@@ -184,11 +228,23 @@ export default function Description({
               placeholder="Enter Description"
               value={editedDescription}
               onChange={event => {
-                setEditedDescription(event.target.value);
+                onSetEditForm({
+                  contentId: linkId,
+                  contentType: 'url',
+                  form: {
+                    editedDescription: event.target.value
+                  }
+                });
               }}
               onKeyUp={event => {
                 if (event.key === ' ') {
-                  setEditedDescription(addEmoji(event.target.value));
+                  onSetEditForm({
+                    contentId: linkId,
+                    contentType: 'url',
+                    form: {
+                      editedDescription: addEmoji(event.target.value)
+                    }
+                  });
                 }
               }}
               style={{
@@ -243,10 +299,16 @@ export default function Description({
   }
 
   function onEditCancel() {
-    setEditedUrl(url);
-    setEditedTitle(cleanString(title));
-    setEditedDescription(description);
-    setOnEdit(false);
+    onSetEditForm({
+      contentId: linkId,
+      contentType: 'url',
+      form: undefined
+    });
+    onSetIsEditing({
+      contentId: linkId,
+      contentType: 'url',
+      isEditing: false
+    });
   }
 
   async function onEditFinish() {
@@ -257,6 +319,10 @@ export default function Description({
       contentId: linkId,
       contentType: 'url'
     });
-    setOnEdit(false);
+    onSetIsEditing({
+      contentId: linkId,
+      contentType: 'url',
+      isEditing: false
+    });
   }
 }

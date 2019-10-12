@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Button from 'components/Button';
@@ -8,7 +8,6 @@ import XPRewardInterface from 'components/XPRewardInterface';
 import AlreadyPosted from 'components/AlreadyPosted';
 import {
   addEmoji,
-  cleanString,
   exceedsCharLimit,
   stringIsEmpty,
   finalizeEmoji,
@@ -19,7 +18,7 @@ import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext, useInputContext } from 'contexts';
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -77,24 +76,36 @@ export default function Details({
       state: { authLevel, canDelete, canEdit, canStar }
     }
   } = useAppContext();
-  const [onEdit, setOnEdit] = useState(false);
+  const {
+    state,
+    actions: { onSetIsEditing }
+  } = useContentContext();
+  const {
+    state: inputState,
+    actions: { onSetEditForm }
+  } = useInputContext();
+  const contentState = state['video' + videoId] || {};
+  const { isEditing } = contentState;
   const [titleHovered, setTitleHovered] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(cleanString(title));
-  const [editedUrl, setEditedUrl] = useState(
-    `https://www.youtube.com/watch?v=${content}`
-  );
-  const [editedDescription, setEditedDescription] = useState(description);
   const [xpRewardInterfaceShown, setXpRewardInterfaceShown] = useState(false);
   const TitleRef = useRef(null);
 
   useEffect(() => {
-    setOnEdit(false);
-    setEditedTitle(cleanString(title));
-    setEditedUrl(`https://www.youtube.com/watch?v=${content}`);
-    setEditedDescription(description);
+    if (!inputState['edit' + 'video' + videoId]) {
+      onSetEditForm({
+        contentId: videoId,
+        contentType: 'video',
+        form: {
+          editedDescription: description || '',
+          editedTitle: title || '',
+          editedUrl: `https://www.youtube.com/watch?v=${content}`
+        }
+      });
+    }
     setXpRewardInterfaceShown(false);
-  }, [title, description, content]);
-
+  }, [isEditing, title, description, content]);
+  const editForm = inputState['edit' + 'video' + videoId] || {};
+  const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
   const userIsUploader = uploader.id === userId;
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader.authLevel;
@@ -112,170 +123,219 @@ export default function Details({
       onClick: onDelete
     });
   }
-  return (
-    <div style={{ width: '100%' }}>
-      <AlreadyPosted
-        changingPage={changingPage}
-        style={{ marginBottom: '1rem' }}
-        contentId={Number(videoId)}
-        contentType="video"
-        url={content}
-        uploaderId={uploader.id}
-        videoCode={content}
-      />
-      <TagStatus
-        style={{ fontSize: '1.5rem' }}
-        onAddTags={addTags}
-        tags={tags}
-        contentId={Number(videoId)}
-      />
-      <div style={{ padding: '0 1rem 1rem 1rem', width: '100%' }}>
-        <div
-          style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              background: '#fff',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: '1.5rem'
-            }}
-          >
-            <BasicInfos
-              style={{
-                marginRight: '1rem',
-                width: '75%',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-              editedUrl={editedUrl}
-              editedTitle={editedTitle}
-              onTitleChange={setEditedTitle}
-              innerRef={TitleRef}
-              onTitleKeyUp={event => {
-                if (event.key === ' ') {
-                  setEditedTitle(addEmoji(event.target.value));
-                }
-              }}
-              onUrlChange={text => {
-                setEditedUrl(text);
-              }}
-              onEdit={onEdit}
-              onMouseLeave={() => setTitleHovered(false)}
-              onMouseOver={onMouseOver}
-              onTitleHover={() => {
-                if (textIsOverflown(TitleRef.current)) {
-                  setTitleHovered(!titleHovered);
-                }
-              }}
-              title={title}
-              titleExceedsCharLimit={titleExceedsCharLimit}
-              titleHovered={titleHovered}
-              timeStamp={timeStamp}
-              uploader={uploader}
-              urlExceedsCharLimit={urlExceedsCharLimit}
-            />
-            <SideButtons
-              style={{
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-              byUser={byUser}
-              canStar={canStar}
-              changeByUserStatus={changeByUserStatus}
-              rewardLevel={rewardLevel}
-              likes={likes}
-              onLikeVideo={onLikeVideo}
-              onSetRewardLevel={onSetRewardLevel}
-              uploader={uploader}
-              userId={userId}
-              videoId={videoId}
-            />
-          </div>
-        </div>
-        <Description
-          onChange={event => {
-            setEditedDescription(event.target.value);
-          }}
-          onEdit={onEdit}
-          onEditCancel={handleEditCancel}
-          onEditFinish={handleEditFinish}
-          onKeyUp={event => {
-            if (event.key === ' ') {
-              setEditedDescription(addEmoji(event.target.value));
-            }
-          }}
-          description={description}
-          editedDescription={editedDescription}
-          descriptionExceedsCharLimit={descriptionExceedsCharLimit}
-          determineEditButtonDoneStatus={determineEditButtonDoneStatus}
+  return useMemo(
+    () => (
+      <div style={{ width: '100%' }}>
+        <AlreadyPosted
+          changingPage={changingPage}
+          style={{ marginBottom: '1rem' }}
+          contentId={Number(videoId)}
+          contentType="video"
+          url={content}
+          uploaderId={uploader.id}
+          videoCode={content}
         />
-        {!onEdit && videoViews > 10 && (
+        <TagStatus
+          style={{ fontSize: '1.5rem' }}
+          onAddTags={addTags}
+          tags={tags}
+          contentId={Number(videoId)}
+        />
+        <div style={{ padding: '0 1rem 1rem 1rem', width: '100%' }}>
           <div
-            style={{
-              padding: '1rem 0',
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: Color.darkerGray()
-            }}
+            style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
           >
-            {videoViews} view
-            {`${videoViews > 1 ? 's' : ''}`}
-          </div>
-        )}
-        <div style={{ display: 'flex' }}>
-          {editButtonShown && !onEdit && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              style={{ marginRight: '1rem' }}
-              direction="left"
-              text="Edit or Delete This Video"
-              menuProps={editMenuItems}
-            />
-          )}
-          {!onEdit && canStar && userCanEditThis && !userIsUploader && (
-            <Button
-              skeuomorphic
-              color="pink"
-              disabled={determineXpButtonDisabled({
-                rewardLevel: byUser ? 5 : 0,
-                myId: userId,
-                xpRewardInterfaceShown,
-                stars
-              })}
-              onClick={() => setXpRewardInterfaceShown(true)}
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                background: '#fff',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '1.5rem'
+              }}
             >
-              <Icon icon="certificate" />
-              <span style={{ marginLeft: '0.7rem' }}>
-                {determineXpButtonDisabled({
+              <BasicInfos
+                style={{
+                  marginRight: '1rem',
+                  width: '75%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+                editedUrl={editedUrl}
+                editedTitle={editedTitle}
+                onTitleChange={title =>
+                  onSetEditForm({
+                    contentId: videoId,
+                    contentType: 'video',
+                    form: {
+                      editedTitle: title
+                    }
+                  })
+                }
+                innerRef={TitleRef}
+                onTitleKeyUp={event => {
+                  if (event.key === ' ') {
+                    onSetEditForm({
+                      contentId: videoId,
+                      contentType: 'video',
+                      form: {
+                        editedTitle: addEmoji(event.target.value)
+                      }
+                    });
+                  }
+                }}
+                onUrlChange={text =>
+                  onSetEditForm({
+                    contentId: videoId,
+                    contentType: 'video',
+                    form: {
+                      editedUrl: text
+                    }
+                  })
+                }
+                onEdit={isEditing}
+                onMouseLeave={() => setTitleHovered(false)}
+                onMouseOver={onMouseOver}
+                onTitleHover={() => {
+                  if (textIsOverflown(TitleRef.current)) {
+                    setTitleHovered(!titleHovered);
+                  }
+                }}
+                title={title}
+                titleExceedsCharLimit={titleExceedsCharLimit}
+                titleHovered={titleHovered}
+                timeStamp={timeStamp}
+                uploader={uploader}
+                urlExceedsCharLimit={urlExceedsCharLimit}
+              />
+              <SideButtons
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+                byUser={byUser}
+                canStar={canStar}
+                changeByUserStatus={changeByUserStatus}
+                rewardLevel={rewardLevel}
+                likes={likes}
+                onLikeVideo={onLikeVideo}
+                onSetRewardLevel={onSetRewardLevel}
+                uploader={uploader}
+                userId={userId}
+                videoId={videoId}
+              />
+            </div>
+          </div>
+          <Description
+            onChange={event =>
+              onSetEditForm({
+                contentId: videoId,
+                contentType: 'video',
+                form: {
+                  editedDescription: event.target.value
+                }
+              })
+            }
+            onEdit={isEditing}
+            onEditCancel={handleEditCancel}
+            onEditFinish={handleEditFinish}
+            onKeyUp={event => {
+              if (event.key === ' ') {
+                onSetEditForm({
+                  contentId: videoId,
+                  contentType: 'video',
+                  form: {
+                    editedDescription: addEmoji(event.target.value)
+                  }
+                });
+              }
+            }}
+            description={description}
+            editedDescription={editedDescription}
+            descriptionExceedsCharLimit={descriptionExceedsCharLimit}
+            determineEditButtonDoneStatus={determineEditButtonDoneStatus}
+          />
+          {!isEditing && videoViews > 10 && (
+            <div
+              style={{
+                padding: '1rem 0',
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                color: Color.darkerGray()
+              }}
+            >
+              {videoViews} view
+              {`${videoViews > 1 ? 's' : ''}`}
+            </div>
+          )}
+          <div style={{ display: 'flex' }}>
+            {editButtonShown && !isEditing && (
+              <DropdownButton
+                skeuomorphic
+                color="darkerGray"
+                style={{ marginRight: '1rem' }}
+                direction="left"
+                text="Edit or Delete This Video"
+                menuProps={editMenuItems}
+              />
+            )}
+            {!isEditing && canStar && userCanEditThis && !userIsUploader && (
+              <Button
+                skeuomorphic
+                color="pink"
+                disabled={determineXpButtonDisabled({
                   rewardLevel: byUser ? 5 : 0,
                   myId: userId,
                   xpRewardInterfaceShown,
                   stars
-                }) || 'Reward'}
-              </span>
-            </Button>
+                })}
+                onClick={() => setXpRewardInterfaceShown(true)}
+              >
+                <Icon icon="certificate" />
+                <span style={{ marginLeft: '0.7rem' }}>
+                  {determineXpButtonDisabled({
+                    rewardLevel: byUser ? 5 : 0,
+                    myId: userId,
+                    xpRewardInterfaceShown,
+                    stars
+                  }) || 'Reward'}
+                </span>
+              </Button>
+            )}
+          </div>
+          {xpRewardInterfaceShown && (
+            <XPRewardInterface
+              rewardLevel={byUser ? 5 : 0}
+              stars={stars}
+              contentType="video"
+              contentId={Number(videoId)}
+              noPadding
+              uploaderId={uploader.id}
+              onRewardSubmit={data => {
+                setXpRewardInterfaceShown(false);
+                attachStar(data);
+              }}
+            />
           )}
         </div>
-        {xpRewardInterfaceShown && (
-          <XPRewardInterface
-            rewardLevel={byUser ? 5 : 0}
-            stars={stars}
-            contentType="video"
-            contentId={Number(videoId)}
-            noPadding
-            uploaderId={uploader.id}
-            onRewardSubmit={data => {
-              setXpRewardInterfaceShown(false);
-              attachStar(data);
-            }}
-          />
-        )}
       </div>
-    </div>
+    ),
+    [
+      content,
+      editForm,
+      isEditing,
+      description,
+      title,
+      likes,
+      byUser,
+      changingPage,
+      rewardLevel,
+      stars,
+      tags,
+      userId,
+      videoId
+    ]
   );
 
   function determineEditButtonDoneStatus() {
@@ -296,10 +356,16 @@ export default function Details({
 
   function handleEditCancel() {
     onEditCancel();
-    setEditedUrl(`https://www.youtube.com/watch?v=${content}`);
-    setEditedTitle(cleanString(title));
-    setEditedDescription(description);
-    setOnEdit(false);
+    onSetEditForm({
+      contentId: videoId,
+      contentType: 'video',
+      editForm: undefined
+    });
+    onSetIsEditing({
+      contentId: videoId,
+      contentType: 'video',
+      isEditing: false
+    });
   }
 
   async function handleEditFinish() {
@@ -312,12 +378,25 @@ export default function Details({
       editedDescription: finalizeEmoji(editedDescription)
     };
     await onEditFinish(params);
-    setOnEdit(false);
+    onSetEditForm({
+      contentId: videoId,
+      contentType: 'video',
+      editForm: undefined
+    });
+    onSetIsEditing({
+      contentId: videoId,
+      contentType: 'video',
+      isEditing: false
+    });
   }
 
   function handleEditStart() {
     onEditStart();
-    setOnEdit(true);
+    onSetIsEditing({
+      contentId: videoId,
+      contentType: 'video',
+      isEditing: true
+    });
   }
 
   function onMouseOver() {

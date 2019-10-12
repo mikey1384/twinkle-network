@@ -45,6 +45,8 @@ export default function TextMessage({
     <ErrorBoundary>
       {onEdit ? (
         <EditTextArea
+          contentId={messageId}
+          contentType="chat"
           autoFocus
           disabled={!socketConnected}
           rows={2}
@@ -76,7 +78,7 @@ export default function TextMessage({
           )}
         </div>
       )}
-      {extractedUrl && (
+      {extractedUrl && messageId && (
         <div
           style={{
             marginTop: '1rem'

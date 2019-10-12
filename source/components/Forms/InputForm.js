@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -49,54 +49,57 @@ export default function InputForm({
     text
   });
 
-  return (
-    <div style={style} className={className}>
-      <div
-        style={{
-          position: 'relative',
-          ...formGroupStyle
-        }}
-      >
-        <Textarea
-          autoFocus={autoFocus}
-          innerRef={innerRef}
+  return useMemo(
+    () => (
+      <div style={style} className={className}>
+        <div
           style={{
-            fontSize: '1.7rem',
-            ...(commentExceedsCharLimit?.style || {})
+            position: 'relative',
+            ...formGroupStyle
           }}
-          minRows={rows}
-          value={text}
-          placeholder={placeholder}
-          onChange={handleOnChange}
-          onKeyUp={handleKeyUp}
-        />
-        {commentExceedsCharLimit && (
-          <small style={{ color: 'red', fontSize: '1.3rem' }}>
-            {commentExceedsCharLimit.message}
-          </small>
+        >
+          <Textarea
+            autoFocus={autoFocus}
+            innerRef={innerRef}
+            style={{
+              fontSize: '1.7rem',
+              ...(commentExceedsCharLimit?.style || {})
+            }}
+            minRows={rows}
+            value={text}
+            placeholder={placeholder}
+            onChange={handleOnChange}
+            onKeyUp={handleKeyUp}
+          />
+          {commentExceedsCharLimit && (
+            <small style={{ color: 'red', fontSize: '1.3rem' }}>
+              {commentExceedsCharLimit.message}
+            </small>
+          )}
+        </div>
+        {!stringIsEmpty(text) && (
+          <div
+            className={css`
+              display: flex;
+              justify-content: flex-end;
+            `}
+          >
+            <Button
+              style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
+              filled
+              color="green"
+              disabled={
+                submitting || stringIsEmpty(text) || commentExceedsCharLimit
+              }
+              onClick={handleSubmit}
+            >
+              Tap This Button to Submit!
+            </Button>
+          </div>
         )}
       </div>
-      {!stringIsEmpty(text) && (
-        <div
-          className={css`
-            display: flex;
-            justify-content: flex-end;
-          `}
-        >
-          <Button
-            style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
-            filled
-            color="green"
-            disabled={
-              submitting || stringIsEmpty(text) || commentExceedsCharLimit
-            }
-            onClick={handleSubmit}
-          >
-            Tap This Button to Submit!
-          </Button>
-        </div>
-      )}
-    </div>
+    ),
+    [text, commentExceedsCharLimit, submitting]
   );
 
   function handleEnterText(text) {

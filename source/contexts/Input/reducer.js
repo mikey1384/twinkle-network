@@ -1,11 +1,15 @@
 import { initialInputState } from '.';
 
 export default function InputReducer(state, action) {
+  const contentKey =
+    action.contentType && action.contentId
+      ? action.contentType + action.contentId
+      : 'temp';
   switch (action.type) {
     case 'ENTER_COMMENT':
       return {
         ...state,
-        [action.contentType + action.contentId]: action.text
+        [contentKey]: action.text
       };
     case 'SET_CONTENT_ALREADY_POSTED':
       return {
@@ -148,6 +152,16 @@ export default function InputReducer(state, action) {
           ...state.userInfo,
           editedYoutubeUrl: action.editedYoutubeUrl
         }
+      };
+    case 'SET_EDIT_FORM':
+      return {
+        ...state,
+        ['edit' + contentKey]: action.form
+          ? {
+              ...(state['edit' + contentKey] || {}),
+              ...action.form
+            }
+          : undefined
       };
     case 'SET_EMAIL_ERROR':
       return {

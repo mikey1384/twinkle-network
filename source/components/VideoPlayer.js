@@ -428,6 +428,7 @@ export default function VideoPlayer({
           <ProgressBar
             progress={progress}
             color={justEarned ? Color.green() : meterColor}
+            noBorderRadius
             text={
               justEarned
                 ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`

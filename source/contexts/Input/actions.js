@@ -1,6 +1,6 @@
 export default function InputActions(dispatch) {
   return {
-    onEnterComment({ contentId, text, contentType }) {
+    onEnterComment({ contentId, contentType, text }) {
       return dispatch({
         type: 'ENTER_COMMENT',
         contentId,
@@ -118,6 +118,14 @@ export default function InputActions(dispatch) {
       return dispatch({
         type: 'SET_EDITED_YOUTUBE_URL',
         editedYoutubeUrl
+      });
+    },
+    onSetEditForm({ contentId, contentType, form }) {
+      return dispatch({
+        type: 'SET_EDIT_FORM',
+        contentId,
+        contentType,
+        form
       });
     },
     onSetHasSecretAnswer(hasSecretAnswer) {

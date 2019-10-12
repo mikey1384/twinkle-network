@@ -4,6 +4,7 @@ export default function ContentPageReducer(state, action) {
       ? action.contentType + action.contentId
       : 'temp';
   const defaultState = {
+    isEditing: false,
     stars: [],
     childComments: [],
     likes: [],
@@ -820,6 +821,14 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           existingContent: action.content
+        }
+      };
+    case 'SET_IS_EDITING':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          isEditing: action.isEditing
         }
       };
     case 'SET_PREV_URL':
