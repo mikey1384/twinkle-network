@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import CommentInputArea from './CommentInputArea';
@@ -133,77 +133,93 @@ export default function Comments({
     numPreviews > 0 && !commentsShown
       ? comments.filter((comment, index) => index < numPreviews)
       : [];
-  return (
-    <Context.Provider
-      value={{
-        onAttachStar,
-        onDelete: deleteComment,
-        onEditDone,
-        onLikeClick,
-        onLoadMoreReplies,
-        onRewardCommentEdit,
-        onReplySubmit: submitReply,
-        onLoadRepliesOfReply
-      }}
-    >
-      <div
-        className={`${
-          previewComments.length > 0
-            ? css`
-                &:hover {
-                  background: ${Color.highlightGray()};
-                }
-                @media (max-width: ${mobileMaxWidth}) {
-                  &:hover {
-                    background: #fff;
-                  }
-                }
-              `
-            : ''
-        } ${className}`}
-        style={style}
-        ref={ContainerRef}
-        onClick={previewComments.length > 0 ? onPreviewClick : () => {}}
+
+  return useMemo(
+    () => (
+      <Context.Provider
+        value={{
+          onAttachStar,
+          onDelete: deleteComment,
+          onEditDone,
+          onLikeClick,
+          onLoadMoreReplies,
+          onRewardCommentEdit,
+          onReplySubmit: submitReply,
+          onLoadRepliesOfReply
+        }}
       >
-        {!inputAtBottom &&
-          !noInput &&
-          (commentsShown || autoExpand) &&
-          renderInputArea()}
-        {(commentsShown || autoExpand || numPreviews > 0) && !commentsHidden && (
-          <div
-            style={{
-              width: '100%'
-            }}
-          >
-            {isLoading && <Loading />}
-            {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
-            {!isLoading &&
-              (previewComments.length > 0 ? previewComments : comments).map(
-                (comment, index) => (
-                  <Comment
-                    isPreview={previewComments.length > 0}
-                    index={index}
-                    innerRef={ref => {
-                      CommentRefs[comment.id] = ref;
-                    }}
-                    parent={parent}
-                    comment={comment}
-                    key={comment.id}
-                    userId={userId}
-                  />
-                )
-              )}
-            {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
-          </div>
-        )}
-        {inputAtBottom &&
-          !noInput &&
-          (commentsShown || autoExpand) &&
-          renderInputArea({
-            marginTop: comments.length > 0 ? '1rem' : 0
-          })}
-      </div>
-    </Context.Provider>
+        <div
+          className={`${
+            previewComments.length > 0
+              ? css`
+                  &:hover {
+                    background: ${Color.highlightGray()};
+                  }
+                  @media (max-width: ${mobileMaxWidth}) {
+                    &:hover {
+                      background: #fff;
+                    }
+                  }
+                `
+              : ''
+          } ${className}`}
+          style={style}
+          ref={ContainerRef}
+          onClick={previewComments.length > 0 ? onPreviewClick : () => {}}
+        >
+          {!inputAtBottom &&
+            !noInput &&
+            (commentsShown || autoExpand) &&
+            renderInputArea()}
+          {(commentsShown || autoExpand || numPreviews > 0) && !commentsHidden && (
+            <div
+              style={{
+                width: '100%'
+              }}
+            >
+              {isLoading && <Loading />}
+              {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+              {!isLoading &&
+                (previewComments.length > 0 ? previewComments : comments).map(
+                  (comment, index) => (
+                    <Comment
+                      isPreview={previewComments.length > 0}
+                      index={index}
+                      innerRef={ref => {
+                        CommentRefs[comment.id] = ref;
+                      }}
+                      parent={parent}
+                      comment={comment}
+                      key={comment.id}
+                      userId={userId}
+                    />
+                  )
+                )}
+              {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
+            </div>
+          )}
+          {inputAtBottom &&
+            !noInput &&
+            (commentsShown || autoExpand) &&
+            renderInputArea({
+              marginTop: comments.length > 0 ? '1rem' : 0
+            })}
+        </div>
+      </Context.Provider>
+    ),
+    [
+      comments,
+      commentsHidden,
+      commentsShown,
+      isLoading,
+      loadMoreButton,
+      noInput,
+      userId,
+      deleting,
+      isLoadingMore,
+      commentSubmitted,
+      previewComments.length
+    ]
   );
 
   async function submitComment({ content, rootCommentId, targetCommentId }) {
@@ -279,9 +295,11 @@ export default function Comments({
         onSubmit={submitComment}
         parent={parent}
         rootCommentId={
+          // eslint-disable-next-line react/prop-types
           parent.contentType === 'comment' ? parent.commentId : null
         }
         style={style}
+        // eslint-disable-next-line react/prop-types
         targetCommentId={parent.contentType === 'comment' ? parent.id : null}
       />
     );

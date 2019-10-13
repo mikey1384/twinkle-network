@@ -31,14 +31,15 @@ export default function SecretAnswer({
     actions: { onChangeSpoilerStatus }
   } = useContentContext();
   const contentState = state['subject' + subjectId] || {};
+  const { spoilerStatusChecked } = contentState;
   const secretShown = contentState.secretShown || uploaderId === userId;
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
-    if (userId && !contentState.spoilerStatusChecked) {
+    if (userId && !spoilerStatusChecked) {
       init();
     }
-    if (contentState.spoilerStatusChecked && contentState.secretShown) {
+    if (spoilerStatusChecked && contentState.secretShown) {
       onChangeSpoilerStatus({
         shown: true,
         subjectId,
@@ -65,7 +66,7 @@ export default function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [contentState.spoilerStatusChecked, userId]);
+  }, [spoilerStatusChecked, userId]);
   return useMemo(
     () => (
       <ErrorBoundary>
@@ -94,6 +95,6 @@ export default function SecretAnswer({
         </div>
       </ErrorBoundary>
     ),
-    [contentState]
+    [secretShown, answer]
   );
 }

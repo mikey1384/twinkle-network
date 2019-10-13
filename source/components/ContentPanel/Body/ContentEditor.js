@@ -258,11 +258,7 @@ export default function ContentEditor({
     ),
     [
       editForm,
-      comment,
-      content,
-      description,
       secretAnswer,
-      title,
       urlError,
       descriptionExceedsCharLimit,
       secretAnswerExceedsCharLimit,

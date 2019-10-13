@@ -122,7 +122,9 @@ export default function Body({
     }
 
     async function loadInitialComments(numPreviewComments) {
-      setLoadingComments(true);
+      if (!numPreviewComments) {
+        setLoadingComments(true);
+      }
       const data = await loadComments({
         contentType,
         contentId,
@@ -458,8 +460,6 @@ export default function Body({
       userListModalShown,
       confirmModalShown,
       xpRewardInterfaceShown,
-      userCanEditThis,
-      userCanRewardThis,
       editButtonShown,
       secretLocked
     ]
@@ -550,7 +550,6 @@ export default function Body({
   }
 
   async function handleExpandComments() {
-    setLoadingComments(true);
     const data = await loadComments({
       contentType,
       contentId,
@@ -558,7 +557,6 @@ export default function Body({
     });
     onLoadComments({ ...data, contentId, contentType });
     onSetCommentsShown({ contentId, contentType });
-    setLoadingComments(false);
   }
 
   async function onLikeClick(likes) {

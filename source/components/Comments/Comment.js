@@ -406,19 +406,13 @@ function Comment({
       </>
     ),
     [
-      comment,
       editMenuItems,
-      parent,
       isCommentForContentSubject,
       isHidden,
-      subjectState,
       userId,
-      userLikedThis,
       userListModalShown,
       confirmModalShown,
-      xpRewardInterfaceShown,
-      prevReplies,
-      replying
+      xpRewardInterfaceShown
     ]
   );
 

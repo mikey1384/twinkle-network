@@ -24,7 +24,6 @@ VideoPlayer.propTypes = {
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
   stretch: PropTypes.bool,
-  onEdit: PropTypes.bool,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
   uploader: PropTypes.object.isRequired,
@@ -37,7 +36,6 @@ export default function VideoPlayer({
   rewardLevel,
   hasHqThumb,
   minimized,
-  onEdit,
   style = {},
   uploader,
   videoCode,
@@ -91,7 +89,8 @@ export default function VideoPlayer({
     justEarned,
     imageUrl = '',
     progress = 0,
-    watchTime = 0
+    watchTime = 0,
+    isEditing
   } = contentState;
   const [playerShown, setPlayerShown] = useState(false);
   const [alreadyEarned, setAlreadyEarned] = useState(false);
@@ -113,7 +112,7 @@ export default function VideoPlayer({
     setStartingPosition(currentTime);
     timeWatchedRef.current = watchTime;
     return function cleanUp() {
-      onVideoStop();
+      handleVideoStop();
       onSetVideoStarted({ videoId, started: false });
       clearInterval(timerRef.current);
       mounted.current = false;
@@ -177,10 +176,10 @@ export default function VideoPlayer({
   }, [rewardLevel, userId]);
 
   useEffect(() => {
-    if (onEdit) {
-      onVideoStop();
+    if (isEditing) {
+      handleVideoStop();
     }
-  }, [onEdit]);
+  }, [isEditing]);
 
   useEffect(() => {
     clearInterval(timerRef.current);
@@ -210,7 +209,7 @@ export default function VideoPlayer({
     const userWatchingMultipleVideo =
       currentVideoSlot && currentVideoSlot !== watchCodeRef.current;
     if (started && userWatchingMultipleVideo) {
-      onVideoStop();
+      handleVideoStop();
       PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
   }, [currentVideoSlot]);
@@ -218,7 +217,7 @@ export default function VideoPlayer({
   useEffect(() => {
     const alreadyEarned = xpEarned || justEarned;
     if (started && !!rewardLevel && userId && !alreadyEarned) {
-      onVideoStop();
+      handleVideoStop();
       PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
   }, [pageVisible]);
@@ -286,10 +285,10 @@ export default function VideoPlayer({
             position: started && minimized && 'absolute',
             bottom: started && minimized && '1rem',
             right: started && minimized && '1rem',
-            cursor: !onEdit && !started && 'pointer'
+            cursor: !isEditing && !started && 'pointer'
           }}
         >
-          {((!minimized && !started) || onEdit) && (
+          {((!minimized && !started) || isEditing) && (
             <>
               <img
                 alt=""
@@ -310,7 +309,7 @@ export default function VideoPlayer({
               />
             </>
           )}
-          {!onEdit && (playerShown || started) && (
+          {!isEditing && (playerShown || started) && (
             <ReactPlayer
               ref={PlayerRef}
               className={css`
@@ -331,11 +330,11 @@ export default function VideoPlayer({
                   userId: userIdRef.current
                 })
               }
-              onPause={onVideoStop}
-              onEnded={onVideoStop}
+              onPause={handleVideoStop}
+              onEnded={handleVideoStop}
             />
           )}
-          {!onEdit && !minimized && started ? (
+          {!isEditing && !minimized && started ? (
             <div
               className={css`
                 position: absolute;
@@ -352,7 +351,7 @@ export default function VideoPlayer({
             >
               <Spinner />
             </div>
-          ) : !onEdit ? (
+          ) : !isEditing ? (
             <a
               className={css`
                 position: absolute;
@@ -439,20 +438,25 @@ export default function VideoPlayer({
       </ErrorBoundary>
     ),
     [
-      contentState,
+      currentTime,
+      playing,
+      started,
+      xpLoaded,
+      xpEarned,
+      justEarned,
+      imageUrl,
+      progress,
+      watchTime,
       playerShown,
       alreadyEarned,
       byUser,
       rewardLevel,
-      hasHqThumb,
       minimized,
-      onEdit,
-      uploader,
       videoCode,
-      videoId,
       profileTheme,
       twinkleXP,
-      userId
+      userId,
+      isEditing
     ]
   );
 
@@ -488,7 +492,7 @@ export default function VideoPlayer({
     }
   }
 
-  function onVideoStop() {
+  function handleVideoStop() {
     onSetVideoPlaying({ videoId, playing: false });
     clearInterval(timerRef.current);
     onEmptyCurrentVideoSlot();

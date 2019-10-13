@@ -184,8 +184,6 @@ export default function XPRewardInterface({
       ) : null,
     [
       comment,
-      contentId,
-      contentType,
       userId,
       rewardLevel,
       stars,

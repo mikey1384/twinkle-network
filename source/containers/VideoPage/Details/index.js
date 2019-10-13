@@ -31,9 +31,7 @@ Details.propTypes = {
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onEditCancel: PropTypes.func.isRequired,
   onEditFinish: PropTypes.func.isRequired,
-  onEditStart: PropTypes.func.isRequired,
   onLikeVideo: PropTypes.func.isRequired,
   onSetRewardLevel: PropTypes.func.isRequired,
   tags: PropTypes.array,
@@ -60,8 +58,6 @@ export default function Details({
   description,
   likes,
   onDelete,
-  onEditCancel,
-  onEditStart,
   onEditFinish,
   onLikeVideo,
   tags = [],
@@ -347,9 +343,10 @@ export default function Details({
       </div>
     ),
     [
+      isEditing,
+      xpRewardInterfaceShown,
       content,
       editForm,
-      isEditing,
       description,
       title,
       likes,
@@ -359,8 +356,7 @@ export default function Details({
       stars,
       tags,
       userId,
-      videoId,
-      contentState
+      videoId
     ]
   );
 
@@ -381,7 +377,6 @@ export default function Details({
   }
 
   function handleEditCancel() {
-    onEditCancel();
     onSetEditForm({
       contentId: videoId,
       contentType: 'video',
@@ -417,7 +412,6 @@ export default function Details({
   }
 
   function handleEditStart() {
-    onEditStart();
     onSetIsEditing({
       contentId: videoId,
       contentType: 'video',

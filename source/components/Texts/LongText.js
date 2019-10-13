@@ -19,6 +19,7 @@ export default function LongText({
   maxLines = 10,
   noExpand
 }) {
+  const [loading, setLoading] = useState(false);
   const [text, setText] = useState(children || '');
   const [fullText, setFullText] = useState(false);
   const [more, setMore] = useState(false);
@@ -32,53 +33,63 @@ export default function LongText({
 
   useEffect(() => {
     if (ContainerRef.current?.clientWidth) {
-      truncateText(children || '');
+      setLoading(false);
+      truncateText({
+        container: ContainerRef.current,
+        originalText: children || '',
+        maxWidth: ContainerRef.current.clientWidth
+      });
+    } else {
+      setLoading(true);
     }
-  }, [children, ContainerRef.current?.clientWidth]);
+  }, [children, ContainerRef.current]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
-      <p ref={TextRef}>
-        {fullText ? (
-          <span
-            dangerouslySetInnerHTML={{
-              __html: limitBrs(
-                cleanString ? children : processedStringWithURL(children || '')
-              )
-            }}
-          />
-        ) : (
-          <>
+      {loading ? null : (
+        <p ref={TextRef}>
+          {fullText ? (
             <span
               dangerouslySetInnerHTML={{
                 __html: limitBrs(
-                  cleanString ? text : processedStringWithURL(text)
+                  cleanString
+                    ? children
+                    : processedStringWithURL(children || '')
                 )
               }}
             />
-            {more && (
-              <>
-                {'... '}
-                {!noExpand && (
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setFullText(true)}
-                  >
-                    Read More
-                  </a>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </p>
+          ) : (
+            <>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: limitBrs(
+                    cleanString ? text : processedStringWithURL(text)
+                  )
+                }}
+              />
+              {more && (
+                <>
+                  {'... '}
+                  {!noExpand && (
+                    <a
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setFullText(true)}
+                    >
+                      Read More
+                    </a>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </p>
+      )}
     </div>
   );
 
-  function truncateText(originalText) {
-    const maxWidth = TextRef.current.clientWidth;
+  function truncateText({ container, originalText, maxWidth }) {
     const canvas = document.createElement('canvas').getContext('2d');
-    const computedStyle = window.getComputedStyle(ContainerRef.current);
+    const computedStyle = window.getComputedStyle(container);
     const font = `${computedStyle['font-weight']} ${
       computedStyle['font-style']
     } ${computedStyle['font-size']} ${computedStyle['font-family']}`;

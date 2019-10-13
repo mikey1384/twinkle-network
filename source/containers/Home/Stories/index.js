@@ -241,7 +241,6 @@ export default function Stories({ location }) {
     ),
     [
       feeds,
-      hideWatched,
       userId,
       username,
       numNewPosts,
@@ -252,7 +251,6 @@ export default function Stories({ location }) {
       displayOrder,
       loadingFeeds,
       loadingMore,
-      loadingNewFeeds,
       feedsOutdated
     ]
   );

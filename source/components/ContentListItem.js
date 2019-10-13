@@ -301,6 +301,14 @@ export default function ContentListItem({
         </Link>
       </div>
     ),
-    [contentObj, mouseEntered, selected, onClick, profileTheme]
+    [
+      contentObj.secretAnswer,
+      contentObj.title,
+      contentObj.description,
+      contentObj.rootObj,
+      mouseEntered,
+      selected,
+      profileTheme
+    ]
   );
 }

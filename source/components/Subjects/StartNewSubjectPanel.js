@@ -83,7 +83,7 @@ export default function StartNewSubjectPanel({
         </div>
       </div>
     ),
-    [contentState, canEditRewardLevel, profileTheme]
+    [subjectFormShown, canEditRewardLevel, profileTheme]
   );
 
   async function onSubmit({ title, description, rewardLevel, secretAnswer }) {

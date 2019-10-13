@@ -52,7 +52,6 @@ export default function VideoPage({
   const [userAnswers, setUserAnswers] = useState({});
   const [resultModalShown, setResultModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [onEdit, setOnEdit] = useState(false);
   const [questionsBuilderShown, setQuestionsBuilderShown] = useState(false);
   const [videoUnavailable, setVideoUnavailable] = useState(false);
   const mounted = useRef(true);
@@ -283,7 +282,6 @@ export default function VideoPage({
                       byUser={!!byUser}
                       key={videoId}
                       hasHqThumb={hasHqThumb}
-                      onEdit={onEdit}
                       videoId={videoId}
                       videoCode={content}
                       title={title}
@@ -355,8 +353,6 @@ export default function VideoPage({
                   content={content}
                   description={description}
                   changeByUserStatus={handleChangeByUserStatus}
-                  onEditStart={() => setOnEdit(true)}
-                  onEditCancel={() => setOnEdit(false)}
                   onEditFinish={handleEditVideoPage}
                   onDelete={() => setConfirmModalShown(true)}
                   onSetRewardLevel={handleSetRewardLevel}
@@ -483,7 +479,6 @@ export default function VideoPage({
       userAnswers,
       resultModalShown,
       confirmModalShown,
-      onEdit,
       playlistId,
       search,
       questionsBuilderShown,
@@ -504,7 +499,6 @@ export default function VideoPage({
   }
 
   async function handleEditVideoPage(params) {
-    setOnEdit(false);
     await editContent(params);
     const url = fetchedVideoCodeFromURL(params.editedUrl);
     onEditContent({

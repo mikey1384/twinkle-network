@@ -355,19 +355,13 @@ function TargetContent({
       </ErrorBoundary>
     ),
     [
-      commentState,
-      subjectState,
-      history,
-      profilePicId,
+      xpRewardInterfaceShown,
       targetObj,
       userId,
       userListModalShown,
       mouseEntered,
-      userLikedThis,
-      userIsUploader,
       userCanRewardThis,
-      uploader,
-      secretShown
+      contentHidden
     ]
   );
 

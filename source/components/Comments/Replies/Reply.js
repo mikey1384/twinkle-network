@@ -321,9 +321,8 @@ export default function Reply({
       </ErrorBoundary>
     ),
     [
-      comment,
+      comment.id,
       isEditing,
-      parent,
       reply,
       subject,
       userId,
@@ -331,7 +330,6 @@ export default function Reply({
       confirmModalShown,
       xpRewardInterfaceShown,
       replyButtonClicked,
-      userLikedThis,
       editMenuItems,
       editButtonShown
     ]

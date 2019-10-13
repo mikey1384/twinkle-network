@@ -91,5 +91,5 @@ export default function AlreadyPosted({
         </Link>
       </div>
     ) : null;
-  }, [contentState, changingPage, uploaderId, url, videoCode, existingContent]);
+  }, [existingContent, changingPage, uploaderId, url, videoCode]);
 }

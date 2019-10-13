@@ -91,14 +91,7 @@ export default function Home({ history, location }) {
         </div>
       </ErrorBoundary>
     ),
-    [
-      history,
-      location,
-      alertModalShown,
-      imageEditModalShown,
-      imageUri,
-      processing
-    ]
+    [alertModalShown, imageEditModalShown, imageUri, processing]
   );
 
   async function uploadImage(image) {

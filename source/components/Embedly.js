@@ -163,7 +163,7 @@ export default function Embedly({
         )}
       </div>
     ),
-    [contentState, loading]
+    [imageUrl, loading, thumbUrl, actualTitle, actualDescription, siteUrl]
   );
 
   function onImageLoadError() {

@@ -129,7 +129,7 @@ export default function ContentPage({
         </div>
       </ErrorBoundary>
     ),
-    [contentState, initialContentId, history, pathname, url]
+    [initialContentId]
   );
 
   function handleDeleteContent() {
