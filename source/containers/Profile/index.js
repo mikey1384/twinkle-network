@@ -20,7 +20,7 @@ export default function Profile({ history, location, match }) {
       state: { userId, username, profile },
       actions: { onChangeProfileTheme, onShowProfile, onUserNotExist }
     },
-    requestHelpers: { checkIfUserExists, setTheme }
+    requestHelpers: { loadProfileViaUsername, setTheme }
   } = useAppContext();
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function Profile({ history, location, match }) {
     async function init() {
       setLoading(true);
       try {
-        const { pageNotExists, user } = await checkIfUserExists(
+        const { pageNotExists, user } = await loadProfileViaUsername(
           match.params.username
         );
         if (pageNotExists) return onUserNotExist();

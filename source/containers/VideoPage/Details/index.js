@@ -7,6 +7,7 @@ import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';
 import AlreadyPosted from 'components/AlreadyPosted';
 import {
+  addCommasToNumber,
   addEmoji,
   exceedsCharLimit,
   stringIsEmpty,
@@ -276,7 +277,7 @@ export default function Details({
                 color: Color.darkerGray()
               }}
             >
-              {videoViews} view
+              {addCommasToNumber(videoViews)} view
               {`${videoViews > 1 ? 's' : ''}`}
             </div>
           )}

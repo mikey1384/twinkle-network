@@ -50,7 +50,15 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async checkIfUserExists(username) {
+    async loadProfile(userId) {
+      try {
+        const { data } = await request.get(`${URL}/user?userId=${userId}`);
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadProfileViaUsername(username) {
       try {
         const {
           data: { pageNotExists, user }

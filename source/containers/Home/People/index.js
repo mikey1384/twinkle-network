@@ -33,8 +33,7 @@ export default function People({ location, history }) {
         loadMoreButton,
         profiles,
         profileTheme,
-        searchedProfiles,
-        userId
+        searchedProfiles
       }
     },
     requestHelpers: { loadUsers }
@@ -132,22 +131,12 @@ export default function People({ location, history }) {
         {profilesLoaded &&
           stringIsEmpty(userSearchText) &&
           profiles.map(profile => (
-            <ProfilePanel
-              expandable
-              key={profile.id}
-              userId={userId}
-              profile={profile}
-            />
+            <ProfilePanel expandable key={profile.id} profileId={profile.id} />
           ))}
         {!stringIsEmpty(userSearchText) &&
           !searching &&
           searchedProfiles.map(profile => (
-            <ProfilePanel
-              expandable
-              key={profile.id}
-              userId={userId}
-              profile={profile}
-            />
+            <ProfilePanel expandable key={profile.id} profileId={profile.id} />
           ))}
         {!stringIsEmpty(userSearchText) &&
           !searching &&
