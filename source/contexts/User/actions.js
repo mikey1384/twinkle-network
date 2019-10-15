@@ -95,12 +95,6 @@ export default function UserActions(dispatch) {
         data: user
       });
     },
-    onShowProfileComments(profileId) {
-      return dispatch({
-        type: 'SHOW_PROFILE_COMMENTS',
-        profileId
-      });
-    },
     onToggleHideWatched(hideWatched) {
       return dispatch({
         type: 'TOGGLE_HIDE_WATCHED',

@@ -237,6 +237,14 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
+    case 'DELETE_CONTENT':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          deleted: true
+        }
+      };
     case 'DELETE_SUBJECT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);

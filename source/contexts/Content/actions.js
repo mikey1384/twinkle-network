@@ -40,6 +40,13 @@ export default function ContentActions(dispatch) {
         commentId
       });
     },
+    onDeleteContent({ contentType, contentId }) {
+      return dispatch({
+        type: 'DELETE_CONTENT',
+        contentType,
+        contentId
+      });
+    },
     onDeleteSubject(subjectId) {
       return dispatch({
         type: 'DELETE_SUBJECT',

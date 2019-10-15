@@ -22,7 +22,6 @@ import { processedURL } from 'helpers/stringHelpers';
 import {
   useAppContext,
   useContentContext,
-  useHomeContext,
   useViewContext,
   useExploreContext
 } from 'contexts';
@@ -42,9 +41,6 @@ export default function LinkPage({
 }) {
   const linkId = Number(initialLinkId);
   const {
-    profile: {
-      actions: { onDeleteFeed: onDeleteProfileFeed }
-    },
     user: {
       state: { authLevel, canDelete, canEdit, canStar, userId }
     },
@@ -65,13 +61,11 @@ export default function LinkPage({
     }
   } = useExploreContext();
   const {
-    actions: { onDeleteFeed: onDeleteHomeFeed }
-  } = useHomeContext();
-  const {
     state,
     actions: {
       onAttachStar,
       onDeleteComment,
+      onDeleteContent,
       onDeleteSubject,
       onEditComment,
       onEditContent,
@@ -101,6 +95,7 @@ export default function LinkPage({
     commentsLoaded,
     commentsLoadMoreButton,
     content,
+    deleted,
     description,
     likes = [],
     loaded,
@@ -127,6 +122,15 @@ export default function LinkPage({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [likesModalShown, setLikesModalShown] = useState(false);
   const mounted = useRef(true);
+  const prevDeleted = useRef(false);
+
+  useEffect(() => {
+    if (!prevDeleted.current && deleted) {
+      onSetExploreSubNav('');
+      history.push('/links');
+    }
+    prevDeleted.current = deleted;
+  }, [deleted, loaded]);
 
   useEffect(() => {
     if (!loaded) {
@@ -440,10 +444,7 @@ export default function LinkPage({
   async function handleDeleteLink() {
     await deleteContent({ id: linkId, contentType: 'url' });
     onDeleteLink(linkId);
-    onDeleteHomeFeed({ contentType: 'url', contentId: linkId });
-    onDeleteProfileFeed({ contentType: 'url', contentId: linkId });
-    onSetExploreSubNav('');
-    history.push('/links');
+    onDeleteContent({ contentId: linkId, contentType: 'url' });
   }
 
   function handleDeleteComment(data) {

@@ -8,13 +8,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { mobileMaxWidth } from 'constants/css';
 import { useScrollPosition } from 'helpers/hooks';
 import { css } from 'emotion';
-import {
-  useAppContext,
-  useContentContext,
-  useHomeContext,
-  useViewContext,
-  useExploreContext
-} from 'contexts';
+import { useAppContext, useContentContext, useViewContext } from 'contexts';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
@@ -32,16 +26,10 @@ export default function ContentPage({
 }) {
   const contentId = Number(initialContentId);
   const {
-    profile: {
-      actions: { onDeleteFeed: onDeleteProfileFeed }
-    },
     user: {
       state: { userId }
     }
   } = useAppContext();
-  const {
-    actions: { onDeleteSubject }
-  } = useExploreContext();
   const {
     actions: { onRecordScrollPosition, onSetExploreSubNav },
     state: { scrollPositions }
@@ -51,17 +39,25 @@ export default function ContentPage({
     pathname,
     scrollPositions
   });
-  const {
-    actions: { onDeleteFeed: onDeleteHomeFeed }
-  } = useHomeContext();
   const { state } = useContentContext();
   const contentType = url.split('/')[1].slice(0, -1);
   const contentState = state[contentType + contentId] || {};
+  const { loaded, deleted } = contentState;
   const [exists, setExists] = useState(true);
   const mounted = useRef(null);
+  const prevDeleted = useRef(false);
+
+  useEffect(() => {
+    if (!prevDeleted.current && deleted) {
+      onSetExploreSubNav('');
+      history.push('/');
+    }
+    prevDeleted.current = deleted;
+  }, [deleted, loaded]);
+
   useEffect(() => {
     mounted.current = true;
-    if (!contentState.loaded) {
+    if (!loaded) {
       initContent();
     }
     async function initContent() {
@@ -120,7 +116,6 @@ export default function ContentPage({
                 contentId={Number(contentId)}
                 contentType={contentType}
                 userId={userId}
-                onDeleteContent={handleDeleteContent}
               />
             ) : (
               <NotFound />
@@ -129,16 +124,6 @@ export default function ContentPage({
         </div>
       </ErrorBoundary>
     ),
-    [initialContentId]
+    [exists]
   );
-
-  function handleDeleteContent() {
-    if (contentType === 'subject') {
-      onDeleteSubject(contentId);
-    }
-    onDeleteHomeFeed({ contentType, contentId });
-    onDeleteProfileFeed({ contentType, contentId });
-    onSetExploreSubNav('');
-    history.push('/');
-  }
 }

@@ -100,7 +100,7 @@ export default function ContentInput() {
       <Checkbox
         label={'YouTube Video:'}
         onClick={() => {
-          onSetContentIsVideo(form.isVideo);
+          onSetContentIsVideo(!form.isVideo);
           onSetContentUrlError(urlError);
         }}
         style={{ marginTop: '1rem' }}
@@ -124,7 +124,7 @@ export default function ContentInput() {
         />
       )}
       <div style={{ marginTop: '1.5rem' }}>
-        <div style={{ position: 'relative' }}>
+        <div className="unselectable" style={{ position: 'relative' }}>
           {titleFieldShown && (
             <>
               <span

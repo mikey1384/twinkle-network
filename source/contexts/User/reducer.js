@@ -83,7 +83,7 @@ export default function UserReducer(state, action) {
       };
     case 'LOAD_USERS': {
       let loadMoreButton = false;
-      if (action.data.length > 20) {
+      if (action.data.length > 5) {
         action.data.pop();
         loadMoreButton = true;
       }

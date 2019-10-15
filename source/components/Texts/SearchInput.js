@@ -44,7 +44,7 @@ export default function SearchInput({
   renderItemLabel,
   renderItemUrl,
   style,
-  value
+  value = ''
 }) {
   const [indexToHighlight, setIndexToHighlight] = useState(0);
   const SearchInputRef = useRef(null);

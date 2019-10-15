@@ -26,7 +26,6 @@ import { css } from 'emotion';
 import {
   useAppContext,
   useContentContext,
-  useHomeContext,
   useViewContext,
   useExploreContext
 } from 'contexts';
@@ -56,11 +55,9 @@ export default function VideoPage({
   const [videoUnavailable, setVideoUnavailable] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
+  const prevDeleted = useRef(false);
 
   const {
-    profile: {
-      actions: { onDeleteFeed: onDeleteProfileFeed }
-    },
     user: {
       state: { authLevel, canEdit, userId }
     },
@@ -83,14 +80,12 @@ export default function VideoPage({
     }
   } = useExploreContext();
   const {
-    actions: { onDeleteFeed: onDeleteHomeFeed }
-  } = useHomeContext();
-  const {
     state,
     actions: {
       onAddTags,
       onAttachStar,
       onDeleteComment,
+      onDeleteContent,
       onDeleteSubject,
       onEditComment,
       onEditContent,
@@ -134,6 +129,7 @@ export default function VideoPage({
     commentsLoaded,
     commentsLoadMoreButton,
     content,
+    deleted,
     description,
     rewardLevel,
     hasHqThumb,
@@ -150,6 +146,14 @@ export default function VideoPage({
     uploader,
     views
   } = contentState;
+
+  useEffect(() => {
+    if (!prevDeleted.current && deleted) {
+      onSetExploreSubNav('');
+      history.push('/videos');
+    }
+    prevDeleted.current = deleted;
+  }, [deleted, loaded]);
 
   useEffect(() => {
     mounted.current = true;
@@ -255,8 +259,11 @@ export default function VideoPage({
         >
           {(!loaded || videoUnavailable) && (
             <div>
-              {!loaded && <Loading text="Loading Video..." />}
-              {videoUnavailable && <NotFound text="Video does not exist" />}
+              {videoUnavailable ? (
+                <NotFound text="Video does not exist" />
+              ) : (
+                <Loading text="Loading Video..." />
+              )}
             </div>
           )}
           {loaded && !videoUnavailable && content && (
@@ -492,10 +499,7 @@ export default function VideoPage({
   async function handleDeleteVideo() {
     await deleteContent({ id: videoId, contentType: 'video' });
     onDeleteVideo(videoId);
-    onDeleteHomeFeed({ contentType: 'video', contentId: videoId });
-    onDeleteProfileFeed({ contentType: 'video', contentId: videoId });
-    onSetExploreSubNav('');
-    history.push('/videos');
+    onDeleteContent({ contentType: 'video', contentId: videoId });
   }
 
   async function handleEditVideoPage(params) {

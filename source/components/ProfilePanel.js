@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -28,7 +28,6 @@ function ProfilePanel({ history, expandable, profileId }) {
     user: {
       actions: {
         onRemoveStatusMsg,
-        onShowProfileComments,
         onUpdateStatusMsg,
         onUpdateBio,
         onUploadProfilePic
@@ -46,18 +45,49 @@ function ProfilePanel({ history, expandable, profileId }) {
   } = useAppContext();
   const {
     state,
-    actions: { onInitContent }
+    actions: {
+      onAttachStar,
+      onDeleteComment,
+      onEditComment,
+      onEditRewardComment,
+      onInitContent,
+      onLikeComment,
+      onLoadComments,
+      onLoadMoreComments,
+      onLoadMoreReplies,
+      onSetCommentsShown,
+      onUploadComment,
+      onUploadReply
+    }
   } = useContentContext();
   const profile = state['user' + profileId] || {};
   const {
-    state: { loaded: chatLoaded },
+    childComments = [],
+    commentsLoaded,
+    commentsShown,
+    lastActive,
+    loaded,
+    numMessages,
+    online,
+    previewLoaded,
+    profileFirstRow,
+    profileSecondRow,
+    profileThirdRow,
+    profilePicId,
+    profileTheme,
+    twinkleXP,
+    username: profileName,
+    userType,
+    website,
+    youtubeUrl
+  } = profile;
+  const {
+    state: { loaded: chatLoaded, commentsLoadMoreButton = false },
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
 
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
-  const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(false);
-  const [commentsLoadMoreButton, setCommentsLoadMoreButton] = useState(false);
   const [imageUri, setImageUri] = useState();
   const [processing, setProcessing] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
@@ -73,7 +103,9 @@ function ProfilePanel({ history, expandable, profileId }) {
     if (!profile.loaded && !loading.current && profileId) {
       handleInitProfile();
     }
-    handleLoadComments();
+    if (!commentsLoaded && !previewLoaded) {
+      handleLoadComments();
+    }
     async function handleInitProfile() {
       loading.current = true;
       const data = await loadProfile(profileId);
@@ -84,13 +116,18 @@ function ProfilePanel({ history, expandable, profileId }) {
     }
     async function handleLoadComments() {
       try {
-        const { comments } = await loadComments({
+        const data = await loadComments({
           contentId: profileId,
           contentType: 'user',
           limit: 1
         });
         if (mounted.current) {
-          setComments(comments);
+          onLoadComments({
+            ...data,
+            contentId: profileId,
+            contentType: 'user',
+            isPreview: true
+          });
         }
       } catch (error) {
         console.error(error);
@@ -101,292 +138,290 @@ function ProfilePanel({ history, expandable, profileId }) {
     };
   }, [profileId]);
   const canEdit = userId === profileId || isCreator;
-  const {
-    commentsShown,
-    lastActive,
-    loaded,
-    numMessages,
-    online,
-    profileFirstRow,
-    profileSecondRow,
-    profileThirdRow,
-    profilePicId,
-    profileTheme,
-    twinkleXP,
-    username: profileName,
-    userType,
-    website,
-    youtubeUrl
-  } = profile;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
-  return (
-    <div
-      key={profileId}
-      className={css`
-        background: #fff;
-        width: 100%;
-        margin-bottom: 1rem;
-        line-height: 2.3rem;
-        font-size: 1.5rem;
-        position: relative;
-      `}
-    >
+
+  return useMemo(
+    () => (
       <div
+        key={profileId}
         className={css`
-          background: ${Color[profileTheme || 'logoBlue']()};
-          min-height: 2.5rem;
-          border-top-right-radius: ${borderRadius};
-          border-top-left-radius: ${borderRadius};
-          border-bottom: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          @media (max-width: ${mobileMaxWidth}) {
-            border-radius: 0;
-            border-left: none;
-            border-right: none;
-          }
+          background: #fff;
+          width: 100%;
+          margin-bottom: 1rem;
+          line-height: 2.3rem;
+          font-size: 1.5rem;
+          position: relative;
         `}
-        style={{ padding: userType ? '0.5rem' : undefined }}
       >
-        {userType && (
-          <div
-            style={{
-              fontSize: '2.2rem',
-              color: '#fff'
-            }}
-          >
-            {userType.includes('teacher') ? 'teacher' : userType}
-          </div>
-        )}
-      </div>
-      <div
-        className={css`
-          display: flex;
-          flex-direction: column;
-          padding: 1rem;
-          border: ${Color.borderGray()} 1px solid;
-          ${twinkleXP
-            ? 'border-bottom: none;'
-            : `
+        <div
+          className={css`
+            background: ${Color[profileTheme || 'logoBlue']()};
+            min-height: 2.5rem;
+            border-top-right-radius: ${borderRadius};
+            border-top-left-radius: ${borderRadius};
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+            }
+          `}
+          style={{ padding: userType ? '0.5rem' : undefined }}
+        >
+          {userType && (
+            <div
+              style={{
+                fontSize: '2.2rem',
+                color: '#fff'
+              }}
+            >
+              {userType.includes('teacher') ? 'teacher' : userType}
+            </div>
+          )}
+        </div>
+        <div
+          className={css`
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            border: ${Color.borderGray()} 1px solid;
+            ${twinkleXP
+              ? 'border-bottom: none;'
+              : `
                 border-bottom-left-radius: ${borderRadius};
                 border-bottom-right-radius: ${borderRadius};
               `};
-          border-top: none;
-          @media (max-width: ${mobileMaxWidth}) {
-            border-radius: 0;
-            border-left: none;
-            border-right: none;
-          }
-        `}
-      >
-        {loaded ? (
-          <div style={{ display: 'flex', height: '100%', marginTop: '1rem' }}>
-            <div
-              style={{
-                width: '20rem',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
+            border-top: none;
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+            }
+          `}
+        >
+          {loaded ? (
+            <div style={{ display: 'flex', height: '100%', marginTop: '1rem' }}>
               <div
-                onMouseEnter={() => setMouseEnteredProfile(true)}
-                onMouseLeave={() => setMouseEnteredProfile(false)}
+                style={{
+                  width: '20rem',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
               >
-                <Link to={`/users/${profileName}`}>
-                  <ProfilePic
+                <div
+                  onMouseEnter={() => setMouseEnteredProfile(true)}
+                  onMouseLeave={() => setMouseEnteredProfile(false)}
+                >
+                  <Link to={`/users/${profileName}`}>
+                    <ProfilePic
+                      style={{
+                        width: '18rem',
+                        height: '18rem',
+                        cursor: 'pointer'
+                      }}
+                      userId={profileId}
+                      profilePicId={profilePicId}
+                      online={userId === profileId || !!online}
+                      large
+                    />
+                  </Link>
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: '1.5rem'
+                  }}
+                >
+                  <Button
+                    color="orange"
+                    transparent
                     style={{
-                      width: '18rem',
-                      height: '18rem',
-                      cursor: 'pointer'
+                      color: mouseEnteredProfile && Color.orange(),
+                      padding: '0.5rem'
                     }}
-                    userId={profileId}
-                    profilePicId={profilePicId}
-                    online={userId === profileId || !!online}
-                    large
-                  />
-                </Link>
+                    onClick={() => history.push(`/users/${profileName}`)}
+                  >
+                    View Profile
+                  </Button>
+                </div>
+                {youtubeUrl && (
+                  <Button
+                    color="red"
+                    transparent
+                    style={{ padding: '0.5rem' }}
+                    onClick={() => window.open(youtubeUrl)}
+                  >
+                    Visit YouTube
+                  </Button>
+                )}
+                {website && (
+                  <Button
+                    color="blue"
+                    transparent
+                    style={{ padding: '0.5rem' }}
+                    onClick={() => window.open(website)}
+                  >
+                    Visit Website
+                  </Button>
+                )}
               </div>
               <div
                 style={{
+                  marginLeft: '2rem',
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: '1.5rem'
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  width: 'CALC(100% - 19rem)'
                 }}
               >
-                <Button
-                  color="orange"
-                  transparent
-                  style={{
-                    color: mouseEnteredProfile && Color.orange(),
-                    padding: '0.5rem'
-                  }}
-                  onClick={() => history.push(`/users/${profileName}`)}
-                >
-                  View Profile
-                </Button>
-              </div>
-              {youtubeUrl && (
-                <Button
-                  color="red"
-                  transparent
-                  style={{ padding: '0.5rem' }}
-                  onClick={() => window.open(youtubeUrl)}
-                >
-                  Visit YouTube
-                </Button>
-              )}
-              {website && (
-                <Button
-                  color="blue"
-                  transparent
-                  style={{ padding: '0.5rem' }}
-                  onClick={() => window.open(website)}
-                >
-                  Visit Website
-                </Button>
-              )}
-            </div>
-            <div
-              style={{
-                marginLeft: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                position: 'relative',
-                width: 'CALC(100% - 19rem)'
-              }}
-            >
-              <UserDetails
-                profile={profile}
-                removeStatusMsg={onRemoveStatusMsg}
-                updateStatusMsg={onUpdateStatusMsg}
-                onUpdateBio={onUpdateBio}
-                userId={userId}
-              />
-              {canEdit && (
-                <div
-                  style={{
-                    zIndex: 1,
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                >
-                  <div style={{ display: 'flex' }}>
-                    <Button transparent onClick={onChangeProfilePictureClick}>
-                      Change Pic
-                    </Button>
-                    <Button
-                      transparent
-                      onClick={() => setBioEditModalShown(true)}
-                      style={{ marginLeft: '0.5rem' }}
-                    >
-                      Edit Bio
-                    </Button>
-                    {profileId === userId &&
-                      comments.length > 0 &&
-                      renderMessagesButton({
-                        style: { marginLeft: '0.5rem' }
-                      })}
+                <UserDetails
+                  profile={profile}
+                  removeStatusMsg={onRemoveStatusMsg}
+                  updateStatusMsg={onUpdateStatusMsg}
+                  onUpdateBio={onUpdateBio}
+                  userId={userId}
+                />
+                {canEdit && (
+                  <div
+                    style={{
+                      zIndex: 1,
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    <div style={{ display: 'flex' }}>
+                      <Button transparent onClick={onChangeProfilePictureClick}>
+                        Change Pic
+                      </Button>
+                      <Button
+                        transparent
+                        onClick={() => setBioEditModalShown(true)}
+                        style={{ marginLeft: '0.5rem' }}
+                      >
+                        Edit Bio
+                      </Button>
+                      {profileId === userId &&
+                        childComments.length > 0 &&
+                        renderMessagesButton({
+                          style: { marginLeft: '0.5rem' }
+                        })}
+                    </div>
                   </div>
-                </div>
+                )}
+                {expandable && userId !== profileId && (
+                  <div
+                    style={{
+                      marginTop: noBio ? '2rem' : '1rem',
+                      display: 'flex'
+                    }}
+                  >
+                    <Button color="green" onClick={handleTalkClick}>
+                      <Icon icon="comments" />
+                      <span style={{ marginLeft: '0.7rem' }}>Talk</span>
+                    </Button>
+                    {renderMessagesButton()}
+                  </div>
+                )}
+                {lastActive && !online && profileId !== userId && (
+                  <div
+                    style={{
+                      marginTop: '1rem',
+                      fontSize: '1.5rem',
+                      color: Color.gray()
+                    }}
+                  >
+                    <p>last online {timeSince(lastActive)}</p>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={FileInputRef}
+                style={{ display: 'none' }}
+                type="file"
+                onChange={handlePicture}
+                accept="image/*"
+              />
+              {bioEditModalShown && (
+                <BioEditModal
+                  firstLine={profileFirstRow}
+                  secondLine={profileSecondRow}
+                  thirdLine={profileThirdRow}
+                  onSubmit={handleUploadBio}
+                  onHide={() => setBioEditModalShown(false)}
+                />
               )}
-              {expandable && userId !== profileId && (
-                <div
-                  style={{
-                    marginTop: noBio ? '2rem' : '1rem',
-                    display: 'flex'
+              {imageEditModalShown && (
+                <ImageEditModal
+                  imageUri={imageUri}
+                  onHide={() => {
+                    setImageUri(undefined);
+                    setImageEditModalShown(false);
+                    setProcessing(false);
                   }}
-                >
-                  <Button color="green" onClick={handleTalkClick}>
-                    <Icon icon="comments" />
-                    <span style={{ marginLeft: '0.7rem' }}>Talk</span>
-                  </Button>
-                  {renderMessagesButton()}
-                </div>
-              )}
-              {lastActive && !online && profileId !== userId && (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    fontSize: '1.5rem',
-                    color: Color.gray()
-                  }}
-                >
-                  <p>last online {timeSince(lastActive)}</p>
-                </div>
+                  processing={processing}
+                  onConfirm={uploadImage}
+                />
               )}
             </div>
-            <input
-              ref={FileInputRef}
-              style={{ display: 'none' }}
-              type="file"
-              onChange={handlePicture}
-              accept="image/*"
+          ) : (
+            <Loading />
+          )}
+          {loaded && (
+            <Comments
+              comments={childComments}
+              commentsLoadLimit={20}
+              commentsShown={commentsShown}
+              contentId={profileId}
+              inputAreaInnerRef={CommentInputAreaRef}
+              inputTypeLabel={`message to ${profileName}`}
+              isLoading={loadingComments}
+              loadMoreButton={commentsLoadMoreButton}
+              noInput={profileId === userId}
+              numPreviews={1}
+              onAttachStar={onAttachStar}
+              onCommentSubmit={onUploadComment}
+              onDelete={onDeleteComment}
+              onEditDone={onEditComment}
+              onLikeClick={onLikeComment}
+              onLoadMoreComments={onLoadMoreComments}
+              onLoadMoreReplies={onLoadMoreReplies}
+              onPreviewClick={onExpandComments}
+              onReplySubmit={onUploadReply}
+              onRewardCommentEdit={onEditRewardComment}
+              parent={{ ...profile, contentType: 'user' }}
+              style={{ marginTop: '1rem' }}
+              userId={userId}
             />
-            {bioEditModalShown && (
-              <BioEditModal
-                firstLine={profileFirstRow}
-                secondLine={profileSecondRow}
-                thirdLine={profileThirdRow}
-                onSubmit={handleUploadBio}
-                onHide={() => setBioEditModalShown(false)}
-              />
-            )}
-            {imageEditModalShown && (
-              <ImageEditModal
-                imageUri={imageUri}
-                onHide={() => {
-                  setImageUri(undefined);
-                  setImageEditModalShown(false);
-                  setProcessing(false);
-                }}
-                processing={processing}
-                onConfirm={uploadImage}
-              />
-            )}
-          </div>
-        ) : (
-          <Loading />
-        )}
-        {loaded && (
-          <Comments
-            comments={comments}
-            commentsLoadLimit={20}
-            commentsShown={commentsShown}
-            contentId={profileId}
-            inputAreaInnerRef={CommentInputAreaRef}
-            inputTypeLabel={`message to ${profileName}`}
-            isLoading={loadingComments}
-            loadMoreButton={commentsLoadMoreButton}
-            noInput={profileId === userId}
-            numPreviews={1}
-            onAttachStar={onAttachStar}
-            onCommentSubmit={onCommentSubmit}
-            onDelete={onDeleteComment}
-            onEditDone={onEditComment}
-            onLikeClick={onLikeComment}
-            onLoadMoreComments={onLoadMoreComments}
-            onLoadMoreReplies={onLoadMoreReplies}
-            onPreviewClick={onExpandComments}
-            onReplySubmit={onReplySubmit}
-            onRewardCommentEdit={onEditRewardComment}
-            parent={{ ...profile, contentType: 'user' }}
-            style={{ marginTop: '1rem' }}
-            userId={userId}
+          )}
+        </div>
+        {!!twinkleXP && <RankBar profile={profile} />}
+        {alertModalShown && (
+          <AlertModal
+            title="Image is too large (limit: 5mb)"
+            content="Please select a smaller image"
+            onHide={() => setAlertModalShown(false)}
           />
         )}
       </div>
-      {!!twinkleXP && <RankBar profile={profile} />}
-      {alertModalShown && (
-        <AlertModal
-          title="Image is too large (limit: 5mb)"
-          content="Please select a smaller image"
-          onHide={() => setAlertModalShown(false)}
-        />
-      )}
-    </div>
+    ),
+    [
+      noBio,
+      canEdit,
+      profile,
+      chatLoaded,
+      bioEditModalShown,
+      loadingComments,
+      imageUri,
+      imageEditModalShown,
+      mouseEnteredProfile,
+      alertModalShown
+    ]
   );
 
   function handlePicture(event) {
@@ -418,88 +453,8 @@ function ProfilePanel({ history, expandable, profileId }) {
     history.push('/chat');
   }
 
-  function onAttachStar(star) {
-    setComments(
-      comments.map(comment => {
-        return {
-          ...comment,
-          stars:
-            comment.id === star.contentId
-              ? (comment.stars || []).concat(star)
-              : comment.stars || [],
-          replies: comment.replies.map(reply => ({
-            ...reply,
-            stars:
-              reply.id === star.contentId
-                ? (reply.stars || []).concat(star)
-                : reply.stars || []
-          }))
-        };
-      })
-    );
-  }
-
-  function onCommentSubmit(comment) {
-    setComments([comment].concat(comments));
-  }
-
   function onChangeProfilePictureClick() {
     FileInputRef.current.click();
-  }
-
-  function onDeleteComment(commentId) {
-    setComments(
-      comments
-        .filter(comment => comment.id !== commentId)
-        .map(comment => ({
-          ...comment,
-          replies: (comment.replies || []).filter(
-            reply => reply.id !== commentId
-          )
-        }))
-    );
-  }
-
-  function onEditComment({ editedComment, commentId }) {
-    setComments(
-      comments.map(comment => ({
-        ...comment,
-        content: comment.id === commentId ? editedComment : comment.content,
-        replies: comment.replies
-          ? comment.replies.map(reply =>
-              reply.id === commentId
-                ? {
-                    ...reply,
-                    content: editedComment
-                  }
-                : reply
-            )
-          : []
-      }))
-    );
-  }
-
-  function onEditRewardComment({ id, text }) {
-    setComments(
-      comments.map(comment => ({
-        ...comment,
-        stars: comment.stars
-          ? comment.stars.map(star => ({
-              ...star,
-              rewardComment: star.id === id ? text : star.rewardComment
-            }))
-          : [],
-        replies: comment.replies.map(reply => ({
-          ...reply,
-          stars: reply.stars
-            ? reply.stars.map(star => ({
-                ...star,
-                rewardComment: star.id === id ? text : star.rewardComment
-              }))
-            : []
-        }))
-      }))
-    );
   }
 
   async function onExpandComments() {
@@ -510,77 +465,20 @@ function ProfilePanel({ history, expandable, profileId }) {
         contentType: 'user',
         limit: 5
       });
-      setComments(comments);
-      onShowProfileComments(profileId);
-      setCommentsLoadMoreButton(loadMoreButton);
+      onLoadComments({
+        comments,
+        contentId: profileId,
+        contentType: 'user',
+        loadMoreButton
+      });
+      onSetCommentsShown({ contentId: profileId, contentType: 'user' });
       setLoadingComments(false);
     }
-  }
-
-  function onLikeComment({ commentId, likes }) {
-    setComments(
-      comments.map(comment => ({
-        ...comment,
-        likes: comment.id === commentId ? likes : comment.likes,
-        replies: comment.replies
-          ? comment.replies.map(reply =>
-              reply.id === commentId
-                ? {
-                    ...reply,
-                    likes
-                  }
-                : reply
-            )
-          : []
-      }))
-    );
-  }
-
-  function onLoadMoreComments({ comments: newComments, loadMoreButton }) {
-    setComments(comments.concat(newComments));
-    setCommentsLoadMoreButton(loadMoreButton);
-  }
-
-  function onLoadMoreReplies({ commentId, replies, loadMoreButton }) {
-    setComments(
-      comments.map(comment => ({
-        ...comment,
-        replies:
-          comment.id === commentId
-            ? replies.concat(comment.replies)
-            : comment.replies,
-        loadMoreButton:
-          comment.id === commentId ? loadMoreButton : comment.loadMoreButton
-      }))
-    );
   }
 
   async function onMessagesButtonClick() {
     await onExpandComments();
     if (profileId !== userId) CommentInputAreaRef.current.focus();
-  }
-
-  function onReplySubmit(data) {
-    setComments(
-      comments.map(comment => {
-        let match = false;
-        let commentId = data.replyId || data.commentId;
-        if (comment.id === commentId) {
-          match = true;
-        } else {
-          for (let reply of comment.replies || []) {
-            if (reply.id === commentId) {
-              match = true;
-              break;
-            }
-          }
-        }
-        return {
-          ...comment,
-          replies: match ? comment.replies.concat([data]) : comment.replies
-        };
-      })
-    );
   }
 
   function renderMessagesButton() {
