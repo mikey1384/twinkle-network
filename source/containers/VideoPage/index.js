@@ -73,7 +73,6 @@ export default function VideoPage({
   const {
     actions: {
       onChangeVideoByUserStatus,
-      onDeleteVideo,
       onEditVideoThumbs,
       onLikeVideo,
       onSetThumbRewardLevel
@@ -86,7 +85,6 @@ export default function VideoPage({
       onAttachStar,
       onDeleteComment,
       onDeleteContent,
-      onDeleteSubject,
       onEditComment,
       onEditContent,
       onEditRewardComment,
@@ -389,7 +387,12 @@ export default function VideoPage({
                 onLoadMoreSubjects={onLoadMoreSubjects}
                 onLoadSubjectComments={onLoadSubjectComments}
                 onSubjectEditDone={onEditSubject}
-                onSubjectDelete={onDeleteSubject}
+                onSubjectDelete={subjectId =>
+                  onDeleteContent({
+                    contentType: 'subject',
+                    contentId: subjectId
+                  })
+                }
                 onSetRewardLevel={onSetRewardLevel}
                 uploadSubject={onUploadSubject}
                 contentId={videoId}
@@ -498,7 +501,6 @@ export default function VideoPage({
 
   async function handleDeleteVideo() {
     await deleteContent({ id: videoId, contentType: 'video' });
-    onDeleteVideo(videoId);
     onDeleteContent({ contentType: 'video', contentId: videoId });
   }
 

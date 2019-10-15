@@ -47,12 +47,6 @@ export default function ContentActions(dispatch) {
         contentId
       });
     },
-    onDeleteSubject(subjectId) {
-      return dispatch({
-        type: 'DELETE_SUBJECT',
-        subjectId
-      });
-    },
     onEditComment({ commentId, editedComment }) {
       return dispatch({
         type: 'EDIT_COMMENT',
@@ -353,14 +347,6 @@ export default function ContentActions(dispatch) {
         contentType: 'video',
         contentId: videoId,
         url
-      });
-    },
-    onSetVideoPlaying({ videoId, playing }) {
-      return dispatch({
-        type: 'SET_VIDEO_PLAYING',
-        contentType: 'video',
-        contentId: videoId,
-        playing
       });
     },
     onSetVideoQuestions({ questions, contentType, contentId }) {

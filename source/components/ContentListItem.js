@@ -302,6 +302,7 @@ export default function ContentListItem({
       </div>
     ),
     [
+      contentObj.rewardLevel,
       contentObj.secretAnswer,
       contentObj.title,
       contentObj.description,

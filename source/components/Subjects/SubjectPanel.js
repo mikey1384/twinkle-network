@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import UsernameText from 'components/Texts/UsernameText';
@@ -22,7 +22,7 @@ import {
 } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 SubjectPanel.propTypes = {
   comments: PropTypes.array.isRequired,
@@ -88,6 +88,9 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
+  const { state } = useContentContext();
+  const contentState = state['subject' + id] || {};
+  const { deleted } = contentState;
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
@@ -116,225 +119,252 @@ export default function SubjectPanel({
     setEditDoneButtonDisabled(editDoneButtonDisabled);
   }, [editedTitle, editedDescription, editedSecretAnswer]);
 
-  return (
-    <div
-      style={{
-        background: '#fff',
-        border: `1px solid ${Color.borderGray()}`,
-        marginTop: '1rem',
-        fontSize: '1.5rem'
-      }}
-    >
-      {rewardLevel > 0 && <RewardLevelBar rewardLevel={rewardLevel} />}
-      <div style={{ padding: '1rem' }}>
+  return useMemo(
+    () =>
+      !deleted ? (
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+            background: '#fff',
+            border: `1px solid ${Color.borderGray()}`,
+            marginTop: '1rem',
+            fontSize: '1.5rem'
           }}
         >
-          {!onEdit && (
-            <Link
-              to={`/subjects/${id}`}
+          {rewardLevel > 0 && <RewardLevelBar rewardLevel={rewardLevel} />}
+          <div style={{ padding: '1rem' }}>
+            <div
               style={{
-                fontSize: '2.5rem',
-                color: Color.green(),
-                fontWeight: 'bold'
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}
             >
-              {cleanString(title)}
-            </Link>
-          )}
-          <div style={{ display: 'flex' }}>
-            {canEditRewardLevel && !onEdit && (
-              <StarButton
-                contentId={id}
-                contentType="subject"
-                rewardLevel={rewardLevel}
-                onSetRewardLevel={onSetRewardLevel}
+              {!onEdit && (
+                <Link
+                  to={`/subjects/${id}`}
+                  style={{
+                    fontSize: '2.5rem',
+                    color: Color.green(),
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {cleanString(title)}
+                </Link>
+              )}
+              <div style={{ display: 'flex' }}>
+                {canEditRewardLevel && !onEdit && (
+                  <StarButton
+                    contentId={id}
+                    contentType="subject"
+                    rewardLevel={rewardLevel}
+                    onSetRewardLevel={onSetRewardLevel}
+                  />
+                )}
+                <div>
+                  {editButtonEnabled && !onEdit && (
+                    <DropdownButton
+                      skeuomorphic
+                      style={{ marginLeft: '1rem' }}
+                      color="darkerGray"
+                      direction="left"
+                      menuProps={renderMenuProps()}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+            {!onEdit && !!description && (
+              <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
+            )}
+            {secretAnswer && !onEdit && (
+              <SecretAnswer
+                style={{ marginTop: '1rem' }}
+                answer={secretAnswer}
+                subjectId={id}
+                onClick={onExpand}
+                uploaderId={userId}
               />
             )}
-            <div>
-              {editButtonEnabled && !onEdit && (
-                <DropdownButton
-                  skeuomorphic
-                  style={{ marginLeft: '1rem' }}
-                  color="darkerGray"
-                  direction="left"
-                  menuProps={renderMenuProps()}
+            {onEdit && (
+              <form onSubmit={event => event.preventDefault()}>
+                <Input
+                  autoFocus
+                  placeholder="Enter Title..."
+                  value={editedTitle}
+                  onChange={text => {
+                    setEditedTitle(text);
+                  }}
+                  onKeyUp={event =>
+                    setEditedTitle(addEmoji(event.target.value))
+                  }
                 />
-              )}
-            </div>
-          </div>
-        </div>
-        {!onEdit && !!description && (
-          <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
-        )}
-        {secretAnswer && !onEdit && (
-          <SecretAnswer
-            style={{ marginTop: '1rem' }}
-            answer={secretAnswer}
-            subjectId={id}
-            onClick={onExpand}
-            uploaderId={userId}
-          />
-        )}
-        {onEdit && (
-          <form onSubmit={event => event.preventDefault()}>
-            <Input
-              autoFocus
-              placeholder="Enter Title..."
-              value={editedTitle}
-              onChange={text => {
-                setEditedTitle(text);
-              }}
-              onKeyUp={event => setEditedTitle(addEmoji(event.target.value))}
-            />
-          </form>
-        )}
-        {onEdit && (
-          <div>
-            <Textarea
-              placeholder="Enter Description (Optional)"
-              style={{ marginTop: '1rem' }}
-              minRows={5}
-              value={editedDescription}
-              onChange={event => {
-                setEditedDescription(event.target.value);
-              }}
-            />
+              </form>
+            )}
+            {onEdit && (
+              <div>
+                <Textarea
+                  placeholder="Enter Description (Optional)"
+                  style={{ marginTop: '1rem' }}
+                  minRows={5}
+                  value={editedDescription}
+                  onChange={event => {
+                    setEditedDescription(event.target.value);
+                  }}
+                />
+                <div style={{ marginTop: '1rem' }}>
+                  <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
+                    Secret Message
+                  </span>
+                  <Textarea
+                    style={{ marginTop: '0.7rem' }}
+                    placeholder="Enter Secret Message (Optional)"
+                    minRows={5}
+                    value={editedSecretAnswer}
+                    onChange={event => {
+                      setEditedSecretAnswer(event.target.value);
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Button
+                    transparent
+                    style={{
+                      fontSize: '1.7rem',
+                      marginRight: '1rem'
+                    }}
+                    onClick={() => {
+                      setOnEdit(false);
+                      setEditedTitle(cleanString(title));
+                      setEditedDescription(description);
+                      setEditedSecretAnswer(secretAnswer);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="blue"
+                    style={{
+                      fontSize: '1.8rem'
+                    }}
+                    onClick={handleEditDone}
+                    disabled={editDoneButtonDisabled}
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            )}
+            {!onEdit && (
+              <div style={{ marginTop: '1rem' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '8rem'
+                  }}
+                >
+                  <Button
+                    skeuomorphic
+                    color={profileTheme}
+                    style={{ fontSize: '2rem' }}
+                    onClick={onExpand}
+                  >
+                    <Icon icon="comment-alt" />
+                    <span style={{ marginLeft: '1rem' }}>
+                      Comment{!expanded && numComments > 1 ? 's' : ''}
+                      {!expanded && numComments && numComments > 0
+                        ? ` (${numComments})`
+                        : ''}
+                    </span>
+                  </Button>
+                </div>
+                <Comments
+                  inputAreaInnerRef={CommentsRef}
+                  isLoading={loadingComments}
+                  numInputRows={expanded ? 4 : 2}
+                  commentsLoadLimit={10}
+                  commentsHidden={
+                    !!secretAnswer && !(secretShown || userId === myId)
+                  }
+                  commentsShown
+                  inputTypeLabel={'comment'}
+                  comments={comments}
+                  loadMoreButton={loadMoreCommentsButton}
+                  userId={myId}
+                  onAttachStar={attachStar}
+                  onCommentSubmit={handleCommentSubmit}
+                  onDelete={onDelete}
+                  onEditDone={onEditDone}
+                  onLikeClick={onLikeClick}
+                  onLoadMoreComments={loadMoreComments}
+                  onLoadMoreReplies={onLoadMoreReplies}
+                  onReplySubmit={onUploadReply}
+                  onRewardCommentEdit={editRewardComment}
+                  contentId={id}
+                  parent={{
+                    id,
+                    rewardLevel,
+                    rootObj: {
+                      id: contentId,
+                      rewardLevel: rootRewardLevel,
+                      contentType
+                    },
+                    contentType: 'subject'
+                  }}
+                />
+              </div>
+            )}
             <div style={{ marginTop: '1rem' }}>
-              <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                Secret Message
-              </span>
-              <Textarea
-                style={{ marginTop: '0.7rem' }}
-                placeholder="Enter Secret Message (Optional)"
-                minRows={5}
-                value={editedSecretAnswer}
-                onChange={event => {
-                  setEditedSecretAnswer(event.target.value);
-                }}
-              />
-            </div>
-            <div
-              style={{
-                marginTop: '1rem',
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <Button
-                transparent
-                style={{
-                  fontSize: '1.7rem',
-                  marginRight: '1rem'
-                }}
-                onClick={() => {
-                  setOnEdit(false);
-                  setEditedTitle(cleanString(title));
-                  setEditedDescription(description);
-                  setEditedSecretAnswer(secretAnswer);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                color="blue"
-                style={{
-                  fontSize: '1.8rem'
-                }}
-                onClick={handleEditDone}
-                disabled={editDoneButtonDisabled}
-              >
-                Done
-              </Button>
+              By{' '}
+              <b>
+                <UsernameText
+                  user={{
+                    username,
+                    id: userId
+                  }}
+                />
+              </b>{' '}
+              &nbsp;|&nbsp; Published {timeSince(timeStamp)}
             </div>
           </div>
-        )}
-        {!onEdit && (
-          <div style={{ marginTop: '1rem' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '8rem'
-              }}
-            >
-              <Button
-                skeuomorphic
-                color={profileTheme}
-                style={{ fontSize: '2rem' }}
-                onClick={onExpand}
-              >
-                <Icon icon="comment-alt" />
-                <span style={{ marginLeft: '1rem' }}>
-                  Comment{!expanded && numComments > 1 ? 's' : ''}
-                  {!expanded && numComments && numComments > 0
-                    ? ` (${numComments})`
-                    : ''}
-                </span>
-              </Button>
-            </div>
-            <Comments
-              inputAreaInnerRef={CommentsRef}
-              isLoading={loadingComments}
-              numInputRows={expanded ? 4 : 2}
-              commentsLoadLimit={10}
-              commentsHidden={
-                !!secretAnswer && !(secretShown || userId === myId)
-              }
-              commentsShown
-              inputTypeLabel={'comment'}
-              comments={comments}
-              loadMoreButton={loadMoreCommentsButton}
-              userId={myId}
-              onAttachStar={attachStar}
-              onCommentSubmit={handleCommentSubmit}
-              onDelete={onDelete}
-              onEditDone={onEditDone}
-              onLikeClick={onLikeClick}
-              onLoadMoreComments={loadMoreComments}
-              onLoadMoreReplies={onLoadMoreReplies}
-              onReplySubmit={onUploadReply}
-              onRewardCommentEdit={editRewardComment}
-              contentId={id}
-              parent={{
-                id,
-                rewardLevel,
-                rootObj: {
-                  id: contentId,
-                  rewardLevel: rootRewardLevel,
-                  contentType
-                },
-                contentType: 'subject'
-              }}
+          {confirmModalShown && (
+            <ConfirmModal
+              onHide={() => setConfirmModalShown(false)}
+              title="Remove Subject"
+              onConfirm={deleteThis}
             />
-          </div>
-        )}
-        <div style={{ marginTop: '1rem' }}>
-          By{' '}
-          <b>
-            <UsernameText
-              user={{
-                username,
-                id: userId
-              }}
-            />
-          </b>{' '}
-          &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+          )}
         </div>
-      </div>
-      {confirmModalShown && (
-        <ConfirmModal
-          onHide={() => setConfirmModalShown(false)}
-          title="Remove Subject"
-          onConfirm={deleteThis}
-        />
-      )}
-    </div>
+      ) : null,
+    [
+      comments,
+      confirmModalShown,
+      deleted,
+      description,
+      editButtonEnabled,
+      editedTitle,
+      editedDescription,
+      expanded,
+      secretShown,
+      editedSecretAnswer,
+      editDoneButtonDisabled,
+      id,
+      loadingComments,
+      loadMoreCommentsButton,
+      myId,
+      numComments,
+      rewardLevel,
+      rootRewardLevel,
+      secretAnswer,
+      title
+    ]
   );
 
   function renderMenuProps() {

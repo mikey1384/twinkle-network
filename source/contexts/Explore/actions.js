@@ -60,28 +60,10 @@ export default function ExploreActions(dispatch) {
         type: 'CLOSE_SELECT_PL_TO_PIN_MODAL'
       });
     },
-    onDeleteLink(linkId) {
-      return dispatch({
-        type: 'DELETE_LINK',
-        linkId
-      });
-    },
     onDeletePlaylist(playlistId) {
       return dispatch({
         type: 'DELETE_PLAYLIST',
         playlistId
-      });
-    },
-    onDeleteSubject(subjectId) {
-      return dispatch({
-        type: 'DELETE_SUBJECT',
-        subjectId: Number(subjectId)
-      });
-    },
-    onDeleteVideo(videoId) {
-      return dispatch({
-        type: 'DELETE_VIDEO',
-        videoId
       });
     },
     onEditLinkPage({ id, title, content }) {

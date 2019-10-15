@@ -86,6 +86,9 @@ function Comment({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
+  const [rewardLevel, setRewardLevel] = useState(
+    determineRewardLevel({ parent, targetObj })
+  );
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
   const mounted = useRef(true);
@@ -97,6 +100,10 @@ function Comment({
     }
     setPrevReplies(replies);
   }, [replies]);
+
+  useEffect(() => {
+    setRewardLevel(determineRewardLevel({ parent, targetObj }));
+  }, [parent, targetObj]);
 
   const userIsUploader = uploader.id === userId;
   const userIsHigherAuth = authLevel > uploader.authLevel;
@@ -346,7 +353,7 @@ function Comment({
               )}
               {!isPreview && (
                 <RewardStatus
-                  rewardLevel={determineRewardLevel({ parent, targetObj })}
+                  rewardLevel={rewardLevel}
                   noMarginForEditButton
                   onCommentEdit={onRewardCommentEdit}
                   style={{
@@ -412,6 +419,7 @@ function Comment({
       userId,
       userListModalShown,
       confirmModalShown,
+      rewardLevel,
       xpRewardInterfaceShown
     ]
   );

@@ -53,12 +53,7 @@ export default function LinkPage({
     }
   } = useAppContext();
   const {
-    actions: {
-      onDeleteLink,
-      onEditLinkPage,
-      onLikeLink,
-      onUpdateNumLinkComments
-    }
+    actions: { onEditLinkPage, onLikeLink, onUpdateNumLinkComments }
   } = useExploreContext();
   const {
     state,
@@ -66,7 +61,6 @@ export default function LinkPage({
       onAttachStar,
       onDeleteComment,
       onDeleteContent,
-      onDeleteSubject,
       onEditComment,
       onEditContent,
       onEditRewardComment,
@@ -362,7 +356,9 @@ export default function LinkPage({
             onLoadMoreSubjects={onLoadMoreSubjects}
             onLoadSubjectComments={onLoadSubjectComments}
             onSubjectEditDone={onEditSubject}
-            onSubjectDelete={onDeleteSubject}
+            onSubjectDelete={subjectId =>
+              onDeleteContent({ contentType: 'subject', contentId: subjectId })
+            }
             onSetRewardLevel={onSetRewardLevel}
             uploadSubject={onUploadSubject}
             contentType="url"
@@ -443,7 +439,6 @@ export default function LinkPage({
 
   async function handleDeleteLink() {
     await deleteContent({ id: linkId, contentType: 'url' });
-    onDeleteLink(linkId);
     onDeleteContent({ contentId: linkId, contentType: 'url' });
   }
 

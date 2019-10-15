@@ -69,7 +69,6 @@ export default function VideoPlayer({
     state,
     actions: {
       onSetVideoImageUrl,
-      onSetVideoPlaying,
       onSetVideoStarted,
       onSetVideoXpEarned,
       onSetVideoXpJustEarned,
@@ -82,7 +81,6 @@ export default function VideoPlayer({
   const contentState = state['video' + videoId] || {};
   const {
     currentTime = 0,
-    playing,
     started,
     xpLoaded,
     xpEarned,
@@ -92,9 +90,11 @@ export default function VideoPlayer({
     watchTime = 0,
     isEditing
   } = contentState;
+  const [playing, setPlaying] = useState(false);
   const [playerShown, setPlayerShown] = useState(false);
   const [alreadyEarned, setAlreadyEarned] = useState(false);
   const [startingPosition, setStartingPosition] = useState(0);
+  const [timeAt, setTimeAt] = useState(0);
   const maxRequiredDuration = 250;
   const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
@@ -121,15 +121,14 @@ export default function VideoPlayer({
 
   useEffect(() => {
     return function setCurrentTimeBeforeUnmount() {
-      onSetVideoCurrentTime({
-        videoId,
-        currentTime:
-          PlayerRef.current?.getInternalPlayer()?.getCurrentTime?.() ||
-          startingPosition ||
-          0
-      });
+      if (timeAt > 0) {
+        onSetVideoCurrentTime({
+          videoId,
+          currentTime: timeAt
+        });
+      }
     };
-  }, [justEarned, startingPosition]);
+  }, [timeAt]);
 
   useEffect(() => {
     PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
@@ -207,7 +206,9 @@ export default function VideoPlayer({
 
   useEffect(() => {
     const userWatchingMultipleVideo =
-      currentVideoSlot && currentVideoSlot !== watchCodeRef.current;
+      currentVideoSlot &&
+      watchCodeRef.current &&
+      currentVideoSlot !== watchCodeRef.current;
     if (started && userWatchingMultipleVideo) {
       handleVideoStop();
       PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
@@ -327,7 +328,8 @@ export default function VideoPlayer({
               onPlay={() =>
                 onVideoPlay({
                   requiredDurationCap: requiredDurationCap.current,
-                  userId: userIdRef.current
+                  userId: userIdRef.current,
+                  watchTime
                 })
               }
               onPause={handleVideoStop}
@@ -454,6 +456,7 @@ export default function VideoPlayer({
       minimized,
       videoCode,
       profileTheme,
+      startingPosition,
       twinkleXP,
       userId,
       isEditing
@@ -466,10 +469,10 @@ export default function VideoPlayer({
       ?.getDuration();
   }
 
-  function onVideoPlay({ requiredDurationCap, userId }) {
+  function onVideoPlay({ requiredDurationCap, userId, watchTime }) {
     onSetVideoStarted({ videoId, started: true });
     if (!playing) {
-      onSetVideoPlaying({ videoId, playing: true });
+      setPlaying(true);
       const time = PlayerRef.current.getCurrentTime();
       if (Math.floor(time) === 0) {
         addVideoView({ videoId, userId });
@@ -480,7 +483,7 @@ export default function VideoPlayer({
       clearInterval(timerRef.current);
       if (!xpEarned && !justEarned) {
         timerRef.current = setInterval(
-          () => increaseProgress({ requiredDurationCap, userId }),
+          () => increaseProgress({ requiredDurationCap, userId, watchTime }),
           intervalLength
         );
       }
@@ -493,12 +496,13 @@ export default function VideoPlayer({
   }
 
   function handleVideoStop() {
-    onSetVideoPlaying({ videoId, playing: false });
+    setPlaying(false);
     clearInterval(timerRef.current);
     onEmptyCurrentVideoSlot();
   }
 
-  async function increaseProgress({ requiredDurationCap, userId }) {
+  async function increaseProgress({ requiredDurationCap, userId, watchTime }) {
+    setTimeAt(PlayerRef.current.getCurrentTime());
     if (!totalDurationRef.current) {
       onVideoReady();
     }
@@ -541,7 +545,10 @@ export default function VideoPlayer({
       }
     }
     if (!xpEarned && userId) {
-      timeWatchedRef.current = timeWatchedRef.current + intervalLength / 1000;
+      timeWatchedRef.current = Math.max(
+        timeWatchedRef.current + intervalLength / 1000,
+        watchTime
+      );
       onSetXpVideoWatchTime({
         videoId,
         watchTime: timeWatchedRef.current

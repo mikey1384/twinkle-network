@@ -218,6 +218,7 @@ export default function Comments({
       deleting,
       isLoadingMore,
       commentSubmitted,
+      parent,
       previewComments.length
     ]
   );

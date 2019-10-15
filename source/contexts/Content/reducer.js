@@ -965,14 +965,6 @@ export default function ContentPageReducer(state, action) {
           questions: action.questions
         }
       };
-    case 'SET_VIDEO_PLAYING':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          playing: action.playing
-        }
-      };
     case 'SET_VIDEO_STARTED':
       return {
         ...state,
