@@ -208,7 +208,7 @@ export default function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
           userId === profile.id ? () => FileInputRef.current.click() : undefined
         }
         profilePicId={profilePicId}
-        online={userId === profile.id || !!online}
+        online={!!online}
         large
       />
       {imageEditModalShown && (

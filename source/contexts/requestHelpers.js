@@ -50,6 +50,16 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
+    async checkIfUserOnline(userId) {
+      try {
+        const {
+          data: { online }
+        } = await request.get(`${URL}/user/online?userId=${userId}`);
+        return Promise.resolve(online);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async loadProfile(userId) {
       try {
         const { data } = await request.get(`${URL}/user?userId=${userId}`);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ContentListItem from 'components/ContentListItem';
@@ -34,12 +34,14 @@ export default function Subjects({ location }) {
     pathname: location.pathname,
     scrollPositions
   });
+  const prevLoaded = useRef(false);
   useEffect(() => {
     init();
     async function init() {
       if (!loaded) {
         const subjects = await loadFeaturedSubjects();
         onLoadFeaturedSubjects(subjects);
+        prevLoaded.current = true;
       }
     }
   }, [loaded]);
@@ -63,7 +65,7 @@ export default function Subjects({ location }) {
           }
           isEmpty={featured.length === 0}
           emptyMessage="No featured subjects for now..."
-          loaded={loaded}
+          loaded={loaded || prevLoaded.current}
         >
           {featured.map(subject => (
             <ContentListItem

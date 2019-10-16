@@ -73,7 +73,7 @@ export default function Reply({
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const contentState = state['comment' + reply.id] || {};
-  const { isEditing, xpRewardInterfaceShown } = contentState;
+  const { deleted, isEditing, xpRewardInterfaceShown } = contentState;
   const {
     onAttachStar,
     onEditDone,
@@ -120,118 +120,109 @@ export default function Reply({
   }
 
   return useMemo(
-    () => (
-      <ErrorBoundary>
-        <div className={commentContainer} ref={innerRef}>
-          <div className="content-wrapper">
-            <aside>
-              <ProfilePic
-                style={{ height: '5rem', width: '5rem' }}
-                userId={uploader.id}
-                profilePicId={uploader.profilePicId}
-              />
-            </aside>
-            {editButtonShown && !isEditing && (
-              <div className="dropdown-wrapper">
-                <DropdownButton
-                  skeuomorphic
-                  color="darkerGray"
-                  direction="left"
-                  opacity={0.8}
-                  menuProps={editMenuItems}
+    () =>
+      !deleted ? (
+        <ErrorBoundary>
+          <div className={commentContainer} ref={innerRef}>
+            <div className="content-wrapper">
+              <aside>
+                <ProfilePic
+                  style={{ height: '5rem', width: '5rem' }}
+                  userId={uploader.id}
+                  profilePicId={uploader.profilePicId}
                 />
-              </div>
-            )}
-            <section>
-              <div>
-                <UsernameText className="username" user={uploader} />{' '}
-                <small className="timestamp">
-                  <Link to={`/comments/${reply.id}`}>
-                    replied {timeSince(reply.timeStamp)}
-                  </Link>
-                </small>
-              </div>
-              <div>
-                {reply.targetObj?.comment?.uploader &&
-                  !!reply.replyId &&
-                  reply.replyId !== comment.id && (
-                    <ErrorBoundary>
-                      <span className="to">
-                        to:{' '}
-                        <UsernameText user={reply.targetObj.comment.uploader} />
-                      </span>
-                    </ErrorBoundary>
-                  )}
-                {isEditing ? (
-                  <EditTextArea
-                    contentId={reply.id}
-                    contentType="comment"
-                    text={reply.content}
-                    onCancel={() =>
-                      onSetIsEditing({
-                        contentId: reply.id,
-                        contentType: 'comment',
-                        isEditing: false
-                      })
-                    }
-                    onEditDone={editDone}
+              </aside>
+              {editButtonShown && !isEditing && (
+                <div className="dropdown-wrapper">
+                  <DropdownButton
+                    skeuomorphic
+                    color="darkerGray"
+                    direction="left"
+                    opacity={0.8}
+                    menuProps={editMenuItems}
                   />
-                ) : (
-                  <div>
-                    <LongText className="comment__content">
-                      {reply.content}
-                    </LongText>
-                    <div className="comment__buttons">
-                      <LikeButton
-                        contentId={reply.id}
-                        contentType="comment"
-                        onClick={likeClick}
-                        liked={userLikedThis}
-                        small
-                      />
-                      <Button
-                        transparent
-                        style={{ marginLeft: '1rem' }}
-                        onClick={replyButtonClick}
-                      >
-                        <Icon icon="comment-alt" />
-                        <span style={{ marginLeft: '0.7rem' }}>
-                          {reply.numReplies > 1 &&
-                          !replyButtonClicked &&
-                          parent.contentType === 'comment'
-                            ? 'Replies'
-                            : 'Reply'}
-                          {reply.numReplies > 0 &&
-                          !replyButtonClicked &&
-                          parent.contentType === 'comment'
-                            ? ` (${reply.numReplies})`
-                            : ''}
+                </div>
+              )}
+              <section>
+                <div>
+                  <UsernameText className="username" user={uploader} />{' '}
+                  <small className="timestamp">
+                    <Link to={`/comments/${reply.id}`}>
+                      replied {timeSince(reply.timeStamp)}
+                    </Link>
+                  </small>
+                </div>
+                <div>
+                  {reply.targetObj?.comment?.uploader &&
+                    !!reply.replyId &&
+                    reply.replyId !== comment.id && (
+                      <ErrorBoundary>
+                        <span className="to">
+                          to:{' '}
+                          <UsernameText
+                            user={reply.targetObj.comment.uploader}
+                          />
                         </span>
-                      </Button>
-                      {canStar && userIsHigherAuth && !userIsUploader && (
+                      </ErrorBoundary>
+                    )}
+                  {isEditing ? (
+                    <EditTextArea
+                      contentId={reply.id}
+                      contentType="comment"
+                      text={reply.content}
+                      onCancel={() =>
+                        onSetIsEditing({
+                          contentId: reply.id,
+                          contentType: 'comment',
+                          isEditing: false
+                        })
+                      }
+                      onEditDone={editDone}
+                    />
+                  ) : (
+                    <div>
+                      <LongText className="comment__content">
+                        {reply.content}
+                      </LongText>
+                      <div className="comment__buttons">
+                        <LikeButton
+                          contentId={reply.id}
+                          contentType="comment"
+                          onClick={likeClick}
+                          liked={userLikedThis}
+                          small
+                        />
                         <Button
-                          color="pink"
+                          transparent
                           style={{ marginLeft: '1rem' }}
-                          onClick={() =>
-                            onSetXpRewardInterfaceShown({
-                              contentId: reply.id,
-                              contentType: 'comment',
-                              shown: true
-                            })
-                          }
-                          disabled={determineXpButtonDisabled({
-                            rewardLevel: determineRewardLevel({
-                              parent,
-                              subject
-                            }),
-                            myId: userId,
-                            xpRewardInterfaceShown,
-                            stars
-                          })}
+                          onClick={replyButtonClick}
                         >
-                          <Icon icon="certificate" />
+                          <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '0.7rem' }}>
-                            {determineXpButtonDisabled({
+                            {reply.numReplies > 1 &&
+                            !replyButtonClicked &&
+                            parent.contentType === 'comment'
+                              ? 'Replies'
+                              : 'Reply'}
+                            {reply.numReplies > 0 &&
+                            !replyButtonClicked &&
+                            parent.contentType === 'comment'
+                              ? ` (${reply.numReplies})`
+                              : ''}
+                          </span>
+                        </Button>
+                        {canStar && userIsHigherAuth && !userIsUploader && (
+                          <Button
+                            color="pink"
+                            style={{ marginLeft: '1rem' }}
+                            onClick={() =>
+                              onSetXpRewardInterfaceShown({
+                                contentId: reply.id,
+                                contentType: 'comment',
+                                shown: true
+                              })
+                            }
+                            disabled={determineXpButtonDisabled({
                               rewardLevel: determineRewardLevel({
                                 parent,
                                 subject
@@ -239,89 +230,102 @@ export default function Reply({
                               myId: userId,
                               xpRewardInterfaceShown,
                               stars
-                            }) || 'Reward'}
-                          </span>
-                        </Button>
-                      )}
+                            })}
+                          >
+                            <Icon icon="certificate" />
+                            <span style={{ marginLeft: '0.7rem' }}>
+                              {determineXpButtonDisabled({
+                                rewardLevel: determineRewardLevel({
+                                  parent,
+                                  subject
+                                }),
+                                myId: userId,
+                                xpRewardInterfaceShown,
+                                stars
+                              }) || 'Reward'}
+                            </span>
+                          </Button>
+                        )}
+                      </div>
+                      <small>
+                        <Likers
+                          className="comment__likes"
+                          userId={userId}
+                          likes={reply.likes}
+                          onLinkClick={() => setUserListModalShown(true)}
+                        />
+                      </small>
                     </div>
-                    <small>
-                      <Likers
-                        className="comment__likes"
-                        userId={userId}
-                        likes={reply.likes}
-                        onLinkClick={() => setUserListModalShown(true)}
-                      />
-                    </small>
-                  </div>
+                  )}
+                </div>
+                {xpRewardInterfaceShown && (
+                  <XPRewardInterface
+                    rewardLevel={determineRewardLevel({ parent, subject })}
+                    stars={stars}
+                    contentType="comment"
+                    contentId={reply.id}
+                    uploaderId={uploader.id}
+                    onRewardSubmit={data => {
+                      onSetXpRewardInterfaceShown({
+                        contentId: reply.id,
+                        contentType: 'comment',
+                        shown: false
+                      });
+                      onAttachStar({
+                        data,
+                        contentId: reply.id,
+                        contentType: 'comment'
+                      });
+                    }}
+                  />
                 )}
-              </div>
-              {xpRewardInterfaceShown && (
-                <XPRewardInterface
+                <RewardStatus
+                  noMarginForEditButton
                   rewardLevel={determineRewardLevel({ parent, subject })}
-                  stars={stars}
-                  contentType="comment"
-                  contentId={reply.id}
-                  uploaderId={uploader.id}
-                  onRewardSubmit={data => {
-                    onSetXpRewardInterfaceShown({
-                      contentId: reply.id,
-                      contentType: 'comment',
-                      shown: false
-                    });
-                    onAttachStar({
-                      data,
-                      contentId: reply.id,
-                      contentType: 'comment'
-                    });
+                  onCommentEdit={onRewardCommentEdit}
+                  style={{
+                    fontSize: '1.5rem',
+                    marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
                   }}
+                  stars={stars}
+                  uploaderName={uploader.username}
                 />
-              )}
-              <RewardStatus
-                noMarginForEditButton
-                rewardLevel={determineRewardLevel({ parent, subject })}
-                onCommentEdit={onRewardCommentEdit}
-                style={{
-                  fontSize: '1.5rem',
-                  marginTop: reply.likes.length > 0 ? '0.5rem' : '1rem'
-                }}
-                stars={stars}
-                uploaderName={uploader.username}
+                <ReplyInputArea
+                  innerRef={ReplyInputAreaRef}
+                  onSubmit={submitReply}
+                  parent={parent}
+                  rootCommentId={reply.commentId}
+                  style={{
+                    marginTop:
+                      stars.length > 0 || reply.likes.length > 0
+                        ? '0.5rem'
+                        : '1rem'
+                  }}
+                  targetCommentId={reply.id}
+                />
+              </section>
+            </div>
+            {userListModalShown && (
+              <UserListModal
+                onHide={() => setUserListModalShown(false)}
+                title="People who liked this reply"
+                users={reply.likes}
+                description="(You)"
               />
-              <ReplyInputArea
-                innerRef={ReplyInputAreaRef}
-                onSubmit={submitReply}
-                parent={parent}
-                rootCommentId={reply.commentId}
-                style={{
-                  marginTop:
-                    stars.length > 0 || reply.likes.length > 0
-                      ? '0.5rem'
-                      : '1rem'
-                }}
-                targetCommentId={reply.id}
+            )}
+            {confirmModalShown && (
+              <ConfirmModal
+                onHide={() => setConfirmModalShown(false)}
+                title="Remove Reply"
+                onConfirm={() => deleteReply(reply.id)}
               />
-            </section>
+            )}
           </div>
-          {userListModalShown && (
-            <UserListModal
-              onHide={() => setUserListModalShown(false)}
-              title="People who liked this reply"
-              users={reply.likes}
-              description="(You)"
-            />
-          )}
-          {confirmModalShown && (
-            <ConfirmModal
-              onHide={() => setConfirmModalShown(false)}
-              title="Remove Reply"
-              onConfirm={() => deleteReply(reply.id)}
-            />
-          )}
-        </div>
-      </ErrorBoundary>
-    ),
+        </ErrorBoundary>
+      ) : null,
     [
       comment.id,
+      deleted,
       isEditing,
       reply,
       subject,

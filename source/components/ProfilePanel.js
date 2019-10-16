@@ -35,6 +35,7 @@ function ProfilePanel({ history, expandable, profileId }) {
       state: { isCreator, userId, username }
     },
     requestHelpers: {
+      checkIfUserOnline,
       loadChat,
       loadDMChannel,
       loadComments,
@@ -56,6 +57,7 @@ function ProfilePanel({ history, expandable, profileId }) {
       onLoadMoreComments,
       onLoadMoreReplies,
       onSetCommentsShown,
+      onSetOnline,
       onUploadComment,
       onUploadReply
     }
@@ -100,11 +102,16 @@ function ProfilePanel({ history, expandable, profileId }) {
 
   useEffect(() => {
     mounted.current = true;
+    handleCheckIfUserOnline();
     if (!profile.loaded && !loading.current && profileId) {
       handleInitProfile();
     }
     if (!commentsLoaded && !previewLoaded) {
       handleLoadComments();
+    }
+    async function handleCheckIfUserOnline() {
+      const online = await checkIfUserOnline(profileId);
+      onSetOnline({ contentId: profileId, contentType: 'user', online });
     }
     async function handleInitProfile() {
       loading.current = true;
@@ -136,7 +143,7 @@ function ProfilePanel({ history, expandable, profileId }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [profileId]);
+  }, [profileId, userId]);
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
@@ -224,7 +231,7 @@ function ProfilePanel({ history, expandable, profileId }) {
                       }}
                       userId={profileId}
                       profilePicId={profilePicId}
-                      online={userId === profileId || !!online}
+                      online={!!online}
                       large
                     />
                   </Link>

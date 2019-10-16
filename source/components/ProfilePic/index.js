@@ -63,7 +63,7 @@ export default function ProfilePic({
       <ChangePicture
         shown={myId === userId && isProfilePage && changePictureShown}
       />
-      {myId !== userId && large && online && (
+      {large && (online || myId === userId) && (
         <div
           style={{
             top: '74%',

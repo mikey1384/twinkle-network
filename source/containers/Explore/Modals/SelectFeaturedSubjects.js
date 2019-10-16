@@ -29,17 +29,17 @@ export default function SelectFeaturedSubjectsModal({
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [challengeObjs, setChallengeObjs] = useState({});
-  const [challenges, setChallenges] = useState([]);
+  const [subjectObj, setSubjectObj] = useState({});
   const [selected, setSelected] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectTabActive, setSelectTabActive] = useState(true);
-  const [searchedChallenges, setSearchedChallenges] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+  const [searchedSubjects, setSearchedSubjects] = useState([]);
   const [searchText, setSearchText] = useState('');
   const { handleSearch, searching } = useSearch({
     onSearch: handleChallengeSearch,
-    onClear: () => setSearchedChallenges([]),
+    onClear: () => setSearchedSubjects([]),
     onSetSearchText: setSearchText
   });
 
@@ -48,27 +48,24 @@ export default function SelectFeaturedSubjectsModal({
     async function init() {
       const selectedIds = subjects.map(({ id }) => id);
       setSelected(selectedIds);
-      const {
-        results: challengesArray,
-        loadMoreButton: loadMoreShown
-      } = await loadUploads({
+      const { results, loadMoreButton: loadMoreShown } = await loadUploads({
         limit: 10,
         contentType: 'subject',
         includeRoot: true
       });
-      setChallengeObjs({
-        ...objectify(challengesArray),
+      setSubjectObj({
+        ...objectify(results),
         ...objectify(subjects)
       });
-      setChallenges(challengesArray.map(challenge => challenge.id));
+      setAllSubjects(results.map(subject => subject.id));
       setLoadMoreButton(loadMoreShown);
       setLoaded(true);
     }
   }, []);
 
-  const displayedChallenges = stringIsEmpty(searchText)
-    ? challenges
-    : searchedChallenges;
+  const displayedSubjects = stringIsEmpty(searchText)
+    ? allSubjects
+    : searchedSubjects;
   const displayedLoadMoreButton = stringIsEmpty(searchText)
     ? loadMoreButton
     : searchLoadMoreButton;
@@ -105,7 +102,7 @@ export default function SelectFeaturedSubjectsModal({
             {selectTabActive &&
               (searching ? (
                 <Loading />
-              ) : displayedChallenges.length === 0 ? (
+              ) : displayedSubjects.length === 0 ? (
                 <p
                   style={{
                     display: 'flex',
@@ -119,18 +116,14 @@ export default function SelectFeaturedSubjectsModal({
                   No Subjects{stringIsEmpty(searchText) ? '' : ' Found'}
                 </p>
               ) : (
-                displayedChallenges.map(challengeId => (
+                displayedSubjects.map(subjectId => (
                   <ContentListItem
                     selectable
-                    selected={selected.includes(challengeId)}
-                    key={challengeId}
+                    selected={selected.includes(subjectId)}
+                    key={subjectId}
                     style={{ width: '100%', marginBottom: '1rem' }}
-                    contentObj={challengeObjs[challengeId]}
-                    onClick={() =>
-                      !selected.includes(challengeId)
-                        ? setSelected([challengeId].concat(selected))
-                        : setSelected(selected.filter(id => id !== challengeId))
-                    }
+                    contentObj={subjectObj[subjectId]}
+                    onClick={() => handleSelect(subjectId)}
                   />
                 ))
               ))}
@@ -158,12 +151,8 @@ export default function SelectFeaturedSubjectsModal({
                       width: '100%',
                       marginBottom: index !== selected.length - 1 ? '1rem' : 0
                     }}
-                    contentObj={challengeObjs[selectedId]}
-                    onClick={() =>
-                      !selected.includes(selectedId)
-                        ? setSelected([selectedId].concat(selected))
-                        : setSelected(selected.filter(id => id !== selectedId))
-                    }
+                    contentObj={subjectObj[selectedId]}
+                    onClick={() => handleSelect(selectedId)}
                   />
                 ))
               ))}
@@ -201,11 +190,11 @@ export default function SelectFeaturedSubjectsModal({
       filter: 'subject',
       searchText: text
     });
-    setChallengeObjs(challengeObjs => ({
-      ...challengeObjs,
+    setSubjectObj(subjectObj => ({
+      ...subjectObj,
       ...objectify(results)
     }));
-    setSearchedChallenges(results.map(result => result.id));
+    setSearchedSubjects(results.map(result => result.id));
     setSearchLoadMoreButton(loadMoreShown);
   }
 
@@ -216,30 +205,25 @@ export default function SelectFeaturedSubjectsModal({
           limit: 10,
           contentType: 'subject',
           includeRoot: true,
-          excludeContentIds: challenges
+          excludeContentIds: allSubjects
         }
       : {
           limit: 10,
           filter: 'subject',
           searchText,
-          shownResults: searchedChallenges.map(
-            challengeId => challengeObjs[challengeId]
-          )
+          shownResults: searchedSubjects.map(subjectId => subjectObj[subjectId])
         };
     const method = stringIsEmpty(searchText) ? loadUploads : searchContent;
-    const {
-      results: challengesArray,
-      loadMoreButton: loadMoreShown
-    } = await method(options);
-    setChallengeObjs({
-      ...challengeObjs,
-      ...objectify(challengesArray)
+    const { results, loadMoreButton: loadMoreShown } = await method(options);
+    setSubjectObj({
+      ...subjectObj,
+      ...objectify(results)
     });
-    const setChallengesMethod = stringIsEmpty(searchText)
-      ? setChallenges
-      : setSearchedChallenges;
-    setChallengesMethod(challenges =>
-      challenges.concat(challengesArray.map(challenge => challenge.id))
+    const setSubjectsMethod = stringIsEmpty(searchText)
+      ? setAllSubjects
+      : setSearchedSubjects;
+    setSubjectsMethod(subjects =>
+      subjects.concat(results.map(subject => subject.id))
     );
     setLoadingMore(false);
     const setLoadMoreButtonMethod = stringIsEmpty(searchText)
@@ -248,9 +232,17 @@ export default function SelectFeaturedSubjectsModal({
     setLoadMoreButtonMethod(loadMoreShown);
   }
 
+  function handleSelect(selectedId) {
+    if (selected.includes(selectedId)) {
+      setSelected(selected => selected.filter(id => id !== selectedId));
+    } else {
+      setSelected(selected => [selectedId].concat(selected));
+    }
+  }
+
   async function handleSubmit() {
     setSubmitting(true);
     await uploadFeaturedSubjects({ selected });
-    onSubmit(selected.map(selectedId => challengeObjs[selectedId]));
+    onSubmit(selected.map(selectedId => subjectObj[selectedId]));
   }
 }
