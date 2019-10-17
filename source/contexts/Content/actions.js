@@ -25,6 +25,14 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onChangeProfileTheme({ userId, theme }) {
+      return dispatch({
+        type: 'CHANGE_PROFILE_THEME',
+        contentId: userId,
+        contentType: 'user',
+        theme
+      });
+    },
     onChangeSpoilerStatus({ checked, shown, subjectId }) {
       return dispatch({
         type: 'CHANGE_SPOILER_STATUS',

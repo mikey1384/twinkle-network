@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { useSearch } from 'helpers/hooks';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
+import { useMyState, useSearch } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 export default function ChatSearchBox() {
   const {
-    user: {
-      state: { userId, username }
-    },
     requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
+  const { userId, username } = useMyState();
   const {
     state: { chatSearchResults },
     actions: {

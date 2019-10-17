@@ -12,6 +12,7 @@ import Profile from './Profile';
 import { css } from 'emotion';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
+import { useContentState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 
@@ -38,7 +39,6 @@ function ContentPanel({
     requestHelpers: { loadContent }
   } = useAppContext();
   const {
-    state: { [contentType + contentId]: contentState = {} },
     actions: {
       onAddTags,
       onAddTagToContents,
@@ -65,6 +65,7 @@ function ContentPanel({
       onUploadReply
     }
   } = useContentContext();
+  const contentState = useContentState({ contentType, contentId });
   const [urlMouseEntered, setUrlMouseEntered] = useState(false);
   const [profileMouseEntered, setProfileMouseEntered] = useState(false);
   const [videoShown, setVideoShown] = useState(false);

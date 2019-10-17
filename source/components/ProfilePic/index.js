@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { borderRadius, Color, innerBorderRadius } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 ProfilePic.propTypes = {
   className: PropTypes.string,
@@ -26,11 +26,7 @@ export default function ProfilePic({
   profilePicId,
   style
 }) {
-  const {
-    user: {
-      state: { userId: myId }
-    }
-  } = useAppContext();
+  const { userId: myId } = useMyState();
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
 

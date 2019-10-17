@@ -16,6 +16,7 @@ import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext, useChatContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
@@ -25,15 +26,6 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ history, expandable, profileId }) {
   const {
-    user: {
-      actions: {
-        onRemoveStatusMsg,
-        onUpdateStatusMsg,
-        onUpdateBio,
-        onUploadProfilePic
-      },
-      state: { isCreator, userId, username }
-    },
     requestHelpers: {
       checkIfUserOnline,
       loadChat,
@@ -44,8 +36,8 @@ function ProfilePanel({ history, expandable, profileId }) {
       uploadProfilePic
     }
   } = useAppContext();
+  const { isCreator, userId, username } = useMyState();
   const {
-    state,
     actions: {
       onAttachStar,
       onDeleteComment,
@@ -59,10 +51,17 @@ function ProfilePanel({ history, expandable, profileId }) {
       onSetCommentsShown,
       onSetOnline,
       onUploadComment,
-      onUploadReply
+      onUploadReply,
+      onRemoveStatusMsg,
+      onUpdateStatusMsg,
+      onUpdateBio,
+      onUploadProfilePic
     }
   } = useContentContext();
-  const profile = state['user' + profileId] || {};
+  const profile = useContentState({
+    contentType: 'user',
+    contentId: profileId
+  });
   const {
     childComments = [],
     commentsLoaded,

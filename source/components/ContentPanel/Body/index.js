@@ -23,6 +23,7 @@ import {
   scrollElementToCenter
 } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
 Body.propTypes = {
@@ -67,24 +68,23 @@ export default function Body({
   onChangeSpoilerStatus
 }) {
   const {
-    user: {
-      state: {
-        authLevel,
-        canDelete,
-        canEdit,
-        canEditRewardLevel,
-        canStar,
-        userId
-      }
-    },
     requestHelpers: { deleteContent, editContent, loadComments }
   } = useAppContext();
   const {
-    state,
+    authLevel,
+    canDelete,
+    canEdit,
+    canEditRewardLevel,
+    canStar,
+    userId
+  } = useMyState();
+  const {
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
-  const contentState = state[contentType + contentId] || {};
-  const { isEditing, xpRewardInterfaceShown } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = useContentState({
+    contentType,
+    contentId
+  });
   const {
     commentsLoadLimit,
     onAddTags,

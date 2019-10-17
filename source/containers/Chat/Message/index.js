@@ -10,8 +10,9 @@ import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { fetchURLFromText } from 'helpers/stringHelpers';
 import { MessageStyle } from '../Styles';
+import { fetchURLFromText } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
@@ -84,18 +85,16 @@ export default function Message({
   showSubjectMsgsModal
 }) {
   const {
-    user: {
-      state: {
-        authLevel,
-        canDelete,
-        canEdit,
-        userId: myId,
-        username: myUsername,
-        profilePicId: myProfilePicId
-      }
-    },
     requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
   } = useAppContext();
+  const {
+    authLevel,
+    canDelete,
+    canEdit,
+    userId: myId,
+    username: myUsername,
+    profilePicId: myProfilePicId
+  } = useMyState();
   const {
     actions: {
       onSetEmbeddedUrl,

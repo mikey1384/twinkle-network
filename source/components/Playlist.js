@@ -8,6 +8,7 @@ import NotFound from 'components/NotFound';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 
 Playlist.propTypes = {
@@ -22,9 +23,9 @@ export default function Playlist({
   playlistId
 }) {
   const {
-    user: { state: profileTheme },
     requestHelpers: { loadPlaylistVideos }
   } = useAppContext();
+  const { profileTheme } = useMyState();
   const [videos, setVideos] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [loading, setLoading] = useState(false);

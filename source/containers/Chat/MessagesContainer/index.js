@@ -16,6 +16,7 @@ import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import EditTitleModal from '../Modals/EditTitle';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext, useChatContext } from 'contexts';
 
 MessagesContainer.propTypes = {
@@ -58,9 +59,6 @@ export default function MessagesContainer({
   subjectId
 }) {
   const {
-    user: {
-      state: { authLevel, profilePicId, userId, username }
-    },
     requestHelpers: {
       deleteMessage,
       editChannelTitle,
@@ -69,6 +67,7 @@ export default function MessagesContainer({
       loadChatChannel
     }
   } = useAppContext();
+  const { authLevel, profilePicId, userId, username } = useMyState();
   const {
     actions: {
       onDeleteMessage,

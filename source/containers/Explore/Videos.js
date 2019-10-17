@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import FeaturedPlaylistsPanel from './Panels/FeaturedPlaylistsPanel';
@@ -7,6 +6,7 @@ import PlaylistsPanel from './Panels/PlaylistsPanel';
 import AddPlaylistModal from 'components/Modals/AddPlaylistModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
+import { useMyState, useSearch, useScrollPosition } from 'helpers/hooks';
 import {
   useAppContext,
   useViewContext,
@@ -21,11 +21,9 @@ Videos.propTypes = {
 
 export default function Videos({ history, location }) {
   const {
-    user: {
-      state: { userId }
-    },
     requestHelpers: { loadPlaylists, searchContent }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
     state: {
       videos: {

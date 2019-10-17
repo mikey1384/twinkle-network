@@ -9,7 +9,12 @@ import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
 import { withRouter } from 'react-router';
-import { useAppContext, useChatContext, useInputContext } from 'contexts';
+import {
+  useAppContext,
+  useChatContext,
+  useContentContext,
+  useInputContext
+} from 'contexts';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
@@ -49,9 +54,6 @@ function BasicInfos({
   style
 }) {
   const {
-    user: {
-      actions: { onUpdateProfileInfo }
-    },
     requestHelpers: {
       loadChat,
       loadDMChannel,
@@ -59,6 +61,9 @@ function BasicInfos({
       sendVerificationEmail
     }
   } = useAppContext();
+  const {
+    actions: { onUpdateProfileInfo }
+  } = useContentContext();
   const {
     state: { loaded },
     actions: { onInitChat, onOpenDirectMessageChannel }

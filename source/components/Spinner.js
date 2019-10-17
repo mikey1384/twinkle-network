@@ -1,14 +1,10 @@
 import React from 'react';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 export default function Spinner() {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       className={css`

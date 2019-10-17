@@ -6,6 +6,7 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
 import { css } from 'emotion';
 import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/video`;
@@ -27,11 +28,9 @@ export default function VideoThumbImage({
   videoId
 }) {
   const {
-    user: {
-      state: { userId }
-    },
     requestHelpers: { auth }
   } = useAppContext();
+  const { userId } = useMyState();
   const [xpEarned, setXpEarned] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {

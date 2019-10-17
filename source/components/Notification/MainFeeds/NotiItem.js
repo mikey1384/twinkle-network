@@ -6,7 +6,7 @@ import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { truncateText } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 NotiItem.propTypes = {
   notification: PropTypes.object.isRequired
@@ -22,11 +22,7 @@ export default function NotiItem({
     user = {}
   }
 }) {
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
+  const { userId } = useMyState();
   let notificationMessage;
   const isReply = targetComment?.userId === userId;
   const isSubjectResponse = targetSubject?.userId === userId;

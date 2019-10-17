@@ -6,9 +6,9 @@ import request from 'axios';
 import URL from 'constants/URL';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { mobileMaxWidth } from 'constants/css';
-import { useScrollPosition } from 'helpers/hooks';
 import { css } from 'emotion';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
+import { useViewContext } from 'contexts';
 
 ContentPage.propTypes = {
   match: PropTypes.object.isRequired,
@@ -25,11 +25,7 @@ export default function ContentPage({
   }
 }) {
   const contentId = Number(initialContentId);
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
+  const { userId } = useMyState();
   const {
     actions: { onRecordScrollPosition, onSetExploreSubNav },
     state: { scrollPositions }
@@ -39,10 +35,8 @@ export default function ContentPage({
     pathname,
     scrollPositions
   });
-  const { state } = useContentContext();
   const contentType = url.split('/')[1].slice(0, -1);
-  const contentState = state[contentType + contentId] || {};
-  const { loaded, deleted } = contentState;
+  const { loaded, deleted } = useContentState({ contentType, contentId });
   const [exists, setExists] = useState(true);
   const mounted = useRef(null);
   const prevDeleted = useRef(false);

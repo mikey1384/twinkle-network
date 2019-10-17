@@ -4,18 +4,14 @@ import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Profile.propTypes = {
   profile: PropTypes.object.isRequired
 };
 
 export default function Profile({ profile }) {
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
+  const { userId } = useMyState();
   return (
     <div
       style={{

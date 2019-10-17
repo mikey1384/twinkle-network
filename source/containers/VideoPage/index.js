@@ -19,10 +19,10 @@ import Details from './Details';
 import NavMenu from './NavMenu';
 import PageTab from './PageTab';
 import URL from 'constants/URL';
-import { useScrollPosition } from 'helpers/hooks';
-import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { fetchedVideoCodeFromURL } from 'helpers/stringHelpers';
+import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
@@ -58,9 +58,6 @@ export default function VideoPage({
   const prevDeleted = useRef(false);
 
   const {
-    user: {
-      state: { authLevel, canEdit, userId }
-    },
     requestHelpers: {
       deleteContent,
       editContent,
@@ -70,6 +67,7 @@ export default function VideoPage({
       uploadQuestions
     }
   } = useAppContext();
+  const { authLevel, canEdit, userId } = useMyState();
   const {
     actions: {
       onChangeVideoByUserStatus,
@@ -79,7 +77,6 @@ export default function VideoPage({
     }
   } = useExploreContext();
   const {
-    state,
     actions: {
       onAddTags,
       onAttachStar,
@@ -119,8 +116,6 @@ export default function VideoPage({
     scrollPositions
   });
 
-  const contentState = state['video' + videoId] || {};
-
   const {
     byUser,
     childComments: comments,
@@ -143,7 +138,7 @@ export default function VideoPage({
     title,
     uploader,
     views
-  } = contentState;
+  } = useContentState({ contentType: 'video', contentId: videoId });
 
   useEffect(() => {
     if (!prevDeleted.current && deleted) {
@@ -284,6 +279,7 @@ export default function VideoPage({
                 <div style={{ marginTop: '2rem' }}>
                   {!questionsBuilderShown && (
                     <VideoPlayer
+                      autoplay
                       rewardLevel={rewardLevel}
                       byUser={!!byUser}
                       key={videoId}
@@ -485,8 +481,28 @@ export default function VideoPage({
       </ErrorBoundary>
     ),
     [
+      byUser,
+      comments,
+      commentsLoaded,
+      commentsLoadMoreButton,
+      content,
+      deleted,
+      description,
+      rewardLevel,
+      hasHqThumb,
+      likes,
+      loaded,
+      questions,
+      stars,
+      subjects,
+      subjectsLoaded,
+      subjectsLoadMoreButton,
+      tags,
+      timeStamp,
+      title,
+      uploader,
+      views,
       changingPage,
-      contentState,
       loadingComments,
       watchTabActive,
       currentSlide,

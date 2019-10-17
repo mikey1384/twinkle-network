@@ -9,8 +9,7 @@ import Loading from 'components/Loading';
 import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useOutsideClick } from 'helpers/hooks';
-import { useAppContext } from 'contexts';
+import { useMyState, useOutsideClick } from 'helpers/hooks';
 
 SectionPanel.propTypes = {
   canEdit: PropTypes.bool,
@@ -55,11 +54,7 @@ export default function SectionPanel({
   style = {},
   title
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   const [loading, setLoading] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);

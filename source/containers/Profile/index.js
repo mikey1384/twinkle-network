@@ -4,7 +4,8 @@ import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext, useProfileContext } from 'contexts';
+import { useContentState, useMyState, useProfileState } from 'helpers/hooks';
 import NotFound from 'components/NotFound';
 import Loading from 'components/Loading';
 
@@ -16,16 +17,24 @@ Profile.propTypes = {
 
 export default function Profile({ history, location, match }) {
   const {
-    user: {
-      state: { userId, username, profile },
-      actions: { onChangeProfileTheme, onShowProfile, onUserNotExist }
-    },
     requestHelpers: { loadProfileViaUsername, setTheme }
   } = useAppContext();
+  const { userId, username } = useMyState();
+  const {
+    actions: { onChangeProfileTheme, onInitContent }
+  } = useContentContext();
+  const {
+    actions: { onSetProfileId, onUserNotExist }
+  } = useProfileContext();
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
+  const { notExist, profileId } = useProfileState(match.params.username);
+  const profile = useContentState({
+    contentType: 'user',
+    contentId: profileId
+  });
   useEffect(() => {
-    if (!profile.id || profile.username !== match.params.username) {
+    if (!notExist && !profile.loaded) {
       init();
     }
     async function init() {
@@ -34,14 +43,21 @@ export default function Profile({ history, location, match }) {
         const { pageNotExists, user } = await loadProfileViaUsername(
           match.params.username
         );
-        if (pageNotExists) return onUserNotExist();
-        onShowProfile(user);
+        if (pageNotExists) return onUserNotExist(match.params.username);
+        onSetProfileId({ username: match.params.username, profileId: user.id });
+        onInitContent({
+          contentType: 'user',
+          contentId: user.id,
+          userId: user.id,
+          username: match.params.username,
+          ...user
+        });
       } catch (error) {
-        onUserNotExist();
+        onUserNotExist(match.params.username);
       }
       setLoading(false);
     }
-  }, [match.params.username]);
+  }, [match.params.username, profile.loaded]);
 
   useEffect(() => {
     if (
@@ -56,7 +72,7 @@ export default function Profile({ history, location, match }) {
 
   return (
     <ErrorBoundary style={{ minHeight: '10rem' }}>
-      {!profile.unavailable ? (
+      {!notExist ? (
         <>
           {loading && <Loading text="Loading Profile..." />}
           {!loading && profile.id && (

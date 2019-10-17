@@ -4,7 +4,7 @@ import Checkbox from 'components/Checkbox';
 import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Categories.propTypes = {
   defaultFilter: PropTypes.string,
@@ -19,11 +19,7 @@ export default function Categories({
   onSetDefaultSearchFilter,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       style={{

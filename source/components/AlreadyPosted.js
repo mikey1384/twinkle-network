@@ -4,6 +4,7 @@ import Link from 'components/Link';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useAppContext, useContentContext } from 'contexts';
+import { useContentState } from 'helpers/hooks';
 
 AlreadyPosted.propTypes = {
   changingPage: PropTypes.bool,
@@ -28,11 +29,9 @@ export default function AlreadyPosted({
     requestHelpers: { checkIfContentExists }
   } = useAppContext();
   const {
-    state,
     actions: { onSetExistingContent }
   } = useContentContext();
-  const contentState = state[contentType + contentId] || {};
-  const { existingContent } = contentState;
+  const { existingContent } = useContentState({ contentType, contentId });
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
@@ -91,5 +90,5 @@ export default function AlreadyPosted({
         </Link>
       </div>
     ) : null;
-  }, [existingContent, changingPage, uploaderId, url, videoCode]);
+  }, [existingContent, changingPage, loading, uploaderId, url, videoCode]);
 }

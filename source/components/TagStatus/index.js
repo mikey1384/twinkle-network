@@ -6,6 +6,7 @@ import { hashify } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 TagStatus.propTypes = {
   onAddTags: PropTypes.func.isRequired,
@@ -25,9 +26,9 @@ export default function TagStatus({
   tags
 }) {
   const {
-    user: { state: canEditPlaylists },
     requestHelpers: { fetchPlaylistsContaining }
   } = useAppContext();
+  const { canEditPlaylists } = useMyState();
   const [shownPlaylistId, setShownPlaylistId] = useState();
   const [shownPlaylistTitle, setShownPlaylistTitle] = useState('');
   const [tagModalShown, setTagModalShown] = useState(false);

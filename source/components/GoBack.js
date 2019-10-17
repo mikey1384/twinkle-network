@@ -4,17 +4,13 @@ import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { withRouter } from 'react-router';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 GoBack.propTypes = {
   history: PropTypes.object.isRequired
 };
 function GoBack({ history }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       className={css`

@@ -1,7 +1,5 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import ProfileActions from './Profile/actions';
-import ProfileReducer from './Profile/reducer';
 import UserActions from './User/actions';
 import UserReducer from './User/reducer';
 import requestHelpers from './requestHelpers';
@@ -11,8 +9,8 @@ import { ExploreContextProvider } from './Explore';
 import { HomeContextProvider } from './Home';
 import { InputContextProvider } from './Input';
 import { NotiContextProvider } from './Notification';
+import { ProfileContextProvider } from './Profile';
 import { ViewContextProvider } from './View';
-import { initialProfileState } from './initialStates';
 
 export const AppContext = createContext();
 export const initialUserState = {
@@ -28,7 +26,6 @@ export const initialUserState = {
   isCreator: false,
   loadMoreButton: false,
   loggedIn: false,
-  profile: {},
   profileTheme: 'logoBlue',
   profiles: [],
   profilesLoaded: false,
@@ -41,18 +38,10 @@ AppContextProvider.propTypes = {
 };
 
 export function AppContextProvider({ children }) {
-  const [profileState, profileDispatch] = useReducer(
-    ProfileReducer,
-    initialProfileState
-  );
   const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
   return (
     <AppContext.Provider
       value={{
-        profile: {
-          state: profileState,
-          actions: ProfileActions(profileDispatch)
-        },
         user: {
           state: userState,
           actions: UserActions(userDispatch)
@@ -61,17 +50,19 @@ export function AppContextProvider({ children }) {
       }}
     >
       <ChatContextProvider>
-        <HomeContextProvider>
-          <ExploreContextProvider>
-            <ViewContextProvider>
-              <NotiContextProvider>
-                <ContentContextProvider>
-                  <InputContextProvider>{children} </InputContextProvider>
-                </ContentContextProvider>
-              </NotiContextProvider>
-            </ViewContextProvider>
-          </ExploreContextProvider>
-        </HomeContextProvider>
+        <ProfileContextProvider>
+          <HomeContextProvider>
+            <ExploreContextProvider>
+              <ViewContextProvider>
+                <NotiContextProvider>
+                  <ContentContextProvider>
+                    <InputContextProvider>{children} </InputContextProvider>
+                  </ContentContextProvider>
+                </NotiContextProvider>
+              </ViewContextProvider>
+            </ExploreContextProvider>
+          </HomeContextProvider>
+        </ProfileContextProvider>
       </ChatContextProvider>
     </AppContext.Provider>
   );

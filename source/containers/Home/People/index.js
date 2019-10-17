@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useInfiniteScroll, useSearch, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import ProfilePanel from 'components/ProfilePanel';
@@ -10,6 +9,12 @@ import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { useAppContext, useInputContext, useViewContext } from 'contexts';
+import {
+  useInfiniteScroll,
+  useMyState,
+  useSearch,
+  useScrollPosition
+} from 'helpers/hooks';
 import request from 'axios';
 import URL from 'constants/URL';
 
@@ -28,16 +33,11 @@ export default function People({ location, history }) {
         onLoadMoreUsers,
         onSearchUsers
       },
-      state: {
-        profilesLoaded,
-        loadMoreButton,
-        profiles,
-        profileTheme,
-        searchedProfiles
-      }
+      state: { loadMoreButton, profilesLoaded, profiles, searchedProfiles }
     },
     requestHelpers: { loadUsers }
   } = useAppContext();
+  const { profileTheme } = useMyState();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

@@ -1,40 +1,50 @@
 export default function HomeActions(dispatch) {
   return {
-    onDeleteFeed({ contentType, contentId }) {
-      return dispatch({
-        type: 'DELETE_FEED',
-        contentType,
-        contentId
-      });
-    },
-    onLoadNotables({ feeds, loadMoreButton }) {
+    onLoadNotables({ feeds, loadMoreButton, username }) {
       return dispatch({
         type: 'LOAD_NOTABLES',
         feeds,
-        loadMoreButton
+        loadMoreButton,
+        username
       });
     },
-    onLoadMoreNotables({ feeds, loadMoreButton }) {
+    onLoadMoreNotables({ feeds, loadMoreButton, username }) {
       return dispatch({
         type: 'LOAD_MORE_NOTABLES',
         feeds,
-        loadMoreButton
+        loadMoreButton,
+        username
       });
     },
-    onLoadPosts({ feeds, loadMoreButton, section }) {
+    onLoadPosts({ feeds, loadMoreButton, section, username }) {
       return dispatch({
         type: 'LOAD_POSTS',
         feeds,
         loadMoreButton,
-        section
+        section,
+        username
       });
     },
-    onLoadMorePosts({ feeds, loadMoreButton, section }) {
+    onLoadMorePosts({ feeds, loadMoreButton, section, username }) {
       return dispatch({
         type: 'LOAD_MORE_POSTS',
         feeds,
         loadMoreButton,
-        section
+        section,
+        username
+      });
+    },
+    onSetProfileId({ username, profileId }) {
+      return dispatch({
+        type: 'SET_PROFILE_ID',
+        username,
+        profileId
+      });
+    },
+    onUserNotExist(username) {
+      return dispatch({
+        type: 'USER_NOT_EXIST',
+        username
       });
     }
   };

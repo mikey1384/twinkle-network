@@ -5,8 +5,9 @@ import Button from 'components/Button';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Loading from 'components/Loading';
 import { container } from './Styles';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius } from 'constants/css';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 const WelcomeMessage = React.lazy(() => import('./WelcomeMessage'));
 
@@ -19,21 +20,14 @@ ProfileWidget.propTypes = {
 export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
   const {
     user: {
-      state: { profilePicId, profileTheme, realName, userId, username },
       actions: { onOpenSigninModal }
     }
   } = useAppContext();
+  const { profilePicId, realName, userId, username } = useMyState();
   const FileInputRef = useRef(null);
-  const themeColor = profileTheme || 'logoBlue';
   return (
     <ErrorBoundary>
-      <div
-        style={{ cursor: 'pointer' }}
-        className={container({
-          username: Color[themeColor](0.6),
-          usernameHovered: Color[themeColor]()
-        })}
-      >
+      <div className={container} style={{ cursor: 'pointer' }}>
         {username && (
           <div
             className="heading"

@@ -1,75 +1,99 @@
 export default function ProfileReducer(state, action) {
-  const contentKey =
-    action.contentType && action.contentId
-      ? action.contentType + action.contentId
-      : 'temp';
+  const defaultState = {
+    notables: {
+      feeds: [],
+      loadMoreButton: false
+    },
+    posts: {
+      all: [],
+      allLoaded: false,
+      allLoadMoreButton: false,
+      comments: [],
+      commentsLoaded: false,
+      commentsLoadMoreButton: false,
+      likes: [],
+      likesLoaded: false,
+      likesLoadMoreButton: false,
+      subjects: [],
+      subjectsLoaded: false,
+      subjectsLoadMoreButton: false,
+      videos: [],
+      videosLoaded: false,
+      videosLoadMoreButton: false,
+      links: [],
+      linksLoaded: false,
+      linksLoadMoreButton: false
+    }
+  };
+  const username = action.username;
+  const prevContentState = state[action.username] || defaultState;
   switch (action.type) {
-    case 'DELETE_FEED':
-      return {
-        ...state,
-        notables: {
-          ...state.notables,
-          feeds: state.notables.feeds.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          )
-        },
-        posts: {
-          ...state.posts,
-          all: state.posts.all.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          ),
-          comments: state.posts.comments.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          ),
-          likes: state.posts.likes.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          ),
-          subjects: state.posts.subjects.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          ),
-          videos: state.posts.videos.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          ),
-          links: state.posts.links.filter(
-            feed => feed.contentType + feed.contentId !== contentKey
-          )
-        }
-      };
     case 'LOAD_NOTABLES':
       return {
         ...state,
-        notables: {
-          ...state.notables,
-          feeds: action.feeds,
-          loadMoreButton: action.loadMoreButton
+        [username]: {
+          ...prevContentState,
+          notables: {
+            ...prevContentState.notables,
+            feeds: action.feeds,
+            loadMoreButton: action.loadMoreButton,
+            loaded: true
+          }
         }
       };
     case 'LOAD_MORE_NOTABLES':
       return {
         ...state,
-        notables: {
-          ...state.notables,
-          feeds: state.notables.feeds.concat(action.feeds),
-          loadMoreButton: action.loadMoreButton
+        [username]: {
+          ...prevContentState,
+          notables: {
+            ...prevContentState.notables,
+            feeds: prevContentState.notables.feeds.concat(action.feeds),
+            loadMoreButton: action.loadMoreButton
+          }
         }
       };
     case 'LOAD_POSTS':
       return {
         ...state,
-        posts: {
-          ...state.posts,
-          [action.section]: action.feeds,
-          [`${action.section}Loaded`]: true,
-          [`${action.section}LoadMoreButton`]: action.loadMoreButton
+        [username]: {
+          ...prevContentState,
+          posts: {
+            ...prevContentState.posts,
+            [action.section]: action.feeds,
+            [`${action.section}Loaded`]: true,
+            [`${action.section}LoadMoreButton`]: action.loadMoreButton
+          }
         }
       };
     case 'LOAD_MORE_POSTS':
       return {
         ...state,
-        posts: {
-          ...state.posts,
-          [action.section]: state.posts[action.section].concat(action.feeds),
-          [`${action.section}LoadMoreButton`]: action.loadMoreButton
+        [username]: {
+          ...prevContentState,
+          posts: {
+            ...prevContentState.posts,
+            [action.section]: prevContentState.posts[action.section].concat(
+              action.feeds
+            ),
+            [`${action.section}LoadMoreButton`]: action.loadMoreButton
+          }
+        }
+      };
+    case 'SET_PROFILE_ID':
+      return {
+        ...state,
+        [username]: {
+          ...prevContentState,
+          profileId: action.profileId
+        }
+      };
+    case 'USER_NOT_EXIST':
+      return {
+        ...state,
+        [username]: {
+          ...prevContentState,
+          notExist: true
         }
       };
     default:

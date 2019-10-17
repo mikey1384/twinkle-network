@@ -8,6 +8,7 @@ import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
 
 Notification.propTypes = {
@@ -19,11 +20,9 @@ Notification.propTypes = {
 
 export default function Notification({ children, className, location, style }) {
   const {
-    user: {
-      state: { userId }
-    },
     requestHelpers: { fetchNotifications }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
     state: {
       loadMore,

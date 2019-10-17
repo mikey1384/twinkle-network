@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import InputPanel from './InputPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
@@ -10,6 +9,11 @@ import HomeFilter from './HomeFilter';
 import ContentPanel from 'components/ContentPanel';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
+import {
+  useInfiniteScroll,
+  useMyState,
+  useScrollPosition
+} from 'helpers/hooks';
 import {
   useAppContext,
   useHomeContext,
@@ -42,11 +46,9 @@ Stories.propTypes = {
 
 export default function Stories({ location }) {
   const {
-    user: {
-      state: { hideWatched, userId, username }
-    },
     requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
+  const { hideWatched, userId, username } = useMyState();
   const {
     state: { numNewPosts },
     actions: { onResetNumNewPosts }
@@ -56,7 +58,6 @@ export default function Stories({ location }) {
     actions: {
       onChangeCategory,
       onChangeSubFilter,
-      onDeleteFeed,
       onLoadFeeds,
       onLoadMoreFeeds,
       onLoadNewFeeds
@@ -220,7 +221,6 @@ export default function Stories({ location }) {
                     contentType={feed.contentType}
                     commentsLoadLimit={5}
                     numPreviewComments={1}
-                    onDeleteContent={onDeleteFeed}
                     userId={userId}
                   />
                 ))}

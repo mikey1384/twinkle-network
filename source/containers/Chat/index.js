@@ -12,6 +12,7 @@ import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
 
 Chat.propTypes = {
@@ -20,9 +21,6 @@ Chat.propTypes = {
 
 export default function Chat({ onFileUpload }) {
   const {
-    user: {
-      state: { profilePicId, userId, username }
-    },
     requestHelpers: {
       createNewChat,
       loadChat,
@@ -34,6 +32,7 @@ export default function Chat({ onFileUpload }) {
       updateChatLastRead
     }
   } = useAppContext();
+  const { profilePicId, userId, username } = useMyState();
   const {
     state: {
       loaded,

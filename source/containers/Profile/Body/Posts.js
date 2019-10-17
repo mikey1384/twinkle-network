@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { useInfiniteScroll, useScrollPosition } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import FilterBar from 'components/FilterBar';
@@ -9,7 +8,12 @@ import SideMenu from './SideMenu';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { useAppContext, useViewContext } from 'contexts';
+import {
+  useInfiniteScroll,
+  useProfileState,
+  useScrollPosition
+} from 'helpers/hooks';
+import { useAppContext, useProfileContext, useViewContext } from 'contexts';
 
 Posts.propTypes = {
   history: PropTypes.object.isRequired,
@@ -36,18 +40,18 @@ export default function Posts({
   selectedTheme
 }) {
   const {
-    profile: {
-      state: {
-        posts: {
-          [section]: profileFeeds,
-          [`${section}LoadMoreButton`]: loadMoreButton,
-          [`${section}Loaded`]: loaded
-        }
-      },
-      actions: { onDeleteFeed, onLoadPosts, onLoadMorePosts }
-    },
     requestHelpers: { loadFeeds }
   } = useAppContext();
+  const {
+    actions: { onLoadPosts, onLoadMorePosts }
+  } = useProfileContext();
+  const {
+    posts: {
+      [section]: profileFeeds,
+      [`${section}LoadMoreButton`]: loadMoreButton,
+      [`${section}Loaded`]: loaded
+    }
+  } = useProfileState(username);
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }
@@ -152,7 +156,6 @@ export default function Posts({
                     contentType={contentType}
                     commentsLoadLimit={5}
                     numPreviewComments={1}
-                    onDeleteContent={onDeleteFeed}
                   />
                 );
               })}
@@ -213,7 +216,7 @@ export default function Posts({
           destinationVar: 'shownFeeds'
         })
       });
-      onLoadMorePosts({ ...data, section });
+      onLoadMorePosts({ ...data, section, username });
       if (mounted.current) {
         setLoading(false);
       }
@@ -230,7 +233,7 @@ export default function Posts({
       filter: filterTable[tabName]
     });
     if (loadedFilter === selectedFilter.current) {
-      onLoadPosts({ ...data, section: tabName });
+      onLoadPosts({ ...data, section: tabName, username });
       setScrollHeight(0);
       setLoadingFeeds(false);
     }

@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { borderRadius, Color } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,
@@ -14,11 +14,7 @@ FileInfo.propTypes = {
 };
 
 export default function FileInfo({ fileName, fileType, fileSize, src }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       style={{

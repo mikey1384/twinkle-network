@@ -6,6 +6,7 @@ import { css } from 'emotion';
 import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
+import { useContentState } from 'helpers/hooks';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/content`;
@@ -41,7 +42,6 @@ export default function Embedly({
     url: contentType === 'url' ? 'content' : 'embeddedUrl'
   };
   const {
-    state,
     actions: {
       onSetActualDescription,
       onSetActualTitle,
@@ -50,7 +50,6 @@ export default function Embedly({
       onSetThumbUrl
     }
   } = useContentContext();
-  const contentState = state[contentType + contentId] || {};
   const {
     description,
     prevUrl,
@@ -60,7 +59,7 @@ export default function Embedly({
     [translator.actualTitle]: actualTitle,
     [translator.siteUrl]: siteUrl,
     [translator.url]: url
-  } = contentState;
+  } = useContentState({ contentType, contentId });
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);

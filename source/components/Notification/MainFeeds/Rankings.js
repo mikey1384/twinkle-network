@@ -8,19 +8,18 @@ import FilterBar from 'components/FilterBar';
 import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
 import URL from 'constants/URL';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
 
 const API_URL = `${URL}/user`;
 
 export default function Rankings() {
   const {
-    user: {
-      state: { rank, twinkleXP, userId }
-    },
     requestHelpers: { auth }
   } = useAppContext();
+  const { rank, twinkleXP, userId } = useMyState();
   const {
     state: { allRanks, rankModifier, top30s, rankingsLoaded },
     actions: { onGetRanks }

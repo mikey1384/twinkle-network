@@ -6,10 +6,17 @@ import { ExploreContext } from './Explore';
 import { HomeContext } from './Home';
 import { InputContext } from './Input';
 import { NotiContext } from './Notification';
+import { ProfileContext } from './Profile';
 import { ViewContext } from './View';
 
+export function useAppContext() {
+  return useContext(AppContext);
+}
 export function useChatContext() {
   return useContext(ChatContext);
+}
+export function useContentContext() {
+  return useContext(ContentContext);
 }
 export function useExploreContext() {
   return useContext(ExploreContext);
@@ -23,11 +30,8 @@ export function useInputContext() {
 export function useNotiContext() {
   return useContext(NotiContext);
 }
-export function useAppContext() {
-  return useContext(AppContext);
-}
-export function useContentContext() {
-  return useContext(ContentContext);
+export function useProfileContext() {
+  return useContext(ProfileContext);
 }
 export function useViewContext() {
   return useContext(ViewContext);

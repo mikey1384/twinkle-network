@@ -6,12 +6,12 @@ import Channels from './Channels';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
+import { mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
-import { mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,
@@ -34,11 +34,7 @@ export default function LeftMenu({
   onNewButtonClick,
   showUserListModal
 }) {
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
+  const { userId } = useMyState();
   const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [onTitleHover, setOnTitleHover] = useState(false);

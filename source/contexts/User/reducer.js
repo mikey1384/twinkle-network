@@ -1,27 +1,11 @@
 import { initialUserState } from '../AppContext';
 
-const DEFAULT_PROFILE_THEME = 'logoBlue';
-
 export default function UserReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_DEFAULT_FILTER':
       return {
         ...state,
-        defaultSearchFilter: action.filter
-      };
-    case 'CHANGE_PROFILE_THEME':
-      return {
-        ...state,
-        profileTheme: action.theme,
-        profile: {
-          ...state.profile,
-          profileTheme: action.theme
-        },
-        profiles: state.profiles.map(profile =>
-          profile.id === action.userId
-            ? { ...profile, profileTheme: action.theme }
-            : profile
-        )
+        searchFilter: action.filter
       };
     case 'CHANGE_XP':
       return {
@@ -76,10 +60,7 @@ export default function UserReducer(state, action) {
     case 'INIT_SESSION':
       return {
         ...state,
-        ...action.data,
-        defaultSearchFilter: action.data.searchFilter,
-        profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
-        isCreator: action.data.userType === 'creator'
+        ...action.data
       };
     case 'LOAD_USERS': {
       let loadMoreButton = false;
@@ -109,11 +90,7 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         ...action.data,
-        defaultSearchFilter: action.data.searchFilter,
-        loggedIn: true,
-        signinModalShown: false,
-        profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
-        isCreator: action.data.userType === 'creator'
+        signinModalShown: false
       };
     case 'LOGOUT':
       return {
@@ -127,9 +104,8 @@ export default function UserReducer(state, action) {
       return {
         ...initialUserState,
         signinModalShown: true,
-        profile: state.profile,
         profiles: state.profiles,
-        profileLoaded: state.profilesLoaded,
+        profilesLoaded: state.profilesLoaded,
         searchedProfiles: state.searchedProfiles
       };
     case 'OPEN_SIGNIN_MODAL':
@@ -160,8 +136,6 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         ...action.data,
-        profileTheme: DEFAULT_PROFILE_THEME,
-        loggedIn: true,
         signinModalShown: false
       };
     case 'SET_PROFILES_LOADED':
@@ -217,13 +191,6 @@ export default function UserReducer(state, action) {
             ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
             : {})
         }))
-      };
-    case 'USER_NOT_EXIST':
-      return {
-        ...state,
-        profile: {
-          unavailable: true
-        }
       };
     default:
       return state;

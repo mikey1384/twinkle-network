@@ -1,7 +1,7 @@
 import { css } from 'emotion';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
-export const container = () => css`
+export const container = css`
   display: flex;
   border: none;
   flex-direction: column;

@@ -12,6 +12,7 @@ import request from 'axios';
 import URL from 'constants/URL';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
 
 NavMenu.propTypes = {
@@ -21,11 +22,9 @@ NavMenu.propTypes = {
 
 export default function NavMenu({ playlistId, videoId }) {
   const {
-    user: {
-      state: { profileTheme, userId }
-    },
     requestHelpers: { fetchNotifications }
   } = useAppContext();
+  const { profileTheme, userId } = useMyState();
   const {
     state: { numNewNotis, totalRewardAmount },
     actions: { onClearNotifications, onFetchNotifications }

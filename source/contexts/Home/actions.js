@@ -12,13 +12,6 @@ export default function HomeActions(dispatch) {
         subFilter
       });
     },
-    onDeleteFeed({ contentType, contentId }) {
-      return dispatch({
-        type: 'DELETE_FEED',
-        contentType,
-        contentId
-      });
-    },
     onLoadFeeds({ feeds, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_FEEDS',

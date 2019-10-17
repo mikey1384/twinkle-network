@@ -9,6 +9,7 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 
 MobileMenu.propTypes = {
@@ -20,11 +21,11 @@ MobileMenu.propTypes = {
 export default function MobileMenu({ location, history, onClose }) {
   const {
     user: {
-      state: { username },
       actions: { onLogout, onUploadProfilePic }
     },
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
+  const { username } = useMyState();
   const [marginLeft, setMarginLeft] = useState('-100%');
   useEffect(() => {
     if (marginLeft !== '-100%') {

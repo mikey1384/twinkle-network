@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAppContext } from 'contexts';
-import { PropTypes } from 'prop-types';
-import { Color, mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { PropTypes } from 'prop-types';
+import { Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
+import { useAppContext } from 'contexts';
 
 const categoryObj = {
   uploads: {
@@ -41,11 +42,11 @@ export default function HomeFilter({
 }) {
   const {
     user: {
-      state: { hideWatched, userId },
       actions: { onToggleHideWatched }
     },
     requestHelpers: { toggleHideWatched }
   } = useAppContext();
+  const { hideWatched, userId } = useMyState();
   const [activeTab, setActiveTab] = useState();
   const mounted = useRef(true);
   useEffect(() => {

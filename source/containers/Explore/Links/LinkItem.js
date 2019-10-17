@@ -7,10 +7,11 @@ import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Embedly from 'components/Embedly';
 import { withRouter } from 'react-router-dom';
-import { cleanString } from 'helpers/stringHelpers';
-import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { cleanString } from 'helpers/stringHelpers';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useExploreContext } from 'contexts';
 
 LinkItem.propTypes = {
@@ -34,20 +35,19 @@ function LinkItem({
   link: { id, numComments, likes, timeStamp, title, uploader, ...embedProps }
 }) {
   const {
-    user: {
-      state: { authLevel, canDelete, canEdit, userId }
-    },
     requestHelpers: { deleteContent, editContent }
   } = useAppContext();
+  const { authLevel, canDelete, canEdit, userId } = useMyState();
   const {
     actions: { onEditLinkTitle }
   } = useExploreContext();
   const {
-    state,
     actions: { onDeleteContent, onInitContent }
   } = useContentContext();
-  const contentState = state['url' + id] || {};
-  const { loaded, deleted } = contentState;
+  const { loaded, deleted } = useContentState({
+    contentType: 'url',
+    contentId: id
+  });
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [onEdit, setOnEdit] = useState(false);

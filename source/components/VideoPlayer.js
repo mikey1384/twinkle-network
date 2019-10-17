@@ -6,9 +6,10 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Spinner from 'components/Spinner';
 import { Color } from 'constants/css';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { useContentState, useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
@@ -20,6 +21,7 @@ const intervalLength = 2000;
 const xp = rewardValue.star;
 
 VideoPlayer.propTypes = {
+  autoplay: PropTypes.bool,
   byUser: PropTypes.bool,
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
@@ -32,6 +34,7 @@ VideoPlayer.propTypes = {
 };
 
 export default function VideoPlayer({
+  autoplay,
   byUser,
   rewardLevel,
   hasHqThumb,
@@ -43,8 +46,7 @@ export default function VideoPlayer({
 }) {
   const {
     user: {
-      actions: { onChangeUserXP },
-      state: { profileTheme, twinkleXP, userId }
+      actions: { onChangeUserXP }
     },
     requestHelpers: {
       addVideoView,
@@ -56,6 +58,7 @@ export default function VideoPlayer({
       updateVideoXPEarned
     }
   } = useAppContext();
+  const { profileTheme, twinkleXP, userId } = useMyState();
   const {
     state: {
       videos: { currentVideoSlot }
@@ -66,7 +69,6 @@ export default function VideoPlayer({
     state: { pageVisible }
   } = useViewContext();
   const {
-    state,
     actions: {
       onSetVideoImageUrl,
       onSetVideoStarted,
@@ -78,7 +80,6 @@ export default function VideoPlayer({
       onSetVideoCurrentTime
     }
   } = useContentContext();
-  const contentState = state['video' + videoId] || {};
   const {
     currentTime = 0,
     started,
@@ -89,7 +90,7 @@ export default function VideoPlayer({
     progress = 0,
     watchTime = 0,
     isEditing
-  } = contentState;
+  } = useContentState({ contentType: 'video', contentId: videoId });
   const [playing, setPlaying] = useState(false);
   const [playerShown, setPlayerShown] = useState(false);
   const [alreadyEarned, setAlreadyEarned] = useState(false);
@@ -179,10 +180,6 @@ export default function VideoPlayer({
       handleVideoStop();
     }
   }, [isEditing]);
-
-  useEffect(() => {
-    clearInterval(timerRef.current);
-  }, [justEarned]);
 
   useEffect(() => {
     if (userId && xpEarned && !playing) {
@@ -289,7 +286,7 @@ export default function VideoPlayer({
             cursor: !isEditing && !started && 'pointer'
           }}
         >
-          {((!minimized && !started) || isEditing) && (
+          {((!minimized && !started && !autoplay) || isEditing) && (
             <>
               <img
                 alt=""
@@ -310,7 +307,7 @@ export default function VideoPlayer({
               />
             </>
           )}
-          {!isEditing && (playerShown || started) && (
+          {!isEditing && (playerShown || started || autoplay) && (
             <ReactPlayer
               ref={PlayerRef}
               className={css`
@@ -481,12 +478,10 @@ export default function VideoPlayer({
         onFillCurrentVideoSlot(watchCodeRef.current);
       }
       clearInterval(timerRef.current);
-      if (!xpEarned && !justEarned) {
-        timerRef.current = setInterval(
-          () => increaseProgress({ requiredDurationCap, userId, watchTime }),
-          intervalLength
-        );
-      }
+      timerRef.current = setInterval(
+        () => increaseProgress({ requiredDurationCap, userId, watchTime }),
+        intervalLength
+      );
     }
     if (!!rewardLevel && !(justEarned || xpEarned)) {
       updateCurrentlyWatching({
@@ -513,38 +508,35 @@ export default function VideoPlayer({
       if (PlayerRef.current.getInternalPlayer()?.getVolume() < 30) {
         PlayerRef.current.getInternalPlayer()?.setVolume(30);
       }
-    }
-    let requiredViewDuration =
-      totalDurationRef.current < requiredDurationCap + 10
-        ? Math.floor(totalDurationRef.current / 2) * 2 - 20
-        : requiredDurationCap;
-    if (
-      rewardAmountRef.current &&
-      timeWatchedRef.current >= requiredViewDuration &&
-      !rewardingXP.current &&
-      (!justEarned || xpEarned) &&
-      userId
-    ) {
-      rewardingXP.current = true;
-      try {
-        await updateVideoXPEarned(videoId);
-        const { alreadyDone, xp, rank } = await updateUserXP({
-          action: 'watch',
-          target: 'video',
-          amount: rewardAmountRef.current,
-          targetId: videoId,
-          type: 'increase'
-        });
-        if (alreadyDone) return;
-        onChangeUserXP({ xp, rank });
-        onSetVideoXpJustEarned({ videoId, justEarned: true });
-        onSetVideoXpEarned({ videoId, earned: true });
-        rewardingXP.current = false;
-      } catch (error) {
-        console.error(error.response || error);
+      let requiredViewDuration =
+        totalDurationRef.current < requiredDurationCap + 10
+          ? Math.floor(totalDurationRef.current / 2) * 2 - 20
+          : requiredDurationCap;
+      if (
+        rewardAmountRef.current &&
+        timeWatchedRef.current >= requiredViewDuration &&
+        !rewardingXP.current &&
+        userId
+      ) {
+        rewardingXP.current = true;
+        try {
+          await updateVideoXPEarned(videoId);
+          const { alreadyDone, xp, rank } = await updateUserXP({
+            action: 'watch',
+            target: 'video',
+            amount: rewardAmountRef.current,
+            targetId: videoId,
+            type: 'increase'
+          });
+          if (alreadyDone) return;
+          onChangeUserXP({ xp, rank });
+          onSetVideoXpJustEarned({ videoId, justEarned: true });
+          onSetVideoXpEarned({ videoId, earned: true });
+          rewardingXP.current = false;
+        } catch (error) {
+          console.error(error.response || error);
+        }
       }
-    }
-    if (!xpEarned && userId) {
       timeWatchedRef.current = Math.max(
         timeWatchedRef.current + intervalLength / 1000,
         watchTime
@@ -553,10 +545,6 @@ export default function VideoPlayer({
         videoId,
         watchTime: timeWatchedRef.current
       });
-      let requiredViewDuration =
-        totalDurationRef.current < requiredDurationCap + 10
-          ? Math.floor(totalDurationRef.current / 2) * 2 - 20
-          : requiredDurationCap;
       onSetVideoXpProgress({
         videoId,
         progress:
@@ -567,8 +555,6 @@ export default function VideoPlayer({
               )
             : 0
       });
-    }
-    if (userId) {
       const {
         notLoggedIn,
         success,

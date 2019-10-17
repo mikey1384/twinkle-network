@@ -9,7 +9,7 @@ import SecretAnswer from 'components/SecretAnswer';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 ContentListItem.propTypes = {
   comments: PropTypes.array,
@@ -30,11 +30,7 @@ export default function ContentListItem({
   selected,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   const [mouseEntered, setMouseEntered] = useState(false);
   return useMemo(
     () => (

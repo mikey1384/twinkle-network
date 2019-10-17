@@ -17,7 +17,7 @@ import Description from './Description';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { determineXpButtonDisabled } from 'helpers';
-import { useScrollPosition } from 'helpers/hooks';
+import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import { processedURL } from 'helpers/stringHelpers';
 import {
   useAppContext,
@@ -41,9 +41,6 @@ export default function LinkPage({
 }) {
   const linkId = Number(initialLinkId);
   const {
-    user: {
-      state: { authLevel, canDelete, canEdit, canStar, userId }
-    },
     requestHelpers: {
       deleteContent,
       editContent,
@@ -52,11 +49,11 @@ export default function LinkPage({
       loadSubjects
     }
   } = useAppContext();
+  const { authLevel, canDelete, canEdit, canStar, userId } = useMyState();
   const {
     actions: { onEditLinkPage, onLikeLink, onUpdateNumLinkComments }
   } = useExploreContext();
   const {
-    state,
     actions: {
       onAttachStar,
       onDeleteComment,
@@ -83,7 +80,6 @@ export default function LinkPage({
       onUploadSubject
     }
   } = useContentContext();
-  const contentState = state['url' + linkId] || {};
   const {
     childComments,
     commentsLoaded,
@@ -101,7 +97,7 @@ export default function LinkPage({
     title,
     uploader,
     xpRewardInterfaceShown
-  } = contentState;
+  } = useContentState({ contentType: 'url', contentId: linkId });
   const {
     actions: { onRecordScrollPosition, onSetExploreSubNav },
     state: { scrollPositions }
@@ -427,7 +423,22 @@ export default function LinkPage({
         <Loading text="Loading Page..." />
       ),
     [
-      contentState,
+      childComments,
+      commentsLoaded,
+      commentsLoadMoreButton,
+      content,
+      deleted,
+      description,
+      likes,
+      loaded,
+      subjects,
+      subjectsLoaded,
+      subjectsLoadMoreButton,
+      stars,
+      timeStamp,
+      title,
+      uploader,
+      xpRewardInterfaceShown,
       linkId,
       loadingComments,
       userId,

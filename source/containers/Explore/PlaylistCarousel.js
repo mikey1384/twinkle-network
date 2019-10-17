@@ -8,11 +8,12 @@ import EditPlaylistModal from './Modals/EditPlaylistModal';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Link from 'components/Link';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { cleanString } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import { cleanString } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
 
 PlaylistCarousel.propTypes = {
@@ -39,11 +40,9 @@ export default function PlaylistCarousel({
   userIsUploader
 }) {
   const {
-    user: {
-      state: { canEdit, canEditPlaylists, profileTheme }
-    },
     requestHelpers: { deletePlaylist, editPlaylistTitle }
   } = useAppContext();
+  const { canEdit, canEditPlaylists, profileTheme } = useMyState();
   const {
     state: {
       videos: { clickSafe }

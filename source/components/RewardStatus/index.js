@@ -8,7 +8,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Starmarks from './Starmarks';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 RewardStatus.propTypes = {
   className: PropTypes.string,
@@ -27,12 +27,8 @@ export default function RewardStatus({
   stars = [],
   style
 }) {
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
-  const [loaded, setLoaded] = useState(2);
+  const { userId } = useMyState();
+  const [numLoaded, setNumLoaded] = useState(2);
   const finalStar = stars.length > 0 ? stars[stars.length - 1] : {};
   const starsWithComment = stars.filter(
     star => !stringIsEmpty(star.rewardComment) && star.id !== finalStar.id
@@ -74,7 +70,7 @@ export default function RewardStatus({
           {maxStars}
         </div>
       </div>
-      {loaded < stars.length && (
+      {numLoaded < stars.length && (
         <LoadMoreButton
           color={
             rewardedStars === maxStars || rewardedStars > 10
@@ -87,11 +83,11 @@ export default function RewardStatus({
             fontSize: '1.3rem',
             marginTop: '1rem'
           }}
-          onClick={() => setLoaded(loaded + 3)}
+          onClick={() => setNumLoaded(numLoaded + 3)}
         />
       )}
       {stars
-        .filter((star, index) => index > stars.length - loaded - 1)
+        .filter((star, index) => index > stars.length - numLoaded - 1)
         .map(star => (
           <Comment
             maxRewardableStars={Math.ceil(maxStars / 2)}

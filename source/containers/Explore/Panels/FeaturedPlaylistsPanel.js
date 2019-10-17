@@ -4,15 +4,14 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
 
 export default function FeaturedPlaylistsPanel() {
   const {
-    user: {
-      state: { canPinPlaylists, userId }
-    },
     requestHelpers: { loadFeaturedPlaylists, loadPlaylistList }
   } = useAppContext();
+  const { canPinPlaylists, userId } = useMyState();
   const {
     state: {
       videos: {

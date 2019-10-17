@@ -10,7 +10,7 @@ import {
   finalizeEmoji,
   exceedsCharLimit
 } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -31,11 +31,7 @@ export default function ChatInput({
   onMessageSubmit,
   onPlusButtonClick
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   const TextareaRef = useRef(null);
   const [message, setMessage] = useState('');
   useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useInterval } from 'helpers/hooks';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -13,13 +12,11 @@ import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useInterval, useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 export default function SubjectHeader() {
   const {
-    user: {
-      state: { profilePicId, userId, username }
-    },
     requestHelpers: {
       loadChatSubject,
       reloadChatSubject,
@@ -27,6 +24,7 @@ export default function SubjectHeader() {
       uploadChatSubject
     }
   } = useAppContext();
+  const { profilePicId, userId, username } = useMyState();
   const {
     state: {
       subject: {

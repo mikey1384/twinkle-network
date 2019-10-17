@@ -8,22 +8,26 @@ import ImageEditModal from 'components/Modals/ImageEditModal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Cover.propTypes = {
   onSelectTheme: PropTypes.func.isRequired,
   onSetTheme: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
   selectedTheme: PropTypes.string
 };
 
-export default function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
+export default function Cover({
+  onSelectTheme,
+  onSetTheme,
+  profile,
+  selectedTheme
+}) {
   const {
-    user: {
-      state: { profile, userId },
-      actions: { onUploadProfilePic }
-    },
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
     profilePicId,
     online,
@@ -33,6 +37,9 @@ export default function Cover({ onSelectTheme, onSetTheme, selectedTheme }) {
     username,
     userType
   } = profile;
+  const {
+    actions: { onUploadProfilePic }
+  } = useContentContext();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);

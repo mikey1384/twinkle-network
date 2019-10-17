@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { removeLineBreaks } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useMyState } from '../helpers/hooks';
 
 ContentLink.propTypes = {
   content: PropTypes.shape({
@@ -22,11 +22,7 @@ export default function ContentLink({
   content: { byUser, id, content, title, username },
   contentType
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   let destination = '';
   if (contentType === 'url') {
     destination = 'links';

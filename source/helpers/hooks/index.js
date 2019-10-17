@@ -1,7 +1,54 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
+import { useAppContext, useContentContext, useProfileContext } from 'contexts';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
+
+export function useContentState({ contentType, contentId }) {
+  const { state } = useContentContext();
+  return state[contentType + contentId] || {};
+}
+
+export function useMyState() {
+  const {
+    user: {
+      state: { userId, searchFilter, signinModalShown }
+    }
+  } = useAppContext();
+  const myState = useContentState({
+    contentId: userId,
+    contentType: 'user'
+  });
+  return myState.loaded
+    ? {
+        ...myState,
+        userId,
+        defaultSearchFilter: searchFilter,
+        isCreator: myState.userType === 'creator',
+        loggedIn: true,
+        signinModalShown
+      }
+    : { profileTheme: 'logoBlue', signinModalShown };
+}
+
+export function useProfileState(username) {
+  const { state = {} } = useProfileContext();
+  const { [username]: userState = {} } = state;
+  const {
+    notExist = false,
+    notables = { feeds: [] },
+    posts = {
+      all: [],
+      comments: [],
+      likes: [],
+      subjects: [],
+      videos: [],
+      links: []
+    },
+    profileId
+  } = userState;
+  return { notables, posts, notExist, profileId };
+}
 
 export function useInterval(callback, interval, tracked) {
   const timerRef = useRef(null);

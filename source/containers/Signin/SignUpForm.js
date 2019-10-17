@@ -7,7 +7,7 @@ import Input from 'components/Texts/Input';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
 import Banner from 'components/Banner';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 SignUpForm.propTypes = {
   onShowLoginForm: PropTypes.func.isRequired
@@ -20,6 +20,9 @@ export default function SignUpForm({ onShowLoginForm }) {
     },
     requestHelpers: { signup }
   } = useAppContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -226,6 +229,7 @@ export default function SignUpForm({ onShowLoginForm }) {
         email
       });
       onSignup(data);
+      onInitContent({ contentType: 'user', contentId: data.id, ...data });
     } catch (error) {
       setErrorMessage(error);
     }

@@ -23,7 +23,7 @@ import URL from 'constants/URL';
 import Bio from 'components/Texts/Bio';
 import BasicInfos from './BasicInfos';
 import Achievements from './Achievements';
-import { useScrollPosition } from 'helpers/hooks';
+import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
@@ -33,15 +33,12 @@ import {
 
 Home.propTypes = {
   location: PropTypes.object,
+  profile: PropTypes.object,
   selectedTheme: PropTypes.string.isRequired
 };
 
-export default function Home({ location, selectedTheme }) {
+export default function Home({ location, profile, selectedTheme }) {
   const {
-    user: {
-      state: { profile, userId },
-      actions: { onRemoveStatusMsg, onUpdateGreeting, onUpdateBio }
-    },
     requestHelpers: {
       auth,
       loadComments,
@@ -50,6 +47,7 @@ export default function Home({ location, selectedTheme }) {
       uploadBio
     }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }
@@ -60,20 +58,21 @@ export default function Home({ location, selectedTheme }) {
     scrollPositions
   });
   const {
-    state,
     actions: {
       onAttachStar,
       onDeleteComment,
       onEditComment,
       onEditRewardComment,
-      onInitContent,
       onLikeComment,
       onLoadComments,
       onLoadMoreComments,
       onLoadMoreReplies,
       onLoadRepliesOfReply,
       onUploadComment,
-      onUploadReply
+      onUploadReply,
+      onRemoveStatusMsg,
+      onUpdateGreeting,
+      onUpdateBio
     }
   } = useContentContext();
   const {
@@ -122,11 +121,11 @@ export default function Home({ location, selectedTheme }) {
           limit: 5
         });
         if (mounted.current) {
-          onInitContent({
+          onLoadComments({
             contentId: profile.id,
             contentType: 'user',
-            childComments: comments,
-            commentsLoadMoreButton: loadMoreButton
+            comments,
+            loadMoreButton
           });
           setLoadingComments(false);
         }
@@ -143,11 +142,10 @@ export default function Home({ location, selectedTheme }) {
   const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
   const usernameColor = Color[selectedTheme]();
   let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
-  const contentState = state['user' + profile.id] || {
-    contentId: profile.id,
-    contentType: 'user'
-  };
-  const { childComments = [], commentsLoadMoreButton = false } = contentState;
+  const {
+    childComments = [],
+    commentsLoadMoreButton = false
+  } = useContentState({ contentType: 'user', contentId: profile.id });
   const displayedStatusColor =
     userId === profile.id ? editedStatusColor : statusColor;
   const displayedStatusMsg =

@@ -6,7 +6,8 @@ import Loading from 'components/Loading';
 import File from './File';
 import uuidv1 from 'uuid/v1';
 import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
-import { useAppContext, useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 UploadModal.propTypes = {
   channelId: PropTypes.number,
@@ -16,11 +17,7 @@ UploadModal.propTypes = {
 };
 
 export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
-  const {
-    user: {
-      state: { profilePicId, userId, username }
-    }
-  } = useAppContext();
+  const { profilePicId, userId, username } = useMyState();
   const {
     actions: { onSubmitMessage }
   } = useChatContext();

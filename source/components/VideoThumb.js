@@ -6,11 +6,11 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Icon from 'components/Icon';
-import { cleanString } from 'helpers/stringHelpers';
-import { textIsOverflown } from 'helpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext, useContentContext } from 'contexts';
+import { cleanString } from 'helpers/stringHelpers';
+import { textIsOverflown } from 'helpers';
+import { useContentState, useMyState } from 'helpers/hooks';
 
 VideoThumb.propTypes = {
   className: PropTypes.string,
@@ -36,14 +36,11 @@ export default function VideoThumb({
   user,
   video
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
-  const { state } = useContentContext();
-  const contentState = state['video' + video.id] || {};
-  const { deleted } = contentState;
+  const { profileTheme } = useMyState();
+  const { deleted } = useContentState({
+    contentType: 'video',
+    contentId: video.id
+  });
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
 

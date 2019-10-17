@@ -16,11 +16,12 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import HiddenComment from 'components/HiddenComment';
 import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { determineXpButtonDisabled, isMobile } from 'helpers';
-import { css } from 'emotion';
-import { withRouter } from 'react-router';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { withRouter } from 'react-router';
 
 TargetContent.propTypes = {
   className: PropTypes.string,
@@ -55,11 +56,9 @@ function TargetContent({
   }
 }) {
   const {
-    user: {
-      state: { authLevel, canStar, userId, username }
-    },
     requestHelpers: { uploadComment }
   } = useAppContext();
+  const { authLevel, canStar, userId, username } = useMyState();
   const {
     state,
     actions: { onSetXpRewardInterfaceShown }

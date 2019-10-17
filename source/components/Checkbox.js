@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { innerBorderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Checkbox.propTypes = {
   backgroundColor: PropTypes.string,
@@ -21,11 +21,7 @@ export default function Checkbox({
   style,
   textIsClickable
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       style={{

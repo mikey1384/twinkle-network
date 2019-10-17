@@ -1,3 +1,5 @@
+const DEFAULT_PROFILE_THEME = 'logoBlue';
+
 export default function ContentPageReducer(state, action) {
   const contentKey =
     action.contentType && action.contentId
@@ -12,7 +14,8 @@ export default function ContentPageReducer(state, action) {
     tags: [],
     commentsLoadMoreButton: false,
     subjectsLoadMoreButton: false,
-    rootObj: {}
+    rootObj: {},
+    profileTheme: 'logoBlue'
   };
   const prevContentState = state[contentKey] || defaultState;
   switch (action.type) {
@@ -22,6 +25,7 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           ...action.data,
+          profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
           loaded: true,
           contentId: action.contentId,
           contentType: action.contentType
@@ -150,6 +154,13 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
+    case 'CHANGE_PROFILE_THEME':
+      return {
+        [contentKey]: {
+          ...prevContentState,
+          profileTheme: action.theme
+        }
+      };
     case 'CHANGE_SPOILER_STATUS': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);

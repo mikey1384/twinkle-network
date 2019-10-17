@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 RewardLevelForm.propTypes = {
   rewardLevel: PropTypes.number.isRequired,
@@ -17,11 +17,7 @@ export default function RewardLevelForm({
   onSetRewardLevel,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <div
       style={{

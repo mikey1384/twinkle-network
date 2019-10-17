@@ -16,16 +16,15 @@ import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 
 export default function SubjectInput() {
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
   const {
-    user: {
-      state: { canEditRewardLevel }
-    },
     requestHelpers: { uploadContent }
   } = useAppContext();
+  const { canEditRewardLevel } = useMyState();
   const {
     actions: { onLoadNewFeeds }
   } = useHomeContext();

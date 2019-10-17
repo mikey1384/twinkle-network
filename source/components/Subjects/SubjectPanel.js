@@ -14,6 +14,7 @@ import Link from 'components/Link';
 import SecretAnswer from 'components/SecretAnswer';
 import StarButton from 'components/Buttons/StarButton';
 import LocalContext from './Context';
+import { Color } from 'constants/css';
 import {
   cleanString,
   stringIsEmpty,
@@ -21,8 +22,8 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { Color } from 'constants/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
+import { useAppContext } from 'contexts';
 
 SubjectPanel.propTypes = {
   comments: PropTypes.array.isRequired,
@@ -61,18 +62,16 @@ export default function SubjectPanel({
   secretAnswer
 }) {
   const {
-    user: {
-      state: {
-        authLevel,
-        canDelete,
-        canEdit,
-        canEditRewardLevel,
-        profileTheme,
-        userId: myId
-      }
-    },
     requestHelpers: { deleteSubject, editSubject, loadComments }
   } = useAppContext();
+  const {
+    authLevel,
+    canDelete,
+    canEdit,
+    canEditRewardLevel,
+    profileTheme,
+    userId: myId
+  } = useMyState();
   const {
     attachStar,
     editRewardComment,
@@ -88,9 +87,10 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
-  const { state } = useContentContext();
-  const contentState = state['subject' + id] || {};
-  const { deleted } = contentState;
+  const { deleted } = useContentState({
+    contentType: 'subject',
+    contentId: id
+  });
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);

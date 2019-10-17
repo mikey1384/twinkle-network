@@ -5,7 +5,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 LoginForm.propTypes = {
   onShowSignupForm: PropTypes.func
@@ -18,6 +18,9 @@ export default function LoginForm({ onShowSignupForm }) {
     },
     requestHelpers: { login }
   } = useAppContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -97,6 +100,7 @@ export default function LoginForm({ onShowSignupForm }) {
     try {
       const data = await login({ username, password });
       onLogin(data);
+      onInitContent({ contentType: 'user', contentId: data.id, ...data });
     } catch (error) {
       setErrorMessage(error);
     }

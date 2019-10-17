@@ -17,8 +17,9 @@ import LongText from 'components/Texts/LongText';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { commentContainer } from '../Styles';
-import { determineXpButtonDisabled } from 'helpers';
 import { Link } from 'react-router-dom';
+import { determineXpButtonDisabled } from 'helpers';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 
@@ -63,17 +64,16 @@ export default function Reply({
   subject
 }) {
   const {
-    user: {
-      state: { authLevel, canDelete, canEdit, canStar, userId }
-    },
     requestHelpers: { editContent, loadReplies }
   } = useAppContext();
+  const { authLevel, canDelete, canEdit, canStar, userId } = useMyState();
   const {
-    state,
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
-  const contentState = state['comment' + reply.id] || {};
-  const { deleted, isEditing, xpRewardInterfaceShown } = contentState;
+  const { deleted, isEditing, xpRewardInterfaceShown } = useContentState({
+    contentType: 'comment',
+    contentId: reply.id
+  });
   const {
     onAttachStar,
     onEditDone,

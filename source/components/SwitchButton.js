@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 SwitchButton.propTypes = {
   color: PropTypes.string,
@@ -20,11 +20,7 @@ export default function SwitchButton({
   onChange,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   return (
     <ErrorBoundary
       style={{

@@ -9,11 +9,12 @@ import Rankings from './Rankings';
 import NotiItem from './NotiItem';
 import MyRank from './MyRank';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { addCommasToNumber } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
 
 MainFeeds.propTypes = {
@@ -35,7 +36,6 @@ export default function MainFeeds({
 }) {
   const {
     user: {
-      state: { userId, rank, twinkleXP },
       actions: { onChangeUserXP }
     },
     requestHelpers: {
@@ -45,6 +45,7 @@ export default function MainFeeds({
       updateUserXP
     }
   } = useAppContext();
+  const { userId, rank, twinkleXP } = useMyState();
   const {
     state: { numNewNotis, totalRewardAmount },
     actions: {

@@ -5,7 +5,7 @@ import ContentListItem from 'components/ContentListItem';
 import SectionPanel from 'components/SectionPanel';
 import SelectFeaturedSubjects from './Modals/SelectFeaturedSubjects';
 import Button from 'components/Button';
-import { useScrollPosition } from 'helpers/hooks';
+import { useMyState, useScrollPosition } from 'helpers/hooks';
 import { useAppContext, useViewContext, useExploreContext } from 'contexts';
 
 Subjects.propTypes = {
@@ -14,11 +14,9 @@ Subjects.propTypes = {
 
 export default function Subjects({ location }) {
   const {
-    user: {
-      state: { userId, canPinPlaylists }
-    },
     requestHelpers: { loadFeaturedSubjects }
   } = useAppContext();
+  const { userId, canPinPlaylists } = useMyState();
   const {
     state: {
       subjects: { loaded, featured }

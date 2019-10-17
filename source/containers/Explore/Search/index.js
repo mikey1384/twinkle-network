@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { getSectionFromPathname } from 'helpers';
 import TopFilter from './TopFilter';
 import Categories from './Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
+import { getSectionFromPathname } from 'helpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
 
 Search.propTypes = {
@@ -19,11 +20,11 @@ Search.propTypes = {
 export default function Search({ history, pathname, style }) {
   const {
     user: {
-      state: { defaultSearchFilter },
       actions: { onChangeDefaultSearchFilter }
     },
     requestHelpers: { setDefaultSearchFilter }
   } = useAppContext();
+  const { defaultSearchFilter } = useMyState();
   const {
     state: {
       search: { searchText }

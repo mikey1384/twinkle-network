@@ -19,9 +19,10 @@ import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
 import { Link } from 'react-router-dom';
 import { commentContainer } from './Styles';
-import { timeSince } from 'helpers/timeStampHelpers';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { withRouter } from 'react-router';
+import { timeSince } from 'helpers/timeStampHelpers';
+import { useContentState, useMyState } from 'helpers/hooks';
+import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { useAppContext, useContentContext } from 'contexts';
 import LocalContext from './Context';
 
@@ -57,22 +58,24 @@ function Comment({
   comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
 }) {
   const {
-    user: {
-      state: { authLevel, canDelete, canEdit, canStar, userId }
-    },
     requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
+  const { authLevel, canDelete, canEdit, canStar, userId } = useMyState();
   const {
-    state,
     actions: {
       onChangeSpoilerStatus,
       onSetIsEditing,
       onSetXpRewardInterfaceShown
     }
   } = useContentContext();
-  const contentState = state['comment' + comment.id] || {};
-  const { deleted, isEditing, xpRewardInterfaceShown } = contentState;
-  const subjectState = state['subject' + targetObj?.subject?.id] || {};
+  const { deleted, isEditing, xpRewardInterfaceShown } = useContentState({
+    contentType: 'comment',
+    contentId: comment.id
+  });
+  const subjectState = useContentState({
+    contentType: 'subject',
+    contentId: targetObj?.subject?.id
+  });
   const {
     onAttachStar,
     onDelete,

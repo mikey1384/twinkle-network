@@ -8,7 +8,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Selectable.propTypes = {
   item: PropTypes.object,
@@ -25,11 +25,7 @@ export default function Selectable({
   onDeselect,
   selected
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
 

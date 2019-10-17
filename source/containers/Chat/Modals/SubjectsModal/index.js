@@ -5,11 +5,11 @@ import Button from 'components/Button';
 import request from 'axios';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import SubjectItem from './SubjectItem';
-import { Color } from 'constants/css';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import Loading from 'components/Loading';
 import SubjectMsgsModal from '../SubjectMsgsModal';
-import { useAppContext } from 'contexts';
+import { Color } from 'constants/css';
+import { queryStringForArray } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import URL from 'constants/URL';
 
 const API_URL = `${URL}/chat`;
@@ -25,11 +25,7 @@ export default function SubjectsModal({
   onHide,
   selectSubject
 }) {
-  const {
-    user: {
-      state: { userId }
-    }
-  } = useAppContext();
+  const { userId } = useMyState();
   const [loaded, setLoaded] = useState(false);
   const [mySubjects, setMySubjects] = useState({
     subjects: [],

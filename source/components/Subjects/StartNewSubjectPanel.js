@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { charLimit } from 'constants/defaultValues';
 import { useAppContext, useContentContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { Color } from 'constants/css';
 
 StartNewSubjectPanel.propTypes = {
@@ -20,17 +21,13 @@ export default function StartNewSubjectPanel({
   onUploadSubject
 }) {
   const {
-    user: {
-      state: { canEditRewardLevel, profileTheme }
-    },
     requestHelpers: { uploadSubject }
   } = useAppContext();
+  const { canEditRewardLevel, profileTheme } = useMyState();
   const {
-    state,
     actions: { onSetSubjectFormShown }
   } = useContentContext();
-  const contentState = state[contentType + contentId] || {};
-  const { subjectFormShown } = contentState;
+  const { subjectFormShown } = useContentState({ contentType, contentId });
   return useMemo(
     () => (
       <div

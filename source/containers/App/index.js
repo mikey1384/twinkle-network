@@ -13,8 +13,10 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
+import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
+  useContentContext,
   useViewContext,
   useNotiContext,
   useChatContext
@@ -39,11 +41,11 @@ App.propTypes = {
 function App({ location, history }) {
   const {
     user: {
-      state: { signinModalShown, username },
       actions: { onCloseSigninModal, onInitSession, onLogout }
     },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
+  const { signinModalShown, username } = useMyState();
   const {
     actions: {
       onPostFileUploadStatus,
@@ -52,6 +54,9 @@ function App({ location, history }) {
       onUpdateClientToApiServerProgress
     }
   } = useChatContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
   const {
     state: { updateDetail }
   } = useNotiContext();
@@ -80,6 +85,7 @@ function App({ location, history }) {
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
+      onInitContent({ contentType: 'user', contentId: data.userId, ...data });
       if (data?.userId) onInitSession(data);
     }
   }, [pageVisible]);

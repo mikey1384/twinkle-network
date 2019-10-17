@@ -16,7 +16,8 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
-import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
+import { useContentContext, useInputContext } from 'contexts';
 
 Description.propTypes = {
   content: PropTypes.string,
@@ -46,21 +47,18 @@ export default function Description({
   userCanEditThis,
   userIsUploader
 }) {
+  const { canDelete, canEdit } = useMyState();
   const {
-    user: {
-      state: { canDelete, canEdit }
-    }
-  } = useAppContext();
-  const {
-    state,
     actions: { onSetIsEditing }
   } = useContentContext();
   const {
     state: inputState,
     actions: { onSetEditForm }
   } = useInputContext();
-  const contentState = state['url' + linkId] || {};
-  const { isEditing } = contentState;
+  const { isEditing } = useContentState({
+    contentType: 'url',
+    contentId: linkId
+  });
   useEffect(() => {
     if (!inputState['edit' + 'url' + linkId]) {
       onSetEditForm({

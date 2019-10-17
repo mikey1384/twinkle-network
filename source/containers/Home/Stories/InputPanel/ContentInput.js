@@ -1,4 +1,14 @@
 import React, { useRef, useState } from 'react';
+import Textarea from 'components/Texts/Textarea';
+import Button from 'components/Button';
+import Input from 'components/Texts/Input';
+import Banner from 'components/Banner';
+import RewardLevelForm from 'components/Forms/RewardLevelForm';
+import Link from 'components/Link';
+import Checkbox from 'components/Checkbox';
+import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import { PanelStyle } from './Styles';
+import { css } from 'emotion';
 import { scrollElementToCenter } from 'helpers';
 import {
   exceedsCharLimit,
@@ -8,25 +18,14 @@ import {
   addEmoji,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import { PanelStyle } from './Styles';
-import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
-import Textarea from 'components/Texts/Textarea';
-import Button from 'components/Button';
-import Input from 'components/Texts/Input';
-import Banner from 'components/Banner';
-import RewardLevelForm from 'components/Forms/RewardLevelForm';
-import Link from 'components/Link';
-import Checkbox from 'components/Checkbox';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 
 export default function ContentInput() {
   const {
-    user: {
-      state: { canEditRewardLevel }
-    },
     requestHelpers: { checkIfContentExists, uploadContent }
   } = useAppContext();
+  const { canEditRewardLevel } = useMyState();
   const {
     actions: { onLoadNewFeeds }
   } = useHomeContext();

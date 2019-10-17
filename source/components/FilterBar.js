@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 FilterBar.propTypes = {
   children: PropTypes.node,
@@ -25,11 +25,7 @@ export default function FilterBar({
   dropdownButton,
   style
 }) {
-  const {
-    user: {
-      state: { profileTheme }
-    }
-  } = useAppContext();
+  const { profileTheme } = useMyState();
   const themeColor = color || profileTheme;
   const selectedOpacity = 1;
   return (

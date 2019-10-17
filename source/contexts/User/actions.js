@@ -6,13 +6,6 @@ export default function UserActions(dispatch) {
         filter
       });
     },
-    onChangeProfileTheme({ userId, theme }) {
-      return dispatch({
-        type: 'CHANGE_PROFILE_THEME',
-        userId,
-        theme
-      });
-    },
     onChangeUserXP({ xp, rank }) {
       return dispatch({
         type: 'CHANGE_XP',
@@ -132,11 +125,6 @@ export default function UserActions(dispatch) {
         statusColor,
         statusMsg,
         userId
-      });
-    },
-    onUserNotExist() {
-      return dispatch({
-        type: 'USER_NOT_EXIST'
       });
     }
   };

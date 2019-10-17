@@ -5,7 +5,8 @@ import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'contexts';
+import { useAppContext, useProfileContext } from 'contexts';
+import { useProfileState } from 'helpers/hooks';
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -18,26 +19,29 @@ export default function Achievements({
   selectedTheme
 }) {
   const {
-    profile: {
-      state: {
-        notables: { feeds, loadMoreButton }
-      },
-      actions: { onDeleteFeed, onLoadNotables, onLoadMoreNotables }
-    },
     requestHelpers: { loadMoreNotableContents, loadNotableContent }
   } = useAppContext();
-  const [loading, setLoading] = useState(true);
+  const {
+    actions: { onLoadNotables, onLoadMoreNotables }
+  } = useProfileContext();
+  const {
+    notables: { feeds, loaded, loadMoreButton }
+  } = useProfileState(username);
+  const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
 
   useEffect(() => {
     mounted.current = true;
-    initNotables();
+    if (!loaded) {
+      initNotables();
+    }
     async function initNotables() {
+      setLoading(true);
       const { results, loadMoreButton } = await loadNotableContent({
         userId: id
       });
       if (mounted.current) {
-        onLoadNotables({ feeds: results, loadMoreButton });
+        onLoadNotables({ username, feeds: results, loadMoreButton });
         setLoading(false);
       }
     }
@@ -68,7 +72,6 @@ export default function Achievements({
               contentType={contentType}
               commentsLoadLimit={5}
               numPreviewComments={1}
-              onDeleteContent={onDeleteFeed}
             />
           );
         })}
@@ -90,6 +93,10 @@ export default function Achievements({
       userId: profile.id,
       notables: feeds
     });
-    onLoadMoreNotables({ feeds: results, loadMoreButton });
+    onLoadMoreNotables({
+      feeds: results,
+      loadMoreButton,
+      username
+    });
   }
 }

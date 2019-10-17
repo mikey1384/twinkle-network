@@ -14,6 +14,7 @@ import FilterBar from 'components/FilterBar';
 import Button from 'components/Button';
 import request from 'axios';
 import { returnMaxStars } from 'constants/defaultValues';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useInputContext } from 'contexts';
 import URL from 'constants/URL';
 
@@ -37,11 +38,9 @@ export default function XPRewardInterface({
   uploaderId
 }) {
   const {
-    user: {
-      state: { userId }
-    },
     requestHelpers: { auth }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
     state,
     actions: { onSetRewardForm }

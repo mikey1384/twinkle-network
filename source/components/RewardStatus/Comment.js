@@ -10,6 +10,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 
 Comment.propTypes = {
@@ -26,11 +27,9 @@ export default function Comment({
   star
 }) {
   const {
-    user: {
-      state: { authLevel, canEdit, userId }
-    },
     requestHelpers: { editRewardComment }
   } = useAppContext();
+  const { authLevel, canEdit, userId } = useMyState();
   const [onEdit, setOnEdit] = useState(false);
   const userIsUploader = star.rewarderId === userId;
   const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel;

@@ -6,6 +6,7 @@ import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { withRouter } from 'react-router';
+import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 UserListModal.propTypes = {
@@ -29,11 +30,9 @@ function UserListModal({
   users
 }) {
   const {
-    user: {
-      state: { userId, username }
-    },
     requestHelpers: { loadChat, loadDMChannel }
   } = useAppContext();
+  const { userId, username } = useMyState();
   const {
     state: { loaded },
     actions: { onInitChat, onOpenDirectMessageChannel }

@@ -6,6 +6,11 @@ import { determineXpButtonDisabled, textIsOverflown } from 'helpers';
 import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';
 import AlreadyPosted from 'components/AlreadyPosted';
+import BasicInfos from './BasicInfos';
+import SideButtons from './SideButtons';
+import Description from './Description';
+import TagStatus from 'components/TagStatus';
+import { Color } from 'constants/css';
 import {
   addCommasToNumber,
   addEmoji,
@@ -14,12 +19,8 @@ import {
   finalizeEmoji,
   isValidYoutubeUrl
 } from 'helpers/stringHelpers';
-import BasicInfos from './BasicInfos';
-import SideButtons from './SideButtons';
-import Description from './Description';
-import TagStatus from 'components/TagStatus';
-import { Color } from 'constants/css';
-import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
+import { useContentContext, useInputContext } from 'contexts';
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -68,21 +69,18 @@ export default function Details({
   videoId,
   videoViews
 }) {
+  const { authLevel, canDelete, canEdit, canStar } = useMyState();
   const {
-    user: {
-      state: { authLevel, canDelete, canEdit, canStar }
-    }
-  } = useAppContext();
-  const {
-    state,
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const {
     state: inputState,
     actions: { onSetEditForm }
   } = useInputContext();
-  const contentState = state['video' + videoId] || {};
-  const { isEditing, xpRewardInterfaceShown } = contentState;
+  const { isEditing, xpRewardInterfaceShown } = useContentState({
+    contentType: 'video',
+    contentId: videoId
+  });
   const [titleHovered, setTitleHovered] = useState(false);
   const TitleRef = useRef(null);
 

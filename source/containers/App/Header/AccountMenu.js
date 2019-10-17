@@ -3,6 +3,7 @@ import React from 'react';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
@@ -19,10 +20,10 @@ export default function AccountMenu({
 }) {
   const {
     user: {
-      state: { loggedIn, username },
       actions: { onLogout, onOpenSigninModal }
     }
   } = useAppContext();
+  const { loggedIn, username } = useMyState();
   return (
     <div style={style}>
       {loggedIn ? (

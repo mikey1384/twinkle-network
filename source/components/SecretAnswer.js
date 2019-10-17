@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
 SecretAnswer.propTypes = {
@@ -21,25 +22,24 @@ export default function SecretAnswer({
   uploaderId
 }) {
   const {
-    user: {
-      state: { userId }
-    },
     requestHelpers: { checkIfUserResponded }
   } = useAppContext();
+  const { userId } = useMyState();
   const {
-    state,
     actions: { onChangeSpoilerStatus }
   } = useContentContext();
-  const contentState = state['subject' + subjectId] || {};
-  const { spoilerStatusChecked } = contentState;
-  const secretShown = contentState.secretShown || uploaderId === userId;
+  const { secretShown, spoilerStatusChecked } = useContentState({
+    contentType: 'subject',
+    contentId: subjectId
+  });
+  const spoilerShown = secretShown || uploaderId === userId;
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
     if (userId && !spoilerStatusChecked) {
       init();
     }
-    if (spoilerStatusChecked && contentState.secretShown) {
+    if (spoilerStatusChecked && spoilerShown) {
       onChangeSpoilerStatus({
         shown: true,
         subjectId,
@@ -51,7 +51,7 @@ export default function SecretAnswer({
     }
 
     async function init() {
-      if (!secretShown) {
+      if (!spoilerShown) {
         const { responded } = await checkIfUserResponded(subjectId);
         if (mounted.current) {
           onChangeSpoilerStatus({
@@ -66,28 +66,28 @@ export default function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [spoilerStatusChecked, userId]);
+  }, [spoilerShown, spoilerStatusChecked, userId]);
   return useMemo(
     () => (
       <ErrorBoundary>
         <div
-          onClick={secretShown ? () => {} : onClick}
+          onClick={spoilerShown ? () => {} : onClick}
           style={{
-            cursor: secretShown ? '' : 'pointer',
+            cursor: spoilerShown ? '' : 'pointer',
             fontSize: '1.7rem',
-            background: secretShown ? Color.ivory() : Color.darkerGray(),
+            background: spoilerShown ? Color.ivory() : Color.darkerGray(),
             border: `1px solid ${
-              secretShown ? Color.borderGray() : Color.black()
+              spoilerShown ? Color.borderGray() : Color.black()
             }`,
             borderRadius,
-            color: secretShown ? Color.black() : '#fff',
-            textAlign: secretShown ? '' : 'center',
+            color: spoilerShown ? Color.black() : '#fff',
+            textAlign: spoilerShown ? '' : 'center',
             padding: '1rem',
             ...style
           }}
         >
-          {secretShown && <LongText>{answer}</LongText>}
-          {!secretShown && (
+          {spoilerShown && <LongText>{answer}</LongText>}
+          {!spoilerShown && (
             <span>
               Submit your response to view the secret message. Tap here
             </span>
@@ -95,6 +95,6 @@ export default function SecretAnswer({
         </div>
       </ErrorBoundary>
     ),
-    [secretShown, answer]
+    [spoilerShown, answer]
   );
 }
