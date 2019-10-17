@@ -161,7 +161,6 @@ export default function Details({
               style={{
                 display: 'flex',
                 width: '100%',
-                background: '#fff',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 fontSize: '1.5rem'
@@ -336,7 +335,7 @@ export default function Details({
                   contentType: 'video',
                   shown: false
                 });
-                attachStar(data);
+                attachStar({ data, contentId: videoId, contentType: 'video' });
               }}
             />
           )}

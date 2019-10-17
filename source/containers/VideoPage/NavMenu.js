@@ -109,6 +109,7 @@ export default function NavMenu({ playlistId, videoId }) {
         > section {
           padding: 1rem;
           background: #fff;
+          border: 1px solid ${Color.borderGray()};
           margin-bottom: 1rem;
           p {
             margin-bottom: 1rem;
@@ -130,7 +131,13 @@ export default function NavMenu({ playlistId, videoId }) {
         }
       `}
     >
-      <FilterBar className="desktop">
+      <FilterBar
+        style={{
+          border: `1px solid ${Color.borderGray()}`,
+          borderBottom: 0
+        }}
+        className="desktop"
+      >
         <nav
           className={videoTabActive ? 'active' : ''}
           onClick={() => setVideoTabActive(true)}

@@ -269,6 +269,7 @@ export default function VideoPage({
               <div
                 style={{
                   width: '100%',
+                  border: `1px solid ${Color.borderGray()}`,
                   background: '#fff',
                   padding: '1rem',
                   paddingTop: 0
@@ -344,6 +345,8 @@ export default function VideoPage({
                   display: 'flex',
                   flexDirection: 'column',
                   background: '#fff',
+                  marginTop: '1rem',
+                  border: `1px solid ${Color.borderGray()}`,
                   width: '100%'
                 }}
               >
@@ -413,6 +416,7 @@ export default function VideoPage({
               <div
                 style={{
                   background: '#fff',
+                  border: `1px solid ${Color.borderGray()}`,
                   padding: '1rem'
                 }}
               >
