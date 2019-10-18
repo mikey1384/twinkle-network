@@ -9,7 +9,8 @@ import HomeMenuItems from 'components/HomeMenuItems';
 import Notification from 'components/Notification';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
-import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
+import { useAppContext, useContentContext } from 'contexts';
 const People = React.lazy(() => import('./People'));
 const Stories = React.lazy(() => import('./Stories'));
 
@@ -20,11 +21,12 @@ Home.propTypes = {
 
 export default function Home({ history, location }) {
   const {
-    user: {
-      actions: { onUploadProfilePic }
-    },
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
+  const {
+    actions: { onUploadProfilePic }
+  } = useContentContext();
+  const { userId } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
@@ -97,7 +99,7 @@ export default function Home({ history, location }) {
   async function uploadImage(image) {
     setProcessing(true);
     const data = await uploadProfilePic({ image });
-    onUploadProfilePic(data);
+    onUploadProfilePic({ userId, ...data });
     setImageUri(null);
     setProcessing(false);
     setImageEditModalShown(false);

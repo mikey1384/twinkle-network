@@ -40,13 +40,13 @@ export default function InfoEditForm({
     }
   } = useInputContext();
   const {
-    editedEmail = email,
-    emailError,
-    editedWebsite = website,
-    websiteError,
-    editedYoutubeUrl = youtubeUrl,
-    youtubeError,
-    editedYoutubeName = youtubeName
+    editedEmail = email || '',
+    emailError = '',
+    editedWebsite = website || '',
+    websiteError = '',
+    editedYoutubeUrl = youtubeUrl || '',
+    youtubeError = '',
+    editedYoutubeName = youtubeName || ''
   } = userInfo;
   const timerRef = useRef(null);
 

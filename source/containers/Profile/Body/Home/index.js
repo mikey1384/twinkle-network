@@ -39,13 +39,7 @@ Home.propTypes = {
 
 export default function Home({ location, profile, selectedTheme }) {
   const {
-    requestHelpers: {
-      auth,
-      loadComments,
-      onUpdateStatusMsg,
-      uploadGreeting,
-      uploadBio
-    }
+    requestHelpers: { auth, loadComments, uploadGreeting, uploadBio }
   } = useAppContext();
   const { userId } = useMyState();
   const {
@@ -68,6 +62,7 @@ export default function Home({ location, profile, selectedTheme }) {
       onLoadMoreComments,
       onLoadMoreReplies,
       onLoadRepliesOfReply,
+      onUpdateStatusMsg,
       onUploadComment,
       onUploadReply,
       onRemoveStatusMsg,
@@ -488,7 +483,7 @@ export default function Home({ location, profile, selectedTheme }) {
 
   async function handleEditGreeting(greeting) {
     await uploadGreeting({ greeting });
-    onUpdateGreeting(greeting);
+    onUpdateGreeting({ greeting, userId });
   }
 
   async function handleUploadBio(params) {
@@ -519,6 +514,6 @@ export default function Home({ location, profile, selectedTheme }) {
     );
     onSetEditedStatusColor('');
     onSetEditedStatusMsg('');
-    if (typeof updateStatusMsg === 'function') onUpdateStatusMsg(data);
+    onUpdateStatusMsg(data);
   }
 }

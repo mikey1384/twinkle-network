@@ -17,40 +17,6 @@ export default function UserReducer(state, action) {
         ...state,
         signinModalShown: false
       };
-    case 'DELETE_STATUS_MSG':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          statusMsg: '',
-          statusColor: ''
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId
-            ? { statusMsg: '', statusColor: '' }
-            : {})
-        }))
-      };
-    case 'EDIT_PROFILE_PICTURE':
-      return {
-        ...state,
-        profilePicId: action.data.imageId,
-        profile: {
-          ...state.profile,
-          profilePicId:
-            state.profile.id === action.data.userId
-              ? action.data.imageId
-              : state.profile.profilePicId
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          profilePicId:
-            profile.id === action.data.userId
-              ? action.data.imageId
-              : profile.profilePicId
-        }))
-      };
     case 'INIT_SESSION':
       return {
         ...state,
@@ -112,11 +78,6 @@ export default function UserReducer(state, action) {
         ...state,
         searchedProfiles: action.users
       };
-    case 'SHOW_PROFILE':
-      return {
-        ...state,
-        profile: action.data
-      };
     case 'SHOW_PROFILE_COMMENTS':
       return {
         ...state,
@@ -141,50 +102,6 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         hideWatched: action.hideWatched
-      };
-    case 'UPDATE_BIO':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          ...action.bio
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId ? action.bio : {})
-        }))
-      };
-    case 'UPDATE_GREETING':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          greeting: action.greeting
-        }
-      };
-    case 'UPDATE_PROFILE_INFO':
-      return {
-        ...state,
-        ...action.data,
-        profile: {
-          ...state.profile,
-          ...action.data
-        }
-      };
-    case 'UPDATE_STATUS_MSG':
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          statusMsg: action.statusMsg,
-          statusColor: action.statusColor
-        },
-        profiles: state.profiles.map(profile => ({
-          ...profile,
-          ...(profile.id === action.userId
-            ? { statusMsg: action.statusMsg, statusColor: action.statusColor }
-            : {})
-        }))
       };
     default:
       return state;

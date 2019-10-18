@@ -194,15 +194,6 @@ export default function Rankings() {
         )}
       </ErrorBoundary>
     ),
-    [
-      allRanks,
-      allSelected,
-      rankModifier,
-      top30s,
-      rankingsLoaded,
-      rank,
-      twinkleXP,
-      userId
-    ]
+    [users, allSelected, rankModifier, rankingsLoaded, rank, twinkleXP, userId]
   );
 }

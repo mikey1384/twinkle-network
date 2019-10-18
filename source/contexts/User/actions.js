@@ -51,12 +51,6 @@ export default function UserActions(dispatch) {
         type: 'OPEN_SIGNIN_MODAL'
       });
     },
-    onRemoveStatusMsg(userId) {
-      return dispatch({
-        type: 'DELETE_STATUS_MSG',
-        userId
-      });
-    },
     onSearchUsers(users) {
       return dispatch({
         type: 'SEARCH_USERS',
@@ -75,49 +69,10 @@ export default function UserActions(dispatch) {
         loaded
       });
     },
-    onShowProfile(user) {
-      return dispatch({
-        type: 'SHOW_PROFILE',
-        data: user
-      });
-    },
     onToggleHideWatched(hideWatched) {
       return dispatch({
         type: 'TOGGLE_HIDE_WATCHED',
         hideWatched
-      });
-    },
-    onUpdateBio(data) {
-      return dispatch({
-        type: 'UPDATE_BIO',
-        bio: data.bio,
-        userId: data.userId
-      });
-    },
-    onUpdateGreeting(greeting) {
-      return dispatch({
-        type: 'UPDATE_GREETING',
-        greeting
-      });
-    },
-    onUpdateProfileInfo(data) {
-      return dispatch({
-        type: 'UPDATE_PROFILE_INFO',
-        data
-      });
-    },
-    onUploadProfilePic(data) {
-      return dispatch({
-        type: 'EDIT_PROFILE_PICTURE',
-        data
-      });
-    },
-    onUpdateStatusMsg({ statusColor, statusMsg, userId }) {
-      return dispatch({
-        type: 'UPDATE_STATUS_MSG',
-        statusColor,
-        statusMsg,
-        userId
       });
     }
   };

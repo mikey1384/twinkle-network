@@ -329,7 +329,7 @@ function BasicInfos({
       youtubeName,
       youtubeUrl
     });
-    onUpdateProfileInfo(data);
+    onUpdateProfileInfo({ userId, ...data });
     if (mounted.current) {
       onSetUserInfoOnEdit(false);
     }

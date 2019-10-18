@@ -285,7 +285,7 @@ export default function Cover({
   async function uploadImage(image) {
     setProcessing(true);
     const data = await uploadProfilePic({ image });
-    onUploadProfilePic(data);
+    onUploadProfilePic({ userId, ...data });
     setImageUri(null);
     setProcessing(false);
     setImageEditModalShown(false);

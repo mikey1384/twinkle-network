@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 MobileMenu.propTypes = {
   location: PropTypes.object,
@@ -21,11 +21,14 @@ MobileMenu.propTypes = {
 export default function MobileMenu({ location, history, onClose }) {
   const {
     user: {
-      actions: { onLogout, onUploadProfilePic }
+      actions: { onLogout }
     },
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
-  const { username } = useMyState();
+  const {
+    actions: { onUploadProfilePic }
+  } = useContentContext();
+  const { userId, username } = useMyState();
   const [marginLeft, setMarginLeft] = useState('-100%');
   useEffect(() => {
     if (marginLeft !== '-100%') {
@@ -146,7 +149,7 @@ export default function MobileMenu({ location, history, onClose }) {
       processing: true
     });
     const data = await uploadProfilePic({ image });
-    onUploadProfilePic(data);
+    onUploadProfilePic({ userId, ...data });
     setImageEditStatus({
       imageUri: null,
       processing: false,

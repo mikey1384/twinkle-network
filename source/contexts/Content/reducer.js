@@ -265,6 +265,16 @@ export default function ContentPageReducer(state, action) {
           deleted: true
         }
       };
+    case 'DELETE_STATUS_MSG': {
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          statusMsg: '',
+          statusColor: ''
+        }
+      };
+    }
     case 'DELETE_SUBJECT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);
@@ -422,6 +432,15 @@ export default function ContentPageReducer(state, action) {
         };
       }
       return newState;
+    }
+    case 'EDIT_PROFILE_PICTURE': {
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          profilePicId: action.data.imageId
+        }
+      };
     }
     case 'EDIT_REWARD_COMMENT': {
       const newState = { ...state };
@@ -1047,6 +1066,39 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           targetObj: { ...prevContentState.targetObj, replyInputShown: true }
+        }
+      };
+    case 'UPDATE_PROFILE_INFO':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          ...action.data
+        }
+      };
+    case 'UPDATE_STATUS_MSG':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          statusMsg: action.statusMsg,
+          statusColor: action.statusColor
+        }
+      };
+    case 'UPDATE_USER_BIO':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          ...action.bio
+        }
+      };
+    case 'UPDATE_USER_GREETING':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          greeting: action.greeting
         }
       };
     case 'UPLOAD_COMMENT':

@@ -59,7 +59,9 @@ export default function UserDetails({
   const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
   const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
   const displayedStatusMsg =
-    userId === profile.id ? editedStatusMsg : profile.statusMsg;
+    userId === profile.id && editedStatusMsg
+      ? editedStatusMsg
+      : profile.statusMsg;
 
   return (
     <ErrorBoundary
@@ -120,10 +122,7 @@ export default function UserDetails({
         />
       )}
       {(profile.statusMsg || displayedStatusMsg) && (
-        <StatusMsg
-          statusColor={statusColor}
-          statusMsg={displayedStatusMsg || profile.statusMsg}
-        />
+        <StatusMsg statusColor={statusColor} statusMsg={displayedStatusMsg} />
       )}
       {profile.statusMsg &&
         !editedStatusMsg &&

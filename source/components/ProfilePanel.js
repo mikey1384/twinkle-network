@@ -426,7 +426,8 @@ function ProfilePanel({ history, expandable, profileId }) {
       imageUri,
       imageEditModalShown,
       mouseEnteredProfile,
-      alertModalShown
+      alertModalShown,
+      userId
     ]
   );
 
@@ -520,7 +521,7 @@ function ProfilePanel({ history, expandable, profileId }) {
   async function uploadImage(image) {
     setProcessing(true);
     const data = await uploadProfilePic({ image });
-    onUploadProfilePic(data);
+    onUploadProfilePic({ userId, ...data });
     setImageUri(undefined);
     setProcessing(false);
     setImageEditModalShown(false);

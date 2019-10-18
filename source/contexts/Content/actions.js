@@ -247,6 +247,13 @@ export default function ContentActions(dispatch) {
         tags
       });
     },
+    onRemoveStatusMsg(userId) {
+      return dispatch({
+        type: 'DELETE_STATUS_MSG',
+        contentId: userId,
+        contentType: 'user'
+      });
+    },
     onSetActualDescription({ contentId, contentType, description }) {
       return dispatch({
         type: 'SET_ACTUAL_URL_DESCRIPTION',
@@ -445,12 +452,53 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onUpdateBio({ bio, userId }) {
+      return dispatch({
+        type: 'UPDATE_USER_BIO',
+        contentType: 'user',
+        contentId: userId,
+        bio
+      });
+    },
+    onUpdateGreeting({ greeting, userId }) {
+      return dispatch({
+        type: 'UPDATE_USER_GREETING',
+        contentId: userId,
+        contentType: 'user',
+        greeting
+      });
+    },
+    onUpdateProfileInfo({ userId, ...data }) {
+      return dispatch({
+        type: 'UPDATE_PROFILE_INFO',
+        data,
+        contentId: userId,
+        contentType: 'user'
+      });
+    },
+    onUpdateStatusMsg({ statusColor, statusMsg, userId }) {
+      return dispatch({
+        type: 'UPDATE_STATUS_MSG',
+        statusColor,
+        statusMsg,
+        contentType: 'user',
+        contentId: userId
+      });
+    },
     onUploadComment({ contentId, contentType, ...data }) {
       return dispatch({
         type: 'UPLOAD_COMMENT',
         data,
         contentId,
         contentType
+      });
+    },
+    onUploadProfilePic({ userId, ...data }) {
+      return dispatch({
+        type: 'EDIT_PROFILE_PICTURE',
+        contentId: userId,
+        contentType: 'user',
+        data
       });
     },
     onUploadReply({ contentId, contentType, ...data }) {
