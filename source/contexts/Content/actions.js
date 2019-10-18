@@ -42,6 +42,15 @@ export default function ContentActions(dispatch) {
         contentType: 'subject'
       });
     },
+    onChangeUserXP({ xp, rank, userId }) {
+      return dispatch({
+        type: 'CHANGE_USER_XP',
+        contentId: userId,
+        contentType: 'user',
+        xp,
+        rank
+      });
+    },
     onDeleteComment(commentId) {
       return dispatch({
         type: 'DELETE_COMMENT',

@@ -6,13 +6,6 @@ export default function UserActions(dispatch) {
         filter
       });
     },
-    onChangeUserXP({ xp, rank }) {
-      return dispatch({
-        type: 'CHANGE_XP',
-        xp,
-        rank
-      });
-    },
     onClearUserSearch() {
       return dispatch({
         type: 'CLEAR_USER_SEARCH'

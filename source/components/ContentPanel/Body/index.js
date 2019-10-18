@@ -189,8 +189,8 @@ export default function Body({
     });
   }, [userId]);
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    return (
       <ErrorBoundary>
         <div>
           {contentType === 'comment' && attachedVideoShown && (
@@ -448,22 +448,21 @@ export default function Body({
           />
         )}
       </ErrorBoundary>
-    ),
-    [
-      isEditing,
-      loadingComments,
-      contentObj,
-      attachedVideoShown,
-      commentsHidden,
-      commentsShown,
-      userId,
-      userListModalShown,
-      confirmModalShown,
-      xpRewardInterfaceShown,
-      editButtonShown,
-      secretLocked
-    ]
-  );
+    );
+  }, [
+    isEditing,
+    loadingComments,
+    contentObj,
+    attachedVideoShown,
+    commentsHidden,
+    commentsShown,
+    userId,
+    userListModalShown,
+    confirmModalShown,
+    xpRewardInterfaceShown,
+    editButtonShown,
+    secretLocked
+  ]);
 
   function determineRewardLevel({ contentObj, rootType, rootObj, targetObj }) {
     const rootRewardLevel =

@@ -205,6 +205,15 @@ export default function ContentPageReducer(state, action) {
       }
       return newState;
     }
+    case 'CHANGE_USER_XP':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          twinkleXP: action.xp,
+          rank: action.rank
+        }
+      };
     case 'DELETE_COMMENT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);

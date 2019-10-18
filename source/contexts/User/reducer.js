@@ -7,12 +7,6 @@ export default function UserReducer(state, action) {
         ...state,
         searchFilter: action.filter
       };
-    case 'CHANGE_XP':
-      return {
-        ...state,
-        twinkleXP: action.xp,
-        rank: action.rank
-      };
     case 'CLEAR_USER_SEARCH':
       return {
         ...state,

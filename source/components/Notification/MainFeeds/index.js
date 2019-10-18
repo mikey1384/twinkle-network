@@ -15,7 +15,7 @@ import { rewardValue } from 'constants/defaultValues';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useNotiContext } from 'contexts';
+import { useAppContext, useContentContext, useNotiContext } from 'contexts';
 
 MainFeeds.propTypes = {
   loadMore: PropTypes.object.isRequired,
@@ -35,9 +35,6 @@ export default function MainFeeds({
   style
 }) {
   const {
-    user: {
-      actions: { onChangeUserXP }
-    },
     requestHelpers: {
       fetchNotifications,
       loadMoreNotifications,
@@ -55,6 +52,9 @@ export default function MainFeeds({
       onLoadMoreRewards
     }
   } = useNotiContext();
+  const {
+    actions: { onChangeUserXP }
+  } = useContentContext();
   const [loading, setLoading] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
@@ -216,7 +216,7 @@ export default function MainFeeds({
       action: 'collect'
     });
     if (alreadyDone) return;
-    onChangeUserXP({ xp, rank });
+    onChangeUserXP({ xp, rank, userId });
     onClearRewards();
   }
 

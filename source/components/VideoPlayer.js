@@ -45,9 +45,6 @@ export default function VideoPlayer({
   videoId
 }) {
   const {
-    user: {
-      actions: { onChangeUserXP }
-    },
     requestHelpers: {
       addVideoView,
       checkXPEarned,
@@ -70,6 +67,7 @@ export default function VideoPlayer({
   } = useViewContext();
   const {
     actions: {
+      onChangeUserXP,
       onSetVideoImageUrl,
       onSetVideoStarted,
       onSetVideoXpEarned,
@@ -107,6 +105,7 @@ export default function VideoPlayer({
   const mounted = useRef(true);
   const rewardingXP = useRef(false);
   const themeColor = profileTheme || 'logoBlue';
+  const rewardLevelRef = useRef(0);
   const rewardAmountRef = useRef(rewardLevel * xp);
   useEffect(() => {
     mounted.current = true;
@@ -141,6 +140,7 @@ export default function VideoPlayer({
   }, [userId]);
 
   useEffect(() => {
+    rewardLevelRef.current = rewardLevel;
     rewardAmountRef.current = rewardLevel * xp;
     if (!imageUrl && videoCode && typeof hasHqThumb !== 'number') {
       fetchVideoThumb();
@@ -501,7 +501,7 @@ export default function VideoPlayer({
     if (!totalDurationRef.current) {
       onVideoReady();
     }
-    if (!!rewardLevel && !xpEarned && !justEarned && userId) {
+    if (!!rewardLevelRef.current && !xpEarned && !justEarned && userId) {
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
       }
@@ -529,7 +529,7 @@ export default function VideoPlayer({
             type: 'increase'
           });
           if (alreadyDone) return;
-          onChangeUserXP({ xp, rank });
+          onChangeUserXP({ xp, rank, userId });
           onSetVideoXpJustEarned({ videoId, justEarned: true });
           onSetVideoXpEarned({ videoId, earned: true });
           rewardingXP.current = false;
@@ -561,7 +561,7 @@ export default function VideoPlayer({
         currentlyWatchingAnotherVideo
       } = await updateTotalViewDuration({
         videoId,
-        rewardLevel,
+        rewardLevel: rewardLevelRef.current,
         xpEarned,
         watchCode: watchCodeRef.current
       });
@@ -569,7 +569,7 @@ export default function VideoPlayer({
       if (
         currentlyWatchingAnotherVideo &&
         !xpEarned &&
-        !!rewardLevel &&
+        !!rewardLevelRef.current &&
         !justEarned
       ) {
         PlayerRef.current.getInternalPlayer()?.pauseVideo?.();
