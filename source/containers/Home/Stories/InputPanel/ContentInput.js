@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -68,157 +68,171 @@ export default function ContentInput() {
     text: form.title
   });
 
-  return (
-    <ErrorBoundary className={PanelStyle}>
-      <p>Share interesting videos or webpages</p>
-      {urlError && (
-        <Banner color="pink" style={{ marginBottom: '1rem' }}>
-          {urlError}
-        </Banner>
-      )}
-      <Input
-        inputRef={UrlFieldRef}
-        style={errorInUrlField()}
-        value={form.url}
-        onChange={onUrlFieldChange}
-        placeholder="Copy and paste a URL address here"
-      />
-      {alreadyPosted && (
-        <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
-          This content has{' '}
-          <Link
-            style={{ fontWeight: 'bold' }}
-            to={`/${alreadyPosted.contentType === 'url' ? 'link' : 'video'}s/${
-              alreadyPosted.id
-            }`}
-          >
-            already been posted before
-          </Link>
-        </div>
-      )}
-      <Checkbox
-        label={'YouTube Video:'}
-        onClick={() => {
-          onSetContentIsVideo(!form.isVideo);
-          onSetContentUrlError(urlError);
-        }}
-        style={{ marginTop: '1rem' }}
-        checked={form.isVideo}
-      />
-      {!stringIsEmpty(urlHelper) && (
-        <span
-          style={{
-            fontSize: '1.7rem',
-            marginTop: '1rem',
-            display: 'block'
-          }}
-          className={css`
-            > a {
-              font-weight: bold;
-            }
-          `}
-          dangerouslySetInnerHTML={{
-            __html: urlHelper
-          }}
+  return useMemo(
+    () => (
+      <ErrorBoundary className={PanelStyle}>
+        <p>Share interesting videos or webpages</p>
+        {urlError && (
+          <Banner color="pink" style={{ marginBottom: '1rem' }}>
+            {urlError}
+          </Banner>
+        )}
+        <Input
+          inputRef={UrlFieldRef}
+          style={errorInUrlField()}
+          value={form.url}
+          onChange={onUrlFieldChange}
+          placeholder="Copy and paste a URL address here"
         />
-      )}
-      <div style={{ marginTop: '1.5rem' }}>
-        <div className="unselectable" style={{ position: 'relative' }}>
-          {titleFieldShown && (
-            <>
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '2rem'
-                }}
-              >
-                Title:
-              </span>
-              <Input
-                value={form.title}
-                onChange={onSetContentTitle}
-                placeholder="Enter Title Here"
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    onSetContentTitle(addEmoji(event.target.value));
+        {alreadyPosted && (
+          <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
+            This content has{' '}
+            <Link
+              style={{ fontWeight: 'bold' }}
+              to={`/${
+                alreadyPosted.contentType === 'url' ? 'link' : 'video'
+              }s/${alreadyPosted.id}`}
+            >
+              already been posted before
+            </Link>
+          </div>
+        )}
+        <Checkbox
+          label={'YouTube Video:'}
+          onClick={() => {
+            onSetContentIsVideo(!form.isVideo);
+            onSetContentUrlError(urlError);
+          }}
+          style={{ marginTop: '1rem' }}
+          checked={form.isVideo}
+        />
+        {!stringIsEmpty(urlHelper) && (
+          <span
+            style={{
+              fontSize: '1.7rem',
+              marginTop: '1rem',
+              display: 'block'
+            }}
+            className={css`
+              > a {
+                font-weight: bold;
+              }
+            `}
+            dangerouslySetInnerHTML={{
+              __html: urlHelper
+            }}
+          />
+        )}
+        <div style={{ marginTop: '1.5rem' }}>
+          <div className="unselectable" style={{ position: 'relative' }}>
+            {titleFieldShown && (
+              <>
+                <span
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '2rem'
+                  }}
+                >
+                  Title:
+                </span>
+                <Input
+                  value={form.title}
+                  onChange={onSetContentTitle}
+                  placeholder="Enter Title Here"
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      onSetContentTitle(addEmoji(event.target.value));
+                    }
+                  }}
+                  style={{
+                    ...(titleExceedsCharLimit?.style || {})
+                  }}
+                />
+                {titleExceedsCharLimit && (
+                  <small style={{ color: 'red' }}>
+                    {titleExceedsCharLimit.message}
+                  </small>
+                )}
+              </>
+            )}
+            {descriptionFieldShown && (
+              <>
+                <Textarea
+                  value={form.description}
+                  minRows={4}
+                  placeholder="Enter Description (Optional, you don't need to write this)"
+                  onChange={event =>
+                    onSetContentDescription(event.target.value)
                   }
-                }}
-                style={{
-                  ...(titleExceedsCharLimit?.style || {})
-                }}
-              />
-              {titleExceedsCharLimit && (
-                <small style={{ color: 'red' }}>
-                  {titleExceedsCharLimit.message}
-                </small>
-              )}
-            </>
-          )}
+                  onKeyUp={event => {
+                    if (event.key === ' ') {
+                      onSetContentDescription(addEmoji(event.target.value));
+                    }
+                  }}
+                  style={{
+                    marginTop: '1rem',
+                    ...(descriptionExceedsCharLimit?.style || {})
+                  }}
+                />
+                {descriptionExceedsCharLimit && (
+                  <small style={{ color: 'red' }}>
+                    {descriptionExceedsCharLimit?.message}
+                  </small>
+                )}
+              </>
+            )}
+          </div>
+          {!buttonDisabled() &&
+            !urlHelper &&
+            form.isVideo &&
+            canEditRewardLevel && (
+              <div style={{ marginTop: '1rem' }}>
+                <div style={{ fontSize: '1.5rem' }}>
+                  For every star you add, the amount of XP gained by the viewers
+                  of this video rises by 200 XP. Please consider both difficulty
+                  and educational importance of your video when setting the
+                  reward level.
+                </div>
+                <RewardLevelForm
+                  themed
+                  style={{
+                    marginTop: '1rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    padding: '1rem',
+                    fontSize: '3rem'
+                  }}
+                  rewardLevel={form.rewardLevel}
+                  onSetRewardLevel={onSetContentRewardLevel}
+                />
+              </div>
+            )}
           {descriptionFieldShown && (
-            <>
-              <Textarea
-                value={form.description}
-                minRows={4}
-                placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event => onSetContentDescription(event.target.value)}
-                onKeyUp={event => {
-                  if (event.key === ' ') {
-                    onSetContentDescription(addEmoji(event.target.value));
-                  }
-                }}
-                style={{
-                  marginTop: '1rem',
-                  ...(descriptionExceedsCharLimit?.style || {})
-                }}
-              />
-              {descriptionExceedsCharLimit && (
-                <small style={{ color: 'red' }}>
-                  {descriptionExceedsCharLimit?.message}
-                </small>
-              )}
-            </>
+            <div className="button-container">
+              <Button
+                type="submit"
+                filled
+                color="green"
+                style={{ marginTop: '1rem' }}
+                disabled={submitting || buttonDisabled()}
+                onClick={onSubmit}
+              >
+                Share!
+              </Button>
+            </div>
           )}
         </div>
-        {!buttonDisabled() && !urlHelper && form.isVideo && canEditRewardLevel && (
-          <div style={{ marginTop: '1rem' }}>
-            <div style={{ fontSize: '1.5rem' }}>
-              For every star you add, the amount of XP gained by the viewers of
-              this video rises by 200 XP. Please consider both difficulty and
-              educational importance of your video when setting the reward
-              level.
-            </div>
-            <RewardLevelForm
-              themed
-              style={{
-                marginTop: '1rem',
-                textAlign: 'center',
-                display: 'flex',
-                alignItems: 'center',
-                flexDirection: 'column',
-                padding: '1rem',
-                fontSize: '3rem'
-              }}
-              rewardLevel={form.rewardLevel}
-              onSetRewardLevel={onSetContentRewardLevel}
-            />
-          </div>
-        )}
-        {descriptionFieldShown && (
-          <div className="button-container">
-            <Button
-              type="submit"
-              filled
-              color="green"
-              style={{ marginTop: '1rem' }}
-              disabled={submitting || buttonDisabled()}
-              onClick={onSubmit}
-            >
-              Share!
-            </Button>
-          </div>
-        )}
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    ),
+    [
+      content,
+      descriptionExceedsCharLimit,
+      canEditRewardLevel,
+      submitting,
+      titleExceedsCharLimit
+    ]
   );
 
   function buttonDisabled() {

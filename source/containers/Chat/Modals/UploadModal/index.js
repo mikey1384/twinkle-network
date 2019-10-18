@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -32,34 +32,41 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
     text: caption
   });
 
-  return (
-    <Modal onHide={onHide}>
-      <header>Upload a file</header>
-      <main>
-        {fileObj ? (
-          <File
-            caption={caption}
-            captionExceedsCharLimit={captionExceedsCharLimit}
-            fileObj={fileObj}
-            onCaptionChange={setCaption}
-          />
-        ) : (
-          <Loading />
-        )}
-      </main>
-      <footer>
-        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
-          Cancel
-        </Button>
-        <Button
-          disabled={captionExceedsCharLimit}
-          color="blue"
-          onClick={handleSubmit}
-        >
-          Upload
-        </Button>
-      </footer>
-    </Modal>
+  return useMemo(
+    () => (
+      <Modal onHide={onHide}>
+        <header>Upload a file</header>
+        <main>
+          {fileObj ? (
+            <File
+              caption={caption}
+              captionExceedsCharLimit={captionExceedsCharLimit}
+              fileObj={fileObj}
+              onCaptionChange={setCaption}
+            />
+          ) : (
+            <Loading />
+          )}
+        </main>
+        <footer>
+          <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button
+            disabled={captionExceedsCharLimit}
+            color="blue"
+            onClick={handleSubmit}
+          >
+            Upload
+          </Button>
+        </footer>
+      </Modal>
+    ),
+    [caption, captionExceedsCharLimit, fileObj, subjectId]
   );
 
   function handleSubmit() {

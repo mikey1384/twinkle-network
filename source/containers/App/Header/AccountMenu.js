@@ -1,5 +1,5 @@
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext } from 'contexts';
@@ -24,60 +24,63 @@ export default function AccountMenu({
     }
   } = useAppContext();
   const { loggedIn, username } = useMyState();
-  return (
-    <div style={style}>
-      {loggedIn ? (
-        <DropdownButton
-          className={className}
-          buttonStyle={buttonStyle}
-          transparent
-          listStyle={{ marginTop: '0.2rem' }}
-          direction="left"
-          text={
+  return useMemo(
+    () => (
+      <div style={style}>
+        {loggedIn ? (
+          <DropdownButton
+            className={className}
+            buttonStyle={buttonStyle}
+            transparent
+            listStyle={{ marginTop: '0.2rem' }}
+            direction="left"
+            text={
+              <div
+                style={{
+                  maxWidth: '10rem',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis'
+                }}
+              >
+                {username}
+              </div>
+            }
+            shape="button"
+            icon="caret-down"
+            iconSize="lg"
+            menuProps={[
+              {
+                label: 'Profile',
+                onClick: () => history.push(`/${username}`)
+              },
+              {
+                label: 'Log out',
+                onClick: onLogout
+              }
+            ]}
+          />
+        ) : (
+          <Button
+            className={className}
+            onClick={onOpenSigninModal}
+            style={{ marginLeft: '1rem', ...buttonStyle }}
+            color="green"
+            filled
+          >
             <div
               style={{
-                maxWidth: '10rem',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis'
               }}
             >
-              {username}
+              Log In
             </div>
-          }
-          shape="button"
-          icon="caret-down"
-          iconSize="lg"
-          menuProps={[
-            {
-              label: 'Profile',
-              onClick: () => history.push(`/${username}`)
-            },
-            {
-              label: 'Log out',
-              onClick: onLogout
-            }
-          ]}
-        />
-      ) : (
-        <Button
-          className={className}
-          onClick={onOpenSigninModal}
-          style={{ marginLeft: '1rem', ...buttonStyle }}
-          color="green"
-          filled
-        >
-          <div
-            style={{
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis'
-            }}
-          >
-            Log In
-          </div>
-        </Button>
-      )}
-    </div>
+          </Button>
+        )}
+      </div>
+    ),
+    [loggedIn, username]
   );
 }

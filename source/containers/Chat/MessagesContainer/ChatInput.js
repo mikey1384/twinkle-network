@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -46,10 +46,46 @@ export default function ChatInput({
     text: message
   });
 
-  return (
-    <>
-      <div style={{ display: 'flex' }}>
-        {!!isTwoPeopleChannel && (
+  return useMemo(
+    () => (
+      <>
+        <div style={{ display: 'flex' }}>
+          {!!isTwoPeopleChannel && (
+            <div
+              style={{
+                margin: '0.2rem 1rem 0.2rem 0',
+                height: '100%'
+              }}
+            >
+              <Button
+                disabled={loading}
+                skeuomorphic
+                onClick={onChessButtonClick}
+                color={profileTheme}
+              >
+                <Icon size="lg" icon={['fas', 'chess']} />
+                <span style={{ marginLeft: '0.7rem' }}>Chess</span>
+              </Button>
+            </div>
+          )}
+          <Textarea
+            innerRef={TextareaRef}
+            minRows={1}
+            placeholder="Type a message..."
+            onKeyDown={onKeyDown}
+            value={message}
+            onChange={handleChange}
+            onKeyUp={event => {
+              if (event.key === ' ') {
+                setMessage(addEmoji(event.target.value));
+              }
+            }}
+            autoFocus
+            style={{
+              marginRight: '1rem',
+              ...(messageExceedsCharLimit?.style || {})
+            }}
+          />
           <div
             style={{
               margin: '0.2rem 1rem 0.2rem 0',
@@ -59,49 +95,16 @@ export default function ChatInput({
             <Button
               disabled={loading}
               skeuomorphic
-              onClick={onChessButtonClick}
+              onClick={onPlusButtonClick}
               color={profileTheme}
             >
-              <Icon size="lg" icon={['fas', 'chess']} />
-              <span style={{ marginLeft: '0.7rem' }}>Chess</span>
+              <Icon size="lg" icon="plus" />
             </Button>
           </div>
-        )}
-        <Textarea
-          innerRef={TextareaRef}
-          minRows={1}
-          placeholder="Type a message..."
-          onKeyDown={onKeyDown}
-          value={message}
-          onChange={handleChange}
-          onKeyUp={event => {
-            if (event.key === ' ') {
-              setMessage(addEmoji(event.target.value));
-            }
-          }}
-          autoFocus
-          style={{
-            marginRight: '1rem',
-            ...(messageExceedsCharLimit?.style || {})
-          }}
-        />
-        <div
-          style={{
-            margin: '0.2rem 1rem 0.2rem 0',
-            height: '100%'
-          }}
-        >
-          <Button
-            disabled={loading}
-            skeuomorphic
-            onClick={onPlusButtonClick}
-            color={profileTheme}
-          >
-            <Icon size="lg" icon="plus" />
-          </Button>
         </div>
-      </div>
-    </>
+      </>
+    ),
+    [loading, message, messageExceedsCharLimit, profileTheme]
   );
 
   function handleChange(event) {

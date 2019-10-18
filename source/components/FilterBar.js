@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -28,11 +28,12 @@ export default function FilterBar({
   const { profileTheme } = useMyState();
   const themeColor = color || profileTheme;
   const selectedOpacity = 1;
-  return (
-    <div
-      style={style}
-      ref={innerRef}
-      className={`${css`
+  return useMemo(
+    () => (
+      <div
+        style={style}
+        ref={innerRef}
+        className={`${css`
         background: ${inverted ? Color[themeColor](0.7) : '#fff'};
         height: 6rem;
         margin-bottom: 1rem;
@@ -146,9 +147,13 @@ export default function FilterBar({
           border-right: none;
         }
       `} ${className}`}
-    >
-      <div className="nav-section">{children}</div>
-      {dropdownButton && <div className="filter-section">{dropdownButton}</div>}
-    </div>
+      >
+        <div className="nav-section">{children}</div>
+        {dropdownButton && (
+          <div className="filter-section">{dropdownButton}</div>
+        )}
+      </div>
+    ),
+    [children, themeColor]
   );
 }

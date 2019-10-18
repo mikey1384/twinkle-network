@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
@@ -24,44 +24,47 @@ function UsernameText({ className, color, history, style = {}, user = {} }) {
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const [menuShown, setMenuShown] = useState(false);
-  return (
-    <div
-      style={{ display: 'inline', position: 'relative' }}
-      onMouseLeave={() => setMenuShown(false)}
-    >
-      <span
-        className={className}
-        style={{
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          color: user.username
-            ? color || Color.darkerGray()
-            : Color.lighterGray(),
-          ...style
-        }}
-        onClick={onUsernameClick}
-        onMouseEnter={onMouseEnter}
+  return useMemo(
+    () => (
+      <div
+        style={{ display: 'inline', position: 'relative' }}
+        onMouseLeave={() => setMenuShown(false)}
       >
-        {user.username || '(Deleted)'}
-      </span>
-      {menuShown && (
-        <DropdownList style={{ width: '100%' }}>
-          <li onClick={() => history.push(`/users/${user.username}`)}>
-            <a
-              style={{ color: Color.darkerGray(), cursor: 'pointer' }}
-              onClick={e => e.preventDefault()}
-            >
-              Profile
-            </a>
-          </li>
-          {user.id !== userId && (
-            <li onClick={onLinkClick}>
-              <a style={{ color: Color.darkerGray() }}>Talk</a>
+        <span
+          className={className}
+          style={{
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            color: user.username
+              ? color || Color.darkerGray()
+              : Color.lighterGray(),
+            ...style
+          }}
+          onClick={onUsernameClick}
+          onMouseEnter={onMouseEnter}
+        >
+          {user.username || '(Deleted)'}
+        </span>
+        {menuShown && (
+          <DropdownList style={{ width: '100%' }}>
+            <li onClick={() => history.push(`/users/${user.username}`)}>
+              <a
+                style={{ color: Color.darkerGray(), cursor: 'pointer' }}
+                onClick={e => e.preventDefault()}
+              >
+                Profile
+              </a>
             </li>
-          )}
-        </DropdownList>
-      )}
-    </div>
+            {user.id !== userId && (
+              <li onClick={onLinkClick}>
+                <a style={{ color: Color.darkerGray() }}>Talk</a>
+              </li>
+            )}
+          </DropdownList>
+        )}
+      </div>
+    ),
+    [loaded, menuShown, user, userId, username]
   );
 
   function onMouseEnter() {

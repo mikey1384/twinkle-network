@@ -227,7 +227,6 @@ export default function LinkPage({
           >
             <Description
               key={'description' + linkId}
-              content={content}
               uploader={uploader}
               timeStamp={timeStamp}
               myId={userId}

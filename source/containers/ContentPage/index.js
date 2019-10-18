@@ -118,6 +118,6 @@ export default function ContentPage({
         </div>
       </ErrorBoundary>
     ),
-    [exists]
+    [exists, userId]
   );
 }

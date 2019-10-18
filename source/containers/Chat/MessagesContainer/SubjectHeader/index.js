@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -94,97 +94,113 @@ export default function SubjectHeader() {
     [timeStamp, reloadTimeStamp]
   );
 
-  return (
-    <ErrorBoundary
-      className={css`
-        display: flex;
-        position: relative;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        height: 7rem;
-        > section {
+  return useMemo(
+    () => (
+      <ErrorBoundary
+        className={css`
+          display: flex;
           position: relative;
-          width: CALC(100% - 15rem);
-        }
-      `}
-    >
-      {loaded ? (
-        <>
-          {!onEdit && (
-            <>
-              <section>
-                <div style={{ width: '100%' }}>
-                  <span
-                    style={{
-                      cursor: 'default',
-                      color: Color.green(),
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      lineHeight: 'normal',
-                      fontSize: '2.2rem',
-                      fontWeight: 'bold',
-                      display: 'block'
-                    }}
-                    onClick={() =>
-                      setOnHover(
-                        textIsOverflown(HeaderLabelRef.current)
-                          ? !onHover
-                          : false
-                      )
-                    }
-                    onMouseOver={onMouseOver}
-                    onMouseLeave={() => setOnHover(false)}
-                    ref={HeaderLabelRef}
-                  >
-                    {subjectTitle}
-                  </span>
-                  <FullTextReveal text={subjectTitle} show={onHover} />
-                </div>
-                {renderDetails()}
-              </section>
-              <Button
-                color="logoBlue"
-                filled
-                style={{
-                  position: 'absolute',
-                  fontSize: '1.3rem',
-                  top: '1.3rem',
-                  right: '1rem'
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          height: 7rem;
+          > section {
+            position: relative;
+            width: CALC(100% - 15rem);
+          }
+        `}
+      >
+        {loaded ? (
+          <>
+            {!onEdit && (
+              <>
+                <section>
+                  <div style={{ width: '100%' }}>
+                    <span
+                      style={{
+                        cursor: 'default',
+                        color: Color.green(),
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        lineHeight: 'normal',
+                        fontSize: '2.2rem',
+                        fontWeight: 'bold',
+                        display: 'block'
+                      }}
+                      onClick={() =>
+                        setOnHover(
+                          textIsOverflown(HeaderLabelRef.current)
+                            ? !onHover
+                            : false
+                        )
+                      }
+                      onMouseOver={onMouseOver}
+                      onMouseLeave={() => setOnHover(false)}
+                      ref={HeaderLabelRef}
+                    >
+                      {subjectTitle}
+                    </span>
+                    <FullTextReveal text={subjectTitle} show={onHover} />
+                  </div>
+                  {renderDetails()}
+                </section>
+                <Button
+                  color="logoBlue"
+                  filled
+                  style={{
+                    position: 'absolute',
+                    fontSize: '1.3rem',
+                    top: '1.3rem',
+                    right: '1rem'
+                  }}
+                  onClick={() => setOnEdit(true)}
+                >
+                  Change Subject
+                </Button>
+              </>
+            )}
+            {onEdit && (
+              <EditSubjectForm
+                autoFocus
+                maxLength={charLimit.chat.subject}
+                currentSubjectId={subjectId}
+                title={subjectTitle}
+                onEditSubmit={onSubjectSubmit}
+                onChange={handleSearchChatSubject}
+                onClickOutSide={() => {
+                  setOnEdit(false);
+                  onClearSubjectSearchResults();
                 }}
-                onClick={() => setOnEdit(true)}
-              >
-                Change Subject
-              </Button>
-            </>
-          )}
-          {onEdit && (
-            <EditSubjectForm
-              autoFocus
-              maxLength={charLimit.chat.subject}
-              currentSubjectId={subjectId}
-              title={subjectTitle}
-              onEditSubmit={onSubjectSubmit}
-              onChange={handleSearchChatSubject}
-              onClickOutSide={() => {
-                setOnEdit(false);
-                onClearSubjectSearchResults();
-              }}
-              reloadChatSubject={handleReloadChatSubject}
-              searchResults={subjectSearchResults}
-            />
-          )}
-        </>
-      ) : (
-        <Loading
-          style={{
-            color: Color.green()
-          }}
-          text="Loading Subject..."
-        />
-      )}
-    </ErrorBoundary>
+                reloadChatSubject={handleReloadChatSubject}
+                searchResults={subjectSearchResults}
+              />
+            )}
+          </>
+        ) : (
+          <Loading
+            style={{
+              color: Color.green()
+            }}
+            text="Loading Subject..."
+          />
+        )}
+      </ErrorBoundary>
+    ),
+    [
+      profilePicId,
+      userId,
+      username,
+      subjectId,
+      subjectTitle,
+      loaded,
+      onEdit,
+      onHover,
+      reloader,
+      timeSincePost,
+      timeSinceReload,
+      uploader
+    ]
   );
 
   function onMouseOver() {

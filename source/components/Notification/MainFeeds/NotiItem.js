@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -184,14 +184,17 @@ export default function NotiItem({
       break;
   }
 
-  return (
-    <ErrorBoundary>
-      <div>
-        <UsernameText user={user} color={Color.blue()} />
-        &nbsp;
-        {notificationMessage}
-      </div>
-      <small style={{ color: Color.gray() }}>{timeSince(timeStamp)}</small>
-    </ErrorBoundary>
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div>
+          <UsernameText user={user} color={Color.blue()} />
+          &nbsp;
+          {notificationMessage}
+        </div>
+        <small style={{ color: Color.gray() }}>{timeSince(timeStamp)}</small>
+      </ErrorBoundary>
+    ),
+    [actionObj.contentType, isReply, isSubjectResponse]
   );
 }

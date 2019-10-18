@@ -1,5 +1,5 @@
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { removeLineBreaks } from 'helpers/stringHelpers';
@@ -30,23 +30,27 @@ export default function ContentLink({
     destination = contentType + 's';
   }
   title = title || content || username;
-  return title ? (
-    <Link
-      style={{
-        fontWeight: 'bold',
-        color:
-          contentType === 'video' && byUser
-            ? Color[profileTheme](0.9)
-            : Color.blue(),
-        ...style
-      }}
-      to={`/${destination}/${contentType === 'user' ? username : id}`}
-    >
-      {removeLineBreaks(title)}
-    </Link>
-  ) : (
-    <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>
-      (Deleted)
-    </span>
+  return useMemo(
+    () =>
+      title ? (
+        <Link
+          style={{
+            fontWeight: 'bold',
+            color:
+              contentType === 'video' && byUser
+                ? Color[profileTheme](0.9)
+                : Color.blue(),
+            ...style
+          }}
+          to={`/${destination}/${contentType === 'user' ? username : id}`}
+        >
+          {removeLineBreaks(title)}
+        </Link>
+      ) : (
+        <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>
+          (Deleted)
+        </span>
+      ),
+    [profileTheme, byUser, content, title, username]
   );
 }

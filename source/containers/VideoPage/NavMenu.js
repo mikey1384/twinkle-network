@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -99,121 +99,139 @@ export default function NavMenu({ playlistId, videoId }) {
     }
   }, [userId]);
 
-  return (
-    <ErrorBoundary
-      className={css`
-        width: CALC(30% - 2rem);
-        font-size: 2rem;
-        margin-right: 1rem;
-        > section {
-          padding: 1rem;
-          background: #fff;
-          border: 1px solid ${Color.borderGray()};
-          margin-bottom: 1rem;
-          p {
+  return useMemo(
+    () => (
+      <ErrorBoundary
+        className={css`
+          width: CALC(30% - 2rem);
+          font-size: 2rem;
+          margin-right: 1rem;
+          > section {
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid ${Color.borderGray()};
             margin-bottom: 1rem;
-            font-size: 2.5rem;
-            font-weight: bold;
+            p {
+              margin-bottom: 1rem;
+              font-size: 2.5rem;
+              font-weight: bold;
+            }
+            a {
+              font-size: 1.7rem;
+              font-weight: bold;
+              line-height: 1.7rem;
+            }
           }
-          a {
-            font-size: 1.7rem;
-            font-weight: bold;
-            line-height: 1.7rem;
-          }
-        }
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 100%;
-          margin: 0;
-          section {
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
             margin: 0;
+            section {
+              margin: 0;
+            }
           }
-        }
-      `}
-    >
-      <FilterBar
-        style={{
-          border: `1px solid ${Color.borderGray()}`,
-          borderBottom: 0
-        }}
-        className="desktop"
+        `}
       >
-        <nav
-          className={videoTabActive ? 'active' : ''}
-          onClick={() => setVideoTabActive(true)}
+        <FilterBar
+          style={{
+            border: `1px solid ${Color.borderGray()}`,
+            borderBottom: 0
+          }}
+          className="desktop"
         >
-          Videos
-        </nav>
-        <nav
-          className={`${!videoTabActive ? 'active' : ''} ${
-            rewardsExist || numNewNotis > 0 ? 'alert' : ''
-          }`}
-          onClick={() => setVideoTabActive(false)}
-        >
-          {rewardsExist ? 'Rewards' : 'News'}
-        </nav>
-      </FilterBar>
-      {videoTabActive && (
-        <>
-          {nextVideos.length > 0 && (
-            <section key={videoId + 'up next'}>
-              <p>Up Next</p>
-              {renderVideos({
-                videos: nextVideos,
-                arePlaylistVideos: playlistId && playlistVideos.length > 0
-              })}
-            </section>
-          )}
-          {playlistId && playlistVideos.length > 0 && (
-            <section
-              key={videoId + 'playlist videos'}
-              style={{
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'break-word',
-                wordBreak: 'break-word'
-              }}
-            >
-              <div style={{ marginBottom: '1rem' }}>
-                <Link
-                  style={{
-                    fontSize: '2.5rem',
-                    textDecoration: 'none'
-                  }}
-                  to={`/playlists/${playlistId}`}
-                >
-                  {cleanString(playlistTitle)}
-                </Link>
-              </div>
-              {renderVideos({
-                videos: playlistVideos,
-                arePlaylistVideos: true
-              })}
-              {playlistVideosLoadMoreShown && (
-                <LoadMoreButton
-                  loading={playlistVideosLoading}
-                  onClick={loadMorePlaylistVideos}
-                  color="green"
-                  filled
-                  style={{ marginTop: '1.5rem', width: '100%' }}
-                />
-              )}
-            </section>
-          )}
-          {relatedVideos.length > 0 && (
-            <section key={videoId + 'related videos'}>
-              <p>Related Videos</p>
-              {renderVideos({ videos: relatedVideos })}
-            </section>
-          )}
-          {otherVideos.length > 0 && (
-            <section key={videoId + 'new videos'}>
-              <p>New Videos</p>
-              {renderVideos({ videos: otherVideos })}
-            </section>
-          )}
-        </>
-      )}
-      {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
-    </ErrorBoundary>
+          <nav
+            className={videoTabActive ? 'active' : ''}
+            onClick={() => setVideoTabActive(true)}
+          >
+            Videos
+          </nav>
+          <nav
+            className={`${!videoTabActive ? 'active' : ''} ${
+              rewardsExist || numNewNotis > 0 ? 'alert' : ''
+            }`}
+            onClick={() => setVideoTabActive(false)}
+          >
+            {rewardsExist ? 'Rewards' : 'News'}
+          </nav>
+        </FilterBar>
+        {videoTabActive && (
+          <>
+            {nextVideos.length > 0 && (
+              <section key={videoId + 'up next'}>
+                <p>Up Next</p>
+                {renderVideos({
+                  videos: nextVideos,
+                  arePlaylistVideos: playlistId && playlistVideos.length > 0
+                })}
+              </section>
+            )}
+            {playlistId && playlistVideos.length > 0 && (
+              <section
+                key={videoId + 'playlist videos'}
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
+              >
+                <div style={{ marginBottom: '1rem' }}>
+                  <Link
+                    style={{
+                      fontSize: '2.5rem',
+                      textDecoration: 'none'
+                    }}
+                    to={`/playlists/${playlistId}`}
+                  >
+                    {cleanString(playlistTitle)}
+                  </Link>
+                </div>
+                {renderVideos({
+                  videos: playlistVideos,
+                  arePlaylistVideos: true
+                })}
+                {playlistVideosLoadMoreShown && (
+                  <LoadMoreButton
+                    loading={playlistVideosLoading}
+                    onClick={loadMorePlaylistVideos}
+                    color="green"
+                    filled
+                    style={{ marginTop: '1.5rem', width: '100%' }}
+                  />
+                )}
+              </section>
+            )}
+            {relatedVideos.length > 0 && (
+              <section key={videoId + 'related videos'}>
+                <p>Related Videos</p>
+                {renderVideos({ videos: relatedVideos })}
+              </section>
+            )}
+            {otherVideos.length > 0 && (
+              <section key={videoId + 'new videos'}>
+                <p>New Videos</p>
+                {renderVideos({ videos: otherVideos })}
+              </section>
+            )}
+          </>
+        )}
+        {!videoTabActive && <Notification style={{ paddingTop: 0 }} />}
+      </ErrorBoundary>
+    ),
+    [
+      numNewNotis,
+      playlistId,
+      profileTheme,
+      userId,
+      videoId,
+      nextVideos,
+      relatedVideos,
+      otherVideos,
+      playlistVideos,
+      rewardsExist,
+      playlistTitle,
+      playlistVideosLoading,
+      playlistVideosLoadMoreShown,
+      videoTabActive
+    ]
   );
 
   async function handleFetchNotifications() {

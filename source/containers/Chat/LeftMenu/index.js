@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
@@ -93,119 +93,135 @@ export default function LeftMenu({
     );
   }, [currentChannel]);
 
-  return (
-    <div
-      className={css`
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 30rem;
-        position: relative;
-        background: #fff;
-        -webkit-overflow-scrolling: touch;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 25%;
-        }
-      `}
-    >
+  return useMemo(
+    () => (
       <div
         className={css`
-          width: 100%;
-          padding: 1rem;
           display: flex;
-          align-items: center;
-          justify-content: space-between;
+          flex-direction: column;
+          height: 100%;
+          width: 30rem;
+          position: relative;
+          background: #fff;
+          -webkit-overflow-scrolling: touch;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 25%;
+          }
         `}
       >
         <div
           className={css`
+            width: 100%;
+            padding: 1rem;
             display: flex;
-            width: 60%;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
           `}
         >
-          <span
-            ref={ChannelTitleRef}
-            style={{
-              textAlign: 'center',
-              justifyContent: 'center',
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              lineHeight: 'normal',
-              cursor: 'default',
-              color: !channelName && '#7c7c7c'
-            }}
-            onClick={() =>
-              setOnTitleHover(
-                textIsOverflown(ChannelTitleRef.current) ? !onTitleHover : false
-              )
-            }
-            onMouseOver={onMouseOverTitle}
-            onMouseLeave={() => setOnTitleHover(false)}
+          <div
+            className={css`
+              display: flex;
+              width: 60%;
+              flex-direction: column;
+            `}
           >
-            {channelName || '(Deleted)'}
-          </span>
-          <FullTextReveal text={channelName || ''} show={onTitleHover} />
-          {selectedChannelId !== 0 ? (
-            <small style={{ gridArea: 'channelMembers', textAlign: 'center' }}>
-              <a
-                style={{
-                  cursor: 'pointer'
-                }}
-                onClick={showUserListModal}
+            <span
+              ref={ChannelTitleRef}
+              style={{
+                textAlign: 'center',
+                justifyContent: 'center',
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                display: 'flex',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                lineHeight: 'normal',
+                cursor: 'default',
+                color: !channelName && '#7c7c7c'
+              }}
+              onClick={() =>
+                setOnTitleHover(
+                  textIsOverflown(ChannelTitleRef.current)
+                    ? !onTitleHover
+                    : false
+                )
+              }
+              onMouseOver={onMouseOverTitle}
+              onMouseLeave={() => setOnTitleHover(false)}
+            >
+              {channelName || '(Deleted)'}
+            </span>
+            <FullTextReveal text={channelName || ''} show={onTitleHover} />
+            {selectedChannelId !== 0 ? (
+              <small
+                style={{ gridArea: 'channelMembers', textAlign: 'center' }}
               >
-                {renderNumberOfMembers()}
-              </a>{' '}
-              online
-            </small>
-          ) : (
-            <small>{'\u00a0'}</small>
+                <a
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                  onClick={showUserListModal}
+                >
+                  {renderNumberOfMembers()}
+                </a>{' '}
+                online
+              </small>
+            ) : (
+              <small>{'\u00a0'}</small>
+            )}
+          </div>
+          <div>
+            <Button transparent onClick={onNewButtonClick}>
+              + Group
+            </Button>
+          </div>
+        </div>
+        <ChatSearchBox />
+        <div
+          style={{
+            overflow: 'scroll',
+            position: 'absolute',
+            top: '11.5rem',
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
+          ref={ChannelListRef}
+        >
+          <Channels
+            userId={userId}
+            currentChannel={currentChannel}
+            channels={channels}
+            selectedChannelId={selectedChannelId}
+            onChannelEnter={onChannelEnter}
+          />
+          {channelLoadMoreButtonShown && (
+            <LoadMoreButton
+              color="green"
+              filled
+              loading={channelsLoading}
+              onClick={handleLoadMoreChannels}
+              style={{
+                width: '100%',
+                borderRadius: 0,
+                border: 0
+              }}
+            />
           )}
         </div>
-        <div>
-          <Button transparent onClick={onNewButtonClick}>
-            + Group
-          </Button>
-        </div>
       </div>
-      <ChatSearchBox />
-      <div
-        style={{
-          overflow: 'scroll',
-          position: 'absolute',
-          top: '11.5rem',
-          left: 0,
-          right: 0,
-          bottom: 0
-        }}
-        ref={ChannelListRef}
-      >
-        <Channels
-          userId={userId}
-          currentChannel={currentChannel}
-          channels={channels}
-          selectedChannelId={selectedChannelId}
-          onChannelEnter={onChannelEnter}
-        />
-        {channelLoadMoreButtonShown && (
-          <LoadMoreButton
-            color="green"
-            filled
-            loading={channelsLoading}
-            onClick={handleLoadMoreChannels}
-            style={{
-              width: '100%',
-              borderRadius: 0,
-              border: 0
-            }}
-          />
-        )}
-      </div>
-    </div>
+    ),
+    [
+      channels,
+      channelLoadMoreButtonShown,
+      currentChannel,
+      userId,
+      selectedChannelId,
+      channelsLoading,
+      onTitleHover,
+      channelName
+    ]
   );
 
   async function handleLoadMoreChannels() {

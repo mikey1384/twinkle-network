@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
@@ -45,49 +45,52 @@ export default function Search({ history, pathname, style }) {
     prevSearchText.current = searchText;
   }, [searchText]);
 
-  return (
-    <div style={style}>
-      {stringIsEmpty(searchText) && (
-        <Categories
-          style={{ marginTop: '7rem', marginBottom: '4rem' }}
-          defaultFilter={defaultSearchFilter}
-          filter={category}
-          onSetDefaultSearchFilter={handleSetDefaultSearchFilter}
-        />
-      )}
-      <SearchBox
-        style={{
-          width: '50%',
-          marginTop: '2rem',
-          height: '5rem'
-        }}
-        category={category}
-        className={css`
-          svg,
-          input {
-            font-size: 2.3rem;
-          }
-        `}
-        innerRef={SearchBoxRef}
-      />
-      {!stringIsEmpty(searchText) && (
-        <>
-          <TopFilter
-            className={css`
-              width: 100%;
-              margin-top: 2rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: 0;
-                border-top: 0;
-              }
-            `}
-            history={history}
-            selectedFilter={category}
+  return useMemo(
+    () => (
+      <div style={style}>
+        {stringIsEmpty(searchText) && (
+          <Categories
+            style={{ marginTop: '7rem', marginBottom: '4rem' }}
+            defaultFilter={defaultSearchFilter}
+            filter={category}
+            onSetDefaultSearchFilter={handleSetDefaultSearchFilter}
           />
-          <Results searchText={searchText} filter={category} />
-        </>
-      )}
-    </div>
+        )}
+        <SearchBox
+          style={{
+            width: '50%',
+            marginTop: '2rem',
+            height: '5rem'
+          }}
+          category={category}
+          className={css`
+            svg,
+            input {
+              font-size: 2.3rem;
+            }
+          `}
+          innerRef={SearchBoxRef}
+        />
+        {!stringIsEmpty(searchText) && (
+          <>
+            <TopFilter
+              className={css`
+                width: 100%;
+                margin-top: 2rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-top: 0;
+                  border-top: 0;
+                }
+              `}
+              history={history}
+              selectedFilter={category}
+            />
+            <Results searchText={searchText} filter={category} />
+          </>
+        )}
+      </div>
+    ),
+    [category, defaultSearchFilter, searchText]
   );
 
   async function handleSetDefaultSearchFilter() {

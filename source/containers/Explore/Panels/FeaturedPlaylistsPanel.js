@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PlaylistsPanel from './PlaylistsPanel';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -55,35 +55,46 @@ export default function FeaturedPlaylistsPanel() {
     });
   }
 
-  return (
-    <ErrorBoundary>
-      <PlaylistsPanel
-        buttonGroupShown={!!canPinPlaylists}
-        buttonGroup={() => (
-          <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <PlaylistsPanel
+          buttonGroupShown={!!canPinPlaylists}
+          buttonGroup={() => (
+            <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
+          )}
+          title="Featured Playlists"
+          userId={userId}
+          playlists={featuredPlaylists}
+          loaded={featuredPlaylistsLoaded}
+        />
+        {selectPlaylistsToFeatureModalShown && (
+          <SelectPlaylistsToPinModal
+            playlistsToPin={playlistsToPin}
+            selectedPlaylists={featuredPlaylists.map(playlist => {
+              return playlist.id;
+            })}
+            loadMoreButton={loadMorePlaylistsToPinButton}
+            onHide={onCloseSelectPlaylistsToPinModal}
+          />
         )}
-        title="Featured Playlists"
-        userId={userId}
-        playlists={featuredPlaylists}
-        loaded={featuredPlaylistsLoaded}
-      />
-      {selectPlaylistsToFeatureModalShown && (
-        <SelectPlaylistsToPinModal
-          playlistsToPin={playlistsToPin}
-          selectedPlaylists={featuredPlaylists.map(playlist => {
-            return playlist.id;
-          })}
-          loadMoreButton={loadMorePlaylistsToPinButton}
-          onHide={onCloseSelectPlaylistsToPinModal}
-        />
-      )}
-      {reorderFeaturedPlaylistsShown && (
-        <ReorderFeaturedPlaylists
-          playlistIds={featuredPlaylists.map(playlist => playlist.id)}
-          onHide={onCloseReorderFeaturedPlaylists}
-        />
-      )}
-    </ErrorBoundary>
+        {reorderFeaturedPlaylistsShown && (
+          <ReorderFeaturedPlaylists
+            playlistIds={featuredPlaylists.map(playlist => playlist.id)}
+            onHide={onCloseReorderFeaturedPlaylists}
+          />
+        )}
+      </ErrorBoundary>
+    ),
+    [
+      featuredPlaylists,
+      loadMorePlaylistsToPinButton,
+      menuButtons,
+      featuredPlaylistsLoaded,
+      playlistsToPin,
+      reorderFeaturedPlaylistsShown,
+      selectPlaylistsToFeatureModalShown
+    ]
   );
 
   async function handleOpenSelectPlaylistsToPinModal() {

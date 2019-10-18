@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -42,115 +42,118 @@ export default function Comment({
     });
   }
 
-  return (
-    <ErrorBoundary>
-      <div
-        className={css`
-          padding: 1rem;
-          ${noMarginForEditButton ? `padding-right: 0;` : ''} display: flex;
-          align-items: space-between;
-        `}
-      >
+  return useMemo(
+    () => (
+      <ErrorBoundary>
         <div
           className={css`
-            width: 6rem;
-          `}
-        >
-          <ProfilePic
-            userId={star.rewarderId}
-            profilePicId={star.rewarderProfilePicId}
-            style={{ width: '5rem', height: '5rem' }}
-          />
-        </div>
-        <div
-          className={css`
-            width: 100%;
-            margin-left: 0.5rem;
-            font-size: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            padding: 1rem;
+            ${noMarginForEditButton ? `padding-right: 0;` : ''} display: flex;
+            align-items: space-between;
           `}
         >
           <div
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent:
-                stringIsEmpty(star.rewardComment) && !onEdit && 'center'
-            }}
+            className={css`
+              width: 6rem;
+            `}
+          >
+            <ProfilePic
+              userId={star.rewarderId}
+              profilePicId={star.rewarderProfilePicId}
+              style={{ width: '5rem', height: '5rem' }}
+            />
+          </div>
+          <div
+            className={css`
+              width: 100%;
+              margin-left: 0.5rem;
+              font-size: 1.5rem;
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+            `}
           >
             <div
               style={{
-                width: '100%'
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent:
+                  stringIsEmpty(star.rewardComment) && !onEdit && 'center'
               }}
             >
-              <UsernameText
-                user={{
-                  id: star.rewarderId,
-                  username: star.rewarderUsername
-                }}
-                userId={userId}
-              />{' '}
-              <span
+              <div
                 style={{
-                  fontWeight: 'bold',
-                  color:
-                    star.rewardAmount >= maxRewardableStars
-                      ? Color.gold()
-                      : star.rewardAmount >= 10
-                      ? Color.orange()
-                      : star.rewardAmount >= 5
-                      ? Color.pink()
-                      : Color.logoBlue()
+                  width: '100%'
                 }}
               >
-                rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
-                Twinkle
-                {star.rewardAmount > 1 ? 's' : ''}
-              </span>{' '}
-              <span style={{ fontSize: '1.2rem', color: Color.gray() }}>
-                ({timeSince(star.timeStamp)})
-              </span>
+                <UsernameText
+                  user={{
+                    id: star.rewarderId,
+                    username: star.rewarderUsername
+                  }}
+                  userId={userId}
+                />{' '}
+                <span
+                  style={{
+                    fontWeight: 'bold',
+                    color:
+                      star.rewardAmount >= maxRewardableStars
+                        ? Color.gold()
+                        : star.rewardAmount >= 10
+                        ? Color.orange()
+                        : star.rewardAmount >= 5
+                        ? Color.pink()
+                        : Color.logoBlue()
+                  }}
+                >
+                  rewarded {star.rewardAmount === 1 ? 'a' : star.rewardAmount}{' '}
+                  Twinkle
+                  {star.rewardAmount > 1 ? 's' : ''}
+                </span>{' '}
+                <span style={{ fontSize: '1.2rem', color: Color.gray() }}>
+                  ({timeSince(star.timeStamp)})
+                </span>
+              </div>
+              <div
+                style={{
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
+              >
+                {!onEdit && <LongText>{star.rewardComment}</LongText>}
+                {onEdit && (
+                  <EditTextArea
+                    contentId={star.id}
+                    contentType="reward"
+                    allowEmptyText
+                    autoFocus
+                    rows={3}
+                    text={star.rewardComment}
+                    onCancel={() => setOnEdit(false)}
+                    onEditDone={submitEdit}
+                  />
+                )}
+              </div>
             </div>
-            <div
-              style={{
-                width: '100%',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'pre-wrap',
-                overflowWrap: 'break-word',
-                wordBreak: 'break-word'
-              }}
-            >
-              {!onEdit && <LongText>{star.rewardComment}</LongText>}
-              {onEdit && (
-                <EditTextArea
-                  contentId={star.id}
-                  contentType="reward"
-                  allowEmptyText
-                  autoFocus
-                  rows={3}
-                  text={star.rewardComment}
-                  onCancel={() => setOnEdit(false)}
-                  onEditDone={submitEdit}
-                />
-              )}
-            </div>
+            {editButtonShown && !onEdit && (
+              <DropdownButton
+                skeuomorphic
+                color="darkerGray"
+                direction="left"
+                menuProps={editMenuItems}
+              />
+            )}
           </div>
-          {editButtonShown && !onEdit && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              direction="left"
-              menuProps={editMenuItems}
-            />
-          )}
         </div>
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    ),
+    [maxRewardableStars, star, editMenuItems, editButtonShown]
   );
 
   async function submitEdit(editedComment) {

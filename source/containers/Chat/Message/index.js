@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
 import moment from 'moment';
@@ -224,119 +224,136 @@ export default function Message({
     !isChessMsg &&
     !onEdit;
 
-  if (!chessState && gameWinnerId) {
-    return (
-      <GameOverMessage
-        winnerId={gameWinnerId}
-        opponentName={channelName}
-        myId={myId}
-      />
-    );
-  }
-
-  return (
-    <ErrorBoundary>
-      <div className={MessageStyle.container}>
-        <ProfilePic
-          className={MessageStyle.profilePic}
-          userId={userId}
-          profilePicId={profilePicId}
+  return useMemo(
+    () =>
+      !chessState && gameWinnerId ? (
+        <GameOverMessage
+          winnerId={gameWinnerId}
+          opponentName={channelName}
+          myId={myId}
         />
-        <div className={MessageStyle.contentWrapper}>
-          <div>
-            <UsernameText
-              style={MessageStyle.usernameText}
-              user={{
-                id: userId,
-                username: username
-              }}
-            />{' '}
-            <span className={MessageStyle.timeStamp}>
-              {moment.unix(timeStamp).format('LLL')}
-            </span>
-          </div>
-          <>
-            {isChessMsg ? (
-              <Chess
-                channelId={channelId}
-                chessCountdownObj={chessCountdownObj}
-                gameWinnerId={gameWinnerId}
-                loaded
-                spoilerOff={spoilerOff}
-                myId={myId}
-                initialState={chessState}
-                moveViewed={!!moveViewTimeStamp}
-                onBoardClick={onChessBoardClick}
-                onSpoilerClick={handleSpoilerClick}
-                opponentId={chessOpponent?.id}
-                opponentName={chessOpponent?.username}
-                style={{ marginTop: '1rem', width: '100%' }}
-              />
-            ) : fileToUpload ? (
-              <FileUploadStatusIndicator
-                channelId={channelId}
-                checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
-                content={content}
-                fileToUpload={fileToUpload}
-                filePath={filePath}
-                onSendFileMessage={onSendFileMessage}
-                recepientId={recepientId}
-                subjectId={subjectId}
-              />
-            ) : (
-              <>
-                {filePath && (
-                  <FileViewer
-                    content={content}
-                    filePath={filePath}
-                    fileName={fileName}
-                    fileSize={fileSize}
-                    scrollAtBottom={scrollAtBottom}
-                    setScrollToBottom={setScrollToBottom}
-                  />
-                )}
-                <TextMessage
-                  content={content}
-                  extractedUrl={extractedUrl}
-                  myId={myId}
-                  messageId={messageId}
-                  numMsgs={numMsgs}
-                  isNotification={isNotification}
-                  isSubject={!!isSubject}
-                  isReloadedSubject={!!isReloadedSubject}
-                  MessageStyle={MessageStyle}
-                  onEdit={onEdit}
-                  onEditCancel={handleEditCancel}
-                  onEditDone={handleEditDone}
-                  showSubjectMsgsModal={showSubjectMsgsModal}
-                  socketConnected={socketConnected}
-                  subjectId={subjectId}
-                />
-              </>
-            )}
-          </>
-          {dropdownButtonShown && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              style={{ position: 'absolute', top: 0, right: '5px' }}
-              direction="left"
-              opacity={0.8}
-              onButtonClick={menuDisplayed => {
-                setEditPadding(
-                  !menuDisplayed && isLastMsg && !filePath && !extractedUrl
-                );
-              }}
-              onOutsideClick={() => {
-                setEditPadding(false);
-              }}
-              menuProps={editMenuItems}
+      ) : (
+        <ErrorBoundary>
+          <div className={MessageStyle.container}>
+            <ProfilePic
+              className={MessageStyle.profilePic}
+              userId={userId}
+              profilePicId={profilePicId}
             />
-          )}
-          {editPadding && <div style={{ height: '10rem' }} />}
-        </div>
-      </div>
-    </ErrorBoundary>
+            <div className={MessageStyle.contentWrapper}>
+              <div>
+                <UsernameText
+                  style={MessageStyle.usernameText}
+                  user={{
+                    id: userId,
+                    username: username
+                  }}
+                />{' '}
+                <span className={MessageStyle.timeStamp}>
+                  {moment.unix(timeStamp).format('LLL')}
+                </span>
+              </div>
+              <>
+                {isChessMsg ? (
+                  <Chess
+                    channelId={channelId}
+                    chessCountdownObj={chessCountdownObj}
+                    gameWinnerId={gameWinnerId}
+                    loaded
+                    spoilerOff={spoilerOff}
+                    myId={myId}
+                    initialState={chessState}
+                    moveViewed={!!moveViewTimeStamp}
+                    onBoardClick={onChessBoardClick}
+                    onSpoilerClick={handleSpoilerClick}
+                    opponentId={chessOpponent?.id}
+                    opponentName={chessOpponent?.username}
+                    style={{ marginTop: '1rem', width: '100%' }}
+                  />
+                ) : fileToUpload ? (
+                  <FileUploadStatusIndicator
+                    channelId={channelId}
+                    checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
+                    content={content}
+                    fileToUpload={fileToUpload}
+                    filePath={filePath}
+                    onSendFileMessage={onSendFileMessage}
+                    recepientId={recepientId}
+                    subjectId={subjectId}
+                  />
+                ) : (
+                  <>
+                    {filePath && (
+                      <FileViewer
+                        content={content}
+                        filePath={filePath}
+                        fileName={fileName}
+                        fileSize={fileSize}
+                        scrollAtBottom={scrollAtBottom}
+                        setScrollToBottom={setScrollToBottom}
+                      />
+                    )}
+                    <TextMessage
+                      content={content}
+                      extractedUrl={extractedUrl}
+                      myId={myId}
+                      messageId={messageId}
+                      numMsgs={numMsgs}
+                      isNotification={isNotification}
+                      isSubject={!!isSubject}
+                      isReloadedSubject={!!isReloadedSubject}
+                      MessageStyle={MessageStyle}
+                      onEdit={onEdit}
+                      onEditCancel={handleEditCancel}
+                      onEditDone={handleEditDone}
+                      showSubjectMsgsModal={showSubjectMsgsModal}
+                      socketConnected={socketConnected}
+                      subjectId={subjectId}
+                    />
+                  </>
+                )}
+              </>
+              {dropdownButtonShown && (
+                <DropdownButton
+                  skeuomorphic
+                  color="darkerGray"
+                  style={{ position: 'absolute', top: 0, right: '5px' }}
+                  direction="left"
+                  opacity={0.8}
+                  onButtonClick={menuDisplayed => {
+                    setEditPadding(
+                      !menuDisplayed && isLastMsg && !filePath && !extractedUrl
+                    );
+                  }}
+                  onOutsideClick={() => {
+                    setEditPadding(false);
+                  }}
+                  menuProps={editMenuItems}
+                />
+              )}
+              {editPadding && <div style={{ height: '10rem' }} />}
+            </div>
+          </div>
+        </ErrorBoundary>
+      ),
+    [
+      extractedUrl,
+      onEdit,
+      editPadding,
+      spoilerOff,
+      channelId,
+      dropdownButtonShown,
+      editMenuItems,
+      moveViewTimeStamp,
+      profilePicId,
+      username,
+      authLevel,
+      canDelete,
+      canEdit,
+      myId,
+      myUsername,
+      myProfilePicId
+    ]
   );
 
   function handleEditCancel() {

@@ -287,8 +287,7 @@ function ContentPanel({
       urlMouseEntered,
       profileMouseEntered,
       videoShown,
-      commentsHidden,
-      style
+      commentsHidden
     ]
   );
 }

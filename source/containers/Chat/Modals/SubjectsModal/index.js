@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -66,102 +66,105 @@ export default function SubjectsModal({
     };
   }, []);
 
-  return (
-    <Modal onHide={onHide} style={{ overflow: msgsModal.shown && 'hidden' }}>
-      <header>View Subjects</header>
-      <main>
-        {!loaded && <Loading />}
-        {msgsModal.shown && (
-          <SubjectMsgsModal
-            subjectId={msgsModal.subjectId}
-            subjectTitle={msgsModal.title}
-            onHide={() =>
-              setMsgsModal({ shown: false, subjectId: null, title: '' })
-            }
-          />
-        )}
-        {mySubjects.subjects.length > 0 && (
-          <div style={{ width: '100%' }}>
-            <h3
+  return useMemo(
+    () => (
+      <Modal onHide={onHide} style={{ overflow: msgsModal.shown && 'hidden' }}>
+        <header>View Subjects</header>
+        <main>
+          {!loaded && <Loading />}
+          {msgsModal.shown && (
+            <SubjectMsgsModal
+              subjectId={msgsModal.subjectId}
+              subjectTitle={msgsModal.title}
+              onHide={() =>
+                setMsgsModal({ shown: false, subjectId: null, title: '' })
+              }
+            />
+          )}
+          {mySubjects.subjects.length > 0 && (
+            <div style={{ width: '100%' }}>
+              <h3
+                style={{
+                  color: Color.green(),
+                  marginBottom: '1rem'
+                }}
+              >
+                My Subjects
+              </h3>
+              {mySubjects.subjects.map(subject => (
+                <SubjectItem
+                  key={subject.id}
+                  currentSubjectId={currentSubjectId}
+                  selectSubject={() => selectSubject(subject.id)}
+                  showMsgsModal={() =>
+                    setMsgsModal({
+                      shown: true,
+                      subjectId: subject.id,
+                      title: subject.content
+                    })
+                  }
+                  {...subject}
+                />
+              ))}
+              {mySubjects.loadMoreButton && (
+                <LoadMoreButton
+                  filled
+                  color="lightBlue"
+                  loading={mySubjects.loading}
+                  onClick={() => loadMoreSubjects(true)}
+                />
+              )}
+            </div>
+          )}
+          {loaded && (
+            <div
               style={{
-                color: Color.green(),
-                marginBottom: '1rem'
+                margin: '1rem 0',
+                marginTop: mySubjects.subjects.length > 0 ? '3rem' : '1rem',
+                width: '100%'
               }}
             >
-              My Subjects
-            </h3>
-            {mySubjects.subjects.map(subject => (
-              <SubjectItem
-                key={subject.id}
-                currentSubjectId={currentSubjectId}
-                selectSubject={() => selectSubject(subject.id)}
-                showMsgsModal={() =>
-                  setMsgsModal({
-                    shown: true,
-                    subjectId: subject.id,
-                    title: subject.content
-                  })
-                }
-                {...subject}
-              />
-            ))}
-            {mySubjects.loadMoreButton && (
-              <LoadMoreButton
-                filled
-                color="lightBlue"
-                loading={mySubjects.loading}
-                onClick={() => loadMoreSubjects(true)}
-              />
-            )}
-          </div>
-        )}
-        {loaded && (
-          <div
-            style={{
-              margin: '1rem 0',
-              marginTop: mySubjects.subjects.length > 0 ? '3rem' : '1rem',
-              width: '100%'
-            }}
-          >
-            <h3
-              style={{
-                color: Color.green()
-              }}
-            >
-              All Subjects
-            </h3>
-          </div>
-        )}
-        {allSubjects.subjects.map(subject => (
-          <SubjectItem
-            key={subject.id}
-            currentSubjectId={currentSubjectId}
-            selectSubject={() => selectSubject(subject.id)}
-            showMsgsModal={() =>
-              setMsgsModal({
-                shown: true,
-                subjectId: subject.id,
-                title: subject.content
-              })
-            }
-            {...subject}
-          />
-        ))}
-        {allSubjects.loadMoreButton && (
-          <LoadMoreButton
-            filled
-            color="lightBlue"
-            loading={allSubjects.loading}
-            onClick={() => loadMoreSubjects(false)}
-          />
-        )}
-      </main>
-      <footer>
-        <Button transparent onClick={onHide}>
-          Close
-        </Button>
-      </footer>
-    </Modal>
+              <h3
+                style={{
+                  color: Color.green()
+                }}
+              >
+                All Subjects
+              </h3>
+            </div>
+          )}
+          {allSubjects.subjects.map(subject => (
+            <SubjectItem
+              key={subject.id}
+              currentSubjectId={currentSubjectId}
+              selectSubject={() => selectSubject(subject.id)}
+              showMsgsModal={() =>
+                setMsgsModal({
+                  shown: true,
+                  subjectId: subject.id,
+                  title: subject.content
+                })
+              }
+              {...subject}
+            />
+          ))}
+          {allSubjects.loadMoreButton && (
+            <LoadMoreButton
+              filled
+              color="lightBlue"
+              loading={allSubjects.loading}
+              onClick={() => loadMoreSubjects(false)}
+            />
+          )}
+        </main>
+        <footer>
+          <Button transparent onClick={onHide}>
+            Close
+          </Button>
+        </footer>
+      </Modal>
+    ),
+    [currentSubjectId, userId, loaded, mySubjects, allSubjects, msgsModal]
   );
 
   async function loadMoreSubjects(mineOnly) {

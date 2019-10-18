@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import ColorSelector from 'components/ColorSelector';
@@ -51,193 +51,209 @@ export default function Cover({
     onSelectTheme(profileTheme || 'logoBlue');
   }, []);
 
-  return (
-    <ErrorBoundary>
-      <div
-        style={{
-          color: '#fff',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '100% 100%',
-          backgroundColor: Color[selectedTheme || profileTheme || 'logoBlue']()
-        }}
-        className={css`
-          height: 26rem;
-          margin-top: -1rem;
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          position: relative;
-          @media (max-width: ${mobileMaxWidth}) {
-            height: 12rem;
-          }
-        `}
-      >
+  return useMemo(
+    () => (
+      <ErrorBoundary>
         <div
+          style={{
+            color: '#fff',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '100% 100%',
+            backgroundColor: Color[
+              selectedTheme || profileTheme || 'logoBlue'
+            ]()
+          }}
           className={css`
-            margin-left: 29rem;
-            font-size: 5rem;
-            padding-top: 15rem;
-            font-weight: bold;
-            > p {
-              font-size: 2rem;
-              line-height: 1rem;
-            }
+            height: 26rem;
+            margin-top: -1rem;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
             @media (max-width: ${mobileMaxWidth}) {
-              margin-left: 15rem;
-              padding-top: 5.5rem;
-              font-size: 3rem;
-              > p {
-                font-size: 1.3rem;
-              }
+              height: 12rem;
             }
           `}
         >
-          {username}
-          {userType ? (
-            <>
-              {' '}
-              <span
-                className={css`
-                  font-size: 2.5rem;
-                  @media (max-width: ${mobileMaxWidth}) {
-                    font-size: 1.5rem;
-                  }
-                `}
-              >
-                {`[${userType.includes('teacher') ? 'teacher' : userType}]`}
-              </span>
-            </>
-          ) : (
-            ''
-          )}
-          <p>({realName})</p>
-        </div>
-        {profile.id === userId && (
           <div
-            style={{
-              background: colorSelectorShown && '#fff',
-              borderRadius,
-              position: 'absolute',
-              padding: '1rem',
-              bottom: '1rem',
-              right: '1rem'
-            }}
+            className={css`
+              margin-left: 29rem;
+              font-size: 5rem;
+              padding-top: 15rem;
+              font-weight: bold;
+              > p {
+                font-size: 2rem;
+                line-height: 1rem;
+              }
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-left: 15rem;
+                padding-top: 5.5rem;
+                font-size: 3rem;
+                > p {
+                  font-size: 1.3rem;
+                }
+              }
+            `}
           >
-            {!colorSelectorShown && (
-              <Button
-                style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
-                default
-                filled
-                onClick={() => setColorSelectorShown(true)}
-              >
-                Change Theme
-              </Button>
-            )}
-            {colorSelectorShown && (
+            {username}
+            {userType ? (
               <>
-                <ColorSelector
-                  colors={[
-                    'logoBlue',
-                    'green',
-                    'orange',
-                    'red',
-                    'rose',
-                    'pink',
-                    'purple',
-                    'darkBlue',
-                    'black',
-                    'vantaBlack'
-                  ]}
-                  twinkleXP={twinkleXP || 0}
-                  setColor={onSelectTheme}
-                  selectedColor={selectedTheme || profileTheme || 'logoBlue'}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    justifyContent: 'center'
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    marginTop: '1rem',
-                    justifyContent: 'flex-end'
-                  }}
+                {' '}
+                <span
+                  className={css`
+                    font-size: 2.5rem;
+                    @media (max-width: ${mobileMaxWidth}) {
+                      font-size: 1.5rem;
+                    }
+                  `}
                 >
-                  <Button
-                    style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                    skeuomorphic
-                    color="darkerGray"
-                    onClick={onColorSelectCancel}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    style={{ fontSize: '1.2rem' }}
-                    color="blue"
-                    filled
-                    onClick={handleSetTheme}
-                  >
-                    Change
-                  </Button>
-                </div>
+                  {`[${userType.includes('teacher') ? 'teacher' : userType}]`}
+                </span>
               </>
+            ) : (
+              ''
             )}
+            <p>({realName})</p>
           </div>
-        )}
-        <input
-          ref={FileInputRef}
-          style={{ display: 'none' }}
-          type="file"
-          onChange={handlePicture}
-          accept="image/*"
-        />
-      </div>
-      <ProfilePic
-        isProfilePage
-        className={css`
-          width: 22rem;
-          height: 22rem;
-          left: 3rem;
-          top: 7rem;
-          font-size: 2rem;
-          z-index: 10;
-          @media (max-width: ${mobileMaxWidth}) {
-            width: 12rem;
-            height: 12rem;
-            left: 1rem;
-            top: 4rem;
+          {profile.id === userId && (
+            <div
+              style={{
+                background: colorSelectorShown && '#fff',
+                borderRadius,
+                position: 'absolute',
+                padding: '1rem',
+                bottom: '1rem',
+                right: '1rem'
+              }}
+            >
+              {!colorSelectorShown && (
+                <Button
+                  style={{ marginBottom: '-1rem', marginRight: '-1rem' }}
+                  default
+                  filled
+                  onClick={() => setColorSelectorShown(true)}
+                >
+                  Change Theme
+                </Button>
+              )}
+              {colorSelectorShown && (
+                <>
+                  <ColorSelector
+                    colors={[
+                      'logoBlue',
+                      'green',
+                      'orange',
+                      'red',
+                      'rose',
+                      'pink',
+                      'purple',
+                      'darkBlue',
+                      'black',
+                      'vantaBlack'
+                    ]}
+                    twinkleXP={twinkleXP || 0}
+                    setColor={onSelectTheme}
+                    selectedColor={selectedTheme || profileTheme || 'logoBlue'}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      justifyContent: 'center'
+                    }}
+                  />
+                  <div
+                    style={{
+                      display: 'flex',
+                      marginTop: '1rem',
+                      justifyContent: 'flex-end'
+                    }}
+                  >
+                    <Button
+                      style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                      skeuomorphic
+                      color="darkerGray"
+                      onClick={onColorSelectCancel}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      style={{ fontSize: '1.2rem' }}
+                      color="blue"
+                      filled
+                      onClick={handleSetTheme}
+                    >
+                      Change
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          <input
+            ref={FileInputRef}
+            style={{ display: 'none' }}
+            type="file"
+            onChange={handlePicture}
+            accept="image/*"
+          />
+        </div>
+        <ProfilePic
+          isProfilePage
+          className={css`
+            width: 22rem;
+            height: 22rem;
+            left: 3rem;
+            top: 7rem;
+            font-size: 2rem;
+            z-index: 10;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 12rem;
+              height: 12rem;
+              left: 1rem;
+              top: 4rem;
+            }
+          `}
+          style={{ position: 'absolute' }}
+          userId={profile.id}
+          onClick={
+            userId === profile.id
+              ? () => FileInputRef.current.click()
+              : undefined
           }
-        `}
-        style={{ position: 'absolute' }}
-        userId={profile.id}
-        onClick={
-          userId === profile.id ? () => FileInputRef.current.click() : undefined
-        }
-        profilePicId={profilePicId}
-        online={!!online}
-        large
-      />
-      {imageEditModalShown && (
-        <ImageEditModal
-          imageUri={imageUri}
-          onHide={() => {
-            setImageUri(null);
-            setImageEditModalShown(false);
-            setProcessing(false);
-          }}
-          processing={processing}
-          onConfirm={uploadImage}
+          profilePicId={profilePicId}
+          online={!!online}
+          large
         />
-      )}
-      {alertModalShown && (
-        <AlertModal
-          title="Image is too large (limit: 5mb)"
-          content="Please select a smaller image"
-          onHide={() => setAlertModalShown(false)}
-        />
-      )}
-    </ErrorBoundary>
+        {imageEditModalShown && (
+          <ImageEditModal
+            imageUri={imageUri}
+            onHide={() => {
+              setImageUri(null);
+              setImageEditModalShown(false);
+              setProcessing(false);
+            }}
+            processing={processing}
+            onConfirm={uploadImage}
+          />
+        )}
+        {alertModalShown && (
+          <AlertModal
+            title="Image is too large (limit: 5mb)"
+            content="Please select a smaller image"
+            onHide={() => setAlertModalShown(false)}
+          />
+        )}
+      </ErrorBoundary>
+    ),
+    [
+      profile,
+      selectedTheme,
+      userId,
+      alertModalShown,
+      colorSelectorShown,
+      imageEditModalShown,
+      imageUri,
+      processing
+    ]
   );
 
   function onColorSelectCancel() {

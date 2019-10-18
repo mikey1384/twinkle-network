@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
@@ -89,14 +89,17 @@ export default function FileUploadStatusIndicator({
     );
   }, [clientToApiServerProgress, apiServerToS3Progress]);
 
-  return (
-    <div style={{ marginTop: '1rem' }}>
-      <div>{`Uploading ${fileToUpload.name}...`}</div>
-      <ProgressBar
-        text={uploadComplete ? 'Upload Complete!' : ''}
-        color={uploadComplete ? Color.green() : Color.blue()}
-        progress={uploadComplete ? 100 : uploadProgress}
-      />
-    </div>
+  return useMemo(
+    () => (
+      <div style={{ marginTop: '1rem' }}>
+        <div>{`Uploading ${fileToUpload.name}...`}</div>
+        <ProgressBar
+          text={uploadComplete ? 'Upload Complete!' : ''}
+          color={uploadComplete ? Color.green() : Color.blue()}
+          progress={uploadComplete ? 100 : uploadProgress}
+        />
+      </div>
+    ),
+    [fileToUpload.name, uploadComplete, uploadProgress]
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Cover from './Cover';
 import Body from './Body';
@@ -70,49 +70,52 @@ export default function Profile({ history, location, match }) {
     setSelectedTheme(profile?.profileTheme || 'logoBlue');
   }, [match.params.username, profile, userId]);
 
-  return (
-    <ErrorBoundary style={{ minHeight: '10rem' }}>
-      {!notExist ? (
-        <>
-          {loading && <Loading text="Loading Profile..." />}
-          {!loading && profile.id && (
-            <div
-              className={css`
-                a {
-                  white-space: pre-wrap;
-                  overflow-wrap: break-word;
-                  word-break: break-word;
-                }
-              `}
-              style={{
-                position: 'relative'
-              }}
-            >
-              <Cover
-                profile={profile}
-                onSelectTheme={theme => {
-                  setSelectedTheme(theme);
+  return useMemo(
+    () => (
+      <ErrorBoundary style={{ minHeight: '10rem' }}>
+        {!notExist ? (
+          <>
+            {loading && <Loading text="Loading Profile..." />}
+            {!loading && profile.id && (
+              <div
+                className={css`
+                  a {
+                    white-space: pre-wrap;
+                    overflow-wrap: break-word;
+                    word-break: break-word;
+                  }
+                `}
+                style={{
+                  position: 'relative'
                 }}
-                selectedTheme={selectedTheme}
-                onSetTheme={onSetTheme}
-              />
-              <Body
-                history={history}
-                location={location}
-                match={match}
-                profile={profile}
-                selectedTheme={selectedTheme}
-              />
-            </div>
-          )}
-        </>
-      ) : (
-        <NotFound
-          title={!userId ? 'For Registered Users Only' : ''}
-          text={!userId ? 'Please Log In or Sign Up' : ''}
-        />
-      )}
-    </ErrorBoundary>
+              >
+                <Cover
+                  profile={profile}
+                  onSelectTheme={theme => {
+                    setSelectedTheme(theme);
+                  }}
+                  selectedTheme={selectedTheme}
+                  onSetTheme={onSetTheme}
+                />
+                <Body
+                  history={history}
+                  location={location}
+                  match={match}
+                  profile={profile}
+                  selectedTheme={selectedTheme}
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <NotFound
+            title={!userId ? 'For Registered Users Only' : ''}
+            text={!userId ? 'Please Log In or Sign Up' : ''}
+          />
+        )}
+      </ErrorBoundary>
+    ),
+    [loading, location, notExist, profile, selectedTheme]
   );
 
   async function onSetTheme() {

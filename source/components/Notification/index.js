@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
@@ -30,6 +30,7 @@ export default function Notification({ children, className, location, style }) {
       numNewNotis,
       rewards,
       totalRewardAmount,
+      currentChatSubject,
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
     },
     actions: { onFetchNotifications }
@@ -68,86 +69,102 @@ export default function Notification({ children, className, location, style }) {
     };
   });
 
-  return (
-    <ErrorBoundary>
-      <div style={style} className={`${container} ${className}`}>
-        <section style={{ marginBottom: '0.5rem' }}>
-          <div
-            className={css`
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-            `}
-          >
-            {children && children}
-          </div>
-          {loaded && location === 'home' && (
-            <ChatFeeds
-              content={content}
-              style={{
-                marginTop: children ? '1rem' : '0',
-                marginBottom: '1rem'
-              }}
-              {...subject}
-            />
-          )}
-          {notifications.length > 0 && userId && (
-            <FilterBar
-              bordered
-              style={{
-                fontSize: '1.6rem',
-                height: '5rem'
-              }}
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <div style={style} className={`${container} ${className}`}>
+          <section style={{ marginBottom: '0.5rem' }}>
+            <div
+              className={css`
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              `}
             >
-              <nav
-                className={`${activeTab === 'notification' &&
-                  'active'} ${numNewNotis > 0 && 'alert'}`}
-                onClick={() => {
-                  userChangedTab.current = true;
-                  setActiveTab('notification');
+              {children && children}
+            </div>
+            {loaded && location === 'home' && (
+              <ChatFeeds
+                content={content}
+                style={{
+                  marginTop: children ? '1rem' : '0',
+                  marginBottom: '1rem'
+                }}
+                {...subject}
+              />
+            )}
+            {notifications.length > 0 && userId && (
+              <FilterBar
+                bordered
+                style={{
+                  fontSize: '1.6rem',
+                  height: '5rem'
                 }}
               >
-                News
-              </nav>
-              <nav
-                className={activeTab === 'rankings' ? 'active' : undefined}
-                onClick={() => {
-                  userChangedTab.current = true;
-                  setActiveTab('rankings');
-                }}
-              >
-                Rankings
-              </nav>
-              {rewardTabShown && (
                 <nav
-                  className={`${activeTab === 'reward' &&
-                    'active'} ${totalRewardAmount > 0 && 'alert'}`}
+                  className={`${activeTab === 'notification' &&
+                    'active'} ${numNewNotis > 0 && 'alert'}`}
                   onClick={() => {
                     userChangedTab.current = true;
-                    setActiveTab('reward');
+                    setActiveTab('notification');
                   }}
                 >
-                  Rewards
+                  News
                 </nav>
-              )}
-            </FilterBar>
-          )}
-          <MainFeeds
-            loadMore={loadMore}
-            activeTab={activeTab}
-            notifications={notifications}
-            rewards={rewards}
-            selectNotiTab={() => {
-              userChangedTab.current = true;
-              setActiveTab('notification');
-            }}
-            style={{
-              marginTop: loaded && userId && notifications.length > 0 && '1rem'
-            }}
-          />
-        </section>
-      </div>
-    </ErrorBoundary>
+                <nav
+                  className={activeTab === 'rankings' ? 'active' : undefined}
+                  onClick={() => {
+                    userChangedTab.current = true;
+                    setActiveTab('rankings');
+                  }}
+                >
+                  Rankings
+                </nav>
+                {rewardTabShown && (
+                  <nav
+                    className={`${activeTab === 'reward' &&
+                      'active'} ${totalRewardAmount > 0 && 'alert'}`}
+                    onClick={() => {
+                      userChangedTab.current = true;
+                      setActiveTab('reward');
+                    }}
+                  >
+                    Rewards
+                  </nav>
+                )}
+              </FilterBar>
+            )}
+            <MainFeeds
+              loadMore={loadMore}
+              activeTab={activeTab}
+              notifications={notifications}
+              rewards={rewards}
+              selectNotiTab={() => {
+                userChangedTab.current = true;
+                setActiveTab('notification');
+              }}
+              style={{
+                marginTop:
+                  loaded && userId && notifications.length > 0 && '1rem'
+              }}
+            />
+          </section>
+        </div>
+      </ErrorBoundary>
+    ),
+    [
+      activeTab,
+      children,
+      currentChatSubject,
+      loadMore,
+      notifications,
+      numNewNotis,
+      rewards,
+      totalRewardAmount,
+      location,
+      rewardTabShown,
+      userId
+    ]
   );
 
   async function handleFetchNotifications() {

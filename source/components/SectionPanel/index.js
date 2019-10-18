@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Body from './Body';
@@ -65,169 +65,188 @@ export default function SectionPanel({
     setEditedTitle(title);
   });
 
-  return (
-    <div
-      className={css`
-        border: 1px solid ${Color.borderGray()};
-        width: 100%;
-        background: #fff;
-        border-radius: ${borderRadius};
-        margin-bottom: 1rem;
-        > header {
-          display: grid;
+  return useMemo(
+    () => (
+      <div
+        className={css`
+          border: 1px solid ${Color.borderGray()};
           width: 100%;
-          grid-template-areas: 'title search buttons';
-          grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
           background: #fff;
-          color: ${Color[themeColor]()};
-          border-top-left-radius: ${borderRadius};
-          border-top-right-radius: ${borderRadius};
-          padding: 1rem;
-          padding-top: ${inverted ? '1.7rem' : '1rem'};
-          font-weight: bold;
-          font-size: 2.5rem;
-          align-items: center;
-        }
-        > main {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          padding: 1rem;
-          width: 100%;
-          justify-content: center;
-          min-height: 15rem;
-        }
-        @media (max-width: ${mobileMaxWidth}) {
-          border-radius: 0;
-          border: 0;
+          border-radius: ${borderRadius};
+          margin-bottom: 1rem;
           > header {
-            border-radius: 0;
+            display: grid;
+            width: 100%;
+            grid-template-areas: 'title search buttons';
+            grid-template-columns: auto ${onSearch ? '40%' : 'auto'} auto;
+            background: #fff;
+            color: ${Color[themeColor]()};
+            border-top-left-radius: ${borderRadius};
+            border-top-right-radius: ${borderRadius};
+            padding: 1rem;
+            padding-top: ${inverted ? '1.7rem' : '1rem'};
+            font-weight: bold;
+            font-size: 2.5rem;
+            align-items: center;
           }
-        }
-      `}
-    >
-      <header ref={innerRef}>
-        <div
-          style={{
-            gridArea: 'title',
-            marginRight: '1rem',
-            display: 'flex'
-          }}
-        >
+          > main {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            width: 100%;
+            justify-content: center;
+            min-height: 15rem;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            border-radius: 0;
+            border: 0;
+            > header {
+              border-radius: 0;
+            }
+          }
+        `}
+      >
+        <header ref={innerRef}>
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%'
+              gridArea: 'title',
+              marginRight: '1rem',
+              display: 'flex'
             }}
           >
-            {onEdit ? (
-              <Input
-                inputRef={TitleInputRef}
-                maxLength={100}
-                placeholder={placeholder}
-                autoFocus
-                onChange={text => setEditedTitle(addEmoji(text))}
-                onKeyPress={event => {
-                  if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
-                    onChangeTitle(editedTitle);
-                  }
-                }}
-                value={editedTitle}
-              />
-            ) : (
-              <div style={{ lineHeight: '3rem' }}>{title}</div>
-            )}
-            {canEdit && onEditTitle && !onEdit ? (
-              <div
-                className={css`
-                  &:hover {
-                    text-decoration: underline;
-                  }
-                `}
-                style={{
-                  color: Color.gray(),
-                  fontWeight: 'normal',
-                  marginTop: '0.5rem',
-                  fontSize: '1.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  lineHeight: '1.7rem',
-                  alignItems: 'flex-end'
-                }}
-                onClick={() => {
-                  setOnEdit(true);
-                  setEditedTitle(title);
-                }}
-              >
-                <span>
-                  <Icon icon="pencil-alt" />
-                  &nbsp;&nbsp;Edit
-                </span>
-              </div>
-            ) : (
-              ''
-            )}
-          </div>
-        </div>
-        {onSearch && (
-          <SearchInput
-            addonColor={themeColor}
-            borderColor={themeColor}
-            style={{
-              color: '#fff',
-              gridArea: 'search',
-              width: '100%',
-              justifySelf: 'center',
-              zIndex: 0
-            }}
-            onChange={search}
-            placeholder={searchPlaceholder}
-            value={searchQuery}
-          />
-        )}
-        <div style={{ gridArea: 'buttons', justifySelf: 'end' }}>{button}</div>
-      </header>
-      <main style={style}>
-        {loaded ? (
-          <Body
-            content={children}
-            emptyMessage={emptyMessage}
-            loadMoreButtonShown={loadMoreButtonShown}
-            isEmpty={isEmpty}
-            isSearching={isSearching}
-            searchQuery={searchQuery}
-            statusMsgStyle={css`
-              font-size: 3rem;
-              font-weight: bold;
-              top: 0;
-              bottom: 0;
-              left: 0;
-              right: 0;
-              position: absolute;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              color: ${Color.darkerGray()};
-            `}
-          />
-        ) : (
-          <Loading />
-        )}
-        {loadMoreButtonShown && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              transparent
-              disabled={loading}
-              onClick={onLoadMore}
-              style={{ fontSize: '2rem' }}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%'
+              }}
             >
-              Load More
-            </Button>
+              {onEdit ? (
+                <Input
+                  inputRef={TitleInputRef}
+                  maxLength={100}
+                  placeholder={placeholder}
+                  autoFocus
+                  onChange={text => setEditedTitle(addEmoji(text))}
+                  onKeyPress={event => {
+                    if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
+                      onChangeTitle(editedTitle);
+                    }
+                  }}
+                  value={editedTitle}
+                />
+              ) : (
+                <div style={{ lineHeight: '3rem' }}>{title}</div>
+              )}
+              {canEdit && onEditTitle && !onEdit ? (
+                <div
+                  className={css`
+                    &:hover {
+                      text-decoration: underline;
+                    }
+                  `}
+                  style={{
+                    color: Color.gray(),
+                    fontWeight: 'normal',
+                    marginTop: '0.5rem',
+                    fontSize: '1.5rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    lineHeight: '1.7rem',
+                    alignItems: 'flex-end'
+                  }}
+                  onClick={() => {
+                    setOnEdit(true);
+                    setEditedTitle(title);
+                  }}
+                >
+                  <span>
+                    <Icon icon="pencil-alt" />
+                    &nbsp;&nbsp;Edit
+                  </span>
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
-        )}
-      </main>
-    </div>
+          {onSearch && (
+            <SearchInput
+              addonColor={themeColor}
+              borderColor={themeColor}
+              style={{
+                color: '#fff',
+                gridArea: 'search',
+                width: '100%',
+                justifySelf: 'center',
+                zIndex: 0
+              }}
+              onChange={search}
+              placeholder={searchPlaceholder}
+              value={searchQuery}
+            />
+          )}
+          <div style={{ gridArea: 'buttons', justifySelf: 'end' }}>
+            {button}
+          </div>
+        </header>
+        <main style={style}>
+          {loaded ? (
+            <Body
+              content={children}
+              emptyMessage={emptyMessage}
+              loadMoreButtonShown={loadMoreButtonShown}
+              isEmpty={isEmpty}
+              isSearching={isSearching}
+              searchQuery={searchQuery}
+              statusMsgStyle={css`
+                font-size: 3rem;
+                font-weight: bold;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: ${Color.darkerGray()};
+              `}
+            />
+          ) : (
+            <Loading />
+          )}
+          {loadMoreButtonShown && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                transparent
+                disabled={loading}
+                onClick={onLoadMore}
+                style={{ fontSize: '2rem' }}
+              >
+                Load More
+              </Button>
+            </div>
+          )}
+        </main>
+      </div>
+    ),
+    [
+      canEdit,
+      children,
+      editedTitle,
+      isEmpty,
+      isSearching,
+      loaded,
+      loading,
+      loadMoreButtonShown,
+      onEdit,
+      onEditTitle,
+      onSearch,
+      themeColor,
+      searchQuery
+    ]
   );
 
   async function onChangeTitle(title) {
