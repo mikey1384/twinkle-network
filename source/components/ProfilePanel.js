@@ -146,8 +146,8 @@ function ProfilePanel({ history, expandable, profileId }) {
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    return (
       <div
         key={profileId}
         className={css`
@@ -197,9 +197,9 @@ function ProfilePanel({ history, expandable, profileId }) {
             ${twinkleXP
               ? 'border-bottom: none;'
               : `
-                border-bottom-left-radius: ${borderRadius};
-                border-bottom-right-radius: ${borderRadius};
-              `};
+                  border-bottom-left-radius: ${borderRadius};
+                  border-bottom-right-radius: ${borderRadius};
+                `};
             border-top: none;
             @media (max-width: ${mobileMaxWidth}) {
               border-radius: 0;
@@ -415,21 +415,20 @@ function ProfilePanel({ history, expandable, profileId }) {
           />
         )}
       </div>
-    ),
-    [
-      noBio,
-      canEdit,
-      profile,
-      chatLoaded,
-      bioEditModalShown,
-      loadingComments,
-      imageUri,
-      imageEditModalShown,
-      mouseEnteredProfile,
-      alertModalShown,
-      userId
-    ]
-  );
+    );
+  }, [
+    noBio,
+    canEdit,
+    profile,
+    chatLoaded,
+    bioEditModalShown,
+    loadingComments,
+    imageUri,
+    imageEditModalShown,
+    mouseEnteredProfile,
+    alertModalShown,
+    userId
+  ]);
 
   function handlePicture(event) {
     const reader = new FileReader();

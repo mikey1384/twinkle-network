@@ -980,6 +980,14 @@ export default function ContentPageReducer(state, action) {
           thumbUrl: action.thumbUrl
         }
       };
+    case 'SET_USER_ONLINE':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          online: action.online
+        }
+      };
     case 'SET_VIDEO_IMAGE_URL':
       return {
         ...state,

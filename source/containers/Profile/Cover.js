@@ -25,10 +25,11 @@ export default function Cover({
   selectedTheme
 }) {
   const {
-    requestHelpers: { uploadProfilePic }
+    requestHelpers: { checkIfUserOnline, uploadProfilePic }
   } = useAppContext();
   const { userId } = useMyState();
   const {
+    id,
     profilePicId,
     online,
     profileTheme,
@@ -38,7 +39,7 @@ export default function Cover({
     userType
   } = profile;
   const {
-    actions: { onUploadProfilePic }
+    actions: { onSetOnline, onUploadProfilePic }
   } = useContentContext();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
@@ -49,6 +50,13 @@ export default function Cover({
 
   useEffect(() => {
     onSelectTheme(profileTheme || 'logoBlue');
+    if (id !== userId) {
+      handleCheckIfUserOnline();
+    }
+    async function handleCheckIfUserOnline() {
+      const online = await checkIfUserOnline(id);
+      onSetOnline({ contentId: id, contentType: 'user', online });
+    }
   }, []);
 
   return useMemo(

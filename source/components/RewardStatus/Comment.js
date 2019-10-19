@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -10,8 +10,8 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
-import { useAppContext } from 'contexts';
+import { useContentState, useMyState } from 'helpers/hooks';
+import { useAppContext, useContentContext } from 'contexts';
 
 Comment.propTypes = {
   maxRewardableStars: PropTypes.number.isRequired,
@@ -29,8 +29,14 @@ export default function Comment({
   const {
     requestHelpers: { editRewardComment }
   } = useAppContext();
+  const {
+    actions: { onSetIsEditing }
+  } = useContentContext();
   const { authLevel, canEdit, userId } = useMyState();
-  const [onEdit, setOnEdit] = useState(false);
+  const { isEditing } = useContentState({
+    contentType: 'reward',
+    contentId: star.id
+  });
   const userIsUploader = star.rewarderId === userId;
   const userCanEditThis = canEdit && authLevel > star.rewarderAuthLevel;
   const editButtonShown = userIsUploader || userCanEditThis;
@@ -38,12 +44,17 @@ export default function Comment({
   if (userIsUploader || canEdit) {
     editMenuItems.push({
       label: 'Edit',
-      onClick: () => setOnEdit(true)
+      onClick: () =>
+        onSetIsEditing({
+          contentId: star.id,
+          contentType: 'reward',
+          isEditing: true
+        })
     });
   }
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    return (
       <ErrorBoundary>
         <div
           className={css`
@@ -80,7 +91,7 @@ export default function Comment({
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent:
-                  stringIsEmpty(star.rewardComment) && !onEdit && 'center'
+                  stringIsEmpty(star.rewardComment) && !isEditing && 'center'
               }}
             >
               <div
@@ -126,8 +137,8 @@ export default function Comment({
                   wordBreak: 'break-word'
                 }}
               >
-                {!onEdit && <LongText>{star.rewardComment}</LongText>}
-                {onEdit && (
+                {!isEditing && <LongText>{star.rewardComment}</LongText>}
+                {isEditing && (
                   <EditTextArea
                     contentId={star.id}
                     contentType="reward"
@@ -135,13 +146,19 @@ export default function Comment({
                     autoFocus
                     rows={3}
                     text={star.rewardComment}
-                    onCancel={() => setOnEdit(false)}
+                    onCancel={() =>
+                      onSetIsEditing({
+                        contentId: star.id,
+                        contentType: 'reward',
+                        isEditing: false
+                      })
+                    }
                     onEditDone={submitEdit}
                   />
                 )}
               </div>
             </div>
-            {editButtonShown && !onEdit && (
+            {editButtonShown && !isEditing && (
               <DropdownButton
                 skeuomorphic
                 color="darkerGray"
@@ -152,13 +169,16 @@ export default function Comment({
           </div>
         </div>
       </ErrorBoundary>
-    ),
-    [maxRewardableStars, star, editMenuItems, editButtonShown]
-  );
+    );
+  }, [maxRewardableStars, star, editMenuItems, editButtonShown, isEditing]);
 
   async function submitEdit(editedComment) {
     await editRewardComment({ editedComment, contentId: star.id });
     onEditDone({ id: star.id, text: editedComment });
-    setOnEdit(false);
+    onSetIsEditing({
+      contentId: star.id,
+      contentType: 'reward',
+      isEditing: false
+    });
   }
 }
