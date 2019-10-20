@@ -33,6 +33,7 @@ export default function Links({ location }) {
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);
   const lastId = useRef(null);
+  const prevLoaded = useRef(false);
 
   useEffect(() => {
     if (links.length > 0) {
@@ -50,6 +51,7 @@ export default function Links({ location }) {
           numberToLoad: 20
         });
         onFetchLinks({ links, loadMoreButton });
+        prevLoaded.current = true;
       }
     }
 
@@ -74,7 +76,7 @@ export default function Links({ location }) {
         emptyMessage="No Uploaded Links"
         isEmpty={links.length === 0}
         emptypMessage="No Links"
-        loaded={loaded}
+        loaded={loaded || prevLoaded.current}
         loadMore={handleLoadMoreLinks}
         loadMoreButtonShown={loadMoreLinksButtonShown}
       >

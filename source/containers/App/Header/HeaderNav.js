@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext, useHomeContext } from 'contexts';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -40,6 +41,14 @@ export default function HeaderNav({
     );
   const activeColor = alert ? alertColor : Color.darkGray();
   const hoverColor = alert ? alertColor : Color.darkGray();
+  const {
+    actions: { onReloadFeeds }
+  } = useHomeContext();
+  const {
+    user: {
+      actions: { onSetProfilesLoaded }
+    }
+  } = useAppContext();
   return (
     <Route
       path={to}
@@ -48,8 +57,7 @@ export default function HeaderNav({
         <div
           onClick={() => {
             if (match) {
-              document.getElementById('App').scrollTop = 0;
-              BodyRef.current.scrollTop = 0;
+              handleMatch(match);
             }
           }}
           className={`${className} ${css`
@@ -152,4 +160,15 @@ export default function HeaderNav({
       )}
     />
   );
+
+  function handleMatch(match) {
+    if (match.path === '/') {
+      onReloadFeeds();
+    }
+    if (match.path === '/users') {
+      onSetProfilesLoaded(false);
+    }
+    document.getElementById('App').scrollTop = 0;
+    BodyRef.current.scrollTop = 0;
+  }
 }

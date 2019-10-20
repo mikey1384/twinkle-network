@@ -177,10 +177,6 @@ export default function LinkPage({
     };
   }, [location.pathname]);
 
-  let userLikedThis = false;
-  for (let i = 0; i < likes.length; i++) {
-    if (likes[i].id === userId) userLikedThis = true;
-  }
   const userCanEditThis =
     (canEdit || canDelete) && authLevel > uploader?.authLevel;
   const userCanRewardThis =
@@ -272,7 +268,7 @@ export default function LinkPage({
                   contentType="url"
                   contentId={linkId}
                   onClick={handleLikeLink}
-                  liked={userLikedThis}
+                  likes={likes}
                 />
                 {userCanRewardThis && (
                   <Button

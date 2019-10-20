@@ -31,7 +31,8 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         profiles: action.data,
-        loadMoreButton
+        loadMoreButton,
+        profilesLoaded: true
       };
     }
     case 'LOAD_MORE_USERS': {

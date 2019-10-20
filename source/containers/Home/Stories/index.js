@@ -120,7 +120,7 @@ export default function Stories({ location }) {
   });
 
   useEffect(() => {
-    if (feeds.length === 0) {
+    if (!loaded) {
       init();
     }
     async function init() {
@@ -137,7 +137,7 @@ export default function Stories({ location }) {
         console.error(error);
       }
     }
-  }, []);
+  }, [loaded]);
 
   useEffect(() => {
     if (category === 'videos') {

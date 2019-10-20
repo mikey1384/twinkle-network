@@ -23,7 +23,7 @@ People.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-export default function People({ location, history }) {
+export default function People({ location }) {
   const {
     user: {
       actions: {
@@ -86,13 +86,12 @@ export default function People({ location, history }) {
   useEffect(() => {
     init();
     async function init() {
-      if (profiles.length === 0) {
+      if (!profilesLoaded) {
         const data = await loadUsers();
         onLoadUsers(data);
-        onSetProfilesLoaded(true);
       }
     }
-  }, [history.action]);
+  }, [profilesLoaded]);
   return useMemo(
     () => (
       <div style={{ height: '100%' }}>

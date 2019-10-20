@@ -49,7 +49,6 @@ export default function Body({
     rewardLevel,
     id,
     numChildComments,
-    title,
     childComments = [],
     commentsLoadMoreButton = false,
     likes = [],
@@ -68,7 +67,7 @@ export default function Body({
   onChangeSpoilerStatus
 }) {
   const {
-    requestHelpers: { deleteContent, editContent, loadComments }
+    requestHelpers: { deleteContent, loadComments }
   } = useAppContext();
   const {
     authLevel,
@@ -87,21 +86,17 @@ export default function Body({
   });
   const {
     commentsLoadLimit,
-    onAddTags,
-    onAddTagToContents,
     onAttachStar,
     onByUserStatusChange,
     onCommentSubmit,
     onDeleteComment,
     onDeleteContent,
     onEditComment,
-    onEditContent,
     onEditRewardComment,
     onLoadComments,
     onLikeContent,
     onLoadMoreComments,
     onLoadMoreReplies,
-    onLoadTags,
     onLoadRepliesOfReply,
     onReplySubmit,
     onSetCommentsHidden,
@@ -209,23 +204,10 @@ export default function Body({
           )}
           <MainContent
             contentId={contentId}
-            contentObj={contentObj}
             contentType={contentType}
             commentsHidden={commentsHidden}
-            contentTitle={title || rootObj.title}
-            onAddTags={onAddTags}
-            onAddTagToContents={onAddTagToContents}
-            isEditing={isEditing}
             myId={userId}
-            onEditContent={editThisContent}
-            onEditDismiss={() =>
-              onSetIsEditing({ contentId, contentType, isEditing: false })
-            }
             onClickSecretAnswer={onCommentButtonClick}
-            onLoadTags={onLoadTags}
-            rootObj={rootObj}
-            rootType={rootType}
-            targetObj={targetObj}
           />
           {!isEditing && !commentsHidden && (
             <div
@@ -244,9 +226,9 @@ export default function Body({
                   <LikeButton
                     contentType={contentType}
                     contentId={contentId}
+                    likes={likes}
                     key="likeButton"
                     onClick={onLikeClick}
-                    liked={determineUserLikedThis(likes)}
                     small
                   />
                   <Button
@@ -506,14 +488,6 @@ export default function Body({
     return editMenuItems;
   }
 
-  function determineUserLikedThis(likes) {
-    let userLikedThis = false;
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].id === userId) userLikedThis = true;
-    }
-    return userLikedThis;
-  }
-
   function xpButtonDisabled() {
     return determineXpButtonDisabled({
       stars,
@@ -540,12 +514,11 @@ export default function Body({
 
   async function deleteThisContent() {
     await deleteContent({ contentType, id });
-    onDeleteContent({ contentType, contentId: id });
-  }
-
-  async function editThisContent(params) {
-    const data = await editContent(params);
-    onEditContent({ data, contentType, contentId });
+    if (contentType === 'comment') {
+      onDeleteComment(id);
+    } else {
+      onDeleteContent({ contentType, contentId: id });
+    }
   }
 
   async function handleExpandComments() {
@@ -558,8 +531,7 @@ export default function Body({
     onSetCommentsShown({ contentId, contentType });
   }
 
-  async function onLikeClick(likes) {
-    onLikeContent({ likes, contentType, contentId });
+  async function onLikeClick() {
     if (!commentsShown) {
       await handleExpandComments();
       if (Number(numChildComments) === 0 && !isMobile(navigator)) {
@@ -569,6 +541,6 @@ export default function Body({
   }
 
   function onToggleByUser(byUser) {
-    onByUserStatusChange({ byUser, contentId });
+    onByUserStatusChange({ byUser, contentId, contentType });
   }
 }

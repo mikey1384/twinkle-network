@@ -114,10 +114,6 @@ export default function Reply({
       onClick: () => setConfirmModalShown(true)
     });
   }
-  let userLikedThis = false;
-  for (let i = 0; i < likes.length; i++) {
-    if (likes[i].id === userId) userLikedThis = true;
-  }
 
   return useMemo(
     () =>
@@ -189,7 +185,7 @@ export default function Reply({
                           contentId={reply.id}
                           contentType="comment"
                           onClick={likeClick}
-                          liked={userLikedThis}
+                          likes={likes}
                           small
                         />
                         <Button

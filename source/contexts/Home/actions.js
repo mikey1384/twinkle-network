@@ -31,6 +31,11 @@ export default function HomeActions(dispatch) {
         type: 'LOAD_NEW_FEEDS',
         data
       });
+    },
+    onReloadFeeds() {
+      return dispatch({
+        type: 'RELOAD_FEEDS'
+      });
     }
   };
 }

@@ -1,17 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 LikeButton.propTypes = {
   className: PropTypes.string,
   contentType: PropTypes.string.isRequired,
   contentId: PropTypes.number.isRequired,
-  liked: PropTypes.bool.isRequired,
   filled: PropTypes.bool,
-  onClick: PropTypes.func.isRequired,
+  likes: PropTypes.array,
+  onClick: PropTypes.func,
   style: PropTypes.object,
   targetLabel: PropTypes.string
 };
@@ -21,15 +22,27 @@ export default function LikeButton({
   contentId,
   contentType,
   filled,
+  likes,
   style,
-  liked,
-  onClick,
+  onClick = () => {},
   targetLabel
 }) {
   const {
     requestHelpers: { likeContent }
   } = useAppContext();
+  const {
+    actions: { onLikeContent }
+  } = useContentContext();
+  const { userId } = useMyState();
   const [disabled, setDisabled] = useState(false);
+  const [liked, setLiked] = useState(false);
+  useEffect(() => {
+    let userLikedThis = false;
+    for (let i = 0; i < likes.length; i++) {
+      if (likes[i].id === userId) userLikedThis = true;
+    }
+    setLiked(userLikedThis);
+  }, [likes]);
   return useMemo(
     () => (
       <ErrorBoundary>
@@ -42,12 +55,13 @@ export default function LikeButton({
           onClick={async () => {
             try {
               setDisabled(true);
-              const likes = await likeContent({
+              const newLikes = await likeContent({
                 id: contentId,
                 contentType
               });
               setDisabled(false);
-              onClick(likes, contentId);
+              onLikeContent({ likes: newLikes, contentType, contentId });
+              onClick(newLikes);
             } catch (error) {
               return console.error(error);
             }

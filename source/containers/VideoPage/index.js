@@ -88,7 +88,6 @@ export default function VideoPage({
       onEditSubject,
       onInitContent,
       onLikeComment,
-      onLikeContent,
       onLoadComments,
       onLoadMoreComments,
       onLoadMoreReplies,
@@ -549,7 +548,6 @@ export default function VideoPage({
   }
 
   function handleLikeVideo(likes, videoId) {
-    onLikeContent({ likes, contentType: 'video', contentId: videoId });
     onLikeVideo({ likes, videoId });
   }
 

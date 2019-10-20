@@ -4,10 +4,9 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 
 TwinkleLogo.propTypes = {
-  history: PropTypes.object.isRequired,
   style: PropTypes.object
 };
-export default function TwinkleLogo({ history, style }) {
+export default function TwinkleLogo({ style }) {
   return (
     <div
       style={style}
@@ -18,7 +17,7 @@ export default function TwinkleLogo({ history, style }) {
         height: 2rem;
       `}`}
       onClick={() => {
-        history.push('/');
+        window.location.href = '/';
       }}
     >
       <div

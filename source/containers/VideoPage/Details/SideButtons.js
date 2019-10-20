@@ -67,6 +67,7 @@ export default function SideButtons({
         <LikeButton
           contentType="video"
           contentId={Number(videoId)}
+          likes={likes}
           filled
           style={{
             fontSize: '2.5vw',
@@ -74,15 +75,6 @@ export default function SideButtons({
             maxWidth: '13vw'
           }}
           onClick={onLikeVideo}
-          liked={(likes => {
-            let liked = false;
-            if (likes) {
-              for (let i = 0; i < likes.length; i++) {
-                if (likes[i]?.id === userId) liked = true;
-              }
-            }
-            return liked;
-          })(likes)}
         />
       </div>
       <Likers

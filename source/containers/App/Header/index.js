@@ -248,7 +248,7 @@ function Header({
             width: '100%'
           }}
         >
-          <TwinkleLogo style={{ marginLeft: '3rem' }} history={history} />
+          <TwinkleLogo style={{ marginLeft: '3rem' }} />
           <MainNavs
             isAtExploreTab={['links', 'videos', 'subjects'].includes(
               getSectionFromPathname(pathname)?.section

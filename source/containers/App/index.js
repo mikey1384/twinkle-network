@@ -78,10 +78,6 @@ function App({ location, history }) {
     ) {
       init();
     }
-    window.ga('send', 'pageview', location.pathname);
-    history.listen(location => {
-      window.ga('send', 'pageview', location.pathname);
-    });
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
@@ -89,6 +85,13 @@ function App({ location, history }) {
       if (data?.userId) onInitSession(data);
     }
   }, [pageVisible]);
+
+  useEffect(() => {
+    window.ga('send', 'pageview', location.pathname);
+    history.listen(location => {
+      window.ga('send', 'pageview', location.pathname);
+    });
+  }, [location.pathname]);
 
   useEffect(() => {
     if (typeof document.hidden !== 'undefined') {

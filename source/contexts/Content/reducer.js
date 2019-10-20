@@ -6,6 +6,8 @@ export default function ContentPageReducer(state, action) {
       ? action.contentType + action.contentId
       : 'temp';
   const defaultState = {
+    contentType: action.contentType,
+    contentId: action.contentId,
     isEditing: false,
     stars: [],
     childComments: [],
@@ -221,6 +223,9 @@ export default function ContentPageReducer(state, action) {
         const prevContentState = newState[contentKey];
         newState[contentKey] = {
           ...prevContentState,
+          deleted:
+            prevContentState.contentId === action.commentId &&
+            prevContentState.contentType === 'comment',
           childComments: prevContentState.childComments
             ?.filter(comment => comment.id !== action.commentId)
             .map(comment => ({
@@ -591,7 +596,7 @@ export default function ContentPageReducer(state, action) {
         newState[contentKey] = {
           ...prevContentState,
           likes:
-            prevContentState.id === action.contentId &&
+            prevContentState.contentId === action.contentId &&
             prevContentState.contentType === action.contentType
               ? action.likes
               : prevContentState.likes,
@@ -667,7 +672,7 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           childComments:
-            state.contentType === 'comment'
+            prevContentState.contentType === 'comment'
               ? (action.comments || []).concat(prevContentState.childComments)
               : (prevContentState.childComments || []).concat(action.comments),
           commentsLoadMoreButton: action.loadMoreButton
@@ -852,7 +857,10 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          byUser: action.byUser
+          byUser: action.byUser,
+          rootObj: prevContentState.rootObj
+            ? { ...prevContentState.rootObj, byUser: action.byUser }
+            : undefined
         }
       };
     case 'SET_COMMENTS_SHOWN':

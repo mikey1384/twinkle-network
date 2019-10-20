@@ -138,10 +138,6 @@ function Comment({
         xpRewardInterfaceShown && userIsHigherAuth && canStar && !userIsUploader
     });
   }, [userId]);
-  let userLikedThis = false;
-  for (let i = 0; i < likes.length; i++) {
-    if (likes[i].id === userId) userLikedThis = true;
-  }
 
   const isCommentForContentSubject =
     parent.contentType !== 'subject' &&
@@ -277,7 +273,7 @@ function Comment({
                               contentType="comment"
                               contentId={comment.id}
                               onClick={likeClick}
-                              liked={userLikedThis}
+                              likes={likes}
                             />
                             <Button
                               transparent

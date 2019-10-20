@@ -74,10 +74,8 @@ function TargetContent({
     onDeleteComment,
     onEditComment,
     onEditRewardComment,
-    onLikeContent,
     onUploadTargetComment
   } = useContext(LocalContext);
-  let userLikedThis = false;
   let userIsUploader;
   let userCanRewardThis;
   let uploader = {};
@@ -87,9 +85,6 @@ function TargetContent({
 
   if (comment && !comment.notFound) {
     uploader = comment.uploader;
-    for (let i = 0; i < comment.likes.length; i++) {
-      if (comment.likes[i].id === userId) userLikedThis = true;
-    }
     userIsUploader = userId === comment.uploader.id;
     userCanRewardThis =
       !userIsUploader && canStar && authLevel > comment.uploader.authLevel;
@@ -216,7 +211,7 @@ function TargetContent({
                             contentType="comment"
                             contentId={comment.id}
                             onClick={handleLikeClick}
-                            liked={userLikedThis}
+                            likes={comment.likes}
                             small
                           />
                           <Button
@@ -383,12 +378,11 @@ function TargetContent({
     return subject?.rewardLevel || rootRewardLevel;
   }
 
-  function handleLikeClick(likes) {
+  function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
       InputFormRef.current.focus();
     }
-    onLikeContent({ likes, contentType: 'comment', contentId: comment.id });
   }
 
   function onReplyClick() {
