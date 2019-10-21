@@ -12,12 +12,7 @@ AccountMenu.propTypes = {
   style: PropTypes.object
 };
 
-export default function AccountMenu({
-  buttonStyle = {},
-  className,
-  history,
-  style
-}) {
+export default function AccountMenu({ className, history, style = {} }) {
   const {
     user: {
       actions: { onLogout, onOpenSigninModal }
@@ -30,7 +25,6 @@ export default function AccountMenu({
         {loggedIn ? (
           <DropdownButton
             className={className}
-            buttonStyle={buttonStyle}
             transparent
             listStyle={{ marginTop: '0.2rem' }}
             direction="left"
@@ -64,7 +58,7 @@ export default function AccountMenu({
           <Button
             className={className}
             onClick={onOpenSigninModal}
-            style={{ marginLeft: '1rem', ...buttonStyle }}
+            style={{ marginLeft: '1rem' }}
             color="green"
             filled
           >

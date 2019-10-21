@@ -324,6 +324,14 @@ export default function ContentActions(dispatch) {
         online
       });
     },
+    onSetPlaceholderHeight({ contentId, contentType, height }) {
+      return dispatch({
+        type: 'SET_PLACEHOLDER_HEIGHT',
+        contentId,
+        contentType,
+        height
+      });
+    },
     onSetPrevUrl({ contentId, contentType, prevUrl }) {
       return dispatch({
         type: 'SET_PREV_URL',
@@ -434,6 +442,15 @@ export default function ContentActions(dispatch) {
         contentType: 'video',
         contentId: videoId,
         progress
+      });
+    },
+    onSetVisible({ visible, contentId, contentType, visibilityTimeStamp }) {
+      return dispatch({
+        type: 'SET_VISIBLE',
+        contentType,
+        contentId,
+        visible,
+        visibilityTimeStamp
       });
     },
     onSetXpRewardInterfaceShown({ contentId, contentType, shown }) {

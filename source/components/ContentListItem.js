@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
@@ -31,12 +31,9 @@ export default function ContentListItem({
   style
 }) {
   const { profileTheme } = useMyState();
-  const [mouseEntered, setMouseEntered] = useState(false);
   return useMemo(
     () => (
       <div
-        onTouchStart={() => setMouseEntered(true)}
-        onMouseEnter={() => setMouseEntered(true)}
         onClick={onClick}
         style={{
           cursor: 'pointer',
@@ -52,8 +49,8 @@ export default function ContentListItem({
             color: ${expandable ? Color.darkerGray() : Color.darkGray()};
             transition: color 1s;
           }
-          margin-top: ${expandable ? (mouseEntered ? '-0.5rem' : '-2rem') : ''};
-          transition: background 0.5s, border 0.5s, margin-top 0.5s;
+          margin-top: ${expandable ? '-1rem' : '0'};
+          transition: background 0.5s, border 0.5s;
           &:hover {
             border-color: ${Color.darkerBorderGray()};
             .label {
@@ -303,7 +300,6 @@ export default function ContentListItem({
       contentObj.title,
       contentObj.description,
       contentObj.rootObj,
-      mouseEntered,
       selected,
       profileTheme
     ]

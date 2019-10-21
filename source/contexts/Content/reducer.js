@@ -9,6 +9,7 @@ export default function ContentPageReducer(state, action) {
     contentType: action.contentType,
     contentId: action.contentId,
     isEditing: false,
+    placeholderHeight: 0,
     stars: [],
     childComments: [],
     likes: [],
@@ -17,7 +18,8 @@ export default function ContentPageReducer(state, action) {
     commentsLoadMoreButton: false,
     subjectsLoadMoreButton: false,
     rootObj: {},
-    profileTheme: 'logoBlue'
+    profileTheme: 'logoBlue',
+    visibilityTimeStamp: 0
   };
   const prevContentState = state[contentKey] || defaultState;
   switch (action.type) {
@@ -895,6 +897,14 @@ export default function ContentPageReducer(state, action) {
           isEditing: action.isEditing
         }
       };
+    case 'SET_PLACEHOLDER_HEIGHT':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          placeholderHeight: action.height
+        }
+      };
     case 'SET_PREV_URL':
       return {
         ...state,
@@ -1066,6 +1076,14 @@ export default function ContentPageReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           progress: action.progress
+        }
+      };
+    case 'SET_VISIBLE':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          visible: action.visible
         }
       };
     case 'SET_XP_REWARD_INTERFACE_SHOWN':

@@ -66,7 +66,7 @@ export default function Posts({
   const mounted = useRef(true);
   const selectedFilter = useRef('all');
 
-  const [setScrollHeight] = useInfiniteScroll({
+  const { setScrollHeight } = useInfiniteScroll({
     feedsLength: profileFeeds.length,
     scrollable: profileFeeds.length > 0,
     loadable: loadMoreButton,

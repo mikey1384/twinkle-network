@@ -67,7 +67,6 @@ function TargetContent({
   const { xpRewardInterfaceShown } = commentState;
   const subjectState = state['subject' + subject?.id] || {};
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [mouseEntered, setMouseEntered] = useState(false);
   const InputFormRef = useRef(null);
   const {
     onAttachStar,
@@ -103,8 +102,6 @@ function TargetContent({
   return useMemo(
     () => (
       <ErrorBoundary
-        onTouchStart={() => setMouseEntered(true)}
-        onMouseEnter={() => setMouseEntered(true)}
         className={`${className} ${css`
           font-size: 1.6rem;
           white-space: pre-wrap;
@@ -113,10 +110,10 @@ function TargetContent({
           border-radius: ${borderRadius};
           border: 1px solid ${Color.darkerBorderGray()};
           padding: 2rem 0 1rem 0;
-          margin-top: ${mouseEntered ? '-0.5rem' : '-2rem'};
           line-height: 1.5;
           background: ${Color.whiteGray()};
-          transition: background 0.5s, margin-top 0.5s;
+          margin-top: -1rem;
+          transition: background 0.5s;
           .buttons {
             margin-top: 2rem;
             display: flex;
@@ -353,7 +350,6 @@ function TargetContent({
       targetObj,
       userId,
       userListModalShown,
-      mouseEntered,
       userCanRewardThis,
       contentHidden
     ]

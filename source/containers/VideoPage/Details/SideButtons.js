@@ -7,7 +7,7 @@ import StarButton from 'components/Buttons/StarButton';
 
 SideButtons.propTypes = {
   byUser: PropTypes.bool.isRequired,
-  canStar: PropTypes.bool.isRequired,
+  canStar: PropTypes.bool,
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   onLikeVideo: PropTypes.func.isRequired,

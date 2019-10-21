@@ -193,7 +193,7 @@ function App({ location, history }) {
             @media (max-width: ${mobileMaxWidth}) {
               margin-top: 0;
               padding-top: 0;
-              padding-bottom: 9rem;
+              padding-bottom: 6rem;
             }
           `}
         >

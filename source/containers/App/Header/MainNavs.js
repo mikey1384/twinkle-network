@@ -131,14 +131,15 @@ export default function MainNavs({
         padding: 0;
         display: flex;
         justify-content: center;
-        align-items: center;
+        width: 100%;
       `}
     >
       <HeaderNav
+        isMobile
         className={`${chatLoading ? 'hidden' : 'mobile'}`}
         alert={numNewNotis > 0 || totalRewardAmount > 0}
         alertColor={Color.gold()}
-        imgLabel="user"
+        imgLabel="bars"
         onClick={onMobileMenuOpen}
       />
       <HeaderNav

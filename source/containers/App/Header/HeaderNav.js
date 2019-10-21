@@ -13,6 +13,7 @@ import {
 } from 'contexts';
 
 HeaderNav.propTypes = {
+  isMobile: PropTypes.bool,
   active: PropTypes.bool,
   alert: PropTypes.bool,
   alertColor: PropTypes.string,
@@ -35,6 +36,7 @@ export default function HeaderNav({
   children,
   imgLabel,
   isHome,
+  isMobile,
   onClick = () => {},
   pathname,
   style
@@ -69,7 +71,7 @@ export default function HeaderNav({
       children={({ match }) => (
         <div
           onClick={() => {
-            if (match) {
+            if (match && !isMobile) {
               handleMatch(match);
             }
           }}

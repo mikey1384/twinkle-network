@@ -150,7 +150,7 @@ function Comments({
       >
         <div
           className={`${
-            previewComments.length > 0
+            previewComments.length > 0 && !(commentsShown || autoExpand)
               ? css`
                   &:hover {
                     background: ${Color.highlightGray()};

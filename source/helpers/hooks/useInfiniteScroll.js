@@ -77,5 +77,5 @@ export default function useInfiniteScroll({
       }
     }, 200);
   }
-  return [setScrollHeight];
+  return { setScrollHeight, scrollHeight };
 }

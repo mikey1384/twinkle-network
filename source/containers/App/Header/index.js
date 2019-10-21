@@ -230,7 +230,7 @@ function Header({
           }
           @media (max-width: ${mobileMaxWidth}) {
             bottom: 0;
-            height: 9rem;
+            height: 6rem;
             border-top: 1px solid ${Color.borderGray()};
           }
         `}`}
@@ -264,10 +264,10 @@ function Header({
             totalRewardAmount={totalRewardAmount}
           />
           <AccountMenu
-            style={{ marginRight: '3rem' }}
             className={`desktop ${css`
-              @media (min-width: ${desktopMinWidth}) {
-                margin-left: 0.5rem;
+              margin-right: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-right: 0;
               }
             `}`}
             history={history}

@@ -80,7 +80,7 @@ export default function Stories({ location }) {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
-  const [setScrollHeight] = useInfiniteScroll({
+  const { setScrollHeight } = useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,
     loadable: loadMoreButton,
@@ -155,8 +155,8 @@ export default function Stories({ location }) {
     }
   }, [hideWatched]);
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    return (
       <ErrorBoundary>
         <div style={{ width: '100%' }} ref={ContainerRef}>
           <HomeFilter
@@ -238,22 +238,21 @@ export default function Stories({ location }) {
           </div>
         </div>
       </ErrorBoundary>
-    ),
-    [
-      feeds,
-      userId,
-      username,
-      numNewPosts,
-      category,
-      loadMoreButton,
-      loaded,
-      subFilter,
-      displayOrder,
-      loadingFeeds,
-      loadingMore,
-      feedsOutdated
-    ]
-  );
+    );
+  }, [
+    feeds,
+    userId,
+    username,
+    numNewPosts,
+    category,
+    loadMoreButton,
+    loaded,
+    subFilter,
+    displayOrder,
+    loadingFeeds,
+    loadingMore,
+    feedsOutdated
+  ]);
 
   async function applyFilter(filter) {
     if (filter === subFilter) return;
