@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import PlaylistsPanel from './PlaylistsPanel';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -31,13 +31,17 @@ export default function FeaturedPlaylistsPanel() {
       onOpenSelectPlaylistsToPinModal
     }
   } = useExploreContext();
+  const prevLoaded = useRef(false);
   useEffect(() => {
-    init();
+    if (!featuredPlaylistsLoaded) {
+      init();
+    }
     async function init() {
       const playlists = await loadFeaturedPlaylists();
       onLoadFeaturedPlaylists(playlists);
+      prevLoaded.current = true;
     }
-  }, []);
+  }, [featuredPlaylistsLoaded]);
   const menuButtons = [
     {
       label: 'Select Playlists',
@@ -66,7 +70,7 @@ export default function FeaturedPlaylistsPanel() {
           title="Featured Playlists"
           userId={userId}
           playlists={featuredPlaylists}
-          loaded={featuredPlaylistsLoaded}
+          loaded={featuredPlaylistsLoaded || prevLoaded.current}
         />
         {selectPlaylistsToFeatureModalShown && (
           <SelectPlaylistsToPinModal

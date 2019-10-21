@@ -247,6 +247,13 @@ export default function ContentActions(dispatch) {
         tags
       });
     },
+    onReloadContent({ contentId, contentType }) {
+      return dispatch({
+        type: 'RELOAD_CONTENT',
+        contentId,
+        contentType
+      });
+    },
     onRemoveStatusMsg(userId) {
       return dispatch({
         type: 'DELETE_STATUS_MSG',

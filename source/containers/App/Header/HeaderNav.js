@@ -4,7 +4,13 @@ import Icon from 'components/Icon';
 import { Link, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useAppContext, useHomeContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useExploreContext,
+  useHomeContext,
+  useProfileContext
+} from 'contexts';
 
 HeaderNav.propTypes = {
   active: PropTypes.bool,
@@ -33,6 +39,13 @@ export default function HeaderNav({
   pathname,
   style
 }) {
+  const { state: profileState = {} } = useProfileContext();
+  const {
+    actions: { onReloadContent }
+  } = useContentContext();
+  const {
+    actions: { onClearLinksLoaded, onClearVideosLoaded, onReloadSubjects }
+  } = useExploreContext();
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const highlighted =
     ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(to) &&
@@ -165,8 +178,24 @@ export default function HeaderNav({
     if (match.path === '/') {
       onReloadFeeds();
     }
+    if (match.path.includes('/users/')) {
+      const { profileId } = profileState[match.path.split('/users/')[1]] || {};
+      onReloadContent({
+        contentId: profileId,
+        contentType: 'user'
+      });
+    }
     if (match.path === '/users') {
       onSetProfilesLoaded(false);
+    }
+    if (
+      ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(
+        match.path
+      )
+    ) {
+      onClearLinksLoaded();
+      onReloadSubjects();
+      onClearVideosLoaded();
     }
     document.getElementById('App').scrollTop = 0;
     BodyRef.current.scrollTop = 0;

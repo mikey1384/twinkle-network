@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import Reply from './Reply';
@@ -23,14 +23,7 @@ Replies.propTypes = {
   userId: PropTypes.number
 };
 
-export default function Replies({
-  replies,
-  userId,
-  comment,
-  subject,
-  parent,
-  ReplyRefs
-}) {
+function Replies({ replies, userId, comment, subject, parent, ReplyRefs }) {
   const {
     onDelete,
     onLoadMoreReplies,
@@ -132,3 +125,5 @@ export default function Replies({
     onReplySubmit(params);
   }
 }
+
+export default memo(Replies);

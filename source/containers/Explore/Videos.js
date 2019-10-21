@@ -64,18 +64,21 @@ export default function Videos({ history, location }) {
       onSetSearchText({ category: 'playlist', searchText })
   });
   const AllPlaylistsPanelRef = useRef(null);
+  const prevLoaded = useRef(false);
 
   useEffect(() => {
-    init();
-
+    if (!allPlaylistsLoaded) {
+      init();
+    }
     async function init() {
       const { results, loadMoreButton } = await loadPlaylists();
       onLoadPlaylists({
         playlists: results,
         loadMoreButton
       });
+      prevLoaded.current = true;
     }
-  }, []);
+  }, [allPlaylistsLoaded]);
 
   const playlists = !stringIsEmpty(playlistSearchText)
     ? searchedPlaylists
@@ -110,7 +113,7 @@ export default function Videos({ history, location }) {
           }
           userId={userId}
           playlists={playlists}
-          loaded={allPlaylistsLoaded}
+          loaded={allPlaylistsLoaded || prevLoaded.current}
           isSearching={searching}
           onSearch={handleSearch}
           searchQuery={playlistSearchText}

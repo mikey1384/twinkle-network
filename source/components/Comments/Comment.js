@@ -1,5 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
@@ -480,4 +487,4 @@ function Comment({
   }
 }
 
-export default withRouter(Comment);
+export default withRouter(memo(Comment));

@@ -48,6 +48,7 @@ function ProfilePanel({ history, expandable, profileId }) {
       onLoadComments,
       onLoadMoreComments,
       onLoadMoreReplies,
+      onReloadContent,
       onSetCommentsShown,
       onSetOnline,
       onUploadComment,
@@ -221,7 +222,15 @@ function ProfilePanel({ history, expandable, profileId }) {
                   onMouseEnter={() => setMouseEnteredProfile(true)}
                   onMouseLeave={() => setMouseEnteredProfile(false)}
                 >
-                  <Link to={`/users/${profileName}`}>
+                  <Link
+                    onClick={() =>
+                      onReloadContent({
+                        contentId: profileId,
+                        contentType: 'user'
+                      })
+                    }
+                    to={`/users/${profileName}`}
+                  >
                     <ProfilePic
                       style={{
                         width: '18rem',

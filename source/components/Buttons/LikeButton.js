@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -17,7 +17,7 @@ LikeButton.propTypes = {
   targetLabel: PropTypes.string
 };
 
-export default function LikeButton({
+function LikeButton({
   className,
   contentId,
   contentType,
@@ -42,7 +42,7 @@ export default function LikeButton({
       if (likes[i].id === userId) userLikedThis = true;
     }
     setLiked(userLikedThis);
-  }, [likes]);
+  }, [likes.length]);
   return useMemo(
     () => (
       <ErrorBoundary>
@@ -53,6 +53,7 @@ export default function LikeButton({
           filled={filled || liked}
           style={style}
           onClick={async () => {
+            setLiked(liked => !liked);
             try {
               setDisabled(true);
               const newLikes = await likeContent({
@@ -79,3 +80,5 @@ export default function LikeButton({
     [disabled, liked]
   );
 }
+
+export default memo(LikeButton);

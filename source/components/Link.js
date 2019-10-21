@@ -16,7 +16,7 @@ Link.propTypes = {
 function Link({
   className,
   to,
-  onClick,
+  onClick = () => {},
   onClickAsync,
   children,
   style,
@@ -60,7 +60,7 @@ function Link({
       });
     }
     history.push(to);
-    if (onClick) onClick();
+    onClick();
   }
 }
 

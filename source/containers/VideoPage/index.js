@@ -601,7 +601,7 @@ export default function VideoPage({
   }
 
   async function handleUploadQuestions(questions) {
-    const data = await uploadQuestions(questions);
+    const data = await uploadQuestions({ questions, videoId });
     onSetVideoQuestions({
       contentType: 'video',
       contentId: videoId,

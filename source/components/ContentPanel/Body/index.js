@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -37,7 +44,7 @@ Body.propTypes = {
   onChangeSpoilerStatus: PropTypes.func.isRequired
 };
 
-export default function Body({
+function Body({
   attachedVideoShown,
   autoExpand,
   commentsHidden,
@@ -544,3 +551,5 @@ export default function Body({
     onByUserStatusChange({ byUser, contentId, contentType });
   }
 }
+
+export default memo(Body);

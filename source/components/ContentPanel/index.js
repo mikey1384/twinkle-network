@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
@@ -292,4 +292,4 @@ function ContentPanel({
   );
 }
 
-export default withRouter(ContentPanel);
+export default withRouter(memo(ContentPanel));

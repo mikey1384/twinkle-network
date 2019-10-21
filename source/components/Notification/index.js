@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
@@ -18,7 +18,7 @@ Notification.propTypes = {
   style: PropTypes.object
 };
 
-export default function Notification({ children, className, location, style }) {
+function Notification({ children, className, location, style }) {
   const {
     requestHelpers: { fetchNotifications }
   } = useAppContext();
@@ -172,3 +172,5 @@ export default function Notification({ children, className, location, style }) {
     onFetchNotifications(data);
   }
 }
+
+export default memo(Notification);

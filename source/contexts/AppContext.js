@@ -40,31 +40,33 @@ AppContextProvider.propTypes = {
 export function AppContextProvider({ children }) {
   const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
   return (
-    <AppContext.Provider
-      value={{
-        user: {
-          state: userState,
-          actions: UserActions(userDispatch)
-        },
-        requestHelpers: requestHelpers(handleError)
-      }}
-    >
-      <ChatContextProvider>
-        <ProfileContextProvider>
-          <HomeContextProvider>
-            <ExploreContextProvider>
-              <ViewContextProvider>
-                <NotiContextProvider>
+    <ChatContextProvider>
+      <ProfileContextProvider>
+        <ExploreContextProvider>
+          <ViewContextProvider>
+            <NotiContextProvider>
+              <HomeContextProvider>
+                <InputContextProvider>
                   <ContentContextProvider>
-                    <InputContextProvider>{children} </InputContextProvider>
+                    <AppContext.Provider
+                      value={{
+                        user: {
+                          state: userState,
+                          actions: UserActions(userDispatch)
+                        },
+                        requestHelpers: requestHelpers(handleError)
+                      }}
+                    >
+                      {children}
+                    </AppContext.Provider>
                   </ContentContextProvider>
-                </NotiContextProvider>
-              </ViewContextProvider>
-            </ExploreContextProvider>
-          </HomeContextProvider>
-        </ProfileContextProvider>
-      </ChatContextProvider>
-    </AppContext.Provider>
+                </InputContextProvider>
+              </HomeContextProvider>
+            </NotiContextProvider>
+          </ViewContextProvider>
+        </ExploreContextProvider>
+      </ProfileContextProvider>
+    </ChatContextProvider>
   );
 
   function handleError(error) {

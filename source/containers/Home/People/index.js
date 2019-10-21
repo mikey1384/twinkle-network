@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import ProfilePanel from 'components/ProfilePanel';
@@ -19,7 +19,6 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 People.propTypes = {
-  history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
@@ -92,99 +91,76 @@ export default function People({ location }) {
       }
     }
   }, [profilesLoaded]);
-  return useMemo(
-    () => (
-      <div style={{ height: '100%' }}>
-        <SearchInput
-          className={css`
-            @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 1rem;
-            }
-          `}
-          style={{ zIndex: 0 }}
-          addonColor={profileTheme}
-          borderColor={profileTheme}
-          placeholder="Search Users"
-          onChange={handleSearch}
-          value={userSearchText}
-        />
-        <div
+  return (
+    <div style={{ height: '100%' }}>
+      <SearchInput
+        className={css`
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 1rem;
+          }
+        `}
+        style={{ zIndex: 0 }}
+        addonColor={profileTheme}
+        borderColor={profileTheme}
+        placeholder="Search Users"
+        onChange={handleSearch}
+        value={userSearchText}
+      />
+      <div
+        style={{
+          marginTop: '1rem',
+          marginBottom: '1rem',
+          position: 'relative',
+          minHeight: '30%',
+          width: '100%'
+        }}
+      >
+        <PeopleFilterBar
           style={{
-            marginTop: '1rem',
-            marginBottom: '1rem',
-            position: 'relative',
-            minHeight: '30%',
-            width: '100%'
+            marginBottom: '1rem'
           }}
-        >
-          <PeopleFilterBar
-            style={{
-              marginBottom: '1rem'
-            }}
-            onSetOrderByText={handleSetOrderBy}
-            orderByText={orderBy}
-            dropdownLabel={dropdownLabel}
-          />
-          {(!profilesLoaded ||
-            (!stringIsEmpty(userSearchText) && searching)) && (
-            <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
+          onSetOrderByText={handleSetOrderBy}
+          orderByText={orderBy}
+          dropdownLabel={dropdownLabel}
+        />
+        {(!profilesLoaded || (!stringIsEmpty(userSearchText) && searching)) && (
+          <Loading text={`${searching ? 'Searching' : 'Loading'} Users...`} />
+        )}
+        {profilesLoaded &&
+          stringIsEmpty(userSearchText) &&
+          profiles.map(profile => (
+            <ProfilePanel expandable key={profile.id} profileId={profile.id} />
+          ))}
+        {!stringIsEmpty(userSearchText) &&
+          !searching &&
+          searchedProfiles.map(profile => (
+            <ProfilePanel expandable key={profile.id} profileId={profile.id} />
+          ))}
+        {!stringIsEmpty(userSearchText) &&
+          !searching &&
+          searchedProfiles.length === 0 && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '15rem',
+                fontSize: '2.8rem'
+              }}
+            >
+              No Users Found
+            </div>
           )}
-          {profilesLoaded &&
-            stringIsEmpty(userSearchText) &&
-            profiles.map(profile => (
-              <ProfilePanel
-                expandable
-                key={profile.id}
-                profileId={profile.id}
-              />
-            ))}
-          {!stringIsEmpty(userSearchText) &&
-            !searching &&
-            searchedProfiles.map(profile => (
-              <ProfilePanel
-                expandable
-                key={profile.id}
-                profileId={profile.id}
-              />
-            ))}
-          {!stringIsEmpty(userSearchText) &&
-            !searching &&
-            searchedProfiles.length === 0 && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '15rem',
-                  fontSize: '2.8rem'
-                }}
-              >
-                No Users Found
-              </div>
-            )}
-          {stringIsEmpty(userSearchText) &&
-            profilesLoaded &&
-            loadMoreButton && (
-              <LoadMoreButton
-                filled
-                color="lightBlue"
-                onClick={() => setLoading(true)}
-                loading={loading}
-              />
-            )}
-        </div>
+        {stringIsEmpty(userSearchText) && profilesLoaded && loadMoreButton && (
+          <LoadMoreButton
+            filled
+            color="lightBlue"
+            onClick={() => setLoading(true)}
+            loading={loading}
+          />
+        )}
       </div>
-    ),
-    [
-      orderBy,
-      searching,
-      loading,
-      profilesLoaded,
-      loadMoreButton,
-      profiles,
-      profileTheme,
-      searchedProfiles
-    ]
+    </div>
   );
 
   async function handleSearchUsers(text) {

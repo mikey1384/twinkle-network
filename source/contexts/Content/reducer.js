@@ -824,6 +824,14 @@ export default function ContentPageReducer(state, action) {
           tags: action.tags
         }
       };
+    case 'RELOAD_CONTENT':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          loaded: false
+        }
+      };
     case 'SET_ACTUAL_URL_DESCRIPTION':
       return {
         ...state,

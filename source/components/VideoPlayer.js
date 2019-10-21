@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
@@ -33,7 +33,7 @@ VideoPlayer.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-export default function VideoPlayer({
+function VideoPlayer({
   autoplay,
   byUser,
   rewardLevel,
@@ -577,3 +577,5 @@ export default function VideoPlayer({
     }
   }
 }
+
+export default memo(VideoPlayer);

@@ -91,7 +91,8 @@ export default function ExploreReducer(state, action) {
         ...state,
         videos: {
           ...state.videos,
-          loaded: false
+          allPlaylistsLoaded: false,
+          featuredPlaylistsLoaded: false
         }
       };
     case 'CLOSE_PLAYLIST_MODAL':

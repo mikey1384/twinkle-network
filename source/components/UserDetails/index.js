@@ -14,7 +14,7 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import URL from 'constants/URL';
-import { useAppContext, useInputContext } from 'contexts';
+import { useAppContext, useContentContext, useInputContext } from 'contexts';
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
@@ -42,6 +42,9 @@ export default function UserDetails({
   const {
     requestHelpers: { auth, uploadBio }
   } = useAppContext();
+  const {
+    actions: { onReloadContent }
+  } = useContentContext();
   const {
     state: { editedStatusColor, editedStatusMsg },
     actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
@@ -73,6 +76,12 @@ export default function UserDetails({
     >
       <Link
         to={noLink ? null : `/users/${profile.username}`}
+        onClick={() =>
+          onReloadContent({
+            contentId: profile.id,
+            contentType: 'user'
+          })
+        }
         style={{
           fontSize: small ? '3rem' : '3.5rem',
           fontWeight: 'bold',
