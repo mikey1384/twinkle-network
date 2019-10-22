@@ -15,6 +15,7 @@ ChatFeeds.propTypes = {
   content: PropTypes.string,
   history: PropTypes.object.isRequired,
   loaded: PropTypes.bool,
+  myId: PropTypes.number,
   reloadedBy: PropTypes.number,
   reloaderName: PropTypes.string,
   reloadTimeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -26,6 +27,7 @@ ChatFeeds.propTypes = {
 
 function ChatFeeds({
   content,
+  myId,
   history,
   loaded,
   reloadedBy,
@@ -99,12 +101,14 @@ function ChatFeeds({
   );
 
   async function initChatFromThis() {
-    if (!loaded) {
-      const data = await loadChat({ channelId: 2 });
-      onInitChat(data);
-    } else {
-      const data = await loadChatChannel({ channelId: 2 });
-      onEnterChannelWithId({ data });
+    if (myId) {
+      if (!loaded) {
+        const data = await loadChat({ channelId: 2 });
+        onInitChat(data);
+      } else {
+        const data = await loadChatChannel({ channelId: 2 });
+        onEnterChannelWithId({ data });
+      }
     }
     history.push('/chat');
   }

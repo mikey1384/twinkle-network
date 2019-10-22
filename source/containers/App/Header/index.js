@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -10,6 +10,7 @@ import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
 import { withRouter } from 'react-router';
+import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useViewContext,
@@ -37,9 +38,6 @@ function Header({
   style = {}
 }) {
   const {
-    user: {
-      state: { defaultSearchFilter, userId, username }
-    },
     requestHelpers: {
       checkVersion,
       getNumberOfUnreadMessages,
@@ -47,10 +45,10 @@ function Header({
       updateChatLastRead
     }
   } = useAppContext();
+  const { defaultSearchFilter, userId, username, loggedIn } = useMyState();
   const {
     state: { selectedChannelId, numUnreads },
     actions: {
-      onClearChatLoadedState,
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onIncreaseNumberOfUnreadMessages,
@@ -105,20 +103,14 @@ function Header({
     }
     async function onConnect() {
       console.log('connected to socket');
-      const { section } = getSectionFromPathname(pathname);
       onClearRecentChessMessage();
       onChangeSocketStatus(true);
       handleCheckVersion();
       if (userId) {
         handleGetNumberOfUnreadMessages();
         socket.emit('bind_uid_to_socket', userId, username);
-        if (section === 'talk') {
-          const data = await loadChat();
-          onInitChat(data);
-        }
-      }
-      if (section !== 'talk') {
-        onClearChatLoadedState();
+        const data = await loadChat();
+        onInitChat(data);
       }
 
       async function handleCheckVersion() {
@@ -210,71 +202,84 @@ function Header({
     showUpdateNotice(versionMatch);
   }, [versionMatch]);
 
-  return (
-    <ErrorBoundary>
-      <nav
-        className={`unselectable ${css`
-          z-index: 30000;
-          position: relative;
-          font-family: sans-serif, Arial, Helvetica;
-          font-size: 1.7rem;
-          background: #fff;
-          display: flex;
-          box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
-          align-items: center;
-          width: 100%;
-          margin-bottom: 0px;
-          height: 4.5rem;
-          @media (min-width: ${desktopMinWidth}) {
-            top: 0;
-          }
-          @media (max-width: ${mobileMaxWidth}) {
-            bottom: 0;
-            height: 6rem;
-            border-top: 1px solid ${Color.borderGray()};
-          }
-        `}`}
-        style={{
-          justifyContent: 'space-around',
-          position: 'fixed',
-          ...style
-        }}
-      >
-        <div
+  return useMemo(
+    () => (
+      <ErrorBoundary>
+        <nav
+          className={`unselectable ${css`
+            z-index: 30000;
+            position: relative;
+            font-family: sans-serif, Arial, Helvetica;
+            font-size: 1.7rem;
+            background: #fff;
+            display: flex;
+            box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
+            align-items: center;
+            width: 100%;
+            margin-bottom: 0px;
+            height: 4.5rem;
+            @media (min-width: ${desktopMinWidth}) {
+              top: 0;
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              bottom: 0;
+              height: 6rem;
+              border-top: 1px solid ${Color.borderGray()};
+            }
+          `}`}
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%'
+            justifyContent: 'space-around',
+            position: 'fixed',
+            ...style
           }}
         >
-          <TwinkleLogo style={{ marginLeft: '3rem' }} />
-          <MainNavs
-            isAtExploreTab={['links', 'videos', 'subjects'].includes(
-              getSectionFromPathname(pathname)?.section
-            )}
-            defaultSearchFilter={defaultSearchFilter}
-            chatLoading={chatLoading}
-            numChatUnreads={numUnreads}
-            numNewNotis={numNewNotis}
-            numNewPosts={numNewPosts}
-            onChatButtonClick={onChatButtonClick}
-            onMobileMenuOpen={onMobileMenuOpen}
-            pathname={pathname}
-            totalRewardAmount={totalRewardAmount}
-          />
-          <AccountMenu
-            className={`desktop ${css`
-              margin-right: 3rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-right: 0;
-              }
-            `}`}
-            history={history}
-          />
-        </div>
-      </nav>
-    </ErrorBoundary>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%'
+            }}
+          >
+            <TwinkleLogo style={{ marginLeft: '3rem' }} />
+            <MainNavs
+              isAtExploreTab={['links', 'videos', 'subjects'].includes(
+                getSectionFromPathname(pathname)?.section
+              )}
+              loggedIn={loggedIn}
+              defaultSearchFilter={defaultSearchFilter}
+              chatLoading={chatLoading}
+              numChatUnreads={numUnreads}
+              numNewNotis={numNewNotis}
+              numNewPosts={numNewPosts}
+              onChatButtonClick={onChatButtonClick}
+              onMobileMenuOpen={onMobileMenuOpen}
+              pathname={pathname}
+              totalRewardAmount={totalRewardAmount}
+            />
+            <AccountMenu
+              className={`desktop ${css`
+                margin-right: 3rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-right: 0;
+                }
+              `}`}
+              history={history}
+            />
+          </div>
+        </nav>
+      </ErrorBoundary>
+    ),
+    [
+      chatLoading,
+      defaultSearchFilter,
+      loggedIn,
+      numNewNotis,
+      numNewPosts,
+      numUnreads,
+      pathname,
+      totalRewardAmount
+    ]
   );
 }
 

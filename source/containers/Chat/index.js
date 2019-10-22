@@ -23,7 +23,6 @@ export default function Chat({ onFileUpload }) {
   const {
     requestHelpers: {
       createNewChat,
-      loadChat,
       loadChatChannel,
       loadDMChannel,
       loadMoreChannels,
@@ -49,7 +48,6 @@ export default function Chat({ onFileUpload }) {
       onClearNumUnreads,
       onCreateNewChannel,
       onEnterChannelWithId,
-      onInitChat,
       onEnterEmptyChat,
       onLoadMoreChannels,
       onLoadMoreMessages,
@@ -87,18 +85,11 @@ export default function Chat({ onFileUpload }) {
 
   useEffect(() => {
     mounted.current = true;
-    if (!loaded && userId && socket.connected) {
-      init();
-    } else {
+    if (userId && (loaded || !userId || !socket.connected)) {
       if (userId) {
         updateChatLastRead(selectedChannelId);
       }
       onClearNumUnreads();
-    }
-
-    async function init() {
-      const data = await loadChat();
-      onInitChat(data);
     }
     return function cleanUp() {
       mounted.current = false;

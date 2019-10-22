@@ -84,48 +84,14 @@ function ContentPanel({
     commentId,
     commentsShown,
     loaded,
-    newPost,
+    placeholderHeight,
+    rootObj,
     rootType,
+    started,
     targetObj,
-    visible
+    visible,
+    rootId
   } = contentState;
-  useEffect(() => {
-    mounted.current = true;
-    return function cleanUp() {
-      onSetVisible({
-        contentId,
-        contentType,
-        visible: false
-      });
-      clearTimeout(timerRef.current);
-      mounted.current = false;
-    };
-  }, []);
-  useEffect(() => {
-    if (!loaded && !loading.current && contentId) {
-      onMount();
-    }
-    async function onMount() {
-      if (!newPost) {
-        loading.current = true;
-        const data = await loadContent({ contentId, contentType });
-        if (mounted.current) {
-          onInitContent({
-            ...data,
-            feedId: contentState.feedId
-          });
-          if (data.rootObj) {
-            onInitContent({
-              contentId: data.rootId,
-              contentType: data.rootType,
-              ...data.rootObj
-            });
-          }
-          loading.current = false;
-        }
-      }
-    }
-  }, [contentState]);
 
   useEffect(() => {
     if (!prevInView.current && inView) {
@@ -144,14 +110,13 @@ function ContentPanel({
         visible: true
       });
     } else {
-      clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
         onSetVisible({
           contentId,
           contentType,
           visible: false
         });
-      }, 5000);
+      }, 3000);
     }
     prevInView.current = inView;
     return function onRefresh() {
@@ -167,6 +132,47 @@ function ContentPanel({
       }
     };
   }, [inView]);
+
+  const { started: rootStarted } = useContentState({
+    contentType: rootType,
+    contentId: rootId
+  });
+
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      onSetVisible({
+        contentId,
+        contentType,
+        visible: false
+      });
+      clearTimeout(timerRef.current);
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
+    if (!loaded && !loading.current && contentId) {
+      onMount();
+    }
+    async function onMount() {
+      loading.current = true;
+      const data = await loadContent({ contentId, contentType });
+      if (mounted.current) {
+        onInitContent({
+          ...data,
+          feedId: contentState.feedId
+        });
+        if (data.rootObj) {
+          onInitContent({
+            contentId: data.rootId,
+            contentType: data.rootType,
+            ...data.rootObj
+          });
+        }
+        loading.current = false;
+      }
+    }
+  }, []);
 
   return useMemo(
     () =>
@@ -199,7 +205,7 @@ function ContentPanel({
         >
           <ErrorBoundary>
             <div ref={ContentPanelRef}>
-              {inView || visible ? (
+              {inView || visible || started || rootStarted ? (
                 <div
                   ref={ActualPanelRef}
                   style={{
@@ -256,7 +262,7 @@ function ContentPanel({
                         zIndex: 2
                       }}
                       targetObj={targetObj}
-                      rootObj={contentState.rootObj}
+                      rootObj={rootObj}
                       rootId={contentState.rootId}
                       rootType={contentState.rootType}
                       contentId={contentId}
@@ -264,7 +270,7 @@ function ContentPanel({
                       onShowTCReplyInput={onShowTCReplyInput}
                     />
                   )}
-                  {contentState.loaded && contentState.targetObj?.subject && (
+                  {contentState.loaded && targetObj?.subject && (
                     <div>
                       <ContentListItem
                         comments={contentState.childComments}
@@ -274,11 +280,9 @@ function ContentPanel({
                         }}
                         expandable
                         onClick={() =>
-                          history.push(
-                            `/subjects/${contentState.targetObj.subject.id}`
-                          )
+                          history.push(`/subjects/${targetObj.subject.id}`)
                         }
-                        contentObj={contentState.targetObj.subject}
+                        contentObj={targetObj.subject}
                         onChangeSpoilerStatus={onChangeSpoilerStatus}
                       />
                     </div>
@@ -290,14 +294,12 @@ function ContentPanel({
                           position: 'relative'
                         }}
                         expandable
-                        onClick={() =>
-                          history.push(`/videos/${contentState.rootObj.id}`)
-                        }
-                        contentObj={contentState.rootObj}
+                        onClick={() => history.push(`/videos/${rootObj.id}`)}
+                        contentObj={rootObj}
                       />
                     )}
                   {(contentType === 'comment' || contentType === 'subject') &&
-                    contentState.rootType === 'url' && (
+                    rootType === 'url' && (
                       <div
                         className={css`
                           padding: 1rem;
@@ -338,12 +340,10 @@ function ContentPanel({
                           }
                         `}
                         onClick={() =>
-                          history.push(
-                            `/users/${contentState.rootObj.username}`
-                          )
+                          history.push(`/users/${rootObj.username}`)
                         }
                       >
-                        <Profile profile={contentState.rootObj} />
+                        <Profile profile={rootObj} />
                       </div>
                     )}
                 </div>
@@ -352,7 +352,7 @@ function ContentPanel({
                   style={{
                     width: '100%',
                     margin: '1rem 0 1rem 0',
-                    height: contentState.placeholderHeight || '20rem'
+                    height: placeholderHeight || '20rem'
                   }}
                 />
               )}
@@ -360,7 +360,7 @@ function ContentPanel({
           </ErrorBoundary>
         </Context.Provider>
       ) : null,
-    [commentsHidden, contentState, inView, visible]
+    [commentsHidden, contentState, inView, rootStarted, visible]
   );
 }
 

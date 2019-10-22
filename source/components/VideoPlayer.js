@@ -4,7 +4,6 @@ import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import Spinner from 'components/Spinner';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
@@ -34,7 +33,6 @@ VideoPlayer.propTypes = {
 };
 
 function VideoPlayer({
-  autoplay,
   byUser,
   rewardLevel,
   hasHqThumb,
@@ -90,7 +88,6 @@ function VideoPlayer({
     isEditing
   } = useContentState({ contentType: 'video', contentId: videoId });
   const [playing, setPlaying] = useState(false);
-  const [playerShown, setPlayerShown] = useState(false);
   const [alreadyEarned, setAlreadyEarned] = useState(false);
   const [startingPosition, setStartingPosition] = useState(0);
   const [timeAt, setTimeAt] = useState(0);
@@ -234,7 +231,6 @@ function VideoPlayer({
   const videoUrl = `https://www.youtube.com/watch?v=${videoCode}${
     startingPosition > 0 ? `?t=${startingPosition}` : ''
   }`;
-
   return useMemo(
     () => (
       <ErrorBoundary style={style}>
@@ -286,85 +282,44 @@ function VideoPlayer({
             cursor: !isEditing && !started && 'pointer'
           }}
         >
-          {((!minimized && !started && !autoplay) || isEditing) && (
-            <>
-              <img
-                alt=""
-                src={imageUrl}
-                onTouchStart={() => setPlayerShown(true)}
-                onMouseEnter={() => setPlayerShown(true)}
-                onClick={() => setPlayerShown(true)}
-                className={css`
-                  position: absolute;
-                  width: 100%;
-                  height: 100%;
-                  top: 0;
-                  right: 0;
-                  left: 0;
-                  bottom: 0;
-                  cursor: pointer;
-                `}
-              />
-            </>
-          )}
-          {!isEditing && (playerShown || started || autoplay) && (
-            <ReactPlayer
-              ref={PlayerRef}
-              className={css`
-                position: absolute;
-                top: 0;
-                left: 0;
-                z-index: 1;
-              `}
-              width="100%"
-              height="100%"
-              url={videoUrl}
-              playing={playing}
-              controls
-              onReady={onVideoReady}
-              onPlay={() =>
-                onVideoPlay({
-                  requiredDurationCap: requiredDurationCap.current,
-                  userId: userIdRef.current,
-                  watchTime
-                })
-              }
-              onPause={handleVideoStop}
-              onEnded={handleVideoStop}
-            />
-          )}
-          {!isEditing && !minimized && started ? (
-            <div
-              className={css`
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                font-size: 3rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              `}
-              style={style}
-            >
-              <Spinner />
-            </div>
-          ) : !isEditing ? (
-            <a
-              className={css`
-                position: absolute;
-                display: block;
-                background: url('/img/play-button-image.png');
-                background-size: contain;
-                height: 5rem;
-                width: 5rem;
-                top: 50%;
-                left: 50%;
-                margin: -2.5rem 0 0 -2.5rem;
-              `}
-            />
-          ) : null}
+          <img
+            alt=""
+            src={imageUrl}
+            className={css`
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              right: 0;
+              left: 0;
+              bottom: 0;
+              cursor: pointer;
+            `}
+          />
+          <ReactPlayer
+            ref={PlayerRef}
+            className={css`
+              position: absolute;
+              top: 0;
+              left: 0;
+              z-index: 1;
+            `}
+            width="100%"
+            height="100%"
+            url={videoUrl}
+            playing={playing}
+            controls
+            onReady={onVideoReady}
+            onPlay={() =>
+              onVideoPlay({
+                requiredDurationCap: requiredDurationCap.current,
+                userId: userIdRef.current,
+                watchTime
+              })
+            }
+            onPause={handleVideoStop}
+            onEnded={handleVideoStop}
+          />
         </div>
         {startingPosition > 0 && !started ? (
           <div
@@ -379,13 +334,7 @@ function VideoPlayer({
               justifyContent: 'center',
               cursor: 'pointer'
             }}
-            onClick={() => {
-              if (!playerShown) {
-                setPlayerShown(true);
-              } else {
-                PlayerRef.current?.getInternalPlayer()?.playVideo();
-              }
-            }}
+            onClick={() => PlayerRef.current?.getInternalPlayer()?.playVideo()}
           >
             Continue Watching...
           </div>
@@ -446,7 +395,6 @@ function VideoPlayer({
       imageUrl,
       progress,
       watchTime,
-      playerShown,
       alreadyEarned,
       byUser,
       rewardLevel,

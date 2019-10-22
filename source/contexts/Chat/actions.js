@@ -6,11 +6,6 @@ export default function ChatActions(dispatch) {
         subject
       });
     },
-    onClearChatLoadedState() {
-      return dispatch({
-        type: 'CLEAR_LOADED_STATE'
-      });
-    },
     onClearNumUnreads() {
       return dispatch({
         type: 'CLEAR_NUM_UNREADS'

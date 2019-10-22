@@ -85,6 +85,7 @@ function Notification({ children, className, location, style }) {
             </div>
             {loaded && location === 'home' && (
               <ChatFeeds
+                myId={userId}
                 content={content}
                 style={{
                   marginTop: children ? '1rem' : '0',

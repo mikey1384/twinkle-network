@@ -42,7 +42,7 @@ function LikeButton({
       if (likes[i].id === userId) userLikedThis = true;
     }
     setLiked(userLikedThis);
-  }, [likes.length]);
+  }, [likes.length, userId]);
   return useMemo(
     () => (
       <ErrorBoundary>
@@ -53,16 +53,18 @@ function LikeButton({
           filled={filled || liked}
           style={style}
           onClick={async () => {
-            setLiked(liked => !liked);
             try {
               setDisabled(true);
               const newLikes = await likeContent({
                 id: contentId,
                 contentType
               });
+              if (userId) {
+                setLiked(liked => !liked);
+                onLikeContent({ likes: newLikes, contentType, contentId });
+                onClick(newLikes);
+              }
               setDisabled(false);
-              onLikeContent({ likes: newLikes, contentType, contentId });
-              onClick(newLikes);
             } catch (error) {
               return console.error(error);
             }
@@ -77,7 +79,7 @@ function LikeButton({
         </Button>
       </ErrorBoundary>
     ),
-    [disabled, liked]
+    [disabled, liked, userId]
   );
 }
 

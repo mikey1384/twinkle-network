@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import { truncateText } from 'helpers/stringHelpers';
@@ -11,6 +11,7 @@ import { useViewContext } from 'contexts';
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
   isAtExploreTab: PropTypes.bool,
+  loggedIn: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
   numNewPosts: PropTypes.number,
@@ -23,6 +24,7 @@ MainNavs.propTypes = {
 export default function MainNavs({
   chatLoading,
   isAtExploreTab,
+  loggedIn,
   numChatUnreads,
   numNewNotis,
   numNewPosts,
@@ -142,15 +144,42 @@ export default function MainNavs({
         imgLabel="bars"
         onClick={onMobileMenuOpen}
       />
+      {profileNav && (
+        <HeaderNav
+          to={profileNav}
+          pathname={pathname}
+          className="mobile"
+          imgLabel="user"
+        />
+      )}
       <HeaderNav
         to="/"
         isHome
         className="mobile"
         imgLabel="home"
         alert={numNewPosts > 0}
-      >
-        Home
-      </HeaderNav>
+      />
+      <HeaderNav
+        to={`/${exploreCategory}`}
+        pathname={pathname}
+        className="mobile"
+        imgLabel="search"
+      />
+      {exploreSubNav && (
+        <HeaderNav
+          to={`/${explorePath}`}
+          pathname={pathname}
+          className="mobile"
+          imgLabel={subSectionIconType}
+        />
+      )}
+      <HeaderNav
+        to="/chat"
+        pathname={pathname}
+        className="mobile"
+        imgLabel="comments"
+        alert={loggedIn && !chatMatch && numChatUnreads > 0}
+      />
       {profileNav && (
         <HeaderNav
           to={profileNav}
@@ -172,38 +201,40 @@ export default function MainNavs({
       >
         HOME{!isAtExploreTab && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
       </HeaderNav>
-      <div style={{ marginLeft: '2rem', marginRight: '2rem' }}>
+      <HeaderNav
+        to={`/${exploreCategory}`}
+        pathname={pathname}
+        className="desktop"
+        style={{ marginLeft: '2rem' }}
+        imgLabel="search"
+      >
+        EXPLORE
+      </HeaderNav>
+      {exploreSubNav && (
         <HeaderNav
-          to={`/${exploreCategory}`}
+          to={`/${explorePath}`}
           pathname={pathname}
           className="desktop"
-          imgLabel="search"
+          style={{ marginLeft: '2rem' }}
+          imgLabel={subSectionIconType}
         >
-          EXPLORE
+          {exploreSubNav.substring(0, exploreSubNav.length - 1).toUpperCase()}
         </HeaderNav>
-      </div>
-      {exploreSubNav && (
-        <div style={{ marginRight: '2rem' }}>
-          <HeaderNav
-            to={`/${explorePath}`}
-            pathname={pathname}
-            className="desktop"
-            imgLabel={subSectionIconType}
-          >
-            {exploreSubNav.substring(0, exploreSubNav.length - 1).toUpperCase()}
-          </HeaderNav>
-        </div>
       )}
-      <div className={`header-nav ${chatLoading ? 'mobile' : 'hidden'}`}>
-        Loading...
-      </div>
-      <div>
+      <div
+        className={css`
+          margin-left: 2rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-left: 0;
+          }
+        `}
+      >
         <HeaderNav
           to="/chat"
           pathname={pathname}
           className="desktop"
           imgLabel="comments"
-          alert={!chatMatch && numChatUnreads > 0}
+          alert={loggedIn && !chatMatch && numChatUnreads > 0}
         >
           CHAT
         </HeaderNav>
