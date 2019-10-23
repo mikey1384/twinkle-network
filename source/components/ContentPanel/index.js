@@ -12,7 +12,7 @@ import Profile from './Profile';
 import { css } from 'emotion';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
-import { useContentState } from 'helpers/hooks';
+import { useContentState, useLazyLoad } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 import { useInView } from 'react-intersection-observer';
@@ -73,13 +73,7 @@ function ContentPanel({
   const [commentsHidden, setCommentsHidden] = useState(true);
   const mounted = useRef(true);
   const loading = useRef(false);
-  const ActualPanelRef = useRef(null);
-  const prevInView = useRef(false);
-  const timerRef = useRef(null);
   const inputAtBottom = contentType === 'comment';
-  const [ContentPanelRef, inView] = useInView({
-    threshold: 0
-  });
   const {
     commentId,
     commentsShown,
@@ -93,45 +87,18 @@ function ContentPanel({
     rootId
   } = contentState;
 
-  useEffect(() => {
-    if (!prevInView.current && inView) {
-      if (ActualPanelRef.current?.clientHeight) {
-        onSetPlaceholderHeight({
-          contentType,
-          contentId,
-          height: ActualPanelRef.current.clientHeight
-        });
-      }
-    }
-    if (inView) {
-      onSetVisible({
-        contentId,
-        contentType,
-        visible: true
-      });
-    } else {
-      timerRef.current = setTimeout(() => {
-        onSetVisible({
-          contentId,
-          contentType,
-          visible: false
-        });
-      }, 3000);
-    }
-    prevInView.current = inView;
-    return function onRefresh() {
-      if (inView) {
-        clearTimeout(timerRef.current);
-      }
-      if (ActualPanelRef.current?.clientHeight) {
-        onSetPlaceholderHeight({
-          contentType,
-          contentId,
-          height: ActualPanelRef.current.clientHeight
-        });
-      }
-    };
-  }, [inView]);
+  const [ComponentRef, inView] = useInView({
+    threshold: 0
+  });
+  const PanelRef = useRef(null);
+  useLazyLoad({
+    contentType,
+    contentId,
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight,
+    onSetVisible
+  });
 
   const { started: rootStarted } = useContentState({
     contentType: rootType,
@@ -141,12 +108,6 @@ function ContentPanel({
   useEffect(() => {
     mounted.current = true;
     return function cleanUp() {
-      onSetVisible({
-        contentId,
-        contentType,
-        visible: false
-      });
-      clearTimeout(timerRef.current);
       mounted.current = false;
     };
   }, []);
@@ -204,10 +165,10 @@ function ContentPanel({
           }}
         >
           <ErrorBoundary>
-            <div ref={ContentPanelRef}>
+            <div ref={ComponentRef}>
               {inView || visible || started || rootStarted ? (
                 <div
-                  ref={ActualPanelRef}
+                  ref={PanelRef}
                   style={{
                     height: !loaded && '15rem',
                     position: 'relative',

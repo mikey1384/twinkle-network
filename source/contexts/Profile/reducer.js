@@ -80,6 +80,14 @@ export default function ProfileReducer(state, action) {
           }
         }
       };
+    case 'RESET_PROFILE':
+      return {
+        ...state,
+        [username]: {
+          ...defaultState,
+          profileId: state.profileId
+        }
+      };
     case 'SET_PROFILE_ID':
       return {
         ...state,

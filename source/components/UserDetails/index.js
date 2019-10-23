@@ -14,7 +14,12 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { addEmoji, finalizeEmoji, renderText } from 'helpers/stringHelpers';
 import URL from 'constants/URL';
-import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useInputContext,
+  useProfileContext
+} from 'contexts';
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
@@ -49,6 +54,9 @@ export default function UserDetails({
     state: { editedStatusColor, editedStatusMsg },
     actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
   } = useInputContext();
+  const {
+    actions: { onResetProfile }
+  } = useProfileContext();
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   useEffect(() => {
@@ -76,12 +84,7 @@ export default function UserDetails({
     >
       <Link
         to={noLink ? null : `/users/${profile.username}`}
-        onClick={() =>
-          onReloadContent({
-            contentId: profile.id,
-            contentType: 'user'
-          })
-        }
+        onClick={handleReloadProfile}
         style={{
           fontSize: small ? '3rem' : '3.5rem',
           fontWeight: 'bold',
@@ -218,6 +221,14 @@ export default function UserDetails({
       )}
     </ErrorBoundary>
   );
+
+  function handleReloadProfile() {
+    onReloadContent({
+      contentId: profile.id,
+      contentType: 'user'
+    });
+    onResetProfile(profile.username);
+  }
 
   async function onRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());

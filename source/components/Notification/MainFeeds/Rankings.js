@@ -1,61 +1,34 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Loading from 'components/Loading';
-import request from 'axios';
 import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import FilterBar from 'components/FilterBar';
 import RoundList from 'components/RoundList';
 import MyRank from './MyRank';
-import URL from 'constants/URL';
 import { Color, borderRadius } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useNotiContext } from 'contexts';
-
-const API_URL = `${URL}/user`;
+import { useNotiContext } from 'contexts';
 
 export default function Rankings() {
-  const {
-    requestHelpers: { auth }
-  } = useAppContext();
   const { rank, twinkleXP, userId } = useMyState();
   const {
-    state: { allRanks, rankModifier, top30s, rankingsLoaded },
-    actions: { onGetRanks }
+    state: { allRanks, rankModifier, top30s, rankingsLoaded }
   } = useNotiContext();
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
-  const loading = useRef(null);
-  const prevId = useRef(null);
+  const prevId = useRef(userId);
 
   useEffect(() => {
     mounted.current = true;
     userChangedTab.current = false;
-    if ((!loading.current && mounted.current) || (!prevId.current && userId)) {
-      setAllSelected(true);
-      loadRankings();
+    if (!rankingsLoaded && mounted.current) {
+      setAllSelected(!!userId);
     }
-    async function loadRankings() {
-      loading.current = true;
-      try {
-        const {
-          data: { all, rankModifier: modifier, top30s }
-        } = await request.get(`${API_URL}/leaderBoard`, auth());
-        if (mounted.current) {
-          onGetRanks({ all, top30s, rankModifier: modifier });
-        }
-        loading.current = false;
-        prevId.current = userId;
-      } catch (error) {
-        console.error(error.response || error);
-      }
-    }
-    return function cleanUp() {
-      mounted.current = false;
-    };
-  }, [twinkleXP, userId]);
+    prevId.current = userId;
+  }, [userId, rankingsLoaded]);
 
   useEffect(() => {
     setAllSelected(!!userId);
@@ -95,8 +68,8 @@ export default function Rankings() {
             </nav>
           </FilterBar>
         )}
-        {!rankingsLoaded && <Loading />}
-        {rankingsLoaded && allSelected && !!userId && (
+        {rankingsLoaded === false && <Loading />}
+        {!!rankingsLoaded && allSelected && !!userId && (
           <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
         )}
         {rankingsLoaded && allSelected && users.length === 0 && !!userId && (

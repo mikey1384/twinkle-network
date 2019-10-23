@@ -23,7 +23,7 @@ export default function LoadMoreButton({ label, loading, ...props }) {
           justify-content: center;
         `}
       >
-        <Button disabled={loading} {...props}>
+        <Button disabled={!!loading} {...props}>
           {loading ? 'Loading' : label || 'Load More'}
           {loading && (
             <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />

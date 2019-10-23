@@ -6,12 +6,6 @@ export default function NotiActions(dispatch) {
         connected
       });
     },
-    onChangeRankingsLoadedStatus(loaded) {
-      return dispatch({
-        type: 'CHANGE_RANKINGS_LOADED',
-        loaded
-      });
-    },
     onCheckVersion(data) {
       return dispatch({
         type: 'CHECK_VERSION',

@@ -1,6 +1,6 @@
 const DEFAULT_PROFILE_THEME = 'logoBlue';
 
-export default function ContentPageReducer(state, action) {
+export default function ContentReducer(state, action) {
   const contentKey =
     action.contentType && action.contentId
       ? action.contentType + action.contentId
@@ -831,6 +831,7 @@ export default function ContentPageReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
+          commentsLoaded: false,
           loaded: false
         }
       };

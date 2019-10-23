@@ -5,6 +5,8 @@ import { container } from './Styles';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
+import { isMobile } from 'helpers';
+import { useAppContext } from 'contexts';
 
 HomeMenuItems.propTypes = {
   history: PropTypes.object,
@@ -12,6 +14,11 @@ HomeMenuItems.propTypes = {
 };
 
 export default function HomeMenuItems({ history, style = {} }) {
+  const {
+    user: {
+      actions: { onSetProfilesLoaded }
+    }
+  } = useAppContext();
   return (
     <div className={`unselectable ${container}`} style={style}>
       <ErrorBoundary>
@@ -46,7 +53,7 @@ export default function HomeMenuItems({ history, style = {} }) {
           children={({ match }) => (
             <nav
               className={match ? 'active' : ''}
-              onClick={() => history.push('/users')}
+              onClick={handleOnPeopleClick}
             >
               <a href="/users" onClick={e => e.preventDefault()}>
                 <div
@@ -82,4 +89,11 @@ export default function HomeMenuItems({ history, style = {} }) {
       </div>
     </div>
   );
+
+  function handleOnPeopleClick() {
+    if (isMobile(navigator)) {
+      onSetProfilesLoaded(false);
+    }
+    history.push('/users');
+  }
 }

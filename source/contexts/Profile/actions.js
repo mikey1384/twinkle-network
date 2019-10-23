@@ -34,6 +34,12 @@ export default function HomeActions(dispatch) {
         username
       });
     },
+    onResetProfile(username) {
+      return dispatch({
+        type: 'RESET_PROFILE',
+        username
+      });
+    },
     onSetProfileId({ username, profileId }) {
       return dispatch({
         type: 'SET_PROFILE_ID',

@@ -42,6 +42,7 @@ export default function NavMenu({ playlistId, videoId }) {
   ] = useState(false);
   const [videoTabActive, setVideoTabActive] = useState(true);
   const mounted = useRef(true);
+  const prevUserId = useRef(userId);
 
   useEffect(() => {
     mounted.current = true;
@@ -92,11 +93,10 @@ export default function NavMenu({ playlistId, videoId }) {
   }, [totalRewardAmount]);
 
   useEffect(() => {
-    if (userId) {
-      handleFetchNotifications();
-    } else {
+    if (prevUserId.current !== userId) {
       onClearNotifications();
     }
+    prevUserId.current = userId;
   }, [userId]);
 
   return useMemo(

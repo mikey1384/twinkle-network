@@ -75,6 +75,7 @@ export default function Home({ location, profile, selectedTheme }) {
     actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
   } = useInputContext();
   const {
+    commentsLoaded,
     email,
     emailVerified,
     greeting,
@@ -106,7 +107,9 @@ export default function Home({ location, profile, selectedTheme }) {
 
   useEffect(() => {
     mounted.current = true;
-    initComments();
+    if (!commentsLoaded) {
+      initComments();
+    }
     async function initComments() {
       try {
         setLoadingComments(true);
@@ -470,6 +473,7 @@ export default function Home({ location, profile, selectedTheme }) {
       </div>
     ),
     [
+      commentsLoaded,
       editedStatusMsg,
       editedStatusColor,
       profile,

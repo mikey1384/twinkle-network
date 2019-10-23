@@ -41,7 +41,10 @@ export default function HeaderNav({
   pathname,
   style
 }) {
-  const { state: profileState = {} } = useProfileContext();
+  const {
+    state: profileState = {},
+    actions: { onResetProfile }
+  } = useProfileContext();
   const {
     actions: { onReloadContent }
   } = useContentContext();
@@ -181,11 +184,13 @@ export default function HeaderNav({
       onReloadFeeds();
     }
     if (match.path.includes('/users/')) {
-      const { profileId } = profileState[match.path.split('/users/')[1]] || {};
+      const username = match.path.split('/users/')[1].split('/')[0];
+      const { profileId } = profileState[username] || {};
       onReloadContent({
         contentId: profileId,
         contentType: 'user'
       });
+      onResetProfile(username);
     }
     if (match.path === '/users') {
       onSetProfilesLoaded(false);

@@ -2,11 +2,6 @@ import { initialNotiState } from '.';
 
 export default function NotiReducer(state, action) {
   switch (action.type) {
-    case 'CHANGE_RANKINGS_LOADED':
-      return {
-        ...state,
-        rankingsLoaded: action.loaded
-      };
     case 'CHANGE_SOCKET_STATUS':
       return {
         ...state,

@@ -6,10 +6,14 @@ import { defaultChatSubject } from 'constants/defaultValues';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
+import request from 'axios';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
+import URL from 'constants/URL';
+
+const API_URL = `${URL}/user`;
 
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -20,9 +24,9 @@ Notification.propTypes = {
 
 function Notification({ children, className, location, style }) {
   const {
-    requestHelpers: { fetchNotifications }
+    requestHelpers: { auth, fetchNotifications }
   } = useAppContext();
-  const { userId } = useMyState();
+  const { userId, twinkleXP } = useMyState();
   const {
     state: {
       loadMore,
@@ -33,11 +37,20 @@ function Notification({ children, className, location, style }) {
       currentChatSubject,
       currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
     },
-    actions: { onFetchNotifications }
+    actions: { onFetchNotifications, onGetRanks, onClearNotifications }
   } = useNotiContext();
   const [activeTab, setActiveTab] = useState('rankings');
   const [rewardTabShown, setRewardTabShown] = useState(false);
   const userChangedTab = useRef(false);
+  const mounted = useRef(true);
+  const prevUserId = useRef(userId);
+  const prevTwinkleXP = useRef(twinkleXP);
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, []);
   useEffect(() => {
     userChangedTab.current = false;
     handleFetchNotifications();
@@ -61,6 +74,23 @@ function Notification({ children, className, location, style }) {
     }
     setRewardTabShown(rewards.length > 0);
   }, [userId, notifications]);
+
+  useEffect(() => {
+    if (userId !== prevUserId.current) {
+      onClearNotifications();
+    }
+    prevUserId.current = userId;
+  }, [userId]);
+
+  useEffect(() => {
+    if (
+      typeof twinkleXP === 'number' &&
+      twinkleXP > (prevTwinkleXP.current || 0)
+    ) {
+      fetchRankings();
+    }
+    prevTwinkleXP.current = twinkleXP;
+  }, [twinkleXP]);
 
   useEffect(() => {
     socket.on('new_reward', handleFetchNotifications);
@@ -168,9 +198,23 @@ function Notification({ children, className, location, style }) {
     ]
   );
 
-  async function handleFetchNotifications() {
+  function handleFetchNotifications() {
+    fetchNews();
+    fetchRankings();
+  }
+  async function fetchNews() {
     const data = await fetchNotifications();
-    onFetchNotifications(data);
+    if (mounted.current) {
+      onFetchNotifications(data);
+    }
+  }
+  async function fetchRankings() {
+    const {
+      data: { all, rankModifier: modifier, top30s }
+    } = await request.get(`${API_URL}/leaderBoard`, auth());
+    if (mounted.current) {
+      onGetRanks({ all, top30s, rankModifier: modifier });
+    }
   }
 }
 

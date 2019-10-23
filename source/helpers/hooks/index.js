@@ -9,6 +9,79 @@ export function useContentState({ contentType, contentId }) {
   return state[contentType + contentId] || {};
 }
 
+export function useInterval(callback, interval, tracked) {
+  const timerRef = useRef(null);
+  useEffect(() => {
+    timerRef.current = setInterval(callback, interval);
+    return function cleanUp() {
+      clearInterval(timerRef.current);
+    };
+  }, tracked);
+}
+
+export function useLazyLoad({
+  contentType,
+  contentId,
+  PanelRef,
+  inView,
+  onSetPlaceholderHeight,
+  onSetVisible
+}) {
+  const prevInView = useRef(false);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    if (!prevInView.current && inView) {
+      if (PanelRef.current?.clientHeight) {
+        onSetPlaceholderHeight({
+          contentType,
+          contentId,
+          height: PanelRef.current.clientHeight
+        });
+      }
+    }
+    if (inView) {
+      onSetVisible({
+        contentId,
+        contentType,
+        visible: true
+      });
+    } else {
+      timerRef.current = setTimeout(() => {
+        onSetVisible({
+          contentId,
+          contentType,
+          visible: false
+        });
+      }, 3000);
+    }
+    prevInView.current = inView;
+    return function onRefresh() {
+      if (inView) {
+        clearTimeout(timerRef.current);
+      }
+      if (PanelRef.current?.clientHeight) {
+        onSetPlaceholderHeight({
+          contentType,
+          contentId,
+          height: PanelRef.current.clientHeight
+        });
+      }
+    };
+  }, [inView]);
+
+  useEffect(() => {
+    return function cleanUp() {
+      onSetVisible({
+        contentId,
+        contentType,
+        visible: false
+      });
+      clearTimeout(timerRef.current);
+    };
+  }, []);
+}
+
 export function useMyState() {
   const {
     user: {
@@ -29,35 +102,6 @@ export function useMyState() {
         signinModalShown
       }
     : { profileTheme: 'logoBlue', signinModalShown };
-}
-
-export function useProfileState(username) {
-  const { state = {} } = useProfileContext();
-  const { [username]: userState = {} } = state;
-  const {
-    notExist = false,
-    notables = { feeds: [] },
-    posts = {
-      all: [],
-      comments: [],
-      likes: [],
-      subjects: [],
-      videos: [],
-      links: []
-    },
-    profileId
-  } = userState;
-  return { notables, posts, notExist, profileId };
-}
-
-export function useInterval(callback, interval, tracked) {
-  const timerRef = useRef(null);
-  useEffect(() => {
-    timerRef.current = setInterval(callback, interval);
-    return function cleanUp() {
-      clearInterval(timerRef.current);
-    };
-  }, tracked);
 }
 
 export function useOutsideClick(ref, callback) {
@@ -84,6 +128,25 @@ export function useOutsideClick(ref, callback) {
       removeEvent(document, 'touchend', uPlistener);
     };
   });
+}
+
+export function useProfileState(username) {
+  const { state = {} } = useProfileContext();
+  const { [username]: userState = {} } = state;
+  const {
+    notExist = false,
+    notables = { feeds: [] },
+    posts = {
+      all: [],
+      comments: [],
+      likes: [],
+      subjects: [],
+      videos: [],
+      links: []
+    },
+    profileId
+  } = userState;
+  return { notables, posts, notExist, profileId };
 }
 
 export function useSearch({

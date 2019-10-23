@@ -254,6 +254,13 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onReloadComments({ contentId, contentType }) {
+      return dispatch({
+        type: 'RELOAD_COMMENTS',
+        contentId,
+        contentType
+      });
+    },
     onRemoveStatusMsg(userId) {
       return dispatch({
         type: 'DELETE_STATUS_MSG',

@@ -62,7 +62,6 @@ function Header({
   const {
     state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
     actions: {
-      onChangeRankingsLoadedStatus,
       onChangeSocketStatus,
       onCheckVersion,
       onIncreaseNumNewPosts,
@@ -109,6 +108,10 @@ function Header({
       if (userId) {
         handleGetNumberOfUnreadMessages();
         socket.emit('bind_uid_to_socket', userId, username);
+        handleLoadChat();
+      }
+
+      async function handleLoadChat() {
         const data = await loadChat();
         onInitChat(data);
       }
@@ -181,7 +184,6 @@ function Header({
   }, []);
 
   useEffect(() => {
-    onChangeRankingsLoadedStatus(false);
     if (userId) {
       socket.emit('bind_uid_to_socket', userId, username);
       socket.emit('enter_my_notification_channel', userId);
