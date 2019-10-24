@@ -52,7 +52,7 @@ export default function ChatActions(dispatch) {
       scrollAtBottom,
       uploaderAuthLevel
     }) {
-      return {
+      return dispatch({
         type: 'DISPLAY_ATTACHED_FILE',
         channelId,
         filePath,
@@ -63,7 +63,7 @@ export default function ChatActions(dispatch) {
           scrollAtBottom,
           uploaderAuthLevel
         }
-      };
+      });
     },
     onEditChannelTitle(params) {
       return dispatch({

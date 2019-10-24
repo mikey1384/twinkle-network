@@ -66,7 +66,7 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
         </footer>
       </Modal>
     ),
-    [caption, captionExceedsCharLimit, fileObj, subjectId]
+    [caption, captionExceedsCharLimit, fileObj, subjectId, selectedFile]
   );
 
   function handleSubmit() {

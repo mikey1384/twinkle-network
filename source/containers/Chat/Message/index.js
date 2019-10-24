@@ -223,7 +223,6 @@ export default function Message({
     (userIsUploader || userCanEditThis) &&
     !isChessMsg &&
     !onEdit;
-
   return useMemo(
     () =>
       !chessState && gameWinnerId ? (
@@ -338,6 +337,8 @@ export default function Message({
       ),
     [
       extractedUrl,
+      filePath,
+      fileToUpload,
       onEdit,
       editPadding,
       spoilerOff,

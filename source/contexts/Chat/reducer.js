@@ -141,8 +141,8 @@ export default function ChatReducer(state, action) {
     case 'DISPLAY_ATTACHED_FILE':
       return {
         ...state,
-        messages: state.messages.map(message =>
-          message.filePath === action.filePath
+        messages: state.messages.map(message => {
+          return message.filePath === action.filePath
             ? {
                 ...message,
                 ...action.fileInfo,
@@ -151,8 +151,8 @@ export default function ChatReducer(state, action) {
                 )?.[0]?.id,
                 fileToUpload: undefined
               }
-            : message
-        )
+            : message;
+        })
       };
     case 'EDIT_MESSAGE':
       return {
