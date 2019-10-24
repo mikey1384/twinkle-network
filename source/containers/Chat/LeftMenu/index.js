@@ -216,6 +216,7 @@ export default function LeftMenu({
       channels,
       channelLoadMoreButtonShown,
       currentChannel,
+      currentChannelOnlineMembers,
       userId,
       selectedChannelId,
       channelsLoading,
