@@ -160,6 +160,7 @@ export default function ContentReducer(state, action) {
     }
     case 'CHANGE_PROFILE_THEME':
       return {
+        ...state,
         [contentKey]: {
           ...prevContentState,
           profileTheme: action.theme
