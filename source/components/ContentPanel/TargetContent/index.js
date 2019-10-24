@@ -137,6 +137,10 @@ function TargetContent({
           &:hover {
             background: #fff;
           }
+          @media (max-width: ${mobileMaxWidth}) {
+            border-left: 0;
+            border-right: 0;
+          }
         `}`}
         style={style}
       >

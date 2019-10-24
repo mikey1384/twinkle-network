@@ -60,6 +60,8 @@ export default function ContentListItem({
           }
           @media (max-width: ${mobileMaxWidth}) {
             margin-top: -0.5rem;
+            border-left: 0;
+            border-right: 0;
           }
         `}
       >

@@ -100,7 +100,8 @@ export default function SectionPanel({
           }
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
-            border: 0;
+            border-left: 0;
+            border-right: 0;
             > header {
               border-radius: 0;
             }
