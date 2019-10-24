@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext, useChatContext, useContentContext } from 'contexts';
 
 MobileMenu.propTypes = {
   location: PropTypes.object,
@@ -25,6 +25,9 @@ export default function MobileMenu({ location, history, onClose }) {
     },
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
+  const {
+    actions: { onResetChat }
+  } = useChatContext();
   const {
     actions: { onUploadProfilePic }
   } = useContentContext();
@@ -98,7 +101,7 @@ export default function MobileMenu({ location, history, onClose }) {
                 font-size: 3rem;
                 padding: 1rem;
               `}
-              onClick={onLogout}
+              onClick={handleLogout}
             >
               Log out
             </div>
@@ -142,6 +145,11 @@ export default function MobileMenu({ location, history, onClose }) {
     ),
     [alertModalShown, imageEditStatus, location, marginLeft, username]
   );
+
+  function handleLogout() {
+    onLogout();
+    onResetChat();
+  }
 
   async function uploadImage(image) {
     setImageEditStatus({

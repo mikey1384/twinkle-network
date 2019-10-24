@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
 AccountMenu.propTypes = {
@@ -18,6 +18,9 @@ export default function AccountMenu({ className, history, style = {} }) {
       actions: { onLogout, onOpenSigninModal }
     }
   } = useAppContext();
+  const {
+    actions: { onResetChat }
+  } = useChatContext();
   const { loggedIn, username } = useMyState();
   return useMemo(
     () => (
@@ -50,7 +53,7 @@ export default function AccountMenu({ className, history, style = {} }) {
               },
               {
                 label: 'Log out',
-                onClick: onLogout
+                onClick: handleLogout
               }
             ]}
           />
@@ -77,4 +80,9 @@ export default function AccountMenu({ className, history, style = {} }) {
     ),
     [loggedIn, username]
   );
+
+  function handleLogout() {
+    onLogout();
+    onResetChat();
+  }
 }

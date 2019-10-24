@@ -50,6 +50,7 @@ function App({ location, history }) {
     actions: {
       onPostFileUploadStatus,
       onPostUploadComplete,
+      onResetChat,
       onSendFirstDirectMessage,
       onUpdateClientToApiServerProgress
     }
@@ -73,6 +74,7 @@ function App({ location, history }) {
   useEffect(() => {
     if (!auth()?.headers?.authorization && !signinModalShown) {
       onLogout();
+      onResetChat();
     } else if (
       authRef.current?.headers?.authorization !== auth()?.headers?.authorization
     ) {

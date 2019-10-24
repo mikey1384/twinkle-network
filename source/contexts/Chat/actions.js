@@ -223,6 +223,11 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onResetChat() {
+      return dispatch({
+        type: 'RESET_CHAT'
+      });
+    },
     onSearchChat(data) {
       return dispatch({
         type: 'SEARCH',

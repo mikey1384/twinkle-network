@@ -599,6 +599,8 @@ export default function ChatReducer(state, action) {
         subject: action.subject,
         messages: state.messages.concat([action.message])
       };
+    case 'RESET_CHAT':
+      return initialChatState;
     case 'SEARCH':
       return {
         ...state,
