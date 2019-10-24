@@ -54,7 +54,6 @@ export default function Chat({ onFileUpload }) {
       onNotifyThatMemberLeftChannel,
       onOpenDirectMessageChannel,
       onReceiveMessage,
-      onReceiveFirstMsg,
       onReceiveMessageOnDifferentChannel,
       onSendFirstDirectMessage,
       onSubmitMessage,
@@ -119,7 +118,6 @@ export default function Chat({ onFileUpload }) {
   useEffect(() => {
     socket.on('receive_message', handleReceiveMessage);
     socket.on('subject_change', onSubjectChange);
-    socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
     socket.on('notifiy_move_viewed', onNotifyMoveViewed);
     socket.on('notifiy_move_made', onNotifiedMoveMade);
@@ -177,7 +175,6 @@ export default function Chat({ onFileUpload }) {
     return function cleanUp() {
       socket.removeListener('receive_message', handleReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
-      socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('change_in_members_online', onChangeMembersOnline);
       socket.removeListener('notifiy_move_viewed', onNotifyMoveViewed);
       socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
@@ -532,20 +529,5 @@ export default function Chat({ onFileUpload }) {
         }
       });
     }
-  }
-
-  function onChatInvitation(data) {
-    let duplicate = false;
-    if (selectedChannelId === 0) {
-      if (
-        data.members.filter(member => member.userId !== userId)[0].userId ===
-        currentChannel.members.filter(member => member.userId !== userId)[0]
-          .userId
-      ) {
-        duplicate = true;
-      }
-    }
-    onReceiveFirstMsg({ data, duplicate, pageVisible });
-    socket.emit('join_chat_channel', data.channelId);
   }
 }

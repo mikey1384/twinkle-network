@@ -46,12 +46,13 @@ function Header({
   } = useAppContext();
   const { defaultSearchFilter, userId, username, loggedIn } = useMyState();
   const {
-    state: { selectedChannelId, numUnreads },
+    state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
       onNotifyChatSubjectChange,
+      onReceiveFirstMsg,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onUpdateApiServerToS3Progress
@@ -96,6 +97,17 @@ function Header({
     };
 
     function onChatInvitation(data) {
+      let duplicate = false;
+      if (selectedChannelId === 0) {
+        if (
+          data.members.filter(member => member.userId !== userId)[0].userId ===
+          currentChannel.members.filter(member => member.userId !== userId)[0]
+            .userId
+        ) {
+          duplicate = true;
+        }
+      }
+      onReceiveFirstMsg({ data, duplicate, pageVisible });
       socket.emit('join_chat_channel', data.channelId);
     }
     async function onConnect() {

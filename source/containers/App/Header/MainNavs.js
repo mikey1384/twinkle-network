@@ -197,9 +197,12 @@ export default function MainNavs({
         pathname={pathname}
         className="desktop"
         imgLabel="home"
-        alert={!isAtExploreTab && numNewPosts > 0}
+        alert={!usersMatch && !isAtExploreTab && numNewPosts > 0}
       >
-        HOME{!isAtExploreTab && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
+        HOME
+        {!usersMatch && !isAtExploreTab && numNewPosts > 0
+          ? ` (${numNewPosts})`
+          : ''}
       </HeaderNav>
       <HeaderNav
         to={`/${exploreCategory}`}
