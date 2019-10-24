@@ -265,7 +265,6 @@ export default function VideoPage({
             <div
               className={css`
                 width: CALC(70% - 1rem);
-                border: 1px solid ${Color.borderGray()};
                 @media (max-width: ${mobileMaxWidth}) {
                   width: 100%;
                   border: 0;
@@ -278,6 +277,7 @@ export default function VideoPage({
                   background: '#fff',
                   marginBottom: '1rem',
                   padding: '1rem',
+                  border: `1px solid ${Color.borderGray()}`,
                   paddingTop: 0
                 }}
               >
