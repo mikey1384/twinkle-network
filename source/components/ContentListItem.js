@@ -281,9 +281,15 @@ export default function ContentListItem({
           </div>
           {!!contentObj.rewardLevel && contentType === 'subject' && (
             <div
+              className={css`
+                margin-right: -1px;
+                margin-left: -1px;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-left: 0px;
+                  margin-right: 0px;
+                }
+              `}
               style={{
-                marginLeft: '-1px',
-                marginRight: '-1px',
                 paddingBottom: !!contentObj.rewardLevel && '1rem'
               }}
             >

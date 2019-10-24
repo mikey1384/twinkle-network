@@ -244,11 +244,11 @@ export default function LinkPage({
             <RewardStatus
               contentType="url"
               onCommentEdit={onEditRewardComment}
-              style={{
-                marginLeft: -1,
-                marginRight: -1,
-                fontSize: '1.4rem'
-              }}
+              className={css`
+                font-size: 1.4rem;
+                margin-right: -1px;
+                margin-left: -1px;
+              `}
               stars={stars}
             />
             <div
