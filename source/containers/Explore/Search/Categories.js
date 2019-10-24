@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from 'components/Checkbox';
 import Link from 'components/Link';
+import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
@@ -75,6 +76,7 @@ export default function Categories({
                   style={{
                     display: 'flex',
                     justifyContent: 'space-around',
+                    alignItems: 'center',
                     width: '100%'
                   }}
                 >
@@ -91,6 +93,9 @@ export default function Categories({
                     checked={filter === defaultFilter}
                     onClick={onSetDefaultSearchFilter}
                   />
+                  {changingDefaultFilter && (
+                    <Icon style={{ opacity: 0.5 }} icon="spinner" />
+                  )}
                 </div>
               </nav>
             ) : (
