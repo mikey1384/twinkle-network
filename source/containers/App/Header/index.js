@@ -4,7 +4,6 @@ import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import { GENERAL_CHAT_ID } from 'constants/database';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
@@ -51,7 +50,6 @@ function Header({
     actions: {
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
-      onIncreaseNumberOfUnreadMessages,
       onInitChat,
       onNotifyChatSubjectChange,
       onReceiveMessage,
@@ -131,15 +129,6 @@ function Header({
       onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
-      const { section } = getSectionFromPathname(pathname);
-      if (
-        message.channelId !== GENERAL_CHAT_ID &&
-        message.userId !== userId &&
-        section !== 'talk'
-      ) {
-        onIncreaseNumberOfUnreadMessages();
-      }
-
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
@@ -168,12 +157,7 @@ function Header({
 
   useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + numUnreads;
-    const { section } = getSectionFromPathname(pathname);
-    document.title = `${
-      newNotiNum > 0 && !['links', 'videos', 'subjects'].includes(section)
-        ? '(' + newNotiNum + ') '
-        : ''
-    }Twinkle`;
+    document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {
@@ -225,7 +209,7 @@ function Header({
             }
             @media (max-width: ${mobileMaxWidth}) {
               bottom: 0;
-              height: 6rem;
+              height: 5rem;
               border-top: 1px solid ${Color.borderGray()};
             }
           `}`}

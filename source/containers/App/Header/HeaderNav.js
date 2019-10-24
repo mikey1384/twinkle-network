@@ -109,7 +109,7 @@ export default function HeaderNav({
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
               justify-content: center;
-              font-size: 4rem;
+              font-size: 3rem;
               a {
                 .nav-label {
                   display: none;

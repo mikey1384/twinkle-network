@@ -241,11 +241,6 @@ export default function ChatReducer(state, action) {
           };
         })
       };
-    case 'INCREASE_NUM_UNREAD_MSGS':
-      return {
-        ...state,
-        numUnreads: state.numUnreads + 1
-      };
     case 'INIT_CHAT': {
       let loadMoreMessages = false;
       let originalNumUnreads = 0;

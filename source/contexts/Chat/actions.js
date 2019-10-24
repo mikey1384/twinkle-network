@@ -101,11 +101,6 @@ export default function ChatActions(dispatch) {
         channelId
       });
     },
-    onIncreaseNumberOfUnreadMessages() {
-      return dispatch({
-        type: 'INCREASE_NUM_UNREAD_MSGS'
-      });
-    },
     onInitChat(data) {
       return dispatch({
         type: 'INIT_CHAT',

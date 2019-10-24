@@ -216,7 +216,7 @@ export default function Chat({ onFileUpload }) {
               position: relative;
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100vw;
-                height: CALC(100% - 1rem);
+                height: 100%;
               }
             `}
           >

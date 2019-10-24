@@ -124,7 +124,7 @@ function App({ location, history }) {
           height: CALC(100% - 4.5rem);
           width: 100%;
           @media (max-width: ${mobileMaxWidth}) {
-            height: auto;
+            height: 100%;
           }
         `}
       >
@@ -193,7 +193,7 @@ function App({ location, history }) {
             @media (max-width: ${mobileMaxWidth}) {
               margin-top: 0;
               padding-top: 0;
-              padding-bottom: 6rem;
+              padding-bottom: 5rem;
             }
           `}
         >

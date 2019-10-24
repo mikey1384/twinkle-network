@@ -107,7 +107,6 @@ function VideoPlayer({
   useEffect(() => {
     mounted.current = true;
     setStartingPosition(currentTime);
-    timeWatchedRef.current = watchTime;
     return function cleanUp() {
       handleVideoStop();
       onSetVideoStarted({ videoId, started: false });
@@ -115,6 +114,10 @@ function VideoPlayer({
       mounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    timeWatchedRef.current = watchTime;
+  }, [watchTime]);
 
   useEffect(() => {
     return function setCurrentTimeBeforeUnmount() {
