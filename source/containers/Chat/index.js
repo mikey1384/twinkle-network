@@ -117,7 +117,7 @@ export default function Chat({ onFileUpload }) {
   }, [currentChannel]);
 
   useEffect(() => {
-    socket.on('receive_message', onReceiveMessage);
+    socket.on('receive_message', handleReceiveMessage);
     socket.on('subject_change', onSubjectChange);
     socket.on('chat_invitation', onChatInvitation);
     socket.on('change_in_members_online', onChangeMembersOnline);
@@ -131,7 +131,7 @@ export default function Chat({ onFileUpload }) {
       }
     }
 
-    function onReceiveMessage(message) {
+    function handleReceiveMessage(message) {
       if (message.isChessMsg) {
         setChessCountdownObj(countdownObj => ({
           ...countdownObj,
@@ -175,9 +175,9 @@ export default function Chat({ onFileUpload }) {
     }
 
     return function cleanUp() {
-      socket.removeListener('receive_message', onReceiveMessage);
-      socket.removeListener('chat_invitation', onChatInvitation);
+      socket.removeListener('receive_message', handleReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
+      socket.removeListener('chat_invitation', onChatInvitation);
       socket.removeListener('change_in_members_online', onChangeMembersOnline);
       socket.removeListener('notifiy_move_viewed', onNotifyMoveViewed);
       socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
@@ -293,19 +293,15 @@ export default function Chat({ onFileUpload }) {
       </LocalContext.Provider>
     ),
     [
-      channelLoading,
       currentChannelOnlineMembers,
       createNewChannelModalShown,
       userListModalShown,
-      setUserListModalShown,
       chessModalShown,
       chessCountdownObj,
       channelName,
       partner,
       creatingNewDMChannel,
       profilePicId,
-      userId,
-      username,
       loaded,
       currentChannel,
       selectedChannelId,

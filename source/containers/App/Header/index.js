@@ -133,7 +133,11 @@ function Header({
       let senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         await updateChatLastRead(message.channelId);
-        onReceiveMessage({ message, pageVisible });
+        onReceiveMessage({
+          message,
+          pageVisible,
+          usingChat: getSectionFromPathname(pathname)?.section === 'chat'
+        });
       }
       if (!messageIsForCurrentChannel) {
         onReceiveMessageOnDifferentChannel({

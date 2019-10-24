@@ -491,9 +491,10 @@ export default function ChatReducer(state, action) {
     case 'RECEIVE_MESSAGE':
       return {
         ...state,
-        numUnreads: action.pageVisible
-          ? state.numUnreads
-          : state.numUnreads + 1,
+        numUnreads:
+          action.pageVisible || action.usingChat
+            ? state.numUnreads
+            : state.numUnreads + 1,
         msgsWhileInvisible: action.pageVisible
           ? 0
           : state.msgsWhileInvisible + 1,

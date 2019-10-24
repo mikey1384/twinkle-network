@@ -185,9 +185,10 @@ export default function ChatActions(dispatch) {
         result
       });
     },
-    onReceiveMessage({ pageVisible, message }) {
+    onReceiveMessage({ pageVisible, message, usingChat }) {
       return dispatch({
         type: 'RECEIVE_MESSAGE',
+        usingChat,
         pageVisible,
         message: {
           ...message,
