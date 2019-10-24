@@ -75,9 +75,9 @@ export default function Categories({
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-around',
                     alignItems: 'center',
-                    width: '100%'
+                    width: '100%',
+                    opacity: changingDefaultFilter ? 0.5 : 1
                   }}
                 >
                   <Checkbox
@@ -85,7 +85,6 @@ export default function Categories({
                     label={`Always explore ${contentType} first:`}
                     textIsClickable
                     style={{
-                      opacity: changingDefaultFilter ? 0.5 : 1,
                       width: 'auto',
                       fontSize: '1.8rem',
                       marginBottom: '0.5rem'
@@ -94,7 +93,11 @@ export default function Categories({
                     onClick={onSetDefaultSearchFilter}
                   />
                   {changingDefaultFilter && (
-                    <Icon style={{ opacity: 0.5 }} icon="spinner" />
+                    <Icon
+                      style={{ marginLeft: '0.5rem' }}
+                      icon="spinner"
+                      pulse
+                    />
                   )}
                 </div>
               </nav>
