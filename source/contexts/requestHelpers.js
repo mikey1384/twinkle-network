@@ -436,7 +436,7 @@ export default function requestHelpers(handleError) {
           `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
           auth()
         );
-        Promise.resolve(data);
+        return Promise.resolve(data);
       } catch (error) {
         handleError(error);
       }
