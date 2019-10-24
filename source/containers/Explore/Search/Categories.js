@@ -76,29 +76,38 @@ export default function Categories({
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     width: '100%',
                     opacity: changingDefaultFilter ? 0.5 : 1
                   }}
                 >
-                  <Checkbox
-                    backgroundColor="#fff"
-                    label={`Always explore ${contentType} first:`}
-                    textIsClickable
+                  <div
                     style={{
-                      width: 'auto',
-                      fontSize: '1.8rem',
-                      marginBottom: '0.5rem'
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
-                    checked={filter === defaultFilter}
-                    onClick={onSetDefaultSearchFilter}
-                  />
-                  {changingDefaultFilter && (
-                    <Icon
-                      style={{ marginLeft: '0.5rem' }}
-                      icon="spinner"
-                      pulse
+                  >
+                    <Checkbox
+                      backgroundColor="#fff"
+                      label={`Always explore ${contentType} first:`}
+                      textIsClickable
+                      style={{
+                        width: 'auto',
+                        fontSize: '1.8rem',
+                        marginBottom: '0.5rem'
+                      }}
+                      checked={filter === defaultFilter}
+                      onClick={onSetDefaultSearchFilter}
                     />
-                  )}
+                    {changingDefaultFilter && (
+                      <Icon
+                        style={{ marginLeft: '0.5rem' }}
+                        icon="spinner"
+                        pulse
+                      />
+                    )}
+                  </div>
                 </div>
               </nav>
             ) : (
