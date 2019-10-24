@@ -80,7 +80,6 @@ export default function ChatInput({
                 setMessage(addEmoji(event.target.value));
               }
             }}
-            autoFocus
             style={{
               marginRight: '1rem',
               ...(messageExceedsCharLimit?.style || {})
