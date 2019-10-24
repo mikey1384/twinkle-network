@@ -99,6 +99,6 @@ export default function Categories({
         </div>
       </div>
     ),
-    [filter, profileTheme]
+    [defaultFilter, filter, profileTheme]
   );
 }
