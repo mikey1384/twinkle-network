@@ -79,6 +79,6 @@ export default function Checkbox({
         </div>
       </div>
     ),
-    [profileTheme, checked]
+    [profileTheme, checked, style]
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
@@ -31,6 +31,7 @@ export default function Search({ history, pathname, style }) {
     },
     actions: { onLoadSearchResults }
   } = useExploreContext();
+  const [changingDefaultFilter, setChangingDefaultFilter] = useState(false);
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
   const SearchBoxRef = useRef(null);
@@ -50,6 +51,7 @@ export default function Search({ history, pathname, style }) {
       <div style={style}>
         {stringIsEmpty(searchText) && (
           <Categories
+            changingDefaultFilter={changingDefaultFilter}
             style={{ marginTop: '7rem', marginBottom: '4rem' }}
             defaultFilter={defaultSearchFilter}
             filter={category}
@@ -90,15 +92,17 @@ export default function Search({ history, pathname, style }) {
         )}
       </div>
     ),
-    [category, defaultSearchFilter, searchText]
+    [category, changingDefaultFilter, defaultSearchFilter, searchText]
   );
 
   async function handleSetDefaultSearchFilter() {
     if (category === defaultSearchFilter) return;
-    await setDefaultSearchFilter(category);
     onChangeDefaultSearchFilter(category);
+    setChangingDefaultFilter(true);
+    await setDefaultSearchFilter(category);
+    setChangingDefaultFilter(false);
     if (stringIsEmpty(searchText)) {
-      SearchBoxRef.current.focus();
+      SearchBoxRef.current?.focus();
     }
   }
 }

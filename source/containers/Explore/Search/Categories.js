@@ -7,6 +7,7 @@ import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 
 Categories.propTypes = {
+  changingDefaultFilter: PropTypes.bool,
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
   onSetDefaultSearchFilter: PropTypes.func.isRequired,
@@ -14,6 +15,7 @@ Categories.propTypes = {
 };
 
 export default function Categories({
+  changingDefaultFilter,
   defaultFilter,
   filter,
   onSetDefaultSearchFilter,
@@ -81,6 +83,7 @@ export default function Categories({
                     label={`Always explore ${contentType} first:`}
                     textIsClickable
                     style={{
+                      opacity: changingDefaultFilter ? 0.5 : 1,
                       width: 'auto',
                       fontSize: '1.8rem',
                       marginBottom: '0.5rem'
@@ -99,6 +102,6 @@ export default function Categories({
         </div>
       </div>
     ),
-    [defaultFilter, filter, profileTheme]
+    [changingDefaultFilter, defaultFilter, filter, profileTheme]
   );
 }
