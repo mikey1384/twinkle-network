@@ -91,6 +91,9 @@ export default function ContentPage({
             margin-bottom: 1rem;
             margin-top: 1rem;
             padding-bottom: 20rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-top: 0;
+            }
           `}
         >
           <section
