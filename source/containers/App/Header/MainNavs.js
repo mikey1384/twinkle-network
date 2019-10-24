@@ -137,7 +137,7 @@ export default function MainNavs({
       `}
     >
       <HeaderNav
-        isMobile
+        isMobileSideMenu
         className={`${chatLoading ? 'hidden' : 'mobile'}`}
         alert={numNewNotis > 0 || totalRewardAmount > 0}
         alertColor={Color.gold()}

@@ -63,6 +63,7 @@ export default function Stories({ location }) {
       onLoadNewFeeds
     }
   } = useHomeContext();
+
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }

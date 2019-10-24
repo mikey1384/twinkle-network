@@ -274,12 +274,13 @@ export default function ContentInput() {
         title: finalizeEmoji(form.title),
         description: finalizeEmoji(form.description)
       });
-      onResetContentInput();
+      if (data) {
+        onResetContentInput();
+        onLoadNewFeeds([data]);
+        document.getElementById('App').scrollTop = 0;
+      }
       setSubmitting(false);
-      onLoadNewFeeds([data]);
-      document.getElementById('App').scrollTop = 0;
     } catch (error) {
-      setSubmitting(false);
       console.error(error);
     }
   }

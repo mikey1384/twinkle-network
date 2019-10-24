@@ -284,11 +284,12 @@ export default function SubjectInput() {
         secretAnswer: hasSecretAnswer ? secretAnswer : '',
         rewardLevel
       });
-      onLoadNewFeeds([data]);
-      onResetSubjectInput();
+      if (data) {
+        onLoadNewFeeds([data]);
+        onResetSubjectInput();
+      }
       setSubmitting(false);
     } catch (error) {
-      setSubmitting(false);
       console.error(error);
     }
   }

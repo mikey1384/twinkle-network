@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
-import { Link, Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
@@ -13,12 +13,13 @@ import {
 } from 'contexts';
 
 HeaderNav.propTypes = {
-  isMobile: PropTypes.bool,
+  isMobileSideMenu: PropTypes.bool,
   active: PropTypes.bool,
   alert: PropTypes.bool,
   alertColor: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.node,
+  history: PropTypes.object,
   imgLabel: PropTypes.string,
   isHome: PropTypes.bool,
   onClick: PropTypes.func,
@@ -27,16 +28,17 @@ HeaderNav.propTypes = {
   to: PropTypes.string
 };
 
-export default function HeaderNav({
+function HeaderNav({
   active,
   alert,
   alertColor,
   className,
+  history,
   to,
   children,
   imgLabel,
   isHome,
-  isMobile,
+  isMobileSideMenu,
   onClick = () => {},
   pathname,
   style
@@ -74,32 +76,36 @@ export default function HeaderNav({
       children={({ match }) => (
         <div
           onClick={() => {
-            if (match && !isMobile) {
-              handleMatch(match);
+            if (!isMobileSideMenu) {
+              if (match) {
+                handleMatch(match);
+              }
+              history.push(to);
             }
           }}
           className={`${className} ${css`
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
             .chat {
               color: ${Color.lightGray()};
             }
-            a {
+            nav {
               text-decoration: none;
               font-weight: bold;
               color: ${Color.lightGray()};
               align-items: center;
               line-height: 1;
             }
-            > a.active {
+            > nav.active {
               color: ${activeColor}!important;
               > svg {
                 color: ${activeColor}!important;
               }
             }
             &:hover {
-              > a {
+              > nav {
                 > svg {
                   color: ${hoverColor};
                 }
@@ -110,18 +116,18 @@ export default function HeaderNav({
               width: 100%;
               justify-content: center;
               font-size: 3rem;
-              a {
+              nav {
                 .nav-label {
                   display: none;
                 }
               }
-              > a.active {
+              > nav.active {
                 > svg {
                   color: ${Color.darkGray()}!important;
                 }
               }
               &:hover {
-                > a {
+                > nav {
                   > svg {
                     color: ${Color.lightGray()};
                   }
@@ -131,24 +137,23 @@ export default function HeaderNav({
           `}`}
           style={style}
         >
-          {to ? (
-            <Link
+          {!isMobileSideMenu ? (
+            <nav
               className={to && (match || highlighted) ? 'active ' : ''}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 ...(alert ? { color: alertColor || Color.gold() } : {})
               }}
-              to={to}
               onClick={onClick}
             >
               <Icon icon={isHome ? 'home' : imgLabel} />
               <span className="nav-label" style={{ marginLeft: '0.7rem' }}>
                 {children}
               </span>
-            </Link>
+            </nav>
           ) : (
-            <a
+            <nav
               className={active ? 'active ' : ''}
               style={{
                 display: 'flex',
@@ -172,7 +177,7 @@ export default function HeaderNav({
               >
                 {children}
               </span>
-            </a>
+            </nav>
           )}
         </div>
       )}
@@ -208,3 +213,5 @@ export default function HeaderNav({
     BodyRef.current.scrollTop = 0;
   }
 }
+
+export default withRouter(HeaderNav);
