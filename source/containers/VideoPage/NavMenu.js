@@ -103,9 +103,8 @@ export default function NavMenu({ playlistId, videoId }) {
     () => (
       <ErrorBoundary
         className={css`
-          width: CALC(30% - 2rem);
+          width: 30%;
           font-size: 2rem;
-          margin-right: 1rem;
           > section {
             padding: 1rem;
             background: #fff;
@@ -125,8 +124,10 @@ export default function NavMenu({ playlistId, videoId }) {
           @media (max-width: ${mobileMaxWidth}) {
             width: 100%;
             margin: 0;
+            padding-bottom: 5rem;
             section {
               margin: 0;
+              margin-bottom: 1rem;
             }
           }
         `}

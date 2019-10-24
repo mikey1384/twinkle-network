@@ -227,44 +227,56 @@ export default function VideoPage({
     () => (
       <ErrorBoundary
         className={css`
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
+          width: CALC(100% - 2rem);
           height: 100%;
           margin-top: 1rem;
+          margin-bottom: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
             margin-top: 0;
+            width: 100%;
             flex-direction: column;
           }
         `}
       >
+        {(!loaded || videoUnavailable) && (
+          <div>
+            {videoUnavailable ? (
+              <NotFound text="Video does not exist" />
+            ) : (
+              <Loading text="Loading Video..." />
+            )}
+          </div>
+        )}
         <div
           className={css`
-            width: CALC(70% - 1rem);
+            width: 100%;
             height: 100%;
             margin-left: 1rem;
+            display: flex;
+            justify-content: space-between;
             @media (max-width: ${mobileMaxWidth}) {
+              flex-direction: column;
               width: 100%;
               margin: 0;
             }
           `}
         >
-          {(!loaded || videoUnavailable) && (
-            <div>
-              {videoUnavailable ? (
-                <NotFound text="Video does not exist" />
-              ) : (
-                <Loading text="Loading Video..." />
-              )}
-            </div>
-          )}
           {loaded && !videoUnavailable && content && (
-            <div style={{ width: '100%', marginBottom: '1rem' }}>
+            <div
+              className={css`
+                width: CALC(70% - 1rem);
+                border: 1px solid ${Color.borderGray()};
+                @media (max-width: ${mobileMaxWidth}) {
+                  width: 100%;
+                  border: 0;
+                }
+              `}
+            >
               <div
                 style={{
                   width: '100%',
-                  border: `1px solid ${Color.borderGray()}`,
                   background: '#fff',
+                  marginBottom: '1rem',
                   padding: '1rem',
                   paddingTop: 0
                 }}
@@ -412,7 +424,8 @@ export default function VideoPage({
                 style={{
                   background: '#fff',
                   border: `1px solid ${Color.borderGray()}`,
-                  padding: '1rem'
+                  padding: '1rem',
+                  marginBottom: '1rem'
                 }}
               >
                 <p
@@ -475,8 +488,8 @@ export default function VideoPage({
               )}
             </div>
           )}
+          {loaded && <NavMenu videoId={videoId} playlistId={playlistId} />}
         </div>
-        <NavMenu videoId={videoId} playlistId={playlistId} />
       </ErrorBoundary>
     ),
     [
