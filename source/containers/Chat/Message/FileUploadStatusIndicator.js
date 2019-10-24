@@ -26,10 +26,9 @@ export default function FileUploadStatusIndicator({
   filePath,
   onSendFileMessage,
   recepientId,
-  profilePicId,
   subjectId
 }) {
-  const { authLevel, userId, username } = useMyState();
+  const { authLevel, profilePicId, userId, username } = useMyState();
   const {
     state: { filesBeingUploaded },
     actions: { onDisplayAttachedFile }

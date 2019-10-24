@@ -89,6 +89,6 @@ export default function ProfilePic({
         )}
       </div>
     ),
-    [changePictureShown, myId, src, userId, online]
+    [changePictureShown, myId, src, userId, online, profilePicId]
   );
 }
