@@ -30,7 +30,7 @@ export default function useScrollToBottom(ContainerRef) {
           setAtBottom(false);
         }
         setScrollTop(document.getElementById('App').scrollTop);
-      }, 200);
+      }, 100);
     }
     return function cleanUp() {
       mounted.current = false;
