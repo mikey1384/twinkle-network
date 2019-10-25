@@ -18,7 +18,7 @@ BasicInfos.propTypes = {
   onUrlChange: PropTypes.func.isRequired,
   onEdit: PropTypes.bool.isRequired,
   titleHovered: PropTypes.bool.isRequired,
-  onTitleHover: PropTypes.func.isRequired,
+  onTitleClick: PropTypes.func.isRequired,
   style: PropTypes.object,
   title: PropTypes.string.isRequired,
   titleExceedsCharLimit: PropTypes.func.isRequired,
@@ -37,7 +37,7 @@ export default function BasicInfos({
   onEdit,
   onMouseLeave,
   onMouseOver,
-  onTitleHover,
+  onTitleClick,
   style,
   title,
   titleHovered,
@@ -90,7 +90,7 @@ export default function BasicInfos({
                 fontWeight: 'bold',
                 cursor: 'default'
               }}
-              onClick={onTitleHover}
+              onClick={onTitleClick}
               onMouseOver={onMouseOver}
               onMouseLeave={onMouseLeave}
             >

@@ -211,9 +211,9 @@ export default function Details({
                 onEdit={isEditing}
                 onMouseLeave={() => setTitleHovered(false)}
                 onMouseOver={onMouseOver}
-                onTitleHover={() => {
+                onTitleClick={() => {
                   if (textIsOverflown(TitleRef.current)) {
-                    setTitleHovered(!titleHovered);
+                    setTitleHovered(titleHovered => !titleHovered);
                   }
                 }}
                 title={title}
