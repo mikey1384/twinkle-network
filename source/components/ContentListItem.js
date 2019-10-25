@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
@@ -10,6 +10,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
+import { useContentContext } from 'contexts';
 
 ContentListItem.propTypes = {
   comments: PropTypes.array,
@@ -31,6 +32,19 @@ export default function ContentListItem({
   style
 }) {
   const { profileTheme } = useMyState();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
+  useEffect(() => {
+    if (contentObj.rootObj) {
+      onInitContent({
+        contentId: contentObj.rootObj.id,
+        contentType: contentObj.rootObj.contentType,
+        ...contentObj.rootObj
+      });
+    }
+  }, []);
+
   return useMemo(
     () => (
       <div
