@@ -93,7 +93,7 @@ export default function Chat({ onFileUpload }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [loaded, userId, socket.connected]);
+  }, [loaded, pageVisible, userId, socket.connected]);
 
   useEffect(() => {
     if (mounted.current) {
