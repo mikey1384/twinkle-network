@@ -30,7 +30,7 @@ export default function Explore({ history, location }) {
   const disconnected = useRef(false);
   const ContainerRef = useRef(null);
   const [categoriesShown, setCategoriesShown] = useState(false);
-  const { atBottom, scrollTop } = useScrollToBottom(ContainerRef);
+  const { atBottom, scrollTop } = useScrollToBottom(ContainerRef, 30);
   const category = getSectionFromPathname(location.pathname)?.section;
 
   useEffect(() => {

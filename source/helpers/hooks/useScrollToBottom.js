@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 
-export default function useScrollToBottom(ContainerRef) {
+export default function useScrollToBottom(containerRef, threshold = 0) {
   const mounted = useRef(true);
   const timerRef = useRef(null);
   const [atBottom, setAtBottom] = useState(false);
@@ -11,7 +11,7 @@ export default function useScrollToBottom(ContainerRef) {
 
   useEffect(() => {
     mounted.current = true;
-    if (ContainerRef.current.clientHeight - scrollTop < window.innerHeight) {
+    if (containerRef.current.clientHeight - scrollTop < window.innerHeight) {
       setAtBottom(true);
     }
     addEvent(window, 'scroll', onScroll);
@@ -21,16 +21,16 @@ export default function useScrollToBottom(ContainerRef) {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
         if (
-          ContainerRef.current.clientHeight -
+          containerRef.current.clientHeight -
             document.getElementById('App').scrollTop <
-          window.innerHeight
+          window.innerHeight + threshold
         ) {
           setAtBottom(true);
         } else {
           setAtBottom(false);
         }
         setScrollTop(document.getElementById('App').scrollTop);
-      }, 100);
+      }, 50);
     }
     return function cleanUp() {
       mounted.current = false;
