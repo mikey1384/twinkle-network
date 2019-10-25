@@ -60,9 +60,11 @@ export default function EditPlaylistModal({
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [mainTabActive, setMainTabActive] = useState(true);
   const [openedRemoveVideosTab, setOpenedRemoveVideosTab] = useState(false);
-  const { handleSearch, searching, searchText } = useSearch({
+  const [searchText, setSearchText] = useState('');
+  const { handleSearch, searching } = useSearch({
     onSearch: handleSearchVideo,
-    onClear: () => setSearchedVideos([])
+    onClear: () => setSearchedVideos([]),
+    onSetSearchText: setSearchText
   });
   const playlistVideoObjects = useRef({});
   const initialSelectedVideos = useRef([]);
