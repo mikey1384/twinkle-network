@@ -1,28 +1,34 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Checkbox from 'components/Checkbox';
 import Link from 'components/Link';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
 Categories.propTypes = {
   changingDefaultFilter: PropTypes.bool,
   defaultFilter: PropTypes.string,
   filter: PropTypes.string.isRequired,
-  onSetDefaultSearchFilter: PropTypes.func.isRequired,
+  onSetDefaultSearchFilter: PropTypes.func,
   style: PropTypes.object
 };
 
 export default function Categories({
-  changingDefaultFilter,
-  defaultFilter,
   filter,
   onSetDefaultSearchFilter,
   style
 }) {
-  const { profileTheme } = useMyState();
+  const {
+    user: {
+      actions: { onChangeDefaultSearchFilter }
+    },
+    requestHelpers: { setDefaultSearchFilter }
+  } = useAppContext();
+  const { defaultSearchFilter, profileTheme } = useMyState();
+  const [changingDefaultFilter, setChangingDefaultFilter] = useState(false);
   return useMemo(
     () => (
       <div
@@ -97,8 +103,8 @@ export default function Categories({
                         fontSize: '1.8rem',
                         marginBottom: '0.5rem'
                       }}
-                      checked={filter === defaultFilter}
-                      onClick={onSetDefaultSearchFilter}
+                      checked={filter === defaultSearchFilter}
+                      onClick={handleSetDefaultSearchFilter}
                     />
                     {changingDefaultFilter && (
                       <Icon
@@ -119,6 +125,15 @@ export default function Categories({
         </div>
       </div>
     ),
-    [changingDefaultFilter, defaultFilter, filter, profileTheme]
+    [changingDefaultFilter, defaultSearchFilter, filter, profileTheme]
   );
+
+  async function handleSetDefaultSearchFilter() {
+    if (filter === defaultSearchFilter) return;
+    onChangeDefaultSearchFilter(filter);
+    setChangingDefaultFilter(true);
+    await setDefaultSearchFilter(filter);
+    setChangingDefaultFilter(false);
+    onSetDefaultSearchFilter?.();
+  }
 }

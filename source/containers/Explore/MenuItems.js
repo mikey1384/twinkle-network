@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { NavLink } from 'react-router-dom';
 
-WorkMenuItems.propTypes = {
+MenuItems.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object
 };
 
-export default function WorkMenuItems({ className, style }) {
+export default function MenuItems({ className, style }) {
   return (
     <div style={style} className={className}>
       <NavLink to="/subjects" activeClassName="active">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
 import { useAppContext, useContentContext, useProfileContext } from 'contexts';
+export { default as useScrollToBottom } from './useScrollToBottom';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 
 export function useContentState({ contentType, contentId }) {

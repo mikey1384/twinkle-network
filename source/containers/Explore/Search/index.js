@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import TopFilter from './TopFilter';
-import Categories from './Categories';
+import Categories from '../Categories';
 import Results from './Results';
 import SearchBox from './SearchBox';
 import { getSectionFromPathname } from 'helpers';
-import { useMyState } from 'helpers/hooks';
-import { useAppContext, useExploreContext } from 'contexts';
+import { useExploreContext } from 'contexts';
 
 Search.propTypes = {
   history: PropTypes.object,
@@ -19,19 +18,11 @@ Search.propTypes = {
 
 export default function Search({ history, pathname, style }) {
   const {
-    user: {
-      actions: { onChangeDefaultSearchFilter }
-    },
-    requestHelpers: { setDefaultSearchFilter }
-  } = useAppContext();
-  const { defaultSearchFilter } = useMyState();
-  const {
     state: {
       search: { searchText }
     },
     actions: { onLoadSearchResults }
   } = useExploreContext();
-  const [changingDefaultFilter, setChangingDefaultFilter] = useState(false);
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
   const SearchBoxRef = useRef(null);
@@ -51,9 +42,7 @@ export default function Search({ history, pathname, style }) {
       <div style={style}>
         {stringIsEmpty(searchText) && (
           <Categories
-            changingDefaultFilter={changingDefaultFilter}
             style={{ marginTop: '7rem', marginBottom: '4rem' }}
-            defaultFilter={defaultSearchFilter}
             filter={category}
             onSetDefaultSearchFilter={handleSetDefaultSearchFilter}
           />
@@ -92,15 +81,10 @@ export default function Search({ history, pathname, style }) {
         )}
       </div>
     ),
-    [category, changingDefaultFilter, defaultSearchFilter, searchText]
+    [category, searchText]
   );
 
   async function handleSetDefaultSearchFilter() {
-    if (category === defaultSearchFilter) return;
-    onChangeDefaultSearchFilter(category);
-    setChangingDefaultFilter(true);
-    await setDefaultSearchFilter(category);
-    setChangingDefaultFilter(false);
     if (stringIsEmpty(searchText)) {
       SearchBoxRef.current?.focus();
     }

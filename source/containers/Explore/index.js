@@ -1,16 +1,19 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from './Subjects';
 import Notification from 'components/Notification';
-import WorkMenuItems from './WorkMenuItems';
+import MenuItems from './MenuItems';
 import Search from './Search';
+import Categories from './Categories';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
+import { getSectionFromPathname } from 'helpers';
 import { useExploreContext } from 'contexts';
+import { useScrollToBottom } from 'helpers/hooks';
 const Videos = React.lazy(() => import('./Videos'));
 const Links = React.lazy(() => import('./Links'));
 
@@ -25,6 +28,25 @@ export default function Explore({ history, location }) {
   } = useExploreContext();
   const mounted = useRef(true);
   const disconnected = useRef(false);
+  const ContainerRef = useRef(null);
+  const [categoriesShown, setCategoriesShown] = useState(false);
+  const { atBottom, scrollTop } = useScrollToBottom(ContainerRef);
+  const category = getSectionFromPathname(location.pathname)?.section;
+
+  useEffect(() => {
+    if (scrollTop === 0) {
+      setCategoriesShown(false);
+    } else if (atBottom) {
+      setCategoriesShown(true);
+    }
+  }, [atBottom, scrollTop]);
+
+  useEffect(() => {
+    return function componentWillRefresh() {
+      setCategoriesShown(false);
+    };
+  }, [category]);
+
   useEffect(() => {
     mounted.current = true;
     socket.on('connect', onConnect);
@@ -50,6 +72,7 @@ export default function Explore({ history, location }) {
   return (
     <ErrorBoundary>
       <div
+        ref={ContainerRef}
         className={css`
           width: 100%;
           display: flex;
@@ -58,7 +81,7 @@ export default function Explore({ history, location }) {
           }
         `}
       >
-        <WorkMenuItems
+        <MenuItems
           className={css`
             top: CALC(50vh - 11rem);
             height: auto;
@@ -123,6 +146,12 @@ export default function Explore({ history, location }) {
               <Route path="/subjects" component={Subjects} />
             </Switch>
           </Suspense>
+          {categoriesShown && (
+            <Categories
+              style={{ marginTop: '4rem', marginBottom: '4rem' }}
+              filter={category}
+            />
+          )}
           <div
             className={css`
               display: none;
