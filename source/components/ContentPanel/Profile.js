@@ -4,6 +4,7 @@ import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
 import UserDetails from 'components/UserDetails';
 import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 
 Profile.propTypes = {
@@ -62,6 +63,10 @@ export default function Profile({ profile }) {
             className={css`
               margin-left: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
               margin-right: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-left: 0;
+                margin-right: 0;
+              }
             `}
             style={{
               borderLeft: 'none',
