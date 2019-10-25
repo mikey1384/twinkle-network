@@ -492,7 +492,7 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         numUnreads:
-          action.pageVisible || action.usingChat
+          action.pageVisible && action.usingChat
             ? state.numUnreads
             : state.numUnreads + 1,
         msgsWhileInvisible: action.pageVisible
