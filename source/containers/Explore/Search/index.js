@@ -42,7 +42,7 @@ export default function Search({ history, pathname, style }) {
       <div style={style}>
         {stringIsEmpty(searchText) && (
           <Categories
-            style={{ marginTop: '7rem', marginBottom: '4rem' }}
+            style={{ marginTop: '6rem', marginBottom: '4rem' }}
             filter={category}
             onSetDefaultSearchFilter={handleSetDefaultSearchFilter}
           />

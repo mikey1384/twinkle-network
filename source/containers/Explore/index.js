@@ -148,7 +148,7 @@ export default function Explore({ history, location }) {
           </Suspense>
           {categoriesShown && (
             <Categories
-              style={{ marginTop: '4rem', marginBottom: '4rem' }}
+              style={{ marginTop: '3rem', marginBottom: '4rem' }}
               filter={category}
             />
           )}
