@@ -85,7 +85,7 @@ export function useLazyLoad({
 export function useMyState() {
   const {
     user: {
-      state: { userId, searchFilter, signinModalShown }
+      state: { hideWatched, userId, searchFilter, signinModalShown }
     }
   } = useAppContext();
   const myState = useContentState({
@@ -97,6 +97,7 @@ export function useMyState() {
         ...myState,
         userId,
         defaultSearchFilter: searchFilter,
+        hideWatched,
         isCreator: myState.userType === 'creator',
         loggedIn: true,
         signinModalShown

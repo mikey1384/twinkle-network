@@ -81,6 +81,8 @@ function HeaderNav({
                 handleMatch(match);
               }
               history.push(to);
+            } else {
+              onClick();
             }
           }}
           className={`${className} ${css`
@@ -160,7 +162,6 @@ function HeaderNav({
                 cursor: 'pointer',
                 justifyContent: 'center'
               }}
-              onClick={onClick}
             >
               <Icon
                 style={{
