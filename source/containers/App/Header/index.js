@@ -36,6 +36,7 @@ function Header({
   showUpdateNotice,
   style = {}
 }) {
+  const usingChat = getSectionFromPathname(pathname)?.section === 'chat';
   const {
     requestHelpers: {
       checkVersion,
@@ -48,6 +49,7 @@ function Header({
   const {
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
+      onClearLoadedState,
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
@@ -122,6 +124,7 @@ function Header({
       }
 
       async function handleLoadChat() {
+        onClearLoadedState();
         const data = await loadChat();
         onInitChat(data);
       }
@@ -144,11 +147,13 @@ function Header({
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
-        await updateChatLastRead(message.channelId);
+        if (usingChat) {
+          await updateChatLastRead(message.channelId);
+        }
         onReceiveMessage({
           message,
           pageVisible,
-          usingChat: getSectionFromPathname(pathname)?.section === 'chat'
+          usingChat
         });
       }
       if (!messageIsForCurrentChannel) {
