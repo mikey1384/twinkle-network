@@ -116,6 +116,7 @@ function Body({
   const mounted = useRef(true);
   const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
+  const RewardInterfaceRef = useRef(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -273,13 +274,7 @@ function Body({
                       color="pink"
                       disabled={xpButtonDisabled()}
                       style={{ marginLeft: '1rem' }}
-                      onClick={() =>
-                        onSetXpRewardInterfaceShown({
-                          contentType,
-                          contentId,
-                          shown: true
-                        })
-                      }
+                      onClick={handleSetXpRewardInterfaceShown}
                     >
                       <Icon icon="certificate" />
                       <span style={{ marginLeft: '0.7rem' }}>
@@ -337,6 +332,7 @@ function Body({
           )}
           {xpRewardInterfaceShown && (
             <XPRewardInterface
+              innerRef={RewardInterfaceRef}
               contentType={contentType}
               contentId={contentId}
               rewardLevel={determineRewardLevel({
@@ -475,6 +471,15 @@ function Body({
         onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
       }
     }
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentType,
+      contentId,
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function renderEditMenuItems() {

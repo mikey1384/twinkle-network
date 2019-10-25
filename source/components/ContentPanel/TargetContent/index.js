@@ -18,7 +18,11 @@ import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
-import { determineXpButtonDisabled, isMobile } from 'helpers';
+import {
+  determineXpButtonDisabled,
+  isMobile,
+  scrollElementToCenter
+} from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
@@ -68,6 +72,7 @@ function TargetContent({
   const subjectState = state['subject' + subject?.id] || {};
   const [userListModalShown, setUserListModalShown] = useState(false);
   const InputFormRef = useRef(null);
+  const RewardInterfaceRef = useRef(null);
   const {
     onAttachStar,
     onDeleteComment,
@@ -241,13 +246,7 @@ function TargetContent({
                           <Button
                             color="pink"
                             disabled={xpButtonDisabled()}
-                            onClick={() =>
-                              onSetXpRewardInterfaceShown({
-                                contentType: 'comment',
-                                contentId: comment.id,
-                                shown: true
-                              })
-                            }
+                            onClick={handleSetXpRewardInterfaceShown}
                           >
                             <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
@@ -261,6 +260,7 @@ function TargetContent({
                 </div>
                 {xpRewardInterfaceShown && (
                   <XPRewardInterface
+                    innerRef={RewardInterfaceRef}
                     contentType={'comment'}
                     contentId={comment.id}
                     rewardLevel={determineRewardLevel({
@@ -383,6 +383,15 @@ function TargetContent({
       onShowTCReplyInput({ contentId, contentType });
       InputFormRef.current.focus();
     }
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentType: 'comment',
+      contentId: comment.id,
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function onReplyClick() {

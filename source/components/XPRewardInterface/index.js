@@ -21,6 +21,7 @@ import URL from 'constants/URL';
 XPRewardInterface.propTypes = {
   contentType: PropTypes.string.isRequired,
   contentId: PropTypes.number.isRequired,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   rewardLevel: PropTypes.number,
   stars: PropTypes.array,
   uploaderId: PropTypes.number.isRequired,
@@ -31,6 +32,7 @@ XPRewardInterface.propTypes = {
 export default function XPRewardInterface({
   contentId,
   contentType,
+  innerRef,
   rewardLevel,
   noPadding,
   onRewardSubmit,
@@ -77,6 +79,7 @@ export default function XPRewardInterface({
     () =>
       userId && uploaderId !== userId ? (
         <div
+          ref={innerRef}
           style={{
             display: 'flex',
             flexDirection: 'column',

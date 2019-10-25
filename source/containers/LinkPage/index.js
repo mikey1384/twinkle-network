@@ -16,7 +16,7 @@ import Loading from 'components/Loading';
 import Description from './Description';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { determineXpButtonDisabled } from 'helpers';
+import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import { processedURL } from 'helpers/stringHelpers';
 import {
@@ -113,6 +113,7 @@ export default function LinkPage({
   const [likesModalShown, setLikesModalShown] = useState(false);
   const mounted = useRef(true);
   const prevDeleted = useRef(false);
+  const RewardInterfaceRef = useRef(null);
 
   useEffect(() => {
     if (!prevDeleted.current && deleted) {
@@ -283,13 +284,7 @@ export default function LinkPage({
                       fontSize: '2rem',
                       marginLeft: '1rem'
                     }}
-                    onClick={() =>
-                      onSetXpRewardInterfaceShown({
-                        contentType: 'url',
-                        contentId: linkId,
-                        shown: true
-                      })
-                    }
+                    onClick={handleSetXpRewardInterfaceShown}
                   >
                     <Icon icon="certificate" />
                     <span style={{ marginLeft: '0.7rem' }}>
@@ -313,6 +308,7 @@ export default function LinkPage({
             {xpRewardInterfaceShown && (
               <div style={{ padding: '0 1rem' }}>
                 <XPRewardInterface
+                  innerRef={RewardInterfaceRef}
                   stars={stars}
                   contentType="url"
                   contentId={linkId}
@@ -483,6 +479,15 @@ export default function LinkPage({
   function handleLikeLink(likes) {
     onLikeContent({ likes, contentType: 'url', contentId: linkId });
     onLikeLink({ likes, id: linkId });
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentType: 'url',
+      contentId: linkId,
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function handleUploadComment(params) {

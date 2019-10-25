@@ -102,6 +102,7 @@ function Comment({
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
   const mounted = useRef(true);
+  const RewardInterfaceRef = useRef(null);
 
   useEffect(() => {
     if (replying && replies.length > prevReplies.length) {
@@ -294,13 +295,7 @@ function Comment({
                               <Button
                                 color="pink"
                                 style={{ marginLeft: '0.7rem' }}
-                                onClick={() =>
-                                  onSetXpRewardInterfaceShown({
-                                    contentId: comment.id,
-                                    contentType: 'comment',
-                                    shown: true
-                                  })
-                                }
+                                onClick={handleSetXpRewardInterfaceShown}
                                 disabled={determineXpButtonDisabled({
                                   rewardLevel: determineRewardLevel({
                                     parent,
@@ -339,6 +334,7 @@ function Comment({
                 </div>
                 {!isPreview && xpRewardInterfaceShown && (
                   <XPRewardInterface
+                    innerRef={RewardInterfaceRef}
                     rewardLevel={determineRewardLevel({ parent, targetObj })}
                     stars={stars}
                     contentType="comment"
@@ -471,6 +467,15 @@ function Comment({
       contentType: 'comment',
       isEditing: false
     });
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentId: comment.id,
+      contentType: 'comment',
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function likeClick(likes) {

@@ -18,7 +18,7 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { commentContainer } from '../Styles';
 import { Link } from 'react-router-dom';
-import { determineXpButtonDisabled } from 'helpers';
+import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext } from 'contexts';
@@ -84,6 +84,7 @@ export default function Reply({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [replyButtonClicked, setReplyButtonClicked] = useState(false);
   const ReplyInputAreaRef = useRef(null);
+  const RewardInterfaceRef = useRef(null);
   const userIsUploader = userId === uploader.id;
   const userIsHigherAuth = authLevel > uploader.authLevel;
   const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
@@ -211,13 +212,7 @@ export default function Reply({
                           <Button
                             color="pink"
                             style={{ marginLeft: '1rem' }}
-                            onClick={() =>
-                              onSetXpRewardInterfaceShown({
-                                contentId: reply.id,
-                                contentType: 'comment',
-                                shown: true
-                              })
-                            }
+                            onClick={handleSetXpRewardInterfaceShown}
                             disabled={determineXpButtonDisabled({
                               rewardLevel: determineRewardLevel({
                                 parent,
@@ -256,6 +251,7 @@ export default function Reply({
                 </div>
                 {xpRewardInterfaceShown && (
                   <XPRewardInterface
+                    innerRef={RewardInterfaceRef}
                     rewardLevel={determineRewardLevel({ parent, subject })}
                     stars={stars}
                     contentType="comment"
@@ -373,6 +369,15 @@ export default function Reply({
       contentType: 'comment',
       isEditing: false
     });
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentId: reply.id,
+      contentType: 'comment',
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function likeClick(likes) {

@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Button from 'components/Button';
-import { determineXpButtonDisabled, textIsOverflown } from 'helpers';
+import {
+  determineXpButtonDisabled,
+  textIsOverflown,
+  scrollElementToCenter
+} from 'helpers';
 import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';
 import AlreadyPosted from 'components/AlreadyPosted';
@@ -83,6 +87,7 @@ export default function Details({
   });
   const [titleHovered, setTitleHovered] = useState(false);
   const TitleRef = useRef(null);
+  const RewardInterfaceRef = useRef(null);
 
   useEffect(() => {
     if (!inputState['edit' + 'video' + videoId]) {
@@ -299,13 +304,7 @@ export default function Details({
                   xpRewardInterfaceShown,
                   stars
                 })}
-                onClick={() =>
-                  onSetXpRewardInterfaceShown({
-                    contentId: videoId,
-                    contentType: 'video',
-                    shown: true
-                  })
-                }
+                onClick={handleSetXpRewardInterfaceShown}
               >
                 <Icon icon="certificate" />
                 <span style={{ marginLeft: '0.7rem' }}>
@@ -321,6 +320,7 @@ export default function Details({
           </div>
           {xpRewardInterfaceShown && (
             <XPRewardInterface
+              innerRef={RewardInterfaceRef}
               rewardLevel={byUser ? 5 : 0}
               stars={stars}
               contentType="video"
@@ -353,6 +353,7 @@ export default function Details({
       rewardLevel,
       stars,
       tags,
+      titleHovered,
       userId,
       videoId
     ]
@@ -415,6 +416,15 @@ export default function Details({
       contentType: 'video',
       isEditing: true
     });
+  }
+
+  function handleSetXpRewardInterfaceShown() {
+    onSetXpRewardInterfaceShown({
+      contentId: videoId,
+      contentType: 'video',
+      shown: true
+    });
+    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function onMouseOver() {
