@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Button from 'components/Button';
 import {
+  isMobile,
   determineXpButtonDisabled,
   textIsOverflown,
   scrollElementToCenter
@@ -428,7 +429,7 @@ export default function Details({
   }
 
   function onMouseOver() {
-    if (textIsOverflown(TitleRef.current)) {
+    if (!isMobile(navigator) && textIsOverflown(TitleRef.current)) {
       setTitleHovered(true);
     }
   }
