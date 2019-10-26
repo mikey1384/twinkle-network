@@ -10,7 +10,6 @@ import { useViewContext } from 'contexts';
 
 MainNavs.propTypes = {
   chatLoading: PropTypes.bool,
-  isAtExploreTab: PropTypes.bool,
   loggedIn: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
@@ -23,7 +22,6 @@ MainNavs.propTypes = {
 
 export default function MainNavs({
   chatLoading,
-  isAtExploreTab,
   loggedIn,
   numChatUnreads,
   numNewNotis,
@@ -197,7 +195,7 @@ export default function MainNavs({
         pathname={pathname}
         className="desktop"
         imgLabel="home"
-        alert={!usersMatch && !isAtExploreTab && numNewPosts > 0}
+        alert={!usersMatch && numNewPosts > 0}
       >
         HOME
         {!usersMatch && numNewPosts > 0 ? ` (${numNewPosts})` : ''}

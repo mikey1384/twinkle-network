@@ -250,9 +250,6 @@ function Header({
           >
             <TwinkleLogo style={{ marginLeft: '3rem' }} />
             <MainNavs
-              isAtExploreTab={['links', 'videos', 'subjects'].includes(
-                getSectionFromPathname(pathname)?.section
-              )}
               loggedIn={loggedIn}
               defaultSearchFilter={defaultSearchFilter}
               chatLoading={chatLoading}
