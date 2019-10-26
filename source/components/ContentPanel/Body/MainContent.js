@@ -140,21 +140,22 @@ function MainContent({ contentId, contentType, history, onClickSecretAnswer }) {
           >
             {!isEditing && (
               <>
-                {contentType === 'comment' && secretHidden ? (
-                  <HiddenComment
-                    onClick={() => history.push(`/subjects/${rootId}`)}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      whiteSpace: 'pre-wrap',
-                      overflowWrap: 'break-word',
-                      wordBreak: 'break-word'
-                    }}
-                  >
-                    <LongText>{content}</LongText>
-                  </div>
-                )}
+                {contentType === 'comment' &&
+                  (secretHidden ? (
+                    <HiddenComment
+                      onClick={() => history.push(`/subjects/${rootId}`)}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        whiteSpace: 'pre-wrap',
+                        overflowWrap: 'break-word',
+                        wordBreak: 'break-word'
+                      }}
+                    >
+                      <LongText>{content}</LongText>
+                    </div>
+                  ))}
                 {contentType === 'subject' && (
                   <div
                     style={{
