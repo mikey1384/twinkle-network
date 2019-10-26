@@ -29,7 +29,11 @@ export default function AccountMenu({ className, history, style = {} }) {
           <DropdownButton
             className={className}
             transparent
-            listStyle={{ marginTop: '0.2rem' }}
+            listStyle={{
+              marginTop: '0.2rem',
+              width: '13rem',
+              marginRight: '1rem'
+            }}
             direction="left"
             text={
               <div

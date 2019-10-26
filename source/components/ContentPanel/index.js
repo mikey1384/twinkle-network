@@ -70,7 +70,6 @@ function ContentPanel({
   } = useContentContext();
   const contentState = useContentState({ contentType, contentId });
   const [videoShown, setVideoShown] = useState(false);
-  const [commentsHidden, setCommentsHidden] = useState(true);
   const mounted = useRef(true);
   const loading = useRef(false);
   const inputAtBottom = contentType === 'comment';
@@ -158,7 +157,6 @@ function ContentPanel({
             onLoadTags,
             onLoadRepliesOfReply,
             onReplySubmit: onUploadReply,
-            onSetCommentsHidden: setCommentsHidden,
             onSetCommentsShown,
             onSetRewardLevel,
             onUploadTargetComment
@@ -204,7 +202,6 @@ function ContentPanel({
                         <div className="body">
                           <Body
                             autoExpand={autoExpand}
-                            commentsHidden={commentsHidden}
                             commentsShown={commentsShown}
                             contentObj={contentState}
                             inputAtBottom={inputAtBottom}
@@ -323,7 +320,7 @@ function ContentPanel({
           </ErrorBoundary>
         </Context.Provider>
       ) : null,
-    [commentsHidden, contentState, inView, rootStarted, visible]
+    [contentState, inView, rootStarted, visible]
   );
 }
 

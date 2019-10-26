@@ -37,7 +37,6 @@ Body.propTypes = {
   autoExpand: PropTypes.bool,
   attachedVideoShown: PropTypes.bool,
   contentObj: PropTypes.object.isRequired,
-  commentsHidden: PropTypes.bool,
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
   numPreviewComments: PropTypes.number,
@@ -47,7 +46,6 @@ Body.propTypes = {
 function Body({
   attachedVideoShown,
   autoExpand,
-  commentsHidden,
   commentsShown,
   contentObj,
   contentObj: {
@@ -87,10 +85,25 @@ function Body({
   const {
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
-  const { isEditing, xpRewardInterfaceShown } = useContentState({
+  const {
+    isEditing,
+    secretAnswer,
+    secretShown,
+    xpRewardInterfaceShown
+  } = useContentState({
     contentType,
     contentId
   });
+  const { secretShown: rootSecretShown } = useContentState({
+    contentId: rootId,
+    contentType: rootType
+  });
+  const secretHidden =
+    contentType === 'subject'
+      ? !!secretAnswer && !secretShown && uploader.id !== userId
+      : rootObj.secretAnswer &&
+        !rootSecretShown &&
+        rootObj.uploader.id !== userId;
   const {
     commentsLoadLimit,
     onAttachStar,
@@ -106,7 +119,6 @@ function Body({
     onLoadMoreReplies,
     onLoadRepliesOfReply,
     onReplySubmit,
-    onSetCommentsHidden,
     onSetCommentsShown,
     onSetRewardLevel
   } = useContext(LocalContext);
@@ -149,32 +161,6 @@ function Body({
   }, []);
 
   useEffect(() => {
-    const secretShown =
-      !!contentObj?.secretShown ||
-      !!targetObj?.subject?.secretShown ||
-      !!rootObj?.secretShown;
-    const contentSecretHidden =
-      !!contentObj.secretAnswer &&
-      !secretShown &&
-      contentObj.uploader.id !== userId;
-    const rootContentSecretHidden =
-      !!rootObj.secretAnswer && !secretShown && rootObj.uploader.id !== userId;
-    const subjectSecretHidden =
-      !!targetObj?.subject?.secretAnswer &&
-      !secretShown &&
-      targetObj?.subject?.uploader.id !== userId;
-    onSetCommentsHidden(
-      contentSecretHidden || rootContentSecretHidden || subjectSecretHidden
-    );
-  }, [
-    contentObj.id,
-    contentObj?.secretShown,
-    targetObj?.subject?.secretShown,
-    rootObj?.secretShown,
-    userId
-  ]);
-
-  useEffect(() => {
     prevContent.current = contentObj.content;
   }, [contentObj.content]);
 
@@ -183,7 +169,6 @@ function Body({
   const userCanRewardThis =
     canStar && authLevel > uploader.authLevel && userId !== uploader.id;
   const editButtonShown = userId === uploader.id || userCanEditThis;
-  const secretLocked = contentType === 'comment' && commentsHidden;
   useEffect(() => {
     onSetXpRewardInterfaceShown({
       contentType,
@@ -213,11 +198,11 @@ function Body({
           <MainContent
             contentId={contentId}
             contentType={contentType}
-            commentsHidden={commentsHidden}
+            secretHidden={secretHidden}
             myId={userId}
             onClickSecretAnswer={onCommentButtonClick}
           />
-          {!isEditing && !commentsHidden && (
+          {!isEditing && !secretHidden && (
             <div
               className="bottom-interface"
               style={{
@@ -364,7 +349,7 @@ function Body({
             onCommentEdit={onEditRewardComment}
             stars={stars}
             className={css`
-              margin-top: ${commentsHidden && rewardLevel ? '1rem' : ''};
+              margin-top: ${secretHidden && rewardLevel ? '1rem' : ''};
               margin-left: -1px;
               margin-right: -1px;
               @media (max-width: ${mobileMaxWidth}) {
@@ -376,12 +361,12 @@ function Body({
           <Comments
             autoFocus={false}
             autoExpand={
-              (autoExpand && !secretLocked) ||
-              (contentType === 'subject' && commentsHidden)
+              (autoExpand && !secretHidden) ||
+              (contentType === 'subject' && secretHidden)
             }
             comments={childComments}
             commentsLoadLimit={commentsLoadLimit}
-            commentsShown={commentsShown && !secretLocked}
+            commentsShown={commentsShown && !secretHidden}
             contentId={contentId}
             inputAreaInnerRef={CommentInputAreaRef}
             inputAtBottom={inputAtBottom}
@@ -407,7 +392,7 @@ function Body({
             onReplySubmit={onReplySubmit}
             onRewardCommentEdit={onEditRewardComment}
             parent={contentObj}
-            commentsHidden={commentsHidden}
+            commentsHidden={secretHidden}
             style={{
               padding: '0 1rem',
               paddingBottom:
@@ -439,14 +424,13 @@ function Body({
     loadingComments,
     contentObj,
     attachedVideoShown,
-    commentsHidden,
     commentsShown,
     userId,
     userListModalShown,
     confirmModalShown,
     xpRewardInterfaceShown,
     editButtonShown,
-    secretLocked
+    secretHidden
   ]);
 
   function determineRewardLevel({ contentObj, rootType, rootObj, targetObj }) {

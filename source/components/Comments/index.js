@@ -13,7 +13,6 @@ import { useAppContext } from 'contexts';
 Comments.propTypes = {
   autoExpand: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  commentsHidden: PropTypes.bool,
   numPreviews: PropTypes.number,
   className: PropTypes.string,
   commentsShown: PropTypes.bool,
@@ -224,18 +223,22 @@ function Comments({
   );
 
   async function submitComment({ content, rootCommentId, targetCommentId }) {
-    setCommentSubmitted(true);
-    const data = await uploadComment({
-      content,
-      parent,
-      rootCommentId,
-      targetCommentId
-    });
-    onCommentSubmit({
-      ...data,
-      contentId: parent.id,
-      contentType: parent.contentType
-    });
+    try {
+      setCommentSubmitted(true);
+      const data = await uploadComment({
+        content,
+        parent,
+        rootCommentId,
+        targetCommentId
+      });
+      onCommentSubmit({
+        ...data,
+        contentId: parent.id,
+        contentType: parent.contentType
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   async function submitReply({ content, rootCommentId, targetCommentId }) {

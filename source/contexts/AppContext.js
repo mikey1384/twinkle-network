@@ -74,7 +74,7 @@ export function AppContextProvider({ children }) {
       const { status } = error.response;
       if (status === 401) {
         localStorage.removeItem('token');
-        return userDispatch({
+        userDispatch({
           type: 'LOGOUT_AND_OPEN_SIGNIN_MODAL'
         });
       }
@@ -82,7 +82,6 @@ export function AppContextProvider({ children }) {
         window.location.reload();
       }
     }
-    console.error(error.response || error);
     return Promise.reject(error);
   }
 }

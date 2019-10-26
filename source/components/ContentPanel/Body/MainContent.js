@@ -8,18 +8,17 @@ import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import RewardLevelBar from 'components/RewardLevelBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';
-import HiddenComment from 'components/HiddenComment';
 import SecretAnswer from 'components/SecretAnswer';
 import Link from 'components/Link';
+import HiddenComment from 'components/HiddenComment';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useContentState } from 'helpers/hooks';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 
 MainContent.propTypes = {
-  commentsHidden: PropTypes.bool,
   contentId: PropTypes.number.isRequired,
   contentType: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
@@ -27,14 +26,7 @@ MainContent.propTypes = {
   onClickSecretAnswer: PropTypes.func.isRequired
 };
 
-function MainContent({
-  commentsHidden,
-  contentId,
-  contentType,
-  history,
-  myId,
-  onClickSecretAnswer
-}) {
+function MainContent({ contentId, contentType, history, onClickSecretAnswer }) {
   const {
     requestHelpers: { editContent }
   } = useAppContext();
@@ -46,15 +38,27 @@ function MainContent({
     isEditing,
     rootContent,
     rootObj,
-    targetObj,
     uploader,
     rewardLevel,
     rootId,
     rootType,
     secretAnswer,
+    secretShown,
     tags,
     title
   } = useContentState({ contentId, contentType });
+  const { userId } = useMyState();
+  const { secretShown: rootSecretShown } = useContentState({
+    contentId: rootId,
+    contentType: rootType
+  });
+  const secretHidden =
+    contentType === 'subject'
+      ? !!secretAnswer && !secretShown && uploader.id !== userId
+      : rootObj.secretAnswer &&
+        !rootSecretShown &&
+        rootObj.uploader.id !== userId;
+
   const {
     actions: {
       onAddTags,
@@ -64,12 +68,6 @@ function MainContent({
       onSetIsEditing
     }
   } = useContentContext();
-  const contentHidden =
-    ((targetObj?.subject?.secretAnswer &&
-      targetObj?.subject?.uploader.id !== myId) ||
-      (rootObj.secretAnswer && rootObj.uploader.id !== myId)) &&
-    (!targetObj?.subject?.secretShown && !rootObj.secretShown);
-  const subjectId = targetObj?.subject ? targetObj.subject.id : rootObj.id;
   return useMemo(
     () => (
       <ErrorBoundary>
@@ -133,8 +131,7 @@ function MainContent({
           <div
             style={{
               marginTop: '1rem',
-              marginBottom:
-                contentType !== 'video' && !commentsHidden && '1rem',
+              marginBottom: contentType !== 'video' && !secretHidden && '1rem',
               padding: '1rem',
               whiteSpace: 'pre-wrap',
               overflowWrap: 'break-word',
@@ -143,22 +140,21 @@ function MainContent({
           >
             {!isEditing && (
               <>
-                {contentType === 'comment' &&
-                  (contentHidden ? (
-                    <HiddenComment
-                      onClick={() => history.push(`/subjects/${subjectId}`)}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        whiteSpace: 'pre-wrap',
-                        overflowWrap: 'break-word',
-                        wordBreak: 'break-word'
-                      }}
-                    >
-                      <LongText>{content}</LongText>
-                    </div>
-                  ))}
+                {contentType === 'comment' && secretHidden ? (
+                  <HiddenComment
+                    onClick={() => history.push(`/subjects/${rootId}`)}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word'
+                    }}
+                  >
+                    <LongText>{content}</LongText>
+                  </div>
+                )}
                 {contentType === 'subject' && (
                   <div
                     style={{
@@ -256,7 +252,7 @@ function MainContent({
               `}
               style={{
                 marginBottom:
-                  isEditing || commentsHidden
+                  isEditing || secretHidden
                     ? '1rem'
                     : rootType === 'url'
                     ? '-0.5rem'
@@ -269,13 +265,12 @@ function MainContent({
       </ErrorBoundary>
     ),
     [
-      contentHidden,
-      commentsHidden,
       content,
       description,
       isEditing,
       rewardLevel,
       rootObj,
+      secretHidden,
       tags,
       title
     ]

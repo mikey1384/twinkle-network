@@ -31,7 +31,7 @@ export default function requestHelpers(handleError) {
       try {
         request.post(`${URL}/video/view`, params);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async checkIfContentExists({ url, videoCode, contentType }) {
@@ -98,7 +98,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async checkXPEarned(videoId) {
@@ -123,7 +123,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async deleteContent({ id, contentType }) {
@@ -145,7 +145,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async deletePlaylist(playlistId) {
@@ -156,7 +156,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async deleteSubject({ subjectId }) {
@@ -178,7 +178,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async editChannelTitle(params) {
@@ -186,7 +186,7 @@ export default function requestHelpers(handleError) {
         await request.post(`${URL}/chat/title`, params, auth());
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async editContent({
@@ -226,7 +226,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async editPlaylistTitle(params) {
@@ -236,7 +236,7 @@ export default function requestHelpers(handleError) {
         } = await request.put(`${URL}/playlist/title`, params, auth());
         return Promise.resolve(title);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async editRewardComment({ editedComment, contentId }) {
@@ -248,7 +248,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async editSubject({
@@ -320,7 +320,7 @@ export default function requestHelpers(handleError) {
           return Promise.resolve(data);
         }
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async fetchVideoThumbUrl({ videoCode, videoId }) {
@@ -346,7 +346,7 @@ export default function requestHelpers(handleError) {
         } = await request.get(`${URL}/chat/numUnreads`, auth());
         return Promise.resolve(numUnreads);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async hideChat(channelId) {
@@ -354,7 +354,7 @@ export default function requestHelpers(handleError) {
         await request.post(`${URL}/chat/hideChat`, { channelId }, auth());
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async initSession(pathname) {
@@ -379,7 +379,7 @@ export default function requestHelpers(handleError) {
         } = await request.post(`${URL}/chat/invite`, params, auth());
         return Promise.resolve({ ...params, message });
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async leaveChannel(channelId) {
@@ -391,7 +391,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve();
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async likeContent({ id, contentType }) {
@@ -438,7 +438,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadMoreChatMessages({ userId, messageId, channelId }) {
@@ -449,7 +449,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadMoreNotifications(lastId) {
@@ -460,7 +460,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadPlaylistList() {
@@ -468,7 +468,7 @@ export default function requestHelpers(handleError) {
         const { data } = await request.get(`${URL}/playlist/list`);
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadMorePlaylistList(playlistId) {
@@ -478,7 +478,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadMoreRewards(lastId) {
@@ -489,7 +489,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadChatSubject() {
@@ -497,7 +497,7 @@ export default function requestHelpers(handleError) {
         const { data } = await request.get(`${URL}/chat/chatSubject`);
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async loadDMChannel({ recepient }) {
@@ -728,7 +728,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async reloadChatSubject(subjectId) {
@@ -742,7 +742,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve({ subject, message });
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async reorderPlaylistVideos({
@@ -769,7 +769,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async searchChatSubject(text) {
@@ -779,7 +779,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async login(params) {
@@ -801,7 +801,7 @@ export default function requestHelpers(handleError) {
         } = await request.post(`${URL}/chat`, { message }, auth());
         return Promise.resolve(messageId);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async searchContent({ filter, limit, searchText, shownResults }) {
@@ -839,7 +839,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async setByUser({ contentId }) {
@@ -948,7 +948,7 @@ export default function requestHelpers(handleError) {
         );
         return Promise.resolve(data);
       } catch (error) {
-        handleError(error);
+        return handleError(error);
       }
     },
     async startNewDMChannel(params) {
