@@ -160,7 +160,8 @@ function Header({
         onReceiveMessageOnDifferentChannel({
           channel,
           senderIsNotTheUser,
-          pageVisible
+          pageVisible,
+          usingChat
         });
       }
     }

@@ -212,13 +212,15 @@ export default function ChatActions(dispatch) {
     onReceiveMessageOnDifferentChannel({
       channel,
       senderIsNotTheUser,
-      pageVisible
+      pageVisible,
+      usingChat
     }) {
       return dispatch({
         type: 'RECEIVE_MSG_ON_DIFF_CHANNEL',
         channel,
         senderIsNotTheUser,
-        pageVisible
+        pageVisible,
+        usingChat
       });
     },
     onReloadChatSubject({ subject, message }) {
