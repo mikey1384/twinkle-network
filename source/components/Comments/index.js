@@ -37,10 +37,13 @@ Comments.propTypes = {
   onReplySubmit: PropTypes.func.isRequired,
   onRewardCommentEdit: PropTypes.func.isRequired,
   parent: PropTypes.shape({
-    commentId: PropTypes.number,
-    id: PropTypes.number.isRequired,
+    contentId: PropTypes.number.isRequired,
     contentType: PropTypes.string.isRequired
   }).isRequired,
+  rootContent: PropTypes.shape({
+    contentId: PropTypes.number.isRequired,
+    contentType: PropTypes.string.isRequired
+  }),
   style: PropTypes.object,
   userId: PropTypes.number
 };
@@ -73,6 +76,8 @@ function Comments({
   onReplySubmit,
   onRewardCommentEdit,
   parent,
+  rootContent,
+  subject,
   style,
   userId
 }) {
@@ -143,7 +148,7 @@ function Comments({
           onLikeClick,
           onLoadMoreReplies,
           onRewardCommentEdit,
-          onReplySubmit: submitReply,
+          onReplySubmit: handleSubmitReply,
           onLoadRepliesOfReply
         }}
       >
@@ -188,6 +193,8 @@ function Comments({
                         CommentRefs[comment.id] = ref;
                       }}
                       parent={parent}
+                      rootContent={rootContent}
+                      subject={subject}
                       comment={comment}
                       key={comment.id}
                       userId={userId}
@@ -222,18 +229,24 @@ function Comments({
     ]
   );
 
-  async function submitComment({ content, rootCommentId, targetCommentId }) {
+  async function handleSubmitComment({
+    content,
+    rootCommentId,
+    subjectId,
+    targetCommentId
+  }) {
     try {
       setCommentSubmitted(true);
       const data = await uploadComment({
         content,
         parent,
         rootCommentId,
+        subjectId,
         targetCommentId
       });
       onCommentSubmit({
         ...data,
-        contentId: parent.id,
+        contentId: parent.contentId,
         contentType: parent.contentType
       });
     } catch (error) {
@@ -241,12 +254,11 @@ function Comments({
     }
   }
 
-  async function submitReply({ content, rootCommentId, targetCommentId }) {
+  async function handleSubmitReply({ content, targetCommentId }) {
     setCommentSubmitted(true);
     const data = await uploadComment({
       content,
       parent,
-      rootCommentId,
       targetCommentId
     });
     onReplySubmit({
@@ -296,15 +308,19 @@ function Comments({
         innerRef={inputAreaInnerRef}
         inputTypeLabel={inputTypeLabel}
         numInputRows={numInputRows}
-        onSubmit={submitComment}
+        onSubmit={handleSubmitComment}
         parent={parent}
         rootCommentId={
           // eslint-disable-next-line react/prop-types
           parent.contentType === 'comment' ? parent.commentId : null
         }
-        style={style}
         // eslint-disable-next-line react/prop-types
-        targetCommentId={parent.contentType === 'comment' ? parent.id : null}
+        subjectId={subject?.id}
+        style={style}
+        targetCommentId={
+          // eslint-disable-next-line react/prop-types
+          parent.contentType === 'comment' ? parent.contentId : null
+        }
       />
     );
   }

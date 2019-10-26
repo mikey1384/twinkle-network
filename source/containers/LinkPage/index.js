@@ -377,7 +377,7 @@ export default function LinkPage({
             onLoadMoreReplies={onLoadMoreReplies}
             onReplySubmit={handleUploadReply}
             onRewardCommentEdit={onEditRewardComment}
-            parent={{ contentType: 'url', id: linkId }}
+            parent={{ contentType: 'url', contentId: linkId }}
             className={css`
               border: 1px solid ${Color.borderGray()};
               padding: 1rem;

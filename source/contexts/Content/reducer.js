@@ -339,7 +339,7 @@ export default function ContentReducer(state, action) {
               }
             : undefined,
           subjects: prevContentState.subjects?.map(subject => ({
-            ...prevContentState,
+            ...subject,
             comments: subject.comments?.map(comment => ({
               ...comment,
               content:

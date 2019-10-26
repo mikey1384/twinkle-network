@@ -455,8 +455,8 @@ export default function VideoPage({
                   onRewardCommentEdit={onEditRewardComment}
                   parent={{
                     contentType: 'video',
+                    contentId: videoId,
                     rewardLevel,
-                    id: videoId,
                     uploader
                   }}
                   style={{ paddingTop: '1rem' }}

@@ -53,7 +53,8 @@ Comment.propTypes = {
   history: PropTypes.object.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
-  parent: PropTypes.object
+  parent: PropTypes.object,
+  rootContent: PropTypes.object
 };
 
 function Comment({
@@ -62,8 +63,11 @@ function Comment({
   innerRef,
   isPreview,
   parent,
-  comment: { replies = [], targetObj = {}, likes = [], stars = [], uploader }
+  rootContent = {},
+  subject,
+  comment: { replies = [], likes = [], stars = [], uploader }
 }) {
+  subject = subject || comment.targetObj?.subject || {};
   const {
     requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
@@ -81,7 +85,7 @@ function Comment({
   });
   const subjectState = useContentState({
     contentType: 'subject',
-    contentId: targetObj?.subject?.id
+    contentId: subject.id
   });
   const {
     onAttachStar,
@@ -97,7 +101,7 @@ function Comment({
   const [prevReplies, setPrevReplies] = useState(replies);
   const [replying, setReplying] = useState(false);
   const [rewardLevel, setRewardLevel] = useState(
-    determineRewardLevel({ parent, targetObj })
+    determineRewardLevel({ parent, rootContent, subject })
   );
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
@@ -113,8 +117,8 @@ function Comment({
   }, [replies]);
 
   useEffect(() => {
-    setRewardLevel(determineRewardLevel({ parent, targetObj }));
-  }, [parent, targetObj]);
+    setRewardLevel(determineRewardLevel({ parent, rootContent, subject }));
+  }, [parent, rootContent, subject]);
 
   const userIsUploader = uploader.id === userId;
   const userIsHigherAuth = authLevel > uploader.authLevel;
@@ -148,25 +152,22 @@ function Comment({
   }, [userId]);
 
   const isCommentForContentSubject =
-    parent.contentType !== 'subject' &&
-    !parent.subjectId &&
-    targetObj &&
-    targetObj.subject;
-  const hasSecretAnswer = targetObj?.subject?.secretAnswer;
+    parent.contentType !== 'subject' && !parent.subjectId && subject;
+  const hasSecretAnswer = subject?.secretAnswer;
   const secretShown =
-    subjectState.secretShown || targetObj?.subject?.uploader?.id === userId;
+    subjectState.secretShown || subject?.uploader?.id === userId;
   const isHidden = hasSecretAnswer && !secretShown;
 
   useEffect(() => {
     mounted.current = true;
     if (mounted.current) {
-      if (userId && targetObj?.subject && !subjectState.spoilerStatusChecked) {
+      if (userId && subject && !subjectState.spoilerStatusChecked) {
         checkSecretShown();
       }
       if (!userId) {
         onChangeSpoilerStatus({
           shown: false,
-          subjectId: targetObj?.subject?.id,
+          subjectId: subject?.id,
           checked: false
         });
       }
@@ -174,13 +175,11 @@ function Comment({
 
     async function checkSecretShown() {
       if (hasSecretAnswer && !secretShown) {
-        const { responded } = await checkIfUserResponded(
-          targetObj?.subject?.id
-        );
+        const { responded } = await checkIfUserResponded(subject?.id);
         if (mounted.current) {
           onChangeSpoilerStatus({
             shown: responded,
-            subjectId: targetObj?.subject?.id,
+            subjectId: subject?.id,
             checked: true
           });
         }
@@ -261,12 +260,12 @@ function Comment({
                   ) : (
                     <div>
                       {isCommentForContentSubject && (
-                        <SubjectLink subject={targetObj.subject} />
+                        <SubjectLink subject={subject} />
                       )}
                       {isHidden ? (
                         <HiddenComment
                           onClick={() =>
-                            history.push(`/subjects/${targetObj?.subject?.id}`)
+                            history.push(`/subjects/${subject?.id}`)
                           }
                         />
                       ) : (
@@ -299,7 +298,8 @@ function Comment({
                                 disabled={determineXpButtonDisabled({
                                   rewardLevel: determineRewardLevel({
                                     parent,
-                                    targetObj
+                                    subject,
+                                    rootContent
                                   }),
                                   myId: userId,
                                   xpRewardInterfaceShown,
@@ -311,7 +311,8 @@ function Comment({
                                   {determineXpButtonDisabled({
                                     rewardLevel: determineRewardLevel({
                                       parent,
-                                      targetObj
+                                      subject,
+                                      rootContent
                                     }),
                                     myId: userId,
                                     xpRewardInterfaceShown,
@@ -335,7 +336,11 @@ function Comment({
                 {!isPreview && xpRewardInterfaceShown && (
                   <XPRewardInterface
                     innerRef={RewardInterfaceRef}
-                    rewardLevel={determineRewardLevel({ parent, targetObj })}
+                    rewardLevel={determineRewardLevel({
+                      parent,
+                      subject,
+                      rootContent
+                    })}
                     stars={stars}
                     contentType="comment"
                     contentId={comment.id}
@@ -371,24 +376,25 @@ function Comment({
                   <>
                     <ReplyInputArea
                       innerRef={ReplyInputAreaRef}
+                      numReplies={replies.length}
+                      onSubmit={submitReply}
+                      parent={parent}
+                      rootCommentId={comment.commentId}
                       style={{
                         marginTop:
                           stars.length > 0 || comment.likes.length > 0
                             ? '0.5rem'
                             : '1rem'
                       }}
-                      onSubmit={submitReply}
-                      parent={parent}
-                      numReplies={replies.length}
-                      rootCommentId={comment.commentId}
                       targetCommentId={comment.id}
                     />
                     <Replies
-                      subject={targetObj.subject || {}}
+                      subject={subject || {}}
                       userId={userId}
                       replies={replies}
                       comment={comment}
                       parent={parent}
+                      rootContent={rootContent}
                       onLoadMoreReplies={onLoadMoreReplies}
                       onReplySubmit={onReplySubmit}
                       ReplyRefs={ReplyRefs}
@@ -424,31 +430,35 @@ function Comment({
       userId,
       userListModalShown,
       confirmModalShown,
+      replies,
       rewardLevel,
       xpRewardInterfaceShown
     ]
   );
 
-  function determineRewardLevel({ parent, targetObj }) {
+  function determineRewardLevel({ parent, subject, rootContent }) {
     if (parent.contentType === 'subject' && parent.rewardLevel > 0) {
       return parent.rewardLevel;
     }
-    if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
-      return parent.rootObj.rewardLevel;
+    if (rootContent.contentType === 'subject' && rootContent.rewardLevel > 0) {
+      return rootContent.rewardLevel;
     }
     if (parent.contentType === 'video' || parent.contentType === 'url') {
-      if (targetObj.subject?.rewardLevel) {
-        return targetObj.subject?.rewardLevel;
+      if (subject?.rewardLevel) {
+        return subject?.rewardLevel;
       }
       if (parent.rewardLevel > 0) {
         return 1;
       }
     }
-    if (parent.rootType === 'video' || parent.rootType === 'url') {
-      if (targetObj.subject?.rewardLevel) {
-        return targetObj.subject?.rewardLevel;
+    if (
+      rootContent.contentType === 'video' ||
+      rootContent.contentType === 'url'
+    ) {
+      if (subject?.rewardLevel) {
+        return subject?.rewardLevel;
       }
-      if (parent.rootObj?.rewardLevel > 0) {
+      if (rootContent.rewardLevel > 0) {
         return 1;
       }
     }

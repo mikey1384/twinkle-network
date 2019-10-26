@@ -23,11 +23,10 @@ import {
 } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 SubjectPanel.propTypes = {
   comments: PropTypes.array.isRequired,
-  contentType: PropTypes.string.isRequired,
   description: PropTypes.string,
   rewardLevel: PropTypes.number,
   id: PropTypes.number.isRequired,
@@ -41,14 +40,15 @@ SubjectPanel.propTypes = {
   userId: PropTypes.number,
   username: PropTypes.string.isRequired,
   uploaderAuthLevel: PropTypes.number.isRequired,
-  contentId: PropTypes.number.isRequired
+  contentType: PropTypes.string.isRequired,
+  contentId: PropTypes.number.isRequired,
+  subjectId: PropTypes.number.isRequired
 };
 
 export default function SubjectPanel({
   contentId,
   contentType,
   description,
-  id,
   title,
   rewardLevel,
   uploaderAuthLevel,
@@ -59,11 +59,15 @@ export default function SubjectPanel({
   comments,
   loadMoreCommentsButton,
   rootRewardLevel,
-  secretAnswer
+  secretAnswer,
+  subjectId
 }) {
   const {
     requestHelpers: { deleteSubject, editSubject, loadComments }
   } = useAppContext();
+  const {
+    actions: { onChangeSpoilerStatus }
+  } = useContentContext();
   const {
     authLevel,
     canDelete,
@@ -87,9 +91,9 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
-  const { deleted } = useContentState({
+  const { deleted, secretShown } = useContentState({
     contentType: 'subject',
-    contentId: id
+    contentId: subjectId
   });
   const [expanded, setExpanded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
@@ -97,7 +101,6 @@ export default function SubjectPanel({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedTitle, setEditedTitle] = useState(cleanString(title));
   const [editedDescription, setEditedDescription] = useState(description || '');
-  const [secretShown, setSecretShown] = useState(false);
   const [editedSecretAnswer, setEditedSecretAnswer] = useState(
     secretAnswer || ''
   );
@@ -106,6 +109,7 @@ export default function SubjectPanel({
   const userHasHigherAuthLevel = authLevel > uploaderAuthLevel;
   const userCanEditThis = (canEdit || canDelete) && userHasHigherAuthLevel;
   const editButtonEnabled = userIsUploader || userCanEditThis;
+  const secretHidden = !!secretAnswer && !(secretShown || userIsUploader);
   const CommentsRef = useRef(null);
 
   useEffect(() => {
@@ -141,7 +145,7 @@ export default function SubjectPanel({
             >
               {!onEdit && (
                 <Link
-                  to={`/subjects/${id}`}
+                  to={`/subjects/${subjectId}`}
                   style={{
                     fontSize: '2.5rem',
                     color: Color.green(),
@@ -154,7 +158,7 @@ export default function SubjectPanel({
               <div style={{ display: 'flex' }}>
                 {canEditRewardLevel && !onEdit && (
                   <StarButton
-                    contentId={id}
+                    contentId={subjectId}
                     contentType="subject"
                     rewardLevel={rewardLevel}
                     onSetRewardLevel={onSetRewardLevel}
@@ -180,8 +184,8 @@ export default function SubjectPanel({
               <SecretAnswer
                 style={{ marginTop: '1rem' }}
                 answer={secretAnswer}
-                subjectId={id}
-                onClick={onExpand}
+                subjectId={subjectId}
+                onClick={handleExpand}
                 uploaderId={userId}
               />
             )}
@@ -262,37 +266,37 @@ export default function SubjectPanel({
             )}
             {!onEdit && (
               <div style={{ marginTop: '1rem' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '8rem'
-                  }}
-                >
-                  <Button
-                    skeuomorphic
-                    color={profileTheme}
-                    style={{ fontSize: '2rem' }}
-                    onClick={onExpand}
+                {!secretHidden && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      minHeight: '8rem'
+                    }}
                   >
-                    <Icon icon="comment-alt" />
-                    <span style={{ marginLeft: '1rem' }}>
-                      Comment{!expanded && numComments > 1 ? 's' : ''}
-                      {!expanded && numComments && numComments > 0
-                        ? ` (${numComments})`
-                        : ''}
-                    </span>
-                  </Button>
-                </div>
+                    <Button
+                      skeuomorphic
+                      color={profileTheme}
+                      style={{ fontSize: '2rem' }}
+                      onClick={handleExpand}
+                    >
+                      <Icon icon="comment-alt" />
+                      <span style={{ marginLeft: '1rem' }}>
+                        Comment{!expanded && numComments > 1 ? 's' : ''}
+                        {!expanded && numComments && numComments > 0
+                          ? ` (${numComments})`
+                          : ''}
+                      </span>
+                    </Button>
+                  </div>
+                )}
                 <Comments
                   inputAreaInnerRef={CommentsRef}
                   isLoading={loadingComments}
-                  numInputRows={expanded ? 4 : 2}
+                  numInputRows={3}
                   commentsLoadLimit={10}
-                  commentsHidden={
-                    !!secretAnswer && !(secretShown || userId === myId)
-                  }
+                  commentsHidden={secretHidden}
                   commentsShown
                   inputTypeLabel={'comment'}
                   comments={comments}
@@ -307,16 +311,18 @@ export default function SubjectPanel({
                   onLoadMoreReplies={onLoadMoreReplies}
                   onReplySubmit={onUploadReply}
                   onRewardCommentEdit={editRewardComment}
-                  contentId={id}
                   parent={{
-                    id,
-                    rewardLevel,
-                    rootObj: {
-                      id: contentId,
-                      rewardLevel: rootRewardLevel,
-                      contentType
-                    },
-                    contentType: 'subject'
+                    contentId,
+                    contentType,
+                    rewardLevel: rootRewardLevel
+                  }}
+                  rootContent={{
+                    contentId,
+                    contentType
+                  }}
+                  subject={{
+                    id: subjectId,
+                    rewardLevel
                   }}
                 />
               </div>
@@ -352,20 +358,32 @@ export default function SubjectPanel({
       editedTitle,
       editedDescription,
       expanded,
+      secretHidden,
       secretShown,
       editedSecretAnswer,
       editDoneButtonDisabled,
-      id,
       loadingComments,
       loadMoreCommentsButton,
       myId,
       numComments,
       rewardLevel,
       rootRewardLevel,
+      secretHidden,
       secretAnswer,
+      subjectId,
       title
     ]
   );
+
+  async function deleteThis() {
+    try {
+      await deleteSubject({ subjectId });
+      setConfirmModalShown(false);
+      onSubjectDelete(subjectId);
+    } catch (error) {
+      return console.error(error);
+    }
+  }
 
   function renderMenuProps() {
     const menuProps = [
@@ -382,36 +400,33 @@ export default function SubjectPanel({
   }
 
   function handleCommentSubmit(params) {
-    setSecretShown(true);
-    onUploadComment({ ...params, contentId, contentType });
+    onChangeSpoilerStatus({
+      shown: true,
+      subjectId,
+      checked: true
+    });
+    onUploadComment({ ...params, subjectId, contentId, contentType });
   }
 
-  function loadMoreComments(data) {
-    onLoadMoreComments({ data, subjectId: id });
-  }
-
-  async function deleteThis() {
-    try {
-      await deleteSubject({ subjectId: id });
-      setConfirmModalShown(false);
-      onSubjectDelete(id);
-    } catch (error) {
-      return console.error(error);
-    }
-  }
-
-  async function onExpand() {
+  async function handleExpand() {
     setExpanded(true);
     try {
       setLoadingComments(true);
-      const data = await loadComments({
-        contentType: 'subject',
-        contentId: id,
-        limit: 10
-      });
-      CommentsRef.current.focus();
-      onLoadSubjectComments({ ...data, subjectId: id, contentType, contentId });
+      if (!secretHidden) {
+        const data = await loadComments({
+          contentType: 'subject',
+          contentId: subjectId,
+          limit: 10
+        });
+        onLoadSubjectComments({
+          ...data,
+          subjectId,
+          contentType,
+          contentId
+        });
+      }
       setLoadingComments(false);
+      CommentsRef.current.focus();
     } catch (error) {
       console.error(error.response || error);
     }
@@ -419,13 +434,17 @@ export default function SubjectPanel({
 
   async function handleEditDone() {
     const editedSubject = await editSubject({
-      subjectId: id,
+      subjectId,
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
       editedSecretAnswer: finalizeEmoji(editedSecretAnswer)
     });
-    onSubjectEditDone({ editedSubject, subjectId: id });
+    onSubjectEditDone({ editedSubject, subjectId });
     setOnEdit(false);
     setEditDoneButtonDisabled(true);
+  }
+
+  function loadMoreComments(data) {
+    onLoadMoreComments({ data, subjectId });
   }
 }

@@ -408,7 +408,6 @@ function TargetContent({
         contentType: rootType,
         id: rootObj.id
       },
-      rootCommentId: comment.commentId,
       targetCommentId: comment.id
     });
     onUploadTargetComment({ ...data, contentId, contentType });

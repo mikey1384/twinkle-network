@@ -20,10 +20,19 @@ Replies.propTypes = {
     })
   ).isRequired,
   ReplyRefs: PropTypes.object,
+  rootContent: PropTypes.object,
   userId: PropTypes.number
 };
 
-function Replies({ replies, userId, comment, subject, parent, ReplyRefs }) {
+function Replies({
+  replies,
+  userId,
+  comment,
+  subject,
+  parent,
+  rootContent,
+  ReplyRefs
+}) {
   const {
     onDelete,
     onLoadMoreReplies,
@@ -85,13 +94,14 @@ function Replies({ replies, userId, comment, subject, parent, ReplyRefs }) {
             index={index}
             innerRef={ref => (ReplyRefs[reply.id] = ref)}
             key={reply.id}
-            parent={parent}
             comment={comment}
-            subject={subject}
             reply={reply}
             userId={userId}
             deleteReply={deleteReply}
             loadRepliesOfReply={onLoadRepliesOfReply}
+            parent={parent}
+            rootContent={rootContent}
+            subject={subject}
             submitReply={submitReply}
           />
         );
@@ -107,7 +117,7 @@ function Replies({ replies, userId, comment, subject, parent, ReplyRefs }) {
       onLoadMoreReplies({
         ...data,
         contentType: parent.contentType,
-        contentId: parent.id
+        contentId: parent.contentId
       });
       setLoadingMoreReplies(false);
     } catch (error) {

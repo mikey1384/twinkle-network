@@ -1024,11 +1024,17 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async uploadComment({ content, parent, rootCommentId, targetCommentId }) {
+    async uploadComment({
+      content,
+      parent,
+      rootCommentId,
+      subjectId,
+      targetCommentId
+    }) {
       try {
         const { data } = await request.post(
           `${URL}/content/comments`,
-          { content, parent, rootCommentId, targetCommentId },
+          { content, parent, rootCommentId, subjectId, targetCommentId },
           auth()
         );
         return Promise.resolve(data);

@@ -94,6 +94,7 @@ export default function Subjects({
                 contentId={Number(contentId)}
                 rootRewardLevel={rootRewardLevel}
                 contentType={contentType}
+                subjectId={subject.id}
                 {...subject}
               />
             ))}

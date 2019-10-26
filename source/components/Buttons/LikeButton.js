@@ -66,6 +66,7 @@ function LikeButton({
               }
               setDisabled(false);
             } catch (error) {
+              setDisabled(false);
               return console.error(error);
             }
           }}

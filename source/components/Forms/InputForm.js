@@ -42,7 +42,7 @@ export default function InputForm({
     actions: { onEnterComment }
   } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
-  const contentId = targetCommentId || parent.id;
+  const contentId = targetCommentId || parent.contentId;
   const text = state[contentType + contentId] || '';
   const commentExceedsCharLimit = exceedsCharLimit({
     contentType: 'comment',

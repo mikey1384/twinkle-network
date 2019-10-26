@@ -27,7 +27,6 @@ Reply.propTypes = {
   comment: PropTypes.shape({
     id: PropTypes.number.isRequired
   }),
-  subject: PropTypes.object,
   innerRef: PropTypes.func,
   deleteReply: PropTypes.func.isRequired,
   loadRepliesOfReply: PropTypes.func,
@@ -49,6 +48,8 @@ Reply.propTypes = {
       .isRequired,
     uploader: PropTypes.object.isRequired
   }),
+  rootContent: PropTypes.object,
+  subject: PropTypes.object,
   submitReply: PropTypes.func.isRequired
 };
 
@@ -60,6 +61,7 @@ export default function Reply({
   parent,
   reply,
   reply: { likes = [], stars = [], uploader },
+  rootContent,
   submitReply,
   subject
 }) {
@@ -216,7 +218,8 @@ export default function Reply({
                             disabled={determineXpButtonDisabled({
                               rewardLevel: determineRewardLevel({
                                 parent,
-                                subject
+                                subject,
+                                rootContent
                               }),
                               myId: userId,
                               xpRewardInterfaceShown,
@@ -228,7 +231,8 @@ export default function Reply({
                               {determineXpButtonDisabled({
                                 rewardLevel: determineRewardLevel({
                                   parent,
-                                  subject
+                                  subject,
+                                  rootContent
                                 }),
                                 myId: userId,
                                 xpRewardInterfaceShown,
@@ -252,7 +256,11 @@ export default function Reply({
                 {xpRewardInterfaceShown && (
                   <XPRewardInterface
                     innerRef={RewardInterfaceRef}
-                    rewardLevel={determineRewardLevel({ parent, subject })}
+                    rewardLevel={determineRewardLevel({
+                      parent,
+                      subject,
+                      rootContent
+                    })}
                     stars={stars}
                     contentType="comment"
                     contentId={reply.id}
@@ -273,7 +281,11 @@ export default function Reply({
                 )}
                 <RewardStatus
                   noMarginForEditButton
-                  rewardLevel={determineRewardLevel({ parent, subject })}
+                  rewardLevel={determineRewardLevel({
+                    parent,
+                    subject,
+                    rootContent
+                  })}
                   onCommentEdit={onRewardCommentEdit}
                   style={{
                     fontSize: '1.5rem',
@@ -331,12 +343,12 @@ export default function Reply({
     ]
   );
 
-  function determineRewardLevel({ parent, subject }) {
+  function determineRewardLevel({ parent, subject, rootContent }) {
     if (parent.contentType === 'subject' && parent.rewardLevel > 0) {
       return parent.rewardLevel;
     }
-    if (parent.rootType === 'subject' && parent.rootObj?.rewardLevel > 0) {
-      return parent.rootObj.rewardLevel;
+    if (parent.rootType === 'subject' && rootContent.rewardLevel > 0) {
+      return rootContent.rewardLevel;
     }
     if (parent.contentType === 'video' || parent.contentType === 'url') {
       if (subject?.rewardLevel) {
@@ -350,7 +362,7 @@ export default function Reply({
       if (subject?.rewardLevel) {
         return subject?.rewardLevel;
       }
-      if (parent.rootObj?.rewardLevel > 0) {
+      if (rootContent?.rewardLevel > 0) {
         return 1;
       }
     }

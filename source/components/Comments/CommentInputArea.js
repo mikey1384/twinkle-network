@@ -12,6 +12,7 @@ CommentInputArea.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   parent: PropTypes.object.isRequired,
   rootCommentId: PropTypes.number,
+  subjectId: PropTypes.number,
   targetCommentId: PropTypes.number,
   style: PropTypes.object
 };
@@ -26,6 +27,7 @@ export default function CommentInputArea({
   onSubmit,
   parent,
   rootCommentId,
+  subjectId,
   style,
   targetCommentId
 }) {
@@ -36,9 +38,11 @@ export default function CommentInputArea({
         clickListenerState={clickListenerState}
         autoFocus={autoFocus}
         onSubmit={text =>
-          onSubmit({ content: text, rootCommentId, targetCommentId })
+          onSubmit({ content: text, subjectId, rootCommentId, targetCommentId })
         }
-        parent={parent}
+        parent={
+          subjectId ? { contentId: subjectId, contentType: 'subject' } : parent
+        }
         rows={numInputRows}
         placeholder={`Enter your ${inputTypeLabel} here...`}
       />
