@@ -200,9 +200,7 @@ export default function MainNavs({
         alert={!usersMatch && !isAtExploreTab && numNewPosts > 0}
       >
         HOME
-        {!usersMatch && !isAtExploreTab && numNewPosts > 0
-          ? ` (${numNewPosts})`
-          : ''}
+        {!usersMatch && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
       </HeaderNav>
       <HeaderNav
         to={`/${exploreCategory}`}
