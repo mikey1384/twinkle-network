@@ -366,7 +366,7 @@ function VideoPlayer({
               )}
               <div style={{ marginLeft: '0.7rem' }}>
                 {alreadyEarned
-                  ? 'You have already earned XP from this video'
+                  ? 'You have earned XP from this video'
                   : `Watch this video and earn ${addCommasToNumber(
                       rewardLevel * xp
                     )} XP`}
