@@ -316,7 +316,7 @@ function TargetContent({
                       padding: '0 1rem'
                     }}
                     onSubmit={onSubmit}
-                    parent={{ contentType: 'comment', id: comment.id }}
+                    parent={{ contentType: 'comment', contentId: comment.id }}
                     rows={4}
                     placeholder={`Write a reply...`}
                   />

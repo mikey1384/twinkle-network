@@ -254,16 +254,21 @@ function Comments({
     }
   }
 
-  async function handleSubmitReply({ content, targetCommentId }) {
+  async function handleSubmitReply({
+    content,
+    rootCommentId,
+    targetCommentId
+  }) {
     setCommentSubmitted(true);
     const data = await uploadComment({
       content,
       parent,
+      rootCommentId,
       targetCommentId
     });
     onReplySubmit({
       ...data,
-      contentId: parent.id,
+      contentId: parent.contentId,
       contentType: parent.contentType
     });
   }
@@ -277,14 +282,14 @@ function Comments({
         : 'undefined';
       try {
         const data = await loadComments({
-          contentId: parent.id,
+          contentId: parent.contentId,
           contentType: parent.contentType,
           lastCommentId,
           limit: commentsLoadLimit
         });
         onLoadMoreComments({
           ...data,
-          contentId: parent.id,
+          contentId: parent.contentId,
           contentType: parent.contentType
         });
         setIsLoadingMore(false);

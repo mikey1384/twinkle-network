@@ -232,7 +232,7 @@ function Comment({
                 <div>
                   {comment.targetUserId &&
                     !!comment.replyId &&
-                    comment.replyId !== parent.id && (
+                    comment.replyId !== parent.contentId && (
                       <span className="to">
                         to:{' '}
                         <UsernameText
@@ -496,9 +496,9 @@ function Comment({
     ReplyInputAreaRef.current.focus();
   }
 
-  async function submitReply(reply) {
+  function submitReply(reply) {
     setReplying(true);
-    await onReplySubmit(reply);
+    onReplySubmit(reply);
   }
 }
 

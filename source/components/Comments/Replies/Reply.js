@@ -412,7 +412,7 @@ export default function Reply({
           replies,
           commentId: reply.commentId,
           replyId: reply.id,
-          contentId: parent.id,
+          contentId: parent.contentId,
           contentType: parent.contentType
         });
       }
