@@ -1,16 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
-import { useMyState, useSearch } from 'helpers/hooks';
-import { useAppContext, useChatContext } from 'contexts';
+import {useMyState, useSearch} from 'helpers/hooks';
+import {useAppContext, useChatContext} from 'contexts';
+import {Color} from 'constants/css';
 
 export default function ChatSearchBox() {
   const {
-    requestHelpers: { loadChatChannel, searchChat }
+    requestHelpers: {loadChatChannel, searchChat}
   } = useAppContext();
-  const { userId, username } = useMyState();
+  const {userId, username} = useMyState();
   const {
-    state: { chatSearchResults },
+    state: {chatSearchResults},
     actions: {
       onClearChatSearchResults,
       onEnterChannelWithId,
@@ -20,7 +21,7 @@ export default function ChatSearchBox() {
     }
   } = useChatContext();
   const [searchText, setSearchText] = useState('');
-  const { handleSearch, searching } = useSearch({
+  const {handleSearch, searching} = useSearch({
     onSearch: handleSearchChat,
     onClear: onClearChatSearchResults,
     onSetSearchText: setSearchText
@@ -28,9 +29,9 @@ export default function ChatSearchBox() {
 
   return useMemo(
     () => (
-      <div style={{ padding: '0 1rem', zIndex: 5 }}>
+      <div style={{padding: '0 1rem', zIndex: 5}}>
         <SearchInput
-          placeholder="Play chess or talk with..."
+          placeholder='Play chess or talk with...'
           onChange={handleSearch}
           value={searchText}
           searchResults={chatSearchResults}
@@ -41,7 +42,13 @@ export default function ChatSearchBox() {
                 {item.subLabel && <small>{`(${item.subLabel})`}</small>}
               </span>
             ) : (
-              <span>{item.label}</span>
+              <span
+                style={{
+                  color: Color.green()
+                }}
+              >
+                {item.label} (Group)
+              </span>
             )
           }
           onClickOutSide={() => {
@@ -50,7 +57,7 @@ export default function ChatSearchBox() {
           }}
           onSelect={onSelect}
         />
-        {searching && <Loading style={{ height: '7rem' }} />}
+        {searching && <Loading style={{height: '7rem'}} />}
       </div>
     ),
     [chatSearchResults, searching, searchText, userId, username]
@@ -67,11 +74,11 @@ export default function ChatSearchBox() {
       const data = await loadChatChannel({
         channelId: item.channelId
       });
-      onEnterChannelWithId({ data, showOnTop: true });
+      onEnterChannelWithId({data, showOnTop: true});
     } else {
       onOpenNewChatTab({
-        user: { username, id: userId },
-        recepient: { username: item.label, id: item.id }
+        user: {username, id: userId},
+        recepient: {username: item.label, id: item.id}
       });
     }
     setSearchText('');
