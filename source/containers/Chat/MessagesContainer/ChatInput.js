@@ -103,7 +103,13 @@ export default function ChatInput({
         </div>
       </>
     ),
-    [loading, message, messageExceedsCharLimit, profileTheme]
+    [
+      isTwoPeopleChannel,
+      loading,
+      message,
+      messageExceedsCharLimit,
+      profileTheme
+    ]
   );
 
   function handleChange(event) {
