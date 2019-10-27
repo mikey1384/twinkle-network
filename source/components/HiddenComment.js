@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { borderRadius, Color } from 'constants/css';
+import {borderRadius, Color} from 'constants/css';
 
 HiddenComment.propTypes = {
   onClick: PropTypes.func
 };
 
-export default function HiddenComment({ onClick }) {
+export default function HiddenComment({onClick}) {
   return (
     <div
       style={{
-        background: Color.darkerGray(),
+        background: Color.orange(),
         color: '#fff',
         textAlign: 'center',
         padding: '1rem',
