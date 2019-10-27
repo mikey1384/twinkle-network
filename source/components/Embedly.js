@@ -17,6 +17,7 @@ Embedly.propTypes = {
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
+  initialThumbUrl: PropTypes.string,
   loadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
   style: PropTypes.object,
@@ -55,11 +56,13 @@ export default function Embedly({
     prevUrl,
     thumbUrl,
     title,
+    thumbLoaded,
     [translator.actualDescription]: actualDescription,
     [translator.actualTitle]: actualTitle,
     [translator.siteUrl]: siteUrl,
     [translator.url]: url
   } = useContentState({ contentType, contentId });
+
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
@@ -78,10 +81,14 @@ export default function Embedly({
 
   useEffect(() => {
     mounted.current = true;
-    if (url && (typeof siteUrl !== 'string' || (prevUrl && url !== prevUrl))) {
+    if (
+      !thumbUrl &&
+      url &&
+      (typeof siteUrl !== 'string' || (prevUrl && url !== prevUrl))
+    ) {
       fetchUrlData();
     }
-    onSetPrevUrl({ contentId, contentType, prevUrl: url });
+    onSetPrevUrl({ contentId, contentType, prevUrl: url, thumbUrl });
     async function fetchUrlData() {
       try {
         setLoading(true);
@@ -110,7 +117,7 @@ export default function Embedly({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [url]);
+  }, [prevUrl, url, thumbLoaded, thumbUrl]);
 
   useEffect(() => {
     setImageUrl(

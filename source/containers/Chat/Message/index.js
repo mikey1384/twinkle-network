@@ -169,26 +169,34 @@ export default function Message({
     if (url) {
       setExtractedUrl(url);
       onSetEmbeddedUrl({ contentId: messageId, contentType: 'chat', url });
-      onSetActualDescription({
-        contentId: messageId,
-        contentType: 'chat',
-        description: linkDescription
-      });
-      onSetActualTitle({
-        contentId: messageId,
-        contentType: 'chat',
-        title: linkTitle
-      });
-      onSetSiteUrl({
-        contentId: messageId,
-        contentType: 'chat',
-        siteUrl: linkUrl
-      });
-      onSetThumbUrl({
-        contentId: messageId,
-        contentType: 'chat',
-        thumbUrl
-      });
+      if (linkDescription) {
+        onSetActualDescription({
+          contentId: messageId,
+          contentType: 'chat',
+          description: linkDescription
+        });
+      }
+      if (linkTitle) {
+        onSetActualTitle({
+          contentId: messageId,
+          contentType: 'chat',
+          title: linkTitle
+        });
+      }
+      if (linkUrl) {
+        onSetSiteUrl({
+          contentId: messageId,
+          contentType: 'chat',
+          siteUrl: linkUrl
+        });
+      }
+      if (thumbUrl) {
+        onSetThumbUrl({
+          contentId: messageId,
+          contentType: 'chat',
+          thumbUrl
+        });
+      }
     }
   }, [content]);
 
