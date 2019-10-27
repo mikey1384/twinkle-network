@@ -10,7 +10,7 @@ export default function HiddenComment({onClick}) {
   return (
     <div
       style={{
-        background: Color.orange(),
+        background: Color.darkerGray(),
         color: '#fff',
         textAlign: 'center',
         padding: '1rem',
