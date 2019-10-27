@@ -9,7 +9,7 @@ import SecretAnswer from 'components/SecretAnswer';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useMyState } from 'helpers/hooks';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useContentContext } from 'contexts';
 
 ContentListItem.propTypes = {
@@ -33,14 +33,27 @@ export default function ContentListItem({
 }) {
   const { profileTheme } = useMyState();
   const {
+    content,
+    description,
+    loaded,
+    rewardLevel,
+    rootObj,
+    secretAnswer,
+    title,
+    uploader = {}
+  } = useContentState({ contentId, contentType });
+  const {
     actions: { onInitContent }
   } = useContentContext();
   useEffect(() => {
-    if (contentObj.rootObj) {
+    if (!loaded) {
+      onInitContent({ contentId, contentType, ...contentObj });
+    }
+    if (rootObj) {
       onInitContent({
-        contentId: contentObj.rootObj.id,
-        contentType: contentObj.rootObj.contentType,
-        ...contentObj.rootObj
+        contentId: rootObj.id,
+        contentType: rootObj.contentType,
+        ...rootObj
       });
     }
   }, []);
@@ -84,9 +97,7 @@ export default function ContentListItem({
           to={
             expandable || selectable
               ? ''
-              : `/${contentType === 'url' ? 'link' : contentType}s/${
-                  contentObj.id
-                }`
+              : `/${contentType === 'url' ? 'link' : contentType}s/${contentId}`
           }
         >
           <div style={{ padding: '1rem' }}>
@@ -107,9 +118,9 @@ export default function ContentListItem({
                   }}
                 >
                   <VideoThumbImage
-                    rewardLevel={contentObj.rewardLevel}
+                    rewardLevel={rewardLevel}
                     videoId={contentId}
-                    src={`https://img.youtube.com/vi/${contentObj.content}/mqdefault.jpg`}
+                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
                   />
                 </div>
               )}
@@ -134,10 +145,10 @@ export default function ContentListItem({
                         }}
                         className="label"
                       >
-                        {cleanString(contentObj.title)}
+                        {cleanString(title)}
                       </p>
                       <p style={{ color: Color.gray() }}>
-                        Uploaded by {contentObj.uploader.username}
+                        Uploaded by {uploader.username}
                       </p>
                     </div>
                     <div
@@ -158,7 +169,7 @@ export default function ContentListItem({
                         noExpand
                         maxLines={4}
                       >
-                        {contentObj.description}
+                        {description}
                       </LongText>
                     </div>
                   </>
@@ -179,12 +190,12 @@ export default function ContentListItem({
                           fontSize: '2.5rem'
                         }}
                       >
-                        {contentObj.title}
+                        {title}
                       </LongText>
                       <p style={{ color: Color.gray() }}>
-                        Written by {contentObj.uploader.username}
+                        Written by {uploader.username}
                       </p>
-                      {contentObj.description && (
+                      {description && (
                         <div
                           style={{
                             marginTop: '1rem',
@@ -194,7 +205,7 @@ export default function ContentListItem({
                           }}
                         >
                           <LongText noExpand cleanString maxLines={4}>
-                            {contentObj.description}
+                            {description}
                           </LongText>
                         </div>
                       )}
@@ -217,12 +228,12 @@ export default function ContentListItem({
                           fontSize: '2.5rem'
                         }}
                       >
-                        {contentObj.title}
+                        {title}
                       </LongText>
                       <p style={{ color: Color.gray() }}>
-                        Posted by {contentObj.uploader.username}
+                        Posted by {uploader.username}
                       </p>
-                      {contentObj.description && (
+                      {description && (
                         <div
                           style={{
                             marginTop: '1rem',
@@ -232,7 +243,7 @@ export default function ContentListItem({
                           }}
                         >
                           <LongText noExpand cleanString maxLines={4}>
-                            {contentObj.description}
+                            {description}
                           </LongText>
                         </div>
                       )}
@@ -248,7 +259,7 @@ export default function ContentListItem({
                       }}
                       className="label"
                     >
-                      {cleanString(contentObj.title)}
+                      {cleanString(title)}
                     </span>
                     <Embedly
                       small
@@ -259,41 +270,37 @@ export default function ContentListItem({
                   </div>
                 )}
               </div>
-              {contentType === 'subject' && contentObj.rootObj?.id && (
+              {contentType === 'subject' && rootObj?.id && (
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     width: '25%',
-                    marginBottom: contentObj.secretAnswer ? '1rem' : ''
+                    marginBottom: secretAnswer ? '1rem' : ''
                   }}
                 >
-                  {contentObj.rootObj?.contentType === 'video' && (
+                  {rootObj?.contentType === 'video' && (
                     <VideoThumbImage
-                      rewardLevel={contentObj.rootObj.rewardLevel}
-                      videoId={contentObj.rootObj.id}
-                      src={`https://img.youtube.com/vi/${contentObj.rootObj.content}/mqdefault.jpg`}
+                      rewardLevel={rootObj.rewardLevel}
+                      videoId={rootObj.id}
+                      src={`https://img.youtube.com/vi/${rootObj.content}/mqdefault.jpg`}
                     />
                   )}
-                  {contentObj.rootObj?.contentType === 'url' && (
-                    <Embedly
-                      imageOnly
-                      noLink
-                      contentId={contentObj.rootObj?.id}
-                    />
+                  {rootObj?.contentType === 'url' && (
+                    <Embedly imageOnly noLink contentId={rootObj?.id} />
                   )}
                 </div>
               )}
             </div>
-            {contentType === 'subject' && contentObj.secretAnswer && (
+            {contentType === 'subject' && secretAnswer && (
               <SecretAnswer
-                answer={contentObj.secretAnswer}
+                answer={secretAnswer}
                 subjectId={contentId}
-                uploaderId={contentObj.uploader.id}
+                uploaderId={uploader.id}
               />
             )}
           </div>
-          {!!contentObj.rewardLevel && contentType === 'subject' && (
+          {!!rewardLevel && contentType === 'subject' && (
             <div
               className={css`
                 margin-right: -1px;
@@ -304,12 +311,12 @@ export default function ContentListItem({
                 }
               `}
               style={{
-                paddingBottom: !!contentObj.rewardLevel && '1rem'
+                paddingBottom: !!rewardLevel && '1rem'
               }}
             >
               <RewardLevelBar
                 style={{ fontSize: '1.3rem' }}
-                rewardLevel={contentObj.rewardLevel}
+                rewardLevel={rewardLevel}
               />
             </div>
           )}
@@ -317,11 +324,11 @@ export default function ContentListItem({
       </div>
     ),
     [
-      contentObj.rewardLevel,
-      contentObj.secretAnswer,
-      contentObj.title,
-      contentObj.description,
-      contentObj.rootObj,
+      rewardLevel,
+      secretAnswer,
+      title,
+      description,
+      rootObj,
       selected,
       profileTheme
     ]
