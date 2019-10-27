@@ -133,9 +133,9 @@ export function addAdvancedEmoji(string) {
 
 export function shortcutsToWords(string) {
   return string
-    .replace(/(brb)/gi, 'be right back')
-    .replace(/(gtg)/gi, 'got to go')
-    .replace(/(tbh)/gi, 'to be honest');
+    .replace(/(\(brb\))/gi, 'be right back')
+    .replace(/(\(gtg\))/gi, 'got to go')
+    .replace(/(\(tbh\))/gi, 'to be honest');
 }
 
 export function addEmoji(string) {
