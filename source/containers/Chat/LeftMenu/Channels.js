@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Color} from 'constants/css';
-import {css} from 'emotion';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 
 Channels.propTypes = {
   userId: PropTypes.number.isRequired,
@@ -32,7 +32,14 @@ export default function Channels({
   return channels
     .filter(channel => !channel.isHidden)
     .map(
-      ({lastMessage, id, channelName, members, numUnreads = 0, twoPeople}) => {
+      ({
+        lastMessage,
+        id,
+        channelName,
+        members,
+        numUnreads = 0,
+        twoPeople
+      }) => {
         const otherMember = twoPeople
           ? members?.filter(member => Number(member.id) !== userId)?.[0]
           : null;
@@ -86,7 +93,7 @@ export default function Channels({
                       lineHeight: 'normal'
                     }}
                   >
-                    {otherMember?.username || channelName || '(Deleted)'})
+                    {otherMember?.username || channelName || '(Deleted)'}
                   </p>
                 </div>
                 <div
@@ -122,7 +129,7 @@ export default function Channels({
       }
     );
 
-  function renderPreviewMessage({content, fileName, gameWinnerId, sender}) {
+  function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
     const messageSender = sender?.id
       ? sender.id === userId
         ? 'You'
