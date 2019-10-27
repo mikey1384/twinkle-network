@@ -1,4 +1,4 @@
-import { charLimit } from 'constants/defaultValues';
+import {charLimit} from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
 export function addCommasToNumber(number) {
@@ -63,6 +63,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:ant\:)/gi, '🐜')
     .replace(/(\:bee\:)/gi, '🐝')
     .replace(/(\:bunny\:)/gi, '🐰')
+    .replace(/(\:burger\:)/gi, '🍔')
     .replace(/(\:bye\:)/gi, '👋')
     .replace(/(\:cash\:)/gi, '💰')
     .replace(/(\:cat\:)/gi, '🐱')
@@ -75,6 +76,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:crayon\:)/gi, '🖍️')
     .replace(/(\:curious\:)/gi, '🤔')
     .replace(/(\:cry\:)/gi, '😭')
+    .replace(/(\:degrees\:)/gi, '°')
     .replace(/(\:devil\:)/gi, '😈')
     .replace(/(\:diamond\:)/gi, '💎')
     .replace(/(\:dinosaur\:)/gi, '🦖')
@@ -92,6 +94,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:hen\:)/gi, '🐔')
     .replace(/(\:horror\:)/gi, '😱')
     .replace(/(\:horse\:)/gi, '🐴')
+    .replace(/(\:infinity\:)/gi, '∞')
     .replace(/(\:korea\:)/gi, '🇰🇷')
     .replace(/(\:lol\:)/gi, '😂')
     .replace(/(\:mad\:)/gi, '😡')
@@ -103,6 +106,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:palette\:)/gi, '🎨')
     .replace(/(\:penguin\:)/gi, '🐧')
     .replace(/(\:perfect\:)/gi, '💯')
+    .replace(/(\:pi\:)/gi, 'π')
     .replace(/(\:pig\:)/gi, '🐷')
     .replace(/(\:pizza\:)/gi, '🍕')
     .replace(/(\:potato\:)/gi, '🥔')
@@ -111,9 +115,11 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:sad\:)/gi, '😭')
     .replace(/(\:smile\:)/gi, '😊')
     .replace(/(\:spider\:)/gi, '🕷️')
+    .replace(/(\:squared\:)/gi, '²')
     .replace(/(\:star\:)/gi, '⭐')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:thank you\:)/gi, '🙏')
+    .replace(/(\:theta\:)/gi, '⍬')
     .replace(/(\:thumbs\:)/gi, '👍')
     .replace(/(\:turtle\:)/gi, '🐢')
     .replace(/(\:twinkle\:)/gi, '✨')
@@ -123,6 +129,13 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
     .replace(/(\:zzz\:)/gi, '💤');
+}
+
+export function shortcutsToWords(string) {
+  return string
+    .replace(/(brb)/gi, 'be right back')
+    .replace(/(gtg)/gi, 'got to go')
+    .replace(/(tbh)/gi, 'to be honest');
 }
 
 export function addEmoji(string) {
@@ -149,7 +162,7 @@ export function cleanString(string) {
     : '';
 }
 
-export function exceedsCharLimit({ inputType, contentType, text }) {
+export function exceedsCharLimit({inputType, contentType, text}) {
   const targetText = text || '';
   const limit =
     contentType === 'comment' ||
@@ -193,7 +206,7 @@ export function getFileInfoFromFileName(fileName) {
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
-  return { extension, fileType: getFileType(extension) };
+  return {extension, fileType: getFileType(extension)};
 
   function getFileType(extension) {
     const audioExt = ['wav', 'aif', 'mp3', 'mid', 'm4a'];
@@ -235,6 +248,7 @@ export function finalizeEmoji(string) {
     /((\s*\S+)*)\s*/,
     '$1'
   );
+  emojifiedString = shortcutsToWords(emojifiedString);
   return addEmoji(emojifiedString);
 }
 
@@ -348,7 +362,7 @@ export function processedURL(url) {
   return url;
 }
 
-export function queryStringForArray({ array, originVar, destinationVar }) {
+export function queryStringForArray({array, originVar, destinationVar}) {
   return `${array
     .map(elem => `${destinationVar}[]=${originVar ? elem[originVar] : elem}`)
     .join('&')}`;
@@ -418,7 +432,7 @@ export function trimWhiteSpaces(text) {
   return newText;
 }
 
-export function truncateText({ text, limit }) {
+export function truncateText({text, limit}) {
   if (text.length > limit) {
     return text.substring(0, limit) + '...';
   }
