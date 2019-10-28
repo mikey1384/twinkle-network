@@ -1,4 +1,4 @@
-import {charLimit} from 'constants/defaultValues';
+import { charLimit } from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
 export function addCommasToNumber(number) {
@@ -131,7 +131,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
-export function shortcutsToWords(string) {
+export function expandShortcut(string) {
   return string
     .replace(/(\(brb\))/gi, 'be right back')
     .replace(/(\(gtg\))/gi, 'got to go')
@@ -167,7 +167,7 @@ export function cleanString(string) {
     : '';
 }
 
-export function exceedsCharLimit({inputType, contentType, text}) {
+export function exceedsCharLimit({ inputType, contentType, text }) {
   const targetText = text || '';
   const limit =
     contentType === 'comment' ||
@@ -211,7 +211,7 @@ export function getFileInfoFromFileName(fileName) {
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
-  return {extension, fileType: getFileType(extension)};
+  return { extension, fileType: getFileType(extension) };
 
   function getFileType(extension) {
     const audioExt = ['wav', 'aif', 'mp3', 'mid', 'm4a'];
@@ -249,12 +249,7 @@ export function limitBrs(string) {
 }
 
 export function finalizeEmoji(string) {
-  let emojifiedString = addAdvancedEmoji(string + ' ').replace(
-    /((\s*\S+)*)\s*/,
-    '$1'
-  );
-  emojifiedString = shortcutsToWords(emojifiedString);
-  return addEmoji(emojifiedString);
+  return addAdvancedEmoji(addEmoji(expandShortcut(string)));
 }
 
 export function hashify(string) {
@@ -367,7 +362,7 @@ export function processedURL(url) {
   return url;
 }
 
-export function queryStringForArray({array, originVar, destinationVar}) {
+export function queryStringForArray({ array, originVar, destinationVar }) {
   return `${array
     .map(elem => `${destinationVar}[]=${originVar ? elem[originVar] : elem}`)
     .join('&')}`;
@@ -437,7 +432,7 @@ export function trimWhiteSpaces(text) {
   return newText;
 }
 
-export function truncateText({text, limit}) {
+export function truncateText({ text, limit }) {
   if (text.length > limit) {
     return text.substring(0, limit) + '...';
   }
