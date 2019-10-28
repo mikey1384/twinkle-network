@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
-import { cloudFrontURL } from 'constants/defaultValues';
-import { borderRadius, Color, innerBorderRadius } from 'constants/css';
-import { useMyState } from 'helpers/hooks';
+import {cloudFrontURL} from 'constants/defaultValues';
+import {useMyState} from 'helpers/hooks';
+import StatusTag from './StatusTag';
 
 ProfilePic.propTypes = {
   className: PropTypes.string,
@@ -26,7 +26,7 @@ export default function ProfilePic({
   profilePicId,
   style
 }) {
-  const { userId: myId } = useMyState();
+  const {userId: myId} = useMyState();
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
 
@@ -47,7 +47,7 @@ export default function ProfilePic({
         onMouseLeave={() => setChangePictureShown(false)}
       >
         <img
-          alt="Thumbnail"
+          alt='Thumbnail'
           style={{
             display: 'block',
             position: 'absolute',
@@ -61,32 +61,9 @@ export default function ProfilePic({
           shown={myId === userId && isProfilePage && changePictureShown}
         />
         {large && (online || myId === userId) && (
-          <div
-            style={{
-              top: '74%',
-              left: '70%',
-              background: '#fff',
-              position: 'absolute',
-              border: '3px solid #fff',
-              borderRadius
-            }}
-          >
-            <div
-              style={{
-                background: Color.green(),
-                color: '#fff',
-                padding: '0.3rem',
-                minWidth: '5rem',
-                fontSize: '1.4rem',
-                textAlign: 'center',
-                borderRadius: innerBorderRadius,
-                fontWeight: 'bold'
-              }}
-            >
-              online
-            </div>
-          </div>
+          <StatusTag status={'online'} />
         )}
+        {large && !online && <StatusTag status={'offline'} />}
       </div>
     ),
     [changePictureShown, myId, src, userId, online, profilePicId]
