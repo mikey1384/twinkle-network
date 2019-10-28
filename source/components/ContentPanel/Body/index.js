@@ -114,7 +114,7 @@ function Body({
       ? contentSecretHidden
       : targetObj.subject?.secretAnswer
       ? targetSubjectSecretHidden
-      : rootObj?.secretAnswer && rootObjSecretHidden;
+      : !!rootObj?.secretAnswer && rootObjSecretHidden;
 
   const {
     commentsLoadLimit,

@@ -174,44 +174,6 @@ export default function ContentListItem({
                     </div>
                   </>
                 )}
-                {contentType === 'book' && (
-                  <div
-                    style={{
-                      display: 'flex'
-                    }}
-                  >
-                    <div className="label">
-                      <LongText
-                        noExpand
-                        cleanString
-                        maxLines={4}
-                        style={{
-                          fontWeight: 'bold',
-                          fontSize: '2.5rem'
-                        }}
-                      >
-                        {title}
-                      </LongText>
-                      <p style={{ color: Color.gray() }}>
-                        Written by {uploader.username}
-                      </p>
-                      {description && (
-                        <div
-                          style={{
-                            marginTop: '1rem',
-                            width: '100%',
-                            textAlign: 'left',
-                            color: Color.darkerGray()
-                          }}
-                        >
-                          <LongText noExpand cleanString maxLines={4}>
-                            {description}
-                          </LongText>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
                 {contentType === 'subject' && (
                   <div
                     style={{
@@ -224,7 +186,6 @@ export default function ContentListItem({
                         cleanString
                         maxLines={4}
                         style={{
-                          fontWeight: 'bold',
                           fontSize: '2.5rem'
                         }}
                       >

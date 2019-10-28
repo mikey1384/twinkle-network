@@ -42,7 +42,7 @@ export default function LongText({
     } else {
       setLoading(true);
     }
-  }, [children, ContainerRef.current]);
+  }, [children, ContainerRef.current?.clientWidth]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
@@ -123,5 +123,6 @@ export default function LongText({
       }
     }
     setText(trimmedText + line || line);
+    setMore((trimmedText + line).length < originalText.length);
   }
 }
