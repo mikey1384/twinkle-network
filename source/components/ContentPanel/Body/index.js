@@ -102,11 +102,7 @@ function Body({
     contentId: targetObj.subject?.id,
     contentType: 'subject'
   });
-  const contentSecretHidden = !(
-    !secretAnswer ||
-    secretShown ||
-    uploader.id === userId
-  );
+  const contentSecretHidden = !(secretShown || uploader.id === userId);
   const targetSubjectSecretHidden = !(
     subjectSecretShown || targetObj.subject?.uploader?.id === userId
   );
@@ -114,11 +110,11 @@ function Body({
     rootSecretShown || rootObj?.uploader?.id === userId
   );
   const secretHidden =
-    contentType === 'subject'
+    contentType === 'subject' && secretAnswer
       ? contentSecretHidden
       : targetObj.subject?.secretAnswer
       ? targetSubjectSecretHidden
-      : rootObjSecretHidden;
+      : rootObj?.secretAnswer && rootObjSecretHidden;
 
   const {
     commentsLoadLimit,
