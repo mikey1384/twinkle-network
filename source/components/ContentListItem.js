@@ -73,7 +73,7 @@ export default function ContentListItem({
           border: 1px solid ${Color.borderGray()};
           background: ${expandable ? Color.whiteGray() : '#fff'};
           .label {
-            color: ${expandable ? Color.darkerGray() : Color.darkGray()};
+            color: ${Color.black()};
             transition: color 1s;
           }
           margin-top: ${expandable ? '-1rem' : '0'};
@@ -81,7 +81,7 @@ export default function ContentListItem({
           &:hover {
             border-color: ${Color.darkerBorderGray()};
             .label {
-              color: ${expandable ? Color.darkGray() : Color.darkerGray()};
+              color: ${Color.black()};
             }
             background: ${expandable ? '#fff' : Color.highlightGray()};
           }
