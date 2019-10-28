@@ -108,10 +108,10 @@ function Body({
     uploader.id === userId
   );
   const targetSubjectSecretHidden = !(
-    subjectSecretShown || targetObj.subject?.uploader.id === userId
+    subjectSecretShown || targetObj.subject?.uploader?.id === userId
   );
   const rootObjSecretHidden = !(
-    rootSecretShown || rootObj.uploader.id === userId
+    rootSecretShown || rootObj?.uploader?.id === userId
   );
   const secretHidden =
     contentType === 'subject'
