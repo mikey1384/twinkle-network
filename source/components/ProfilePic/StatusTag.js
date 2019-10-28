@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {borderRadius, innerBorderRadius, Color} from 'constants/css';
+import { borderRadius, innerBorderRadius, Color } from 'constants/css';
 
 StatusTag.propTypes = {
   status: PropTypes.string
 };
 
-export default function StatusTag({status}) {
+export default function StatusTag({ status }) {
   const backgroundColor = {
     online: Color.green(),
     offline: Color.gray(),

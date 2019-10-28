@@ -1,8 +1,8 @@
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
-import {cloudFrontURL} from 'constants/defaultValues';
-import {useMyState} from 'helpers/hooks';
+import { cloudFrontURL } from 'constants/defaultValues';
+import { useMyState } from 'helpers/hooks';
 import StatusTag from './StatusTag';
 
 ProfilePic.propTypes = {
@@ -26,7 +26,7 @@ export default function ProfilePic({
   profilePicId,
   style
 }) {
-  const {userId: myId} = useMyState();
+  const { userId: myId } = useMyState();
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
 
@@ -47,7 +47,7 @@ export default function ProfilePic({
         onMouseLeave={() => setChangePictureShown(false)}
       >
         <img
-          alt='Thumbnail'
+          alt="Thumbnail"
           style={{
             display: 'block',
             position: 'absolute',
@@ -60,10 +60,7 @@ export default function ProfilePic({
         <ChangePicture
           shown={myId === userId && isProfilePage && changePictureShown}
         />
-        {large && (online || myId === userId) && (
-          <StatusTag status={'online'} />
-        )}
-        {large && !online && <StatusTag status={'offline'} />}
+        {large && (online || myId === userId) && <StatusTag status="online" />}
       </div>
     ),
     [changePictureShown, myId, src, userId, online, profilePicId]

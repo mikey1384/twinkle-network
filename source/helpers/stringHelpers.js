@@ -136,7 +136,7 @@ export function shortcutsToWords(string) {
     .replace(/(\(brb\))/gi, 'be right back')
     .replace(/(\(gtg\))/gi, 'got to go')
     .replace(/(\(tbh\))/gi, 'to be honest')
-    .replace(/(\(nvm\))/gi, 'nevermind')
+    .replace(/(\(nvm\))/gi, 'never mind')
     .replace(
       /(\(verylongword\))/gi,
       'pneumonoultramicroscopicsilicovolcanoconiosis'
