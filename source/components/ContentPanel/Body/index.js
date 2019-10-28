@@ -98,12 +98,28 @@ function Body({
     contentId: rootId,
     contentType: rootType
   });
+  const { secretShown: subjectSecretShown } = useContentState({
+    contentId: targetObj.subject?.id,
+    contentType: 'subject'
+  });
+  const contentSecretHidden = !(
+    !secretAnswer ||
+    secretShown ||
+    uploader.id === userId
+  );
+  const targetSubjectSecretHidden = !(
+    subjectSecretShown || targetObj.subject?.uploader.id === userId
+  );
+  const rootObjSecretHidden = !(
+    rootSecretShown || rootObj.uploader.id === userId
+  );
   const secretHidden =
     contentType === 'subject'
-      ? !!secretAnswer && !secretShown && uploader.id !== userId
-      : rootObj.secretAnswer &&
-        !rootSecretShown &&
-        rootObj.uploader.id !== userId;
+      ? contentSecretHidden
+      : targetObj.subject?.secretAnswer
+      ? targetSubjectSecretHidden
+      : rootObjSecretHidden;
+
   const {
     commentsLoadLimit,
     onAttachStar,

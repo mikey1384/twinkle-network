@@ -14,7 +14,7 @@ import HiddenComment from 'components/HiddenComment';
 import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { useContentState, useMyState } from 'helpers/hooks';
+import { useContentState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { withRouter } from 'react-router';
 
@@ -23,10 +23,17 @@ MainContent.propTypes = {
   contentType: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   myId: PropTypes.number,
-  onClickSecretAnswer: PropTypes.func.isRequired
+  onClickSecretAnswer: PropTypes.func.isRequired,
+  secretHidden: PropTypes.bool
 };
 
-function MainContent({ contentId, contentType, history, onClickSecretAnswer }) {
+function MainContent({
+  contentId,
+  contentType,
+  history,
+  onClickSecretAnswer,
+  secretHidden
+}) {
   const {
     requestHelpers: { editContent }
   } = useAppContext();
@@ -43,21 +50,9 @@ function MainContent({ contentId, contentType, history, onClickSecretAnswer }) {
     rootId,
     rootType,
     secretAnswer,
-    secretShown,
     tags,
     title
   } = useContentState({ contentId, contentType });
-  const { userId } = useMyState();
-  const { secretShown: rootSecretShown } = useContentState({
-    contentId: rootId,
-    contentType: rootType
-  });
-  const secretHidden =
-    contentType === 'subject'
-      ? !!secretAnswer && !secretShown && uploader.id !== userId
-      : rootObj.secretAnswer &&
-        !rootSecretShown &&
-        rootObj.uploader.id !== userId;
 
   const {
     actions: {
@@ -68,6 +63,7 @@ function MainContent({ contentId, contentType, history, onClickSecretAnswer }) {
       onSetIsEditing
     }
   } = useContentContext();
+
   return useMemo(
     () => (
       <ErrorBoundary>
