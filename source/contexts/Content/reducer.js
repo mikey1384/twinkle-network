@@ -777,12 +777,17 @@ export default function ContentReducer(state, action) {
               }
             }
             if (containsRootReply) {
+              const replies = comment.replies.filter(
+                reply => reply.id <= action.replyId
+              );
+              replies[replies.length - 1] = {
+                ...replies[replies.length - 1],
+                numReplies: 0
+              };
               return {
                 ...comment,
                 replies: [
-                  ...comment.replies.filter(
-                    reply => reply.id <= action.replyId
-                  ),
+                  ...replies,
                   ...action.replies,
                   ...comment.replies.filter(reply => reply.id > action.replyId)
                 ]

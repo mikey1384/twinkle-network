@@ -84,7 +84,6 @@ export default function Reply({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [replyButtonClicked, setReplyButtonClicked] = useState(false);
   const ReplyInputAreaRef = useRef(null);
   const RewardInterfaceRef = useRef(null);
   const userIsUploader = userId === uploader.id;
@@ -199,12 +198,10 @@ export default function Reply({
                           <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '0.7rem' }}>
                             {reply.numReplies > 1 &&
-                            !replyButtonClicked &&
                             parent.contentType === 'comment'
                               ? 'Replies'
                               : 'Reply'}
                             {reply.numReplies > 0 &&
-                            !replyButtonClicked &&
                             parent.contentType === 'comment'
                               ? ` (${reply.numReplies})`
                               : ''}
@@ -337,7 +334,6 @@ export default function Reply({
       userListModalShown,
       confirmModalShown,
       xpRewardInterfaceShown,
-      replyButtonClicked,
       editMenuItems,
       editButtonShown
     ]
@@ -397,13 +393,8 @@ export default function Reply({
   }
 
   async function replyButtonClick() {
-    setReplyButtonClicked(true);
     ReplyInputAreaRef.current.focus();
-    if (
-      reply.numReplies > 0 &&
-      !replyButtonClicked &&
-      parent.contentType === 'comment'
-    ) {
+    if (reply.numReplies > 0 && parent.contentType === 'comment') {
       const { replies } = await loadReplies({
         commentId: reply.id
       });
