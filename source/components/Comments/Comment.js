@@ -54,7 +54,9 @@ Comment.propTypes = {
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
   parent: PropTypes.object,
-  rootContent: PropTypes.object
+  rootContent: PropTypes.shape({
+    contentType: PropTypes.string.isRequired
+  })
 };
 
 function Comment({

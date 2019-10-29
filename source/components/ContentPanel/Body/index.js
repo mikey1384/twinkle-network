@@ -404,6 +404,8 @@ function Body({
             onReplySubmit={onReplySubmit}
             onRewardCommentEdit={onEditRewardComment}
             parent={contentObj}
+            rootContent={rootObj}
+            subject={contentObj.targetObj?.subject}
             commentsHidden={secretHidden}
             style={{
               padding: '0 1rem',

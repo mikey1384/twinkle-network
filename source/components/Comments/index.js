@@ -40,10 +40,7 @@ Comments.propTypes = {
     contentId: PropTypes.number.isRequired,
     contentType: PropTypes.string.isRequired
   }).isRequired,
-  rootContent: PropTypes.shape({
-    contentId: PropTypes.number.isRequired,
-    contentType: PropTypes.string.isRequired
-  }),
+  rootContent: PropTypes.object,
   style: PropTypes.object,
   userId: PropTypes.number
 };

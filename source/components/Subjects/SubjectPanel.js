@@ -317,7 +317,6 @@ export default function SubjectPanel({
                     rewardLevel: rootRewardLevel
                   }}
                   rootContent={{
-                    contentId,
                     contentType
                   }}
                   subject={{
