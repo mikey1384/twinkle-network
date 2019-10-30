@@ -126,7 +126,7 @@ function HeaderNav({
               }
               > nav.active {
                 > svg {
-                  color: ${Color.darkGray()}!important;
+                  color: ${Color.darkGray()};
                 }
               }
               &:hover {

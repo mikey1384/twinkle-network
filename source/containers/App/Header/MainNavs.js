@@ -126,6 +126,7 @@ export default function MainNavs({
     const splitProfileNav = profileNav.split('/users/')[1].split('/');
     profileUsername = splitProfileNav[0];
   }
+
   return (
     <div
       className={css`

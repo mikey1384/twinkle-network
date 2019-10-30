@@ -1,11 +1,11 @@
 import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
-import Link from 'components/Link';
 import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
+import { withRouter } from 'react-router-dom';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -16,17 +16,19 @@ ContentListItem.propTypes = {
   comments: PropTypes.array,
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
+  history: PropTypes.object,
   onClick: PropTypes.func,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
   style: PropTypes.object
 };
 
-export default function ContentListItem({
+function ContentListItem({
   onClick = () => {},
   contentObj,
   contentObj: { id: contentId, contentType },
   expandable,
+  history,
   selectable,
   selected,
   style
@@ -92,12 +94,16 @@ export default function ContentListItem({
           }
         `}
       >
-        <Link
-          style={{ textDecoration: 'none' }}
-          to={
+        <div
+          onClick={
             expandable || selectable
-              ? ''
-              : `/${contentType === 'url' ? 'link' : contentType}s/${contentId}`
+              ? () => {}
+              : () =>
+                  history.push(
+                    `/${
+                      contentType === 'url' ? 'link' : contentType
+                    }s/${contentId}`
+                  )
           }
         >
           <div style={{ padding: '1rem' }}>
@@ -281,7 +287,7 @@ export default function ContentListItem({
               />
             </div>
           )}
-        </Link>
+        </div>
       </div>
     ),
     [
@@ -295,3 +301,5 @@ export default function ContentListItem({
     ]
   );
 }
+
+export default withRouter(ContentListItem);
