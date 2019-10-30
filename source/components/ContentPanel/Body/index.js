@@ -212,7 +212,7 @@ function Body({
             contentType={contentType}
             secretHidden={secretHidden}
             myId={userId}
-            onClickSecretAnswer={onCommentButtonClick}
+            onClickSecretAnswer={onSecretAnswerClick}
           />
           {!isEditing && !secretHidden && (
             <div
@@ -520,6 +520,10 @@ function Body({
       CommentInputAreaRef.current.focus();
     }
     scrollElementToCenter(CommentInputAreaRef.current);
+  }
+
+  function onSecretAnswerClick() {
+    CommentInputAreaRef.current.focus();
   }
 
   async function deleteThisContent() {
