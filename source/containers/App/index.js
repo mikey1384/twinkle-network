@@ -70,6 +70,14 @@ function App({ location, history }) {
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
   const authRef = useRef(null);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  });
 
   useEffect(() => {
     if (!auth()?.headers?.authorization && !signinModalShown) {
@@ -83,8 +91,10 @@ function App({ location, history }) {
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
-      onInitContent({ contentType: 'user', contentId: data.userId, ...data });
-      if (data?.userId) onInitSession(data);
+      if (mounted.current) {
+        onInitContent({ contentType: 'user', contentId: data.userId, ...data });
+        if (data?.userId) onInitSession(data);
+      }
     }
   }, [pageVisible]);
 

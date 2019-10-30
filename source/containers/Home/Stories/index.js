@@ -92,6 +92,12 @@ export default function Stories({ location }) {
 
   useEffect(() => {
     mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     socket.on('connect', onConnect);
     async function onConnect() {
       const firstFeed = feeds[0];
@@ -116,7 +122,6 @@ export default function Stories({ location }) {
     }
     return function cleanUp() {
       socket.removeListener('connect', onConnect);
-      mounted.current = false;
     };
   });
 

@@ -80,7 +80,7 @@ export default function People({ location }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [userSearchText]);
+  }, []);
 
   useEffect(() => {
     init();
