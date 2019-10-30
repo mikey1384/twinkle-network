@@ -50,6 +50,7 @@ function MainContent({
     rootId,
     rootType,
     secretAnswer,
+    targetObj,
     tags,
     title
   } = useContentState({ contentId, contentType });
@@ -139,7 +140,11 @@ function MainContent({
                 {contentType === 'comment' &&
                   (secretHidden ? (
                     <HiddenComment
-                      onClick={() => history.push(`/subjects/${rootId}`)}
+                      onClick={() =>
+                        history.push(
+                          `/subjects/${targetObj?.subject?.id || rootId}`
+                        )
+                      }
                     />
                   ) : (
                     <div
