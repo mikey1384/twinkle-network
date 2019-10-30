@@ -59,8 +59,7 @@ function HeaderNav({
     ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
       pathname.substring(1)
     );
-  const activeColor = alert ? alertColor : Color.darkGray();
-  const hoverColor = alert ? alertColor : Color.darkGray();
+  const highlightColor = alert ? alertColor : Color.darkGray();
   const {
     state: { feedsOutdated },
     actions: { onReloadFeeds }
@@ -102,17 +101,17 @@ function HeaderNav({
               line-height: 1;
             }
             > nav.active {
-              color: ${activeColor}!important;
+              color: ${highlightColor}!important;
               > svg {
-                color: ${activeColor}!important;
+                color: ${highlightColor}!important;
               }
             }
             &:hover {
               > nav {
                 > svg {
-                  color: ${hoverColor};
+                  color: ${highlightColor};
                 }
-                color: ${hoverColor};
+                color: ${highlightColor};
               }
             }
             @media (max-width: ${mobileMaxWidth}) {
@@ -126,13 +125,13 @@ function HeaderNav({
               }
               > nav.active {
                 > svg {
-                  color: ${activeColor};
+                  color: ${highlightColor};
                 }
               }
               &:hover {
                 > nav {
                   > svg {
-                    color: ${activeColor};
+                    color: ${highlightColor};
                   }
                 }
               }
