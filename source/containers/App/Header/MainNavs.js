@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
@@ -127,119 +127,138 @@ export default function MainNavs({
     profileUsername = splitProfileNav[0];
   }
 
-  return (
-    <div
-      className={css`
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        width: 100%;
-      `}
-    >
-      <HeaderNav
-        isMobileSideMenu
-        className="mobile"
-        alert={numNewNotis > 0 || totalRewardAmount > 0}
-        alertColor={Color.gold()}
-        imgLabel="bars"
-        onClick={onMobileMenuOpen}
-      />
-      {profileNav && (
-        <HeaderNav
-          to={profileNav}
-          pathname={pathname}
-          className="mobile"
-          imgLabel="user"
-        />
-      )}
-      <HeaderNav
-        to="/"
-        isHome
-        className="mobile"
-        imgLabel="home"
-        alert={numNewPosts > 0 || feedsOutdated}
-      />
-      <HeaderNav
-        to={`/${exploreCategory}`}
-        pathname={pathname}
-        className="mobile"
-        imgLabel="search"
-      />
-      {exploreSubNav && (
-        <HeaderNav
-          to={`/${explorePath}`}
-          pathname={pathname}
-          className="mobile"
-          imgLabel={subSectionIconType}
-        />
-      )}
-      <HeaderNav
-        to="/chat"
-        pathname={pathname}
-        className="mobile"
-        imgLabel="comments"
-        alert={loggedIn && !chatMatch && numChatUnreads > 0}
-      />
-      {profileNav && (
-        <HeaderNav
-          to={profileNav}
-          pathname={pathname}
-          className="desktop"
-          style={{ marginRight: '2rem' }}
-          imgLabel="user"
-        >
-          {truncateText({ text: profileUsername.toUpperCase(), limit: 7 })}
-        </HeaderNav>
-      )}
-      <HeaderNav
-        to={homeNav}
-        isHome
-        pathname={pathname}
-        className="desktop"
-        imgLabel="home"
-        alert={!usersMatch && numNewPosts > 0}
-      >
-        HOME
-        {!usersMatch && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
-      </HeaderNav>
-      <HeaderNav
-        to={`/${exploreCategory}`}
-        pathname={pathname}
-        className="desktop"
-        style={{ marginLeft: '2rem' }}
-        imgLabel="search"
-      >
-        EXPLORE
-      </HeaderNav>
-      {exploreSubNav && (
-        <HeaderNav
-          to={`/${explorePath}`}
-          pathname={pathname}
-          className="desktop"
-          style={{ marginLeft: '2rem' }}
-          imgLabel={subSectionIconType}
-        >
-          {exploreSubNav.substring(0, exploreSubNav.length - 1).toUpperCase()}
-        </HeaderNav>
-      )}
+  return useMemo(
+    () => (
       <div
         className={css`
-          margin-left: 2rem;
-          @media (max-width: ${mobileMaxWidth}) {
-            margin-left: 0;
-          }
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          width: 100%;
         `}
       >
         <HeaderNav
+          isMobileSideMenu
+          className="mobile"
+          alert={numNewNotis > 0 || totalRewardAmount > 0}
+          alertColor={Color.gold()}
+          imgLabel="bars"
+          onClick={onMobileMenuOpen}
+        />
+        {profileNav && (
+          <HeaderNav
+            to={profileNav}
+            pathname={pathname}
+            className="mobile"
+            imgLabel="user"
+          />
+        )}
+        <HeaderNav
+          to="/"
+          isHome
+          className="mobile"
+          imgLabel="home"
+          alert={numNewPosts > 0 || feedsOutdated}
+        />
+        <HeaderNav
+          to={`/${exploreCategory}`}
+          pathname={pathname}
+          className="mobile"
+          imgLabel="search"
+        />
+        {exploreSubNav && (
+          <HeaderNav
+            to={`/${explorePath}`}
+            pathname={pathname}
+            className="mobile"
+            imgLabel={subSectionIconType}
+          />
+        )}
+        <HeaderNav
           to="/chat"
           pathname={pathname}
-          className="desktop"
+          className="mobile"
           imgLabel="comments"
           alert={loggedIn && !chatMatch && numChatUnreads > 0}
+        />
+        {profileNav && (
+          <HeaderNav
+            to={profileNav}
+            pathname={pathname}
+            className="desktop"
+            style={{ marginRight: '2rem' }}
+            imgLabel="user"
+          >
+            {truncateText({ text: profileUsername.toUpperCase(), limit: 7 })}
+          </HeaderNav>
+        )}
+        <HeaderNav
+          to={homeNav}
+          isHome
+          pathname={pathname}
+          className="desktop"
+          imgLabel="home"
+          alert={!usersMatch && numNewPosts > 0}
         >
-          CHAT
+          HOME
+          {!usersMatch && numNewPosts > 0 ? ` (${numNewPosts})` : ''}
         </HeaderNav>
+        <HeaderNav
+          to={`/${exploreCategory}`}
+          pathname={pathname}
+          className="desktop"
+          style={{ marginLeft: '2rem' }}
+          imgLabel="search"
+        >
+          EXPLORE
+        </HeaderNav>
+        {exploreSubNav && (
+          <HeaderNav
+            to={`/${explorePath}`}
+            pathname={pathname}
+            className="desktop"
+            style={{ marginLeft: '2rem' }}
+            imgLabel={subSectionIconType}
+          >
+            {exploreSubNav.substring(0, exploreSubNav.length - 1).toUpperCase()}
+          </HeaderNav>
+        )}
+        <div
+          className={css`
+            margin-left: 2rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-left: 0;
+            }
+          `}
+        >
+          <HeaderNav
+            to="/chat"
+            pathname={pathname}
+            className="desktop"
+            imgLabel="comments"
+            alert={loggedIn && !chatMatch && numChatUnreads > 0}
+          >
+            CHAT
+          </HeaderNav>
+        </div>
       </div>
-    </div>
+    ),
+    [
+      chatMatch,
+      explorePath,
+      exploreCategory,
+      exploreSubNav,
+      feedsOutdated,
+      homeNav,
+      loggedIn,
+      numChatUnreads,
+      numNewPosts,
+      pathname,
+      numNewNotis,
+      profileNav,
+      subSectionIconType,
+      totalRewardAmount,
+      usersMatch
+    ]
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Route, withRouter } from 'react-router-dom';
@@ -69,63 +69,42 @@ function HeaderNav({
       actions: { onSetProfilesLoaded }
     }
   } = useAppContext();
-  return (
-    <Route
-      path={to}
-      exact
-      children={({ match }) => (
-        <div
-          onClick={() => {
-            if (!isMobileSideMenu) {
-              if (match) {
-                handleMatch(match);
+  return useMemo(
+    () => (
+      <Route
+        path={to}
+        exact
+        children={({ match }) => (
+          <div
+            onClick={() => {
+              if (!isMobileSideMenu) {
+                if (match) {
+                  handleMatch(match);
+                }
+                history.push(to);
+              } else {
+                onClick();
               }
-              history.push(to);
-            } else {
-              onClick();
-            }
-          }}
-          className={`${className} ${css`
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            .chat {
-              color: ${Color.lightGray()};
-            }
-            nav {
-              text-decoration: none;
-              font-weight: bold;
-              color: ${Color.lightGray()};
+            }}
+            className={`${className} ${css`
+              display: flex;
               align-items: center;
-              line-height: 1;
-            }
-            > nav.active {
-              color: ${highlightColor}!important;
-              > svg {
-                color: ${highlightColor}!important;
-              }
-            }
-            &:hover {
-              > nav {
-                > svg {
-                  color: ${highlightColor};
-                }
-                color: ${highlightColor};
-              }
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
               justify-content: center;
-              font-size: 3rem;
+              cursor: pointer;
+              .chat {
+                color: ${Color.lightGray()};
+              }
               nav {
-                .nav-label {
-                  display: none;
-                }
+                text-decoration: none;
+                font-weight: bold;
+                color: ${Color.lightGray()};
+                align-items: center;
+                line-height: 1;
               }
               > nav.active {
+                color: ${highlightColor}!important;
                 > svg {
-                  color: ${highlightColor};
+                  color: ${highlightColor}!important;
                 }
               }
               &:hover {
@@ -133,56 +112,80 @@ function HeaderNav({
                   > svg {
                     color: ${highlightColor};
                   }
+                  color: ${highlightColor};
                 }
               }
-            }
-          `}`}
-          style={style}
-        >
-          {!isMobileSideMenu ? (
-            <nav
-              className={to && (match || highlighted) ? 'active ' : ''}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                ...(alert ? { color: alertColor || Color.gold() } : {})
-              }}
-              onClick={onClick}
-            >
-              <Icon icon={isHome ? 'home' : imgLabel} />
-              <span className="nav-label" style={{ marginLeft: '0.7rem' }}>
-                {children}
-              </span>
-            </nav>
-          ) : (
-            <nav
-              className={active ? 'active ' : ''}
-              style={{
-                display: 'flex',
-                cursor: 'pointer',
-                justifyContent: 'center'
-              }}
-            >
-              <Icon
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+                justify-content: center;
+                font-size: 3rem;
+                nav {
+                  .nav-label {
+                    display: none;
+                  }
+                }
+                > nav.active {
+                  > svg {
+                    color: ${highlightColor};
+                  }
+                }
+                &:hover {
+                  > nav {
+                    > svg {
+                      color: ${highlightColor};
+                    }
+                  }
+                }
+              }
+            `}`}
+            style={style}
+          >
+            {!isMobileSideMenu ? (
+              <nav
+                className={to && (match || highlighted) ? 'active ' : ''}
                 style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   ...(alert ? { color: alertColor || Color.gold() } : {})
                 }}
-                icon={imgLabel}
-              />
-              <span
-                className="nav-label"
+                onClick={onClick}
+              >
+                <Icon icon={isHome ? 'home' : imgLabel} />
+                <span className="nav-label" style={{ marginLeft: '0.7rem' }}>
+                  {children}
+                </span>
+              </nav>
+            ) : (
+              <nav
+                className={active ? 'active ' : ''}
                 style={{
-                  marginLeft: '0.7rem',
-                  ...(alert ? { color: alertColor || Color.gold() } : {})
+                  display: 'flex',
+                  cursor: 'pointer',
+                  justifyContent: 'center'
                 }}
               >
-                {children}
-              </span>
-            </nav>
-          )}
-        </div>
-      )}
-    />
+                <Icon
+                  style={{
+                    ...(alert ? { color: alertColor || Color.gold() } : {})
+                  }}
+                  icon={imgLabel}
+                />
+                <span
+                  className="nav-label"
+                  style={{
+                    marginLeft: '0.7rem',
+                    ...(alert ? { color: alertColor || Color.gold() } : {})
+                  }}
+                >
+                  {children}
+                </span>
+              </nav>
+            )}
+          </div>
+        )}
+      />
+    ),
+    [active, highlighted]
   );
 
   function handleMatch(match) {
