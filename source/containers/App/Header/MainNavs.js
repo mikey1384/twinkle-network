@@ -6,10 +6,9 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import { truncateText } from 'helpers/stringHelpers';
-import { useViewContext } from 'contexts';
+import { useHomeContext, useViewContext } from 'contexts';
 
 MainNavs.propTypes = {
-  chatLoading: PropTypes.bool,
   loggedIn: PropTypes.bool,
   numChatUnreads: PropTypes.number,
   numNewNotis: PropTypes.number,
@@ -21,7 +20,6 @@ MainNavs.propTypes = {
 };
 
 export default function MainNavs({
-  chatLoading,
   loggedIn,
   numChatUnreads,
   numNewNotis,
@@ -41,6 +39,9 @@ export default function MainNavs({
       onSetHomeNav
     }
   } = useViewContext();
+  const {
+    state: { feedsOutdated }
+  } = useHomeContext();
   const loaded = useRef(false);
   const chatMatch = matchPath(pathname, {
     path: '/chat',
@@ -136,7 +137,7 @@ export default function MainNavs({
     >
       <HeaderNav
         isMobileSideMenu
-        className={`${chatLoading ? 'hidden' : 'mobile'}`}
+        className="mobile"
         alert={numNewNotis > 0 || totalRewardAmount > 0}
         alertColor={Color.gold()}
         imgLabel="bars"
@@ -155,7 +156,7 @@ export default function MainNavs({
         isHome
         className="mobile"
         imgLabel="home"
-        alert={numNewPosts > 0}
+        alert={numNewPosts > 0 || feedsOutdated}
       />
       <HeaderNav
         to={`/${exploreCategory}`}

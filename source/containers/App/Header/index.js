@@ -18,7 +18,6 @@ import {
 } from 'contexts';
 
 Header.propTypes = {
-  chatLoading: PropTypes.bool,
   history: PropTypes.object.isRequired,
   location: PropTypes.object,
   onChatButtonClick: PropTypes.func,
@@ -28,7 +27,6 @@ Header.propTypes = {
 };
 
 function Header({
-  chatLoading,
   history,
   location: { pathname },
   onChatButtonClick,
@@ -253,7 +251,6 @@ function Header({
             <MainNavs
               loggedIn={loggedIn}
               defaultSearchFilter={defaultSearchFilter}
-              chatLoading={chatLoading}
               numChatUnreads={numUnreads}
               numNewNotis={numNewNotis}
               numNewPosts={numNewPosts}
@@ -276,7 +273,6 @@ function Header({
       </ErrorBoundary>
     ),
     [
-      chatLoading,
       defaultSearchFilter,
       loggedIn,
       numNewNotis,
