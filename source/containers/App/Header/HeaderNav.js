@@ -185,7 +185,7 @@ function HeaderNav({
         )}
       />
     ),
-    [alert, active, highlighted]
+    [alert, active, feedsOutdated, highlighted]
   );
 
   function handleMatch(match) {
