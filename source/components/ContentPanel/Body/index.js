@@ -372,10 +372,7 @@ function Body({
           />
           <Comments
             autoFocus={false}
-            autoExpand={
-              (autoExpand && !secretHidden) ||
-              (contentType === 'subject' && secretHidden)
-            }
+            autoExpand={autoExpand || secretHidden}
             comments={childComments}
             commentsLoadLimit={commentsLoadLimit}
             commentsShown={commentsShown && !secretHidden}
