@@ -54,13 +54,21 @@ export default function Stories({ location }) {
     actions: { onResetNumNewPosts }
   } = useNotiContext();
   const {
-    state: { category, feeds, loadMoreButton, loaded, subFilter },
+    state: {
+      category,
+      feeds,
+      loadMoreButton,
+      loaded,
+      feedsOutdated,
+      subFilter
+    },
     actions: {
       onChangeCategory,
       onChangeSubFilter,
       onLoadFeeds,
       onLoadMoreFeeds,
-      onLoadNewFeeds
+      onLoadNewFeeds,
+      onSetFeedsOutdated
     }
   } = useHomeContext();
 
@@ -77,7 +85,6 @@ export default function Stories({ location }) {
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
-  const [feedsOutdated, setFeedsOutdated] = useState(false);
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
@@ -116,7 +123,7 @@ export default function Stories({ location }) {
           })
         });
         if (mounted.current) {
-          setFeedsOutdated(outdated.length > 0);
+          onSetFeedsOutdated(outdated.length > 0);
         }
       }
     }
@@ -204,7 +211,7 @@ export default function Stories({ location }) {
                     Tap to See New Posts!
                   </Banner>
                 )}
-                {numNewPosts > 0 && (
+                {numNewPosts > 0 && !feedsOutdated && (
                   <Banner
                     color="gold"
                     onClick={handleFetchNewFeeds}

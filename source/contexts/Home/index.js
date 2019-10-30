@@ -7,6 +7,7 @@ export const HomeContext = createContext();
 export const initialHomeState = {
   category: 'uploads',
   feeds: [],
+  feedsOutdated: false,
   loadMoreButton: false,
   subFilter: 'all'
 };

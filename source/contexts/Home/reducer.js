@@ -44,6 +44,11 @@ export default function HomeReducer(state, action) {
         ...state,
         loaded: false
       };
+    case 'SET_FEEDS_OUTDATED':
+      return {
+        ...state,
+        feedsOutdated: action.outdated
+      };
     default:
       return state;
   }

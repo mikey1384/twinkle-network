@@ -36,6 +36,12 @@ export default function HomeActions(dispatch) {
       return dispatch({
         type: 'RELOAD_FEEDS'
       });
+    },
+    onSetFeedsOutdated(outdated) {
+      return dispatch({
+        type: 'SET_FEEDS_OUTDATED',
+        outdated
+      });
     }
   };
 }

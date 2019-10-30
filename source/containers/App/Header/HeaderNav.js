@@ -62,6 +62,7 @@ function HeaderNav({
   const activeColor = alert ? alertColor : Color.darkGray();
   const hoverColor = alert ? alertColor : Color.darkGray();
   const {
+    state: { feedsOutdated },
     actions: { onReloadFeeds }
   } = useHomeContext();
   const {
@@ -187,6 +188,9 @@ function HeaderNav({
 
   function handleMatch(match) {
     if (match.path === '/') {
+      if (feedsOutdated) {
+        return window.location.reload();
+      }
       onReloadFeeds();
     }
     if (match.path.includes('/users/')) {
