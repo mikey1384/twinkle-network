@@ -112,7 +112,7 @@ function ContentListItem({
                 display: 'flex',
                 width: '100%',
                 fontSize: '1.3rem',
-                minHeight: contentType === 'subject' ? '10rem' : ''
+                minHeight: contentType === 'subject' ? '11rem' : ''
               }}
             >
               {contentType === 'video' && (
