@@ -88,6 +88,7 @@ export default function Stories({ location }) {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+  const disconnected = useRef(false);
   const { setScrollHeight } = useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,
@@ -106,6 +107,7 @@ export default function Stories({ location }) {
 
   useEffect(() => {
     socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
     async function onConnect() {
       const firstFeed = feeds[0];
       if (
@@ -114,21 +116,28 @@ export default function Stories({ location }) {
         category === 'uploads' &&
         subFilter === 'all'
       ) {
-        const outdated = await loadNewFeeds({
-          lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
-          shownFeeds: queryStringForArray({
-            array: feeds,
-            originVar: 'feedId',
-            destinationVar: 'shownFeeds'
-          })
-        });
-        if (mounted.current) {
-          onSetFeedsOutdated(outdated.length > 0);
+        if (disconnected.current) {
+          disconnected.current = false;
+          const outdated = await loadNewFeeds({
+            lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
+            shownFeeds: queryStringForArray({
+              array: feeds,
+              originVar: 'feedId',
+              destinationVar: 'shownFeeds'
+            })
+          });
+          if (mounted.current) {
+            onSetFeedsOutdated(outdated.length > 0);
+          }
         }
       }
     }
+    function onDisconnect() {
+      disconnected.current = true;
+    }
     return function cleanUp() {
       socket.removeListener('connect', onConnect);
+      socket.removeListener('disconnect', onDisconnect);
     };
   });
 
