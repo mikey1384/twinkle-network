@@ -76,10 +76,10 @@ function Header({
     socket.on('chat_invitation', onChatInvitation);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('receive_message', handleReceiveMessage);
     socket.on('new_post', onIncreaseNumNewPosts);
     socket.on('new_notification', onIncreaseNumNewNotis);
     socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
+    socket.on('receive_message', handleReceiveMessage);
     socket.on('subject_change', onSubjectChange);
 
     return function cleanUp() {
