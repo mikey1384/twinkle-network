@@ -126,13 +126,13 @@ function HeaderNav({
               }
               > nav.active {
                 > svg {
-                  color: ${Color.darkGray()};
+                  color: ${activeColor};
                 }
               }
               &:hover {
                 > nav {
                   > svg {
-                    color: ${Color.lightGray()};
+                    color: ${activeColor};
                   }
                 }
               }
