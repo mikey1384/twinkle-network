@@ -167,6 +167,12 @@ export default function ExploreActions(dispatch) {
         loadMoreButton
       });
     },
+    onLoadMorePlaylistsToPin(data) {
+      return dispatch({
+        type: 'LOAD_MORE_PLAYLISTS_TO_PIN',
+        data
+      });
+    },
     onLoadSearchResults({ filter, results, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_SEARCH_RESULTS',

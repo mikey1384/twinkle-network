@@ -463,9 +463,11 @@ export default function requestHelpers(handleError) {
         return handleError(error);
       }
     },
-    async loadPlaylistList() {
+    async loadPlaylistList(playlistId) {
       try {
-        const { data } = await request.get(`${URL}/playlist/list`);
+        const { data } = await request.get(
+          `${URL}/playlist/list${playlistId ? `?playlistId=${playlistId}` : ''}`
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

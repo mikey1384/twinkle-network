@@ -16,9 +16,7 @@ export default function FeaturedPlaylistsPanel() {
     state: {
       videos: {
         featuredPlaylists,
-        loadMorePlaylistsToPinButton,
         featuredPlaylistsLoaded,
-        playlistsToPin,
         reorderFeaturedPlaylistsShown,
         selectPlaylistsToFeatureModalShown
       }
@@ -74,11 +72,9 @@ export default function FeaturedPlaylistsPanel() {
         />
         {selectPlaylistsToFeatureModalShown && (
           <SelectPlaylistsToPinModal
-            playlistsToPin={playlistsToPin}
             selectedPlaylists={featuredPlaylists.map(playlist => {
               return playlist.id;
             })}
-            loadMoreButton={loadMorePlaylistsToPinButton}
             onHide={onCloseSelectPlaylistsToPinModal}
           />
         )}
@@ -92,10 +88,8 @@ export default function FeaturedPlaylistsPanel() {
     ),
     [
       featuredPlaylists,
-      loadMorePlaylistsToPinButton,
       menuButtons,
       featuredPlaylistsLoaded,
-      playlistsToPin,
       reorderFeaturedPlaylistsShown,
       selectPlaylistsToFeatureModalShown
     ]

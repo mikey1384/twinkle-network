@@ -417,6 +417,23 @@ export default function ExploreReducer(state, action) {
               })
         }
       };
+    case 'LOAD_MORE_PLAYLISTS_TO_PIN': {
+      let loadMorePlaylistsToPinButton = false;
+      if (action.data.result.length > 10) {
+        action.data.result.pop();
+        loadMorePlaylistsToPinButton = true;
+      }
+      return {
+        ...state,
+        videos: {
+          ...state.videos,
+          playlistsToPin: state.videos.playlistsToPin.concat(
+            action.data.result
+          ),
+          loadMorePlaylistsToPinButton
+        }
+      };
+    }
     case 'LOAD_SEARCH_RESULTS':
       return {
         ...state,

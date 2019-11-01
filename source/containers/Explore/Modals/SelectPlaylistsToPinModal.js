@@ -13,26 +13,26 @@ import { isEqual } from 'lodash';
 import { useAppContext, useExploreContext } from 'contexts';
 
 SelectPlaylistsToPinModal.propTypes = {
-  loadMoreButton: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
-  playlistsToPin: PropTypes.array.isRequired,
   selectedPlaylists: PropTypes.array.isRequired
 };
 
 export default function SelectPlaylistsToPinModal({
-  loadMoreButton,
   onHide,
-  playlistsToPin,
   selectedPlaylists: initialSelectedPlaylists
 }) {
   const {
-    requestHelpers: { searchContent, uploadFeaturedPlaylists }
+    requestHelpers: { loadPlaylistList, searchContent, uploadFeaturedPlaylists }
   } = useAppContext();
   const {
     state: {
-      videos: { featuredPlaylists }
+      videos: {
+        featuredPlaylists,
+        loadMorePlaylistsToPinButton: loadMoreButton,
+        playlistsToPin
+      }
     },
-    actions: { onChangeFeaturedPlaylists }
+    actions: { onChangeFeaturedPlaylists, onLoadMorePlaylistsToPin }
   } = useExploreContext();
   const [selectTabActive, setSelectTabActive] = useState(true);
   const [selectedPlaylists, setSelectedPlaylists] = useState([]);
@@ -189,9 +189,11 @@ export default function SelectPlaylistsToPinModal({
     </Modal>
   );
 
-  async function handleLoadMore() {
+  async function handleLoadMore(playlistId) {
     setLoadingMore(true);
     if (stringIsEmpty(searchText)) {
+      const data = await loadPlaylistList(playlistId);
+      onLoadMorePlaylistsToPin(data);
       return setLoadingMore(false);
     }
     const { loadMoreButton: loadMoreShown, results } = await searchContent({
