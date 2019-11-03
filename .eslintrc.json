@@ -15,7 +15,7 @@
     "node": true
   },
 
-  "plugins": ["standard", "promise", "react", "react-hooks"],
+  "plugins": ["standard", "babel", "promise", "react", "react-hooks"],
 
   "extends": ["plugin:react/recommended"],
 

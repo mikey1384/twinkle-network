@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -11,6 +11,7 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -33,9 +34,14 @@ export default function ChatInput({
 }) {
   const { profileTheme } = useMyState();
   const TextareaRef = useRef(null);
-  const [message, setMessage] = useState('');
+  const {
+    state,
+    actions: { onEnterText }
+  } = useChatContext();
+
+  const text = state['chat' + currentChannelId] || '';
+
   useEffect(() => {
-    setMessage('');
     if (!isMobile(navigator)) {
       TextareaRef.current.focus();
     }
@@ -43,7 +49,7 @@ export default function ChatInput({
   const messageExceedsCharLimit = exceedsCharLimit({
     inputType: 'message',
     contentType: 'chat',
-    text: message
+    text: text
   });
 
   return useMemo(
@@ -73,11 +79,14 @@ export default function ChatInput({
             minRows={1}
             placeholder="Type a message..."
             onKeyDown={onKeyDown}
-            value={message}
+            value={text}
             onChange={handleChange}
             onKeyUp={event => {
               if (event.key === ' ') {
-                setMessage(addEmoji(event.target.value));
+                onEnterText({
+                  contentId: currentChannelId,
+                  text: addEmoji(event.target.value)
+                });
               }
             }}
             style={{
@@ -103,20 +112,14 @@ export default function ChatInput({
         </div>
       </>
     ),
-    [
-      isTwoPeopleChannel,
-      loading,
-      message,
-      messageExceedsCharLimit,
-      profileTheme
-    ]
+    [isTwoPeopleChannel, loading, text, messageExceedsCharLimit, profileTheme]
   );
 
   function handleChange(event) {
     setTimeout(() => {
       onHeightChange(TextareaRef.current?.clientHeight);
     }, 0);
-    setMessage(event.target.value);
+    onEnterText({ contentId: currentChannelId, text: event.target.value });
   }
 
   function onKeyDown(event) {
@@ -129,9 +132,10 @@ export default function ChatInput({
       !loading
     ) {
       event.preventDefault();
-      if (stringIsEmpty(message)) return;
-      onMessageSubmit(finalizeEmoji(message));
-      setMessage('');
+      if (stringIsEmpty(text)) return;
+      onMessageSubmit(finalizeEmoji(text));
+      onEnterText({ contentId: currentChannelId, text: '' });
+      event.target.value = '';
     }
     if (enterKeyPressed && shiftKeyPressed) {
       onHeightChange(TextareaRef.current?.clientHeight + 20);
