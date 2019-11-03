@@ -1,5 +1,12 @@
 export default function ChatActions(dispatch) {
   return {
+    onEnterText({ contentId, text }) {
+      return dispatch({
+        type: 'ENTER_TEXT',
+        contentId,
+        text
+      });
+    },
     onChangeChatSubject(subject) {
       return dispatch({
         type: 'CHANGE_SUBJECT',
