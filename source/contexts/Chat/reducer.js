@@ -1,13 +1,7 @@
 import { initialChatState } from '.';
 
 export default function ChatReducer(state, action) {
-  const contentKey = action.contentId ? 'chat' + action.contentId : 'temp';
   switch (action.type) {
-    case 'ENTER_TEXT':
-      return {
-        ...state,
-        [contentKey]: action.text
-      };
     case 'ADD_ID_TO_NEW_MESSAGE':
       return {
         ...state,

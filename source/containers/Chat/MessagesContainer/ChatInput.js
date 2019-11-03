@@ -11,7 +11,7 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useChatContext } from 'contexts';
+import { useInputContext } from 'contexts';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -36,8 +36,8 @@ export default function ChatInput({
   const TextareaRef = useRef(null);
   const {
     state,
-    actions: { onEnterText }
-  } = useChatContext();
+    actions: { onEnterComment }
+  } = useInputContext();
 
   const text = state['chat' + currentChannelId] || '';
 
@@ -49,7 +49,7 @@ export default function ChatInput({
   const messageExceedsCharLimit = exceedsCharLimit({
     inputType: 'message',
     contentType: 'chat',
-    text: text
+    text
   });
 
   return useMemo(
@@ -83,7 +83,8 @@ export default function ChatInput({
             onChange={handleChange}
             onKeyUp={event => {
               if (event.key === ' ') {
-                onEnterText({
+                onEnterComment({
+                  contentType: 'chat',
                   contentId: currentChannelId,
                   text: addEmoji(event.target.value)
                 });
@@ -119,7 +120,11 @@ export default function ChatInput({
     setTimeout(() => {
       onHeightChange(TextareaRef.current?.clientHeight);
     }, 0);
-    onEnterText({ contentId: currentChannelId, text: event.target.value });
+    onEnterComment({
+      contentType: 'chat',
+      contentId: currentChannelId,
+      text: event.target.value
+    });
   }
 
   function onKeyDown(event) {
@@ -134,7 +139,11 @@ export default function ChatInput({
       event.preventDefault();
       if (stringIsEmpty(text)) return;
       onMessageSubmit(finalizeEmoji(text));
-      onEnterText({ contentId: currentChannelId, text: '' });
+      onEnterComment({
+        contentType: 'chat',
+        contentId: currentChannelId,
+        text: ''
+      });
       event.target.value = '';
     }
     if (enterKeyPressed && shiftKeyPressed) {
