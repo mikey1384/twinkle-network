@@ -95,7 +95,7 @@ function App({ location, history }) {
         if (data?.userId) onInitSession(data);
       }
     }
-  }, [!auth()?.headers?.authorization, pageVisible]);
+  }, [auth()?.headers?.authorization, pageVisible]);
 
   useEffect(() => {
     window.ga('send', 'pageview', location.pathname);
