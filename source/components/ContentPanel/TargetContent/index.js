@@ -32,7 +32,6 @@ TargetContent.propTypes = {
   contentId: PropTypes.number,
   contentType: PropTypes.string,
   history: PropTypes.object.isRequired,
-  profilePicId: PropTypes.number,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
   onShowTCReplyInput: PropTypes.func.isRequired,
@@ -46,7 +45,6 @@ function TargetContent({
   contentType,
   history,
   rootObj,
-  profilePicId,
   rootType,
   onShowTCReplyInput,
   style,
@@ -62,7 +60,7 @@ function TargetContent({
   const {
     requestHelpers: { uploadComment }
   } = useAppContext();
-  const { authLevel, canStar, userId, username } = useMyState();
+  const { authLevel, canStar, profilePicId, userId, username } = useMyState();
   const {
     state,
     actions: { onSetXpRewardInterfaceShown }
@@ -355,7 +353,10 @@ function TargetContent({
       userId,
       userListModalShown,
       userCanRewardThis,
-      contentHidden
+      contentHidden,
+      profilePicId,
+      username,
+      userId
     ]
   );
 
@@ -406,7 +407,7 @@ function TargetContent({
       content,
       parent: {
         contentType: rootType,
-        id: rootObj.id
+        contentId: rootObj.id
       },
       targetCommentId: comment.id
     });

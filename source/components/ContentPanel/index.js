@@ -221,7 +221,6 @@ function ContentPanel({
                       }}
                       targetObj={targetObj}
                       rootObj={rootObj}
-                      rootId={contentState.rootId}
                       rootType={contentState.rootType}
                       contentId={contentId}
                       contentType={contentType}
