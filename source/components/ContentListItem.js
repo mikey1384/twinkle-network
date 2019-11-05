@@ -206,7 +206,10 @@ function ContentListItem({
                             marginTop: '1rem',
                             width: '100%',
                             textAlign: 'left',
-                            color: Color.darkerGray()
+                            color: Color.darkerGray(),
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'break-word',
+                            wordBreak: 'break-word'
                           }}
                         >
                           <LongText noExpand cleanString maxLines={4}>
