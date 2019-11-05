@@ -21,7 +21,8 @@ export const initialNotiState = {
   socketConnected: false,
   rankModifier: 0,
   totalRewardAmount: 0,
-  updateDetail: ''
+  updateDetail: '',
+  updateNoticeShown: false
 };
 
 NotiContextProvider.propTypes = {

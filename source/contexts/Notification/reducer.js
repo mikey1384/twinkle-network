@@ -32,7 +32,11 @@ export default function NotiReducer(state, action) {
         }
       };
     case 'CLEAR_NOTIFICATIONS':
-      return initialNotiState;
+      return {
+        ...initialNotiState,
+        updateDetail: state.updateDetail,
+        updateNoticeShown: state.updateNoticeShown
+      };
     case 'INCREASE_NUM_NEW_NOTIS':
       return {
         ...state,
@@ -79,6 +83,11 @@ export default function NotiReducer(state, action) {
       return {
         ...state,
         numNewPosts: 0
+      };
+    case 'SHOW_UPDATE_NOTICE':
+      return {
+        ...state,
+        updateNoticeShown: action.shown
       };
     default:
       return state;

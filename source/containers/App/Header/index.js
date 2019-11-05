@@ -22,7 +22,6 @@ Header.propTypes = {
   location: PropTypes.object,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
-  showUpdateNotice: PropTypes.func,
   style: PropTypes.object
 };
 
@@ -31,7 +30,6 @@ function Header({
   location: { pathname },
   onChatButtonClick,
   onMobileMenuOpen,
-  showUpdateNotice,
   style = {}
 }) {
   const usingChat = getSectionFromPathname(pathname)?.section === 'chat';
@@ -64,7 +62,8 @@ function Header({
       onChangeSocketStatus,
       onCheckVersion,
       onIncreaseNumNewPosts,
-      onIncreaseNumNewNotis
+      onIncreaseNumNewNotis,
+      onShowUpdateNotice
     }
   } = useNotiContext();
   const {
@@ -205,7 +204,7 @@ function Header({
   }, [userId]);
 
   useEffect(() => {
-    showUpdateNotice(versionMatch);
+    onShowUpdateNotice(!versionMatch);
   }, [versionMatch]);
 
   return useMemo(

@@ -59,13 +59,12 @@ function App({ location, history }) {
     actions: { onInitContent }
   } = useContentContext();
   const {
-    state: { updateDetail }
+    state: { updateDetail, updateNoticeShown }
   } = useNotiContext();
   const {
     state: { pageVisible },
     actions: { onChangePageVisibility }
   } = useViewContext();
-  const [updateNoticeShown, setUpdateNoticeShown] = useState(false);
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
@@ -96,7 +95,7 @@ function App({ location, history }) {
         if (data?.userId) onInitSession(data);
       }
     }
-  }, [pageVisible]);
+  }, [!auth()?.headers?.authorization, pageVisible]);
 
   useEffect(() => {
     window.ga('send', 'pageview', location.pathname);
@@ -194,7 +193,6 @@ function App({ location, history }) {
         )}
         <Header
           history={history}
-          showUpdateNotice={match => setUpdateNoticeShown(!match)}
           onMobileMenuOpen={() => setMobileMenuShown(true)}
         />
         <div

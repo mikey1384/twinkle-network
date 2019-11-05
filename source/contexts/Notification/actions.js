@@ -68,6 +68,12 @@ export default function NotiActions(dispatch) {
       return dispatch({
         type: 'RESET_NUM_NEW_POSTS'
       });
+    },
+    onShowUpdateNotice(shown) {
+      return dispatch({
+        type: 'SHOW_UPDATE_NOTICE',
+        shown
+      });
     }
   };
 }
