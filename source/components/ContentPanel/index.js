@@ -14,7 +14,7 @@ import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { container } from './Styles';
 import { useContentState, useLazyLoad } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 
 ContentPanel.propTypes = {
@@ -22,7 +22,6 @@ ContentPanel.propTypes = {
   commentsLoadLimit: PropTypes.number,
   contentId: PropTypes.number.isRequired,
   contentType: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
   numPreviewComments: PropTypes.number,
   style: PropTypes.object
 };
@@ -32,10 +31,10 @@ function ContentPanel({
   commentsLoadLimit,
   contentId,
   contentType,
-  history,
   numPreviewComments = 0,
   style = {}
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { loadContent }
   } = useAppContext();
@@ -323,4 +322,4 @@ function ContentPanel({
   );
 }
 
-export default memo(withRouter(ContentPanel));
+export default memo(ContentPanel);

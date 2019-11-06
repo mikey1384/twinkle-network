@@ -5,7 +5,7 @@ import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -16,23 +16,22 @@ ContentListItem.propTypes = {
   comments: PropTypes.array,
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
-  history: PropTypes.object,
   onClick: PropTypes.func,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
   style: PropTypes.object
 };
 
-function ContentListItem({
+export default function ContentListItem({
   onClick = () => {},
   contentObj,
   contentObj: { id: contentId, contentType },
   expandable,
-  history,
   selectable,
   selected,
   style
 }) {
+  const history = useHistory();
   const { profileTheme } = useMyState();
   const {
     content,
@@ -304,5 +303,3 @@ function ContentListItem({
     ]
   );
 }
-
-export default withRouter(ContentListItem);

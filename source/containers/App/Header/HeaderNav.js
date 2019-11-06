@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
-import { Route, withRouter } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
@@ -19,7 +19,6 @@ HeaderNav.propTypes = {
   alertColor: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.node,
-  history: PropTypes.object,
   imgLabel: PropTypes.string,
   isHome: PropTypes.bool,
   onClick: PropTypes.func,
@@ -28,12 +27,11 @@ HeaderNav.propTypes = {
   to: PropTypes.string
 };
 
-function HeaderNav({
+export default function HeaderNav({
   active,
   alert,
   alertColor,
   className,
-  history,
   to,
   children,
   imgLabel,
@@ -43,6 +41,7 @@ function HeaderNav({
   pathname,
   style
 }) {
+  const history = useHistory();
   const {
     state: profileState = {},
     actions: { onResetProfile }
@@ -220,5 +219,3 @@ function HeaderNav({
     BodyRef.current.scrollTop = 0;
   }
 }
-
-export default withRouter(HeaderNav);

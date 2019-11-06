@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 Link.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node,
-  history: PropTypes.object.isRequired,
   onClick: PropTypes.func,
   onClickAsync: PropTypes.func,
   style: PropTypes.object,
@@ -13,16 +12,16 @@ Link.propTypes = {
   to: PropTypes.string
 };
 
-function Link({
+export default function Link({
   className,
   to,
   onClick = () => {},
   onClickAsync,
   children,
   style,
-  target,
-  history
+  target
 }) {
+  const history = useHistory();
   return to ? (
     <a
       className={className}
@@ -63,5 +62,3 @@ function Link({
     onClick();
   }
 }
-
-export default withRouter(Link);

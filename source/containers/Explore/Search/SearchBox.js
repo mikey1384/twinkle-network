@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
-import { withRouter } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useExploreContext } from 'contexts';
 
@@ -12,7 +11,7 @@ SearchBox.propTypes = {
   style: PropTypes.object
 };
 
-function SearchBox({ category, className, innerRef, style }) {
+export default function SearchBox({ category, className, innerRef, style }) {
   const { profileTheme } = useMyState();
   const {
     state: {
@@ -36,5 +35,3 @@ function SearchBox({ category, className, innerRef, style }) {
     [profileTheme, category, searchText]
   );
 }
-
-export default withRouter(SearchBox);

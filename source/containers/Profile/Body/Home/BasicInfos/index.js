@@ -8,7 +8,7 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import moment from 'moment';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import {
   useAppContext,
   useChatContext,
@@ -20,7 +20,6 @@ BasicInfos.propTypes = {
   className: PropTypes.string,
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
-  history: PropTypes.object,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
@@ -35,11 +34,10 @@ BasicInfos.propTypes = {
   style: PropTypes.object
 };
 
-function BasicInfos({
+export default function BasicInfos({
   className,
   email,
   emailVerified,
-  history,
   online,
   joinDate,
   lastActive,
@@ -53,6 +51,7 @@ function BasicInfos({
   youtubeUrl,
   style
 }) {
+  const history = useHistory();
   const {
     requestHelpers: {
       loadChat,
@@ -359,5 +358,3 @@ function BasicInfos({
     } by tapping the "Edit" button below`;
   }
 }
-
-export default withRouter(BasicInfos);

@@ -25,13 +25,12 @@ import {
 } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 TargetContent.propTypes = {
   className: PropTypes.string,
   contentId: PropTypes.number,
   contentType: PropTypes.string,
-  history: PropTypes.object.isRequired,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
   onShowTCReplyInput: PropTypes.func.isRequired,
@@ -39,11 +38,10 @@ TargetContent.propTypes = {
   targetObj: PropTypes.object
 };
 
-function TargetContent({
+export default function TargetContent({
   className,
   contentId,
   contentType,
-  history,
   rootObj,
   rootType,
   onShowTCReplyInput,
@@ -57,6 +55,7 @@ function TargetContent({
     type
   }
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { uploadComment }
   } = useAppContext();
@@ -414,5 +413,3 @@ function TargetContent({
     onUploadTargetComment({ ...data, contentId, contentType });
   }
 }
-
-export default withRouter(TargetContent);

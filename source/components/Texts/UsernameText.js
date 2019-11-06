@@ -2,19 +2,24 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
-  history: PropTypes.object.isRequired,
   style: PropTypes.object,
   user: PropTypes.object
 };
 
-function UsernameText({ className, color, history, style = {}, user = {} }) {
+export default function UsernameText({
+  className,
+  color,
+  style = {},
+  user = {}
+}) {
+  const history = useHistory();
   const {
     requestHelpers: { loadChat, loadDMChannel }
   } = useAppContext();
@@ -94,5 +99,3 @@ function UsernameText({ className, color, history, style = {}, user = {} }) {
     }
   }
 }
-
-export default withRouter(UsernameText);

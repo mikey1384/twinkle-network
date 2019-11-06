@@ -6,7 +6,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTitleForm from 'components/Texts/EditTitleForm';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Embedly from 'components/Embedly';
-import { withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { cleanString } from 'helpers/stringHelpers';
@@ -15,7 +15,6 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useExploreContext } from 'contexts';
 
 LinkItem.propTypes = {
-  history: PropTypes.object.isRequired,
   link: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
@@ -30,10 +29,10 @@ LinkItem.propTypes = {
   }).isRequired
 };
 
-function LinkItem({
-  history,
+export default function LinkItem({
   link: { id, numComments, likes, timeStamp, title, uploader, ...embedProps }
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { deleteContent, editContent }
   } = useAppContext();
@@ -258,5 +257,3 @@ function LinkItem({
     setOnEdit(false);
   }
 }
-
-export default withRouter(LinkItem);

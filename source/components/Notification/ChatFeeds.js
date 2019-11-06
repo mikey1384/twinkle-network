@@ -8,12 +8,11 @@ import Icon from 'components/Icon';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useAppContext, useChatContext } from 'contexts';
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
-  history: PropTypes.object.isRequired,
   loaded: PropTypes.bool,
   myId: PropTypes.number,
   reloadedBy: PropTypes.number,
@@ -28,7 +27,6 @@ ChatFeeds.propTypes = {
 function ChatFeeds({
   content,
   myId,
-  history,
   loaded,
   reloadedBy,
   reloaderName,
@@ -38,6 +36,7 @@ function ChatFeeds({
   userId,
   username
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { loadChat, loadChatChannel }
   } = useAppContext();
@@ -137,4 +136,4 @@ function ChatFeeds({
   }
 }
 
-export default withRouter(memo(ChatFeeds));
+export default memo(ChatFeeds);

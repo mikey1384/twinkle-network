@@ -11,7 +11,7 @@ import Comments from 'components/Comments';
 import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
 import Loading from 'components/Loading';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -26,11 +26,11 @@ import {
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
-  history: PropTypes.object,
   profileId: PropTypes.number
 };
 
-function ProfilePanel({ history, expandable, profileId }) {
+export default function ProfilePanel({ expandable, profileId }) {
+  const history = useHistory();
   const {
     requestHelpers: {
       checkIfUserOnline,
@@ -583,5 +583,3 @@ function ProfilePanel({ history, expandable, profileId }) {
     setImageEditModalShown(false);
   }
 }
-
-export default withRouter(ProfilePanel);

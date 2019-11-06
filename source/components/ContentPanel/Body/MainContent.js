@@ -16,12 +16,11 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useContentState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 
 MainContent.propTypes = {
   contentId: PropTypes.number.isRequired,
   contentType: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
   myId: PropTypes.number,
   onClickSecretAnswer: PropTypes.func.isRequired,
   secretHidden: PropTypes.bool
@@ -30,10 +29,10 @@ MainContent.propTypes = {
 function MainContent({
   contentId,
   contentType,
-  history,
   onClickSecretAnswer,
   secretHidden
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { editContent }
   } = useAppContext();
@@ -284,4 +283,4 @@ function MainContent({
   }
 }
 
-export default withRouter(memo(MainContent));
+export default memo(MainContent);

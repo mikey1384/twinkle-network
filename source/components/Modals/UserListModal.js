@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
@@ -13,22 +13,21 @@ UserListModal.propTypes = {
   description: PropTypes.string,
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
-  history: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   users: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired }))
     .isRequired
 };
 
-function UserListModal({
+export default function UserListModal({
   description = '',
   descriptionColor = Color.green(),
   descriptionShown,
-  history,
   onHide,
   title,
   users
 }) {
+  const history = useHistory();
   const {
     requestHelpers: { loadChat, loadDMChannel }
   } = useAppContext();
@@ -120,5 +119,3 @@ function UserListModal({
     }
   }
 }
-
-export default withRouter(UserListModal);

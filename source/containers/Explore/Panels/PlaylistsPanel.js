@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
@@ -20,7 +19,7 @@ PlaylistsPanel.propTypes = {
   userId: PropTypes.number
 };
 
-function PlaylistsPanel({
+export default function PlaylistsPanel({
   buttonGroupShown = true,
   buttonGroup,
   isSearching,
@@ -84,5 +83,3 @@ function PlaylistsPanel({
     });
   }
 }
-
-export default withRouter(PlaylistsPanel);

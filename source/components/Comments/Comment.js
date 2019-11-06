@@ -24,9 +24,8 @@ import HiddenComment from 'components/HiddenComment';
 import XPRewardInterface from 'components/XPRewardInterface';
 import SubjectLink from './SubjectLink';
 import Icon from 'components/Icon';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { commentContainer } from './Styles';
-import { withRouter } from 'react-router';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
@@ -50,7 +49,6 @@ Comment.propTypes = {
       .isRequired,
     uploader: PropTypes.object.isRequired
   }).isRequired,
-  history: PropTypes.object.isRequired,
   innerRef: PropTypes.func,
   isPreview: PropTypes.bool,
   parent: PropTypes.object,
@@ -61,7 +59,6 @@ Comment.propTypes = {
 
 function Comment({
   comment,
-  history,
   innerRef,
   isPreview,
   parent,
@@ -70,6 +67,7 @@ function Comment({
   comment: { replies = [], likes = [], stars = [], uploader }
 }) {
   subject = subject || comment.targetObj?.subject || {};
+  const history = useHistory();
   const {
     requestHelpers: { checkIfUserResponded, editContent }
   } = useAppContext();
@@ -504,4 +502,4 @@ function Comment({
   }
 }
 
-export default withRouter(memo(Comment));
+export default memo(Comment);

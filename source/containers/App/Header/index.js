@@ -8,7 +8,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
-import { withRouter } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
@@ -18,20 +18,18 @@ import {
 } from 'contexts';
 
 Header.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object,
   onChatButtonClick: PropTypes.func,
   onMobileMenuOpen: PropTypes.func,
   style: PropTypes.object
 };
 
-function Header({
-  history,
-  location: { pathname },
+export default function Header({
   onChatButtonClick,
   onMobileMenuOpen,
   style = {}
 }) {
+  const { pathname } = useLocation();
+  const history = useHistory();
   const usingChat = getSectionFromPathname(pathname)?.section === 'chat';
   const {
     requestHelpers: {
@@ -282,5 +280,3 @@ function Header({
     ]
   );
 }
-
-export default withRouter(Header);

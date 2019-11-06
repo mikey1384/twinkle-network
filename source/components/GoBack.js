@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
-import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 
 GoBack.propTypes = {
-  history: PropTypes.object.isRequired,
   to: PropTypes.string,
   isMobile: PropTypes.bool,
   text: PropTypes.string
 };
-function GoBack({ history, isMobile, to, text }) {
+
+export default function GoBack({ isMobile, to, text }) {
+  const history = useHistory();
   const { profileTheme } = useMyState();
   return useMemo(
     () => (
@@ -51,5 +52,3 @@ function GoBack({ history, isMobile, to, text }) {
     [profileTheme]
   );
 }
-
-export default withRouter(GoBack);
