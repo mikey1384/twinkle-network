@@ -4,7 +4,7 @@ export const rewardValue = {
 };
 
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.0.93';
+export const clientVersion = '1.0.94';
 export const charLimit = {
   chat: {
     subject: 200,

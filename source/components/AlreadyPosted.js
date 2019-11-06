@@ -31,7 +31,10 @@ export default function AlreadyPosted({
   const {
     actions: { onSetExistingContent }
   } = useContentContext();
-  const { existingContent } = useContentState({ contentType, contentId });
+  const { existingContent, byUser } = useContentState({
+    contentType,
+    contentId
+  });
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
@@ -59,7 +62,8 @@ export default function AlreadyPosted({
     return !changingPage &&
       !loading &&
       existingContent &&
-      existingContent.id !== contentId ? (
+      existingContent.id !== contentId &&
+      !(byUser && uploaderId !== existingContent.uploader) ? (
       <div
         style={{
           fontSize: '1.6rem',
