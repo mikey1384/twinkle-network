@@ -547,12 +547,12 @@ export default function Chess({
       kingEndDest,
       isCastling: true
     });
-    const { moved } = processResult({
+    const { moved, isCheck, isCheckmate, isStalemate } = processResult({
       myKingIndex: kingEndDest,
       newSquares
     });
     if (moved) {
-      handleMove({ newSquares });
+      handleMove({ newSquares, isCheck, isCheckmate, isStalemate });
     }
   }
 
