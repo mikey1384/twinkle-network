@@ -185,7 +185,7 @@ export default function AddPlaylistModal({
                   )
                 }
                 onDeselect={deselectedVideoId =>
-                  setSelectedVideos(
+                  setSelectedVideos(selectedVideos =>
                     selectedVideos.filter(
                       videoId => videoId !== deselectedVideoId
                     )
