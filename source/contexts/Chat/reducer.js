@@ -577,7 +577,7 @@ export default function ChatReducer(state, action) {
       };
     case 'RECEIVE_MSG_ON_DIFF_CHANNEL':
       for (let i = 0; i < state.channels.length; i++) {
-        if (state.channels[i].id === action.channel.id) {
+        if (state.channels[i].id === action.channel?.id) {
           action.channel.numUnreads = state.channels[i].numUnreads + 1;
         }
       }
