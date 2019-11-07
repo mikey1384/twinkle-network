@@ -45,6 +45,7 @@ export default function CommentInputArea({
         }
         rows={numInputRows}
         placeholder={`Enter your ${inputTypeLabel} here...`}
+        targetCommentId={targetCommentId}
       />
     </div>
   );
