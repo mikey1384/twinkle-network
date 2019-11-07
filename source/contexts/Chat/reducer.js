@@ -577,7 +577,7 @@ export default function ChatReducer(state, action) {
       };
     case 'RECEIVE_MSG_ON_DIFF_CHANNEL':
       for (let i = 0; i < state.channels.length; i++) {
-        if (state.channels[i].id === action.channel?.id) {
+        if (state.channels[i].id === action.channel.id) {
           action.channel.numUnreads = state.channels[i].numUnreads + 1;
         }
       }
@@ -591,7 +591,7 @@ export default function ChatReducer(state, action) {
           ? 0
           : state.msgsWhileInvisible + 1,
         channels: [action.channel].concat(
-          state.channels.filter(channel => channel.id !== action.channel?.id)
+          state.channels.filter(channel => channel.id !== action.channel.id)
         )
       };
     case 'RELOAD_SUBJECT':

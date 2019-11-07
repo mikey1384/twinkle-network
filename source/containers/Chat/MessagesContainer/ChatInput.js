@@ -24,7 +24,7 @@ ChatInput.propTypes = {
 };
 
 export default function ChatInput({
-  currentChannelId,
+  currentChannelId = 0,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
@@ -113,7 +113,14 @@ export default function ChatInput({
         </div>
       </>
     ),
-    [isTwoPeopleChannel, loading, text, messageExceedsCharLimit, profileTheme]
+    [
+      currentChannelId,
+      isTwoPeopleChannel,
+      loading,
+      text,
+      messageExceedsCharLimit,
+      profileTheme
+    ]
   );
 
   function handleChange(event) {
