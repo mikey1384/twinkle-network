@@ -227,8 +227,9 @@ export default function ContentReducer(state, action) {
         newState[contentKey] = {
           ...prevContentState,
           deleted:
-            prevContentState.contentId === action.commentId &&
-            prevContentState.contentType === 'comment',
+            prevContentState.deleted ||
+            (prevContentState.contentId === action.commentId &&
+              prevContentState.contentType === 'comment'),
           childComments: prevContentState.childComments?.map(comment =>
             comment.id === action.commentId
               ? { ...comment, deleted: true }
@@ -264,6 +265,9 @@ export default function ContentReducer(state, action) {
                 comment: prevContentState.targetObj.comment
                   ? {
                       ...prevContentState.targetObj.comment,
+                      deleted:
+                        prevContentState.targetObj.comment.id ===
+                        action.commentId,
                       comments: prevContentState.targetObj.comment.comments?.map(
                         comment =>
                           comment.id === action.commentId

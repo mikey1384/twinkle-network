@@ -148,7 +148,7 @@ export default function TargetContent({
       >
         <div>
           {comment &&
-            (comment.notFound ? (
+            (comment.notFound || comment.deleted ? (
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
                 <span>Comment removed / no longer available</span>
               </div>
@@ -347,6 +347,7 @@ export default function TargetContent({
       </ErrorBoundary>
     ),
     [
+      comment,
       xpRewardInterfaceShown,
       targetObj,
       userId,
