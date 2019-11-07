@@ -244,20 +244,18 @@ export default function ContentReducer(state, action) {
           ),
           subjects: prevContentState.subjects?.map(subject => ({
             ...subject,
-            comments: subject.comments
-              ?.map(comment =>
-                comment.id === action.commentId
-                  ? { ...comment, deleted: true }
-                  : comment
-              )
-              .map(comment => ({
-                ...comment,
-                replies: comment.replies?.map(reply =>
-                  reply.id === action.commentId
-                    ? { ...reply, deleted: true }
-                    : reply
-                )
-              }))
+            comments: subject.comments?.map(comment =>
+              comment.id === action.commentId
+                ? { ...comment, deleted: true }
+                : {
+                    ...comment,
+                    replies: comment.replies?.map(reply =>
+                      reply.id === action.commentId
+                        ? { ...reply, deleted: true }
+                        : reply
+                    )
+                  }
+            )
           })),
           targetObj: prevContentState.targetObj
             ? {
