@@ -119,7 +119,7 @@ export default function Reply({
 
   return useMemo(
     () =>
-      !deleted ? (
+      !deleted && !reply.deleted ? (
         <ErrorBoundary>
           <div className={commentContainer} ref={innerRef}>
             <div className="content-wrapper">
