@@ -591,7 +591,7 @@ export default function ChatReducer(state, action) {
           ? 0
           : state.msgsWhileInvisible + 1,
         channels: [action.channel].concat(
-          state.channels.filter(channel => channel.id !== action.channel.id)
+          state.channels.filter(channel => channel.id !== action.channel?.id)
         )
       };
     case 'RELOAD_SUBJECT':
