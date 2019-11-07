@@ -140,7 +140,7 @@ function Comments({
       <Context.Provider
         value={{
           onAttachStar,
-          onDelete: deleteComment,
+          onDelete: handleDeleteComment,
           onEditDone,
           onLikeClick,
           onLoadMoreReplies,
@@ -296,7 +296,7 @@ function Comments({
     }
   }
 
-  async function deleteComment(commentId) {
+  async function handleDeleteComment(commentId) {
     setDeleting(true);
     await deleteContent({ id: commentId, contentType: 'comment' });
     onDelete(commentId);

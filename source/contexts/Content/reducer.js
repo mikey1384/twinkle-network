@@ -229,22 +229,32 @@ export default function ContentReducer(state, action) {
           deleted:
             prevContentState.contentId === action.commentId &&
             prevContentState.contentType === 'comment',
-          childComments: prevContentState.childComments
-            ?.filter(comment => comment.id !== action.commentId)
-            .map(comment => ({
-              ...comment,
-              replies: comment.replies?.filter(
-                reply => reply.id !== action.commentId
-              )
-            })),
+          childComments: prevContentState.childComments?.map(comment =>
+            comment.id === action.commentId
+              ? { ...comment, deleted: true }
+              : {
+                  ...comment,
+                  replies: comment.replies?.map(reply =>
+                    reply.id === action.commentId
+                      ? { ...reply, deleted: true }
+                      : reply
+                  )
+                }
+          ),
           subjects: prevContentState.subjects?.map(subject => ({
             ...subject,
             comments: subject.comments
-              ?.filter(comment => comment.id !== action.commentId)
+              ?.map(comment =>
+                comment.id === action.commentId
+                  ? { ...comment, deleted: true }
+                  : comment
+              )
               .map(comment => ({
                 ...comment,
-                replies: comment.replies?.filter(
-                  reply => reply.id !== action.commentId
+                replies: comment.replies?.map(reply =>
+                  reply.id === action.commentId
+                    ? { ...reply, deleted: true }
+                    : reply
                 )
               }))
           })),
@@ -254,8 +264,11 @@ export default function ContentReducer(state, action) {
                 comment: prevContentState.targetObj.comment
                   ? {
                       ...prevContentState.targetObj.comment,
-                      comments: prevContentState.targetObj.comment.comments?.filter(
-                        comment => comment.id !== action.commentId
+                      comments: prevContentState.targetObj.comment.comments?.map(
+                        comment =>
+                          comment.id === action.commentId
+                            ? { ...comment, deleted: true }
+                            : comment
                       )
                     }
                   : undefined

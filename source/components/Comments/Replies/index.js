@@ -97,7 +97,7 @@ function Replies({
             comment={comment}
             reply={reply}
             userId={userId}
-            deleteReply={deleteReply}
+            deleteReply={handleDeleteReply}
             loadRepliesOfReply={onLoadRepliesOfReply}
             parent={parent}
             rootContent={rootContent}
@@ -125,7 +125,7 @@ function Replies({
     }
   }
 
-  function deleteReply(replyId) {
+  function handleDeleteReply(replyId) {
     setDeleting(true);
     onDelete(replyId);
   }

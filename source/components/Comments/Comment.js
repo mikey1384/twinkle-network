@@ -193,7 +193,7 @@ function Comment({
 
   return useMemo(
     () =>
-      !deleted ? (
+      !deleted && !comment.deleted ? (
         <>
           <div
             style={isPreview ? { cursor: 'pointer' } : {}}
