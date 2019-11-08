@@ -30,7 +30,6 @@ export default function People({ location }) {
   const {
     user: {
       actions: {
-        onSetProfilesLoaded,
         onClearUserSearch,
         onLoadUsers,
         onLoadMoreUsers,
@@ -68,6 +67,7 @@ export default function People({ location }) {
       onSetSearchText({ category: 'user', searchText }),
     onClear: onClearUserSearch
   });
+  const prevOrderUsersBy = useRef(orderUsersBy);
   const mounted = useRef(true);
   const dropdownLabel =
     orderUsersBy === LAST_ONLINE_FILTER_LABEL
@@ -93,12 +93,15 @@ export default function People({ location }) {
   useEffect(() => {
     init();
     async function init() {
-      if (!profilesLoaded) {
-        const data = await loadUsers();
+      if (!profilesLoaded || orderUsersBy !== prevOrderUsersBy.current) {
+        const data = await loadUsers({
+          orderBy: orderUsersBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
+        });
         onLoadUsers(data);
+        prevOrderUsersBy.current = orderUsersBy;
       }
     }
-  }, []);
+  }, [orderUsersBy, profilesLoaded]);
   return (
     <div style={{ height: '100%' }}>
       <SearchInput
@@ -127,7 +130,7 @@ export default function People({ location }) {
           style={{
             marginBottom: '1rem'
           }}
-          onSetOrderByText={handleSetOrderBy}
+          onSetOrderByText={onSetOrderUsersBy}
           orderByText={orderUsersBy}
           dropdownLabel={dropdownLabel}
         />
@@ -176,16 +179,6 @@ export default function People({ location }) {
       `${URL}/user/users/search?queryString=${text}`
     );
     onSearchUsers(users);
-  }
-
-  async function handleSetOrderBy(label) {
-    onSetProfilesLoaded(false);
-    const data = await loadUsers({
-      orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
-    });
-    onLoadUsers(data);
-    onSetOrderUsersBy(label);
-    onSetProfilesLoaded(true);
   }
 
   async function loadMoreProfiles() {
