@@ -35,7 +35,6 @@ export default function Rankings() {
   }, [userId]);
 
   const users = allSelected ? allRanks : top30s;
-  const modifier = allSelected ? rankModifier : 0;
 
   return useMemo(
     () => (
@@ -88,19 +87,12 @@ export default function Rankings() {
         {rankingsLoaded && users.length > 0 && (
           <RoundList style={{ marginTop: 0 }}>
             {users.map(user => {
-              const rank = !user.twinkleXP
-                ? undefined
-                : users.filter(
-                    otherUser => otherUser.twinkleXP > user.twinkleXP
-                  ).length +
-                  1 +
-                  modifier;
               const rankColor =
-                rank === 1
+                user.rank === 1
                   ? Color.gold()
-                  : rank === 2
+                  : user.rank === 2
                   ? Color.lighterGray()
-                  : rank === 3
+                  : user.rank === 3
                   ? Color.orange()
                   : undefined;
               return (
@@ -129,7 +121,7 @@ export default function Rankings() {
                           (rank <= 10 ? Color.logoBlue() : Color.darkGray())
                       }}
                     >
-                      {rank ? `#${rank}` : '--'}
+                      {user.rank ? `#${user.rank}` : '--'}
                     </span>
                     <div
                       style={{
