@@ -103,7 +103,7 @@ export default function Rankings() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     background:
-                      user.id === userId && rank > 3
+                      user.id === userId && user.rank > 3
                         ? Color.highlightGray()
                         : '#fff'
                   }}
@@ -112,13 +112,15 @@ export default function Rankings() {
                     <span
                       style={{
                         fontWeight: 'bold',
-                        fontSize: rank < 100 ? '2rem' : '1.5rem',
+                        fontSize: user.rank < 100 ? '2rem' : '1.5rem',
                         width: '3rem',
                         marginRight: '1rem',
                         textAlign: 'center',
                         color:
                           rankColor ||
-                          (rank <= 10 ? Color.logoBlue() : Color.darkGray())
+                          (user.rank <= 10
+                            ? Color.logoBlue()
+                            : Color.darkGray())
                       }}
                     >
                       {user.rank ? `#${user.rank}` : '--'}
@@ -138,7 +140,9 @@ export default function Rankings() {
                       <UsernameText
                         color={
                           rankColor ||
-                          (rank <= 10 ? Color.logoBlue() : Color.darkGray())
+                          (user.rank <= 10
+                            ? Color.logoBlue()
+                            : Color.darkGray())
                         }
                         user={{ ...user, username: user.username }}
                         userId={userId}
