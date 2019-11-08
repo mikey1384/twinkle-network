@@ -11,6 +11,7 @@ import { InputContextProvider } from './Input';
 import { NotiContextProvider } from './Notification';
 import { ProfileContextProvider } from './Profile';
 import { ViewContextProvider } from './View';
+import { LAST_ONLINE_FILTER_LABEL } from 'constants/defaultValues';
 
 export const AppContext = createContext();
 export const initialUserState = {
@@ -26,6 +27,7 @@ export const initialUserState = {
   isCreator: false,
   loadMoreButton: false,
   loggedIn: false,
+  orderUsersBy: LAST_ONLINE_FILTER_LABEL,
   profileTheme: 'logoBlue',
   profiles: [],
   profilesLoaded: false,

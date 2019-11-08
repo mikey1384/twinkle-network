@@ -94,6 +94,11 @@ export default function UserReducer(state, action) {
         ...action.data,
         signinModalShown: false
       };
+    case 'SET_ORDER_USERS_BY':
+      return {
+        ...state,
+        orderUsersBy: action.label
+      };
     case 'SET_PROFILES_LOADED':
       return {
         ...state,

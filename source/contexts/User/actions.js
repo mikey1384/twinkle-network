@@ -63,6 +63,12 @@ export default function UserActions(dispatch) {
         data
       });
     },
+    onSetOrderUsersBy(label) {
+      return dispatch({
+        type: 'SET_ORDER_USERS_BY',
+        label
+      });
+    },
     onSetProfilesLoaded(loaded) {
       return dispatch({
         type: 'SET_PROFILES_LOADED',

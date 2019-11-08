@@ -17,6 +17,10 @@ import {
 } from 'helpers/hooks';
 import request from 'axios';
 import URL from 'constants/URL';
+import {
+  LAST_ONLINE_FILTER_LABEL,
+  RANKING_FILTER_LABEL
+} from 'constants/defaultValues';
 
 People.propTypes = {
   location: PropTypes.object.isRequired
@@ -30,9 +34,16 @@ export default function People({ location }) {
         onClearUserSearch,
         onLoadUsers,
         onLoadMoreUsers,
-        onSearchUsers
+        onSearchUsers,
+        onSetOrderUsersBy
       },
-      state: { loadMoreButton, profilesLoaded, profiles, searchedProfiles }
+      state: {
+        loadMoreButton,
+        profilesLoaded,
+        orderUsersBy,
+        profiles,
+        searchedProfiles
+      }
     },
     requestHelpers: { loadUsers }
   } = useAppContext();
@@ -50,9 +61,6 @@ export default function People({ location }) {
     state: { userSearchText },
     actions: { onSetSearchText }
   } = useInputContext();
-  const LAST_ONLINE_FILTER_LABEL = 'Last Online';
-  const RANKING_FILTER_LABEL = 'Ranking';
-  const [orderBy, setOrderBy] = useState(LAST_ONLINE_FILTER_LABEL);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching } = useSearch({
     onSearch: handleSearchUsers,
@@ -62,7 +70,7 @@ export default function People({ location }) {
   });
   const mounted = useRef(true);
   const dropdownLabel =
-    orderBy === LAST_ONLINE_FILTER_LABEL
+    orderUsersBy === LAST_ONLINE_FILTER_LABEL
       ? RANKING_FILTER_LABEL
       : LAST_ONLINE_FILTER_LABEL;
 
@@ -90,7 +98,7 @@ export default function People({ location }) {
         onLoadUsers(data);
       }
     }
-  }, [profilesLoaded]);
+  }, []);
   return (
     <div style={{ height: '100%' }}>
       <SearchInput
@@ -120,7 +128,7 @@ export default function People({ location }) {
             marginBottom: '1rem'
           }}
           onSetOrderByText={handleSetOrderBy}
-          orderByText={orderBy}
+          orderByText={orderUsersBy}
           dropdownLabel={dropdownLabel}
         />
         {(!profilesLoaded || (!stringIsEmpty(userSearchText) && searching)) && (
@@ -176,7 +184,7 @@ export default function People({ location }) {
       orderBy: label === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
     onLoadUsers(data);
-    setOrderBy(label);
+    onSetOrderUsersBy(label);
     onSetProfilesLoaded(true);
   }
 
@@ -187,7 +195,7 @@ export default function People({ location }) {
         originVar: 'id',
         destinationVar: 'shownUsers'
       }),
-      orderBy: orderBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
+      orderBy: orderUsersBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
     });
     onLoadMoreUsers(data);
     if (mounted.current) {

@@ -2,7 +2,6 @@ export const defaultChatSubject = 'Introduce yourself!';
 export const rewardValue = {
   star: 200
 };
-
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
 export const clientVersion = '1.0.95';
 export const charLimit = {
@@ -36,6 +35,8 @@ export const charLimit = {
     url: 300
   }
 };
+export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
+export const RANKING_FILTER_LABEL = 'Ranking';
 
 export const returnMaxStars = ({ rewardLevel }) => {
   let maxStars = 5;
