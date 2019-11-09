@@ -76,7 +76,6 @@ export default function NotiReducer(state, action) {
         ...state,
         allRanks: action.all,
         top30s: action.top30s,
-        rankModifier: action.rankModifier,
         rankingsLoaded: true
       };
     case 'RESET_NUM_NEW_POSTS':

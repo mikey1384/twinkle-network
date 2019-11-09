@@ -28,12 +28,11 @@ export default function NotiActions(dispatch) {
         data
       });
     },
-    onGetRanks({ all, top30s, rankModifier }) {
+    onGetRanks({ all, top30s }) {
       return dispatch({
         type: 'LOAD_RANKS',
         all,
-        top30s,
-        rankModifier
+        top30s
       });
     },
     onIncreaseNumNewNotis() {

@@ -14,7 +14,7 @@ import { useNotiContext } from 'contexts';
 export default function Rankings() {
   const { rank, twinkleXP, userId } = useMyState();
   const {
-    state: { allRanks, rankModifier, top30s, rankingsLoaded }
+    state: { allRanks, top30s, rankingsLoaded }
   } = useNotiContext();
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
@@ -163,6 +163,6 @@ export default function Rankings() {
         )}
       </ErrorBoundary>
     ),
-    [users, allSelected, rankModifier, rankingsLoaded, rank, twinkleXP, userId]
+    [users, allSelected, rankingsLoaded, rank, twinkleXP, userId]
   );
 }

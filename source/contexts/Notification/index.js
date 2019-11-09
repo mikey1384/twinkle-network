@@ -19,7 +19,6 @@ export const initialNotiState = {
   allRanks: [],
   top30s: [],
   socketConnected: false,
-  rankModifier: 0,
   totalRewardAmount: 0,
   updateDetail: '',
   updateNoticeShown: false

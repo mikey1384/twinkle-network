@@ -210,10 +210,10 @@ function Notification({ children, className, location, style }) {
   }
   async function fetchRankings() {
     const {
-      data: { all, rankModifier: modifier, top30s }
+      data: { all, top30s }
     } = await request.get(`${API_URL}/leaderBoard`, auth());
     if (mounted.current) {
-      onGetRanks({ all, top30s, rankModifier: modifier });
+      onGetRanks({ all, top30s });
     }
   }
 }
