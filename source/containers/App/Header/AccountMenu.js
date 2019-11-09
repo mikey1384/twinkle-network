@@ -56,6 +56,10 @@ export default function AccountMenu({ className, history, style = {} }) {
                 onClick: () => history.push(`/${username}`)
               },
               {
+                label: 'Settings',
+                onClick: () => history.push('/settings')
+              },
+              {
                 label: 'Log out',
                 onClick: handleLogout
               }
