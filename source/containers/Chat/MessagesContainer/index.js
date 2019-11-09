@@ -284,6 +284,7 @@ export default function MessagesContainer({
                         container: MessagesContainerRef.current
                       })
                     }
+                    currentChannel={currentChannel}
                     index={index}
                     isLastMsg={index === messages.length - 1}
                     isNotification={!!message.isNotification}

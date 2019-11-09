@@ -235,6 +235,13 @@ export default function ChatActions(dispatch) {
         type: 'RESET_CHAT'
       });
     },
+    onSaveMessage({ index, messageId }) {
+      return dispatch({
+        type: 'ADD_ID_TO_NEW_MESSAGE',
+        messageIndex: index,
+        messageId
+      });
+    },
     onSearchChat(data) {
       return dispatch({
         type: 'SEARCH',
@@ -258,13 +265,6 @@ export default function ChatActions(dispatch) {
         type: 'CREATE_NEW_DM_CHANNEL',
         members,
         message
-      });
-    },
-    onSaveMessage({ index, messageId }) {
-      return dispatch({
-        type: 'ADD_ID_TO_NEW_MESSAGE',
-        messageIndex: index,
-        messageId
       });
     },
     onSubmitMessage(params) {

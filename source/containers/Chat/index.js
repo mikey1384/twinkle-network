@@ -371,20 +371,7 @@ export default function Chat({ onFileUpload }) {
       channelId: selectedChannelId,
       subjectId: subject.id
     };
-    try {
-      onSubmitMessage(params);
-      socket.emit('new_chat_message', params, {
-        ...currentChannel,
-        numUnreads: 1,
-        lastMessage: {
-          content,
-          sender: { id: userId, username }
-        },
-        channelName
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    onSubmitMessage(params);
   }
 
   function handleSendFileMessage(params) {

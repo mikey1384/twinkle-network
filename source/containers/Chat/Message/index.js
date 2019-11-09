@@ -10,6 +10,7 @@ import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import DropdownButton from 'components/Buttons/DropdownButton';
+import { socket } from 'constants/io';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
@@ -26,6 +27,7 @@ Message.propTypes = {
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
+  currentChannel: PropTypes.object,
   message: PropTypes.object,
   style: PropTypes.object,
   onDelete: PropTypes.func,
@@ -47,6 +49,7 @@ export default function Message({
   checkScrollIsAtTheBottom,
   chessCountdownObj,
   chessOpponent,
+  currentChannel,
   index,
   isLastMsg,
   isNotification,
@@ -141,6 +144,19 @@ export default function Message({
     async function handleSaveMessage() {
       const messageId = await saveMessage(post);
       onSaveMessage({ messageId, index });
+      socket.emit(
+        'new_chat_message',
+        { ...message, id: messageId },
+        {
+          ...currentChannel,
+          numUnreads: 1,
+          lastMessage: {
+            content,
+            sender: { id: userId, username }
+          },
+          channelName
+        }
+      );
     }
   }, []);
   useEffect(() => {
@@ -201,7 +217,7 @@ export default function Message({
   }, [content]);
 
   useEffect(() => {
-    if (isLastMsg && !message.id) {
+    if (isLastMsg && message.userId !== myId) {
       onReceiveNewMessage();
     }
   }, []);
@@ -231,6 +247,7 @@ export default function Message({
     (userIsUploader || userCanEditThis) &&
     !isChessMsg &&
     !onEdit;
+
   return useMemo(
     () =>
       !chessState && gameWinnerId ? (
@@ -359,6 +376,7 @@ export default function Message({
       authLevel,
       canDelete,
       canEdit,
+      message.id,
       myId,
       myUsername,
       myProfilePicId
