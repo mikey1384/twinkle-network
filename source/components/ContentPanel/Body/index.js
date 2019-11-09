@@ -463,7 +463,7 @@ function Body({
     onCommentSubmit(params);
     if (contentObj.secretAnswer) {
       if (contentType === 'subject') {
-        if (!commentsShown) {
+        if (!secretShown) {
           await handleExpandComments();
         }
         onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
