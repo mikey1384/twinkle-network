@@ -318,7 +318,7 @@ function ContentPanel({
           </ErrorBoundary>
         </Context.Provider>
       ) : null,
-    [contentState, inView, rootStarted, visible]
+    [contentState, inView, rootStarted, style, visible]
   );
 }
 
