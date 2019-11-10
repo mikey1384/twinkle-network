@@ -1,10 +1,7 @@
 import React from 'react';
-import ManagementPanel from '../../components/ManagementPanel';
-import { useMyState } from 'helpers/hooks';
-import { Color } from 'constants/css';
+import SectionPanel from 'components/SectionPanel';
 
 export default function Management() {
-  const { profileTheme } = useMyState();
   return (
     <div
       style={{
@@ -13,10 +10,13 @@ export default function Management() {
         alignItems: 'center'
       }}
     >
-      <ManagementPanel
-        title="Username"
-        customColorTheme={Color[profileTheme]()}
-      />
+      <SectionPanel
+        title="Moderators"
+        emptyMessage="No Moderators"
+        isEmpty={true}
+        loaded={true}
+        loadMore={() => console.log('loading more')}
+      ></SectionPanel>
     </div>
   );
 }
