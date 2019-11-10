@@ -32,6 +32,7 @@ const VideoPage = React.lazy(() => import('containers/VideoPage'));
 const LinkPage = React.lazy(() => import('containers/LinkPage'));
 const Verify = React.lazy(() => import('containers/Verify'));
 const Chat = React.lazy(() => import('containers/Chat'));
+const Settings = React.lazy(() => import('containers/Settings'));
 
 App.propTypes = {
   history: PropTypes.object,
@@ -247,6 +248,7 @@ function App({ location, history }) {
                   <Home history={history} location={location} />
                 )}
               />
+              <Route path="/settings" component={Settings} />
               <Route path="/:username" component={Redirect} />
             </Switch>
           </Suspense>
