@@ -419,26 +419,6 @@ export default function Chat({ onFileUpload }) {
           userId,
           channelId: selectedChannelId
         });
-        socket.emit(
-          'new_chat_message',
-          {
-            ...params,
-            content,
-            username,
-            profilePicId,
-            channelId: selectedChannelId
-          },
-          {
-            ...currentChannel,
-            numUnreads: 1,
-            lastMessage: {
-              gameWinnerId,
-              sender: { id: userId, username },
-              content
-            },
-            channelName: username
-          }
-        );
       } else {
         const { members, message } = await startNewDMChannel({
           ...params,
