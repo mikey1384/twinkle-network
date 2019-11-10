@@ -69,6 +69,8 @@ export default function Header({
   } = useViewContext();
 
   const prevUserIdRef = useRef(userId);
+  const socketConnected = useRef(false);
+
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
     socket.on('connect', onConnect);
@@ -109,6 +111,7 @@ export default function Header({
     }
     async function onConnect() {
       console.log('connected to socket');
+      socketConnected.current = true;
       onClearRecentChessMessage();
       onChangeSocketStatus(true);
       handleCheckVersion();
@@ -136,6 +139,7 @@ export default function Header({
     }
     function onDisconnect() {
       console.log('disconnected from socket');
+      socketConnected.current = false;
       onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
@@ -178,7 +182,9 @@ export default function Header({
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {
-    socket.connect();
+    if (!socketConnected.current) {
+      socket.connect();
+    }
     return function cleanUp() {
       socket.disconnect();
     };
