@@ -26,13 +26,13 @@ const Home = React.lazy(() => import('containers/Home'));
 const Privacy = React.lazy(() => import('containers/Privacy'));
 const Redirect = React.lazy(() => import('containers/Redirect'));
 const Explore = React.lazy(() => import('containers/Explore'));
+const Management = React.lazy(() => import('containers/Management'));
 const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
 const ContentPage = React.lazy(() => import('containers/ContentPage'));
 const VideoPage = React.lazy(() => import('containers/VideoPage'));
 const LinkPage = React.lazy(() => import('containers/LinkPage'));
 const Verify = React.lazy(() => import('containers/Verify'));
 const Chat = React.lazy(() => import('containers/Chat'));
-const Settings = React.lazy(() => import('containers/Settings'));
 
 App.propTypes = {
   history: PropTypes.object,
@@ -248,7 +248,7 @@ function App({ location, history }) {
                   <Home history={history} location={location} />
                 )}
               />
-              <Route path="/settings" component={Settings} />
+              <Route path="/management" component={Management} />
               <Route path="/:username" component={Redirect} />
             </Switch>
           </Suspense>
