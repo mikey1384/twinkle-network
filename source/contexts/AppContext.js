@@ -32,7 +32,8 @@ export const initialUserState = {
   profiles: [],
   profilesLoaded: false,
   searchedProfiles: [],
-  signinModalShown: false
+  signinModalShown: false,
+  userId: null
 };
 
 AppContextProvider.propTypes = {
