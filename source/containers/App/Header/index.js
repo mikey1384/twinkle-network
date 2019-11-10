@@ -69,6 +69,8 @@ export default function Header({
   } = useViewContext();
 
   const prevUserIdRef = useRef(userId);
+  const socketConnected = useRef(false);
+
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
     socket.on('connect', onConnect);
@@ -108,14 +110,17 @@ export default function Header({
       socket.emit('join_chat_channel', data.channelId);
     }
     async function onConnect() {
-      console.log('connected to socket');
-      onClearRecentChessMessage();
-      onChangeSocketStatus(true);
-      handleCheckVersion();
-      if (userId) {
-        handleGetNumberOfUnreadMessages();
-        socket.emit('bind_uid_to_socket', userId, username);
-        handleLoadChat();
+      if (!socketConnected.current) {
+        console.log('connected to socket');
+        socketConnected.current = true;
+        onClearRecentChessMessage();
+        onChangeSocketStatus(true);
+        handleCheckVersion();
+        if (userId) {
+          handleGetNumberOfUnreadMessages();
+          socket.emit('bind_uid_to_socket', userId, username);
+          handleLoadChat();
+        }
       }
 
       async function handleLoadChat() {
@@ -135,8 +140,11 @@ export default function Header({
       }
     }
     function onDisconnect() {
-      console.log('disconnected from socket');
-      onChangeSocketStatus(false);
+      if (socketConnected.current) {
+        console.log('disconnected from socket');
+        socketConnected.current = false;
+        onChangeSocketStatus(false);
+      }
     }
     async function handleReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
@@ -179,26 +187,22 @@ export default function Header({
 
   useEffect(() => {
     socket.connect();
-    return function cleanUp() {
-      socket.disconnect();
-    };
   }, []);
 
   useEffect(() => {
     if (userId) {
+      socket.disconnect();
+      socket.connect();
       socket.emit('bind_uid_to_socket', userId, username);
       socket.emit('enter_my_notification_channel', userId);
     } else {
       if (prevUserIdRef.current) {
         socket.emit('leave_my_notification_channel', prevUserIdRef.current);
+        socket.disconnect();
+        socket.connect();
       }
     }
     prevUserIdRef.current = userId;
-
-    return function socketRefresh() {
-      socket.disconnect();
-      socket.connect();
-    };
   }, [userId]);
 
   useEffect(() => {

@@ -4,7 +4,6 @@ import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { socket } from 'constants/io';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
@@ -91,9 +90,7 @@ export default function AccountMenu({ className, history, style = {} }) {
   );
 
   function handleLogout() {
-    socket.disconnect();
     onLogout();
     onResetChat();
-    socket.connect();
   }
 }
