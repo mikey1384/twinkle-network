@@ -120,5 +120,9 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "singleQuote": true
   }
 }
