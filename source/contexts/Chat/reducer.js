@@ -41,12 +41,6 @@ export default function ChatReducer(state, action) {
         ...state,
         chatSearchResults: []
       };
-    case 'CLEAR_LOADED_STATE': {
-      return {
-        ...state,
-        loaded: false
-      };
-    }
     case 'CLEAR_NUM_UNREADS': {
       return {
         ...state,
@@ -281,7 +275,8 @@ export default function ChatReducer(state, action) {
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
-        loadMoreMessages
+        loadMoreMessages,
+        reconnecting: false
       };
     }
     case 'INVITE_USERS_TO_CHANNEL':
@@ -617,6 +612,12 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
+    case 'SET_RECONNECTING': {
+      return {
+        ...state,
+        reconnecting: true
+      };
+    }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,

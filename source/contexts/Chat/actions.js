@@ -6,9 +6,9 @@ export default function ChatActions(dispatch) {
         subject
       });
     },
-    onClearLoadedState() {
+    onSetReconnecting() {
       return dispatch({
-        type: 'CLEAR_LOADED_STATE'
+        type: 'SET_RECONNECTING'
       });
     },
     onClearNumUnreads() {
