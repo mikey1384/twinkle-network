@@ -43,7 +43,7 @@ export default function Header({
   const {
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
-      onClearLoadedState,
+      onSetReconnecting,
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
@@ -124,7 +124,7 @@ export default function Header({
       }
 
       async function handleLoadChat() {
-        onClearLoadedState();
+        onSetReconnecting(true);
         const data = await loadChat();
         onInitChat(data);
       }

@@ -42,6 +42,7 @@ export default function Chat({ onFileUpload }) {
       channelLoadMoreButton,
       loadMoreMessages,
       recepientId,
+      reconnecting,
       subject
     },
     actions: {
@@ -252,7 +253,9 @@ export default function Chat({ onFileUpload }) {
                   channelName={channelName}
                   chessCountdownObj={chessCountdownObj}
                   chessOpponent={partner}
-                  loading={channelLoading || creatingNewDMChannel}
+                  loading={
+                    channelLoading || creatingNewDMChannel || reconnecting
+                  }
                   currentChannel={currentChannel}
                   currentChannelId={selectedChannelId}
                   loadMoreButton={loadMoreMessages}
