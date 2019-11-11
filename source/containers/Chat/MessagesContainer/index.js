@@ -387,7 +387,7 @@ export default function MessagesContainer({
             onHide={() => setInviteUsersModalShown(false)}
             currentChannel={currentChannel}
             selectedChannelId={selectedChannelId}
-            onDone={onInviteUsersDone}
+            onDone={handleInviteUsersDone}
           />
         )}
         {editTitleModalShown && (
@@ -529,11 +529,23 @@ export default function MessagesContainer({
     event.target.value = null;
   }
 
-  function onInviteUsersDone(users, message) {
-    socket.emit('new_chat_message', {
-      ...message,
-      channelId: message.channelId
-    });
+  function handleInviteUsersDone(users, message) {
+    socket.emit(
+      'new_chat_message',
+      {
+        ...message,
+        channelId: message.channelId
+      },
+      {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessage: {
+          content: message.content,
+          sender: { id: userId, username }
+        },
+        channelName
+      }
+    );
     socket.emit('send_group_chat_invitation', users, {
       message: { ...message, messageId: message.id }
     });
