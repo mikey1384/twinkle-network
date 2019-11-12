@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext, useChatContext } from 'contexts';
-import { useMyState, useContentState } from 'helpers/hooks';
+import { useMyState } from 'helpers/hooks';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
@@ -21,37 +21,23 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username, userId } = useMyState();
-  const profile = useContentState({
-    contentType: 'user',
-    contentId: userId
+  const { loggedIn, username, userType } = useMyState();
+  let menuProps = [
+    {
+      label: 'Profile',
+      onClick: () => history.push(`/${username}`)
+    }
+  ];
+  if (userType) {
+    menuProps.push({
+      label: 'Management',
+      onClick: () => history.push('/management')
+    });
+  }
+  menuProps.push({
+    label: 'Log out',
+    onClick: handleLogout
   });
-  const { userType } = profile;
-  const menuProps = userType
-    ? [
-        {
-          label: 'Profile',
-          onClick: () => history.push(`/${username}`)
-        },
-        {
-          label: 'Management',
-          onClick: () => history.push('/management')
-        },
-        {
-          label: 'Log out',
-          onClick: handleLogout
-        }
-      ]
-    : [
-        {
-          label: 'Profile',
-          onClick: () => history.push(`/${username}`)
-        },
-        {
-          label: 'Log out',
-          onClick: handleLogout
-        }
-      ];
 
   return useMemo(
     () => (
