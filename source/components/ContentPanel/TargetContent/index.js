@@ -382,7 +382,9 @@ export default function TargetContent({
   function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
-      InputFormRef.current.focus();
+      if (!isMobile(navigator)) {
+        InputFormRef.current.focus();
+      }
     }
   }
 
