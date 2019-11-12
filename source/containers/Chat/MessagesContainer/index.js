@@ -113,7 +113,7 @@ export default function MessagesContainer({
       : authLevel > 4
       ? 4000 * mb
       : authLevel === 4
-      ? 2000 * mb
+      ? 1000 * mb
       : 300 * mb;
   const menuProps = currentChannel.twoPeople
     ? [{ label: 'Hide Chat', onClick: handleHideChat }]
