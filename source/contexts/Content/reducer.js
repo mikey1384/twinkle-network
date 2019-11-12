@@ -53,7 +53,10 @@ export default function ContentReducer(state, action) {
           tags:
             prevContentState.contentType === action.contentType &&
             action.contentIds.includes(prevContentState.contentId)
-              ? (prevContentState.tags || []).concat(action.tag)
+              ? (prevContentState.tags || []).concat({
+                  id: action.tagId,
+                  title: action.tagTitle
+                })
               : prevContentState.tags
         };
       }
