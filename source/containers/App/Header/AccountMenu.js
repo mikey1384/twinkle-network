@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext, useChatContext } from 'contexts';
-import { useMyState } from 'helpers/hooks';
+import { useMyState, useContentState } from 'helpers/hooks';
 
 AccountMenu.propTypes = {
   buttonStyle: PropTypes.object,
@@ -21,7 +21,38 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username } = useMyState();
+  const { loggedIn, username, userId } = useMyState();
+  const profile = useContentState({
+    contentType: 'user',
+    contentId: userId
+  });
+  const { userType } = profile;
+  const menuProps = userType
+    ? [
+        {
+          label: 'Profile',
+          onClick: () => history.push(`/${username}`)
+        },
+        {
+          label: 'Management',
+          onClick: () => history.push('/management')
+        },
+        {
+          label: 'Log out',
+          onClick: handleLogout
+        }
+      ]
+    : [
+        {
+          label: 'Profile',
+          onClick: () => history.push(`/${username}`)
+        },
+        {
+          label: 'Log out',
+          onClick: handleLogout
+        }
+      ];
+
   return useMemo(
     () => (
       <div style={style}>
@@ -50,20 +81,7 @@ export default function AccountMenu({ className, history, style = {} }) {
             shape="button"
             icon="caret-down"
             iconSize="lg"
-            menuProps={[
-              {
-                label: 'Profile',
-                onClick: () => history.push(`/${username}`)
-              },
-              {
-                label: 'Management',
-                onClick: () => history.push('/management')
-              },
-              {
-                label: 'Log out',
-                onClick: handleLogout
-              }
-            ]}
+            menuProps={menuProps}
           />
         ) : (
           <Button
