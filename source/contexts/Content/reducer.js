@@ -319,6 +319,10 @@ export default function ContentReducer(state, action) {
         const prevContentState = newState[contentKey];
         newState[contentKey] = {
           ...prevContentState,
+          content:
+            prevContentState.contentId === action.commentId
+              ? action.editedComment
+              : prevContentState.content,
           childComments: prevContentState.childComments.map(comment => ({
             ...comment,
             content:
