@@ -109,12 +109,12 @@ export default function MessagesContainer({
   const mb = 1000;
   const maxSize =
     authLevel > 8
-      ? 4000 * mb
+      ? 10000 * mb
       : authLevel > 4
-      ? 2000 * mb
+      ? 4000 * mb
       : authLevel === 4
       ? 1000 * mb
-      : 50 * mb;
+      : 300 * mb;
   const menuProps = currentChannel.twoPeople
     ? [{ label: 'Hide Chat', onClick: handleHideChat }]
     : [
@@ -387,7 +387,7 @@ export default function MessagesContainer({
             onHide={() => setInviteUsersModalShown(false)}
             currentChannel={currentChannel}
             selectedChannelId={selectedChannelId}
-            onDone={onInviteUsersDone}
+            onDone={handleInviteUsersDone}
           />
         )}
         {editTitleModalShown && (
@@ -529,11 +529,23 @@ export default function MessagesContainer({
     event.target.value = null;
   }
 
-  function onInviteUsersDone(users, message) {
-    socket.emit('new_chat_message', {
-      ...message,
-      channelId: message.channelId
-    });
+  function handleInviteUsersDone(users, message) {
+    socket.emit(
+      'new_chat_message',
+      {
+        ...message,
+        channelId: message.channelId
+      },
+      {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessage: {
+          content: message.content,
+          sender: { id: userId, username }
+        },
+        channelName
+      }
+    );
     socket.emit('send_group_chat_invitation', users, {
       message: { ...message, messageId: message.id }
     });

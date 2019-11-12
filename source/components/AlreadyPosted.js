@@ -68,16 +68,16 @@ export default function AlreadyPosted({
         style={{
           fontSize: '1.6rem',
           padding: '1rem',
-          color: uploaderId !== existingContent.uploader ? '#000' : '#fff',
+          color: '#fff',
           backgroundColor:
             uploaderId !== existingContent.uploader
-              ? Color.orange()
+              ? Color.brown()
               : Color.blue(),
           ...style
         }}
         className={css`
           > a {
-            color: ${uploaderId !== existingContent.uploader ? '#000' : '#fff'};
+            color: #fff;
             font-weight: bold;
           }
         `}

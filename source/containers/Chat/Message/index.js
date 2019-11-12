@@ -243,6 +243,7 @@ export default function Message({
   }
   const dropdownButtonShown =
     !!messageId &&
+    !isSubject &&
     !isReloadedSubject &&
     (userIsUploader || userCanEditThis) &&
     !isChessMsg &&
