@@ -109,12 +109,12 @@ export default function MessagesContainer({
   const mb = 1000;
   const maxSize =
     authLevel > 8
-      ? 4000 * mb
+      ? 10000 * mb
       : authLevel > 4
-      ? 2000 * mb
+      ? 4000 * mb
       : authLevel === 4
-      ? 1000 * mb
-      : 50 * mb;
+      ? 2000 * mb
+      : 400 * mb;
   const menuProps = currentChannel.twoPeople
     ? [{ label: 'Hide Chat', onClick: handleHideChat }]
     : [
