@@ -51,11 +51,11 @@ export default function MenuButtons({
           color={
             !(i === maxRewardableStars && maxRewardableStars < 5) &&
             i * multiplier < 5
-              ? 'lightBlue'
+              ? 'logoBlue'
               : (i === maxRewardableStars && maxRewardableStars < 5) ||
                 i * multiplier >= 25
               ? 'gold'
-              : 'orange'
+              : 'pink'
           }
           style={{
             justifyContent: 'flex-start',
@@ -80,7 +80,7 @@ export default function MenuButtons({
     if (!starTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
       buttons.push(
         <Button
-          color="orange"
+          color="pink"
           key={5}
           onClick={() =>
             onSetRewardForm({
