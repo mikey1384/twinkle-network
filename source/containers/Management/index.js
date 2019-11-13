@@ -19,7 +19,7 @@ export default function Management({ location }) {
   useEffect(() => {
     onLoadManagement();
   }, []);
-
+  console.log(location);
   return useMemo(
     () =>
       !loaded || !userLoaded ? (

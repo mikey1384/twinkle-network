@@ -5,6 +5,7 @@ import Notification from 'components/Notification';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { Route, Switch } from 'react-router-dom';
+import ModifyUsername from './ModifyUsername';
 
 Routes.propTypes = {
   location: PropTypes.object
@@ -21,6 +22,7 @@ export default function Routes({ location }) {
         }}
       >
         <Switch>
+          <Route path="/" component={ModifyUsername} />
           <Route path="/" component={Main} />
         </Switch>
       </div>
