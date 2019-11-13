@@ -70,7 +70,6 @@ export default function Button({
             disabled ? backgroundDisabledOpacity : backgroundOpacity
           )};
         border-radius: ${borderRadius};
-        transition: background 0.2s;
         ${skeuomorphic
           ? disabled
             ? 'opacity: 0.5;'
