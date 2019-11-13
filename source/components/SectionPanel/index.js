@@ -192,7 +192,7 @@ export default function SectionPanel({
             {button}
           </div>
         </header>
-        <main style={style}>
+        <main style={{ width: '100%', ...style }}>
           {loaded ? (
             <Body
               content={children}
