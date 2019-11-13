@@ -54,7 +54,7 @@ export function useLazyLoad({
           contentType,
           visible: false
         });
-      }, 3000);
+      }, 5000);
     }
     prevInView.current = inView;
     return function onRefresh() {
