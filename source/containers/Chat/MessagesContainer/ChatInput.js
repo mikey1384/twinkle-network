@@ -18,6 +18,7 @@ ChatInput.propTypes = {
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
+  onMafiaButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
   onPlusButtonClick: PropTypes.func.isRequired
@@ -28,6 +29,7 @@ export default function ChatInput({
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
+  onMafiaButtonClick,
   onHeightChange,
   onMessageSubmit,
   onPlusButtonClick
@@ -56,7 +58,7 @@ export default function ChatInput({
     () => (
       <>
         <div style={{ display: 'flex' }}>
-          {!!isTwoPeopleChannel && (
+          {isTwoPeopleChannel ? (
             <div
               style={{
                 margin: '0.2rem 1rem 0.2rem 0',
@@ -71,6 +73,23 @@ export default function ChatInput({
               >
                 <Icon size="lg" icon={['fas', 'chess']} />
                 <span style={{ marginLeft: '0.7rem' }}>Chess</span>
+              </Button>
+            </div>
+          ) : (
+            <div
+              style={{
+                margin: '0.2rem 1rem 0.2rem 0',
+                height: '100%'
+              }}
+            >
+              <Button
+                disabled={loading}
+                skeuomorphic
+                onClick={onMafiaButtonClick}
+                color={profileTheme}
+              >
+                <Icon size="lg" icon={['fas', 'fingerprint']} />
+                <span style={{ marginLeft: '0.7rem' }}>Mafia</span>
               </Button>
             </div>
           )}

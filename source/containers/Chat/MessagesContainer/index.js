@@ -34,6 +34,7 @@ MessagesContainer.propTypes = {
   onMessageSubmit: PropTypes.func.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
   onShowChessModal: PropTypes.func.isRequired,
+  onShowMafiaModal: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   selectedChannelId: PropTypes.number,
   subjectId: PropTypes.number
@@ -54,6 +55,7 @@ export default function MessagesContainer({
   onMessageSubmit,
   onSendFileMessage,
   onShowChessModal,
+  onShowMafiaModal,
   recepientId,
   selectedChannelId,
   subjectId
@@ -346,6 +348,7 @@ export default function MessagesContainer({
             currentChannelId={selectedChannelId}
             currentChannel={currentChannel}
             onChessButtonClick={onShowChessModal}
+            onMafiaButtonClick={onShowMafiaModal}
             onMessageSubmit={content => {
               setTextAreaHeight(0);
               onMessageSubmit(content);

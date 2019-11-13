@@ -14,6 +14,7 @@ import { css } from 'emotion';
 import { objectify } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
+import MafiaModal from './Modals/MafiaModal';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -75,6 +76,7 @@ export default function Chat({ onFileUpload }) {
   );
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [chessModalShown, setChessModalShown] = useState(false);
+  const [mafiaModalShown, setMafiaModalShown] = useState(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
   const [partner, setPartner] = useState(null);
@@ -262,6 +264,7 @@ export default function Chat({ onFileUpload }) {
                   messages={messages}
                   loadMoreMessages={handleLoadMoreMessages}
                   onShowChessModal={handleChessModalShown}
+                  onShowMafiaModal={handleMafiaModalShown}
                   onChessBoardClick={handleChessModalShown}
                   onChessSpoilerClick={handleChessSpoilerClick}
                   onMessageSubmit={handleMessageSubmit}
@@ -281,6 +284,9 @@ export default function Chat({ onFileUpload }) {
                     opponentId={partner?.id}
                     opponentName={partner?.username}
                   />
+                )}
+                {mafiaModalShown && (
+                  <MafiaModal onHide={() => setMafiaModalShown(false)} />
                 )}
               </>
             ) : (
@@ -320,6 +326,9 @@ export default function Chat({ onFileUpload }) {
     if (chessCountdownObj[channelId] !== 0) {
       setChessModalShown(true);
     }
+  }
+  function handleMafiaModalShown() {
+    setMafiaModalShown(true);
   }
 
   function handleChessSpoilerClick(senderId) {

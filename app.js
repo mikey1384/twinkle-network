@@ -30,6 +30,7 @@ import { faFileAudio } from '@fortawesome/pro-solid-svg-icons/faFileAudio';
 import { faFilePdf } from '@fortawesome/pro-solid-svg-icons/faFilePdf';
 import { faFileVideo } from '@fortawesome/pro-solid-svg-icons/faFileVideo';
 import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
+import { faFingerprint } from '@fortawesome/pro-solid-svg-icons/faFingerprint';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
@@ -73,6 +74,7 @@ library.add(
   faFileVideo,
   faFileWord,
   faFilm,
+  faFingerprint,
   faHome,
   faLink,
   faLock,
