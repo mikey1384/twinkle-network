@@ -46,6 +46,7 @@ export default function Main() {
             border: 0;
           }
           td {
+            font-size: 1.5rem;
             padding-top: 10px;
             padding-bottom: 10px;
             color: #808080;
