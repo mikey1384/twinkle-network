@@ -119,6 +119,7 @@ export default function MenuButtons({
     maxRewardableStars,
     myRewardableStars,
     remainingStars,
+    selectedAmount,
     starTabActive
   ]);
 
