@@ -42,7 +42,7 @@ App.propTypes = {
 function App({ location, history }) {
   const {
     user: {
-      actions: { onCloseSigninModal, onInitSession, onLogout }
+      actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
     },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
@@ -83,18 +83,25 @@ function App({ location, history }) {
     if (!auth()?.headers?.authorization && !signinModalShown) {
       onLogout();
       onResetChat();
-    } else if (
-      authRef.current?.headers?.authorization !== auth()?.headers?.authorization
-    ) {
-      init();
+      onSetSessionLoaded();
+    } else {
+      if (
+        authRef.current?.headers?.authorization !==
+        auth()?.headers?.authorization
+      ) {
+        init();
+      } else {
+        onSetSessionLoaded();
+      }
     }
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
       if (mounted.current) {
         onInitContent({ contentType: 'user', contentId: data.userId, ...data });
-        if (data?.userId) onInitSession(data);
+        if (data?.userId) onInitUser(data);
       }
+      onSetSessionLoaded();
     }
   }, [auth()?.headers?.authorization, pageVisible]);
 

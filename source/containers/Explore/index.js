@@ -5,11 +5,13 @@ import Loading from 'components/Loading';
 import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
 import Subjects from './Subjects';
 import Notification from 'components/Notification';
-import MenuItems from './MenuItems';
+import SideMenu from 'components/SideMenu';
 import Search from './Search';
 import Categories from './Categories';
+import Icon from 'components/Icon';
+import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
 import { useExploreContext } from 'contexts';
@@ -81,41 +83,20 @@ export default function Explore({ history, location }) {
           }
         `}
       >
-        <MenuItems
-          className={css`
-            top: CALC(50vh - 11rem);
-            height: auto;
-            width: 19rem;
-            display: flex;
-            position: fixed;
-            justify-content: center;
-            flex-direction: column;
-            font-size: 2rem;
-            font-family: sans-serif, Arial, Helvetica;
-            > a {
-              padding: 1.5rem;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              text-align: center;
-              width: 100%;
-              justify-content: center;
-              color: ${Color.darkGray()};
-              text-decoration: none;
-            }
-            > a:hover {
-              font-weight: bold;
-              color: ${Color.black()};
-            }
-            > a.active {
-              font-weight: bold;
-              color: ${Color.black()};
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              display: none;
-            }
-          `}
-        />
+        <SideMenu>
+          <NavLink to="/subjects" activeClassName="active">
+            <Icon icon="bolt" />
+            <span style={{ marginLeft: '1.1rem' }}>Subjects</span>
+          </NavLink>
+          <NavLink to="/videos" activeClassName="active">
+            <Icon icon="film" />
+            <span style={{ marginLeft: '1.1rem' }}>Videos</span>
+          </NavLink>
+          <NavLink to="/links" activeClassName="active">
+            <Icon icon="book" />
+            <span style={{ marginLeft: '1.1rem' }}>Links</span>
+          </NavLink>
+        </SideMenu>
         <div
           className={css`
             width: CALC(100vw - 51rem - 2rem);

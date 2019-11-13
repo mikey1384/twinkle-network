@@ -5,6 +5,7 @@ import { ContentContext } from './Content';
 import { ExploreContext } from './Explore';
 import { HomeContext } from './Home';
 import { InputContext } from './Input';
+import { ManagementContext } from './Management';
 import { NotiContext } from './Notification';
 import { ProfileContext } from './Profile';
 import { ViewContext } from './View';
@@ -20,6 +21,9 @@ export function useContentContext() {
 }
 export function useExploreContext() {
   return useContext(ExploreContext);
+}
+export function useManagementContext() {
+  return useContext(ManagementContext);
 }
 export function useHomeContext() {
   return useContext(HomeContext);

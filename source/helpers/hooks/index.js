@@ -88,6 +88,7 @@ export function useMyState() {
     user: {
       state: {
         hideWatched,
+        loaded,
         userId,
         searchFilter,
         signinModalShown,
@@ -102,6 +103,7 @@ export function useMyState() {
   return myState.loaded
     ? {
         ...myState,
+        loaded,
         userId,
         defaultSearchFilter: searchFilter,
         hideWatched,
@@ -110,7 +112,7 @@ export function useMyState() {
         signinModalShown,
         xpThisMonth
       }
-    : { profileTheme: 'logoBlue', signinModalShown };
+    : { loaded, profileTheme: 'logoBlue', signinModalShown };
 }
 
 export function useOutsideClick(ref, callback) {
