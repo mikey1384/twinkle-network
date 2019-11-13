@@ -167,7 +167,7 @@ export default function XPRewardInterface({
             }}
           >
             <Button
-              color="pink"
+              color={selectedAmount > 4 ? 'pink' : 'logoBlue'}
               filled
               disabled={
                 exceedsCharLimit({
