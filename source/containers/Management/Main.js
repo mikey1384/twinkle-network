@@ -58,24 +58,24 @@ export default function Main() {
       >
         <thead>
           <tr>
-            <th>test</th>
-            <th>one</th>
-            <th>two</th>
-            <th>three</th>
+            <th>User</th>
+            <th>Type</th>
+            <th>Last online</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>hello</td>
             <td>mikey</td>
-            <td>jane</td>
-            <td>charlie</td>
+            <td>admin</td>
+            <td>yesterday</td>
+            <td>mikey1384@gmail.com</td>
           </tr>
           <tr>
-            <td>two</td>
-            <td>three</td>
-            <td>four</td>
-            <td>five</td>
+            <td>DytroCodes</td>
+            <td>programmer</td>
+            <td>10 minutes ago</td>
+            <td>dytro@gmail.com</td>
           </tr>
         </tbody>
       </table>
