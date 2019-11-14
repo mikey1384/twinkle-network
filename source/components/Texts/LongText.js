@@ -24,6 +24,7 @@ export default function LongText({
   const [fullText, setFullText] = useState(false);
   const [more, setMore] = useState(false);
   const truncated = useRef(false);
+  const lengthRef = useRef(0);
   const ContainerRef = useRef(null);
   const TextRef = useRef(null);
 
@@ -120,7 +121,10 @@ export default function LongText({
         }
         setText(trimmedText);
         setMore(more);
-        truncated.current = true;
+        if (trimmedText.length < lengthRef.current) {
+          truncated.current = true;
+        }
+        lengthRef.current = trimmedText.length;
         return;
       }
     }
