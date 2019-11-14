@@ -221,6 +221,7 @@ export default function PlaylistCarousel({
       changePLVideosModalShown,
       reorderPLVideosModalShown,
       deleteConfirmModalShown,
+      playlist,
       playlistModalShown,
       numSlides
     ]
