@@ -175,7 +175,11 @@ export default function Message({
     ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
 
   useEffect(() => {
-    if (isLastMsg && userCanEditThis) {
+    if (
+      (message.userId === myId || !filePath) &&
+      isLastMsg &&
+      userCanEditThis
+    ) {
       setScrollToBottom();
     }
   }, [onEdit, editPadding]);
@@ -315,7 +319,6 @@ export default function Message({
                         fileName={fileName}
                         fileSize={fileSize}
                         scrollAtBottom={scrollAtBottom}
-                        setScrollToBottom={setScrollToBottom}
                       />
                     )}
                     <TextMessage
