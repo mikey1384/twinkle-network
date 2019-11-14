@@ -23,6 +23,8 @@ export default function LongText({
   const [text, setText] = useState(children || '');
   const [fullText, setFullText] = useState(false);
   const [more, setMore] = useState(false);
+  const truncated = useRef(false);
+  const lengthRef = useRef(0);
   const ContainerRef = useRef(null);
   const TextRef = useRef(null);
 
@@ -34,15 +36,17 @@ export default function LongText({
   useEffect(() => {
     if (ContainerRef.current?.clientWidth) {
       setLoading(false);
-      truncateText({
-        container: ContainerRef.current,
-        originalText: children || '',
-        maxWidth: ContainerRef.current.clientWidth
-      });
+      if (!truncated.current) {
+        truncateText({
+          container: ContainerRef.current,
+          originalText: children || '',
+          maxWidth: ContainerRef.current.clientWidth
+        });
+      }
     } else {
       setLoading(true);
     }
-  }, [children, ContainerRef.current?.clientWidth]);
+  }, [children, ContainerRef.current?.clientWidth, more]);
 
   return (
     <div ref={ContainerRef} style={style} className={className}>
@@ -90,9 +94,7 @@ export default function LongText({
   function truncateText({ container, originalText, maxWidth }) {
     const canvas = document.createElement('canvas').getContext('2d');
     const computedStyle = window.getComputedStyle(container);
-    const font = `${computedStyle['font-weight']} ${
-      computedStyle['font-style']
-    } ${computedStyle['font-size']} ${computedStyle['font-family']}`;
+    const font = `${computedStyle['font-weight']} ${computedStyle['font-style']} ${computedStyle['font-size']} ${computedStyle['font-family']}`;
     canvas.font = font;
     let line = '';
     let numLines = 0;
@@ -119,10 +121,14 @@ export default function LongText({
         }
         setText(trimmedText);
         setMore(more);
+        if (trimmedText.length < lengthRef.current) {
+          truncated.current = true;
+        }
+        lengthRef.current = trimmedText.length;
         return;
       }
     }
     setText(trimmedText + line || line);
-    setMore((trimmedText + line).length < originalText.length);
+    setMore(!fullText && (trimmedText + line).length < originalText.length);
   }
 }

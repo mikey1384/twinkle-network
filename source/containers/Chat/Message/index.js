@@ -88,9 +88,6 @@ export default function Message({
   showSubjectMsgsModal
 }) {
   const {
-    requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
-  } = useAppContext();
-  const {
     authLevel,
     canDelete,
     canEdit,
@@ -98,6 +95,12 @@ export default function Message({
     username: myUsername,
     profilePicId: myProfilePicId
   } = useMyState();
+  const userIsUploader = myId === userId;
+  const userCanEditThis =
+    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+  const {
+    requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
+  } = useAppContext();
   const {
     actions: {
       onSetEmbeddedUrl,
@@ -133,7 +136,7 @@ export default function Message({
       onUpdateRecentChessMessage(message);
     }
     if (
-      message.userId === myId &&
+      userIsUploader &&
       !message.id &&
       !message.fileToUpload &&
       !message.isSubject &&
@@ -170,12 +173,8 @@ export default function Message({
     }
   }, [channelId, moveViewTimeStamp]);
 
-  const userIsUploader = myId === userId;
-  const userCanEditThis =
-    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
-
   useEffect(() => {
-    if (isLastMsg && userCanEditThis) {
+    if ((userIsUploader || !filePath) && isLastMsg && userCanEditThis) {
       setScrollToBottom();
     }
   }, [onEdit, editPadding]);
@@ -217,7 +216,7 @@ export default function Message({
   }, [content]);
 
   useEffect(() => {
-    if (isLastMsg && message.userId !== myId) {
+    if (isLastMsg && !userIsUploader) {
       onReceiveNewMessage();
     }
   }, []);
@@ -315,7 +314,6 @@ export default function Message({
                         fileName={fileName}
                         fileSize={fileSize}
                         scrollAtBottom={scrollAtBottom}
-                        setScrollToBottom={setScrollToBottom}
                       />
                     )}
                     <TextMessage

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
@@ -10,26 +10,15 @@ FileViewer.propTypes = {
   filePath: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  isLastMsg: PropTypes.bool,
-  modalOverModal: PropTypes.bool,
-  scrollAtBottom: PropTypes.bool,
-  setScrollToBottom: PropTypes.func
+  modalOverModal: PropTypes.bool
 };
 
 export default function FileViewer({
   filePath,
   fileName,
   fileSize,
-  isLastMsg,
-  modalOverModal,
-  scrollAtBottom,
-  setScrollToBottom
+  modalOverModal
 }) {
-  useEffect(() => {
-    if (!!scrollAtBottom && isLastMsg) {
-      setScrollToBottom?.();
-    }
-  }, []);
   const { fileType } = getFileInfoFromFileName(fileName);
   const src = `${cloudFrontURL}/attachments/chat/${filePath}/${encodeURIComponent(
     fileName

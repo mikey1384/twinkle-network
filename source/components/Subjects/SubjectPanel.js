@@ -365,6 +365,7 @@ export default function SubjectPanel({
       loadMoreCommentsButton,
       myId,
       numComments,
+      onEdit,
       rewardLevel,
       rootRewardLevel,
       secretHidden,

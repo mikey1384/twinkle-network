@@ -128,6 +128,6 @@ export default function VideoThumbImage({
         )}
       </div>
     ),
-    [rewardLevel, userId, xpEarned]
+    [rewardLevel, src, userId, xpEarned]
   );
 }
