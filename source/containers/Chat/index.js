@@ -4,17 +4,17 @@ import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
 import MessagesContainer from './MessagesContainer';
-import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
+import ChessModal from './Modals/ChessModal';
+import MafiaModal from './Modals/MafiaModal';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
-import MafiaModal from './Modals/MafiaModal';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -315,6 +315,7 @@ export default function Chat({ onFileUpload }) {
       messages,
       channelLoadMoreButton,
       loadMoreMessages,
+      mafiaModalShown,
       pageVisible,
       recepientId,
       subject
