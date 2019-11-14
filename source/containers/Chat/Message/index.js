@@ -87,12 +87,6 @@ export default function Message({
   setScrollToBottom,
   showSubjectMsgsModal
 }) {
-  const userIsUploader = myId === userId;
-  const userCanEditThis =
-    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
-  const {
-    requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
-  } = useAppContext();
   const {
     authLevel,
     canDelete,
@@ -101,6 +95,12 @@ export default function Message({
     username: myUsername,
     profilePicId: myProfilePicId
   } = useMyState();
+  const userIsUploader = myId === userId;
+  const userCanEditThis =
+    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+  const {
+    requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
+  } = useAppContext();
   const {
     actions: {
       onSetEmbeddedUrl,
