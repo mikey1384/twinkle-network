@@ -69,7 +69,7 @@ export function useLazyLoad({
         });
       }
     };
-  }, [inView]);
+  }, [inView, PanelRef.current?.clientHeight]);
 
   useEffect(() => {
     return function cleanUp() {
