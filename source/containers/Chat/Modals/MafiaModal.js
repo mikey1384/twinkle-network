@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Mafia from '../Mafia';
-import Button from 'components/Button';
+import MafiaInventory from '../Mafia/MafiaInventory';
 
 MafiaModal.propTypes = {
   onHide: PropTypes.func.isRequired
@@ -18,7 +18,7 @@ export default function MafiaModal({ onHide }) {
         </div>
       </main>
       <footer>
-        <Button onClick={() => onHide()}>Hold Knife</Button>
+        <MafiaInventory role="murderer" />
       </footer>
     </Modal>
   );
