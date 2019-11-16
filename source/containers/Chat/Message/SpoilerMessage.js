@@ -57,7 +57,9 @@ export default function SpoilerMessage({
         <div
           style={{
             background: Color.darkGray(),
-            width: `${0.7 * content.length}rem`,
+            width: `${
+              0.7 * content.length <= 100 ? 0.7 * content.length : 100
+            }rem`,
             height: '2.8rem',
             borderRadius: '3px',
             cursor: 'pointer'
