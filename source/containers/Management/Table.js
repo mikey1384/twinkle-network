@@ -4,10 +4,12 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 
 Table.propTypes = {
+  headerFontSize: PropTypes.string,
+  columns: PropTypes.string.isRequired,
   children: PropTypes.node
 };
 
-export default function Table({ children }) {
+export default function Table({ headerFontSize, columns, children }) {
   return (
     <table
       className={css`
@@ -15,7 +17,7 @@ export default function Table({ children }) {
         flex: 1;
         display: grid;
         border-collapse: collapse;
-        grid-template-columns: 1fr 1fr 2fr 1fr 2fr;
+        grid-template-columns: ${columns};
         thead {
           display: contents;
         }
@@ -26,7 +28,7 @@ export default function Table({ children }) {
           display: contents;
         }
         th {
-          font-size: 1.7rem;
+          font-size: ${headerFontSize || '1.7rem'};
           font-weight: normal;
           text-align: left;
           padding: 1.5rem 2rem 1.5rem 2rem;

@@ -42,7 +42,7 @@ export default function Main() {
           </Button>
         }
       >
-        <Table>
+        <Table columns="1fr 1fr 2fr 1fr 2fr">
           <thead>
             <tr>
               <th>User</th>
@@ -99,7 +99,26 @@ export default function Main() {
             + Add Account Type
           </Button>
         }
-      ></SectionPanel>
+      >
+        <Table
+          headerFontSize="1.2rem"
+          columns="1fr 1fr 1.1fr 1.2fr 1.1fr 1.7fr 1.7fr 2.1fr 1.3fr"
+        >
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Auth</th>
+              <th>Can Edit</th>
+              <th>Can Delete</th>
+              <th>Can Star</th>
+              <th>Can Pin Playlists</th>
+              <th>Can Edit Playlists</th>
+              <th>Can Edit Reward Level</th>
+              <th>Management</th>
+            </tr>
+          </thead>
+        </Table>
+      </SectionPanel>
     </ErrorBoundary>
   );
 }

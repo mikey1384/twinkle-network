@@ -8,6 +8,7 @@ export default function ManagementReducer(state, action) {
     case 'LOAD_MODERATORS':
       return {
         ...state,
+        accountTypesLoaded: true,
         moderators: action.moderators,
         moderatorsLoaded: true
       };
