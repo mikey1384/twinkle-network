@@ -20,6 +20,7 @@ import {
   useNotiContext,
   useChatContext
 } from 'contexts';
+import SpoilerMessage from './SpoilerMessage';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
@@ -155,7 +156,8 @@ export default function Message({
           numUnreads: 1,
           lastMessage: {
             content,
-            sender: { id: userId, username }
+            sender: { id: userId, username },
+            isSpoiler: content.startsWith('/spoiler')
           },
           channelName
         }
@@ -316,23 +318,43 @@ export default function Message({
                         scrollAtBottom={scrollAtBottom}
                       />
                     )}
-                    <TextMessage
-                      content={content}
-                      extractedUrl={extractedUrl}
-                      myId={myId}
-                      messageId={messageId}
-                      numMsgs={numMsgs}
-                      isNotification={isNotification}
-                      isSubject={!!isSubject}
-                      isReloadedSubject={!!isReloadedSubject}
-                      MessageStyle={MessageStyle}
-                      onEdit={onEdit}
-                      onEditCancel={handleEditCancel}
-                      onEditDone={handleEditDone}
-                      showSubjectMsgsModal={showSubjectMsgsModal}
-                      socketConnected={socketConnected}
-                      subjectId={subjectId}
-                    />
+                    {content.startsWith('/spoiler ') ? (
+                      <SpoilerMessage
+                        content={content.substr(9)}
+                        extractedUrl={extractedUrl}
+                        myId={myId}
+                        messageId={messageId}
+                        numMsgs={numMsgs}
+                        isNotification={isNotification}
+                        isSubject={!!isSubject}
+                        isReloadedSubject={!!isReloadedSubject}
+                        MessageStyle={MessageStyle}
+                        onEdit={onEdit}
+                        onEditCancel={handleEditCancel}
+                        onEditDone={handleEditDone}
+                        showSubjectMsgsModal={showSubjectMsgsModal}
+                        socketConnected={socketConnected}
+                        subjectId={subjectId}
+                      />
+                    ) : (
+                      <TextMessage
+                        content={content}
+                        extractedUrl={extractedUrl}
+                        myId={myId}
+                        messageId={messageId}
+                        numMsgs={numMsgs}
+                        isNotification={isNotification}
+                        isSubject={!!isSubject}
+                        isReloadedSubject={!!isReloadedSubject}
+                        MessageStyle={MessageStyle}
+                        onEdit={onEdit}
+                        onEditCancel={handleEditCancel}
+                        onEditDone={handleEditDone}
+                        showSubjectMsgsModal={showSubjectMsgsModal}
+                        socketConnected={socketConnected}
+                        subjectId={subjectId}
+                      />
+                    )}
                   </>
                 )}
               </>

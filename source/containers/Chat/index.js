@@ -493,7 +493,8 @@ export default function Chat({ onFileUpload }) {
             sender: {
               id: message.userId,
               username: message.username
-            }
+            },
+            isSpoiler: message.content.startsWith('/spoiler')
           },
           numUnreads: 1
         }
