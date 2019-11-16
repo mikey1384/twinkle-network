@@ -12,8 +12,7 @@ Channels.propTypes = {
           id: PropTypes.number,
           username: PropTypes.string
         }),
-        content: PropTypes.string,
-        isSpoiler: PropTypes.bool
+        content: PropTypes.string
       }),
       id: PropTypes.number.isRequired,
       channelName: PropTypes.string,
@@ -130,20 +129,15 @@ export default function Channels({
       }
     );
 
-  function renderPreviewMessage({
-    content,
-    fileName,
-    gameWinnerId,
-    sender,
-    isSpoiler
-  }) {
+  function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
     const messageSender = sender?.id
       ? sender.id === userId
         ? 'You'
         : sender.username
       : '';
-    const isASpoiler = isSpoiler || content.startsWith('/spoiler ');
-    const msg = !isASpoiler ? content.substring(0, 100) : 'Hidden Message';
+    const msg = content.startsWith('/spoiler ')
+      ? 'Hidden Message'
+      : content.substring(0, 100);
     if (fileName) {
       return (
         <span>

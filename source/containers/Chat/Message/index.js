@@ -156,8 +156,7 @@ export default function Message({
           numUnreads: 1,
           lastMessage: {
             content,
-            sender: { id: userId, username },
-            isSpoiler: content.startsWith('/spoiler')
+            sender: { id: userId, username }
           },
           channelName
         }
