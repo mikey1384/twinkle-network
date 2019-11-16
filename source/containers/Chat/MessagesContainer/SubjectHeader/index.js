@@ -197,6 +197,7 @@ export default function SubjectHeader() {
       onEdit,
       onHover,
       reloader,
+      subjectSearchResults,
       timeSincePost,
       timeSinceReload,
       uploader
