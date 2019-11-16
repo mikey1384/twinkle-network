@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
+import AccountTypeModal from './Modals/AccountTypeModal';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { css } from 'emotion';
-import { Color } from 'constants/css';
+import Table from './Table';
 import { useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useManagementContext } from 'contexts';
@@ -14,9 +14,10 @@ export default function Main() {
     requestHelpers: { loadModerators }
   } = useAppContext();
   const {
-    state: { moderators, moderatorsLoaded },
+    state: { accountTypesLoaded, moderators, moderatorsLoaded },
     actions: { onLoadModerators }
   } = useManagementContext();
+  const [accountTypeModalTarget, setAccountTypeModalTarget] = useState(null);
   useEffect(() => {
     init();
     async function init() {
@@ -24,6 +25,7 @@ export default function Main() {
       onLoadModerators(data);
     }
   }, []);
+
   return (
     <ErrorBoundary>
       <SectionPanel
@@ -40,59 +42,7 @@ export default function Main() {
           </Button>
         }
       >
-        <table
-          className={css`
-            width: 100%;
-            flex: 1;
-            display: grid;
-            border-collapse: collapse;
-            grid-template-columns: 1fr 1fr 2fr 1fr 2fr;
-            thead {
-              display: contents;
-            }
-            tbody {
-              display: contents;
-            }
-            tr {
-              display: contents;
-            }
-            th {
-              font-size: 1.7rem;
-              font-weight: normal;
-              text-align: left;
-              padding: 1.5rem 2rem 1.5rem 2rem;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              position: sticky;
-              top: 0;
-              background: ${Color.logoBlue()};
-              color: white;
-              position: relative;
-            }
-            th:last-child {
-              border: 0;
-            }
-            td {
-              font-size: 1.5rem;
-              padding: 2rem;
-              color: ${Color.darkGray()};
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              a {
-                cursor: pointer;
-                display: none;
-              }
-            }
-            tr:hover td {
-              background: ${Color.lightPurple()};
-              a {
-                display: block;
-              }
-            }
-          `}
-        >
+        <Table>
           <thead>
             <tr>
               <th>User</th>
@@ -121,13 +71,35 @@ export default function Main() {
                     : timeSince(moderator.lastActive)}
                 </td>
                 <td style={{ display: 'flex', justifyContent: 'center' }}>
-                  <a>Change Account Type</a>
+                  <a onClick={() => setAccountTypeModalTarget(moderator)}>
+                    Change Account Type
+                  </a>
                 </td>
+                {accountTypeModalTarget && (
+                  <AccountTypeModal
+                    target={accountTypeModalTarget}
+                    onHide={() => setAccountTypeModalTarget(null)}
+                  />
+                )}
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </SectionPanel>
+      <SectionPanel
+        title="Account Types"
+        emptyMessage="No Account Types"
+        loaded={accountTypesLoaded}
+        button={
+          <Button
+            color="darkerGray"
+            skeuomorphic
+            onClick={() => console.log('clicked')}
+          >
+            + Add Account Type
+          </Button>
+        }
+      ></SectionPanel>
     </ErrorBoundary>
   );
 }
