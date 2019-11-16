@@ -5,6 +5,12 @@ export default function ManagementReducer(state, action) {
         ...state,
         loaded: true
       };
+    case 'LOAD_MODERATORS':
+      return {
+        ...state,
+        moderators: action.moderators,
+        moderatorsLoaded: true
+      };
     default:
       return state;
   }

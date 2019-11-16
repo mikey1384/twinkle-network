@@ -2,7 +2,7 @@ import React, { useMemo, Suspense, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Loading from 'components/Loading';
 import { container } from './Styles';
 import { borderRadius } from 'constants/css';

@@ -7,7 +7,7 @@ import { Color } from 'constants/css';
 import LongText from 'components/Texts/LongText';
 import EditTextArea from 'components/Texts/EditTextArea';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';

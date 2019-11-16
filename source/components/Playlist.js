@@ -5,7 +5,7 @@ import Loading from 'components/Loading';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Link from 'components/Link';
 import NotFound from 'components/NotFound';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { cleanString } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';

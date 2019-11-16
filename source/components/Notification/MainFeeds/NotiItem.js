@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';

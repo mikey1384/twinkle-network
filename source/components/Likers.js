@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import UsernameText from 'components/Texts/UsernameText';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 
 Likers.propTypes = {

@@ -4,7 +4,7 @@ import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useProfileContext } from 'contexts';
 import { useProfileState } from 'helpers/hooks';
 

@@ -8,7 +8,7 @@ import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Rankings from './Rankings';
 import NotiItem from './NotiItem';
 import MyRank from './MyRank';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { notiFeedListItem } from '../Styles';
 import { rewardValue } from 'constants/defaultValues';

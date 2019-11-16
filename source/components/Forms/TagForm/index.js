@@ -3,7 +3,7 @@ import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
 import Tag from './Tag';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {

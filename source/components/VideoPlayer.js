@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';

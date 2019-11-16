@@ -20,7 +20,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';

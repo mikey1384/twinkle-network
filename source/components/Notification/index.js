@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MainFeeds from './MainFeeds';
 import ChatFeeds from './ChatFeeds';
 import { defaultChatSubject } from 'constants/defaultValues';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
 import request from 'axios';

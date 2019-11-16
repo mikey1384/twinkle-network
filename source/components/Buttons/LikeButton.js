@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { memo, useMemo, useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Embedly from 'components/Embedly';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';

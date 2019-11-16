@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import PlaylistsPanel from './PlaylistsPanel';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
 import SelectPlaylistsToPinModal from '../Modals/SelectPlaylistsToPinModal';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';

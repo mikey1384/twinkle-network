@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
 import { useContentState, useMyState } from 'helpers/hooks';

@@ -8,7 +8,7 @@ import { css } from 'emotion';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useOutsideClick } from 'helpers/hooks';
 import Loading from 'components/Loading';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 TagInput.propTypes = {
   autoFocus: PropTypes.bool,

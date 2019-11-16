@@ -40,6 +40,14 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
+    async loadModerators() {
+      try {
+        const { data } = await request.get(`${URL}/user/moderators`);
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async loadMonthlyXp(userId) {
       try {
         const { data } = await request.get(

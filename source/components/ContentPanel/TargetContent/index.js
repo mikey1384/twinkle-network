@@ -12,7 +12,7 @@ import LongText from 'components/Texts/LongText';
 import ContentLink from 'components/ContentLink';
 import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import HiddenComment from 'components/HiddenComment';
 import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';

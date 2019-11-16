@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import BioEditModal from 'components/Modals/BioEditModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import request from 'axios';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
 import { css } from 'emotion';

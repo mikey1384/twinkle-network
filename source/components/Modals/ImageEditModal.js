@@ -4,7 +4,7 @@ import Button from 'components/Button';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
 import AvatarEditor from 'react-avatar-editor';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 ImageEditModal.propTypes = {
   imageUri: PropTypes.string,

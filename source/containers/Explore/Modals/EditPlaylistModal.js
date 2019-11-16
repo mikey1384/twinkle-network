@@ -11,7 +11,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import TouchBackend from 'react-dnd-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';

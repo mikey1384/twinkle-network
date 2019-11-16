@@ -6,7 +6,7 @@ import { addCommasToNumber, stringIsEmpty } from 'helpers/stringHelpers';
 import { returnMaxStars } from 'constants/defaultValues';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Comment from './Comment';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Starmarks from './Starmarks';
 import { useMyState } from 'helpers/hooks';
 

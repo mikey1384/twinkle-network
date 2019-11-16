@@ -4,7 +4,7 @@ import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
 import AttachContentModal from './AttachContentModal';
 import Attachment from './Attachment';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import {
   addEmoji,
   exceedsCharLimit,

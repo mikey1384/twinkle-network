@@ -4,7 +4,7 @@ import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
 import VideoPlayer from 'components/VideoPlayer';
 import ContentEditor from './ContentEditor';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import RewardLevelBar from 'components/RewardLevelBar';
 import AlreadyPosted from 'components/AlreadyPosted';
 import TagStatus from 'components/TagStatus';

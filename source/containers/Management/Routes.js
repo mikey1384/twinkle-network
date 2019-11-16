@@ -14,11 +14,14 @@ export default function Routes({ location }) {
   return (
     <div style={{ display: 'flex', width: '100%' }}>
       <div
-        style={{
-          marginTop: '1rem',
-          width: 'CALC(100vw - 34rem)',
-          marginLeft: '1rem'
-        }}
+        className={css`
+          margin-top: 1rem;
+          width: CALC(100vw - 34rem);
+          margin-left: 1rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
       >
         <Switch>
           <Route path="/" component={Main} />

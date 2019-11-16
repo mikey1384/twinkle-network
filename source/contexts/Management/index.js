@@ -5,7 +5,9 @@ import ManagementReducer from './reducer';
 
 export const ManagementContext = createContext();
 export const initialManagementState = {
-  loaded: false
+  loaded: false,
+  moderators: [],
+  moderatorsLoaded: false
 };
 
 ManagementContextProvider.propTypes = {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import LocalContext from '../Context';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import EditTextArea from 'components/Texts/EditTextArea';

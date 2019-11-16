@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import UsernameText from './Texts/UsernameText';
 import Link from 'components/Link';
 import FullTextReveal from 'components/Texts/FullTextReveal';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
