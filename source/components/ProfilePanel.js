@@ -86,6 +86,7 @@ export default function ProfilePanel({ expandable, profileId }) {
   const {
     childComments = [],
     commentsLoaded,
+    commentsLoadMoreButton,
     commentsShown,
     lastActive,
     loaded,
@@ -110,7 +111,6 @@ export default function ProfilePanel({ expandable, profileId }) {
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const {
-    state: { commentsLoadMoreButton },
     actions: { onResetProfile }
   } = useProfileContext();
 
