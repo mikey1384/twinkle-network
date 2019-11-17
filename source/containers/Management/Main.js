@@ -101,20 +101,20 @@ export default function Main() {
         }
       >
         <Table
-          headerFontSize="1.2rem"
-          columns="1fr 1fr 1.1fr 1.2fr 1.1fr 1.7fr 1.7fr 2.1fr 1.3fr"
+          headerFontSize="1.5rem"
+          columns="1fr 1fr 1.5fr 1.1fr 1.2fr 1.1fr 1.6fr 1.6fr 2fr"
         >
           <thead>
             <tr>
+              <th>Label</th>
               <th>Rank</th>
-              <th>Auth</th>
-              <th>Can Edit</th>
-              <th>Can Delete</th>
-              <th>Can Star</th>
-              <th>Can Pin Playlists</th>
-              <th>Can Edit Playlists</th>
-              <th>Can Edit Reward Level</th>
-              <th>Management</th>
+              <th>Auth Level</th>
+              <th>Edit</th>
+              <th>Delete</th>
+              <th>Reward</th>
+              <th>Pin Playlists</th>
+              <th>Edit Playlists</th>
+              <th>Edit Reward Level</th>
             </tr>
           </thead>
         </Table>
