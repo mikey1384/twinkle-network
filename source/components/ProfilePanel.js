@@ -106,10 +106,11 @@ export default function ProfilePanel({ expandable, profileId }) {
     visible
   } = profile;
   const {
-    state: { loaded: chatLoaded, commentsLoadMoreButton = false },
+    state: { loaded: chatLoaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const {
+    state: { commentsLoadMoreButton },
     actions: { onResetProfile }
   } = useProfileContext();
 
