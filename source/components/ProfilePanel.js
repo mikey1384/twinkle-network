@@ -86,6 +86,7 @@ export default function ProfilePanel({ expandable, profileId }) {
   const {
     childComments = [],
     commentsLoaded,
+    commentsLoadMoreButton,
     commentsShown,
     lastActive,
     loaded,
@@ -106,7 +107,7 @@ export default function ProfilePanel({ expandable, profileId }) {
     visible
   } = profile;
   const {
-    state: { loaded: chatLoaded, commentsLoadMoreButton = false },
+    state: { loaded: chatLoaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const {
@@ -417,7 +418,7 @@ export default function ProfilePanel({ expandable, profileId }) {
               {loaded && (
                 <Comments
                   comments={childComments}
-                  commentsLoadLimit={20}
+                  commentsLoadLimit={5}
                   commentsShown={commentsShown}
                   contentId={profileId}
                   inputAreaInnerRef={CommentInputAreaRef}
