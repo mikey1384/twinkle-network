@@ -136,7 +136,7 @@ export default function LeftMenu({
         <ChatSearchBox />
         <div
           style={{
-            overflow: 'scroll',
+            display: 'flex',
             position: 'absolute',
             top: '15.5rem',
             left: 0,
@@ -145,49 +145,47 @@ export default function LeftMenu({
           }}
           ref={ChannelListRef}
         >
-          <div style={{ display: 'flex', width: '100%' }}>
-            <div
-              style={{
-                width: '5rem',
-                display: 'flex',
-                flexDirection: 'column',
-                padding: '1rem',
-                alignItems: 'center',
-                fontSize: '2.5rem'
-              }}
-            >
-              <div>
-                <Icon icon="comments" />
-              </div>
-              <div style={{ marginTop: '1rem' }}>
-                <Icon icon="chalkboard-teacher" />
-              </div>
-              <div style={{ marginTop: '1rem' }}>
-                <Icon icon="book" />
-              </div>
+          <div
+            style={{
+              width: '5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '1rem',
+              alignItems: 'center',
+              fontSize: '2.5rem'
+            }}
+          >
+            <div>
+              <Icon icon="comments" />
             </div>
-            <div style={{ width: 'CALC(100% - 5rem)' }}>
-              <Channels
-                userId={userId}
-                currentChannel={currentChannel}
-                channels={channels}
-                selectedChannelId={selectedChannelId}
-                onChannelEnter={onChannelEnter}
+            <div style={{ marginTop: '1rem' }}>
+              <Icon icon="chalkboard-teacher" />
+            </div>
+            <div style={{ marginTop: '1rem' }}>
+              <Icon icon="book" />
+            </div>
+          </div>
+          <div style={{ width: '100%', overflow: 'scroll' }}>
+            <Channels
+              userId={userId}
+              currentChannel={currentChannel}
+              channels={channels}
+              selectedChannelId={selectedChannelId}
+              onChannelEnter={onChannelEnter}
+            />
+            {channelLoadMoreButtonShown && (
+              <LoadMoreButton
+                color="green"
+                filled
+                loading={channelsLoading}
+                onClick={handleLoadMoreChannels}
+                style={{
+                  width: '100%',
+                  borderRadius: 0,
+                  border: 0
+                }}
               />
-              {channelLoadMoreButtonShown && (
-                <LoadMoreButton
-                  color="green"
-                  filled
-                  loading={channelsLoading}
-                  onClick={handleLoadMoreChannels}
-                  style={{
-                    width: '100%',
-                    borderRadius: 0,
-                    border: 0
-                  }}
-                />
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
