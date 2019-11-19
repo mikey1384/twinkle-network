@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from 'components/Button';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
-import FullTextReveal from 'components/Texts/FullTextReveal';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
-import { mobileMaxWidth } from 'constants/css';
+import FilterBar from 'components/FilterBar';
+import Icon from 'components/Icon';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { textIsOverflown } from 'helpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 
@@ -31,17 +30,14 @@ export default function LeftMenu({
   currentChannelOnlineMembers,
   loadMoreChannels,
   onChannelEnter,
-  onNewButtonClick,
-  showUserListModal
+  onNewButtonClick
 }) {
-  const { userId } = useMyState();
+  const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
-  const [onTitleHover, setOnTitleHover] = useState(false);
   const [prevChannels, setPrevChannels] = useState(channels);
   const [channelName, setChannelName] = useState('');
   const ChannelListRef = useRef(null);
-  const ChannelTitleRef = useRef(null);
   const loading = useRef(false);
   const channelsObj = useRef({});
 
@@ -100,7 +96,7 @@ export default function LeftMenu({
           display: flex;
           flex-direction: column;
           height: 100%;
-          width: 30rem;
+          width: 35rem;
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
@@ -111,104 +107,88 @@ export default function LeftMenu({
       >
         <div
           className={css`
-            width: 100%;
             padding: 1rem;
+            background: ${Color[profileTheme](0.8)};
+            color: #fff;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            &:hover {
+              background: ${Color[profileTheme]()};
+            }
           `}
+          onClick={onNewButtonClick}
         >
-          <div
-            className={css`
-              display: flex;
-              width: 60%;
-              flex-direction: column;
-            `}
-          >
-            <span
-              ref={ChannelTitleRef}
-              style={{
-                textAlign: 'center',
-                justifyContent: 'center',
-                fontSize: '2rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                lineHeight: 'normal',
-                cursor: 'default',
-                color: !channelName && '#7c7c7c'
-              }}
-              onClick={() =>
-                setOnTitleHover(
-                  textIsOverflown(ChannelTitleRef.current)
-                    ? !onTitleHover
-                    : false
-                )
-              }
-              onMouseOver={onMouseOverTitle}
-              onMouseLeave={() => setOnTitleHover(false)}
-            >
-              {channelName || '(Deleted)'}
-            </span>
-            <FullTextReveal text={channelName || ''} show={onTitleHover} />
-            {selectedChannelId !== 0 ? (
-              <small
-                style={{ gridArea: 'channelMembers', textAlign: 'center' }}
-              >
-                <a
-                  style={{
-                    cursor: 'pointer'
-                  }}
-                  onClick={showUserListModal}
-                >
-                  {renderNumberOfMembers()}
-                </a>{' '}
-                online
-              </small>
-            ) : (
-              <small>{'\u00a0'}</small>
-            )}
-          </div>
-          <div>
-            <Button transparent onClick={onNewButtonClick}>
-              + Group
-            </Button>
-          </div>
+          + Start New Channel
         </div>
+        <FilterBar
+          style={{
+            fontSize: '1.6rem',
+            height: '5rem'
+          }}
+        >
+          <nav className="active" onClick={() => console.log('left click')}>
+            Home
+          </nav>
+          <nav onClick={() => console.log('right click')}>Create</nav>
+        </FilterBar>
         <ChatSearchBox />
         <div
           style={{
             overflow: 'scroll',
             position: 'absolute',
-            top: '11.5rem',
+            top: '15.5rem',
             left: 0,
             right: 0,
             bottom: 0
           }}
           ref={ChannelListRef}
         >
-          <Channels
-            userId={userId}
-            currentChannel={currentChannel}
-            channels={channels}
-            selectedChannelId={selectedChannelId}
-            onChannelEnter={onChannelEnter}
-          />
-          {channelLoadMoreButtonShown && (
-            <LoadMoreButton
-              color="green"
-              filled
-              loading={channelsLoading}
-              onClick={handleLoadMoreChannels}
+          <div style={{ display: 'flex', width: '100%' }}>
+            <div
               style={{
-                width: '100%',
-                borderRadius: 0,
-                border: 0
+                width: '5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '1rem',
+                alignItems: 'center',
+                fontSize: '2.5rem'
               }}
-            />
-          )}
+            >
+              <div>
+                <Icon icon="comments" />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <Icon icon="chalkboard-teacher" />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <Icon icon="book" />
+              </div>
+            </div>
+            <div style={{ width: 'CALC(100% - 5rem)' }}>
+              <Channels
+                userId={userId}
+                currentChannel={currentChannel}
+                channels={channels}
+                selectedChannelId={selectedChannelId}
+                onChannelEnter={onChannelEnter}
+              />
+              {channelLoadMoreButtonShown && (
+                <LoadMoreButton
+                  color="green"
+                  filled
+                  loading={channelsLoading}
+                  onClick={handleLoadMoreChannels}
+                  style={{
+                    width: '100%',
+                    borderRadius: 0,
+                    border: 0
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     ),
@@ -220,7 +200,6 @@ export default function LeftMenu({
       userId,
       selectedChannelId,
       channelsLoading,
-      onTitleHover,
       channelName
     ]
   );
@@ -240,18 +219,5 @@ export default function LeftMenu({
       setChannelsLoading(false);
       loading.current = false;
     }
-  }
-
-  function onMouseOverTitle() {
-    if (textIsOverflown(ChannelTitleRef.current)) {
-      setOnTitleHover(true);
-    }
-  }
-
-  function renderNumberOfMembers() {
-    const numberOfMembers = currentChannel?.members?.length;
-    return `${currentChannelOnlineMembers.length || 1}${
-      numberOfMembers <= 1 ? '' : '/' + numberOfMembers
-    }`;
   }
 }

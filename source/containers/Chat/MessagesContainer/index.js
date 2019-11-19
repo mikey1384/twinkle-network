@@ -11,7 +11,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import Loading from 'components/Loading';
 import Message from '../Message';
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal';
-import SubjectHeader from './SubjectHeader';
+import ChannelHeader from './ChannelHeader';
 import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
@@ -226,7 +226,7 @@ export default function MessagesContainer({
               right: '0',
               bottom: '0',
               opacity: loading && '0.3',
-              top: currentChannelId === 2 ? '7rem' : 0,
+              top: '7rem',
               overflowY: 'scroll'
             }}
             onScroll={() => {
@@ -304,7 +304,7 @@ export default function MessagesContainer({
               </div>
             </div>
           </div>
-          {!loading && currentChannelId === 2 && <SubjectHeader />}
+          {!loading && <ChannelHeader />}
           <div
             style={{
               position: 'absolute',

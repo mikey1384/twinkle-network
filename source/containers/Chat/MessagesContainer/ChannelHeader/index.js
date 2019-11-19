@@ -15,7 +15,7 @@ import { css } from 'emotion';
 import { useInterval, useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
-export default function SubjectHeader() {
+export default function ChannelHeader() {
   const {
     requestHelpers: {
       loadChatSubject,

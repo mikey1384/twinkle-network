@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
+import RightMenu from './RightMenu';
 import MessagesContainer from './MessagesContainer';
 import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
@@ -270,6 +271,7 @@ export default function Chat({ onFileUpload }) {
                   selectedChannelId={selectedChannelId}
                   subjectId={subject.id}
                 />
+                <RightMenu channelName={channelName} />
                 {chessModalShown && (
                   <ChessModal
                     channelId={selectedChannelId}
