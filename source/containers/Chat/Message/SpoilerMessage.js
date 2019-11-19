@@ -49,7 +49,7 @@ export default function SpoilerMessage({
           autoFocus
           disabled={!socketConnected}
           rows={2}
-          text={content}
+          text={'/spoiler ' + content}
           onCancel={onEditCancel}
           onEditDone={onEditDone}
         />
@@ -94,7 +94,7 @@ export default function SpoilerMessage({
           )}
         </div>
       )}
-      {extractedUrl && messageId && (
+      {extractedUrl && spoilerShown && messageId && (
         <div
           style={{
             marginTop: '1rem'
