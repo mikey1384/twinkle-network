@@ -69,7 +69,7 @@ export default function Description({
         }
       });
     }
-  }, [description, inputState, isEditing, linkId, onSetEditForm, title, url]);
+  }, [isEditing, title, description, url]);
   const editForm = inputState['edit' + 'url' + linkId] || {};
   const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
 
@@ -107,7 +107,6 @@ export default function Description({
       onClick: onDelete
     });
   }
-
   return useMemo(() => {
     return (
       <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
@@ -324,20 +323,19 @@ export default function Description({
       });
     }
   }, [
+    description,
+    descriptionExceedsCharLimit,
     editButtonShown,
+    editForm,
     isEditing,
-    editMenuItems,
-    titleExceedsCharLimit,
-    editedTitle,
-    title,
-    uploader,
-    timeStamp,
+    onDelete,
     linkId,
+    title,
+    titleExceedsCharLimit,
+    uploader,
     url,
     urlExceedsCharLimit,
-    editedUrl,
-    editedDescription,
-    descriptionExceedsCharLimit,
-    description
+    userCanEditThis,
+    editMenuItems
   ]);
 }
