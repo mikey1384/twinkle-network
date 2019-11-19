@@ -42,6 +42,7 @@ export default function Profile({ profile }) {
               profilePicId={profile.profilePicId}
               online={userId === profile.id || !!profile.online}
               large
+              statusShown
             />
           </div>
           <UserDetails

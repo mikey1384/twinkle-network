@@ -244,7 +244,6 @@ export default function Chat({ onFileUpload }) {
                   channels={channels}
                   channelLoadMoreButtonShown={channelLoadMoreButton}
                   currentChannel={currentChannel}
-                  currentChannelOnlineMembers={currentChannelOnlineMembers}
                   loadMoreChannels={handleLoadMoreChannels}
                   onChannelEnter={onChannelEnter}
                   onNewButtonClick={onNewButtonClick}
@@ -271,7 +270,11 @@ export default function Chat({ onFileUpload }) {
                   selectedChannelId={selectedChannelId}
                   subjectId={subject.id}
                 />
-                <RightMenu channelName={channelName} />
+                <RightMenu
+                  channelName={channelName}
+                  currentChannel={currentChannel}
+                  currentChannelOnlineMembers={currentChannelOnlineMembers}
+                />
                 {chessModalShown && (
                   <ChessModal
                     channelId={selectedChannelId}

@@ -12,6 +12,7 @@ ProfilePic.propTypes = {
   onClick: PropTypes.func,
   online: PropTypes.bool,
   profilePicId: PropTypes.number,
+  statusShown: PropTypes.bool,
   style: PropTypes.object,
   userId: PropTypes.number
 };
@@ -24,6 +25,7 @@ export default function ProfilePic({
   userId,
   online,
   profilePicId,
+  statusShown,
   style
 }) {
   const { userId: myId } = useMyState();
@@ -60,7 +62,9 @@ export default function ProfilePic({
         <ChangePicture
           shown={myId === userId && isProfilePage && changePictureShown}
         />
-        {large && (online || myId === userId) && <StatusTag status="online" />}
+        {(online || myId === userId) && statusShown && (
+          <StatusTag large={large} status="online" />
+        )}
       </div>
     ),
     [changePictureShown, myId, src, userId, online, profilePicId]

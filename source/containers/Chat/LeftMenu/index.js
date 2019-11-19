@@ -16,7 +16,6 @@ LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
   currentChannel: PropTypes.object.isRequired,
-  currentChannelOnlineMembers: PropTypes.array.isRequired,
   loadMoreChannels: PropTypes.func.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired,
@@ -27,7 +26,6 @@ export default function LeftMenu({
   channels,
   channelLoadMoreButtonShown,
   currentChannel,
-  currentChannelOnlineMembers,
   loadMoreChannels,
   onChannelEnter,
   onNewButtonClick
@@ -96,7 +94,7 @@ export default function LeftMenu({
           display: flex;
           flex-direction: column;
           height: 100%;
-          width: 35rem;
+          width: 40rem;
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
@@ -146,14 +144,21 @@ export default function LeftMenu({
           ref={ChannelListRef}
         >
           <div
-            style={{
-              width: '5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '1rem',
-              alignItems: 'center',
-              fontSize: '2.5rem'
-            }}
+            className={css`
+              width: 5rem;
+              display: flex;
+              flex-direction: column;
+              padding: 1rem;
+              align-items: center;
+              font-size: 2.5rem;
+              svg {
+                cursor: pointer;
+                color: ${Color.lightGray()};
+                &:hover {
+                  color: ${Color.black()};
+                }
+              }
+            `}
           >
             <div>
               <Icon icon="comments" />
@@ -194,7 +199,6 @@ export default function LeftMenu({
       channels,
       channelLoadMoreButtonShown,
       currentChannel,
-      currentChannelOnlineMembers,
       userId,
       selectedChannelId,
       channelsLoading,
