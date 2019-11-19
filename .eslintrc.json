@@ -33,7 +33,6 @@
   },
 
   "rules": {
-    "react-hooks/exhaustive-deps": "warn",
     "react/display-name": 0,
     "accessor-pairs": 2,
     "arrow-spacing": [2, { "before": true, "after": true }],

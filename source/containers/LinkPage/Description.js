@@ -338,9 +338,6 @@ export default function Description({
     editedUrl,
     editedDescription,
     descriptionExceedsCharLimit,
-    description,
-    onSetEditForm,
-    onSetIsEditing,
-    onEditDone
+    description
   ]);
 }
