@@ -328,7 +328,6 @@ export default function Description({
     editButtonShown,
     editForm,
     isEditing,
-    onDelete,
     linkId,
     title,
     titleExceedsCharLimit,
