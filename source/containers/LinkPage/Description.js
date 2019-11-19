@@ -107,8 +107,8 @@ export default function Description({
       onClick: onDelete
     });
   }
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    return (
       <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
         {editButtonShown && !isEditing && (
           <DropdownButton
@@ -276,67 +276,66 @@ export default function Description({
           )}
         </div>
       </div>
-    ),
-    [
-      description,
-      descriptionExceedsCharLimit,
-      editButtonShown,
-      editForm,
-      isEditing,
-      onDelete,
-      linkId,
-      title,
-      titleExceedsCharLimit,
-      uploader,
-      url,
-      urlExceedsCharLimit,
-      userCanEditThis,
-      editMenuItems
-    ]
-  );
+    );
 
-  function determineEditButtonDoneStatus() {
-    const urlIsEmpty = stringIsEmpty(editedUrl);
-    const urlIsValid = isValidUrl(editedUrl);
-    const titleIsEmpty = stringIsEmpty(editedTitle);
-    const titleChanged = editedTitle !== title;
-    const urlChanged = editedUrl !== url;
-    const descriptionChanged = editedDescription !== description;
-    if (!urlIsValid) return true;
-    if (urlIsEmpty) return true;
-    if (titleIsEmpty) return true;
-    if (!titleChanged && !descriptionChanged && !urlChanged) return true;
-    if (titleExceedsCharLimit) return true;
-    if (descriptionExceedsCharLimit) return true;
-    if (urlExceedsCharLimit) return true;
-    return false;
-  }
+    function determineEditButtonDoneStatus() {
+      const urlIsEmpty = stringIsEmpty(editedUrl);
+      const urlIsValid = isValidUrl(editedUrl);
+      const titleIsEmpty = stringIsEmpty(editedTitle);
+      const titleChanged = editedTitle !== title;
+      const urlChanged = editedUrl !== url;
+      const descriptionChanged = editedDescription !== description;
+      if (!urlIsValid) return true;
+      if (urlIsEmpty) return true;
+      if (titleIsEmpty) return true;
+      if (!titleChanged && !descriptionChanged && !urlChanged) return true;
+      if (titleExceedsCharLimit) return true;
+      if (descriptionExceedsCharLimit) return true;
+      if (urlExceedsCharLimit) return true;
+      return false;
+    }
 
-  function onEditCancel() {
-    onSetEditForm({
-      contentId: linkId,
-      contentType: 'url',
-      form: undefined
-    });
-    onSetIsEditing({
-      contentId: linkId,
-      contentType: 'url',
-      isEditing: false
-    });
-  }
+    function onEditCancel() {
+      onSetEditForm({
+        contentId: linkId,
+        contentType: 'url',
+        form: undefined
+      });
+      onSetIsEditing({
+        contentId: linkId,
+        contentType: 'url',
+        isEditing: false
+      });
+    }
 
-  async function onEditFinish() {
-    await onEditDone({
-      editedUrl,
-      editedTitle: finalizeEmoji(editedTitle),
-      editedDescription: finalizeEmoji(editedDescription),
-      contentId: linkId,
-      contentType: 'url'
-    });
-    onSetIsEditing({
-      contentId: linkId,
-      contentType: 'url',
-      isEditing: false
-    });
-  }
+    async function onEditFinish() {
+      await onEditDone({
+        editedUrl,
+        editedTitle: finalizeEmoji(editedTitle),
+        editedDescription: finalizeEmoji(editedDescription),
+        contentId: linkId,
+        contentType: 'url'
+      });
+      onSetIsEditing({
+        contentId: linkId,
+        contentType: 'url',
+        isEditing: false
+      });
+    }
+  }, [
+    description,
+    descriptionExceedsCharLimit,
+    editButtonShown,
+    editForm,
+    isEditing,
+    onDelete,
+    linkId,
+    title,
+    titleExceedsCharLimit,
+    uploader,
+    url,
+    urlExceedsCharLimit,
+    userCanEditThis,
+    editMenuItems
+  ]);
 }
