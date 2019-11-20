@@ -95,7 +95,8 @@ export default function Chat({ onFileUpload }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [loaded, pageVisible, userId, socket.connected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, pageVisible, userId, selectedChannelId]);
 
   useEffect(() => {
     if (mounted.current) {
@@ -115,7 +116,7 @@ export default function Chat({ onFileUpload }) {
       otherMember?.username ||
         channelsObj.current?.[currentChannel?.id]?.channelName
     );
-  }, [currentChannel]);
+  }, [currentChannel, userId]);
 
   useEffect(() => {
     socket.on('receive_message', handleReceiveMessage);
