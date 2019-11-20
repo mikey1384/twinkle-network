@@ -266,7 +266,6 @@ export default function ProfilePanel({ expandable, profileId }) {
                           profilePicId={profilePicId}
                           online={!!online}
                           large
-                          statusShown
                         />
                       </Link>
                     </div>

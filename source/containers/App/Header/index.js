@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
@@ -203,84 +203,75 @@ export default function Header({
       }
     }
     prevUserIdRef.current = userId;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
     onShowUpdateNotice(!versionMatch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [versionMatch]);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <nav
-          className={`unselectable ${css`
-            z-index: 30000;
-            position: relative;
-            font-family: sans-serif, Arial, Helvetica;
-            font-size: 1.7rem;
-            background: #fff;
-            display: flex;
-            box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
-            align-items: center;
-            width: 100%;
-            margin-bottom: 0px;
-            height: 4.5rem;
-            @media (min-width: ${desktopMinWidth}) {
-              top: 0;
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              bottom: 0;
-              height: 5rem;
-              border-top: 1px solid ${Color.borderGray()};
-            }
-          `}`}
+  return (
+    <ErrorBoundary>
+      <nav
+        className={`unselectable ${css`
+          z-index: 30000;
+          position: relative;
+          font-family: sans-serif, Arial, Helvetica;
+          font-size: 1.7rem;
+          background: #fff;
+          display: flex;
+          box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
+          align-items: center;
+          width: 100%;
+          margin-bottom: 0px;
+          height: 4.5rem;
+          @media (min-width: ${desktopMinWidth}) {
+            top: 0;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            bottom: 0;
+            height: 5rem;
+            border-top: 1px solid ${Color.borderGray()};
+          }
+        `}`}
+        style={{
+          justifyContent: 'space-around',
+          position: 'fixed',
+          ...style
+        }}
+      >
+        <div
           style={{
-            justifyContent: 'space-around',
-            position: 'fixed',
-            ...style
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <TwinkleLogo style={{ marginLeft: '3rem' }} />
-            <MainNavs
-              loggedIn={loggedIn}
-              defaultSearchFilter={defaultSearchFilter}
-              numChatUnreads={numUnreads}
-              numNewNotis={numNewNotis}
-              numNewPosts={numNewPosts}
-              onChatButtonClick={onChatButtonClick}
-              onMobileMenuOpen={onMobileMenuOpen}
-              pathname={pathname}
-              totalRewardAmount={totalRewardAmount}
-            />
-            <AccountMenu
-              className={`desktop ${css`
-                margin-right: 3rem;
-                @media (max-width: ${mobileMaxWidth}) {
-                  margin-right: 0;
-                }
-              `}`}
-              history={history}
-            />
-          </div>
-        </nav>
-      </ErrorBoundary>
-    ),
-    [
-      defaultSearchFilter,
-      loggedIn,
-      numNewNotis,
-      numNewPosts,
-      numUnreads,
-      pathname,
-      totalRewardAmount
-    ]
+          <TwinkleLogo style={{ marginLeft: '3rem' }} />
+          <MainNavs
+            loggedIn={loggedIn}
+            defaultSearchFilter={defaultSearchFilter}
+            numChatUnreads={numUnreads}
+            numNewNotis={numNewNotis}
+            numNewPosts={numNewPosts}
+            onChatButtonClick={onChatButtonClick}
+            onMobileMenuOpen={onMobileMenuOpen}
+            pathname={pathname}
+            totalRewardAmount={totalRewardAmount}
+          />
+          <AccountMenu
+            className={`desktop ${css`
+              margin-right: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-right: 0;
+              }
+            `}`}
+            history={history}
+          />
+        </div>
+      </nav>
+    </ErrorBoundary>
   );
 }

@@ -16,6 +16,7 @@ LeftMenu.propTypes = {
   channels: PropTypes.array.isRequired,
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
   currentChannel: PropTypes.object.isRequired,
+  currentChannelOnlineMembers: PropTypes.array.isRequired,
   loadMoreChannels: PropTypes.func.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired,
@@ -26,6 +27,7 @@ export default function LeftMenu({
   channels,
   channelLoadMoreButtonShown,
   currentChannel,
+  currentChannelOnlineMembers,
   loadMoreChannels,
   onChannelEnter,
   onNewButtonClick
@@ -94,7 +96,7 @@ export default function LeftMenu({
           display: flex;
           flex-direction: column;
           height: 100%;
-          width: 40rem;
+          width: 35rem;
           position: relative;
           background: #fff;
           -webkit-overflow-scrolling: touch;
@@ -134,7 +136,7 @@ export default function LeftMenu({
         <ChatSearchBox />
         <div
           style={{
-            display: 'flex',
+            overflow: 'scroll',
             position: 'absolute',
             top: '15.5rem',
             left: 0,
@@ -143,54 +145,49 @@ export default function LeftMenu({
           }}
           ref={ChannelListRef}
         >
-          <div
-            className={css`
-              width: 5rem;
-              display: flex;
-              flex-direction: column;
-              padding: 1rem;
-              align-items: center;
-              font-size: 2.5rem;
-              svg {
-                cursor: pointer;
-                color: ${Color.lightGray()};
-                &:hover {
-                  color: ${Color.black()};
-                }
-              }
-            `}
-          >
-            <div>
-              <Icon icon="comments" />
+          <div style={{ display: 'flex', width: '100%' }}>
+            <div
+              style={{
+                width: '5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '1rem',
+                alignItems: 'center',
+                fontSize: '2.5rem'
+              }}
+            >
+              <div>
+                <Icon icon="comments" />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <Icon icon="chalkboard-teacher" />
+              </div>
+              <div style={{ marginTop: '1rem' }}>
+                <Icon icon="book" />
+              </div>
             </div>
-            <div style={{ marginTop: '1rem' }}>
-              <Icon icon="chalkboard-teacher" />
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              <Icon icon="book" />
-            </div>
-          </div>
-          <div style={{ width: '100%', overflow: 'scroll' }}>
-            <Channels
-              userId={userId}
-              currentChannel={currentChannel}
-              channels={channels}
-              selectedChannelId={selectedChannelId}
-              onChannelEnter={onChannelEnter}
-            />
-            {channelLoadMoreButtonShown && (
-              <LoadMoreButton
-                color="green"
-                filled
-                loading={channelsLoading}
-                onClick={handleLoadMoreChannels}
-                style={{
-                  width: '100%',
-                  borderRadius: 0,
-                  border: 0
-                }}
+            <div style={{ width: 'CALC(100% - 5rem)' }}>
+              <Channels
+                userId={userId}
+                currentChannel={currentChannel}
+                channels={channels}
+                selectedChannelId={selectedChannelId}
+                onChannelEnter={onChannelEnter}
               />
-            )}
+              {channelLoadMoreButtonShown && (
+                <LoadMoreButton
+                  color="green"
+                  filled
+                  loading={channelsLoading}
+                  onClick={handleLoadMoreChannels}
+                  style={{
+                    width: '100%',
+                    borderRadius: 0,
+                    border: 0
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -199,6 +196,7 @@ export default function LeftMenu({
       channels,
       channelLoadMoreButtonShown,
       currentChannel,
+      currentChannelOnlineMembers,
       userId,
       selectedChannelId,
       channelsLoading,

@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { useInterval } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
@@ -47,14 +47,41 @@ function ChatFeeds({
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
   );
-  useInterval(
-    () => {
-      setTimeSincePost(timeSince(timeStamp));
-      setTimeSinceReload(timeSince(reloadTimeStamp));
-    },
-    1000,
-    [timeStamp, reloadTimeStamp]
-  );
+  useInterval(() => {
+    setTimeSincePost(timeSince(timeStamp));
+    setTimeSinceReload(timeSince(reloadTimeStamp));
+  }, 1000);
+  const Details = useMemo(() => {
+    const posterString = (
+      <>
+        Started by <UsernameText user={{ id: userId, username }} />
+        {timeStamp ? ` ${timeSincePost}` : ''}
+      </>
+    );
+    const reloaderString = (
+      <div style={{ marginTop: '0.5rem' }}>
+        Brought back by{' '}
+        <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
+        {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
+      </div>
+    );
+
+    return (
+      <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
+        <div>{userId ? posterString : 'Join the conversation!'}</div>
+        {reloadedBy && reloaderString}
+      </div>
+    );
+  }, [
+    reloadTimeStamp,
+    reloadedBy,
+    reloaderName,
+    timeSincePost,
+    timeSinceReload,
+    timeStamp,
+    userId,
+    username
+  ]);
 
   return (
     <RoundList
@@ -90,7 +117,7 @@ function ChatFeeds({
         >
           {content}
         </p>
-        <span style={{ color: Color.darkerGray() }}>{renderDetails()}</span>
+        <span style={{ color: Color.darkerGray() }}>{Details}</span>
         <Button skeuomorphic color="darkerGray" onClick={initChatFromThis}>
           <Icon icon="comments" />
           <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
@@ -110,29 +137,6 @@ function ChatFeeds({
       }
     }
     history.push('/chat');
-  }
-
-  function renderDetails() {
-    const posterString = (
-      <>
-        Started by <UsernameText user={{ id: userId, username }} />
-        {timeStamp ? ` ${timeSincePost}` : ''}
-      </>
-    );
-    const reloaderString = (
-      <div style={{ marginTop: '0.5rem' }}>
-        Brought back by{' '}
-        <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
-        {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
-      </div>
-    );
-
-    return (
-      <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
-        <div>{userId ? posterString : 'Join the conversation!'}</div>
-        {reloadedBy && reloaderString}
-      </div>
-    );
   }
 }
 

@@ -63,188 +63,183 @@ export default function LinkItem({
         ...embedProps
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const userIsUploader = userId === uploader.id;
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploader.authLevel;
-  const editButtonShown = userIsUploader || userCanEditThis;
-  const editMenuItems = [];
-  if (userIsUploader || canEdit) {
-    editMenuItems.push({
-      label: 'Edit',
-      onClick: () => setOnEdit(true)
-    });
-  }
-  if (userIsUploader || canDelete) {
-    editMenuItems.push({
-      label: 'Remove',
-      onClick: () => setConfirmModalShown(true)
-    });
-  }
 
-  return useMemo(
-    () =>
-      !deleted ? (
-        <nav
+  const userIsUploader = userId === uploader.id;
+
+  const editButtonShown = useMemo(() => {
+    const userCanEditThis =
+      (canEdit || canDelete) && authLevel > uploader.authLevel;
+    return userIsUploader || userCanEditThis;
+  }, [authLevel, canDelete, canEdit, uploader.authLevel, userIsUploader]);
+
+  const editMenuItems = useMemo(() => {
+    const items = [];
+    if (userIsUploader || canEdit) {
+      items.push({
+        label: 'Edit',
+        onClick: () => setOnEdit(true)
+      });
+    }
+    if (userIsUploader || canDelete) {
+      items.push({
+        label: 'Remove',
+        onClick: () => setConfirmModalShown(true)
+      });
+    }
+    return items;
+  }, [canDelete, canEdit, userIsUploader]);
+
+  return !deleted ? (
+    <nav
+      className={css`
+        display: flex;
+        width: 100%;
+        section {
+          width: 100%;
+          margin-left: 2rem;
+          display: flex;
+          justify-content: space-between;
+        }
+      `}
+    >
+      <div
+        onMouseUp={() => {
+          if (!onEdit) history.push(`/links/${id}`);
+        }}
+        style={{ cursor: !onEdit && 'pointer' }}
+        className={css`
+          position: relative;
+          width: 20%;
+          &:after {
+            content: '';
+            display: block;
+            padding-bottom: 35%;
+          }
+        `}
+      >
+        <Embedly
+          imageOnly
+          noLink
+          style={{ width: '100%', height: '100%' }}
+          loadingHeight="6rem"
+          contentId={id}
+        />
+      </div>
+      <section
+        onMouseUp={() => {
+          if (!onEdit) history.push(`/links/${id}`);
+        }}
+        style={{ cursor: !onEdit && 'pointer' }}
+      >
+        <div
           className={css`
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             width: 100%;
-            section {
-              width: 100%;
-              margin-left: 2rem;
-              display: flex;
-              justify-content: space-between;
-            }
           `}
         >
-          <div
-            onMouseUp={() => {
-              if (!onEdit) history.push(`/links/${id}`);
-            }}
-            style={{ cursor: !onEdit && 'pointer' }}
-            className={css`
-              position: relative;
-              width: 20%;
-              &:after {
-                content: '';
-                display: block;
-                padding-bottom: 35%;
-              }
-            `}
-          >
-            <Embedly
-              imageOnly
-              noLink
-              style={{ width: '100%', height: '100%' }}
-              loadingHeight="6rem"
-              contentId={id}
-            />
-          </div>
-          <section
-            onMouseUp={() => {
-              if (!onEdit) history.push(`/links/${id}`);
-            }}
-            style={{ cursor: !onEdit && 'pointer' }}
-          >
+          <div style={{ width: '100%' }}>
             <div
               className={css`
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
                 width: 100%;
+                a {
+                  font-size: 2rem;
+                  line-height: 1.2;
+                  font-weight: bold;
+                }
               `}
             >
-              <div style={{ width: '100%' }}>
-                <div
-                  className={css`
-                    width: 100%;
-                    a {
-                      font-size: 2rem;
-                      line-height: 1.2;
-                      font-weight: bold;
-                    }
-                  `}
-                >
-                  {!onEdit && (
-                    <span
-                      style={{
-                        color: Color.blue(),
-                        fontSize: '2rem',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {cleanString(title)}
-                    </span>
-                  )}
-                  {onEdit && (
-                    <EditTitleForm
-                      autoFocus
-                      style={{ width: '80%' }}
-                      maxLength={200}
-                      title={title}
-                      onEditSubmit={handleEditedTitleSubmit}
-                      onClickOutSide={() => setOnEdit(false)}
-                    />
-                  )}
-                </div>
-                <div
+              {!onEdit && (
+                <span
                   style={{
-                    fontSize: '1.2rem',
-                    lineHeight: '2rem'
+                    color: Color.blue(),
+                    fontSize: '2rem',
+                    fontWeight: 'bold'
                   }}
                 >
-                  Uploaded {`${timeSince(timeStamp)} `}
-                  by <UsernameText user={uploader} />
-                </div>
-              </div>
-              <div
-                className={css`
-                  font-size: 1.3rem;
-                  font-weight: bold;
-                  color: ${Color.darkerGray()};
-                  margin-bottom: 0.5rem;
-                `}
-              >
-                {likes.length > 0 && (
-                  <>
-                    <span
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setUserListModalShown(true)}
-                    >
-                      {`${likes.length}`} like
-                      {likes.length > 1 ? 's' : ''}
-                    </span>
-                    &nbsp;&nbsp;
-                  </>
-                )}
-                {numComments > 0 && (
-                  <span>
-                    {numComments} comment
-                    {numComments > 1 ? 's' : ''}
-                  </span>
-                )}
-              </div>
+                  {cleanString(title)}
+                </span>
+              )}
+              {onEdit && (
+                <EditTitleForm
+                  autoFocus
+                  style={{ width: '80%' }}
+                  maxLength={200}
+                  title={title}
+                  onEditSubmit={handleEditedTitleSubmit}
+                  onClickOutSide={() => setOnEdit(false)}
+                />
+              )}
             </div>
-          </section>
-          {!onEdit && editButtonShown && (
-            <div>
-              <DropdownButton
-                skeuomorphic
-                color="darkerGray"
-                direction="left"
-                menuProps={editMenuItems}
-              />
+            <div
+              style={{
+                fontSize: '1.2rem',
+                lineHeight: '2rem'
+              }}
+            >
+              Uploaded {`${timeSince(timeStamp)} `}
+              by <UsernameText user={uploader} />
             </div>
-          )}
-          {confirmModalShown && (
-            <ConfirmModal
-              title="Remove Link"
-              onConfirm={handleDelete}
-              onHide={() => setConfirmModalShown(false)}
-            />
-          )}
-          {userListModalShown && (
-            <UserListModal
-              users={likes}
-              description="(You)"
-              onHide={() => setUserListModalShown(false)}
-              title="People who liked this link"
-            />
-          )}
-        </nav>
-      ) : null,
-    [
-      confirmModalShown,
-      deleted,
-      editButtonShown,
-      likes,
-      loaded,
-      numComments,
-      onEdit,
-      title,
-      userListModalShown
-    ]
-  );
+          </div>
+          <div
+            className={css`
+              font-size: 1.3rem;
+              font-weight: bold;
+              color: ${Color.darkerGray()};
+              margin-bottom: 0.5rem;
+            `}
+          >
+            {likes.length > 0 && (
+              <>
+                <span
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setUserListModalShown(true)}
+                >
+                  {`${likes.length}`} like
+                  {likes.length > 1 ? 's' : ''}
+                </span>
+                &nbsp;&nbsp;
+              </>
+            )}
+            {numComments > 0 && (
+              <span>
+                {numComments} comment
+                {numComments > 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+        </div>
+      </section>
+      {!onEdit && editButtonShown && (
+        <div>
+          <DropdownButton
+            skeuomorphic
+            color="darkerGray"
+            direction="left"
+            menuProps={editMenuItems}
+          />
+        </div>
+      )}
+      {confirmModalShown && (
+        <ConfirmModal
+          title="Remove Link"
+          onConfirm={handleDelete}
+          onHide={() => setConfirmModalShown(false)}
+        />
+      )}
+      {userListModalShown && (
+        <UserListModal
+          users={likes}
+          description="(You)"
+          onHide={() => setUserListModalShown(false)}
+          title="People who liked this link"
+        />
+      )}
+    </nav>
+  ) : null;
 
   async function handleDelete() {
     await deleteContent({ id, contentType: 'url' });

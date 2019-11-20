@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import { useMyState } from 'helpers/hooks';
@@ -19,19 +19,17 @@ export default function SearchBox({ category, className, innerRef, style }) {
     },
     actions: { onChangeSearchInput }
   } = useExploreContext();
-  return useMemo(
-    () => (
-      <SearchInput
-        className={className}
-        style={style}
-        addonColor={profileTheme}
-        borderColor={profileTheme}
-        innerRef={innerRef}
-        placeholder={`Search ${category}...`}
-        onChange={onChangeSearchInput}
-        value={searchText}
-      />
-    ),
-    [profileTheme, category, searchText]
+
+  return (
+    <SearchInput
+      className={className}
+      style={style}
+      addonColor={profileTheme}
+      borderColor={profileTheme}
+      innerRef={innerRef}
+      placeholder={`Search ${category}...`}
+      onChange={onChangeSearchInput}
+      value={searchText}
+    />
   );
 }

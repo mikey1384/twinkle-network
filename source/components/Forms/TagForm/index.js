@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
 import Tag from './Tag';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
@@ -58,47 +58,11 @@ export default function TagForm({
     onClear,
     onSetSearchText: setSearchText
   });
-  const filteredResults = searchResults.filter(filter);
-
-  return (
-    <ErrorBoundary>
-      <form
-        style={{ width: '70%' }}
-        onSubmit={event => {
-          event.preventDefault();
-          onSubmit?.();
-        }}
-      >
-        <div style={{ width: '100%' }}>
-          {title && <h3>{title}</h3>}
-          {subTitle && <span>{subTitle}</span>}
-          {renderTags()}
-          <TagInput
-            dropdownFooter={dropdownFooter}
-            style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
-            autoFocus
-            inputRef={inputRef}
-            loading={searching}
-            value={searchText}
-            onChange={handleSearch}
-            onClickOutSide={() => {
-              setSearchText('');
-              onClear();
-            }}
-            onNotFound={onNotFound}
-            placeholder={searchPlaceholder}
-            renderDropdownLabel={renderDropdownLabel}
-            searchResults={filteredResults}
-            selectedItems={objectify(selectedItems)}
-            onAddItem={addItem}
-          />
-        </div>
-        {children}
-      </form>
-    </ErrorBoundary>
-  );
-
-  function renderTags() {
+  const filteredResults = useMemo(() => searchResults.filter(filter), [
+    filter,
+    searchResults
+  ]);
+  const tags = useMemo(() => {
     return selectedItems.length > 0 ? (
       <div
         style={{
@@ -118,9 +82,47 @@ export default function TagForm({
         })}
       </div>
     ) : null;
-  }
+  }, [itemLabel, onRemoveItem, renderTagLabel, selectedItems]);
 
-  function addItem(item) {
+  return (
+    <ErrorBoundary>
+      <form
+        style={{ width: '70%' }}
+        onSubmit={event => {
+          event.preventDefault();
+          onSubmit?.();
+        }}
+      >
+        <div style={{ width: '100%' }}>
+          {title && <h3>{title}</h3>}
+          {subTitle && <span>{subTitle}</span>}
+          {tags}
+          <TagInput
+            dropdownFooter={dropdownFooter}
+            style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
+            autoFocus
+            inputRef={inputRef}
+            loading={searching}
+            value={searchText}
+            onChange={handleSearch}
+            onClickOutSide={() => {
+              setSearchText('');
+              onClear();
+            }}
+            onNotFound={onNotFound}
+            placeholder={searchPlaceholder}
+            renderDropdownLabel={renderDropdownLabel}
+            searchResults={filteredResults}
+            selectedItems={objectify(selectedItems)}
+            onAddItem={handleAddItem}
+          />
+        </div>
+        {children}
+      </form>
+    </ErrorBoundary>
+  );
+
+  function handleAddItem(item) {
     setSearchText('');
     onAddItem(item);
     onClear();

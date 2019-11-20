@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
@@ -84,17 +84,41 @@ export default function AddPlaylistModal({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const titleExceedsCharLimit = exceedsCharLimit({
-    contentType: 'playlist',
-    inputType: 'title',
-    text: title
-  });
-  const descriptionExceedsCharLimit = exceedsCharLimit({
-    contentType: 'playlist',
-    inputType: 'description',
-    text: description
-  });
+
+  const titleExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'playlist',
+        inputType: 'title',
+        text: title
+      }),
+    [title]
+  );
+
+  const descriptionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'playlist',
+        inputType: 'description',
+        text: description
+      }),
+    [description]
+  );
+
+  const header = useMemo(() => {
+    switch (section) {
+      case 0:
+        return 'Add Playlist';
+      case 1:
+        return 'Add videos to your playlist';
+      case 2:
+        return 'Click and drag videos into the order that you would like them to appear';
+      default:
+        return 'Error';
+    }
+  }, [section]);
 
   return (
     <DndProvider backend={Backend}>
@@ -103,7 +127,7 @@ export default function AddPlaylistModal({
         onHide={onHide}
         large={section > 0}
       >
-        <header>{renderTitle()}</header>
+        <header>{header}</header>
         <main style={{ paddingBottom: '1rem' }}>
           {section === 0 && (
             <form
@@ -251,8 +275,8 @@ export default function AddPlaylistModal({
               disabled={
                 (section === 0 &&
                   (stringIsEmpty(title) ||
-                    titleExceedsCharLimit ||
-                    descriptionExceedsCharLimit)) ||
+                    !!titleExceedsCharLimit ||
+                    !!descriptionExceedsCharLimit)) ||
                 (section === 1 && selectedVideos.length === 0)
               }
               onClick={handleNext}
@@ -264,19 +288,6 @@ export default function AddPlaylistModal({
       </Modal>
     </DndProvider>
   );
-
-  function renderTitle() {
-    switch (section) {
-      case 0:
-        return 'Add Playlist';
-      case 1:
-        return 'Add videos to your playlist';
-      case 2:
-        return 'Click and drag videos into the order that you would like them to appear';
-      default:
-        return 'Error';
-    }
-  }
 
   function handlePrev() {
     const prevSection = Math.max(section - 1, 0);

@@ -83,6 +83,7 @@ export default function QuestionsBuilder({
         ? initialQuestions.map((question, index) => index)
         : [0]
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

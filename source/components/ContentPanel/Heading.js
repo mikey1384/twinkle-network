@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -39,38 +39,7 @@ function Heading({
     uploader = {}
   }
 }) {
-  return (
-    <header className="heading">
-      <ProfilePic
-        style={{ width: '6rem', height: '6rem' }}
-        userId={uploader.id}
-        profilePicId={uploader.profilePicId}
-      />
-      <div
-        style={{
-          width: '90%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginLeft: '1rem'
-        }}
-      >
-        <div
-          style={{
-            width: '100%'
-          }}
-        >
-          <span className="title">{renderHeading()}</span>
-          <small className="timestamp">
-            {timeStamp ? `(${timeSince(timeStamp)})` : ''}
-          </small>
-        </div>
-      </div>
-    </header>
-  );
-
-  function renderHeading() {
+  const MemoizedComponent = useMemo(() => {
     const contentLabel =
       rootType === 'url'
         ? 'link'
@@ -127,36 +96,78 @@ function Heading({
       default:
         return <span>Error</span>;
     }
-  }
 
-  function renderTargetAction() {
-    if (targetObj?.comment && !targetObj?.comment.notFound) {
-      return (
-        <span>
-          {' '}
-          <UsernameText
-            user={targetObj.comment.uploader}
-            color={Color.blue()}
-          />
-          {"'s "}
-          <ContentLink
-            content={{
-              id: replyId || commentId,
-              title: replyId
-                ? 'reply '
-                : rootType === 'user'
-                ? 'message '
-                : 'comment '
-            }}
-            contentType="comment"
-            style={{ color: Color.green() }}
-          />
-          {!replyId && rootType === 'user' ? 'to' : 'on'}
-        </span>
-      );
+    function renderTargetAction() {
+      if (targetObj?.comment && !targetObj?.comment.notFound) {
+        return (
+          <span>
+            {' '}
+            <UsernameText
+              user={targetObj.comment.uploader}
+              color={Color.blue()}
+            />
+            {"'s "}
+            <ContentLink
+              content={{
+                id: replyId || commentId,
+                title: replyId
+                  ? 'reply '
+                  : rootType === 'user'
+                  ? 'message '
+                  : 'comment '
+              }}
+              contentType="comment"
+              style={{ color: Color.green() }}
+            />
+            {!replyId && rootType === 'user' ? 'to' : 'on'}
+          </span>
+        );
+      }
+      return null;
     }
-    return null;
-  }
+  }, [
+    action,
+    commentId,
+    contentObj,
+    contentType,
+    id,
+    replyId,
+    rootObj,
+    rootType,
+    targetObj,
+    uploader
+  ]);
+
+  return (
+    <header className="heading">
+      <ProfilePic
+        style={{ width: '6rem', height: '6rem' }}
+        userId={uploader.id}
+        profilePicId={uploader.profilePicId}
+      />
+      <div
+        style={{
+          width: '90%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginLeft: '1rem'
+        }}
+      >
+        <div
+          style={{
+            width: '100%'
+          }}
+        >
+          <span className="title">{MemoizedComponent}</span>
+          <small className="timestamp">
+            {timeStamp ? `(${timeSince(timeStamp)})` : ''}
+          </small>
+        </div>
+      </div>
+    </header>
+  );
 }
 
 export default memo(Heading);

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';

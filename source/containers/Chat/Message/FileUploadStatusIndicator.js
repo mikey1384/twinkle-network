@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
@@ -14,7 +14,6 @@ FileUploadStatusIndicator.propTypes = {
   filePath: PropTypes.string.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
-  profilePicId: PropTypes.number,
   subjectId: PropTypes.number
 };
 
@@ -34,6 +33,7 @@ export default function FileUploadStatusIndicator({
     actions: { onDisplayAttachedFile }
   } = useChatContext();
   const { onFileUpload } = useContext(LocalContext);
+
   useEffect(() => {
     if (
       !filesBeingUploaded[channelId] ||
@@ -51,7 +51,9 @@ export default function FileUploadStatusIndicator({
         subjectId
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [
     {
       uploadComplete = false,
@@ -62,6 +64,7 @@ export default function FileUploadStatusIndicator({
     filesBeingUploaded[channelId]?.filter(
       ({ filePath: path }) => path === filePath
     ) || [];
+
   useEffect(() => {
     if (uploadComplete) {
       const params = {
@@ -80,7 +83,9 @@ export default function FileUploadStatusIndicator({
         onSendFileMessage(params);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filesBeingUploaded]);
+
   const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => {
     setUploadProgress(
@@ -88,17 +93,14 @@ export default function FileUploadStatusIndicator({
     );
   }, [clientToApiServerProgress, apiServerToS3Progress]);
 
-  return useMemo(
-    () => (
-      <div style={{ marginTop: '1rem' }}>
-        <div>{`Uploading ${fileToUpload.name}...`}</div>
-        <ProgressBar
-          text={uploadComplete ? 'Upload Complete!' : ''}
-          color={uploadComplete ? Color.green() : Color.blue()}
-          progress={uploadComplete ? 100 : uploadProgress}
-        />
-      </div>
-    ),
-    [fileToUpload.name, uploadComplete, uploadProgress]
+  return (
+    <div style={{ marginTop: '1rem' }}>
+      <div>{`Uploading ${fileToUpload.name}...`}</div>
+      <ProgressBar
+        text={uploadComplete ? 'Upload Complete!' : ''}
+        color={uploadComplete ? Color.green() : Color.blue()}
+        progress={uploadComplete ? 100 : uploadProgress}
+      />
+    </div>
   );
 }

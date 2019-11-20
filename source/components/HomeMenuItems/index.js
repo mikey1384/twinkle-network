@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import { container } from './Styles';
 import Icon from 'components/Icon';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { isMobile } from 'helpers';
 import { useAppContext } from 'contexts';
@@ -19,6 +19,7 @@ export default function HomeMenuItems({ history, style = {} }) {
       actions: { onSetProfilesLoaded }
     }
   } = useAppContext();
+
   return (
     <div className={`unselectable ${container}`} style={style}>
       <ErrorBoundary>

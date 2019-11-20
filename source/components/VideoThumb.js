@@ -1,9 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from './Texts/UsernameText';
 import Link from 'components/Link';
 import FullTextReveal from 'components/Texts/FullTextReveal';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
@@ -44,98 +44,94 @@ export default function VideoThumb({
   const [onTitleHover, setOnTitleHover] = useState(false);
   const ThumbLabelRef = useRef(null);
 
-  return useMemo(
-    () =>
-      !deleted ? (
-        <ErrorBoundary style={style}>
+  return !deleted ? (
+    <ErrorBoundary style={style}>
+      <div
+        className={`${className} ${css`
+          display: flex;
+          width: 100%;
+          flex-direction: column;
+          align-items: flex-end;
+          position: relative;
+          font-size: 1.5rem;
+          box-shadow: 0 0 5px ${Color.darkerGray()};
+          background: ${Color.whiteGray()};
+          border-radius: 1px;
+          p {
+            font-weight: bold;
+          }
+        `}`}
+      >
+        <div style={{ width: '100%' }}>
+          <Link to={`/${to}`} onClickAsync={onLinkClick}>
+            <VideoThumbImage
+              height="65%"
+              videoId={video.id}
+              rewardLevel={video.rewardLevel}
+              src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
+            />
+          </Link>
+        </div>
+        <div
+          style={{
+            height: '8rem',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            padding: '0 1rem'
+          }}
+        >
           <div
-            className={`${className} ${css`
-              display: flex;
-              width: 100%;
-              flex-direction: column;
-              align-items: flex-end;
-              position: relative;
-              font-size: 1.5rem;
-              box-shadow: 0 0 5px ${Color.darkerGray()};
-              background: ${Color.whiteGray()};
-              border-radius: 1px;
-              p {
-                font-weight: bold;
-              }
-            `}`}
+            onMouseOver={onMouseOver}
+            onMouseLeave={() => setOnTitleHover(false)}
+            style={{ width: '100%' }}
           >
-            <div style={{ width: '100%' }}>
-              <Link to={`/${to}`} onClickAsync={onLinkClick}>
-                <VideoThumbImage
-                  height="65%"
-                  videoId={video.id}
-                  rewardLevel={video.rewardLevel}
-                  src={`https://img.youtube.com/vi/${video.content}/mqdefault.jpg`}
-                />
-              </Link>
-            </div>
-            <div
+            <p
+              ref={ThumbLabelRef}
               style={{
-                height: '8rem',
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-around',
-                padding: '0 1rem'
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                lineHeight: 'normal'
               }}
             >
-              <div
-                onMouseOver={onMouseOver}
-                onMouseLeave={() => setOnTitleHover(false)}
-                style={{ width: '100%' }}
+              <a
+                style={{
+                  color: video.byUser ? Color[profileTheme](0.9) : Color.blue()
+                }}
+                href={`/${to}`}
+                onClick={onLinkClick}
               >
-                <p
-                  ref={ThumbLabelRef}
-                  style={{
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    lineHeight: 'normal'
-                  }}
-                >
-                  <a
-                    style={{
-                      color: video.byUser
-                        ? Color[profileTheme](0.9)
-                        : Color.blue()
-                    }}
-                    href={`/${to}`}
-                    onClick={onLinkClick}
-                  >
-                    {cleanString(video.title)}
-                  </a>
-                </p>
-                <FullTextReveal
-                  show={onTitleHover}
-                  text={cleanString(video.title)}
-                />
-              </div>
-              <div style={{ width: '100%', fontSize: '1.2rem' }}>
-                <div className="username">
-                  Added by <UsernameText user={user} />
-                </div>
-                {video.likes?.length > 0 && (
-                  <div style={{ marginTop: '0.5rem' }}>
-                    <Icon icon="thumbs-up" />
-                    &nbsp;&times;&nbsp;
-                    {video.likes.length}
-                  </div>
-                )}
-              </div>
-            </div>
+                {cleanString(video.title)}
+              </a>
+            </p>
+            <FullTextReveal
+              show={onTitleHover}
+              text={cleanString(video.title)}
+            />
           </div>
-        </ErrorBoundary>
-      ) : null,
-    [clickSafe, deleted, onTitleHover, profileTheme, video]
-  );
+          <div style={{ width: '100%', fontSize: '1.2rem' }}>
+            <div className="username">
+              Added by <UsernameText user={user} />
+            </div>
+            {video.likes?.length > 0 && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <Icon icon="thumbs-up" />
+                &nbsp;&times;&nbsp;
+                {video.likes.length}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
   function onLinkClick() {
     return Promise.resolve(clickSafe);
   }
+
   function onMouseOver() {
     if (textIsOverflown(ThumbLabelRef.current)) {
       setOnTitleHover(true);

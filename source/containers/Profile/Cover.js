@@ -5,7 +5,7 @@ import ColorSelector from 'components/ColorSelector';
 import Button from 'components/Button';
 import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useContentContext } from 'contexts';
@@ -230,7 +230,6 @@ export default function Cover({
           profilePicId={profilePicId}
           online={!!online}
           large
-          statusShown
         />
         {imageEditModalShown && (
           <ImageEditModal
