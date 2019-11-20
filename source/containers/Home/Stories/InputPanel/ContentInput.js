@@ -6,7 +6,7 @@ import Banner from 'components/Banner';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import Link from 'components/Link';
 import Checkbox from 'components/Checkbox';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { PanelStyle } from './Styles';
 import { css } from 'emotion';
 import { scrollElementToCenter } from 'helpers';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { stringIsEmpty } from 'helpers/stringHelpers';

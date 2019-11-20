@@ -4,7 +4,7 @@ import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -85,14 +85,10 @@ export default function SubjectHeader() {
     setTimeSinceReload(timeSince(reloadTimeStamp));
   }, [timeStamp, reloadTimeStamp]);
 
-  useInterval(
-    () => {
-      setTimeSincePost(timeSince(timeStamp));
-      setTimeSinceReload(timeSince(reloadTimeStamp));
-    },
-    1000,
-    [timeStamp, reloadTimeStamp]
-  );
+  useInterval(() => {
+    setTimeSincePost(timeSince(timeStamp));
+    setTimeSinceReload(timeSince(reloadTimeStamp));
+  }, 1000);
 
   return useMemo(
     () => (

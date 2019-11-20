@@ -3,7 +3,7 @@ import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext } from 'contexts';

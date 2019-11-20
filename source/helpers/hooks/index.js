@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
@@ -10,14 +11,14 @@ export function useContentState({ contentType, contentId }) {
   return state[contentType + contentId] || {};
 }
 
-export function useInterval(callback, interval, tracked) {
+export function useInterval(callback, interval) {
   const timerRef = useRef(null);
   useEffect(() => {
     timerRef.current = setInterval(callback, interval);
     return function cleanUp() {
       clearInterval(timerRef.current);
     };
-  }, tracked);
+  }, [callback, interval]);
 }
 
 export function useLazyLoad({

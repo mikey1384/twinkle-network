@@ -4,7 +4,7 @@ import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import FilterBar from 'components/FilterBar';
 import Notification from 'components/Notification';

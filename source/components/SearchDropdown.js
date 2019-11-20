@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 
@@ -27,6 +27,7 @@ export default function Dropdown({
 }) {
   useEffect(() => {
     onUpdate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchResults]);
 
   return (

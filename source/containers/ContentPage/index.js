@@ -4,7 +4,7 @@ import ContentPanel from 'components/ContentPanel';
 import NotFound from 'components/NotFound';
 import request from 'axios';
 import URL from 'constants/URL';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';

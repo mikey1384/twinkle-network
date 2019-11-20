@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -69,7 +69,7 @@ export default function Description({
         }
       });
     }
-  }, [isEditing, title, description, url]);
+  }, [isEditing, title, description, url, inputState, linkId, onSetEditForm]);
   const editForm = inputState['edit' + 'url' + linkId] || {};
   const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
 
@@ -107,129 +107,50 @@ export default function Description({
       onClick: onDelete
     });
   }
-  return useMemo(() => {
-    return (
-      <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
-        {editButtonShown && !isEditing && (
-          <DropdownButton
-            skeuomorphic
-            color="darkerGray"
-            opacity={0.8}
-            style={{ position: 'absolute', top: '1rem', right: '1rem' }}
-            direction="left"
-            menuProps={editMenuItems}
-          />
-        )}
+  return (
+    <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
+      {editButtonShown && !isEditing && (
+        <DropdownButton
+          skeuomorphic
+          color="darkerGray"
+          opacity={0.8}
+          style={{ position: 'absolute', top: '1rem', right: '1rem' }}
+          direction="left"
+          menuProps={editMenuItems}
+        />
+      )}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%'
+        }}
+      >
         <div
           style={{
+            width: '100%',
             display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
             alignItems: 'center',
-            width: '100%'
+            flexDirection: 'column'
           }}
         >
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            {isEditing ? (
-              <>
-                <Input
-                  className={css`
-                    width: 80%;
-                  `}
-                  style={titleExceedsCharLimit?.style}
-                  placeholder="Enter Title..."
-                  value={editedTitle}
-                  onChange={text => {
-                    onSetEditForm({
-                      contentId: linkId,
-                      contentType: 'url',
-                      form: {
-                        editedTitle: text
-                      }
-                    });
-                  }}
-                  onKeyUp={event => {
-                    if (event.key === ' ') {
-                      onSetEditForm({
-                        contentId: linkId,
-                        contentType: 'url',
-                        form: {
-                          editedTitle: addEmoji(event.target.value)
-                        }
-                      });
-                    }
-                  }}
-                />
-                {titleExceedsCharLimit && (
-                  <small style={{ color: 'red' }}>
-                    {titleExceedsCharLimit.message}
-                  </small>
-                )}
-              </>
-            ) : (
-              <h2>{title}</h2>
-            )}
-          </div>
-          <div>
-            <small>
-              Added by <UsernameText user={uploader} /> ({timeSince(timeStamp)})
-            </small>
-          </div>
-        </div>
-        <div
-          style={{
-            marginTop: '2rem',
-            whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word',
-            wordBreak: 'break-word'
-          }}
-        >
-          <AlreadyPosted
-            style={{
-              marginLeft: '-1rem',
-              marginRight: '-1rem'
-            }}
-            contentId={Number(linkId)}
-            contentType="url"
-            url={url}
-            uploaderId={uploader.id}
-          />
           {isEditing ? (
-            <div>
+            <>
               <Input
-                placeholder="Enter URL"
                 className={css`
-                  margin-bottom: '1rem';
+                  width: 80%;
                 `}
-                style={urlExceedsCharLimit?.style}
-                value={editedUrl}
+                style={titleExceedsCharLimit?.style}
+                placeholder="Enter Title..."
+                value={editedTitle}
                 onChange={text => {
                   onSetEditForm({
                     contentId: linkId,
                     contentType: 'url',
                     form: {
-                      editedUrl: text
-                    }
-                  });
-                }}
-              />
-              <Textarea
-                minRows={4}
-                placeholder="Enter Description"
-                value={editedDescription}
-                onChange={event => {
-                  onSetEditForm({
-                    contentId: linkId,
-                    contentType: 'url',
-                    form: {
-                      editedDescription: event.target.value
+                      editedTitle: text
                     }
                   });
                 }}
@@ -239,102 +160,165 @@ export default function Description({
                       contentId: linkId,
                       contentType: 'url',
                       form: {
-                        editedDescription: addEmoji(event.target.value)
+                        editedTitle: addEmoji(event.target.value)
                       }
                     });
                   }
                 }}
-                style={{
-                  marginTop: '1rem',
-                  ...(descriptionExceedsCharLimit?.style || {})
-                }}
               />
-              {descriptionExceedsCharLimit && (
+              {titleExceedsCharLimit && (
                 <small style={{ color: 'red' }}>
-                  {descriptionExceedsCharLimit?.message}
+                  {titleExceedsCharLimit.message}
                 </small>
               )}
-              <div style={{ justifyContent: 'center', display: 'flex' }}>
-                <Button
-                  transparent
-                  style={{ marginRight: '1rem' }}
-                  onClick={onEditCancel}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color="blue"
-                  disabled={determineEditButtonDoneStatus()}
-                  onClick={onEditFinish}
-                >
-                  Done
-                </Button>
-              </div>
-            </div>
+            </>
           ) : (
-            <LongText lines={20}>{description || ''}</LongText>
+            <h2>{title}</h2>
           )}
         </div>
+        <div>
+          <small>
+            Added by <UsernameText user={uploader} /> ({timeSince(timeStamp)})
+          </small>
+        </div>
       </div>
-    );
+      <div
+        style={{
+          marginTop: '2rem',
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word'
+        }}
+      >
+        <AlreadyPosted
+          style={{
+            marginLeft: '-1rem',
+            marginRight: '-1rem'
+          }}
+          contentId={Number(linkId)}
+          contentType="url"
+          url={url}
+          uploaderId={uploader.id}
+        />
+        {isEditing ? (
+          <div>
+            <Input
+              placeholder="Enter URL"
+              className={css`
+                margin-bottom: '1rem';
+              `}
+              style={urlExceedsCharLimit?.style}
+              value={editedUrl}
+              onChange={text => {
+                onSetEditForm({
+                  contentId: linkId,
+                  contentType: 'url',
+                  form: {
+                    editedUrl: text
+                  }
+                });
+              }}
+            />
+            <Textarea
+              minRows={4}
+              placeholder="Enter Description"
+              value={editedDescription}
+              onChange={event => {
+                onSetEditForm({
+                  contentId: linkId,
+                  contentType: 'url',
+                  form: {
+                    editedDescription: event.target.value
+                  }
+                });
+              }}
+              onKeyUp={event => {
+                if (event.key === ' ') {
+                  onSetEditForm({
+                    contentId: linkId,
+                    contentType: 'url',
+                    form: {
+                      editedDescription: addEmoji(event.target.value)
+                    }
+                  });
+                }
+              }}
+              style={{
+                marginTop: '1rem',
+                ...(descriptionExceedsCharLimit?.style || {})
+              }}
+            />
+            {descriptionExceedsCharLimit && (
+              <small style={{ color: 'red' }}>
+                {descriptionExceedsCharLimit?.message}
+              </small>
+            )}
+            <div style={{ justifyContent: 'center', display: 'flex' }}>
+              <Button
+                transparent
+                style={{ marginRight: '1rem' }}
+                onClick={onEditCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="blue"
+                disabled={determineEditButtonDoneStatus()}
+                onClick={onEditFinish}
+              >
+                Done
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <LongText lines={20}>{description || ''}</LongText>
+        )}
+      </div>
+    </div>
+  );
 
-    function determineEditButtonDoneStatus() {
-      const urlIsEmpty = stringIsEmpty(editedUrl);
-      const urlIsValid = isValidUrl(editedUrl);
-      const titleIsEmpty = stringIsEmpty(editedTitle);
-      const titleChanged = editedTitle !== title;
-      const urlChanged = editedUrl !== url;
-      const descriptionChanged = editedDescription !== description;
-      if (!urlIsValid) return true;
-      if (urlIsEmpty) return true;
-      if (titleIsEmpty) return true;
-      if (!titleChanged && !descriptionChanged && !urlChanged) return true;
-      if (titleExceedsCharLimit) return true;
-      if (descriptionExceedsCharLimit) return true;
-      if (urlExceedsCharLimit) return true;
-      return false;
-    }
+  function determineEditButtonDoneStatus() {
+    const urlIsEmpty = stringIsEmpty(editedUrl);
+    const urlIsValid = isValidUrl(editedUrl);
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== title;
+    const urlChanged = editedUrl !== url;
+    const descriptionChanged = editedDescription !== description;
+    if (!urlIsValid) return true;
+    if (urlIsEmpty) return true;
+    if (titleIsEmpty) return true;
+    if (!titleChanged && !descriptionChanged && !urlChanged) return true;
+    if (titleExceedsCharLimit) return true;
+    if (descriptionExceedsCharLimit) return true;
+    if (urlExceedsCharLimit) return true;
+    return false;
+  }
 
-    function onEditCancel() {
-      onSetEditForm({
-        contentId: linkId,
-        contentType: 'url',
-        form: undefined
-      });
-      onSetIsEditing({
-        contentId: linkId,
-        contentType: 'url',
-        isEditing: false
-      });
-    }
+  function onEditCancel() {
+    onSetEditForm({
+      contentId: linkId,
+      contentType: 'url',
+      form: undefined
+    });
+    onSetIsEditing({
+      contentId: linkId,
+      contentType: 'url',
+      isEditing: false
+    });
+  }
 
-    async function onEditFinish() {
-      await onEditDone({
-        editedUrl,
-        editedTitle: finalizeEmoji(editedTitle),
-        editedDescription: finalizeEmoji(editedDescription),
-        contentId: linkId,
-        contentType: 'url'
-      });
-      onSetIsEditing({
-        contentId: linkId,
-        contentType: 'url',
-        isEditing: false
-      });
-    }
-  }, [
-    description,
-    descriptionExceedsCharLimit,
-    editButtonShown,
-    editForm,
-    isEditing,
-    linkId,
-    title,
-    titleExceedsCharLimit,
-    uploader,
-    url,
-    urlExceedsCharLimit,
-    userCanEditThis,
-    editMenuItems
-  ]);
+  async function onEditFinish() {
+    await onEditDone({
+      editedUrl,
+      editedTitle: finalizeEmoji(editedTitle),
+      editedDescription: finalizeEmoji(editedDescription),
+      contentId: linkId,
+      contentType: 'url'
+    });
+    onSetIsEditing({
+      contentId: linkId,
+      contentType: 'url',
+      isEditing: false
+    });
+  }
 }

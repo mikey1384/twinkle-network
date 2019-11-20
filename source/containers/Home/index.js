@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import AlertModal from 'components/Modals/AlertModal';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import ProfileWidget from 'components/ProfileWidget';
 import HomeMenuItems from 'components/HomeMenuItems';
 import Notification from 'components/Notification';

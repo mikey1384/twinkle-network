@@ -11,7 +11,7 @@ import QuestionsBuilder from './QuestionsBuilder';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import request from 'axios';
 import queryString from 'query-string';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Subjects from 'components/Subjects';
 import RewardStatus from 'components/RewardStatus';
 import Loading from 'components/Loading';

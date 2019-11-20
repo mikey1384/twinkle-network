@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -35,17 +35,21 @@ export default function TagModal({
   const [disabled, setDisabled] = useState(false);
   const InputRef = useRef(null);
   const searchTextRef = useRef('');
-  const dropdownFooter = notFoundMessageShown ? (
-    <a
-      style={{ cursor: 'pointer', fontWeight: 'bold' }}
-      onClick={() => {
-        setSearchResults([]);
-        setAddPlaylistModalShown(true);
-      }}
-    >
-      {`Create a new playlist titled "${capitalize(searchText)}"`}
-    </a>
-  ) : null;
+  const dropdownFooter = useMemo(
+    () =>
+      notFoundMessageShown ? (
+        <a
+          style={{ cursor: 'pointer', fontWeight: 'bold' }}
+          onClick={() => {
+            setSearchResults([]);
+            setAddPlaylistModalShown(true);
+          }}
+        >
+          {`Create a new playlist titled "${capitalize(searchText)}"`}
+        </a>
+      ) : null,
+    [notFoundMessageShown, searchText]
+  );
 
   return (
     <Modal onHide={onHide}>

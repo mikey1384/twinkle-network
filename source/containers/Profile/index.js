@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Cover from './Cover';
 import Body from './Body';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
 import { useAppContext, useContentContext, useProfileContext } from 'contexts';
 import { useContentState, useMyState, useProfileState } from 'helpers/hooks';

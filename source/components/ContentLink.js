@@ -23,34 +23,33 @@ export default function ContentLink({
   contentType
 }) {
   const { profileTheme } = useMyState();
-  let destination = '';
-  if (contentType === 'url') {
-    destination = 'links';
-  } else {
-    destination = contentType + 's';
-  }
-  title = title || content || username;
-  return useMemo(
-    () =>
-      title ? (
-        <Link
-          style={{
-            fontWeight: 'bold',
-            color:
-              contentType === 'video' && byUser
-                ? Color[profileTheme](0.9)
-                : Color.blue(),
-            ...style
-          }}
-          to={`/${destination}/${contentType === 'user' ? username : id}`}
-        >
-          {removeLineBreaks(title)}
-        </Link>
-      ) : (
-        <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>
-          (Deleted)
-        </span>
-      ),
-    [profileTheme, byUser, content, title, username]
+  const destination = useMemo(() => {
+    let result = '';
+    if (contentType === 'url') {
+      result = 'links';
+    } else {
+      result = contentType + 's';
+    }
+    return result;
+  }, [contentType]);
+  const label = title || content || username;
+  return label ? (
+    <Link
+      style={{
+        fontWeight: 'bold',
+        color:
+          contentType === 'video' && byUser
+            ? Color[profileTheme](0.9)
+            : Color.blue(),
+        ...style
+      }}
+      to={`/${destination}/${contentType === 'user' ? username : id}`}
+    >
+      {removeLineBreaks(title)}
+    </Link>
+  ) : (
+    <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>
+      (Deleted)
+    </span>
   );
 }
