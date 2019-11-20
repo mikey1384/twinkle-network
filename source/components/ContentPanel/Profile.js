@@ -35,33 +35,12 @@ export default function Profile({ profile }) {
             flexDirection: 'column'
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            <ProfilePic
-              style={{ width: '15rem', height: '15rem', cursor: 'pointer' }}
-              userId={profile.id}
-              profilePicId={profile.profilePicId}
-              online={userId === profile.id || !!profile.online}
-              large
-              statusShown
-            />
-          </div>
-          <UserDetails
-            noLink
-            small
-            unEditable
-            profile={profile}
-            style={{
-              width: 'CALC(100% - 18rem)',
-              marginLeft: '1rem',
-              fontSize: '1.5rem'
-            }}
-            userId={userId}
+          <ProfilePic
+            style={{ width: '15rem', height: '15rem', cursor: 'pointer' }}
+            userId={profile.id}
+            profilePicId={profile.profilePicId}
+            online={userId === profile.id || !!profile.online}
+            large
           />
         </div>
         <UserDetails
