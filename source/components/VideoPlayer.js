@@ -20,11 +20,9 @@ const intervalLength = 2000;
 const xp = rewardValue.star;
 
 VideoPlayer.propTypes = {
-  autoplay: PropTypes.bool,
   byUser: PropTypes.bool,
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
-  stretch: PropTypes.bool,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
   uploader: PropTypes.object.isRequired,
@@ -113,6 +111,7 @@ function VideoPlayer({
       clearInterval(timerRef.current);
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -128,6 +127,7 @@ function VideoPlayer({
         });
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeAt]);
 
   useEffect(() => {
@@ -137,6 +137,7 @@ function VideoPlayer({
       ? Math.min(twinkleXP / 10000, maxRequiredDuration)
       : 60 + Math.min(twinkleXP / 1000, 120) || maxRequiredDuration;
     userIdRef.current = userId;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
@@ -173,12 +174,14 @@ function VideoPlayer({
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rewardLevel, userId]);
 
   useEffect(() => {
     if (isEditing) {
       handleVideoStop();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
   useEffect(() => {
@@ -191,6 +194,7 @@ function VideoPlayer({
       onSetVideoXpJustEarned({ videoId, justEarned: false });
       onSetVideoXpLoaded({ videoId, loaded: false });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, xpEarned, playing]);
 
   useEffect(() => {
@@ -199,6 +203,7 @@ function VideoPlayer({
       videoId,
       url: `https://img.youtube.com/vi/${videoCode}/${newImageName}.jpg`
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoCode]);
 
   useEffect(() => {
@@ -210,6 +215,7 @@ function VideoPlayer({
       handleVideoStop();
       PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentVideoSlot]);
 
   useEffect(() => {
@@ -218,197 +224,185 @@ function VideoPlayer({
       handleVideoStop();
       PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisible]);
 
-  const meterColor = xpEarned
-    ? Color.green()
-    : rewardLevel === 5
-    ? Color.gold()
-    : rewardLevel === 4
-    ? Color.brownOrange()
-    : rewardLevel === 3
-    ? Color.orange()
-    : rewardLevel === 2
-    ? Color.pink()
-    : Color.logoBlue();
-  const videoUrl = `https://www.youtube.com/watch?v=${videoCode}${
-    startingPosition > 0 ? `?t=${startingPosition}` : ''
-  }`;
-  return useMemo(
-    () => (
-      <ErrorBoundary style={style}>
-        {byUser && (
+  const meterColor = useMemo(
+    () =>
+      xpEarned
+        ? Color.green()
+        : rewardLevel === 5
+        ? Color.gold()
+        : rewardLevel === 4
+        ? Color.brownOrange()
+        : rewardLevel === 3
+        ? Color.orange()
+        : rewardLevel === 2
+        ? Color.pink()
+        : Color.logoBlue(),
+    [rewardLevel, xpEarned]
+  );
+
+  const videoUrl = useMemo(
+    () =>
+      `https://www.youtube.com/watch?v=${videoCode}${
+        startingPosition > 0 ? `?t=${startingPosition}` : ''
+      }`,
+    [startingPosition, videoCode]
+  );
+
+  return (
+    <ErrorBoundary style={style}>
+      {byUser && (
+        <div
+          style={{
+            background: Color[themeColor](0.9),
+            color: '#fff',
+            padding: '0.5rem',
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <div>
+            This video was made by {uploader.username}.{' '}
+            {uploader.youtubeUrl && (
+              <a
+                style={{
+                  color: '#fff',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={uploader.youtubeUrl}
+              >
+                {`Visit ${uploader.username}'s`} YouTube Channel
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+      <div
+        className={`${css`
+          user-select: none;
+          position: relative;
+          padding-top: 56.25%;
+        `}${minimized ? ' desktop' : ''}`}
+        style={{
+          display: minimized && !started && 'none',
+          width: started && minimized && '39rem',
+          paddingTop: started && minimized && '22rem',
+          position: started && minimized && 'absolute',
+          bottom: started && minimized && '1rem',
+          right: started && minimized && '1rem',
+          cursor: !isEditing && !started && 'pointer'
+        }}
+      >
+        <img
+          alt=""
+          src={imageUrl}
+          className={css`
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            cursor: pointer;
+          `}
+        />
+        <ReactPlayer
+          ref={PlayerRef}
+          className={css`
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+          `}
+          width="100%"
+          height="100%"
+          url={videoUrl}
+          playing={playing}
+          controls
+          onReady={onVideoReady}
+          onPlay={() =>
+            onVideoPlay({
+              requiredDurationCap: requiredDurationCap.current,
+              userId: userIdRef.current,
+              watchTime
+            })
+          }
+          onPause={handleVideoStop}
+          onEnded={handleVideoStop}
+        />
+      </div>
+      {startingPosition > 0 && !started ? (
+        <div
+          style={{
+            background: Color.darkBlue(),
+            padding: '0.5rem',
+            color: '#fff',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={() => PlayerRef.current?.getInternalPlayer()?.playVideo()}
+        >
+          Continue Watching...
+        </div>
+      ) : (
+        (!userId || xpLoaded) &&
+        !!rewardLevel &&
+        (!started || alreadyEarned) && (
           <div
             style={{
-              background: Color[themeColor](0.9),
-              color: '#fff',
+              background: meterColor,
               padding: '0.5rem',
-              fontWeight: 'bold',
+              color: '#fff',
               fontSize: '1.5rem',
+              fontWeight: 'bold',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
           >
-            <div>
-              This video was made by {uploader.username}.{' '}
-              {uploader.youtubeUrl && (
-                <a
-                  style={{
-                    color: '#fff',
-                    cursor: 'pointer',
-                    textDecoration: 'underline'
-                  }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={uploader.youtubeUrl}
-                >
-                  {`Visit ${uploader.username}'s`} YouTube Channel
-                </a>
-              )}
-            </div>
-          </div>
-        )}
-        <div
-          className={`${css`
-            user-select: none;
-            position: relative;
-            padding-top: 56.25%;
-          `}${minimized ? ' desktop' : ''}`}
-          style={{
-            display: minimized && !started && 'none',
-            width: started && minimized && '39rem',
-            paddingTop: started && minimized && '22rem',
-            position: started && minimized && 'absolute',
-            bottom: started && minimized && '1rem',
-            right: started && minimized && '1rem',
-            cursor: !isEditing && !started && 'pointer'
-          }}
-        >
-          <img
-            alt=""
-            src={imageUrl}
-            className={css`
-              position: absolute;
-              width: 100%;
-              height: 100%;
-              top: 0;
-              right: 0;
-              left: 0;
-              bottom: 0;
-              cursor: pointer;
-            `}
-          />
-          <ReactPlayer
-            ref={PlayerRef}
-            className={css`
-              position: absolute;
-              top: 0;
-              left: 0;
-              z-index: 1;
-            `}
-            width="100%"
-            height="100%"
-            url={videoUrl}
-            playing={playing}
-            controls
-            onReady={onVideoReady}
-            onPlay={() =>
-              onVideoPlay({
-                requiredDurationCap: requiredDurationCap.current,
-                userId: userIdRef.current,
-                watchTime
-              })
-            }
-            onPause={handleVideoStop}
-            onEnded={handleVideoStop}
-          />
-        </div>
-        {startingPosition > 0 && !started ? (
-          <div
-            style={{
-              background: Color.darkBlue(),
-              padding: '0.5rem',
-              color: '#fff',
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}
-            onClick={() => PlayerRef.current?.getInternalPlayer()?.playVideo()}
-          >
-            Continue Watching...
-          </div>
-        ) : (
-          (!userId || xpLoaded) &&
-          !!rewardLevel &&
-          (!started || alreadyEarned) && (
-            <div
-              style={{
-                background: meterColor,
-                padding: '0.5rem',
-                color: '#fff',
-                fontSize: '1.5rem',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              {!alreadyEarned && (
-                <div>
-                  {[...Array(rewardLevel)].map((elem, index) => (
-                    <Icon key={index} icon="star" />
-                  ))}
-                </div>
-              )}
-              <div style={{ marginLeft: '0.7rem' }}>
-                {alreadyEarned
-                  ? 'You have earned XP from this video'
-                  : `Watch this video and earn ${addCommasToNumber(
-                      rewardLevel * xp
-                    )} XP`}
+            {!alreadyEarned && (
+              <div>
+                {[...Array(rewardLevel)].map((elem, index) => (
+                  <Icon key={index} icon="star" />
+                ))}
               </div>
+            )}
+            <div style={{ marginLeft: '0.7rem' }}>
+              {alreadyEarned
+                ? 'You have earned XP from this video'
+                : `Watch this video and earn ${addCommasToNumber(
+                    rewardLevel * xp
+                  )} XP`}
             </div>
-          )
-        )}
-        {!alreadyEarned && !!rewardLevel && userId && started && (
-          <ProgressBar
-            progress={progress}
-            color={justEarned ? Color.green() : meterColor}
-            noBorderRadius
-            text={
-              justEarned
-                ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`
-                : ''
-            }
-          />
-        )}
-      </ErrorBoundary>
-    ),
-    [
-      currentTime,
-      playing,
-      started,
-      xpLoaded,
-      xpEarned,
-      justEarned,
-      imageUrl,
-      progress,
-      watchTime,
-      alreadyEarned,
-      byUser,
-      rewardLevel,
-      minimized,
-      videoCode,
-      profileTheme,
-      startingPosition,
-      twinkleXP,
-      userId,
-      isEditing
-    ]
+          </div>
+        )
+      )}
+      {!alreadyEarned && !!rewardLevel && userId && started && (
+        <ProgressBar
+          progress={progress}
+          color={justEarned ? Color.green() : meterColor}
+          noBorderRadius
+          text={
+            justEarned
+              ? `Earned ${addCommasToNumber(rewardLevel * xp)} XP!`
+              : ''
+          }
+        />
+      )}
+    </ErrorBoundary>
   );
 
   function onVideoReady() {

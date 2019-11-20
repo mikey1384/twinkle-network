@@ -50,25 +50,30 @@ export default function SelectPlaylistsToPinModal({
     onClear: () => setSearchedPlaylists([]),
     onSetSearchText: setSearchText
   });
+
   useEffect(() => {
     pinnedPlaylistsObjectRef.current = featuredPlaylists.reduce(
       (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
       {}
     );
     setSelectedPlaylists(initialSelectedPlaylists);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
     playlistsToPinObjectRef.current = playlistsToPin.reduce(
       (prev, playlist) => ({ ...prev, [playlist.id]: playlist.title }),
       {}
     );
   }, [playlistsToPin]);
+
   playlistObjectsRef.current = {
     ...playlistObjectsRef.current,
     ...pinnedPlaylistsObjectRef.current,
     ...playlistsToPinObjectRef.current,
     ...searchedPlaylistsObjectRef.current
   };
+
   const lastPlaylistId = playlistsToPin[playlistsToPin.length - 1].id;
   const displayedLoadMoreButton = stringIsEmpty(searchText)
     ? loadMoreButton

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Square from './Square';
 import getPiece from './helpers/piece';
@@ -16,35 +16,33 @@ export default function FallenPieces({
   blackFallenPieces,
   myColor
 }) {
-  const whiteFallenHash = {};
-  const blackFallenHash = {};
-
-  if (whiteFallenPieces) {
-    for (let piece of whiteFallenPieces) {
-      if (!whiteFallenHash[piece.type]) {
-        whiteFallenHash[piece.type] = { ...piece, count: 1 };
-      } else {
-        whiteFallenHash[piece.type].count += 1;
+  const whiteFallenPiecesCompressed = useMemo(() => {
+    const whiteFallenHash = {};
+    if (whiteFallenPieces) {
+      for (let piece of whiteFallenPieces) {
+        if (!whiteFallenHash[piece.type]) {
+          whiteFallenHash[piece.type] = { ...piece, count: 1 };
+        } else {
+          whiteFallenHash[piece.type].count += 1;
+        }
       }
     }
-  }
+    return Object.keys(whiteFallenHash).map(key => whiteFallenHash[key]);
+  }, [whiteFallenPieces]);
 
-  if (blackFallenPieces) {
-    for (let piece of blackFallenPieces) {
-      if (!blackFallenHash[piece.type]) {
-        blackFallenHash[piece.type] = { ...piece, count: 1 };
-      } else {
-        blackFallenHash[piece.type].count += 1;
+  const blackFallenPiecesCompressed = useMemo(() => {
+    const blackFallenHash = {};
+    if (blackFallenPieces) {
+      for (let piece of blackFallenPieces) {
+        if (!blackFallenHash[piece.type]) {
+          blackFallenHash[piece.type] = { ...piece, count: 1 };
+        } else {
+          blackFallenHash[piece.type].count += 1;
+        }
       }
     }
-  }
-
-  const whiteFallenPiecesCompressed = Object.keys(whiteFallenHash).map(
-    key => whiteFallenHash[key]
-  );
-  const blackFallenPiecesCompressed = Object.keys(blackFallenHash).map(
-    key => blackFallenHash[key]
-  );
+    return Object.keys(blackFallenHash).map(key => blackFallenHash[key]);
+  }, [blackFallenPieces]);
 
   return (
     <>

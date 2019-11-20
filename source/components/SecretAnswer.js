@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
@@ -66,35 +66,32 @@ export default function SecretAnswer({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spoilerShown, spoilerStatusChecked, userId]);
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <div
-          onClick={spoilerShown ? () => {} : onClick}
-          style={{
-            cursor: spoilerShown ? '' : 'pointer',
-            fontSize: '1.7rem',
-            background: spoilerShown ? Color.ivory() : Color.darkerGray(),
-            border: `1px solid ${
-              spoilerShown ? Color.borderGray() : Color.black()
-            }`,
-            borderRadius,
-            color: spoilerShown ? Color.black() : '#fff',
-            textAlign: spoilerShown ? '' : 'center',
-            padding: '1rem',
-            ...style
-          }}
-        >
-          {spoilerShown && <LongText>{answer}</LongText>}
-          {!spoilerShown && (
-            <span>
-              Submit your response to view the secret message. Tap here
-            </span>
-          )}
-        </div>
-      </ErrorBoundary>
-    ),
-    [spoilerShown, answer]
+
+  return (
+    <ErrorBoundary>
+      <div
+        onClick={spoilerShown ? () => {} : onClick}
+        style={{
+          cursor: spoilerShown ? '' : 'pointer',
+          fontSize: '1.7rem',
+          background: spoilerShown ? Color.ivory() : Color.darkerGray(),
+          border: `1px solid ${
+            spoilerShown ? Color.borderGray() : Color.black()
+          }`,
+          borderRadius,
+          color: spoilerShown ? Color.black() : '#fff',
+          textAlign: spoilerShown ? '' : 'center',
+          padding: '1rem',
+          ...style
+        }}
+      >
+        {spoilerShown && <LongText>{answer}</LongText>}
+        {!spoilerShown && (
+          <span>Submit your response to view the secret message. Tap here</span>
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }

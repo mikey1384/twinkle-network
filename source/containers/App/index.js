@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
@@ -103,13 +103,15 @@ function App({ location, history }) {
       }
       onSetSessionLoaded();
     }
-  }, [auth()?.headers?.authorization, pageVisible]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth, location.pathname, pageVisible, signinModalShown]);
 
   useEffect(() => {
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   useEffect(() => {
@@ -136,144 +138,129 @@ function App({ location, history }) {
     };
   });
 
-  return useMemo(
-    () => (
-      <div
-        className={css`
-          height: CALC(100% - 4.5rem);
-          width: 100%;
-          @media (max-width: ${mobileMaxWidth}) {
-            height: 100%;
-          }
-        `}
-      >
-        {mobileMenuShown && (
-          <MobileMenu
-            location={location}
-            history={history}
-            username={username}
-            onClose={() => setMobileMenuShown(false)}
-          />
-        )}
-        {updateNoticeShown && (
-          <div
-            className={css`
-              position: fixed;
-              width: 80%;
-              left: 10%;
-              top: 2rem;
-              z-index: 100000;
-              background: ${Color.blue()};
-              color: #fff;
-              padding: 1rem;
-              text-align: center;
-              font-size: 2rem;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-                left: 0;
-              }
-            `}
-          >
-            <p>
-              The website has been updated. Click the button below to apply the
-              update.
-            </p>
-            <p style={{ fontSize: '1.3em' }}>
-              {
-                "Warning: Update is mandatory. Some features will not work properly if you don't update!"
-              }
-            </p>
-            {updateDetail && (
-              <p style={{ color: Color.gold() }}>{updateDetail}</p>
-            )}
-            <Button
-              color="gold"
-              filled
-              style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
-              onClick={() => window.location.reload()}
-            >
-              Update!
-            </Button>
-          </div>
-        )}
-        <Header
+  return (
+    <div
+      className={css`
+        height: CALC(100% - 4.5rem);
+        width: 100%;
+        @media (max-width: ${mobileMaxWidth}) {
+          height: 100%;
+        }
+      `}
+    >
+      {mobileMenuShown && (
+        <MobileMenu
+          location={location}
           history={history}
-          onMobileMenuOpen={() => setMobileMenuShown(true)}
+          username={username}
+          onClose={() => setMobileMenuShown(false)}
         />
+      )}
+      {updateNoticeShown && (
         <div
-          id="App"
           className={css`
-            margin-top: 4.5rem;
-            height: 100%;
+            position: fixed;
+            width: 80%;
+            left: 10%;
+            top: 2rem;
+            z-index: 100000;
+            background: ${Color.blue()};
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
-              padding-top: 0;
-              padding-bottom: 5rem;
+              width: 100%;
+              left: 0;
             }
           `}
         >
-          <Suspense fallback={<Loading />}>
-            <Switch>
-              <Route
-                path="/users/:username"
-                render={({ history, location, match }) => (
-                  <Profile
-                    history={history}
-                    location={location}
-                    match={match}
-                  />
-                )}
-              />
-              <Route path="/comments/:contentId" component={ContentPage} />
-              <Route path="/videos/:videoId" component={VideoPage} />
-              <Route path="/videos" component={Explore} />
-              <Route path="/links/:linkId" component={LinkPage} />
-              <Route path="/links" component={Explore} />
-              <Route path="/subjects/:contentId" component={ContentPage} />
-              <Route path="/subjects" component={Explore} />
-              <Route path="/playlists" component={PlaylistPage} />
-              <Route
-                path="/chat"
-                render={() => <Chat onFileUpload={handleFileUpload} />}
-              />
-              <Route path="/verify" component={Verify} />
-              <Route path="/privacy" component={Privacy} />
-              <Route
-                exact
-                path="/"
-                render={({ history, location }) => (
-                  <Home history={history} location={location} />
-                )}
-              />
-              <Route
-                exact
-                path="/users/"
-                render={({ history, location }) => (
-                  <Home history={history} location={location} />
-                )}
-              />
-              <Route path="/management" component={Management} />
-              <Route path="/:username" component={Redirect} />
-            </Switch>
-          </Suspense>
+          <p>
+            The website has been updated. Click the button below to apply the
+            update.
+          </p>
+          <p style={{ fontSize: '1.3em' }}>
+            {
+              "Warning: Update is mandatory. Some features will not work properly if you don't update!"
+            }
+          </p>
+          {updateDetail && (
+            <p style={{ color: Color.gold() }}>{updateDetail}</p>
+          )}
+          <Button
+            color="gold"
+            filled
+            style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
+            onClick={() => window.location.reload()}
+          >
+            Update!
+          </Button>
         </div>
+      )}
+      <Header
+        history={history}
+        onMobileMenuOpen={() => setMobileMenuShown(true)}
+      />
+      <div
+        id="App"
+        className={css`
+          margin-top: 4.5rem;
+          height: 100%;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 5rem;
+          }
+        `}
+      >
         <Suspense fallback={<Loading />}>
-          {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
+          <Switch>
+            <Route
+              path="/users/:username"
+              render={({ history, location, match }) => (
+                <Profile history={history} location={location} match={match} />
+              )}
+            />
+            <Route path="/comments/:contentId" component={ContentPage} />
+            <Route path="/videos/:videoId" component={VideoPage} />
+            <Route path="/videos" component={Explore} />
+            <Route path="/links/:linkId" component={LinkPage} />
+            <Route path="/links" component={Explore} />
+            <Route path="/subjects/:contentId" component={ContentPage} />
+            <Route path="/subjects" component={Explore} />
+            <Route path="/playlists" component={PlaylistPage} />
+            <Route
+              path="/chat"
+              render={() => <Chat onFileUpload={handleFileUpload} />}
+            />
+            <Route path="/verify" component={Verify} />
+            <Route path="/privacy" component={Privacy} />
+            <Route
+              exact
+              path="/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
+            <Route
+              exact
+              path="/users/"
+              render={({ history, location }) => (
+                <Home history={history} location={location} />
+              )}
+            />
+            <Route path="/management" component={Management} />
+            <Route path="/:username" component={Redirect} />
+          </Switch>
         </Suspense>
       </div>
-    ),
-    [
-      location,
-      mobileMenuShown,
-      pageVisible,
-      signinModalShown,
-      updateDetail,
-      updateNoticeShown,
-      username
-    ]
+      <Suspense fallback={<Loading />}>
+        {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
+      </Suspense>
+    </div>
   );
 
   async function handleFileUpload({

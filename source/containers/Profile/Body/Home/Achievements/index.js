@@ -48,7 +48,8 @@ export default function Achievements({
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [profile.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, loaded, profile.id, username]);
 
   return (
     <ErrorBoundary>

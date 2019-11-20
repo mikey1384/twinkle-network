@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import { useMyState, useSearch } from 'helpers/hooks';
@@ -27,41 +27,38 @@ export default function ChatSearchBox() {
     onSetSearchText: setSearchText
   });
 
-  return useMemo(
-    () => (
-      <div style={{ padding: '0 1rem', zIndex: 5 }}>
-        <SearchInput
-          placeholder="Play chess or talk with..."
-          onChange={handleSearch}
-          value={searchText}
-          searchResults={chatSearchResults}
-          renderItemLabel={item =>
-            !item.primary || (item.primary && item.twoPeople) ? (
-              <span>
-                {item.label}{' '}
-                {item.subLabel && <small>{`(${item.subLabel})`}</small>}
-              </span>
-            ) : (
-              <span
-                style={{
-                  color: Color.green(),
-                  fontWeight: 'bold'
-                }}
-              >
-                {item.label} (Group)
-              </span>
-            )
-          }
-          onClickOutSide={() => {
-            setSearchText('');
-            onClearChatSearchResults();
-          }}
-          onSelect={onSelect}
-        />
-        {searching && <Loading style={{ height: '7rem' }} />}
-      </div>
-    ),
-    [chatSearchResults, searching, searchText, userId, username]
+  return (
+    <div style={{ padding: '0 1rem', zIndex: 5 }}>
+      <SearchInput
+        placeholder="Play chess or talk with..."
+        onChange={handleSearch}
+        value={searchText}
+        searchResults={chatSearchResults}
+        renderItemLabel={item =>
+          !item.primary || (item.primary && item.twoPeople) ? (
+            <span>
+              {item.label}{' '}
+              {item.subLabel && <small>{`(${item.subLabel})`}</small>}
+            </span>
+          ) : (
+            <span
+              style={{
+                color: Color.green(),
+                fontWeight: 'bold'
+              }}
+            >
+              {item.label} (Group)
+            </span>
+          )
+        }
+        onClickOutSide={() => {
+          setSearchText('');
+          onClearChatSearchResults();
+        }}
+        onSelect={onSelect}
+      />
+      {searching && <Loading style={{ height: '7rem' }} />}
+    </div>
   );
 
   async function handleSearchChat(text) {

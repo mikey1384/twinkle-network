@@ -59,9 +59,11 @@ export default function TagInput({
         value.length > 1;
       onNotFound?.({ messageShown: shown });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
   useEffect(() => {
     setResults(searchResults.filter(item => !selectedItems[item.id]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchResults]);
 
   useOutsideClick(TagInputRef, onClickOutSide);

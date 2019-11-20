@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -31,10 +31,14 @@ export default function StatusInput({
   onTextChange,
   setColor
 }) {
-  const statusExceedsCharLimit = exceedsCharLimit({
-    contentType: 'statusMsg',
-    text: editedStatusMsg
-  });
+  const statusExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'statusMsg',
+        text: editedStatusMsg
+      }),
+    [editedStatusMsg]
+  );
 
   return (
     <ErrorBoundary>

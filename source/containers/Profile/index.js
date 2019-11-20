@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Cover from './Cover';
 import Body from './Body';
@@ -58,7 +58,8 @@ export default function Profile({ history, location, match }) {
       }
       setLoading(false);
     }
-  }, [match.params.username, profile.loaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match.params.username, notExist, profile.loaded]);
 
   useEffect(() => {
     if (
@@ -69,55 +70,53 @@ export default function Profile({ history, location, match }) {
       history.push(`/${username}`);
     }
     setSelectedTheme(profile?.profileTheme || 'logoBlue');
-  }, [match.params.username, profile, userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [match.params.username, profile, userId, username]);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary style={{ minHeight: '10rem' }}>
-        <GoBack isMobile to="/users" text="Users" />
-        {!notExist ? (
-          <>
-            {loading && <Loading text="Loading Profile..." />}
-            {!loading && profile.id && (
-              <div
-                className={css`
-                  a {
-                    white-space: pre-wrap;
-                    overflow-wrap: break-word;
-                    word-break: break-word;
-                  }
-                `}
-                style={{
-                  position: 'relative'
+  return (
+    <ErrorBoundary style={{ minHeight: '10rem' }}>
+      <GoBack isMobile to="/users" text="Users" />
+      {!notExist ? (
+        <>
+          {loading && <Loading text="Loading Profile..." />}
+          {!loading && profile.id && (
+            <div
+              className={css`
+                a {
+                  white-space: pre-wrap;
+                  overflow-wrap: break-word;
+                  word-break: break-word;
+                }
+              `}
+              style={{
+                position: 'relative'
+              }}
+            >
+              <Cover
+                profile={profile}
+                onSelectTheme={theme => {
+                  setSelectedTheme(theme);
                 }}
-              >
-                <Cover
-                  profile={profile}
-                  onSelectTheme={theme => {
-                    setSelectedTheme(theme);
-                  }}
-                  selectedTheme={selectedTheme}
-                  onSetTheme={onSetTheme}
-                />
-                <Body
-                  history={history}
-                  location={location}
-                  match={match}
-                  profile={profile}
-                  selectedTheme={selectedTheme}
-                />
-              </div>
-            )}
-          </>
-        ) : (
-          <NotFound
-            title={!userId ? 'For Registered Users Only' : ''}
-            text={!userId ? 'Please Log In or Sign Up' : ''}
-          />
-        )}
-      </ErrorBoundary>
-    ),
-    [loading, location, notExist, profile, selectedTheme]
+                selectedTheme={selectedTheme}
+                onSetTheme={onSetTheme}
+              />
+              <Body
+                history={history}
+                location={location}
+                match={match}
+                profile={profile}
+                selectedTheme={selectedTheme}
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        <NotFound
+          title={!userId ? 'For Registered Users Only' : ''}
+          text={!userId ? 'Please Log In or Sign Up' : ''}
+        />
+      )}
+    </ErrorBoundary>
   );
 
   async function onSetTheme() {

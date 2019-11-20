@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
@@ -97,10 +97,15 @@ export default function EditPlaylistModal({
       setLoadMoreButton(loadMoreShown);
       setIsLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const videosToRearrange = modalVideos.filter(
-    videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
+  const videosToRearrange = useMemo(
+    () =>
+      modalVideos.filter(
+        videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
+      ),
+    [addedVideos, modalVideos, removedVideoIds]
   );
 
   return (

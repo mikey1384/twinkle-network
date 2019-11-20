@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -131,194 +131,196 @@ function ContentPanel({
         loading.current = false;
       }
     }
-  }, []);
+  }, [
+    contentId,
+    contentState.feedId,
+    contentType,
+    loadContent,
+    loaded,
+    onInitContent
+  ]);
 
-  return useMemo(
-    () =>
-      !contentState.deleted ? (
-        <Context.Provider
-          value={{
-            commentsLoadLimit,
-            onAddTags,
-            onAddTagToContents,
-            onAttachStar,
-            onByUserStatusChange: onSetByUserStatus,
-            onCommentSubmit: onUploadComment,
-            onDeleteComment,
-            onDeleteContent,
-            onEditComment,
-            onEditContent,
-            onEditRewardComment,
-            onLoadComments,
-            onLikeContent,
-            onLoadMoreComments,
-            onLoadMoreReplies,
-            onLoadTags,
-            onLoadRepliesOfReply,
-            onReplySubmit: onUploadReply,
-            onSetCommentsShown,
-            onSetRewardLevel,
-            onUploadTargetComment
-          }}
-        >
-          <ErrorBoundary>
-            <div ref={ComponentRef}>
-              {inView || visible || started || rootStarted ? (
+  return (
+    <ErrorBoundary>
+      <Context.Provider
+        value={{
+          commentsLoadLimit,
+          onAddTags,
+          onAddTagToContents,
+          onAttachStar,
+          onByUserStatusChange: onSetByUserStatus,
+          onCommentSubmit: onUploadComment,
+          onDeleteComment,
+          onDeleteContent,
+          onEditComment,
+          onEditContent,
+          onEditRewardComment,
+          onLoadComments,
+          onLikeContent,
+          onLoadMoreComments,
+          onLoadMoreReplies,
+          onLoadTags,
+          onLoadRepliesOfReply,
+          onReplySubmit: onUploadReply,
+          onSetCommentsShown,
+          onSetRewardLevel,
+          onUploadTargetComment
+        }}
+      >
+        {!contentState.deleted ? (
+          <div ref={ComponentRef}>
+            {inView || visible || started || rootStarted ? (
+              <div
+                ref={PanelRef}
+                style={{
+                  height: !loaded && '15rem',
+                  position: 'relative',
+                  ...style
+                }}
+              >
                 <div
-                  ref={PanelRef}
                   style={{
-                    height: !loaded && '15rem',
                     position: 'relative',
-                    ...style
+                    zIndex: 3
                   }}
+                  className={container}
                 >
-                  <div
+                  {!loaded && <Loading />}
+                  {loaded && (
+                    <>
+                      <Heading
+                        contentObj={contentState}
+                        action={
+                          commentId
+                            ? targetObj.comment.notFound
+                              ? 'replied on'
+                              : 'replied to'
+                            : rootType === 'subject'
+                            ? 'responded to'
+                            : rootType === 'user'
+                            ? 'left a message to'
+                            : 'commented on'
+                        }
+                        onPlayVideoClick={() => setVideoShown(true)}
+                        attachedVideoShown={videoShown}
+                      />
+                      <div className="body">
+                        <Body
+                          autoExpand={autoExpand}
+                          commentsShown={commentsShown}
+                          contentObj={contentState}
+                          inputAtBottom={inputAtBottom}
+                          attachedVideoShown={videoShown}
+                          numPreviewComments={numPreviewComments}
+                          onChangeSpoilerStatus={onChangeSpoilerStatus}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+                {loaded && targetObj?.comment && (
+                  <TargetContent
                     style={{
                       position: 'relative',
-                      zIndex: 3
+                      zIndex: 2
                     }}
-                    className={container}
-                  >
-                    {!loaded && <Loading />}
-                    {loaded && (
-                      <>
-                        <Heading
-                          contentObj={contentState}
-                          action={
-                            commentId
-                              ? targetObj.comment.notFound
-                                ? 'replied on'
-                                : 'replied to'
-                              : rootType === 'subject'
-                              ? 'responded to'
-                              : rootType === 'user'
-                              ? 'left a message to'
-                              : 'commented on'
-                          }
-                          onPlayVideoClick={() => setVideoShown(true)}
-                          attachedVideoShown={videoShown}
-                        />
-                        <div className="body">
-                          <Body
-                            autoExpand={autoExpand}
-                            commentsShown={commentsShown}
-                            contentObj={contentState}
-                            inputAtBottom={inputAtBottom}
-                            attachedVideoShown={videoShown}
-                            numPreviewComments={numPreviewComments}
-                            onChangeSpoilerStatus={onChangeSpoilerStatus}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  {loaded && targetObj?.comment && (
-                    <TargetContent
+                    targetObj={targetObj}
+                    rootObj={rootObj}
+                    rootType={contentState.rootType}
+                    contentId={contentId}
+                    contentType={contentType}
+                    onShowTCReplyInput={onShowTCReplyInput}
+                  />
+                )}
+                {contentState.loaded && targetObj?.subject && (
+                  <div>
+                    <ContentListItem
+                      comments={contentState.childComments}
                       style={{
-                        position: 'relative',
-                        zIndex: 2
+                        zIndex: 1,
+                        position: 'relative'
                       }}
-                      targetObj={targetObj}
-                      rootObj={rootObj}
-                      rootType={contentState.rootType}
-                      contentId={contentId}
-                      contentType={contentType}
-                      onShowTCReplyInput={onShowTCReplyInput}
+                      expandable
+                      onClick={() =>
+                        history.push(`/subjects/${targetObj.subject.id}`)
+                      }
+                      contentObj={targetObj.subject}
+                      onChangeSpoilerStatus={onChangeSpoilerStatus}
+                    />
+                  </div>
+                )}
+                {contentType === 'comment' &&
+                  contentState.rootType === 'video' && (
+                    <ContentListItem
+                      style={{
+                        position: 'relative'
+                      }}
+                      expandable
+                      onClick={() => history.push(`/videos/${rootObj.id}`)}
+                      contentObj={rootObj}
                     />
                   )}
-                  {contentState.loaded && targetObj?.subject && (
-                    <div>
-                      <ContentListItem
-                        comments={contentState.childComments}
-                        style={{
-                          zIndex: 1,
-                          position: 'relative'
-                        }}
-                        expandable
-                        onClick={() =>
-                          history.push(`/subjects/${targetObj.subject.id}`)
+                {(contentType === 'comment' || contentType === 'subject') &&
+                  rootType === 'url' && (
+                    <div
+                      className={css`
+                        padding: 1rem;
+                        background: ${Color.whiteGray()};
+                        border: 1px solid ${Color.borderGray()};
+                        border-radius: ${borderRadius};
+                        margin-top: -1rem;
+                        transition: background 0.5s;
+                        &:hover {
+                          background: #fff;
                         }
-                        contentObj={targetObj.subject}
-                        onChangeSpoilerStatus={onChangeSpoilerStatus}
-                      />
+                        @media (max-width: ${mobileMaxWidth}) {
+                          margin-top: -0.5rem;
+                          border-left: 0;
+                          border-right: 0;
+                        }
+                      `}
+                    >
+                      <Embedly small contentId={contentState.rootId} />
                     </div>
                   )}
-                  {contentType === 'comment' &&
-                    contentState.rootType === 'video' && (
-                      <ContentListItem
-                        style={{
-                          position: 'relative'
-                        }}
-                        expandable
-                        onClick={() => history.push(`/videos/${rootObj.id}`)}
-                        contentObj={rootObj}
-                      />
-                    )}
-                  {(contentType === 'comment' || contentType === 'subject') &&
-                    rootType === 'url' && (
-                      <div
-                        className={css`
-                          padding: 1rem;
-                          background: ${Color.whiteGray()};
-                          border: 1px solid ${Color.borderGray()};
-                          border-radius: ${borderRadius};
-                          margin-top: -1rem;
-                          transition: background 0.5s;
-                          &:hover {
-                            background: #fff;
-                          }
-                          @media (max-width: ${mobileMaxWidth}) {
-                            margin-top: -0.5rem;
-                            border-left: 0;
-                            border-right: 0;
-                          }
-                        `}
-                      >
-                        <Embedly small contentId={contentState.rootId} />
-                      </div>
-                    )}
-                  {contentType === 'comment' &&
-                    contentState.rootType === 'user' && (
-                      <div
-                        className={css`
-                          cursor: pointer;
-                          background: ${Color.whiteGray()};
-                          border: 1px solid ${Color.borderGray()};
-                          border-radius: ${borderRadius};
-                          margin-top: -1rem;
-                          transition: background 0.5s;
-                          padding-bottom: 1rem;
-                          &:hover {
-                            background: #fff;
-                          }
-                          @media (max-width: ${mobileMaxWidth}) {
-                            border-left: 0;
-                            border-right: 0;
-                            margin-top: -0.5rem;
-                          }
-                        `}
-                        onClick={() =>
-                          history.push(`/users/${rootObj.username}`)
-                        }
-                      >
-                        <Profile profile={rootObj} />
-                      </div>
-                    )}
-                </div>
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    margin: '1rem 0 1rem 0',
-                    height: placeholderHeight || '20rem'
-                  }}
-                />
-              )}
-            </div>
-          </ErrorBoundary>
-        </Context.Provider>
-      ) : null,
-    [contentState, inView, rootStarted, style, visible]
+                {contentType === 'comment' && contentState.rootType === 'user' && (
+                  <div
+                    className={css`
+                      cursor: pointer;
+                      background: ${Color.whiteGray()};
+                      border: 1px solid ${Color.borderGray()};
+                      border-radius: ${borderRadius};
+                      margin-top: -1rem;
+                      transition: background 0.5s;
+                      padding-bottom: 1rem;
+                      &:hover {
+                        background: #fff;
+                      }
+                      @media (max-width: ${mobileMaxWidth}) {
+                        border-left: 0;
+                        border-right: 0;
+                        margin-top: -0.5rem;
+                      }
+                    `}
+                    onClick={() => history.push(`/users/${rootObj.username}`)}
+                  >
+                    <Profile profile={rootObj} />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div
+                style={{
+                  width: '100%',
+                  margin: '1rem 0 1rem 0',
+                  height: placeholderHeight || '20rem'
+                }}
+              />
+            )}
+          </div>
+        ) : null}
+      </Context.Provider>
+    </ErrorBoundary>
   );
 }
 

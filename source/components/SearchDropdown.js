@@ -27,6 +27,7 @@ export default function Dropdown({
 }) {
   useEffect(() => {
     onUpdate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchResults]);
 
   return (

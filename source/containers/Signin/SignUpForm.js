@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
@@ -30,13 +30,16 @@ export default function SignUpForm({ onShowLoginForm }) {
   const [email, setEmail] = useState('');
   const [keyphrase, setKeyphrase] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const submitDisabled =
-    stringIsEmpty(username) ||
-    stringIsEmpty(password) ||
-    stringIsEmpty(firstname) ||
-    stringIsEmpty(lastname) ||
-    // stringIsEmpty(keyphrase);
-    errorMessage;
+  const submitDisabled = useMemo(
+    () =>
+      stringIsEmpty(username) ||
+      stringIsEmpty(password) ||
+      stringIsEmpty(firstname) ||
+      stringIsEmpty(lastname) ||
+      // stringIsEmpty(keyphrase);
+      errorMessage,
+    [errorMessage, firstname, lastname, password, username]
+  );
 
   return (
     <ErrorBoundary>

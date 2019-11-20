@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PlaylistsPanel from './PlaylistsPanel';
 import ErrorBoundary from 'components/ErrorBoundary';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -39,60 +39,57 @@ export default function FeaturedPlaylistsPanel() {
       onLoadFeaturedPlaylists(playlists);
       prevLoaded.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featuredPlaylistsLoaded]);
-  const menuButtons = [
-    {
-      label: 'Select Playlists',
-      onClick: handleOpenSelectPlaylistsToPinModal,
-      skeuomorphic: true,
-      color: 'darkerGray'
-    }
-  ];
-  if (featuredPlaylists.length > 0) {
-    menuButtons.push({
-      label: 'Reorder Playlists',
-      onClick: onOpenReorderFeaturedPlaylists,
-      skeuomorphic: true,
-      color: 'darkerGray'
-    });
-  }
 
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <PlaylistsPanel
-          buttonGroupShown={!!canPinPlaylists}
-          buttonGroup={() => (
-            <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
-          )}
-          title="Featured Playlists"
-          userId={userId}
-          playlists={featuredPlaylists}
-          loaded={featuredPlaylistsLoaded || prevLoaded.current}
+  const menuButtons = useMemo(() => {
+    const buttons = [
+      {
+        label: 'Select Playlists',
+        onClick: handleOpenSelectPlaylistsToPinModal,
+        skeuomorphic: true,
+        color: 'darkerGray'
+      }
+    ];
+    if (featuredPlaylists.length > 0) {
+      buttons.push({
+        label: 'Reorder Playlists',
+        onClick: onOpenReorderFeaturedPlaylists,
+        skeuomorphic: true,
+        color: 'darkerGray'
+      });
+    }
+    return buttons;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [featuredPlaylists.length]);
+
+  return (
+    <ErrorBoundary>
+      <PlaylistsPanel
+        buttonGroupShown={!!canPinPlaylists}
+        buttonGroup={() => (
+          <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
+        )}
+        title="Featured Playlists"
+        userId={userId}
+        playlists={featuredPlaylists}
+        loaded={featuredPlaylistsLoaded || prevLoaded.current}
+      />
+      {selectPlaylistsToFeatureModalShown && (
+        <SelectPlaylistsToPinModal
+          selectedPlaylists={featuredPlaylists.map(playlist => {
+            return playlist.id;
+          })}
+          onHide={onCloseSelectPlaylistsToPinModal}
         />
-        {selectPlaylistsToFeatureModalShown && (
-          <SelectPlaylistsToPinModal
-            selectedPlaylists={featuredPlaylists.map(playlist => {
-              return playlist.id;
-            })}
-            onHide={onCloseSelectPlaylistsToPinModal}
-          />
-        )}
-        {reorderFeaturedPlaylistsShown && (
-          <ReorderFeaturedPlaylists
-            playlistIds={featuredPlaylists.map(playlist => playlist.id)}
-            onHide={onCloseReorderFeaturedPlaylists}
-          />
-        )}
-      </ErrorBoundary>
-    ),
-    [
-      featuredPlaylists,
-      menuButtons,
-      featuredPlaylistsLoaded,
-      reorderFeaturedPlaylistsShown,
-      selectPlaylistsToFeatureModalShown
-    ]
+      )}
+      {reorderFeaturedPlaylistsShown && (
+        <ReorderFeaturedPlaylists
+          playlistIds={featuredPlaylists.map(playlist => playlist.id)}
+          onHide={onCloseReorderFeaturedPlaylists}
+        />
+      )}
+    </ErrorBoundary>
   );
 
   async function handleOpenSelectPlaylistsToPinModal() {

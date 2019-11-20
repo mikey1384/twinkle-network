@@ -89,7 +89,7 @@ export default function Carousel({
 
   useEffect(() => {
     setSlideCount(React.Children.count(children));
-  }, [React.Children.count(children)]);
+  }, [children]);
 
   return (
     <ErrorBoundary>

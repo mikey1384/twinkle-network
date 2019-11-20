@@ -44,8 +44,13 @@ export default function ContentEditor({
     state,
     actions: { onSetEditForm }
   } = useInputContext();
+  const inputState = useMemo(() => state['edit' + contentType + contentId], [
+    contentId,
+    contentType,
+    state
+  ]);
   useEffect(() => {
-    if (!state['edit' + contentType + contentId]) {
+    if (!inputState) {
       onSetEditForm({
         contentId,
         contentType,
@@ -62,8 +67,9 @@ export default function ContentEditor({
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const editForm = state['edit' + contentType + contentId] || {};
+  const editForm = inputState || {};
   const {
     editedContent = '',
     editedComment = '',
@@ -72,202 +78,51 @@ export default function ContentEditor({
     editedTitle = '',
     editedUrl = ''
   } = editForm;
-  const urlError =
-    !stringIsEmpty(editedUrl) &&
-    !(contentType === 'video'
-      ? isValidYoutubeUrl(editedUrl)
-      : isValidUrl(editedUrl));
-  const descriptionExceedsCharLimit = exceedsCharLimit({
-    contentType,
-    inputType: 'description',
-    text: contentType === 'comment' ? editedComment : editedDescription
-  });
-  const secretAnswerExceedsCharLimit = exceedsCharLimit({
-    inputType: 'description',
-    contentType,
-    text: editedSecretAnswer
-  });
-  const titleExceedsCharLimit = exceedsCharLimit({
-    contentType,
-    inputType: 'title',
-    text: editedTitle
-  });
-  const urlExceedsCharLimit = exceedsCharLimit({
-    contentType,
-    inputType: 'url',
-    text: editedUrl
-  });
-
-  return useMemo(
-    () => (
-      <div
-        style={style}
-        className={css`
-          small {
-            font-size: 1.3rem;
-            line-height: 2.5rem;
-          }
-        `}
-      >
-        <form onSubmit={onSubmit}>
-          {(contentType === 'video' || contentType === 'url') && (
-            <div
-              className={css`
-                margin-bottom: 1rem;
-              `}
-            >
-              <Input
-                hasError={urlError}
-                onChange={text =>
-                  onSetEditForm({
-                    contentId,
-                    contentType,
-                    form: {
-                      ...editForm,
-                      editedUrl: text
-                    }
-                  })
-                }
-                placeholder={edit[contentType]}
-                value={editedUrl}
-                style={urlExceedsCharLimit?.style}
-              />
-              {(urlExceedsCharLimit || urlError) && (
-                <small style={{ color: 'red', lineHeight: 0.5 }}>
-                  {urlExceedsCharLimit?.message || 'Please check the url'}
-                </small>
-              )}
-            </div>
-          )}
-          {contentType !== 'comment' && (
-            <>
-              <Input
-                onChange={text =>
-                  onSetEditForm({
-                    contentId,
-                    contentType,
-                    form: {
-                      ...editForm,
-                      editedTitle: text
-                    }
-                  })
-                }
-                onKeyUp={event =>
-                  onSetEditForm({
-                    contentId,
-                    contentType,
-                    form: {
-                      ...editForm,
-                      editedTitle: addEmoji(event.target.value)
-                    }
-                  })
-                }
-                placeholder={edit.title}
-                value={editedTitle}
-                style={titleExceedsCharLimit?.style}
-              />
-              <small style={titleExceedsCharLimit?.style}>
-                {titleExceedsCharLimit?.message}
-              </small>
-            </>
-          )}
-          <div style={{ position: 'relative', marginTop: '1rem' }}>
-            <Textarea
-              minRows={4}
-              onChange={event => {
-                const { value } = event.target;
-                onSetEditForm({
-                  contentId,
-                  contentType,
-                  form: {
-                    ...editForm,
-                    [contentType === 'comment'
-                      ? 'editedComment'
-                      : 'editedDescription']: value
-                  }
-                });
-              }}
-              placeholder={
-                edit[contentType === 'comment' ? 'comment' : 'description']
-              }
-              value={
-                contentType === 'comment' ? editedComment : editedDescription
-              }
-              style={descriptionExceedsCharLimit?.style}
-            />
-            {descriptionExceedsCharLimit && (
-              <small style={{ color: 'red' }}>
-                {descriptionExceedsCharLimit?.message}
-              </small>
-            )}
-          </div>
-          {contentType === 'subject' && (
-            <div style={{ position: 'relative', marginTop: '1rem' }}>
-              <span style={{ fontWeight: 'bold' }}>Secret Message</span>
-              <Textarea
-                minRows={4}
-                onChange={event => {
-                  const { value } = event.target;
-                  onSetEditForm({
-                    contentId,
-                    contentType,
-                    form: {
-                      ...editForm,
-                      editedSecretAnswer: value
-                    }
-                  });
-                }}
-                placeholder="Enter Secret Message... (Optional)"
-                value={editedSecretAnswer}
-                style={{
-                  marginTop: '0.7rem',
-                  ...(secretAnswerExceedsCharLimit?.style || {})
-                }}
-              />
-              {secretAnswerExceedsCharLimit && (
-                <small style={{ color: 'red' }}>
-                  {secretAnswerExceedsCharLimit.message}
-                </small>
-              )}
-            </div>
-          )}
-          <div
-            style={{
-              marginTop: '1rem',
-              display: 'flex',
-              flexDirection: 'row-reverse'
-            }}
-          >
-            <Button
-              color="blue"
-              type="submit"
-              disabled={determineButtonDisabled()}
-            >
-              Done
-            </Button>
-            <Button
-              transparent
-              style={{ marginRight: '1rem' }}
-              onClick={handleDismiss}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </div>
-    ),
-    [
-      editForm,
-      secretAnswer,
-      urlError,
-      descriptionExceedsCharLimit,
-      secretAnswerExceedsCharLimit,
-      titleExceedsCharLimit,
-      urlExceedsCharLimit
-    ]
+  const urlError = useMemo(
+    () =>
+      !stringIsEmpty(editedUrl) &&
+      !(contentType === 'video'
+        ? isValidYoutubeUrl(editedUrl)
+        : isValidUrl(editedUrl)),
+    [contentType, editedUrl]
   );
-
-  function determineButtonDisabled() {
+  const descriptionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType,
+        inputType: 'description',
+        text: contentType === 'comment' ? editedComment : editedDescription
+      }),
+    [contentType, editedComment, editedDescription]
+  );
+  const secretAnswerExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'description',
+        contentType,
+        text: editedSecretAnswer
+      }),
+    [contentType, editedSecretAnswer]
+  );
+  const titleExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType,
+        inputType: 'title',
+        text: editedTitle
+      }),
+    [contentType, editedTitle]
+  );
+  const urlExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType,
+        inputType: 'url',
+        text: editedUrl
+      }),
+    [contentType, editedUrl]
+  );
+  const editButtonDisabled = useMemo(() => {
     const contentUrl =
       contentType === 'video'
         ? `https://www.youtube.com/watch?v=${content}`
@@ -328,7 +183,177 @@ export default function ContentEditor({
       default:
         return true;
     }
-  }
+  }, [
+    comment,
+    content,
+    contentType,
+    description,
+    descriptionExceedsCharLimit,
+    editedComment,
+    editedDescription,
+    editedSecretAnswer,
+    editedTitle,
+    editedUrl,
+    secretAnswer,
+    secretAnswerExceedsCharLimit,
+    title,
+    titleExceedsCharLimit,
+    urlExceedsCharLimit
+  ]);
+
+  return (
+    <div
+      style={style}
+      className={css`
+        small {
+          font-size: 1.3rem;
+          line-height: 2.5rem;
+        }
+      `}
+    >
+      <form onSubmit={onSubmit}>
+        {(contentType === 'video' || contentType === 'url') && (
+          <div
+            className={css`
+              margin-bottom: 1rem;
+            `}
+          >
+            <Input
+              hasError={urlError}
+              onChange={text =>
+                onSetEditForm({
+                  contentId,
+                  contentType,
+                  form: {
+                    ...editForm,
+                    editedUrl: text
+                  }
+                })
+              }
+              placeholder={edit[contentType]}
+              value={editedUrl}
+              style={urlExceedsCharLimit?.style}
+            />
+            {(urlExceedsCharLimit || urlError) && (
+              <small style={{ color: 'red', lineHeight: 0.5 }}>
+                {urlExceedsCharLimit?.message || 'Please check the url'}
+              </small>
+            )}
+          </div>
+        )}
+        {contentType !== 'comment' && (
+          <>
+            <Input
+              onChange={text =>
+                onSetEditForm({
+                  contentId,
+                  contentType,
+                  form: {
+                    ...editForm,
+                    editedTitle: text
+                  }
+                })
+              }
+              onKeyUp={event =>
+                onSetEditForm({
+                  contentId,
+                  contentType,
+                  form: {
+                    ...editForm,
+                    editedTitle: addEmoji(event.target.value)
+                  }
+                })
+              }
+              placeholder={edit.title}
+              value={editedTitle}
+              style={titleExceedsCharLimit?.style}
+            />
+            <small style={titleExceedsCharLimit?.style}>
+              {titleExceedsCharLimit?.message}
+            </small>
+          </>
+        )}
+        <div style={{ position: 'relative', marginTop: '1rem' }}>
+          <Textarea
+            minRows={4}
+            onChange={event => {
+              const { value } = event.target;
+              onSetEditForm({
+                contentId,
+                contentType,
+                form: {
+                  ...editForm,
+                  [contentType === 'comment'
+                    ? 'editedComment'
+                    : 'editedDescription']: value
+                }
+              });
+            }}
+            placeholder={
+              edit[contentType === 'comment' ? 'comment' : 'description']
+            }
+            value={
+              contentType === 'comment' ? editedComment : editedDescription
+            }
+            style={descriptionExceedsCharLimit?.style}
+          />
+          {descriptionExceedsCharLimit && (
+            <small style={{ color: 'red' }}>
+              {descriptionExceedsCharLimit?.message}
+            </small>
+          )}
+        </div>
+        {contentType === 'subject' && (
+          <div style={{ position: 'relative', marginTop: '1rem' }}>
+            <span style={{ fontWeight: 'bold' }}>Secret Message</span>
+            <Textarea
+              minRows={4}
+              onChange={event => {
+                const { value } = event.target;
+                onSetEditForm({
+                  contentId,
+                  contentType,
+                  form: {
+                    ...editForm,
+                    editedSecretAnswer: value
+                  }
+                });
+              }}
+              placeholder="Enter Secret Message... (Optional)"
+              value={editedSecretAnswer}
+              style={{
+                marginTop: '0.7rem',
+                ...(secretAnswerExceedsCharLimit?.style || {})
+              }}
+            />
+            {secretAnswerExceedsCharLimit && (
+              <small style={{ color: 'red' }}>
+                {secretAnswerExceedsCharLimit.message}
+              </small>
+            )}
+          </div>
+        )}
+        <div
+          style={{
+            marginTop: '1rem',
+            display: 'flex',
+            flexDirection: 'row-reverse'
+          }}
+        >
+          <Button color="blue" type="submit" disabled={editButtonDisabled}>
+            Done
+          </Button>
+          <Button
+            transparent
+            style={{ marginRight: '1rem' }}
+            onClick={handleDismiss}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
 
   function handleDismiss() {
     onSetEditForm({

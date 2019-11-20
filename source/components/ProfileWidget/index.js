@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense, useRef } from 'react';
+import React, { Suspense, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -25,88 +25,86 @@ export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
   } = useAppContext();
   const { profilePicId, realName, userId, username } = useMyState();
   const FileInputRef = useRef(null);
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <div className={container} style={{ cursor: 'pointer' }}>
-          {username && (
-            <div
-              className="heading"
-              onClick={() =>
-                username ? history.push(`/users/${username}`) : null
-              }
-            >
-              <ProfilePic
-                className="widget__profile-pic"
-                style={{
-                  cursor: userId ? 'pointer' : 'default'
-                }}
-                userId={userId}
-                profilePicId={profilePicId}
-                onClick={() => {
-                  if (userId) history.push(`/users/${username}`);
-                }}
-              />
-              <div className="names">
-                <a>{username}</a>
-                {realName && (
-                  <div>
-                    <span>({realName})</span>
-                  </div>
-                )}
-              </div>
+
+  return (
+    <ErrorBoundary>
+      <div className={container} style={{ cursor: 'pointer' }}>
+        {username && (
+          <div
+            className="heading"
+            onClick={() =>
+              username ? history.push(`/users/${username}`) : null
+            }
+          >
+            <ProfilePic
+              className="widget__profile-pic"
+              style={{
+                cursor: userId ? 'pointer' : 'default'
+              }}
+              userId={userId}
+              profilePicId={profilePicId}
+              onClick={() => {
+                if (userId) history.push(`/users/${username}`);
+              }}
+            />
+            <div className="names">
+              <a>{username}</a>
+              {realName && (
+                <div>
+                  <span>({realName})</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        <div
+          className={`details ${css`
+            border-top-right-radius: ${username ? '' : borderRadius};
+            border-top-left-radius: ${username ? '' : borderRadius};
+          `}`}
+        >
+          {userId && (
+            <div>
+              <Button
+                style={{ width: '100%' }}
+                transparent
+                onClick={() => history.push(`/users/${username}`)}
+              >
+                View Profile
+              </Button>
+              <Button
+                style={{ width: '100%' }}
+                transparent
+                onClick={() => FileInputRef.current.click()}
+              >
+                Change Picture
+              </Button>
             </div>
           )}
-          <div
-            className={`details ${css`
-              border-top-right-radius: ${username ? '' : borderRadius};
-              border-top-left-radius: ${username ? '' : borderRadius};
-            `}`}
-          >
-            {userId && (
-              <div>
-                <Button
-                  style={{ width: '100%' }}
-                  transparent
-                  onClick={() => history.push(`/users/${username}`)}
-                >
-                  View Profile
-                </Button>
-                <Button
-                  style={{ width: '100%' }}
-                  transparent
-                  onClick={() => FileInputRef.current.click()}
-                >
-                  Change Picture
-                </Button>
-              </div>
-            )}
-            <Suspense
-              fallback={
-                <Loading
-                  innerStyle={{ fontSize: '2rem' }}
-                  text="Loading Twinkle Network"
-                />
-              }
-            >
-              <WelcomeMessage
-                userId={userId}
-                openSigninModal={onOpenSigninModal}
+          <Suspense
+            fallback={
+              <Loading
+                innerStyle={{ fontSize: '2rem' }}
+                text="Loading Twinkle Network"
               />
-            </Suspense>
-
-            <input
-              ref={FileInputRef}
-              style={{ display: 'none' }}
-              type="file"
-              onChange={handlePicture}
-              accept="image/*"
+            }
+          >
+            <WelcomeMessage
+              userId={userId}
+              openSigninModal={onOpenSigninModal}
             />
-          </div>
+          </Suspense>
+
+          <input
+            ref={FileInputRef}
+            style={{ display: 'none' }}
+            type="file"
+            onChange={handlePicture}
+            accept="image/*"
+          />
         </div>
-      </ErrorBoundary>
-    ),
-    [profilePicId, realName, userId, username]
+      </div>
+    </ErrorBoundary>
   );
 
   function handlePicture(event) {

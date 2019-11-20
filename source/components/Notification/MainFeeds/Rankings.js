@@ -34,135 +34,132 @@ export default function Rankings() {
     setAllSelected(!!userId);
   }, [userId]);
 
-  const users = allSelected ? allRanks : top30s;
+  const users = useMemo(() => (allSelected ? allRanks : top30s), [
+    allRanks,
+    allSelected,
+    top30s
+  ]);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        {!!userId && (
-          <FilterBar
-            bordered
-            style={{
-              height: '4.5rem',
-              fontSize: '1.6rem'
+  return (
+    <ErrorBoundary>
+      {!!userId && (
+        <FilterBar
+          bordered
+          style={{
+            height: '4.5rem',
+            fontSize: '1.6rem'
+          }}
+        >
+          <nav
+            className={allSelected ? 'active' : ''}
+            onClick={() => {
+              userChangedTab.current = true;
+              setAllSelected(true);
             }}
           >
-            <nav
-              className={allSelected ? 'active' : ''}
-              onClick={() => {
-                userChangedTab.current = true;
-                setAllSelected(true);
-              }}
-            >
-              My Ranking
-            </nav>
-            <nav
-              className={allSelected ? '' : 'active'}
-              onClick={() => {
-                userChangedTab.current = true;
-                setAllSelected(false);
-              }}
-            >
-              Top 30
-            </nav>
-          </FilterBar>
-        )}
-        {rankingsLoaded === false && <Loading />}
-        {!!rankingsLoaded && allSelected && !!userId && (
-          <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
-        )}
-        {rankingsLoaded && allSelected && users.length === 0 && !!userId && (
-          <div
-            style={{
-              background: '#fff',
-              borderRadius,
-              padding: '1rem',
-              border: `1px solid ${Color.borderGray()}`
+            My Ranking
+          </nav>
+          <nav
+            className={allSelected ? '' : 'active'}
+            onClick={() => {
+              userChangedTab.current = true;
+              setAllSelected(false);
             }}
           >
-            You are not ranked. To get ranked, earn XP by watching a starred
-            video or leaving comments
-          </div>
-        )}
-        {rankingsLoaded && users.length > 0 && (
-          <RoundList style={{ marginTop: 0 }}>
-            {users.map(user => {
-              const rankColor =
-                user.rank === 1
-                  ? Color.gold()
-                  : user.rank === 2
-                  ? Color.lighterGray()
-                  : user.rank === 3
-                  ? Color.orange()
-                  : undefined;
-              return (
-                <li
-                  key={user.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    background:
-                      user.id === userId && user.rank > 3
-                        ? Color.highlightGray()
-                        : '#fff'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: user.rank < 100 ? '2rem' : '1.5rem',
-                        width: '3rem',
-                        marginRight: '1rem',
-                        textAlign: 'center',
-                        color:
-                          rankColor ||
-                          (user.rank <= 10
-                            ? Color.logoBlue()
-                            : Color.darkGray())
-                      }}
-                    >
-                      {user.rank ? `#${user.rank}` : '--'}
-                    </span>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <ProfilePic
-                        style={{ width: '6rem', height: '6rem' }}
-                        profilePicId={user.profilePicId}
-                        userId={user.id}
-                      />
-                      <UsernameText
-                        color={
-                          rankColor ||
-                          (user.rank <= 10
-                            ? Color.logoBlue()
-                            : Color.darkGray())
-                        }
-                        user={{ ...user, username: user.username }}
-                        userId={userId}
-                        style={{ display: 'block', marginTop: '0.5rem' }}
-                      />
-                    </div>
+            Top 30
+          </nav>
+        </FilterBar>
+      )}
+      {rankingsLoaded === false && <Loading />}
+      {!!rankingsLoaded && allSelected && !!userId && (
+        <MyRank myId={userId} rank={rank} twinkleXP={twinkleXP} />
+      )}
+      {rankingsLoaded && allSelected && users.length === 0 && !!userId && (
+        <div
+          style={{
+            background: '#fff',
+            borderRadius,
+            padding: '1rem',
+            border: `1px solid ${Color.borderGray()}`
+          }}
+        >
+          You are not ranked. To get ranked, earn XP by watching a starred video
+          or leaving comments
+        </div>
+      )}
+      {rankingsLoaded && users.length > 0 && (
+        <RoundList style={{ marginTop: 0 }}>
+          {users.map(user => {
+            const rankColor =
+              user.rank === 1
+                ? Color.gold()
+                : user.rank === 2
+                ? Color.lighterGray()
+                : user.rank === 3
+                ? Color.orange()
+                : undefined;
+            return (
+              <li
+                key={user.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  background:
+                    user.id === userId && user.rank > 3
+                      ? Color.highlightGray()
+                      : '#fff'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: user.rank < 100 ? '2rem' : '1.5rem',
+                      width: '3rem',
+                      marginRight: '1rem',
+                      textAlign: 'center',
+                      color:
+                        rankColor ||
+                        (user.rank <= 10 ? Color.logoBlue() : Color.darkGray())
+                    }}
+                  >
+                    {user.rank ? `#${user.rank}` : '--'}
+                  </span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <ProfilePic
+                      style={{ width: '6rem', height: '6rem' }}
+                      profilePicId={user.profilePicId}
+                      userId={user.id}
+                    />
+                    <UsernameText
+                      color={
+                        rankColor ||
+                        (user.rank <= 10 ? Color.logoBlue() : Color.darkGray())
+                      }
+                      user={{ ...user, username: user.username }}
+                      userId={userId}
+                      style={{ display: 'block', marginTop: '0.5rem' }}
+                    />
                   </div>
-                  <div style={{ fontWeight: 'bold' }}>
-                    <span style={{ color: Color.logoGreen() }}>
-                      {addCommasToNumber(user.twinkleXP || 0)}
-                    </span>{' '}
-                    <span style={{ color: Color.gold() }}>XP</span>
-                  </div>
-                </li>
-              );
-            })}
-          </RoundList>
-        )}
-      </ErrorBoundary>
-    ),
-    [users, allSelected, rankingsLoaded, rank, twinkleXP, userId]
+                </div>
+                <div style={{ fontWeight: 'bold' }}>
+                  <span style={{ color: Color.logoGreen() }}>
+                    {addCommasToNumber(user.twinkleXP || 0)}
+                  </span>{' '}
+                  <span style={{ color: Color.gold() }}>XP</span>
+                </div>
+              </li>
+            );
+          })}
+        </RoundList>
+      )}
+    </ErrorBoundary>
   );
 }

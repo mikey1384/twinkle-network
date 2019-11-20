@@ -19,6 +19,7 @@ export default function HomeMenuItems({ history, style = {} }) {
       actions: { onSetProfilesLoaded }
     }
   } = useAppContext();
+
   return (
     <div className={`unselectable ${container}`} style={style}>
       <ErrorBoundary>
