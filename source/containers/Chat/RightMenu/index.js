@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import { css } from 'emotion';
@@ -16,9 +16,13 @@ export default function RightMenu({
   currentChannelOnlineMembers
 }) {
   const totalChannelMembers = currentChannel?.members || [];
-  const membersOnline = `${currentChannelOnlineMembers.length || 1}${
-    totalChannelMembers.length <= 1 ? '' : '/' + totalChannelMembers.length
-  }`;
+  const membersOnline = useMemo(
+    () =>
+      `${currentChannelOnlineMembers.length || 1}${
+        totalChannelMembers.length <= 1 ? '' : '/' + totalChannelMembers.length
+      }`,
+    [currentChannelOnlineMembers.length, totalChannelMembers.length]
+  );
 
   return (
     <div
