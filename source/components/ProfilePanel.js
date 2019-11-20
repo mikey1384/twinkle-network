@@ -106,6 +106,7 @@ export default function ProfilePanel({ expandable, profileId }) {
     youtubeUrl,
     visible
   } = profile;
+
   const {
     state: { loaded: chatLoaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
