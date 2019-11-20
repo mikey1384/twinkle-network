@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ContentPanel from 'components/ContentPanel';
 import NotFound from 'components/NotFound';
@@ -47,6 +47,7 @@ export default function ContentPage({
       history.push('/');
     }
     prevDeleted.current = deleted;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleted, loaded]);
 
   useEffect(() => {
@@ -72,55 +73,53 @@ export default function ContentPage({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentId, url]);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%'
-        }}
+  return (
+    <ErrorBoundary
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%'
+      }}
+    >
+      <div
+        className={css`
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1rem;
+          margin-top: 1rem;
+          padding-bottom: 20rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
+          }
+        `}
       >
-        <div
+        <section
           className={css`
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 1rem;
-            margin-top: 1rem;
-            padding-bottom: 20rem;
+            width: 65%;
             @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
+              width: 100%;
+              min-height: 100vh;
             }
           `}
         >
-          <section
-            className={css`
-              width: 65%;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-                min-height: 100vh;
-              }
-            `}
-          >
-            {exists ? (
-              <ContentPanel
-                key={contentType + contentId}
-                autoExpand
-                commentsLoadLimit={5}
-                contentId={Number(contentId)}
-                contentType={contentType}
-                userId={userId}
-              />
-            ) : (
-              <NotFound />
-            )}
-          </section>
-        </div>
-      </ErrorBoundary>
-    ),
-    [exists, contentId, userId]
+          {exists ? (
+            <ContentPanel
+              key={contentType + contentId}
+              autoExpand
+              commentsLoadLimit={5}
+              contentId={Number(contentId)}
+              contentType={contentType}
+              userId={userId}
+            />
+          ) : (
+            <NotFound />
+          )}
+        </section>
+      </div>
+    </ErrorBoundary>
   );
 }

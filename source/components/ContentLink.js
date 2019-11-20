@@ -45,7 +45,7 @@ export default function ContentLink({
       }}
       to={`/${destination}/${contentType === 'user' ? username : id}`}
     >
-      {removeLineBreaks(title)}
+      {removeLineBreaks(label)}
     </Link>
   ) : (
     <span style={{ fontWeight: 'bold', color: Color.darkerGray() }}>

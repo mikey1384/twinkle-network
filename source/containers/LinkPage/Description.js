@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -70,43 +70,93 @@ export default function Description({
       });
     }
   }, [isEditing, title, description, url, inputState, linkId, onSetEditForm]);
-  const editForm = inputState['edit' + 'url' + linkId] || {};
+  const editForm = useMemo(() => inputState['edit' + 'url' + linkId] || {}, [
+    inputState,
+    linkId
+  ]);
   const { editedDescription = '', editedTitle = '', editedUrl = '' } = editForm;
 
-  const descriptionExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'description',
-    text: editedDescription
-  });
-  const titleExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'title',
-    text: editedTitle
-  });
-  const urlExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'url',
-    text: editedUrl
-  });
+  const descriptionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'description',
+        text: editedDescription
+      }),
+    [editedDescription]
+  );
+
+  const titleExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'title',
+        text: editedTitle
+      }),
+    [editedTitle]
+  );
+
+  const urlExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'url',
+        text: editedUrl
+      }),
+    [editedUrl]
+  );
+
   const editButtonShown = userIsUploader || userCanEditThis;
-  const editMenuItems = [];
-  if (userIsUploader || canEdit) {
-    editMenuItems.push({
-      label: 'Edit',
-      onClick: () =>
-        onSetIsEditing({
-          contentId: linkId,
-          contentType: 'url',
-          isEditing: true
-        })
-    });
-  }
-  if (userIsUploader || canDelete) {
-    editMenuItems.push({
-      label: 'Delete',
-      onClick: onDelete
-    });
-  }
+  const editMenuItems = useMemo(() => {
+    const items = [];
+    if (userIsUploader || canEdit) {
+      items.push({
+        label: 'Edit',
+        onClick: () =>
+          onSetIsEditing({
+            contentId: linkId,
+            contentType: 'url',
+            isEditing: true
+          })
+      });
+    }
+    if (userIsUploader || canDelete) {
+      items.push({
+        label: 'Delete',
+        onClick: onDelete
+      });
+    }
+    return items;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canDelete, canEdit, linkId, userIsUploader]);
+
+  const doneButtonDisabled = useMemo(() => {
+    const urlIsEmpty = stringIsEmpty(editedUrl);
+    const urlIsValid = isValidUrl(editedUrl);
+    const titleIsEmpty = stringIsEmpty(editedTitle);
+    const titleChanged = editedTitle !== title;
+    const urlChanged = editedUrl !== url;
+    const descriptionChanged = editedDescription !== description;
+    if (!urlIsValid) return true;
+    if (urlIsEmpty) return true;
+    if (titleIsEmpty) return true;
+    if (!titleChanged && !descriptionChanged && !urlChanged) return true;
+    if (titleExceedsCharLimit) return true;
+    if (descriptionExceedsCharLimit) return true;
+    if (urlExceedsCharLimit) return true;
+    return false;
+  }, [
+    description,
+    descriptionExceedsCharLimit,
+    editedDescription,
+    editedTitle,
+    editedUrl,
+    title,
+    titleExceedsCharLimit,
+    url,
+    urlExceedsCharLimit
+  ]);
+
   return (
     <div style={{ position: 'relative', padding: '2rem 1rem 0 1rem' }}>
       {editButtonShown && !isEditing && (
@@ -263,7 +313,7 @@ export default function Description({
               </Button>
               <Button
                 color="blue"
-                disabled={determineEditButtonDoneStatus()}
+                disabled={doneButtonDisabled}
                 onClick={onEditFinish}
               >
                 Done
@@ -276,23 +326,6 @@ export default function Description({
       </div>
     </div>
   );
-
-  function determineEditButtonDoneStatus() {
-    const urlIsEmpty = stringIsEmpty(editedUrl);
-    const urlIsValid = isValidUrl(editedUrl);
-    const titleIsEmpty = stringIsEmpty(editedTitle);
-    const titleChanged = editedTitle !== title;
-    const urlChanged = editedUrl !== url;
-    const descriptionChanged = editedDescription !== description;
-    if (!urlIsValid) return true;
-    if (urlIsEmpty) return true;
-    if (titleIsEmpty) return true;
-    if (!titleChanged && !descriptionChanged && !urlChanged) return true;
-    if (titleExceedsCharLimit) return true;
-    if (descriptionExceedsCharLimit) return true;
-    if (urlExceedsCharLimit) return true;
-    return false;
-  }
 
   function onEditCancel() {
     onSetEditForm({

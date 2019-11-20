@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
@@ -145,6 +145,7 @@ export default function VideoPage({
       history.push('/videos');
     }
     prevDeleted.current = deleted;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleted, loaded]);
 
   useEffect(() => {
@@ -218,317 +219,277 @@ export default function VideoPage({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
   const { playlist: playlistId } = queryString.parse(search);
   const userIsUploader = uploader?.id === userId;
   const userCanEditThis = canEdit && authLevel >= uploader?.authLevel;
 
-  return useMemo(
-    () => (
-      <ErrorBoundary
+  return (
+    <ErrorBoundary
+      className={css`
+        width: CALC(100% - 2rem);
+        height: 100%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: 0;
+          width: 100%;
+          flex-direction: column;
+        }
+      `}
+    >
+      {(!loaded || videoUnavailable) && (
+        <div>
+          {videoUnavailable ? (
+            <NotFound text="Video does not exist" />
+          ) : (
+            <Loading text="Loading Video..." />
+          )}
+        </div>
+      )}
+      <div
         className={css`
-          width: CALC(100% - 2rem);
+          width: 100%;
           height: 100%;
-          margin-top: 1rem;
-          margin-bottom: 1rem;
+          margin-left: 1rem;
+          display: flex;
+          justify-content: space-between;
           @media (max-width: ${mobileMaxWidth}) {
-            margin-top: 0;
-            width: 100%;
             flex-direction: column;
+            width: 100%;
+            margin: 0;
           }
         `}
       >
-        {(!loaded || videoUnavailable) && (
-          <div>
-            {videoUnavailable ? (
-              <NotFound text="Video does not exist" />
-            ) : (
-              <Loading text="Loading Video..." />
+        {loaded && !videoUnavailable && content && (
+          <div
+            className={css`
+              width: CALC(70% - 1rem);
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 100%;
+                border: 0;
+              }
+            `}
+          >
+            <div
+              style={{
+                width: '100%',
+                background: '#fff',
+                marginBottom: '1rem',
+                padding: '1rem',
+                border: `1px solid ${Color.borderGray()}`,
+                paddingTop: 0
+              }}
+            >
+              <PageTab
+                questions={questions}
+                watchTabActive={watchTabActive}
+                onWatchTabClick={() => setWatchTabActive(true)}
+                onQuestionTabClick={() => setWatchTabActive(false)}
+              />
+              <div style={{ marginTop: '2rem' }}>
+                {!questionsBuilderShown && (
+                  <VideoPlayer
+                    autoplay
+                    rewardLevel={rewardLevel}
+                    byUser={!!byUser}
+                    key={videoId}
+                    hasHqThumb={hasHqThumb}
+                    videoId={videoId}
+                    videoCode={content}
+                    title={title}
+                    uploader={uploader}
+                    minimized={!watchTabActive}
+                  />
+                )}
+                {!watchTabActive && questions.length > 0 && (
+                  <Carousel
+                    allowDrag={false}
+                    style={{ marginTop: !!rewardLevel && '1rem' }}
+                    progressBar
+                    showQuestionsBuilder={() => setQuestionsBuilderShown(true)}
+                    userIsUploader={userIsUploader}
+                    userCanEditThis={userCanEditThis}
+                    slidesToShow={1}
+                    slidesToScroll={1}
+                    slideIndex={currentSlide}
+                    afterSlide={setCurrentSlide}
+                    onFinish={() => setResultModalShown(true)}
+                  >
+                    {handleRenderSlides()}
+                  </Carousel>
+                )}
+                {!watchTabActive && questions.length === 0 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: '2rem',
+                      height: '15rem'
+                    }}
+                  >
+                    <p>There are no questions yet.</p>
+                    {(userIsUploader || userCanEditThis) && (
+                      <Button
+                        style={{ marginTop: '2rem', fontSize: '2rem' }}
+                        skeuomorphic
+                        color="darkerGray"
+                        onClick={() => setQuestionsBuilderShown(true)}
+                      >
+                        Add Questions
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                background: '#fff',
+                marginTop: '1rem',
+                border: `1px solid ${Color.borderGray()}`,
+                width: '100%'
+              }}
+            >
+              <Details
+                addTags={onAddTags}
+                attachStar={onAttachStar}
+                byUser={!!byUser}
+                changingPage={changingPage}
+                rewardLevel={rewardLevel}
+                likes={likes}
+                onLikeVideo={handleLikeVideo}
+                content={content}
+                description={description}
+                changeByUserStatus={handleChangeByUserStatus}
+                onEditFinish={handleEditVideoPage}
+                onDelete={() => setConfirmModalShown(true)}
+                onSetRewardLevel={handleSetRewardLevel}
+                stars={stars}
+                tags={tags}
+                title={title}
+                timeStamp={timeStamp}
+                uploader={uploader}
+                userId={userId}
+                videoId={videoId}
+                videoViews={views}
+              />
+              <RewardStatus
+                contentType="video"
+                rewardLevel={byUser ? 5 : 0}
+                onCommentEdit={onEditRewardComment}
+                style={{
+                  fontSize: '1.4rem'
+                }}
+                stars={stars}
+                uploaderName={uploader.username}
+              />
+            </div>
+            <Subjects
+              loadMoreButton={subjectsLoadMoreButton}
+              subjects={subjects}
+              onLoadMoreSubjects={onLoadMoreSubjects}
+              onLoadSubjectComments={onLoadSubjectComments}
+              onSubjectEditDone={onEditSubject}
+              onSubjectDelete={subjectId =>
+                onDeleteContent({
+                  contentType: 'subject',
+                  contentId: subjectId
+                })
+              }
+              onSetRewardLevel={onSetRewardLevel}
+              uploadSubject={onUploadSubject}
+              contentId={videoId}
+              contentType="video"
+              rootRewardLevel={rewardLevel}
+              commentActions={{
+                attachStar: onAttachStar,
+                editRewardComment: onEditRewardComment,
+                onDelete: onDeleteComment,
+                onEditDone: onEditComment,
+                onLikeClick: onLikeComment,
+                onLoadMoreComments: onLoadMoreSubjectComments,
+                onLoadMoreReplies: onLoadMoreSubjectReplies,
+                onUploadComment,
+                onUploadReply
+              }}
+            />
+            <div
+              style={{
+                background: '#fff',
+                border: `1px solid ${Color.borderGray()}`,
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '2.5rem',
+                  color: Color.darkerGray()
+                }}
+              >
+                Comment on this video
+              </p>
+              <Comments
+                autoExpand
+                comments={comments}
+                inputAreaInnerRef={CommentInputAreaRef}
+                inputTypeLabel={'comment'}
+                isLoading={loadingComments}
+                loadMoreButton={commentsLoadMoreButton}
+                onAttachStar={onAttachStar}
+                onCommentSubmit={onUploadComment}
+                onDelete={onDeleteComment}
+                onEditDone={onEditComment}
+                onLikeClick={onLikeComment}
+                onLoadMoreComments={onLoadMoreComments}
+                onLoadMoreReplies={onLoadMoreReplies}
+                onReplySubmit={onUploadReply}
+                onRewardCommentEdit={onEditRewardComment}
+                parent={{
+                  contentType: 'video',
+                  contentId: videoId,
+                  rewardLevel,
+                  uploader
+                }}
+                style={{ paddingTop: '1rem' }}
+                userId={userId}
+              />
+            </div>
+            {resultModalShown && (
+              <ResultModal
+                onHide={() => setResultModalShown(false)}
+                numberCorrect={numberCorrect}
+                totalQuestions={questions.length}
+              />
+            )}
+            {confirmModalShown && (
+              <ConfirmModal
+                title="Remove Video"
+                onHide={() => setConfirmModalShown(false)}
+                onConfirm={handleDeleteVideo}
+              />
+            )}
+            {questionsBuilderShown && (
+              <QuestionsBuilder
+                questions={questions}
+                title={title}
+                videoCode={content}
+                onSubmit={handleUploadQuestions}
+                onHide={() => setQuestionsBuilderShown(false)}
+              />
             )}
           </div>
         )}
-        <div
-          className={css`
-            width: 100%;
-            height: 100%;
-            margin-left: 1rem;
-            display: flex;
-            justify-content: space-between;
-            @media (max-width: ${mobileMaxWidth}) {
-              flex-direction: column;
-              width: 100%;
-              margin: 0;
-            }
-          `}
-        >
-          {loaded && !videoUnavailable && content && (
-            <div
-              className={css`
-                width: CALC(70% - 1rem);
-                @media (max-width: ${mobileMaxWidth}) {
-                  width: 100%;
-                  border: 0;
-                }
-              `}
-            >
-              <div
-                style={{
-                  width: '100%',
-                  background: '#fff',
-                  marginBottom: '1rem',
-                  padding: '1rem',
-                  border: `1px solid ${Color.borderGray()}`,
-                  paddingTop: 0
-                }}
-              >
-                <PageTab
-                  questions={questions}
-                  watchTabActive={watchTabActive}
-                  onWatchTabClick={() => setWatchTabActive(true)}
-                  onQuestionTabClick={() => setWatchTabActive(false)}
-                />
-                <div style={{ marginTop: '2rem' }}>
-                  {!questionsBuilderShown && (
-                    <VideoPlayer
-                      autoplay
-                      rewardLevel={rewardLevel}
-                      byUser={!!byUser}
-                      key={videoId}
-                      hasHqThumb={hasHqThumb}
-                      videoId={videoId}
-                      videoCode={content}
-                      title={title}
-                      uploader={uploader}
-                      minimized={!watchTabActive}
-                    />
-                  )}
-                  {!watchTabActive && questions.length > 0 && (
-                    <Carousel
-                      allowDrag={false}
-                      style={{ marginTop: !!rewardLevel && '1rem' }}
-                      progressBar
-                      showQuestionsBuilder={() =>
-                        setQuestionsBuilderShown(true)
-                      }
-                      userIsUploader={userIsUploader}
-                      userCanEditThis={userCanEditThis}
-                      slidesToShow={1}
-                      slidesToScroll={1}
-                      slideIndex={currentSlide}
-                      afterSlide={setCurrentSlide}
-                      onFinish={() => setResultModalShown(true)}
-                    >
-                      {handleRenderSlides()}
-                    </Carousel>
-                  )}
-                  {!watchTabActive && questions.length === 0 && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        fontSize: '2rem',
-                        height: '15rem'
-                      }}
-                    >
-                      <p>There are no questions yet.</p>
-                      {(userIsUploader || userCanEditThis) && (
-                        <Button
-                          style={{ marginTop: '2rem', fontSize: '2rem' }}
-                          skeuomorphic
-                          color="darkerGray"
-                          onClick={() => setQuestionsBuilderShown(true)}
-                        >
-                          Add Questions
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  background: '#fff',
-                  marginTop: '1rem',
-                  border: `1px solid ${Color.borderGray()}`,
-                  width: '100%'
-                }}
-              >
-                <Details
-                  addTags={onAddTags}
-                  attachStar={onAttachStar}
-                  byUser={!!byUser}
-                  changingPage={changingPage}
-                  rewardLevel={rewardLevel}
-                  likes={likes}
-                  onLikeVideo={handleLikeVideo}
-                  content={content}
-                  description={description}
-                  changeByUserStatus={handleChangeByUserStatus}
-                  onEditFinish={handleEditVideoPage}
-                  onDelete={() => setConfirmModalShown(true)}
-                  onSetRewardLevel={handleSetRewardLevel}
-                  stars={stars}
-                  tags={tags}
-                  title={title}
-                  timeStamp={timeStamp}
-                  uploader={uploader}
-                  userId={userId}
-                  videoId={videoId}
-                  videoViews={views}
-                />
-                <RewardStatus
-                  contentType="video"
-                  rewardLevel={byUser ? 5 : 0}
-                  onCommentEdit={onEditRewardComment}
-                  style={{
-                    fontSize: '1.4rem'
-                  }}
-                  stars={stars}
-                  uploaderName={uploader.username}
-                />
-              </div>
-              <Subjects
-                loadMoreButton={subjectsLoadMoreButton}
-                subjects={subjects}
-                onLoadMoreSubjects={onLoadMoreSubjects}
-                onLoadSubjectComments={onLoadSubjectComments}
-                onSubjectEditDone={onEditSubject}
-                onSubjectDelete={subjectId =>
-                  onDeleteContent({
-                    contentType: 'subject',
-                    contentId: subjectId
-                  })
-                }
-                onSetRewardLevel={onSetRewardLevel}
-                uploadSubject={onUploadSubject}
-                contentId={videoId}
-                contentType="video"
-                rootRewardLevel={rewardLevel}
-                commentActions={{
-                  attachStar: onAttachStar,
-                  editRewardComment: onEditRewardComment,
-                  onDelete: onDeleteComment,
-                  onEditDone: onEditComment,
-                  onLikeClick: onLikeComment,
-                  onLoadMoreComments: onLoadMoreSubjectComments,
-                  onLoadMoreReplies: onLoadMoreSubjectReplies,
-                  onUploadComment,
-                  onUploadReply
-                }}
-              />
-              <div
-                style={{
-                  background: '#fff',
-                  border: `1px solid ${Color.borderGray()}`,
-                  padding: '1rem',
-                  marginBottom: '1rem'
-                }}
-              >
-                <p
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: '2.5rem',
-                    color: Color.darkerGray()
-                  }}
-                >
-                  Comment on this video
-                </p>
-                <Comments
-                  autoExpand
-                  comments={comments}
-                  inputAreaInnerRef={CommentInputAreaRef}
-                  inputTypeLabel={'comment'}
-                  isLoading={loadingComments}
-                  loadMoreButton={commentsLoadMoreButton}
-                  onAttachStar={onAttachStar}
-                  onCommentSubmit={onUploadComment}
-                  onDelete={onDeleteComment}
-                  onEditDone={onEditComment}
-                  onLikeClick={onLikeComment}
-                  onLoadMoreComments={onLoadMoreComments}
-                  onLoadMoreReplies={onLoadMoreReplies}
-                  onReplySubmit={onUploadReply}
-                  onRewardCommentEdit={onEditRewardComment}
-                  parent={{
-                    contentType: 'video',
-                    contentId: videoId,
-                    rewardLevel,
-                    uploader
-                  }}
-                  style={{ paddingTop: '1rem' }}
-                  userId={userId}
-                />
-              </div>
-              {resultModalShown && (
-                <ResultModal
-                  onHide={() => setResultModalShown(false)}
-                  numberCorrect={numberCorrect}
-                  totalQuestions={questions.length}
-                />
-              )}
-              {confirmModalShown && (
-                <ConfirmModal
-                  title="Remove Video"
-                  onHide={() => setConfirmModalShown(false)}
-                  onConfirm={handleDeleteVideo}
-                />
-              )}
-              {questionsBuilderShown && (
-                <QuestionsBuilder
-                  questions={questions}
-                  title={title}
-                  videoCode={content}
-                  onSubmit={handleUploadQuestions}
-                  onHide={() => setQuestionsBuilderShown(false)}
-                />
-              )}
-            </div>
-          )}
-          {loaded && <NavMenu videoId={videoId} playlistId={playlistId} />}
-        </div>
-      </ErrorBoundary>
-    ),
-    [
-      byUser,
-      comments,
-      commentsLoaded,
-      commentsLoadMoreButton,
-      content,
-      deleted,
-      description,
-      rewardLevel,
-      hasHqThumb,
-      likes,
-      loaded,
-      questions,
-      stars,
-      subjects,
-      subjectsLoaded,
-      subjectsLoadMoreButton,
-      tags,
-      timeStamp,
-      title,
-      uploader,
-      views,
-      changingPage,
-      loadingComments,
-      watchTabActive,
-      currentSlide,
-      userAnswers,
-      resultModalShown,
-      confirmModalShown,
-      playlistId,
-      search,
-      questionsBuilderShown,
-      userIsUploader,
-      userCanEditThis,
-      videoId,
-      videoUnavailable
-    ]
+        {loaded && <NavMenu videoId={videoId} playlistId={playlistId} />}
+      </div>
+    </ErrorBoundary>
   );
 
   async function handleDeleteVideo() {

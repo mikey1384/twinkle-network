@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Embedly from 'components/Embedly';
@@ -180,10 +180,15 @@ export default function LinkPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploader?.authLevel;
-  const userCanRewardThis =
-    canStar && authLevel > uploader?.authLevel && !userIsUploader;
+  const userCanEditThis = useMemo(
+    () => (canEdit || canDelete) && authLevel > uploader?.authLevel,
+    [authLevel, canDelete, canEdit, uploader]
+  );
+  const userCanRewardThis = useMemo(
+    () => canStar && authLevel > uploader?.authLevel && !userIsUploader,
+    [authLevel, canStar, uploader, userIsUploader]
+  );
+
   const userIsUploader = uploader?.id === userId;
   useEffect(() => {
     onSetXpRewardInterfaceShown({

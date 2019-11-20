@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
@@ -74,7 +74,10 @@ export default function Chess({
   });
   const enPassantTarget = useRef({});
   const capturedPiece = useRef(null);
-  const parsedState = initialState ? JSON.parse(initialState) : undefined;
+  const parsedState = useMemo(
+    () => (initialState ? JSON.parse(initialState) : undefined),
+    [initialState]
+  );
 
   useEffect(() => {
     if (newChessState) return;
@@ -118,6 +121,7 @@ export default function Chess({
         )
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, loaded, newChessState]);
 
   useEffect(() => {
@@ -131,15 +135,17 @@ export default function Chess({
   const isCheckmate = parsedState?.isCheckmate;
   const isStalemate = parsedState?.isStalemate;
   const isDraw = parsedState?.isDraw;
-  const statusText = isCheckmate
-    ? 'Checkmate!'
-    : isStalemate
-    ? 'Stalemate!'
-    : isDraw
-    ? `It's a draw...`
-    : isCheck
-    ? 'Check!'
-    : '';
+  const statusText = useMemo(() => {
+    isCheckmate
+      ? 'Checkmate!'
+      : isStalemate
+      ? 'Stalemate!'
+      : isDraw
+      ? `It's a draw...`
+      : isCheck
+      ? 'Check!'
+      : '';
+  }, [isCheck, isCheckmate, isDraw, isStalemate]);
 
   return (
     <div
@@ -428,7 +434,7 @@ export default function Chess({
         </div>
       )}
       {!(isCheckmate || isStalemate || isDraw) &&
-        (((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
+        ((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
           <div
             className={css`
               padding: 0.5rem 1rem;
@@ -464,7 +470,7 @@ export default function Chess({
               </>
             )}
           </div>
-        ))}
+        )}
     </div>
   );
 

@@ -31,6 +31,7 @@ export default function MonthlyXp({ selectedTheme, userId }) {
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   return (

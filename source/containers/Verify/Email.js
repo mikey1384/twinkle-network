@@ -37,6 +37,7 @@ export default function Email({ match }) {
         setExpired(error.response?.status === 401);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

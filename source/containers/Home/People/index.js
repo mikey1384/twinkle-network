@@ -101,7 +101,9 @@ export default function People({ location }) {
         prevOrderUsersBy.current = orderUsersBy;
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderUsersBy, profilesLoaded]);
+
   return (
     <div style={{ height: '100%' }}>
       <SearchInput
