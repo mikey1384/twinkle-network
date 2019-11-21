@@ -86,7 +86,7 @@ export default function LeftMenu({
         background: #fff;
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${mobileMaxWidth}) {
-          width: 25%;
+          width: 50vw;
         }
       `}
     >
