@@ -135,17 +135,15 @@ export default function Chess({
   const isCheckmate = parsedState?.isCheckmate;
   const isStalemate = parsedState?.isStalemate;
   const isDraw = parsedState?.isDraw;
-  const statusText = useMemo(() => {
-    isCheckmate
-      ? 'Checkmate!'
-      : isStalemate
-      ? 'Stalemate!'
-      : isDraw
-      ? `It's a draw...`
-      : isCheck
-      ? 'Check!'
-      : '';
-  }, [isCheck, isCheckmate, isDraw, isStalemate]);
+  const statusText = isCheckmate
+    ? 'Checkmate!'
+    : isStalemate
+    ? 'Stalemate!'
+    : isDraw
+    ? `It's a draw...`
+    : isCheck
+    ? 'Check!'
+    : '';
 
   return (
     <div
@@ -170,8 +168,7 @@ export default function Chess({
             background: ${Color.white(0.9)};
             border: 1px solid ${Color.darkGray()};
             position: absolute;
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 2rem;
             @media (max-width: ${mobileMaxWidth}) {
               top: 0;
               left: 0.5rem;
@@ -192,27 +189,42 @@ export default function Chess({
             move?.number && <p>Move {move?.number}:</p>}
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {spoilerOff || isCheckmate || isStalemate || isDraw
-              ? move?.piece
-                ? `moved ${
-                    move?.piece?.type === 'king'
-                      ? `${userMadeLastMove ? 'your' : 'their'} king`
-                      : `a ${move?.piece?.type}`
-                  }`
-                : 'castled'
-              : 'made a move'}
+            {spoilerOff || isCheckmate || isStalemate || isDraw ? (
+              move?.piece ? (
+                <span>
+                  moved{' '}
+                  {move?.piece?.type === 'king' ? (
+                    `${userMadeLastMove ? 'your' : 'their'} king`
+                  ) : (
+                    <span>
+                      a <b>{move?.piece?.type}</b>
+                    </span>
+                  )}
+                </span>
+              ) : (
+                'castled'
+              )
+            ) : (
+              'made a move'
+            )}
           </p>
           {(spoilerOff || isCheckmate || isStalemate || isDraw) && (
             <>
               {move?.piece?.type && (
                 <>
-                  <p>from {move?.from}</p>
-                  <p>to {move?.to}</p>
+                  <p>
+                    from <b>{move?.from}</b>
+                  </p>
+                  <p>
+                    to <b>{move?.to}</b>
+                  </p>
                   {parsedState?.capturedPiece && (
                     <>
                       <p>and captured</p>
                       <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
-                      <p>{parsedState?.capturedPiece}</p>
+                      <p>
+                        <b>{parsedState?.capturedPiece}</b>
+                      </p>
                     </>
                   )}
                 </>
@@ -221,6 +233,7 @@ export default function Chess({
                 <div
                   className={css`
                     margin-top: 2rem;
+                    font-weight: bold;
                     @media (max-width: ${mobileMaxWidth}) {
                       margin-top: 1rem;
                     }
