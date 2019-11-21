@@ -208,7 +208,11 @@ export default function Chess({
               'made a move'
             )}
           </p>
-          {(spoilerOff || isCheckmate || isStalemate || isDraw) && (
+          {(spoilerOff ||
+            isCheckmate ||
+            isStalemate ||
+            isDraw ||
+            userMadeLastMove) && (
             <>
               {move?.piece?.type && (
                 <>
