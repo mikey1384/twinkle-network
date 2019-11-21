@@ -9,7 +9,7 @@ export const MessageStyle = {
     position: relative;
   `,
   profilePic: css`
-    width: 5.3vw;
+    width: 5vw;
     height: 5vw;
     @media (max-width: ${mobileMaxWidth}) {
       width: 6vw;
@@ -19,7 +19,7 @@ export const MessageStyle = {
   contentWrapper: css`
     margin-left: 2rem;
     margin-right: 1rem;
-    width: 100%;
+    width: CALC(100% - 20rem);
     position: relative;
     white-space: pre-wrap;
     overflow-wrap: break-word;

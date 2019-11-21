@@ -35,9 +35,9 @@ export default function RightMenu({
       member => member.id
     );
     if (totalValidChannelMembers.length > 0) {
-      const offlineChannelMembers = totalValidChannelMembers.filter(member => {
-        return !currentlyOnlineIds.includes(member.id) && member.id !== myId;
-      });
+      const offlineChannelMembers = totalValidChannelMembers.filter(
+        member => !currentlyOnlineIds.includes(member.id) && member.id !== myId
+      );
       return [
         me,
         ...currentChannelOnlineMembersOtherThanMe,
@@ -100,7 +100,7 @@ export default function RightMenu({
             style={{ fontSize: '1.5rem' }}
             show={channelNameHovered}
             direction="left"
-            text={channelName}
+            text={channelName || ''}
           />
         </div>
       </div>
