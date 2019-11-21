@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { isMobile, textIsOverflown } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 
 RightMenu.propTypes = {
@@ -18,6 +19,7 @@ export default function RightMenu({
   currentChannel,
   currentChannelOnlineMembers
 }) {
+  const ChannelNameRef = useRef(null);
   const [channelNameHovered, setChannelNameHovered] = useState(false);
   const { userId: myId, username, profilePicId } = useMyState();
   const displayedChannelMembers = useMemo(() => {
@@ -78,19 +80,24 @@ export default function RightMenu({
           color: Color.darkerGray()
         }}
       >
-        <div style={{ width: '100%', padding: '0 1rem 0 1rem' }}>
+        <div
+          onClick={() => setChannelNameHovered(hovered => !hovered)}
+          style={{ width: '100%', padding: '0 1rem 0 1rem' }}
+        >
           <p
+            ref={ChannelNameRef}
             style={{
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               cursor: 'default'
             }}
-            onMouseEnter={() => setChannelNameHovered(true)}
+            onMouseEnter={handleMouseOver}
             onMouseLeave={() => setChannelNameHovered(false)}
           >
             {channelName}
           </p>
           <FullTextReveal
+            style={{ fontSize: '1.5rem' }}
             show={channelNameHovered}
             direction="left"
             text={channelName}
@@ -143,4 +150,10 @@ export default function RightMenu({
       </div>
     </div>
   );
+
+  function handleMouseOver() {
+    if (textIsOverflown(ChannelNameRef.current) && !isMobile(navigator)) {
+      setChannelNameHovered(true);
+    }
+  }
 }
