@@ -105,10 +105,13 @@ export default function RightMenu({
         </div>
       </div>
       <div
-        style={{
-          overflow: 'scroll',
-          marginTop: '1rem'
-        }}
+        className={css`
+          overflow: scroll;
+          margin-top: 1rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 3rem;
+          }
+        `}
       >
         {displayedChannelMembers.map((member, index) => (
           <div
