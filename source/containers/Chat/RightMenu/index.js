@@ -22,7 +22,7 @@ export default function RightMenu({
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
     const currentChannelOnlineMembersOtherThanMe = currentChannelOnlineMembers.filter(
-      member => member.id !== myId
+      member => !!member.id && member.id !== myId
     );
     const totalValidChannelMembers = totalChannelMembers.filter(
       member => member.id !== 0
