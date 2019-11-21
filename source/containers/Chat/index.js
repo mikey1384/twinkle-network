@@ -215,8 +215,7 @@ export default function Chat({ onFileUpload }) {
               font-size: 1.5rem;
               position: relative;
               @media (max-width: ${mobileMaxWidth}) {
-                overflow-x: scroll;
-                width: 200vw;
+                width: 180vw;
                 height: 100%;
               }
             `}

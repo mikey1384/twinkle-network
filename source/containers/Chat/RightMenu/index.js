@@ -65,7 +65,7 @@ export default function RightMenu({
         border-left: 1px solid ${Color.borderGray()};
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${mobileMaxWidth}) {
-          width: 50vw;
+          width: 45vw;
         }
       `}
     >

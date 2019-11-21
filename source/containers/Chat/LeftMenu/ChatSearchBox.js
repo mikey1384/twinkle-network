@@ -35,7 +35,7 @@ export default function ChatSearchBox({ style }) {
   return (
     <div style={style}>
       <SearchInput
-        placeholder="Play chess or talk with..."
+        placeholder="Search..."
         onChange={handleSearch}
         value={searchText}
         searchResults={chatSearchResults}

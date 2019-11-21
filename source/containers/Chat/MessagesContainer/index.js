@@ -176,7 +176,7 @@ export default function MessagesContainer({
         position: relative;
         background: #fff;
         @media (max-width: ${mobileMaxWidth}) {
-          width: 100vw;
+          width: 90vw;
         }
       `}
     >
