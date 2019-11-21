@@ -189,7 +189,11 @@ export default function Chess({
             move?.number && <p>Move {move?.number}:</p>}
           <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {spoilerOff || isCheckmate || isStalemate || isDraw ? (
+            {spoilerOff ||
+            isCheckmate ||
+            isStalemate ||
+            isDraw ||
+            userMadeLastMove ? (
               move?.piece ? (
                 <span>
                   moved{' '}
