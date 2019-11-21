@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
@@ -11,20 +11,30 @@ RewardLevelBar.propTypes = {
 };
 
 export default function RewardLevelBar({ className, rewardLevel, style }) {
-  const stars = [];
-  for (let i = 0; i < rewardLevel; i++) {
-    stars.push(<Icon key={i} icon="star" style={{ marginLeft: '0.2rem' }} />);
-  }
-  const barColor =
-    rewardLevel === 5
-      ? Color.gold()
-      : rewardLevel === 4
-      ? Color.brownOrange()
-      : rewardLevel === 3
-      ? Color.orange()
-      : rewardLevel === 2
-      ? Color.pink()
-      : Color.logoBlue();
+  const stars = useMemo(() => {
+    const result = [];
+    for (let i = 0; i < rewardLevel; i++) {
+      result.push(
+        <Icon key={i} icon="star" style={{ marginLeft: '0.2rem' }} />
+      );
+    }
+    return result;
+  }, [rewardLevel]);
+
+  const barColor = useMemo(
+    () =>
+      rewardLevel === 5
+        ? Color.gold()
+        : rewardLevel === 4
+        ? Color.brownOrange()
+        : rewardLevel === 3
+        ? Color.orange()
+        : rewardLevel === 2
+        ? Color.pink()
+        : Color.logoBlue(),
+    [rewardLevel]
+  );
+
   return (
     <div
       className={className}

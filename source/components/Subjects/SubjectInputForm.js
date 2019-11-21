@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { useInputContext } from 'contexts';
 

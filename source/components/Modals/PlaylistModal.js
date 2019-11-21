@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Playlist from 'components/Playlist';
 import Link from 'components/Link';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 PlaylistModal.propTypes = {
   onHide: PropTypes.func.isRequired,

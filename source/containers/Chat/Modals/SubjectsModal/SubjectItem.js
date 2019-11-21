@@ -37,7 +37,7 @@ export default function SubjectItem({
   useEffect(() => {
     const numLines = SubjectTitleRef.current.clientHeight / subjectTitleHeight;
     setMarginBottom(`${numLines * marginHeight}rem`);
-  });
+  }, []);
 
   let buttons = [];
   if (numMsgs > 0) {

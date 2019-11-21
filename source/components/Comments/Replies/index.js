@@ -70,6 +70,7 @@ function Replies({
       }
     }
     setPrevReplies(replies);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replies]);
 
   return (

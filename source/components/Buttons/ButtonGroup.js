@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 ButtonGroup.propTypes = {
   buttons: PropTypes.array.isRequired,

@@ -112,6 +112,7 @@ export default function QuestionBlock({
   useEffect(() => {
     setEditedQuestionTitle(title);
     setChoices(initialChoices);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialChoices]);
 
   const choicePlaceHolder = [

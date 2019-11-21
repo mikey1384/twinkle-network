@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { Color, borderRadius } from 'constants/css';
@@ -11,14 +11,17 @@ MyRank.propTypes = {
 };
 
 export default function MyRank({ myId, rank, twinkleXP }) {
-  const rankedColor =
-    rank === 1
-      ? Color.gold()
-      : rank === 2
-      ? '#fff'
-      : rank === 3
-      ? Color.bronze()
-      : undefined;
+  const rankedColor = useMemo(
+    () =>
+      rank === 1
+        ? Color.gold()
+        : rank === 2
+        ? '#fff'
+        : rank === 3
+        ? Color.bronze()
+        : undefined,
+    [rank]
+  );
   return (
     <div
       style={{

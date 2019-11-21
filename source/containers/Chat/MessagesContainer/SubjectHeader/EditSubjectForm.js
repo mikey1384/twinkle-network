@@ -13,7 +13,7 @@ import { Color } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
 import SubjectsModal from '../../Modals/SubjectsModal';
 import Input from 'components/Texts/Input';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { edit } from 'constants/placeholders';
 import { css } from 'emotion';
 
@@ -63,6 +63,7 @@ export default function EditSubjectForm({
       }
       setReadyForSubmit(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
 
   return (

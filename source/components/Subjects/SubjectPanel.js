@@ -29,7 +29,6 @@ SubjectPanel.propTypes = {
   comments: PropTypes.array.isRequired,
   description: PropTypes.string,
   rewardLevel: PropTypes.number,
-  id: PropTypes.number.isRequired,
   loadMoreCommentsButton: PropTypes.bool.isRequired,
   numComments: PropTypes.string,
   rootRewardLevel: PropTypes.number,
@@ -106,10 +105,15 @@ export default function SubjectPanel({
   );
   const [editDoneButtonDisabled, setEditDoneButtonDisabled] = useState(true);
   const userIsUploader = myId === userId;
-  const userHasHigherAuthLevel = authLevel > uploaderAuthLevel;
-  const userCanEditThis = (canEdit || canDelete) && userHasHigherAuthLevel;
-  const editButtonEnabled = userIsUploader || userCanEditThis;
-  const secretHidden = !!secretAnswer && !(secretShown || userIsUploader);
+  const editButtonShown = useMemo(() => {
+    const userHasHigherAuthLevel = authLevel > uploaderAuthLevel;
+    const userCanEditThis = (canEdit || canDelete) && userHasHigherAuthLevel;
+    return userIsUploader || userCanEditThis;
+  }, [authLevel, canDelete, canEdit, uploaderAuthLevel, userIsUploader]);
+  const secretHidden = useMemo(
+    () => !!secretAnswer && !(secretShown || userIsUploader),
+    [secretAnswer, secretShown, userIsUploader]
+  );
   const CommentsRef = useRef(null);
 
   useEffect(() => {
@@ -121,259 +125,230 @@ export default function SubjectPanel({
       titleIsEmpty ||
       (!titleChanged && !descriptionChanged && !secretAnswerChanged);
     setEditDoneButtonDisabled(editDoneButtonDisabled);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedTitle, editedDescription, editedSecretAnswer]);
 
-  return useMemo(
-    () =>
-      !deleted ? (
+  return !deleted ? (
+    <div
+      style={{
+        background: '#fff',
+        border: `1px solid ${Color.borderGray()}`,
+        marginTop: '1rem',
+        fontSize: '1.5rem'
+      }}
+    >
+      {rewardLevel > 0 && <RewardLevelBar rewardLevel={rewardLevel} />}
+      <div style={{ padding: '1rem' }}>
         <div
           style={{
-            background: '#fff',
-            border: `1px solid ${Color.borderGray()}`,
-            marginTop: '1rem',
-            fontSize: '1.5rem'
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}
         >
-          {rewardLevel > 0 && <RewardLevelBar rewardLevel={rewardLevel} />}
-          <div style={{ padding: '1rem' }}>
-            <div
+          {!onEdit && (
+            <Link
+              to={`/subjects/${subjectId}`}
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                fontSize: '2.5rem',
+                color: Color.green(),
+                fontWeight: 'bold'
               }}
             >
-              {!onEdit && (
-                <Link
-                  to={`/subjects/${subjectId}`}
-                  style={{
-                    fontSize: '2.5rem',
-                    color: Color.green(),
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {cleanString(title)}
-                </Link>
-              )}
-              <div style={{ display: 'flex' }}>
-                {canEditRewardLevel && !onEdit && (
-                  <StarButton
-                    contentId={subjectId}
-                    contentType="subject"
-                    rewardLevel={rewardLevel}
-                    onSetRewardLevel={onSetRewardLevel}
-                  />
-                )}
-                <div>
-                  {editButtonEnabled && !onEdit && (
-                    <DropdownButton
-                      skeuomorphic
-                      style={{ marginLeft: '1rem' }}
-                      color="darkerGray"
-                      direction="left"
-                      menuProps={renderMenuProps()}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-            {!onEdit && !!description && (
-              <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
-            )}
-            {secretAnswer && !onEdit && (
-              <SecretAnswer
-                style={{ marginTop: '1rem' }}
-                answer={secretAnswer}
-                subjectId={subjectId}
-                onClick={handleExpand}
-                uploaderId={userId}
+              {cleanString(title)}
+            </Link>
+          )}
+          <div style={{ display: 'flex' }}>
+            {canEditRewardLevel && !onEdit && (
+              <StarButton
+                contentId={subjectId}
+                contentType="subject"
+                rewardLevel={rewardLevel}
+                onSetRewardLevel={onSetRewardLevel}
               />
             )}
-            {onEdit && (
-              <form onSubmit={event => event.preventDefault()}>
-                <Input
-                  autoFocus
-                  placeholder="Enter Title..."
-                  value={editedTitle}
-                  onChange={text => {
-                    setEditedTitle(text);
-                  }}
-                  onKeyUp={event =>
-                    setEditedTitle(addEmoji(event.target.value))
-                  }
+            <div>
+              {editButtonShown && !onEdit && (
+                <DropdownButton
+                  skeuomorphic
+                  style={{ marginLeft: '1rem' }}
+                  color="darkerGray"
+                  direction="left"
+                  menuProps={renderMenuProps()}
                 />
-              </form>
-            )}
-            {onEdit && (
-              <div>
-                <Textarea
-                  placeholder="Enter Description (Optional)"
-                  style={{ marginTop: '1rem' }}
-                  minRows={5}
-                  value={editedDescription}
-                  onChange={event => {
-                    setEditedDescription(event.target.value);
-                  }}
-                />
-                <div style={{ marginTop: '1rem' }}>
-                  <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                    Secret Message
-                  </span>
-                  <Textarea
-                    style={{ marginTop: '0.7rem' }}
-                    placeholder="Enter Secret Message (Optional)"
-                    minRows={5}
-                    value={editedSecretAnswer}
-                    onChange={event => {
-                      setEditedSecretAnswer(event.target.value);
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    display: 'flex',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Button
-                    transparent
-                    style={{
-                      fontSize: '1.7rem',
-                      marginRight: '1rem'
-                    }}
-                    onClick={() => {
-                      setOnEdit(false);
-                      setEditedTitle(cleanString(title));
-                      setEditedDescription(description);
-                      setEditedSecretAnswer(secretAnswer);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    color="blue"
-                    style={{
-                      fontSize: '1.8rem'
-                    }}
-                    onClick={handleEditDone}
-                    disabled={editDoneButtonDisabled}
-                  >
-                    Done
-                  </Button>
-                </div>
-              </div>
-            )}
-            {!onEdit && (
-              <div style={{ marginTop: '1rem' }}>
-                {!secretHidden && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      minHeight: '8rem'
-                    }}
-                  >
-                    <Button
-                      skeuomorphic
-                      color={profileTheme}
-                      style={{ fontSize: '2rem' }}
-                      onClick={handleExpand}
-                    >
-                      <Icon icon="comment-alt" />
-                      <span style={{ marginLeft: '1rem' }}>
-                        Comment{!expanded && numComments > 1 ? 's' : ''}
-                        {!expanded && numComments && numComments > 0
-                          ? ` (${numComments})`
-                          : ''}
-                      </span>
-                    </Button>
-                  </div>
-                )}
-                <Comments
-                  inputAreaInnerRef={CommentsRef}
-                  isLoading={loadingComments}
-                  numInputRows={3}
-                  commentsLoadLimit={10}
-                  commentsHidden={secretHidden}
-                  commentsShown
-                  inputTypeLabel={'comment'}
-                  comments={comments}
-                  loadMoreButton={loadMoreCommentsButton}
-                  userId={myId}
-                  onAttachStar={attachStar}
-                  onCommentSubmit={handleCommentSubmit}
-                  onDelete={onDelete}
-                  onEditDone={onEditDone}
-                  onLikeClick={onLikeClick}
-                  onLoadMoreComments={loadMoreComments}
-                  onLoadMoreReplies={onLoadMoreReplies}
-                  onReplySubmit={onUploadReply}
-                  onRewardCommentEdit={editRewardComment}
-                  parent={{
-                    contentId,
-                    contentType,
-                    rewardLevel: rootRewardLevel
-                  }}
-                  rootContent={{
-                    contentType
-                  }}
-                  subject={{
-                    id: subjectId,
-                    rewardLevel
-                  }}
-                />
-              </div>
-            )}
-            <div style={{ marginTop: '1rem' }}>
-              By{' '}
-              <b>
-                <UsernameText
-                  user={{
-                    username,
-                    id: userId
-                  }}
-                />
-              </b>{' '}
-              &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+              )}
             </div>
           </div>
-          {confirmModalShown && (
-            <ConfirmModal
-              onHide={() => setConfirmModalShown(false)}
-              title="Remove Subject"
-              onConfirm={deleteThis}
-            />
-          )}
         </div>
-      ) : null,
-    [
-      comments,
-      confirmModalShown,
-      deleted,
-      description,
-      editButtonEnabled,
-      editedTitle,
-      editedDescription,
-      expanded,
-      secretHidden,
-      secretShown,
-      editedSecretAnswer,
-      editDoneButtonDisabled,
-      loadingComments,
-      loadMoreCommentsButton,
-      myId,
-      numComments,
-      onEdit,
-      rewardLevel,
-      rootRewardLevel,
-      secretHidden,
-      secretAnswer,
-      subjectId,
-      title
-    ]
-  );
+        {!onEdit && !!description && (
+          <LongText style={{ padding: '1rem 0' }}>{description}</LongText>
+        )}
+        {secretAnswer && !onEdit && (
+          <SecretAnswer
+            style={{ marginTop: '1rem' }}
+            answer={secretAnswer}
+            subjectId={subjectId}
+            onClick={handleExpand}
+            uploaderId={userId}
+          />
+        )}
+        {onEdit && (
+          <form onSubmit={event => event.preventDefault()}>
+            <Input
+              autoFocus
+              placeholder="Enter Title..."
+              value={editedTitle}
+              onChange={text => {
+                setEditedTitle(text);
+              }}
+              onKeyUp={event => setEditedTitle(addEmoji(event.target.value))}
+            />
+          </form>
+        )}
+        {onEdit && (
+          <div>
+            <Textarea
+              placeholder="Enter Description (Optional)"
+              style={{ marginTop: '1rem' }}
+              minRows={5}
+              value={editedDescription}
+              onChange={event => {
+                setEditedDescription(event.target.value);
+              }}
+            />
+            <div style={{ marginTop: '1rem' }}>
+              <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
+                Secret Message
+              </span>
+              <Textarea
+                style={{ marginTop: '0.7rem' }}
+                placeholder="Enter Secret Message (Optional)"
+                minRows={5}
+                value={editedSecretAnswer}
+                onChange={event => {
+                  setEditedSecretAnswer(event.target.value);
+                }}
+              />
+            </div>
+            <div
+              style={{
+                marginTop: '1rem',
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+            >
+              <Button
+                transparent
+                style={{
+                  fontSize: '1.7rem',
+                  marginRight: '1rem'
+                }}
+                onClick={() => {
+                  setOnEdit(false);
+                  setEditedTitle(cleanString(title));
+                  setEditedDescription(description);
+                  setEditedSecretAnswer(secretAnswer);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="blue"
+                style={{
+                  fontSize: '1.8rem'
+                }}
+                onClick={handleEditDone}
+                disabled={editDoneButtonDisabled}
+              >
+                Done
+              </Button>
+            </div>
+          </div>
+        )}
+        {!onEdit && (
+          <div style={{ marginTop: '1rem' }}>
+            {!secretHidden && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  minHeight: '8rem'
+                }}
+              >
+                <Button
+                  skeuomorphic
+                  color={profileTheme}
+                  style={{ fontSize: '2rem' }}
+                  onClick={handleExpand}
+                >
+                  <Icon icon="comment-alt" />
+                  <span style={{ marginLeft: '1rem' }}>
+                    Comment{!expanded && numComments > 1 ? 's' : ''}
+                    {!expanded && numComments && numComments > 0
+                      ? ` (${numComments})`
+                      : ''}
+                  </span>
+                </Button>
+              </div>
+            )}
+            <Comments
+              inputAreaInnerRef={CommentsRef}
+              isLoading={loadingComments}
+              numInputRows={3}
+              commentsLoadLimit={10}
+              commentsHidden={secretHidden}
+              commentsShown
+              inputTypeLabel={'comment'}
+              comments={comments}
+              loadMoreButton={loadMoreCommentsButton}
+              userId={myId}
+              onAttachStar={attachStar}
+              onCommentSubmit={handleCommentSubmit}
+              onDelete={onDelete}
+              onEditDone={onEditDone}
+              onLikeClick={onLikeClick}
+              onLoadMoreComments={loadMoreComments}
+              onLoadMoreReplies={onLoadMoreReplies}
+              onReplySubmit={onUploadReply}
+              onRewardCommentEdit={editRewardComment}
+              parent={{
+                contentId,
+                contentType,
+                rewardLevel: rootRewardLevel
+              }}
+              rootContent={{
+                contentType
+              }}
+              subject={{
+                id: subjectId,
+                rewardLevel
+              }}
+            />
+          </div>
+        )}
+        <div style={{ marginTop: '1rem' }}>
+          By{' '}
+          <b>
+            <UsernameText
+              user={{
+                username,
+                id: userId
+              }}
+            />
+          </b>{' '}
+          &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+        </div>
+      </div>
+      {confirmModalShown && (
+        <ConfirmModal
+          onHide={() => setConfirmModalShown(false)}
+          title="Remove Subject"
+          onConfirm={deleteThis}
+        />
+      )}
+    </div>
+  ) : null;
 
   async function deleteThis() {
     try {

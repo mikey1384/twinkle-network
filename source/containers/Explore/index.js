@@ -2,7 +2,7 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import Loading from 'components/Loading';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Subjects from './Subjects';
 import Notification from 'components/Notification';
 import MenuItems from './MenuItems';
