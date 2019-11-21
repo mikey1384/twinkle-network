@@ -32,7 +32,7 @@ export default function Link({
         ...style
       }}
       href={to}
-      onClick={onLinkClick}
+      onClick={handleLinkClick}
     >
       {children}
     </a>
@@ -50,7 +50,7 @@ export default function Link({
     </div>
   );
 
-  function onLinkClick(event) {
+  function handleLinkClick(event) {
     event.preventDefault();
     if (target) return window.open(to, target);
     if (typeof onClickAsync === 'function') {

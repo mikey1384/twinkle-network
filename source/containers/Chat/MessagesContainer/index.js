@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
@@ -156,292 +156,257 @@ export default function MessagesContainer({
     );
   }, [currentChannel.id]);
 
-  return useMemo(
-    () => (
+  return (
+    <div
+      className={css`
+        height: 100%;
+        width: CALC(100% - 30rem);
+        border-left: 1px solid ${Color.borderGray()};
+        padding: 0 0 1rem 1rem;
+        position: relative;
+        background: #fff;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 75%;
+        }
+      `}
+    >
+      <input
+        ref={FileInputRef}
+        style={{ display: 'none' }}
+        type="file"
+        onChange={handleUpload}
+      />
+      {selectedChannelId !== GENERAL_CHAT_ID && (
+        <DropdownButton
+          skeuomorphic
+          color="darkerGray"
+          opacity={0.7}
+          style={{
+            position: 'absolute',
+            zIndex: 10,
+            top: '1rem',
+            right: '1rem'
+          }}
+          direction="left"
+          icon="bars"
+          text="Menu"
+          menuProps={menuProps}
+        />
+      )}
+      {subjectMsgsModal.shown && (
+        <SubjectMsgsModal
+          subjectId={subjectMsgsModal.subjectId}
+          subjectTitle={subjectMsgsModal.content}
+          onHide={() =>
+            setSubjectMsgsModal({
+              shown: false,
+              subjectId: null,
+              content: ''
+            })
+          }
+        />
+      )}
       <div
         className={css`
-          height: 100%;
-          width: CALC(100% - 30rem);
-          border-left: 1px solid ${Color.borderGray()};
-          padding: 0 0 1rem 1rem;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: CALC(
+            100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
+          );
           position: relative;
-          background: #fff;
-          @media (max-width: ${mobileMaxWidth}) {
-            width: 75%;
-          }
+          -webkit-overflow-scrolling: touch;
         `}
       >
-        <input
-          ref={FileInputRef}
-          style={{ display: 'none' }}
-          type="file"
-          onChange={handleUpload}
-        />
-        {selectedChannelId !== GENERAL_CHAT_ID && (
-          <DropdownButton
-            skeuomorphic
-            color="darkerGray"
-            opacity={0.7}
-            style={{
-              position: 'absolute',
-              zIndex: 10,
-              top: '1rem',
-              right: '1rem'
-            }}
-            direction="left"
-            icon="bars"
-            text="Menu"
-            menuProps={menuProps}
-          />
-        )}
-        {subjectMsgsModal.shown && (
-          <SubjectMsgsModal
-            subjectId={subjectMsgsModal.subjectId}
-            subjectTitle={subjectMsgsModal.content}
-            onHide={() =>
-              setSubjectMsgsModal({
-                shown: false,
-                subjectId: null,
-                content: ''
-              })
-            }
-          />
-        )}
+        {loading && <Loading />}
         <div
-          className={css`
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: CALC(
-              100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
-            );
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-          `}
+          ref={MessagesContainerRef}
+          style={{
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            opacity: loading && '0.3',
+            top: currentChannelId === 2 ? '7rem' : 0,
+            overflowY: 'scroll'
+          }}
+          onScroll={() => {
+            if (
+              checkScrollIsAtTheBottom({
+                content: ContentRef.current,
+                container: MessagesContainerRef.current
+              })
+            ) {
+              setScrollAtBottom(true);
+              setNewUnseenMessage(false);
+            } else {
+              setScrollAtBottom(false);
+            }
+          }}
         >
-          {loading && <Loading />}
-          <div
-            ref={MessagesContainerRef}
-            style={{
-              position: 'absolute',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              opacity: loading && '0.3',
-              top: currentChannelId === 2 ? '7rem' : 0,
-              overflowY: 'scroll'
-            }}
-            onScroll={() => {
-              if (
-                checkScrollIsAtTheBottom({
-                  content: ContentRef.current,
-                  container: MessagesContainerRef.current
-                })
-              ) {
-                setScrollAtBottom(true);
-                setNewUnseenMessage(false);
-              } else {
-                setScrollAtBottom(false);
-              }
-            }}
-          >
-            <div ref={ContentRef} style={{ width: '100%' }}>
-              {loadMoreButton ? (
-                <div
-                  style={{
-                    marginTop: '1rem',
-                    marginBottom: '1rem',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '100%'
-                  }}
-                >
-                  <Button
-                    filled
-                    color="lightBlue"
-                    disabled={loadMoreButtonLock}
-                    onClick={handleLoadMoreButtonClick}
-                  >
-                    Load More
-                  </Button>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    height: fillerHeight + 'px'
-                  }}
-                />
-              )}
-              <div ref={MessagesRef}>
-                {messages.map((message, index) => (
-                  <Message
-                    key={message.id || 'newMessage' + index}
-                    channelId={selectedChannelId}
-                    channelName={channelName}
-                    chessCountdownObj={chessCountdownObj}
-                    chessOpponent={chessOpponent}
-                    checkScrollIsAtTheBottom={() =>
-                      checkScrollIsAtTheBottom({
-                        content: ContentRef.current,
-                        container: MessagesContainerRef.current
-                      })
-                    }
-                    currentChannel={currentChannel}
-                    index={index}
-                    isLastMsg={index === messages.length - 1}
-                    isNotification={!!message.isNotification}
-                    message={message}
-                    onChessBoardClick={onChessBoardClick}
-                    onChessSpoilerClick={onChessSpoilerClick}
-                    onSendFileMessage={onSendFileMessage}
-                    onDelete={handleShowDeleteModal}
-                    onReceiveNewMessage={handleReceiveNewMessage}
-                    recepientId={recepientId}
-                    setScrollToBottom={handleSetScrollToBottom}
-                    showSubjectMsgsModal={({ subjectId, content }) =>
-                      setSubjectMsgsModal({ shown: true, subjectId, content })
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          {!loading && currentChannelId === 2 && <SubjectHeader />}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '1rem',
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%'
-            }}
-          >
-            {newUnseenMessage && (
-              <Button
-                filled
-                color="orange"
-                onClick={() => {
-                  setNewUnseenMessage(false);
-                  MessagesContainerRef.current.scrollTop =
-                    ContentRef.current.offsetHeight;
+          <div ref={ContentRef} style={{ width: '100%' }}>
+            {loadMoreButton ? (
+              <div
+                style={{
+                  marginTop: '1rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%'
                 }}
               >
-                New Message
-              </Button>
+                <Button
+                  filled
+                  color="lightBlue"
+                  disabled={loadMoreButtonLock}
+                  onClick={handleLoadMoreButtonClick}
+                >
+                  Load More
+                </Button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  height: fillerHeight + 'px'
+                }}
+              />
             )}
+            <div ref={MessagesRef}>
+              {messages.map((message, index) => (
+                <Message
+                  key={message.id || 'newMessage' + index}
+                  channelId={selectedChannelId}
+                  channelName={channelName}
+                  chessCountdownObj={chessCountdownObj}
+                  chessOpponent={chessOpponent}
+                  checkScrollIsAtTheBottom={() =>
+                    checkScrollIsAtTheBottom({
+                      content: ContentRef.current,
+                      container: MessagesContainerRef.current
+                    })
+                  }
+                  currentChannel={currentChannel}
+                  index={index}
+                  isLastMsg={index === messages.length - 1}
+                  isNotification={!!message.isNotification}
+                  message={message}
+                  onChessBoardClick={onChessBoardClick}
+                  onChessSpoilerClick={onChessSpoilerClick}
+                  onSendFileMessage={onSendFileMessage}
+                  onDelete={handleShowDeleteModal}
+                  onReceiveNewMessage={handleReceiveNewMessage}
+                  recepientId={recepientId}
+                  setScrollToBottom={handleSetScrollToBottom}
+                  showSubjectMsgsModal={({ subjectId, content }) =>
+                    setSubjectMsgsModal({ shown: true, subjectId, content })
+                  }
+                />
+              ))}
+            </div>
           </div>
-          {deleteModal.shown && (
-            <ConfirmModal
-              onHide={() =>
-                setDeleteModal({ shown: false, filePath: '', messageId: null })
-              }
-              title="Remove Message"
-              onConfirm={handleDelete}
-            />
+        </div>
+        {!loading && currentChannelId === 2 && <SubjectHeader />}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
+          {newUnseenMessage && (
+            <Button
+              filled
+              color="orange"
+              onClick={() => {
+                setNewUnseenMessage(false);
+                MessagesContainerRef.current.scrollTop =
+                  ContentRef.current.offsetHeight;
+              }}
+            >
+              New Message
+            </Button>
           )}
         </div>
-        {socketConnected ? (
-          <ChatInput
-            loading={loading}
-            myId={userId}
-            isTwoPeopleChannel={currentChannel.twoPeople}
-            currentChannelId={selectedChannelId}
-            currentChannel={currentChannel}
-            onChessButtonClick={onShowChessModal}
-            onMafiaButtonClick={onShowMafiaModal}
-            onMessageSubmit={content => {
-              setTextAreaHeight(0);
-              onMessageSubmit(content);
-            }}
-            onHeightChange={height => {
-              if (height !== textAreaHeight) {
-                setTextAreaHeight(height > 46 ? height : 0);
-              }
-            }}
-            onPlusButtonClick={() => FileInputRef.current.click()}
-          />
-        ) : (
-          <div>
-            <Loading
-              style={{ height: '2.2rem' }}
-              innerStyle={{ fontSize: '2rem' }}
-              text="Socket disconnected. Reconnecting..."
-            />
-          </div>
-        )}
-        {alertModalShown && (
-          <AlertModal
-            title="File is too large"
-            content={`The file size is larger than your limit of ${maxSize /
-              mb} MB`}
-            onHide={() => setAlertModalShown(false)}
-          />
-        )}
-        {uploadModalShown && (
-          <UploadModal
-            channelId={selectedChannelId}
-            fileObj={fileObj}
-            onHide={() => setUploadModalShown(false)}
-            subjectId={subjectId}
-          />
-        )}
-        {inviteUsersModalShown && (
-          <InviteUsersModal
-            onHide={() => setInviteUsersModalShown(false)}
-            currentChannel={currentChannel}
-            selectedChannelId={selectedChannelId}
-            onDone={handleInviteUsersDone}
-          />
-        )}
-        {editTitleModalShown && (
-          <EditTitleModal
-            title={channelName}
-            onHide={() => setEditTitleModalShown(false)}
-            onDone={handleEditChannelTitle}
-          />
-        )}
-        {leaveConfirmModalShown && (
+        {deleteModal.shown && (
           <ConfirmModal
-            title="Leave Channel"
-            onHide={() => setLeaveConfirmModalShown(false)}
-            onConfirm={handleLeaveChannel}
+            onHide={() =>
+              setDeleteModal({ shown: false, filePath: '', messageId: null })
+            }
+            title="Remove Message"
+            onConfirm={handleDelete}
           />
         )}
       </div>
-    ),
-    [
-      authLevel,
-      deleteModal,
-      fillerHeight,
-      loadMoreButtonLock,
-      subjectMsgsModal,
-      profilePicId,
-      userId,
-      username,
-      channelName,
-      chessCountdownObj,
-      chessOpponent,
-      loadMoreButton,
-      loading,
-      currentChannel,
-      currentChannelId,
-      messages,
-      recepientId,
-      selectedChannelId,
-      socketConnected,
-      subjectId,
-      maxSize,
-      menuProps,
-      newUnseenMessage,
-      textAreaHeight,
-      fileObj,
-      inviteUsersModalShown,
-      uploadModalShown,
-      alertModalShown,
-      editTitleModalShown,
-      leaveConfirmModalShown,
-      scrollAtBottom
-    ]
+      {socketConnected ? (
+        <ChatInput
+          loading={loading}
+          myId={userId}
+          isTwoPeopleChannel={currentChannel.twoPeople}
+          currentChannelId={selectedChannelId}
+          currentChannel={currentChannel}
+          onChessButtonClick={onShowChessModal}
+          onMafiaButtonClick={onShowMafiaModal}
+          onMessageSubmit={content => {
+            setTextAreaHeight(0);
+            onMessageSubmit(content);
+          }}
+          onHeightChange={height => {
+            if (height !== textAreaHeight) {
+              setTextAreaHeight(height > 46 ? height : 0);
+            }
+          }}
+          onPlusButtonClick={() => FileInputRef.current.click()}
+        />
+      ) : (
+        <div>
+          <Loading
+            style={{ height: '2.2rem' }}
+            innerStyle={{ fontSize: '2rem' }}
+            text="Socket disconnected. Reconnecting..."
+          />
+        </div>
+      )}
+      {alertModalShown && (
+        <AlertModal
+          title="File is too large"
+          content={`The file size is larger than your limit of ${maxSize /
+            mb} MB`}
+          onHide={() => setAlertModalShown(false)}
+        />
+      )}
+      {uploadModalShown && (
+        <UploadModal
+          channelId={selectedChannelId}
+          fileObj={fileObj}
+          onHide={() => setUploadModalShown(false)}
+          subjectId={subjectId}
+        />
+      )}
+      {inviteUsersModalShown && (
+        <InviteUsersModal
+          onHide={() => setInviteUsersModalShown(false)}
+          currentChannel={currentChannel}
+          selectedChannelId={selectedChannelId}
+          onDone={handleInviteUsersDone}
+        />
+      )}
+      {editTitleModalShown && (
+        <EditTitleModal
+          title={channelName}
+          onHide={() => setEditTitleModalShown(false)}
+          onDone={handleEditChannelTitle}
+        />
+      )}
+      {leaveConfirmModalShown && (
+        <ConfirmModal
+          title="Leave Channel"
+          onHide={() => setLeaveConfirmModalShown(false)}
+          onConfirm={handleLeaveChannel}
+        />
+      )}
+    </div>
   );
 
   function checkScrollIsAtTheBottom({ content, container }) {

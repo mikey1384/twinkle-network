@@ -78,67 +78,58 @@ export default function Videos({ history, location }) {
       });
       prevLoaded.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPlaylistsLoaded]);
 
-  const playlists = !stringIsEmpty(playlistSearchText)
-    ? searchedPlaylists
-    : allPlaylists;
+  const playlists = useMemo(
+    () =>
+      !stringIsEmpty(playlistSearchText) ? searchedPlaylists : allPlaylists,
+    [allPlaylists, playlistSearchText, searchedPlaylists]
+  );
 
-  return useMemo(
-    () => (
-      <div>
-        <FeaturedPlaylistsPanel history={history} />
-        <PlaylistsPanel
-          key={'allplaylists'}
-          innerRef={AllPlaylistsPanelRef}
-          buttonGroup={() => (
-            <ButtonGroup
-              style={{ marginLeft: 'auto' }}
-              buttons={[
-                {
-                  label: '+ Add Playlist',
-                  onClick: onOpenAddPlaylistModal,
-                  skeuomorphic: true,
-                  color: 'darkerGray',
-                  disabled: !userId
-                }
-              ]}
-            />
-          )}
-          title="All Playlists"
-          loadMoreButton={
-            !stringIsEmpty(playlistSearchText)
-              ? loadMoreSearchedPlaylistsButton
-              : loadMorePlaylistsButton
-          }
-          userId={userId}
-          playlists={playlists}
-          loaded={allPlaylistsLoaded || prevLoaded.current}
-          isSearching={searching}
-          onSearch={handleSearch}
-          searchQuery={playlistSearchText}
-        />
-        {addPlaylistModalShown && (
-          <AddPlaylistModal
-            onUploadPlaylist={onUploadPlaylist}
-            onHide={onCloseAddPlaylistModal}
-            focusPlaylistPanelAfterUpload={() =>
-              scrollElementToCenter(AllPlaylistsPanelRef.current, 150)
-            }
+  return (
+    <div>
+      <FeaturedPlaylistsPanel history={history} />
+      <PlaylistsPanel
+        key={'allplaylists'}
+        innerRef={AllPlaylistsPanelRef}
+        buttonGroup={() => (
+          <ButtonGroup
+            style={{ marginLeft: 'auto' }}
+            buttons={[
+              {
+                label: '+ Add Playlist',
+                onClick: onOpenAddPlaylistModal,
+                skeuomorphic: true,
+                color: 'darkerGray',
+                disabled: !userId
+              }
+            ]}
           />
         )}
-      </div>
-    ),
-    [
-      userId,
-      addPlaylistModalShown,
-      loadMorePlaylistsButton,
-      loadMoreSearchedPlaylistsButton,
-      allPlaylistsLoaded,
-      playlists,
-      playlistSearchText,
-      searching
-    ]
+        title="All Playlists"
+        loadMoreButton={
+          !stringIsEmpty(playlistSearchText)
+            ? loadMoreSearchedPlaylistsButton
+            : loadMorePlaylistsButton
+        }
+        userId={userId}
+        playlists={playlists}
+        loaded={allPlaylistsLoaded || prevLoaded.current}
+        isSearching={searching}
+        onSearch={handleSearch}
+        searchQuery={playlistSearchText}
+      />
+      {addPlaylistModalShown && (
+        <AddPlaylistModal
+          onUploadPlaylist={onUploadPlaylist}
+          onHide={onCloseAddPlaylistModal}
+          focusPlaylistPanelAfterUpload={() =>
+            scrollElementToCenter(AllPlaylistsPanelRef.current, 150)
+          }
+        />
+      )}
+    </div>
   );
 
   async function handleSearchPlaylist(text) {

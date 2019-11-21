@@ -1,7 +1,7 @@
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import UsernameText from 'components/Texts/UsernameText';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 
 Likers.propTypes = {
@@ -28,15 +28,7 @@ export default function Likers({
   className,
   defaultText
 }) {
-  return (
-    <ErrorBoundary>
-      <div style={style} className={className}>
-        {renderLikers()}
-      </div>
-    </ErrorBoundary>
-  );
-
-  function renderLikers() {
+  const Likers = useMemo(() => {
     let userLiked = false;
     let totalLikes = 0;
     if (likes) {
@@ -103,5 +95,13 @@ export default function Likers({
     } else {
       return defaultText ? <div>{defaultText}</div> : null;
     }
-  }
+  }, [defaultText, likes, onLinkClick, target, userId]);
+
+  return (
+    <ErrorBoundary>
+      <div style={style} className={className}>
+        {Likers}
+      </div>
+    </ErrorBoundary>
+  );
 }

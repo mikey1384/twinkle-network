@@ -59,7 +59,7 @@ export default function SideButtons({
               contentType="video"
               rewardLevel={rewardLevel}
               onSetRewardLevel={onSetRewardLevel}
-              onToggleByUser={onToggleByUser}
+              onToggleByUser={handleToggleByUser}
               uploader={uploader}
             />
           </div>
@@ -100,7 +100,7 @@ export default function SideButtons({
     </div>
   );
 
-  function onToggleByUser(byUser) {
+  function handleToggleByUser(byUser) {
     changeByUserStatus({ byUser, contentId: videoId, contentType: 'video' });
   }
 }

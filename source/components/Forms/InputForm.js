@@ -43,63 +43,68 @@ export default function InputForm({
   } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.contentId;
-  const text = state[contentType + contentId] || '';
-  const commentExceedsCharLimit = exceedsCharLimit({
-    contentType: 'comment',
-    text
-  });
+  const text = useMemo(() => state[contentType + contentId] || '', [
+    contentId,
+    contentType,
+    state
+  ]);
+  const commentExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'comment',
+        text
+      }),
+    [text]
+  );
 
-  return useMemo(
-    () => (
-      <div style={style} className={className}>
-        <div
+  return (
+    <div style={style} className={className}>
+      <div
+        style={{
+          position: 'relative',
+          ...formGroupStyle
+        }}
+      >
+        <Textarea
+          autoFocus={autoFocus}
+          innerRef={innerRef}
           style={{
-            position: 'relative',
-            ...formGroupStyle
+            fontSize: '1.7rem',
+            ...(commentExceedsCharLimit?.style || {})
           }}
-        >
-          <Textarea
-            autoFocus={autoFocus}
-            innerRef={innerRef}
-            style={{
-              fontSize: '1.7rem',
-              ...(commentExceedsCharLimit?.style || {})
-            }}
-            minRows={rows}
-            value={text}
-            placeholder={placeholder}
-            onChange={handleOnChange}
-            onKeyUp={handleKeyUp}
-          />
-          {commentExceedsCharLimit && (
-            <small style={{ color: 'red', fontSize: '1.3rem' }}>
-              {commentExceedsCharLimit.message}
-            </small>
-          )}
-        </div>
-        {!stringIsEmpty(text) && (
-          <div
-            className={css`
-              display: flex;
-              justify-content: flex-end;
-            `}
-          >
-            <Button
-              style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
-              filled
-              color="green"
-              disabled={
-                submitting || stringIsEmpty(text) || commentExceedsCharLimit
-              }
-              onClick={handleSubmit}
-            >
-              Tap This Button to Submit!
-            </Button>
-          </div>
+          minRows={rows}
+          value={text}
+          placeholder={placeholder}
+          onChange={handleOnChange}
+          onKeyUp={handleKeyUp}
+        />
+        {commentExceedsCharLimit && (
+          <small style={{ color: 'red', fontSize: '1.3rem' }}>
+            {commentExceedsCharLimit.message}
+          </small>
         )}
       </div>
-    ),
-    [text, commentExceedsCharLimit, submitting]
+      {!stringIsEmpty(text) && (
+        <div
+          className={css`
+            display: flex;
+            justify-content: flex-end;
+          `}
+        >
+          <Button
+            style={{ marginTop: '1rem', marginBottom: '0.5rem' }}
+            filled
+            color="green"
+            disabled={
+              submitting || stringIsEmpty(text) || !!commentExceedsCharLimit
+            }
+            onClick={handleSubmit}
+          >
+            Tap This Button to Submit!
+          </Button>
+        </div>
+      )}
+    </div>
   );
 
   function handleEnterText(text) {

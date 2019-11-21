@@ -17,6 +17,7 @@ export default function Image({ imageObj }) {
       };
       reader.readAsDataURL(imageObj);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

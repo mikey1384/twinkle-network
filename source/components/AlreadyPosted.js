@@ -57,50 +57,48 @@ export default function AlreadyPosted({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
-  return useMemo(() => {
-    return !changingPage &&
+
+  const show = useMemo(() => {
+    return (
+      !changingPage &&
       !loading &&
       existingContent &&
       existingContent.id !== contentId &&
-      !(byUser && uploaderId !== existingContent.uploader) ? (
-      <div
-        style={{
-          fontSize: '1.6rem',
-          padding: '1rem',
-          color: '#fff',
-          backgroundColor:
-            uploaderId !== existingContent.uploader
-              ? Color.brown()
-              : Color.blue(),
-          ...style
-        }}
-        className={css`
-          > a {
-            color: #fff;
-            font-weight: bold;
-          }
-        `}
+      !(byUser && uploaderId !== existingContent.uploader)
+    );
+  }, [byUser, changingPage, contentId, existingContent, loading, uploaderId]);
+
+  return show ? (
+    <div
+      style={{
+        fontSize: '1.6rem',
+        padding: '1rem',
+        color: '#fff',
+        backgroundColor:
+          uploaderId !== existingContent.uploader
+            ? Color.brown()
+            : Color.blue(),
+        ...style
+      }}
+      className={css`
+        > a {
+          color: #fff;
+          font-weight: bold;
+        }
+      `}
+    >
+      This content has{' '}
+      <Link
+        style={{ fontWeight: 'bold' }}
+        to={`/${contentType === 'url' ? 'link' : 'video'}s/${
+          existingContent.id
+        }`}
       >
-        This content has{' '}
-        <Link
-          style={{ fontWeight: 'bold' }}
-          to={`/${contentType === 'url' ? 'link' : 'video'}s/${
-            existingContent.id
-          }`}
-        >
-          already been posted before
-          {uploaderId !== existingContent.uploader ? ' by someone else' : ''}
-        </Link>
-      </div>
-    ) : null;
-  }, [
-    byUser,
-    existingContent,
-    changingPage,
-    loading,
-    uploaderId,
-    url,
-    videoCode
-  ]);
+        already been posted before
+        {uploaderId !== existingContent.uploader ? ' by someone else' : ''}
+      </Link>
+    </div>
+  ) : null;
 }

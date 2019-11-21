@@ -48,72 +48,21 @@ export default function ChatInput({
       TextareaRef.current.focus();
     }
   }, [currentChannelId]);
-  const messageExceedsCharLimit = exceedsCharLimit({
-    inputType: 'message',
-    contentType: 'chat',
-    text
-  });
 
-  return useMemo(
-    () => (
-      <>
-        <div style={{ display: 'flex' }}>
-          {isTwoPeopleChannel ? (
-            <div
-              style={{
-                margin: '0.2rem 1rem 0.2rem 0',
-                height: '100%'
-              }}
-            >
-              <Button
-                disabled={loading}
-                skeuomorphic
-                onClick={onChessButtonClick}
-                color={profileTheme}
-              >
-                <Icon size="lg" icon={['fas', 'chess']} />
-                <span style={{ marginLeft: '0.7rem' }}>Chess</span>
-              </Button>
-            </div>
-          ) : (
-            <div
-              style={{
-                margin: '0.2rem 1rem 0.2rem 0',
-                height: '100%'
-              }}
-            >
-              <Button
-                disabled={loading}
-                skeuomorphic
-                onClick={onMafiaButtonClick}
-                color={profileTheme}
-              >
-                <Icon size="lg" icon={['fas', 'fingerprint']} />
-                <span style={{ marginLeft: '0.7rem' }}>Mafia</span>
-              </Button>
-            </div>
-          )}
-          <Textarea
-            innerRef={TextareaRef}
-            minRows={1}
-            placeholder="Type a message..."
-            onKeyDown={onKeyDown}
-            value={text}
-            onChange={handleChange}
-            onKeyUp={event => {
-              if (event.key === ' ') {
-                onEnterComment({
-                  contentType: 'chat',
-                  contentId: currentChannelId,
-                  text: addEmoji(event.target.value)
-                });
-              }
-            }}
-            style={{
-              marginRight: '1rem',
-              ...(messageExceedsCharLimit?.style || {})
-            }}
-          />
+  const messageExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'message',
+        contentType: 'chat',
+        text
+      }),
+    [text]
+  );
+
+  return (
+    <>
+      <div style={{ display: 'flex' }}>
+        {isTwoPeopleChannel ? (
           <div
             style={{
               margin: '0.2rem 1rem 0.2rem 0',
@@ -123,23 +72,69 @@ export default function ChatInput({
             <Button
               disabled={loading}
               skeuomorphic
-              onClick={onPlusButtonClick}
+              onClick={onChessButtonClick}
               color={profileTheme}
             >
-              <Icon size="lg" icon="plus" />
+              <Icon size="lg" icon={['fas', 'chess']} />
+              <span style={{ marginLeft: '0.7rem' }}>Chess</span>
             </Button>
           </div>
+        ) : (
+          <div
+            style={{
+              margin: '0.2rem 1rem 0.2rem 0',
+              height: '100%'
+            }}
+          >
+            <Button
+              disabled={loading}
+              skeuomorphic
+              onClick={onMafiaButtonClick}
+              color={profileTheme}
+            >
+              <Icon size="lg" icon={['fas', 'fingerprint']} />
+              <span style={{ marginLeft: '0.7rem' }}>Mafia</span>
+            </Button>
+          </div>
+        )}
+        <Textarea
+          innerRef={TextareaRef}
+          minRows={1}
+          placeholder="Type a message..."
+          onKeyDown={onKeyDown}
+          value={text}
+          onChange={handleChange}
+          onKeyUp={event => {
+            if (event.key === ' ') {
+              onEnterComment({
+                contentType: 'chat',
+                contentId: currentChannelId,
+                text: addEmoji(event.target.value)
+              });
+            }
+          }}
+          style={{
+            marginRight: '1rem',
+            ...(messageExceedsCharLimit?.style || {})
+          }}
+        />
+        <div
+          style={{
+            margin: '0.2rem 1rem 0.2rem 0',
+            height: '100%'
+          }}
+        >
+          <Button
+            disabled={loading}
+            skeuomorphic
+            onClick={onPlusButtonClick}
+            color={profileTheme}
+          >
+            <Icon size="lg" icon="plus" />
+          </Button>
         </div>
-      </>
-    ),
-    [
-      currentChannelId,
-      isTwoPeopleChannel,
-      loading,
-      text,
-      messageExceedsCharLimit,
-      profileTheme
-    ]
+      </div>
+    </>
   );
 
   function handleChange(event) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { borderRadius, mobileMaxWidth, Color } from 'constants/css';
@@ -11,14 +11,17 @@ RankBar.propTypes = {
 };
 
 export default function RankBar({ className, profile, style }) {
-  const rankColor =
-    profile.rank === 1
-      ? Color.gold()
-      : profile.rank === 2
-      ? '#fff'
-      : profile.rank === 3
-      ? Color.bronze()
-      : undefined;
+  const rankColor = useMemo(
+    () =>
+      profile.rank === 1
+        ? Color.gold()
+        : profile.rank === 2
+        ? '#fff'
+        : profile.rank === 3
+        ? Color.bronze()
+        : undefined,
+    [profile.rank]
+  );
 
   return (
     <div

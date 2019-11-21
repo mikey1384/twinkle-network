@@ -25,48 +25,46 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     setSelectedFile(fileObj);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const captionExceedsCharLimit = exceedsCharLimit({
-    inputType: 'message',
-    contentType: 'chat',
-    text: caption
-  });
+  const captionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'message',
+        contentType: 'chat',
+        text: caption
+      }),
+    [caption]
+  );
 
-  return useMemo(
-    () => (
-      <Modal onHide={onHide}>
-        <header>Upload a file</header>
-        <main>
-          {fileObj ? (
-            <File
-              caption={caption}
-              captionExceedsCharLimit={captionExceedsCharLimit}
-              fileObj={fileObj}
-              onCaptionChange={setCaption}
-            />
-          ) : (
-            <Loading />
-          )}
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={captionExceedsCharLimit}
-            color="blue"
-            onClick={handleSubmit}
-          >
-            Upload
-          </Button>
-        </footer>
-      </Modal>
-    ),
-    [caption, captionExceedsCharLimit, fileObj, subjectId, selectedFile]
+  return (
+    <Modal onHide={onHide}>
+      <header>Upload a file</header>
+      <main>
+        {fileObj ? (
+          <File
+            caption={caption}
+            captionExceedsCharLimit={captionExceedsCharLimit}
+            fileObj={fileObj}
+            onCaptionChange={setCaption}
+          />
+        ) : (
+          <Loading />
+        )}
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          disabled={captionExceedsCharLimit}
+          color="blue"
+          onClick={handleSubmit}
+        >
+          Upload
+        </Button>
+      </footer>
+    </Modal>
   );
 
   function handleSubmit() {

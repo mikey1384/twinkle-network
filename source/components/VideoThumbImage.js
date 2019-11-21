@@ -58,76 +58,79 @@ export default function VideoThumbImage({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId, rewardLevel, userId]);
 
-  return useMemo(
-    () => (
-      <div
+  const tagColor = useMemo(
+    () =>
+      rewardLevel === 5
+        ? Color.gold()
+        : rewardLevel === 4
+        ? Color.brownOrange()
+        : rewardLevel === 3
+        ? Color.orange()
+        : rewardLevel === 2
+        ? Color.pink()
+        : Color.logoBlue(),
+    [rewardLevel]
+  );
+
+  return (
+    <div
+      style={{
+        display: 'block',
+        width: '100%',
+        height: 'auto',
+        overFlow: 'hidden',
+        paddingBottom: height,
+        position: 'relative'
+      }}
+    >
+      <img
+        alt="Thumbnail"
+        src={src}
         style={{
           display: 'block',
           width: '100%',
-          height: 'auto',
-          overFlow: 'hidden',
-          paddingBottom: height,
-          position: 'relative'
+          height: '100%',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          margin: 'auto',
+          borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
         }}
-      >
-        <img
-          alt="Thumbnail"
-          src={src}
-          style={{
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            margin: 'auto',
-            borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
-          }}
+      />
+      {playIcon && (
+        <a
+          className={css`
+            position: absolute;
+            display: block;
+            background: url('/img/play-button-image.png');
+            background-size: contain;
+            height: 3rem;
+            width: 3rem;
+            top: 50%;
+            left: 50%;
+            margin: -1.5rem 0 0 -1.5rem;
+          `}
         />
-        {playIcon && (
-          <a
-            className={css`
-              position: absolute;
-              display: block;
-              background: url('/img/play-button-image.png');
-              background-size: contain;
-              height: 3rem;
-              width: 3rem;
-              top: 50%;
-              left: 50%;
-              margin: -1.5rem 0 0 -1.5rem;
-            `}
-          />
-        )}
-        {!!rewardLevel && (
-          <div
-            style={{
-              position: 'absolute',
-              padding: '0.1rem 0.5rem',
-              background:
-                rewardLevel === 5
-                  ? Color.gold()
-                  : rewardLevel === 4
-                  ? Color.brownOrange()
-                  : rewardLevel === 3
-                  ? Color.orange()
-                  : rewardLevel === 2
-                  ? Color.pink()
-                  : Color.logoBlue(),
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              color: '#fff'
-            }}
-          >
-            {addCommasToNumber(rewardLevel * xp)} XP
-          </div>
-        )}
-      </div>
-    ),
-    [rewardLevel, src, userId, xpEarned]
+      )}
+      {!!rewardLevel && (
+        <div
+          style={{
+            position: 'absolute',
+            padding: '0.1rem 0.5rem',
+            background: tagColor,
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            color: '#fff'
+          }}
+        >
+          {addCommasToNumber(rewardLevel * xp)} XP
+        </div>
+      )}
+    </div>
   );
 }

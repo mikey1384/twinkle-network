@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -78,6 +78,7 @@ export default function SubjectHeader() {
         setLoaded(true);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -85,122 +86,102 @@ export default function SubjectHeader() {
     setTimeSinceReload(timeSince(reloadTimeStamp));
   }, [timeStamp, reloadTimeStamp]);
 
-  useInterval(
-    () => {
-      setTimeSincePost(timeSince(timeStamp));
-      setTimeSinceReload(timeSince(reloadTimeStamp));
-    },
-    1000,
-    [timeStamp, reloadTimeStamp]
-  );
+  useInterval(() => {
+    setTimeSincePost(timeSince(timeStamp));
+    setTimeSinceReload(timeSince(reloadTimeStamp));
+  }, 1000);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary
-        className={css`
-          display: flex;
+  return (
+    <ErrorBoundary
+      className={css`
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 7rem;
+        > section {
           position: relative;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          height: 7rem;
-          > section {
-            position: relative;
-            width: CALC(100% - 15rem);
-          }
-        `}
-      >
-        {loaded ? (
-          <>
-            {!onEdit && (
-              <>
-                <section>
-                  <div style={{ width: '100%' }}>
-                    <span
-                      style={{
-                        cursor: 'default',
-                        color: Color.green(),
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        lineHeight: 'normal',
-                        fontSize: '2.2rem',
-                        fontWeight: 'bold',
-                        display: 'block'
-                      }}
-                      onClick={() =>
-                        setOnHover(
-                          textIsOverflown(HeaderLabelRef.current)
-                            ? !onHover
-                            : false
-                        )
-                      }
-                      onMouseOver={onMouseOver}
-                      onMouseLeave={() => setOnHover(false)}
-                      ref={HeaderLabelRef}
-                    >
-                      {subjectTitle}
-                    </span>
-                    <FullTextReveal text={subjectTitle} show={onHover} />
-                  </div>
-                  {renderDetails()}
-                </section>
-                <Button
-                  color="logoBlue"
-                  filled
-                  style={{
-                    position: 'absolute',
-                    fontSize: '1.3rem',
-                    top: '1.3rem',
-                    right: '1rem'
-                  }}
-                  onClick={() => setOnEdit(true)}
-                >
-                  Change Subject
-                </Button>
-              </>
-            )}
-            {onEdit && (
-              <EditSubjectForm
-                autoFocus
-                maxLength={charLimit.chat.subject}
-                currentSubjectId={subjectId}
-                title={subjectTitle}
-                onEditSubmit={onSubjectSubmit}
-                onChange={handleSearchChatSubject}
-                onClickOutSide={() => {
-                  setOnEdit(false);
-                  onClearSubjectSearchResults();
+          width: CALC(100% - 15rem);
+        }
+      `}
+    >
+      {loaded ? (
+        <>
+          {!onEdit && (
+            <>
+              <section>
+                <div style={{ width: '100%' }}>
+                  <span
+                    style={{
+                      cursor: 'default',
+                      color: Color.green(),
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      lineHeight: 'normal',
+                      fontSize: '2.2rem',
+                      fontWeight: 'bold',
+                      display: 'block'
+                    }}
+                    onClick={() =>
+                      setOnHover(
+                        textIsOverflown(HeaderLabelRef.current)
+                          ? !onHover
+                          : false
+                      )
+                    }
+                    onMouseOver={onMouseOver}
+                    onMouseLeave={() => setOnHover(false)}
+                    ref={HeaderLabelRef}
+                  >
+                    {subjectTitle}
+                  </span>
+                  <FullTextReveal text={subjectTitle} show={onHover} />
+                </div>
+                {renderDetails()}
+              </section>
+              <Button
+                color="logoBlue"
+                filled
+                style={{
+                  position: 'absolute',
+                  fontSize: '1.3rem',
+                  top: '1.3rem',
+                  right: '1rem'
                 }}
-                reloadChatSubject={handleReloadChatSubject}
-                searchResults={subjectSearchResults}
-              />
-            )}
-          </>
-        ) : (
-          <Loading
-            style={{
-              color: Color.green()
-            }}
-            text="Loading Subject..."
-          />
-        )}
-      </ErrorBoundary>
-    ),
-    [
-      profilePicId,
-      userId,
-      username,
-      subjectId,
-      subjectTitle,
-      loaded,
-      onEdit,
-      onHover,
-      reloader,
-      timeSincePost,
-      timeSinceReload,
-      uploader
-    ]
+                onClick={() => setOnEdit(true)}
+              >
+                Change Subject
+              </Button>
+            </>
+          )}
+          {onEdit && (
+            <EditSubjectForm
+              autoFocus
+              maxLength={charLimit.chat.subject}
+              currentSubjectId={subjectId}
+              title={subjectTitle}
+              onEditSubmit={onSubjectSubmit}
+              onChange={handleSearchChatSubject}
+              onClickOutSide={() => {
+                setOnEdit(false);
+                onClearSubjectSearchResults();
+              }}
+              reloadChatSubject={handleReloadChatSubject}
+              searchResults={subjectSearchResults}
+            />
+          )}
+        </>
+      ) : (
+        <Loading
+          style={{
+            color: Color.green()
+          }}
+          text="Loading Subject..."
+        />
+      )}
+    </ErrorBoundary>
   );
 
   function onMouseOver() {

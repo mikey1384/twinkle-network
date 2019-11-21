@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
@@ -80,151 +80,131 @@ export default function PlaylistCarousel({
     };
   });
 
-  return useMemo(
-    () => (
+  return (
+    <div
+      className={css`
+        margin-bottom: 1.5rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      `}
+    >
       <div
         className={css`
-          margin-bottom: 1.5rem;
-          &:last-child {
-            margin-bottom: 0;
+          position: relative;
+          display: flex;
+          align-items: center;
+          padding-bottom: 0.8rem;
+          p {
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline;
+            > a {
+              color: ${Color.darkGray()};
+              text-decoration: none;
+              &:hover {
+                transition: color 0.3s;
+                color: ${Color[profileTheme]()};
+              }
+            }
+          }
+          small {
+            font-size: 1.5rem;
+            color: ${Color.gray()};
           }
         `}
       >
-        <div
-          className={css`
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding-bottom: 0.8rem;
-            p {
-              font-size: 2.2rem;
-              font-weight: bold;
-              cursor: pointer;
-              display: inline;
-              > a {
-                color: ${Color.darkGray()};
-                text-decoration: none;
-                &:hover {
-                  transition: color 0.3s;
-                  color: ${Color[profileTheme]()};
-                }
+        {onEdit ? (
+          <EditTitleForm
+            autoFocus
+            maxLength={charLimit.playlist.title}
+            style={{ width: '90%' }}
+            title={title}
+            onEditSubmit={handleEditedTitleSubmit}
+            onClickOutSide={() => setOnEdit(false)}
+          />
+        ) : (
+          <div>
+            <p>
+              <Link to={`/playlists/${playlistId}`}>{cleanString(title)}</Link>
+              &nbsp;
+              <small>by {uploader}</small>
+            </p>
+          </div>
+        )}
+        {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
+          <DropdownButton
+            skeuomorphic
+            color="darkerGray"
+            style={{ position: 'absolute', right: 0 }}
+            direction="left"
+            menuProps={[
+              {
+                label: 'Edit Title',
+                onClick: () => setOnEdit(true)
+              },
+              {
+                label: 'Change Videos',
+                onClick: () => setChangePLVideosModalShown(true)
+              },
+              {
+                label: 'Reorder Videos',
+                onClick: () => setReorderPLVideosModalShown(true)
+              },
+              {
+                separator: true
+              },
+              {
+                label: 'Remove Playlist',
+                onClick: () => setDeleteConfirmModalShown(true)
               }
-            }
-            small {
-              font-size: 1.5rem;
-              color: ${Color.gray()};
-            }
-          `}
-        >
-          {onEdit ? (
-            <EditTitleForm
-              autoFocus
-              maxLength={charLimit.playlist.title}
-              style={{ width: '90%' }}
-              title={title}
-              onEditSubmit={handleEditedTitleSubmit}
-              onClickOutSide={() => setOnEdit(false)}
-            />
-          ) : (
-            <div>
-              <p>
-                <Link to={`/playlists/${playlistId}`}>
-                  {cleanString(title)}
-                </Link>
-                &nbsp;
-                <small>by {uploader}</small>
-              </p>
-            </div>
-          )}
-          {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
-            <DropdownButton
-              skeuomorphic
-              color="darkerGray"
-              style={{ position: 'absolute', right: 0 }}
-              direction="left"
-              menuProps={[
-                {
-                  label: 'Edit Title',
-                  onClick: () => setOnEdit(true)
-                },
-                {
-                  label: 'Change Videos',
-                  onClick: () => setChangePLVideosModalShown(true)
-                },
-                {
-                  label: 'Reorder Videos',
-                  onClick: () => setReorderPLVideosModalShown(true)
-                },
-                {
-                  separator: true
-                },
-                {
-                  label: 'Remove Playlist',
-                  onClick: () => setDeleteConfirmModalShown(true)
-                }
-              ]}
-            />
-          )}
-        </div>
-        <Carousel
-          progressBar={false}
-          slidesToShow={numSlides}
-          slidesToScroll={numSlides}
-          cellSpacing={cellSpacing}
-          slideWidthMultiplier={0.99}
-          showAllButton={showAllButton}
-          onShowAll={() => setPlaylistModalShown(true)}
-        >
-          {renderThumbs()}
-        </Carousel>
-        {playlistModalShown && (
-          <PlaylistModal
-            title={cleanString(title)}
-            onHide={() => setPlaylistModalShown(false)}
-            playlistId={playlistId}
-          />
-        )}
-        {changePLVideosModalShown && (
-          <EditPlaylistModal
-            modalType="change"
-            numPlaylistVids={numPlaylistVids}
-            playlistId={playlistId}
-            onHide={() => setChangePLVideosModalShown(false)}
-          />
-        )}
-        {reorderPLVideosModalShown && (
-          <EditPlaylistModal
-            modalType="reorder"
-            numPlaylistVids={numPlaylistVids}
-            playlistId={playlistId}
-            onHide={() => setReorderPLVideosModalShown(false)}
-          />
-        )}
-        {deleteConfirmModalShown && (
-          <ConfirmModal
-            title="Remove Playlist"
-            onConfirm={handleDeleteConfirm}
-            onHide={() => setDeleteConfirmModalShown(false)}
+            ]}
           />
         )}
       </div>
-    ),
-    [
-      clickSafe,
-      showAllButton,
-      title,
-      userIsUploader,
-      canEdit,
-      canEditPlaylists,
-      profileTheme,
-      onEdit,
-      changePLVideosModalShown,
-      reorderPLVideosModalShown,
-      deleteConfirmModalShown,
-      playlist,
-      playlistModalShown,
-      numSlides
-    ]
+      <Carousel
+        progressBar={false}
+        slidesToShow={numSlides}
+        slidesToScroll={numSlides}
+        cellSpacing={cellSpacing}
+        slideWidthMultiplier={0.99}
+        showAllButton={showAllButton}
+        onShowAll={() => setPlaylistModalShown(true)}
+      >
+        {renderThumbs()}
+      </Carousel>
+      {playlistModalShown && (
+        <PlaylistModal
+          title={cleanString(title)}
+          onHide={() => setPlaylistModalShown(false)}
+          playlistId={playlistId}
+        />
+      )}
+      {changePLVideosModalShown && (
+        <EditPlaylistModal
+          modalType="change"
+          numPlaylistVids={numPlaylistVids}
+          playlistId={playlistId}
+          onHide={() => setChangePLVideosModalShown(false)}
+        />
+      )}
+      {reorderPLVideosModalShown && (
+        <EditPlaylistModal
+          modalType="reorder"
+          numPlaylistVids={numPlaylistVids}
+          playlistId={playlistId}
+          onHide={() => setReorderPLVideosModalShown(false)}
+        />
+      )}
+      {deleteConfirmModalShown && (
+        <ConfirmModal
+          title="Remove Playlist"
+          onConfirm={handleDeleteConfirm}
+          onHide={() => setDeleteConfirmModalShown(false)}
+        />
+      )}
+    </div>
   );
 
   function renderThumbs() {

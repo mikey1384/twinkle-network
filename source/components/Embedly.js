@@ -17,7 +17,6 @@ Embedly.propTypes = {
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
-  initialThumbUrl: PropTypes.string,
   loadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
   style: PropTypes.object,
@@ -67,17 +66,20 @@ export default function Embedly({
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
-  const contentCss = css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    color: ${Color.darkerGray()};
-    position: relative;
-    overflow: hidden;
-    ${!small ? 'flex-direction: column;' : ''};
-  `;
+  const contentCss = useMemo(
+    () => css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      color: ${Color.darkerGray()};
+      position: relative;
+      overflow: hidden;
+      ${!small ? 'flex-direction: column;' : ''};
+    `,
+    [small]
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -117,6 +119,7 @@ export default function Embedly({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevUrl, url, thumbLoaded, thumbUrl]);
 
   useEffect(() => {
@@ -125,58 +128,9 @@ export default function Embedly({
         ? url
         : thumbUrl || fallbackImage
     );
-  }, [thumbUrl]);
+  }, [thumbUrl, url]);
 
-  return useMemo(
-    () => (
-      <div
-        className={css`
-          width: 100%;
-          height: 100%;
-          > a {
-            text-decoration: none;
-          }
-          h3 {
-            font-size: 1.9rem;
-          }
-          p {
-            font-size: 1.4rem;
-            margin-top: 1rem;
-          }
-          @media (max-width: ${mobileMaxWidth}) {
-            h3 {
-              font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
-            }
-            p {
-              font-size: ${contentType === 'chat' ? '1.1rem' : '1.4rem'};
-              margin-top: 1rem;
-            }
-          }
-        `}
-        style={style}
-      >
-        {noLink ? (
-          <div className={contentCss}>{renderInner()}</div>
-        ) : (
-          <a
-            className={contentCss}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={url}
-          >
-            {renderInner()}
-          </a>
-        )}
-      </div>
-    ),
-    [imageUrl, loading, thumbUrl, actualTitle, actualDescription, siteUrl]
-  );
-
-  function onImageLoadError() {
-    setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
-  }
-
-  function renderInner() {
+  const InnerContent = useMemo(() => {
     return (
       <>
         {!imageUrl || loading ? (
@@ -227,5 +181,67 @@ export default function Embedly({
         )}
       </>
     );
-  }
+    function onImageLoadError() {
+      setImageUrl(
+        !thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl
+      );
+    }
+  }, [
+    actualDescription,
+    actualTitle,
+    contentType,
+    description,
+    imageHeight,
+    imageMobileHeight,
+    imageOnly,
+    imageUrl,
+    loading,
+    loadingHeight,
+    siteUrl,
+    small,
+    thumbUrl,
+    title
+  ]);
+
+  return (
+    <div
+      className={css`
+        width: 100%;
+        height: 100%;
+        > a {
+          text-decoration: none;
+        }
+        h3 {
+          font-size: 1.9rem;
+        }
+        p {
+          font-size: 1.4rem;
+          margin-top: 1rem;
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          h3 {
+            font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
+          }
+          p {
+            font-size: ${contentType === 'chat' ? '1.1rem' : '1.4rem'};
+            margin-top: 1rem;
+          }
+        }
+      `}
+      style={style}
+    >
+      {noLink ? (
+        <div className={contentCss}>{InnerContent}</div>
+      ) : (
+        <a
+          className={contentCss}
+          target="_blank"
+          rel="noopener noreferrer"
+          href={url}
+        >
+          {InnerContent}
+        </a>
+      )}
+    </div>
+  );
 }
