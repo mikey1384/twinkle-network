@@ -103,7 +103,7 @@ export default function LeftMenu({
         `}
         onClick={onNewButtonClick}
       >
-        + Start New Channel
+        + Start a New Channel
       </div>
       <ChatSearchBox
         style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
