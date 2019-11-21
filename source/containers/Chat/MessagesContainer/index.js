@@ -237,7 +237,7 @@ export default function MessagesContainer({
             right: '0',
             bottom: '0',
             opacity: loading && '0.3',
-            top: '7rem',
+            top: selectedChannelId === GENERAL_CHAT_ID ? '7rem' : 0,
             overflowY: 'scroll'
           }}
           onScroll={() => {
@@ -315,7 +315,7 @@ export default function MessagesContainer({
             </div>
           </div>
         </div>
-        {!loading && <ChannelHeader />}
+        {!loading && selectedChannelId === GENERAL_CHAT_ID && <ChannelHeader />}
         <div
           style={{
             position: 'absolute',

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
+import UsernameText from 'components/Texts/UsernameText';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
@@ -83,10 +84,16 @@ export default function RightMenu({
           marginTop: '1rem'
         }}
       >
-        {displayedChannelMembers.map(member => (
+        {displayedChannelMembers.map((member, index) => (
           <div
             key={member.id}
-            style={{ display: 'flex', width: '100%', padding: '1rem' }}
+            style={{
+              display: 'flex',
+              width: '100%',
+              padding: '1rem',
+              paddingBottom:
+                index === displayedChannelMembers.length - 1 ? '15rem' : '1rem'
+            }}
           >
             <div
               style={{
@@ -103,7 +110,14 @@ export default function RightMenu({
                   .includes(member.id)}
                 statusShown
               />
-              <div style={{ marginLeft: '1rem' }}>{member.username}</div>
+              <div
+                style={{
+                  color: Color.darkerGray(),
+                  marginLeft: '2rem'
+                }}
+              >
+                <UsernameText user={member} />
+              </div>
             </div>
           </div>
         ))}

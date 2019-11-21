@@ -4,8 +4,6 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
-import FilterBar from 'components/FilterBar';
-import Icon from 'components/Icon';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
@@ -107,23 +105,14 @@ export default function LeftMenu({
       >
         + Start New Channel
       </div>
-      <FilterBar
-        style={{
-          fontSize: '1.6rem',
-          height: '5rem'
-        }}
-      >
-        <nav className="active" onClick={() => console.log('left click')}>
-          Home
-        </nav>
-        <nav onClick={() => console.log('right click')}>Create</nav>
-      </FilterBar>
-      <ChatSearchBox />
+      <ChatSearchBox
+        style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
+      />
       <div
         style={{
           overflow: 'scroll',
           position: 'absolute',
-          top: '15.5rem',
+          top: '10.5rem',
           left: 0,
           right: 0,
           bottom: 0
@@ -131,27 +120,7 @@ export default function LeftMenu({
         ref={ChannelListRef}
       >
         <div style={{ display: 'flex', width: '100%' }}>
-          <div
-            style={{
-              width: '5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              padding: '1rem',
-              alignItems: 'center',
-              fontSize: '2.5rem'
-            }}
-          >
-            <div>
-              <Icon icon="comments" />
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              <Icon icon="chalkboard-teacher" />
-            </div>
-            <div style={{ marginTop: '1rem' }}>
-              <Icon icon="book" />
-            </div>
-          </div>
-          <div style={{ width: 'CALC(100% - 5rem)' }}>
+          <div style={{ width: '100%' }}>
             <Channels
               userId={userId}
               currentChannel={currentChannel}
