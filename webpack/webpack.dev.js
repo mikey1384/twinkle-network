@@ -45,6 +45,10 @@ export default function devConfig(app) {
           }
         },
         {
+          test: /\.css$/,
+          loader: 'style-loader!css-loader'
+        },
+        {
           test: /\.(png|jp(e*)g|svg)$/,
           use: [
             {

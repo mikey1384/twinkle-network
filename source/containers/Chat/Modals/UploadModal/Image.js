@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import Loading from 'components/Loading';
 import { Color } from 'constants/css';
 
 Image.propTypes = {
-  imageObj: PropTypes.object.isRequired
+  imageUrl: PropTypes.string.isRequired
 };
 
-export default function Image({ imageObj }) {
-  const [imageUrl, setImageUrl] = useState('');
-  useEffect(() => {
-    init();
-    function init() {
-      const reader = new FileReader();
-      reader.onload = upload => {
-        setImageUrl(upload.target.result);
-      };
-      reader.readAsDataURL(imageObj);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
+export default function Image({ imageUrl }) {
+  return imageUrl ? (
     <div
       style={{
         width: '100%',
@@ -34,5 +22,7 @@ export default function Image({ imageObj }) {
         rel=""
       />
     </div>
+  ) : (
+    <Loading />
   );
 }

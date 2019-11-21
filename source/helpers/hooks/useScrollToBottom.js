@@ -37,6 +37,7 @@ export default function useScrollToBottom(containerRef, threshold = 0) {
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { atBottom, scrollTop };

@@ -39,7 +39,13 @@ export default function Header({
       updateChatLastRead
     }
   } = useAppContext();
-  const { defaultSearchFilter, userId, username, loggedIn } = useMyState();
+  const {
+    defaultSearchFilter,
+    userId,
+    username,
+    loggedIn,
+    profilePicId
+  } = useMyState();
   const {
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
@@ -70,6 +76,14 @@ export default function Header({
 
   const prevUserIdRef = useRef(userId);
   const socketConnected = useRef(false);
+  const prevProfilePicId = useRef(profilePicId);
+
+  useEffect(() => {
+    if (userId && profilePicId !== prevProfilePicId.current) {
+      socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+    }
+    prevProfilePicId.current = profilePicId;
+  }, [profilePicId, userId, username]);
 
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
@@ -118,7 +132,7 @@ export default function Header({
         handleCheckVersion();
         if (userId) {
           handleGetNumberOfUnreadMessages();
-          socket.emit('bind_uid_to_socket', userId, username);
+          socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
           handleLoadChat();
         }
       }
@@ -193,7 +207,7 @@ export default function Header({
     if (userId) {
       socket.disconnect();
       socket.connect();
-      socket.emit('bind_uid_to_socket', userId, username);
+      socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
       socket.emit('enter_my_notification_channel', userId);
     } else {
       if (prevUserIdRef.current) {

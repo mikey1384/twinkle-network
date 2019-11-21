@@ -3,9 +3,13 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
-import File from './File';
+import FileInfo from './FileInfo';
 import uuidv1 from 'uuid/v1';
-import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
+import {
+  exceedsCharLimit,
+  finalizeEmoji,
+  getFileInfoFromFileName
+} from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useChatContext } from 'contexts';
 
@@ -22,11 +26,38 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
     actions: { onSubmitMessage }
   } = useChatContext();
   const [caption, setCaption] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const { fileType } = useMemo(() => getFileInfoFromFileName(fileObj.name), [
+    fileObj.name
+  ]);
+
   useEffect(() => {
-    setSelectedFile(fileObj);
+    if (fileType === 'image') {
+      const reader = new FileReader();
+      reader.onload = upload => {
+        const payload = upload.target.result;
+        window.loadImage(
+          payload,
+          function(img) {
+            const image = img.toDataURL('image/jpeg');
+            setImageUrl(image);
+            const dataUri = image.replace(/^data:image\/\w+;base64,/, '');
+            const buffer = Buffer.from(dataUri, 'base64');
+            // eslint-disable-next-line no-undef
+            const file = new File([buffer], fileObj.name);
+            setSelectedFile(file);
+          },
+          { orientation: true }
+        );
+      };
+      reader.readAsDataURL(fileObj);
+    } else {
+      setSelectedFile(fileObj);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const captionExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
@@ -42,10 +73,12 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
       <header>Upload a file</header>
       <main>
         {fileObj ? (
-          <File
+          <FileInfo
             caption={caption}
             captionExceedsCharLimit={captionExceedsCharLimit}
             fileObj={fileObj}
+            fileType={fileType}
+            imageUrl={imageUrl}
             onCaptionChange={setCaption}
           />
         ) : (
@@ -57,7 +90,7 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
           Cancel
         </Button>
         <Button
-          disabled={captionExceedsCharLimit}
+          disabled={captionExceedsCharLimit || !selectedFile}
           color="blue"
           onClick={handleSubmit}
         >
@@ -68,17 +101,19 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   );
 
   function handleSubmit() {
-    onSubmitMessage({
-      content: finalizeEmoji(caption),
-      channelId,
-      fileToUpload: selectedFile,
-      filePath: uuidv1(),
-      fileName: selectedFile.name,
-      profilePicId,
-      subjectId,
-      userId,
-      username
-    });
-    onHide();
+    if (selectedFile) {
+      onSubmitMessage({
+        content: finalizeEmoji(caption),
+        channelId,
+        fileToUpload: selectedFile,
+        filePath: uuidv1(),
+        fileName: selectedFile.name,
+        profilePicId,
+        subjectId,
+        userId,
+        username
+      });
+      onHide();
+    }
   }
 }

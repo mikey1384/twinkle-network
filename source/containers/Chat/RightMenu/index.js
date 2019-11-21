@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { useMyState } from 'helpers/hooks';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
@@ -15,14 +16,37 @@ export default function RightMenu({
   currentChannel,
   currentChannelOnlineMembers
 }) {
-  const totalChannelMembers = currentChannel?.members || [];
-  const membersOnline = useMemo(
-    () =>
-      `${currentChannelOnlineMembers.length || 1}${
-        totalChannelMembers.length <= 1 ? '' : '/' + totalChannelMembers.length
-      }`,
-    [currentChannelOnlineMembers.length, totalChannelMembers.length]
-  );
+  const { userId: myId, username, profilePicId } = useMyState();
+  const displayedChannelMembers = useMemo(() => {
+    const totalChannelMembers = currentChannel?.members || [];
+    const me = { id: myId, username, profilePicId };
+    const currentChannelOnlineMembersOtherThanMe = currentChannelOnlineMembers.filter(
+      member => member.id !== myId
+    );
+    const totalValidChannelMembers = totalChannelMembers.filter(
+      member => member.id !== 0
+    );
+    const currentlyOnlineIds = currentChannelOnlineMembers.map(
+      member => member.id
+    );
+    if (totalValidChannelMembers.length > 0) {
+      const offlineChannelMembers = totalValidChannelMembers.filter(member => {
+        return !currentlyOnlineIds.includes(member.id) && member.id !== myId;
+      });
+      return [
+        me,
+        ...currentChannelOnlineMembersOtherThanMe,
+        ...offlineChannelMembers
+      ];
+    }
+    return [me, ...currentChannelOnlineMembersOtherThanMe];
+  }, [
+    currentChannel,
+    myId,
+    username,
+    profilePicId,
+    currentChannelOnlineMembers
+  ]);
 
   return (
     <div
@@ -55,16 +79,11 @@ export default function RightMenu({
       </div>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          fontWeight: 'bold',
-          color: Color.green()
+          overflow: 'scroll',
+          marginTop: '1rem'
         }}
       >
-        {membersOnline} online
-      </div>
-      <div>
-        {totalChannelMembers.map(member => (
+        {displayedChannelMembers.map(member => (
           <div
             key={member.id}
             style={{ display: 'flex', width: '100%', padding: '1rem' }}
@@ -79,7 +98,9 @@ export default function RightMenu({
                 style={{ height: '5rem', width: '5rem' }}
                 userId={member.id}
                 profilePicId={member.profilePicId}
-                online={currentChannelOnlineMembers.includes(member.id)}
+                online={currentChannelOnlineMembers
+                  .map(member => member.id)
+                  .includes(member.id)}
                 statusShown
               />
               <div style={{ marginLeft: '1rem' }}>{member.username}</div>
