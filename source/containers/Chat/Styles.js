@@ -19,7 +19,7 @@ export const MessageStyle = {
   contentWrapper: css`
     margin-left: 2rem;
     margin-right: 1rem;
-    width: CALC(100% - 20rem);
+    width: 100%;
     position: relative;
     white-space: pre-wrap;
     overflow-wrap: break-word;
