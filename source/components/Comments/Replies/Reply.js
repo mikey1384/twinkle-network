@@ -94,7 +94,7 @@ export default function Reply({
     return userIsUploader || userCanEditThis;
   }, [canDelete, canEdit, userIsHigherAuth, userIsUploader]);
   const rewardButtonShown = useMemo(
-    () => (canStar && userIsHigherAuth) || userIsUploader,
+    () => canStar && userIsHigherAuth && !userIsUploader,
     [canStar, userIsHigherAuth, userIsUploader]
   );
   const rewardLevel = useMemo(() => {
