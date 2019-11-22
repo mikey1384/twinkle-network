@@ -74,8 +74,12 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
-  const socketConnected = useRef(false);
   const prevProfilePicId = useRef(profilePicId);
+
+  useEffect(() => {
+    socket.disconnect();
+    socket.connect();
+  }, [userId]);
 
   useEffect(() => {
     if (userId && profilePicId !== prevProfilePicId.current) {
@@ -123,18 +127,15 @@ export default function Header({
       socket.emit('join_chat_channel', data.channelId);
     }
     async function onConnect() {
-      if (!socketConnected.current) {
-        console.log('connected to socket');
-        socketConnected.current = true;
-        onClearRecentChessMessage();
-        onChangeSocketStatus(true);
-        handleCheckVersion();
-        if (userId) {
-          handleGetNumberOfUnreadMessages();
-          socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
-          socket.emit('enter_my_notification_channel', userId);
-          handleLoadChat();
-        }
+      console.log('connected to socket');
+      onClearRecentChessMessage();
+      onChangeSocketStatus(true);
+      handleCheckVersion();
+      if (userId) {
+        handleGetNumberOfUnreadMessages();
+        socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+        socket.emit('enter_my_notification_channel', userId);
+        handleLoadChat();
       }
 
       async function handleLoadChat() {
@@ -154,11 +155,8 @@ export default function Header({
       }
     }
     function onDisconnect() {
-      if (socketConnected.current) {
-        console.log('disconnected from socket');
-        socketConnected.current = false;
-        onChangeSocketStatus(false);
-      }
+      console.log('disconnected from socket');
+      onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
@@ -198,12 +196,6 @@ export default function Header({
     const newNotiNum = numNewPosts + numNewNotis + numUnreads;
     document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
-
-  useEffect(() => {
-    socket.disconnect();
-    socket.connect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
 
   useEffect(() => {
     onShowUpdateNotice(!versionMatch);
