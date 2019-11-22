@@ -58,7 +58,6 @@ export default function RightMenu({
       className={css`
         display: flex;
         flex-direction: column;
-        height: 100%;
         width: 20vw;
         position: relative;
         background: #fff;
@@ -87,7 +86,6 @@ export default function RightMenu({
             font-size: 2.5rem;
             font-weight: bold;
             @media (max-width: ${mobileMaxWidth}) {
-              line-height: 3rem;
               font-size: 1.7rem;
             }
           `}
@@ -119,9 +117,6 @@ export default function RightMenu({
           overflow: hidden;
           overflow-y: scroll;
           margin-top: 1rem;
-          @media (max-width: ${mobileMaxWidth}) {
-            margin-top: 2rem;
-          }
         `}
       >
         {displayedChannelMembers.map((member, index) => (
