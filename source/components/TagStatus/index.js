@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import TagModal from './TagModal';
@@ -17,7 +17,7 @@ TagStatus.propTypes = {
   tags: PropTypes.array.isRequired
 };
 
-export default function TagStatus({
+function TagStatus({
   contentId,
   onAddTags,
   onAddTagToContents,
@@ -137,3 +137,5 @@ export default function TagStatus({
     setTagModalShown(false);
   }
 }
+
+export default memo(TagStatus);
