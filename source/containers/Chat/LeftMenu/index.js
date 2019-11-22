@@ -98,6 +98,7 @@ export default function LeftMenu({
           cursor: pointer;
           transition: background 0.2s;
           @media (min-width: ${desktopMinWidth}) {
+            background: ${Color[profileTheme](1)};
             &:hover {
               background: ${Color[profileTheme]()};
             }
