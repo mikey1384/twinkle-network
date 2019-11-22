@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -29,7 +29,7 @@ ProfilePanel.propTypes = {
   profileId: PropTypes.number
 };
 
-export default function ProfilePanel({ expandable, profileId }) {
+function ProfilePanel({ expandable, profileId }) {
   const history = useHistory();
   const {
     requestHelpers: {
@@ -571,3 +571,5 @@ export default function ProfilePanel({ expandable, profileId }) {
     setImageEditModalShown(false);
   }
 }
+
+export default memo(ProfilePanel);
