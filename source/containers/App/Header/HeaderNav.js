@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Route, useHistory } from 'react-router-dom';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
   useAppContext,
@@ -114,12 +114,14 @@ export default function HeaderNav({
                 color: ${highlightColor}!important;
               }
             }
-            &:hover {
-              > nav {
-                > svg {
+            @media (max-width: ${desktopMinWidth}) {
+              &:hover {
+                > nav {
+                  > svg {
+                    color: ${highlightColor};
+                  }
                   color: ${highlightColor};
                 }
-                color: ${highlightColor};
               }
             }
             @media (max-width: ${mobileMaxWidth}) {
@@ -134,13 +136,6 @@ export default function HeaderNav({
               > nav.active {
                 > svg {
                   color: ${highlightColor};
-                }
-              }
-              &:hover {
-                > nav {
-                  > svg {
-                    color: ${highlightColor};
-                  }
                 }
               }
             }
