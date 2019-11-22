@@ -153,12 +153,11 @@ export default function RightMenu({
                 statusShown
               />
               <UsernameText
+                truncate
                 style={{
-                  height: '100%',
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
-                  width: 'CALC(100% - 5rem - 2rem)',
-                  textOverflow: 'ellipsis'
+                  width: 'CALC(100% - 5rem - 2rem)'
                 }}
                 user={member}
               />
