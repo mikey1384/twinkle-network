@@ -4,7 +4,7 @@ import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth, phoneMaxWidth } from 'constants/css';
 import { isMobile, textIsOverflown } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 
@@ -68,7 +68,7 @@ export default function RightMenu({
         border-left: 1px solid ${Color.borderGray()};
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
-        @media (max-width: ${mobileMaxWidth}) {
+        @media (max-width: ${phoneMaxWidth}) {
           width: 45vw;
         }
       `}

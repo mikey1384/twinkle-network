@@ -9,7 +9,7 @@ import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
-import { mobileMaxWidth } from 'constants/css';
+import { phoneMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
@@ -214,7 +214,7 @@ export default function Chat({ onFileUpload }) {
               display: flex;
               font-size: 1.5rem;
               position: relative;
-              @media (max-width: ${mobileMaxWidth}) {
+              @media (max-width: ${phoneMaxWidth}) {
                 width: 180vw;
                 height: 100%;
               }

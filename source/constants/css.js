@@ -43,3 +43,4 @@ export const borderRadius = '5px';
 export const innerBorderRadius = '4px';
 export const mobileMaxWidth = '850px';
 export const desktopMinWidth = '851px';
+export const phoneMaxWidth = '750px';
