@@ -149,7 +149,7 @@ export default function RightMenu({
                 style={{
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
-                  width: 'CALC(100% - 5rem)',
+                  width: 'CALC(100% - 5rem - 2rem)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   cursor: 'default'
