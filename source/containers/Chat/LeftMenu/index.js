@@ -4,7 +4,7 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
@@ -97,8 +97,10 @@ export default function LeftMenu({
           justify-content: center;
           cursor: pointer;
           transition: background 0.2s;
-          &:hover {
-            background: ${Color[profileTheme]()};
+          @media (min-width: ${desktopMinWidth}) {
+            &:hover {
+              background: ${Color[profileTheme]()};
+            }
           }
         `}
         onClick={onNewButtonClick}
