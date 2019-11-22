@@ -168,13 +168,12 @@ export default function Chess({
             background: ${Color.white(0.9)};
             border: 1px solid ${Color.darkGray()};
             position: absolute;
-            font-size: 2rem;
+            font-size: 1.7rem;
             @media (max-width: ${mobileMaxWidth}) {
               top: 0;
               left: 0.5rem;
               width: CALC(100% - 1rem);
               position: relative;
-              font-size: 1.5rem;
               p {
                 display: inline-block;
                 margin-left: 0.5rem;
@@ -187,7 +186,9 @@ export default function Chess({
         >
           {(spoilerOff || isCheckmate || isStalemate || isDraw) &&
             move?.number && <p>Move {move?.number}:</p>}
-          <p>{userMadeLastMove ? 'You' : opponentName}</p>
+          <p>
+            <b>{userMadeLastMove ? 'You' : opponentName}</b>
+          </p>
           <p>
             {spoilerOff ||
             isCheckmate ||
