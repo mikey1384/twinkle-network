@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { memo, useMemo, useRef, useState } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -21,7 +21,7 @@ import {
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 
-export default function ContentInput() {
+function ContentInput() {
   const {
     requestHelpers: { checkIfContentExists, uploadContent }
   } = useAppContext();
@@ -328,3 +328,5 @@ export default function ContentInput() {
     return onSetContentAlreadyPosted(exists ? content : false);
   }
 }
+
+export default memo(ContentInput);
