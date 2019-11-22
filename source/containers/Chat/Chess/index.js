@@ -337,17 +337,23 @@ function Chess({
               }
             `}
           >
-            {loaded && (spoilerOff || isCheckmate || isStalemate) && (
-              <FallenPieces
-                myColor={myColor}
-                {...{
-                  [myColor === 'white'
-                    ? 'whiteFallenPieces'
-                    : 'blackFallenPieces']:
-                    myColor === 'white' ? whiteFallenPieces : blackFallenPieces
-                }}
-              />
-            )}
+            {loaded &&
+              (userMadeLastMove ||
+                spoilerOff ||
+                isCheckmate ||
+                isStalemate) && (
+                <FallenPieces
+                  myColor={myColor}
+                  {...{
+                    [myColor === 'white'
+                      ? 'whiteFallenPieces'
+                      : 'blackFallenPieces']:
+                      myColor === 'white'
+                        ? whiteFallenPieces
+                        : blackFallenPieces
+                  }}
+                />
+              )}
           </div>
           <Board
             loading={!loaded || !opponentId}
@@ -388,19 +394,24 @@ function Chess({
                 }
               `}
             >
-              {loaded && (spoilerOff || isCheckmate || isStalemate || isDraw) && (
-                <FallenPieces
-                  myColor={myColor}
-                  {...{
-                    [myColor === 'white'
-                      ? 'blackFallenPieces'
-                      : 'whiteFallenPieces']:
-                      myColor === 'white'
-                        ? blackFallenPieces
-                        : whiteFallenPieces
-                  }}
-                />
-              )}
+              {loaded &&
+                (userMadeLastMove ||
+                  spoilerOff ||
+                  isCheckmate ||
+                  isStalemate ||
+                  isDraw) && (
+                  <FallenPieces
+                    myColor={myColor}
+                    {...{
+                      [myColor === 'white'
+                        ? 'blackFallenPieces'
+                        : 'whiteFallenPieces']:
+                        myColor === 'white'
+                          ? blackFallenPieces
+                          : whiteFallenPieces
+                    }}
+                  />
+                )}
             </div>
             {(status || gameOverMsg) && (
               <div
