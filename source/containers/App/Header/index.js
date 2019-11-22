@@ -205,6 +205,9 @@ export default function Header({
 
   useEffect(() => {
     if (userId) {
+      if (!prevUserIdRef.current) {
+        socket.disconnect();
+      }
       socket.connect();
       socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
       socket.emit('enter_my_notification_channel', userId);
