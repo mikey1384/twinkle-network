@@ -78,6 +78,7 @@ export default function RightMenu({
           font-size: 2.5rem;
           justify-content: center;
           color: ${Color.darkerGray()};
+          line-height: 1.5;
           @media (max-width: ${mobileMaxWidth}) {
             font-size: 1.7rem;
           }
