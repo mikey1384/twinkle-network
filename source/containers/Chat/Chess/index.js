@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
@@ -38,7 +38,7 @@ Chess.propTypes = {
   style: PropTypes.object
 };
 
-export default function Chess({
+function Chess({
   channelId,
   chessCountdownObj,
   gameWinnerId,
@@ -832,3 +832,5 @@ export default function Chess({
     };
   }
 }
+
+export default memo(Chess);

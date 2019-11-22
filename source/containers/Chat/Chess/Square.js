@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { memo, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 Square.propTypes = {
@@ -13,15 +13,7 @@ Square.propTypes = {
   style: PropTypes.object
 };
 
-export default function Square({
-  count,
-  className,
-  img,
-  shade,
-  onClick,
-  color,
-  style
-}) {
+function Square({ count, className, img, shade, onClick, color, style }) {
   return (
     <div
       className={`${css`
@@ -76,3 +68,5 @@ export default function Square({
     </div>
   );
 }
+
+export default memo(Square);

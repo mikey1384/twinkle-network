@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { memo, Fragment, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Square from './Square';
 import getPiece from './helpers/piece';
@@ -19,7 +19,7 @@ Board.propTypes = {
   onSpoilerClick: PropTypes.func
 };
 
-export default function Board({
+function Board({
   interactable,
   loading,
   onClick,
@@ -33,6 +33,9 @@ export default function Board({
 }) {
   const board = useMemo(() => {
     const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    function isEven(num) {
+      return num % 2 === 0;
+    }
     if (myColor === 'black') letters.reverse();
     if (spoilerOff) {
       const board = [];
@@ -465,6 +468,4 @@ export default function Board({
   );
 }
 
-function isEven(num) {
-  return num % 2 === 0;
-}
+export default memo(Board);
