@@ -73,6 +73,7 @@ export default function RightMenu({
           width: 100%;
           display: flex;
           margin-top: 1rem;
+          padding-bottom: 1rem;
           justify-content: center;
           color: ${Color.darkerGray()};
         `}
@@ -116,7 +117,6 @@ export default function RightMenu({
           width: 100%;
           overflow: hidden;
           overflow-y: scroll;
-          margin-top: 1rem;
         `}
       >
         {displayedChannelMembers.map((member, index) => (
