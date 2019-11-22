@@ -72,24 +72,25 @@ export default function RightMenu({
       <div
         className={css`
           width: 100%;
-          font-weight: bold;
           display: flex;
           margin-top: 1rem;
-          font-size: 2.5rem;
           justify-content: center;
           color: ${Color.darkerGray()};
-          line-height: 1.5;
-          @media (max-width: ${mobileMaxWidth}) {
-            font-size: 1.7rem;
-          }
         `}
       >
         <div
           onClick={() => setChannelNameHovered(hovered => !hovered)}
-          style={{
-            width: '100%',
-            padding: '0 1rem 0 1rem'
-          }}
+          className={css`
+            width: 100%;
+            line-height: 1.5;
+            padding: 0 1rem 0 1rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            @media (max-width: ${mobileMaxWidth}) {
+              line-height: 3rem;
+              font-size: 1.7rem;
+            }
+          `}
         >
           <p
             ref={ChannelNameRef}
