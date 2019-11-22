@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
@@ -23,7 +23,7 @@ Embedly.propTypes = {
   contentType: PropTypes.string
 };
 
-export default function Embedly({
+function Embedly({
   contentId,
   contentType = 'url',
   imageHeight = '100%',
@@ -245,3 +245,5 @@ export default function Embedly({
     </div>
   );
 }
+
+export default memo(Embedly);
