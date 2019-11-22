@@ -174,6 +174,7 @@ export default function Chess({
               left: 0.5rem;
               width: CALC(100% - 1rem);
               position: relative;
+              font-size: 1.5rem;
               p {
                 display: inline-block;
                 margin-left: 0.5rem;
