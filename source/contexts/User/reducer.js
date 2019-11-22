@@ -56,6 +56,7 @@ export default function UserReducer(state, action) {
     case 'LOGOUT':
       return {
         ...initialUserState,
+        loadMoreButton: state.loadMoreButton,
         profile: state.profile,
         profiles: state.profiles,
         profilesLoaded: state.profilesLoaded,
@@ -64,6 +65,7 @@ export default function UserReducer(state, action) {
     case 'LOGOUT_AND_OPEN_SIGNIN_MODAL':
       return {
         ...initialUserState,
+        loadMoreButton: state.loadMoreButton,
         signinModalShown: true,
         profiles: state.profiles,
         profilesLoaded: state.profilesLoaded,
