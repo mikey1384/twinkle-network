@@ -97,8 +97,10 @@ export default function LeftMenu({
           justify-content: center;
           cursor: pointer;
           transition: background 0.2s;
-          @media (min-width: ${desktopMinWidth}) {
+          @media (max-width: ${mobileMaxWidth}) {
             background: ${Color[profileTheme](1)};
+          }
+          @media (min-width: ${desktopMinWidth}) {
             &:hover {
               background: ${Color[profileTheme]()};
             }
