@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ChangePicture from './ChangePicture';
 import { cloudFrontURL } from 'constants/defaultValues';
@@ -31,6 +31,10 @@ export default function ProfilePic({
   const { userId: myId } = useMyState();
   const [changePictureShown, setChangePictureShown] = useState(false);
   const src = `${cloudFrontURL}/pictures/${userId}/${profilePicId}.jpg`;
+  const statusTagShown = useMemo(
+    () => (online || myId === userId) && statusShown,
+    [myId, online, statusShown, userId]
+  );
 
   return (
     <div
@@ -61,9 +65,7 @@ export default function ProfilePic({
       <ChangePicture
         shown={myId === userId && isProfilePage && changePictureShown}
       />
-      {(online || myId === userId) && statusShown && (
-        <StatusTag large={large} status="online" />
-      )}
+      {statusTagShown && <StatusTag large={large} status="online" />}
     </div>
   );
 }

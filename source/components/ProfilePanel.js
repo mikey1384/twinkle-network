@@ -129,7 +129,7 @@ function ProfilePanel({ expandable, profileId }) {
 
   useEffect(() => {
     mounted.current = true;
-    handleCheckIfUserOnline();
+    setTimeout(() => handleCheckIfUserOnline(), 100);
     if (!profile.loaded && !loading.current && profileId) {
       handleInitProfile();
     }
@@ -171,7 +171,7 @@ function ProfilePanel({ expandable, profileId }) {
       mounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, userId, profile.loaded]);
+  }, [profileId, userId, profile.loaded, commentsLoaded, previewLoaded]);
 
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
