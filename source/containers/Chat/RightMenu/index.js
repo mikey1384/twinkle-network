@@ -70,15 +70,18 @@ export default function RightMenu({
       `}
     >
       <div
-        style={{
-          width: '100%',
-          fontWeight: 'bold',
-          display: 'flex',
-          marginTop: '1rem',
-          fontSize: '2.5rem',
-          justifyContent: 'center',
-          color: Color.darkerGray()
-        }}
+        className={css`
+          width: 100%;
+          font-weight: bold;
+          display: flex;
+          margin-top: 1rem;
+          font-size: 2.5rem;
+          justify-content: center;
+          color: ${Color.darkerGray()};
+          @media (max-width: ${mobileMaxWidth}) {
+            font-size: 1.7rem;
+          }
+        `}
       >
         <div
           onClick={() => setChannelNameHovered(hovered => !hovered)}
@@ -106,10 +109,12 @@ export default function RightMenu({
       </div>
       <div
         className={css`
-          overflow: scroll;
+          width: 100%;
+          overflow: hidden;
+          overflow-y: scroll;
           margin-top: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
-            margin-top: 3rem;
+            margin-top: 2rem;
           }
         `}
       >
@@ -126,6 +131,7 @@ export default function RightMenu({
           >
             <div
               style={{
+                width: '100%',
                 display: 'flex',
                 alignItems: 'center'
               }}
@@ -142,7 +148,11 @@ export default function RightMenu({
               <div
                 style={{
                   color: Color.darkerGray(),
-                  marginLeft: '2rem'
+                  marginLeft: '2rem',
+                  width: 'CALC(100% - 5rem)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  cursor: 'default'
                 }}
               >
                 <UsernameText user={member} />
