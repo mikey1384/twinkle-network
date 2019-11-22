@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -20,7 +20,7 @@ Comment.propTypes = {
   star: PropTypes.object.isRequired
 };
 
-export default function Comment({
+function Comment({
   maxRewardableStars,
   noMarginForEditButton,
   onEditDone = () => {},
@@ -185,3 +185,5 @@ export default function Comment({
     });
   }
 }
+
+export default memo(Comment);
