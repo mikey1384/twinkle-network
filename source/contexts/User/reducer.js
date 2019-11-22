@@ -57,7 +57,6 @@ export default function UserReducer(state, action) {
       return {
         ...initialUserState,
         loadMoreButton: state.loadMoreButton,
-        profile: state.profile,
         profiles: state.profiles,
         profilesLoaded: state.profilesLoaded,
         searchedProfiles: state.searchedProfiles
