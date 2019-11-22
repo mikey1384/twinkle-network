@@ -114,7 +114,7 @@ export default function HeaderNav({
                 color: ${highlightColor}!important;
               }
             }
-            @media (max-width: ${desktopMinWidth}) {
+            @media (min-width: ${desktopMinWidth}) {
               &:hover {
                 > nav {
                   > svg {
