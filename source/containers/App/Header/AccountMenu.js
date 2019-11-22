@@ -4,6 +4,7 @@ import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { socket } from 'constants/io';
 
 AccountMenu.propTypes = {
   className: PropTypes.string,
@@ -20,7 +21,7 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username } = useMyState();
+  const { loggedIn, username, userId } = useMyState();
   return (
     <div style={style}>
       {loggedIn ? (
@@ -82,6 +83,9 @@ export default function AccountMenu({ className, history, style = {} }) {
   );
 
   function handleLogout() {
+    socket.emit('leave_my_notification_channel', userId);
+    socket.disconnect();
+    socket.connect();
     onLogout();
     onResetChat();
   }

@@ -74,13 +74,12 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
-  const prevUserIdRef = useRef(userId);
   const socketConnected = useRef(false);
   const prevProfilePicId = useRef(profilePicId);
 
   useEffect(() => {
     if (userId && profilePicId !== prevProfilePicId.current) {
-      socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+      socket.emit('change_profile_pic', profilePicId);
     }
     prevProfilePicId.current = profilePicId;
   }, [profilePicId, userId, username]);
@@ -133,6 +132,7 @@ export default function Header({
         if (userId) {
           handleGetNumberOfUnreadMessages();
           socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+          socket.emit('enter_my_notification_channel', userId);
           handleLoadChat();
         }
       }
@@ -200,25 +200,8 @@ export default function Header({
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {
+    socket.disconnect();
     socket.connect();
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      if (!prevUserIdRef.current) {
-        socket.disconnect();
-      }
-      socket.connect();
-      socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
-      socket.emit('enter_my_notification_channel', userId);
-    } else {
-      if (prevUserIdRef.current) {
-        socket.emit('leave_my_notification_channel', prevUserIdRef.current);
-        socket.disconnect();
-        socket.connect();
-      }
-    }
-    prevUserIdRef.current = userId;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
