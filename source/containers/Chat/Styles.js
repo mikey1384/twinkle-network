@@ -4,6 +4,7 @@ import { css } from 'emotion';
 export const MessageStyle = {
   container: css`
     display: flex;
+    justify-content: space-between;
     width: 100%;
     padding: 1rem 0;
     position: relative;
@@ -19,7 +20,7 @@ export const MessageStyle = {
   contentWrapper: css`
     margin-left: 2rem;
     margin-right: 1rem;
-    width: 100%;
+    width: CALC(100% - 5.3vw);
     position: relative;
     white-space: pre-wrap;
     overflow-wrap: break-word;

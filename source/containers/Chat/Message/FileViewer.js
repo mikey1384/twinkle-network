@@ -46,7 +46,7 @@ export default function FileViewer({
           </div>
           <ReactPlayer
             style={{ marginTop: '1rem' }}
-            width={`CALC(60vw - 6rem)`}
+            width="100%"
             height={fileType === 'video' ? '32vw' : '5rem'}
             url={src}
             controls

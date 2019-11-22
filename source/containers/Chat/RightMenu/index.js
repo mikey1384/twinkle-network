@@ -56,12 +56,11 @@ export default function RightMenu({
   return (
     <div
       className={css`
-        display: flex;
-        flex-direction: column;
         width: 20vw;
         position: relative;
         background: #fff;
         border-left: 1px solid ${Color.borderGray()};
+        overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${mobileMaxWidth}) {
           width: 45vw;
