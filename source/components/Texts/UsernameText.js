@@ -31,7 +31,12 @@ export default function UsernameText({
   const [menuShown, setMenuShown] = useState(false);
   return (
     <div
-      style={{ display: 'inline', position: 'relative' }}
+      style={{
+        display: 'inline',
+        position: 'relative',
+        height: '100%',
+        ...style
+      }}
       onMouseLeave={() => setMenuShown(false)}
     >
       <span
@@ -41,8 +46,7 @@ export default function UsernameText({
           fontWeight: 'bold',
           color: user.username
             ? color || Color.darkerGray()
-            : Color.lighterGray(),
-          ...style
+            : Color.lighterGray()
         }}
         onClick={onUsernameClick}
         onMouseEnter={onMouseEnter}

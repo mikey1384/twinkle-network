@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -20,6 +20,7 @@ export default function RightMenu({
   currentChannelOnlineMembers
 }) {
   const ChannelNameRef = useRef(null);
+  const MenuRef = useRef(null);
   const [channelNameHovered, setChannelNameHovered] = useState(false);
   const { userId: myId, username, profilePicId } = useMyState();
   const displayedChannelMembers = useMemo(() => {
@@ -53,8 +54,13 @@ export default function RightMenu({
     currentChannelOnlineMembers
   ]);
 
+  useEffect(() => {
+    MenuRef.current.scrollTop = 0;
+  }, [currentChannel.id]);
+
   return (
     <div
+      ref={MenuRef}
       className={css`
         width: 20vw;
         position: relative;
@@ -131,6 +137,7 @@ export default function RightMenu({
           >
             <div
               style={{
+                height: '100%',
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center'
@@ -145,18 +152,16 @@ export default function RightMenu({
                   .includes(member.id)}
                 statusShown
               />
-              <div
+              <UsernameText
                 style={{
+                  height: '100%',
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
                   width: 'CALC(100% - 5rem - 2rem)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  cursor: 'default'
+                  textOverflow: 'ellipsis'
                 }}
-              >
-                <UsernameText user={member} />
-              </div>
+                user={member}
+              />
             </div>
           </div>
         ))}
