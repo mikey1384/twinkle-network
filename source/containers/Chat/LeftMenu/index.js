@@ -79,7 +79,7 @@ export default function LeftMenu({
         display: flex;
         flex-direction: column;
         height: 100%;
-        width: 35rem;
+        width: 20vw;
         position: relative;
         background: #fff;
         -webkit-overflow-scrolling: touch;

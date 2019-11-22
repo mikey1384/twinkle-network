@@ -59,7 +59,7 @@ export default function RightMenu({
         display: flex;
         flex-direction: column;
         height: 100%;
-        width: 30rem;
+        width: 20vw;
         position: relative;
         background: #fff;
         border-left: 1px solid ${Color.borderGray()};
@@ -85,11 +85,15 @@ export default function RightMenu({
       >
         <div
           onClick={() => setChannelNameHovered(hovered => !hovered)}
-          style={{ width: '100%', padding: '0 1rem 0 1rem' }}
+          style={{
+            width: '100%',
+            padding: '0 1rem 0 1rem'
+          }}
         >
           <p
             ref={ChannelNameRef}
             style={{
+              width: '100%',
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               cursor: 'default'
@@ -100,7 +104,7 @@ export default function RightMenu({
             {channelName}
           </p>
           <FullTextReveal
-            style={{ fontSize: '1.5rem' }}
+            style={{ width: '100%', fontSize: '1.5rem' }}
             show={channelNameHovered}
             direction="left"
             text={channelName || ''}

@@ -170,7 +170,7 @@ export default function MessagesContainer({
     <div
       className={css`
         height: 100%;
-        width: CALC(100% - 30rem);
+        width: 60vw;
         border-left: 1px solid ${Color.borderGray()};
         padding: 0 0 1rem 1rem;
         position: relative;
