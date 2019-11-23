@@ -44,6 +44,7 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

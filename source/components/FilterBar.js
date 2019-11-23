@@ -26,14 +26,10 @@ export default function FilterBar({
   style
 }) {
   const { profileTheme } = useMyState();
-  const themeColor = color || profileTheme;
-  const selectedOpacity = 1;
-  return useMemo(
-    () => (
-      <div
-        style={style}
-        ref={innerRef}
-        className={`${css`
+  const FilterBarStyle = useMemo(() => {
+    const themeColor = color || profileTheme;
+    const selectedOpacity = 1;
+    return `${css`
         background: ${inverted ? Color[themeColor](0.7) : '#fff'};
         height: 6rem;
         margin-bottom: 1rem;
@@ -146,14 +142,13 @@ export default function FilterBar({
           border-left: none;
           border-right: none;
         }
-      `} ${className}`}
-      >
-        <div className="nav-section">{children}</div>
-        {dropdownButton && (
-          <div className="filter-section">{dropdownButton}</div>
-        )}
-      </div>
-    ),
-    [children, themeColor]
+      `} ${className}`;
+  }, [bordered, className, color, dropdownButton, inverted, profileTheme]);
+
+  return (
+    <div style={style} ref={innerRef} className={FilterBarStyle}>
+      <div className="nav-section">{children}</div>
+      {dropdownButton && <div className="filter-section">{dropdownButton}</div>}
+    </div>
   );
 }

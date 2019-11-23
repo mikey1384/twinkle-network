@@ -64,6 +64,7 @@ export default function ChessModal({
       loading.current = true;
       setInitialState(undefined);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -74,6 +75,7 @@ export default function ChessModal({
     if (prevChannelId.current !== channelId) {
       onHide();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId]);
 
   useEffect(() => {
@@ -84,13 +86,13 @@ export default function ChessModal({
         setUserMadeLastMove(!!userMadeLastMove);
       }
     }
-  }, [loading.current, spoilerOff]);
+  }, [initialState, myId, spoilerOff, uploaderId]);
 
   useEffect(() => {
     if (typeof chessCountdownObj[channelId] === 'number') {
       setSpoilerOff(true);
     }
-  }, [chessCountdownObj]);
+  }, [channelId, chessCountdownObj]);
 
   const parsedState = initialState ? JSON.parse(initialState) : {};
 

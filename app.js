@@ -16,6 +16,7 @@ import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
 import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
+import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboardTeacher';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
 import { faChess } from '@fortawesome/pro-solid-svg-icons/faChess';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
@@ -36,6 +37,7 @@ import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
 import { faPlus } from '@fortawesome/pro-solid-svg-icons/faPlus';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
+import { faSchool } from '@fortawesome/pro-solid-svg-icons/faSchool';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
 import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
@@ -59,6 +61,7 @@ library.add(
   faCameraAlt,
   faCaretDown,
   faCertificate,
+  faChalkboardTeacher,
   faCheckCircle,
   faChess,
   faChevronLeft,
@@ -78,6 +81,7 @@ library.add(
   faLock,
   faPencilAlt,
   faPlus,
+  faSchool,
   faSearch,
   faSpinner,
   faStar,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
@@ -10,6 +10,7 @@ UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
   style: PropTypes.object,
+  truncate: PropTypes.bool,
   user: PropTypes.object
 };
 
@@ -17,7 +18,8 @@ export default function UsernameText({
   className,
   color,
   style = {},
-  user = {}
+  user = {},
+  truncate = false
 }) {
   const history = useHistory();
   const {
@@ -29,47 +31,58 @@ export default function UsernameText({
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const [menuShown, setMenuShown] = useState(false);
-  return useMemo(
-    () => (
+  return (
+    <div
+      style={{
+        display: 'inline',
+        position: 'relative',
+        width: '100%',
+        ...style
+      }}
+      onMouseLeave={() => setMenuShown(false)}
+    >
       <div
-        style={{ display: 'inline', position: 'relative' }}
-        onMouseLeave={() => setMenuShown(false)}
+        style={{
+          display: truncate ? 'block' : 'inline',
+          overflowX: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%'
+        }}
       >
         <span
           className={className}
           style={{
+            width: '100%',
             cursor: 'pointer',
             fontWeight: 'bold',
             color: user.username
               ? color || Color.darkerGray()
-              : Color.lighterGray(),
-            ...style
+              : Color.lighterGray()
           }}
           onClick={onUsernameClick}
           onMouseEnter={onMouseEnter}
         >
           {user.username || '(Deleted)'}
         </span>
-        {menuShown && (
-          <DropdownList style={{ width: '100%' }}>
-            <li onClick={() => history.push(`/users/${user.username}`)}>
-              <a
-                style={{ color: Color.darkerGray(), cursor: 'pointer' }}
-                onClick={e => e.preventDefault()}
-              >
-                Profile
-              </a>
-            </li>
-            {user.id !== userId && (
-              <li onClick={onLinkClick}>
-                <a style={{ color: Color.darkerGray() }}>Talk</a>
-              </li>
-            )}
-          </DropdownList>
-        )}
       </div>
-    ),
-    [loaded, menuShown, user, userId, username]
+      {menuShown && (
+        <DropdownList style={{ width: '100%' }}>
+          <li onClick={() => history.push(`/users/${user.username}`)}>
+            <a
+              style={{ color: Color.darkerGray(), cursor: 'pointer' }}
+              onClick={e => e.preventDefault()}
+            >
+              Profile
+            </a>
+          </li>
+          {user.id !== userId && (
+            <li onClick={onLinkClick}>
+              <a style={{ color: Color.darkerGray() }}>Talk</a>
+            </li>
+          )}
+        </DropdownList>
+      )}
+    </div>
   );
 
   function onMouseEnter() {

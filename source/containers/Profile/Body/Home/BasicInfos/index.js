@@ -21,6 +21,7 @@ BasicInfos.propTypes = {
   email: PropTypes.string,
   emailVerified: PropTypes.bool,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  profilePicId: PropTypes.number,
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
   lastActive: PropTypes.string,
@@ -42,6 +43,7 @@ export default function BasicInfos({
   joinDate,
   lastActive,
   myId,
+  profilePicId,
   profileTheme,
   selectedTheme,
   userId,
@@ -305,7 +307,7 @@ export default function BasicInfos({
     });
     onOpenDirectMessageChannel({
       user: { id: myId },
-      recepient: { id: userId, username },
+      recepient: { id: userId, username, profilePicId },
       channelData: data
     });
     history.push('/chat');
@@ -349,9 +351,7 @@ export default function BasicInfos({
     const emptyItemsArray = unfilledItems.map(item => item.label);
     const emptyItemsString =
       emptyItemsArray.length === 3
-        ? `${emptyItemsArray[0]}, ${emptyItemsArray[1]}, and ${
-            emptyItemsArray[2]
-          }`
+        ? `${emptyItemsArray[0]}, ${emptyItemsArray[1]}, and ${emptyItemsArray[2]}`
         : emptyItemsArray.join(' and ');
     return `Add your ${emptyItemsString} address${
       emptyItemsArray.length > 1 ? 'es' : ''

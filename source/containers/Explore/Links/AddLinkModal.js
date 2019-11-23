@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Modal from 'components/Modal';
@@ -32,21 +32,45 @@ export default function AddLinkModal({ onHide }) {
     description: ''
   });
   const UrlFieldRef = useRef(null);
-  const descriptionExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'description',
-    text: form.description
-  });
-  const titleExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'title',
-    text: form.title
-  });
-  const urlExceedsCharLimit = exceedsCharLimit({
-    contentType: 'url',
-    inputType: 'url',
-    text: form.url
-  });
+  const descriptionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'description',
+        text: form.description
+      }),
+    [form.description]
+  );
+
+  const titleExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'title',
+        text: form.title
+      }),
+    [form.title]
+  );
+
+  const urlExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'url',
+        inputType: 'url',
+        text: form.url
+      }),
+    [form.url]
+  );
+
+  const urlHasError = useMemo(() => {
+    if (urlError) {
+      return {
+        color: 'red',
+        borderColor: 'red'
+      };
+    }
+    return urlExceedsCharLimit?.style;
+  }, [urlError, urlExceedsCharLimit]);
 
   return (
     <Modal onHide={onHide}>
@@ -57,7 +81,7 @@ export default function AddLinkModal({ onHide }) {
         )}
         <Input
           inputRef={UrlFieldRef}
-          style={urlHasError()}
+          style={urlHasError}
           value={form.url}
           onChange={handleUrlFieldChange}
           placeholder="Paste the Link's Internet Address (URL) here"
@@ -151,19 +175,9 @@ export default function AddLinkModal({ onHide }) {
     const { url, title } = form;
     if (stringIsEmpty(url)) return true;
     if (stringIsEmpty(title)) return true;
-    if (urlHasError()) return true;
+    if (urlHasError) return true;
     if (titleExceedsCharLimit) return true;
     if (descriptionExceedsCharLimit) return true;
     return false;
-  }
-
-  function urlHasError() {
-    if (urlError) {
-      return {
-        color: 'red',
-        borderColor: 'red'
-      };
-    }
-    return urlExceedsCharLimit?.style;
   }
 }

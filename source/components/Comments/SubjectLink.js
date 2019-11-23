@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';

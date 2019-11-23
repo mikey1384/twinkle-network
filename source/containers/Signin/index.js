@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import Main from './Main';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 Signin.propTypes = {
   onHide: PropTypes.func.isRequired

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import RankBar from 'components/RankBar';
@@ -13,70 +13,68 @@ Profile.propTypes = {
 
 export default function Profile({ profile }) {
   const { userId } = useMyState();
-  return useMemo(
-    () => (
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
       <div
         style={{
+          padding: '1rem',
           display: 'flex',
-          flexDirection: 'column'
+          justifyContent: 'space-between',
+          width: '100%'
         }}
       >
         <div
           style={{
-            padding: '1rem',
             display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%'
+            justifyContent: 'center',
+            flexDirection: 'column'
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            <ProfilePic
-              style={{ width: '15rem', height: '15rem', cursor: 'pointer' }}
-              userId={profile.id}
-              profilePicId={profile.profilePicId}
-              online={userId === profile.id || !!profile.online}
-              large
-            />
-          </div>
-          <UserDetails
-            noLink
-            small
-            unEditable
-            profile={profile}
-            style={{
-              width: 'CALC(100% - 18rem)',
-              marginLeft: '1rem',
-              fontSize: '1.5rem'
-            }}
-            userId={userId}
+          <ProfilePic
+            style={{ width: '15rem', height: '15rem', cursor: 'pointer' }}
+            userId={profile.id}
+            profilePicId={profile.profilePicId}
+            online={userId === profile.id || !!profile.online}
+            statusShown
+            large
           />
         </div>
-        {!!profile.twinkleXP && (
-          <RankBar
-            profile={profile}
-            className={css`
-              margin-left: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
-              margin-right: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-left: 0;
-                margin-right: 0;
-              }
-            `}
-            style={{
-              borderLeft: 'none',
-              borderRight: 'none',
-              borderRadius: 0
-            }}
-          />
-        )}
+        <UserDetails
+          noLink
+          small
+          unEditable
+          profile={profile}
+          style={{
+            width: 'CALC(100% - 18rem)',
+            marginLeft: '1rem',
+            fontSize: '1.5rem'
+          }}
+          userId={userId}
+        />
       </div>
-    ),
-    [profile, userId]
+      {!!profile.twinkleXP && (
+        <RankBar
+          profile={profile}
+          className={css`
+            margin-left: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
+            margin-right: ${!!profile.rank && profile.rank < 4 ? '-1px' : ''};
+            @media (max-width: ${mobileMaxWidth}) {
+              margin-left: 0;
+              margin-right: 0;
+            }
+          `}
+          style={{
+            borderLeft: 'none',
+            borderRight: 'none',
+            borderRadius: 0
+          }}
+        />
+      )}
+    </div>
   );
 }

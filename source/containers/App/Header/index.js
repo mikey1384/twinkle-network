@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
@@ -39,7 +39,13 @@ export default function Header({
       updateChatLastRead
     }
   } = useAppContext();
-  const { defaultSearchFilter, userId, username, loggedIn } = useMyState();
+  const {
+    defaultSearchFilter,
+    userId,
+    username,
+    loggedIn,
+    profilePicId
+  } = useMyState();
   const {
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
@@ -47,7 +53,6 @@ export default function Header({
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
-      onNotifyChatSubjectChange,
       onReceiveFirstMsg,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
@@ -61,6 +66,7 @@ export default function Header({
       onCheckVersion,
       onIncreaseNumNewPosts,
       onIncreaseNumNewNotis,
+      onNotifyChatSubjectChange,
       onShowUpdateNotice
     }
   } = useNotiContext();
@@ -68,8 +74,19 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
-  const prevUserIdRef = useRef(userId);
-  const socketConnected = useRef(false);
+  const prevProfilePicId = useRef(profilePicId);
+
+  useEffect(() => {
+    socket.disconnect();
+    socket.connect();
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId && profilePicId !== prevProfilePicId.current) {
+      socket.emit('change_profile_pic', profilePicId);
+    }
+    prevProfilePicId.current = profilePicId;
+  }, [profilePicId, userId, username]);
 
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
@@ -110,17 +127,15 @@ export default function Header({
       socket.emit('join_chat_channel', data.channelId);
     }
     async function onConnect() {
-      if (!socketConnected.current) {
-        console.log('connected to socket');
-        socketConnected.current = true;
-        onClearRecentChessMessage();
-        onChangeSocketStatus(true);
-        handleCheckVersion();
-        if (userId) {
-          handleGetNumberOfUnreadMessages();
-          socket.emit('bind_uid_to_socket', userId, username);
-          handleLoadChat();
-        }
+      console.log('connected to socket');
+      onClearRecentChessMessage();
+      onChangeSocketStatus(true);
+      handleCheckVersion();
+      if (userId) {
+        handleGetNumberOfUnreadMessages();
+        socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+        socket.emit('enter_my_notification_channel', userId);
+        handleLoadChat();
       }
 
       async function handleLoadChat() {
@@ -140,11 +155,8 @@ export default function Header({
       }
     }
     function onDisconnect() {
-      if (socketConnected.current) {
-        console.log('disconnected from socket');
-        socketConnected.current = false;
-        onChangeSocketStatus(false);
-      }
+      console.log('disconnected from socket');
+      onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
@@ -186,101 +198,71 @@ export default function Header({
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {
-    socket.connect();
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      socket.disconnect();
-      socket.connect();
-      socket.emit('bind_uid_to_socket', userId, username);
-      socket.emit('enter_my_notification_channel', userId);
-    } else {
-      if (prevUserIdRef.current) {
-        socket.emit('leave_my_notification_channel', prevUserIdRef.current);
-        socket.disconnect();
-        socket.connect();
-      }
-    }
-    prevUserIdRef.current = userId;
-  }, [userId]);
-
-  useEffect(() => {
     onShowUpdateNotice(!versionMatch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [versionMatch]);
 
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <nav
-          className={`unselectable ${css`
-            z-index: 30000;
-            position: relative;
-            font-family: sans-serif, Arial, Helvetica;
-            font-size: 1.7rem;
-            background: #fff;
-            display: flex;
-            box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
-            align-items: center;
-            width: 100%;
-            margin-bottom: 0px;
-            height: 4.5rem;
-            @media (min-width: ${desktopMinWidth}) {
-              top: 0;
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              bottom: 0;
-              height: 5rem;
-              border-top: 1px solid ${Color.borderGray()};
-            }
-          `}`}
+  return (
+    <ErrorBoundary>
+      <nav
+        className={`unselectable ${css`
+          z-index: 30000;
+          position: relative;
+          font-family: sans-serif, Arial, Helvetica;
+          font-size: 1.7rem;
+          background: #fff;
+          display: flex;
+          box-shadow: 0 3px 3px -3px ${Color.black(0.6)};
+          align-items: center;
+          width: 100%;
+          margin-bottom: 0px;
+          height: 4.5rem;
+          @media (min-width: ${desktopMinWidth}) {
+            top: 0;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            bottom: 0;
+            height: 5rem;
+            border-top: 1px solid ${Color.borderGray()};
+          }
+        `}`}
+        style={{
+          justifyContent: 'space-around',
+          position: 'fixed',
+          ...style
+        }}
+      >
+        <div
           style={{
-            justifyContent: 'space-around',
-            position: 'fixed',
-            ...style
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%'
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <TwinkleLogo style={{ marginLeft: '3rem' }} />
-            <MainNavs
-              loggedIn={loggedIn}
-              defaultSearchFilter={defaultSearchFilter}
-              numChatUnreads={numUnreads}
-              numNewNotis={numNewNotis}
-              numNewPosts={numNewPosts}
-              onChatButtonClick={onChatButtonClick}
-              onMobileMenuOpen={onMobileMenuOpen}
-              pathname={pathname}
-              totalRewardAmount={totalRewardAmount}
-            />
-            <AccountMenu
-              className={`desktop ${css`
-                margin-right: 3rem;
-                @media (max-width: ${mobileMaxWidth}) {
-                  margin-right: 0;
-                }
-              `}`}
-              history={history}
-            />
-          </div>
-        </nav>
-      </ErrorBoundary>
-    ),
-    [
-      defaultSearchFilter,
-      loggedIn,
-      numNewNotis,
-      numNewPosts,
-      numUnreads,
-      pathname,
-      totalRewardAmount
-    ]
+          <TwinkleLogo style={{ marginLeft: '3rem' }} />
+          <MainNavs
+            loggedIn={loggedIn}
+            defaultSearchFilter={defaultSearchFilter}
+            numChatUnreads={numUnreads}
+            numNewNotis={numNewNotis}
+            numNewPosts={numNewPosts}
+            onChatButtonClick={onChatButtonClick}
+            onMobileMenuOpen={onMobileMenuOpen}
+            pathname={pathname}
+            totalRewardAmount={totalRewardAmount}
+          />
+          <AccountMenu
+            className={`desktop ${css`
+              margin-right: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                margin-right: 0;
+              }
+            `}`}
+            history={history}
+          />
+        </div>
+      </nav>
+    </ErrorBoundary>
   );
 }

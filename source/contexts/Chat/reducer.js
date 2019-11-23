@@ -76,8 +76,7 @@ export default function ChatReducer(state, action) {
               sender: {
                 id: action.data.message.userId,
                 username: action.data.message.username
-              },
-              isSpoiler: action.data.message.content.startsWith('/spoiler ')
+              }
             },
             lastUpdate: action.data.message.timeStamp,
             numUnreads: 0
@@ -108,8 +107,7 @@ export default function ChatReducer(state, action) {
                 sender: {
                   id: action.message.userId,
                   username: action.message.username
-                },
-                isSpoiler: action.message.content.startsWith('/spoiler ')
+                }
               },
               lastUpdate: action.message.timeStamp,
               members: action.members,
@@ -346,11 +344,7 @@ export default function ChatReducer(state, action) {
             sender: {
               id: action.data.subject.userId,
               username: action.data.subject.username
-            },
-            isSpoiler:
-              channel.id === 2
-                ? action.data.subject.content.startsWith('/spoiler ')
-                : channel.lastMessage.content.startsWith('/spoiler ')
+            }
           }
         })),
         messages: state.messages.concat([
@@ -375,8 +369,7 @@ export default function ChatReducer(state, action) {
                   sender: {
                     id: action.data.userId,
                     username: action.data.username
-                  },
-                  isSpoiler: false
+                  }
                 },
                 numUnreads: 0
               }
@@ -446,8 +439,7 @@ export default function ChatReducer(state, action) {
             channelName: action.recepient.username,
             lastMessage: {
               content: null,
-              sender: null,
-              isSpoiler: null
+              sender: null
             },
             lastUpdate: null,
             members: [action.user, action.recepient],
@@ -513,8 +505,7 @@ export default function ChatReducer(state, action) {
                 sender: {
                   id: action.message.userId,
                   username: action.message.username
-                },
-                isSpoiler: action.message.content.startsWith('/spoiler ')
+                }
               },
               lastUpdate: action.message.timeStamp,
               numUnreads: 0,
@@ -568,8 +559,7 @@ export default function ChatReducer(state, action) {
               sender: {
                 id: action.data.userId,
                 username: action.data.username
-              },
-              isSpoiler: action.data.content.startsWith('/spoiler ')
+              }
             },
             lastUpdate: action.data.timeStamp,
             numUnreads: 1
@@ -643,8 +633,7 @@ export default function ChatReducer(state, action) {
                     sender: {
                       id: action.message.userId,
                       username: action.message.username
-                    },
-                    isSpoiler: action.message.content.startsWith('/spoiler ')
+                    }
                   },
                   lastUpdate: Math.floor(Date.now() / 1000),
                   numUnreads: 0
@@ -708,7 +697,6 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
-        subject: action.channelId === 2 ? state.subject : {},
         selectedChannelId: action.channelId
       };
     default:

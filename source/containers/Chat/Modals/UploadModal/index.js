@@ -3,9 +3,13 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
-import File from './File';
+import FileInfo from './FileInfo';
 import uuidv1 from 'uuid/v1';
-import { exceedsCharLimit, finalizeEmoji } from 'helpers/stringHelpers';
+import {
+  exceedsCharLimit,
+  finalizeEmoji,
+  getFileInfoFromFileName
+} from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useChatContext } from 'contexts';
 
@@ -22,65 +26,94 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
     actions: { onSubmitMessage }
   } = useChatContext();
   const [caption, setCaption] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  useEffect(() => {
-    setSelectedFile(fileObj);
-  }, []);
-  const captionExceedsCharLimit = exceedsCharLimit({
-    inputType: 'message',
-    contentType: 'chat',
-    text: caption
-  });
+  const { fileType } = useMemo(() => getFileInfoFromFileName(fileObj.name), [
+    fileObj.name
+  ]);
 
-  return useMemo(
-    () => (
-      <Modal onHide={onHide}>
-        <header>Upload a file</header>
-        <main>
-          {fileObj ? (
-            <File
-              caption={caption}
-              captionExceedsCharLimit={captionExceedsCharLimit}
-              fileObj={fileObj}
-              onCaptionChange={setCaption}
-            />
-          ) : (
-            <Loading />
-          )}
-        </main>
-        <footer>
-          <Button
-            transparent
-            style={{ marginRight: '0.7rem' }}
-            onClick={onHide}
-          >
-            Cancel
-          </Button>
-          <Button
-            disabled={captionExceedsCharLimit}
-            color="blue"
-            onClick={handleSubmit}
-          >
-            Upload
-          </Button>
-        </footer>
-      </Modal>
-    ),
-    [caption, captionExceedsCharLimit, fileObj, subjectId, selectedFile]
+  useEffect(() => {
+    if (fileType === 'image') {
+      const reader = new FileReader();
+      reader.onload = upload => {
+        const payload = upload.target.result;
+        window.loadImage(
+          payload,
+          function(img) {
+            const image = img.toDataURL('image/jpeg');
+            setImageUrl(image);
+            const dataUri = image.replace(/^data:image\/\w+;base64,/, '');
+            const buffer = Buffer.from(dataUri, 'base64');
+            // eslint-disable-next-line no-undef
+            const file = new File([buffer], fileObj.name);
+            setSelectedFile(file);
+          },
+          { orientation: true }
+        );
+      };
+      reader.readAsDataURL(fileObj);
+    } else {
+      setSelectedFile(fileObj);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const captionExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'message',
+        contentType: 'chat',
+        text: caption
+      }),
+    [caption]
+  );
+
+  return (
+    <Modal onHide={onHide}>
+      <header>Upload a file</header>
+      <main>
+        {fileObj ? (
+          <FileInfo
+            caption={caption}
+            captionExceedsCharLimit={captionExceedsCharLimit}
+            fileObj={fileObj}
+            fileType={fileType}
+            imageUrl={imageUrl}
+            onCaptionChange={setCaption}
+          />
+        ) : (
+          <Loading />
+        )}
+      </main>
+      <footer>
+        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
+          Cancel
+        </Button>
+        <Button
+          disabled={captionExceedsCharLimit || !selectedFile}
+          color="blue"
+          onClick={handleSubmit}
+        >
+          Upload
+        </Button>
+      </footer>
+    </Modal>
   );
 
   function handleSubmit() {
-    onSubmitMessage({
-      content: finalizeEmoji(caption),
-      channelId,
-      fileToUpload: selectedFile,
-      filePath: uuidv1(),
-      fileName: selectedFile.name,
-      profilePicId,
-      subjectId,
-      userId,
-      username
-    });
-    onHide();
+    if (selectedFile) {
+      onSubmitMessage({
+        content: finalizeEmoji(caption),
+        channelId,
+        fileToUpload: selectedFile,
+        filePath: uuidv1(),
+        fileName: selectedFile.name,
+        profilePicId,
+        subjectId,
+        userId,
+        username
+      });
+      onHide();
+    }
   }
 }

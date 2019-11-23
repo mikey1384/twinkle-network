@@ -1,14 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
+import RightMenu from './RightMenu';
 import MessagesContainer from './MessagesContainer';
 import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
-import { mobileMaxWidth } from 'constants/css';
+import { phoneMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { objectify } from 'helpers';
@@ -94,7 +95,8 @@ export default function Chat({ onFileUpload }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [loaded, pageVisible, userId, socket.connected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, pageVisible, userId, selectedChannelId]);
 
   useEffect(() => {
     if (mounted.current) {
@@ -114,7 +116,7 @@ export default function Chat({ onFileUpload }) {
       otherMember?.username ||
         channelsObj.current?.[currentChannel?.id]?.channelName
     );
-  }, [currentChannel]);
+  }, [currentChannel, userId]);
 
   useEffect(() => {
     socket.on('receive_message', handleReceiveMessage);
@@ -196,15 +198,15 @@ export default function Chat({ onFileUpload }) {
     });
   }, [currentChannel, selectedChannelId]);
 
-  return useMemo(
-    () => (
-      <LocalContext.Provider
-        value={{
-          selectedChannelId,
-          onFileUpload
-        }}
-      >
-        {userId ? (
+  return (
+    <LocalContext.Provider
+      value={{
+        selectedChannelId,
+        onFileUpload
+      }}
+    >
+      {userId ? (
+        loaded ? (
           <div
             className={css`
               width: 100%;
@@ -212,107 +214,82 @@ export default function Chat({ onFileUpload }) {
               display: flex;
               font-size: 1.5rem;
               position: relative;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100vw;
+              @media (max-width: ${phoneMaxWidth}) {
+                width: 152vw;
                 height: 100%;
               }
             `}
           >
-            {loaded ? (
-              <>
-                {createNewChannelModalShown && (
-                  <CreateNewChannelModal
-                    userId={userId}
-                    onHide={() => setCreateNewChannelModalShown(false)}
-                    onDone={handleCreateNewChannel}
-                  />
-                )}
-                {userListModalShown && (
-                  <UserListModal
-                    onHide={() => setUserListModalShown(false)}
-                    users={returnUsers(
-                      currentChannel,
-                      currentChannelOnlineMembers
-                    )}
-                    descriptionShown={userListDescriptionShown}
-                    description="(online)"
-                    title="Online Status"
-                  />
-                )}
-                <LeftMenu
-                  channels={channels}
-                  channelLoadMoreButtonShown={channelLoadMoreButton}
-                  currentChannel={currentChannel}
-                  currentChannelOnlineMembers={currentChannelOnlineMembers}
-                  loadMoreChannels={handleLoadMoreChannels}
-                  onChannelEnter={onChannelEnter}
-                  onNewButtonClick={onNewButtonClick}
-                  showUserListModal={() => setUserListModalShown(true)}
-                />
-                <MessagesContainer
-                  channelName={channelName}
-                  chessCountdownObj={chessCountdownObj}
-                  chessOpponent={partner}
-                  loading={
-                    channelLoading || creatingNewDMChannel || reconnecting
-                  }
-                  currentChannel={currentChannel}
-                  currentChannelId={selectedChannelId}
-                  loadMoreButton={loadMoreMessages}
-                  messages={messages}
-                  loadMoreMessages={handleLoadMoreMessages}
-                  onShowChessModal={handleChessModalShown}
-                  onChessBoardClick={handleChessModalShown}
-                  onChessSpoilerClick={handleChessSpoilerClick}
-                  onMessageSubmit={handleMessageSubmit}
-                  onSendFileMessage={handleSendFileMessage}
-                  recepientId={recepientId}
-                  selectedChannelId={selectedChannelId}
-                  subjectId={subject.id}
-                />
-                {chessModalShown && (
-                  <ChessModal
-                    channelId={selectedChannelId}
-                    chessCountdownObj={chessCountdownObj}
-                    myId={userId}
-                    onConfirmChessMove={handleConfirmChessMove}
-                    onHide={() => setChessModalShown(false)}
-                    onSpoilerClick={handleChessSpoilerClick}
-                    opponentId={partner?.id}
-                    opponentName={partner?.username}
-                  />
-                )}
-              </>
-            ) : (
-              <Loading text="Loading Twinkle Chat..." />
+            {createNewChannelModalShown && (
+              <CreateNewChannelModal
+                userId={userId}
+                onHide={() => setCreateNewChannelModalShown(false)}
+                onDone={handleCreateNewChannel}
+              />
+            )}
+            {userListModalShown && (
+              <UserListModal
+                onHide={() => setUserListModalShown(false)}
+                users={returnUsers(currentChannel, currentChannelOnlineMembers)}
+                descriptionShown={userListDescriptionShown}
+                description="(online)"
+                title="Online Status"
+              />
+            )}
+            <LeftMenu
+              channels={channels}
+              channelLoadMoreButtonShown={channelLoadMoreButton}
+              currentChannel={currentChannel}
+              currentChannelOnlineMembers={currentChannelOnlineMembers}
+              loadMoreChannels={handleLoadMoreChannels}
+              onChannelEnter={onChannelEnter}
+              onNewButtonClick={onNewButtonClick}
+              showUserListModal={() => setUserListModalShown(true)}
+            />
+            <MessagesContainer
+              channelName={channelName}
+              chessCountdownObj={chessCountdownObj}
+              chessOpponent={partner}
+              loading={channelLoading || creatingNewDMChannel || reconnecting}
+              currentChannel={currentChannel}
+              currentChannelId={selectedChannelId}
+              loadMoreButton={loadMoreMessages}
+              messages={messages}
+              loadMoreMessages={handleLoadMoreMessages}
+              onShowChessModal={handleChessModalShown}
+              onChessBoardClick={handleChessModalShown}
+              onChessSpoilerClick={handleChessSpoilerClick}
+              onMessageSubmit={handleMessageSubmit}
+              onSendFileMessage={handleSendFileMessage}
+              recepientId={recepientId}
+              selectedChannelId={selectedChannelId}
+              subjectId={subject.id}
+            />
+            <RightMenu
+              channelName={channelName}
+              currentChannel={currentChannel}
+              currentChannelOnlineMembers={currentChannelOnlineMembers}
+            />
+            {chessModalShown && (
+              <ChessModal
+                channelId={selectedChannelId}
+                chessCountdownObj={chessCountdownObj}
+                myId={userId}
+                onConfirmChessMove={handleConfirmChessMove}
+                onHide={() => setChessModalShown(false)}
+                onSpoilerClick={handleChessSpoilerClick}
+                opponentId={partner?.id}
+                opponentName={partner?.username}
+              />
             )}
           </div>
         ) : (
-          <PleaseLogIn />
-        )}
-      </LocalContext.Provider>
-    ),
-    [
-      currentChannelOnlineMembers,
-      createNewChannelModalShown,
-      userListModalShown,
-      chessModalShown,
-      chessCountdownObj,
-      channelName,
-      partner,
-      creatingNewDMChannel,
-      profilePicId,
-      loaded,
-      currentChannel,
-      selectedChannelId,
-      channels,
-      messages,
-      channelLoadMoreButton,
-      loadMoreMessages,
-      pageVisible,
-      recepientId,
-      subject
-    ]
+          <Loading text="Loading Twinkle Chat" />
+        )
+      ) : (
+        <PleaseLogIn />
+      )}
+    </LocalContext.Provider>
   );
 
   function handleChessModalShown() {
@@ -493,8 +470,7 @@ export default function Chat({ onFileUpload }) {
             sender: {
               id: message.userId,
               username: message.username
-            },
-            isSpoiler: message.content.startsWith('/spoiler')
+            }
           },
           numUnreads: 1
         }

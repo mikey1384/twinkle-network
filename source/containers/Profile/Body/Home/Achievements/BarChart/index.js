@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Bar from './Bar';
 
@@ -8,6 +8,19 @@ BarChart.propTypes = {
 };
 
 export default function BarChart({ bars, topValue }) {
+  const Bars = useMemo(
+    () =>
+      bars.map((bar, index) => (
+        <Bar
+          key={bar.id}
+          index={index}
+          bar={bar}
+          barPercentage={Math.floor((bar.value * 100) / topValue)}
+        />
+      )),
+    [bars, topValue]
+  );
+
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
       <div
@@ -19,14 +32,7 @@ export default function BarChart({ bars, topValue }) {
           marginLeft: '-2rem'
         }}
       >
-        {bars.map((bar, index) => (
-          <Bar
-            key={bar.id}
-            index={index}
-            bar={bar}
-            barPercentage={Math.floor((bar.value * 100) / topValue)}
-          />
-        ))}
+        {Bars}
       </div>
     </div>
   );

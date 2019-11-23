@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchInput from 'components/Texts/SearchInput';
 import ProfilePanel from 'components/ProfilePanel';
@@ -26,7 +26,7 @@ People.propTypes = {
   location: PropTypes.object.isRequired
 };
 
-export default function People({ location }) {
+function People({ location }) {
   const {
     user: {
       actions: {
@@ -101,7 +101,9 @@ export default function People({ location }) {
         prevOrderUsersBy.current = orderUsersBy;
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderUsersBy, profilesLoaded]);
+
   return (
     <div style={{ height: '100%' }}>
       <SearchInput
@@ -196,3 +198,5 @@ export default function People({ location }) {
     }
   }
 }
+
+export default memo(People);

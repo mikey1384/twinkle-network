@@ -86,6 +86,7 @@ export default function Posts({
     if (profileFeeds.length === 0) {
       handleLoadTab(section);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   return !loaded ? (

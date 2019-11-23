@@ -27,6 +27,7 @@ export default function Redirect({
       if (userExists) return history.push(`/users/${username}`);
       setLoaded(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div>{loaded ? <NotFound /> : <Loading text="Loading..." />}</div>;

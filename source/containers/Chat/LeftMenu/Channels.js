@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
+import { Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
 
 Channels.propTypes = {
@@ -12,8 +12,7 @@ Channels.propTypes = {
           id: PropTypes.number,
           username: PropTypes.string
         }),
-        content: PropTypes.string,
-        isSpoiler: PropTypes.bool
+        content: PropTypes.string
       }),
       id: PropTypes.number.isRequired,
       channelName: PropTypes.string,
@@ -48,8 +47,10 @@ export default function Channels({
           <div
             key={id}
             className={css`
-              &:hover {
-                background: ${Color.checkboxAreaGray()};
+              @media (min-width: ${desktopMinWidth}) {
+                &:hover {
+                  background: ${Color.checkboxAreaGray()};
+                }
               }
             `}
             style={{
@@ -130,20 +131,12 @@ export default function Channels({
       }
     );
 
-  function renderPreviewMessage({
-    content,
-    fileName,
-    gameWinnerId,
-    sender,
-    isSpoiler
-  }) {
+  function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
     const messageSender = sender?.id
       ? sender.id === userId
         ? 'You'
         : sender.username
       : '';
-    const isASpoiler = isSpoiler || content.startsWith('/spoiler ');
-    const msg = !isASpoiler ? content.substring(0, 100) : 'Hidden Message';
     if (fileName) {
       return (
         <span>
@@ -165,7 +158,7 @@ export default function Channels({
       return (
         <>
           <span>{`${messageSender}: `}</span>
-          <span>{msg}</span>
+          <span>{content.substr(0, 100)}</span>
         </>
       );
     }

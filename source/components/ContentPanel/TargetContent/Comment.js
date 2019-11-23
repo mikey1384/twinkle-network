@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import LongText from 'components/Texts/LongText';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { useAppContext } from 'contexts';

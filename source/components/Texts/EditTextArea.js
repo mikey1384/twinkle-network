@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -41,8 +41,12 @@ export default function EditTextArea({
     state,
     actions: { onSetEditForm }
   } = useInputContext();
+  const inputState = useMemo(() => {
+    return state['edit' + contentType + contentId];
+  }, [contentId, contentType, state]);
+
   useEffect(() => {
-    if (!state['edit' + contentType + contentId]) {
+    if (!inputState) {
       onSetEditForm({
         contentId,
         contentType,
@@ -51,13 +55,18 @@ export default function EditTextArea({
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const editForm = state['edit' + contentType + contentId] || {};
+  const editForm = inputState || {};
   const { editedComment } = editForm;
-  const commentExceedsCharLimit = exceedsCharLimit({
-    contentType: 'comment',
-    text: editedComment
-  });
+  const commentExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        contentType: 'comment',
+        text: editedComment
+      }),
+    [editedComment]
+  );
 
   return (
     <div style={{ lineHeight: 1 }}>
