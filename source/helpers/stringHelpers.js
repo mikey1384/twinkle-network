@@ -118,6 +118,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:squared\:)/gi, '²')
     .replace(/(\:star\:)/gi, '⭐')
     .replace(/(\:sunglasses\:)/gi, '😎')
+    .replace(/(\:taco\:)/gi, '🌮')
     .replace(/(\:thank you\:)/gi, '🙏')
     .replace(/(\:theta\:)/gi, '⍬')
     .replace(/(\:thumbs\:)/gi, '👍')
@@ -319,12 +320,14 @@ export function processedStringWithURL(string) {
   const maxChar = 100;
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
-  const regex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
+  const urlRegex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
+  const boldRegex = /\*\*(.*?)\*\*/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
     .replace(/>/g, '&gt')
-    .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
     .replace(/\r?\n/g, '<br>');
   let newString = '';
   while (tempString.length > 0) {
