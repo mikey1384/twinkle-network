@@ -2,12 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Button from 'components/Button';
-import {
-  isMobile,
-  determineXpButtonDisabled,
-  textIsOverflown,
-  scrollElementToCenter
-} from 'helpers';
+import { isMobile, determineXpButtonDisabled, textIsOverflown } from 'helpers';
 import Icon from 'components/Icon';
 import XPRewardInterface from 'components/XPRewardInterface';
 import AlreadyPosted from 'components/AlreadyPosted';
@@ -427,7 +422,6 @@ export default function Details({
       contentType: 'video',
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function onMouseOver() {

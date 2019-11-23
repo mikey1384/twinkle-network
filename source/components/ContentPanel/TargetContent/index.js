@@ -18,11 +18,7 @@ import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
-import {
-  determineXpButtonDisabled,
-  isMobile,
-  scrollElementToCenter
-} from 'helpers';
+import { determineXpButtonDisabled, isMobile } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { useHistory } from 'react-router-dom';
@@ -386,7 +382,6 @@ export default function TargetContent({
       contentId: comment.id,
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function onReplyClick() {

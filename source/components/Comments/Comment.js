@@ -470,7 +470,6 @@ function Comment({
       contentType: 'comment',
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function likeClick(likes) {
