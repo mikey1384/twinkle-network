@@ -131,7 +131,7 @@ export default function ChannelHeader() {
                           : false
                       )
                     }
-                    onMouseOver={onMouseOver}
+                    onMouseOver={handleMouseOver}
                     onMouseLeave={() => setOnHover(false)}
                     ref={HeaderLabelRef}
                   >
@@ -184,7 +184,7 @@ export default function ChannelHeader() {
     </ErrorBoundary>
   );
 
-  function onMouseOver() {
+  function handleMouseOver() {
     if (textIsOverflown(HeaderLabelRef.current) && !isMobile(navigator)) {
       setOnHover(true);
     }
