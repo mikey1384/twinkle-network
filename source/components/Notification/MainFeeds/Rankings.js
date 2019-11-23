@@ -145,7 +145,7 @@ export default function Rankings() {
                       }
                       user={{ ...user, username: user.username }}
                       userId={userId}
-                      style={{ display: 'block', marginTop: '0.5rem' }}
+                      style={{ marginTop: '0.5rem', textAlign: 'center' }}
                     />
                   </div>
                 </div>

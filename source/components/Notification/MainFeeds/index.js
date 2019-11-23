@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ContentLink from 'components/ContentLink';
 import UsernameText from 'components/Texts/UsernameText';
@@ -26,7 +26,7 @@ MainFeeds.propTypes = {
   style: PropTypes.object
 };
 
-export default function MainFeeds({
+function MainFeeds({
   activeTab,
   loadMore,
   notifications,
@@ -224,3 +224,5 @@ export default function MainFeeds({
     setLoading(false);
   }
 }
+
+export default memo(MainFeeds);

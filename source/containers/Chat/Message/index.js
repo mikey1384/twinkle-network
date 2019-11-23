@@ -263,11 +263,13 @@ export default function Message({
   ) : (
     <ErrorBoundary>
       <div className={MessageStyle.container}>
-        <ProfilePic
-          className={MessageStyle.profilePic}
-          userId={userId}
-          profilePicId={profilePicId}
-        />
+        <div className={MessageStyle.profilePic}>
+          <ProfilePic
+            style={{ width: '100%', height: '100%' }}
+            userId={userId}
+            profilePicId={profilePicId}
+          />
+        </div>
         <div className={MessageStyle.contentWrapper}>
           <div>
             <UsernameText

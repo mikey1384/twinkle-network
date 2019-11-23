@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import SearchInput from 'components/Texts/SearchInput';
 import { useMyState, useSearch } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 import { Color } from 'constants/css';
 
-export default function ChatSearchBox() {
+ChatSearchBox.propTypes = {
+  style: PropTypes.object
+};
+
+export default function ChatSearchBox({ style }) {
   const {
     requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
@@ -28,9 +33,9 @@ export default function ChatSearchBox() {
   });
 
   return (
-    <div style={{ padding: '0 1rem', zIndex: 5 }}>
+    <div style={style}>
       <SearchInput
-        placeholder="Play chess or talk with..."
+        placeholder="Search..."
         onChange={handleSearch}
         value={searchText}
         searchResults={chatSearchResults}

@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LocalContext from '../Context';
@@ -54,7 +61,7 @@ Reply.propTypes = {
   submitReply: PropTypes.func.isRequired
 };
 
-export default function Reply({
+function Reply({
   comment,
   innerRef = () => {},
   deleteReply,
@@ -94,7 +101,7 @@ export default function Reply({
     return userIsUploader || userCanEditThis;
   }, [canDelete, canEdit, userIsHigherAuth, userIsUploader]);
   const rewardButtonShown = useMemo(
-    () => (canStar && userIsHigherAuth) || userIsUploader,
+    () => canStar && userIsHigherAuth && !userIsUploader,
     [canStar, userIsHigherAuth, userIsUploader]
   );
   const rewardLevel = useMemo(() => {
@@ -392,3 +399,5 @@ export default function Reply({
     }
   }
 }
+
+export default memo(Reply);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { mobileMaxWidth, Color } from 'constants/css';
@@ -11,7 +11,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import Loading from 'components/Loading';
 import Message from '../Message';
 import SubjectMsgsModal from '../Modals/SubjectMsgsModal';
-import SubjectHeader from './SubjectHeader';
+import ChannelHeader from './ChannelHeader';
 import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
@@ -27,7 +27,6 @@ MessagesContainer.propTypes = {
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
   currentChannel: PropTypes.object,
-  currentChannelId: PropTypes.number.isRequired,
   messages: PropTypes.array,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
@@ -47,7 +46,6 @@ export default function MessagesContainer({
   loading,
   loadMoreMessages,
   currentChannel,
-  currentChannelId,
   messages,
   onChessBoardClick,
   onChessSpoilerClick,
@@ -107,33 +105,47 @@ export default function MessagesContainer({
   const FileInputRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const mb = 1000;
-  const maxSize =
-    authLevel > 8
-      ? 10000 * mb
-      : authLevel > 4
-      ? 4000 * mb
-      : authLevel === 4
-      ? 1000 * mb
-      : 300 * mb;
-  const menuProps = currentChannel.twoPeople
-    ? [{ label: 'Hide Chat', onClick: handleHideChat }]
-    : [
-        {
-          label: 'Invite People',
-          onClick: () => setInviteUsersModalShown(true)
-        },
-        {
-          label: 'Edit Channel Name',
-          onClick: () => setEditTitleModalShown(true)
-        },
-        {
-          separator: true
-        },
-        {
-          label: 'Leave Channel',
-          onClick: () => setLeaveConfirmModalShown(true)
-        }
-      ];
+  const maxSize = useMemo(
+    () =>
+      authLevel > 8
+        ? 10000 * mb
+        : authLevel > 4
+        ? 4000 * mb
+        : authLevel === 4
+        ? 1000 * mb
+        : 300 * mb,
+    [authLevel]
+  );
+  const menuProps = useMemo(() => {
+    return currentChannel.twoPeople
+      ? [{ label: 'Hide Chat', onClick: handleHideChat }]
+      : [
+          {
+            label: 'Invite People',
+            onClick: () => setInviteUsersModalShown(true)
+          },
+          {
+            label: 'Edit Channel Name',
+            onClick: () => setEditTitleModalShown(true)
+          },
+          {
+            separator: true
+          },
+          {
+            label: 'Leave Channel',
+            onClick: () => setLeaveConfirmModalShown(true)
+          }
+        ];
+    async function handleHideChat() {
+      await hideChat(selectedChannelId);
+      onHideChat(selectedChannelId);
+      const data = await loadChatChannel({
+        channelId: GENERAL_CHAT_ID
+      });
+      onEnterChannelWithId({ data, showOnTop: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChannel.twoPeople, selectedChannelId]);
 
   useEffect(() => {
     setFillerHeight(
@@ -158,13 +170,13 @@ export default function MessagesContainer({
     <div
       className={css`
         height: 100%;
-        width: CALC(100% - 30rem);
+        width: 60vw;
         border-left: 1px solid ${Color.borderGray()};
         padding: 0 0 1rem 1rem;
         position: relative;
         background: #fff;
         @media (max-width: ${mobileMaxWidth}) {
-          width: 75%;
+          width: 90vw;
         }
       `}
     >
@@ -225,7 +237,7 @@ export default function MessagesContainer({
             right: '0',
             bottom: '0',
             opacity: loading && '0.3',
-            top: currentChannelId === 2 ? '7rem' : 0,
+            top: selectedChannelId === GENERAL_CHAT_ID ? '7rem' : 0,
             overflowY: 'scroll'
           }}
           onScroll={() => {
@@ -303,7 +315,7 @@ export default function MessagesContainer({
             </div>
           </div>
         </div>
-        {!loading && currentChannelId === 2 && <SubjectHeader />}
+        {!loading && selectedChannelId === GENERAL_CHAT_ID && <ChannelHeader />}
         <div
           style={{
             position: 'absolute',
@@ -426,15 +438,6 @@ export default function MessagesContainer({
     await editChannelTitle({ title, channelId: selectedChannelId });
     onEditChannelTitle({ title, channelId: selectedChannelId });
     setEditTitleModalShown(false);
-  }
-
-  async function handleHideChat() {
-    await hideChat(selectedChannelId);
-    onHideChat(selectedChannelId);
-    const data = await loadChatChannel({
-      channelId: GENERAL_CHAT_ID
-    });
-    onEnterChannelWithId({ data, showOnTop: true });
   }
 
   async function handleLoadMoreButtonClick() {

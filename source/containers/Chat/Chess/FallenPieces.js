@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Square from './Square';
 import getPiece from './helpers/piece';
@@ -11,11 +11,7 @@ FallenPieces.propTypes = {
   myColor: PropTypes.string
 };
 
-export default function FallenPieces({
-  whiteFallenPieces,
-  blackFallenPieces,
-  myColor
-}) {
+function FallenPieces({ whiteFallenPieces, blackFallenPieces, myColor }) {
   const whiteFallenPiecesCompressed = useMemo(() => {
     const whiteFallenHash = {};
     if (whiteFallenPieces) {
@@ -97,3 +93,5 @@ export default function FallenPieces({
     </>
   );
 }
+
+export default memo(FallenPieces);

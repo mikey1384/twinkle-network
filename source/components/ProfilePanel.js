@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -29,7 +29,7 @@ ProfilePanel.propTypes = {
   profileId: PropTypes.number
 };
 
-export default function ProfilePanel({ expandable, profileId }) {
+function ProfilePanel({ expandable, profileId }) {
   const history = useHistory();
   const {
     requestHelpers: {
@@ -106,6 +106,7 @@ export default function ProfilePanel({ expandable, profileId }) {
     youtubeUrl,
     visible
   } = profile;
+
   const {
     state: { loaded: chatLoaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
@@ -128,7 +129,7 @@ export default function ProfilePanel({ expandable, profileId }) {
 
   useEffect(() => {
     mounted.current = true;
-    handleCheckIfUserOnline();
+    setTimeout(() => handleCheckIfUserOnline(), 100);
     if (!profile.loaded && !loading.current && profileId) {
       handleInitProfile();
     }
@@ -170,16 +171,10 @@ export default function ProfilePanel({ expandable, profileId }) {
       mounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, userId, profile.loaded]);
-  const canEdit = useMemo(() => userId === profileId || isCreator, [
-    isCreator,
-    profileId,
-    userId
-  ]);
-  const noBio = useMemo(
-    () => !profileFirstRow && !profileSecondRow && !profileThirdRow,
-    [profileFirstRow, profileSecondRow, profileThirdRow]
-  );
+  }, [profileId, userId, profile.loaded, commentsLoaded, previewLoaded]);
+
+  const canEdit = userId === profileId || isCreator;
+  const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
   return (
     <div ref={ComponentRef} key={profileId}>
@@ -272,6 +267,7 @@ export default function ProfilePanel({ expandable, profileId }) {
                         userId={profileId}
                         profilePicId={profilePicId}
                         online={!!online}
+                        statusShown
                         large
                       />
                     </Link>
@@ -575,3 +571,5 @@ export default function ProfilePanel({ expandable, profileId }) {
     setImageEditModalShown(false);
   }
 }
+
+export default memo(ProfilePanel);

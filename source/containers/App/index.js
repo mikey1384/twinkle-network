@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { memo, Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Button from 'components/Button';
@@ -310,4 +310,6 @@ function App({ location, history }) {
   }
 }
 
-export default process.env.NODE_ENV === 'development' ? hot(module)(App) : App;
+export default process.env.NODE_ENV === 'development'
+  ? hot(module)(memo(App))
+  : memo(App);

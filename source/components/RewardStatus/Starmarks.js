@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 
@@ -6,7 +6,7 @@ Starmarks.propTypes = {
   stars: PropTypes.number.isRequired
 };
 
-export default function Starmarks({ stars }) {
+function Starmarks({ stars }) {
   const Marks = useMemo(() => {
     const baselines = [
       { baseline: 10, icon: ['far', 'star-half-alt'] },
@@ -43,3 +43,5 @@ export default function Starmarks({ stars }) {
 
   return <div>{Marks}</div>;
 }
+
+export default memo(Starmarks);

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
@@ -19,7 +19,7 @@ import { charLimit } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 
-export default function SubjectInput() {
+function SubjectInput() {
   const {
     requestHelpers: { uploadContent }
   } = useAppContext();
@@ -297,3 +297,5 @@ export default function SubjectInput() {
     }
   }
 }
+
+export default memo(SubjectInput);

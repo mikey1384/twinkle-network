@@ -40,6 +40,7 @@ export default function Profile({ profile }) {
             userId={profile.id}
             profilePicId={profile.profilePicId}
             online={userId === profile.id || !!profile.online}
+            statusShown
             large
           />
         </div>

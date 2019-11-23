@@ -10,6 +10,7 @@ UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
   style: PropTypes.object,
+  truncate: PropTypes.bool,
   user: PropTypes.object
 };
 
@@ -17,7 +18,8 @@ export default function UsernameText({
   className,
   color,
   style = {},
-  user = {}
+  user = {},
+  truncate = false
 }) {
   const history = useHistory();
   const {
@@ -31,24 +33,38 @@ export default function UsernameText({
   const [menuShown, setMenuShown] = useState(false);
   return (
     <div
-      style={{ display: 'inline', position: 'relative' }}
+      style={{
+        display: 'inline',
+        position: 'relative',
+        width: '100%',
+        ...style
+      }}
       onMouseLeave={() => setMenuShown(false)}
     >
-      <span
-        className={className}
+      <div
         style={{
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          color: user.username
-            ? color || Color.darkerGray()
-            : Color.lighterGray(),
-          ...style
+          display: truncate ? 'block' : 'inline',
+          overflowX: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%'
         }}
-        onClick={onUsernameClick}
-        onMouseEnter={onMouseEnter}
       >
-        {user.username || '(Deleted)'}
-      </span>
+        <span
+          className={className}
+          style={{
+            width: '100%',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            color: user.username
+              ? color || Color.darkerGray()
+              : Color.lighterGray()
+          }}
+          onClick={onUsernameClick}
+          onMouseEnter={onMouseEnter}
+        >
+          {user.username || '(Deleted)'}
+        </span>
+      </div>
       {menuShown && (
         <DropdownList style={{ width: '100%' }}>
           <li onClick={() => history.push(`/users/${user.username}`)}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
+import { Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
 
 Channels.propTypes = {
@@ -47,8 +47,10 @@ export default function Channels({
           <div
             key={id}
             className={css`
-              &:hover {
-                background: ${Color.checkboxAreaGray()};
+              @media (min-width: ${desktopMinWidth}) {
+                &:hover {
+                  background: ${Color.checkboxAreaGray()};
+                }
               }
             `}
             style={{

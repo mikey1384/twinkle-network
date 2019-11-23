@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
@@ -21,7 +21,7 @@ Button.propTypes = {
   transparent: PropTypes.bool
 };
 
-export default function Button({
+function Button({
   className,
   color = 'black',
   disabled,
@@ -147,3 +147,5 @@ export default function Button({
     </button>
   );
 }
+
+export default memo(Button);

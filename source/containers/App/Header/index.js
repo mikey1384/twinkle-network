@@ -39,7 +39,13 @@ export default function Header({
       updateChatLastRead
     }
   } = useAppContext();
-  const { defaultSearchFilter, userId, username, loggedIn } = useMyState();
+  const {
+    defaultSearchFilter,
+    userId,
+    username,
+    loggedIn,
+    profilePicId
+  } = useMyState();
   const {
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
@@ -68,8 +74,19 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
-  const prevUserIdRef = useRef(userId);
-  const socketConnected = useRef(false);
+  const prevProfilePicId = useRef(profilePicId);
+
+  useEffect(() => {
+    socket.disconnect();
+    socket.connect();
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId && profilePicId !== prevProfilePicId.current) {
+      socket.emit('change_profile_pic', profilePicId);
+    }
+    prevProfilePicId.current = profilePicId;
+  }, [profilePicId, userId, username]);
 
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
@@ -110,17 +127,15 @@ export default function Header({
       socket.emit('join_chat_channel', data.channelId);
     }
     async function onConnect() {
-      if (!socketConnected.current) {
-        console.log('connected to socket');
-        socketConnected.current = true;
-        onClearRecentChessMessage();
-        onChangeSocketStatus(true);
-        handleCheckVersion();
-        if (userId) {
-          handleGetNumberOfUnreadMessages();
-          socket.emit('bind_uid_to_socket', userId, username);
-          handleLoadChat();
-        }
+      console.log('connected to socket');
+      onClearRecentChessMessage();
+      onChangeSocketStatus(true);
+      handleCheckVersion();
+      if (userId) {
+        handleGetNumberOfUnreadMessages();
+        socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+        socket.emit('enter_my_notification_channel', userId);
+        handleLoadChat();
       }
 
       async function handleLoadChat() {
@@ -140,11 +155,8 @@ export default function Header({
       }
     }
     function onDisconnect() {
-      if (socketConnected.current) {
-        console.log('disconnected from socket');
-        socketConnected.current = false;
-        onChangeSocketStatus(false);
-      }
+      console.log('disconnected from socket');
+      onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
@@ -184,27 +196,6 @@ export default function Header({
     const newNotiNum = numNewPosts + numNewNotis + numUnreads;
     document.title = `${newNotiNum > 0 ? '(' + newNotiNum + ') ' : ''}Twinkle`;
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
-
-  useEffect(() => {
-    socket.connect();
-  }, []);
-
-  useEffect(() => {
-    if (userId) {
-      socket.disconnect();
-      socket.connect();
-      socket.emit('bind_uid_to_socket', userId, username);
-      socket.emit('enter_my_notification_channel', userId);
-    } else {
-      if (prevUserIdRef.current) {
-        socket.emit('leave_my_notification_channel', prevUserIdRef.current);
-        socket.disconnect();
-        socket.connect();
-      }
-    }
-    prevUserIdRef.current = userId;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
 
   useEffect(() => {
     onShowUpdateNotice(!versionMatch);

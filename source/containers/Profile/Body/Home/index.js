@@ -84,6 +84,7 @@ export default function Home({ location, profile, selectedTheme }) {
     lastActive,
     online,
     statusMsg,
+    profilePicId,
     profileFirstRow,
     profileSecondRow,
     profileTheme,
@@ -311,6 +312,7 @@ export default function Home({ location, profile, selectedTheme }) {
             online={online}
             lastActive={lastActive}
             myId={userId}
+            profilePicId={profilePicId}
             userId={id}
             username={username}
             selectedTheme={selectedTheme}

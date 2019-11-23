@@ -26,8 +26,6 @@ PlaylistCarousel.propTypes = {
   numPlaylistVids: PropTypes.number.isRequired
 };
 
-const defaultNumSlides = 5;
-const mobileNumSlides = 4;
 const cellSpacing = 12;
 
 export default function PlaylistCarousel({
@@ -58,21 +56,12 @@ export default function PlaylistCarousel({
   );
   const [deleteConfirmModalShown, setDeleteConfirmModalShown] = useState(false);
   const [playlistModalShown, setPlaylistModalShown] = useState(false);
-  const [numSlides, setNumSlides] = useState(
-    typeof document !== 'undefined' &&
-      document.documentElement.clientWidth <= 991
-      ? mobileNumSlides
-      : defaultNumSlides
-  );
+  const [numSlides, setNumSlides] = useState(4);
 
   useEffect(() => {
     addEvent(window, 'resize', onResize);
     function onResize() {
-      setNumSlides(
-        document.documentElement.clientWidth <= 991
-          ? mobileNumSlides
-          : defaultNumSlides
-      );
+      setNumSlides(4);
     }
 
     return function cleanUp() {

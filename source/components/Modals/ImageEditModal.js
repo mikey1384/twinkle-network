@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import PropTypes from 'prop-types';
-import Slider from 'rc-slider';
-import AvatarEditor from 'react-avatar-editor';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import ErrorBoundary from 'components/ErrorBoundary';
+import Loading from 'components/Loading';
 
 ImageEditModal.propTypes = {
   imageUri: PropTypes.string,
@@ -19,32 +20,59 @@ export default function ImageEditModal({
   onConfirm,
   processing
 }) {
-  const [imageScale, setImageScale] = useState(1);
-  const EditorRef = useRef(null);
+  const [crop, setCrop] = useState({
+    unit: '%',
+    width: 90,
+    aspect: 1,
+    x: 5
+  });
+  const [loading, setLoading] = useState(false);
+  const [originalImageUrl, setOriginalImageUrl] = useState('');
+  const [croppedImageUrl, setCroppedImageUrl] = useState('');
+  const ImageRef = useRef(null);
+  useEffect(() => {
+    setLoading(true);
+    window.loadImage(
+      imageUri,
+      function(img) {
+        const image = img.toDataURL('image/jpeg');
+        setOriginalImageUrl(image);
+        setLoading(false);
+      },
+      { orientation: true }
+    );
+  }, [imageUri]);
 
   return (
     <Modal onHide={onHide}>
       <ErrorBoundary>
-        <header>Create Profile Picture</header>
+        <header>Edit your picture</header>
         <main>
-          <div style={{ textAlign: 'center', paddingBottom: '2rem' }}>
-            {imageUri && (
-              <div>
-                <AvatarEditor
-                  ref={EditorRef}
-                  image={imageUri}
-                  width={350}
-                  height={350}
-                  border={30}
-                  color={[255, 255, 255, 0.6]}
-                  scale={imageScale}
-                />
-                <Slider
-                  className="rc-slider"
-                  defaultValue={50}
-                  onChange={value => setImageScale(value / 100 + 0.5)}
-                />
-              </div>
+          <div
+            style={{
+              textAlign: 'center',
+              paddingBottom: '1rem'
+            }}
+          >
+            {loading && <Loading text="Loading..." />}
+            {!loading && imageUri && (
+              <ReactCrop
+                // eslint-disable-next-line no-undef
+                src={originalImageUrl}
+                crop={crop}
+                minWidth={250}
+                minHeight={250}
+                keepSelection
+                ruleOfThirds
+                onImageLoaded={image => (ImageRef.current = image)}
+                onChange={newCrop => setCrop(newCrop)}
+                onComplete={handleCropComplete}
+                imageStyle={{
+                  objectFit: 'contain',
+                  minHeight: '350px',
+                  maxHeight: '65vh'
+                }}
+              />
             )}
           </div>
         </main>
@@ -58,11 +86,7 @@ export default function ImageEditModal({
           </Button>
           <Button
             color="blue"
-            onClick={() =>
-              onConfirm(
-                EditorRef.current.getImage().toDataURL('image/jpeg', 0.7)
-              )
-            }
+            onClick={() => onConfirm(croppedImageUrl)}
             disabled={processing}
           >
             Submit
@@ -71,4 +95,36 @@ export default function ImageEditModal({
       </ErrorBoundary>
     </Modal>
   );
+
+  async function handleCropComplete(crop) {
+    if (crop.width && crop.height) {
+      const cropped = getCroppedImg({
+        image: ImageRef.current,
+        crop
+      });
+      setCroppedImageUrl(cropped);
+    }
+  }
+
+  function getCroppedImg({ image, crop }) {
+    const canvas = document.createElement('canvas');
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+    return canvas.toDataURL('image/jpeg');
+  }
 }

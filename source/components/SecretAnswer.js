@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
@@ -14,13 +14,7 @@ SecretAnswer.propTypes = {
   uploaderId: PropTypes.number
 };
 
-export default function SecretAnswer({
-  answer,
-  onClick,
-  style,
-  subjectId,
-  uploaderId
-}) {
+function SecretAnswer({ answer, onClick, style, subjectId, uploaderId }) {
   const {
     requestHelpers: { checkIfUserResponded }
   } = useAppContext();
@@ -95,3 +89,5 @@ export default function SecretAnswer({
     </ErrorBoundary>
   );
 }
+
+export default memo(SecretAnswer);
