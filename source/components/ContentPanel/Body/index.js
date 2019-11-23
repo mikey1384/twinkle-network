@@ -502,7 +502,6 @@ function Body({
       contentId,
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   async function onCommentButtonClick() {

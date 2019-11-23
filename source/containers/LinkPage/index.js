@@ -16,7 +16,7 @@ import Loading from 'components/Loading';
 import Description from './Description';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
+import { determineXpButtonDisabled } from 'helpers';
 import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import { processedURL } from 'helpers/stringHelpers';
 import {
@@ -468,7 +468,6 @@ export default function LinkPage({
       contentId: linkId,
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function handleUploadComment(params) {

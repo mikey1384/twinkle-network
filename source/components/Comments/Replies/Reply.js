@@ -25,7 +25,7 @@ import RewardStatus from 'components/RewardStatus';
 import XPRewardInterface from 'components/XPRewardInterface';
 import { commentContainer } from '../Styles';
 import { Link } from 'react-router-dom';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
+import { determineXpButtonDisabled } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext } from 'contexts';
@@ -374,7 +374,6 @@ function Reply({
       contentType: 'comment',
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function likeClick(likes) {
