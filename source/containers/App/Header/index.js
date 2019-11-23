@@ -53,7 +53,6 @@ export default function Header({
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
-      onNotifyChatSubjectChange,
       onReceiveFirstMsg,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
@@ -67,6 +66,7 @@ export default function Header({
       onCheckVersion,
       onIncreaseNumNewPosts,
       onIncreaseNumNewNotis,
+      onNotifyChatSubjectChange,
       onShowUpdateNotice
     }
   } = useNotiContext();
