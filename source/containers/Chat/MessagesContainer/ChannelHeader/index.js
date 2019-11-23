@@ -102,7 +102,7 @@ export default function ChannelHeader() {
         height: 7rem;
         > section {
           position: relative;
-          width: CALC(100% - 15rem);
+          width: CALC(100% - 9rem);
         }
       `}
     >
