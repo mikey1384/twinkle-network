@@ -215,7 +215,7 @@ export default function Chat({ onFileUpload }) {
               font-size: 1.5rem;
               position: relative;
               @media (max-width: ${phoneMaxWidth}) {
-                width: 140vw;
+                width: 147vw;
                 height: 100%;
               }
             `}
