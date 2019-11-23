@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { GENERAL_CHAT_ID } from 'constants/database';
-import { mobileMaxWidth, Color } from 'constants/css';
+import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
 import { socket } from 'constants/io';
 import Button from 'components/Button';
@@ -175,8 +175,8 @@ export default function MessagesContainer({
         padding: 0 0 1rem 1rem;
         position: relative;
         background: #fff;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 90vw;
+        @media (max-width: ${phoneMaxWidth}) {
+          width: 82vw;
         }
       `}
     >
