@@ -152,7 +152,7 @@ export default function ChannelHeader() {
                 }}
                 onClick={() => setOnEdit(true)}
               >
-                Change Subject
+                Change
               </Button>
             </>
           )}
@@ -234,7 +234,7 @@ export default function ChannelHeader() {
   function renderDetails() {
     const isReloaded = reloader && reloader.id;
     let posterString =
-      'You can change this subject by clicking the blue "Change Subject" button';
+      'You can change this subject by clicking the "Change" button';
     if (uploader.id) {
       posterString = (
         <span>
@@ -257,7 +257,7 @@ export default function ChannelHeader() {
         ) : (
           <small>
             {
-              'You can change the subject by clicking the "Change Subject" button on the right'
+              'You can change the subject by clicking the "Change" button to the right'
             }
           </small>
         )}
