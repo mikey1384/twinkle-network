@@ -67,7 +67,7 @@ export default function chatRequestHelpers({ auth, handleError }) {
         const {
           data: { numUnreads }
         } = await request.get(`${URL}/chat/numUnreads`, auth());
-        return Promise.resolve(numUnreads);
+        return Promise.resolve(Number(numUnreads));
       } catch (error) {
         return handleError(error);
       }
