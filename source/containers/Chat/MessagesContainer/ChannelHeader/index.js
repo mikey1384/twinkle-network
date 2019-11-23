@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
-import { textIsOverflown } from 'helpers';
+import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
@@ -185,7 +185,7 @@ export default function ChannelHeader() {
   );
 
   function onMouseOver() {
-    if (textIsOverflown(HeaderLabelRef.current)) {
+    if (textIsOverflown(HeaderLabelRef.current) && !isMobile(navigator)) {
       setOnHover(true);
     }
   }
