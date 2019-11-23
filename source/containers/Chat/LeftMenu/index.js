@@ -4,7 +4,12 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
-import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
+import {
+  Color,
+  desktopMinWidth,
+  mobileMaxWidth,
+  phoneMaxWidth
+} from 'constants/css';
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { queryStringForArray } from 'helpers/stringHelpers';
@@ -83,6 +88,9 @@ export default function LeftMenu({
         position: relative;
         background: #fff;
         -webkit-overflow-scrolling: touch;
+        @media (max-width: ${phoneMaxWidth}) {
+          width: 30vw;
+        }
       `}
     >
       <div
