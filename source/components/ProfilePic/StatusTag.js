@@ -11,7 +11,7 @@ export default function StatusTag({ large, status }) {
   const backgroundColor = {
     online: Color.green(),
     offline: Color.gray(),
-    busy: Color.yellow(),
+    busy: Color.gold(),
     away: Color.red()
   };
 
