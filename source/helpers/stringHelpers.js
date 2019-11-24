@@ -87,6 +87,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:fox\:)/gi, '🦊')
     .replace(/(\:friend\:)/gi, '👭')
     .replace(/(\:ghost\:)/gi, '👻')
+    .replace(/(\:good\:)/gi, '👍')
     .replace(/(\:happy\:)/gi, '😄')
     .replace(/(\:heart\:)/gi, '❤️')
     .replace(/(\:hello\:)/gi, '👋')
