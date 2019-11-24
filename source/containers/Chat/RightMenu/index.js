@@ -84,43 +84,56 @@ export default function RightMenu({
         `}
       >
         <div
-          onClick={() => setChannelNameHovered(hovered => !hovered)}
-          className={css`
-            width: 100%;
-            line-height: 1.5;
-            padding: 0 1rem 0 1rem;
-            font-size: 2.5rem;
-            font-weight: bold;
-            @media (max-width: ${mobileMaxWidth}) {
-              font-size: 1.7rem;
-            }
-          `}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+            width: '100%'
+          }}
         >
-          <p
-            ref={ChannelNameRef}
-            style={{
-              width: '100%',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              cursor: 'default'
-            }}
-            onMouseEnter={handleMouseOver}
-            onMouseLeave={() => setChannelNameHovered(false)}
+          <div
+            onClick={() => setChannelNameHovered(hovered => !hovered)}
+            className={css`
+              width: 100%;
+              line-height: 1.5;
+              padding: 0 1rem 0 1rem;
+              font-size: 2.5rem;
+              font-weight: bold;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.7rem;
+              }
+            `}
           >
-            {channelName}
-          </p>
-          <FullTextReveal
-            style={{ width: '100%', fontSize: '1.5rem' }}
-            show={channelNameHovered}
-            direction="left"
-            text={channelName || ''}
-          />
+            <p
+              ref={ChannelNameRef}
+              style={{
+                width: '100%',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                cursor: 'default'
+              }}
+              onMouseEnter={handleMouseOver}
+              onMouseLeave={() => setChannelNameHovered(false)}
+            >
+              {channelName}
+            </p>
+            <FullTextReveal
+              style={{ width: '100%', fontSize: '1.5rem' }}
+              show={channelNameHovered}
+              direction="left"
+              text={channelName || ''}
+            />
+          </div>
           {displayedChannelMembers.length > 2 && (
             <div
-              style={{
-                color: Color.green(),
-                fontSize: '1.7rem'
-              }}
+              className={css`
+                color: ${Color.green()};
+                font-size: 1.7rem;
+                font-weight: bold;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1.5rem;
+                }
+              `}
             >
               {currentChannelOnlineMembers.length} online
             </div>
