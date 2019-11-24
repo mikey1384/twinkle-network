@@ -140,7 +140,10 @@ export default function RightMenu({
                 }
               `}
             >
-              {currentlyOnlineValidMembers.length} online
+              {currentlyOnlineValidMembers.length}
+              {currentChannel.id !== 2 &&
+                '/' + displayedChannelMembers.length}{' '}
+              online
             </div>
           )}
         </div>
