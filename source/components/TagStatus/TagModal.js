@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { memo, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -16,7 +16,7 @@ TagModal.propTypes = {
   onSubmit: PropTypes.func.isRequired
 };
 
-export default function TagModal({
+function TagModal({
   currentPlaylists,
   title,
   onAddPlaylist,
@@ -155,3 +155,5 @@ export default function TagModal({
     }
   }
 }
+
+export default memo(TagModal);
