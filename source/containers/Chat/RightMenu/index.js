@@ -54,6 +54,11 @@ export default function RightMenu({
     currentChannelOnlineMembers
   ]);
 
+  const currentlyOnlineValidMembers = useMemo(
+    () => currentChannelOnlineMembers.filter(member => !!member.id),
+    [currentChannelOnlineMembers]
+  );
+
   useEffect(() => {
     MenuRef.current.scrollTop = 0;
   }, [currentChannel.id]);
@@ -135,7 +140,7 @@ export default function RightMenu({
                 }
               `}
             >
-              {currentChannelOnlineMembers.length} online
+              {currentlyOnlineValidMembers.length} online
             </div>
           )}
         </div>
