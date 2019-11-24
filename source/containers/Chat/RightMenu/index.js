@@ -118,8 +118,8 @@ export default function RightMenu({
           {displayedChannelMembers.length > 2 && (
             <div
               style={{
-                color: 'lime',
-                fontSize: '2.2rem'
+                color: Color.green(),
+                fontSize: '1.7rem'
               }}
             >
               {currentChannelOnlineMembers.length} online
