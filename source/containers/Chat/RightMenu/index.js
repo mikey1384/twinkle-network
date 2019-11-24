@@ -131,7 +131,7 @@ export default function RightMenu({
                 font-size: 1.7rem;
                 font-weight: bold;
                 @media (max-width: ${mobileMaxWidth}) {
-                  font-size: 1.5rem;
+                  font-size: 1.3rem;
                 }
               `}
             >
