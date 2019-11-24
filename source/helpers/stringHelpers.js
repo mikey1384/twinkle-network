@@ -323,7 +323,7 @@ export function processedStringWithURL(string) {
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
-  const boldRegex = /((\*[^\s*])(.)+([^\s*]\*))/gi;
+  const boldRegex = /((\*[^\s*])([^\s*])+([^\s*]\*))/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
