@@ -259,18 +259,7 @@ export default function ChatReducer(state, action) {
         subject: action.data.currentChannel.id === 2 ? state.subject : {},
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
-        channels: action.data.channels.reduce((resultingArray, channel) => {
-          if (channel.id === action.data.currentChannel.id) {
-            if (channel.id !== 2) originalNumUnreads = channel.numUnreads;
-            return [
-              {
-                ...channel,
-                numUnreads: 0
-              }
-            ].concat(resultingArray);
-          }
-          return resultingArray.concat([channel]);
-        }, []),
+        channels: action.data.channels,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
