@@ -115,6 +115,16 @@ export default function RightMenu({
             direction="left"
             text={channelName || ''}
           />
+          {displayedChannelMembers.length > 2 && (
+            <div
+              style={{
+                color: 'lime',
+                fontSize: '2.2rem'
+              }}
+            >
+              {currentChannelOnlineMembers.length} online
+            </div>
+          )}
         </div>
       </div>
       <div

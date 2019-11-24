@@ -157,8 +157,8 @@ export default function Channels({
     if (messageSender && content) {
       return (
         <>
-          <span>{`${messageSender}:`}</span>{' '}
-          <span>{content.substring(0, 100)}</span>
+          <span>{`${messageSender}: `}</span>
+          <span>{content.substr(0, 100)}</span>
         </>
       );
     }
