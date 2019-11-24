@@ -25,10 +25,10 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
 
   return (
     <Modal onHide={onHide}>
-      <header>Create New Channel</header>
+      <header>Start a New Channel</header>
       <main>
         <TagForm
-          title="Who are the members of your channel?"
+          title="Who are the members?"
           itemLabel="username"
           searchResults={userSearchResults}
           filter={result => result.id !== userId}
