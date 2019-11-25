@@ -8,6 +8,8 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 import URL from 'constants/URL';
+import { isValidYoutubeUrl } from '../helpers/stringHelpers';
+import ReactPlayer from 'react-player';
 
 const API_URL = `${URL}/content`;
 
@@ -232,6 +234,14 @@ function Embedly({
     >
       {noLink ? (
         <div className={contentCss}>{InnerContent}</div>
+      ) : isValidYoutubeUrl(url) ? (
+        <ReactPlayer
+          style={{ marginTop: '1rem' }}
+          width="45vw"
+          height={'27vw'}
+          url={url}
+          controls
+        />
       ) : (
         <a
           className={contentCss}

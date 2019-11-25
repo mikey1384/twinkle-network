@@ -324,12 +324,29 @@ export function processedStringWithURL(string) {
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
   const boldRegex = /\*([^\s*]+)\*/gi;
+  const italicRegex = /\*\*([^\s*]+)\*\*/gi;
+  const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
+  const underlineRegex = /_([^\s*]+)_/gi;
+  const linethroughRegex = /-([^\s*]+)-/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
     .replace(/>/g, '&gt')
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(
+      boldItalicRegex,
+      `<span style="font-style: italic; font-weight: bold;">$1</span>`
+    )
+    .replace(italicRegex, `<span style="font-style: italic;">$1</span>`)
     .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
+    .replace(
+      underlineRegex,
+      `<span style="text-decoration: underline;">$1</span>`
+    )
+    .replace(
+      linethroughRegex,
+      `<span style="text-decoration: line-through;">$1</span>`
+    )
     .replace(/\r?\n/g, '<br>');
   let newString = '';
   while (tempString.length > 0) {
