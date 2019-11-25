@@ -4,8 +4,7 @@ import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
-import { Color, mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
+import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 
 TextMessage.propTypes = {
@@ -79,27 +78,15 @@ export default function TextMessage({
         </div>
       )}
       {extractedUrl && messageId && (
-        <div
-          style={{
-            marginTop: '1rem'
-          }}
-          className={css`
-            display: flex;
-            width: 40%;
-            height: 35vw;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-              height: 65vw;
-            }
-          `}
-        >
-          <Embedly
-            contentId={messageId}
-            contentType="chat"
-            imageHeight="25vw"
-            imageMobileHeight="60vw"
-          />
-        </div>
+        <Embedly
+          style={{ marginTop: '1rem' }}
+          contentId={messageId}
+          contentType="chat"
+          imageHeight="20vw"
+          imageMobileHeight="50vw"
+          loadingHeight="35vw"
+          mobileLoadingHeight="70vw"
+        />
       )}
     </ErrorBoundary>
   );

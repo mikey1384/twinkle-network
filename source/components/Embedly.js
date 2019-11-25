@@ -20,6 +20,7 @@ Embedly.propTypes = {
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
   loadingHeight: PropTypes.string,
+  mobileLoadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
   style: PropTypes.object,
   contentType: PropTypes.string
@@ -32,6 +33,7 @@ function Embedly({
   imageMobileHeight = '100%',
   imageOnly,
   loadingHeight = '100%',
+  mobileLoadingHeight = '100%',
   noLink,
   small,
   style
@@ -66,6 +68,9 @@ function Embedly({
 
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const isYouTube = useMemo(() => {
+    return contentType === 'chat' && isValidYoutubeUrl(url);
+  }, [contentType, url]);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
   const contentCss = useMemo(
@@ -136,7 +141,14 @@ function Embedly({
     return (
       <>
         {!imageUrl || loading ? (
-          <Loading style={{ height: loadingHeight }} />
+          <Loading
+            className={css`
+              height: ${loadingHeight};
+              @media (max-width: ${mobileMaxWidth}) {
+                height: ${mobileLoadingHeight};
+              }
+            `}
+          />
         ) : (
           <section
             className={css`
@@ -170,8 +182,9 @@ function Embedly({
           <section
             className={css`
               width: 100%;
-              padding: 1rem;
               line-height: 1.5;
+              padding: 1rem;
+              margin-bottom: 2rem;
               ${small ? 'margin-left: 1rem;' : ''};
               ${small ? '' : 'margin-top: 1rem;'};
             `}
@@ -199,6 +212,7 @@ function Embedly({
     imageUrl,
     loading,
     loadingHeight,
+    mobileLoadingHeight,
     siteUrl,
     small,
     thumbUrl,
@@ -207,51 +221,49 @@ function Embedly({
 
   return (
     <div
+      style={{
+        width: contentType === 'chat' ? '50%' : '100%',
+        height: '100%',
+        ...style
+      }}
       className={css`
-        width: 100%;
-        height: 100%;
-        > a {
-          text-decoration: none;
-        }
-        h3 {
-          font-size: 1.9rem;
-        }
-        p {
-          font-size: 1.4rem;
-          margin-top: 1rem;
-        }
+        display: flex;
         @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
+        }
+      `}
+    >
+      <div
+        className={css`
+          width: 100%;
+          height: 100%;
+          > a {
+            text-decoration: none;
+          }
           h3 {
             font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
           }
           p {
-            font-size: ${contentType === 'chat' ? '1.1rem' : '1.4rem'};
+            font-size: ${contentType === 'chat' ? '1.2rem' : '1.5rem'};
             margin-top: 1rem;
           }
-        }
-      `}
-      style={style}
-    >
-      {noLink ? (
-        <div className={contentCss}>{InnerContent}</div>
-      ) : isValidYoutubeUrl(url) ? (
-        <ReactPlayer
-          style={{ marginTop: '1rem' }}
-          width="45vw"
-          height={'27vw'}
-          url={url}
-          controls
-        />
-      ) : (
-        <a
-          className={contentCss}
-          target="_blank"
-          rel="noopener noreferrer"
-          href={url}
-        >
-          {InnerContent}
-        </a>
-      )}
+        `}
+      >
+        {noLink ? (
+          <div className={contentCss}>{InnerContent}</div>
+        ) : isYouTube ? (
+          <ReactPlayer width="50vw" height="30vw" url={url} controls />
+        ) : (
+          <a
+            className={contentCss}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={url}
+          >
+            {InnerContent}
+          </a>
+        )}
+      </div>
     </div>
   );
 }
