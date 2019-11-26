@@ -8,7 +8,11 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 import URL from 'constants/URL';
-import { isValidYoutubeUrl } from '../helpers/stringHelpers';
+import {
+  isValidYoutubeUrl,
+  isValidGipfyGifUrl,
+  toValidGipfyGifUrl
+} from '../helpers/stringHelpers';
 import ReactPlayer from 'react-player';
 
 const API_URL = `${URL}/content`;
@@ -70,6 +74,9 @@ function Embedly({
   const [loading, setLoading] = useState(false);
   const isYouTube = useMemo(() => {
     return contentType === 'chat' && isValidYoutubeUrl(url);
+  }, [contentType, url]);
+  const isGiphyGif = useMemo(() => {
+    return contentType === 'chat' && isValidGipfyGifUrl(url);
   }, [contentType, url]);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
@@ -253,6 +260,11 @@ function Embedly({
           <div className={contentCss}>{InnerContent}</div>
         ) : isYouTube ? (
           <ReactPlayer width="50vw" height="30vw" url={url} controls />
+        ) : isGiphyGif ? (
+          <img
+            alt={'Gif of ' + toValidGipfyGifUrl(url)}
+            src={toValidGipfyGifUrl(url)}
+          />
         ) : (
           <a
             className={contentCss}

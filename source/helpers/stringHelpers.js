@@ -288,6 +288,21 @@ export function isValidYoutubeUrl(url = '') {
   );
 }
 
+export function isValidGipfyGifUrl(url = '') {
+  const regex = /((https:\/\/www.)?giphy.com\/gifs\/[\w,-]*)/g;
+  return regex.test(url);
+}
+
+export function toValidGipfyGifUrl(url = '') {
+  const splitUrl = url.split('/');
+  const splitUrl1 = url.includes('https://')
+    ? splitUrl[4].split('-')
+    : splitUrl[2].split('-');
+  const id = splitUrl1[splitUrl1.length - 1];
+  url = 'https://media.giphy.com/media/' + id + '/giphy.gif';
+  return url;
+}
+
 export function isValidYoutubeChannelUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   const trim = url.split('youtube.com/')[1];
