@@ -44,7 +44,15 @@ export default function ChatReducer(state, action) {
     case 'CLEAR_NUM_UNREADS': {
       return {
         ...state,
-        numUnreads: 0
+        numUnreads: 0,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? {
+                ...channel,
+                numUnreads: 0
+              }
+            : channel
+        )
       };
     }
     case 'CLEAR_RECENT_CHESS_MESSAGE': {

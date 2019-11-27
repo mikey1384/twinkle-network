@@ -90,7 +90,7 @@ export default function Chat({ onFileUpload }) {
       if (userId) {
         updateChatLastRead(selectedChannelId);
       }
-      onClearNumUnreads();
+      onClearNumUnreads(selectedChannelId);
     }
     return function cleanUp() {
       mounted.current = false;
