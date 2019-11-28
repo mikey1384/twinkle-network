@@ -102,6 +102,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:money\:)/gi, '💰')
     .replace(/(\:monkey\:)/gi, '🐵')
     .replace(/(\:moo\:)/gi, '🐮')
+    .replace(/(\:nice\:)/gi, '👍')
     .replace(/(\:ok\:)/gi, '👌')
     .replace(/(\:okay\:)/gi, '👌')
     .replace(/(\:palette\:)/gi, '🎨')
@@ -132,6 +133,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:wave\:)/gi, '👋')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
+    .replace(/(\:zombie\:)/gi, '🧟')
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
