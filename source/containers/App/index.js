@@ -207,45 +207,43 @@ function App({ location, history }) {
           }
         `}
       >
-        <Suspense fallback={<Loading />}>
-          <Switch>
-            <Route
-              path="/users/:username"
-              render={({ history, location, match }) => (
-                <Profile history={history} location={location} match={match} />
-              )}
-            />
-            <Route path="/comments/:contentId" component={ContentPage} />
-            <Route path="/videos/:videoId" component={VideoPage} />
-            <Route path="/videos" component={Explore} />
-            <Route path="/links/:linkId" component={LinkPage} />
-            <Route path="/links" component={Explore} />
-            <Route path="/subjects/:contentId" component={ContentPage} />
-            <Route path="/subjects" component={Explore} />
-            <Route path="/playlists" component={PlaylistPage} />
-            <Route
-              path="/chat"
-              render={() => <Chat onFileUpload={handleFileUpload} />}
-            />
-            <Route path="/verify" component={Verify} />
-            <Route path="/privacy" component={Privacy} />
-            <Route
-              exact
-              path="/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route
-              exact
-              path="/users/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route path="/:username" component={Redirect} />
-          </Switch>
-        </Suspense>
+        <Switch>
+          <Route
+            path="/users/:username"
+            render={({ history, location, match }) => (
+              <Profile history={history} location={location} match={match} />
+            )}
+          />
+          <Route path="/comments/:contentId" component={ContentPage} />
+          <Route path="/videos/:videoId" component={VideoPage} />
+          <Route path="/videos" component={Explore} />
+          <Route path="/links/:linkId" component={LinkPage} />
+          <Route path="/links" component={Explore} />
+          <Route path="/subjects/:contentId" component={ContentPage} />
+          <Route path="/subjects" component={Explore} />
+          <Route path="/playlists" component={PlaylistPage} />
+          <Route
+            path="/chat"
+            render={() => <Chat onFileUpload={handleFileUpload} />}
+          />
+          <Route path="/verify" component={Verify} />
+          <Route path="/privacy" component={Privacy} />
+          <Route
+            exact
+            path="/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route
+            exact
+            path="/users/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route path="/:username" component={Redirect} />
+        </Switch>
       </div>
       <Suspense fallback={<Loading />}>
         {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
