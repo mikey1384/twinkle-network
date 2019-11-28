@@ -326,6 +326,8 @@ export function processedStringWithURL(string) {
   const boldRegex = /\*([^\s*]+)\*/gi;
   const italicRegex = /\*\*([^\s*]+)\*\*/gi;
   const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
+  const underlineRegex = /__\*([^\s*]+)__\*/gi;
+  const linethroughRegex = /--\*([^\s*]+)--\*/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
@@ -337,6 +339,14 @@ export function processedStringWithURL(string) {
     )
     .replace(italicRegex, `<span style="font-style: italic;">$1</span>`)
     .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
+    .replace(
+      underlineRegex,
+      `<span style="text-decoration: underline;">$1</span>`
+    )
+    .replace(
+      linethroughRegex,
+      `<span style="text-decoration: line-through;">$1</span>`
+    )
     .replace(/\r?\n/g, '<br>');
   let newString = '';
   while (tempString.length > 0) {
