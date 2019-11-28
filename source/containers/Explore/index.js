@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
 import ErrorBoundary from 'components/ErrorBoundary';
-import Subjects from './Subjects';
 import Notification from 'components/Notification';
 import MenuItems from './MenuItems';
 import Search from './Search';
@@ -15,6 +14,7 @@ import { useExploreContext } from 'contexts';
 import { useScrollToBottom } from 'helpers/hooks';
 import Videos from './Videos';
 import Links from './Links';
+import Subjects from './Subjects';
 
 Explore.propTypes = {
   history: PropTypes.object.isRequired,
