@@ -1,12 +1,22 @@
 import 'regenerator-runtime/runtime'; // for async await
 import React, { memo, Suspense, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import Chat from 'containers/Chat';
+import ContentPage from 'containers/ContentPage';
+import Explore from 'containers/Explore';
 import Header from './Header';
+import Home from 'containers/Home';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
+import LinkPage from 'containers/LinkPage';
+import PlaylistPage from 'containers/PlaylistPage';
+import Privacy from 'containers/Privacy';
+import Redirect from 'containers/Redirect';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
+import Verify from 'containers/Verify';
+import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -21,17 +31,6 @@ import {
   useNotiContext,
   useChatContext
 } from 'contexts';
-
-const Home = React.lazy(() => import('containers/Home'));
-const Privacy = React.lazy(() => import('containers/Privacy'));
-const Redirect = React.lazy(() => import('containers/Redirect'));
-const Explore = React.lazy(() => import('containers/Explore'));
-const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
-const ContentPage = React.lazy(() => import('containers/ContentPage'));
-const VideoPage = React.lazy(() => import('containers/VideoPage'));
-const LinkPage = React.lazy(() => import('containers/LinkPage'));
-const Verify = React.lazy(() => import('containers/Verify'));
-const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
   history: PropTypes.object,
