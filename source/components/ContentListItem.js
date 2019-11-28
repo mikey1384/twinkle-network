@@ -181,10 +181,18 @@ function ContentListItem({
               {contentType === 'subject' && (
                 <div
                   style={{
-                    display: 'flex'
+                    display: 'flex',
+                    width: '100%'
                   }}
                 >
-                  <div className="label">
+                  <div
+                    className="label"
+                    style={{
+                      width: '100%',
+                      overflowWrap: 'break-word',
+                      wordBreak: 'break-word'
+                    }}
+                  >
                     <LongText
                       noExpand
                       cleanString

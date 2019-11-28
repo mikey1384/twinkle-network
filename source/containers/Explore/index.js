@@ -1,9 +1,7 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
-import Loading from 'components/Loading';
 import ErrorBoundary from 'components/ErrorBoundary';
-import Subjects from './Subjects';
 import Notification from 'components/Notification';
 import MenuItems from './MenuItems';
 import Search from './Search';
@@ -14,8 +12,9 @@ import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
 import { useExploreContext } from 'contexts';
 import { useScrollToBottom } from 'helpers/hooks';
-const Videos = React.lazy(() => import('./Videos'));
-const Links = React.lazy(() => import('./Links'));
+import Videos from './Videos';
+import Links from './Links';
+import Subjects from './Subjects';
 
 Explore.propTypes = {
   history: PropTypes.object.isRequired,
@@ -139,13 +138,11 @@ export default function Explore({ history, location }) {
               marginBottom: '4rem'
             }}
           />
-          <Suspense fallback={<Loading />}>
-            <Switch>
-              <Route path="/videos" component={Videos} />
-              <Route path="/links" component={Links} />
-              <Route path="/subjects" component={Subjects} />
-            </Switch>
-          </Suspense>
+          <Switch>
+            <Route path="/videos" component={Videos} />
+            <Route path="/links" component={Links} />
+            <Route path="/subjects" component={Subjects} />
+          </Switch>
           {categoriesShown && (
             <Categories
               style={{ marginTop: '3rem', marginBottom: '4rem' }}

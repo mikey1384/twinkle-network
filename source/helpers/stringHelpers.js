@@ -102,6 +102,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:money\:)/gi, '💰')
     .replace(/(\:monkey\:)/gi, '🐵')
     .replace(/(\:moo\:)/gi, '🐮')
+    .replace(/(\:nice\:)/gi, '👍')
     .replace(/(\:ok\:)/gi, '👌')
     .replace(/(\:okay\:)/gi, '👌')
     .replace(/(\:palette\:)/gi, '🎨')
@@ -114,6 +115,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:rabbit\:)/gi, '🐰')
     .replace(/(\:rooster\:)/gi, '🐓')
     .replace(/(\:sad\:)/gi, '😭')
+    .replace(/(\:shrug\:)/gi, '🤷')
     .replace(/(\:smile\:)/gi, '😊')
     .replace(/(\:snail\:)/gi, '🐌')
     .replace(/(\:spider\:)/gi, '🕷️')
@@ -131,6 +133,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:wave\:)/gi, '👋')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
+    .replace(/(\:zombie\:)/gi, '🧟')
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
@@ -341,8 +344,8 @@ export function processedStringWithURL(string) {
   const boldRegex = /\*([^\s*]+)\*/gi;
   const italicRegex = /\*\*([^\s*]+)\*\*/gi;
   const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
-  const underlineRegex = /_([^\s*]+)_/gi;
-  const linethroughRegex = /-([^\s*]+)-/gi;
+  const underlineRegex = /__([^\s*]+)__/gi;
+  const linethroughRegex = /--([^\s*]+)--/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')

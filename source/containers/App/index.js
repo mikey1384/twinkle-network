@@ -1,12 +1,21 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { memo, Suspense, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import Chat from 'containers/Chat';
+import ContentPage from 'containers/ContentPage';
+import Explore from 'containers/Explore';
 import Header from './Header';
+import Home from 'containers/Home';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
+import LinkPage from 'containers/LinkPage';
+import PlaylistPage from 'containers/PlaylistPage';
+import Privacy from 'containers/Privacy';
+import Redirect from 'containers/Redirect';
 import SigninModal from 'containers/Signin';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
+import Verify from 'containers/Verify';
+import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -21,17 +30,6 @@ import {
   useNotiContext,
   useChatContext
 } from 'contexts';
-
-const Home = React.lazy(() => import('containers/Home'));
-const Privacy = React.lazy(() => import('containers/Privacy'));
-const Redirect = React.lazy(() => import('containers/Redirect'));
-const Explore = React.lazy(() => import('containers/Explore'));
-const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
-const ContentPage = React.lazy(() => import('containers/ContentPage'));
-const VideoPage = React.lazy(() => import('containers/VideoPage'));
-const LinkPage = React.lazy(() => import('containers/LinkPage'));
-const Verify = React.lazy(() => import('containers/Verify'));
-const Chat = React.lazy(() => import('containers/Chat'));
 
 App.propTypes = {
   history: PropTypes.object,
@@ -208,49 +206,45 @@ function App({ location, history }) {
           }
         `}
       >
-        <Suspense fallback={<Loading />}>
-          <Switch>
-            <Route
-              path="/users/:username"
-              render={({ history, location, match }) => (
-                <Profile history={history} location={location} match={match} />
-              )}
-            />
-            <Route path="/comments/:contentId" component={ContentPage} />
-            <Route path="/videos/:videoId" component={VideoPage} />
-            <Route path="/videos" component={Explore} />
-            <Route path="/links/:linkId" component={LinkPage} />
-            <Route path="/links" component={Explore} />
-            <Route path="/subjects/:contentId" component={ContentPage} />
-            <Route path="/subjects" component={Explore} />
-            <Route path="/playlists" component={PlaylistPage} />
-            <Route
-              path="/chat"
-              render={() => <Chat onFileUpload={handleFileUpload} />}
-            />
-            <Route path="/verify" component={Verify} />
-            <Route path="/privacy" component={Privacy} />
-            <Route
-              exact
-              path="/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route
-              exact
-              path="/users/"
-              render={({ history, location }) => (
-                <Home history={history} location={location} />
-              )}
-            />
-            <Route path="/:username" component={Redirect} />
-          </Switch>
-        </Suspense>
+        <Switch>
+          <Route
+            path="/users/:username"
+            render={({ history, location, match }) => (
+              <Profile history={history} location={location} match={match} />
+            )}
+          />
+          <Route path="/comments/:contentId" component={ContentPage} />
+          <Route path="/videos/:videoId" component={VideoPage} />
+          <Route path="/videos" component={Explore} />
+          <Route path="/links/:linkId" component={LinkPage} />
+          <Route path="/links" component={Explore} />
+          <Route path="/subjects/:contentId" component={ContentPage} />
+          <Route path="/subjects" component={Explore} />
+          <Route path="/playlists" component={PlaylistPage} />
+          <Route
+            path="/chat"
+            render={() => <Chat onFileUpload={handleFileUpload} />}
+          />
+          <Route path="/verify" component={Verify} />
+          <Route path="/privacy" component={Privacy} />
+          <Route
+            exact
+            path="/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route
+            exact
+            path="/users/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route path="/:username" component={Redirect} />
+        </Switch>
       </div>
-      <Suspense fallback={<Loading />}>
-        {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
-      </Suspense>
+      {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
     </div>
   );
 
