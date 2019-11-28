@@ -42,52 +42,54 @@ export default function TextMessage({
 }) {
   return (
     <ErrorBoundary>
-      {onEdit ? (
-        <EditTextArea
-          contentId={messageId}
-          contentType="chat"
-          autoFocus
-          disabled={!socketConnected}
-          rows={2}
-          text={content}
-          onCancel={onEditCancel}
-          onEditDone={onEditDone}
-        />
-      ) : (
-        <div>
-          <div className={MessageStyle.messageWrapper}>
-            {renderPrefix()}
-            <span
-              style={{ color: isNotification ? Color.gray() : undefined }}
-              dangerouslySetInnerHTML={{
-                __html: processedStringWithURL(content)
-              }}
-            />
-          </div>
-          {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
-            <div className={MessageStyle.relatedConversationsButton}>
-              <Button
-                filled
-                color="logoBlue"
-                onClick={() => showSubjectMsgsModal({ subjectId, content })}
-              >
-                Show related conversations
-              </Button>
+      <div>
+        {onEdit ? (
+          <EditTextArea
+            contentId={messageId}
+            contentType="chat"
+            autoFocus
+            disabled={!socketConnected}
+            rows={2}
+            text={content}
+            onCancel={onEditCancel}
+            onEditDone={onEditDone}
+          />
+        ) : (
+          <div>
+            <div className={MessageStyle.messageWrapper}>
+              {renderPrefix()}
+              <span
+                style={{ color: isNotification ? Color.gray() : undefined }}
+                dangerouslySetInnerHTML={{
+                  __html: processedStringWithURL(content)
+                }}
+              />
             </div>
-          )}
-        </div>
-      )}
-      {extractedUrl && messageId && (
-        <Embedly
-          style={{ marginTop: '1rem' }}
-          contentId={messageId}
-          contentType="chat"
-          imageHeight="20vw"
-          imageMobileHeight="50vw"
-          loadingHeight="30vw"
-          mobileLoadingHeight="70vw"
-        />
-      )}
+            {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
+              <div className={MessageStyle.relatedConversationsButton}>
+                <Button
+                  filled
+                  color="logoBlue"
+                  onClick={() => showSubjectMsgsModal({ subjectId, content })}
+                >
+                  Show related conversations
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+        {extractedUrl && messageId && (
+          <Embedly
+            style={{ marginTop: '1rem' }}
+            contentId={messageId}
+            contentType="chat"
+            imageHeight="20vw"
+            imageMobileHeight="50vw"
+            loadingHeight="30vw"
+            mobileLoadingHeight="70vw"
+          />
+        )}
+      </div>
     </ErrorBoundary>
   );
 

@@ -184,7 +184,7 @@ function Embedly({
               width: 100%;
               line-height: 1.5;
               padding: 1rem;
-              ${contentType === 'chat' ? 'margin-bottom: 4rem;' : ''}
+              ${contentType === 'chat' ? 'margin-bottom: 1rem;' : ''}
               ${small ? 'margin-left: 1rem;' : ''}
               ${small ? '' : 'margin-top: 1rem;'}
             `}
