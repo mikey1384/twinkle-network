@@ -326,8 +326,8 @@ export function processedStringWithURL(string) {
   const boldRegex = /\*([^\s*]+)\*/gi;
   const italicRegex = /\*\*([^\s*]+)\*\*/gi;
   const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
-  const underlineRegex = /__\*([^\s*]+)__\*/gi;
-  const linethroughRegex = /--\*([^\s*]+)--\*/gi;
+  const underlineRegex = /__([^\s*]+)__/gi;
+  const linethroughRegex = /--([^\s*]+)--/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
