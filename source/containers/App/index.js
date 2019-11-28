@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { memo, Suspense, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Chat from 'containers/Chat';
 import ContentPage from 'containers/ContentPage';
@@ -7,7 +7,6 @@ import Explore from 'containers/Explore';
 import Header from './Header';
 import Home from 'containers/Home';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
 import LinkPage from 'containers/LinkPage';
 import PlaylistPage from 'containers/PlaylistPage';
 import Privacy from 'containers/Privacy';
@@ -245,9 +244,7 @@ function App({ location, history }) {
           <Route path="/:username" component={Redirect} />
         </Switch>
       </div>
-      <Suspense fallback={<Loading />}>
-        {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
-      </Suspense>
+      {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
     </div>
   );
 
