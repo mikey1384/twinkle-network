@@ -83,6 +83,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:dog\:)/gi, '🐶')
     .replace(/(\:dolphin\:)/gi, '🐬')
     .replace(/(\:elephant\:)/gi, '🐘')
+    .replace(/(\:evil\:)/gi, '😈')
     .replace(/(\:fear\:)/gi, '😱')
     .replace(/(\:fox\:)/gi, '🦊')
     .replace(/(\:friend\:)/gi, '👭')
