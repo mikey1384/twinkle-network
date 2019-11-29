@@ -71,7 +71,7 @@ export function useLazyLoad({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef, contentId, contentType, inView]);
+  }, [PanelRef, inView]);
 
   useEffect(() => {
     return function cleanUp() {
@@ -83,7 +83,7 @@ export function useLazyLoad({
       clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contentId, contentType]);
+  }, []);
 }
 
 export function useMyState() {
