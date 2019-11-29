@@ -451,8 +451,7 @@ export default function MessagesContainer({
   }
 
   function handleReceiveNewMessage() {
-    const messageSenderId = messages[messages.length - 1].userId;
-    if (messageSenderId === userId || scrollAtBottom) {
+    if (scrollAtBottom) {
       setFillerHeight(
         MessagesContainerRef.current?.offsetHeight >
           MessagesRef.current?.offsetHeight

@@ -355,15 +355,19 @@ export default function Chat({ onFileUpload }) {
   }
 
   function handleSendFileMessage(params) {
-    socket.emit('new_chat_message', params, {
-      ...currentChannel,
-      numUnreads: 1,
-      lastMessage: {
-        fileName: params.fileName,
-        sender: { id: userId, username }
-      },
-      channelName
-    });
+    socket.emit(
+      'new_chat_message',
+      { ...params, isNewMessage: true },
+      {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessage: {
+          fileName: params.fileName,
+          sender: { id: userId, username }
+        },
+        channelName
+      }
+    );
   }
 
   function userListDescriptionShown(user) {
