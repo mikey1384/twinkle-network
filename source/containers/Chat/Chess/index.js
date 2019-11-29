@@ -208,7 +208,7 @@ function Chess({
                   )}
                 </span>
               ) : (
-                'castled'
+                <b>castled</b>
               )
             ) : (
               'made a move'
