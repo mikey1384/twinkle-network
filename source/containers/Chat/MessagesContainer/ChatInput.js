@@ -20,7 +20,8 @@ ChatInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
-  onPlusButtonClick: PropTypes.func.isRequired
+  onPlusButtonClick: PropTypes.func.isRequired,
+  onGifButtonClick: PropTypes.func.isRequired
 };
 
 export default function ChatInput({
@@ -30,7 +31,8 @@ export default function ChatInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
-  onPlusButtonClick
+  onPlusButtonClick,
+  onGifButtonClick
 }) {
   const { profileTheme } = useMyState();
   const TextareaRef = useRef(null);
@@ -112,6 +114,21 @@ export default function ChatInput({
             color={profileTheme}
           >
             <Icon size="lg" icon="plus" />
+          </Button>
+        </div>
+        <div
+          style={{
+            margin: '0.2rem 1rem 0.2rem 0',
+            height: '100%'
+          }}
+        >
+          <Button
+            disabled={loading}
+            skeuomorphic
+            onClick={onGifButtonClick}
+            color={profileTheme}
+          >
+            GIFS
           </Button>
         </div>
       </div>

@@ -18,6 +18,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import EditTitleModal from '../Modals/EditTitle';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext, useChatContext } from 'contexts';
+import GifModal from '../Modals/GifModal';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -97,6 +98,7 @@ export default function MessagesContainer({
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
+  const [gifModalShown, setGifModalShown] = useState(false);
   const [editTitleModalShown, setEditTitleModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
@@ -367,6 +369,7 @@ export default function MessagesContainer({
             }
           }}
           onPlusButtonClick={() => FileInputRef.current.click()}
+          onGifButtonClick={() => setGifModalShown(true)}
         />
       ) : (
         <div>
@@ -393,6 +396,7 @@ export default function MessagesContainer({
           subjectId={subjectId}
         />
       )}
+      {gifModalShown && <GifModal onHide={() => setGifModalShown(false)} />}
       {inviteUsersModalShown && (
         <InviteUsersModal
           onHide={() => setInviteUsersModalShown(false)}
