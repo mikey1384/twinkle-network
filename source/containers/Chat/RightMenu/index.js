@@ -7,6 +7,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, phoneMaxWidth } from 'constants/css';
 import { isMobile, textIsOverflown } from 'helpers';
 import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
@@ -19,6 +20,9 @@ export default function RightMenu({
   currentChannel,
   currentChannelOnlineMembers
 }) {
+  const {
+    state: { customChannelNames }
+  } = useChatContext();
   const ChannelNameRef = useRef(null);
   const MenuRef = useRef(null);
   const [channelNameHovered, setChannelNameHovered] = useState(false);
@@ -54,6 +58,11 @@ export default function RightMenu({
     currentChannelOnlineMembers
   ]);
 
+  const currentlyOnlineValidMembers = useMemo(
+    () => currentChannelOnlineMembers.filter(member => !!member.id),
+    [currentChannelOnlineMembers]
+  );
+
   useEffect(() => {
     MenuRef.current.scrollTop = 0;
   }, [currentChannel.id]);
@@ -84,37 +93,63 @@ export default function RightMenu({
         `}
       >
         <div
-          onClick={() => setChannelNameHovered(hovered => !hovered)}
-          className={css`
-            width: 100%;
-            line-height: 1.5;
-            padding: 0 1rem 0 1rem;
-            font-size: 2.5rem;
-            font-weight: bold;
-            @media (max-width: ${mobileMaxWidth}) {
-              font-size: 1.7rem;
-            }
-          `}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+            width: '100%'
+          }}
         >
-          <p
-            ref={ChannelNameRef}
-            style={{
-              width: '100%',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              cursor: 'default'
-            }}
-            onMouseEnter={handleMouseOver}
-            onMouseLeave={() => setChannelNameHovered(false)}
+          <div
+            onClick={() => setChannelNameHovered(hovered => !hovered)}
+            className={css`
+              width: 100%;
+              line-height: 1.5;
+              padding: 0 1rem 0 1rem;
+              font-size: 2.5rem;
+              font-weight: bold;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.7rem;
+              }
+            `}
           >
-            {channelName}
-          </p>
-          <FullTextReveal
-            style={{ width: '100%', fontSize: '1.5rem' }}
-            show={channelNameHovered}
-            direction="left"
-            text={channelName || ''}
-          />
+            <p
+              ref={ChannelNameRef}
+              style={{
+                width: '100%',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                cursor: 'default'
+              }}
+              onMouseEnter={handleMouseOver}
+              onMouseLeave={() => setChannelNameHovered(false)}
+            >
+              {customChannelNames[currentChannel.id] || channelName}
+            </p>
+            <FullTextReveal
+              style={{ width: '100%', fontSize: '1.5rem' }}
+              show={channelNameHovered}
+              direction="left"
+              text={channelName || ''}
+            />
+          </div>
+          {displayedChannelMembers.length > 2 && (
+            <div
+              className={css`
+                color: ${Color.green()};
+                font-size: 1.7rem;
+                font-weight: bold;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1.3rem;
+                }
+              `}
+            >
+              {currentlyOnlineValidMembers.length}
+              {currentChannel.id !== 2 &&
+                '/' + displayedChannelMembers.length}{' '}
+              online
+            </div>
+          )}
         </div>
       </div>
       <div

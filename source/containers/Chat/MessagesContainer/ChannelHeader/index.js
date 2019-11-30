@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { cleanString } from 'helpers/stringHelpers';
-import { textIsOverflown } from 'helpers';
+import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
@@ -102,7 +102,7 @@ export default function ChannelHeader() {
         height: 7rem;
         > section {
           position: relative;
-          width: CALC(100% - 15rem);
+          width: CALC(100% - 9rem);
         }
       `}
     >
@@ -131,7 +131,7 @@ export default function ChannelHeader() {
                           : false
                       )
                     }
-                    onMouseOver={onMouseOver}
+                    onMouseOver={handleMouseOver}
                     onMouseLeave={() => setOnHover(false)}
                     ref={HeaderLabelRef}
                   >
@@ -152,7 +152,7 @@ export default function ChannelHeader() {
                 }}
                 onClick={() => setOnEdit(true)}
               >
-                Change Subject
+                Change
               </Button>
             </>
           )}
@@ -184,8 +184,8 @@ export default function ChannelHeader() {
     </ErrorBoundary>
   );
 
-  function onMouseOver() {
-    if (textIsOverflown(HeaderLabelRef.current)) {
+  function handleMouseOver() {
+    if (textIsOverflown(HeaderLabelRef.current) && !isMobile(navigator)) {
       setOnHover(true);
     }
   }
@@ -234,7 +234,7 @@ export default function ChannelHeader() {
   function renderDetails() {
     const isReloaded = reloader && reloader.id;
     let posterString =
-      'You can change this subject by clicking the blue "Change Subject" button';
+      'You can change this subject by clicking the "Change" button';
     if (uploader.id) {
       posterString = (
         <span>
@@ -257,7 +257,7 @@ export default function ChannelHeader() {
         ) : (
           <small>
             {
-              'You can change the subject by clicking the "Change Subject" button on the right'
+              'You can change the subject by clicking the "Change" button to the right'
             }
           </small>
         )}

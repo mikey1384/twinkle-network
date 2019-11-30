@@ -11,9 +11,10 @@ export default function ChatActions(dispatch) {
         type: 'SET_RECONNECTING'
       });
     },
-    onClearNumUnreads() {
+    onClearNumUnreads(channelId) {
       return dispatch({
-        type: 'CLEAR_NUM_UNREADS'
+        type: 'CLEAR_NUM_UNREADS',
+        channelId
       });
     },
     onClearRecentChessMessage() {

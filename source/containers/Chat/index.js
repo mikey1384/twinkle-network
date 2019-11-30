@@ -90,7 +90,7 @@ export default function Chat({ onFileUpload }) {
       if (userId) {
         updateChatLastRead(selectedChannelId);
       }
-      onClearNumUnreads();
+      onClearNumUnreads(selectedChannelId);
     }
     return function cleanUp() {
       mounted.current = false;
@@ -215,7 +215,7 @@ export default function Chat({ onFileUpload }) {
               font-size: 1.5rem;
               position: relative;
               @media (max-width: ${phoneMaxWidth}) {
-                width: 180vw;
+                width: 152vw;
                 height: 100%;
               }
             `}
@@ -355,15 +355,19 @@ export default function Chat({ onFileUpload }) {
   }
 
   function handleSendFileMessage(params) {
-    socket.emit('new_chat_message', params, {
-      ...currentChannel,
-      numUnreads: 1,
-      lastMessage: {
-        fileName: params.fileName,
-        sender: { id: userId, username }
-      },
-      channelName
-    });
+    socket.emit(
+      'new_chat_message',
+      { ...params, isNewMessage: true },
+      {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessage: {
+          fileName: params.fileName,
+          sender: { id: userId, username }
+        },
+        channelName
+      }
+    );
   }
 
   function userListDescriptionShown(user) {

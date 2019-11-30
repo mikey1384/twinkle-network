@@ -65,6 +65,7 @@ export default function Message({
     fileSize,
     gameWinnerId,
     subjectId,
+    isNewMessage,
     isReloadedSubject,
     isSubject,
     numMsgs,
@@ -149,7 +150,12 @@ export default function Message({
       onSaveMessage({ messageId, index });
       socket.emit(
         'new_chat_message',
-        { ...message, id: messageId },
+        {
+          ...message,
+          uploaderAuthLevel: authLevel,
+          isNewMessage: true,
+          id: messageId
+        },
         {
           ...currentChannel,
           numUnreads: 1,
@@ -177,7 +183,7 @@ export default function Message({
   }, [channelId, moveViewTimeStamp]);
 
   useEffect(() => {
-    if ((userIsUploader || !filePath) && isLastMsg && userCanEditThis) {
+    if (userIsUploader && isLastMsg) {
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,7 +227,7 @@ export default function Message({
   }, [content]);
 
   useEffect(() => {
-    if (isLastMsg && !userIsUploader) {
+    if (isLastMsg && isNewMessage && !userIsUploader) {
       onReceiveNewMessage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -248,6 +254,7 @@ export default function Message({
   }
   const dropdownButtonShown =
     !!messageId &&
+    !isNotification &&
     !isSubject &&
     !isReloadedSubject &&
     (userIsUploader || userCanEditThis) &&

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
@@ -33,6 +32,7 @@ export function useLazyLoad({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    const clientHeight = PanelRef.current?.clientHeight;
     if (!prevInView.current && inView) {
       if (PanelRef.current?.clientHeight) {
         onSetPlaceholderHeight({
@@ -62,14 +62,15 @@ export function useLazyLoad({
       if (inView) {
         clearTimeout(timerRef.current);
       }
-      if (PanelRef.current?.clientHeight) {
+      if (clientHeight) {
         onSetPlaceholderHeight({
           contentType,
           contentId,
-          height: PanelRef.current.clientHeight
+          height: clientHeight
         });
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, PanelRef.current?.clientHeight]);
 
   useEffect(() => {
@@ -81,6 +82,7 @@ export function useLazyLoad({
       });
       clearTimeout(timerRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
@@ -208,7 +210,9 @@ export function useScrollPosition({
       );
       onRecordScrollPosition({ section: pathname, position });
       document.getElementById('App').scrollTop = 0;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       BodyRef.current.scrollTop = 0;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 }

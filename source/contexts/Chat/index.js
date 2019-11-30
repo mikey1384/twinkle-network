@@ -9,6 +9,7 @@ export const initialChatState = {
   loaded: false,
   selectedChannelId: null,
   currentChannel: {},
+  customChannelNames: {},
   channels: [],
   messages: [],
   userSearchResults: [],

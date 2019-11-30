@@ -28,7 +28,11 @@ export default function ChatReducer(state, action) {
                 ? action.data.title
                 : channel.channelName
           };
-        })
+        }),
+        customChannelNames: {
+          ...state.customChannelNames,
+          [action.data.channelId]: action.data.title
+        }
       };
     case 'CHANGE_SUBJECT': {
       return {
@@ -44,7 +48,15 @@ export default function ChatReducer(state, action) {
     case 'CLEAR_NUM_UNREADS': {
       return {
         ...state,
-        numUnreads: 0
+        numUnreads: 0,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? {
+                ...channel,
+                numUnreads: 0
+              }
+            : channel
+        )
       };
     }
     case 'CLEAR_RECENT_CHESS_MESSAGE': {
@@ -251,6 +263,7 @@ export default function ChatReducer(state, action) {
         action.data.channels.pop();
         channelLoadMoreButton = true;
       }
+
       return {
         ...initialChatState,
         loaded: true,
@@ -259,18 +272,8 @@ export default function ChatReducer(state, action) {
         subject: action.data.currentChannel.id === 2 ? state.subject : {},
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
-        channels: action.data.channels.reduce((resultingArray, channel) => {
-          if (channel.id === action.data.currentChannel.id) {
-            if (channel.id !== 2) originalNumUnreads = channel.numUnreads;
-            return [
-              {
-                ...channel,
-                numUnreads: 0
-              }
-            ].concat(resultingArray);
-          }
-          return resultingArray.concat([channel]);
-        }, []),
+        channels: action.data.channels,
+        customChannelNames: action.data.customChannelNames,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]

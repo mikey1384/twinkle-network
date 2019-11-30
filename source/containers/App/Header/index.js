@@ -59,6 +59,7 @@ export default function Header({
       onUpdateApiServerToS3Progress
     }
   } = useChatContext();
+
   const {
     state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
     actions: {
