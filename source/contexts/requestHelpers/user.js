@@ -40,6 +40,14 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
+    async loadAccountTypes() {
+      try {
+        const { data } = await request.get(`${URL}/user/accountTypes`);
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async loadModerators() {
       try {
         const { data } = await request.get(`${URL}/user/moderators`);

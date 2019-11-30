@@ -53,13 +53,14 @@ export default function Table({ headerFontSize, columns, children }) {
           white-space: nowrap;
           a {
             cursor: pointer;
-            display: none;
+            color: ${Color.lighterGray()};
           }
         }
         tr:hover td {
           background: ${Color.lightPurple()};
           a {
-            display: block;
+            font-weight: bold;
+            color: ${Color.logoBlue()};
           }
         }
       `}

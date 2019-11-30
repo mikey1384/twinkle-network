@@ -1,5 +1,11 @@
 export default function ManagementActions(dispatch) {
   return {
+    onLoadAccountTypes(accountTypes) {
+      return dispatch({
+        type: 'LOAD_ACCOUNT_TYPES',
+        accountTypes
+      });
+    },
     onLoadManagement() {
       return dispatch({
         type: 'LOAD_MANAGEMENT'

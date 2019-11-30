@@ -11,19 +11,25 @@ import { useAppContext, useManagementContext } from 'contexts';
 export default function Main() {
   const { userId } = useMyState();
   const {
-    requestHelpers: { loadModerators }
+    requestHelpers: { loadAccountTypes, loadModerators }
   } = useAppContext();
   const {
-    state: { accountTypesLoaded, moderators, moderatorsLoaded },
-    actions: { onLoadModerators }
+    state: { accountTypes, accountTypesLoaded, moderators, moderatorsLoaded },
+    actions: { onLoadAccountTypes, onLoadModerators }
   } = useManagementContext();
   const [accountTypeModalTarget, setAccountTypeModalTarget] = useState(null);
   useEffect(() => {
-    init();
-    async function init() {
+    initModerators();
+    initAccountTypes();
+    async function initModerators() {
       const data = await loadModerators();
       onLoadModerators(data);
     }
+    async function initAccountTypes() {
+      const data = await loadAccountTypes();
+      onLoadAccountTypes(data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -102,12 +108,11 @@ export default function Main() {
       >
         <Table
           headerFontSize="1.5rem"
-          columns="1fr 1fr 1.5fr 1.1fr 1.2fr 1.1fr 1.6fr 1.6fr 2fr"
+          columns="1.2fr 1.5fr 1fr 1.2fr 1.1fr 1.6fr 1.6fr 2fr"
         >
           <thead>
             <tr>
               <th>Label</th>
-              <th>Rank</th>
               <th>Auth Level</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -117,6 +122,20 @@ export default function Main() {
               <th>Edit Reward Level</th>
             </tr>
           </thead>
+          <tbody>
+            {accountTypes.map(accountType => (
+              <tr key={accountType.id}>
+                <td>{accountType.label}</td>
+                <td>{accountType.authLevel}</td>
+                <td>{accountType.canEdit}</td>
+                <td>{accountType.canDelete}</td>
+                <td>{accountType.canStar}</td>
+                <td>{accountType.canPinPlaylists}</td>
+                <td>{accountType.canEditPlaylists}</td>
+                <td>{accountType.canEditRewardLevel}</td>
+              </tr>
+            ))}
+          </tbody>
         </Table>
       </SectionPanel>
     </ErrorBoundary>

@@ -18,6 +18,7 @@ export default function Management({ location }) {
   const { loaded: userLoaded, userType } = useMyState();
   useEffect(() => {
     onLoadManagement();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return useMemo(
@@ -32,6 +33,6 @@ export default function Management({ location }) {
           text="You are not authorized to view this page"
         />
       ),
-    [loaded, userLoaded, userType]
+    [loaded, location, userLoaded, userType]
   );
 }
