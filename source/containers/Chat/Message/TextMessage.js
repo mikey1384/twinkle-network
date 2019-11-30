@@ -4,6 +4,7 @@ import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
+import Gif from '../Gif';
 import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 
@@ -64,6 +65,7 @@ export default function TextMessage({
                   __html: processedStringWithURL(content)
                 }}
               />
+              <Gif />
             </div>
             {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
               <div className={MessageStyle.relatedConversationsButton}>

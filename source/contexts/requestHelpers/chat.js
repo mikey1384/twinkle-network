@@ -216,8 +216,8 @@ export default function chatRequestHelpers({ auth, handleError }) {
         '+'
       )}&api_key=dc6zaTOxFJmzC`;
 
-      const res = await request.get(url);
-      return res.body.data;
+      const { data: { data } = {} } = await request.get(url);
+      return Promise.resolve(data);
     },
     async searchUserToInvite(text) {
       try {
