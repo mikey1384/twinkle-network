@@ -210,6 +210,15 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async searchGifs(text) {
+      const url = `http://api.giphy.com/v1/gifs/search?q=${text.replace(
+        /\s/g,
+        '+'
+      )}&api_key=dc6zaTOxFJmzC`;
+
+      const res = await request.get(url);
+      return res.body.data;
+    },
     async searchUserToInvite(text) {
       try {
         const { data } = await request.get(
