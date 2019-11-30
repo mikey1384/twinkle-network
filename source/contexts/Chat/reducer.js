@@ -28,7 +28,11 @@ export default function ChatReducer(state, action) {
                 ? action.data.title
                 : channel.channelName
           };
-        })
+        }),
+        customChannelNames: {
+          ...state.customChannelNames,
+          [action.data.channelId]: action.data.title
+        }
       };
     case 'CHANGE_SUBJECT': {
       return {
