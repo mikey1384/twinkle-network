@@ -12,6 +12,7 @@ import PlaylistPage from 'containers/PlaylistPage';
 import Privacy from 'containers/Privacy';
 import Redirect from 'containers/Redirect';
 import SigninModal from 'containers/Signin';
+import Management from 'containers/Management';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
 import Verify from 'containers/Verify';
@@ -232,6 +233,7 @@ function App({ location, history }) {
             path="/chat"
             render={() => <Chat onFileUpload={handleFileUpload} />}
           />
+          <Route path="/management" component={Management} />
           <Route path="/verify" component={Verify} />
           <Route path="/privacy" component={Privacy} />
           <Route
