@@ -7,6 +7,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth, phoneMaxWidth } from 'constants/css';
 import { isMobile, textIsOverflown } from 'helpers';
 import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
@@ -19,6 +20,9 @@ export default function RightMenu({
   currentChannel,
   currentChannelOnlineMembers
 }) {
+  const {
+    state: { customChannelNames }
+  } = useChatContext();
   const ChannelNameRef = useRef(null);
   const MenuRef = useRef(null);
   const [channelNameHovered, setChannelNameHovered] = useState(false);
@@ -120,7 +124,7 @@ export default function RightMenu({
               onMouseEnter={handleMouseOver}
               onMouseLeave={() => setChannelNameHovered(false)}
             >
-              {channelName}
+              {customChannelNames[currentChannel.id] || channelName}
             </p>
             <FullTextReveal
               style={{ width: '100%', fontSize: '1.5rem' }}
