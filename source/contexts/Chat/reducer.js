@@ -259,6 +259,7 @@ export default function ChatReducer(state, action) {
         action.data.channels.pop();
         channelLoadMoreButton = true;
       }
+
       return {
         ...initialChatState,
         loaded: true,
@@ -268,6 +269,7 @@ export default function ChatReducer(state, action) {
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels,
+        customChannelNames: action.data.customChannelNames,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
