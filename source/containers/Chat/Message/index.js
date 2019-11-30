@@ -183,7 +183,7 @@ export default function Message({
   }, [channelId, moveViewTimeStamp]);
 
   useEffect(() => {
-    if ((userIsUploader || !filePath) && isLastMsg && userCanEditThis) {
+    if (userIsUploader && isLastMsg) {
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -254,6 +254,7 @@ export default function Message({
   }
   const dropdownButtonShown =
     !!messageId &&
+    !isNotification &&
     !isSubject &&
     !isReloadedSubject &&
     (userIsUploader || userCanEditThis) &&
