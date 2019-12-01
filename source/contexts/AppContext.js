@@ -26,6 +26,7 @@ export const initialUserState = {
   defaultSearchFilter: '',
   hideWatched: false,
   isCreator: false,
+  loaded: false,
   loadMoreButton: false,
   loggedIn: false,
   orderUsersBy: LAST_ONLINE_FILTER_LABEL,

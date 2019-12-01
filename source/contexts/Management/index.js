@@ -5,6 +5,7 @@ import ManagementReducer from './reducer';
 
 export const ManagementContext = createContext();
 export const initialManagementState = {
+  accountTypes: [],
   accountTypesLoaded: false,
   loaded: false,
   moderators: [],

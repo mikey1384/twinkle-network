@@ -56,6 +56,7 @@ export default function UserReducer(state, action) {
     case 'LOGOUT':
       return {
         ...initialUserState,
+        loaded: true,
         loadMoreButton: state.loadMoreButton,
         profiles: state.profiles,
         profilesLoaded: state.profilesLoaded,

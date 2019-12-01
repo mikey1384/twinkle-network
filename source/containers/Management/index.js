@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import NotFound from 'components/NotFound';
 import Routes from './Routes';
@@ -19,20 +19,16 @@ export default function Management({ location }) {
   useEffect(() => {
     onLoadManagement();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userType]);
 
-  return useMemo(
-    () =>
-      !loaded || !userLoaded ? (
-        <Loading />
-      ) : userType ? (
-        <Routes location={location} />
-      ) : (
-        <NotFound
-          title="For moderators only"
-          text="You are not authorized to view this page"
-        />
-      ),
-    [loaded, location, userLoaded, userType]
+  return !loaded || !userLoaded ? (
+    <Loading />
+  ) : userType ? (
+    <Routes location={location} />
+  ) : (
+    <NotFound
+      title="For moderators only"
+      text="You are not authorized to view this page"
+    />
   );
 }

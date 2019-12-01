@@ -4,12 +4,12 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
 
-AccountTypeModal.propTypes = {
+EditModeratorModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   target: PropTypes.number
 };
 
-export default function AccountTypeModal({ onHide, target }) {
+export default function EditModeratorModal({ onHide, target }) {
   return (
     <Modal onHide={onHide}>
       <header style={{ display: 'block' }}>
