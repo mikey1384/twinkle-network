@@ -289,8 +289,9 @@ export default function ChatReducer(state, action) {
           ...state.currentChannel,
           members: state.currentChannel.members.concat(
             action.data.selectedUsers.map(user => ({
-              userId: user.id,
-              username: user.username
+              id: user.id,
+              username: user.username,
+              profilePicId: user.profilePicId
             }))
           )
         },
