@@ -64,7 +64,11 @@ export default function Main() {
           </thead>
           <tbody>
             {moderators.map(moderator => (
-              <tr key={moderator.id}>
+              <tr
+                key={moderator.id}
+                style={{ cursor: 'pointer' }}
+                onClick={() => setModeratorModalTarget(moderator)}
+              >
                 <td style={{ fontWeight: 'bold' }}>{moderator.username}</td>
                 <td>{moderator.email}</td>
                 <td>
@@ -81,9 +85,7 @@ export default function Main() {
                   {moderator.userType}
                 </td>
                 <td style={{ display: 'flex', justifyContent: 'center' }}>
-                  <a onClick={() => setModeratorModalTarget(moderator)}>
-                    Change Account Type
-                  </a>
+                  <a>Change Account Type</a>
                 </td>
                 {moderatorModalTarget && (
                   <EditModeratorModal
