@@ -37,6 +37,7 @@ export const charLimit = {
 };
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
+export const MAX_PROFILE_PIC_SIZE = 5000;
 
 export const returnMaxStars = ({ rewardLevel }) => {
   let maxStars = 5;

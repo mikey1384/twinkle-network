@@ -12,6 +12,7 @@ import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
 import Loading from 'components/Loading';
 import { useHistory } from 'react-router-dom';
+import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -469,9 +470,8 @@ function ProfilePanel({ expandable, profileId }) {
 
   function handlePicture(event) {
     const reader = new FileReader();
-    const maxSize = 5000;
     const file = event.target.files[0];
-    if (file.size / 1000 > maxSize) {
+    if (file.size / 1000 > MAX_PROFILE_PIC_SIZE) {
       return setAlertModalShown(true);
     }
     reader.onload = upload => {
