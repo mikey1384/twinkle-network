@@ -3,6 +3,18 @@ import URL from 'constants/URL';
 
 export default function userRequestHelpers({ auth, handleError, token }) {
   return {
+    async changeAccountType({ userId, selectedAccountType }) {
+      try {
+        const { data } = await request.put(
+          `${URL}/user/accountType`,
+          { userId, selectedAccountType },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async checkIfUserOnline(userId) {
       try {
         const {

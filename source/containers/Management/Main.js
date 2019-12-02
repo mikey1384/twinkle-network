@@ -87,12 +87,6 @@ export default function Main() {
                 <td style={{ display: 'flex', justifyContent: 'center' }}>
                   <a>Change Account Type</a>
                 </td>
-                {moderatorModalTarget && (
-                  <EditModeratorModal
-                    target={moderatorModalTarget}
-                    onHide={() => setModeratorModalTarget(null)}
-                  />
-                )}
               </tr>
             ))}
           </tbody>
@@ -136,13 +130,7 @@ export default function Main() {
                 style={{ cursor: 'pointer' }}
               >
                 <td style={{ fontWeight: 'bold' }}>{accountType.label}</td>
-                <td style={{ textAlign: 'center' }}>
-                  {accountType.authLevel ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
-                </td>
+                <td style={{ textAlign: 'center' }}>{accountType.authLevel}</td>
                 <td style={{ textAlign: 'center' }}>
                   {accountType.canEdit ? (
                     <Icon icon="check" style={{ color: Color.green() }} />
@@ -187,15 +175,26 @@ export default function Main() {
                 </td>
               </tr>
             ))}
-            {accountTypeModalTarget && (
-              <EditAccountTypeModal
-                target={accountTypeModalTarget}
-                onHide={() => setAccountTypeModalTarget(null)}
-              />
-            )}
           </tbody>
         </Table>
       </SectionPanel>
+      {moderatorModalTarget && (
+        <EditModeratorModal
+          accountTypes={accountTypes}
+          target={moderatorModalTarget}
+          onHide={() => setModeratorModalTarget(null)}
+        />
+      )}
+      {accountTypeModalTarget && (
+        <EditAccountTypeModal
+          target={
+            accountTypes.filter(
+              accountType => accountType.label === accountTypeModalTarget
+            )[0]
+          }
+          onHide={() => setAccountTypeModalTarget(null)}
+        />
+      )}
     </ErrorBoundary>
   );
 }

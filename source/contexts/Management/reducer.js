@@ -1,5 +1,17 @@
 export default function ManagementReducer(state, action) {
   switch (action.type) {
+    case 'CHANGE_MODERATOR_ACCOUNT_TYPE':
+      return {
+        ...state,
+        moderators: state.moderators.map(moderator =>
+          moderator.id === action.userId
+            ? {
+                ...moderator,
+                userType: action.selectedAccountType
+              }
+            : moderator
+        )
+      };
     case 'LOAD_ACCOUNT_TYPES':
       return {
         ...state,
