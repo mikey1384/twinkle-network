@@ -3,13 +3,14 @@ import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
 import EditAccountTypeModal from './Modals/EditAccountTypeModal';
 import EditModeratorModal from './Modals/EditModeratorModal';
+import AddModeratorModal from './Modals/AddModeratorModal';
 import ErrorBoundary from 'components/ErrorBoundary';
-import Icon from 'components/Icon';
 import Table from './Table';
-import { Color } from 'constants/css';
+import Check from './Check';
 import { useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useManagementContext } from 'contexts';
+import AddAccountTypeModal from './Modals/AddAccountTypeModal';
 
 export default function Main() {
   const { userId } = useMyState();
@@ -22,6 +23,10 @@ export default function Main() {
   } = useManagementContext();
   const [accountTypeModalTarget, setAccountTypeModalTarget] = useState(null);
   const [moderatorModalTarget, setModeratorModalTarget] = useState(null);
+  const [addAccountTypeModalShown, setAddAccountTypeModalShown] = useState(
+    false
+  );
+  const [addModeratorModalShown, setAddModeratorModalShown] = useState(false);
   useEffect(() => {
     initModerators();
     initAccountTypes();
@@ -46,9 +51,9 @@ export default function Main() {
           <Button
             color="darkerGray"
             skeuomorphic
-            onClick={() => console.log('clicked')}
+            onClick={() => setAddModeratorModalShown(true)}
           >
-            + Add Moderator
+            + Add Moderators
           </Button>
         }
       >
@@ -100,7 +105,7 @@ export default function Main() {
           <Button
             color="darkerGray"
             skeuomorphic
-            onClick={() => console.log('clicked')}
+            onClick={() => setAddAccountTypeModalShown(true)}
           >
             + Add Account Type
           </Button>
@@ -108,7 +113,7 @@ export default function Main() {
       >
         <Table
           headerFontSize="1.5rem"
-          columns="1.2fr 1.5fr 1fr 1.2fr 1.1fr 1.6fr 1.6fr 2fr"
+          columns="1.2fr 1.5fr 1fr 1.2fr 1.1fr 2fr 1.6fr 2fr"
         >
           <thead>
             <tr>
@@ -117,7 +122,7 @@ export default function Main() {
               <th style={{ textAlign: 'center' }}>Edit</th>
               <th style={{ textAlign: 'center' }}>Delete</th>
               <th style={{ textAlign: 'center' }}>Reward</th>
-              <th style={{ textAlign: 'center' }}>Pin Playlists</th>
+              <th style={{ textAlign: 'center' }}>Feature Contents</th>
               <th style={{ textAlign: 'center' }}>Edit Playlists</th>
               <th style={{ textAlign: 'center' }}>Edit Reward Level</th>
             </tr>
@@ -132,46 +137,22 @@ export default function Main() {
                 <td style={{ fontWeight: 'bold' }}>{accountType.label}</td>
                 <td style={{ textAlign: 'center' }}>{accountType.authLevel}</td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canEdit ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canEdit} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canDelete ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canDelete} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canStar ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canStar} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canPinPlaylists ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canPinPlaylists} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canEditPlaylists ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canEditPlaylists} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  {accountType.canEditRewardLevel ? (
-                    <Icon icon="check" style={{ color: Color.green() }} />
-                  ) : (
-                    <Icon icon="minus" />
-                  )}
+                  <Check checked={!!accountType.canEditRewardLevel} />
                 </td>
               </tr>
             ))}
@@ -193,6 +174,14 @@ export default function Main() {
             )[0]
           }
           onHide={() => setAccountTypeModalTarget(null)}
+        />
+      )}
+      {addModeratorModalShown && (
+        <AddModeratorModal onHide={() => setAddModeratorModalShown(false)} />
+      )}
+      {addAccountTypeModalShown && (
+        <AddAccountTypeModal
+          onHide={() => setAddAccountTypeModalShown(false)}
         />
       )}
     </ErrorBoundary>

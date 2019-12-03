@@ -12,6 +12,27 @@ export default function ManagementReducer(state, action) {
             : moderator
         )
       };
+    case 'EDIT_ACCOUNT_TYPE':
+      return {
+        ...state,
+        accountTypes: state.accountTypes.map(accountType =>
+          accountType.label === action.label
+            ? {
+                ...accountType,
+                ...action.editedAccountType
+              }
+            : accountType
+        ),
+        moderators: state.moderators.map(moderator => {
+          return {
+            ...moderator,
+            userType:
+              moderator.userType === action.label
+                ? action.editedAccountType.label
+                : moderator.userType
+          };
+        })
+      };
     case 'LOAD_ACCOUNT_TYPES':
       return {
         ...state,

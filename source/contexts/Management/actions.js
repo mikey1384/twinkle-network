@@ -7,6 +7,13 @@ export default function ManagementActions(dispatch) {
         selectedAccountType
       });
     },
+    onEditAccountType({ label, editedAccountType }) {
+      return dispatch({
+        type: 'EDIT_ACCOUNT_TYPE',
+        label,
+        editedAccountType
+      });
+    },
     onLoadAccountTypes(accountTypes) {
       return dispatch({
         type: 'LOAD_ACCOUNT_TYPES',

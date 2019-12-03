@@ -6,7 +6,7 @@ export default function userRequestHelpers({ auth, handleError, token }) {
     async changeAccountType({ userId, selectedAccountType }) {
       try {
         const { data } = await request.put(
-          `${URL}/user/accountType`,
+          `${URL}/user/moderator`,
           { userId, selectedAccountType },
           auth()
         );
@@ -21,6 +21,19 @@ export default function userRequestHelpers({ auth, handleError, token }) {
           data: { online }
         } = await request.get(`${URL}/user/online?userId=${userId}`);
         return Promise.resolve(online);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async editAccountType({ label, editedAccountType }) {
+      try {
+        const {
+          data: { success }
+        } = await request.put(`${URL}/user/accountType`, {
+          label,
+          editedAccountType
+        });
+        return Promise.resolve(success);
       } catch (error) {
         return handleError(error);
       }
