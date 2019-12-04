@@ -79,11 +79,11 @@ function SubjectInput() {
   );
 
   const buttonDisabled = useMemo(() => {
-    if (title.length > charLimit.subject?.title) return true;
-    if (description.length > charLimit.subject?.description) return true;
+    if (title.length > charLimit.subject.title) return true;
+    if (description.length > charLimit.subject.description) return true;
     if (
       (hasSecretAnswer && stringIsEmpty(secretAnswer)) ||
-      secretAnswer.length > charLimit.subject?.description
+      secretAnswer.length > charLimit.subject.description
     ) {
       return true;
     }
@@ -139,7 +139,7 @@ function SubjectInput() {
           style={{
             fontSize: '1.2rem',
             color:
-              title.length > charLimit.subject?.title
+              title.length > charLimit.subject.title
                 ? 'red'
                 : Color.darkerGray()
           }}
@@ -273,7 +273,7 @@ function SubjectInput() {
     event.preventDefault();
     if (
       stringIsEmpty(title) ||
-      title.length > charLimit.subject?.title ||
+      title.length > charLimit.subject.title ||
       (hasSecretAnswer && stringIsEmpty(secretAnswer))
     ) {
       return;
