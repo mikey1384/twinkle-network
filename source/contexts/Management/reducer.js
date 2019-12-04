@@ -1,5 +1,10 @@
 export default function ManagementReducer(state, action) {
   switch (action.type) {
+    case 'ADD_ACCOUNT_TYPE':
+      return {
+        ...state,
+        accountTypes: state.accountTypes.concat(action.accountType)
+      };
     case 'ADD_MODERATORS':
       return {
         ...state,
@@ -18,6 +23,16 @@ export default function ManagementReducer(state, action) {
                 : moderator
             )
           : state.moderators.filter(moderator => moderator.id !== action.userId)
+      };
+    case 'DELETE_ACCOUNT_TYPE':
+      return {
+        ...state,
+        accountTypes: state.accountTypes.filter(
+          accountType => accountType.label !== action.accountTypeLabel
+        ),
+        moderators: state.moderators.filter(
+          moderator => moderator.userType !== action.accountTypeLabel
+        )
       };
     case 'EDIT_ACCOUNT_TYPE':
       return {

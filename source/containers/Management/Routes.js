@@ -19,6 +19,7 @@ export default function Routes({ location }) {
           width: CALC(100vw - 34rem);
           margin-left: 1rem;
           @media (max-width: ${mobileMaxWidth}) {
+            margin-left: 0;
             width: 100%;
           }
         `}

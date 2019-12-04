@@ -16,6 +16,7 @@ export default function Table({ headerFontSize, columns, children, style }) {
       style={style}
       className={css`
         width: 100%;
+        overflow-x: scroll;
         flex: 1;
         display: grid;
         border-collapse: collapse;

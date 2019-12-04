@@ -1,5 +1,17 @@
 export default function ManagementActions(dispatch) {
   return {
+    onAddAccountType(accountType) {
+      return dispatch({
+        type: 'ADD_ACCOUNT_TYPE',
+        accountType
+      });
+    },
+    onDeleteAccountType(accountTypeLabel) {
+      return dispatch({
+        type: 'DELETE_ACCOUNT_TYPE',
+        accountTypeLabel
+      });
+    },
     onAddModerators(newModerators) {
       return dispatch({
         type: 'ADD_MODERATORS',

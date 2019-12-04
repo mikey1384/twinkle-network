@@ -47,6 +47,7 @@ export default function Main() {
         title="Moderators"
         emptyMessage="No Moderators"
         loaded={moderatorsLoaded}
+        style={{ paddingLeft: 0, paddingRight: 0 }}
         button={
           <Button
             color="darkerGray"
@@ -57,7 +58,15 @@ export default function Main() {
           </Button>
         }
       >
-        <Table columns="1fr 2fr 1fr 1fr 2fr">
+        <Table
+          columns={`
+            minmax(10rem, 1fr)
+            minmax(15rem, 2fr)
+            minmax(10rem, 1fr)
+            minmax(15rem, 1fr)
+            minmax(17rem, 2fr)
+          `}
+        >
           <thead>
             <tr>
               <th>User</th>
@@ -103,6 +112,7 @@ export default function Main() {
         title="Account Types"
         emptyMessage="No Account Types"
         loaded={accountTypesLoaded}
+        style={{ paddingLeft: 0, paddingRight: 0 }}
         button={
           <Button
             color="darkerGray"
@@ -115,7 +125,16 @@ export default function Main() {
       >
         <Table
           headerFontSize="1.5rem"
-          columns="1.2fr 1.5fr 1fr 1.2fr 1.1fr 2fr 1.6fr 2fr"
+          columns={`
+            minmax(10rem, 1.5fr)
+            minmax(15rem, 1.5fr)
+            minmax(10rem, 1fr)
+            minmax(10rem, 1.2fr)
+            minmax(10rem, 1.1fr)
+            minmax(17rem, 2fr)
+            minmax(15rem, 1.6fr)
+            minmax(17rem, 2fr)
+          `}
         >
           <thead>
             <tr>
@@ -133,10 +152,15 @@ export default function Main() {
             {accountTypes.map(accountType => (
               <tr
                 onClick={() => setAccountTypeModalTarget(accountType.label)}
-                key={accountType.id}
+                key={accountType.label}
                 style={{ cursor: 'pointer' }}
               >
-                <td style={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
+                <td
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: '1.6rem'
+                  }}
+                >
                   {accountType.label}
                 </td>
                 <td style={{ textAlign: 'center' }}>{accountType.authLevel}</td>

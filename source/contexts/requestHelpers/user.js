@@ -3,6 +3,18 @@ import URL from 'constants/URL';
 
 export default function userRequestHelpers({ auth, handleError, token }) {
   return {
+    async addAccountType(accountType) {
+      try {
+        const { data } = await request.post(
+          `${URL}/user/accountType`,
+          { accountType },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async addModerators(newModerators) {
       try {
         const { data } = await request.post(
@@ -33,6 +45,19 @@ export default function userRequestHelpers({ auth, handleError, token }) {
           data: { online }
         } = await request.get(`${URL}/user/online?userId=${userId}`);
         return Promise.resolve(online);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async deleteAccountType(accountTypeLabel) {
+      try {
+        const {
+          data: { success }
+        } = await request.delete(
+          `${URL}/user/accountType?accountTypeLabel=${accountTypeLabel}`,
+          auth()
+        );
+        return Promise.resolve(success);
       } catch (error) {
         return handleError(error);
       }
