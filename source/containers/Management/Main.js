@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
 import EditAccountTypeModal from './Modals/EditAccountTypeModal';
@@ -13,7 +13,8 @@ import { useAppContext, useManagementContext } from 'contexts';
 import AddAccountTypeModal from './Modals/AddAccountTypeModal';
 
 export default function Main() {
-  const { userId } = useMyState();
+  const { userId, managementLevel } = useMyState();
+  const canManage = useMemo(() => managementLevel > 1, [managementLevel]);
   const {
     requestHelpers: { loadAccountTypes, loadModerators }
   } = useAppContext();
@@ -49,13 +50,15 @@ export default function Main() {
         loaded={moderatorsLoaded}
         style={{ paddingLeft: 0, paddingRight: 0 }}
         button={
-          <Button
-            color="darkerGray"
-            skeuomorphic
-            onClick={() => setAddModeratorModalShown(true)}
-          >
-            + Add Moderators
-          </Button>
+          canManage ? (
+            <Button
+              color="darkerGray"
+              skeuomorphic
+              onClick={() => setAddModeratorModalShown(true)}
+            >
+              + Add Moderators
+            </Button>
+          ) : null
         }
       >
         <Table
@@ -64,7 +67,7 @@ export default function Main() {
             minmax(15rem, 2fr)
             minmax(10rem, 1fr)
             minmax(15rem, 1fr)
-            minmax(17rem, 2fr)
+            ${canManage ? 'minmax(17rem, 2fr)' : ''}
           `}
         >
           <thead>
@@ -73,15 +76,17 @@ export default function Main() {
               <th>Email</th>
               <th>Online</th>
               <th>Account Type</th>
-              <th></th>
+              {canManage && <th></th>}
             </tr>
           </thead>
           <tbody>
             {moderators.map(moderator => (
               <tr
                 key={moderator.id}
-                style={{ cursor: 'pointer' }}
-                onClick={() => setModeratorModalTarget(moderator)}
+                style={{ cursor: canManage && 'pointer' }}
+                onClick={() =>
+                  canManage ? setModeratorModalTarget(moderator) : {}
+                }
               >
                 <td style={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
                   {moderator.username}
@@ -100,9 +105,11 @@ export default function Main() {
                 >
                   {moderator.userType}
                 </td>
-                <td style={{ display: 'flex', justifyContent: 'center' }}>
-                  <a>Change Account Type</a>
-                </td>
+                {canManage && (
+                  <td style={{ display: 'flex', justifyContent: 'center' }}>
+                    <a>Change Account Type</a>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
@@ -114,13 +121,15 @@ export default function Main() {
         loaded={accountTypesLoaded}
         style={{ paddingLeft: 0, paddingRight: 0 }}
         button={
-          <Button
-            color="darkerGray"
-            skeuomorphic
-            onClick={() => setAddAccountTypeModalShown(true)}
-          >
-            + Add Account Type
-          </Button>
+          canManage ? (
+            <Button
+              color="darkerGray"
+              skeuomorphic
+              onClick={() => setAddAccountTypeModalShown(true)}
+            >
+              + Add Account Type
+            </Button>
+          ) : null
         }
       >
         <Table
@@ -151,9 +160,11 @@ export default function Main() {
           <tbody>
             {accountTypes.map(accountType => (
               <tr
-                onClick={() => setAccountTypeModalTarget(accountType.label)}
+                onClick={() =>
+                  canManage ? setAccountTypeModalTarget(accountType.label) : {}
+                }
                 key={accountType.label}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: canManage && 'pointer' }}
               >
                 <td
                   style={{

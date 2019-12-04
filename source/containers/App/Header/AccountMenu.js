@@ -21,7 +21,7 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username, userId, userType } = useMyState();
+  const { loggedIn, username, userId, managementLevel } = useMyState();
   const menuProps = useMemo(() => {
     const result = [
       {
@@ -29,7 +29,7 @@ export default function AccountMenu({ className, history, style = {} }) {
         onClick: () => history.push(`/${username}`)
       }
     ];
-    if (userType) {
+    if (managementLevel > 0) {
       result.push({
         label: 'Management',
         onClick: () => history.push('/management')
@@ -41,7 +41,7 @@ export default function AccountMenu({ className, history, style = {} }) {
     });
     return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userType, username]);
+  }, [managementLevel, username]);
 
   return (
     <div style={style}>

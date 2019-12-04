@@ -15,15 +15,15 @@ export default function Management({ location }) {
     state: { loaded },
     actions: { onLoadManagement }
   } = useManagementContext();
-  const { loaded: userLoaded, userType } = useMyState();
+  const { loaded: userLoaded, managementLevel } = useMyState();
   useEffect(() => {
     onLoadManagement();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userType]);
+  }, [managementLevel]);
 
   return !loaded || !userLoaded ? (
     <Loading />
-  ) : userType ? (
+  ) : managementLevel > 0 ? (
     <Routes location={location} />
   ) : (
     <NotFound
