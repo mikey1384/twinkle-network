@@ -15,7 +15,7 @@ module.exports = {
   output: {
     publicPath: '/',
     path: path.resolve(__dirname, '../public'),
-    filename: '[name].js'
+    filename: '[name].[contenthash].js'
   },
   module: {
     rules: [
@@ -35,7 +35,7 @@ module.exports = {
             loader: 'url-loader',
             options: {
               limit: 8000,
-              name: 'images/[name].[ext]'
+              name: 'images/[hash]-[name].[ext]'
             }
           }
         ]
