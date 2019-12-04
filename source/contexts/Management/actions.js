@@ -1,5 +1,11 @@
 export default function ManagementActions(dispatch) {
   return {
+    onAddModerators(newModerators) {
+      return dispatch({
+        type: 'ADD_MODERATORS',
+        newModerators
+      });
+    },
     onChangeModeratorAccountType({ userId, selectedAccountType }) {
       return dispatch({
         type: 'CHANGE_MODERATOR_ACCOUNT_TYPE',

@@ -1,16 +1,23 @@
 export default function ManagementReducer(state, action) {
   switch (action.type) {
+    case 'ADD_MODERATORS':
+      return {
+        ...state,
+        moderators: state.moderators.concat(action.newModerators)
+      };
     case 'CHANGE_MODERATOR_ACCOUNT_TYPE':
       return {
         ...state,
-        moderators: state.moderators.map(moderator =>
-          moderator.id === action.userId
-            ? {
-                ...moderator,
-                userType: action.selectedAccountType
-              }
-            : moderator
-        )
+        moderators: action.selectedAccountType
+          ? state.moderators.map(moderator =>
+              moderator.id === action.userId
+                ? {
+                    ...moderator,
+                    userType: action.selectedAccountType
+                  }
+                : moderator
+            )
+          : state.moderators.filter(moderator => moderator.id !== action.userId)
       };
     case 'EDIT_ACCOUNT_TYPE':
       return {

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
+import Icon from 'components/Icon';
 import { Color } from 'constants/css';
+import { capitalize } from 'helpers/stringHelpers';
 import { useAppContext, useManagementContext } from 'contexts';
 
 EditModeratorModal.propTypes = {
@@ -23,12 +25,24 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
     target.userType
   );
   const editMenuItems = useMemo(() => {
-    return accountTypes
+    const dropdownMenu = accountTypes
       .filter(accountType => accountType.label !== selectedAccountType)
       .map(accountType => ({
-        label: accountType.label,
+        label: capitalize(accountType.label),
         onClick: () => setSelectedAccountType(accountType.label)
       }));
+    if (selectedAccountType) {
+      dropdownMenu.push({
+        label: (
+          <>
+            <Icon icon="trash-alt" />
+            <span style={{ marginLeft: '1rem' }}>Remove</span>
+          </>
+        ),
+        onClick: () => setSelectedAccountType(null)
+      });
+    }
+    return dropdownMenu;
   }, [accountTypes, selectedAccountType]);
 
   return (
@@ -48,7 +62,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
         <DropdownButton
           style={{ marginTop: '1rem' }}
           skeuomorphic
-          text={selectedAccountType}
+          text={selectedAccountType || 'Not Selected'}
           color="darkerGray"
           menuProps={editMenuItems}
         />

@@ -6,12 +6,14 @@ import { Color } from 'constants/css';
 Table.propTypes = {
   headerFontSize: PropTypes.string,
   columns: PropTypes.string.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  style: PropTypes.object
 };
 
-export default function Table({ headerFontSize, columns, children }) {
+export default function Table({ headerFontSize, columns, children, style }) {
   return (
     <table
+      style={style}
       className={css`
         width: 100%;
         flex: 1;

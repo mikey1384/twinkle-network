@@ -3,6 +3,18 @@ import URL from 'constants/URL';
 
 export default function userRequestHelpers({ auth, handleError, token }) {
   return {
+    async addModerators(newModerators) {
+      try {
+        const { data } = await request.post(
+          `${URL}/user/moderator`,
+          { newModerators },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async changeAccountType({ userId, selectedAccountType }) {
       try {
         const { data } = await request.put(
@@ -29,10 +41,14 @@ export default function userRequestHelpers({ auth, handleError, token }) {
       try {
         const {
           data: { success }
-        } = await request.put(`${URL}/user/accountType`, {
-          label,
-          editedAccountType
-        });
+        } = await request.put(
+          `${URL}/user/accountType`,
+          {
+            label,
+            editedAccountType
+          },
+          auth()
+        );
         return Promise.resolve(success);
       } catch (error) {
         return handleError(error);

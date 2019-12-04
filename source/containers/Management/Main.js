@@ -74,8 +74,10 @@ export default function Main() {
                 style={{ cursor: 'pointer' }}
                 onClick={() => setModeratorModalTarget(moderator)}
               >
-                <td style={{ fontWeight: 'bold' }}>{moderator.username}</td>
-                <td>{moderator.email}</td>
+                <td style={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
+                  {moderator.username}
+                </td>
+                <td>{moderator.email || 'Not Specified'}</td>
                 <td>
                   {userId === moderator.id || moderator.online
                     ? 'now'
@@ -134,7 +136,9 @@ export default function Main() {
                 key={accountType.id}
                 style={{ cursor: 'pointer' }}
               >
-                <td style={{ fontWeight: 'bold' }}>{accountType.label}</td>
+                <td style={{ fontWeight: 'bold', fontSize: '1.6rem' }}>
+                  {accountType.label}
+                </td>
                 <td style={{ textAlign: 'center' }}>{accountType.authLevel}</td>
                 <td style={{ textAlign: 'center' }}>
                   <Check checked={!!accountType.canEdit} />
@@ -177,7 +181,10 @@ export default function Main() {
         />
       )}
       {addModeratorModalShown && (
-        <AddModeratorModal onHide={() => setAddModeratorModalShown(false)} />
+        <AddModeratorModal
+          accountTypes={accountTypes}
+          onHide={() => setAddModeratorModalShown(false)}
+        />
       )}
       {addAccountTypeModalShown && (
         <AddAccountTypeModal
