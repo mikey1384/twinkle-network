@@ -108,7 +108,7 @@ export default function userRequestHelpers({ auth, handleError, token }) {
     },
     async loadAccountTypes() {
       try {
-        const { data } = await request.get(`${URL}/user/accountTypes`);
+        const { data } = await request.get(`${URL}/user/accountType`);
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
