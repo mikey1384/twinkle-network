@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { useChatContext } from 'contexts';
 import { Color, borderRadius } from 'constants/css';
+import { getFileInfoFromFileName, renderFileSize } from 'helpers/stringHelpers';
+import { cloudFrontURL } from 'constants/defaultValues';
+import Image from '../Image';
+import FileIcon from '../FileIcon';
 
 TargetMessagePreview.propTypes = {
   onClose: PropTypes.func.isRequired
@@ -12,6 +16,17 @@ export default function TargetMessagePreview({ onClose }) {
   const {
     state: { replyTarget }
   } = useChatContext();
+  const fileType = useMemo(() => {
+    return replyTarget.fileName
+      ? getFileInfoFromFileName(replyTarget.fileName)?.fileType
+      : null;
+  }, [replyTarget.fileName]);
+  const imageSrc = useMemo(() => {
+    if (!replyTarget.filePath || fileType !== 'image') return '';
+    return `${cloudFrontURL}/attachments/chat/${
+      replyTarget.filePath
+    }/${encodeURIComponent(replyTarget.fileName)}`;
+  }, [fileType, replyTarget.fileName, replyTarget.filePath]);
 
   return (
     <div
@@ -41,18 +56,41 @@ export default function TargetMessagePreview({ onClose }) {
           width: '100%',
           background: Color.targetGray(),
           borderRadius,
-          overflow: 'scroll'
+          overflow: 'scroll',
+          display: 'flex',
+          justifyContent: 'space-between'
         }}
       >
-        <p
-          style={{
-            fontWeight: 'bold',
-            color: Color.black()
-          }}
-        >
-          {replyTarget.username}
-        </p>
-        <span>{replyTarget.content}</span>
+        <div>
+          <p
+            style={{
+              fontWeight: 'bold',
+              color: Color.black()
+            }}
+          >
+            {replyTarget.username}
+          </p>
+          <div style={{ marginTop: '0.5rem', paddingBottom: '1rem' }}>
+            {replyTarget.content || replyTarget.fileName}
+          </div>
+        </div>
+        {fileType && replyTarget.fileName && (
+          <div style={{ display: 'flex' }}>
+            {imageSrc ? (
+              <Image imageUrl={imageSrc} />
+            ) : (
+              <FileIcon size="5x" fileType={fileType} />
+            )}
+            {!imageSrc && (
+              <div style={{ marginLeft: '1rem', fontSize: '1.3rem' }}>
+                <p>{replyTarget.fileName}</p>
+                {replyTarget.fileSize && (
+                  <p>{renderFileSize(replyTarget.fileSize)}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
