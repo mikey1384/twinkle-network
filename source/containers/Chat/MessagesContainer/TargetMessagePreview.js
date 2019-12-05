@@ -40,18 +40,19 @@ export default function TargetMessagePreview({ onClose }) {
           height: '100%',
           width: '100%',
           background: Color.targetGray(),
-          borderRadius
+          borderRadius,
+          overflow: 'scroll'
         }}
       >
-        <div
+        <p
           style={{
             fontWeight: 'bold',
             color: Color.black()
           }}
         >
           {replyTarget.username}
-        </div>
-        <div>{replyTarget.content}</div>
+        </p>
+        <span>{replyTarget.content}</span>
       </div>
     </div>
   );

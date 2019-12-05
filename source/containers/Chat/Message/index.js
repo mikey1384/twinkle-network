@@ -40,7 +40,6 @@ Message.propTypes = {
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
-  onSetIsReplying: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
