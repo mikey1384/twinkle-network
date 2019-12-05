@@ -107,11 +107,11 @@ export default function MessagesContainer({
   const mb = 1000;
   const maxSize = useMemo(
     () =>
-      authLevel > 8
+      authLevel > 3
         ? 10000 * mb
-        : authLevel > 4
+        : authLevel > 1
         ? 4000 * mb
-        : authLevel === 4
+        : authLevel === 1
         ? 1000 * mb
         : 300 * mb,
     [authLevel]
