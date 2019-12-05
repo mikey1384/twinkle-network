@@ -116,7 +116,7 @@ export default function userRequestHelpers({ auth, handleError, token }) {
     },
     async loadModerators() {
       try {
-        const { data } = await request.get(`${URL}/user/moderators`);
+        const { data } = await request.get(`${URL}/user/moderator`);
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
