@@ -14,7 +14,7 @@ Checkbox.propTypes = {
 };
 
 export default function Checkbox({
-  backgroundColor = Color.backgroundGray(),
+  backgroundColor = Color.inputGray(),
   checked,
   label,
   onClick,

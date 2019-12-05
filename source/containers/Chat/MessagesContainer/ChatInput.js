@@ -11,7 +11,8 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useInputContext } from 'contexts';
+import { useChatContext, useInputContext } from 'contexts';
+import TargetMessagePreview from './TargetMessagePreview';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
@@ -34,6 +35,10 @@ export default function ChatInput({
 }) {
   const { profileTheme } = useMyState();
   const TextareaRef = useRef(null);
+  const {
+    state: { replyTarget },
+    actions: { onSetReplyTarget }
+  } = useChatContext();
   const {
     state,
     actions: { onEnterComment }
@@ -58,7 +63,15 @@ export default function ChatInput({
   );
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {replyTarget && (
+        <TargetMessagePreview onClose={() => onSetReplyTarget(null)} />
+      )}
       <div style={{ display: 'flex' }}>
         {!!isTwoPeopleChannel && (
           <div
@@ -115,7 +128,7 @@ export default function ChatInput({
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 
   function handleChange(event) {

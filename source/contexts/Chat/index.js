@@ -20,6 +20,7 @@ export const initialChatState = {
   msgsWhileInvisible: 0,
   recepientId: null,
   recentChessMessage: undefined,
+  replyTarget: null,
   subject: {},
   subjectSearchResults: [],
   filesBeingUploaded: {}

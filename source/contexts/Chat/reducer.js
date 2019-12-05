@@ -622,6 +622,12 @@ export default function ChatReducer(state, action) {
         reconnecting: true
       };
     }
+    case 'SET_REPLY_TARGET': {
+      return {
+        ...state,
+        replyTarget: action.target
+      };
+    }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,

@@ -268,6 +268,12 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onSetReplyTarget(target) {
+      return dispatch({
+        type: 'SET_REPLY_TARGET',
+        target
+      });
+    },
     onSubmitMessage(params) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',

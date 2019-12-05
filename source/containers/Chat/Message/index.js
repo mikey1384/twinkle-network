@@ -40,6 +40,7 @@ Message.propTypes = {
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
+  onSetIsReplying: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -116,6 +117,7 @@ export default function Message({
     actions: {
       onEditMessage,
       onSaveMessage,
+      onSetReplyTarget,
       onUpdateChessMoveViewTimeStamp,
       onUpdateRecentChessMessage
     }
@@ -234,8 +236,21 @@ export default function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const editMenuItems = [];
-  if (userIsUploader || canEdit) {
+  const editMenuItems = [
+    {
+      label: (
+        <>
+          <Icon icon="reply" />
+          <span style={{ marginLeft: '1rem' }}>Reply</span>
+        </>
+      ),
+      onClick: () => {
+        onSetReplyTarget(message);
+        setEditPadding(false);
+      }
+    }
+  ];
+  if (userCanEditThis) {
     editMenuItems.push({
       label: (
         <>
@@ -264,13 +279,7 @@ export default function Message({
     });
   }
   const dropdownButtonShown =
-    !!messageId &&
-    !isNotification &&
-    !isSubject &&
-    !isReloadedSubject &&
-    (userIsUploader || userCanEditThis) &&
-    !isChessMsg &&
-    !onEdit;
+    !!messageId && !isNotification && !isChessMsg && !onEdit;
 
   return !chessState && gameWinnerId ? (
     <GameOverMessage

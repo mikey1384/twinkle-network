@@ -67,6 +67,7 @@ export default function MessagesContainer({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
+    state: { replyTarget },
     actions: {
       onDeleteMessage,
       onEditChannelTitle,
@@ -84,7 +85,6 @@ export default function MessagesContainer({
     filePath: '',
     messageId: null
   });
-  const [fillerHeight, setFillerHeight] = useState(20);
   const [loadMoreButtonLock, setLoadMoreButtonLock] = useState(false);
   const [subjectMsgsModal, setSubjectMsgsModal] = useState({
     shown: false,
@@ -116,6 +116,11 @@ export default function MessagesContainer({
         : 300 * mb,
     [authLevel]
   );
+  const containerHeight = useMemo(() => {
+    return `CALC(100% - 1rem - 2px - ${
+      textAreaHeight ? `${textAreaHeight}px - 1rem` : '5.5rem'
+    }${replyTarget ? ' - 10rem - 2px' : ''})`;
+  }, [replyTarget, textAreaHeight]);
   const menuProps = useMemo(() => {
     return currentChannel.twoPeople
       ? [{ label: 'Hide Chat', onClick: handleHideChat }]
@@ -147,14 +152,22 @@ export default function MessagesContainer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChannel.twoPeople, selectedChannelId]);
 
-  useEffect(() => {
-    setFillerHeight(
+  const fillerHeight = useMemo(
+    () =>
       MessagesContainerRef.current?.offsetHeight >
-        MessagesRef.current?.offsetHeight
+      MessagesRef.current?.offsetHeight
         ? MessagesContainerRef.current?.offsetHeight -
-            MessagesRef.current?.offsetHeight
-        : 0
-    );
+          MessagesRef.current?.offsetHeight
+        : 20,
+    [
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      MessagesContainerRef.current?.offsetHeight,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      MessagesRef.current?.offsetHeight
+    ]
+  );
+
+  useEffect(() => {
     MessagesContainerRef.current.scrollTop = ContentRef.current?.offsetHeight;
     setTimeout(
       () =>
@@ -172,7 +185,7 @@ export default function MessagesContainer({
         height: 100%;
         width: 60vw;
         border-left: 1px solid ${Color.borderGray()};
-        padding: 0 0 1rem 1rem;
+        padding: 0;
         position: relative;
         background: #fff;
         @media (max-width: ${phoneMaxWidth}) {
@@ -221,19 +234,19 @@ export default function MessagesContainer({
           display: flex;
           flex-direction: column;
           width: 100%;
-          height: CALC(
-            100% - ${textAreaHeight ? `${textAreaHeight}px` : '4.5rem'}
-          );
           position: relative;
           -webkit-overflow-scrolling: touch;
         `}
+        style={{
+          height: containerHeight
+        }}
       >
         {loading && <Loading />}
         <div
           ref={MessagesContainerRef}
           style={{
             position: 'absolute',
-            left: '0',
+            left: '1rem',
             right: '0',
             bottom: '0',
             opacity: loading && '0.3',
@@ -349,72 +362,80 @@ export default function MessagesContainer({
           />
         )}
       </div>
-      {socketConnected ? (
-        <ChatInput
-          loading={loading}
-          myId={userId}
-          isTwoPeopleChannel={currentChannel.twoPeople}
-          currentChannelId={selectedChannelId}
-          currentChannel={currentChannel}
-          onChessButtonClick={onShowChessModal}
-          onMessageSubmit={content => {
-            setTextAreaHeight(0);
-            onMessageSubmit(content);
-          }}
-          onHeightChange={height => {
-            if (height !== textAreaHeight) {
-              setTextAreaHeight(height > 46 ? height : 0);
-            }
-          }}
-          onPlusButtonClick={() => FileInputRef.current.click()}
-        />
-      ) : (
-        <div>
-          <Loading
-            style={{ height: '2.2rem' }}
-            innerStyle={{ fontSize: '2rem' }}
-            text="Socket disconnected. Reconnecting..."
+      <div
+        style={{
+          background: Color.inputGray(),
+          padding: '1rem',
+          borderTop: `1px solid ${Color.borderGray()}`
+        }}
+      >
+        {socketConnected ? (
+          <ChatInput
+            loading={loading}
+            myId={userId}
+            isTwoPeopleChannel={currentChannel.twoPeople}
+            currentChannelId={selectedChannelId}
+            currentChannel={currentChannel}
+            onChessButtonClick={onShowChessModal}
+            onMessageSubmit={content => {
+              setTextAreaHeight(0);
+              onMessageSubmit(content);
+            }}
+            onHeightChange={height => {
+              if (height !== textAreaHeight) {
+                setTextAreaHeight(height > 46 ? height : 0);
+              }
+            }}
+            onPlusButtonClick={() => FileInputRef.current.click()}
           />
-        </div>
-      )}
-      {alertModalShown && (
-        <AlertModal
-          title="File is too large"
-          content={`The file size is larger than your limit of ${maxSize /
-            mb} MB`}
-          onHide={() => setAlertModalShown(false)}
-        />
-      )}
-      {uploadModalShown && (
-        <UploadModal
-          channelId={selectedChannelId}
-          fileObj={fileObj}
-          onHide={() => setUploadModalShown(false)}
-          subjectId={subjectId}
-        />
-      )}
-      {inviteUsersModalShown && (
-        <InviteUsersModal
-          onHide={() => setInviteUsersModalShown(false)}
-          currentChannel={currentChannel}
-          selectedChannelId={selectedChannelId}
-          onDone={handleInviteUsersDone}
-        />
-      )}
-      {editTitleModalShown && (
-        <EditTitleModal
-          title={channelName}
-          onHide={() => setEditTitleModalShown(false)}
-          onDone={handleEditChannelTitle}
-        />
-      )}
-      {leaveConfirmModalShown && (
-        <ConfirmModal
-          title="Leave Channel"
-          onHide={() => setLeaveConfirmModalShown(false)}
-          onConfirm={handleLeaveChannel}
-        />
-      )}
+        ) : (
+          <div>
+            <Loading
+              style={{ height: '2.2rem' }}
+              innerStyle={{ fontSize: '2rem' }}
+              text="Socket disconnected. Reconnecting..."
+            />
+          </div>
+        )}
+        {alertModalShown && (
+          <AlertModal
+            title="File is too large"
+            content={`The file size is larger than your limit of ${maxSize /
+              mb} MB`}
+            onHide={() => setAlertModalShown(false)}
+          />
+        )}
+        {uploadModalShown && (
+          <UploadModal
+            channelId={selectedChannelId}
+            fileObj={fileObj}
+            onHide={() => setUploadModalShown(false)}
+            subjectId={subjectId}
+          />
+        )}
+        {inviteUsersModalShown && (
+          <InviteUsersModal
+            onHide={() => setInviteUsersModalShown(false)}
+            currentChannel={currentChannel}
+            selectedChannelId={selectedChannelId}
+            onDone={handleInviteUsersDone}
+          />
+        )}
+        {editTitleModalShown && (
+          <EditTitleModal
+            title={channelName}
+            onHide={() => setEditTitleModalShown(false)}
+            onDone={handleEditChannelTitle}
+          />
+        )}
+        {leaveConfirmModalShown && (
+          <ConfirmModal
+            title="Leave Channel"
+            onHide={() => setLeaveConfirmModalShown(false)}
+            onConfirm={handleLeaveChannel}
+          />
+        )}
+      </div>
     </div>
   );
 
@@ -452,13 +473,6 @@ export default function MessagesContainer({
 
   function handleReceiveNewMessage() {
     if (scrollAtBottom) {
-      setFillerHeight(
-        MessagesContainerRef.current?.offsetHeight >
-          MessagesRef.current?.offsetHeight
-          ? MessagesContainerRef.current?.offsetHeight -
-              MessagesRef.current?.offsetHeight
-          : 0
-      );
       handleSetScrollToBottom();
     } else {
       setNewUnseenMessage(true);
