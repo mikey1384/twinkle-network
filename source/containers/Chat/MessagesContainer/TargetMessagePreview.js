@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { useChatContext } from 'contexts';
-import { Color } from 'constants/css';
+import { Color, borderRadius } from 'constants/css';
 
 TargetMessagePreview.propTypes = {
   onClose: PropTypes.func.isRequired
@@ -16,10 +16,10 @@ export default function TargetMessagePreview({ onClose }) {
   return (
     <div
       style={{
-        height: '10rem',
+        height: '12rem',
         width: '100%',
         position: 'relative',
-        paddingRight: '1rem',
+        padding: '1rem 6rem 2rem 0.5rem',
         marginBottom: '2px'
       }}
     >
@@ -28,8 +28,8 @@ export default function TargetMessagePreview({ onClose }) {
         size="lg"
         style={{
           position: 'absolute',
-          right: 0,
-          top: 0,
+          right: '1.7rem',
+          top: '4rem',
           cursor: 'pointer'
         }}
         onClick={onClose}
@@ -38,7 +38,9 @@ export default function TargetMessagePreview({ onClose }) {
         style={{
           padding: '1rem',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          background: Color.targetGray(),
+          borderRadius
         }}
       >
         <div

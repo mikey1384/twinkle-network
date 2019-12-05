@@ -119,7 +119,7 @@ export default function MessagesContainer({
   const containerHeight = useMemo(() => {
     return `CALC(100% - 1rem - 2px - ${
       textAreaHeight ? `${textAreaHeight}px - 1rem` : '5.5rem'
-    }${replyTarget ? ' - 10rem - 2px' : ''})`;
+    }${replyTarget ? ' - 12rem - 2px' : ''})`;
   }, [replyTarget, textAreaHeight]);
   const menuProps = useMemo(() => {
     return currentChannel.twoPeople
