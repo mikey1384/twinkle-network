@@ -9,6 +9,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
+import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { socket } from 'constants/io';
 import { MessageStyle } from '../Styles';
@@ -236,7 +237,12 @@ export default function Message({
   const editMenuItems = [];
   if (userIsUploader || canEdit) {
     editMenuItems.push({
-      label: 'Edit',
+      label: (
+        <>
+          <Icon icon="pencil-alt"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Edit</span>
+        </>
+      ),
       onClick: () => {
         setOnEdit(true);
         setEditPadding(false);
@@ -245,7 +251,12 @@ export default function Message({
   }
   if (userIsUploader || canDelete) {
     editMenuItems.push({
-      label: 'Remove',
+      label: (
+        <>
+          <Icon icon="trash-alt"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Remove</span>
+        </>
+      ),
       onClick: () => {
         setEditPadding(false);
         onDelete({ messageId });
@@ -353,6 +364,7 @@ export default function Message({
             <DropdownButton
               skeuomorphic
               color="darkerGray"
+              icon="chevron-down"
               style={{ position: 'absolute', top: 0, right: '5px' }}
               direction="left"
               opacity={0.8}

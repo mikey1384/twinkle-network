@@ -20,6 +20,7 @@ import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboa
 import { faCheck } from '@fortawesome/pro-solid-svg-icons/faCheck';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
 import { faChess } from '@fortawesome/pro-solid-svg-icons/faChess';
+import { faChevronDown } from '@fortawesome/pro-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight';
 import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
@@ -67,6 +68,7 @@ library.add(
   faCheck,
   faCheckCircle,
   faChess,
+  faChevronDown,
   faChevronLeft,
   faChevronRight,
   faComment,
