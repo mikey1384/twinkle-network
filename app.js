@@ -42,6 +42,7 @@ import { faPlus } from '@fortawesome/pro-solid-svg-icons/faPlus';
 import { faReply } from '@fortawesome/pro-solid-svg-icons/faReply';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
 import { faSchool } from '@fortawesome/pro-solid-svg-icons/faSchool';
+import { faSlidersH } from '@fortawesome/pro-solid-svg-icons/faSlidersH';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
 import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
@@ -91,6 +92,7 @@ library.add(
   faReply,
   faSchool,
   faSearch,
+  faSlidersH,
   faSpinner,
   faStar,
   faStarHalfAlt,

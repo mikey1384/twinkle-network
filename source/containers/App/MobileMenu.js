@@ -103,6 +103,7 @@ export default function MobileMenu({ location, history, onClose }) {
               color: ${Color.red()};
               font-size: 3rem;
               padding: 1rem;
+              margin-top: 1rem;
             `}
             onClick={handleLogout}
           >
