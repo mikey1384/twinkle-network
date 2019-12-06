@@ -69,6 +69,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:cat\:)/gi, '🐱')
     .replace(/(\:chess\:)/gi, '♟️')
     .replace(/(\:chicken\:)/gi, '🍗')
+    .replace(/(\:christmas\:)/gi, '🎄')
     .replace(/(\:clap\:)/gi, '👏')
     .replace(/(\:colored pencil\:)/gi, '🖍️')
     .replace(/(\:computer\:)/gi, '🖥')
