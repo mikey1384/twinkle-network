@@ -16,7 +16,7 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
   return (
     <div
       style={{
-        background: Color.lighterGray(),
+        background: Color.wellGray(),
         padding: '1rem',
         width: '70%',
         borderRadius

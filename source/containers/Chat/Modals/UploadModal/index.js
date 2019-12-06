@@ -23,6 +23,7 @@ UploadModal.propTypes = {
 export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   const { profilePicId, userId, username } = useMyState();
   const {
+    state: { replyTarget },
     actions: { onSubmitMessage }
   } = useChatContext();
   const [caption, setCaption] = useState('');
@@ -103,15 +104,18 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   function handleSubmit() {
     if (selectedFile) {
       onSubmitMessage({
-        content: finalizeEmoji(caption),
-        channelId,
-        fileToUpload: selectedFile,
-        filePath: uuidv1(),
-        fileName: selectedFile.name,
-        profilePicId,
-        subjectId,
-        userId,
-        username
+        message: {
+          content: finalizeEmoji(caption),
+          channelId,
+          fileToUpload: selectedFile,
+          filePath: uuidv1(),
+          fileName: selectedFile.name,
+          profilePicId,
+          subjectId,
+          userId,
+          username
+        },
+        replyTarget
       });
       onHide();
     }

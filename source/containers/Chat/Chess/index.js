@@ -155,7 +155,7 @@ function Chess({
       `}
       style={{
         position: 'relative',
-        background: Color.lighterGray(),
+        background: Color.wellGray(),
         ...style
       }}
     >

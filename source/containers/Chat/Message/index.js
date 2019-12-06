@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
-import moment from 'moment';
+import { unix } from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
@@ -11,6 +11,7 @@ import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
+import TargetMessage from './TargetMessage';
 import { socket } from 'constants/io';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
@@ -39,6 +40,7 @@ Message.propTypes = {
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
+  onReplyClick: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
@@ -84,6 +86,7 @@ export default function Message({
   onDelete,
   onChessSpoilerClick,
   onReceiveNewMessage,
+  onReplyClick,
   onSendFileMessage,
   recepientId,
   setScrollToBottom,
@@ -124,7 +127,7 @@ export default function Message({
   const {
     state: { socketConnected }
   } = useNotiContext();
-  let { username, profilePicId, ...post } = message;
+  let { username, profilePicId, targetMessage, ...post } = message;
   const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
@@ -148,7 +151,10 @@ export default function Message({
       handleSaveMessage();
     }
     async function handleSaveMessage() {
-      const messageId = await saveMessage(post);
+      const messageId = await saveMessage({
+        message: post,
+        targetMessageId: targetMessage?.id
+      });
       onSaveMessage({ messageId, index });
       socket.emit(
         'new_chat_message',
@@ -245,6 +251,7 @@ export default function Message({
       ),
       onClick: () => {
         onSetReplyTarget(message);
+        onReplyClick();
         setEditPadding(false);
       }
     }
@@ -306,7 +313,7 @@ export default function Message({
               }}
             />{' '}
             <span className={MessageStyle.timeStamp}>
-              {moment.unix(timeStamp).format('LLL')}
+              {unix(timeStamp).format('LLL')}
             </span>
           </div>
           <>
@@ -339,6 +346,8 @@ export default function Message({
               />
             ) : (
               <>
+                {targetMessage && <TargetMessage message={targetMessage} />}
+                {}
                 {filePath && (
                   <FileViewer
                     content={content}
@@ -364,6 +373,7 @@ export default function Message({
                   showSubjectMsgsModal={showSubjectMsgsModal}
                   socketConnected={socketConnected}
                   subjectId={subjectId}
+                  targetMessage={targetMessage}
                 />
               </>
             )}
@@ -405,6 +415,7 @@ export default function Message({
   }
 
   async function handleSpoilerClick() {
+    onSetReplyTarget(null);
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
       onUpdateChessMoveViewTimeStamp();

@@ -264,6 +264,7 @@ function App({ location, history }) {
     filePath,
     fileToUpload,
     recepientId,
+    targetMessageId,
     subjectId
   }) {
     onPostFileUploadStatus({
@@ -281,6 +282,7 @@ function App({ location, history }) {
       onUploadProgress: handleUploadProgress,
       recepientId,
       path: filePath,
+      targetMessageId,
       subjectId
     });
     if (members) {

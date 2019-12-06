@@ -274,13 +274,14 @@ export default function ChatActions(dispatch) {
         target
       });
     },
-    onSubmitMessage(params) {
+    onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
         message: {
-          ...params,
+          ...message,
           timeStamp: Math.floor(Date.now() / 1000)
-        }
+        },
+        replyTarget
       });
     },
     onUpdateApiServerToS3Progress({ progress, channelId, path }) {

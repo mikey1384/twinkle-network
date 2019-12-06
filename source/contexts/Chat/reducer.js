@@ -78,6 +78,7 @@ export default function ChatReducer(state, action) {
     case 'CREATE_NEW_CHANNEL':
       return {
         ...state,
+        replyTarget: null,
         subject: {},
         channels: [
           {
@@ -187,6 +188,7 @@ export default function ChatReducer(state, action) {
       action.data.messages.reverse();
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         currentChannel: selectedChannel,
         channels: state.channels.reduce((prev, channel, index) => {
@@ -221,6 +223,7 @@ export default function ChatReducer(state, action) {
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         selectedChannelId: 0,
@@ -408,6 +411,7 @@ export default function ChatReducer(state, action) {
         ...state,
         loaded: true,
         recentChessMessage: undefined,
+        replyTarget: null,
         subject: {},
         channels: [
           {
@@ -435,6 +439,7 @@ export default function ChatReducer(state, action) {
     case 'OPEN_NEW_TAB':
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         channels: [
@@ -654,7 +659,8 @@ export default function ChatReducer(state, action) {
         messages: state.messages.concat([
           {
             ...action.message,
-            content: action.message.content
+            content: action.message.content,
+            targetMessage: action.replyTarget
           }
         ])
       };

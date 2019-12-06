@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -16,6 +16,7 @@ import TargetMessagePreview from './TargetMessagePreview';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
+  innerRef: PropTypes.object,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
@@ -26,6 +27,7 @@ ChatInput.propTypes = {
 
 export default function ChatInput({
   currentChannelId = 0,
+  innerRef,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
@@ -34,7 +36,6 @@ export default function ChatInput({
   onPlusButtonClick
 }) {
   const { profileTheme } = useMyState();
-  const TextareaRef = useRef(null);
   const {
     state: { replyTarget },
     actions: { onSetReplyTarget }
@@ -48,9 +49,9 @@ export default function ChatInput({
 
   useEffect(() => {
     if (!isMobile(navigator)) {
-      TextareaRef.current.focus();
+      innerRef.current.focus();
     }
-  }, [currentChannelId]);
+  }, [currentChannelId, innerRef]);
 
   const messageExceedsCharLimit = useMemo(
     () =>
@@ -92,7 +93,7 @@ export default function ChatInput({
           </div>
         )}
         <Textarea
-          innerRef={TextareaRef}
+          innerRef={innerRef}
           minRows={1}
           placeholder="Type a message..."
           onKeyDown={onKeyDown}
@@ -133,7 +134,7 @@ export default function ChatInput({
 
   function handleChange(event) {
     setTimeout(() => {
-      onHeightChange(TextareaRef.current?.clientHeight);
+      onHeightChange(innerRef.current?.clientHeight);
     }, 0);
     onEnterComment({
       contentType: 'chat',
@@ -162,7 +163,7 @@ export default function ChatInput({
       event.target.value = '';
     }
     if (enterKeyPressed && shiftKeyPressed) {
-      onHeightChange(TextareaRef.current?.clientHeight + 20);
+      onHeightChange(innerRef.current?.clientHeight + 20);
     }
   }
 }

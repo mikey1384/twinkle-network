@@ -75,7 +75,9 @@ export default function TargetMessagePreview({ onClose }) {
           </div>
         </div>
         {fileType && replyTarget.fileName && (
-          <div style={{ display: 'flex' }}>
+          <div
+            style={{ display: 'flex', maxWidth: imageSrc ? '12rem' : '30rem' }}
+          >
             {imageSrc ? (
               <Image imageUrl={imageSrc} />
             ) : (

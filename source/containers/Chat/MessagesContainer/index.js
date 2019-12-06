@@ -104,6 +104,7 @@ export default function MessagesContainer({
   const ContentRef = useRef({});
   const FileInputRef = useRef(null);
   const MessagesContainerRef = useRef({});
+  const ChatInputRef = useRef(null);
   const mb = 1000;
   const maxSize = useMemo(
     () =>
@@ -318,6 +319,7 @@ export default function MessagesContainer({
                   onSendFileMessage={onSendFileMessage}
                   onDelete={handleShowDeleteModal}
                   onReceiveNewMessage={handleReceiveNewMessage}
+                  onReplyClick={() => ChatInputRef.current.focus()}
                   recepientId={recepientId}
                   setScrollToBottom={handleSetScrollToBottom}
                   showSubjectMsgsModal={({ subjectId, content }) =>
@@ -371,6 +373,7 @@ export default function MessagesContainer({
       >
         {socketConnected ? (
           <ChatInput
+            innerRef={ChatInputRef}
             loading={loading}
             myId={userId}
             isTwoPeopleChannel={currentChannel.twoPeople}
@@ -391,7 +394,7 @@ export default function MessagesContainer({
         ) : (
           <div>
             <Loading
-              style={{ height: '2.2rem' }}
+              style={{ height: '4.2rem' }}
               innerStyle={{ fontSize: '2rem' }}
               text="Socket disconnected. Reconnecting..."
             />
