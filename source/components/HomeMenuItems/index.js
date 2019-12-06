@@ -71,7 +71,7 @@ export default function HomeMenuItems({ history, style = {} }) {
             </nav>
           )}
         />
-        {managementLevel > 0 && (
+        {managementLevel > 0 && isMobile(navigator) && (
           <Route
             exact
             path="/management"
