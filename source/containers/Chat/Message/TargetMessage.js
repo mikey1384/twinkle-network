@@ -4,7 +4,11 @@ import Image from '../Image';
 import FileIcon from '../FileIcon';
 import { unix } from 'moment';
 import { borderRadius, Color } from 'constants/css';
-import { getFileInfoFromFileName, renderFileSize } from 'helpers/stringHelpers';
+import {
+  getFileInfoFromFileName,
+  processedStringWithURL,
+  renderFileSize
+} from 'helpers/stringHelpers';
 import { cloudFrontURL } from 'constants/defaultValues';
 
 TargetMessage.propTypes = {
@@ -50,9 +54,12 @@ export default function TargetMessage({ message }) {
             {unix(message.timeStamp).format('LLL')}
           </small>
         </p>
-        <p style={{ marginTop: '0.5rem' }}>
-          {message.content || message.fileName}
-        </p>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: processedStringWithURL(message.content) || message.fileName
+          }}
+          style={{ marginTop: '0.5rem' }}
+        />
       </div>
       {fileType && message.fileName && (
         <div
