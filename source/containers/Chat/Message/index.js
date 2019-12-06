@@ -390,6 +390,7 @@ export default function Message({
                 setEditPadding(
                   !menuDisplayed && isLastMsg && !filePath && !extractedUrl
                 );
+                setScrollToBottom();
               }}
               onOutsideClick={() => {
                 setEditPadding(false);
