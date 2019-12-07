@@ -8,6 +8,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
 import FilterBar from 'components/FilterBar';
 import Notification from 'components/Notification';
+import Loading from 'components/Loading';
 import request from 'axios';
 import URL from 'constants/URL';
 import { socket } from 'constants/io';
@@ -41,6 +42,7 @@ export default function NavMenu({ playlistId, videoId }) {
     setPlaylistVideosLoadMoreShown
   ] = useState(false);
   const [videoTabActive, setVideoTabActive] = useState(true);
+  const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   const prevUserId = useRef(userId);
 
@@ -50,6 +52,7 @@ export default function NavMenu({ playlistId, videoId }) {
     loadRightMenuVideos();
     async function loadRightMenuVideos() {
       try {
+        setLoading(true);
         const { data } = await request.get(
           `${URL}/${
             playlistId ? 'playlist' : 'video'
@@ -76,6 +79,7 @@ export default function NavMenu({ playlistId, videoId }) {
           if (data.otherVideos) {
             setOtherVideos(data.otherVideos);
           }
+          setLoading(false);
         }
       } catch (error) {
         console.error(error);
@@ -155,6 +159,7 @@ export default function NavMenu({ playlistId, videoId }) {
           {rewardsExist ? 'Rewards' : 'News'}
         </nav>
       </FilterBar>
+      {loading && <Loading />}
       {videoTabActive && (
         <>
           {nextVideos.length > 0 && (
