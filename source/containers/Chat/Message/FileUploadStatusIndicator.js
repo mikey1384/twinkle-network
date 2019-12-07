@@ -66,6 +66,7 @@ export default function FileUploadStatusIndicator({
 
   const [
     {
+      id: messageId,
       uploadComplete = false,
       clientToApiServerProgress = 0,
       apiServerToS3Progress = 0
@@ -84,6 +85,7 @@ export default function FileUploadStatusIndicator({
         content,
         fileName: fileToUpload.name,
         filePath,
+        id: messageId,
         uploaderAuthLevel: authLevel,
         channelId,
         userId,
