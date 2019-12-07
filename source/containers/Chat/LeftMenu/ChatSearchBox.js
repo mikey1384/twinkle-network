@@ -16,7 +16,7 @@ export default function ChatSearchBox({ style }) {
   } = useAppContext();
   const { profilePicId, userId, username } = useMyState();
   const {
-    state: { chatSearchResults },
+    state: { chatSearchResults, selectedChannelId },
     actions: {
       onClearChatSearchResults,
       onEnterChannelWithId,
@@ -73,6 +73,11 @@ export default function ChatSearchBox({ style }) {
 
   async function onSelect(item) {
     if (item.primary || !!item.channelId) {
+      if (item.channelId === selectedChannelId) {
+        setSearchText('');
+        onClearChatSearchResults();
+        return;
+      }
       onUpdateSelectedChannelId(item.channelId);
       const data = await loadChatChannel({
         channelId: item.channelId
