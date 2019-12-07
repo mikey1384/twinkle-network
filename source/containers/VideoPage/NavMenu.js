@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -45,6 +45,21 @@ export default function NavMenu({ playlistId, videoId }) {
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
   const prevUserId = useRef(userId);
+
+  const noVideos = useMemo(() => {
+    return (
+      nextVideos.length +
+        relatedVideos.length +
+        otherVideos.length +
+        playlistVideos.length ===
+      0
+    );
+  }, [
+    nextVideos.length,
+    otherVideos.length,
+    playlistVideos.length,
+    relatedVideos.length
+  ]);
 
   useEffect(() => {
     mounted.current = true;
@@ -159,7 +174,7 @@ export default function NavMenu({ playlistId, videoId }) {
           {rewardsExist ? 'Rewards' : 'News'}
         </nav>
       </FilterBar>
-      {loading && <Loading />}
+      {loading && noVideos && <Loading />}
       {videoTabActive && (
         <>
           {nextVideos.length > 0 && (
