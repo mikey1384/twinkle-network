@@ -2,6 +2,7 @@ import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
+import LongText from 'components/Texts/LongText';
 import { css } from 'emotion';
 import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -190,7 +191,11 @@ function Embedly({
             `}
           >
             <h3>{cleanString(actualTitle || title)}</h3>
-            <p>{cleanString(actualDescription || description)}</p>
+            <p>
+              <LongText maxLines={6} noExpand>
+                {cleanString(actualDescription || description)}
+              </LongText>
+            </p>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
         )}
