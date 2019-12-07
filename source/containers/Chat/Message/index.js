@@ -37,6 +37,7 @@ Message.propTypes = {
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
+  loading: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
@@ -56,6 +57,7 @@ export default function Message({
   index,
   isLastMsg,
   isNotification,
+  loading,
   message,
   message: {
     id: messageId,
@@ -333,8 +335,9 @@ export default function Message({
                 opponentName={chessOpponent?.username}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
-            ) : fileToUpload ? (
+            ) : fileToUpload && !loading ? (
               <FileUploadStatusIndicator
+                key={channelId}
                 channelId={channelId}
                 checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
                 content={content}

@@ -211,9 +211,10 @@ export default function ChatReducer(state, action) {
             }
           ]);
         }, []),
-        messages: uploadStatusMessages
-          ? [...action.data.messages, ...uploadStatusMessages]
-          : action.data.messages,
+        messages:
+          uploadStatusMessages?.length > 0
+            ? [...action.data.messages, ...uploadStatusMessages]
+            : action.data.messages,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         selectedChannelId: selectedChannel.id,
         subject: action.channelId === 2 ? state.subject : {},
@@ -713,6 +714,8 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
+        messages: [],
+        loadMoreMessages: false,
         selectedChannelId: action.channelId
       };
     default:
