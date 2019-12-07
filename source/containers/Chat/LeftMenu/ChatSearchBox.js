@@ -14,7 +14,7 @@ export default function ChatSearchBox({ style }) {
   const {
     requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
-  const { userId, username } = useMyState();
+  const { profilePicId, userId, username } = useMyState();
   const {
     state: { chatSearchResults },
     actions: {
@@ -80,8 +80,12 @@ export default function ChatSearchBox({ style }) {
       onEnterChannelWithId({ data, showOnTop: true });
     } else {
       onOpenNewChatTab({
-        user: { username, id: userId },
-        recepient: { username: item.label, id: item.id }
+        user: { username, id: userId, profilePicId },
+        recepient: {
+          username: item.label,
+          id: item.id,
+          profilePicId: item.profilePicId
+        }
       });
     }
     setSearchText('');
