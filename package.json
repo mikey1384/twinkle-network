@@ -11,7 +11,7 @@
     "build": "webpack --progress --color -p --config webpack/webpack.prod.js",
     "reload": "sudo pm2 reload entry/production.js",
     "start": "sudo NODE_PATH=./source forever -o api_out.log -e api_err.log start entry/production.js -i max --log ./logs",
-    "stop": "sudo pm2 stop entry/production.js",
+    "stop": "sudo forever stop entry/production.js",
     "test": "node scripts/test.js --env=jsdom"
   },
   "dependencies": {
