@@ -89,6 +89,7 @@ export default function Stories({ location }) {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+  const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
   const { setScrollHeight } = useInfiniteScroll({
     scrollable: feeds.length > 0,
@@ -143,6 +144,29 @@ export default function Stories({ location }) {
   });
 
   useEffect(() => {
+    if (
+      category === 'videos' &&
+      loaded &&
+      typeof hideWatchedRef.current === 'number' &&
+      hideWatchedRef.current !== hideWatched
+    ) {
+      filterVideos();
+    }
+    async function filterVideos() {
+      const { data } = await loadFeeds({
+        order: 'desc',
+        filter: categoryObj.videos.filter,
+        orderBy: categoryObj.videos.orderBy
+      });
+      if (category === 'videos' && mounted.current) {
+        onLoadFeeds(data);
+      }
+    }
+    hideWatchedRef.current = hideWatched;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hideWatched]);
+
+  useEffect(() => {
     if (!loaded) {
       init();
     }
@@ -162,23 +186,6 @@ export default function Stories({ location }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
-
-  useEffect(() => {
-    if (category === 'videos') {
-      filterVideos();
-    }
-    async function filterVideos() {
-      const { data } = await loadFeeds({
-        order: 'desc',
-        filter: categoryObj.videos.filter,
-        orderBy: categoryObj.videos.orderBy
-      });
-      if (category === 'videos' && mounted.current) {
-        onLoadFeeds(data);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hideWatched]);
 
   const ContentPanels = useMemo(() => {
     return feeds.map((feed, index) => (
