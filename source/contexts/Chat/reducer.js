@@ -713,6 +713,8 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
+        messages: [],
+        loadMoreMessages: false,
         selectedChannelId: action.channelId
       };
     default:

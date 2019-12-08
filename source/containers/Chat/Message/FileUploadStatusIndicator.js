@@ -52,17 +52,7 @@ export default function FileUploadStatusIndicator({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    channelId,
-    content,
-    filePath,
-    fileToUpload,
-    filesBeingUploaded,
-    recepientId,
-    replyTarget,
-    subjectId,
-    userId
-  ]);
+  }, []);
 
   const [
     {

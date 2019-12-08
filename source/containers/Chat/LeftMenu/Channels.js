@@ -67,7 +67,9 @@ export default function Channels({
               height: '6.5rem'
             }}
             onClick={() => {
-              onChannelEnter(id);
+              if (id !== selectedChannelId) {
+                onChannelEnter(id);
+              }
             }}
           >
             <div

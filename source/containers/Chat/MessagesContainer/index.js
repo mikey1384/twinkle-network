@@ -298,7 +298,7 @@ export default function MessagesContainer({
             <div ref={MessagesRef}>
               {messages.map((message, index) => (
                 <Message
-                  key={message.id || 'newMessage' + index}
+                  key={selectedChannelId + (message.id || 'newMessage' + index)}
                   channelId={selectedChannelId}
                   channelName={channelName}
                   chessCountdownObj={chessCountdownObj}
@@ -313,6 +313,7 @@ export default function MessagesContainer({
                   index={index}
                   isLastMsg={index === messages.length - 1}
                   isNotification={!!message.isNotification}
+                  loading={loading}
                   message={message}
                   onChessBoardClick={onChessBoardClick}
                   onChessSpoilerClick={onChessSpoilerClick}
