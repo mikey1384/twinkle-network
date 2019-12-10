@@ -282,6 +282,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         const { data: url } = await request.get(
           `${URL}/chat/sign-s3?fileName=${selectedFile.name}&path=${path}`
         );
+        await request.put(url.signedRequest, selectedFile, {
+          onUploadProgress
+        });
         const { data } = await request.post(
           `${URL}/chat/file`,
           {
@@ -296,9 +299,6 @@ export default function chatRequestHelpers({ auth, handleError }) {
           },
           auth()
         );
-        await request.put(url.signedRequest, selectedFile, {
-          onUploadProgress
-        });
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
