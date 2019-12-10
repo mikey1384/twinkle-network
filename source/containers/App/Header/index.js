@@ -55,8 +55,7 @@ export default function Header({
       onInitChat,
       onReceiveFirstMsg,
       onReceiveMessage,
-      onReceiveMessageOnDifferentChannel,
-      onUpdateApiServerToS3Progress
+      onReceiveMessageOnDifferentChannel
     }
   } = useChatContext();
 
@@ -95,7 +94,6 @@ export default function Header({
     socket.on('disconnect', onDisconnect);
     socket.on('new_post', onIncreaseNumNewPosts);
     socket.on('new_notification', onIncreaseNumNewNotis);
-    socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
     socket.on('receive_message', handleReceiveMessage);
     socket.on('subject_change', onSubjectChange);
 
@@ -105,10 +103,6 @@ export default function Header({
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('new_post', onIncreaseNumNewPosts);
       socket.removeListener('new_notification', onIncreaseNumNewNotis);
-      socket.removeListener(
-        'receive_chat_file_upload_progress',
-        onReceiveUploadProgress
-      );
       socket.removeListener('receive_message', handleReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
     };
@@ -180,13 +174,6 @@ export default function Header({
           usingChat
         });
       }
-    }
-    function onReceiveUploadProgress({ channelId, path, percentage }) {
-      onUpdateApiServerToS3Progress({
-        progress: percentage / 100,
-        channelId,
-        path
-      });
     }
     function onSubjectChange({ subject }) {
       onNotifyChatSubjectChange(subject);

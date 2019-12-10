@@ -279,20 +279,24 @@ export default function chatRequestHelpers({ auth, handleError }) {
       subjectId
     }) {
       try {
-        const fileData = new FormData();
-        fileData.append('file', selectedFile, selectedFile.name);
-        fileData.append('path', path);
-        fileData.append('channelId', channelId);
-        fileData.append('recepientId', recepientId);
-        fileData.append('content', content);
-        if (targetMessageId) {
-          fileData.append('targetMessageId', targetMessageId);
-        }
-        if (subjectId) {
-          fileData.append('subjectId', subjectId);
-        }
-        const { data } = await request.post(`${URL}/chat/file`, fileData, {
-          ...auth(),
+        const { data: url } = await request.get(
+          `${URL}/chat/sign-s3?fileName=${selectedFile.name}&path=${path}`
+        );
+        const { data } = await request.post(
+          `${URL}/chat/file`,
+          {
+            fileName: selectedFile.name,
+            fileSize: selectedFile.size,
+            path,
+            channelId,
+            content,
+            recepientId,
+            targetMessageId,
+            subjectId
+          },
+          auth()
+        );
+        await request.put(url.signedRequest, selectedFile, {
           onUploadProgress
         });
         return Promise.resolve(data);

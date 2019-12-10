@@ -78,6 +78,7 @@ export function AppContextProvider({ children }) {
 
   function handleError(error) {
     if (error.response) {
+      console.error(error.response);
       const { status } = error.response;
       if (status === 401) {
         localStorage.removeItem('token');

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
@@ -55,12 +55,7 @@ export default function FileUploadStatusIndicator({
   }, []);
 
   const [
-    {
-      id: messageId,
-      uploadComplete = false,
-      clientToApiServerProgress = 0,
-      apiServerToS3Progress = 0
-    } = {}
+    { id: messageId, uploadComplete = false, uploadProgress } = {}
   ] = useMemo(() => {
     return (
       filesBeingUploaded[channelId]?.filter(
@@ -104,20 +99,13 @@ export default function FileUploadStatusIndicator({
     username
   ]);
 
-  const [uploadProgress, setUploadProgress] = useState(0);
-  useEffect(() => {
-    setUploadProgress(
-      Math.ceil(5 + 15 * clientToApiServerProgress + 80 * apiServerToS3Progress)
-    );
-  }, [clientToApiServerProgress, apiServerToS3Progress]);
-
   return (
     <div style={{ marginTop: '1rem' }}>
       <div>{`Uploading ${fileToUpload.name}...`}</div>
       <ProgressBar
         text={uploadComplete ? 'Upload Complete!' : ''}
         color={uploadComplete ? Color.green() : Color.blue()}
-        progress={uploadComplete ? 100 : uploadProgress}
+        progress={uploadComplete ? 100 : Math.ceil(100 * uploadProgress)}
       />
     </div>
   );

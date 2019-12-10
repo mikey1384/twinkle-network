@@ -284,22 +284,14 @@ export default function ChatActions(dispatch) {
         replyTarget
       });
     },
-    onUpdateApiServerToS3Progress({ progress, channelId, path }) {
-      return dispatch({
-        type: 'UPDATE_API_SERVER_TO_S3_PROGRESS',
-        progress,
-        channelId,
-        path
-      });
-    },
     onUpdateChessMoveViewTimeStamp() {
       return dispatch({
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
       });
     },
-    onUpdateClientToApiServerProgress({ progress, channelId, path }) {
+    onUpdateUploadProgress({ progress, channelId, path }) {
       return dispatch({
-        type: 'UPDATE_CLIENT_TO_API_SERVER_PROGRESS',
+        type: 'UPDATE_UPLOAD_PROGRESS',
         progress,
         channelId,
         path

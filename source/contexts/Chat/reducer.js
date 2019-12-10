@@ -664,7 +664,7 @@ export default function ChatReducer(state, action) {
           }
         ])
       };
-    case 'UPDATE_API_SERVER_TO_S3_PROGRESS':
+    case 'UPDATE_UPLOAD_PROGRESS':
       return {
         ...state,
         filesBeingUploaded: {
@@ -674,7 +674,7 @@ export default function ChatReducer(state, action) {
               file.filePath === action.path
                 ? {
                     ...file,
-                    apiServerToS3Progress: action.progress
+                    uploadProgress: action.progress
                   }
                 : file
           )
