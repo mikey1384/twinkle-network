@@ -15,7 +15,8 @@ import ChannelHeader from './ChannelHeader';
 import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
-import EditTitleModal from '../Modals/EditTitle';
+import SettingsModal from '../Modals/SettingsModal';
+import Icon from 'components/Icon';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext, useChatContext } from 'contexts';
 
@@ -23,6 +24,7 @@ MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
+  isClosed: PropTypes.bool,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
@@ -97,7 +99,7 @@ export default function MessagesContainer({
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
-  const [editTitleModalShown, setEditTitleModalShown] = useState(false);
+  const [settingsModalShown, setSettingsModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const MessagesRef = useRef({});
@@ -123,25 +125,56 @@ export default function MessagesContainer({
     }${replyTarget ? ' - 12rem - 2px' : ''})`;
   }, [replyTarget, textAreaHeight]);
   const menuProps = useMemo(() => {
-    return currentChannel.twoPeople
-      ? [{ label: 'Hide Chat', onClick: handleHideChat }]
-      : [
-          {
-            label: 'Invite People',
-            onClick: () => setInviteUsersModalShown(true)
-          },
-          {
-            label: 'Edit Channel Name',
-            onClick: () => setEditTitleModalShown(true)
-          },
-          {
-            separator: true
-          },
-          {
-            label: 'Leave Channel',
-            onClick: () => setLeaveConfirmModalShown(true)
-          }
-        ];
+    if (currentChannel.twoPeople) {
+      return [
+        {
+          label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
+          onClick: handleHideChat
+        }
+      ];
+    }
+    let result = [];
+    if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
+      result.push({
+        label: (
+          <>
+            <Icon icon="users" />
+            <span style={{ marginLeft: '1rem' }}>Invite People</span>
+          </>
+        ),
+        onClick: () => setInviteUsersModalShown(true)
+      });
+    }
+    result = result.concat([
+      {
+        label:
+          currentChannel.creatorId === userId ? (
+            <>
+              <Icon icon="sliders-h" />
+              <span style={{ marginLeft: '1rem' }}>Settings</span>
+            </>
+          ) : (
+            <>
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '1rem' }}>Edit Channel Name</span>
+            </>
+          ),
+        onClick: () => setSettingsModalShown(true)
+      },
+      {
+        separator: true
+      },
+      {
+        label: (
+          <>
+            <Icon icon="sign-out-alt" />
+            <span style={{ marginLeft: '1rem' }}>Leave</span>
+          </>
+        ),
+        onClick: () => setLeaveConfirmModalShown(true)
+      }
+    ]);
+    return result;
     async function handleHideChat() {
       await hideChat(selectedChannelId);
       onHideChat(selectedChannelId);
@@ -151,7 +184,13 @@ export default function MessagesContainer({
       onEnterChannelWithId({ data, showOnTop: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentChannel.twoPeople, selectedChannelId]);
+  }, [
+    currentChannel.twoPeople,
+    currentChannel.isClosed,
+    currentChannel.creatorId,
+    userId,
+    selectedChannelId
+  ]);
 
   const fillerHeight = useMemo(
     () =>
@@ -210,6 +249,9 @@ export default function MessagesContainer({
             zIndex: 10,
             top: '1rem',
             right: '1rem'
+          }}
+          listStyle={{
+            width: '15rem'
           }}
           direction="left"
           icon="bars"
@@ -425,10 +467,11 @@ export default function MessagesContainer({
             onDone={handleInviteUsersDone}
           />
         )}
-        {editTitleModalShown && (
-          <EditTitleModal
-            title={channelName}
-            onHide={() => setEditTitleModalShown(false)}
+        {settingsModalShown && (
+          <SettingsModal
+            userIsChannelOwner={currentChannel.creatorId === userId}
+            channelName={channelName}
+            onHide={() => setSettingsModalShown(false)}
             onDone={handleEditChannelTitle}
           />
         )}
@@ -462,7 +505,7 @@ export default function MessagesContainer({
   async function handleEditChannelTitle(title) {
     await editChannelTitle({ title, channelId: selectedChannelId });
     onEditChannelTitle({ title, channelId: selectedChannelId });
-    setEditTitleModalShown(false);
+    setSettingsModalShown(false);
   }
 
   async function handleLoadMoreButtonClick() {

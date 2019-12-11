@@ -9,6 +9,7 @@ SwitchButton.propTypes = {
   color: PropTypes.string,
   checked: PropTypes.bool.isRequired,
   label: PropTypes.string,
+  labelStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object
 };
@@ -17,6 +18,7 @@ export default function SwitchButton({
   color,
   checked,
   label,
+  labelStyle = { fontSize: '1.3rem' },
   onChange,
   style
 }) {
@@ -30,7 +32,7 @@ export default function SwitchButton({
       }}
     >
       {label && (
-        <div style={{ marginRight: '1rem', fontSize: '1.3rem' }}>{label}</div>
+        <div style={{ marginRight: '1rem', ...labelStyle }}>{label}</div>
       )}
       <label
         className={css`

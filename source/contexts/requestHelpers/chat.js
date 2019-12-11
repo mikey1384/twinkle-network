@@ -3,11 +3,11 @@ import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
   return {
-    async createNewChat({ channelName, selectedUsers }) {
+    async createNewChat({ channelName, selectedUsers, isClosed }) {
       try {
         const { data } = await request.post(
           `${URL}/chat/channel`,
-          { channelName, selectedUsers },
+          { channelName, selectedUsers, isClosed },
           auth()
         );
         return Promise.resolve(data);
