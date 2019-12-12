@@ -7,7 +7,9 @@ import Banner from 'components/Banner';
 import ErrorBoundary from 'components/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import ContentPanel from 'components/ContentPanel';
+import { css } from 'emotion';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import {
   useInfiniteScroll,
@@ -266,6 +268,15 @@ export default function Stories({ location }) {
                   filled
                 />
               )}
+              <div
+                className={css`
+                  display: none;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    display: block;
+                    height: 5rem;
+                  }
+                `}
+              />
             </>
           )}
         </div>
