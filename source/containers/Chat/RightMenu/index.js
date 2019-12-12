@@ -193,7 +193,8 @@ export default function RightMenu({
                 style={{
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
-                  width: 'auto'
+                  width: 'auto',
+                  maxWidth: '7rem'
                 }}
                 user={member}
               />

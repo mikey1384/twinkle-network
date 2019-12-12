@@ -33,27 +33,33 @@ export default function SettingsModal({
     <Modal onHide={onHide}>
       <header>{userIsChannelOwner ? 'Settings' : 'Edit Channel Name'}</header>
       <main>
-        {userIsChannelOwner && (
-          <SwitchButton
-            labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
-            label="Only I can invite new members:"
-            checked={editedIsClosed}
-            onChange={() => setEditedIsClosed(isClosed => !isClosed)}
-          />
-        )}
-        <div style={{ width: '50%' }}>
+        <div>
           {userIsChannelOwner && (
-            <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-              Channel Name:
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
+                Only I can invite new members:
+              </p>
+              <SwitchButton
+                style={{ marginLeft: '1rem' }}
+                checked={editedIsClosed}
+                onChange={() => setEditedIsClosed(isClosed => !isClosed)}
+              />
+            </div>
           )}
-          <Input
-            style={{ marginTop: '1rem' }}
-            autoFocus
-            placeholder="Enter channel name..."
-            value={editedChannelName}
-            onChange={setEditedChannelName}
-          />
+          <div style={{ marginTop: '1rem' }}>
+            {userIsChannelOwner && (
+              <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
+                Channel Name:
+              </p>
+            )}
+            <Input
+              style={{ marginTop: '0.5rem' }}
+              autoFocus
+              placeholder="Enter channel name..."
+              value={editedChannelName}
+              onChange={setEditedChannelName}
+            />
+          </div>
         </div>
       </main>
       <footer>
