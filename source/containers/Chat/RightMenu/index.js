@@ -190,12 +190,20 @@ export default function RightMenu({
               />
               <UsernameText
                 truncate
+                className={css`
+                  width: auto;
+                  max-width: ${currentChannel.creatorId === member.id
+                    ? '12rem'
+                    : '16rem'};
+                  @media (max-width: ${mobileMaxWidth}) {
+                    max-width: ${currentChannel.creatorId === member.id
+                      ? '8rem'
+                      : '12rem'};
+                  }
+                `}
                 style={{
                   color: Color.darkerGray(),
-                  marginLeft: '2rem',
-                  width: 'auto',
-                  maxWidth:
-                    currentChannel.creatorId === member.id ? '8rem' : '12rem'
+                  marginLeft: '2rem'
                 }}
                 user={member}
               />

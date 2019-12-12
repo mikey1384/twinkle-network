@@ -36,9 +36,9 @@ export default function UsernameText({
       style={{
         display: 'inline',
         position: 'relative',
-        width: '100%',
         ...style
       }}
+      className={className}
       onMouseLeave={() => setMenuShown(false)}
     >
       <div
@@ -50,7 +50,6 @@ export default function UsernameText({
         }}
       >
         <span
-          className={className}
           style={{
             width: '100%',
             cursor: 'pointer',
