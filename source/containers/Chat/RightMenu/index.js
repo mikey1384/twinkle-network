@@ -194,7 +194,8 @@ export default function RightMenu({
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
                   width: 'auto',
-                  maxWidth: '7rem'
+                  maxWidth:
+                    currentChannel.creatorId === member.id ? '8rem' : '12rem'
                 }}
                 user={member}
               />
