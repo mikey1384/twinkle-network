@@ -479,6 +479,7 @@ export default function MessagesContainer({
             channelName={channelName}
             onHide={() => setSettingsModalShown(false)}
             onDone={handleEditSettings}
+            channelId={selectedChannelId}
           />
         )}
         {leaveConfirmModalShown && (

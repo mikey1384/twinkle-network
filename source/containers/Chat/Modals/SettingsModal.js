@@ -5,8 +5,10 @@ import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { useChatContext } from 'contexts';
 
 SettingsModal.propTypes = {
+  channelId: PropTypes.number,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   channelName: PropTypes.string,
@@ -15,20 +17,36 @@ SettingsModal.propTypes = {
 };
 
 export default function SettingsModal({
+  channelId,
   isClosed,
   onDone,
   onHide,
   channelName,
   userIsChannelOwner
 }) {
+  const {
+    state: { customChannelNames }
+  } = useChatContext();
   const [editedChannelName, setEditedChannelName] = useState(channelName);
   const [editedIsClosed, setEditedIsClosed] = useState(isClosed);
   const disabled = useMemo(() => {
+    const customChannelName = customChannelNames[channelId];
+    let channelNameDidNotChange = editedChannelName === channelName;
+    if (customChannelName !== channelName) {
+      channelNameDidNotChange = false;
+    }
     return (
-      (stringIsEmpty(editedChannelName) || editedChannelName === channelName) &&
+      (stringIsEmpty(editedChannelName) || channelNameDidNotChange) &&
       isClosed === editedIsClosed
     );
-  }, [channelName, editedChannelName, editedIsClosed, isClosed]);
+  }, [
+    channelId,
+    channelName,
+    customChannelNames,
+    editedChannelName,
+    editedIsClosed,
+    isClosed
+  ]);
   return (
     <Modal onHide={onHide}>
       <header>{userIsChannelOwner ? 'Settings' : 'Edit Channel Name'}</header>
