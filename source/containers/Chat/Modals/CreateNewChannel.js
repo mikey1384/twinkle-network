@@ -5,6 +5,8 @@ import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
 
 CreateNewChannelModal.propTypes = {
@@ -47,9 +49,15 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
           )}
           searchPlaceholder="Search for people you want to chat with"
           selectedItems={selectedUsers}
+          className={css`
+            width: 80%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
         >
           {selectedUsers.length > 1 && (
-            <div>
+            <div style={{ width: '100%' }}>
               <div style={{ marginTop: '1.5rem' }}>
                 <h3>Channel name</h3>
                 <Input
