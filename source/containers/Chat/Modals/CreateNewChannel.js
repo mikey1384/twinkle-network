@@ -62,8 +62,8 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
               <div style={{ marginTop: '1.5rem' }}>
                 <SwitchButton
                   labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
-                  label="Only I can invite new members:"
-                  checked={isClosed}
+                  label="Anyone can invite new members:"
+                  checked={!isClosed}
                   onChange={() => setIsClosed(isClosed => !isClosed)}
                 />
                 <p>(You can change this setting later)</p>

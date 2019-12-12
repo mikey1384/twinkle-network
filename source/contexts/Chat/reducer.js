@@ -125,6 +125,7 @@ export default function ChatReducer(state, action) {
               }
             },
             lastUpdate: action.data.message.timeStamp,
+            isClosed: action.data.isClosed,
             numUnreads: 0
           }
         ].concat(state.channels),
@@ -133,7 +134,8 @@ export default function ChatReducer(state, action) {
           id: action.data.message.channelId,
           twoPeople: false,
           creatorId: action.data.message.userId,
-          members: action.data.members
+          members: action.data.members,
+          isClosed: action.data.isClosed
         },
         messages: [action.data.message],
         loadMoreMessages: false

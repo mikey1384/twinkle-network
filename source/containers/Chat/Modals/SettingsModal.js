@@ -55,11 +55,11 @@ export default function SettingsModal({
           {userIsChannelOwner && (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-                Only I can invite new members:
+                Anyone can invite new members:
               </p>
               <SwitchButton
                 style={{ marginLeft: '1rem' }}
-                checked={editedIsClosed}
+                checked={!editedIsClosed}
                 onChange={() => setEditedIsClosed(isClosed => !isClosed)}
               />
             </div>
