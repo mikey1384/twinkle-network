@@ -50,6 +50,7 @@ export default function Header({
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
       onSetReconnecting,
+      onChangeChannelOwner,
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
@@ -90,6 +91,7 @@ export default function Header({
 
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
+    socket.on('change_channel_owner', onChangeChannelOwner);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('new_post', onIncreaseNumNewPosts);
@@ -99,6 +101,7 @@ export default function Header({
 
     return function cleanUp() {
       socket.removeListener('chat_invitation', onChatInvitation);
+      socket.removeListener('change_channel_owner', onChangeChannelOwner);
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('new_post', onIncreaseNumNewPosts);

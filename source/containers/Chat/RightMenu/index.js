@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import FullTextReveal from 'components/Texts/FullTextReveal';
+import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, phoneMaxWidth } from 'constants/css';
 import { isMobile, textIsOverflown } from 'helpers';
@@ -192,10 +193,19 @@ export default function RightMenu({
                 style={{
                   color: Color.darkerGray(),
                   marginLeft: '2rem',
-                  width: 'CALC(100% - 5rem - 2rem)'
+                  width: 'auto'
                 }}
                 user={member}
               />
+              {currentChannel.creatorId === member.id ? (
+                <div
+                  style={{
+                    marginLeft: '1rem'
+                  }}
+                >
+                  <Icon icon="crown" style={{ color: Color.brownOrange() }} />
+                </div>
+              ) : null}
             </div>
           </div>
         ))}

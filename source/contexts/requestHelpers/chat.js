@@ -3,6 +3,20 @@ import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
   return {
+    async changeChannelOwner({ channelId, newOwner }) {
+      try {
+        const {
+          data: { notificationMsg }
+        } = await request.put(
+          `${URL}/chat/owner`,
+          { channelId, newOwner },
+          auth()
+        );
+        return Promise.resolve(notificationMsg);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async createNewChat({ channelName, selectedUsers, isClosed }) {
       try {
         const { data } = await request.post(
@@ -26,9 +40,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editChannelTitle(params) {
+    async editChannelSettings(params) {
       try {
-        await request.post(`${URL}/chat/title`, params, auth());
+        await request.put(`${URL}/chat/settings`, params, auth());
         return Promise.resolve();
       } catch (error) {
         return handleError(error);

@@ -26,6 +26,7 @@ import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight'
 import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
 import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
+import { faCrown } from '@fortawesome/pro-solid-svg-icons/faCrown';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
 import { faFile } from '@fortawesome/pro-solid-svg-icons/faFile';
 import { faFileArchive } from '@fortawesome/pro-solid-svg-icons/faFileArchive';
@@ -77,6 +78,7 @@ library.add(
   faComment,
   faCommentAlt,
   faComments,
+  faCrown,
   faFile,
   faFileArchive,
   faFileAudio,

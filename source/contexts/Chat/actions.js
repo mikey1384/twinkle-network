@@ -1,5 +1,13 @@
 export default function ChatActions(dispatch) {
   return {
+    onChangeChannelOwner({ channelId, message, newOwner }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_OWNER',
+        channelId,
+        message,
+        newOwner
+      });
+    },
     onChangeChatSubject(subject) {
       return dispatch({
         type: 'CHANGE_SUBJECT',
@@ -71,10 +79,12 @@ export default function ChatActions(dispatch) {
         }
       });
     },
-    onEditChannelTitle(params) {
+    onEditChannelSettings({ channelName, isClosed, channelId }) {
       return dispatch({
-        type: 'APPLY_CHANGED_CHANNEL_TITLE',
-        data: params
+        type: 'APPLY_CHANGED_CHANNEL_SETTINGS',
+        channelName,
+        isClosed,
+        channelId
       });
     },
     onEditMessage({ editedMessage, messageId }) {
