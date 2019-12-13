@@ -180,7 +180,7 @@ export default function RightMenu({
               }}
             >
               <ProfilePic
-                style={{ height: '5rem', width: '5rem' }}
+                style={{ height: '4rem', width: '4rem' }}
                 userId={member.id}
                 profilePicId={member.profilePicId}
                 online={currentChannelOnlineMembers
