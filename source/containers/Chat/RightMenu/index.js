@@ -180,7 +180,7 @@ export default function RightMenu({
               }}
             >
               <ProfilePic
-                style={{ height: '5rem', width: '5rem' }}
+                style={{ height: '4rem', width: '4rem' }}
                 userId={member.id}
                 profilePicId={member.profilePicId}
                 online={currentChannelOnlineMembers
@@ -193,13 +193,8 @@ export default function RightMenu({
                 className={css`
                   width: auto;
                   max-width: ${currentChannel.creatorId === member.id
-                    ? '12rem'
-                    : '16rem'};
-                  @media (max-width: ${mobileMaxWidth}) {
-                    max-width: ${currentChannel.creatorId === member.id
-                      ? '8rem'
-                      : '12rem'};
-                  }
+                    ? '50%'
+                    : 'CALC(45% + 3rem)'};
                 `}
                 style={{
                   color: Color.darkerGray(),
