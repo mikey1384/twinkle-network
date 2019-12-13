@@ -8,15 +8,18 @@ export default function ChatActions(dispatch) {
         newOwner
       });
     },
+    onChangeChannelSettings({ channelId, channelName, isClosed }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_SETTINGS',
+        channelId,
+        channelName,
+        isClosed
+      });
+    },
     onChangeChatSubject(subject) {
       return dispatch({
         type: 'CHANGE_SUBJECT',
         subject
-      });
-    },
-    onSetReconnecting() {
-      return dispatch({
-        type: 'SET_RECONNECTING'
       });
     },
     onClearNumUnreads(channelId) {
@@ -276,6 +279,11 @@ export default function ChatActions(dispatch) {
         type: 'CREATE_NEW_DM_CHANNEL',
         members,
         message
+      });
+    },
+    onSetReconnecting() {
+      return dispatch({
+        type: 'SET_RECONNECTING'
       });
     },
     onSetReplyTarget(target) {

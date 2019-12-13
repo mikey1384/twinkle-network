@@ -67,6 +67,23 @@ export default function ChatReducer(state, action) {
             : state.messages
       };
     }
+    case 'CHANGE_CHANNEL_SETTINGS': {
+      return {
+        ...state,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? { ...channel, channelName: action.channelName }
+            : channel
+        ),
+        currentChannel:
+          state.currentChannel.id === action.channelId
+            ? {
+                ...state.currentChannel,
+                isClosed: action.isClosed
+              }
+            : state.currentChannel
+      };
+    }
     case 'CHANGE_SUBJECT': {
       return {
         ...state,

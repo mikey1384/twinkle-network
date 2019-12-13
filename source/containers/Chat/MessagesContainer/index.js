@@ -25,7 +25,6 @@ MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessCountdownObj: PropTypes.object,
   chessOpponent: PropTypes.object,
-  isClosed: PropTypes.bool,
   loadMoreButton: PropTypes.bool,
   loading: PropTypes.bool,
   loadMoreMessages: PropTypes.func,
@@ -523,6 +522,11 @@ export default function MessagesContainer({
       channelId: selectedChannelId
     });
     onEditChannelSettings({
+      channelName: editedChannelName,
+      isClosed: editedIsClosed,
+      channelId: selectedChannelId
+    });
+    socket.emit('new_chat_settings', {
       channelName: editedChannelName,
       isClosed: editedIsClosed,
       channelId: selectedChannelId
