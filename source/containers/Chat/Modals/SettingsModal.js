@@ -6,6 +6,8 @@ import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useChatContext } from 'contexts';
+import { mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 SettingsModal.propTypes = {
   channelId: PropTypes.number,
@@ -51,9 +53,36 @@ export default function SettingsModal({
     <Modal onHide={onHide}>
       <header>{userIsChannelOwner ? 'Settings' : 'Edit Channel Name'}</header>
       <main>
-        <div>
+        <div
+          className={css`
+            width: 80%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
+        >
+          <div style={{ width: '100%' }}>
+            {userIsChannelOwner && (
+              <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
+                Channel Name:
+              </p>
+            )}
+            <Input
+              style={{ marginTop: '0.5rem', width: '100%' }}
+              autoFocus
+              placeholder="Enter channel name..."
+              value={editedChannelName}
+              onChange={setEditedChannelName}
+            />
+          </div>
           {userIsChannelOwner && (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: '1.5rem'
+              }}
+            >
               <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
                 Anyone can invite new members:
               </p>
@@ -64,20 +93,6 @@ export default function SettingsModal({
               />
             </div>
           )}
-          <div style={{ marginTop: '1rem' }}>
-            {userIsChannelOwner && (
-              <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-                Channel Name:
-              </p>
-            )}
-            <Input
-              style={{ marginTop: '0.5rem' }}
-              autoFocus
-              placeholder="Enter channel name..."
-              value={editedChannelName}
-              onChange={setEditedChannelName}
-            />
-          </div>
         </div>
       </main>
       <footer>
