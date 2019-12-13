@@ -6,24 +6,24 @@ import ChatReducer from './reducer';
 export const ChatContext = createContext();
 
 export const initialChatState = {
-  loaded: false,
-  selectedChannelId: null,
-  currentChannel: {},
-  customChannelNames: {},
-  channels: [],
-  messages: [],
-  userSearchResults: [],
-  chatSearchResults: [],
-  loadMoreMessages: false,
   channelLoadMoreButton: false,
-  numUnreads: 0,
+  channelIds: [],
+  channelsObj: {},
+  chatSearchResults: [],
+  customChannelNames: {},
+  filesBeingUploaded: {},
+  loaded: false,
+  loadMoreMessages: false,
+  messages: [],
   msgsWhileInvisible: 0,
-  recepientId: null,
+  numUnreads: 0,
   recentChessMessage: undefined,
+  recepientId: null,
   replyTarget: null,
+  selectedChannelId: null,
   subject: {},
   subjectSearchResults: [],
-  filesBeingUploaded: {}
+  userSearchResults: []
 };
 
 ChatContextProvider.propTypes = {

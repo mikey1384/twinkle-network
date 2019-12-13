@@ -6,139 +6,130 @@ import { css } from 'emotion';
 
 Channels.propTypes = {
   userId: PropTypes.number.isRequired,
-  channels: PropTypes.arrayOf(
-    PropTypes.shape({
-      lastMessage: PropTypes.shape({
-        sender: PropTypes.shape({
-          id: PropTypes.number,
-          username: PropTypes.string
-        }),
-        content: PropTypes.string
-      }),
-      id: PropTypes.number.isRequired,
-      channelName: PropTypes.string,
-      numUnreads: PropTypes.number
-    })
-  ).isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number.isRequired
 };
 
 export default function Channels({
   userId,
-  channels,
   onChannelEnter,
   selectedChannelId
 }) {
   const {
-    state: { customChannelNames }
+    state: { channelIds, channelsObj, customChannelNames }
   } = useChatContext();
-  return channels
-    .filter(channel => !channel.isHidden)
-    .map(
-      ({
-        lastMessage,
-        id,
-        channelName,
-        members,
-        numUnreads = 0,
-        twoPeople
-      }) => {
-        const effectiveChannelName = customChannelNames[id] || channelName;
-        const otherMember = twoPeople
-          ? members?.filter(member => Number(member.id) !== userId)?.[0]
-          : null;
-        return (
-          <div
-            key={id}
-            className={css`
-              @media (min-width: ${desktopMinWidth}) {
-                &:hover {
-                  background: ${Color.checkboxAreaGray()};
-                }
-              }
-            `}
-            style={{
-              width: '100%',
-              backgroundColor:
-                id === selectedChannelId && Color.highlightGray(),
-              cursor: 'pointer',
-              padding: '1rem',
-              height: '6.5rem'
-            }}
-            onClick={() => {
-              if (id !== selectedChannelId) {
-                onChannelEnter(id);
-              }
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                height: '100%',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
+  return (
+    <>
+      {channelIds
+        .map(channelId => channelsObj[channelId])
+        .filter(channel => !channel.isHidden)
+        .map(
+          ({
+            lastMessage,
+            id,
+            channelName,
+            members,
+            numUnreads = 0,
+            twoPeople
+          }) => {
+            const effectiveChannelName = customChannelNames[id] || channelName;
+            const otherMember = twoPeople
+              ? members?.filter(member => Number(member.id) !== userId)?.[0]
+              : null;
+            return (
               <div
+                key={id}
+                className={css`
+                  @media (min-width: ${desktopMinWidth}) {
+                    &:hover {
+                      background: ${Color.checkboxAreaGray()};
+                    }
+                  }
+                `}
                 style={{
-                  display: 'flex',
-                  width: '85%',
-                  height: '100%',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between'
+                  width: '100%',
+                  backgroundColor:
+                    id === selectedChannelId && Color.highlightGray(),
+                  cursor: 'pointer',
+                  padding: '1rem',
+                  height: '6.5rem'
+                }}
+                onClick={() => {
+                  if (id !== selectedChannelId) {
+                    onChannelEnter(id);
+                  }
                 }}
               >
-                <div>
-                  <p
-                    style={{
-                      color: !effectiveChannelName && !otherMember && '#7c7c7c',
-                      fontWeight: 'bold',
-                      margin: 0,
-                      padding: 0,
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      lineHeight: 'normal'
-                    }}
-                  >
-                    {otherMember?.username ||
-                      effectiveChannelName ||
-                      '(Deleted)'}
-                  </p>
-                </div>
                 <div
                   style={{
-                    width: '100%',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden'
-                  }}
-                >
-                  {renderPreviewMessage(lastMessage || {})}
-                </div>
-              </div>
-              {id !== selectedChannelId && numUnreads > 0 && (
-                <div
-                  style={{
-                    background: Color.rose(),
                     display: 'flex',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    minWidth: '2rem',
-                    height: '2rem',
-                    borderRadius: '50%',
-                    justifyContent: 'center',
+                    height: '100%',
+                    justifyContent: 'space-between',
                     alignItems: 'center'
                   }}
                 >
-                  {numUnreads}
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '85%',
+                      height: '100%',
+                      whiteSpace: 'nowrap',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <div>
+                      <p
+                        style={{
+                          color:
+                            !effectiveChannelName && !otherMember && '#7c7c7c',
+                          fontWeight: 'bold',
+                          margin: 0,
+                          padding: 0,
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          lineHeight: 'normal'
+                        }}
+                      >
+                        {otherMember?.username ||
+                          effectiveChannelName ||
+                          '(Deleted)'}
+                      </p>
+                    </div>
+                    <div
+                      style={{
+                        width: '100%',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden'
+                      }}
+                    >
+                      {renderPreviewMessage(lastMessage || {})}
+                    </div>
+                  </div>
+                  {id !== selectedChannelId && numUnreads > 0 && (
+                    <div
+                      style={{
+                        background: Color.rose(),
+                        display: 'flex',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        minWidth: '2rem',
+                        height: '2rem',
+                        borderRadius: '50%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {numUnreads}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        );
-      }
-    );
+              </div>
+            );
+          }
+        )}
+    </>
+  );
 
   function renderPreviewMessage({ content, fileName, gameWinnerId, sender }) {
     const messageSender = sender?.id

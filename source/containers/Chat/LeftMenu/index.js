@@ -12,11 +12,10 @@ import {
 } from 'constants/css';
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 LeftMenu.propTypes = {
-  channels: PropTypes.array.isRequired,
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
   currentChannel: PropTypes.object.isRequired,
   loadMoreChannels: PropTypes.func.isRequired,
@@ -25,30 +24,24 @@ LeftMenu.propTypes = {
 };
 
 export default function LeftMenu({
-  channels,
   channelLoadMoreButtonShown,
   currentChannel,
   loadMoreChannels,
   onChannelEnter,
   onNewButtonClick
 }) {
+  const {
+    state: { channelIds }
+  } = useChatContext();
   const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
-  const [prevChannels, setPrevChannels] = useState(channels);
+  const [prevChannelIds, setPrevChannelIds] = useState(channelIds);
   const ChannelListRef = useRef(null);
   const loading = useRef(false);
-  const channelsObj = useRef({});
 
   useEffect(() => {
     const ChannelList = ChannelListRef.current;
-    channelsObj.current = channels.reduce(
-      (prev, curr) => ({
-        ...prev,
-        [curr.id]: curr
-      }),
-      {}
-    );
     addEvent(ChannelList, 'scroll', onListScroll);
 
     function onListScroll() {
@@ -69,14 +62,14 @@ export default function LeftMenu({
 
   useEffect(() => {
     if (
-      selectedChannelId === channels[0].id &&
-      channels[0].id !== prevChannels[0].id
+      selectedChannelId === channelIds &&
+      channelIds[0] !== prevChannelIds[0]
     ) {
       ChannelListRef.current.scrollTop = 0;
     }
-    setPrevChannels(channels);
+    setPrevChannelIds(channelIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channels]);
+  }, [channelIds]);
 
   return (
     <div
@@ -134,7 +127,6 @@ export default function LeftMenu({
             <Channels
               userId={userId}
               currentChannel={currentChannel}
-              channels={channels}
               selectedChannelId={selectedChannelId}
               onChannelEnter={onChannelEnter}
             />
@@ -163,11 +155,7 @@ export default function LeftMenu({
       loading.current = true;
       await loadMoreChannels({
         currentChannelId: selectedChannelId,
-        channelIds: queryStringForArray({
-          array: channels,
-          originVar: 'id',
-          destinationVar: 'channelIds'
-        })
+        channelIds
       });
       setChannelsLoading(false);
       loading.current = false;

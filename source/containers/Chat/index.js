@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
@@ -36,9 +36,8 @@ export default function Chat({ onFileUpload }) {
   const {
     state: {
       loaded,
-      currentChannel,
       selectedChannelId,
-      channels,
+      channelsObj,
       messages,
       channelLoadMoreButton,
       loadMoreMessages,
@@ -83,8 +82,12 @@ export default function Chat({ onFileUpload }) {
   const [partner, setPartner] = useState(null);
   const [creatingNewDMChannel, setCreatingNewDMChannel] = useState(false);
   const memberObj = useRef({});
-  const channelsObj = useRef({});
   const mounted = useRef(true);
+
+  const currentChannel = useMemo(() => channelsObj[selectedChannelId], [
+    channelsObj,
+    selectedChannelId
+  ]);
 
   useEffect(() => {
     mounted.current = true;
@@ -103,9 +106,8 @@ export default function Chat({ onFileUpload }) {
   useEffect(() => {
     if (mounted.current) {
       memberObj.current = objectify(currentChannelOnlineMembers);
-      channelsObj.current = objectify(channels);
     }
-  }, [currentChannelOnlineMembers, channels]);
+  }, [currentChannelOnlineMembers]);
 
   useEffect(() => {
     const otherMember = currentChannel.twoPeople
@@ -115,10 +117,9 @@ export default function Chat({ onFileUpload }) {
       : null;
     setPartner(otherMember);
     setChannelName(
-      otherMember?.username ||
-        channelsObj.current?.[currentChannel?.id]?.channelName
+      otherMember?.username || channelsObj[currentChannel?.id]?.channelName
     );
-  }, [currentChannel, userId]);
+  }, [channelsObj, currentChannel, userId]);
 
   useEffect(() => {
     socket.on('receive_message', handleReceiveMessage);
@@ -239,7 +240,6 @@ export default function Chat({ onFileUpload }) {
               />
             )}
             <LeftMenu
-              channels={channels}
               channelLoadMoreButtonShown={channelLoadMoreButton}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
