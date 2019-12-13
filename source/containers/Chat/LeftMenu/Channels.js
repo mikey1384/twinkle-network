@@ -18,6 +18,7 @@ export default function Channels({
   const {
     state: { channelIds, channelsObj, customChannelNames }
   } = useChatContext();
+
   return (
     <>
       {channelIds
@@ -31,7 +32,7 @@ export default function Channels({
             members,
             numUnreads = 0,
             twoPeople
-          }) => {
+          } = {}) => {
             const effectiveChannelName = customChannelNames[id] || channelName;
             const otherMember = twoPeople
               ? members?.filter(member => Number(member.id) !== userId)?.[0]

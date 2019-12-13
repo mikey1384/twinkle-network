@@ -84,7 +84,7 @@ export default function Chat({ onFileUpload }) {
   const memberObj = useRef({});
   const mounted = useRef(true);
 
-  const currentChannel = useMemo(() => channelsObj[selectedChannelId], [
+  const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
     channelsObj,
     selectedChannelId
   ]);

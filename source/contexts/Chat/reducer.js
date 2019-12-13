@@ -98,15 +98,7 @@ export default function ChatReducer(state, action) {
     case 'CLEAR_NUM_UNREADS': {
       return {
         ...state,
-        numUnreads: 0,
-        channels: state.channels.map(channel =>
-          channel.id === action.channelId
-            ? {
-                ...channel,
-                numUnreads: 0
-              }
-            : channel
-        )
+        numUnreads: 0
       };
     }
     case 'CLEAR_RECENT_CHESS_MESSAGE': {
@@ -243,25 +235,16 @@ export default function ChatReducer(state, action) {
         replyTarget: null,
         recentChessMessage: undefined,
         currentChannel: selectedChannel,
-        channels: state.channels.reduce((prev, channel, index) => {
-          if (channel.id === selectedChannel.id) {
-            originalNumUnreads = channel.numUnreads;
-          }
-          if (action.showOnTop && index === state.channels.length - 1) {
-            return [selectedChannel].concat(
-              prev.concat(channel.id === selectedChannel.id ? [] : [channel])
+        channelIds: state.channelIds.reduce((prev, channelId, index) => {
+          if (action.showOnTop && index === state.channelIds.length - 1) {
+            return [selectedChannel.id].concat(
+              prev.concat(channelId === selectedChannel.id ? [] : [channelId])
             );
           }
-          if (action.showOnTop && selectedChannel.id === channel.id) {
+          if (action.showOnTop && selectedChannel.id === channelId) {
             return prev;
           }
-          return prev.concat([
-            {
-              ...channel,
-              numUnreads:
-                channel.id === selectedChannel.id ? 0 : channel.numUnreads
-            }
-          ]);
+          return prev.concat([channelId]);
         }, []),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
@@ -307,34 +290,34 @@ export default function ChatReducer(state, action) {
       let originalNumUnreads = 0;
       let channelLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
-        action.data.currentChannel.id
+        action.data.currentChannelId
       ]?.filter(message => !message.uploadComplete);
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
         loadMoreMessages = true;
       }
       action.data.messages && action.data.messages.reverse();
-      if (action.data.channels.length > 20) {
-        action.data.channels.pop();
+      if (action.data.channelIds.length > 20) {
+        action.data.channelIds.pop();
         channelLoadMoreButton = true;
       }
 
       return {
         ...initialChatState,
-        loaded: true,
+        channelIds: action.data.channelIds,
+        channelsObj: action.data.channelsObj,
         channelLoadMoreButton,
-        recentChessMessage: undefined,
-        subject: action.data.currentChannel.id === 2 ? state.subject : {},
-        currentChannel: action.data.currentChannel,
-        selectedChannelId: action.data.currentChannel.id,
-        channels: action.data.channels,
         customChannelNames: action.data.customChannelNames,
-        numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
+        loaded: true,
+        loadMoreMessages,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
-        loadMoreMessages,
-        reconnecting: false
+        numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
+        recentChessMessage: undefined,
+        reconnecting: false,
+        selectedChannelId: action.data.currentChannelId,
+        subject: action.data.currentChannelId === 2 ? state.subject : {}
       };
     }
     case 'INVITE_USERS_TO_CHANNEL':
