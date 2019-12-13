@@ -193,13 +193,8 @@ export default function RightMenu({
                 className={css`
                   width: auto;
                   max-width: ${currentChannel.creatorId === member.id
-                    ? '12rem'
-                    : '16rem'};
-                  @media (max-width: ${mobileMaxWidth}) {
-                    max-width: ${currentChannel.creatorId === member.id
-                      ? '8rem'
-                      : '12rem'};
-                  }
+                    ? '40%'
+                    : 'CALC(40% + 4rem)'};
                 `}
                 style={{
                   color: Color.darkerGray(),
