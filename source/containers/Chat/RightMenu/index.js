@@ -194,7 +194,7 @@ export default function RightMenu({
                   width: auto;
                   max-width: ${currentChannel.creatorId === member.id
                     ? '50%'
-                    : 'CALC(50% + 4rem)'};
+                    : 'CALC(45% + 3rem)'};
                 `}
                 style={{
                   color: Color.darkerGray(),
