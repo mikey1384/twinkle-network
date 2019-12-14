@@ -270,11 +270,11 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async uploadChatSubject(content) {
+    async uploadChatSubject({ channelId, content }) {
       try {
         const { data } = await request.post(
           `${URL}/chat/chatSubject`,
-          { content },
+          { channelId, content },
           auth()
         );
         return Promise.resolve(data);

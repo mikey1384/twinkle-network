@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { phoneMaxWidth, Color } from 'constants/css';
@@ -106,8 +106,9 @@ export default function MessagesContainer({
     false
   );
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
-  const MessagesRef = useRef({});
-  const ContentRef = useRef({});
+  const prevMessagesLength = useRef(0);
+  const MessagesRef = useRef(null);
+  const ContentRef = useRef(null);
   const FileInputRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const ChatInputRef = useRef(null);
@@ -212,16 +213,12 @@ export default function MessagesContainer({
   );
 
   useEffect(() => {
-    MessagesContainerRef.current.scrollTop = ContentRef.current?.offsetHeight;
-    setTimeout(
-      () =>
-        MessagesContainerRef.current
-          ? (MessagesContainerRef.current.scrollTop =
-              ContentRef.current?.offsetHeight || 0)
-          : {},
-      0
-    );
-  }, [currentChannel.id]);
+    if (prevMessagesLength.current === 0 && messages.length !== 0) {
+      MessagesContainerRef.current.scrollTop =
+        ContentRef.current?.offsetHeight || 0;
+    }
+    prevMessagesLength.current = messages.length;
+  }, [messages]);
 
   return (
     <div
@@ -628,14 +625,8 @@ export default function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    setTimeout(
-      () =>
-        MessagesContainerRef.current
-          ? (MessagesContainerRef.current.scrollTop =
-              ContentRef.current?.offsetHeight || 0)
-          : {},
-      0
-    );
+    MessagesContainerRef.current.scrollTop =
+      ContentRef.current?.offsetHeight || 0;
     if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);
   }
 

@@ -21,15 +21,14 @@ export default function ChatReducer(state, action) {
                 isClosed: action.isClosed
               }
             : state.currentChannel,
-        channels: state.channels.map(channel =>
-          channel.id === action.channelId
-            ? {
-                ...channel,
-                channelName: action.channelName,
-                isClosed: action.isClosed
-              }
-            : channel
-        ),
+        channelObjs: {
+          ...state.channelObjs,
+          [action.channelId]: {
+            ...state.channelObjs[action.channelId],
+            channelName: action.channelName,
+            isClosed: action.isClosed
+          }
+        },
         customChannelNames: {
           ...state.customChannelNames,
           [action.channelId]: action.channelName
@@ -38,22 +37,20 @@ export default function ChatReducer(state, action) {
     case 'CHANGE_CHANNEL_OWNER': {
       return {
         ...state,
-        channels: state.channels.map(channel =>
-          channel.id === action.channelId
-            ? {
-                ...channel,
-                numUnreads:
-                  state.selectedChannelId === action.channelId ? 0 : 1,
-                lastMessage: {
-                  content: action.message.content,
-                  sender: {
-                    id: action.message.userId,
-                    username: action.message.username
-                  }
-                }
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            numUnreads: state.selectedChannelId === action.channelId ? 0 : 1,
+            lastMessage: {
+              content: action.message.content,
+              sender: {
+                id: action.message.userId,
+                username: action.message.username
               }
-            : channel
-        ),
+            }
+          }
+        },
         currentChannel: {
           ...state.currentChannel,
           creatorId:
@@ -70,18 +67,14 @@ export default function ChatReducer(state, action) {
     case 'CHANGE_CHANNEL_SETTINGS': {
       return {
         ...state,
-        channels: state.channels.map(channel =>
-          channel.id === action.channelId
-            ? { ...channel, channelName: action.channelName }
-            : channel
-        ),
-        currentChannel:
-          state.currentChannel.id === action.channelId
-            ? {
-                ...state.currentChannel,
-                isClosed: action.isClosed
-              }
-            : state.currentChannel
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            channelName: action.channelName,
+            isClosed: action.isClosed
+          }
+        }
       };
     }
     case 'CHANGE_SUBJECT': {
@@ -234,7 +227,13 @@ export default function ChatReducer(state, action) {
         ...state,
         replyTarget: null,
         recentChessMessage: undefined,
-        currentChannel: selectedChannel,
+        channelsObj: {
+          ...state.channelsObj,
+          [selectedChannel.id]: {
+            ...state.channelsObj[selectedChannel.id],
+            ...selectedChannel
+          }
+        },
         channelIds: state.channelIds.reduce((prev, channelId, index) => {
           if (action.showOnTop && index === state.channelIds.length - 1) {
             return [selectedChannel.id].concat(
@@ -278,12 +277,13 @@ export default function ChatReducer(state, action) {
     case 'HIDE_CHAT':
       return {
         ...state,
-        channels: state.channels.map(channel => {
-          return {
-            ...channel,
-            isHidden: channel.id === action.channelId
-          };
-        })
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            isHidden: true
+          }
+        }
       };
     case 'INIT_CHAT': {
       let loadMoreMessages = false;
@@ -376,23 +376,23 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         subject: action.data.subject,
-        channels: state.channels.map(channel => ({
-          ...channel,
-          lastMessage: {
-            content:
-              channel.id === 2
-                ? action.data.subject.content
-                : channel.lastMessage.content,
-            sender: {
-              id: action.data.subject.userId,
-              username: action.data.subject.username
+        channelsObj: {
+          ...state.channelsObj,
+          [action.data.channelId]: {
+            ...state.channelsObj[action.data.channelId],
+            lastMessage: {
+              content: action.data.subject.content,
+              sender: {
+                id: action.data.subject.userId,
+                username: action.data.subject.username
+              }
             }
           }
-        })),
+        },
         messages: state.messages.concat([
           {
             id: action.data.subject.id,
-            channelId: 2,
+            channelId: action.data.channelId,
             ...action.data.subject
           }
         ])
@@ -538,26 +538,24 @@ export default function ChatReducer(state, action) {
           ? 0
           : state.msgsWhileInvisible + 1,
         messages: state.messages.concat([action.message]),
-        channels: state.channels.map(channel => {
-          if (channel.id === action.message.channelId) {
-            return {
-              ...channel,
-              lastMessage: {
-                fileName: action.message.fileName || '',
-                gameWinnerId: action.message.gameWinnerId,
-                content: action.message.content,
-                sender: {
-                  id: action.message.userId,
-                  username: action.message.username
-                }
-              },
-              lastUpdate: action.message.timeStamp,
-              numUnreads: 0,
-              isHidden: false
-            };
+        channelsObj: {
+          ...state.channelsObj,
+          [action.message.channelId]: {
+            ...state.channelsObj[action.message.channelId],
+            lastMessage: {
+              fileName: action.message.fileName || '',
+              gameWinnerId: action.message.gameWinnerId,
+              content: action.message.content,
+              sender: {
+                id: action.message.userId,
+                username: action.message.username
+              }
+            },
+            lastUpdate: action.message.timeStamp,
+            numUnreads: 0,
+            isHidden: false
           }
-          return channel;
-        })
+        }
       };
     case 'RECEIVE_FIRST_MSG':
       return {
@@ -615,13 +613,17 @@ export default function ChatReducer(state, action) {
         )
       };
     case 'RECEIVE_MSG_ON_DIFF_CHANNEL':
-      for (let i = 0; i < state.channels.length; i++) {
-        if (state.channels[i].id === action.channel.id) {
-          action.channel.numUnreads = state.channels[i].numUnreads + 1;
-        }
-      }
       return {
         ...state,
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channel.id]: {
+            ...state.channelsObj[action.channel.id],
+            ...action.channel,
+            numUnreads:
+              Number(state.channelsObj[action.channel.id].numUnreads) + 1
+          }
+        },
         numUnreads:
           action.pageVisible && action.usingChat
             ? state.numUnreads
@@ -629,8 +631,8 @@ export default function ChatReducer(state, action) {
         msgsWhileInvisible: action.pageVisible
           ? 0
           : state.msgsWhileInvisible + 1,
-        channels: [action.channel].concat(
-          state.channels.filter(channel => channel.id !== action.channel.id)
+        channelIds: [action.channel.id].concat(
+          state.channelIds.filter(channelId => channelId !== action.channel.id)
         )
       };
     case 'RELOAD_SUBJECT':
@@ -671,26 +673,30 @@ export default function ChatReducer(state, action) {
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
-        channels: state.channels.reduce((result, channel) => {
-          return channel.id === action.message.channelId
-            ? [
-                {
-                  ...channel,
-                  lastMessage: {
-                    fileName: action.message.fileName || '',
-                    gameWinnerId: action.message.gameWinnerId,
-                    content: action.message.content,
-                    sender: {
-                      id: action.message.userId,
-                      username: action.message.username
-                    }
-                  },
-                  lastUpdate: Math.floor(Date.now() / 1000),
-                  numUnreads: 0
-                }
-              ].concat(result)
-            : result.concat([channel]);
+        channelIds: state.channelIds.reduce((prev, channelId) => {
+          const next =
+            channelId === action.message.channelId
+              ? [channelId].concat(prev)
+              : prev.concat([channelId]);
+          return next;
         }, []),
+        channelsObj: {
+          ...state.channelsObj,
+          [action.message.channelId]: {
+            ...state.channelsObj[action.message.channelId],
+            lastMessage: {
+              fileName: action.message.fileName || '',
+              gameWinnerId: action.message.gameWinnerId,
+              content: action.message.content,
+              sender: {
+                id: action.message.userId,
+                username: action.message.username
+              }
+            },
+            lastUpdate: Math.floor(Date.now() / 1000),
+            numUnreads: 0
+          }
+        },
         messages: state.messages.concat([
           {
             ...action.message,

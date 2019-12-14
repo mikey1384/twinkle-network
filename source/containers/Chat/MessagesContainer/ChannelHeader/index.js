@@ -206,8 +206,8 @@ export default function ChannelHeader() {
 
   async function onSubjectSubmit(text) {
     const content = `${text[0].toUpperCase()}${text.slice(1)}`;
-    const data = await uploadChatSubject(text);
-    onUploadChatSubject(data);
+    const data = await uploadChatSubject({ content: text, channelId: 2 });
+    onUploadChatSubject({ ...data, channelId: 2 });
     const timeStamp = Math.floor(Date.now() / 1000);
     const subject = {
       id: data.subjectId,
