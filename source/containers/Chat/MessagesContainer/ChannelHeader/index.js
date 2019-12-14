@@ -95,6 +95,7 @@ export default function ChannelHeader() {
     <ErrorBoundary
       className={css`
         display: flex;
+        padding: 1rem;
         position: relative;
         align-items: center;
         justify-content: space-between;

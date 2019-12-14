@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
-import moment from 'moment';
+import { unix } from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
@@ -9,7 +9,9 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileViewer from './FileViewer';
 import TextMessage from './TextMessage';
+import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
+import TargetMessage from './TargetMessage';
 import { socket } from 'constants/io';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
@@ -35,9 +37,11 @@ Message.propTypes = {
   index: PropTypes.number,
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
+  loading: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
+  onReplyClick: PropTypes.func,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
@@ -53,6 +57,7 @@ export default function Message({
   index,
   isLastMsg,
   isNotification,
+  loading,
   message,
   message: {
     id: messageId,
@@ -83,6 +88,7 @@ export default function Message({
   onDelete,
   onChessSpoilerClick,
   onReceiveNewMessage,
+  onReplyClick,
   onSendFileMessage,
   recepientId,
   setScrollToBottom,
@@ -115,6 +121,7 @@ export default function Message({
     actions: {
       onEditMessage,
       onSaveMessage,
+      onSetReplyTarget,
       onUpdateChessMoveViewTimeStamp,
       onUpdateRecentChessMessage
     }
@@ -122,7 +129,7 @@ export default function Message({
   const {
     state: { socketConnected }
   } = useNotiContext();
-  let { username, profilePicId, ...post } = message;
+  let { username, profilePicId, targetMessage, ...post } = message;
   const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
@@ -146,7 +153,10 @@ export default function Message({
       handleSaveMessage();
     }
     async function handleSaveMessage() {
-      const messageId = await saveMessage(post);
+      const messageId = await saveMessage({
+        message: post,
+        targetMessageId: targetMessage?.id
+      });
       onSaveMessage({ messageId, index });
       socket.emit(
         'new_chat_message',
@@ -233,10 +243,29 @@ export default function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const editMenuItems = [];
-  if (userIsUploader || canEdit) {
+  const editMenuItems = [
+    {
+      label: (
+        <>
+          <Icon icon="reply" />
+          <span style={{ marginLeft: '1rem' }}>Reply</span>
+        </>
+      ),
+      onClick: () => {
+        onSetReplyTarget(message);
+        onReplyClick();
+        setEditPadding(false);
+      }
+    }
+  ];
+  if (userCanEditThis) {
     editMenuItems.push({
-      label: 'Edit',
+      label: (
+        <>
+          <Icon icon="pencil-alt"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Edit</span>
+        </>
+      ),
       onClick: () => {
         setOnEdit(true);
         setEditPadding(false);
@@ -245,7 +274,12 @@ export default function Message({
   }
   if (userIsUploader || canDelete) {
     editMenuItems.push({
-      label: 'Remove',
+      label: (
+        <>
+          <Icon icon="trash-alt"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Remove</span>
+        </>
+      ),
       onClick: () => {
         setEditPadding(false);
         onDelete({ messageId });
@@ -253,13 +287,7 @@ export default function Message({
     });
   }
   const dropdownButtonShown =
-    !!messageId &&
-    !isNotification &&
-    !isSubject &&
-    !isReloadedSubject &&
-    (userIsUploader || userCanEditThis) &&
-    !isChessMsg &&
-    !onEdit;
+    !!messageId && !isNotification && !isChessMsg && !onEdit;
 
   return !chessState && gameWinnerId ? (
     <GameOverMessage
@@ -287,7 +315,7 @@ export default function Message({
               }}
             />{' '}
             <span className={MessageStyle.timeStamp}>
-              {moment.unix(timeStamp).format('LLL')}
+              {unix(timeStamp).format('LLL')}
             </span>
           </div>
           <>
@@ -307,8 +335,9 @@ export default function Message({
                 opponentName={chessOpponent?.username}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
-            ) : fileToUpload ? (
+            ) : fileToUpload && !loading ? (
               <FileUploadStatusIndicator
+                key={channelId}
                 channelId={channelId}
                 checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
                 content={content}
@@ -320,6 +349,8 @@ export default function Message({
               />
             ) : (
               <>
+                {targetMessage && <TargetMessage message={targetMessage} />}
+                {}
                 {filePath && (
                   <FileViewer
                     content={content}
@@ -345,6 +376,7 @@ export default function Message({
                   showSubjectMsgsModal={showSubjectMsgsModal}
                   socketConnected={socketConnected}
                   subjectId={subjectId}
+                  targetMessage={targetMessage}
                 />
               </>
             )}
@@ -353,13 +385,15 @@ export default function Message({
             <DropdownButton
               skeuomorphic
               color="darkerGray"
+              icon="chevron-down"
               style={{ position: 'absolute', top: 0, right: '5px' }}
               direction="left"
               opacity={0.8}
               onButtonClick={menuDisplayed => {
-                setEditPadding(
-                  !menuDisplayed && isLastMsg && !filePath && !extractedUrl
-                );
+                if (!menuDisplayed && isLastMsg && !filePath && !extractedUrl) {
+                  setEditPadding(true);
+                  setScrollToBottom();
+                }
               }}
               onOutsideClick={() => {
                 setEditPadding(false);
@@ -385,6 +419,7 @@ export default function Message({
   }
 
   async function handleSpoilerClick() {
+    onSetReplyTarget(null);
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
       onUpdateChessMoveViewTimeStamp();

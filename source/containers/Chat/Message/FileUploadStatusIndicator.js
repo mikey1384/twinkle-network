@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
@@ -29,11 +29,10 @@ export default function FileUploadStatusIndicator({
 }) {
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { filesBeingUploaded },
-    actions: { onDisplayAttachedFile }
+    state: { filesBeingUploaded, replyTarget },
+    actions: { onDisplayAttachedFile, onSetReplyTarget }
   } = useChatContext();
   const { onFileUpload } = useContext(LocalContext);
-
   useEffect(() => {
     if (
       !filesBeingUploaded[channelId] ||
@@ -48,6 +47,7 @@ export default function FileUploadStatusIndicator({
         fileToUpload,
         userId,
         recepientId,
+        targetMessageId: replyTarget?.id,
         subjectId
       });
     }
@@ -56,14 +56,18 @@ export default function FileUploadStatusIndicator({
 
   const [
     {
+      id: messageId,
       uploadComplete = false,
       clientToApiServerProgress = 0,
       apiServerToS3Progress = 0
     } = {}
-  ] =
-    filesBeingUploaded[channelId]?.filter(
-      ({ filePath: path }) => path === filePath
-    ) || [];
+  ] = useMemo(() => {
+    return (
+      filesBeingUploaded[channelId]?.filter(
+        ({ filePath: path }) => path === filePath
+      ) || []
+    );
+  }, [channelId, filePath, filesBeingUploaded]);
 
   useEffect(() => {
     if (uploadComplete) {
@@ -71,6 +75,7 @@ export default function FileUploadStatusIndicator({
         content,
         fileName: fileToUpload.name,
         filePath,
+        id: messageId,
         uploaderAuthLevel: authLevel,
         channelId,
         userId,
@@ -80,11 +85,24 @@ export default function FileUploadStatusIndicator({
       };
       onDisplayAttachedFile(params);
       if (channelId) {
-        onSendFileMessage(params);
+        onSendFileMessage({ ...params, targetMessage: replyTarget });
       }
+      onSetReplyTarget(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filesBeingUploaded]);
+  }, [
+    authLevel,
+    channelId,
+    content,
+    filePath,
+    fileToUpload.name,
+    filesBeingUploaded,
+    profilePicId,
+    replyTarget,
+    uploadComplete,
+    userId,
+    username
+  ]);
 
   const [uploadProgress, setUploadProgress] = useState(0);
   useEffect(() => {

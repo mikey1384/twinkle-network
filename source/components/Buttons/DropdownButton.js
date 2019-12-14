@@ -17,7 +17,7 @@ DropdownButton.propTypes = {
   listStyle: PropTypes.object,
   menuProps: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string,
+      label: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
       onClick: PropTypes.func
     })
   ),

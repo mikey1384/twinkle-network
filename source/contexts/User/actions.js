@@ -16,9 +16,9 @@ export default function UserActions(dispatch) {
         type: 'CLOSE_SIGNIN_MODAL'
       });
     },
-    onInitSession(data) {
+    onInitUser(data) {
       return dispatch({
-        type: 'INIT_SESSION',
+        type: 'INIT_USER',
         data: { ...data, loggedIn: true }
       });
     },
@@ -73,6 +73,11 @@ export default function UserActions(dispatch) {
       return dispatch({
         type: 'SET_PROFILES_LOADED',
         loaded
+      });
+    },
+    onSetSessionLoaded() {
+      return dispatch({
+        type: 'SET_SESSION_LOADED'
       });
     },
     onToggleHideWatched(hideWatched) {

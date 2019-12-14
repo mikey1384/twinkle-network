@@ -9,6 +9,7 @@ export const initialChatState = {
   loaded: false,
   selectedChannelId: null,
   currentChannel: {},
+  customChannelNames: {},
   channels: [],
   messages: [],
   userSearchResults: [],
@@ -19,6 +20,7 @@ export const initialChatState = {
   msgsWhileInvisible: 0,
   recepientId: null,
   recentChessMessage: undefined,
+  replyTarget: null,
   subject: {},
   subjectSearchResults: [],
   filesBeingUploaded: {}

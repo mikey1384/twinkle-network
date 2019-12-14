@@ -7,7 +7,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
-import moment from 'moment';
+import { unix } from 'moment';
 import { useHistory } from 'react-router-dom';
 import {
   useAppContext,
@@ -99,7 +99,7 @@ export default function BasicInfos({
         About {username}
       </div>
       <div style={{ marginBottom: '0.5rem' }}>
-        Member since {moment.unix(joinDate).format('LL')}
+        Member since {unix(joinDate).format('LL')}
       </div>
       {userInfoOnEdit && userId === myId && (
         <InfoEditForm

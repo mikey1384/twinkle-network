@@ -71,7 +71,7 @@ export default function MobileMenu({ location, history, onClose }) {
           height: 100%;
           width: 70%;
           position: relative;
-          background: ${Color.backgroundGray()};
+          background: ${Color.whiteGray()};
           margin-left: ${marginLeft};
           transition: margin-left 0.5s;
           overflow-y: scroll;
@@ -103,6 +103,7 @@ export default function MobileMenu({ location, history, onClose }) {
               color: ${Color.red()};
               font-size: 3rem;
               padding: 1rem;
+              margin-top: 1rem;
             `}
             onClick={handleLogout}
           >

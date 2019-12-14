@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -21,7 +21,28 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username, userId } = useMyState();
+  const { loggedIn, username, userId, managementLevel } = useMyState();
+  const menuProps = useMemo(() => {
+    const result = [
+      {
+        label: 'Profile',
+        onClick: () => history.push(`/${username}`)
+      }
+    ];
+    if (managementLevel > 0) {
+      result.push({
+        label: 'Management',
+        onClick: () => history.push('/management')
+      });
+    }
+    result.push({
+      label: 'Log out',
+      onClick: handleLogout
+    });
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [managementLevel, username]);
+
   return (
     <div style={style}>
       {loggedIn ? (
@@ -49,16 +70,7 @@ export default function AccountMenu({ className, history, style = {} }) {
           shape="button"
           icon="caret-down"
           iconSize="lg"
-          menuProps={[
-            {
-              label: 'Profile',
-              onClick: () => history.push(`/${username}`)
-            },
-            {
-              label: 'Log out',
-              onClick: handleLogout
-            }
-          ]}
+          menuProps={menuProps}
         />
       ) : (
         <Button

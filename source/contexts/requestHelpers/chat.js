@@ -179,11 +179,15 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async saveMessage(message) {
+    async saveMessage({ message, targetMessageId }) {
       try {
         const {
           data: { messageId }
-        } = await request.post(`${URL}/chat`, { message }, auth());
+        } = await request.post(
+          `${URL}/chat`,
+          { message, targetMessageId },
+          auth()
+        );
         return Promise.resolve(messageId);
       } catch (error) {
         return handleError(error);
@@ -278,8 +282,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
       content,
       selectedFile,
       onUploadProgress,
-      recepientId,
       path,
+      recepientId,
+      targetMessageId,
       subjectId
     }) {
       try {
@@ -289,6 +294,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         fileData.append('channelId', channelId);
         fileData.append('recepientId', recepientId);
         fileData.append('content', content);
+        if (targetMessageId) {
+          fileData.append('targetMessageId', targetMessageId);
+        }
         if (subjectId) {
           fileData.append('subjectId', subjectId);
         }

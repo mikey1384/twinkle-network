@@ -12,6 +12,7 @@ import PlaylistPage from 'containers/PlaylistPage';
 import Privacy from 'containers/Privacy';
 import Redirect from 'containers/Redirect';
 import SigninModal from 'containers/Signin';
+import Management from 'containers/Management';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
 import Verify from 'containers/Verify';
@@ -39,7 +40,7 @@ App.propTypes = {
 function App({ location, history }) {
   const {
     user: {
-      actions: { onCloseSigninModal, onInitSession, onLogout }
+      actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
     },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
@@ -80,18 +81,25 @@ function App({ location, history }) {
     if (!auth()?.headers?.authorization && !signinModalShown) {
       onLogout();
       onResetChat();
-    } else if (
-      authRef.current?.headers?.authorization !== auth()?.headers?.authorization
-    ) {
-      init();
+      onSetSessionLoaded();
+    } else {
+      if (
+        authRef.current?.headers?.authorization !==
+        auth()?.headers?.authorization
+      ) {
+        init();
+      } else {
+        onSetSessionLoaded();
+      }
     }
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
       if (mounted.current) {
         onInitContent({ contentType: 'user', contentId: data.userId, ...data });
-        if (data?.userId) onInitSession(data);
+        if (data?.userId) onInitUser(data);
       }
+      onSetSessionLoaded();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth, location.pathname, pageVisible, signinModalShown]);
@@ -225,6 +233,7 @@ function App({ location, history }) {
             path="/chat"
             render={() => <Chat onFileUpload={handleFileUpload} />}
           />
+          <Route path="/management" component={Management} />
           <Route path="/verify" component={Verify} />
           <Route path="/privacy" component={Privacy} />
           <Route
@@ -255,6 +264,7 @@ function App({ location, history }) {
     filePath,
     fileToUpload,
     recepientId,
+    targetMessageId,
     subjectId
   }) {
     onPostFileUploadStatus({
@@ -272,6 +282,7 @@ function App({ location, history }) {
       onUploadProgress: handleUploadProgress,
       recepientId,
       path: filePath,
+      targetMessageId,
       subjectId
     });
     if (members) {

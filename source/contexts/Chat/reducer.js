@@ -28,7 +28,11 @@ export default function ChatReducer(state, action) {
                 ? action.data.title
                 : channel.channelName
           };
-        })
+        }),
+        customChannelNames: {
+          ...state.customChannelNames,
+          [action.data.channelId]: action.data.title
+        }
       };
     case 'CHANGE_SUBJECT': {
       return {
@@ -74,6 +78,7 @@ export default function ChatReducer(state, action) {
     case 'CREATE_NEW_CHANNEL':
       return {
         ...state,
+        replyTarget: null,
         subject: {},
         channels: [
           {
@@ -183,6 +188,7 @@ export default function ChatReducer(state, action) {
       action.data.messages.reverse();
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         currentChannel: selectedChannel,
         channels: state.channels.reduce((prev, channel, index) => {
@@ -217,6 +223,7 @@ export default function ChatReducer(state, action) {
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         selectedChannelId: 0,
@@ -259,6 +266,7 @@ export default function ChatReducer(state, action) {
         action.data.channels.pop();
         channelLoadMoreButton = true;
       }
+
       return {
         ...initialChatState,
         loaded: true,
@@ -268,6 +276,7 @@ export default function ChatReducer(state, action) {
         currentChannel: action.data.currentChannel,
         selectedChannelId: action.data.currentChannel.id,
         channels: action.data.channels,
+        customChannelNames: action.data.customChannelNames,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
@@ -283,8 +292,9 @@ export default function ChatReducer(state, action) {
           ...state.currentChannel,
           members: state.currentChannel.members.concat(
             action.data.selectedUsers.map(user => ({
-              userId: user.id,
-              username: user.username
+              id: user.id,
+              username: user.username,
+              profilePicId: user.profilePicId
             }))
           )
         },
@@ -401,6 +411,7 @@ export default function ChatReducer(state, action) {
         ...state,
         loaded: true,
         recentChessMessage: undefined,
+        replyTarget: null,
         subject: {},
         channels: [
           {
@@ -428,6 +439,7 @@ export default function ChatReducer(state, action) {
     case 'OPEN_NEW_TAB':
       return {
         ...state,
+        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         channels: [
@@ -615,6 +627,12 @@ export default function ChatReducer(state, action) {
         reconnecting: true
       };
     }
+    case 'SET_REPLY_TARGET': {
+      return {
+        ...state,
+        replyTarget: action.target
+      };
+    }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
@@ -641,7 +659,8 @@ export default function ChatReducer(state, action) {
         messages: state.messages.concat([
           {
             ...action.message,
-            content: action.message.content
+            content: action.message.content,
+            targetMessage: action.replyTarget
           }
         ])
       };
@@ -694,6 +713,8 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
+        messages: [],
+        loadMoreMessages: false,
         selectedChannelId: action.channelId
       };
     default:

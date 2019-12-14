@@ -17,7 +17,7 @@ export default function UserReducer(state, action) {
         ...state,
         signinModalShown: false
       };
-    case 'INIT_SESSION':
+    case 'INIT_USER':
       return {
         ...state,
         ...action.data
@@ -56,6 +56,7 @@ export default function UserReducer(state, action) {
     case 'LOGOUT':
       return {
         ...initialUserState,
+        loaded: true,
         loadMoreButton: state.loadMoreButton,
         profiles: state.profiles,
         profilesLoaded: state.profilesLoaded,
@@ -79,6 +80,11 @@ export default function UserReducer(state, action) {
       return {
         ...state,
         searchedProfiles: action.users
+      };
+    case 'SET_SESSION_LOADED':
+      return {
+        ...state,
+        loaded: true
       };
     case 'SHOW_PROFILE_COMMENTS':
       return {

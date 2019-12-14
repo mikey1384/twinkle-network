@@ -45,6 +45,7 @@ export default function TextMessage({
       <div>
         {onEdit ? (
           <EditTextArea
+            allowEmptyText
             contentId={messageId}
             contentType="chat"
             autoFocus

@@ -268,13 +268,20 @@ export default function ChatActions(dispatch) {
         message
       });
     },
-    onSubmitMessage(params) {
+    onSetReplyTarget(target) {
+      return dispatch({
+        type: 'SET_REPLY_TARGET',
+        target
+      });
+    },
+    onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
         message: {
-          ...params,
+          ...message,
           timeStamp: Math.floor(Date.now() / 1000)
-        }
+        },
+        replyTarget
       });
     },
     onUpdateApiServerToS3Progress({ progress, channelId, path }) {

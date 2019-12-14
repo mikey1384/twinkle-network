@@ -4,7 +4,6 @@ import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { borderRadius, Color } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
 
 FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,
@@ -14,11 +13,10 @@ FileInfo.propTypes = {
 };
 
 export default function FileInfo({ fileName, fileType, fileSize, src }) {
-  const { profileTheme } = useMyState();
   return (
     <div
       style={{
-        background: Color.lighterGray(),
+        background: Color.wellGray(),
         padding: '1rem',
         width: '70%',
         borderRadius
@@ -27,9 +25,9 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
       <div style={{ display: 'flex', width: '100%' }}>
         <div>
           {fileType === 'other' ? (
-            <Icon color={profileTheme} size="7x" icon="file" />
+            <Icon size="7x" icon="file" />
           ) : (
-            <Icon color={profileTheme} size="7x" icon={`file-${fileType}`} />
+            <Icon size="7x" icon={`file-${fileType}`} />
           )}
         </div>
         <div

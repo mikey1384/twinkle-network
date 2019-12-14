@@ -17,8 +17,10 @@ import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
 import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboardTeacher';
+import { faCheck } from '@fortawesome/pro-solid-svg-icons/faCheck';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
 import { faChess } from '@fortawesome/pro-solid-svg-icons/faChess';
+import { faChevronDown } from '@fortawesome/pro-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight';
 import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
@@ -34,10 +36,13 @@ import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
+import { faMinus } from '@fortawesome/pro-solid-svg-icons/faMinus';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
 import { faPlus } from '@fortawesome/pro-solid-svg-icons/faPlus';
+import { faReply } from '@fortawesome/pro-solid-svg-icons/faReply';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
 import { faSchool } from '@fortawesome/pro-solid-svg-icons/faSchool';
+import { faSlidersH } from '@fortawesome/pro-solid-svg-icons/faSlidersH';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
 import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
@@ -62,8 +67,10 @@ library.add(
   faCaretDown,
   faCertificate,
   faChalkboardTeacher,
+  faCheck,
   faCheckCircle,
   faChess,
+  faChevronDown,
   faChevronLeft,
   faChevronRight,
   faComment,
@@ -79,10 +86,13 @@ library.add(
   faHome,
   faLink,
   faLock,
+  faMinus,
   faPencilAlt,
   faPlus,
+  faReply,
   faSchool,
   faSearch,
+  faSlidersH,
   faSpinner,
   faStar,
   faStarHalfAlt,

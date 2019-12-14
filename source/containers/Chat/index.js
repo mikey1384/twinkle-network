@@ -44,6 +44,7 @@ export default function Chat({ onFileUpload }) {
       loadMoreMessages,
       recepientId,
       reconnecting,
+      replyTarget,
       subject
     },
     actions: {
@@ -58,6 +59,7 @@ export default function Chat({ onFileUpload }) {
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onSendFirstDirectMessage,
+      onSetReplyTarget,
       onSubmitMessage,
       onUpdateChessMoveViewTimeStamp,
       onUpdateSelectedChannelId
@@ -295,6 +297,7 @@ export default function Chat({ onFileUpload }) {
   function handleChessModalShown() {
     const channelId = currentChannel?.id;
     if (chessCountdownObj[channelId] !== 0) {
+      onSetReplyTarget(null);
       setChessModalShown(true);
     }
   }
@@ -343,7 +346,7 @@ export default function Chat({ onFileUpload }) {
       setCreatingNewDMChannel(false);
       return;
     }
-    const params = {
+    const message = {
       userId,
       username,
       profilePicId,
@@ -351,7 +354,8 @@ export default function Chat({ onFileUpload }) {
       channelId: selectedChannelId,
       subjectId: subject.id
     };
-    onSubmitMessage(params);
+    onSubmitMessage({ message, replyTarget });
+    onSetReplyTarget(null);
   }
 
   function handleSendFileMessage(params) {
@@ -393,12 +397,15 @@ export default function Chat({ onFileUpload }) {
     try {
       if (selectedChannelId) {
         onSubmitMessage({
-          ...params,
-          profilePicId,
-          username,
-          content,
-          channelId: selectedChannelId
+          message: {
+            ...params,
+            profilePicId,
+            username,
+            content,
+            channelId: selectedChannelId
+          }
         });
+        onSetReplyTarget(null);
         socket.emit('user_made_a_move', {
           userId,
           channelId: selectedChannelId

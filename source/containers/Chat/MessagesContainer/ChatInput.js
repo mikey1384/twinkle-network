@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -11,31 +11,35 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useInputContext } from 'contexts';
+import { useChatContext, useInputContext } from 'contexts';
+import TargetMessagePreview from './TargetMessagePreview';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
+  innerRef: PropTypes.object,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
-  onPlusButtonClick: PropTypes.func.isRequired,
-  onGifButtonClick: PropTypes.func.isRequired
+  onPlusButtonClick: PropTypes.func.isRequired
 };
 
 export default function ChatInput({
   currentChannelId = 0,
+  innerRef,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
-  onPlusButtonClick,
-  onGifButtonClick
+  onPlusButtonClick
 }) {
   const { profileTheme } = useMyState();
-  const TextareaRef = useRef(null);
+  const {
+    state: { replyTarget },
+    actions: { onSetReplyTarget }
+  } = useChatContext();
   const {
     state,
     actions: { onEnterComment }
@@ -45,9 +49,9 @@ export default function ChatInput({
 
   useEffect(() => {
     if (!isMobile(navigator)) {
-      TextareaRef.current.focus();
+      innerRef.current.focus();
     }
-  }, [currentChannelId]);
+  }, [currentChannelId, innerRef]);
 
   const messageExceedsCharLimit = useMemo(
     () =>
@@ -60,7 +64,15 @@ export default function ChatInput({
   );
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {replyTarget && (
+        <TargetMessagePreview onClose={() => onSetReplyTarget(null)} />
+      )}
       <div style={{ display: 'flex' }}>
         {!!isTwoPeopleChannel && (
           <div
@@ -81,7 +93,7 @@ export default function ChatInput({
           </div>
         )}
         <Textarea
-          innerRef={TextareaRef}
+          innerRef={innerRef}
           minRows={1}
           placeholder="Type a message..."
           onKeyDown={onKeyDown}
@@ -116,28 +128,13 @@ export default function ChatInput({
             <Icon size="lg" icon="plus" />
           </Button>
         </div>
-        <div
-          style={{
-            margin: '0.2rem 1rem 0.2rem 0',
-            height: '100%'
-          }}
-        >
-          <Button
-            disabled={loading}
-            skeuomorphic
-            onClick={onGifButtonClick}
-            color={profileTheme}
-          >
-            GIFS
-          </Button>
-        </div>
       </div>
-    </>
+    </div>
   );
 
   function handleChange(event) {
     setTimeout(() => {
-      onHeightChange(TextareaRef.current?.clientHeight);
+      onHeightChange(innerRef.current?.clientHeight);
     }, 0);
     onEnterComment({
       contentType: 'chat',
@@ -166,7 +163,7 @@ export default function ChatInput({
       event.target.value = '';
     }
     if (enterKeyPressed && shiftKeyPressed) {
-      onHeightChange(TextareaRef.current?.clientHeight + 20);
+      onHeightChange(innerRef.current?.clientHeight + 20);
     }
   }
 }

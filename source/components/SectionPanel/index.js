@@ -131,7 +131,7 @@ export default function SectionPanel({
                 onChange={text => setEditedTitle(addEmoji(text))}
                 onKeyPress={event => {
                   if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
-                    handleChangeTitle(editedTitle);
+                    onChangeTitle(editedTitle);
                   }
                 }}
                 value={editedTitle}
@@ -182,14 +182,14 @@ export default function SectionPanel({
               justifySelf: 'center',
               zIndex: 0
             }}
-            onChange={handleSearch}
+            onChange={search}
             placeholder={searchPlaceholder}
             value={searchQuery}
           />
         )}
         <div style={{ gridArea: 'buttons', justifySelf: 'end' }}>{button}</div>
       </header>
-      <main style={style}>
+      <main style={{ width: '100%', ...style }}>
         {loaded ? (
           <Body
             content={children}
@@ -220,7 +220,7 @@ export default function SectionPanel({
             <Button
               transparent
               disabled={loading}
-              onClick={handleLoadMore}
+              onClick={onLoadMore}
               style={{ fontSize: '2rem' }}
             >
               Load More
@@ -231,16 +231,16 @@ export default function SectionPanel({
     </div>
   );
 
-  async function handleChangeTitle(title) {
+  async function onChangeTitle(title) {
     await onEditTitle(title);
     setOnEdit(false);
   }
 
-  function handleSearch(text) {
+  function search(text) {
     onSearch(text);
   }
 
-  async function handleLoadMore() {
+  async function onLoadMore() {
     if (!loading) {
       setLoading(true);
       await loadMore();

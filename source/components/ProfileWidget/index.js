@@ -6,6 +6,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Loading from 'components/Loading';
 import { container } from './Styles';
 import { borderRadius } from 'constants/css';
+import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
@@ -109,9 +110,8 @@ export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
 
   function handlePicture(event) {
     const reader = new FileReader();
-    const maxSize = 5000;
     const file = event.target.files[0];
-    if (file.size / 1000 > maxSize) {
+    if (file.size / 1000 > MAX_PROFILE_PIC_SIZE) {
       return onShowAlert();
     }
     reader.onload = onLoadImage;

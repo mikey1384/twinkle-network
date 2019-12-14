@@ -40,7 +40,7 @@ export default function PlaylistCarousel({
   const {
     requestHelpers: { deletePlaylist, editPlaylistTitle }
   } = useAppContext();
-  const { canEdit, canEditPlaylists, profileTheme } = useMyState();
+  const { canEditPlaylists, profileTheme } = useMyState();
   const {
     state: {
       videos: { clickSafe }
@@ -122,7 +122,7 @@ export default function PlaylistCarousel({
             </p>
           </div>
         )}
-        {!onEdit && (userIsUploader || canEditPlaylists || canEdit) && (
+        {!onEdit && (userIsUploader || canEditPlaylists) && (
           <DropdownButton
             skeuomorphic
             color="darkerGray"

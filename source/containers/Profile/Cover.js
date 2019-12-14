@@ -8,6 +8,7 @@ import ImageEditModal from 'components/Modals/ImageEditModal';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
@@ -262,9 +263,8 @@ export default function Cover({
 
   function handlePicture(event) {
     const reader = new FileReader();
-    const maxSize = 5000;
     const file = event.target.files[0];
-    if (file.size / 1000 > maxSize) {
+    if (file.size / 1000 > MAX_PROFILE_PIC_SIZE) {
       return setAlertModalShown(true);
     }
     reader.onload = upload => {

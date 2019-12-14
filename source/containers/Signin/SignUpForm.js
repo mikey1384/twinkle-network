@@ -67,7 +67,7 @@ export default function SignUpForm({ onShowLoginForm }) {
             <label>Username</label>
             <Input
               value={username}
-              placeholder="Enter the username you wish to use. It has to be at least 4 characters long"
+              placeholder="Enter the username you wish to use. It has to be at least 3 characters long"
               onChange={text => {
                 setErrorMessage('');
                 setUsername(trimWhiteSpaces(text));
@@ -199,8 +199,8 @@ export default function SignUpForm({ onShowLoginForm }) {
     if (!isValidUsername(username)) {
       return setErrorMessage(
         `${username} is not a valid username.${
-          username.length < 4
-            ? ' Make sure it is at least 4 characters long.'
+          username.length < 3
+            ? ' Make sure it is at least 3 characters long.'
             : ''
         }`
       );
@@ -256,7 +256,7 @@ function isValidUsername(username) {
   return (
     !!username &&
     username.length < 20 &&
-    username.length > 3 &&
+    username.length > 2 &&
     pattern.test(username)
   );
 }

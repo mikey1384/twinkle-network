@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useChatContext } from 'contexts';
 import { Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
 
@@ -29,6 +30,9 @@ export default function Channels({
   onChannelEnter,
   selectedChannelId
 }) {
+  const {
+    state: { customChannelNames }
+  } = useChatContext();
   return channels
     .filter(channel => !channel.isHidden)
     .map(
@@ -40,6 +44,7 @@ export default function Channels({
         numUnreads = 0,
         twoPeople
       }) => {
+        const effectiveChannelName = customChannelNames[id] || channelName;
         const otherMember = twoPeople
           ? members?.filter(member => Number(member.id) !== userId)?.[0]
           : null;
@@ -62,7 +67,9 @@ export default function Channels({
               height: '6.5rem'
             }}
             onClick={() => {
-              onChannelEnter(id);
+              if (id !== selectedChannelId) {
+                onChannelEnter(id);
+              }
             }}
           >
             <div
@@ -86,7 +93,7 @@ export default function Channels({
                 <div>
                   <p
                     style={{
-                      color: !channelName && !otherMember && '#7c7c7c',
+                      color: !effectiveChannelName && !otherMember && '#7c7c7c',
                       fontWeight: 'bold',
                       margin: 0,
                       padding: 0,
@@ -95,7 +102,9 @@ export default function Channels({
                       lineHeight: 'normal'
                     }}
                   >
-                    {otherMember?.username || channelName || '(Deleted)'}
+                    {otherMember?.username ||
+                      effectiveChannelName ||
+                      '(Deleted)'}
                   </p>
                 </div>
                 <div
