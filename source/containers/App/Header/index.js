@@ -50,13 +50,14 @@ export default function Header({
     state: { currentChannel, selectedChannelId, numUnreads },
     actions: {
       onSetReconnecting,
+      onChangeChannelOwner,
+      onChangeChannelSettings,
       onClearRecentChessMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
       onReceiveFirstMsg,
       onReceiveMessage,
-      onReceiveMessageOnDifferentChannel,
-      onUpdateApiServerToS3Progress
+      onReceiveMessageOnDifferentChannel
     }
   } = useChatContext();
 
@@ -91,24 +92,23 @@ export default function Header({
 
   useEffect(() => {
     socket.on('chat_invitation', onChatInvitation);
+    socket.on('change_channel_owner', onChangeChannelOwner);
+    socket.on('change_channel_settings', onChangeChannelSettings);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('new_post', onIncreaseNumNewPosts);
     socket.on('new_notification', onIncreaseNumNewNotis);
-    socket.on('receive_chat_file_upload_progress', onReceiveUploadProgress);
     socket.on('receive_message', handleReceiveMessage);
     socket.on('subject_change', onSubjectChange);
 
     return function cleanUp() {
       socket.removeListener('chat_invitation', onChatInvitation);
+      socket.removeListener('change_channel_owner', onChangeChannelOwner);
+      socket.removeListener('change_channel_settings', onChangeChannelSettings);
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('new_post', onIncreaseNumNewPosts);
       socket.removeListener('new_notification', onIncreaseNumNewNotis);
-      socket.removeListener(
-        'receive_chat_file_upload_progress',
-        onReceiveUploadProgress
-      );
       socket.removeListener('receive_message', handleReceiveMessage);
       socket.removeListener('subject_change', onSubjectChange);
     };
@@ -180,13 +180,6 @@ export default function Header({
           usingChat
         });
       }
-    }
-    function onReceiveUploadProgress({ channelId, path, percentage }) {
-      onUpdateApiServerToS3Progress({
-        progress: percentage / 100,
-        channelId,
-        path
-      });
     }
     function onSubjectChange({ subject }) {
       onNotifyChatSubjectChange(subject);

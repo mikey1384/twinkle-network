@@ -76,6 +76,7 @@ function SecretAnswer({ answer, onClick, style, subjectId, uploaderId }) {
           }`,
           borderRadius,
           color: spoilerShown ? Color.black() : '#fff',
+          wordBreak: 'break-word',
           textAlign: spoilerShown ? '' : 'center',
           padding: '1rem',
           ...style

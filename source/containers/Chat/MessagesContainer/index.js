@@ -15,7 +15,9 @@ import ChannelHeader from './ChannelHeader';
 import UploadModal from '../Modals/UploadModal';
 import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
-import EditTitleModal from '../Modals/EditTitle';
+import SelectNewOwnerModal from '../Modals/SelectNewOwnerModal';
+import SettingsModal from '../Modals/SettingsModal';
+import Icon from 'components/Icon';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext, useChatContext } from 'contexts';
 
@@ -58,8 +60,9 @@ export default function MessagesContainer({
 }) {
   const {
     requestHelpers: {
+      changeChannelOwner,
       deleteMessage,
-      editChannelTitle,
+      editChannelSettings,
       hideChat,
       leaveChannel,
       loadChatChannel
@@ -70,7 +73,7 @@ export default function MessagesContainer({
     state: { replyTarget },
     actions: {
       onDeleteMessage,
-      onEditChannelTitle,
+      onEditChannelSettings,
       onEnterChannelWithId,
       onHideChat,
       onLeaveChannel
@@ -97,8 +100,11 @@ export default function MessagesContainer({
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
-  const [editTitleModalShown, setEditTitleModalShown] = useState(false);
+  const [settingsModalShown, setSettingsModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
+  const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] = useState(
+    false
+  );
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const MessagesRef = useRef({});
   const ContentRef = useRef({});
@@ -123,25 +129,56 @@ export default function MessagesContainer({
     }${replyTarget ? ' - 12rem - 2px' : ''})`;
   }, [replyTarget, textAreaHeight]);
   const menuProps = useMemo(() => {
-    return currentChannel.twoPeople
-      ? [{ label: 'Hide Chat', onClick: handleHideChat }]
-      : [
-          {
-            label: 'Invite People',
-            onClick: () => setInviteUsersModalShown(true)
-          },
-          {
-            label: 'Edit Channel Name',
-            onClick: () => setEditTitleModalShown(true)
-          },
-          {
-            separator: true
-          },
-          {
-            label: 'Leave Channel',
-            onClick: () => setLeaveConfirmModalShown(true)
-          }
-        ];
+    if (currentChannel.twoPeople) {
+      return [
+        {
+          label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
+          onClick: handleHideChat
+        }
+      ];
+    }
+    let result = [];
+    if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
+      result.push({
+        label: (
+          <>
+            <Icon icon="users" />
+            <span style={{ marginLeft: '1rem' }}>Invite People</span>
+          </>
+        ),
+        onClick: () => setInviteUsersModalShown(true)
+      });
+    }
+    result = result.concat([
+      {
+        label:
+          currentChannel.creatorId === userId ? (
+            <>
+              <Icon icon="sliders-h" />
+              <span style={{ marginLeft: '1rem' }}>Settings</span>
+            </>
+          ) : (
+            <>
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '1rem' }}>Edit Channel Name</span>
+            </>
+          ),
+        onClick: () => setSettingsModalShown(true)
+      },
+      {
+        separator: true
+      },
+      {
+        label: (
+          <>
+            <Icon icon="sign-out-alt" />
+            <span style={{ marginLeft: '1rem' }}>Leave</span>
+          </>
+        ),
+        onClick: () => setLeaveConfirmModalShown(true)
+      }
+    ]);
+    return result;
     async function handleHideChat() {
       await hideChat(selectedChannelId);
       onHideChat(selectedChannelId);
@@ -151,7 +188,13 @@ export default function MessagesContainer({
       onEnterChannelWithId({ data, showOnTop: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentChannel.twoPeople, selectedChannelId]);
+  }, [
+    currentChannel.twoPeople,
+    currentChannel.isClosed,
+    currentChannel.creatorId,
+    userId,
+    selectedChannelId
+  ]);
 
   const fillerHeight = useMemo(
     () =>
@@ -210,6 +253,9 @@ export default function MessagesContainer({
             zIndex: 10,
             top: '1rem',
             right: '1rem'
+          }}
+          listStyle={{
+            width: '15rem'
           }}
           direction="left"
           icon="bars"
@@ -425,18 +471,28 @@ export default function MessagesContainer({
             onDone={handleInviteUsersDone}
           />
         )}
-        {editTitleModalShown && (
-          <EditTitleModal
-            title={channelName}
-            onHide={() => setEditTitleModalShown(false)}
-            onDone={handleEditChannelTitle}
+        {settingsModalShown && (
+          <SettingsModal
+            isClosed={!!currentChannel.isClosed}
+            userIsChannelOwner={currentChannel.creatorId === userId}
+            channelName={channelName}
+            onHide={() => setSettingsModalShown(false)}
+            onDone={handleEditSettings}
+            channelId={selectedChannelId}
           />
         )}
         {leaveConfirmModalShown && (
           <ConfirmModal
             title="Leave Channel"
             onHide={() => setLeaveConfirmModalShown(false)}
-            onConfirm={handleLeaveChannel}
+            onConfirm={handleLeaveConfirm}
+          />
+        )}
+        {selectNewOwnerModalShown && (
+          <SelectNewOwnerModal
+            onHide={() => setSelectNewOwnerModalShown(false)}
+            members={currentChannel.members}
+            onSubmit={handleSelectNewOwnerAndLeaveChannel}
           />
         )}
       </div>
@@ -459,18 +515,80 @@ export default function MessagesContainer({
     });
   }
 
-  async function handleEditChannelTitle(title) {
-    await editChannelTitle({ title, channelId: selectedChannelId });
-    onEditChannelTitle({ title, channelId: selectedChannelId });
-    setEditTitleModalShown(false);
+  async function handleEditSettings({ editedChannelName, editedIsClosed }) {
+    await editChannelSettings({
+      channelName: editedChannelName,
+      isClosed: editedIsClosed,
+      channelId: selectedChannelId
+    });
+    onEditChannelSettings({
+      channelName: editedChannelName,
+      isClosed: editedIsClosed,
+      channelId: selectedChannelId
+    });
+    socket.emit('new_chat_settings', {
+      channelName: editedChannelName,
+      isClosed: editedIsClosed,
+      channelId: selectedChannelId
+    });
+    setSettingsModalShown(false);
+  }
+
+  function handleInviteUsersDone(users, message) {
+    socket.emit(
+      'new_chat_message',
+      {
+        ...message,
+        channelId: message.channelId
+      },
+      {
+        ...currentChannel,
+        numUnreads: 1,
+        lastMessage: {
+          content: message.content,
+          sender: { id: userId, username }
+        },
+        channelName
+      }
+    );
+    socket.emit('send_group_chat_invitation', users, {
+      message: { ...message, messageId: message.id }
+    });
+    setInviteUsersModalShown(false);
+  }
+
+  function handleLeaveConfirm() {
+    if (currentChannel.creatorId === userId) {
+      setLeaveConfirmModalShown(false);
+      setSelectNewOwnerModalShown(true);
+    } else {
+      handleLeaveChannel();
+    }
+  }
+
+  async function handleLeaveChannel() {
+    await leaveChannel(selectedChannelId);
+    onLeaveChannel(selectedChannelId);
+    socket.emit('leave_chat_channel', {
+      channelId: selectedChannelId,
+      userId,
+      username,
+      profilePicId
+    });
+    const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
+    onEnterChannelWithId({ data, showOnTop: true });
+    setLeaveConfirmModalShown(false);
   }
 
   async function handleLoadMoreButtonClick() {
     const messageId = messages[0].id;
-    const channelId = messages[0].channelId;
     if (!loadMoreButtonLock) {
       setLoadMoreButtonLock(true);
-      await loadMoreMessages({ userId, messageId, channelId });
+      await loadMoreMessages({
+        userId,
+        messageId,
+        channelId: selectedChannelId
+      });
       setLoadMoreButtonLock(false);
     }
   }
@@ -481,6 +599,23 @@ export default function MessagesContainer({
     } else {
       setNewUnseenMessage(true);
     }
+  }
+
+  async function handleSelectNewOwnerAndLeaveChannel(newOwner) {
+    const notificationMsg = await changeChannelOwner({
+      channelId: selectedChannelId,
+      newOwner
+    });
+    socket.emit('new_channel_owner', {
+      channelId: selectedChannelId,
+      userId,
+      username,
+      profilePicId,
+      newOwner,
+      notificationMsg
+    });
+    handleLeaveChannel();
+    setSelectNewOwnerModalShown(false);
   }
 
   function handleShowDeleteModal({ fileName, filePath, messageId }) {
@@ -512,42 +647,5 @@ export default function MessagesContainer({
     setFileObj(file);
     setUploadModalShown(true);
     event.target.value = null;
-  }
-
-  function handleInviteUsersDone(users, message) {
-    socket.emit(
-      'new_chat_message',
-      {
-        ...message,
-        channelId: message.channelId
-      },
-      {
-        ...currentChannel,
-        numUnreads: 1,
-        lastMessage: {
-          content: message.content,
-          sender: { id: userId, username }
-        },
-        channelName
-      }
-    );
-    socket.emit('send_group_chat_invitation', users, {
-      message: { ...message, messageId: message.id }
-    });
-    setInviteUsersModalShown(false);
-  }
-
-  async function handleLeaveChannel() {
-    await leaveChannel(selectedChannelId);
-    onLeaveChannel(selectedChannelId);
-    socket.emit('leave_chat_channel', {
-      channelId: selectedChannelId,
-      userId,
-      username,
-      profilePicId
-    });
-    const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-    onEnterChannelWithId({ data, showOnTop: true });
-    setLeaveConfirmModalShown(false);
   }
 }

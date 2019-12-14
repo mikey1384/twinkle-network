@@ -89,7 +89,7 @@ export default function Chat({ onFileUpload }) {
   useEffect(() => {
     mounted.current = true;
     if (userId && (loaded || !userId || !socket.connected)) {
-      if (userId) {
+      if (userId && selectedChannelId) {
         updateChatLastRead(selectedChannelId);
       }
       onClearNumUnreads(selectedChannelId);

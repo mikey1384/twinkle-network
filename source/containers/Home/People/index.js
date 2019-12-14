@@ -172,6 +172,15 @@ function People({ location }) {
             loading={loading}
           />
         )}
+        <div
+          className={css`
+            display: none;
+            @media (max-width: ${mobileMaxWidth}) {
+              display: block;
+              height: 5rem;
+            }
+          `}
+        />
       </div>
     </div>
   );

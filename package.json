@@ -10,8 +10,8 @@
     "dev": "cross-env NODE_PATH=./source node entry/development.js",
     "build": "webpack --progress --color -p --config webpack/webpack.prod.js",
     "reload": "sudo pm2 reload entry/production.js",
-    "start": "sudo NODE_PATH=./source pm2 start entry/production.js -i max --log ./logs",
-    "stop": "sudo pm2 stop entry/production.js",
+    "start": "sudo NODE_PATH=./source forever -o out.log -e err.log start entry/production.js -i max --log ./logs",
+    "stop": "sudo forever stop entry/production.js",
     "test": "node scripts/test.js --env=jsdom"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "@fortawesome/pro-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
     "@hot-loader/react-dom": "^16.10.2",
+    "aws-sdk": "^2.586.0",
     "axios": "^0.19.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",

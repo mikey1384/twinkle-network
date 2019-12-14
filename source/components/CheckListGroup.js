@@ -17,7 +17,7 @@ CheckListGroup.propTypes = {
 
 export default function CheckListGroup({
   listItems,
-  inputType,
+  inputType = 'checkbox',
   onSelect,
   style = {}
 }) {

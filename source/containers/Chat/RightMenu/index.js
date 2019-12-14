@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import FullTextReveal from 'components/Texts/FullTextReveal';
+import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, phoneMaxWidth } from 'constants/css';
 import { isMobile, textIsOverflown } from 'helpers';
@@ -179,7 +180,7 @@ export default function RightMenu({
               }}
             >
               <ProfilePic
-                style={{ height: '5rem', width: '5rem' }}
+                style={{ height: '4rem', width: '4rem' }}
                 userId={member.id}
                 profilePicId={member.profilePicId}
                 online={currentChannelOnlineMembers
@@ -189,13 +190,27 @@ export default function RightMenu({
               />
               <UsernameText
                 truncate
+                className={css`
+                  width: auto;
+                  max-width: ${currentChannel.creatorId === member.id
+                    ? '50%'
+                    : 'CALC(45% + 3rem)'};
+                `}
                 style={{
                   color: Color.darkerGray(),
-                  marginLeft: '2rem',
-                  width: 'CALC(100% - 5rem - 2rem)'
+                  marginLeft: '2rem'
                 }}
                 user={member}
               />
+              {currentChannel.creatorId === member.id ? (
+                <div
+                  style={{
+                    marginLeft: '1rem'
+                  }}
+                >
+                  <Icon icon="crown" style={{ color: Color.brownOrange() }} />
+                </div>
+              ) : null}
             </div>
           </div>
         ))}

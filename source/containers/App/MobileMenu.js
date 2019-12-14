@@ -97,6 +97,8 @@ export default function MobileMenu({ location, history, onClose }) {
         {username && (
           <div
             className={css`
+              border-top: 1px solid ${Color.borderGray()};
+              border-bottom: 1px solid ${Color.borderGray()};
               background: #fff;
               width: 100%;
               text-align: center;

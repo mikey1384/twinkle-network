@@ -3,11 +3,25 @@ import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
   return {
-    async createNewChat({ channelName, selectedUsers }) {
+    async changeChannelOwner({ channelId, newOwner }) {
+      try {
+        const {
+          data: { notificationMsg }
+        } = await request.put(
+          `${URL}/chat/owner`,
+          { channelId, newOwner },
+          auth()
+        );
+        return Promise.resolve(notificationMsg);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async createNewChat({ channelName, selectedUsers, isClosed }) {
       try {
         const { data } = await request.post(
           `${URL}/chat/channel`,
-          { channelName, selectedUsers },
+          { channelName, selectedUsers, isClosed },
           auth()
         );
         return Promise.resolve(data);
@@ -26,9 +40,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editChannelTitle(params) {
+    async editChannelSettings(params) {
       try {
-        await request.post(`${URL}/chat/title`, params, auth());
+        await request.put(`${URL}/chat/settings`, params, auth());
         return Promise.resolve();
       } catch (error) {
         return handleError(error);
@@ -288,22 +302,27 @@ export default function chatRequestHelpers({ auth, handleError }) {
       subjectId
     }) {
       try {
-        const fileData = new FormData();
-        fileData.append('file', selectedFile, selectedFile.name);
-        fileData.append('path', path);
-        fileData.append('channelId', channelId);
-        fileData.append('recepientId', recepientId);
-        fileData.append('content', content);
-        if (targetMessageId) {
-          fileData.append('targetMessageId', targetMessageId);
-        }
-        if (subjectId) {
-          fileData.append('subjectId', subjectId);
-        }
-        const { data } = await request.post(`${URL}/chat/file`, fileData, {
-          ...auth(),
+        const { data: url } = await request.get(
+          `${URL}/chat/sign-s3?fileName=${selectedFile.name}&path=${path}`,
+          auth()
+        );
+        await request.put(url.signedRequest, selectedFile, {
           onUploadProgress
         });
+        const { data } = await request.post(
+          `${URL}/chat/file`,
+          {
+            fileName: selectedFile.name,
+            fileSize: selectedFile.size,
+            path,
+            channelId,
+            content,
+            recepientId,
+            targetMessageId,
+            subjectId
+          },
+          auth()
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

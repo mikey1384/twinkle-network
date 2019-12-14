@@ -198,11 +198,11 @@ function Embedly({
             `}
           >
             <h3>{cleanString(actualTitle || title)}</h3>
-            <p>
+            <div>
               <LongText maxLines={6} noExpand>
                 {cleanString(actualDescription || description)}
               </LongText>
-            </p>
+            </div>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
         )}

@@ -51,7 +51,7 @@ function App({ location, history }) {
       onPostUploadComplete,
       onResetChat,
       onSendFirstDirectMessage,
-      onUpdateClientToApiServerProgress
+      onUpdateUploadProgress
     }
   } = useChatContext();
   const {
@@ -297,7 +297,7 @@ function App({ location, history }) {
       result: !!messageId
     });
     function handleUploadProgress({ loaded, total }) {
-      onUpdateClientToApiServerProgress({
+      onUpdateUploadProgress({
         channelId,
         path: filePath,
         progress: loaded / total

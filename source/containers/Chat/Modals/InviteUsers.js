@@ -54,6 +54,7 @@ export default function InviteUsersModal({
           )}
           searchPlaceholder="Search for people you want to chat with"
           selectedItems={selectedUsers}
+          style={{ width: '80%' }}
         />
       </main>
       <footer>

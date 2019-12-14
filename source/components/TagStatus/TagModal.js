@@ -79,6 +79,7 @@ function TagModal({
           renderTagLabel={label => hashify(label)}
           searchPlaceholder="Search for playlists here..."
           selectedItems={selectedPlaylists}
+          style={{ width: '80%' }}
         />
         {addPlaylistModalShown && (
           <AddPlaylistModal

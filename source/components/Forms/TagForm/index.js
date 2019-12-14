@@ -7,6 +7,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
+  className: PropTypes.string,
   dropdownFooter: PropTypes.node,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   itemLabel: PropTypes.string.isRequired,
@@ -28,11 +29,13 @@ TagForm.propTypes = {
   renderDropdownLabel: PropTypes.func.isRequired,
   renderTagLabel: PropTypes.func,
   subTitle: PropTypes.node,
+  style: PropTypes.object,
   title: PropTypes.string
 };
 
 function TagForm({
   children,
+  className,
   dropdownFooter,
   inputRef,
   filter,
@@ -49,6 +52,7 @@ function TagForm({
   renderTagLabel,
   searchPlaceholder,
   subTitle,
+  style,
   title
 }) {
   const [searchText, setSearchText] = useState('');
@@ -87,7 +91,8 @@ function TagForm({
   return (
     <ErrorBoundary>
       <form
-        style={{ width: '70%' }}
+        style={style}
+        className={className}
         onSubmit={event => {
           event.preventDefault();
           onSubmit?.();

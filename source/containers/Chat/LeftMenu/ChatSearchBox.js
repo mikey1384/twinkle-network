@@ -14,9 +14,9 @@ export default function ChatSearchBox({ style }) {
   const {
     requestHelpers: { loadChatChannel, searchChat }
   } = useAppContext();
-  const { userId, username } = useMyState();
+  const { profilePicId, userId, username } = useMyState();
   const {
-    state: { chatSearchResults },
+    state: { chatSearchResults, selectedChannelId },
     actions: {
       onClearChatSearchResults,
       onEnterChannelWithId,
@@ -73,6 +73,11 @@ export default function ChatSearchBox({ style }) {
 
   async function onSelect(item) {
     if (item.primary || !!item.channelId) {
+      if (item.channelId === selectedChannelId) {
+        setSearchText('');
+        onClearChatSearchResults();
+        return;
+      }
       onUpdateSelectedChannelId(item.channelId);
       const data = await loadChatChannel({
         channelId: item.channelId
@@ -80,8 +85,12 @@ export default function ChatSearchBox({ style }) {
       onEnterChannelWithId({ data, showOnTop: true });
     } else {
       onOpenNewChatTab({
-        user: { username, id: userId },
-        recepient: { username: item.label, id: item.id }
+        user: { username, id: userId, profilePicId },
+        recepient: {
+          username: item.label,
+          id: item.id,
+          profilePicId: item.profilePicId
+        }
       });
     }
     setSearchText('');

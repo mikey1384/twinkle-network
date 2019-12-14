@@ -1,14 +1,25 @@
 export default function ChatActions(dispatch) {
   return {
+    onChangeChannelOwner({ channelId, message, newOwner }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_OWNER',
+        channelId,
+        message,
+        newOwner
+      });
+    },
+    onChangeChannelSettings({ channelId, channelName, isClosed }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_SETTINGS',
+        channelId,
+        channelName,
+        isClosed
+      });
+    },
     onChangeChatSubject(subject) {
       return dispatch({
         type: 'CHANGE_SUBJECT',
         subject
-      });
-    },
-    onSetReconnecting() {
-      return dispatch({
-        type: 'SET_RECONNECTING'
       });
     },
     onClearNumUnreads(channelId) {
@@ -71,10 +82,12 @@ export default function ChatActions(dispatch) {
         }
       });
     },
-    onEditChannelTitle(params) {
+    onEditChannelSettings({ channelName, isClosed, channelId }) {
       return dispatch({
-        type: 'APPLY_CHANGED_CHANNEL_TITLE',
-        data: params
+        type: 'APPLY_CHANGED_CHANNEL_SETTINGS',
+        channelName,
+        isClosed,
+        channelId
       });
     },
     onEditMessage({ editedMessage, messageId }) {
@@ -268,6 +281,11 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onSetReconnecting() {
+      return dispatch({
+        type: 'SET_RECONNECTING'
+      });
+    },
     onSetReplyTarget(target) {
       return dispatch({
         type: 'SET_REPLY_TARGET',
@@ -284,22 +302,14 @@ export default function ChatActions(dispatch) {
         replyTarget
       });
     },
-    onUpdateApiServerToS3Progress({ progress, channelId, path }) {
-      return dispatch({
-        type: 'UPDATE_API_SERVER_TO_S3_PROGRESS',
-        progress,
-        channelId,
-        path
-      });
-    },
     onUpdateChessMoveViewTimeStamp() {
       return dispatch({
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
       });
     },
-    onUpdateClientToApiServerProgress({ progress, channelId, path }) {
+    onUpdateUploadProgress({ progress, channelId, path }) {
       return dispatch({
-        type: 'UPDATE_CLIENT_TO_API_SERVER_PROGRESS',
+        type: 'UPDATE_UPLOAD_PROGRESS',
         progress,
         channelId,
         path

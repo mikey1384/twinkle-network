@@ -10,30 +10,80 @@ export default function ChatReducer(state, action) {
           id: index === action.messageIndex ? action.messageId : message.id
         }))
       };
-    case 'APPLY_CHANGED_CHANNEL_TITLE':
+    case 'APPLY_CHANGED_CHANNEL_SETTINGS':
       return {
         ...state,
-        currentChannel: {
-          ...state.currentChannel,
-          title:
-            state.currentChannel.id === action.data.channelId
-              ? action.data.title
-              : state.currentChannel.title
-        },
-        channels: state.channels.map(channel => {
-          return {
-            ...channel,
-            channelName:
-              channel.id === action.data.channelId
-                ? action.data.title
-                : channel.channelName
-          };
-        }),
+        currentChannel:
+          state.currentChannel.id === action.channelId
+            ? {
+                ...state.currentChannel,
+                channelName: action.channelName,
+                isClosed: action.isClosed
+              }
+            : state.currentChannel,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? {
+                ...channel,
+                channelName: action.channelName,
+                isClosed: action.isClosed
+              }
+            : channel
+        ),
         customChannelNames: {
           ...state.customChannelNames,
-          [action.data.channelId]: action.data.title
+          [action.channelId]: action.channelName
         }
       };
+    case 'CHANGE_CHANNEL_OWNER': {
+      return {
+        ...state,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? {
+                ...channel,
+                numUnreads:
+                  state.selectedChannelId === action.channelId ? 0 : 1,
+                lastMessage: {
+                  content: action.message.content,
+                  sender: {
+                    id: action.message.userId,
+                    username: action.message.username
+                  }
+                }
+              }
+            : channel
+        ),
+        currentChannel: {
+          ...state.currentChannel,
+          creatorId:
+            state.selectedChannelId === action.channelId
+              ? action.newOwner.id
+              : state.currentChannel.creatorId
+        },
+        messages:
+          state.selectedChannelId === action.channelId
+            ? state.messages.concat(action.message)
+            : state.messages
+      };
+    }
+    case 'CHANGE_CHANNEL_SETTINGS': {
+      return {
+        ...state,
+        channels: state.channels.map(channel =>
+          channel.id === action.channelId
+            ? { ...channel, channelName: action.channelName }
+            : channel
+        ),
+        currentChannel:
+          state.currentChannel.id === action.channelId
+            ? {
+                ...state.currentChannel,
+                isClosed: action.isClosed
+              }
+            : state.currentChannel
+      };
+    }
     case 'CHANGE_SUBJECT': {
       return {
         ...state,
@@ -92,6 +142,7 @@ export default function ChatReducer(state, action) {
               }
             },
             lastUpdate: action.data.message.timeStamp,
+            isClosed: action.data.isClosed,
             numUnreads: 0
           }
         ].concat(state.channels),
@@ -100,7 +151,8 @@ export default function ChatReducer(state, action) {
           id: action.data.message.channelId,
           twoPeople: false,
           creatorId: action.data.message.userId,
-          members: action.data.members
+          members: action.data.members,
+          isClosed: action.data.isClosed
         },
         messages: [action.data.message],
         loadMoreMessages: false
@@ -372,7 +424,7 @@ export default function ChatReducer(state, action) {
                 ...channel,
                 lastUpdate: timeStamp,
                 lastMessage: {
-                  content: 'Left the channel',
+                  content: 'Left this channel',
                   sender: {
                     id: action.data.userId,
                     username: action.data.username
@@ -392,7 +444,7 @@ export default function ChatReducer(state, action) {
           {
             id: null,
             channelId: action.data.channelId,
-            content: 'Left the channel',
+            content: 'Left this channel',
             timeStamp: timeStamp,
             isNotification: true,
             username: action.data.username,
@@ -664,7 +716,7 @@ export default function ChatReducer(state, action) {
           }
         ])
       };
-    case 'UPDATE_API_SERVER_TO_S3_PROGRESS':
+    case 'UPDATE_UPLOAD_PROGRESS':
       return {
         ...state,
         filesBeingUploaded: {
@@ -674,7 +726,7 @@ export default function ChatReducer(state, action) {
               file.filePath === action.path
                 ? {
                     ...file,
-                    apiServerToS3Progress: action.progress
+                    uploadProgress: action.progress
                   }
                 : file
           )

@@ -4,6 +4,9 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
+import SwitchButton from 'components/SwitchButton';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
 
 CreateNewChannelModal.propTypes = {
@@ -22,6 +25,7 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
   } = useChatContext();
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isClosed, setIsClosed] = useState(false);
 
   return (
     <Modal onHide={onHide}>
@@ -45,16 +49,33 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
           )}
           searchPlaceholder="Search for people you want to chat with"
           selectedItems={selectedUsers}
+          className={css`
+            width: 80%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
         >
           {selectedUsers.length > 1 && (
-            <div style={{ marginTop: '1.5rem' }}>
-              <h3>Channel name</h3>
-              <Input
-                style={{ marginTop: '1rem' }}
-                placeholder="Enter channel name"
-                value={channelName}
-                onChange={setChannelName}
-              />
+            <div style={{ width: '100%' }}>
+              <div style={{ marginTop: '1.5rem' }}>
+                <h3>Channel name</h3>
+                <Input
+                  style={{ marginTop: '1rem' }}
+                  placeholder="Enter channel name"
+                  value={channelName}
+                  onChange={setChannelName}
+                />
+              </div>
+              <div style={{ marginTop: '1.5rem' }}>
+                <SwitchButton
+                  labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
+                  label="Anyone can invite new members:"
+                  checked={!isClosed}
+                  onChange={() => setIsClosed(isClosed => !isClosed)}
+                />
+                <p>(You can change this setting later)</p>
+              </div>
             </div>
           )}
         </TagForm>
@@ -91,6 +112,6 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
   }
 
   function handleDone() {
-    onDone({ userId, channelName, selectedUsers });
+    onDone({ userId, channelName, selectedUsers, isClosed });
   }
 }
