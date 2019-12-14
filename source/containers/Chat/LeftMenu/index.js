@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
+import FilterBar from 'components/FilterBar';
 import Context from '../Context';
 import {
   Color,
@@ -36,6 +37,8 @@ export default function LeftMenu({
   const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [prevChannels, setPrevChannels] = useState(channels);
+  const [isSpecial] = useState(false);
+  /*, setIsSpecial */
   const ChannelListRef = useRef(null);
   const loading = useRef(false);
   const channelsObj = useRef({});
@@ -129,7 +132,25 @@ export default function LeftMenu({
         }}
         ref={ChannelListRef}
       >
-        <div style={{ display: 'flex', width: '100%' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+        >
+          <div style={{ width: '100%', display: 'flex' }}>
+            <FilterBar>
+              <nav
+                // onClick={setIsSpecial(false)}
+                className={isSpecial ? 'inactive' : 'active'}
+              >
+                Normal
+              </nav>
+              <nav
+                // onClick={setIsSpecial(true)}
+                className={!isSpecial ? 'inactive' : 'active'}
+              >
+                Special
+              </nav>
+            </FilterBar>
+          </div>
           <div style={{ width: '100%' }}>
             <Channels
               userId={userId}
