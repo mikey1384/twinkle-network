@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -55,7 +55,7 @@ export default function ChannelHeader() {
   );
   const HeaderLabelRef = useRef(null);
   const mounted = useRef(true);
-  const subjectTitle = cleanString(content);
+  const subjectTitle = useMemo(() => cleanString(content), [content]);
 
   useEffect(() => {
     function onSubjectChange({ subject }) {

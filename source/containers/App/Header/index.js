@@ -47,7 +47,7 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: { currentChannel, selectedChannelId, numUnreads },
+    state: { channelsObj, selectedChannelId, numUnreads },
     actions: {
       onSetReconnecting,
       onChangeChannelOwner,
@@ -118,8 +118,9 @@ export default function Header({
       if (selectedChannelId === 0) {
         if (
           data.members.filter(member => member.userId !== userId)[0].userId ===
-          currentChannel.members.filter(member => member.userId !== userId)[0]
-            .userId
+          channelsObj[selectedChannelId].members.filter(
+            member => member.userId !== userId
+          )[0].userId
         ) {
           duplicate = true;
         }

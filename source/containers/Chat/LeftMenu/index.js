@@ -46,10 +46,11 @@ export default function LeftMenu({
 
     function onListScroll() {
       if (
+        channelLoadMoreButtonShown &&
         ChannelListRef.current.scrollTop >=
-        (ChannelListRef.current.scrollHeight -
-          ChannelListRef.current.offsetHeight) *
-          0.7
+          (ChannelListRef.current.scrollHeight -
+            ChannelListRef.current.offsetHeight) *
+            0.7
       ) {
         handleLoadMoreChannels();
       }
@@ -68,8 +69,12 @@ export default function LeftMenu({
       ChannelListRef.current.scrollTop = 0;
     }
     setPrevChannelIds(channelIds);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelIds]);
+  }, [
+    channelLoadMoreButtonShown,
+    channelIds,
+    selectedChannelId,
+    prevChannelIds
+  ]);
 
   return (
     <div
@@ -154,8 +159,7 @@ export default function LeftMenu({
       setChannelsLoading(true);
       loading.current = true;
       await loadMoreChannels({
-        currentChannelId: selectedChannelId,
-        channelIds
+        shownIds: channelIds
       });
       setChannelsLoading(false);
       loading.current = false;

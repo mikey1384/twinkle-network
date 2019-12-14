@@ -84,7 +84,7 @@ export default function ChatActions(dispatch) {
     },
     onEditChannelSettings({ channelName, isClosed, channelId }) {
       return dispatch({
-        type: 'APPLY_CHANGED_CHANNEL_SETTINGS',
+        type: 'EDIT_CHANNEL_SETTINGS',
         channelName,
         isClosed,
         channelId

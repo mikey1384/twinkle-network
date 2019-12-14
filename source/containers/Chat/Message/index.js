@@ -390,8 +390,10 @@ export default function Message({
               direction="left"
               opacity={0.8}
               onButtonClick={menuDisplayed => {
-                if (!menuDisplayed && isLastMsg && !filePath && !extractedUrl) {
-                  setEditPadding(true);
+                if (isLastMsg) {
+                  if (!filePath && !extractedUrl) {
+                    setEditPadding(!menuDisplayed);
+                  }
                   setScrollToBottom();
                 }
               }}

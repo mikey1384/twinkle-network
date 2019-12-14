@@ -157,10 +157,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadMoreChannels({ currentChannelId, channelIds }) {
+    async loadMoreChannels({ currentChannelId, shownIds }) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
+          `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${shownIds
+            .map(shownId => `shownIds[]=${shownId}`)
+            .join('&')}`,
           auth()
         );
         return Promise.resolve(data);
