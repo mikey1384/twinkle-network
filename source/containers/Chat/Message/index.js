@@ -14,10 +14,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import { socket } from 'constants/io';
 import { MessageStyle } from '../Styles';
-import {
-  getFileInfoFromFileName,
-  fetchURLFromText
-} from 'helpers/stringHelpers';
+import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
@@ -300,15 +297,7 @@ export default function Message({
     />
   ) : (
     <ErrorBoundary>
-      <div
-        style={{
-          height:
-            getFileInfoFromFileName(fileName)?.fileType === 'video'
-              ? '60vw'
-              : 'auto'
-        }}
-        className={MessageStyle.container}
-      >
+      <div className={MessageStyle.container}>
         <div className={MessageStyle.profilePic}>
           <ProfilePic
             style={{ width: '100%', height: '100%' }}
