@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { phoneMaxWidth, Color } from 'constants/css';
@@ -70,7 +70,7 @@ export default function MessagesContainer({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { messagesLoaded, reconnecting, replyTarget },
+    state: { replyTarget },
     actions: {
       onChannelLoadingDone,
       onDeleteMessage,
@@ -211,18 +211,6 @@ export default function MessagesContainer({
       MessagesRef.current?.offsetHeight
     ]
   );
-
-  useEffect(() => {
-    if (messagesLoaded) {
-      setTimeout(() => {
-        MessagesContainerRef.current.scrollTop =
-          Math.max(ContentRef.current?.offsetHeight, 10000000) || 0;
-        onChannelLoadingDone();
-      }, 0);
-      setScrollAtBottom(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messagesLoaded, reconnecting]);
 
   return (
     <div
@@ -629,12 +617,11 @@ export default function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    setTimeout(
-      () =>
-        (MessagesContainerRef.current.scrollTop =
-          ContentRef.current?.offsetHeight || 0),
-      100
-    );
+    setTimeout(() => {
+      MessagesContainerRef.current.scrollTop =
+        ContentRef.current?.offsetHeight || 0;
+      onChannelLoadingDone();
+    }, 100);
     if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);
   }
 
