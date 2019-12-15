@@ -236,6 +236,7 @@ export default function ChatReducer(state, action) {
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
+        messagesLoaded: true,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         selectedChannelId: selectedChannel.id,
         subject: selectedChannel.id === 2 ? state.subject : {},
@@ -287,6 +288,7 @@ export default function ChatReducer(state, action) {
 
       return {
         ...initialChatState,
+        loaded: true,
         channelIds: action.data.channelIds,
         channelsObj: {
           ...action.data.channelsObj,
@@ -297,11 +299,11 @@ export default function ChatReducer(state, action) {
         },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
-        loaded: true,
         loadMoreMessages,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
+        messagesLoaded: true,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         recentChessMessage: undefined,
         reconnecting: false,
@@ -752,6 +754,7 @@ export default function ChatReducer(state, action) {
         ...state,
         channelLoading: true,
         messages: [],
+        messagesLoaded: false,
         loadMoreMessages: false,
         selectedChannelId: action.channelId
       };

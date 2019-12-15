@@ -70,7 +70,7 @@ export default function MessagesContainer({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { replyTarget },
+    state: { messagesLoaded, replyTarget },
     actions: {
       onChannelLoadingDone,
       onDeleteMessage,
@@ -107,7 +107,6 @@ export default function MessagesContainer({
     false
   );
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
-  const prevMessagesLength = useRef(0);
   const MessagesRef = useRef(null);
   const ContentRef = useRef(null);
   const FileInputRef = useRef(null);
@@ -214,7 +213,7 @@ export default function MessagesContainer({
   );
 
   useEffect(() => {
-    if (prevMessagesLength.current === 0 && messages.length !== 0) {
+    if (messagesLoaded) {
       setTimeout(() => {
         MessagesContainerRef.current.scrollTop =
           ContentRef.current?.offsetHeight || 0;
@@ -222,9 +221,8 @@ export default function MessagesContainer({
       }, 0);
       setScrollAtBottom(true);
     }
-    prevMessagesLength.current = messages.length;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messages]);
+  }, [messagesLoaded]);
 
   return (
     <div
