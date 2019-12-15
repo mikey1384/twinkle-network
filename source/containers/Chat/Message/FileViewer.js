@@ -29,7 +29,7 @@ export default function FileViewer({
       style={{
         marginTop: '1rem',
         width: '100%',
-        height: fileType === 'video' ? '35vw' : '7rem'
+        height: fileType === 'video' ? '35vw' : 'auto'
       }}
     >
       {fileType === 'image' ? (
