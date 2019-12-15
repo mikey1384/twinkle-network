@@ -218,6 +218,7 @@ export function fetchedVideoCodeFromURL(url) {
 }
 
 export function getFileInfoFromFileName(fileName) {
+  if (typeof fileName !== 'string') return null;
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
