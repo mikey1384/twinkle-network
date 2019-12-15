@@ -218,7 +218,7 @@ export default function MessagesContainer({
         MessagesContainerRef.current.scrollTop =
           ContentRef.current?.offsetHeight || 0;
         onChannelLoadingDone();
-      }, 0);
+      }, 10);
       setScrollAtBottom(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
