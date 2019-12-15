@@ -615,7 +615,7 @@ export default function ChatReducer(state, action) {
             ...state.channelsObj[action.channel.id],
             ...action.channel,
             numUnreads:
-              Number(state.channelsObj[action.channel.id].numUnreads) + 1
+              Number(state.channelsObj[action.channel.id]?.numUnreads || 0) + 1
           }
         },
         numUnreads:
