@@ -342,7 +342,7 @@ export default function MessagesContainer({
                 }}
               />
             )}
-            <div style={{ opacity: loading ? 0 : 1 }} ref={MessagesRef}>
+            <div style={{ opacity: loading ? 0.5 : 1 }} ref={MessagesRef}>
               {messages.map((message, index) => (
                 <Message
                   key={selectedChannelId + (message.id || 'newMessage' + index)}
