@@ -28,8 +28,7 @@ export default function FileViewer({
     <div
       style={{
         marginTop: '1rem',
-        width: '100%',
-        height: fileType === 'video' ? '35vw' : 'auto'
+        width: '100%'
       }}
     >
       {fileType === 'image' ? (
