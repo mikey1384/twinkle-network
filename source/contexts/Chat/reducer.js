@@ -207,6 +207,7 @@ export default function ChatReducer(state, action) {
       action.data.messages.reverse();
       return {
         ...state,
+        channelLoading: false,
         replyTarget: null,
         recentChessMessage: undefined,
         channelsObj: {
@@ -296,6 +297,7 @@ export default function ChatReducer(state, action) {
 
       return {
         ...initialChatState,
+        channelLoading: false,
         channelIds: action.data.channelIds,
         channelsObj: {
           ...action.data.channelsObj,
@@ -759,6 +761,7 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
+        channelLoading: true,
         messages: [],
         loadMoreMessages: false,
         selectedChannelId: action.channelId

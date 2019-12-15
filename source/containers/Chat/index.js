@@ -35,6 +35,7 @@ export default function Chat({ onFileUpload }) {
   const { profilePicId, userId, username } = useMyState();
   const {
     state: {
+      channelLoading,
       loaded,
       selectedChannelId,
       channelsObj,
@@ -67,7 +68,6 @@ export default function Chat({ onFileUpload }) {
   const {
     state: { pageVisible }
   } = useViewContext();
-  const [channelLoading, setChannelLoading] = useState(false);
   const [
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
@@ -192,7 +192,6 @@ export default function Chat({ onFileUpload }) {
   });
 
   useEffect(() => {
-    setChannelLoading(selectedChannelId !== currentChannel.id);
     socket.emit('check_online_members', selectedChannelId, (err, data) => {
       if (err) console.error(err);
       if (mounted.current) {

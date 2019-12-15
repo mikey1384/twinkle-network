@@ -20,6 +20,7 @@ export const initialChatState = {
   recentChessMessage: undefined,
   recepientId: null,
   replyTarget: null,
+  channelLoading: true,
   selectedChannelId: null,
   subject: {},
   subjectSearchResults: [],
