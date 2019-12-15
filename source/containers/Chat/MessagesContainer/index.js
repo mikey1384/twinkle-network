@@ -629,6 +629,8 @@ export default function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
+    MessagesContainerRef.current.scrollTop =
+      ContentRef.current?.offsetHeight || 0;
     setTimeout(
       () =>
         (MessagesContainerRef.current.scrollTop =
