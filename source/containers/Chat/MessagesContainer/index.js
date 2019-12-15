@@ -216,7 +216,7 @@ export default function MessagesContainer({
     if (messagesLoaded) {
       setTimeout(() => {
         MessagesContainerRef.current.scrollTop =
-          ContentRef.current?.offsetHeight || 0;
+          Math.max(ContentRef.current?.offsetHeight, 1000000) || 0;
         onChannelLoadingDone();
       }, 10);
       setScrollAtBottom(true);
