@@ -217,6 +217,13 @@ export default function MessagesContainer({
       MessagesContainerRef.current.scrollTop =
         ContentRef.current?.offsetHeight || 0;
     }
+    setTimeout(
+      () =>
+        (MessagesContainerRef.current.scrollTop =
+          ContentRef.current?.offsetHeight || 0),
+      0
+    );
+    setScrollAtBottom(true);
     prevMessagesLength.current = messages.length;
   }, [messages]);
 
