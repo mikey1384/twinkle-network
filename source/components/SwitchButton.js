@@ -8,7 +8,7 @@ import { useMyState } from 'helpers/hooks';
 SwitchButton.propTypes = {
   color: PropTypes.string,
   checked: PropTypes.bool.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   labelStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   style: PropTypes.object

@@ -6,7 +6,7 @@ import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useChatContext } from 'contexts';
-import { mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 SettingsModal.propTypes = {
@@ -84,7 +84,8 @@ export default function SettingsModal({
               }}
             >
               <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-                Anyone can invite new members:
+                <span style={{ color: Color.logoBlue() }}>Anyone</span> can
+                invite new members:
               </p>
               <SwitchButton
                 style={{ marginLeft: '1rem' }}

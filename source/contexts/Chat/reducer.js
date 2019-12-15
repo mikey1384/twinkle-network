@@ -297,7 +297,13 @@ export default function ChatReducer(state, action) {
       return {
         ...initialChatState,
         channelIds: action.data.channelIds,
-        channelsObj: action.data.channelsObj,
+        channelsObj: {
+          ...action.data.channelsObj,
+          [action.data.currentChannelId]: {
+            ...action.data.channelsObj[action.data.currentChannelId],
+            numUnreads: 0
+          }
+        },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
         loaded: true,

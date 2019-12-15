@@ -6,7 +6,7 @@ import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
 import { css } from 'emotion';
-import { mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
 
 CreateNewChannelModal.propTypes = {
@@ -70,7 +70,12 @@ export default function CreateNewChannelModal({ userId, onHide, onDone }) {
               <div style={{ marginTop: '1.5rem' }}>
                 <SwitchButton
                   labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
-                  label="Anyone can invite new members:"
+                  label={
+                    <>
+                      <span style={{ color: Color.logoBlue() }}>Anyone</span>{' '}
+                      can invite new members:
+                    </>
+                  }
                   checked={!isClosed}
                   onChange={() => setIsClosed(isClosed => !isClosed)}
                 />
