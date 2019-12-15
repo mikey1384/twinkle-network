@@ -83,6 +83,7 @@ export default function Chat({ onFileUpload }) {
   const [creatingNewDMChannel, setCreatingNewDMChannel] = useState(false);
   const memberObj = useRef({});
   const mounted = useRef(true);
+  const loadingRef = useRef(false);
 
   const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
     channelsObj,
@@ -120,6 +121,10 @@ export default function Chat({ onFileUpload }) {
       otherMember?.username || channelsObj[currentChannel?.id]?.channelName
     );
   }, [channelsObj, currentChannel, userId]);
+
+  useEffect(() => {
+    loadingRef.current = channelLoading;
+  }, [channelLoading]);
 
   useEffect(() => {
     socket.on('receive_message', handleReceiveMessage);
@@ -305,7 +310,7 @@ export default function Chat({ onFileUpload }) {
     if (
       selectedChannelId !== currentChannel.id ||
       senderId === userId ||
-      channelLoading ||
+      loadingRef.current ||
       creatingNewDMChannel
     ) {
       return;

@@ -282,7 +282,6 @@ export default function ChatReducer(state, action) {
         action.data.channelIds.pop();
         channelLoadMoreButton = true;
       }
-
       return {
         ...initialChatState,
         loaded: true,
