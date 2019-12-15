@@ -25,7 +25,13 @@ export default function FileViewer({
   )}`;
 
   return (
-    <div style={{ marginTop: '1rem', width: '100%' }}>
+    <div
+      style={{
+        marginTop: '1rem',
+        width: '100%',
+        height: fileType === 'video' ? '35vw' : '7rem'
+      }}
+    >
       {fileType === 'image' ? (
         <ImagePreview
           modalOverModal={modalOverModal}
@@ -47,7 +53,7 @@ export default function FileViewer({
           <ReactPlayer
             style={{ marginTop: '1rem' }}
             width="100%"
-            height={fileType === 'video' ? '32vw' : '5rem'}
+            height={fileType === 'video' ? '33vw' : '5rem'}
             url={src}
             controls
           />
