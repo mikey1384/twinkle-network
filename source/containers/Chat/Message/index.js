@@ -193,7 +193,7 @@ export default function Message({
   }, [channelId, moveViewTimeStamp]);
 
   useEffect(() => {
-    if (isLastMsg) {
+    if (isLastMsg && (!isNewMessage || userIsUploader)) {
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
