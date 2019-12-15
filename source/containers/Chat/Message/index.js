@@ -118,6 +118,7 @@ export default function Message({
     }
   } = useContentContext();
   const {
+    state: { reconnecting },
     actions: {
       onEditMessage,
       onSaveMessage,
@@ -197,7 +198,7 @@ export default function Message({
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onEdit, editPadding, loading]);
+  }, [onEdit, editPadding, reconnecting]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
