@@ -70,7 +70,7 @@ export default function MessagesContainer({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { messagesLoaded, replyTarget },
+    state: { messagesLoaded, reconnecting, replyTarget },
     actions: {
       onChannelLoadingDone,
       onDeleteMessage,
@@ -222,7 +222,7 @@ export default function MessagesContainer({
       setScrollAtBottom(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messagesLoaded]);
+  }, [messagesLoaded, reconnecting]);
 
   return (
     <div
