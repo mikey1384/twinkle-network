@@ -217,10 +217,7 @@ export default function ChatReducer(state, action) {
         recentChessMessage: undefined,
         channelsObj: {
           ...state.channelsObj,
-          [selectedChannel.id]: {
-            ...state.channelsObj[selectedChannel.id],
-            ...selectedChannel
-          }
+          [selectedChannel.id]: selectedChannel
         },
         channelIds: state.channelIds.reduce((prev, channelId, index) => {
           if (action.showOnTop && index === state.channelIds.length - 1) {

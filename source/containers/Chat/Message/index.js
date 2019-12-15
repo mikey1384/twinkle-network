@@ -197,7 +197,7 @@ export default function Message({
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onEdit, editPadding]);
+  }, [onEdit, editPadding, loading]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
