@@ -22,6 +22,11 @@ export default function ChatActions(dispatch) {
         subject
       });
     },
+    onChannelLoadingDone() {
+      return dispatch({
+        type: 'CHANNEL_LOADING_DONE'
+      });
+    },
     onClearNumUnreads(channelId) {
       return dispatch({
         type: 'CLEAR_NUM_UNREADS',

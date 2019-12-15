@@ -69,6 +69,12 @@ export default function ChatReducer(state, action) {
         subject: action.subject
       };
     }
+    case 'CHANNEL_LOADING_DONE': {
+      return {
+        ...state,
+        channelLoading: false
+      };
+    }
     case 'CLEAR_CHAT_SEARCH_RESULTS':
       return {
         ...state,
@@ -207,7 +213,6 @@ export default function ChatReducer(state, action) {
       action.data.messages.reverse();
       return {
         ...state,
-        channelLoading: false,
         replyTarget: null,
         recentChessMessage: undefined,
         channelsObj: {

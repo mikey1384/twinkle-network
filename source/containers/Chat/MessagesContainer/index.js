@@ -72,6 +72,7 @@ export default function MessagesContainer({
   const {
     state: { replyTarget },
     actions: {
+      onChannelLoadingDone,
       onDeleteMessage,
       onEditChannelSettings,
       onEnterChannelWithId,
@@ -214,15 +215,15 @@ export default function MessagesContainer({
 
   useEffect(() => {
     if (prevMessagesLength.current === 0 && messages.length !== 0) {
-      setTimeout(
-        () =>
-          (MessagesContainerRef.current.scrollTop =
-            ContentRef.current?.offsetHeight || 0),
-        0
-      );
+      setTimeout(() => {
+        MessagesContainerRef.current.scrollTop =
+          ContentRef.current?.offsetHeight || 0;
+        onChannelLoadingDone();
+      }, 0);
       setScrollAtBottom(true);
     }
     prevMessagesLength.current = messages.length;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   return (
@@ -317,7 +318,7 @@ export default function MessagesContainer({
           }}
         >
           <div ref={ContentRef} style={{ width: '100%' }}>
-            {loadMoreButton ? (
+            {!loading && loadMoreButton ? (
               <div
                 style={{
                   marginTop: '1rem',
@@ -343,7 +344,7 @@ export default function MessagesContainer({
                 }}
               />
             )}
-            <div ref={MessagesRef}>
+            <div style={{ opacity: loading ? 0 : 1 }} ref={MessagesRef}>
               {messages.map((message, index) => (
                 <Message
                   key={selectedChannelId + (message.id || 'newMessage' + index)}
