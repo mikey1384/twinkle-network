@@ -106,7 +106,7 @@ export default function MessagesContainer({
   const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] = useState(
     false
   );
-  const [scrollAtBottom, setScrollAtBottom] = useState(false);
+  const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const MessagesRef = useRef(null);
   const ContentRef = useRef(null);
   const FileInputRef = useRef(null);
