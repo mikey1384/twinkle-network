@@ -249,21 +249,6 @@ export default function ChatReducer(state, action) {
         recentChessMessage: undefined,
         subject: {},
         selectedChannelId: 0,
-        channelsObj: {
-          ...state.channelsObj,
-          '0': {
-            id: 0,
-            twoPeople: true,
-            members: state.channels[0].members,
-            channelName: action.recepient.username,
-            lastMessage: {
-              content: null,
-              sender: null
-            },
-            lastUpdate: null,
-            numUnreads: 0
-          }
-        },
         messages: [],
         loadMoreMessages: false
       };
@@ -302,7 +287,6 @@ export default function ChatReducer(state, action) {
 
       return {
         ...initialChatState,
-        channelLoading: false,
         channelIds: action.data.channelIds,
         channelsObj: {
           ...action.data.channelsObj,
