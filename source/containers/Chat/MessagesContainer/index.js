@@ -214,16 +214,14 @@ export default function MessagesContainer({
 
   useEffect(() => {
     if (prevMessagesLength.current === 0 && messages.length !== 0) {
-      MessagesContainerRef.current.scrollTop =
-        ContentRef.current?.offsetHeight || 0;
+      setTimeout(
+        () =>
+          (MessagesContainerRef.current.scrollTop =
+            ContentRef.current?.offsetHeight || 0),
+        0
+      );
+      setScrollAtBottom(true);
     }
-    setTimeout(
-      () =>
-        (MessagesContainerRef.current.scrollTop =
-          ContentRef.current?.offsetHeight || 0),
-      0
-    );
-    setScrollAtBottom(true);
     prevMessagesLength.current = messages.length;
   }, [messages]);
 
@@ -632,8 +630,6 @@ export default function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    MessagesContainerRef.current.scrollTop =
-      ContentRef.current?.offsetHeight || 0;
     setTimeout(
       () =>
         (MessagesContainerRef.current.scrollTop =
