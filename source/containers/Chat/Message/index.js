@@ -318,7 +318,7 @@ export default function Message({
               {unix(timeStamp).format('LLL')}
             </span>
           </div>
-          <>
+          <div>
             {isChessMsg ? (
               <Chess
                 channelId={channelId}
@@ -380,7 +380,7 @@ export default function Message({
                 />
               </>
             )}
-          </>
+          </div>
           {dropdownButtonShown && (
             <DropdownButton
               skeuomorphic
