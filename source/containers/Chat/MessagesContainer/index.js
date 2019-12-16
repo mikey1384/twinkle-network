@@ -514,6 +514,10 @@ export default function MessagesContainer({
       filePath: '',
       messageId: null
     });
+    socket.emit('delete_chat_message', {
+      channelId: selectedChannelId,
+      messageId
+    });
   }
 
   async function handleEditSettings({ editedChannelName, editedIsClosed }) {
@@ -527,7 +531,7 @@ export default function MessagesContainer({
       isClosed: editedIsClosed,
       channelId: selectedChannelId
     });
-    socket.emit('new_chat_settings', {
+    socket.emit('new_channel_settings', {
       channelName: editedChannelName,
       isClosed: editedIsClosed,
       channelId: selectedChannelId

@@ -417,6 +417,7 @@ export default function Message({
   async function handleEditDone(editedMessage) {
     await editMessage({ editedMessage, messageId });
     onEditMessage({ editedMessage, messageId });
+    socket.emit('edit_chat_message', { channelId, editedMessage, messageId });
     setOnEdit(false);
   }
 

@@ -96,9 +96,9 @@ function Notification({ children, className, location, style }) {
   }, [twinkleXP]);
 
   useEffect(() => {
-    socket.on('new_reward', handleFetchNotifications);
+    socket.on('new_reward_received', handleFetchNotifications);
     return function cleanUp() {
-      socket.removeListener('new_reward', handleFetchNotifications);
+      socket.removeListener('new_reward_received', handleFetchNotifications);
     };
   });
 

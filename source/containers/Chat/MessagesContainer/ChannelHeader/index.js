@@ -62,9 +62,9 @@ export default function ChannelHeader() {
       onChangeChatSubject(subject);
     }
     mounted.current = true;
-    socket.on('subject_change', onSubjectChange);
+    socket.on('subject_changed', onSubjectChange);
     return function cleanUp() {
-      socket.removeListener('subject_change', onSubjectChange);
+      socket.removeListener('subject_changed', onSubjectChange);
       mounted.current = false;
     };
   });

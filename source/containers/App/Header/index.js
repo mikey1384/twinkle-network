@@ -53,6 +53,8 @@ export default function Header({
       onChangeChannelOwner,
       onChangeChannelSettings,
       onClearRecentChessMessage,
+      onDeleteMessage,
+      onEditMessage,
       onGetNumberOfUnreadMessages,
       onInitChat,
       onReceiveFirstMsg,
@@ -91,26 +93,33 @@ export default function Header({
   }, [profilePicId, userId, username]);
 
   useEffect(() => {
-    socket.on('chat_invitation', onChatInvitation);
-    socket.on('change_channel_owner', onChangeChannelOwner);
-    socket.on('change_channel_settings', onChangeChannelSettings);
+    socket.on('chat_invitation_received', onChatInvitation);
+    socket.on('chat_message_deleted', onDeleteMessage);
+    socket.on('chat_message_edited', onEditMessage);
+    socket.on('channel_owner_changed', onChangeChannelOwner);
+    socket.on('channel_settings_changed', onChangeChannelSettings);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('new_post', onIncreaseNumNewPosts);
-    socket.on('new_notification', onIncreaseNumNewNotis);
-    socket.on('receive_message', handleReceiveMessage);
-    socket.on('subject_change', onSubjectChange);
+    socket.on('new_post_uploaded', onIncreaseNumNewPosts);
+    socket.on('new_notification_received', onIncreaseNumNewNotis);
+    socket.on('new_message_received', handleReceiveMessage);
+    socket.on('subject_changed', onSubjectChange);
 
     return function cleanUp() {
-      socket.removeListener('chat_invitation', onChatInvitation);
-      socket.removeListener('change_channel_owner', onChangeChannelOwner);
-      socket.removeListener('change_channel_settings', onChangeChannelSettings);
+      socket.removeListener('chat_invitation_received', onChatInvitation);
+      socket.removeListener('channel_owner_changed', onChangeChannelOwner);
+      socket.removeListener(
+        'channel_settings_changed',
+        onChangeChannelSettings
+      );
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
-      socket.removeListener('new_post', onIncreaseNumNewPosts);
-      socket.removeListener('new_notification', onIncreaseNumNewNotis);
-      socket.removeListener('receive_message', handleReceiveMessage);
-      socket.removeListener('subject_change', onSubjectChange);
+      socket.removeListener('chat_message_deleted', onDeleteMessage);
+      socket.removeListener('chat_message_edited', onEditMessage);
+      socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
+      socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
+      socket.removeListener('new_message_received', handleReceiveMessage);
+      socket.removeListener('subject_changed', onSubjectChange);
     };
 
     function onChatInvitation(data) {

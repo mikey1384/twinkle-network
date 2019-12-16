@@ -127,12 +127,12 @@ export default function Chat({ onFileUpload }) {
   }, [channelLoading]);
 
   useEffect(() => {
-    socket.on('receive_message', handleReceiveMessage);
-    socket.on('subject_change', onSubjectChange);
-    socket.on('change_in_members_online', onChangeMembersOnline);
-    socket.on('notifiy_move_viewed', onNotifyMoveViewed);
-    socket.on('notifiy_move_made', onNotifiedMoveMade);
-    socket.on('receive_chess_countdown_number', onReceiveCountdownNumber);
+    socket.on('new_message_received', handleReceiveMessage);
+    socket.on('subject_changed', onSubjectChange);
+    socket.on('members_online_changed', onChangeMembersOnline);
+    socket.on('chess_move_viewed', onNotifyMoveViewed);
+    socket.on('chess_move_made', onNotifiedMoveMade);
+    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
 
     function onNotifyMoveViewed(channelId) {
       if (channelId === selectedChannelId) {
@@ -184,13 +184,13 @@ export default function Chat({ onFileUpload }) {
     }
 
     return function cleanUp() {
-      socket.removeListener('receive_message', handleReceiveMessage);
-      socket.removeListener('subject_change', onSubjectChange);
-      socket.removeListener('change_in_members_online', onChangeMembersOnline);
-      socket.removeListener('notifiy_move_viewed', onNotifyMoveViewed);
-      socket.removeListener('notifiy_move_made', onNotifiedMoveMade);
+      socket.removeListener('new_message_received', handleReceiveMessage);
+      socket.removeListener('subject_changed', onSubjectChange);
+      socket.removeListener('members_online_changed', onChangeMembersOnline);
+      socket.removeListener('chess_move_viewed', onNotifyMoveViewed);
+      socket.removeListener('chess_move_made', onNotifiedMoveMade);
       socket.removeListener(
-        'receive_chess_countdown_number',
+        'chess_countdown_number_received',
         onReceiveCountdownNumber
       );
     };
