@@ -227,13 +227,14 @@ function Embedly({
   return (
     <div
       style={{
-        width: contentType === 'chat' ? '50%' : '100%',
         height: '100%',
         ...style
       }}
       className={css`
+        width: ${contentType === 'chat' ? '50%' : '100%'};
         display: flex;
         @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
           width: 100%;
         }
       `}
@@ -251,6 +252,14 @@ function Embedly({
           p {
             font-size: ${contentType === 'chat' ? '1.2rem' : '1.5rem'};
             margin-top: 1rem;
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            h3 {
+              font-size: ${contentType === 'chat' ? '1.3rem' : '1.7rem'};
+            }
+            p {
+              font-size: ${contentType === 'chat' ? '1.1rem' : '1.3rem'};
+            }
           }
         `}
       >

@@ -85,7 +85,7 @@ export default function TextMessage({
             contentId={messageId}
             contentType="chat"
             imageHeight="20vw"
-            imageMobileHeight="50vw"
+            imageMobileHeight="25vw"
             loadingHeight="30vw"
             mobileLoadingHeight="70vw"
           />
