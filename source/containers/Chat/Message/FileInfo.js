@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
 
 FileInfo.propTypes = {
@@ -18,17 +18,35 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
       style={{
         background: Color.wellGray(),
         padding: '1rem',
-        width: '70%',
         borderRadius
       }}
+      className={css`
+        width: 70%;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
+        }
+      `}
     >
       <div style={{ display: 'flex', width: '100%' }}>
-        <div>
-          {fileType === 'other' ? (
-            <Icon size="7x" icon="file" />
-          ) : (
-            <Icon size="7x" icon={`file-${fileType}`} />
-          )}
+        <div
+          className={css`
+            color: ${Color.black()};
+            cursor: pointer;
+            &:hover {
+              color: #000;
+            }
+          `}
+          onClick={() => window.open(src)}
+        >
+          <Icon
+            className={css`
+              font-size: 10rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 7rem;
+              }
+            `}
+            icon={fileType === 'other' ? 'file' : `file-${fileType}`}
+          />
         </div>
         <div
           style={{
@@ -49,6 +67,11 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
             <div style={{ width: '100%' }}>
               <a
                 style={{ fontWeight: 'bold' }}
+                className={css`
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.5rem;
+                  }
+                `}
                 href={src}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -56,9 +79,18 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
                 {fileName}
               </a>
             </div>
-            <div>{renderFileSize(fileSize)}</div>
+            <div
+              className={css`
+                font-size: 1.2rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
+                }
+              `}
+            >
+              {renderFileSize(fileSize)}
+            </div>
           </div>
-          <div
+          <p
             style={{
               fontWeight: 'bold',
               cursor: 'pointer',
@@ -67,15 +99,19 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
               justifyContent: 'flex-end'
             }}
             className={css`
-              color: ${Color.darkerGray()};
+              color: ${Color.black()};
               &:hover {
-                color: ${Color.black()};
+                color: #000;
+              }
+              line-height: 1;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.3rem;
               }
             `}
             onClick={() => window.open(src)}
           >
             Download
-          </div>
+          </p>
         </div>
       </div>
     </div>
