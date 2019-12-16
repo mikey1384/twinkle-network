@@ -204,8 +204,12 @@ export default function MessagesContainer({
         ? MessagesContainerRef.current?.offsetHeight -
           MessagesRef.current?.offsetHeight
         : 20,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [MessagesContainerRef.current, MessagesRef]
+    [
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      MessagesContainerRef.current?.offsetHeight,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      MessagesRef.current?.offsetHeight
+    ]
   );
 
   useEffect(() => {
