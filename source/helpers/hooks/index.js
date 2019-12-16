@@ -71,7 +71,7 @@ export function useLazyLoad({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, PanelRef.current?.clientHeight]);
+  }, [inView, PanelRef]);
 
   useEffect(() => {
     return function cleanUp() {
