@@ -27,6 +27,7 @@ export default function Categories({
   } = useAppContext();
   const { defaultSearchFilter, profileTheme } = useMyState();
   const [changingDefaultFilter, setChangingDefaultFilter] = useState(false);
+
   return (
     <div
       style={{
@@ -52,6 +53,9 @@ export default function Categories({
               font-weight: bold;
               text-transform: capitalize;
               font-size: 3.5rem;
+              > svg {
+                font-size: 3.2rem;
+              }
             }
             span {
               font-size: 1.5rem;
@@ -74,7 +78,9 @@ export default function Categories({
         {['subjects', 'videos', 'links'].map(contentType =>
           filter === contentType ? (
             <nav key={contentType}>
-              <p>Explore {contentType}</p>
+              <p style={{ display: 'flex', alignItems: 'center' }}>
+                {returnIcon(contentType)}Explore {contentType}
+              </p>
               <div
                 style={{
                   display: 'flex',
@@ -114,14 +120,32 @@ export default function Categories({
               </div>
             </nav>
           ) : (
-            <Link key={contentType} to={contentType}>
-              Explore {contentType}
+            <Link
+              style={{ display: 'flex', alignItems: 'center' }}
+              key={contentType}
+              to={contentType}
+            >
+              {returnIcon(contentType)}Explore {contentType}
             </Link>
           )
         )}
       </div>
     </div>
   );
+
+  function returnIcon(contentType) {
+    let icon = '';
+    if (contentType === 'subjects') {
+      icon = 'bolt';
+    }
+    if (contentType === 'videos') {
+      icon = 'film';
+    }
+    if (contentType === 'links') {
+      icon = 'book';
+    }
+    return <Icon style={{ marginRight: '1.5rem' }} icon={icon} />;
+  }
 
   async function handleSetDefaultSearchFilter() {
     if (filter === defaultSearchFilter) return;
