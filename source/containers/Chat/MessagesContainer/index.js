@@ -609,18 +609,20 @@ export default function MessagesContainer({
   }
 
   async function handleLoadMore() {
-    const messageId = messages[0].id;
-    const prevContentHeight = ContentRef.current?.offsetHeight || 0;
-    if (!loadMoreButtonLock) {
-      setLoadMoreButtonLock(true);
-      await loadMoreMessages({
-        userId,
-        messageId,
-        channelId: selectedChannelId
-      });
-      MessagesContainerRef.current.scrollTop =
-        (ContentRef.current?.offsetHeight || 0) - prevContentHeight;
-      setLoadMoreButtonLock(false);
+    if (loadMoreButton) {
+      const messageId = messages[0].id;
+      const prevContentHeight = ContentRef.current?.offsetHeight || 0;
+      if (!loadMoreButtonLock) {
+        setLoadMoreButtonLock(true);
+        await loadMoreMessages({
+          userId,
+          messageId,
+          channelId: selectedChannelId
+        });
+        MessagesContainerRef.current.scrollTop =
+          (ContentRef.current?.offsetHeight || 0) - prevContentHeight;
+        setLoadMoreButtonLock(false);
+      }
     }
   }
 
