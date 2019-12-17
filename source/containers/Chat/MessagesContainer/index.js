@@ -619,8 +619,10 @@ export default function MessagesContainer({
           messageId,
           channelId: selectedChannelId
         });
-        MessagesContainerRef.current.scrollTop =
-          (ContentRef.current?.offsetHeight || 0) - prevContentHeight;
+        MessagesContainerRef.current.scrollTop = Math.max(
+          MessagesContainerRef.current.scrollTop,
+          (ContentRef.current?.offsetHeight || 0) - prevContentHeight
+        );
         setLoadMoreButtonLock(false);
       }
     }
