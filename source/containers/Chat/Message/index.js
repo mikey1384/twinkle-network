@@ -362,7 +362,7 @@ export default function Message({
                   />
                 )}
                 <TextMessage
-                  attachmentHidden={attachmentHidden}
+                  attachmentHidden={!!attachmentHidden}
                   channelId={channelId}
                   content={content}
                   extractedUrl={extractedUrl}

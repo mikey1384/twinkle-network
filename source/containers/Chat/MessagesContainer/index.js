@@ -18,6 +18,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import SelectNewOwnerModal from '../Modals/SelectNewOwnerModal';
 import SettingsModal from '../Modals/SettingsModal';
 import Icon from 'components/Icon';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext, useChatContext } from 'contexts';
 
@@ -112,6 +113,8 @@ export default function MessagesContainer({
   const FileInputRef = useRef(null);
   const MessagesContainerRef = useRef({});
   const ChatInputRef = useRef(null);
+  const timerRef = useRef(null);
+  const mounted = useRef(null);
   const mb = 1000;
   const maxSize = useMemo(
     () =>
@@ -211,6 +214,26 @@ export default function MessagesContainer({
       MessagesRef.current?.offsetHeight
     ]
   );
+
+  useEffect(() => {
+    const MessagesContainer = MessagesContainerRef.current;
+    mounted.current = true;
+    addEvent(MessagesContainer, 'scroll', handleScroll);
+
+    return function cleanUp() {
+      mounted.current = false;
+      removeEvent(MessagesContainer, 'scroll', handleScroll);
+    };
+
+    function handleScroll() {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        if (MessagesContainerRef.current.scrollTop === 0) {
+          handleLoadMore();
+        }
+      }, 200);
+    }
+  });
 
   useEffect(() => {
     if (messagesLoaded) {
@@ -330,7 +353,7 @@ export default function MessagesContainer({
                   filled
                   color="lightBlue"
                   disabled={loadMoreButtonLock}
-                  onClick={handleLoadMoreButtonClick}
+                  onClick={handleLoadMore}
                 >
                   Load More
                 </Button>
@@ -585,8 +608,9 @@ export default function MessagesContainer({
     setLeaveConfirmModalShown(false);
   }
 
-  async function handleLoadMoreButtonClick() {
+  async function handleLoadMore() {
     const messageId = messages[0].id;
+    const prevContentHeight = ContentRef.current?.offsetHeight || 0;
     if (!loadMoreButtonLock) {
       setLoadMoreButtonLock(true);
       await loadMoreMessages({
@@ -594,6 +618,8 @@ export default function MessagesContainer({
         messageId,
         channelId: selectedChannelId
       });
+      MessagesContainerRef.current.scrollTop =
+        (ContentRef.current?.offsetHeight || 0) - prevContentHeight;
       setLoadMoreButtonLock(false);
     }
   }

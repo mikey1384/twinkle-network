@@ -49,6 +49,7 @@ export default function useInfiniteScroll({
   }, [loading]);
 
   function onScroll() {
+    clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       if (
         (document.getElementById('App').scrollHeight > scrollHeight ||
@@ -77,7 +78,7 @@ export default function useInfiniteScroll({
           onScrollToBottom();
         }
       }
-    }, 200);
+    }, 100);
   }
   return { setScrollHeight, scrollHeight };
 }
