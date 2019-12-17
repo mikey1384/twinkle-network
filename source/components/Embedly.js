@@ -279,7 +279,7 @@ function Embedly({
               margin-top: 1rem;
             }
             @media (max-width: ${mobileMaxWidth}) {
-              width: 85%;
+              width: ${contentType === 'chat' ? '85%' : '100%'};
               h3 {
                 font-size: ${contentType === 'chat' ? '1.3rem' : '1.7rem'};
               }
