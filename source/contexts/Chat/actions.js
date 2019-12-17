@@ -119,6 +119,12 @@ export default function ChatActions(dispatch) {
         numUnreads
       });
     },
+    onHideAttachment(messageId) {
+      return dispatch({
+        type: 'HIDE_ATTACHMENT',
+        messageId
+      });
+    },
     onHideChat(channelId) {
       return dispatch({
         type: 'HIDE_CHAT',

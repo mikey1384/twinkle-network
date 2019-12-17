@@ -255,6 +255,15 @@ export default function ChatReducer(state, action) {
         ...state,
         numUnreads: action.numUnreads
       };
+    case 'HIDE_ATTACHMENT':
+      return {
+        ...state,
+        messages: state.messages.map(message =>
+          message.id === action.messageId
+            ? { ...message, attachmentHidden: true }
+            : message
+        )
+      };
     case 'HIDE_CHAT':
       return {
         ...state,

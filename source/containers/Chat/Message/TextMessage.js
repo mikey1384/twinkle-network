@@ -6,8 +6,12 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
 import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
+import { useAppContext, useChatContext } from 'contexts';
+import { socket } from 'constants/io';
 
 TextMessage.propTypes = {
+  attachmentHidden: PropTypes.bool,
+  channelId: PropTypes.number,
   content: PropTypes.string.isRequired,
   extractedUrl: PropTypes.string,
   isNotification: PropTypes.bool,
@@ -21,10 +25,13 @@ TextMessage.propTypes = {
   onEditDone: PropTypes.func.isRequired,
   showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
-  subjectId: PropTypes.number
+  subjectId: PropTypes.number,
+  userCanEditThis: PropTypes.bool
 };
 
 export default function TextMessage({
+  attachmentHidden,
+  channelId,
   content,
   extractedUrl,
   isNotification,
@@ -38,8 +45,16 @@ export default function TextMessage({
   onEditDone,
   subjectId,
   showSubjectMsgsModal,
-  socketConnected
+  socketConnected,
+  userCanEditThis
 }) {
+  const {
+    actions: { onHideAttachment }
+  } = useChatContext();
+  const {
+    requestHelpers: { hideAttachment }
+  } = useAppContext();
+
   return (
     <ErrorBoundary>
       <div>
@@ -79,7 +94,7 @@ export default function TextMessage({
             )}
           </div>
         )}
-        {extractedUrl && messageId && (
+        {extractedUrl && messageId && !attachmentHidden && (
           <Embedly
             style={{ marginTop: '1rem' }}
             contentId={messageId}
@@ -88,11 +103,19 @@ export default function TextMessage({
             imageMobileHeight="25vw"
             loadingHeight="30vw"
             mobileLoadingHeight="70vw"
+            onHideAttachment={handleHideAttachment}
+            userCanEditThis={userCanEditThis}
           />
         )}
       </div>
     </ErrorBoundary>
   );
+
+  async function handleHideAttachment() {
+    await hideAttachment(messageId);
+    onHideAttachment(messageId);
+    socket.emit('hide_message_attachment', { channelId, messageId });
+  }
 
   function renderPrefix() {
     let prefix = '';

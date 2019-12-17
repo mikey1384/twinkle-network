@@ -53,6 +53,7 @@ export default function Header({
       onChangeChannelOwner,
       onChangeChannelSettings,
       onClearRecentChessMessage,
+      onHideAttachment,
       onDeleteMessage,
       onEditMessage,
       onGetNumberOfUnreadMessages,
@@ -100,6 +101,7 @@ export default function Header({
     socket.on('channel_settings_changed', onChangeChannelSettings);
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
+    socket.on('message_attachment_hid', onHideAttachment);
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', onIncreaseNumNewNotis);
     socket.on('new_message_received', handleReceiveMessage);
@@ -116,6 +118,7 @@ export default function Header({
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
+      socket.removeListener('message_attachment_hid', onHideAttachment);
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
       socket.removeListener('new_message_received', handleReceiveMessage);

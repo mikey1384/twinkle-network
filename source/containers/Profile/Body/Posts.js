@@ -92,10 +92,10 @@ export default function Posts({
   return !loaded ? (
     <Loading style={{ marginBottom: '50vh' }} text="Loading..." />
   ) : (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <FilterBar
         color={selectedTheme}
-        style={{ height: '5rem' }}
+        style={{ height: '5rem', marginTop: '-1rem' }}
         className="mobile"
       >
         {[
@@ -117,8 +117,9 @@ export default function Posts({
       </FilterBar>
       <div
         className={css`
-          width: ${section === 'likes' ? '65vw' : '80vw'};
+          width: 100%;
           display: flex;
+          justify-content: center;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100vw;
           }
@@ -127,7 +128,7 @@ export default function Posts({
         {loadingFeeds ? (
           <Loading
             className={css`
-              width: ${section === 'likes' ? '100%' : 'CALC(100% - 25rem)'};
+              width: ${section === 'likes' ? '55%' : '50%'};
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100%;
               }
@@ -137,7 +138,7 @@ export default function Posts({
         ) : (
           <div
             className={css`
-              width: ${section === 'likes' ? '100%' : 'CALC(100% - 25rem)'};
+              width: ${section === 'likes' ? '55%' : '50%'};
               @media (max-width: ${mobileMaxWidth}) {
                 width: 100%;
               }
@@ -188,7 +189,7 @@ export default function Posts({
           <Suspense fallback={<Loading />}>
             <SideMenu
               className={`desktop ${css`
-                width: 30rem;
+                width: 10%;
               `}`}
               menuItems={[
                 { key: 'all', label: 'All' },

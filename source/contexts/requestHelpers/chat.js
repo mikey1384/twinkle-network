@@ -86,9 +86,17 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async hideAttachment(messageId) {
+      try {
+        await request.put(`${URL}/chat/hide/attachment`, { messageId }, auth());
+        return Promise.resolve();
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async hideChat(channelId) {
       try {
-        await request.post(`${URL}/chat/hideChat`, { channelId }, auth());
+        await request.put(`${URL}/chat/hide/chat`, { channelId }, auth());
         return Promise.resolve();
       } catch (error) {
         return handleError(error);

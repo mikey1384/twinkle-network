@@ -61,6 +61,7 @@ export default function Message({
   message,
   message: {
     id: messageId,
+    attachmentHidden,
     fileToUpload,
     fileName,
     userId,
@@ -361,6 +362,8 @@ export default function Message({
                   />
                 )}
                 <TextMessage
+                  attachmentHidden={attachmentHidden}
+                  channelId={channelId}
                   content={content}
                   extractedUrl={extractedUrl}
                   myId={myId}
@@ -377,6 +380,7 @@ export default function Message({
                   socketConnected={socketConnected}
                   subjectId={subjectId}
                   targetMessage={targetMessage}
+                  userCanEditThis={userCanEditThis}
                 />
               </>
             )}

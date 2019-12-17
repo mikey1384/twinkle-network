@@ -3,28 +3,31 @@ import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
 import LongText from 'components/Texts/LongText';
+import ReactPlayer from 'react-player';
+import Icon from 'components/Icon';
+import URL from 'constants/URL';
 import { css } from 'emotion';
 import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
-import URL from 'constants/URL';
 import { isValidYoutubeUrl } from '../helpers/stringHelpers';
-import ReactPlayer from 'react-player';
 
 const API_URL = `${URL}/content`;
 
 Embedly.propTypes = {
   contentId: PropTypes.number,
-  small: PropTypes.bool,
+  contentType: PropTypes.string,
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
   loadingHeight: PropTypes.string,
   mobileLoadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
+  onHideAttachment: PropTypes.func,
+  small: PropTypes.bool,
   style: PropTypes.object,
-  contentType: PropTypes.string
+  userCanEditThis: PropTypes.bool
 };
 
 function Embedly({
@@ -36,8 +39,10 @@ function Embedly({
   loadingHeight = '100%',
   mobileLoadingHeight = '100%',
   noLink,
+  onHideAttachment = () => {},
   small,
-  style
+  style,
+  userCanEditThis
 }) {
   const translator = {
     actualDescription:
@@ -225,58 +230,80 @@ function Embedly({
   ]);
 
   return (
-    <div
-      style={{
-        height: '100%',
-        ...style
-      }}
-      className={css`
-        width: ${contentType === 'chat' ? '50%' : '100%'};
-        display: flex;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 100%;
-          width: 100%;
-        }
-      `}
-    >
+    <div style={{ position: 'relative', height: '100%', ...style }}>
+      {contentType === 'chat' && userCanEditThis && (
+        <Icon
+          style={{
+            position: 'absolute',
+            cursor: 'pointer',
+            zIndex: 100
+          }}
+          onClick={() => onHideAttachment()}
+          className={css`
+            right: ${isYouTube ? '1rem' : 'CALC(50% - 1rem)'};
+            color: ${Color.darkGray()};
+            font-size: 2rem;
+            &:hover {
+              color: ${Color.black()};
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              right: 1rem;
+            }
+          `}
+          icon="times"
+        />
+      )}
       <div
+        style={{ height: '100%' }}
         className={css`
-          width: 100%;
-          height: 100%;
-          > a {
-            text-decoration: none;
-          }
-          h3 {
-            font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
-          }
-          p {
-            font-size: ${contentType === 'chat' ? '1.2rem' : '1.5rem'};
-            margin-top: 1rem;
-          }
+          width: ${contentType === 'chat' ? '50%' : '100%'};
+          position: relative;
+          display: flex;
           @media (max-width: ${mobileMaxWidth}) {
-            h3 {
-              font-size: ${contentType === 'chat' ? '1.3rem' : '1.7rem'};
-            }
-            p {
-              font-size: ${contentType === 'chat' ? '1.1rem' : '1.3rem'};
-            }
+            width: 100%;
           }
         `}
       >
-        {noLink ? (
-          <div className={contentCss}>{InnerContent}</div>
-        ) : isYouTube ? (
-          <ReactPlayer width="50vw" height="30vw" url={url} controls />
-        ) : (
-          <a
-            className={contentCss}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={url}
-          >
-            {InnerContent}
-          </a>
-        )}
+        <div
+          className={css`
+            width: 100%;
+            height: 100%;
+            > a {
+              text-decoration: none;
+            }
+            h3 {
+              font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
+            }
+            p {
+              font-size: ${contentType === 'chat' ? '1.2rem' : '1.5rem'};
+              margin-top: 1rem;
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 85%;
+              h3 {
+                font-size: ${contentType === 'chat' ? '1.3rem' : '1.7rem'};
+              }
+              p {
+                font-size: ${contentType === 'chat' ? '1.1rem' : '1.3rem'};
+              }
+            }
+          `}
+        >
+          {noLink ? (
+            <div className={contentCss}>{InnerContent}</div>
+          ) : isYouTube ? (
+            <ReactPlayer width="50vw" height="30vw" url={url} controls />
+          ) : (
+            <a
+              className={contentCss}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={url}
+            >
+              {InnerContent}
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
