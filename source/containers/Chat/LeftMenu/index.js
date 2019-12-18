@@ -4,6 +4,7 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
+import Icon from 'components/Icon';
 import {
   Color,
   desktopMinWidth,
@@ -113,6 +114,39 @@ export default function LeftMenu({
       >
         + New Channel
       </div>
+      <div
+        style={{
+          cursor: 'pointer',
+          padding: '1rem',
+          borderBottom: `1px solid ${Color.borderGray()}`
+        }}
+        className={`unselectable ${css`
+          &:hover {
+            background: ${Color.checkboxAreaGray()};
+          }
+        `}`}
+        onClick={handleEnterDictionary}
+      >
+        <div>
+          <div style={{ fontSize: '1.7rem' }}>
+            <Icon icon="book" />
+            <span style={{ fontWeight: 'bold', marginLeft: '0.7rem' }}>
+              Dictionary
+            </span>
+          </div>
+          <p
+            style={{
+              marginTop: '0.3rem',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              width: '100%'
+            }}
+          >
+            mikey: Justice means
+          </p>
+        </div>
+      </div>
       <ChatSearchBox
         style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
       />
@@ -120,7 +154,7 @@ export default function LeftMenu({
         style={{
           overflow: 'scroll',
           position: 'absolute',
-          top: '10.5rem',
+          top: '17.5rem',
           left: 0,
           right: 0,
           bottom: 0
@@ -153,6 +187,10 @@ export default function LeftMenu({
       </div>
     </div>
   );
+
+  function handleEnterDictionary() {
+    console.log('hello');
+  }
 
   async function handleLoadMoreChannels() {
     if (!loading.current) {
