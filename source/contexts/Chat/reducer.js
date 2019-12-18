@@ -244,6 +244,7 @@ export default function ChatReducer(state, action) {
     case 'ENTER_DICTIONARY':
       return {
         ...state,
+        selectedChannelId: null,
         chatType: 'dictionary',
         messages: [],
         loadMoreMessages: false

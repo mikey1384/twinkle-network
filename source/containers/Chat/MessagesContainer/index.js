@@ -17,6 +17,7 @@ import InviteUsersModal from '../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import SelectNewOwnerModal from '../Modals/SelectNewOwnerModal';
 import SettingsModal from '../Modals/SettingsModal';
+import Dictionary from './Dictionary';
 import Icon from 'components/Icon';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
@@ -71,7 +72,7 @@ export default function MessagesContainer({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { messagesLoaded, reconnecting, replyTarget },
+    state: { chatType, messagesLoaded, reconnecting, replyTarget },
     actions: {
       onChannelLoadingDone,
       onDeleteMessage,
@@ -365,40 +366,45 @@ export default function MessagesContainer({
                 }}
               />
             )}
-            <div style={{ opacity: loading ? 0 : 1 }} ref={MessagesRef}>
-              {messages.map((message, index) => (
-                <Message
-                  key={selectedChannelId + (message.id || 'newMessage' + index)}
-                  channelId={selectedChannelId}
-                  channelName={channelName}
-                  chessCountdownObj={chessCountdownObj}
-                  chessOpponent={chessOpponent}
-                  checkScrollIsAtTheBottom={() =>
-                    checkScrollIsAtTheBottom({
-                      content: ContentRef.current,
-                      container: MessagesContainerRef.current
-                    })
-                  }
-                  currentChannel={currentChannel}
-                  index={index}
-                  isLastMsg={index === messages.length - 1}
-                  isNotification={!!message.isNotification}
-                  loading={loading}
-                  message={message}
-                  onChessBoardClick={onChessBoardClick}
-                  onChessSpoilerClick={onChessSpoilerClick}
-                  onSendFileMessage={onSendFileMessage}
-                  onDelete={handleShowDeleteModal}
-                  onReceiveNewMessage={handleReceiveNewMessage}
-                  onReplyClick={() => ChatInputRef.current.focus()}
-                  recepientId={recepientId}
-                  setScrollToBottom={handleSetScrollToBottom}
-                  showSubjectMsgsModal={({ subjectId, content }) =>
-                    setSubjectMsgsModal({ shown: true, subjectId, content })
-                  }
-                />
-              ))}
-            </div>
+            {chatType === 'dictionary' && <Dictionary />}
+            {!chatType && (
+              <div style={{ opacity: loading ? 0 : 1 }} ref={MessagesRef}>
+                {messages.map((message, index) => (
+                  <Message
+                    key={
+                      selectedChannelId + (message.id || 'newMessage' + index)
+                    }
+                    channelId={selectedChannelId}
+                    channelName={channelName}
+                    chessCountdownObj={chessCountdownObj}
+                    chessOpponent={chessOpponent}
+                    checkScrollIsAtTheBottom={() =>
+                      checkScrollIsAtTheBottom({
+                        content: ContentRef.current,
+                        container: MessagesContainerRef.current
+                      })
+                    }
+                    currentChannel={currentChannel}
+                    index={index}
+                    isLastMsg={index === messages.length - 1}
+                    isNotification={!!message.isNotification}
+                    loading={loading}
+                    message={message}
+                    onChessBoardClick={onChessBoardClick}
+                    onChessSpoilerClick={onChessSpoilerClick}
+                    onSendFileMessage={onSendFileMessage}
+                    onDelete={handleShowDeleteModal}
+                    onReceiveNewMessage={handleReceiveNewMessage}
+                    onReplyClick={() => ChatInputRef.current.focus()}
+                    recepientId={recepientId}
+                    setScrollToBottom={handleSetScrollToBottom}
+                    showSubjectMsgsModal={({ subjectId, content }) =>
+                      setSubjectMsgsModal({ shown: true, subjectId, content })
+                    }
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {!loading && selectedChannelId === GENERAL_CHAT_ID && <ChannelHeader />}
