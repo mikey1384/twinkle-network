@@ -10,6 +10,7 @@ export const initialChatState = {
   channelIds: [],
   channelsObj: {},
   chatSearchResults: [],
+  chatType: null,
   customChannelNames: {},
   filesBeingUploaded: {},
   loaded: false,

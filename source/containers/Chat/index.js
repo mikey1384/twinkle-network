@@ -248,8 +248,8 @@ export default function Chat({ onFileUpload }) {
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={handleLoadMoreChannels}
-              onChannelEnter={onChannelEnter}
-              onNewButtonClick={onNewButtonClick}
+              onChannelEnter={handleChannelEnter}
+              onNewButtonClick={() => setCreateNewChannelModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
             />
             <MessagesContainer
@@ -430,11 +430,7 @@ export default function Chat({ onFileUpload }) {
     }
   }
 
-  function onNewButtonClick() {
-    setCreateNewChannelModalShown(true);
-  }
-
-  async function onChannelEnter(id) {
+  async function handleChannelEnter(id) {
     if (id === 0) {
       setCurrentChannelOnlineMembers([]);
       return onEnterEmptyChat();

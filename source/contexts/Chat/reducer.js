@@ -213,6 +213,7 @@ export default function ChatReducer(state, action) {
       action.data.messages.reverse();
       return {
         ...state,
+        chatType: null,
         replyTarget: null,
         recentChessMessage: undefined,
         channelsObj: {
@@ -240,6 +241,13 @@ export default function ChatReducer(state, action) {
         loadMoreMessages
       };
     }
+    case 'ENTER_DICTIONARY':
+      return {
+        ...state,
+        chatType: 'dictionary',
+        messages: [],
+        loadMoreMessages: false
+      };
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
@@ -293,6 +301,7 @@ export default function ChatReducer(state, action) {
       }
       return {
         ...initialChatState,
+        chatType: action.data.chatType,
         loaded: true,
         channelIds: action.data.channelIds,
         channelsObj: {

@@ -60,6 +60,14 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async enterDictionary() {
+      try {
+        const data = await request.get(`${URL}/chat/dictionary`, auth());
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async fetchCurrentChessState({ channelId, recentChessMessage }) {
       try {
         const { data } = await request.put(

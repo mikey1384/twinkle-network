@@ -14,7 +14,7 @@ import {
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useChatContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 LeftMenu.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
@@ -32,7 +32,11 @@ export default function LeftMenu({
   onNewButtonClick
 }) {
   const {
-    state: { channelIds }
+    requestHelpers: { enterDictionary }
+  } = useAppContext();
+  const {
+    state: { chatType, channelIds },
+    actions: { onEnterDictionary }
   } = useChatContext();
   const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
@@ -118,7 +122,8 @@ export default function LeftMenu({
         style={{
           cursor: 'pointer',
           padding: '1rem',
-          borderBottom: `1px solid ${Color.borderGray()}`
+          borderBottom: `1px solid ${Color.borderGray()}`,
+          background: chatType === 'dictionary' && Color.highlightGray()
         }}
         className={`unselectable ${css`
           &:hover {
@@ -188,8 +193,9 @@ export default function LeftMenu({
     </div>
   );
 
-  function handleEnterDictionary() {
-    console.log('hello');
+  async function handleEnterDictionary() {
+    await enterDictionary();
+    onEnterDictionary();
   }
 
   async function handleLoadMoreChannels() {

@@ -108,6 +108,11 @@ export default function ChatActions(dispatch) {
         showOnTop
       });
     },
+    onEnterDictionary() {
+      return dispatch({
+        type: 'ENTER_DICTIONARY'
+      });
+    },
     onEnterEmptyChat() {
       return dispatch({
         type: 'ENTER_EMPTY_CHAT'
