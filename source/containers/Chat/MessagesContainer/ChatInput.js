@@ -96,7 +96,7 @@ export default function ChatInput({
           innerRef={innerRef}
           minRows={1}
           placeholder="Type a message..."
-          onKeyDown={onKeyDown}
+          onKeyDown={handleKeyDown}
           value={text}
           onChange={handleChange}
           onKeyUp={event => {
@@ -113,9 +113,21 @@ export default function ChatInput({
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
+        {isMobile(navigator) && !stringIsEmpty(text) && (
+          <div style={{ height: '100%', margin: '0.2rem 2rem 0.2rem 0' }}>
+            <Button
+              filled
+              disabled={loading}
+              color={profileTheme}
+              onClick={handleSendMsg}
+            >
+              <Icon size="lg" icon="paper-plane" />
+            </Button>
+          </div>
+        )}
         <div
           style={{
-            margin: '0.2rem 1rem 0.2rem 0',
+            margin: '0.2rem 0 0.2rem 0',
             height: '100%'
           }}
         >
@@ -143,27 +155,31 @@ export default function ChatInput({
     });
   }
 
-  function onKeyDown(event) {
+  function handleKeyDown(event) {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
     if (
       enterKeyPressed &&
+      !isMobile(navigator) &&
       !shiftKeyPressed &&
       !messageExceedsCharLimit &&
       !loading
     ) {
       event.preventDefault();
-      if (stringIsEmpty(text)) return;
-      onMessageSubmit(finalizeEmoji(text));
-      onEnterComment({
-        contentType: 'chat',
-        contentId: currentChannelId,
-        text: ''
-      });
-      event.target.value = '';
+      handleSendMsg();
     }
     if (enterKeyPressed && shiftKeyPressed) {
       onHeightChange(innerRef.current?.clientHeight + 20);
     }
+  }
+
+  function handleSendMsg() {
+    if (stringIsEmpty(text)) return;
+    onMessageSubmit(finalizeEmoji(text));
+    onEnterComment({
+      contentType: 'chat',
+      contentId: currentChannelId,
+      text: ''
+    });
   }
 }
