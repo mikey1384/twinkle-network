@@ -51,6 +51,7 @@ export default function EditSubjectForm({
   });
 
   useEffect(() => {
+    clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => changeInput(title), 300);
     async function changeInput(input) {
       await onChange(input);
@@ -172,7 +173,6 @@ export default function EditSubjectForm({
   }
 
   function onInputChange(text) {
-    clearTimeout(timerRef.current);
     setTitle(text);
     setReadyForSubmit(false);
     setHighlightedIndex(-1);
