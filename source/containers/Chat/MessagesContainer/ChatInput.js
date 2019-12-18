@@ -114,7 +114,7 @@ export default function ChatInput({
           }}
         />
         {isMobile(navigator) && !stringIsEmpty(text) && (
-          <div style={{ height: '100%', margin: '0.2rem 1rem 0.2rem 0' }}>
+          <div style={{ height: '100%', margin: '0.2rem 2rem 0.2rem 0' }}>
             <Button
               filled
               disabled={loading}
@@ -127,7 +127,7 @@ export default function ChatInput({
         )}
         <div
           style={{
-            margin: '0.2rem 1rem 0.2rem 0',
+            margin: '0.2rem 0 0.2rem 0',
             height: '100%'
           }}
         >
