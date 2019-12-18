@@ -122,7 +122,6 @@ function People({ location }) {
       <div
         style={{
           marginTop: '1rem',
-          marginBottom: '1rem',
           position: 'relative',
           minHeight: '30%',
           width: '100%'
@@ -166,6 +165,7 @@ function People({ location }) {
           )}
         {stringIsEmpty(userSearchText) && profilesLoaded && loadMoreButton && (
           <LoadMoreButton
+            style={{ marginBottom: '1rem' }}
             filled
             color="lightBlue"
             onClick={() => setLoading(true)}
