@@ -236,7 +236,7 @@ function Embedly({
           style={{
             position: 'absolute',
             cursor: 'pointer',
-            zIndex: 100
+            zIndex: 10
           }}
           onClick={() => onHideAttachment()}
           className={css`
