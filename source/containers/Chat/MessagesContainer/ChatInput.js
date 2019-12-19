@@ -174,6 +174,7 @@ export default function ChatInput({
   }
 
   function handleSendMsg() {
+    innerRef.current.focus();
     if (stringIsEmpty(text)) return;
     onMessageSubmit(finalizeEmoji(text));
     onEnterComment({
