@@ -8,10 +8,10 @@ import { useAppContext, useChatContext } from 'contexts';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
-  chessCountdownObj: PropTypes.object,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
+  countdownNumber: PropTypes.number,
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string
@@ -19,10 +19,10 @@ ChessModal.propTypes = {
 
 export default function ChessModal({
   channelId,
-  chessCountdownObj,
   myId,
   onConfirmChessMove,
   onHide,
+  countdownNumber,
   onSpoilerClick,
   opponentId,
   opponentName
@@ -89,10 +89,10 @@ export default function ChessModal({
   }, [initialState, myId, spoilerOff, uploaderId]);
 
   useEffect(() => {
-    if (typeof chessCountdownObj[channelId] === 'number') {
+    if (typeof countdownNumber === 'number') {
       setSpoilerOff(true);
     }
-  }, [channelId, chessCountdownObj]);
+  }, [channelId, countdownNumber]);
 
   const parsedState = initialState ? JSON.parse(initialState) : {};
 
@@ -110,7 +110,7 @@ export default function ChessModal({
           <Chess
             isFromModal
             channelId={channelId}
-            chessCountdownObj={chessCountdownObj}
+            countdownNumber={countdownNumber}
             interactable={!parsedState?.isDraw}
             initialState={initialState}
             loaded={loaded}
@@ -119,6 +119,7 @@ export default function ChessModal({
             onChessMove={setNewChessState}
             opponentId={opponentId}
             opponentName={opponentName}
+            senderId={uploaderId}
             spoilerOff={
               spoilerOff ||
               (!loading.current && !initialState) ||

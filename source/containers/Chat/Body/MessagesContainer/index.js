@@ -27,15 +27,13 @@ import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessOpponent: PropTypes.object,
-  currentChannel: PropTypes.object.isRequired,
-  loading: PropTypes.bool
+  currentChannel: PropTypes.object.isRequired
 };
 
 export default function MessagesContainer({
   channelName,
   chessOpponent,
-  currentChannel,
-  loading
+  currentChannel
 }) {
   const {
     requestHelpers: {
@@ -55,8 +53,8 @@ export default function MessagesContainer({
   const {
     state: {
       channelLoading,
-      chessCountdownObj,
       chessModalShown,
+      creatingNewDMChannel,
       messagesLoadMoreButton,
       messages,
       messagesLoaded,
@@ -76,11 +74,13 @@ export default function MessagesContainer({
       onChannelLoadingDone,
       onSendFirstDirectMessage,
       onSetChessModalShown,
+      onSetCreatingNewDMChannel,
       onSetReplyTarget,
       onSubmitMessage
     }
   } = useChatContext();
-  const [creatingNewDMChannel, setCreatingNewDMChannel] = useState(false);
+  const { authLevel, profilePicId, userId, username } = useMyState();
+  const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [fileObj, setFileObj] = useState('');
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
@@ -106,7 +106,39 @@ export default function MessagesContainer({
     false
   );
 
-  const { authLevel, profilePicId, userId, username } = useMyState();
+  useEffect(() => {
+    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
+    socket.on('new_message_received', handleReceiveMessage);
+
+    function onReceiveCountdownNumber({ channelId, number }) {
+      if (channelId === selectedChannelId) {
+        if (number === 0) {
+          onSetChessModalShown(false);
+        }
+        setChessCountdownObj(chessCountdownObj => ({
+          ...chessCountdownObj,
+          [channelId]: number
+        }));
+      }
+    }
+    function handleReceiveMessage(message) {
+      if (message.isChessMsg) {
+        setChessCountdownObj(chessCountdownObj => ({
+          ...chessCountdownObj,
+          [message.channelId]: undefined
+        }));
+      }
+    }
+
+    return function cleanUp() {
+      socket.removeListener(
+        'chess_countdown_number_received',
+        onReceiveCountdownNumber
+      );
+      socket.removeListener('new_message_received', handleReceiveMessage);
+    };
+  });
+
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
   const mounted = useRef(null);
@@ -248,6 +280,11 @@ export default function MessagesContainer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagesLoaded, reconnecting]);
 
+  const loading = useMemo(
+    () => channelLoading || creatingNewDMChannel || reconnecting,
+    [channelLoading, creatingNewDMChannel, reconnecting]
+  );
+
   return (
     <ErrorBoundary>
       {selectedChannelId !== GENERAL_CHAT_ID && (
@@ -347,7 +384,7 @@ export default function MessagesContainer({
                   key={selectedChannelId + (message.id || 'newMessage' + index)}
                   channelId={selectedChannelId}
                   channelName={channelName}
-                  chessCountdownObj={chessCountdownObj}
+                  chessCountdownNumber={chessCountdownObj[selectedChannelId]}
                   chessOpponent={chessOpponent}
                   checkScrollIsAtTheBottom={() =>
                     checkScrollIsAtTheBottom({
@@ -468,10 +505,11 @@ export default function MessagesContainer({
         {chessModalShown && (
           <ChessModal
             channelId={selectedChannelId}
-            chessCountdownObj={chessCountdownObj}
+            countdownNumber={chessCountdownObj[selectedChannelId]}
             myId={userId}
             onConfirmChessMove={handleConfirmChessMove}
             onHide={() => onSetChessModalShown(false)}
+            onSetChessCountdownObj={setChessCountdownObj}
             onSpoilerClick={handleChessSpoilerClick}
             opponentId={chessOpponent?.id}
             opponentName={chessOpponent?.username}
@@ -534,14 +572,6 @@ export default function MessagesContainer({
   }
 
   function handleChessSpoilerClick(senderId) {
-    if (
-      selectedChannelId !== currentChannel.id ||
-      senderId === userId ||
-      channelLoading ||
-      creatingNewDMChannel
-    ) {
-      return;
-    }
     socket.emit('viewed_chess_move', selectedChannelId);
     socket.emit('start_chess_timer', {
       currentChannel,
@@ -699,7 +729,7 @@ export default function MessagesContainer({
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
       if (creatingNewDMChannel) return;
-      setCreatingNewDMChannel(true);
+      onSetCreatingNewDMChannel(true);
       const { members, message } = await startNewDMChannel({
         content,
         userId,
@@ -708,7 +738,7 @@ export default function MessagesContainer({
       onSendFirstDirectMessage({ members, message });
       socket.emit('join_chat_channel', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
-      setCreatingNewDMChannel(false);
+      onSetCreatingNewDMChannel(false);
       return;
     }
     const message = {

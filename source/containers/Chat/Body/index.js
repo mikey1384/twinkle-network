@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
+import Dictionary from './Dictionary';
 import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
+import { useChatContext } from 'contexts';
 
 Body.propTypes = {
   channelName: PropTypes.string,
   chessOpponent: PropTypes.object,
-  currentChannel: PropTypes.object,
-  loading: PropTypes.bool
+  currentChannel: PropTypes.object
 };
 
-export default function Body({
-  channelName,
-  chessOpponent,
-  currentChannel,
-  loading
-}) {
+export default function Body({ channelName, chessOpponent, currentChannel }) {
+  const {
+    state: { chatType }
+  } = useChatContext();
+
   return (
     <div
       className={css`
@@ -31,12 +31,14 @@ export default function Body({
         }
       `}
     >
-      <MessagesContainer
-        channelName={channelName}
-        chessOpponent={chessOpponent}
-        currentChannel={currentChannel}
-        loading={loading}
-      />
+      {chatType === 'dictionary' && <Dictionary />}
+      {!chatType && (
+        <MessagesContainer
+          channelName={channelName}
+          chessOpponent={chessOpponent}
+          currentChannel={currentChannel}
+        />
+      )}
     </div>
   );
 }

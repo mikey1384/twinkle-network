@@ -17,10 +17,12 @@ import {
   getOpponentPlayerColor,
   getPlayerPieces
 } from './helpers/model';
+import { useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 Chess.propTypes = {
   channelId: PropTypes.number,
-  chessCountdownObj: PropTypes.object,
+  countdownNumber: PropTypes.number,
   gameWinnerId: PropTypes.number,
   interactable: PropTypes.bool,
   initialState: PropTypes.string,
@@ -34,13 +36,14 @@ Chess.propTypes = {
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
+  senderId: PropTypes.number,
   spoilerOff: PropTypes.bool,
   style: PropTypes.object
 };
 
 function Chess({
+  countdownNumber,
   channelId,
-  chessCountdownObj,
   gameWinnerId,
   interactable,
   initialState,
@@ -54,10 +57,14 @@ function Chess({
   onSpoilerClick,
   opponentId,
   opponentName,
+  senderId,
   spoilerOff,
   style
 }) {
-  const [countdownNumber, setCountdownNumber] = useState();
+  const { userId } = useMyState();
+  const {
+    state: { channelLoading, creatingNewDMChannel, selectedChannelId }
+  } = useChatContext();
   const [playerColors, setPlayerColors] = useState({
     [myId]: 'white',
     [opponentId]: 'black'
@@ -72,12 +79,17 @@ function Chess({
     white: [],
     black: []
   });
+  const loadingRef = useRef(channelLoading);
   const enPassantTarget = useRef({});
   const capturedPiece = useRef(null);
   const parsedState = useMemo(
     () => (initialState ? JSON.parse(initialState) : undefined),
     [initialState]
   );
+
+  useEffect(() => {
+    loadingRef.current = channelLoading;
+  }, [channelLoading]);
 
   useEffect(() => {
     if (newChessState) return;
@@ -123,10 +135,6 @@ function Chess({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, loaded, newChessState]);
-
-  useEffect(() => {
-    setCountdownNumber(chessCountdownObj?.[channelId]);
-  }, [channelId, chessCountdownObj]);
 
   const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
@@ -372,7 +380,7 @@ function Chess({
             onClick={handleClick}
             onBoardClick={onBoardClick}
             onCastling={handleCastling}
-            onSpoilerClick={onSpoilerClick}
+            onSpoilerClick={handleSpoilerClick}
             opponentName={opponentName}
           />
           <div
@@ -841,6 +849,18 @@ function Chess({
       isStalemate: gameOver === 'Stalemate',
       isDraw: gameOver === 'Draw'
     };
+  }
+
+  function handleSpoilerClick() {
+    if (
+      loadingRef.current ||
+      selectedChannelId !== channelId ||
+      senderId === userId ||
+      creatingNewDMChannel
+    ) {
+      return;
+    }
+    onSpoilerClick(senderId);
   }
 }
 

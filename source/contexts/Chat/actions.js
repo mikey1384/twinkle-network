@@ -297,17 +297,16 @@ export default function ChatActions(dispatch) {
         message
       });
     },
-    onSetChessCountdown({ channelId, number }) {
-      return dispatch({
-        type: 'SET_CHESS_COUNTDOWN',
-        channelId,
-        number
-      });
-    },
     onSetChessModalShown(shown) {
       return dispatch({
         type: 'SET_CHESS_MODAL_SHOWN',
         shown
+      });
+    },
+    onSetCreatingNewDMChannel(creating) {
+      return dispatch({
+        type: 'SET_CREATING_NEW_DM_CHANNEL',
+        creating
       });
     },
     onSetReconnecting() {

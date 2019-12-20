@@ -25,10 +25,10 @@ import {
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
+  chessCountdownNumber: PropTypes.number,
   chessOpponent: PropTypes.object,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
-  chessCountdownObj: PropTypes.object,
   currentChannel: PropTypes.object,
   message: PropTypes.object,
   style: PropTypes.object,
@@ -51,7 +51,7 @@ export default function Message({
   channelId,
   channelName,
   checkScrollIsAtTheBottom,
-  chessCountdownObj,
+  chessCountdownNumber,
   chessOpponent,
   currentChannel,
   index,
@@ -324,7 +324,7 @@ export default function Message({
             {isChessMsg ? (
               <Chess
                 channelId={channelId}
-                chessCountdownObj={chessCountdownObj}
+                countdownNumber={chessCountdownNumber}
                 gameWinnerId={gameWinnerId}
                 loaded
                 spoilerOff={spoilerOff}
@@ -335,6 +335,7 @@ export default function Message({
                 onSpoilerClick={handleSpoilerClick}
                 opponentId={chessOpponent?.id}
                 opponentName={chessOpponent?.username}
+                senderId={userId}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : fileToUpload && !loading ? (

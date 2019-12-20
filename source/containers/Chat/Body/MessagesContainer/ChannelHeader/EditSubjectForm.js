@@ -128,13 +128,12 @@ export default function EditSubjectForm({
             style={{
               marginTop: '1.7rem',
               marginLeft: '1rem',
-              marginRight: '1rem',
               display: 'flex',
               alignItems: 'center'
             }}
           >
             <Button
-              style={{ fontSize: '1.4rem' }}
+              style={{ fontSize: '1.3rem' }}
               filled
               color="green"
               onClick={() => setSubjectsModalShown(true)}

@@ -14,7 +14,6 @@ import { css } from 'emotion';
 import { objectify } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
-import Dictionary from './Dictionary';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -32,13 +31,7 @@ export default function Chat({ onFileUpload }) {
   } = useAppContext();
   const { userId, username } = useMyState();
   const {
-    state: {
-      chatType,
-      loaded,
-      selectedChannelId,
-      channelsObj,
-      channelLoadMoreButton
-    },
+    state: { loaded, selectedChannelId, channelsObj, channelLoadMoreButton },
     actions: {
       onClearNumUnreads,
       onCreateNewChannel,
@@ -49,7 +42,6 @@ export default function Chat({ onFileUpload }) {
       onOpenDirectMessageChannel,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
-      onSetChessCountdown,
       onSetChessModalShown,
       onUpdateChessMoveViewTimeStamp,
       onUpdateSelectedChannelId
@@ -109,7 +101,6 @@ export default function Chat({ onFileUpload }) {
   }, [channelsObj, currentChannel, userId]);
 
   useEffect(() => {
-    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
     socket.on('chess_move_made', onNotifiedMoveMade);
     socket.on('chess_move_viewed', onNotifyMoveViewed);
     socket.on('subject_changed', onSubjectChange);
@@ -143,20 +134,7 @@ export default function Chat({ onFileUpload }) {
       }
     }
 
-    function onReceiveCountdownNumber({ channelId, number }) {
-      if (channelId === selectedChannelId) {
-        if (number === 0) {
-          onSetChessModalShown(false);
-        }
-        onSetChessCountdown({ channelId, number });
-      }
-    }
-
     return function cleanUp() {
-      socket.removeListener(
-        'chess_countdown_number_received',
-        onReceiveCountdownNumber
-      );
       socket.removeListener('chess_move_made', onNotifiedMoveMade);
       socket.removeListener('chess_move_viewed', onNotifyMoveViewed);
       socket.removeListener('subject_changed', onSubjectChange);
@@ -220,15 +198,11 @@ export default function Chat({ onFileUpload }) {
               onNewButtonClick={() => setCreateNewChannelModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
             />
-            {chatType === 'dictionary' && <Dictionary />}
-            {!chatType && (
-              <Body
-                channelName={channelName}
-                chessOpponent={partner}
-                currentChannel={currentChannel}
-                currentChannelId={selectedChannelId}
-              />
-            )}
+            <Body
+              channelName={channelName}
+              chessOpponent={partner}
+              currentChannel={currentChannel}
+            />
             <RightMenu
               channelName={channelName}
               currentChannel={currentChannel}

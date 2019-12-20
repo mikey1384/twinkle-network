@@ -131,7 +131,7 @@ export default function ChatReducer(state, action) {
         },
         selectedChannelId: channelId,
         messages: [action.data.message],
-        loadMoreMessages: false
+        messagesLoadMoreButton: false
       };
     }
     case 'CREATE_NEW_DM_CHANNEL':
@@ -200,7 +200,7 @@ export default function ChatReducer(state, action) {
         })
       };
     case 'ENTER_CHANNEL': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       const selectedChannel = action.data.channel;
       const uploadStatusMessages = state.filesBeingUploaded[
@@ -208,7 +208,7 @@ export default function ChatReducer(state, action) {
       ]?.filter(message => !message.uploadComplete);
       if (action.data.messages.length === 21) {
         action.data.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       action.data.messages.reverse();
       return {
@@ -238,7 +238,7 @@ export default function ChatReducer(state, action) {
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         selectedChannelId: selectedChannel.id,
         subject: selectedChannel.id === 2 ? state.subject : {},
-        loadMoreMessages
+        messagesLoadMoreButton
       };
     }
     case 'ENTER_DICTIONARY':
@@ -247,7 +247,7 @@ export default function ChatReducer(state, action) {
         selectedChannelId: null,
         chatType: 'dictionary',
         messages: [],
-        loadMoreMessages: false
+        messagesLoadMoreButton: false
       };
     case 'ENTER_EMPTY_CHAT':
       return {
@@ -257,7 +257,7 @@ export default function ChatReducer(state, action) {
         subject: {},
         selectedChannelId: 0,
         messages: [],
-        loadMoreMessages: false
+        messagesLoadMoreButton: false
       };
     case 'GET_NUM_UNREAD_MSGS':
       return {
@@ -285,7 +285,7 @@ export default function ChatReducer(state, action) {
         }
       };
     case 'INIT_CHAT': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       let channelLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
@@ -293,7 +293,7 @@ export default function ChatReducer(state, action) {
       ]?.filter(message => !message.uploadComplete);
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       action.data.messages && action.data.messages.reverse();
       if (action.data.channelIds.length > 20) {
@@ -314,7 +314,7 @@ export default function ChatReducer(state, action) {
         },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
-        loadMoreMessages,
+        messagesLoadMoreButton,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
@@ -375,15 +375,15 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'LOAD_MORE_MESSAGES': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       if (action.data.length === 21) {
         action.data.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       action.data.reverse();
       return {
         ...state,
-        loadMoreMessages,
+        messagesLoadMoreButton,
         messages: action.data.concat(state.messages)
       };
     }
@@ -454,10 +454,10 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'OPEN_DM': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       if (action.messages.length > 20) {
         action.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       return {
         ...state,
@@ -482,7 +482,7 @@ export default function ChatReducer(state, action) {
         ),
         selectedChannelId: action.channelId,
         messages: action.messages.reverse(),
-        loadMoreMessages,
+        messagesLoadMoreButton,
         recepientId: action.recepient.id
       };
     }
@@ -513,7 +513,7 @@ export default function ChatReducer(state, action) {
           }
         },
         messages: [],
-        loadMoreMessages: false,
+        messagesLoadMoreButton: false,
         recepientId: action.recepient.id
       };
     case 'POST_FILE_UPLOAD_STATUS':
@@ -671,18 +671,15 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
-    case 'SET_CHESS_COUNTDOWN':
-      return {
-        ...state,
-        chessCountdownObj: {
-          ...state.chessCountdownObj,
-          [action.channelId]: action.number
-        }
-      };
     case 'SET_CHESS_MODAL_SHOWN':
       return {
         ...state,
         chessModalShown: action.shown
+      };
+    case 'SET_CREATING_NEW_DM_CHANNEL':
+      return {
+        ...state,
+        creatingNewDMChannel: action.creating
       };
     case 'SET_RECONNECTING': {
       return {
@@ -783,7 +780,7 @@ export default function ChatReducer(state, action) {
         channelLoading: true,
         messages: [],
         messagesLoaded: false,
-        loadMoreMessages: false,
+        messagesLoadMoreButton: false,
         selectedChannelId: action.channelId
       };
     default:
