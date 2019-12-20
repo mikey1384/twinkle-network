@@ -671,6 +671,19 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
+    case 'SET_CHESS_COUNTDOWN':
+      return {
+        ...state,
+        chessCountdownObj: {
+          ...state.chessCountdownObj,
+          [action.channelId]: action.number
+        }
+      };
+    case 'SET_CHESS_MODAL_SHOWN':
+      return {
+        ...state,
+        chessModalShown: action.shown
+      };
     case 'SET_RECONNECTING': {
       return {
         ...state,

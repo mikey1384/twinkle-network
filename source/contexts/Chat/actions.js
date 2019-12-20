@@ -297,6 +297,19 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onSetChessCountdown({ channelId, number }) {
+      return dispatch({
+        type: 'SET_CHESS_COUNTDOWN',
+        channelId,
+        number
+      });
+    },
+    onSetChessModalShown(shown) {
+      return dispatch({
+        type: 'SET_CHESS_MODAL_SHOWN',
+        shown
+      });
+    },
     onSetReconnecting() {
       return dispatch({
         type: 'SET_RECONNECTING'

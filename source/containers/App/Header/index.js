@@ -60,7 +60,8 @@ export default function Header({
       onInitChat,
       onReceiveFirstMsg,
       onReceiveMessage,
-      onReceiveMessageOnDifferentChannel
+      onReceiveMessageOnDifferentChannel,
+      onSetChessCountdown
     }
   } = useChatContext();
 
@@ -175,6 +176,12 @@ export default function Header({
     async function handleReceiveMessage(message, channel) {
       let messageIsForCurrentChannel = message.channelId === selectedChannelId;
       let senderIsNotTheUser = message.userId !== userId;
+      if (message.isChessMsg) {
+        onSetChessCountdown({
+          channelId: message.channelId,
+          number: undefined
+        });
+      }
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         if (usingChat) {
           await updateChatLastRead(message.channelId);
