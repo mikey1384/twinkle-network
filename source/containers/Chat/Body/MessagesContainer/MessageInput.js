@@ -14,7 +14,7 @@ import { useMyState } from 'helpers/hooks';
 import { useChatContext, useInputContext } from 'contexts';
 import TargetMessagePreview from './TargetMessagePreview';
 
-ChatInput.propTypes = {
+MessageInput.propTypes = {
   currentChannelId: PropTypes.number,
   innerRef: PropTypes.object,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
@@ -25,7 +25,7 @@ ChatInput.propTypes = {
   onPlusButtonClick: PropTypes.func.isRequired
 };
 
-export default function ChatInput({
+export default function MessageInput({
   currentChannelId = 0,
   innerRef,
   isTwoPeopleChannel,

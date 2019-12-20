@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import ChatInput from './ChatInput';
+import MessageInput from './MessageInput';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Loading from 'components/Loading';
 import Message from '../../Message';
@@ -469,7 +469,7 @@ export default function MessagesContainer({
         }}
       >
         {socketConnected ? (
-          <ChatInput
+          <MessageInput
             innerRef={ChatInputRef}
             loading={loading}
             myId={userId}
