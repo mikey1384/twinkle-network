@@ -7,7 +7,7 @@ import { css } from 'emotion';
 Channels.propTypes = {
   userId: PropTypes.number.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number.isRequired
+  selectedChannelId: PropTypes.number
 };
 
 export default function Channels({

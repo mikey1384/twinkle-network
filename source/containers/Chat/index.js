@@ -4,7 +4,7 @@ import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
 import RightMenu from './RightMenu';
-import MessagesContainer from './MessagesContainer';
+import Body from './Body';
 import ChessModal from './Modals/ChessModal';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
@@ -15,6 +15,7 @@ import { css } from 'emotion';
 import { objectify } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
+import Dictionary from './Dictionary';
 
 Chat.propTypes = {
   onFileUpload: PropTypes.func
@@ -36,6 +37,7 @@ export default function Chat({ onFileUpload }) {
   const {
     state: {
       channelLoading,
+      chatType,
       loaded,
       selectedChannelId,
       channelsObj,
@@ -252,25 +254,27 @@ export default function Chat({ onFileUpload }) {
               onNewButtonClick={() => setCreateNewChannelModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
             />
-            <MessagesContainer
-              channelName={channelName}
-              chessCountdownObj={chessCountdownObj}
-              chessOpponent={partner}
-              loading={channelLoading || creatingNewDMChannel || reconnecting}
-              currentChannel={currentChannel}
-              currentChannelId={selectedChannelId}
-              loadMoreButton={loadMoreMessages}
-              messages={messages}
-              loadMoreMessages={handleLoadMoreMessages}
-              onShowChessModal={handleChessModalShown}
-              onChessBoardClick={handleChessModalShown}
-              onChessSpoilerClick={handleChessSpoilerClick}
-              onMessageSubmit={handleMessageSubmit}
-              onSendFileMessage={handleSendFileMessage}
-              recepientId={recepientId}
-              selectedChannelId={selectedChannelId}
-              subjectId={subject.id}
-            />
+            {chatType === 'dictionary' && <Dictionary />}
+            {!chatType && (
+              <Body
+                channelName={channelName}
+                chessCountdownObj={chessCountdownObj}
+                chessOpponent={partner}
+                loading={channelLoading || creatingNewDMChannel || reconnecting}
+                currentChannel={currentChannel}
+                currentChannelId={selectedChannelId}
+                loadMoreButton={loadMoreMessages}
+                messages={messages}
+                loadMoreMessages={handleLoadMoreMessages}
+                onShowChessModal={handleChessModalShown}
+                onChessSpoilerClick={handleChessSpoilerClick}
+                onMessageSubmit={handleMessageSubmit}
+                onSendFileMessage={handleSendFileMessage}
+                recepientId={recepientId}
+                selectedChannelId={selectedChannelId}
+                subjectId={subject.id}
+              />
+            )}
             <RightMenu
               channelName={channelName}
               currentChannel={currentChannel}

@@ -15,7 +15,7 @@ import { useChatContext, useInputContext } from 'contexts';
 import TargetMessagePreview from './TargetMessagePreview';
 
 ChatInput.propTypes = {
-  currentChannelId: PropTypes.number.isRequired,
+  currentChannelId: PropTypes.number,
   innerRef: PropTypes.object,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
