@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ConfirmModal from 'components/Modals/ConfirmModal';
-import ChatInput from '../ChatInput';
+import ChatInput from './ChatInput';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Loading from 'components/Loading';
 import Message from '../../Message';
@@ -494,68 +494,68 @@ export default function MessagesContainer({
             />
           </div>
         )}
-        {alertModalShown && (
-          <AlertModal
-            title="File is too large"
-            content={`The file size is larger than your limit of ${maxSize /
-              mb} MB`}
-            onHide={() => setAlertModalShown(false)}
-          />
-        )}
-        {chessModalShown && (
-          <ChessModal
-            channelId={selectedChannelId}
-            countdownNumber={chessCountdownObj[selectedChannelId]}
-            myId={userId}
-            onConfirmChessMove={handleConfirmChessMove}
-            onHide={() => onSetChessModalShown(false)}
-            onSetChessCountdownObj={setChessCountdownObj}
-            onSpoilerClick={handleChessSpoilerClick}
-            opponentId={chessOpponent?.id}
-            opponentName={chessOpponent?.username}
-          />
-        )}
-        {uploadModalShown && (
-          <UploadModal
-            channelId={selectedChannelId}
-            fileObj={fileObj}
-            onHide={() => setUploadModalShown(false)}
-            subjectId={subject.id}
-          />
-        )}
-        {inviteUsersModalShown && (
-          <InviteUsersModal
-            onHide={() => setInviteUsersModalShown(false)}
-            currentChannel={currentChannel}
-            selectedChannelId={selectedChannelId}
-            onDone={handleInviteUsersDone}
-          />
-        )}
-        {settingsModalShown && (
-          <SettingsModal
-            isClosed={!!currentChannel.isClosed}
-            userIsChannelOwner={currentChannel.creatorId === userId}
-            channelName={channelName}
-            onHide={() => setSettingsModalShown(false)}
-            onDone={handleEditSettings}
-            channelId={selectedChannelId}
-          />
-        )}
-        {leaveConfirmModalShown && (
-          <ConfirmModal
-            title="Leave Channel"
-            onHide={() => setLeaveConfirmModalShown(false)}
-            onConfirm={handleLeaveConfirm}
-          />
-        )}
-        {selectNewOwnerModalShown && (
-          <SelectNewOwnerModal
-            onHide={() => setSelectNewOwnerModalShown(false)}
-            members={currentChannel.members}
-            onSubmit={handleSelectNewOwnerAndLeaveChannel}
-          />
-        )}
       </div>
+      {alertModalShown && (
+        <AlertModal
+          title="File is too large"
+          content={`The file size is larger than your limit of ${maxSize /
+            mb} MB`}
+          onHide={() => setAlertModalShown(false)}
+        />
+      )}
+      {chessModalShown && (
+        <ChessModal
+          channelId={selectedChannelId}
+          countdownNumber={chessCountdownObj[selectedChannelId]}
+          myId={userId}
+          onConfirmChessMove={handleConfirmChessMove}
+          onHide={() => onSetChessModalShown(false)}
+          onSetChessCountdownObj={setChessCountdownObj}
+          onSpoilerClick={handleChessSpoilerClick}
+          opponentId={chessOpponent?.id}
+          opponentName={chessOpponent?.username}
+        />
+      )}
+      {uploadModalShown && (
+        <UploadModal
+          channelId={selectedChannelId}
+          fileObj={fileObj}
+          onHide={() => setUploadModalShown(false)}
+          subjectId={subject.id}
+        />
+      )}
+      {inviteUsersModalShown && (
+        <InviteUsersModal
+          onHide={() => setInviteUsersModalShown(false)}
+          currentChannel={currentChannel}
+          selectedChannelId={selectedChannelId}
+          onDone={handleInviteUsersDone}
+        />
+      )}
+      {settingsModalShown && (
+        <SettingsModal
+          isClosed={!!currentChannel.isClosed}
+          userIsChannelOwner={currentChannel.creatorId === userId}
+          channelName={channelName}
+          onHide={() => setSettingsModalShown(false)}
+          onDone={handleEditSettings}
+          channelId={selectedChannelId}
+        />
+      )}
+      {leaveConfirmModalShown && (
+        <ConfirmModal
+          title="Leave Channel"
+          onHide={() => setLeaveConfirmModalShown(false)}
+          onConfirm={handleLeaveConfirm}
+        />
+      )}
+      {selectNewOwnerModalShown && (
+        <SelectNewOwnerModal
+          onHide={() => setSelectNewOwnerModalShown(false)}
+          members={currentChannel.members}
+          onSubmit={handleSelectNewOwnerAndLeaveChannel}
+        />
+      )}
     </ErrorBoundary>
   );
 
