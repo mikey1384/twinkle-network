@@ -56,7 +56,7 @@ export default function Input({ innerRef, loading, onHeightChange, onSubmit }) {
         <Textarea
           innerRef={innerRef}
           minRows={1}
-          placeholder="Type a message..."
+          placeholder="Type a word..."
           onKeyDown={handleKeyDown}
           value={text}
           onChange={handleChange}
@@ -69,12 +69,11 @@ export default function Input({ innerRef, loading, onHeightChange, onSubmit }) {
             }
           }}
           style={{
-            marginRight: '1rem',
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
         {isMobile(navigator) && !stringIsEmpty(text) && (
-          <div style={{ height: '100%', margin: '0.2rem 2rem 0.2rem 0' }}>
+          <div style={{ height: '100%', margin: '0.2rem 0 0.2rem 1rem' }}>
             <Button
               filled
               disabled={loading}

@@ -320,6 +320,12 @@ export default function ChatActions(dispatch) {
         target
       });
     },
+    onSetWordObj(wordObj) {
+      return dispatch({
+        type: 'SET_WORD_OBJECT',
+        wordObj
+      });
+    },
     onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',

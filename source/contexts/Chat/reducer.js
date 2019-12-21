@@ -693,6 +693,12 @@ export default function ChatReducer(state, action) {
         replyTarget: action.target
       };
     }
+    case 'SET_WORD_OBJECT': {
+      return {
+        ...state,
+        wordObj: action.wordObj
+      };
+    }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,

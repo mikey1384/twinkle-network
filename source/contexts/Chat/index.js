@@ -27,6 +27,7 @@ export const initialChatState = {
   selectedChannelId: null,
   subject: {},
   subjectSearchResults: [],
+  wordObj: {},
   userSearchResults: []
 };
 

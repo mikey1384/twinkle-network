@@ -211,6 +211,17 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async lookUpDictionary(text) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/definition?word=${text}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async saveMessage({ message, targetMessageId }) {
       try {
         const {
