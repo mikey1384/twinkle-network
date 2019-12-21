@@ -148,7 +148,7 @@ export default function LeftMenu({
               width: '100%'
             }}
           >
-            mikey: Justice means
+            mikey: Impecunious - not having enough money to pay for necessities
           </p>
         </div>
       </div>

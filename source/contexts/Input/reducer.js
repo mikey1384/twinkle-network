@@ -2,7 +2,9 @@ import { initialInputState } from '.';
 
 export default function InputReducer(state, action) {
   const contentKey =
-    action.contentType && typeof action.contentId === 'number'
+    action.contentType === 'dictionary'
+      ? 'dictionary'
+      : action.contentType && typeof action.contentId === 'number'
       ? action.contentType + action.contentId
       : 'temp';
   switch (action.type) {

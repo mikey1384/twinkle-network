@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import Input from './Input';
 
 export default function Dictionary() {
+  const inputRef = useRef(null);
   return (
     <div
       style={{
@@ -20,6 +22,11 @@ export default function Dictionary() {
       <div
         style={{ border: '1px solid pink', width: '100%', height: '10rem' }}
       ></div>
+      <Input
+        onHeightChange={() => console.log('height changing')}
+        onSubmit={result => console.log(result)}
+        innerRef={inputRef}
+      />
     </div>
   );
 }
