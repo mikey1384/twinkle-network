@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ConfirmModal from 'components/Modals/ConfirmModal';
@@ -30,11 +30,7 @@ MessagesContainer.propTypes = {
   currentChannel: PropTypes.object.isRequired
 };
 
-export default function MessagesContainer({
-  channelName,
-  chessOpponent,
-  currentChannel
-}) {
+function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   const {
     requestHelpers: {
       changeChannelOwner,
@@ -825,3 +821,5 @@ export default function MessagesContainer({
     event.target.value = null;
   }
 }
+
+export default memo(MessagesContainer);

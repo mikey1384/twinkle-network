@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
 import { unix } from 'moment';
@@ -47,7 +47,7 @@ Message.propTypes = {
   setScrollToBottom: PropTypes.func
 };
 
-export default function Message({
+function Message({
   channelId,
   channelName,
   checkScrollIsAtTheBottom,
@@ -437,3 +437,5 @@ export default function Message({
     }
   }
 }
+
+export default memo(Message);

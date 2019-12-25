@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Dictionary from './Dictionary';
@@ -12,7 +12,7 @@ Body.propTypes = {
   currentChannel: PropTypes.object
 };
 
-export default function Body({ channelName, chessOpponent, currentChannel }) {
+function Body({ channelName, chessOpponent, currentChannel }) {
   const {
     state: { chatType }
   } = useChatContext();
@@ -42,3 +42,5 @@ export default function Body({ channelName, chessOpponent, currentChannel }) {
     </div>
   );
 }
+
+export default memo(Body);
