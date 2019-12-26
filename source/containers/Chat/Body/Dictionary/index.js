@@ -8,7 +8,7 @@ import { useAppContext, useChatContext, useInputContext } from 'contexts';
 
 export default function Dictionary() {
   const {
-    requestHelpers: { lookUpDictionary }
+    requestHelpers: { lookUpWord }
   } = useAppContext();
   const {
     state: { wordObj },
@@ -28,8 +28,8 @@ export default function Dictionary() {
     }
     async function changeInput(input) {
       setLoading(true);
-      const wordObject = await lookUpDictionary(input);
-      onSetWordObj(wordObject);
+      const wordObject = await lookUpWord(input);
+      onSetWordObj(wordObject || {});
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,17 +68,27 @@ export default function Dictionary() {
     () => details.filter(detail => detail.partOfSpeech === 'pronoun'),
     [details]
   );
+  const conjunctions = useMemo(
+    () => details.filter(detail => detail.partOfSpeech === 'conjunctions'),
+    [details]
+  );
+  const interjections = useMemo(
+    () => details.filter(detail => detail.partOfSpeech === 'interjection'),
+    [details]
+  );
   const others = useMemo(
     () =>
       details.filter(
         detail =>
           ![
             'noun',
+            'pronoun',
             'verb',
+            'adverb',
             'adjective',
             'preposition',
-            'adverb',
-            'pronoun'
+            'conjunction',
+            'interjection'
           ].includes(detail.partOfSpeech)
       ),
     [details]
@@ -264,6 +274,40 @@ export default function Dictionary() {
                     </div>
                   </section>
                 )}
+                {conjunctions.length > 0 && (
+                  <section>
+                    <p>conjunction</p>
+                    <div
+                      style={{
+                        width: '80%',
+                        padding: '1rem',
+                        height: '100%',
+                        overflow: 'scroll'
+                      }}
+                    >
+                      {conjunctions.map(detail => (
+                        <div key={detail.definition}>{detail.definition}</div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+                {interjections.length > 0 && (
+                  <section>
+                    <p>interjection</p>
+                    <div
+                      style={{
+                        width: '80%',
+                        padding: '1rem',
+                        height: '100%',
+                        overflow: 'scroll'
+                      }}
+                    >
+                      {interjections.map(detail => (
+                        <div key={detail.definition}>{detail.definition}</div>
+                      ))}
+                    </div>
+                  </section>
+                )}
                 {others.length > 0 && (
                   <section>
                     <p>other</p>
@@ -276,12 +320,7 @@ export default function Dictionary() {
                       }}
                     >
                       {others.map(detail => (
-                        <div key={detail.definition}>
-                          {detail.definition}
-                          {detail.partOfSpeech
-                            ? ` (${detail.partOfSpeech})`
-                            : ''}
-                        </div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
                   </section>
@@ -307,7 +346,7 @@ export default function Dictionary() {
   );
 
   async function handleSubmit(text) {
-    const wordObject = await lookUpDictionary(text);
+    const wordObject = await lookUpWord(text);
     onSetWordObj(wordObject);
   }
 }

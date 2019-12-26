@@ -211,10 +211,10 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async lookUpDictionary(text) {
+    async lookUpWord(text) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/definition?word=${text}`,
+          `${URL}/chat/word?word=${text}`,
           auth()
         );
         return Promise.resolve(data);
