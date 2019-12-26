@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Input from './Input';
-import uuidv1 from 'uuid/v1';
 import Loading from 'components/Loading';
+import { css } from 'emotion';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext, useInputContext } from 'contexts';
@@ -22,8 +22,10 @@ export default function Dictionary() {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => changeInput(inputText), 300);
+    if (!stringIsEmpty(inputText)) {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => changeInput(inputText), 300);
+    }
     async function changeInput(input) {
       setLoading(true);
       const wordObject = await lookUpDictionary(input);
@@ -82,6 +84,10 @@ export default function Dictionary() {
     [details]
   );
 
+  const widgetHeight = useMemo(() => {
+    return stringIsEmpty(inputText) ? '15rem' : '20rem';
+  }, [inputText]);
+
   return (
     <div
       style={{
@@ -94,34 +100,36 @@ export default function Dictionary() {
       <div
         style={{
           width: '100%',
-          height: 'CALC(100% - 20rem)'
+          height: `CALC(100% - ${widgetHeight})`
         }}
       ></div>
       <div
         style={{
           borderTop: `1px solid ${Color.borderGray()}`,
           width: '100%',
-          height: '20rem'
+          height: widgetHeight
         }}
       >
         {stringIsEmpty(inputText) && (
           <div
             style={{
               padding: '1rem',
-              fontSize: '3rem',
+              fontSize: '3.5rem',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              height: '100%'
+              height: '100%',
+              background: Color.logoBlue(),
+              color: '#fff'
             }}
           >
-            <div>Enter a word using the text box below</div>
+            <div>Type a word in the text box below</div>
           </div>
         )}
         {!stringIsEmpty(inputText) &&
           (loading ? (
-            <Loading text="Looking up" />
+            <Loading style={{ height: '100%' }} text="Looking up..." />
           ) : (
             <div
               style={{
@@ -143,9 +151,19 @@ export default function Dictionary() {
               >
                 {inputText}
               </div>
-              <div style={{ padding: '1rem' }}>
+              <div
+                className={css`
+                  > section {
+                    > p {
+                      font-size: 1.7rem;
+                      font-style: italic;
+                    }
+                  }
+                `}
+                style={{ padding: '1rem' }}
+              >
                 {verbs.length > 0 && (
-                  <div>
+                  <section>
                     <p>verb:</p>
                     <div
                       style={{
@@ -156,14 +174,14 @@ export default function Dictionary() {
                       }}
                     >
                       {verbs.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {nouns.length > 0 && (
-                  <div>
-                    <p>noun:</p>
+                  <section>
+                    <p>noun</p>
                     <div
                       style={{
                         width: '80%',
@@ -173,14 +191,14 @@ export default function Dictionary() {
                       }}
                     >
                       {nouns.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {adjectives.length > 0 && (
-                  <div>
-                    <p>adjective:</p>
+                  <section>
+                    <p>adjective</p>
                     <div
                       style={{
                         width: '80%',
@@ -190,14 +208,14 @@ export default function Dictionary() {
                       }}
                     >
                       {adjectives.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {prepositions.length > 0 && (
-                  <div>
-                    <p>preposition:</p>
+                  <section>
+                    <p>preposition</p>
                     <div
                       style={{
                         width: '80%',
@@ -207,14 +225,14 @@ export default function Dictionary() {
                       }}
                     >
                       {prepositions.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {adverbs.length > 0 && (
-                  <div>
-                    <p>adverb:</p>
+                  <section>
+                    <p>adverb</p>
                     <div
                       style={{
                         width: '80%',
@@ -224,14 +242,14 @@ export default function Dictionary() {
                       }}
                     >
                       {adverbs.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {pronouns.length > 0 && (
-                  <div>
-                    <p>pronoun:</p>
+                  <section>
+                    <p>pronoun</p>
                     <div
                       style={{
                         width: '80%',
@@ -241,14 +259,14 @@ export default function Dictionary() {
                       }}
                     >
                       {pronouns.map(detail => (
-                        <div key={uuidv1()}>{detail.definition}</div>
+                        <div key={detail.definition}>{detail.definition}</div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
                 {others.length > 0 && (
-                  <div>
-                    <p>other:</p>
+                  <section>
+                    <p>other</p>
                     <div
                       style={{
                         width: '80%',
@@ -258,7 +276,7 @@ export default function Dictionary() {
                       }}
                     >
                       {others.map(detail => (
-                        <div key={uuidv1()}>
+                        <div key={detail.definition}>
                           {detail.definition}
                           {detail.partOfSpeech
                             ? ` (${detail.partOfSpeech})`
@@ -266,7 +284,7 @@ export default function Dictionary() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
               </div>
             </div>
