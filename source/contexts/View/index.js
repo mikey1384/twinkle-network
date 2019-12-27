@@ -6,7 +6,9 @@ import ViewReducer from './reducer';
 export const ViewContext = createContext();
 const initialViewState = {
   pageVisible: true,
-  exploreCategory: 'subjects',
+  exploreCategory: ['subjects', 'videos', 'links'][
+    Math.floor(Math.random() * 2)
+  ],
   explorePath: '',
   exploreSubNav: '',
   profileNav: '',
