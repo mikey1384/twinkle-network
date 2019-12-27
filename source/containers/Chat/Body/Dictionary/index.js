@@ -11,7 +11,20 @@ export default function Dictionary() {
     requestHelpers: { lookUpWord }
   } = useAppContext();
   const {
-    state: { wordObj },
+    state: {
+      wordObj: {
+        nouns = [],
+        verbs = [],
+        adjectives = [],
+        prepositions = [],
+        adverbs = [],
+        pronouns = [],
+        conjunctions = [],
+        interjections = [],
+        others = [],
+        isNew
+      }
+    },
     actions: { onSetWordObj }
   } = useChatContext();
   const { state } = useInputContext();
@@ -24,79 +37,37 @@ export default function Dictionary() {
   useEffect(() => {
     if (!stringIsEmpty(inputText)) {
       clearTimeout(timerRef.current);
+      setLoading(true);
       timerRef.current = setTimeout(() => changeInput(inputText), 300);
     }
     async function changeInput(input) {
-      setLoading(true);
       const wordObject = await lookUpWord(input);
-      onSetWordObj(wordObject || {});
+      onSetWordObj(wordObject);
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputText]);
 
-  const details = useMemo(
-    () =>
-      wordObj.word && wordObj.results
-        ? wordObj.results.filter(
-            result => !result.definition.includes(wordObj.word)
-          )
-        : [],
-    [wordObj.results, wordObj.word]
-  );
-  const nouns = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'noun'),
-    [details]
-  );
-  const verbs = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'verb'),
-    [details]
-  );
-  const adjectives = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'adjective'),
-    [details]
-  );
-  const prepositions = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'preposition'),
-    [details]
-  );
-  const adverbs = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'adverb'),
-    [details]
-  );
-  const pronouns = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'pronoun'),
-    [details]
-  );
-  const conjunctions = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'conjunctions'),
-    [details]
-  );
-  const interjections = useMemo(
-    () => details.filter(detail => detail.partOfSpeech === 'interjection'),
-    [details]
-  );
-  const others = useMemo(
-    () =>
-      details.filter(
-        detail =>
-          ![
-            'noun',
-            'pronoun',
-            'verb',
-            'adverb',
-            'adjective',
-            'preposition',
-            'conjunction',
-            'interjection'
-          ].includes(detail.partOfSpeech)
-      ),
-    [details]
-  );
+  const notificationHeight = useMemo(() => {
+    return isNew && !stringIsEmpty(inputText) && !loading ? '7rem' : 0;
+  }, [inputText, isNew, loading]);
 
   const widgetHeight = useMemo(() => {
-    return stringIsEmpty(inputText) ? '15rem' : '20rem';
-  }, [inputText]);
+    return stringIsEmpty(inputText) || loading
+      ? '15rem'
+      : `CALC(30rem - ${notificationHeight})`;
+  }, [inputText, loading, notificationHeight]);
+
+  const messagesContainerHeight = useMemo(() => {
+    return `CALC(100% - ${widgetHeight}${
+      notificationHeight ? ` - ${notificationHeight}` : ''
+    })`;
+  }, [notificationHeight, widgetHeight]);
+
+  const notRegistered = useMemo(
+    () => isNew && !stringIsEmpty(inputText) && !loading,
+    [inputText, isNew, loading]
+  );
 
   return (
     <div
@@ -110,14 +81,14 @@ export default function Dictionary() {
       <div
         style={{
           width: '100%',
-          height: `CALC(100% - ${widgetHeight})`
+          height: messagesContainerHeight
         }}
       ></div>
       <div
         style={{
-          borderTop: `1px solid ${Color.borderGray()}`,
           width: '100%',
-          height: widgetHeight
+          height: widgetHeight,
+          borderTop: `1px solid ${Color.borderGray()}`
         }}
       >
         {stringIsEmpty(inputText) && (
@@ -174,7 +145,7 @@ export default function Dictionary() {
               >
                 {verbs.length > 0 && (
                   <section>
-                    <p>verb:</p>
+                    <p>verb</p>
                     <div
                       style={{
                         width: '80%',
@@ -183,8 +154,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {verbs.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {verbs.map((verb, index) => (
+                        <div key={verb}>
+                          {index + 1}. {verb}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -200,8 +173,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {nouns.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {nouns.map((noun, index) => (
+                        <div key={noun}>
+                          {index + 1}. {noun}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -217,8 +192,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {adjectives.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {adjectives.map((adjective, index) => (
+                        <div key={adjective}>
+                          {index + 1}. {adjective}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -234,8 +211,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {prepositions.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {prepositions.map((preposition, index) => (
+                        <div key={preposition}>
+                          {index + 1}. {preposition}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -251,8 +230,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {adverbs.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {adverbs.map((adverb, index) => (
+                        <div key={adverb}>
+                          {index + 1}. {adverb}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -268,8 +249,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {pronouns.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {pronouns.map((pronoun, index) => (
+                        <div key={pronoun}>
+                          {index + 1}. {pronoun}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -285,8 +268,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {conjunctions.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {conjunctions.map((conjunction, index) => (
+                        <div key={conjunction}>
+                          {index + 1}. {conjunction}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -302,8 +287,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {interjections.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {interjections.map((interjection, index) => (
+                        <div key={interjection}>
+                          {index + 1}. {interjection}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -319,8 +306,10 @@ export default function Dictionary() {
                         overflow: 'scroll'
                       }}
                     >
-                      {others.map(detail => (
-                        <div key={detail.definition}>{detail.definition}</div>
+                      {others.map((other, index) => (
+                        <div key={other}>
+                          {index + 1}. {other}
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -329,6 +318,23 @@ export default function Dictionary() {
             </div>
           ))}
       </div>
+      {notRegistered && (
+        <div
+          style={{
+            display: 'flex',
+            background: Color.brownOrange(),
+            color: '#fff',
+            width: '100%',
+            padding: '1rem',
+            fontSize: '2rem',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: notificationHeight
+          }}
+        >
+          This word has not been registered yet. Register and earn 100 XP!
+        </div>
+      )}
       <div
         style={{
           background: Color.inputGray(),
@@ -340,6 +346,7 @@ export default function Dictionary() {
           onHeightChange={() => console.log('height changing')}
           onSubmit={handleSubmit}
           innerRef={inputRef}
+          registerButtonShown={notRegistered}
         />
       </div>
     </div>

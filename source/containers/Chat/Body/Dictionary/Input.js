@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
-import Button from 'components/Button';
 import Icon from 'components/Icon';
+import Button from 'components/Button';
 import { isMobile } from 'helpers';
 import {
   stringIsEmpty,
@@ -10,18 +10,23 @@ import {
   finalizeEmoji,
   exceedsCharLimit
 } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
 import { useInputContext } from 'contexts';
 
 Input.propTypes = {
   innerRef: PropTypes.object,
   loading: PropTypes.bool,
+  registerButtonShown: PropTypes.bool,
   onHeightChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 
-export default function Input({ innerRef, loading, onHeightChange, onSubmit }) {
-  const { profileTheme } = useMyState();
+export default function Input({
+  innerRef,
+  loading,
+  onHeightChange,
+  onSubmit,
+  registerButtonShown
+}) {
   const {
     state,
     actions: { onEnterComment }
@@ -72,15 +77,17 @@ export default function Input({ innerRef, loading, onHeightChange, onSubmit }) {
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
-        {isMobile(navigator) && !stringIsEmpty(text) && (
-          <div style={{ height: '100%', margin: '0.2rem 0 0.2rem 1rem' }}>
+        {registerButtonShown && (
+          <div style={{ height: '100%', margin: '0.5rem 0 0.2rem 1rem' }}>
             <Button
               filled
+              style={{ width: '9rem' }}
               disabled={loading}
-              color={profileTheme}
+              color="brownOrange"
               onClick={handleSendMsg}
             >
-              <Icon size="lg" icon="paper-plane" />
+              <Icon icon="plus" />
+              <span style={{ marginLeft: '0.5rem' }}>100 XP</span>
             </Button>
           </div>
         )}
