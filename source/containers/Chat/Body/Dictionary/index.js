@@ -8,10 +8,11 @@ import { useAppContext, useChatContext, useInputContext } from 'contexts';
 
 export default function Dictionary() {
   const {
-    requestHelpers: { lookUpWord }
+    requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
     state: {
+      wordObj,
       wordObj: {
         nouns = [],
         verbs = [],
@@ -48,21 +49,13 @@ export default function Dictionary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputText]);
 
-  const notificationHeight = useMemo(() => {
-    return isNew && !stringIsEmpty(inputText) && !loading ? '7rem' : 0;
-  }, [inputText, isNew, loading]);
-
   const widgetHeight = useMemo(() => {
-    return stringIsEmpty(inputText) || loading
-      ? '15rem'
-      : `CALC(30rem - ${notificationHeight})`;
-  }, [inputText, loading, notificationHeight]);
+    return stringIsEmpty(inputText) || loading ? '15rem' : `20rem`;
+  }, [inputText, loading]);
 
   const messagesContainerHeight = useMemo(() => {
-    return `CALC(100% - ${widgetHeight}${
-      notificationHeight ? ` - ${notificationHeight}` : ''
-    })`;
-  }, [notificationHeight, widgetHeight]);
+    return `CALC(100% - ${widgetHeight})`;
+  }, [widgetHeight]);
 
   const notRegistered = useMemo(
     () => isNew && !stringIsEmpty(inputText) && !loading,
@@ -329,7 +322,7 @@ export default function Dictionary() {
             fontSize: '2rem',
             justifyContent: 'center',
             alignItems: 'center',
-            height: notificationHeight
+            height: '7rem'
           }}
         >
           This word has not been registered yet. Register and earn 100 XP!
@@ -353,7 +346,10 @@ export default function Dictionary() {
   );
 
   async function handleSubmit(text) {
-    const wordObject = await lookUpWord(text);
-    onSetWordObj(wordObject);
+    const { isNew, ...definitions } = wordObj;
+    if (isNew) {
+      const wordObject = await registerWord({ word: text, definitions });
+      onSetWordObj(wordObject);
+    }
   }
 }

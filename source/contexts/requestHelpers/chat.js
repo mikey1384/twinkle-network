@@ -211,10 +211,22 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async lookUpWord(text) {
+    async lookUpWord(word) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/word?word=${text}`,
+          `${URL}/chat/word?word=${word}`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async registerWord({ word, definitions }) {
+      try {
+        const { data } = await request.post(
+          `${URL}/chat/word`,
+          { word, definitions },
           auth()
         );
         return Promise.resolve(data);
