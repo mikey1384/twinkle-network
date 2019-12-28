@@ -39,7 +39,7 @@ export default function SideButtons({
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-end',
+          justifyContent: canStar ? 'flex-end' : 'center',
           width: '100%'
         }}
       >
@@ -72,7 +72,7 @@ export default function SideButtons({
           style={{
             fontSize: '2.5vw',
             minWidth: '50%',
-            maxWidth: '13vw'
+            maxWidth: '16vw'
           }}
           onClick={onLikeVideo}
         />

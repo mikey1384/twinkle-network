@@ -69,7 +69,13 @@ export default function Details({
   videoId,
   videoViews
 }) {
-  const { authLevel, canDelete, canEdit, canStar } = useMyState();
+  const {
+    authLevel,
+    canDelete,
+    canEdit,
+    canEditPlaylists,
+    canStar
+  } = useMyState();
   const {
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
@@ -180,7 +186,12 @@ export default function Details({
         tags={tags}
         contentId={Number(videoId)}
       />
-      <div style={{ padding: '0 1rem 1rem 1rem', width: '100%' }}>
+      <div
+        style={{
+          padding: '0 1rem 1rem 1rem',
+          width: '100%'
+        }}
+      >
         <div
           style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
         >
@@ -249,6 +260,7 @@ export default function Details({
             />
             <SideButtons
               style={{
+                marginTop: canEditPlaylists ? 0 : '1rem',
                 display: 'flex',
                 flexDirection: 'column'
               }}
