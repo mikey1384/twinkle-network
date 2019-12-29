@@ -157,9 +157,11 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
 
   const containerHeight = useMemo(() => {
     return `CALC(100% - 1rem - 2px - ${
-      textAreaHeight ? `${textAreaHeight}px - 1rem` : '5.5rem'
-    }${replyTarget ? ' - 12rem - 2px' : ''})`;
-  }, [replyTarget, textAreaHeight]);
+      socketConnected && textAreaHeight
+        ? `${textAreaHeight}px - 1rem`
+        : '5.5rem'
+    }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''})`;
+  }, [replyTarget, socketConnected, textAreaHeight]);
 
   const fillerHeight = useMemo(
     () =>
@@ -484,7 +486,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         ) : (
           <div>
             <Loading
-              style={{ height: '4.2rem' }}
+              style={{ height: '4.6rem' }}
               innerStyle={{ fontSize: '2rem' }}
               text="Socket disconnected. Reconnecting..."
             />
