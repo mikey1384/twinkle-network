@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Input from './Input';
 import Loading from 'components/Loading';
+import EntriesContainer from './EntriesContainer';
 import { css } from 'emotion';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
@@ -53,7 +54,7 @@ export default function Dictionary() {
     return stringIsEmpty(inputText) || loading ? '15rem' : `20rem`;
   }, [inputText, loading]);
 
-  const messagesContainerHeight = useMemo(() => {
+  const entriesContainerHeight = useMemo(() => {
     return `CALC(100% - ${widgetHeight})`;
   }, [widgetHeight]);
 
@@ -71,12 +72,12 @@ export default function Dictionary() {
         flexDirection: 'column'
       }}
     >
-      <div
+      <EntriesContainer
         style={{
           width: '100%',
-          height: messagesContainerHeight
+          height: entriesContainerHeight
         }}
-      ></div>
+      />
       <div
         style={{
           width: '100%',
