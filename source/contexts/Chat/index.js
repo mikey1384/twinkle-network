@@ -14,6 +14,7 @@ export const initialChatState = {
   chessModalShown: false,
   creatingNewDMChannel: false,
   customChannelNames: {},
+  dictionaryEntries: [],
   filesBeingUploaded: {},
   loaded: false,
   messages: [],
