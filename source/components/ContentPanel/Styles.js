@@ -19,7 +19,8 @@ export const container = css`
     justify-content: space-between;
   }
   .body {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
+    line-height: 1.7;
     padding: 0;
     position: static;
     z-index: 10;

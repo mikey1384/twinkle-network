@@ -171,6 +171,7 @@ export default function TargetContent({
           background: #fff;
         }
         @media (max-width: ${mobileMaxWidth}) {
+          font-size: 1.7rem;
           border-left: 0;
           border-right: 0;
         }
