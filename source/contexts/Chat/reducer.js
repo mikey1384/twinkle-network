@@ -288,6 +288,7 @@ export default function ChatReducer(state, action) {
       let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       let channelLoadMoreButton = false;
+      let dictionaryEntriesLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
         action.data.currentChannelId
       ]?.filter(message => !message.uploadComplete);
@@ -299,6 +300,10 @@ export default function ChatReducer(state, action) {
       if (action.data.channelIds.length > 20) {
         action.data.channelIds.pop();
         channelLoadMoreButton = true;
+      }
+      if (action.data.dictionaryEntries.length > 20) {
+        action.data.dictionaryEntries.pop();
+        dictionaryEntriesLoadMoreButton = true;
       }
       return {
         ...initialChatState,
@@ -314,6 +319,8 @@ export default function ChatReducer(state, action) {
         },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
+        dictionaryEntries: action.data.dictionaryEntries,
+        dictionaryEntriesLoadMoreButton,
         messagesLoadMoreButton,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
