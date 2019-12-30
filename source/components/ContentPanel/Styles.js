@@ -20,6 +20,7 @@ export const container = css`
   }
   .body {
     font-size: 1.6rem;
+    line-height: 1.7;
     padding: 0;
     position: static;
     z-index: 10;
@@ -81,7 +82,7 @@ export const container = css`
     border-left: none;
     border-right: none;
     .body {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
     }
     .heading {
       > a,
