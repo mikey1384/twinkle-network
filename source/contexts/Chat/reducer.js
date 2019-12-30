@@ -620,12 +620,16 @@ export default function ChatReducer(state, action) {
         ...state,
         channelsObj: {
           ...state.channelsObj,
-          [action.channel.id]: {
-            ...state.channelsObj[action.channel.id],
-            ...action.channel,
-            numUnreads:
-              Number(state.channelsObj[action.channel.id]?.numUnreads || 0) + 1
-          }
+          [action.channel.id]: action.senderIsNotTheUser
+            ? {
+                ...state.channelsObj[action.channel.id],
+                ...action.channel,
+                numUnreads:
+                  Number(
+                    state.channelsObj[action.channel.id]?.numUnreads || 0
+                  ) + 1
+              }
+            : state.channelsObj[action.channel.id]
         },
         numUnreads:
           action.pageVisible && action.usingChat
