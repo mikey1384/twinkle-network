@@ -68,8 +68,6 @@ export default function RightMenu({
     MenuRef.current.scrollTop = 0;
   }, [currentChannel.id]);
 
-  console.log(displayedChannelMembers);
-
   return (
     <div
       ref={MenuRef}
