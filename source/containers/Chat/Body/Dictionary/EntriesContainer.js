@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Entry from './Entry';
 import { useChatContext } from 'contexts';
 
 EntriesContainer.propTypes = {
@@ -12,9 +13,9 @@ export default function EntriesContainer({ style }) {
   } = useChatContext();
 
   return (
-    <div style={style}>
+    <div style={{ padding: '0 1rem 0 1rem', ...style }}>
       {dictionaryEntries.map(entry => (
-        <div key={entry.id}>{entry.content}</div>
+        <Entry key={entry.id} entry={entry} />
       ))}
     </div>
   );
