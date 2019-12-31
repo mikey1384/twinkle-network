@@ -334,15 +334,23 @@ export function processedStringWithURL(string) {
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
   const boldItalicRegex = /((\*\*\*[0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]\*\*\*){1})/gi;
-  const boldRegex = /((\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*){1})/gi;
-  const italicRegex = /((\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*\*){1})/gi;
-  const underlineRegex = /((__[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]__){1})/gi;
-  const linethroughRegex = /((--[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]--){1})/gi;
+  const boldRegex = /((\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*){1})/gi;
+  const italicRegex = /((\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*\*){1})/gi;
+  const underlineRegex = /((__[0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]__){1})/gi;
+  const linethroughRegex = /((--[0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]--){1})/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
     .replace(/>/g, '&gt')
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(
+      underlineRegex,
+      string => `<u>${string.substring(2, string.length - 2)}</u>`
+    )
+    .replace(
+      linethroughRegex,
+      string => `<strike>${string.substring(2, string.length - 2)}</strike>`
+    )
     .replace(
       boldItalicRegex,
       string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
@@ -354,14 +362,6 @@ export function processedStringWithURL(string) {
     .replace(
       boldRegex,
       string => `<b>${string.substring(1, string.length - 1)}</b>`
-    )
-    .replace(
-      underlineRegex,
-      `<span style="text-decoration: underline;">$1</span>`
-    )
-    .replace(
-      linethroughRegex,
-      `<span style="text-decoration: line-through;">$1</span>`
     )
     .replace(/\r?\n/g, '<br>');
   let newString = '';
