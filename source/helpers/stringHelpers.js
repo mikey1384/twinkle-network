@@ -336,8 +336,8 @@ export function processedStringWithURL(string) {
   const boldItalicRegex = /((\*\*\*[0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]\*\*\*){1})/gi;
   const boldRegex = /((\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*){1})/gi;
   const italicRegex = /((\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*\*){1})/gi;
-  const underlineRegex = /__([^\s*]+)__/gi;
-  const linethroughRegex = /--([^\s*]+)--/gi;
+  const underlineRegex = /((__[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]__){1})/gi;
+  const linethroughRegex = /((--[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]--){1})/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
