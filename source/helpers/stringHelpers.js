@@ -333,9 +333,9 @@ export function processedStringWithURL(string) {
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
-  const boldRegex = /\*([^\s*]+)\*/gi;
-  const italicRegex = /\*\*([^\s*]+)\*\*/gi;
-  const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
+  const boldItalicRegex = /((\*\*\*[0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!*&@%_\+~#=\/()]\*\*\*){1})/gi;
+  const boldRegex = /((\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*){1})/gi;
+  const italicRegex = /((\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,;:?!*&@%_\+~#=\/()])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()]\*\*){1})/gi;
   const underlineRegex = /__([^\s*]+)__/gi;
   const linethroughRegex = /--([^\s*]+)--/gi;
   let tempString = string
@@ -345,10 +345,16 @@ export function processedStringWithURL(string) {
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(
       boldItalicRegex,
-      `<span style="font-style: italic; font-weight: bold;">$1</span>`
+      string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
     )
-    .replace(italicRegex, `<span style="font-style: italic;">$1</span>`)
-    .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
+    .replace(
+      italicRegex,
+      string => `<i>${string.substring(2, string.length - 2)}</i>`
+    )
+    .replace(
+      boldRegex,
+      string => `<b>${string.substring(1, string.length - 1)}</b>`
+    )
     .replace(
       underlineRegex,
       `<span style="text-decoration: underline;">$1</span>`
