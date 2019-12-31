@@ -35,7 +35,7 @@ export default function RightMenu({
       member => !!member.id && member.id !== myId
     );
     const totalValidChannelMembers = totalChannelMembers.filter(
-      member => member.id !== 0
+      member => !!member.id
     );
     const currentlyOnlineIds = currentChannelOnlineMembers.map(
       member => member.id
@@ -162,7 +162,7 @@ export default function RightMenu({
       >
         {displayedChannelMembers.map((member, index) => (
           <div
-            key={member.id}
+            key={currentChannel.id + member.id}
             style={{
               display: 'flex',
               width: '100%',
