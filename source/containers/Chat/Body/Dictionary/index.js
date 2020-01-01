@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Input from './Input';
 import Loading from 'components/Loading';
 import EntriesContainer from './EntriesContainer';
-import { css } from 'emotion';
+import Definition from './Definition';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext, useInputContext } from 'contexts';
@@ -12,21 +12,7 @@ export default function Dictionary() {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
-    state: {
-      wordObj,
-      wordObj: {
-        nouns = [],
-        verbs = [],
-        adjectives = [],
-        prepositions = [],
-        adverbs = [],
-        pronouns = [],
-        conjunctions = [],
-        interjections = [],
-        others = [],
-        isNew
-      }
-    },
+    state: { wordObj },
     actions: { onSetWordObj }
   } = useChatContext();
   const { state } = useInputContext();
@@ -59,8 +45,8 @@ export default function Dictionary() {
   }, [widgetHeight]);
 
   const notRegistered = useMemo(
-    () => isNew && !stringIsEmpty(inputText) && !loading,
-    [inputText, isNew, loading]
+    () => wordObj.isNew && !stringIsEmpty(inputText) && !loading,
+    [inputText, wordObj.isNew, loading]
   );
 
   return (
@@ -75,6 +61,7 @@ export default function Dictionary() {
       <EntriesContainer
         style={{
           width: '100%',
+          overflow: 'scroll',
           height: entriesContainerHeight
         }}
       />
@@ -126,189 +113,7 @@ export default function Dictionary() {
               >
                 {inputText}
               </div>
-              <div
-                className={css`
-                  > section {
-                    > p {
-                      font-size: 1.7rem;
-                      font-style: italic;
-                    }
-                  }
-                `}
-                style={{ padding: '1rem' }}
-              >
-                {verbs.length > 0 && (
-                  <section>
-                    <p>verb</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {verbs.map((verb, index) => (
-                        <div key={verb}>
-                          {index + 1}. {verb}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {nouns.length > 0 && (
-                  <section>
-                    <p>noun</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {nouns.map((noun, index) => (
-                        <div key={noun}>
-                          {index + 1}. {noun}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {adjectives.length > 0 && (
-                  <section>
-                    <p>adjective</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {adjectives.map((adjective, index) => (
-                        <div key={adjective}>
-                          {index + 1}. {adjective}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {prepositions.length > 0 && (
-                  <section>
-                    <p>preposition</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {prepositions.map((preposition, index) => (
-                        <div key={preposition}>
-                          {index + 1}. {preposition}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {adverbs.length > 0 && (
-                  <section>
-                    <p>adverb</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {adverbs.map((adverb, index) => (
-                        <div key={adverb}>
-                          {index + 1}. {adverb}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {pronouns.length > 0 && (
-                  <section>
-                    <p>pronoun</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {pronouns.map((pronoun, index) => (
-                        <div key={pronoun}>
-                          {index + 1}. {pronoun}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {conjunctions.length > 0 && (
-                  <section>
-                    <p>conjunction</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {conjunctions.map((conjunction, index) => (
-                        <div key={conjunction}>
-                          {index + 1}. {conjunction}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {interjections.length > 0 && (
-                  <section>
-                    <p>interjection</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {interjections.map((interjection, index) => (
-                        <div key={interjection}>
-                          {index + 1}. {interjection}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-                {others.length > 0 && (
-                  <section>
-                    <p>other</p>
-                    <div
-                      style={{
-                        width: '80%',
-                        padding: '1rem',
-                        height: '100%',
-                        overflow: 'scroll'
-                      }}
-                    >
-                      {others.map((other, index) => (
-                        <div key={other}>
-                          {index + 1}. {other}
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                )}
-              </div>
+              <Definition wordObj={wordObj} />
             </div>
           ))}
       </div>

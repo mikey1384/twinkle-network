@@ -13,9 +13,13 @@ export default function EntriesContainer({ style }) {
   } = useChatContext();
 
   return (
-    <div style={{ padding: '0 1rem 0 1rem', ...style }}>
-      {dictionaryEntries.map(entry => (
-        <Entry key={entry.id} entry={entry} />
+    <div style={{ padding: '0 1rem 1rem 1rem', ...style }}>
+      {dictionaryEntries.map((entry, index) => (
+        <Entry
+          key={entry.id}
+          entry={entry}
+          style={{ marginTop: index === 0 ? 0 : '1rem' }}
+        />
       ))}
     </div>
   );
