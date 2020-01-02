@@ -67,9 +67,10 @@ export default function Dictionary() {
       />
       <div
         style={{
+          zIndex: 5,
           width: '100%',
           height: widgetHeight,
-          borderTop: `1px solid ${Color.borderGray()}`
+          boxShadow: `0 -5px 6px -3px ${Color.gray()}`
         }}
       >
         {stringIsEmpty(inputText) && (

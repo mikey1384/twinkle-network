@@ -49,13 +49,14 @@ export default function Entry({ entry, style }) {
       </div>
       {definitionShown && <Definition wordObj={entry} />}
       {!definitionShown && (
-        <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-          {`What does "${entry.content}" mean?`}
+        <p style={{ fontSize: '1.7rem', marginTop: '0.5rem' }}>
+          What does <b>{entry.content}</b> mean?
         </p>
       )}
       {definitionShown && (
-        <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
-          {`Enter your own definition of "${entry.content}." You may use Korean`}
+        <p style={{ fontSize: '1.7rem' }}>
+          <b>{`Tell us what "${entry.content}" means in your own words for XP`}</b>{' '}
+          (you may use Korean)
         </p>
       )}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
