@@ -47,6 +47,17 @@ export default function Entry({ entry, style }) {
           <div style={{ marginLeft: '0.5rem' }}>{entry.username}</div>
         </div>
       </div>
+      {definitionShown && <Definition wordObj={entry} />}
+      {!definitionShown && (
+        <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
+          {`What does "${entry.content}" mean?`}
+        </p>
+      )}
+      {definitionShown && (
+        <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>
+          {`Enter your own definition of "${entry.content}." You may use Korean`}
+        </p>
+      )}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
         <Textarea
           autoFocus
@@ -54,16 +65,19 @@ export default function Entry({ entry, style }) {
           onChange={event => setUserDefinition(event.target.value)}
           onKeyUp={handleKeyUp}
           minRows={1}
-          placeholder="What does this word mean?"
+          placeholder={`Enter what ${entry.content} means...`}
         />
-        <Button
-          filled
-          color={profileTheme}
-          style={{ marginLeft: '1rem', fontSize: '1.3rem', width: '16rem' }}
-          onClick={() => setDefinitionShown(true)}
-        >{`Show meaning`}</Button>
+        {!definitionShown && (
+          <Button
+            filled
+            color={profileTheme}
+            style={{ marginLeft: '1rem', fontSize: '1.3rem', width: '16rem' }}
+            onClick={() => setDefinitionShown(true)}
+          >
+            Use Dictionary
+          </Button>
+        )}
       </div>
-      {definitionShown && <Definition wordObj={entry} />}
     </div>
   );
 
