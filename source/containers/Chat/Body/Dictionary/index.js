@@ -3,6 +3,7 @@ import Input from './Input';
 import Loading from 'components/Loading';
 import EntriesContainer from './EntriesContainer';
 import Definition from './Definition';
+import Icon from 'components/Icon';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext, useInputContext } from 'contexts';
@@ -70,7 +71,10 @@ export default function Dictionary() {
           zIndex: 5,
           width: '100%',
           height: widgetHeight,
-          boxShadow: `0 -5px 6px -3px ${Color.gray()}`
+          boxShadow:
+            stringIsEmpty(inputText) && `0 -5px 6px -3px ${Color.gray()}`,
+          borderTop:
+            !stringIsEmpty(inputText) && `1px solid ${Color.borderGray()}`
         }}
       >
         {stringIsEmpty(inputText) && (
@@ -83,11 +87,14 @@ export default function Dictionary() {
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
-              background: Color.logoBlue(),
+              background: Color.darkBlue(),
               color: '#fff'
             }}
           >
-            <div>Type a word in the text box below</div>
+            <div>
+              <span>Type a word in the text box below</span>
+              <Icon style={{ marginLeft: '1rem' }} icon="arrow-down" />
+            </div>
           </div>
         )}
         {!stringIsEmpty(inputText) &&

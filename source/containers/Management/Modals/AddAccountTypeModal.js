@@ -27,6 +27,7 @@ export default function AddAccountTypeModal({ onHide }) {
     canDelete: false,
     canStar: false,
     canPinPlaylists: false,
+    canEditDictionary: false,
     canEditPlaylists: false,
     canEditRewardLevel: false
   });
@@ -159,6 +160,19 @@ export default function AddAccountTypeModal({ onHide }) {
               <td style={{ fontWeight: 'bold' }}>Can Edit Playlists</td>
               <td style={{ textAlign: 'center' }}>
                 <Check checked={perks.canEditPlaylists} />
+              </td>
+            </tr>
+            <tr
+              onClick={() =>
+                setPerks(perk => ({
+                  ...perk,
+                  canEditDictionary: !perk.canEditDictionary
+                }))
+              }
+            >
+              <td style={{ fontWeight: 'bold' }}>Can Edit Dictionary</td>
+              <td style={{ textAlign: 'center' }}>
+                <Check checked={perks.canEditDictionary} />
               </td>
             </tr>
             <tr

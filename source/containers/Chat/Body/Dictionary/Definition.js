@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 
 Definition.propTypes = {
   style: PropTypes.object,
@@ -8,6 +9,7 @@ Definition.propTypes = {
 };
 
 export default function Definition({ style, wordObj }) {
+  const { canEditDictionary } = useMyState();
   const {
     nouns = [],
     verbs = [],
@@ -19,6 +21,7 @@ export default function Definition({ style, wordObj }) {
     interjections = [],
     others = []
   } = wordObj;
+  console.log(canEditDictionary);
 
   return (
     <div
