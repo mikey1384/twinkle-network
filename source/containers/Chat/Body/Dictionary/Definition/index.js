@@ -226,7 +226,29 @@ export default function Definition({ style, wordObj }) {
           </div>
         </section>
       )}
-      {editModalShown && <EditModal onHide={() => setEditModalShown(false)} />}
+      {editModalShown && (
+        <EditModal
+          partOfSpeeches={{
+            nouns,
+            verbs,
+            adjectives,
+            prepositions,
+            adverbs,
+            pronouns,
+            conjunctions,
+            interjections,
+            others
+          }}
+          onHide={() => setEditModalShown(false)}
+          onSubmit={handleEditDone}
+          word={wordObj.content}
+        />
+      )}
     </div>
   );
+
+  function handleEditDone() {
+    console.log('done');
+    setEditModalShown(false);
+  }
 }
