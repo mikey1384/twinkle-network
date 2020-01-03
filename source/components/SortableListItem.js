@@ -9,7 +9,7 @@ import { Color } from 'constants/css';
 SortableListItem.propTypes = {
   index: PropTypes.number,
   item: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string.isRequired
   }).isRequired,
   onMove: PropTypes.func.isRequired

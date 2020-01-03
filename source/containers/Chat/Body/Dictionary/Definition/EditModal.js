@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
+import uuidv1 from 'uuid/v1';
+import SortableListGroup from 'components/SortableListGroup';
 
 EditModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -11,26 +13,37 @@ EditModal.propTypes = {
 };
 
 export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
-  const allDefinitions = useMemo(() => {
-    const result = [];
+  const [definitionIds, setDefinitionIds] = useState([]);
+  const definitionsObj = useMemo(() => {
+    const result = {};
     for (let key in partOfSpeeches) {
       for (let definition of partOfSpeeches[key]) {
         const partOfSpeech = key.slice(0, -1);
-        result.push({ partOfSpeech, definition });
+        const id = uuidv1();
+        result[id] = { id, title: `${partOfSpeech} ${definition}` };
       }
     }
     return result;
-  }, [partOfSpeeches]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const result = [];
+    for (let key in definitionsObj) {
+      result.push(key);
+    }
+    setDefinitionIds(result);
+  }, [definitionsObj]);
 
   return (
     <Modal large onHide={onHide}>
       <header>{`Edit Definitions of "${word}"`}</header>
       <main>
-        {allDefinitions.map(({ definition, partOfSpeech }) => (
-          <div key={definition}>
-            {definition} ({partOfSpeech})
-          </div>
-        ))}
+        <SortableListGroup
+          listItemObj={definitionsObj}
+          onMove={handleMove}
+          itemIds={definitionIds}
+        />
       </main>
       <footer>
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
@@ -42,4 +55,8 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
       </footer>
     </Modal>
   );
+
+  function handleMove(result) {
+    console.log(result);
+  }
 }
