@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Button from 'components/Button';
+import Icon from 'components/Icon';
+import EditModal from './EditModal';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 
@@ -21,11 +24,11 @@ export default function Definition({ style, wordObj }) {
     interjections = [],
     others = []
   } = wordObj;
-  console.log(canEditDictionary);
+  const [editModalShown, setEditModalShown] = useState(false);
 
   return (
     <div
-      style={{ padding: '1rem', ...style }}
+      style={{ padding: '1rem', position: 'relative', ...style }}
       className={css`
         > section {
           > p {
@@ -35,6 +38,23 @@ export default function Definition({ style, wordObj }) {
         }
       `}
     >
+      {canEditDictionary && (
+        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Button
+            className={css`
+              opacity: 0.8;
+              &:hover {
+                opacity: 1;
+              }
+            `}
+            skeuomorphic
+            onClick={() => setEditModalShown(true)}
+          >
+            <Icon icon="pencil-alt" />
+            <span style={{ marginLeft: '0.7rem' }}>Edit</span>
+          </Button>
+        </div>
+      )}
       {verbs.length > 0 && (
         <section>
           <p>verb</p>
@@ -206,6 +226,7 @@ export default function Definition({ style, wordObj }) {
           </div>
         </section>
       )}
+      {editModalShown && <EditModal onHide={() => setEditModalShown(false)} />}
     </div>
   );
 }
