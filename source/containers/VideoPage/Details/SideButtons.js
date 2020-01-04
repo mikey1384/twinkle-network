@@ -4,6 +4,8 @@ import UserListModal from 'components/Modals/UserListModal';
 import Likers from 'components/Likers';
 import LikeButton from 'components/Buttons/LikeButton';
 import StarButton from 'components/Buttons/StarButton';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 SideButtons.propTypes = {
   byUser: PropTypes.bool.isRequired,
@@ -69,11 +71,14 @@ export default function SideButtons({
           contentId={Number(videoId)}
           likes={likes}
           filled
-          style={{
-            fontSize: '2.5vw',
-            minWidth: '50%',
-            maxWidth: '16vw'
-          }}
+          className={css`
+            font-size: 2.5rem;
+            min-width: 50%;
+            max-width: 16vw;
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 1.5rem;
+            }
+          `}
           onClick={onLikeVideo}
         />
       </div>
