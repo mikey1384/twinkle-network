@@ -9,7 +9,8 @@ import LongText from 'components/Texts/LongText';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useContentState } from 'helpers/hooks';
+import { useAppContext, useContentContext } from 'contexts';
 
 Comment.propTypes = {
   comment: PropTypes.shape({
@@ -26,7 +27,7 @@ Comment.propTypes = {
 
 export default function Comment({
   comment,
-  comment: { content, timeStamp },
+  comment: { id, content, timeStamp },
   onDelete,
   onEditDone,
   profilePicId,
@@ -36,7 +37,13 @@ export default function Comment({
   const {
     requestHelpers: { deleteContent, editContent }
   } = useAppContext();
-  const [onEdit, setOnEdit] = useState(false);
+  const {
+    actions: { onSetIsEditing }
+  } = useContentContext();
+  const { isEditing } = useContentState({
+    contentType: 'comment',
+    contentId: id
+  });
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   return (
     <ErrorBoundary
@@ -47,7 +54,7 @@ export default function Comment({
         paddingTop: '1rem'
       }}
     >
-      {!onEdit && (
+      {!isEditing && (
         <div
           style={{
             width: '100%',
@@ -64,7 +71,12 @@ export default function Comment({
             menuProps={[
               {
                 label: 'Edit',
-                onClick: () => setOnEdit(true)
+                onClick: () =>
+                  onSetIsEditing({
+                    contentId: id,
+                    contentType: 'comment',
+                    isEditing: true
+                  })
               },
               {
                 label: 'Remove',
@@ -94,11 +106,17 @@ export default function Comment({
               {timeSince(timeStamp)}
             </small>
           </div>
-          {onEdit ? (
+          {isEditing ? (
             <EditTextArea
               autoFocus
+              contentType="comment"
+              contentId={id}
               text={content}
-              onCancel={() => setOnEdit(false)}
+              onCancel={() => ({
+                contentId: id,
+                contentType: 'comment',
+                isEditing: false
+              })}
               onEditDone={editComment}
               rows={2}
             />
@@ -141,6 +159,10 @@ export default function Comment({
       contentType: 'comment'
     });
     onEditDone({ editedComment, commentId: comment.id });
-    setOnEdit(false);
+    onSetIsEditing({
+      contentId: id,
+      contentType: 'comment',
+      isEditing: false
+    });
   }
 }
