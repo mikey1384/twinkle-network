@@ -56,7 +56,7 @@ export default function EditTextArea({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [text]);
   const editForm = inputState || {};
   const { editedComment } = editForm;
   const commentExceedsCharLimit = useMemo(
