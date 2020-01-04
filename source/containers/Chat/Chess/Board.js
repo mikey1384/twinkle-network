@@ -201,7 +201,7 @@ function Board({
               <p>Tap here to view it.</p>
               <p>
                 {`After viewing ${opponentName}'s move, you `}
-                <b>must</b> make your own move in <b>3 minutes</b>. Otherwise,
+                <b>must</b> make your own move in <b>5 minutes</b>. Otherwise,
                 you will lose.
               </p>
             </div>
