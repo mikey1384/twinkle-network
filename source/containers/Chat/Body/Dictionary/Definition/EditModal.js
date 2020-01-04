@@ -1,8 +1,8 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
-import SortableListGroup from 'components/SortableListGroup';
+import PartOfSpeechBlock from './PartOfSpeechBlock';
 
 EditModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -12,7 +12,6 @@ EditModal.propTypes = {
 };
 
 export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
-  const [nounIds, setNounIds] = useState([]);
   const nounsObj = useMemo(() => {
     const result = {};
     for (let noun of partOfSpeeches.nouns) {
@@ -23,27 +22,33 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
     }
     return result;
   }, [partOfSpeeches.nouns]);
-  useEffect(() => {
-    setNounIds(partOfSpeeches.nouns.map(({ id }) => id));
-  }, [partOfSpeeches.nouns]);
+
+  const adjectivesObj = useMemo(() => {
+    const result = {};
+    for (let adjective of partOfSpeeches.adjectives) {
+      result[adjective.id] = {
+        id: adjective.id,
+        title: adjective.definition
+      };
+    }
+    return result;
+  }, [partOfSpeeches.adjectives]);
 
   return (
     <Modal large onHide={onHide}>
       <header>{`Edit Definitions of "${word}"`}</header>
       <main>
         <div>
-          {nounIds.length > 0 && (
-            <div>
-              <p style={{ fontSize: '2rem', fontWeight: 'bold' }}>Noun</p>
-              <SortableListGroup
-                numbered
-                style={{ marginTop: '1rem' }}
-                listItemObj={nounsObj}
-                onMove={handleNounsMove}
-                itemIds={nounIds}
-              />
-            </div>
-          )}
+          <PartOfSpeechBlock
+            posIds={partOfSpeeches.nouns.map(({ id }) => id)}
+            partOfSpeech="noun"
+            posObject={nounsObj}
+          />
+          <PartOfSpeechBlock
+            posIds={partOfSpeeches.adjectives.map(({ id }) => id)}
+            partOfSpeech="adjective"
+            posObject={adjectivesObj}
+          />
         </div>
       </main>
       <footer>
@@ -56,13 +61,4 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
       </footer>
     </Modal>
   );
-
-  function handleNounsMove({ sourceId, targetId }) {
-    const sourceIndex = nounIds.indexOf(sourceId);
-    const targetIndex = nounIds.indexOf(targetId);
-    const newNounIds = [...nounIds];
-    newNounIds.splice(sourceIndex, 1);
-    newNounIds.splice(targetIndex, 0, sourceId);
-    setNounIds(newNounIds);
-  }
 }
