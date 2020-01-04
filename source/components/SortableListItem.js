@@ -12,10 +12,16 @@ SortableListItem.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string.isRequired
   }).isRequired,
+  numbered: PropTypes.bool,
   onMove: PropTypes.func.isRequired
 };
 
-export default function SortableListItem({ index, item: listItem, onMove }) {
+export default function SortableListItem({
+  index,
+  item: listItem,
+  numbered,
+  onMove
+}) {
   const Draggable = useRef(null);
   const [{ opacity }, drag] = useDrag({
     item: { type: ItemTypes.THUMB, id: listItem.id, index },
@@ -45,7 +51,10 @@ export default function SortableListItem({ index, item: listItem, onMove }) {
         color: Color.darkerGray()
       }}
     >
-      <section>{cleanString(listItem.title)}</section>
+      <section>
+        {numbered ? `${index + 1}. ` : ''}
+        {cleanString(listItem.title)}
+      </section>
       <Icon icon="align-justify" style={{ color: Color.darkerBorderGray() }} />
     </nav>
   );

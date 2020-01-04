@@ -11,15 +11,24 @@ import { css } from 'emotion';
 SortableListGroup.propTypes = {
   listItemObj: PropTypes.object.isRequired,
   onMove: PropTypes.func.isRequired,
-  itemIds: PropTypes.array.isRequired
+  itemIds: PropTypes.array.isRequired,
+  numbered: PropTypes.bool,
+  style: PropTypes.object
 };
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-export default function SortableListGroup({ listItemObj, onMove, itemIds }) {
+export default function SortableListGroup({
+  listItemObj,
+  onMove,
+  itemIds,
+  numbered,
+  style
+}) {
   return (
     <DndProvider backend={Backend}>
       <div
+        style={style}
         className={css`
           width: 100%;
           cursor: ns-resize;
@@ -46,6 +55,7 @@ export default function SortableListGroup({ listItemObj, onMove, itemIds }) {
         {itemIds.map((id, index) => {
           return (
             <SortableListItem
+              numbered={numbered}
               key={id}
               id={id}
               index={index}
