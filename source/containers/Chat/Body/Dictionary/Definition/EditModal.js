@@ -1,8 +1,7 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
-import uuidv1 from 'uuid/v1';
 import SortableListGroup from 'components/SortableListGroup';
 
 EditModal.propTypes = {
@@ -13,36 +12,26 @@ EditModal.propTypes = {
 };
 
 export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
-  const [definitionIds, setDefinitionIds] = useState([]);
-  const definitionsObj = useMemo(() => {
+  const nounsObj = useMemo(() => {
     const result = {};
-    for (let key in partOfSpeeches) {
-      for (let definition of partOfSpeeches[key]) {
-        const partOfSpeech = key.slice(0, -1);
-        const id = uuidv1();
-        result[id] = { id, title: `${partOfSpeech} ${definition}` };
-      }
+    for (let noun of partOfSpeeches.nouns) {
+      result[noun.id] = { id: noun.id, title: noun.definition };
     }
     return result;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const result = [];
-    for (let key in definitionsObj) {
-      result.push(key);
-    }
-    setDefinitionIds(result);
-  }, [definitionsObj]);
+  }, [partOfSpeeches.nouns]);
+  const nounIds = useMemo(() => {
+    return partOfSpeeches.nouns.map(({ id }) => id);
+  }, [partOfSpeeches.nouns]);
 
   return (
     <Modal large onHide={onHide}>
       <header>{`Edit Definitions of "${word}"`}</header>
       <main>
+        <p>Nouns</p>
         <SortableListGroup
-          listItemObj={definitionsObj}
+          listItemObj={nounsObj}
           onMove={handleMove}
-          itemIds={definitionIds}
+          itemIds={nounIds}
         />
       </main>
       <footer>

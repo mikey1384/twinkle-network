@@ -66,9 +66,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {verbs.map((verb, index) => (
-              <div key={verb}>
-                {index + 1}. {verb}
+            {verbs.map(({ id, definition }, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -85,9 +85,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {nouns.map((noun, index) => (
-              <div key={noun}>
-                {index + 1}. {noun}
+            {nouns.map(({ id, definition }, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -104,9 +104,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {adjectives.map((adjective, index) => (
-              <div key={adjective}>
-                {index + 1}. {adjective}
+            {adjectives.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -123,9 +123,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {prepositions.map((preposition, index) => (
-              <div key={preposition}>
-                {index + 1}. {preposition}
+            {prepositions.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -142,9 +142,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {adverbs.map((adverb, index) => (
-              <div key={adverb}>
-                {index + 1}. {adverb}
+            {adverbs.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -161,9 +161,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {pronouns.map((pronoun, index) => (
-              <div key={pronoun}>
-                {index + 1}. {pronoun}
+            {pronouns.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -180,9 +180,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {conjunctions.map((conjunction, index) => (
-              <div key={conjunction}>
-                {index + 1}. {conjunction}
+            {conjunctions.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -199,9 +199,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {interjections.map((interjection, index) => (
-              <div key={interjection}>
-                {index + 1}. {interjection}
+            {interjections.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
@@ -218,9 +218,9 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {others.map((other, index) => (
-              <div key={other}>
-                {index + 1}. {other}
+            {others.map(({id, definition}, index) => (
+              <div key={id}>
+                {index + 1}. {definition}
               </div>
             ))}
           </div>
