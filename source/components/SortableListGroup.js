@@ -57,9 +57,9 @@ export default function SortableListGroup({
             <SortableListItem
               numbered={numbered}
               key={id}
-              id={id}
               index={index}
-              item={listItemObj[id]}
+              listItemId={id}
+              listItemLabel={listItemObj[id]?.title}
               onMove={onMove}
             />
           );

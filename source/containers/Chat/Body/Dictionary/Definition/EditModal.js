@@ -1,8 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Button from 'components/Button';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
 import PartOfSpeechBlock from './PartOfSpeechBlock';
+import TouchBackend from 'react-dnd-touch-backend';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
+import { isMobile } from 'helpers';
 
 EditModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -11,7 +15,11 @@ EditModal.propTypes = {
   word: PropTypes.string.isRequired
 };
 
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
+  const [nounIds, setNounIds] = useState([]);
+  const [adjectiveIds, setAdjectiveIds] = useState([]);
   const nounsObj = useMemo(() => {
     const result = {};
     for (let noun of partOfSpeeches.nouns) {
@@ -34,31 +42,65 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
     return result;
   }, [partOfSpeeches.adjectives]);
 
+  useEffect(() => {
+    setNounIds(partOfSpeeches.nouns.map(({ id }) => id));
+  }, [partOfSpeeches.nouns]);
+
+  useEffect(() => {
+    setAdjectiveIds(partOfSpeeches.adjectives.map(({ id }) => id));
+  }, [partOfSpeeches.adjectives]);
+
   return (
-    <Modal large onHide={onHide}>
-      <header>{`Edit Definitions of "${word}"`}</header>
-      <main>
-        <div>
-          <PartOfSpeechBlock
-            posIds={partOfSpeeches.nouns.map(({ id }) => id)}
-            partOfSpeech="noun"
-            posObject={nounsObj}
-          />
-          <PartOfSpeechBlock
-            posIds={partOfSpeeches.adjectives.map(({ id }) => id)}
-            partOfSpeech="adjective"
-            posObject={adjectivesObj}
-          />
-        </div>
-      </main>
-      <footer>
-        <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
-          Cancel
-        </Button>
-        <Button color="blue" onClick={onSubmit}>
-          Done
-        </Button>
-      </footer>
-    </Modal>
+    <DndProvider backend={Backend}>
+      <Modal large onHide={onHide}>
+        <header>{`Edit Definitions of "${word}"`}</header>
+        <main>
+          <div>
+            <PartOfSpeechBlock
+              type="Noun"
+              posIds={nounIds}
+              posObject={nounsObj}
+              onListItemMove={handleNounItemsMove}
+            />
+            <PartOfSpeechBlock
+              type="Adjective"
+              posIds={adjectiveIds}
+              posObject={adjectivesObj}
+              onListItemMove={handleAdjectiveItemsMove}
+            />
+          </div>
+        </main>
+        <footer>
+          <Button
+            transparent
+            style={{ marginRight: '0.7rem' }}
+            onClick={onHide}
+          >
+            Cancel
+          </Button>
+          <Button color="blue" onClick={onSubmit}>
+            Done
+          </Button>
+        </footer>
+      </Modal>
+    </DndProvider>
   );
+
+  function handleAdjectiveItemsMove({ sourceId, targetId }) {
+    const newIds = [...adjectiveIds];
+    const sourceIndex = newIds.indexOf(sourceId);
+    const targetIndex = newIds.indexOf(targetId);
+    newIds.splice(sourceIndex, 1);
+    newIds.splice(targetIndex, 0, sourceId);
+    setAdjectiveIds(newIds);
+  }
+
+  function handleNounItemsMove({ sourceId, targetId }) {
+    const newIds = [...nounIds];
+    const sourceIndex = newIds.indexOf(sourceId);
+    const targetIndex = newIds.indexOf(targetId);
+    newIds.splice(sourceIndex, 1);
+    newIds.splice(targetIndex, 0, sourceId);
+    setNounIds(newIds);
+  }
 }
