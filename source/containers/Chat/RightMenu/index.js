@@ -162,7 +162,7 @@ export default function RightMenu({
       >
         {displayedChannelMembers.map((member, index) => (
           <div
-            key={currentChannel.id + member.id}
+            key={`channel${currentChannel.id}member${member.id}`}
             style={{
               display: 'flex',
               width: '100%',
