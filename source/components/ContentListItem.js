@@ -208,9 +208,11 @@ function ContentListItem({
                     >
                       {title}
                     </LongText>
-                    <p style={{ color: Color.gray() }}>
-                      Posted by {uploader.username}
-                    </p>
+                    {uploader.username && (
+                      <p style={{ color: Color.gray() }}>
+                        Posted by {uploader.username}
+                      </p>
+                    )}
                     {description && (
                       <div
                         style={{
