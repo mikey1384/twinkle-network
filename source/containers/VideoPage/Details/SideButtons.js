@@ -10,6 +10,7 @@ import { mobileMaxWidth } from 'constants/css';
 SideButtons.propTypes = {
   byUser: PropTypes.bool.isRequired,
   canStar: PropTypes.bool,
+  className: PropTypes.string,
   rewardLevel: PropTypes.number,
   likes: PropTypes.array.isRequired,
   onLikeVideo: PropTypes.func.isRequired,
@@ -25,6 +26,7 @@ export default function SideButtons({
   byUser,
   canStar,
   changeByUserStatus,
+  className,
   rewardLevel,
   likes,
   onLikeVideo,
@@ -36,12 +38,12 @@ export default function SideButtons({
 }) {
   const [userListModalShown, setUserListModalShown] = useState(false);
   return (
-    <div style={style}>
+    <div className={className} style={style}>
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: canStar ? 'flex-end' : 'center',
+          justifyContent: 'flex-end',
           width: '100%'
         }}
       >
@@ -55,6 +57,7 @@ export default function SideButtons({
             }}
           >
             <StarButton
+              skeuomorphic
               byUser={byUser}
               contentId={Number(videoId)}
               style={{ position: 'absolute', top: 0, left: 0 }}
@@ -66,34 +69,41 @@ export default function SideButtons({
             />
           </div>
         )}
-        <LikeButton
-          contentType="video"
-          contentId={Number(videoId)}
-          likes={likes}
-          filled
-          className={css`
-            font-size: 2.5rem;
-            min-width: 50%;
-            max-width: 16vw;
-            @media (max-width: ${mobileMaxWidth}) {
-              font-size: 1.5rem;
-            }
-          `}
-          onClick={onLikeVideo}
-        />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: '50%',
+            maxWidth: '16vw'
+          }}
+        >
+          <LikeButton
+            contentType="video"
+            contentId={Number(videoId)}
+            likes={likes}
+            filled
+            style={{
+              fontSize: '2.5vw'
+            }}
+            onClick={onLikeVideo}
+          />
+          <Likers
+            className={css`
+              text-align: center;
+              line-height: 1.7rem;
+              margin-top: 0.5rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.2rem;
+              }
+            `}
+            userId={userId}
+            likes={likes}
+            onLinkClick={() => setUserListModalShown(true)}
+            target="video"
+            defaultText="Be the first to like this video"
+          />
+        </div>
       </div>
-      <Likers
-        style={{
-          textAlign: 'center',
-          lineHeight: '1.7rem',
-          marginTop: '0.5rem'
-        }}
-        userId={userId}
-        likes={likes}
-        onLinkClick={() => setUserListModalShown(true)}
-        target="video"
-        defaultText="Be the first to like this video"
-      />
       {userListModalShown && (
         <UserListModal
           onHide={() => setUserListModalShown(false)}

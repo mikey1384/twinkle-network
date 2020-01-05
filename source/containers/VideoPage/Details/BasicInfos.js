@@ -8,6 +8,7 @@ import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 
 BasicInfos.propTypes = {
+  className: PropTypes.string,
   editedUrl: PropTypes.string,
   editedTitle: PropTypes.string,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
@@ -28,6 +29,7 @@ BasicInfos.propTypes = {
 };
 
 export default function BasicInfos({
+  className,
   editedUrl,
   editedTitle,
   innerRef,
@@ -47,7 +49,7 @@ export default function BasicInfos({
   urlExceedsCharLimit
 }) {
   return (
-    <div style={style}>
+    <div className={className} style={style}>
       {onEdit ? (
         <div>
           <Input
