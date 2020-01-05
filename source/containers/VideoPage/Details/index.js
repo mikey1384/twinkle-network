@@ -209,7 +209,7 @@ export default function Details({
               className={css`
                 width: CALC(100% - 25rem);
                 @media (max-width: ${mobileMaxWidth}) {
-                  width: CALC(100% - 23rem);
+                  width: CALC(100% - 17rem);
                 }
               `}
               style={{
@@ -268,7 +268,7 @@ export default function Details({
               className={css`
                 width: 25rem;
                 @media (max-width: ${mobileMaxWidth}) {
-                  width: 23rem;
+                  width: 17rem;
                 }
               `}
               style={{
