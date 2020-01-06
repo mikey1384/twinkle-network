@@ -8,18 +8,24 @@ PartOfSpeechBlock.propTypes = {
   type: PropTypes.string,
   onListItemMove: PropTypes.func.isRequired,
   posIds: PropTypes.array.isRequired,
-  posObject: PropTypes.object.isRequired
+  posObject: PropTypes.object.isRequired,
+  style: PropTypes.object
 };
 
 export default function PartOfSpeechBlock({
   type,
   onListItemMove,
   posIds,
-  posObject
+  posObject,
+  style
 }) {
   return posIds.length > 0 ? (
-    <div>
-      <p style={{ fontSize: '2rem', fontWeight: 'bold' }}>{type}</p>
+    <div style={style}>
+      <p
+        style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}
+      >
+        {type}
+      </p>
       <div
         className={css`
           width: 100%;

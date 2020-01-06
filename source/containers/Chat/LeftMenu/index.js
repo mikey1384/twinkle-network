@@ -136,7 +136,7 @@ export default function LeftMenu({
           <div style={{ fontSize: '1.7rem' }}>
             <Icon icon="book" />
             <span style={{ fontWeight: 'bold', marginLeft: '0.7rem' }}>
-              Dictionary
+              Vocabulary
             </span>
           </div>
           <p

@@ -20,6 +20,7 @@ const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
   const [nounIds, setNounIds] = useState([]);
   const [adjectiveIds, setAdjectiveIds] = useState([]);
+  const [verbIds, setVerbIds] = useState([]);
   const nounsObj = useMemo(() => {
     const result = {};
     for (let noun of partOfSpeeches.nouns) {
@@ -42,6 +43,17 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
     return result;
   }, [partOfSpeeches.adjectives]);
 
+  const verbsObj = useMemo(() => {
+    const result = {};
+    for (let verb of partOfSpeeches.verbs) {
+      result[verb.id] = {
+        id: verb.id,
+        title: verb.definition
+      };
+    }
+    return result;
+  }, [partOfSpeeches.verbs]);
+
   useEffect(() => {
     setNounIds(partOfSpeeches.nouns.map(({ id }) => id));
   }, [partOfSpeeches.nouns]);
@@ -49,6 +61,10 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
   useEffect(() => {
     setAdjectiveIds(partOfSpeeches.adjectives.map(({ id }) => id));
   }, [partOfSpeeches.adjectives]);
+
+  useEffect(() => {
+    setVerbIds(partOfSpeeches.verbs.map(({ id }) => id));
+  }, [partOfSpeeches.verbs]);
 
   return (
     <DndProvider backend={Backend}>
@@ -63,10 +79,18 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
               onListItemMove={handleNounItemsMove}
             />
             <PartOfSpeechBlock
+              style={{ marginTop: '1.5rem' }}
               type="Adjective"
               posIds={adjectiveIds}
               posObject={adjectivesObj}
               onListItemMove={handleAdjectiveItemsMove}
+            />
+            <PartOfSpeechBlock
+              style={{ marginTop: '1.5rem' }}
+              type="Verb"
+              posIds={verbIds}
+              posObject={verbsObj}
+              onListItemMove={handleVerbItemsMove}
             />
           </div>
         </main>
@@ -97,6 +121,15 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
 
   function handleNounItemsMove({ sourceId, targetId }) {
     const newIds = [...nounIds];
+    const sourceIndex = newIds.indexOf(sourceId);
+    const targetIndex = newIds.indexOf(targetId);
+    newIds.splice(sourceIndex, 1);
+    newIds.splice(targetIndex, 0, sourceId);
+    setNounIds(newIds);
+  }
+
+  function handleVerbItemsMove({ sourceId, targetId }) {
+    const newIds = [...verbIds];
     const sourceIndex = newIds.indexOf(sourceId);
     const targetIndex = newIds.indexOf(targetId);
     newIds.splice(sourceIndex, 1);
