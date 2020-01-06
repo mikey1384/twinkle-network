@@ -112,11 +112,13 @@ export default function Comment({
               contentType="comment"
               contentId={id}
               text={content}
-              onCancel={() => ({
-                contentId: id,
-                contentType: 'comment',
-                isEditing: false
-              })}
+              onCancel={() =>
+                onSetIsEditing({
+                  contentId: id,
+                  contentType: 'comment',
+                  isEditing: false
+                })
+              }
               onEditDone={editComment}
               rows={2}
             />

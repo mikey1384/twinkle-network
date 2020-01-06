@@ -341,17 +341,19 @@ export default function TargetContent({
               )}
               {comments.length > 0 && (
                 <div style={{ padding: '0 1rem' }}>
-                  {comments.map(comment => (
-                    <Comment
-                      key={comment.id}
-                      comment={comment}
-                      username={username}
-                      userId={userId}
-                      profilePicId={profilePicId}
-                      onDelete={onDeleteComment}
-                      onEditDone={onEditComment}
-                    />
-                  ))}
+                  {comments
+                    .filter(comment => !comment.deleted)
+                    .map(comment => (
+                      <Comment
+                        key={comment.id}
+                        comment={comment}
+                        username={username}
+                        userId={userId}
+                        profilePicId={profilePicId}
+                        onDelete={onDeleteComment}
+                        onEditDone={onEditComment}
+                      />
+                    ))}
                 </div>
               )}
               {userListModalShown && (
