@@ -8,17 +8,25 @@ import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'helpers';
+import { capitalize } from 'helpers/stringHelpers';
 
 EditModal.propTypes = {
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   partOfSpeeches: PropTypes.object.isRequired,
+  partOfSpeechOrder: PropTypes.array.isRequired,
   word: PropTypes.string.isRequired
 };
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
+export default function EditModal({
+  onHide,
+  onSubmit,
+  partOfSpeeches,
+  partOfSpeechOrder,
+  word
+}) {
   const [adjectiveIds, setAdjectiveIds] = useState([]);
   const [adverbIds, setAdverbIds] = useState([]);
   const [conjunctionIds, setConjunctionIds] = useState([]);
@@ -28,6 +36,45 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
   const [pronounIds, setPronounIds] = useState([]);
   const [verbIds, setVerbIds] = useState([]);
   const [otherIds, setOtherIds] = useState([]);
+  const ids = useMemo(
+    () => ({
+      adjective: adjectiveIds,
+      adverb: adverbIds,
+      conjunction: conjunctionIds,
+      interjection: interjectionIds,
+      noun: nounIds,
+      preposition: prepositionIds,
+      pronoun: pronounIds,
+      verb: verbIds,
+      other: otherIds
+    }),
+    [
+      adjectiveIds,
+      adverbIds,
+      conjunctionIds,
+      interjectionIds,
+      nounIds,
+      otherIds,
+      prepositionIds,
+      pronounIds,
+      verbIds
+    ]
+  );
+
+  const setIds = useMemo(
+    () => ({
+      adjective: setAdjectiveIds,
+      adverb: setAdverbIds,
+      conjunction: setConjunctionIds,
+      interjection: setInterjectionIds,
+      noun: setNounIds,
+      other: setOtherIds,
+      preposition: setPrepositionIds,
+      verb: setVerbIds
+    }),
+    []
+  );
+
   const posObj = useMemo(() => {
     const result = {
       adjectives: {},
@@ -96,126 +143,27 @@ export default function EditModal({ onHide, onSubmit, partOfSpeeches, word }) {
             <div
               style={{ display: 'flex', flexDirection: 'column', width: '60%' }}
             >
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Adjective"
-                posIds={adjectiveIds}
-                posObject={posObj.adjectives}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setAdjectiveIds,
-                    ids: adjectiveIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Adverb"
-                posIds={adverbIds}
-                posObject={posObj.adverbs}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setAdverbIds,
-                    ids: adverbIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Conjunction"
-                posIds={conjunctionIds}
-                posObject={posObj.conjunctions}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setConjunctionIds,
-                    ids: conjunctionIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Interjection"
-                posIds={interjectionIds}
-                posObject={posObj.interjections}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setInterjectionIds,
-                    ids: interjectionIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Noun"
-                posIds={nounIds}
-                posObject={posObj.nouns}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setNounIds,
-                    ids: nounIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Preposition"
-                posIds={prepositionIds}
-                posObject={posObj.prepositions}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setPrepositionIds,
-                    ids: prepositionIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Pronoun"
-                posIds={pronounIds}
-                posObject={posObj.pronouns}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setPronounIds,
-                    ids: pronounIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Verb"
-                posIds={verbIds}
-                posObject={posObj.verbs}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setVerbIds,
-                    ids: verbIds
-                  })
-                }
-              />
-              <PartOfSpeechBlock
-                style={{ marginBottom: '1.5rem' }}
-                type="Other"
-                posIds={otherIds}
-                posObject={posObj.others}
-                onListItemMove={params =>
-                  handleItemsMove({
-                    ...params,
-                    setIds: setOtherIds,
-                    ids: otherIds
-                  })
-                }
-              />
+              {partOfSpeechOrder.map(pos => (
+                <PartOfSpeechBlock
+                  key={pos}
+                  style={{ marginBottom: '1.5rem' }}
+                  type={capitalize(pos)}
+                  posIds={ids[pos]}
+                  posObject={posObj[`${pos}s`]}
+                  onListItemMove={params =>
+                    handleItemsMove({
+                      ...params,
+                      setIds: setIds[pos],
+                      ids: ids[pos]
+                    })
+                  }
+                />
+              ))}
             </div>
-            <div style={{ width: '40%' }}>
-              <PartOfSpeechesList />
+            <div
+              style={{ width: '40%', marginLeft: '1rem', marginTop: '3.5rem' }}
+            >
+              <PartOfSpeechesList partOfSpeeches={partOfSpeechOrder} />
             </div>
           </div>
         </main>

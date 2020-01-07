@@ -22,7 +22,8 @@ export default function Definition({ style, wordObj }) {
     pronouns = [],
     conjunctions = [],
     interjections = [],
-    others = []
+    others = [],
+    partOfSpeechOrder
   } = wordObj;
   const [editModalShown, setEditModalShown] = useState(false);
   return (
@@ -54,176 +55,26 @@ export default function Definition({ style, wordObj }) {
           </Button>
         </div>
       )}
-      {verbs.length > 0 && (
-        <section>
-          <p>verb</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {verbs.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {nouns.length > 0 && (
-        <section>
-          <p>noun</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {nouns.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {adjectives.length > 0 && (
-        <section>
-          <p>adjective</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {adjectives.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {prepositions.length > 0 && (
-        <section>
-          <p>preposition</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {prepositions.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {adverbs.length > 0 && (
-        <section>
-          <p>adverb</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {adverbs.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {pronouns.length > 0 && (
-        <section>
-          <p>pronoun</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {pronouns.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {conjunctions.length > 0 && (
-        <section>
-          <p>conjunction</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {conjunctions.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {interjections.length > 0 && (
-        <section>
-          <p>interjection</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {interjections.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-      {others.length > 0 && (
-        <section>
-          <p>other</p>
-          <div
-            style={{
-              width: '80%',
-              padding: '1rem',
-              height: '100%',
-              overflow: 'scroll'
-            }}
-          >
-            {others.map(({ id, definition }, index) => (
-              <div key={id}>
-                {index + 1}. {definition}
-              </div>
-            ))}
-          </div>
-        </section>
+      {partOfSpeechOrder.map(pos =>
+        wordObj[`${pos}s`].length > 0 ? (
+          <section key={pos}>
+            <p>{pos}</p>
+            <div
+              style={{
+                width: '80%',
+                padding: '1rem',
+                height: '100%',
+                overflow: 'scroll'
+              }}
+            >
+              {wordObj[`${pos}s`].map(({ id, definition }, index) => (
+                <div key={id}>
+                  {index + 1}. {definition}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null
       )}
       {editModalShown && (
         <EditModal
@@ -238,6 +89,7 @@ export default function Definition({ style, wordObj }) {
             interjections,
             others
           }}
+          partOfSpeechOrder={partOfSpeechOrder}
           onHide={() => setEditModalShown(false)}
           onSubmit={handleEditDone}
           word={wordObj.content}

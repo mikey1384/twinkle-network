@@ -8,7 +8,7 @@ import { Color } from 'constants/css';
 
 SortableListItem.propTypes = {
   index: PropTypes.number,
-  listItemId: PropTypes.number,
+  listItemId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   listItemLabel: PropTypes.string,
   numbered: PropTypes.bool,
   onMove: PropTypes.func.isRequired,
