@@ -25,7 +25,6 @@ export default function Definition({ style, wordObj }) {
     others = []
   } = wordObj;
   const [editModalShown, setEditModalShown] = useState(false);
-
   return (
     <div
       style={{ padding: '1rem', position: 'relative', ...style }}
@@ -104,7 +103,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {adjectives.map(({id, definition}, index) => (
+            {adjectives.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -123,7 +122,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {prepositions.map(({id, definition}, index) => (
+            {prepositions.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -142,7 +141,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {adverbs.map(({id, definition}, index) => (
+            {adverbs.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -161,7 +160,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {pronouns.map(({id, definition}, index) => (
+            {pronouns.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -180,7 +179,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {conjunctions.map(({id, definition}, index) => (
+            {conjunctions.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -199,7 +198,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {interjections.map(({id, definition}, index) => (
+            {interjections.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
@@ -218,7 +217,7 @@ export default function Definition({ style, wordObj }) {
               overflow: 'scroll'
             }}
           >
-            {others.map(({id, definition}, index) => (
+            {others.map(({ id, definition }, index) => (
               <div key={id}>
                 {index + 1}. {definition}
               </div>
