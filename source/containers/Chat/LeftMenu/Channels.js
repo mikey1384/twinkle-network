@@ -107,23 +107,25 @@ export default function Channels({
                       {renderPreviewMessage(lastMessage || {})}
                     </div>
                   </div>
-                  {id !== selectedChannelId && numUnreads > 0 && (
-                    <div
-                      style={{
-                        background: Color.rose(),
-                        display: 'flex',
-                        color: '#fff',
-                        fontWeight: 'bold',
-                        minWidth: '2rem',
-                        height: '2rem',
-                        borderRadius: '50%',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}
-                    >
-                      {numUnreads}
-                    </div>
-                  )}
+                  {id !== selectedChannelId &&
+                    numUnreads > 0 &&
+                    lastMessage?.sender?.id !== userId && (
+                      <div
+                        style={{
+                          background: Color.rose(),
+                          display: 'flex',
+                          color: '#fff',
+                          fontWeight: 'bold',
+                          minWidth: '2rem',
+                          height: '2rem',
+                          borderRadius: '50%',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}
+                      >
+                        {numUnreads}
+                      </div>
+                    )}
                 </div>
               </div>
             );

@@ -78,6 +78,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:crayon\:)/gi, '🖍️')
     .replace(/(\:curious\:)/gi, '🤔')
     .replace(/(\:cry\:)/gi, '😭')
+    .replace(/(\:deer\:)/gi, '🦌')
     .replace(/(\:degrees\:)/gi, '°')
     .replace(/(\:devil\:)/gi, '😈')
     .replace(/(\:diamond\:)/gi, '💎')
@@ -116,8 +117,9 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:pizza\:)/gi, '🍕')
     .replace(/(\:potato\:)/gi, '🥔')
     .replace(/(\:rabbit\:)/gi, '🐰')
+    .replace(/(\:reindeer\:)/gi, '🦌')
     .replace(/(\:rooster\:)/gi, '🐓')
-    .replace(/(\:sad\:)/gi, '😭')
+    .replace(/(\:sad\:)/gi, '😢')
     .replace(/(\:santa\:)/gi, '🎅')
     .replace(/(\:shrug\:)/gi, '🤷')
     .replace(/(\:smile\:)/gi, '😊')
@@ -330,30 +332,61 @@ export function processedStringWithURL(string) {
   const maxChar = 100;
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
-  const urlRegex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
-  const boldRegex = /\*([^\s*]+)\*/gi;
-  const italicRegex = /\*\*([^\s*]+)\*\*/gi;
-  const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
-  const underlineRegex = /__([^\s*]+)__/gi;
-  const linethroughRegex = /--([^\s*]+)--/gi;
+  const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
+  const boldItalicWordRegex = /(\*\*\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*\*\*)/gi;
+  const boldItalicSentenceRegex = /((\*\*\*[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\+~#=\/()])+([0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]\*\*\*){1})/gi;
+  const boldWordRegex = /(\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*)/gi;
+  const boldSentenceRegex = /((\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]\*){1})/gi;
+  const italicWordRegex = /(\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]+\*\*)/gi;
+  const italicSentenceRegex = /((\*\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]\*\*){1})/gi;
+  const underlineWordRegex = /(__[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+__)/gi;
+  const underlineSentenceRegex = /((__[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:'"?!*&@%_\+~#=\/()]__){1})/gi;
+  const linethroughWordRegex = /(--[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+--)/gi;
+  const linethroughSentenceRegex = /((--[0-9A-Za-z-.,;'":?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]--){1})/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
     .replace(/>/g, '&gt')
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(
-      boldItalicRegex,
-      `<span style="font-style: italic; font-weight: bold;">$1</span>`
-    )
-    .replace(italicRegex, `<span style="font-style: italic;">$1</span>`)
-    .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
-    .replace(
-      underlineRegex,
-      `<span style="text-decoration: underline;">$1</span>`
+      underlineWordRegex,
+      string => `<u>${string.substring(2, string.length - 2)}</u>`
     )
     .replace(
-      linethroughRegex,
-      `<span style="text-decoration: line-through;">$1</span>`
+      underlineSentenceRegex,
+      string => `<u>${string.substring(2, string.length - 2)}</u>`
+    )
+    .replace(
+      linethroughWordRegex,
+      string => `<strike>${string.substring(2, string.length - 2)}</strike>`
+    )
+    .replace(
+      linethroughSentenceRegex,
+      string => `<strike>${string.substring(2, string.length - 2)}</strike>`
+    )
+    .replace(
+      boldItalicWordRegex,
+      string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
+    )
+    .replace(
+      boldItalicSentenceRegex,
+      string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
+    )
+    .replace(
+      italicWordRegex,
+      string => `<i>${string.substring(2, string.length - 2)}</i>`
+    )
+    .replace(
+      italicSentenceRegex,
+      string => `<i>${string.substring(2, string.length - 2)}</i>`
+    )
+    .replace(
+      boldWordRegex,
+      string => `<b>${string.substring(1, string.length - 1)}</b>`
+    )
+    .replace(
+      boldSentenceRegex,
+      string => `<b>${string.substring(1, string.length - 1)}</b>`
     )
     .replace(/\r?\n/g, '<br>');
   let newString = '';

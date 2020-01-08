@@ -5,6 +5,7 @@ import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
+import Loading from 'components/Loading';
 import { useHistory } from 'react-router-dom';
 import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
@@ -121,11 +122,15 @@ function ContentListItem({
                   width: '25%'
                 }}
               >
-                <VideoThumbImage
-                  rewardLevel={rewardLevel}
-                  videoId={contentId}
-                  src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
-                />
+                {content ? (
+                  <VideoThumbImage
+                    rewardLevel={rewardLevel}
+                    videoId={contentId}
+                    src={`https://img.youtube.com/vi/${content}/mqdefault.jpg`}
+                  />
+                ) : (
+                  <Loading style={{ height: '10rem' }} />
+                )}
               </div>
             )}
             <div
@@ -203,9 +208,11 @@ function ContentListItem({
                     >
                       {title}
                     </LongText>
-                    <p style={{ color: Color.gray() }}>
-                      Posted by {uploader.username}
-                    </p>
+                    {uploader.username && (
+                      <p style={{ color: Color.gray() }}>
+                        Posted by {uploader.username}
+                      </p>
+                    )}
                     {description && (
                       <div
                         style={{

@@ -10,7 +10,7 @@ import BasicInfos from './BasicInfos';
 import SideButtons from './SideButtons';
 import Description from './Description';
 import TagStatus from 'components/TagStatus';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import {
   addCommasToNumber,
   addEmoji,
@@ -21,6 +21,7 @@ import {
 } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useContentContext, useInputContext } from 'contexts';
+import { css } from 'emotion';
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -69,7 +70,13 @@ export default function Details({
   videoId,
   videoViews
 }) {
-  const { authLevel, canDelete, canEdit, canStar } = useMyState();
+  const {
+    authLevel,
+    canDelete,
+    canEdit,
+    canEditPlaylists,
+    canStar
+  } = useMyState();
   const {
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
@@ -180,7 +187,12 @@ export default function Details({
         tags={tags}
         contentId={Number(videoId)}
       />
-      <div style={{ padding: '0 1rem 1rem 1rem', width: '100%' }}>
+      <div
+        style={{
+          padding: '0 1rem 1rem 1rem',
+          width: '100%'
+        }}
+      >
         <div
           style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
         >
@@ -194,9 +206,14 @@ export default function Details({
             }}
           >
             <BasicInfos
+              className={css`
+                width: CALC(100% - 25rem);
+                @media (max-width: ${mobileMaxWidth}) {
+                  width: CALC(100% - ${canStar ? '12rem' : '9rem'});
+                }
+              `}
               style={{
                 marginRight: '1rem',
-                width: '75%',
                 display: 'flex',
                 flexDirection: 'column'
               }}
@@ -248,7 +265,14 @@ export default function Details({
               urlExceedsCharLimit={urlExceedsCharLimit}
             />
             <SideButtons
+              className={css`
+                width: 25rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  width: ${canStar ? '12rem' : '9rem'};
+                }
+              `}
               style={{
+                marginTop: canEditPlaylists ? 0 : '1rem',
                 display: 'flex',
                 flexDirection: 'column'
               }}

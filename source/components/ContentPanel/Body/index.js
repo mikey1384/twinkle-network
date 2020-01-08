@@ -539,10 +539,7 @@ function Body({
 
   async function onLikeClick() {
     if (!commentsShown) {
-      await handleExpandComments();
-      if (Number(numChildComments) === 0 && !isMobile(navigator)) {
-        CommentInputAreaRef.current.focus();
-      }
+      handleExpandComments();
     }
   }
 

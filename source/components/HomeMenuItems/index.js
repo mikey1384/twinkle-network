@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import { container } from './Styles';
@@ -21,6 +21,10 @@ export default function HomeMenuItems({ history, style = {} }) {
     }
   } = useAppContext();
   const { managementLevel } = useMyState();
+  const year = useMemo(() => {
+    const dt = new Date();
+    return dt.getFullYear();
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -106,7 +110,7 @@ export default function HomeMenuItems({ history, style = {} }) {
           }}
         >
           <div>
-            © 2019 Twinkle Network ·{' '}
+            © {year} Twinkle Network ·{' '}
             <Link to="/privacy" style={{ color: Color.gray() }}>
               Privacy
             </Link>

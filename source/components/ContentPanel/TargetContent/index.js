@@ -171,6 +171,7 @@ export default function TargetContent({
           background: #fff;
         }
         @media (max-width: ${mobileMaxWidth}) {
+          font-size: 1.7rem;
           border-left: 0;
           border-right: 0;
         }
@@ -340,17 +341,19 @@ export default function TargetContent({
               )}
               {comments.length > 0 && (
                 <div style={{ padding: '0 1rem' }}>
-                  {comments.map(comment => (
-                    <Comment
-                      key={comment.id}
-                      comment={comment}
-                      username={username}
-                      userId={userId}
-                      profilePicId={profilePicId}
-                      onDelete={onDeleteComment}
-                      onEditDone={onEditComment}
-                    />
-                  ))}
+                  {comments
+                    .filter(comment => !comment.deleted)
+                    .map(comment => (
+                      <Comment
+                        key={comment.id}
+                        comment={comment}
+                        username={username}
+                        userId={userId}
+                        profilePicId={profilePicId}
+                        onDelete={onDeleteComment}
+                        onEditDone={onEditComment}
+                      />
+                    ))}
                 </div>
               )}
               {userListModalShown && (
