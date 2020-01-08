@@ -20,10 +20,12 @@ export default function Dictionary() {
   const inputText = state['dictionary'] || '';
   const [loading, setLoading] = useState(false);
 
+  const text = useRef(null);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
 
   useEffect(() => {
+    text.current = inputText;
     if (!stringIsEmpty(inputText)) {
       clearTimeout(timerRef.current);
       setLoading(true);
@@ -31,7 +33,9 @@ export default function Dictionary() {
     }
     async function changeInput(input) {
       const wordObject = await lookUpWord(input);
-      onSetWordObj(wordObject);
+      if (wordObject.notFound || wordObject.content === text.current) {
+        onSetWordObj(wordObject);
+      }
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +125,7 @@ export default function Dictionary() {
                   fontSize: '3rem'
                 }}
               >
-                {inputText}
+                {wordObj.content}
               </div>
               <Definition wordObj={wordObj} />
             </div>
