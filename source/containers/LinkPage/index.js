@@ -16,7 +16,7 @@ import Loading from 'components/Loading';
 import Description from './Description';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { determineXpButtonDisabled, scrollElementToCenter } from 'helpers';
+import { determineXpButtonDisabled } from 'helpers';
 import { useContentState, useMyState, useScrollPosition } from 'helpers/hooks';
 import { processedURL } from 'helpers/stringHelpers';
 import {
@@ -121,7 +121,8 @@ export default function LinkPage({
       history.push('/links');
     }
     prevDeleted.current = deleted;
-  }, [deleted, loaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleted]);
 
   useEffect(() => {
     if (!loaded) {
@@ -176,12 +177,18 @@ export default function LinkPage({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  const userCanEditThis =
-    (canEdit || canDelete) && authLevel > uploader?.authLevel;
-  const userCanRewardThis =
-    canStar && authLevel > uploader?.authLevel && !userIsUploader;
+  const userCanEditThis = useMemo(
+    () => (canEdit || canDelete) && authLevel > uploader?.authLevel,
+    [authLevel, canDelete, canEdit, uploader]
+  );
+  const userCanRewardThis = useMemo(
+    () => canStar && authLevel > uploader?.authLevel && !userIsUploader,
+    [authLevel, canStar, uploader, userIsUploader]
+  );
+
   const userIsUploader = uploader?.id === userId;
   useEffect(() => {
     onSetXpRewardInterfaceShown({
@@ -189,254 +196,228 @@ export default function LinkPage({
       contentId: linkId,
       shown: xpRewardInterfaceShown && userCanRewardThis
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  return useMemo(
-    () =>
-      loaded ? (
-        <div
+  return loaded ? (
+    <div
+      className={css`
+        margin-top: 1rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          margin-top: 0;
+        }
+      `}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        fontSize: '1.7rem',
+        paddingBottom: '10rem'
+      }}
+    >
+      <div
+        className={css`
+          width: 60%;
+          background-color: #fff;
+          border: 1px solid ${Color.borderGray()};
+          padding-bottom: 1rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+      >
+        <Description
+          key={'description' + linkId}
+          uploader={uploader}
+          timeStamp={timeStamp}
+          myId={userId}
+          title={title}
+          url={content}
+          userCanEditThis={userCanEditThis}
+          description={description}
+          linkId={linkId}
+          onDelete={() => setConfirmModalShown(true)}
+          onEditDone={handleEditLinkPage}
+          userIsUploader={userIsUploader}
+        />
+        <Embedly
+          key={'link' + linkId}
+          style={{ marginTop: '2rem' }}
+          contentId={linkId}
+          loadingHeight="30rem"
+        />
+        <RewardStatus
+          contentType="url"
+          onCommentEdit={onEditRewardComment}
           className={css`
-            margin-top: 1rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
-            }
+            font-size: 1.4rem;
+            margin-right: -1px;
+            margin-left: -1px;
           `}
+          stars={stars}
+        />
+        <div
           style={{
+            paddingTop: '1.5rem',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            fontSize: '1.7rem',
-            paddingBottom: '10rem'
+            alignItems: 'center'
           }}
         >
-          <div
-            className={css`
-              width: 60%;
-              background-color: #fff;
-              border: 1px solid ${Color.borderGray()};
-              padding-bottom: 1rem;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-              }
-            `}
-          >
-            <Description
-              key={'description' + linkId}
-              uploader={uploader}
-              timeStamp={timeStamp}
-              myId={userId}
-              title={title}
-              url={content}
-              userCanEditThis={userCanEditThis}
-              description={description}
-              linkId={linkId}
-              onDelete={() => setConfirmModalShown(true)}
-              onEditDone={handleEditLinkPage}
-              userIsUploader={userIsUploader}
-            />
-            <Embedly
-              key={'link' + linkId}
-              style={{ marginTop: '2rem' }}
-              contentId={linkId}
-              loadingHeight="30rem"
-            />
-            <RewardStatus
+          <div style={{ display: 'flex' }}>
+            <LikeButton
+              key={'like' + linkId}
+              filled
+              style={{ fontSize: '2rem' }}
               contentType="url"
-              onCommentEdit={onEditRewardComment}
-              className={css`
-                font-size: 1.4rem;
-                margin-right: -1px;
-                margin-left: -1px;
-              `}
-              stars={stars}
+              contentId={linkId}
+              onClick={handleLikeLink}
+              likes={likes}
             />
-            <div
-              style={{
-                paddingTop: '1.5rem',
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }}
-            >
-              <div style={{ display: 'flex' }}>
-                <LikeButton
-                  key={'like' + linkId}
-                  filled
-                  style={{ fontSize: '2rem' }}
-                  contentType="url"
-                  contentId={linkId}
-                  onClick={handleLikeLink}
-                  likes={likes}
-                />
-                {userCanRewardThis && (
-                  <Button
-                    color="pink"
-                    filled
-                    disabled={determineXpButtonDisabled({
-                      myId: userId,
-                      xpRewardInterfaceShown,
-                      stars
-                    })}
-                    style={{
-                      fontSize: '2rem',
-                      marginLeft: '1rem'
-                    }}
-                    onClick={handleSetXpRewardInterfaceShown}
-                  >
-                    <Icon icon="certificate" />
-                    <span style={{ marginLeft: '0.7rem' }}>
-                      {determineXpButtonDisabled({
-                        myId: userId,
-                        xpRewardInterfaceShown,
-                        stars
-                      }) || 'Reward'}
-                    </span>
-                  </Button>
-                )}
-              </div>
-              <Likers
-                key={'likes' + linkId}
-                style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
-                likes={likes}
-                userId={userId}
-                onLinkClick={() => setLikesModalShown(true)}
-              />
-            </div>
-            {xpRewardInterfaceShown && (
-              <div style={{ padding: '0 1rem' }}>
-                <XPRewardInterface
-                  innerRef={RewardInterfaceRef}
-                  stars={stars}
-                  contentType="url"
-                  contentId={linkId}
-                  noPadding
-                  uploaderId={uploader.id}
-                  onRewardSubmit={data => {
-                    onSetXpRewardInterfaceShown({
-                      contentType: 'url',
-                      contentId: linkId,
-                      shown: false
-                    });
-                    onAttachStar({
-                      data,
-                      contentId: linkId,
-                      contentType: 'url'
-                    });
-                  }}
-                />
-              </div>
+            {userCanRewardThis && (
+              <Button
+                color="pink"
+                filled
+                disabled={determineXpButtonDisabled({
+                  myId: userId,
+                  xpRewardInterfaceShown,
+                  stars
+                })}
+                style={{
+                  fontSize: '2rem',
+                  marginLeft: '1rem'
+                }}
+                onClick={handleSetXpRewardInterfaceShown}
+              >
+                <Icon icon="certificate" />
+                <span style={{ marginLeft: '0.7rem' }}>
+                  {determineXpButtonDisabled({
+                    myId: userId,
+                    xpRewardInterfaceShown,
+                    stars
+                  }) || 'Reward'}
+                </span>
+              </Button>
             )}
           </div>
-          <Subjects
-            className={css`
-              width: 60%;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-              }
-            `}
-            contentId={linkId}
-            loadMoreButton={subjectsLoadMoreButton}
-            subjects={subjects}
-            onLoadMoreSubjects={onLoadMoreSubjects}
-            onLoadSubjectComments={onLoadSubjectComments}
-            onSubjectEditDone={onEditSubject}
-            onSubjectDelete={subjectId =>
-              onDeleteContent({ contentType: 'subject', contentId: subjectId })
-            }
-            onSetRewardLevel={onSetRewardLevel}
-            uploadSubject={onUploadSubject}
-            contentType="url"
-            commentActions={{
-              attachStar: onAttachStar,
-              editRewardComment: onEditRewardComment,
-              onDelete: handleDeleteComment,
-              onEditDone: onEditComment,
-              onLikeClick: onLikeComment,
-              onLoadMoreComments: onLoadMoreSubjectComments,
-              onLoadMoreReplies: onLoadMoreSubjectReplies,
-              onUploadComment: handleUploadComment,
-              onUploadReply: handleUploadReply
-            }}
-          />
-          <Comments
-            autoExpand
-            comments={childComments}
-            isLoading={loadingComments}
-            inputTypeLabel="comment"
-            key={'comments' + linkId}
-            loadMoreButton={commentsLoadMoreButton}
-            onAttachStar={onAttachStar}
-            onCommentSubmit={handleUploadComment}
-            onDelete={handleDeleteComment}
-            onEditDone={onEditComment}
-            onLikeClick={onLikeComment}
-            onLoadMoreComments={onLoadMoreComments}
-            onLoadMoreReplies={onLoadMoreReplies}
-            onReplySubmit={handleUploadReply}
-            onRewardCommentEdit={onEditRewardComment}
-            parent={{ contentType: 'url', contentId: linkId }}
-            className={css`
-              border: 1px solid ${Color.borderGray()};
-              padding: 1rem;
-              width: 60%;
-              background: #fff;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-              }
-            `}
+          <Likers
+            key={'likes' + linkId}
+            style={{ marginTop: '0.5rem', fontSize: '1.3rem' }}
+            likes={likes}
             userId={userId}
+            onLinkClick={() => setLikesModalShown(true)}
           />
-          {confirmModalShown && (
-            <ConfirmModal
-              key={'confirm' + linkId}
-              title="Remove Link"
-              onConfirm={handleDeleteLink}
-              onHide={() => setConfirmModalShown(false)}
-            />
-          )}
-          {likesModalShown && (
-            <UserListModal
-              key={'userlist' + linkId}
-              users={likes}
-              userId={userId}
-              title="People who liked this"
-              description="(You)"
-              onHide={() => setLikesModalShown(false)}
-            />
-          )}
         </div>
-      ) : notFound ? (
-        <NotFound />
-      ) : (
-        <Loading text="Loading Page..." />
-      ),
-    [
-      childComments,
-      commentsLoaded,
-      commentsLoadMoreButton,
-      content,
-      deleted,
-      description,
-      likes,
-      loaded,
-      subjects,
-      subjectsLoaded,
-      subjectsLoadMoreButton,
-      stars,
-      timeStamp,
-      title,
-      uploader,
-      xpRewardInterfaceShown,
-      linkId,
-      loadingComments,
-      userId,
-      notFound,
-      confirmModalShown,
-      likesModalShown
-    ]
+        {xpRewardInterfaceShown && (
+          <div style={{ padding: '0 1rem' }}>
+            <XPRewardInterface
+              innerRef={RewardInterfaceRef}
+              stars={stars}
+              contentType="url"
+              contentId={linkId}
+              noPadding
+              uploaderId={uploader.id}
+              onRewardSubmit={data => {
+                onSetXpRewardInterfaceShown({
+                  contentType: 'url',
+                  contentId: linkId,
+                  shown: false
+                });
+                onAttachStar({
+                  data,
+                  contentId: linkId,
+                  contentType: 'url'
+                });
+              }}
+            />
+          </div>
+        )}
+      </div>
+      <Subjects
+        className={css`
+          width: 60%;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+        contentId={linkId}
+        loadMoreButton={subjectsLoadMoreButton}
+        subjects={subjects}
+        onLoadMoreSubjects={onLoadMoreSubjects}
+        onLoadSubjectComments={onLoadSubjectComments}
+        onSubjectEditDone={onEditSubject}
+        onSubjectDelete={subjectId =>
+          onDeleteContent({ contentType: 'subject', contentId: subjectId })
+        }
+        onSetRewardLevel={onSetRewardLevel}
+        uploadSubject={onUploadSubject}
+        contentType="url"
+        commentActions={{
+          attachStar: onAttachStar,
+          editRewardComment: onEditRewardComment,
+          onDelete: handleDeleteComment,
+          onEditDone: onEditComment,
+          onLikeClick: onLikeComment,
+          onLoadMoreComments: onLoadMoreSubjectComments,
+          onLoadMoreReplies: onLoadMoreSubjectReplies,
+          onUploadComment: handleUploadComment,
+          onUploadReply: handleUploadReply
+        }}
+      />
+      <Comments
+        autoExpand
+        comments={childComments}
+        isLoading={loadingComments}
+        inputTypeLabel="comment"
+        key={'comments' + linkId}
+        loadMoreButton={commentsLoadMoreButton}
+        onAttachStar={onAttachStar}
+        onCommentSubmit={handleUploadComment}
+        onDelete={handleDeleteComment}
+        onEditDone={onEditComment}
+        onLikeClick={onLikeComment}
+        onLoadMoreComments={onLoadMoreComments}
+        onLoadMoreReplies={onLoadMoreReplies}
+        onReplySubmit={handleUploadReply}
+        onRewardCommentEdit={onEditRewardComment}
+        parent={{ contentType: 'url', contentId: linkId }}
+        className={css`
+          border: 1px solid ${Color.borderGray()};
+          padding: 1rem;
+          width: 60%;
+          background: #fff;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+        userId={userId}
+      />
+      {confirmModalShown && (
+        <ConfirmModal
+          key={'confirm' + linkId}
+          title="Remove Link"
+          onConfirm={handleDeleteLink}
+          onHide={() => setConfirmModalShown(false)}
+        />
+      )}
+      {likesModalShown && (
+        <UserListModal
+          key={'userlist' + linkId}
+          users={likes}
+          userId={userId}
+          title="People who liked this"
+          description="(You)"
+          onHide={() => setLikesModalShown(false)}
+        />
+      )}
+    </div>
+  ) : notFound ? (
+    <NotFound />
+  ) : (
+    <Loading text="Loading Page..." />
   );
 
   async function handleDeleteLink() {
@@ -487,7 +468,6 @@ export default function LinkPage({
       contentId: linkId,
       shown: true
     });
-    setTimeout(() => scrollElementToCenter(RewardInterfaceRef.current), 0);
   }
 
   function handleUploadComment(params) {

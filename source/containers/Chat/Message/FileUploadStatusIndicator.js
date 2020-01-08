@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'components/ProgressBar';
 import LocalContext from '../Context';
@@ -14,7 +14,6 @@ FileUploadStatusIndicator.propTypes = {
   filePath: PropTypes.string.isRequired,
   onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
-  profilePicId: PropTypes.number,
   subjectId: PropTypes.number
 };
 
@@ -30,8 +29,8 @@ export default function FileUploadStatusIndicator({
 }) {
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: { filesBeingUploaded },
-    actions: { onDisplayAttachedFile }
+    state: { filesBeingUploaded, replyTarget },
+    actions: { onDisplayAttachedFile, onSetReplyTarget }
   } = useChatContext();
   const { onFileUpload } = useContext(LocalContext);
   useEffect(() => {
@@ -48,26 +47,30 @@ export default function FileUploadStatusIndicator({
         fileToUpload,
         userId,
         recepientId,
+        targetMessageId: replyTarget?.id,
         subjectId
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [
-    {
-      uploadComplete = false,
-      clientToApiServerProgress = 0,
-      apiServerToS3Progress = 0
-    } = {}
-  ] =
-    filesBeingUploaded[channelId]?.filter(
-      ({ filePath: path }) => path === filePath
-    ) || [];
+    { id: messageId, uploadComplete = false, uploadProgress } = {}
+  ] = useMemo(() => {
+    return (
+      filesBeingUploaded[channelId]?.filter(
+        ({ filePath: path }) => path === filePath
+      ) || []
+    );
+  }, [channelId, filePath, filesBeingUploaded]);
+
   useEffect(() => {
     if (uploadComplete) {
       const params = {
         content,
         fileName: fileToUpload.name,
         filePath,
+        id: messageId,
         uploaderAuthLevel: authLevel,
         channelId,
         userId,
@@ -77,28 +80,33 @@ export default function FileUploadStatusIndicator({
       };
       onDisplayAttachedFile(params);
       if (channelId) {
-        onSendFileMessage(params);
+        onSendFileMessage({ ...params, targetMessage: replyTarget });
       }
+      onSetReplyTarget(null);
     }
-  }, [filesBeingUploaded]);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  useEffect(() => {
-    setUploadProgress(
-      Math.ceil(5 + 15 * clientToApiServerProgress + 80 * apiServerToS3Progress)
-    );
-  }, [clientToApiServerProgress, apiServerToS3Progress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    authLevel,
+    channelId,
+    content,
+    filePath,
+    fileToUpload.name,
+    filesBeingUploaded,
+    profilePicId,
+    replyTarget,
+    uploadComplete,
+    userId,
+    username
+  ]);
 
-  return useMemo(
-    () => (
-      <div style={{ marginTop: '1rem' }}>
-        <div>{`Uploading ${fileToUpload.name}...`}</div>
-        <ProgressBar
-          text={uploadComplete ? 'Upload Complete!' : ''}
-          color={uploadComplete ? Color.green() : Color.blue()}
-          progress={uploadComplete ? 100 : uploadProgress}
-        />
-      </div>
-    ),
-    [fileToUpload.name, uploadComplete, uploadProgress]
+  return (
+    <div style={{ marginTop: '1rem' }}>
+      <div>{`Uploading ${fileToUpload.name}...`}</div>
+      <ProgressBar
+        text={uploadComplete ? 'Upload Complete!' : ''}
+        color={uploadComplete ? Color.green() : Color.blue()}
+        progress={uploadComplete ? 100 : Math.ceil(100 * uploadProgress)}
+      />
+    </div>
   );
 }

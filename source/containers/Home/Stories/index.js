@@ -1,13 +1,15 @@
-import React, { useMemo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import InputPanel from './InputPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import Banner from 'components/Banner';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import ContentPanel from 'components/ContentPanel';
+import { css } from 'emotion';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import {
   useInfiniteScroll,
@@ -81,6 +83,7 @@ export default function Stories({ location }) {
     pathname: location.pathname,
     scrollPositions
   });
+
   const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -88,6 +91,7 @@ export default function Stories({ location }) {
   const mounted = useRef(true);
   const categoryRef = useRef(null);
   const ContainerRef = useRef(null);
+  const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
   const { setScrollHeight } = useInfiniteScroll({
     scrollable: feeds.length > 0,
@@ -142,6 +146,29 @@ export default function Stories({ location }) {
   });
 
   useEffect(() => {
+    if (
+      category === 'videos' &&
+      loaded &&
+      typeof hideWatchedRef.current === 'number' &&
+      hideWatchedRef.current !== hideWatched
+    ) {
+      filterVideos();
+    }
+    async function filterVideos() {
+      const { data } = await loadFeeds({
+        order: 'desc',
+        filter: categoryObj.videos.filter,
+        orderBy: categoryObj.videos.orderBy
+      });
+      if (category === 'videos' && mounted.current) {
+        onLoadFeeds(data);
+      }
+    }
+    hideWatchedRef.current = hideWatched;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hideWatched]);
+
+  useEffect(() => {
     if (!loaded) {
       init();
     }
@@ -159,122 +186,103 @@ export default function Stories({ location }) {
         console.error(error);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
-  useEffect(() => {
-    if (category === 'videos') {
-      filterVideos();
-    }
-    async function filterVideos() {
-      const { data } = await loadFeeds({
-        order: 'desc',
-        filter: categoryObj.videos.filter,
-        orderBy: categoryObj.videos.orderBy
-      });
-      if (category === 'videos' && mounted.current) {
-        onLoadFeeds(data);
-      }
-    }
-  }, [hideWatched]);
+  const ContentPanels = useMemo(() => {
+    return feeds.map((feed, index) => (
+      <ContentPanel
+        key={category + subFilter + feed.contentId + feed.contentType}
+        style={{
+          marginBottom: '1rem',
+          zIndex: feeds.length - index
+        }}
+        contentId={feed.contentId}
+        contentType={feed.contentType}
+        commentsLoadLimit={5}
+        numPreviewComments={1}
+        userId={userId}
+      />
+    ));
+  }, [category, feeds, subFilter, userId]);
 
-  return useMemo(() => {
-    return (
-      <ErrorBoundary>
-        <div style={{ width: '100%' }} ref={ContainerRef}>
-          <HomeFilter
-            category={category}
-            changeCategory={handleChangeCategory}
-            displayOrder={displayOrder}
-            selectedFilter={subFilter}
-            applyFilter={applyFilter}
-            setDisplayOrder={handleDisplayOrder}
-          />
-          <InputPanel />
-          <div style={{ width: '100%' }}>
-            {loadingFeeds && <Loading text="Loading Feeds..." />}
-            {loaded && feeds.length === 0 && !loadingFeeds && (
+  return (
+    <ErrorBoundary>
+      <div style={{ width: '100%' }} ref={ContainerRef}>
+        <HomeFilter
+          category={category}
+          changeCategory={handleChangeCategory}
+          displayOrder={displayOrder}
+          selectedFilter={subFilter}
+          applyFilter={applyFilter}
+          setDisplayOrder={handleDisplayOrder}
+        />
+        <InputPanel />
+        <div style={{ width: '100%' }}>
+          {loadingFeeds && <Loading text="Loading Feeds..." />}
+          {loaded && feeds.length === 0 && !loadingFeeds && (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '15rem'
+              }}
+            >
+              <h1 style={{ textAlign: 'center' }}>
+                {username
+                  ? `Hello ${username}, be the first to post something`
+                  : 'Hi there!'}
+              </h1>
+            </div>
+          )}
+          {loaded && !loadingFeeds && feeds.length > 0 && (
+            <>
+              {feedsOutdated && (
+                <Banner
+                  color="gold"
+                  onClick={() => window.location.reload()}
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Tap to See New Posts!
+                </Banner>
+              )}
+              {numNewPosts > 0 && !feedsOutdated && (
+                <Banner
+                  color="gold"
+                  onClick={handleFetchNewFeeds}
+                  style={{ marginBottom: '1rem' }}
+                >
+                  Tap to See {numNewPosts} new Post
+                  {numNewPosts > 1 ? 's' : ''}
+                </Banner>
+              )}
+              {ContentPanels}
+              {loadMoreButton && (
+                <LoadMoreButton
+                  style={{ marginBottom: '1rem' }}
+                  onClick={() => setLoadingMore(true)}
+                  loading={loadingMore}
+                  color="lightBlue"
+                  filled
+                />
+              )}
               <div
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '15rem'
-                }}
-              >
-                <h1 style={{ textAlign: 'center' }}>
-                  {username
-                    ? `Hello ${username}, be the first to post something`
-                    : 'Hi there!'}
-                </h1>
-              </div>
-            )}
-            {loaded && !loadingFeeds && feeds.length > 0 && (
-              <>
-                {feedsOutdated && (
-                  <Banner
-                    color="gold"
-                    onClick={() => window.location.reload()}
-                    style={{ marginBottom: '1rem' }}
-                  >
-                    Tap to See New Posts!
-                  </Banner>
-                )}
-                {numNewPosts > 0 && !feedsOutdated && (
-                  <Banner
-                    color="gold"
-                    onClick={handleFetchNewFeeds}
-                    style={{ marginBottom: '1rem' }}
-                  >
-                    Tap to See {numNewPosts} new Post
-                    {numNewPosts > 1 ? 's' : ''}
-                  </Banner>
-                )}
-                {feeds.map((feed, index) => (
-                  <ContentPanel
-                    key={
-                      category + subFilter + feed.contentId + feed.contentType
-                    }
-                    style={{
-                      marginBottom: '1rem',
-                      zIndex: feeds.length - index
-                    }}
-                    contentId={feed.contentId}
-                    contentType={feed.contentType}
-                    commentsLoadLimit={5}
-                    numPreviewComments={1}
-                    userId={userId}
-                  />
-                ))}
-                {loadMoreButton && (
-                  <LoadMoreButton
-                    style={{ marginBottom: '1rem' }}
-                    onClick={() => setLoadingMore(true)}
-                    loading={loadingMore}
-                    color="lightBlue"
-                    filled
-                  />
-                )}
-              </>
-            )}
-          </div>
+                className={css`
+                  display: none;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    display: block;
+                    height: 5rem;
+                  }
+                `}
+              />
+            </>
+          )}
         </div>
-      </ErrorBoundary>
-    );
-  }, [
-    feeds,
-    userId,
-    username,
-    numNewPosts,
-    category,
-    loadMoreButton,
-    loaded,
-    subFilter,
-    displayOrder,
-    loadingFeeds,
-    loadingMore,
-    feedsOutdated
-  ]);
+      </div>
+    </ErrorBoundary>
+  );
 
   async function applyFilter(filter) {
     if (filter === subFilter) return;

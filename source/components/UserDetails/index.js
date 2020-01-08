@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import StatusInput from './StatusInput';
@@ -7,7 +7,7 @@ import Icon from 'components/Icon';
 import BioEditModal from 'components/Modals/BioEditModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import request from 'axios';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import StatusMsg from './StatusMsg';
 import Bio from 'components/Texts/Bio';
 import { css } from 'emotion';
@@ -61,18 +61,28 @@ export default function UserDetails({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   useEffect(() => {
     onSetEditedStatusColor('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
   const StatusInputRef = useRef(null);
-  const statusColor =
-    (userId === profile.id
-      ? editedStatusColor || profile.statusColor
-      : profile.statusColor) || 'logoBlue';
   const { profileFirstRow, profileSecondRow, profileThirdRow } = profile;
-  const noProfile = !profileFirstRow && !profileSecondRow && !profileThirdRow;
-  const displayedStatusMsg =
-    userId === profile.id && editedStatusMsg
-      ? editedStatusMsg
-      : profile.statusMsg;
+  const statusColor = useMemo(() => {
+    return (
+      (userId === profile.id
+        ? editedStatusColor || profile.statusColor
+        : profile.statusColor) || 'logoBlue'
+    );
+  }, [editedStatusColor, profile.id, profile.statusColor, userId]);
+  const noProfile = useMemo(
+    () => !profileFirstRow && !profileSecondRow && !profileThirdRow,
+    [profileFirstRow, profileSecondRow, profileThirdRow]
+  );
+  const displayedStatusMsg = useMemo(
+    () =>
+      userId === profile.id && editedStatusMsg
+        ? editedStatusMsg
+        : profile.statusMsg,
+    [editedStatusMsg, profile.id, profile.statusMsg, userId]
+  );
 
   return (
     <ErrorBoundary

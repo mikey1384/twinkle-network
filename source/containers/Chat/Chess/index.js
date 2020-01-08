@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import FallenPieces from './FallenPieces.js';
@@ -38,7 +38,7 @@ Chess.propTypes = {
   style: PropTypes.object
 };
 
-export default function Chess({
+function Chess({
   channelId,
   chessCountdownObj,
   gameWinnerId,
@@ -74,7 +74,10 @@ export default function Chess({
   });
   const enPassantTarget = useRef({});
   const capturedPiece = useRef(null);
-  const parsedState = initialState ? JSON.parse(initialState) : undefined;
+  const parsedState = useMemo(
+    () => (initialState ? JSON.parse(initialState) : undefined),
+    [initialState]
+  );
 
   useEffect(() => {
     if (newChessState) return;
@@ -118,6 +121,7 @@ export default function Chess({
         )
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, loaded, newChessState]);
 
   useEffect(() => {
@@ -151,7 +155,7 @@ export default function Chess({
       `}
       style={{
         position: 'relative',
-        background: Color.lighterGray(),
+        background: Color.wellGray(),
         ...style
       }}
     >
@@ -164,8 +168,7 @@ export default function Chess({
             background: ${Color.white(0.9)};
             border: 1px solid ${Color.darkGray()};
             position: absolute;
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 1.7rem;
             @media (max-width: ${mobileMaxWidth}) {
               top: 0;
               left: 0.5rem;
@@ -184,29 +187,54 @@ export default function Chess({
         >
           {(spoilerOff || isCheckmate || isStalemate || isDraw) &&
             move?.number && <p>Move {move?.number}:</p>}
-          <p>{userMadeLastMove ? 'You' : opponentName}</p>
           <p>
-            {spoilerOff || isCheckmate || isStalemate || isDraw
-              ? move?.piece
-                ? `moved ${
-                    move?.piece?.type === 'king'
-                      ? `${userMadeLastMove ? 'your' : 'their'} king`
-                      : `a ${move?.piece?.type}`
-                  }`
-                : 'castled'
-              : 'made a move'}
+            <b>{userMadeLastMove ? 'You' : opponentName}</b>
           </p>
-          {(spoilerOff || isCheckmate || isStalemate || isDraw) && (
+          <p>
+            {spoilerOff ||
+            isCheckmate ||
+            isStalemate ||
+            isDraw ||
+            userMadeLastMove ? (
+              move?.piece ? (
+                <span>
+                  moved{' '}
+                  {move?.piece?.type === 'king' ? (
+                    `${userMadeLastMove ? 'your' : 'their'} king`
+                  ) : (
+                    <span>
+                      a <b>{move?.piece?.type}</b>
+                    </span>
+                  )}
+                </span>
+              ) : (
+                <b>castled</b>
+              )
+            ) : (
+              'made a move'
+            )}
+          </p>
+          {(spoilerOff ||
+            isCheckmate ||
+            isStalemate ||
+            isDraw ||
+            userMadeLastMove) && (
             <>
               {move?.piece?.type && (
                 <>
-                  <p>from {move?.from}</p>
-                  <p>to {move?.to}</p>
+                  <p>
+                    from <b>{move?.from}</b>
+                  </p>
+                  <p>
+                    to <b>{move?.to}</b>
+                  </p>
                   {parsedState?.capturedPiece && (
                     <>
                       <p>and captured</p>
                       <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
-                      <p>{parsedState?.capturedPiece}</p>
+                      <p>
+                        <b>{parsedState?.capturedPiece}</b>
+                      </p>
                     </>
                   )}
                 </>
@@ -215,6 +243,7 @@ export default function Chess({
                 <div
                   className={css`
                     margin-top: 2rem;
+                    font-weight: bold;
                     @media (max-width: ${mobileMaxWidth}) {
                       margin-top: 1rem;
                     }
@@ -308,17 +337,23 @@ export default function Chess({
               }
             `}
           >
-            {loaded && (spoilerOff || isCheckmate || isStalemate) && (
-              <FallenPieces
-                myColor={myColor}
-                {...{
-                  [myColor === 'white'
-                    ? 'whiteFallenPieces'
-                    : 'blackFallenPieces']:
-                    myColor === 'white' ? whiteFallenPieces : blackFallenPieces
-                }}
-              />
-            )}
+            {loaded &&
+              (userMadeLastMove ||
+                spoilerOff ||
+                isCheckmate ||
+                isStalemate) && (
+                <FallenPieces
+                  myColor={myColor}
+                  {...{
+                    [myColor === 'white'
+                      ? 'whiteFallenPieces'
+                      : 'blackFallenPieces']:
+                      myColor === 'white'
+                        ? whiteFallenPieces
+                        : blackFallenPieces
+                  }}
+                />
+              )}
           </div>
           <Board
             loading={!loaded || !opponentId}
@@ -359,19 +394,24 @@ export default function Chess({
                 }
               `}
             >
-              {loaded && (spoilerOff || isCheckmate || isStalemate || isDraw) && (
-                <FallenPieces
-                  myColor={myColor}
-                  {...{
-                    [myColor === 'white'
-                      ? 'blackFallenPieces'
-                      : 'whiteFallenPieces']:
-                      myColor === 'white'
-                        ? blackFallenPieces
-                        : whiteFallenPieces
-                  }}
-                />
-              )}
+              {loaded &&
+                (userMadeLastMove ||
+                  spoilerOff ||
+                  isCheckmate ||
+                  isStalemate ||
+                  isDraw) && (
+                  <FallenPieces
+                    myColor={myColor}
+                    {...{
+                      [myColor === 'white'
+                        ? 'blackFallenPieces'
+                        : 'whiteFallenPieces']:
+                        myColor === 'white'
+                          ? blackFallenPieces
+                          : whiteFallenPieces
+                    }}
+                  />
+                )}
             </div>
             {(status || gameOverMsg) && (
               <div
@@ -428,7 +468,7 @@ export default function Chess({
         </div>
       )}
       {!(isCheckmate || isStalemate || isDraw) &&
-        (((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
+        ((loaded && userMadeLastMove && !moveViewed) || !!countdownNumber) && (
           <div
             className={css`
               padding: 0.5rem 1rem;
@@ -464,7 +504,7 @@ export default function Chess({
               </>
             )}
           </div>
-        ))}
+        )}
     </div>
   );
 
@@ -803,3 +843,5 @@ export default function Chess({
     };
   }
 }
+
+export default memo(Chess);

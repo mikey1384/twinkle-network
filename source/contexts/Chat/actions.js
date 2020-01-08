@@ -1,19 +1,36 @@
 export default function ChatActions(dispatch) {
   return {
+    onChangeChannelOwner({ channelId, message, newOwner }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_OWNER',
+        channelId,
+        message,
+        newOwner
+      });
+    },
+    onChangeChannelSettings({ channelId, channelName, isClosed }) {
+      return dispatch({
+        type: 'CHANGE_CHANNEL_SETTINGS',
+        channelId,
+        channelName,
+        isClosed
+      });
+    },
     onChangeChatSubject(subject) {
       return dispatch({
         type: 'CHANGE_SUBJECT',
         subject
       });
     },
-    onSetReconnecting() {
+    onChannelLoadingDone() {
       return dispatch({
-        type: 'SET_RECONNECTING'
+        type: 'CHANNEL_LOADING_DONE'
       });
     },
-    onClearNumUnreads() {
+    onClearNumUnreads(channelId) {
       return dispatch({
-        type: 'CLEAR_NUM_UNREADS'
+        type: 'CLEAR_NUM_UNREADS',
+        channelId
       });
     },
     onClearRecentChessMessage() {
@@ -70,10 +87,12 @@ export default function ChatActions(dispatch) {
         }
       });
     },
-    onEditChannelTitle(params) {
+    onEditChannelSettings({ channelName, isClosed, channelId }) {
       return dispatch({
-        type: 'APPLY_CHANGED_CHANNEL_TITLE',
-        data: params
+        type: 'EDIT_CHANNEL_SETTINGS',
+        channelName,
+        isClosed,
+        channelId
       });
     },
     onEditMessage({ editedMessage, messageId }) {
@@ -98,6 +117,12 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'GET_NUM_UNREAD_MSGS',
         numUnreads
+      });
+    },
+    onHideAttachment(messageId) {
+      return dispatch({
+        type: 'HIDE_ATTACHMENT',
+        messageId
       });
     },
     onHideChat(channelId) {
@@ -267,21 +292,25 @@ export default function ChatActions(dispatch) {
         message
       });
     },
-    onSubmitMessage(params) {
+    onSetReconnecting() {
+      return dispatch({
+        type: 'SET_RECONNECTING'
+      });
+    },
+    onSetReplyTarget(target) {
+      return dispatch({
+        type: 'SET_REPLY_TARGET',
+        target
+      });
+    },
+    onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
         message: {
-          ...params,
+          ...message,
           timeStamp: Math.floor(Date.now() / 1000)
-        }
-      });
-    },
-    onUpdateApiServerToS3Progress({ progress, channelId, path }) {
-      return dispatch({
-        type: 'UPDATE_API_SERVER_TO_S3_PROGRESS',
-        progress,
-        channelId,
-        path
+        },
+        replyTarget
       });
     },
     onUpdateChessMoveViewTimeStamp() {
@@ -289,9 +318,9 @@ export default function ChatActions(dispatch) {
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
       });
     },
-    onUpdateClientToApiServerProgress({ progress, channelId, path }) {
+    onUpdateUploadProgress({ progress, channelId, path }) {
       return dispatch({
-        type: 'UPDATE_CLIENT_TO_API_SERVER_PROGRESS',
+        type: 'UPDATE_UPLOAD_PROGRESS',
         progress,
         channelId,
         path

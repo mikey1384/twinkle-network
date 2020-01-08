@@ -29,20 +29,32 @@ export default function Body({
   selectedTheme
 }) {
   return (
-    <div style={{ height: '100%' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div
+      className={css`
+        width: 100%;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
+        }
+      `}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%'
+        }}
+      >
         <div
           className={css`
-            width: 55rem;
+            width: 40%;
             background: #fff;
-            margin-bottom: 1rem;
             border-bottom: 1px solid ${Color.borderGray()};
             @media (max-width: ${mobileMaxWidth}) {
               width: 25rem;
             }
           `}
         />
-        <FilterBar color={selectedTheme}>
+        <FilterBar style={{ margin: 0 }} color={selectedTheme}>
           <nav
             className={
               location.pathname === `/users/${username}` ? 'active' : ''
@@ -78,7 +90,6 @@ export default function Body({
           className={css`
             width: 35rem;
             background: #fff;
-            margin-bottom: 1rem;
             border-bottom: 1px solid ${Color.borderGray()};
             @media (max-width: ${mobileMaxWidth}) {
               width: 0;
@@ -90,11 +101,11 @@ export default function Body({
         <div
           className={css`
             display: flex;
-            margin: 0 1rem;
+            margin: 1rem 1rem 0 1rem;
             width: 100%;
             justify-content: center;
             @media (max-width: ${mobileMaxWidth}) {
-              margin: 0;
+              margin-top: 1rem;
             }
           `}
         >

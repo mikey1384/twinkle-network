@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
@@ -11,7 +11,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import TouchBackend from 'react-dnd-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { isMobile, objectify } from 'helpers';
@@ -97,10 +97,15 @@ export default function EditPlaylistModal({
       setLoadMoreButton(loadMoreShown);
       setIsLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const videosToRearrange = modalVideos.filter(
-    videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
+  const videosToRearrange = useMemo(
+    () =>
+      modalVideos.filter(
+        videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
+      ),
+    [addedVideos, modalVideos, removedVideoIds]
   );
 
   return (

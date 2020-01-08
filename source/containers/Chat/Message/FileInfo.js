@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
 
 FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,
@@ -14,75 +13,107 @@ FileInfo.propTypes = {
 };
 
 export default function FileInfo({ fileName, fileType, fileSize, src }) {
-  const { profileTheme } = useMyState();
-  return useMemo(
-    () => (
-      <div
-        style={{
-          background: Color.lighterGray(),
-          padding: '1rem',
-          width: '70%',
-          borderRadius
-        }}
-      >
-        <div style={{ display: 'flex', width: '100%' }}>
-          <div>
-            {fileType === 'other' ? (
-              <Icon color={profileTheme} size="7x" icon="file" />
-            ) : (
-              <Icon color={profileTheme} size="7x" icon={`file-${fileType}`} />
-            )}
-          </div>
+  return (
+    <div
+      style={{
+        background: Color.wellGray(),
+        padding: '1rem',
+        borderRadius
+      }}
+      className={css`
+        width: 70%;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: 100%;
+        }
+      `}
+    >
+      <div style={{ display: 'flex', width: '100%' }}>
+        <div
+          className={css`
+            color: ${Color.black()};
+            cursor: pointer;
+            &:hover {
+              color: #000;
+            }
+          `}
+          onClick={() => window.open(src)}
+        >
+          <Icon
+            className={css`
+              font-size: 10rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 7rem;
+              }
+            `}
+            icon={fileType === 'other' ? 'file' : `file-${fileType}`}
+          />
+        </div>
+        <div
+          style={{
+            width: '100%',
+            marginLeft: '1rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}
+        >
           <div
             style={{
-              width: '100%',
-              marginLeft: '1rem',
-              display: 'flex',
+              displahy: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between'
+              width: '100%'
             }}
           >
-            <div
-              style={{
-                displahy: 'flex',
-                flexDirection: 'column',
-                width: '100%'
-              }}
-            >
-              <div style={{ width: '100%' }}>
-                <a
-                  style={{ fontWeight: 'bold' }}
-                  href={src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {fileName}
-                </a>
-              </div>
-              <div>{renderFileSize(fileSize)}</div>
+            <div style={{ width: '100%' }}>
+              <a
+                style={{ fontWeight: 'bold' }}
+                className={css`
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.5rem;
+                  }
+                `}
+                href={src}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {fileName}
+              </a>
             </div>
             <div
-              style={{
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-end'
-              }}
               className={css`
-                color: ${Color.darkerGray()};
-                &:hover {
-                  color: ${Color.black()};
+                font-size: 1.2rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 1rem;
                 }
               `}
-              onClick={() => window.open(src)}
             >
-              Download
+              {renderFileSize(fileSize)}
             </div>
           </div>
+          <p
+            style={{
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+            className={css`
+              color: ${Color.black()};
+              &:hover {
+                color: #000;
+              }
+              line-height: 1;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.3rem;
+              }
+            `}
+            onClick={() => window.open(src)}
+          >
+            Download
+          </p>
         </div>
       </div>
-    ),
-    [fileName, fileType, fileSize, src, profileTheme]
+    </div>
   );
 }

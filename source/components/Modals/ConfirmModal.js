@@ -4,14 +4,20 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 ConfirmModal.propTypes = {
+  modalOverModal: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   onConfirm: PropTypes.func.isRequired
 };
 
-export default function ConfirmModal({ onHide, title, onConfirm }) {
+export default function ConfirmModal({
+  modalOverModal,
+  onHide,
+  title,
+  onConfirm
+}) {
   return (
-    <Modal onHide={onHide}>
+    <Modal modalOverModal={modalOverModal} onHide={onHide}>
       <header>{title}</header>
       <main style={{ fontSize: '3rem', paddingTop: 0 }}>Are you sure?</main>
       <footer>

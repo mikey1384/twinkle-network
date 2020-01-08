@@ -4,9 +4,9 @@ import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { socket } from 'constants/io';
 
 AccountMenu.propTypes = {
-  buttonStyle: PropTypes.object,
   className: PropTypes.string,
   history: PropTypes.object.isRequired,
   style: PropTypes.object
@@ -21,71 +21,83 @@ export default function AccountMenu({ className, history, style = {} }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { loggedIn, username } = useMyState();
-  return useMemo(
-    () => (
-      <div style={style}>
-        {loggedIn ? (
-          <DropdownButton
-            className={className}
-            transparent
-            listStyle={{
-              marginTop: '0.2rem',
-              width: '13rem',
-              marginRight: '1rem'
-            }}
-            direction="left"
-            text={
-              <div
-                style={{
-                  maxWidth: '10rem',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis'
-                }}
-              >
-                {username}
-              </div>
-            }
-            shape="button"
-            icon="caret-down"
-            iconSize="lg"
-            menuProps={[
-              {
-                label: 'Profile',
-                onClick: () => history.push(`/${username}`)
-              },
-              {
-                label: 'Log out',
-                onClick: handleLogout
-              }
-            ]}
-          />
-        ) : (
-          <Button
-            className={className}
-            onClick={onOpenSigninModal}
-            style={{ marginLeft: '1rem' }}
-            color="green"
-            filled
-          >
+  const { loggedIn, username, userId, managementLevel } = useMyState();
+  const menuProps = useMemo(() => {
+    const result = [
+      {
+        label: 'Profile',
+        onClick: () => history.push(`/${username}`)
+      }
+    ];
+    if (managementLevel > 0) {
+      result.push({
+        label: 'Management',
+        onClick: () => history.push('/management')
+      });
+    }
+    result.push({
+      label: 'Log out',
+      onClick: handleLogout
+    });
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [managementLevel, username]);
+
+  return (
+    <div style={style}>
+      {loggedIn ? (
+        <DropdownButton
+          className={className}
+          transparent
+          listStyle={{
+            marginTop: '0.2rem',
+            width: '13rem',
+            marginRight: '1rem'
+          }}
+          direction="left"
+          text={
             <div
               style={{
+                maxWidth: '10rem',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis'
               }}
             >
-              Log In
+              {username}
             </div>
-          </Button>
-        )}
-      </div>
-    ),
-    [loggedIn, username]
+          }
+          shape="button"
+          icon="caret-down"
+          iconSize="lg"
+          menuProps={menuProps}
+        />
+      ) : (
+        <Button
+          className={className}
+          onClick={onOpenSigninModal}
+          style={{ marginLeft: '1rem' }}
+          color="green"
+          filled
+        >
+          <div
+            style={{
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis'
+            }}
+          >
+            Log In
+          </div>
+        </Button>
+      )}
+    </div>
   );
 
   function handleLogout() {
+    socket.emit('leave_my_notification_channel', userId);
+    socket.disconnect();
+    socket.connect();
     onLogout();
     onResetChat();
   }

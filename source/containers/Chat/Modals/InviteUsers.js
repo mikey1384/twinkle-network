@@ -37,7 +37,7 @@ export default function InviteUsersModal({
       <header>Invite people to this channel</header>
       <main>
         <TagForm
-          title="People"
+          title="Invite People"
           itemLabel="username"
           searchResults={userSearchResults}
           filter={result => !currentMembersUID.includes(result.id)}
@@ -54,6 +54,7 @@ export default function InviteUsersModal({
           )}
           searchPlaceholder="Search for people you want to chat with"
           selectedItems={selectedUsers}
+          style={{ width: '80%' }}
         />
       </main>
       <footer>
@@ -85,7 +86,10 @@ export default function InviteUsersModal({
       channelId: selectedChannelId
     });
     onInviteUsersToChannel(data);
-    onDone(selectedUsers.map(user => user.id), data.message);
+    onDone(
+      selectedUsers.map(user => user.id),
+      data.message
+    );
   }
 
   async function handleSearchUserToInvite(text) {

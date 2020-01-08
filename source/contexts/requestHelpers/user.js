@@ -3,12 +3,78 @@ import URL from 'constants/URL';
 
 export default function userRequestHelpers({ auth, handleError, token }) {
   return {
+    async addAccountType(accountType) {
+      try {
+        const { data } = await request.post(
+          `${URL}/user/accountType`,
+          { accountType },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async addModerators(newModerators) {
+      try {
+        const { data } = await request.post(
+          `${URL}/user/moderator`,
+          { newModerators },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async changeAccountType({ userId, selectedAccountType }) {
+      try {
+        const { data } = await request.put(
+          `${URL}/user/moderator`,
+          { userId, selectedAccountType },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async checkIfUserOnline(userId) {
       try {
         const {
           data: { online }
         } = await request.get(`${URL}/user/online?userId=${userId}`);
         return Promise.resolve(online);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async deleteAccountType(accountTypeLabel) {
+      try {
+        const {
+          data: { success }
+        } = await request.delete(
+          `${URL}/user/accountType?accountTypeLabel=${accountTypeLabel}`,
+          auth()
+        );
+        return Promise.resolve(success);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async editAccountType({ label, editedAccountType }) {
+      try {
+        const {
+          data: { success }
+        } = await request.put(
+          `${URL}/user/accountType`,
+          {
+            label,
+            editedAccountType
+          },
+          auth()
+        );
+        return Promise.resolve(success);
       } catch (error) {
         return handleError(error);
       }
@@ -35,6 +101,22 @@ export default function userRequestHelpers({ auth, handleError, token }) {
           `${URL}/user/session?pathname=${pathname}`,
           auth()
         );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadAccountTypes() {
+      try {
+        const { data } = await request.get(`${URL}/user/accountType`);
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadModerators() {
+      try {
+        const { data } = await request.get(`${URL}/user/moderator`);
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

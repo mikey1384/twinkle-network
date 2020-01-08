@@ -58,6 +58,7 @@ export default function Links({ location }) {
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
   return (
@@ -75,7 +76,6 @@ export default function Links({ location }) {
         }
         emptyMessage="No Uploaded Links"
         isEmpty={links.length === 0}
-        emptypMessage="No Links"
         loaded={loaded || prevLoaded.current}
         loadMore={handleLoadMoreLinks}
         loadMoreButtonShown={loadMoreLinksButtonShown}

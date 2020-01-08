@@ -3,11 +3,25 @@ import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
   return {
-    async createNewChat({ channelName, selectedUsers }) {
+    async changeChannelOwner({ channelId, newOwner }) {
+      try {
+        const {
+          data: { notificationMsg }
+        } = await request.put(
+          `${URL}/chat/owner`,
+          { channelId, newOwner },
+          auth()
+        );
+        return Promise.resolve(notificationMsg);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async createNewChat({ channelName, selectedUsers, isClosed }) {
       try {
         const { data } = await request.post(
           `${URL}/chat/channel`,
-          { channelName, selectedUsers },
+          { channelName, selectedUsers, isClosed },
           auth()
         );
         return Promise.resolve(data);
@@ -26,9 +40,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editChannelTitle(params) {
+    async editChannelSettings(params) {
       try {
-        await request.post(`${URL}/chat/title`, params, auth());
+        await request.put(`${URL}/chat/settings`, params, auth());
         return Promise.resolve();
       } catch (error) {
         return handleError(error);
@@ -67,14 +81,22 @@ export default function chatRequestHelpers({ auth, handleError }) {
         const {
           data: { numUnreads }
         } = await request.get(`${URL}/chat/numUnreads`, auth());
-        return Promise.resolve(numUnreads);
+        return Promise.resolve(Number(numUnreads));
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async hideAttachment(messageId) {
+      try {
+        await request.put(`${URL}/chat/hide/attachment`, { messageId }, auth());
+        return Promise.resolve();
       } catch (error) {
         return handleError(error);
       }
     },
     async hideChat(channelId) {
       try {
-        await request.post(`${URL}/chat/hideChat`, { channelId }, auth());
+        await request.put(`${URL}/chat/hide/chat`, { channelId }, auth());
         return Promise.resolve();
       } catch (error) {
         return handleError(error);
@@ -143,10 +165,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadMoreChannels({ currentChannelId, channelIds }) {
+    async loadMoreChannels({ currentChannelId, shownIds }) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${channelIds}`,
+          `${URL}/chat/more/channels?currentChannelId=${currentChannelId}&${shownIds
+            .map(shownId => `shownIds[]=${shownId}`)
+            .join('&')}`,
           auth()
         );
         return Promise.resolve(data);
@@ -179,11 +203,15 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async saveMessage(message) {
+    async saveMessage({ message, targetMessageId }) {
       try {
         const {
           data: { messageId }
-        } = await request.post(`${URL}/chat`, { message }, auth());
+        } = await request.post(
+          `${URL}/chat`,
+          { message, targetMessageId },
+          auth()
+        );
         return Promise.resolve(messageId);
       } catch (error) {
         return handleError(error);
@@ -252,11 +280,11 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async uploadChatSubject(content) {
+    async uploadChatSubject({ channelId, content }) {
       try {
         const { data } = await request.post(
           `${URL}/chat/chatSubject`,
-          { content },
+          { channelId, content },
           auth()
         );
         return Promise.resolve(data);
@@ -269,24 +297,33 @@ export default function chatRequestHelpers({ auth, handleError }) {
       content,
       selectedFile,
       onUploadProgress,
-      recepientId,
       path,
+      recepientId,
+      targetMessageId,
       subjectId
     }) {
       try {
-        const fileData = new FormData();
-        fileData.append('file', selectedFile, selectedFile.name);
-        fileData.append('path', path);
-        fileData.append('channelId', channelId);
-        fileData.append('recepientId', recepientId);
-        fileData.append('content', content);
-        if (subjectId) {
-          fileData.append('subjectId', subjectId);
-        }
-        const { data } = await request.post(`${URL}/chat/file`, fileData, {
-          ...auth(),
+        const { data: url } = await request.get(
+          `${URL}/chat/sign-s3?fileName=${selectedFile.name}&path=${path}`,
+          auth()
+        );
+        await request.put(url.signedRequest, selectedFile, {
           onUploadProgress
         });
+        const { data } = await request.post(
+          `${URL}/chat/file`,
+          {
+            fileName: selectedFile.name,
+            fileSize: selectedFile.size,
+            path,
+            channelId,
+            content,
+            recepientId,
+            targetMessageId,
+            subjectId
+          },
+          auth()
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

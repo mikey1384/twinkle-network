@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import Image from './Image';
-import FileIcon from './FileIcon';
+import Image from '../../Image';
+import FileIcon from '../../FileIcon';
 import Textarea from 'components/Texts/Textarea';
 import {
   addCommasToNumber,
   addEmoji,
-  getFileInfoFromFileName,
   renderFileSize
 } from 'helpers/stringHelpers';
 
-File.propTypes = {
+FileInfo.propTypes = {
   captionExceedsCharLimit: PropTypes.object,
   caption: PropTypes.string,
   fileObj: PropTypes.object.isRequired,
+  fileType: PropTypes.string,
+  imageUrl: PropTypes.string,
   onCaptionChange: PropTypes.func.isRequired
 };
 
-export default function File({
+export default function FileInfo({
   caption,
   captionExceedsCharLimit,
   fileObj,
+  fileType,
+  imageUrl,
   onCaptionChange
 }) {
-  const [fileType, setFileType] = useState(false);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (fileObj) {
       setLoading(false);
     }
-    const { fileType } = getFileInfoFromFileName(fileObj.name);
-    setFileType(fileType);
   }, [fileObj]);
 
   return loading ? (
@@ -46,7 +46,7 @@ export default function File({
       }}
     >
       <div style={{ width: '13vw', height: '13vw' }}>
-        {fileType === 'image' && <Image imageObj={fileObj} />}
+        {fileType === 'image' && <Image imageUrl={imageUrl} />}
         {fileType !== 'image' && <FileIcon fileType={fileType} />}
       </div>
       <div

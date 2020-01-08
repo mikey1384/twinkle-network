@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
@@ -38,7 +38,7 @@ export default function SelectFeaturedSubjectsModal({
   const [searchedSubjects, setSearchedSubjects] = useState([]);
   const [searchText, setSearchText] = useState('');
   const { handleSearch, searching } = useSearch({
-    onSearch: handleChallengeSearch,
+    onSearch: handleSubjectSearch,
     onClear: () => setSearchedSubjects([]),
     onSetSearchText: setSearchText
   });
@@ -61,14 +61,17 @@ export default function SelectFeaturedSubjectsModal({
       setLoadMoreButton(loadMoreShown);
       setLoaded(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const displayedSubjects = stringIsEmpty(searchText)
-    ? allSubjects
-    : searchedSubjects;
-  const displayedLoadMoreButton = stringIsEmpty(searchText)
-    ? loadMoreButton
-    : searchLoadMoreButton;
+  const displayedSubjects = useMemo(
+    () => (stringIsEmpty(searchText) ? allSubjects : searchedSubjects),
+    [allSubjects, searchText, searchedSubjects]
+  );
+  const displayedLoadMoreButton = useMemo(
+    () => (stringIsEmpty(searchText) ? loadMoreButton : searchLoadMoreButton),
+    [loadMoreButton, searchLoadMoreButton, searchText]
+  );
 
   return (
     <Modal large onHide={onHide}>
@@ -184,7 +187,7 @@ export default function SelectFeaturedSubjectsModal({
     </Modal>
   );
 
-  async function handleChallengeSearch(text) {
+  async function handleSubjectSearch(text) {
     const { loadMoreButton: loadMoreShown, results } = await searchContent({
       limit: 10,
       filter: 'subject',

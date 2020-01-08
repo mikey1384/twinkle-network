@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import ContentListItem from 'components/ContentListItem';
@@ -35,6 +35,7 @@ export default function Results({ filter, searchText }) {
       handleSearchContent();
     }
     prevFilter.current = filter;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function Results({ filter, searchText }) {
       }
       prevSearchText.current = searchText;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText]);
 
   async function handleSearchContent() {
@@ -64,8 +66,13 @@ export default function Results({ filter, searchText }) {
     onLoadSearchResults({ filter, results, loadMoreButton });
     return setSearching(false);
   }
-  const availableFilters = ['videos', 'links', 'subjects'].filter(
-    availableFilter => availableFilter !== filter
+
+  const availableFilters = useMemo(
+    () =>
+      ['videos', 'links', 'subjects'].filter(
+        availableFilter => availableFilter !== filter
+      ),
+    [filter]
   );
 
   return (

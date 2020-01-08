@@ -8,6 +8,7 @@ import { ContentContextProvider } from './Content';
 import { ExploreContextProvider } from './Explore';
 import { HomeContextProvider } from './Home';
 import { InputContextProvider } from './Input';
+import { ManagementContextProvider } from './Management';
 import { NotiContextProvider } from './Notification';
 import { ProfileContextProvider } from './Profile';
 import { ViewContextProvider } from './View';
@@ -25,6 +26,7 @@ export const initialUserState = {
   defaultSearchFilter: '',
   hideWatched: false,
   isCreator: false,
+  loaded: false,
   loadMoreButton: false,
   loggedIn: false,
   orderUsersBy: LAST_ONLINE_FILTER_LABEL,
@@ -43,37 +45,40 @@ AppContextProvider.propTypes = {
 export function AppContextProvider({ children }) {
   const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
   return (
-    <ChatContextProvider>
-      <ProfileContextProvider>
-        <ExploreContextProvider>
-          <ViewContextProvider>
-            <NotiContextProvider>
-              <HomeContextProvider>
-                <InputContextProvider>
-                  <ContentContextProvider>
-                    <AppContext.Provider
-                      value={{
-                        user: {
-                          state: userState,
-                          actions: UserActions(userDispatch)
-                        },
-                        requestHelpers: requestHelpers(handleError)
-                      }}
-                    >
-                      {children}
-                    </AppContext.Provider>
-                  </ContentContextProvider>
-                </InputContextProvider>
-              </HomeContextProvider>
-            </NotiContextProvider>
-          </ViewContextProvider>
-        </ExploreContextProvider>
-      </ProfileContextProvider>
-    </ChatContextProvider>
+    <ManagementContextProvider>
+      <ChatContextProvider>
+        <ProfileContextProvider>
+          <ExploreContextProvider>
+            <ViewContextProvider>
+              <NotiContextProvider>
+                <HomeContextProvider>
+                  <InputContextProvider>
+                    <ContentContextProvider>
+                      <AppContext.Provider
+                        value={{
+                          user: {
+                            state: userState,
+                            actions: UserActions(userDispatch)
+                          },
+                          requestHelpers: requestHelpers(handleError)
+                        }}
+                      >
+                        {children}
+                      </AppContext.Provider>
+                    </ContentContextProvider>
+                  </InputContextProvider>
+                </HomeContextProvider>
+              </NotiContextProvider>
+            </ViewContextProvider>
+          </ExploreContextProvider>
+        </ProfileContextProvider>
+      </ChatContextProvider>
+    </ManagementContextProvider>
   );
 
   function handleError(error) {
     if (error.response) {
+      console.error(error.response);
       const { status } = error.response;
       if (status === 401) {
         localStorage.removeItem('token');

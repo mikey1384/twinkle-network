@@ -1,39 +1,48 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
+import LongText from 'components/Texts/LongText';
+import ReactPlayer from 'react-player';
+import Icon from 'components/Icon';
+import URL from 'constants/URL';
 import { css } from 'emotion';
 import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
-import URL from 'constants/URL';
+import { isValidYoutubeUrl } from '../helpers/stringHelpers';
 
 const API_URL = `${URL}/content`;
 
 Embedly.propTypes = {
   contentId: PropTypes.number,
-  small: PropTypes.bool,
+  contentType: PropTypes.string,
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
-  initialThumbUrl: PropTypes.string,
   loadingHeight: PropTypes.string,
+  mobileLoadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
+  onHideAttachment: PropTypes.func,
+  small: PropTypes.bool,
   style: PropTypes.object,
-  contentType: PropTypes.string
+  userCanEditThis: PropTypes.bool
 };
 
-export default function Embedly({
+function Embedly({
   contentId,
   contentType = 'url',
   imageHeight = '100%',
   imageMobileHeight = '100%',
   imageOnly,
   loadingHeight = '100%',
+  mobileLoadingHeight = '100%',
   noLink,
+  onHideAttachment = () => {},
   small,
-  style
+  style,
+  userCanEditThis
 }) {
   const translator = {
     actualDescription:
@@ -65,19 +74,25 @@ export default function Embedly({
 
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const isYouTube = useMemo(() => {
+    return contentType === 'chat' && isValidYoutubeUrl(url);
+  }, [contentType, url]);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
-  const contentCss = css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    color: ${Color.darkerGray()};
-    position: relative;
-    overflow: hidden;
-    ${!small ? 'flex-direction: column;' : ''};
-  `;
+  const contentCss = useMemo(
+    () => css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      color: ${Color.darkerGray()};
+      position: relative;
+      overflow: hidden;
+      ${!small ? 'flex-direction: column;' : ''};
+    `,
+    [small]
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -117,6 +132,7 @@ export default function Embedly({
     return function cleanUp() {
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevUrl, url, thumbLoaded, thumbUrl]);
 
   useEffect(() => {
@@ -125,62 +141,20 @@ export default function Embedly({
         ? url
         : thumbUrl || fallbackImage
     );
-  }, [thumbUrl]);
+  }, [thumbUrl, url]);
 
-  return useMemo(
-    () => (
-      <div
-        className={css`
-          width: 100%;
-          height: 100%;
-          > a {
-            text-decoration: none;
-          }
-          h3 {
-            font-size: 1.9rem;
-          }
-          p {
-            font-size: 1.4rem;
-            margin-top: 1rem;
-          }
-          @media (max-width: ${mobileMaxWidth}) {
-            h3 {
-              font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
-            }
-            p {
-              font-size: ${contentType === 'chat' ? '1.1rem' : '1.4rem'};
-              margin-top: 1rem;
-            }
-          }
-        `}
-        style={style}
-      >
-        {noLink ? (
-          <div className={contentCss}>{renderInner()}</div>
-        ) : (
-          <a
-            className={contentCss}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={url}
-          >
-            {renderInner()}
-          </a>
-        )}
-      </div>
-    ),
-    [imageUrl, loading, thumbUrl, actualTitle, actualDescription, siteUrl]
-  );
-
-  function onImageLoadError() {
-    setImageUrl(!thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl);
-  }
-
-  function renderInner() {
+  const InnerContent = useMemo(() => {
     return (
       <>
         {!imageUrl || loading ? (
-          <Loading style={{ height: loadingHeight }} />
+          <Loading
+            className={css`
+              height: ${loadingHeight};
+              @media (max-width: ${mobileMaxWidth}) {
+                height: ${mobileLoadingHeight};
+              }
+            `}
+          />
         ) : (
           <section
             className={css`
@@ -214,18 +188,125 @@ export default function Embedly({
           <section
             className={css`
               width: 100%;
-              padding: 1rem;
               line-height: 1.5;
-              ${small ? 'margin-left: 1rem;' : ''};
-              ${small ? '' : 'margin-top: 1rem;'};
+              padding: 1rem;
+              ${contentType === 'chat' ? 'margin-bottom: 1rem;' : ''}
+              ${small ? 'margin-left: 1rem;' : ''}
+              ${small ? '' : 'margin-top: 1rem;'}
             `}
           >
             <h3>{cleanString(actualTitle || title)}</h3>
-            <p>{cleanString(actualDescription || description)}</p>
+            <div>
+              <LongText maxLines={6} noExpand>
+                {cleanString(actualDescription || description)}
+              </LongText>
+            </div>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
         )}
       </>
     );
-  }
+    function onImageLoadError() {
+      setImageUrl(
+        !thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl
+      );
+    }
+  }, [
+    actualDescription,
+    actualTitle,
+    contentType,
+    description,
+    imageHeight,
+    imageMobileHeight,
+    imageOnly,
+    imageUrl,
+    loading,
+    loadingHeight,
+    mobileLoadingHeight,
+    siteUrl,
+    small,
+    thumbUrl,
+    title
+  ]);
+
+  return (
+    <div style={{ position: 'relative', height: '100%', ...style }}>
+      {contentType === 'chat' && userCanEditThis && (
+        <Icon
+          style={{
+            position: 'absolute',
+            cursor: 'pointer',
+            zIndex: 10
+          }}
+          onClick={() => onHideAttachment()}
+          className={css`
+            right: ${isYouTube ? '1rem' : 'CALC(50% - 1rem)'};
+            color: ${Color.darkGray()};
+            font-size: 2rem;
+            &:hover {
+              color: ${Color.black()};
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              right: 1rem;
+            }
+          `}
+          icon="times"
+        />
+      )}
+      <div
+        style={{ height: '100%' }}
+        className={css`
+          width: ${contentType === 'chat' ? '50%' : '100%'};
+          position: relative;
+          display: flex;
+          @media (max-width: ${mobileMaxWidth}) {
+            width: 100%;
+          }
+        `}
+      >
+        <div
+          className={css`
+            width: 100%;
+            height: 100%;
+            > a {
+              text-decoration: none;
+            }
+            h3 {
+              font-size: ${contentType === 'chat' ? '1.4rem' : '1.9rem'};
+            }
+            p {
+              font-size: ${contentType === 'chat' ? '1.2rem' : '1.5rem'};
+              margin-top: 1rem;
+            }
+            @media (max-width: ${mobileMaxWidth}) {
+              width: ${contentType === 'chat' ? '85%' : '100%'};
+              h3 {
+                font-size: ${contentType === 'chat' ? '1.3rem' : '1.7rem'};
+              }
+              p {
+                font-size: ${contentType === 'chat' ? '1.1rem' : '1.3rem'};
+              }
+            }
+          `}
+        >
+          {noLink ? (
+            <div className={contentCss}>{InnerContent}</div>
+          ) : isYouTube ? (
+            <ReactPlayer width="50vw" height="30vw" url={url} controls />
+          ) : (
+            <a
+              className={contentCss}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={url}
+            >
+              {InnerContent}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
+
+export default memo(Embedly);

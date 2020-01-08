@@ -15,6 +15,7 @@ export function ContentContextProvider({ children }) {
     ContentReducer,
     initialContentState
   );
+
   return (
     <ContentContext.Provider
       value={{

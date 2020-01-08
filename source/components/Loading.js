@@ -21,10 +21,11 @@ export default function Loading({
       className={
         className ||
         css`
+          height: 15rem;
           width: 100%;
         `
       }
-      style={{ height: '15rem', ...style }}
+      style={style}
     >
       <div
         style={{

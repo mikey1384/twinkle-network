@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -11,10 +11,12 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useInputContext } from 'contexts';
+import { useChatContext, useInputContext } from 'contexts';
+import TargetMessagePreview from './TargetMessagePreview';
 
 ChatInput.propTypes = {
   currentChannelId: PropTypes.number.isRequired,
+  innerRef: PropTypes.object,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
@@ -25,6 +27,7 @@ ChatInput.propTypes = {
 
 export default function ChatInput({
   currentChannelId = 0,
+  innerRef,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
@@ -33,7 +36,10 @@ export default function ChatInput({
   onPlusButtonClick
 }) {
   const { profileTheme } = useMyState();
-  const TextareaRef = useRef(null);
+  const {
+    state: { replyTarget },
+    actions: { onSetReplyTarget }
+  } = useChatContext();
   const {
     state,
     actions: { onEnterComment }
@@ -43,58 +49,32 @@ export default function ChatInput({
 
   useEffect(() => {
     if (!isMobile(navigator)) {
-      TextareaRef.current.focus();
+      innerRef.current.focus();
     }
-  }, [currentChannelId]);
-  const messageExceedsCharLimit = exceedsCharLimit({
-    inputType: 'message',
-    contentType: 'chat',
-    text
-  });
+  }, [currentChannelId, innerRef]);
 
-  return useMemo(
-    () => (
-      <>
-        <div style={{ display: 'flex' }}>
-          {!!isTwoPeopleChannel && (
-            <div
-              style={{
-                margin: '0.2rem 1rem 0.2rem 0',
-                height: '100%'
-              }}
-            >
-              <Button
-                disabled={loading}
-                skeuomorphic
-                onClick={onChessButtonClick}
-                color={profileTheme}
-              >
-                <Icon size="lg" icon={['fas', 'chess']} />
-                <span style={{ marginLeft: '0.7rem' }}>Chess</span>
-              </Button>
-            </div>
-          )}
-          <Textarea
-            innerRef={TextareaRef}
-            minRows={1}
-            placeholder="Type a message..."
-            onKeyDown={onKeyDown}
-            value={text}
-            onChange={handleChange}
-            onKeyUp={event => {
-              if (event.key === ' ') {
-                onEnterComment({
-                  contentType: 'chat',
-                  contentId: currentChannelId,
-                  text: addEmoji(event.target.value)
-                });
-              }
-            }}
-            style={{
-              marginRight: '1rem',
-              ...(messageExceedsCharLimit?.style || {})
-            }}
-          />
+  const messageExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'message',
+        contentType: 'chat',
+        text
+      }),
+    [text]
+  );
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {replyTarget && (
+        <TargetMessagePreview onClose={() => onSetReplyTarget(null)} />
+      )}
+      <div style={{ display: 'flex' }}>
+        {!!isTwoPeopleChannel && (
           <div
             style={{
               margin: '0.2rem 1rem 0.2rem 0',
@@ -104,28 +84,69 @@ export default function ChatInput({
             <Button
               disabled={loading}
               skeuomorphic
-              onClick={onPlusButtonClick}
+              onClick={onChessButtonClick}
               color={profileTheme}
             >
-              <Icon size="lg" icon="plus" />
+              <Icon size="lg" icon={['fas', 'chess']} />
+              <span style={{ marginLeft: '0.7rem' }}>Chess</span>
             </Button>
           </div>
+        )}
+        <Textarea
+          innerRef={innerRef}
+          minRows={1}
+          placeholder="Type a message..."
+          onKeyDown={handleKeyDown}
+          value={text}
+          onChange={handleChange}
+          onKeyUp={event => {
+            if (event.key === ' ') {
+              onEnterComment({
+                contentType: 'chat',
+                contentId: currentChannelId,
+                text: addEmoji(event.target.value)
+              });
+            }
+          }}
+          style={{
+            marginRight: '1rem',
+            ...(messageExceedsCharLimit?.style || {})
+          }}
+        />
+        {isMobile(navigator) && !stringIsEmpty(text) && (
+          <div style={{ height: '100%', margin: '0.2rem 2rem 0.2rem 0' }}>
+            <Button
+              filled
+              disabled={loading}
+              color={profileTheme}
+              onClick={handleSendMsg}
+            >
+              <Icon size="lg" icon="paper-plane" />
+            </Button>
+          </div>
+        )}
+        <div
+          style={{
+            margin: '0.2rem 0 0.2rem 0',
+            height: '100%'
+          }}
+        >
+          <Button
+            disabled={loading}
+            skeuomorphic
+            onClick={onPlusButtonClick}
+            color={profileTheme}
+          >
+            <Icon size="lg" icon="plus" />
+          </Button>
         </div>
-      </>
-    ),
-    [
-      currentChannelId,
-      isTwoPeopleChannel,
-      loading,
-      text,
-      messageExceedsCharLimit,
-      profileTheme
-    ]
+      </div>
+    </div>
   );
 
   function handleChange(event) {
     setTimeout(() => {
-      onHeightChange(TextareaRef.current?.clientHeight);
+      onHeightChange(innerRef.current?.clientHeight);
     }, 0);
     onEnterComment({
       contentType: 'chat',
@@ -134,27 +155,32 @@ export default function ChatInput({
     });
   }
 
-  function onKeyDown(event) {
+  function handleKeyDown(event) {
     const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
     if (
       enterKeyPressed &&
+      !isMobile(navigator) &&
       !shiftKeyPressed &&
       !messageExceedsCharLimit &&
       !loading
     ) {
       event.preventDefault();
-      if (stringIsEmpty(text)) return;
-      onMessageSubmit(finalizeEmoji(text));
-      onEnterComment({
-        contentType: 'chat',
-        contentId: currentChannelId,
-        text: ''
-      });
-      event.target.value = '';
+      handleSendMsg();
     }
     if (enterKeyPressed && shiftKeyPressed) {
-      onHeightChange(TextareaRef.current?.clientHeight + 20);
+      onHeightChange(innerRef.current?.clientHeight + 20);
     }
+  }
+
+  function handleSendMsg() {
+    innerRef.current.focus();
+    if (stringIsEmpty(text)) return;
+    onMessageSubmit(finalizeEmoji(text));
+    onEnterComment({
+      contentType: 'chat',
+      contentId: currentChannelId,
+      text: ''
+    });
   }
 }

@@ -4,7 +4,7 @@ import NavButton from './NavButton';
 import Button from 'components/Button';
 import ProgressBar from 'components/ProgressBar';
 import PropTypes from 'prop-types';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import * as d3Ease from 'd3-ease';
 import { Animate } from 'react-move';
 import { Color } from 'constants/css';
@@ -89,7 +89,7 @@ export default function Carousel({
 
   useEffect(() => {
     setSlideCount(React.Children.count(children));
-  }, [React.Children.count(children)]);
+  }, [children]);
 
   return (
     <ErrorBoundary>

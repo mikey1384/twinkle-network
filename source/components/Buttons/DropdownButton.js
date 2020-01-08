@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { useOutsideClick } from 'helpers/hooks';
 import { css } from 'emotion';
 
@@ -17,7 +17,7 @@ DropdownButton.propTypes = {
   listStyle: PropTypes.object,
   menuProps: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string,
+      label: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
       onClick: PropTypes.func
     })
   ),

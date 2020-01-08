@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'components/Modal';
-import Button from 'components/Button';
+import ImageModal from '../Modals/ImageModal';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
@@ -32,32 +31,12 @@ export default function ImagePreview({ modalOverModal, src, fileName }) {
         onClick={() => setImageModalShown(true)}
       />
       {imageModalShown && (
-        <Modal
-          modalOverModal={modalOverModal}
-          large
+        <ImageModal
           onHide={() => setImageModalShown(false)}
-        >
-          <header>{fileName}</header>
-          <main>
-            <img
-              style={{ maxWidth: '100%', objectFit: 'contain' }}
-              src={src}
-              rel={fileName}
-            />
-          </main>
-          <footer>
-            <Button color="orange" onClick={() => window.open(src)}>
-              Download
-            </Button>
-            <Button
-              style={{ marginLeft: '1rem' }}
-              color="blue"
-              onClick={() => setImageModalShown(false)}
-            >
-              Close
-            </Button>
-          </footer>
-        </Modal>
+          modalOverModal={modalOverModal}
+          fileName={fileName}
+          src={src}
+        />
       )}
     </div>
   );

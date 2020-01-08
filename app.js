@@ -16,13 +16,17 @@ import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
 import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
+import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboardTeacher';
+import { faCheck } from '@fortawesome/pro-solid-svg-icons/faCheck';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
 import { faChess } from '@fortawesome/pro-solid-svg-icons/faChess';
+import { faChevronDown } from '@fortawesome/pro-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/pro-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/pro-solid-svg-icons/faChevronRight';
 import { faComment } from '@fortawesome/pro-solid-svg-icons/faComment';
 import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
+import { faCrown } from '@fortawesome/pro-solid-svg-icons/faCrown';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
 import { faFile } from '@fortawesome/pro-solid-svg-icons/faFile';
 import { faFileArchive } from '@fortawesome/pro-solid-svg-icons/faFileArchive';
@@ -33,9 +37,15 @@ import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
+import { faMinus } from '@fortawesome/pro-solid-svg-icons/faMinus';
+import { faPaperPlane } from '@fortawesome/pro-solid-svg-icons/faPaperPlane';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
 import { faPlus } from '@fortawesome/pro-solid-svg-icons/faPlus';
+import { faReply } from '@fortawesome/pro-solid-svg-icons/faReply';
 import { faSearch } from '@fortawesome/pro-solid-svg-icons/faSearch';
+import { faSchool } from '@fortawesome/pro-solid-svg-icons/faSchool';
+import { faSignOutAlt } from '@fortawesome/pro-solid-svg-icons/faSignOutAlt';
+import { faSlidersH } from '@fortawesome/pro-solid-svg-icons/faSlidersH';
 import { faSpinner } from '@fortawesome/pro-solid-svg-icons/faSpinner';
 import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
 import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
@@ -59,13 +69,17 @@ library.add(
   faCameraAlt,
   faCaretDown,
   faCertificate,
+  faChalkboardTeacher,
+  faCheck,
   faCheckCircle,
   faChess,
+  faChevronDown,
   faChevronLeft,
   faChevronRight,
   faComment,
   faCommentAlt,
   faComments,
+  faCrown,
   faFile,
   faFileArchive,
   faFileAudio,
@@ -76,9 +90,15 @@ library.add(
   faHome,
   faLink,
   faLock,
+  faMinus,
+  faPaperPlane,
   faPencilAlt,
   faPlus,
+  faReply,
+  faSchool,
   faSearch,
+  faSignOutAlt,
+  faSlidersH,
   faSpinner,
   faStar,
   faStarHalfAlt,

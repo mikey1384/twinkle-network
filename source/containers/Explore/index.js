@@ -1,21 +1,22 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router';
-import Loading from 'components/Loading';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
-import Subjects from './Subjects';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Notification from 'components/Notification';
-import MenuItems from './MenuItems';
+import SideMenu from 'components/SideMenu';
 import Search from './Search';
 import Categories from './Categories';
+import Icon from 'components/Icon';
+import { NavLink } from 'react-router-dom';
 import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { getSectionFromPathname } from 'helpers';
 import { useExploreContext } from 'contexts';
 import { useScrollToBottom } from 'helpers/hooks';
-const Videos = React.lazy(() => import('./Videos'));
-const Links = React.lazy(() => import('./Links'));
+import Videos from './Videos';
+import Links from './Links';
+import Subjects from './Subjects';
 
 Explore.propTypes = {
   history: PropTypes.object.isRequired,
@@ -81,41 +82,20 @@ export default function Explore({ history, location }) {
           }
         `}
       >
-        <MenuItems
-          className={css`
-            top: CALC(50vh - 11rem);
-            height: auto;
-            width: 19rem;
-            display: flex;
-            position: fixed;
-            justify-content: center;
-            flex-direction: column;
-            font-size: 2rem;
-            font-family: sans-serif, Arial, Helvetica;
-            > a {
-              padding: 1.5rem;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              text-align: center;
-              width: 100%;
-              justify-content: center;
-              color: ${Color.darkGray()};
-              text-decoration: none;
-            }
-            > a:hover {
-              font-weight: bold;
-              color: ${Color.black()};
-            }
-            > a.active {
-              font-weight: bold;
-              color: ${Color.black()};
-            }
-            @media (max-width: ${mobileMaxWidth}) {
-              display: none;
-            }
-          `}
-        />
+        <SideMenu>
+          <NavLink to="/subjects" activeClassName="active">
+            <Icon icon="bolt" />
+            <span style={{ marginLeft: '1.1rem' }}>Subjects</span>
+          </NavLink>
+          <NavLink to="/videos" activeClassName="active">
+            <Icon icon="film" />
+            <span style={{ marginLeft: '1.1rem' }}>Videos</span>
+          </NavLink>
+          <NavLink to="/links" activeClassName="active">
+            <Icon icon="book" />
+            <span style={{ marginLeft: '1.1rem' }}>Links</span>
+          </NavLink>
+        </SideMenu>
         <div
           className={css`
             width: CALC(100vw - 51rem - 2rem);
@@ -139,13 +119,11 @@ export default function Explore({ history, location }) {
               marginBottom: '4rem'
             }}
           />
-          <Suspense fallback={<Loading />}>
-            <Switch>
-              <Route path="/videos" component={Videos} />
-              <Route path="/links" component={Links} />
-              <Route path="/subjects" component={Subjects} />
-            </Switch>
-          </Suspense>
+          <Switch>
+            <Route path="/videos" component={Videos} />
+            <Route path="/links" component={Links} />
+            <Route path="/subjects" component={Subjects} />
+          </Switch>
           {categoriesShown && (
             <Categories
               style={{ marginTop: '3rem', marginBottom: '4rem' }}

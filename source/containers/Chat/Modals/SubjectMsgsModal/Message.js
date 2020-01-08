@@ -5,7 +5,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import FileViewer from '../../Message/FileViewer';
 import { MessageStyle } from '../../Styles';
 import { Color } from 'constants/css';
-import moment from 'moment';
+import { unix } from 'moment';
 
 Message.propTypes = {
   content: PropTypes.string,
@@ -47,7 +47,7 @@ export default function Message({
             }}
           />{' '}
           <span className={MessageStyle.timeStamp}>
-            {moment.unix(timeStamp).format('LLL')}
+            {unix(timeStamp).format('LLL')}
           </span>
         </div>
         {filePath && (

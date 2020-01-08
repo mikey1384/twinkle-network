@@ -26,6 +26,7 @@ export default function useInfiniteScroll({
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollHeight]);
 
   useEffect(() => {
@@ -44,9 +45,11 @@ export default function useInfiniteScroll({
     if (loading) {
       onLoad();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   function onScroll() {
+    clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       if (
         (document.getElementById('App').scrollHeight > scrollHeight ||
@@ -75,7 +78,7 @@ export default function useInfiniteScroll({
           onScrollToBottom();
         }
       }
-    }, 200);
+    }, 100);
   }
   return { setScrollHeight, scrollHeight };
 }

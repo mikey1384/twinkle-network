@@ -21,31 +21,34 @@ export default function MenuButtons({
   starTabActive,
   userId
 }) {
-  let currentStars =
-    stars.length > 0
-      ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
-      : 0;
-  currentStars = Math.min(currentStars, maxStars);
-  const prevRewardedStars = stars.reduce((prev, star) => {
-    if (star.rewarderId === userId) {
-      return prev + star.rewardAmount;
-    }
-    return prev;
-  }, 0);
-  const maxRewardableStars = Math.ceil(maxStars / 2);
-  const myRewardableStars = maxRewardableStars - prevRewardedStars;
-  const remainingStars = maxStars - currentStars;
+  const maxRewardableStars = useMemo(() => Math.ceil(maxStars / 2), [maxStars]);
+  const myRewardableStars = useMemo(() => {
+    const prevRewardedStars = stars.reduce((prev, star) => {
+      if (star.rewarderId === userId) {
+        return prev + star.rewardAmount;
+      }
+      return prev;
+    }, 0);
+    return maxRewardableStars - prevRewardedStars;
+  }, [maxRewardableStars, stars, userId]);
+  const remainingStars = useMemo(() => {
+    let currentStars =
+      stars.length > 0
+        ? stars.reduce((prev, star) => prev + star.rewardAmount, 0)
+        : 0;
+    currentStars = Math.min(currentStars, maxStars);
+    return maxStars - currentStars;
+  }, [maxStars, stars]);
   const multiplier = starTabActive ? 5 : 1;
-  const buttons = [];
-
-  return useMemo(() => {
+  const buttons = useMemo(() => {
+    const result = [];
     for (
       let i = 1;
       i * multiplier <=
       Math.min(remainingStars, myRewardableStars, starTabActive ? 25 : 4);
       i++
     ) {
-      buttons.push(
+      result.push(
         <Button
           key={i * multiplier}
           color={
@@ -78,7 +81,7 @@ export default function MenuButtons({
       );
     }
     if (!starTabActive && Math.min(remainingStars, myRewardableStars) >= 5) {
-      buttons.push(
+      result.push(
         <Button
           color="pink"
           key={5}
@@ -99,29 +102,32 @@ export default function MenuButtons({
         </Button>
       );
     }
-    return buttons.length > 0 ? (
-      buttons
-    ) : (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '2rem 0 2rem 0',
-          fontWeight: 'bold'
-        }}
-      >
-        Cannot reward more than {Math.min(remainingStars, myRewardableStars)}{' '}
-        Twinkle
-        {Math.min(remainingStars, myRewardableStars) > 1 ? 's' : ''}
-      </div>
-    );
+    return result;
   }, [
-    buttons,
     maxRewardableStars,
+    multiplier,
     myRewardableStars,
+    onSetRewardForm,
     remainingStars,
     selectedAmount,
     starTabActive
   ]);
+
+  return buttons.length > 0 ? (
+    buttons
+  ) : (
+    <div
+      style={{
+        textAlign: 'center',
+        padding: '2rem 0 2rem 0',
+        fontWeight: 'bold'
+      }}
+    >
+      Cannot reward more than {Math.min(remainingStars, myRewardableStars)}{' '}
+      Twinkle
+      {Math.min(remainingStars, myRewardableStars) > 1 ? 's' : ''}
+    </div>
+  );
 
   function renderStars({ numStars, starTabActive }) {
     const result = [];

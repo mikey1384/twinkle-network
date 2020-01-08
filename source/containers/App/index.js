@@ -1,12 +1,22 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import Chat from 'containers/Chat';
+import ContentPage from 'containers/ContentPage';
+import Explore from 'containers/Explore';
 import Header from './Header';
+import Home from 'containers/Home';
 import Button from 'components/Button';
-import Loading from 'components/Loading';
+import LinkPage from 'containers/LinkPage';
+import PlaylistPage from 'containers/PlaylistPage';
+import Privacy from 'containers/Privacy';
+import Redirect from 'containers/Redirect';
 import SigninModal from 'containers/Signin';
+import Management from 'containers/Management';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
+import Verify from 'containers/Verify';
+import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -22,17 +32,6 @@ import {
   useChatContext
 } from 'contexts';
 
-const Home = React.lazy(() => import('containers/Home'));
-const Privacy = React.lazy(() => import('containers/Privacy'));
-const Redirect = React.lazy(() => import('containers/Redirect'));
-const Explore = React.lazy(() => import('containers/Explore'));
-const PlaylistPage = React.lazy(() => import('containers/PlaylistPage'));
-const ContentPage = React.lazy(() => import('containers/ContentPage'));
-const VideoPage = React.lazy(() => import('containers/VideoPage'));
-const LinkPage = React.lazy(() => import('containers/LinkPage'));
-const Verify = React.lazy(() => import('containers/Verify'));
-const Chat = React.lazy(() => import('containers/Chat'));
-
 App.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object
@@ -41,7 +40,7 @@ App.propTypes = {
 function App({ location, history }) {
   const {
     user: {
-      actions: { onCloseSigninModal, onInitSession, onLogout }
+      actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
     },
     requestHelpers: { auth, initSession, uploadFileOnChat }
   } = useAppContext();
@@ -52,7 +51,7 @@ function App({ location, history }) {
       onPostUploadComplete,
       onResetChat,
       onSendFirstDirectMessage,
-      onUpdateClientToApiServerProgress
+      onUpdateUploadProgress
     }
   } = useChatContext();
   const {
@@ -82,26 +81,35 @@ function App({ location, history }) {
     if (!auth()?.headers?.authorization && !signinModalShown) {
       onLogout();
       onResetChat();
-    } else if (
-      authRef.current?.headers?.authorization !== auth()?.headers?.authorization
-    ) {
-      init();
+      onSetSessionLoaded();
+    } else {
+      if (
+        authRef.current?.headers?.authorization !==
+        auth()?.headers?.authorization
+      ) {
+        init();
+      } else {
+        onSetSessionLoaded();
+      }
     }
     authRef.current = auth();
     async function init() {
       const data = await initSession(location.pathname);
       if (mounted.current) {
         onInitContent({ contentType: 'user', contentId: data.userId, ...data });
-        if (data?.userId) onInitSession(data);
+        if (data?.userId) onInitUser(data);
       }
+      onSetSessionLoaded();
     }
-  }, [auth()?.headers?.authorization, pageVisible]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth, location.pathname, pageVisible, signinModalShown]);
 
   useEffect(() => {
     window.ga('send', 'pageview', location.pathname);
     history.listen(location => {
       window.ga('send', 'pageview', location.pathname);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   useEffect(() => {
@@ -128,143 +136,125 @@ function App({ location, history }) {
     };
   });
 
-  return useMemo(
-    () => (
-      <div
-        className={css`
-          height: CALC(100% - 4.5rem);
-          width: 100%;
-          @media (max-width: ${mobileMaxWidth}) {
-            height: 100%;
-          }
-        `}
-      >
-        {mobileMenuShown && (
-          <MobileMenu
-            location={location}
-            history={history}
-            username={username}
-            onClose={() => setMobileMenuShown(false)}
-          />
-        )}
-        {updateNoticeShown && (
-          <div
-            className={css`
-              position: fixed;
-              width: 80%;
-              left: 10%;
-              top: 2rem;
-              z-index: 100000;
-              background: ${Color.blue()};
-              color: #fff;
-              padding: 1rem;
-              text-align: center;
-              font-size: 2rem;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              @media (max-width: ${mobileMaxWidth}) {
-                width: 100%;
-                left: 0;
-              }
-            `}
-          >
-            <p>
-              The website has been updated. Click the button below to apply the
-              update.
-            </p>
-            <p style={{ fontSize: '1.3em' }}>
-              {
-                "Warning: Update is mandatory. Some features will not work properly if you don't update!"
-              }
-            </p>
-            {updateDetail && (
-              <p style={{ color: Color.gold() }}>{updateDetail}</p>
-            )}
-            <Button
-              color="gold"
-              filled
-              style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
-              onClick={() => window.location.reload()}
-            >
-              Update!
-            </Button>
-          </div>
-        )}
-        <Header
+  return (
+    <div
+      className={css`
+        height: CALC(100% - 4.5rem);
+        width: 100%;
+        @media (max-width: ${mobileMaxWidth}) {
+          height: 100%;
+        }
+      `}
+    >
+      {mobileMenuShown && (
+        <MobileMenu
+          location={location}
           history={history}
-          onMobileMenuOpen={() => setMobileMenuShown(true)}
+          username={username}
+          onClose={() => setMobileMenuShown(false)}
         />
+      )}
+      {updateNoticeShown && (
         <div
-          id="App"
           className={css`
-            margin-top: 4.5rem;
-            height: 100%;
+            position: fixed;
+            width: 80%;
+            left: 10%;
+            top: 2rem;
+            z-index: 100000;
+            background: ${Color.blue()};
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 0;
-              padding-top: 0;
-              padding-bottom: 5rem;
+              width: 100%;
+              left: 0;
             }
           `}
         >
-          <Suspense fallback={<Loading />}>
-            <Switch>
-              <Route
-                path="/users/:username"
-                render={({ history, location, match }) => (
-                  <Profile
-                    history={history}
-                    location={location}
-                    match={match}
-                  />
-                )}
-              />
-              <Route path="/comments/:contentId" component={ContentPage} />
-              <Route path="/videos/:videoId" component={VideoPage} />
-              <Route path="/videos" component={Explore} />
-              <Route path="/links/:linkId" component={LinkPage} />
-              <Route path="/links" component={Explore} />
-              <Route path="/subjects/:contentId" component={ContentPage} />
-              <Route path="/subjects" component={Explore} />
-              <Route path="/playlists" component={PlaylistPage} />
-              <Route
-                path="/chat"
-                render={() => <Chat onFileUpload={handleFileUpload} />}
-              />
-              <Route path="/verify" component={Verify} />
-              <Route path="/privacy" component={Privacy} />
-              <Route
-                exact
-                path="/"
-                render={({ history, location }) => (
-                  <Home history={history} location={location} />
-                )}
-              />
-              <Route
-                exact
-                path="/users/"
-                render={({ history, location }) => (
-                  <Home history={history} location={location} />
-                )}
-              />
-              <Route path="/:username" component={Redirect} />
-            </Switch>
-          </Suspense>
+          <p>
+            The website has been updated. Click the button below to apply the
+            update.
+          </p>
+          <p style={{ fontSize: '1.3em' }}>
+            {
+              "Warning: Update is mandatory. Some features will not work properly if you don't update!"
+            }
+          </p>
+          {updateDetail && (
+            <p style={{ color: Color.gold() }}>{updateDetail}</p>
+          )}
+          <Button
+            color="gold"
+            filled
+            style={{ marginTop: '3rem', width: '20%', alignSelf: 'center' }}
+            onClick={() => window.location.reload()}
+          >
+            Update!
+          </Button>
         </div>
-        <Suspense fallback={<Loading />}>
-          {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
-        </Suspense>
+      )}
+      <Header
+        history={history}
+        onMobileMenuOpen={() => setMobileMenuShown(true)}
+      />
+      <div
+        id="App"
+        className={css`
+          margin-top: 4.5rem;
+          height: 100%;
+          @media (max-width: ${mobileMaxWidth}) {
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 5rem;
+          }
+        `}
+      >
+        <Switch>
+          <Route
+            path="/users/:username"
+            render={({ history, location, match }) => (
+              <Profile history={history} location={location} match={match} />
+            )}
+          />
+          <Route path="/comments/:contentId" component={ContentPage} />
+          <Route path="/videos/:videoId" component={VideoPage} />
+          <Route path="/videos" component={Explore} />
+          <Route path="/links/:linkId" component={LinkPage} />
+          <Route path="/links" component={Explore} />
+          <Route path="/subjects/:contentId" component={ContentPage} />
+          <Route path="/subjects" component={Explore} />
+          <Route path="/playlists" component={PlaylistPage} />
+          <Route
+            path="/chat"
+            render={() => <Chat onFileUpload={handleFileUpload} />}
+          />
+          <Route path="/management" component={Management} />
+          <Route path="/verify" component={Verify} />
+          <Route path="/privacy" component={Privacy} />
+          <Route
+            exact
+            path="/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route
+            exact
+            path="/users/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
+          <Route path="/:username" component={Redirect} />
+        </Switch>
       </div>
-    ),
-    [
-      location,
-      mobileMenuShown,
-      pageVisible,
-      signinModalShown,
-      updateDetail,
-      updateNoticeShown,
-      username
-    ]
+      {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
+    </div>
   );
 
   async function handleFileUpload({
@@ -274,6 +264,7 @@ function App({ location, history }) {
     filePath,
     fileToUpload,
     recepientId,
+    targetMessageId,
     subjectId
   }) {
     onPostFileUploadStatus({
@@ -291,6 +282,7 @@ function App({ location, history }) {
       onUploadProgress: handleUploadProgress,
       recepientId,
       path: filePath,
+      targetMessageId,
       subjectId
     });
     if (members) {
@@ -305,7 +297,7 @@ function App({ location, history }) {
       result: !!messageId
     });
     function handleUploadProgress({ loaded, total }) {
-      onUpdateClientToApiServerProgress({
+      onUpdateUploadProgress({
         channelId,
         path: filePath,
         progress: loaded / total
@@ -314,4 +306,6 @@ function App({ location, history }) {
   }
 }
 
-export default process.env.NODE_ENV === 'development' ? hot(module)(App) : App;
+export default process.env.NODE_ENV === 'development'
+  ? hot(module)(memo(App))
+  : memo(App);

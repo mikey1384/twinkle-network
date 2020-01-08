@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import { unix } from 'moment';
 import UsernameText from 'components/Texts/UsernameText';
 import { Color } from 'constants/css';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
@@ -37,7 +37,7 @@ export default function SubjectItem({
   useEffect(() => {
     const numLines = SubjectTitleRef.current.clientHeight / subjectTitleHeight;
     setMarginBottom(`${numLines * marginHeight}rem`);
-  });
+  }, []);
 
   let buttons = [];
   if (numMsgs > 0) {
@@ -92,7 +92,7 @@ export default function SubjectItem({
             dangerouslySetInnerHTML={{ __html: content }}
           />{' '}
           {numMsgs && numMsgs > 0 && (
-            <b style={{ color: Color.blue() }}>({numMsgs})</b>
+            <b style={{ color: Color.blue() }}>{`(${numMsgs})`}</b>
           )}
           <div>
             <UsernameText
@@ -102,7 +102,7 @@ export default function SubjectItem({
                 username: username
               }}
             />{' '}
-            <small>{moment.unix(timeStamp).format('LLL')}</small>
+            <small>{unix(timeStamp).format('LLL')}</small>
           </div>
         </div>
       </div>

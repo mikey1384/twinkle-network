@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
-import { Color, mobileMaxWidth } from 'constants/css';
-import { css } from 'emotion';
+import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
+import { useAppContext, useChatContext } from 'contexts';
+import { socket } from 'constants/io';
 
 TextMessage.propTypes = {
+  attachmentHidden: PropTypes.bool,
+  channelId: PropTypes.number,
   content: PropTypes.string.isRequired,
   extractedUrl: PropTypes.string,
   isNotification: PropTypes.bool,
@@ -22,10 +25,13 @@ TextMessage.propTypes = {
   onEditDone: PropTypes.func.isRequired,
   showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
-  subjectId: PropTypes.number
+  subjectId: PropTypes.number,
+  userCanEditThis: PropTypes.bool
 };
 
 export default function TextMessage({
+  attachmentHidden,
+  channelId,
   content,
   extractedUrl,
   isNotification,
@@ -39,70 +45,77 @@ export default function TextMessage({
   onEditDone,
   subjectId,
   showSubjectMsgsModal,
-  socketConnected
+  socketConnected,
+  userCanEditThis
 }) {
+  const {
+    actions: { onHideAttachment }
+  } = useChatContext();
+  const {
+    requestHelpers: { hideAttachment }
+  } = useAppContext();
+
   return (
     <ErrorBoundary>
-      {onEdit ? (
-        <EditTextArea
-          contentId={messageId}
-          contentType="chat"
-          autoFocus
-          disabled={!socketConnected}
-          rows={2}
-          text={content}
-          onCancel={onEditCancel}
-          onEditDone={onEditDone}
-        />
-      ) : (
-        <div>
-          <div className={MessageStyle.messageWrapper}>
-            {renderPrefix()}
-            <span
-              style={{ color: isNotification ? Color.gray() : undefined }}
-              dangerouslySetInnerHTML={{
-                __html: processedStringWithURL(content)
-              }}
-            />
-          </div>
-          {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
-            <div className={MessageStyle.relatedConversationsButton}>
-              <Button
-                filled
-                color="logoBlue"
-                onClick={() => showSubjectMsgsModal({ subjectId, content })}
-              >
-                Show related conversations
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-      {extractedUrl && messageId && (
-        <div
-          style={{
-            marginTop: '1rem'
-          }}
-          className={css`
-            display: flex;
-            width: 40%;
-            height: 35vw;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 100%;
-              height: 65vw;
-            }
-          `}
-        >
-          <Embedly
+      <div>
+        {onEdit ? (
+          <EditTextArea
+            allowEmptyText
             contentId={messageId}
             contentType="chat"
-            imageHeight="25vw"
-            imageMobileHeight="60vw"
+            autoFocus
+            disabled={!socketConnected}
+            rows={2}
+            text={content}
+            onCancel={onEditCancel}
+            onEditDone={onEditDone}
           />
-        </div>
-      )}
+        ) : (
+          <div>
+            <div className={MessageStyle.messageWrapper}>
+              {renderPrefix()}
+              <span
+                style={{ color: isNotification ? Color.gray() : undefined }}
+                dangerouslySetInnerHTML={{
+                  __html: processedStringWithURL(content)
+                }}
+              />
+            </div>
+            {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
+              <div className={MessageStyle.relatedConversationsButton}>
+                <Button
+                  filled
+                  color="logoBlue"
+                  onClick={() => showSubjectMsgsModal({ subjectId, content })}
+                >
+                  Show related conversations
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+        {extractedUrl && messageId && !attachmentHidden && (
+          <Embedly
+            style={{ marginTop: '1rem' }}
+            contentId={messageId}
+            contentType="chat"
+            imageHeight="20vw"
+            imageMobileHeight="25vw"
+            loadingHeight="30vw"
+            mobileLoadingHeight="70vw"
+            onHideAttachment={handleHideAttachment}
+            userCanEditThis={userCanEditThis}
+          />
+        )}
+      </div>
     </ErrorBoundary>
   );
+
+  async function handleHideAttachment() {
+    await hideAttachment(messageId);
+    onHideAttachment(messageId);
+    socket.emit('hide_message_attachment', { channelId, messageId });
+  }
 
   function renderPrefix() {
     let prefix = '';

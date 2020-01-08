@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -12,6 +12,7 @@ import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
 import Loading from 'components/Loading';
 import { useHistory } from 'react-router-dom';
+import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -29,7 +30,7 @@ ProfilePanel.propTypes = {
   profileId: PropTypes.number
 };
 
-export default function ProfilePanel({ expandable, profileId }) {
+function ProfilePanel({ expandable, profileId }) {
   const history = useHistory();
   const {
     requestHelpers: {
@@ -106,6 +107,7 @@ export default function ProfilePanel({ expandable, profileId }) {
     youtubeUrl,
     visible
   } = profile;
+
   const {
     state: { loaded: chatLoaded },
     actions: { onInitChat, onOpenDirectMessageChannel }
@@ -128,7 +130,7 @@ export default function ProfilePanel({ expandable, profileId }) {
 
   useEffect(() => {
     mounted.current = true;
-    handleCheckIfUserOnline();
+    setTimeout(() => handleCheckIfUserOnline(), 100);
     if (!profile.loaded && !loading.current && profileId) {
       handleInitProfile();
     }
@@ -169,322 +171,307 @@ export default function ProfilePanel({ expandable, profileId }) {
     return function cleanUp() {
       mounted.current = false;
     };
-  }, [profileId, userId, profile.loaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId, userId, profile.loaded, commentsLoaded, previewLoaded]);
+
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
 
-  return useMemo(() => {
-    return (
-      <div ref={ComponentRef} key={profileId}>
-        {visible || inView ? (
+  return (
+    <div ref={ComponentRef} key={profileId}>
+      {visible || inView ? (
+        <div
+          ref={PanelRef}
+          className={css`
+            background: #fff;
+            width: 100%;
+            margin-bottom: 1rem;
+            line-height: 2.3rem;
+            font-size: 1.5rem;
+            position: relative;
+          `}
+        >
           <div
-            ref={PanelRef}
             className={css`
-              background: #fff;
-              width: 100%;
-              margin-bottom: 1rem;
-              line-height: 2.3rem;
-              font-size: 1.5rem;
-              position: relative;
+              background: ${Color[profileTheme || 'logoBlue']()};
+              min-height: 2.5rem;
+              border-top-right-radius: ${borderRadius};
+              border-top-left-radius: ${borderRadius};
+              border-bottom: none;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              @media (max-width: ${mobileMaxWidth}) {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+              }
             `}
+            style={{ padding: userType ? '0.5rem' : undefined }}
           >
-            <div
-              className={css`
-                background: ${Color[profileTheme || 'logoBlue']()};
-                min-height: 2.5rem;
-                border-top-right-radius: ${borderRadius};
-                border-top-left-radius: ${borderRadius};
-                border-bottom: none;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                @media (max-width: ${mobileMaxWidth}) {
-                  border-radius: 0;
-                  border-left: none;
-                  border-right: none;
-                }
-              `}
-              style={{ padding: userType ? '0.5rem' : undefined }}
-            >
-              {userType && (
-                <div
-                  style={{
-                    fontSize: '2.2rem',
-                    color: '#fff'
-                  }}
-                >
-                  {userType.includes('teacher') ? 'teacher' : userType}
-                </div>
-              )}
-            </div>
-            <div
-              className={css`
-                display: flex;
-                flex-direction: column;
-                padding: 1rem;
-                border: ${Color.borderGray()} 1px solid;
-                ${twinkleXP
-                  ? 'border-bottom: none;'
-                  : `
+            {userType && (
+              <div
+                style={{
+                  fontSize: '2.2rem',
+                  color: '#fff'
+                }}
+              >
+                {userType.includes('teacher') ? 'teacher' : userType}
+              </div>
+            )}
+          </div>
+          <div
+            className={css`
+              display: flex;
+              flex-direction: column;
+              padding: 1rem;
+              border: ${Color.borderGray()} 1px solid;
+              ${twinkleXP
+                ? 'border-bottom: none;'
+                : `
                   border-bottom-left-radius: ${borderRadius};
                   border-bottom-right-radius: ${borderRadius};
                 `};
-                border-top: none;
-                @media (max-width: ${mobileMaxWidth}) {
-                  border-radius: 0;
-                  border-left: none;
-                  border-right: none;
-                }
-              `}
-            >
-              {loaded ? (
+              border-top: none;
+              @media (max-width: ${mobileMaxWidth}) {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+              }
+            `}
+          >
+            {loaded ? (
+              <div
+                style={{ display: 'flex', height: '100%', marginTop: '1rem' }}
+              >
                 <div
-                  style={{ display: 'flex', height: '100%', marginTop: '1rem' }}
+                  style={{
+                    width: '20rem',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }}
                 >
                   <div
-                    style={{
-                      width: '20rem',
-                      display: 'flex',
-                      flexDirection: 'column'
-                    }}
+                    onMouseEnter={() => setMouseEnteredProfile(true)}
+                    onMouseLeave={() => setMouseEnteredProfile(false)}
                   >
-                    <div
-                      onMouseEnter={() => setMouseEnteredProfile(true)}
-                      onMouseLeave={() => setMouseEnteredProfile(false)}
+                    <Link
+                      onClick={handleReloadProfile}
+                      to={`/users/${profileName}`}
                     >
-                      <Link
-                        onClick={handleReloadProfile}
-                        to={`/users/${profileName}`}
-                      >
-                        <ProfilePic
-                          style={{
-                            width: '18rem',
-                            height: '18rem',
-                            cursor: 'pointer'
-                          }}
-                          userId={profileId}
-                          profilePicId={profilePicId}
-                          online={!!online}
-                          large
-                        />
-                      </Link>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: '1.5rem'
-                      }}
-                    >
-                      <Button
-                        color="orange"
-                        transparent
+                      <ProfilePic
                         style={{
-                          color: mouseEnteredProfile && Color.orange(),
-                          padding: '0.5rem'
+                          width: '18rem',
+                          height: '18rem',
+                          cursor: 'pointer'
                         }}
-                        onClick={() => history.push(`/users/${profileName}`)}
-                      >
-                        View Profile
-                      </Button>
-                    </div>
-                    {youtubeUrl && (
-                      <Button
-                        color="red"
-                        transparent
-                        style={{ padding: '0.5rem' }}
-                        onClick={() => window.open(youtubeUrl)}
-                      >
-                        Visit YouTube
-                      </Button>
-                    )}
-                    {website && (
-                      <Button
-                        color="blue"
-                        transparent
-                        style={{ padding: '0.5rem' }}
-                        onClick={() => window.open(website)}
-                      >
-                        Visit Website
-                      </Button>
-                    )}
+                        userId={profileId}
+                        profilePicId={profilePicId}
+                        online={!!online}
+                        statusShown
+                        large
+                      />
+                    </Link>
                   </div>
                   <div
                     style={{
-                      marginLeft: '2rem',
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      position: 'relative',
-                      width: 'CALC(100% - 19rem)'
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: '1.5rem'
                     }}
                   >
-                    <UserDetails
-                      profile={profile}
-                      removeStatusMsg={onRemoveStatusMsg}
-                      updateStatusMsg={onUpdateStatusMsg}
-                      onUpdateBio={onUpdateBio}
-                      userId={userId}
-                    />
-                    {canEdit && (
-                      <div
-                        style={{
-                          zIndex: 1,
-                          display: 'flex',
-                          flexDirection: 'column'
-                        }}
-                      >
-                        <div style={{ display: 'flex' }}>
-                          <Button
-                            transparent
-                            onClick={onChangeProfilePictureClick}
-                          >
-                            Change Pic
-                          </Button>
-                          <Button
-                            transparent
-                            onClick={() => setBioEditModalShown(true)}
-                            style={{ marginLeft: '0.5rem' }}
-                          >
-                            Edit Bio
-                          </Button>
-                          {profileId === userId &&
-                            childComments.length > 0 &&
-                            renderMessagesButton({
-                              style: { marginLeft: '0.5rem' }
-                            })}
-                        </div>
-                      </div>
-                    )}
-                    {expandable && userId !== profileId && (
-                      <div
-                        style={{
-                          marginTop: noBio ? '2rem' : '1rem',
-                          display: 'flex'
-                        }}
-                      >
-                        <Button color="green" onClick={handleTalkClick}>
-                          <Icon icon="comments" />
-                          <span style={{ marginLeft: '0.7rem' }}>Talk</span>
-                        </Button>
-                        {renderMessagesButton()}
-                      </div>
-                    )}
-                    {lastActive && !online && profileId !== userId && (
-                      <div
-                        style={{
-                          marginTop: '1rem',
-                          fontSize: '1.5rem',
-                          color: Color.gray()
-                        }}
-                      >
-                        <p>last online {timeSince(lastActive)}</p>
-                      </div>
-                    )}
-                  </div>
-                  <input
-                    ref={FileInputRef}
-                    style={{ display: 'none' }}
-                    type="file"
-                    onChange={handlePicture}
-                    accept="image/*"
-                  />
-                  {bioEditModalShown && (
-                    <BioEditModal
-                      firstLine={profileFirstRow}
-                      secondLine={profileSecondRow}
-                      thirdLine={profileThirdRow}
-                      onSubmit={handleUploadBio}
-                      onHide={() => setBioEditModalShown(false)}
-                    />
-                  )}
-                  {imageEditModalShown && (
-                    <ImageEditModal
-                      imageUri={imageUri}
-                      onHide={() => {
-                        setImageUri(undefined);
-                        setImageEditModalShown(false);
-                        setProcessing(false);
+                    <Button
+                      color="orange"
+                      transparent
+                      style={{
+                        color: mouseEnteredProfile && Color.orange(),
+                        padding: '0.5rem'
                       }}
-                      processing={processing}
-                      onConfirm={uploadImage}
-                    />
+                      onClick={() => history.push(`/users/${profileName}`)}
+                    >
+                      View Profile
+                    </Button>
+                  </div>
+                  {youtubeUrl && (
+                    <Button
+                      color="red"
+                      transparent
+                      style={{ padding: '0.5rem' }}
+                      onClick={() => window.open(youtubeUrl)}
+                    >
+                      Visit YouTube
+                    </Button>
+                  )}
+                  {website && (
+                    <Button
+                      color="blue"
+                      transparent
+                      style={{ padding: '0.5rem' }}
+                      onClick={() => window.open(website)}
+                    >
+                      Visit Website
+                    </Button>
                   )}
                 </div>
-              ) : (
-                <Loading />
-              )}
-              {loaded && (
-                <Comments
-                  comments={childComments}
-                  commentsLoadLimit={5}
-                  commentsShown={commentsShown}
-                  contentId={profileId}
-                  inputAreaInnerRef={CommentInputAreaRef}
-                  inputTypeLabel={`message to ${profileName}`}
-                  isLoading={loadingComments}
-                  loadMoreButton={commentsLoadMoreButton}
-                  noInput={profileId === userId}
-                  numPreviews={1}
-                  onAttachStar={onAttachStar}
-                  onCommentSubmit={onUploadComment}
-                  onDelete={onDeleteComment}
-                  onEditDone={onEditComment}
-                  onLikeClick={onLikeComment}
-                  onLoadMoreComments={onLoadMoreComments}
-                  onLoadMoreReplies={onLoadMoreReplies}
-                  onPreviewClick={onExpandComments}
-                  onReplySubmit={onUploadReply}
-                  onRewardCommentEdit={onEditRewardComment}
-                  parent={{ ...profile, contentType: 'user' }}
-                  style={{ marginTop: '1rem' }}
-                  userId={userId}
+                <div
+                  style={{
+                    marginLeft: '2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'relative',
+                    width: 'CALC(100% - 19rem)'
+                  }}
+                >
+                  <UserDetails
+                    profile={profile}
+                    removeStatusMsg={onRemoveStatusMsg}
+                    updateStatusMsg={onUpdateStatusMsg}
+                    onUpdateBio={onUpdateBio}
+                    userId={userId}
+                  />
+                  {canEdit && (
+                    <div
+                      style={{
+                        zIndex: 1,
+                        display: 'flex',
+                        flexDirection: 'column'
+                      }}
+                    >
+                      <div style={{ display: 'flex' }}>
+                        <Button
+                          transparent
+                          onClick={onChangeProfilePictureClick}
+                        >
+                          Change Pic
+                        </Button>
+                        <Button
+                          transparent
+                          onClick={() => setBioEditModalShown(true)}
+                          style={{ marginLeft: '0.5rem' }}
+                        >
+                          Edit Bio
+                        </Button>
+                        {profileId === userId &&
+                          childComments.length > 0 &&
+                          renderMessagesButton({
+                            style: { marginLeft: '0.5rem' }
+                          })}
+                      </div>
+                    </div>
+                  )}
+                  {expandable && userId !== profileId && (
+                    <div
+                      style={{
+                        marginTop: noBio ? '2rem' : '1rem',
+                        display: 'flex'
+                      }}
+                    >
+                      <Button color="green" onClick={handleTalkClick}>
+                        <Icon icon="comments" />
+                        <span style={{ marginLeft: '0.7rem' }}>Talk</span>
+                      </Button>
+                      {renderMessagesButton()}
+                    </div>
+                  )}
+                  {lastActive && !online && profileId !== userId && (
+                    <div
+                      style={{
+                        marginTop: '1rem',
+                        fontSize: '1.5rem',
+                        color: Color.gray()
+                      }}
+                    >
+                      <p>last online {timeSince(lastActive)}</p>
+                    </div>
+                  )}
+                </div>
+                <input
+                  ref={FileInputRef}
+                  style={{ display: 'none' }}
+                  type="file"
+                  onChange={handlePicture}
+                  accept="image/*"
                 />
-              )}
-            </div>
-            {!!twinkleXP && <RankBar profile={profile} />}
-            {alertModalShown && (
-              <AlertModal
-                title="Image is too large (limit: 5mb)"
-                content="Please select a smaller image"
-                onHide={() => setAlertModalShown(false)}
+                {bioEditModalShown && (
+                  <BioEditModal
+                    firstLine={profileFirstRow}
+                    secondLine={profileSecondRow}
+                    thirdLine={profileThirdRow}
+                    onSubmit={handleUploadBio}
+                    onHide={() => setBioEditModalShown(false)}
+                  />
+                )}
+                {imageEditModalShown && (
+                  <ImageEditModal
+                    imageUri={imageUri}
+                    onHide={() => {
+                      setImageUri(undefined);
+                      setImageEditModalShown(false);
+                      setProcessing(false);
+                    }}
+                    processing={processing}
+                    onConfirm={uploadImage}
+                  />
+                )}
+              </div>
+            ) : (
+              <Loading />
+            )}
+            {loaded && (
+              <Comments
+                comments={childComments}
+                commentsLoadLimit={5}
+                commentsShown={commentsShown}
+                contentId={profileId}
+                inputAreaInnerRef={CommentInputAreaRef}
+                inputTypeLabel={`message to ${profileName}`}
+                isLoading={loadingComments}
+                loadMoreButton={commentsLoadMoreButton}
+                noInput={profileId === userId}
+                numPreviews={1}
+                onAttachStar={onAttachStar}
+                onCommentSubmit={onUploadComment}
+                onDelete={onDeleteComment}
+                onEditDone={onEditComment}
+                onLikeClick={onLikeComment}
+                onLoadMoreComments={onLoadMoreComments}
+                onLoadMoreReplies={onLoadMoreReplies}
+                onPreviewClick={onExpandComments}
+                onReplySubmit={onUploadReply}
+                onRewardCommentEdit={onEditRewardComment}
+                parent={{ ...profile, contentType: 'user' }}
+                style={{ marginTop: '1rem' }}
+                userId={userId}
               />
             )}
           </div>
-        ) : (
-          <div
-            style={{
-              width: '100%',
-              margin: '1rem 0 1rem 0',
-              height: placeholderHeight || '20rem'
-            }}
-          />
-        )}
-      </div>
-    );
-  }, [
-    alertModalShown,
-    noBio,
-    canEdit,
-    profile,
-    chatLoaded,
-    bioEditModalShown,
-    loadingComments,
-    imageUri,
-    imageEditModalShown,
-    inView,
-    mouseEnteredProfile,
-    placeholderHeight,
-    userId,
-    visible
-  ]);
+          {!!twinkleXP && <RankBar profile={profile} />}
+          {alertModalShown && (
+            <AlertModal
+              title="Image is too large (limit: 5mb)"
+              content="Please select a smaller image"
+              onHide={() => setAlertModalShown(false)}
+            />
+          )}
+        </div>
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            margin: '1rem 0 1rem 0',
+            height: placeholderHeight || '20rem'
+          }}
+        />
+      )}
+    </div>
+  );
 
   function handlePicture(event) {
     const reader = new FileReader();
-    const maxSize = 5000;
     const file = event.target.files[0];
-    if (file.size / 1000 > maxSize) {
+    if (file.size / 1000 > MAX_PROFILE_PIC_SIZE) {
       return setAlertModalShown(true);
     }
     reader.onload = upload => {
@@ -584,3 +571,5 @@ export default function ProfilePanel({ expandable, profileId }) {
     setImageEditModalShown(false);
   }
 }
+
+export default memo(ProfilePanel);

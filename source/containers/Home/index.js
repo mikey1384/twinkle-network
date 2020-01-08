@@ -1,25 +1,24 @@
-import React, { Suspense, useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
-import Loading from 'components/Loading';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import AlertModal from 'components/Modals/AlertModal';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import ProfileWidget from 'components/ProfileWidget';
 import HomeMenuItems from 'components/HomeMenuItems';
 import Notification from 'components/Notification';
+import People from './People';
+import Stories from './Stories';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
-const People = React.lazy(() => import('./People'));
-const Stories = React.lazy(() => import('./Stories'));
 
 Home.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
-export default function Home({ history, location }) {
+function Home({ history, location }) {
   const {
     requestHelpers: { uploadProfilePic }
   } = useAppContext();
@@ -51,23 +50,21 @@ export default function Home({ history, location }) {
           />
         </div>
         <div className={Center}>
-          <Suspense fallback={<Loading />}>
-            <Switch>
-              <Route
-                path="/users"
-                render={({ history, location }) => (
-                  <People location={location} history={history} />
-                )}
-              />
-              <Route
-                exact
-                path="/"
-                render={({ location, history }) => (
-                  <Stories location={location} history={history} />
-                )}
-              />
-            </Switch>
-          </Suspense>
+          <Switch>
+            <Route
+              path="/users"
+              render={({ history, location }) => (
+                <People location={location} history={history} />
+              )}
+            />
+            <Route
+              exact
+              path="/"
+              render={({ location, history }) => (
+                <Stories location={location} history={history} />
+              )}
+            />
+          </Switch>
         </div>
         <Notification className={Right} location="home" />
         {imageEditModalShown && (
@@ -102,3 +99,5 @@ export default function Home({ history, location }) {
     setImageEditModalShown(false);
   }
 }
+
+export default memo(Home);

@@ -6,12 +6,12 @@ export default function useScrollToBottom(containerRef, threshold = 0) {
   const timerRef = useRef(null);
   const [atBottom, setAtBottom] = useState(false);
   const [scrollTop, setScrollTop] = useState(
-    document.getElementById('App').scrollTop
+    document.getElementById('App')?.scrollTop
   );
 
   useEffect(() => {
     mounted.current = true;
-    if (containerRef.current.clientHeight - scrollTop < window.innerHeight) {
+    if (containerRef?.current?.clientHeight - scrollTop < window.innerHeight) {
       setAtBottom(true);
     }
     addEvent(window, 'scroll', onScroll);
@@ -37,7 +37,7 @@ export default function useScrollToBottom(containerRef, threshold = 0) {
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-  }, []);
+  }, [containerRef, scrollTop, threshold]);
 
   return { atBottom, scrollTop };
 }

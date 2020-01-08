@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import SwitchButton from 'components/SwitchButton';
 import FilterBar from 'components/FilterBar';
-import ErrorBoundary from 'components/Wrappers/ErrorBoundary';
+import ErrorBoundary from 'components/ErrorBoundary';
 import { PropTypes } from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -52,130 +52,127 @@ export default function HomeFilter({
   useEffect(() => {
     mounted.current = true;
     setActiveTab(category);
-
     return function cleanUp() {
       mounted.current = false;
     };
   }, [category]);
-  return useMemo(
-    () => (
-      <ErrorBoundary>
-        <FilterBar
-          inverted
-          bordered
+
+  return (
+    <ErrorBoundary>
+      <FilterBar
+        inverted
+        bordered
+        style={{
+          height: '4rem',
+          fontSize: '1.6rem'
+        }}
+      >
+        {['uploads', 'challenges', 'videos'].map(elem => (
+          <nav
+            key={elem}
+            className={activeTab === elem ? 'active' : ''}
+            style={{ width: elem !== 'challenges' ? '70%' : '100%' }}
+            onClick={() => {
+              document.getElementById('App').scrollTop = 0;
+              changeCategory(elem);
+            }}
+          >
+            {categoryObj[elem].label}
+          </nav>
+        ))}
+      </FilterBar>
+      {(activeTab === 'uploads' || (category === 'videos' && userId)) && (
+        <nav
           style={{
-            height: '4rem',
-            fontSize: '1.6rem'
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            marginBottom: '1rem'
           }}
         >
-          {['uploads', 'challenges', 'videos'].map(elem => (
-            <nav
-              key={elem}
-              className={activeTab === elem ? 'active' : ''}
-              style={{ width: elem !== 'challenges' ? '70%' : '100%' }}
-              onClick={() => {
-                document.getElementById('App').scrollTop = 0;
-                changeCategory(elem);
-              }}
-            >
-              {categoryObj[elem].label}
-            </nav>
-          ))}
-        </FilterBar>
-        {(activeTab === 'uploads' || (category === 'videos' && userId)) && (
-          <nav
+          <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
-              width: '100%',
-              marginBottom: '1rem'
+              width: '100%'
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%'
-              }}
-            >
-              {category === 'uploads' && (
-                <FilterBar
-                  bordered
-                  style={{
-                    height: '5rem',
-                    fontSize: '1.6rem',
-                    marginBottom: 0
-                  }}
-                  dropdownButton={
-                    <DropdownButton
-                      skeuomorphic
-                      color="darkerGray"
-                      direction="left"
-                      icon="caret-down"
-                      text={categoryObj[category][displayOrder]}
-                      menuProps={[
-                        {
-                          label:
-                            displayOrder === 'desc'
-                              ? categoryObj[category]['asc']
-                              : categoryObj[category]['desc'],
-                          onClick: setDisplayOrder
-                        }
-                      ]}
-                    />
+            {category === 'uploads' && (
+              <FilterBar
+                bordered
+                style={{
+                  height: '5rem',
+                  fontSize: '1.6rem',
+                  marginBottom: 0
+                }}
+                dropdownButton={
+                  <DropdownButton
+                    skeuomorphic
+                    color="darkerGray"
+                    direction="left"
+                    icon="caret-down"
+                    text={categoryObj[category][displayOrder]}
+                    menuProps={[
+                      {
+                        label:
+                          displayOrder === 'desc'
+                            ? categoryObj[category]['asc']
+                            : categoryObj[category]['desc'],
+                        onClick: setDisplayOrder
+                      }
+                    ]}
+                  />
+                }
+              >
+                {['all', 'subject'].map(type => {
+                  const displayLabel =
+                    type === 'all' ? 'All Posts' : 'Subjects';
+                  return (
+                    <nav
+                      key={type}
+                      className={selectedFilter === type ? 'active' : ''}
+                      onClick={() => applyFilter(type)}
+                    >
+                      {`${displayLabel
+                        .charAt(0)
+                        .toUpperCase()}${displayLabel.slice(1)}`}
+                    </nav>
+                  );
+                })}
+              </FilterBar>
+            )}
+            {category === 'videos' && (
+              <div
+                className={css`
+                  border: 1px solid ${Color.borderGray()};
+                  @media (max-width: ${mobileMaxWidth}) {
+                    border-right: 0;
+                    border-left: 0;
                   }
-                >
-                  {['all', 'subject'].map(type => {
-                    const displayLabel =
-                      type === 'all' ? 'All Posts' : 'Subjects';
-                    return (
-                      <nav
-                        key={type}
-                        className={selectedFilter === type ? 'active' : ''}
-                        onClick={() => applyFilter(type)}
-                      >
-                        {`${displayLabel
-                          .charAt(0)
-                          .toUpperCase()}${displayLabel.slice(1)}`}
-                      </nav>
-                    );
-                  })}
-                </FilterBar>
-              )}
-              {category === 'videos' && (
-                <div
-                  className={css`
-                    border: 1px solid ${Color.borderGray()};
-                    @media (max-width: ${mobileMaxWidth}) {
-                      border-right: 0;
-                      border-left: 0;
-                    }
-                  `}
-                  style={{
-                    display: 'flex',
-                    background: '#fff',
-                    height: '100%',
-                    width: '100%',
-                    padding: '1rem',
-                    justifyContent: 'flex-end'
-                  }}
-                >
-                  {userId && (
-                    <SwitchButton
-                      checked={!!hideWatched}
-                      label="Hide Watched"
-                      onChange={handleToggleHideWatched}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          </nav>
-        )}
-      </ErrorBoundary>
-    ),
-    [activeTab, category, displayOrder, selectedFilter, hideWatched, userId]
+                `}
+                style={{
+                  display: 'flex',
+                  background: '#fff',
+                  height: '100%',
+                  width: '100%',
+                  padding: '1rem',
+                  justifyContent: 'flex-end'
+                }}
+              >
+                {userId && (
+                  <SwitchButton
+                    checked={!!hideWatched}
+                    label="Hide Watched"
+                    onChange={handleToggleHideWatched}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </nav>
+      )}
+    </ErrorBoundary>
   );
 
   async function handleToggleHideWatched() {

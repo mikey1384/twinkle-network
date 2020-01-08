@@ -10,14 +10,14 @@ export function useContentState({ contentType, contentId }) {
   return state[contentType + contentId] || {};
 }
 
-export function useInterval(callback, interval, tracked) {
+export function useInterval(callback, interval) {
   const timerRef = useRef(null);
   useEffect(() => {
     timerRef.current = setInterval(callback, interval);
     return function cleanUp() {
       clearInterval(timerRef.current);
     };
-  }, tracked);
+  }, [callback, interval]);
 }
 
 export function useLazyLoad({
@@ -32,6 +32,8 @@ export function useLazyLoad({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    clearTimeout(timerRef.current);
+    const clientHeight = PanelRef.current?.clientHeight;
     if (!prevInView.current && inView) {
       if (PanelRef.current?.clientHeight) {
         onSetPlaceholderHeight({
@@ -58,17 +60,15 @@ export function useLazyLoad({
     }
     prevInView.current = inView;
     return function onRefresh() {
-      if (inView) {
-        clearTimeout(timerRef.current);
-      }
-      if (PanelRef.current?.clientHeight) {
+      if (clientHeight) {
         onSetPlaceholderHeight({
           contentType,
           contentId,
-          height: PanelRef.current.clientHeight
+          height: clientHeight
         });
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, PanelRef.current?.clientHeight]);
 
   useEffect(() => {
@@ -80,6 +80,7 @@ export function useLazyLoad({
       });
       clearTimeout(timerRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
@@ -88,6 +89,7 @@ export function useMyState() {
     user: {
       state: {
         hideWatched,
+        loaded,
         userId,
         searchFilter,
         signinModalShown,
@@ -102,6 +104,7 @@ export function useMyState() {
   return myState.loaded
     ? {
         ...myState,
+        loaded,
         userId,
         defaultSearchFilter: searchFilter,
         hideWatched,
@@ -110,7 +113,7 @@ export function useMyState() {
         signinModalShown,
         xpThisMonth
       }
-    : { profileTheme: 'logoBlue', signinModalShown };
+    : { loaded, profileTheme: 'logoBlue', signinModalShown };
 }
 
 export function useOutsideClick(ref, callback) {
@@ -205,7 +208,9 @@ export function useScrollPosition({
       );
       onRecordScrollPosition({ section: pathname, position });
       document.getElementById('App').scrollTop = 0;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       BodyRef.current.scrollTop = 0;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 }

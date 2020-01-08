@@ -20,6 +20,7 @@ export function addTwoLetterEmoji(string) {
     .replace(/(:\) )/g, '😊 ')
     .replace(/(;\) )/g, '😉 ')
     .replace(/(XD )/g, '😆 ')
+    .replace(/(xD )/g, '😆 ')
     .replace(/(:D )/g, '😄 ')
     .replace(/(:P )/gi, '😛 ')
     .replace(/(:\( )/g, '🙁 ')
@@ -69,6 +70,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:cat\:)/gi, '🐱')
     .replace(/(\:chess\:)/gi, '♟️')
     .replace(/(\:chicken\:)/gi, '🍗')
+    .replace(/(\:christmas\:)/gi, '🎄')
     .replace(/(\:clap\:)/gi, '👏')
     .replace(/(\:colored pencil\:)/gi, '🖍️')
     .replace(/(\:computer\:)/gi, '🖥')
@@ -83,10 +85,12 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:dog\:)/gi, '🐶')
     .replace(/(\:dolphin\:)/gi, '🐬')
     .replace(/(\:elephant\:)/gi, '🐘')
+    .replace(/(\:evil\:)/gi, '😈')
     .replace(/(\:fear\:)/gi, '😱')
     .replace(/(\:fox\:)/gi, '🦊')
     .replace(/(\:friend\:)/gi, '👭')
     .replace(/(\:ghost\:)/gi, '👻')
+    .replace(/(\:good\:)/gi, '👍')
     .replace(/(\:happy\:)/gi, '😄')
     .replace(/(\:heart\:)/gi, '❤️')
     .replace(/(\:hello\:)/gi, '👋')
@@ -101,6 +105,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:money\:)/gi, '💰')
     .replace(/(\:monkey\:)/gi, '🐵')
     .replace(/(\:moo\:)/gi, '🐮')
+    .replace(/(\:nice\:)/gi, '👍')
     .replace(/(\:ok\:)/gi, '👌')
     .replace(/(\:okay\:)/gi, '👌')
     .replace(/(\:palette\:)/gi, '🎨')
@@ -113,11 +118,15 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:rabbit\:)/gi, '🐰')
     .replace(/(\:rooster\:)/gi, '🐓')
     .replace(/(\:sad\:)/gi, '😭')
+    .replace(/(\:santa\:)/gi, '🎅')
+    .replace(/(\:shrug\:)/gi, '🤷')
     .replace(/(\:smile\:)/gi, '😊')
+    .replace(/(\:snail\:)/gi, '🐌')
     .replace(/(\:spider\:)/gi, '🕷️')
     .replace(/(\:squared\:)/gi, '²')
     .replace(/(\:star\:)/gi, '⭐')
     .replace(/(\:sunglasses\:)/gi, '😎')
+    .replace(/(\:taco\:)/gi, '🌮')
     .replace(/(\:thank you\:)/gi, '🙏')
     .replace(/(\:theta\:)/gi, '⍬')
     .replace(/(\:thumbs\:)/gi, '👍')
@@ -128,6 +137,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:wave\:)/gi, '👋')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
+    .replace(/(\:zombie\:)/gi, '🧟')
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
@@ -208,6 +218,7 @@ export function fetchedVideoCodeFromURL(url) {
 }
 
 export function getFileInfoFromFileName(fileName) {
+  if (typeof fileName !== 'string') return null;
   const fileNameArray = fileName.split('.');
   const extension =
     fileNameArray[fileNameArray.length - 1]?.toLowerCase() || '';
@@ -319,12 +330,31 @@ export function processedStringWithURL(string) {
   const maxChar = 100;
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
-  const regex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?&@%_\+~#=\/()])+([A-Za-z])+(\.[A-Za-z])?)/gi;
+  const urlRegex = /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+(\.[A-Za-z])?)/gi;
+  const boldRegex = /\*([^\s*]+)\*/gi;
+  const italicRegex = /\*\*([^\s*]+)\*\*/gi;
+  const boldItalicRegex = /\*\*\*([^\s*]+)\*\*\*/gi;
+  const underlineRegex = /__([^\s*]+)__/gi;
+  const linethroughRegex = /--([^\s*]+)--/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
     .replace(/>/g, '&gt')
-    .replace(regex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
+    .replace(
+      boldItalicRegex,
+      `<span style="font-style: italic; font-weight: bold;">$1</span>`
+    )
+    .replace(italicRegex, `<span style="font-style: italic;">$1</span>`)
+    .replace(boldRegex, `<span style="font-weight: bold;">$1</span>`)
+    .replace(
+      underlineRegex,
+      `<span style="text-decoration: underline;">$1</span>`
+    )
+    .replace(
+      linethroughRegex,
+      `<span style="text-decoration: line-through;">$1</span>`
+    )
     .replace(/\r?\n/g, '<br>');
   let newString = '';
   while (tempString.length > 0) {
