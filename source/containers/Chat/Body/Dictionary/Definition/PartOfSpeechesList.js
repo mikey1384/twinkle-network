@@ -5,10 +5,11 @@ import { css } from 'emotion';
 import { borderRadius, Color } from 'constants/css';
 
 PartOfSpeechesList.propTypes = {
+  onListItemMove: PropTypes.func.isRequired,
   partOfSpeeches: PropTypes.array.isRequired
 };
 
-export default function PartOfSpeechesList({ partOfSpeeches }) {
+export default function PartOfSpeechesList({ onListItemMove, partOfSpeeches }) {
   return (
     <div
       className={css`
@@ -43,7 +44,7 @@ export default function PartOfSpeechesList({ partOfSpeeches }) {
             index={index}
             listItemId={pos}
             listItemLabel={pos}
-            onMove={() => console.log('move')}
+            onMove={onListItemMove}
           />
         );
       })}

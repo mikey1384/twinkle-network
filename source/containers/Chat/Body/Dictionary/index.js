@@ -104,6 +104,8 @@ export default function Dictionary() {
             <div
               style={{
                 display: 'flex',
+                position: 'relative',
+                paddingRight: '1rem',
                 flexDirection: 'column',
                 width: '100%',
                 height: '100%',

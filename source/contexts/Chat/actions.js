@@ -101,6 +101,15 @@ export default function ChatActions(dispatch) {
         data: { editedMessage, messageId }
       });
     },
+    onEditWord({ entryId, partOfSpeeches, definitions, word }) {
+      return dispatch({
+        type: 'EDIT_WORD',
+        entryId,
+        partOfSpeeches,
+        definitions,
+        word
+      });
+    },
     onEnterChannelWithId({ data, showOnTop }) {
       return dispatch({
         type: 'ENTER_CHANNEL',

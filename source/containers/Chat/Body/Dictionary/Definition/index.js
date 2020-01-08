@@ -5,6 +5,7 @@ import Icon from 'components/Icon';
 import EditModal from './EditModal';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
+import { useAppContext, useChatContext } from 'contexts';
 
 Definition.propTypes = {
   style: PropTypes.object,
@@ -14,17 +15,46 @@ Definition.propTypes = {
 export default function Definition({ style, wordObj }) {
   const { canEditDictionary } = useMyState();
   const {
-    nouns = [],
-    verbs = [],
-    adjectives = [],
-    prepositions = [],
-    adverbs = [],
-    pronouns = [],
-    conjunctions = [],
-    interjections = [],
-    others = [],
-    partOfSpeechOrder
+    requestHelpers: { editWord }
+  } = useAppContext();
+  const {
+    actions: { onEditWord }
+  } = useChatContext();
+  const {
+    content,
+    noun = [],
+    verb = [],
+    adjective = [],
+    preposition = [],
+    adverb = [],
+    pronoun = [],
+    conjunction = [],
+    interjection = [],
+    other = [],
+    partOfSpeechOrder = [
+      'noun',
+      'verb',
+      'adjective',
+      'preposition',
+      'adverb',
+      'pronoun',
+      'conjunction',
+      'interjection',
+      'other'
+    ],
+    notFound
   } = wordObj;
+  const posObj = {
+    noun,
+    verb,
+    adjective,
+    preposition,
+    adverb,
+    pronoun,
+    conjunction,
+    interjection,
+    other
+  };
   const [editModalShown, setEditModalShown] = useState(false);
   return (
     <div
@@ -38,57 +68,53 @@ export default function Definition({ style, wordObj }) {
         }
       `}
     >
-      {canEditDictionary && (
-        <div style={{ position: 'absolute', top: 0, right: 0 }}>
-          <Button
-            className={css`
-              opacity: 0.8;
-              &:hover {
-                opacity: 1;
-              }
-            `}
-            skeuomorphic
-            onClick={() => setEditModalShown(true)}
-          >
-            <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '0.7rem' }}>Edit</span>
-          </Button>
-        </div>
-      )}
-      {partOfSpeechOrder.map(pos =>
-        wordObj[`${pos}s`].length > 0 ? (
-          <section key={pos}>
-            <p>{pos}</p>
-            <div
-              style={{
-                width: '80%',
-                padding: '1rem',
-                height: '100%',
-                overflow: 'scroll'
-              }}
-            >
-              {wordObj[`${pos}s`].map(({ id, definition }, index) => (
-                <div key={id}>
-                  {index + 1}. {definition}
-                </div>
-              ))}
+      {notFound ? (
+        <div>Not Found</div>
+      ) : (
+        <>
+          {canEditDictionary && wordObj.id && (
+            <div style={{ position: 'absolute', top: 0, right: 0 }}>
+              <Button
+                className={css`
+                  opacity: 0.8;
+                  &:hover {
+                    opacity: 1;
+                  }
+                `}
+                skeuomorphic
+                onClick={() => setEditModalShown(true)}
+              >
+                <Icon icon="pencil-alt" />
+                <span style={{ marginLeft: '0.7rem' }}>Edit</span>
+              </Button>
             </div>
-          </section>
-        ) : null
+          )}
+          {partOfSpeechOrder.map(pos =>
+            wordObj[pos]?.length > 0 ? (
+              <section key={pos}>
+                <p>{pos}</p>
+                <div
+                  style={{
+                    width: '80%',
+                    padding: '1rem',
+                    height: '100%',
+                    overflow: 'scroll'
+                  }}
+                >
+                  {wordObj[pos].map(({ id, definition }, index) => (
+                    <div key={id}>
+                      {index + 1}. {definition}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null
+          )}
+        </>
       )}
       {editModalShown && (
         <EditModal
-          partOfSpeeches={{
-            nouns,
-            verbs,
-            adjectives,
-            prepositions,
-            adverbs,
-            pronouns,
-            conjunctions,
-            interjections,
-            others
-          }}
+          partOfSpeeches={posObj}
           partOfSpeechOrder={partOfSpeechOrder}
           onHide={() => setEditModalShown(false)}
           onSubmit={handleEditDone}
@@ -98,8 +124,27 @@ export default function Definition({ style, wordObj }) {
     </div>
   );
 
-  function handleEditDone() {
-    console.log('done');
+  async function handleEditDone({ poses, allDefinitionIds }) {
+    const definitions = [];
+    for (let key in posObj) {
+      for (let id of allDefinitionIds[key]) {
+        const [definition] = posObj[key]
+          .filter(obj => obj.id === id)
+          .map(({ definition }) => definition);
+        definitions.push({ definition, partOfSpeech: key });
+      }
+    }
+    await editWord({
+      partOfSpeeches: poses,
+      definitions,
+      word: content
+    });
+    onEditWord({
+      entryId: wordObj.id,
+      partOfSpeeches: poses,
+      definitions,
+      word: content
+    });
     setEditModalShown(false);
   }
 }

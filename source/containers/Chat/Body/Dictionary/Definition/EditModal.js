@@ -9,6 +9,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'helpers';
 import { capitalize } from 'helpers/stringHelpers';
+import { isEqual } from 'lodash';
 
 EditModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -27,6 +28,7 @@ export default function EditModal({
   partOfSpeechOrder,
   word
 }) {
+  const [poses, setPoses] = useState([]);
   const [adjectiveIds, setAdjectiveIds] = useState([]);
   const [adverbIds, setAdverbIds] = useState([]);
   const [conjunctionIds, setConjunctionIds] = useState([]);
@@ -36,7 +38,7 @@ export default function EditModal({
   const [pronounIds, setPronounIds] = useState([]);
   const [verbIds, setVerbIds] = useState([]);
   const [otherIds, setOtherIds] = useState([]);
-  const ids = useMemo(
+  const allDefinitionIds = useMemo(
     () => ({
       adjective: adjectiveIds,
       adverb: adverbIds,
@@ -77,15 +79,15 @@ export default function EditModal({
 
   const posObj = useMemo(() => {
     const result = {
-      adjectives: {},
-      adverbs: {},
-      conjunctions: {},
-      interjections: {},
-      nouns: {},
-      prepositions: {},
-      pronouns: {},
-      verbs: {},
-      others: {}
+      adjective: {},
+      adverb: {},
+      conjunction: {},
+      interjection: {},
+      noun: {},
+      preposition: {},
+      pronoun: {},
+      verb: {},
+      other: {}
     };
     for (let key in partOfSpeeches) {
       for (let partOfSpeech of partOfSpeeches[key]) {
@@ -99,40 +101,81 @@ export default function EditModal({
   }, [partOfSpeeches]);
 
   useEffect(() => {
-    setAdjectiveIds(partOfSpeeches.adjectives.map(({ id }) => id));
-  }, [partOfSpeeches.adjectives]);
+    setPoses(
+      partOfSpeechOrder.filter(pos => Object.keys(posObj[pos]).length > 0)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    setAdverbIds(partOfSpeeches.adverbs.map(({ id }) => id));
-  }, [partOfSpeeches.adverbs]);
+    setAdjectiveIds(partOfSpeeches.adjective.map(({ id }) => id));
+  }, [partOfSpeeches.adjective]);
 
   useEffect(() => {
-    setConjunctionIds(partOfSpeeches.conjunctions.map(({ id }) => id));
-  }, [partOfSpeeches.conjunctions]);
+    setAdverbIds(partOfSpeeches.adverb.map(({ id }) => id));
+  }, [partOfSpeeches.adverb]);
 
   useEffect(() => {
-    setInterjectionIds(partOfSpeeches.interjections.map(({ id }) => id));
-  }, [partOfSpeeches.interjections]);
+    setConjunctionIds(partOfSpeeches.conjunction.map(({ id }) => id));
+  }, [partOfSpeeches.conjunction]);
 
   useEffect(() => {
-    setNounIds(partOfSpeeches.nouns.map(({ id }) => id));
-  }, [partOfSpeeches.nouns]);
+    setInterjectionIds(partOfSpeeches.interjection.map(({ id }) => id));
+  }, [partOfSpeeches.interjection]);
 
   useEffect(() => {
-    setPrepositionIds(partOfSpeeches.prepositions.map(({ id }) => id));
-  }, [partOfSpeeches.prepositions]);
+    setNounIds(partOfSpeeches.noun.map(({ id }) => id));
+  }, [partOfSpeeches.noun]);
 
   useEffect(() => {
-    setPronounIds(partOfSpeeches.pronouns.map(({ id }) => id));
-  }, [partOfSpeeches.pronouns]);
+    setPrepositionIds(partOfSpeeches.preposition.map(({ id }) => id));
+  }, [partOfSpeeches.preposition]);
 
   useEffect(() => {
-    setVerbIds(partOfSpeeches.verbs.map(({ id }) => id));
-  }, [partOfSpeeches.verbs]);
+    setPronounIds(partOfSpeeches.pronoun.map(({ id }) => id));
+  }, [partOfSpeeches.pronoun]);
 
   useEffect(() => {
-    setOtherIds(partOfSpeeches.others.map(({ id }) => id));
-  }, [partOfSpeeches.others]);
+    setVerbIds(partOfSpeeches.verb.map(({ id }) => id));
+  }, [partOfSpeeches.verb]);
+
+  useEffect(() => {
+    setOtherIds(partOfSpeeches.other.map(({ id }) => id));
+  }, [partOfSpeeches.other]);
+
+  const disabled = useMemo(() => {
+    const originalPoses = partOfSpeechOrder.filter(
+      pos => Object.keys(posObj[pos]).length > 0
+    );
+    const originalIds = {
+      adjective: partOfSpeeches.adjective.map(({ id }) => id),
+      adverb: partOfSpeeches.adverb.map(({ id }) => id),
+      conjunction: partOfSpeeches.conjunction.map(({ id }) => id),
+      interjection: partOfSpeeches.interjection.map(({ id }) => id),
+      noun: partOfSpeeches.noun.map(({ id }) => id),
+      preposition: partOfSpeeches.preposition.map(({ id }) => id),
+      pronoun: partOfSpeeches.pronoun.map(({ id }) => id),
+      verb: partOfSpeeches.verb.map(({ id }) => id),
+      other: partOfSpeeches.other.map(({ id }) => id)
+    };
+    return (
+      isEqual(originalPoses, poses) && isEqual(originalIds, allDefinitionIds)
+    );
+  }, [
+    allDefinitionIds,
+    partOfSpeechOrder,
+    partOfSpeeches.adjective,
+    partOfSpeeches.adverb,
+    partOfSpeeches.conjunction,
+    partOfSpeeches.interjection,
+    partOfSpeeches.noun,
+    partOfSpeeches.other,
+    partOfSpeeches.preposition,
+    partOfSpeeches.pronoun,
+    partOfSpeeches.verb,
+    posObj,
+    poses
+  ]);
 
   return (
     <DndProvider backend={Backend}>
@@ -143,18 +186,18 @@ export default function EditModal({
             <div
               style={{ display: 'flex', flexDirection: 'column', width: '60%' }}
             >
-              {partOfSpeechOrder.map(pos => (
+              {poses.map(pos => (
                 <PartOfSpeechBlock
                   key={pos}
                   style={{ marginBottom: '1.5rem' }}
                   type={capitalize(pos)}
-                  posIds={ids[pos]}
-                  posObject={posObj[`${pos}s`]}
+                  posIds={allDefinitionIds[pos]}
+                  posObject={posObj[pos]}
                   onListItemMove={params =>
-                    handleItemsMove({
+                    handleDefinitionsMove({
                       ...params,
                       setIds: setIds[pos],
-                      ids: ids[pos]
+                      ids: allDefinitionIds[pos]
                     })
                   }
                 />
@@ -163,7 +206,10 @@ export default function EditModal({
             <div
               style={{ width: '40%', marginLeft: '1rem', marginTop: '3.5rem' }}
             >
-              <PartOfSpeechesList partOfSpeeches={partOfSpeechOrder} />
+              <PartOfSpeechesList
+                partOfSpeeches={poses}
+                onListItemMove={handlePosMove}
+              />
             </div>
           </div>
         </main>
@@ -175,7 +221,11 @@ export default function EditModal({
           >
             Cancel
           </Button>
-          <Button color="blue" onClick={onSubmit}>
+          <Button
+            color="blue"
+            disabled={disabled}
+            onClick={() => onSubmit({ poses, allDefinitionIds })}
+          >
             Done
           </Button>
         </footer>
@@ -183,12 +233,21 @@ export default function EditModal({
     </DndProvider>
   );
 
-  function handleItemsMove({ sourceId, targetId, ids, setIds }) {
+  function handleDefinitionsMove({ sourceId, targetId, ids, setIds }) {
     const newIds = [...ids];
     const sourceIndex = newIds.indexOf(sourceId);
     const targetIndex = newIds.indexOf(targetId);
     newIds.splice(sourceIndex, 1);
     newIds.splice(targetIndex, 0, sourceId);
     setIds(newIds);
+  }
+
+  function handlePosMove({ sourceId: sourcePos, targetId: targetPos }) {
+    const newPoses = [...poses];
+    const sourceIndex = newPoses.indexOf(sourcePos);
+    const targetIndex = newPoses.indexOf(targetPos);
+    newPoses.splice(sourceIndex, 1);
+    newPoses.splice(targetIndex, 0, sourcePos);
+    setPoses(newPoses);
   }
 }

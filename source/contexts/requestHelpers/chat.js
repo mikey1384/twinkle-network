@@ -60,6 +60,18 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async editWord({ partOfSpeeches, definitions, word }) {
+      try {
+        const data = await request.put(
+          `${URL}/chat/word`,
+          { partOfSpeeches, definitions, word },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async enterDictionary() {
       try {
         const data = await request.get(`${URL}/chat/dictionary`, auth());
