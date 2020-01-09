@@ -333,7 +333,6 @@ export function processedStringWithURL(string) {
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
-<<<<<<< HEAD
   const boldItalicWordRegex = /(\*\*\*[^\s]+\*\*\*)/gi;
   const boldItalicSentenceRegex = /((\*\*\*[^\*\s]){1}([^\*])+([^\*\s]\*\*\*){1})/gi;
   const boldWordRegex = /(\*[^\s*]+\*)/gi;
@@ -344,18 +343,6 @@ export function processedStringWithURL(string) {
   const underlineSentenceRegex = /((__[\S]){1}([\s\S])+([\S]__){1})/gi;
   const linethroughWordRegex = /(--[\S]+--)/gi;
   const linethroughSentenceRegex = /((--[\S]){1}([\s\S])+([\S]--){1})/gi;
-=======
-  const boldItalicWordRegex = /(\*\*\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*\*\*)/gi;
-  const boldItalicSentenceRegex = /((\*\*\*[\S]){1}([\w\W])+([\S]\*\*\*){1})/gi;
-  const boldWordRegex = /(\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*)/gi;
-  const boldSentenceRegex = /((\*[\S]){1}([\w\W])+([\S]\*){1})/gi;
-  const italicWordRegex = /(\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]+\*\*)/gi;
-  const italicSentenceRegex = /((\*\*[\S]){1}([\w\W])+([\S]\*\*){1})/gi;
-  const underlineWordRegex = /(__[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+__)/gi;
-  const underlineSentenceRegex = /((\_\_[\S]){1}([\w\W])+([\S]\_\_){1})/gi;
-  const linethroughWordRegex = /(--[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+--)/gi;
-  const linethroughSentenceRegex = /((\-\-[\S]){1}([\w\W])+([\S]\-\-){1})/gi;
->>>>>>> 38fc6cc3fff9882c07bfe882cf8fe22206d539b6
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
