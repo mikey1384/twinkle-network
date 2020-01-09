@@ -158,11 +158,11 @@ export default function Channels({
       );
     }
     if (messageSender && content) {
-      const returnContent = content.substr(0, 100);
+      const truncatedContent = content.substr(0, 100);
       return (
         <>
           <span>{`${messageSender}: `}</span>
-          <span>{returnContent}</span>
+          <span>{truncatedContent}</span>
         </>
       );
     }
