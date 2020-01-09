@@ -17,7 +17,13 @@ export default function Entry({ entry, style }) {
   const [definitionShown, setDefinitionShown] = useState(false);
   const { profileTheme } = useMyState();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', ...style }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        ...style
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div
           style={{
@@ -48,18 +54,6 @@ export default function Entry({ entry, style }) {
         </div>
       </div>
       {definitionShown && <Definition wordObj={entry} />}
-      {!definitionShown && (
-        <p style={{ fontSize: '1.7rem', marginTop: '0.5rem' }}>
-          What does <b>{entry.content}</b> mean? (you may use Korean or other
-          languages)
-        </p>
-      )}
-      {definitionShown && (
-        <p style={{ fontSize: '1.7rem' }}>
-          <b>{`Tell us what "${entry.content}" means in your own words for XP`}</b>{' '}
-          (you may use Korean or other languages)
-        </p>
-      )}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
         <Textarea
           autoFocus
@@ -67,19 +61,19 @@ export default function Entry({ entry, style }) {
           onChange={event => setUserDefinition(event.target.value)}
           onKeyUp={handleKeyUp}
           minRows={1}
-          placeholder={`Enter what ${entry.content} means...`}
+          placeholder={`Tell us what "${entry.content}" means in your own words for XP (you may use Korean or other languages)`}
         />
-        {!definitionShown && (
-          <Button
-            filled
-            color={profileTheme}
-            style={{ marginLeft: '1rem', fontSize: '1.3rem', width: '16rem' }}
-            onClick={() => setDefinitionShown(true)}
-          >
-            Use Dictionary
-          </Button>
-        )}
       </div>
+      {!definitionShown && (
+        <Button
+          filled
+          color={profileTheme}
+          style={{ marginTop: '1rem', fontSize: '1.3rem', width: '16rem' }}
+          onClick={() => setDefinitionShown(true)}
+        >
+          Use Dictionary
+        </Button>
+      )}
     </div>
   );
 

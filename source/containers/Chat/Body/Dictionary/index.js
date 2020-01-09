@@ -4,6 +4,7 @@ import Loading from 'components/Loading';
 import EntriesContainer from './EntriesContainer';
 import Definition from './Definition';
 import Icon from 'components/Icon';
+import FilterBar from 'components/FilterBar';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext, useInputContext } from 'contexts';
@@ -23,6 +24,14 @@ export default function Dictionary() {
   const text = useRef(null);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
+  const entriesContainerRef = useRef(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      entriesContainerRef.current.scrollTop = 0;
+    }, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     text.current = inputText;
@@ -63,7 +72,14 @@ export default function Dictionary() {
         flexDirection: 'column'
       }}
     >
+      <FilterBar>
+        <nav className="active" onClick={() => console.log('clicked')}>
+          Earn XP!
+        </nav>
+        <nav onClick={() => console.log('clicked')}>Activities</nav>
+      </FilterBar>
       <EntriesContainer
+        innerRef={entriesContainerRef}
         style={{
           width: '100%',
           overflow: 'scroll',
