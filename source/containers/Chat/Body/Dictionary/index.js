@@ -38,12 +38,15 @@ export default function Dictionary() {
     if (!stringIsEmpty(inputText)) {
       clearTimeout(timerRef.current);
       setLoading(true);
-      timerRef.current = setTimeout(() => changeInput(inputText), 300);
+      timerRef.current = setTimeout(() => changeInput(inputText), 1000);
     }
     async function changeInput(input) {
-      const wordObject = await lookUpWord(input);
-      if (wordObject.notFound || wordObject.content === text.current) {
-        onSetWordObj(wordObject);
+      const word = await lookUpWord(input);
+      if (
+        (!wordObj.content && word.notFound) ||
+        word.content === text.current
+      ) {
+        onSetWordObj(word);
       }
       setLoading(false);
     }
@@ -74,9 +77,9 @@ export default function Dictionary() {
     >
       <FilterBar>
         <nav className="active" onClick={() => console.log('clicked')}>
-          Earn XP!
+          Main
         </nav>
-        <nav onClick={() => console.log('clicked')}>Activities</nav>
+        <nav onClick={() => console.log('clicked')}>Activities & Rankings</nav>
       </FilterBar>
       <EntriesContainer
         innerRef={entriesContainerRef}
@@ -107,7 +110,7 @@ export default function Dictionary() {
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
-              background: Color.darkBlue(),
+              background: Color.logoBlue(),
               color: '#fff'
             }}
           >
@@ -172,7 +175,6 @@ export default function Dictionary() {
         }}
       >
         <Input
-          onHeightChange={() => console.log('height changing')}
           onSubmit={handleSubmit}
           innerRef={inputRef}
           registerButtonShown={notRegistered}

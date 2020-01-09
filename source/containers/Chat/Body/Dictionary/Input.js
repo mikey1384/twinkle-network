@@ -8,7 +8,8 @@ import {
   stringIsEmpty,
   addEmoji,
   finalizeEmoji,
-  exceedsCharLimit
+  exceedsCharLimit,
+  trimWhiteSpaces
 } from 'helpers/stringHelpers';
 import { useInputContext } from 'contexts';
 
@@ -16,14 +17,12 @@ Input.propTypes = {
   innerRef: PropTypes.object,
   loading: PropTypes.bool,
   registerButtonShown: PropTypes.bool,
-  onHeightChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 
 export default function Input({
   innerRef,
   loading,
-  onHeightChange,
   onSubmit,
   registerButtonShown
 }) {
@@ -96,30 +95,17 @@ export default function Input({
   );
 
   function handleChange(event) {
-    setTimeout(() => {
-      onHeightChange(innerRef.current?.clientHeight);
-    }, 0);
     onEnterComment({
       contentType: 'dictionary',
-      text: event.target.value
+      text: trimWhiteSpaces(event.target.value)
     });
   }
 
   function handleKeyDown(event) {
-    const shiftKeyPressed = event.shiftKey;
     const enterKeyPressed = event.keyCode === 13;
-    if (
-      enterKeyPressed &&
-      !isMobile(navigator) &&
-      !shiftKeyPressed &&
-      !messageExceedsCharLimit &&
-      !loading
-    ) {
+    if (enterKeyPressed && !messageExceedsCharLimit && !loading) {
       event.preventDefault();
       handleSendMsg();
-    }
-    if (enterKeyPressed && shiftKeyPressed) {
-      onHeightChange(innerRef.current?.clientHeight + 20);
     }
   }
 

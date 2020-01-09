@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Definition from './Definition';
 import Textarea from 'components/Texts/Textarea';
-import Button from 'components/Button';
+import FilterBar from 'components/FilterBar';
 import { addEmoji } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
 
 Entry.propTypes = {
   entry: PropTypes.object.isRequired,
@@ -13,9 +12,8 @@ Entry.propTypes = {
 };
 
 export default function Entry({ entry, style }) {
-  const [userDefinition, setUserDefinition] = useState('');
-  const [definitionShown, setDefinitionShown] = useState(false);
-  const { profileTheme } = useMyState();
+  const [commentInput, setCommentInput] = useState('');
+  const [selectedTab, setSelectedTab] = useState('comments');
   return (
     <div
       style={{
@@ -53,33 +51,40 @@ export default function Entry({ entry, style }) {
           <div style={{ marginLeft: '0.5rem' }}>{entry.username}</div>
         </div>
       </div>
-      {definitionShown && <Definition wordObj={entry} />}
+      <FilterBar
+        color="vantaBlack"
+        style={{ fontSize: '1.5rem', height: '4rem' }}
+      >
+        <nav
+          className={selectedTab === 'comments' ? 'active' : ''}
+          onClick={() => setSelectedTab('comments')}
+        >
+          Comments
+        </nav>
+        <nav
+          className={selectedTab === 'dictionary' ? 'active' : ''}
+          onClick={() => setSelectedTab('dictionary')}
+        >
+          Dictionary
+        </nav>
+      </FilterBar>
+      {selectedTab === 'dictionary' && <Definition wordObj={entry} />}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
         <Textarea
           autoFocus
-          value={userDefinition}
-          onChange={event => setUserDefinition(event.target.value)}
+          value={commentInput}
+          onChange={event => setCommentInput(event.target.value)}
           onKeyUp={handleKeyUp}
           minRows={1}
-          placeholder={`Tell us what "${entry.content}" means in your own words for XP (you may use Korean or other languages)`}
+          placeholder={`Talk about "${entry.content}"`}
         />
       </div>
-      {!definitionShown && (
-        <Button
-          filled
-          color={profileTheme}
-          style={{ marginTop: '1rem', fontSize: '1.3rem', width: '16rem' }}
-          onClick={() => setDefinitionShown(true)}
-        >
-          Use Dictionary
-        </Button>
-      )}
     </div>
   );
 
   function handleKeyUp(event) {
     if (event.key === ' ') {
-      setUserDefinition(addEmoji(event.target.value));
+      setCommentInput(addEmoji(event.target.value));
     }
   }
 }
