@@ -335,6 +335,12 @@ export default function ChatActions(dispatch) {
         wordObj
       });
     },
+    onSetWordRegisterSuccess(success) {
+      return dispatch({
+        type: 'SET_WORD_REGISTER_SUCCESS',
+        success
+      });
+    },
     onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',

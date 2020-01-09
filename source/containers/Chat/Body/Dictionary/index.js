@@ -14,10 +14,13 @@ export default function Dictionary() {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
-    state: { wordObj },
-    actions: { onSetWordObj }
+    state: { wordObj, wordRegisterSuccess },
+    actions: { onSetWordRegisterSuccess, onSetWordObj }
   } = useChatContext();
-  const { state } = useInputContext();
+  const {
+    state,
+    actions: { onEnterComment }
+  } = useInputContext();
   const inputText = state['dictionary'] || '';
   const [loading, setLoading] = useState(false);
 
@@ -95,12 +98,18 @@ export default function Dictionary() {
           width: '100%',
           height: widgetHeight,
           boxShadow:
-            stringIsEmpty(inputText) && `0 -5px 6px -3px ${Color.gray()}`,
+            !wordRegisterSuccess &&
+            stringIsEmpty(inputText) &&
+            `0 -5px 6px -3px ${Color.gray()}`,
           borderTop:
-            !stringIsEmpty(inputText) && `1px solid ${Color.borderGray()}`
+            (wordRegisterSuccess || !stringIsEmpty(inputText)) &&
+            `1px solid ${Color.borderGray()}`
         }}
       >
-        {stringIsEmpty(inputText) && (
+        {wordRegisterSuccess && stringIsEmpty(inputText) && (
+          <div>Registration Success {wordObj.content}</div>
+        )}
+        {!wordRegisterSuccess && stringIsEmpty(inputText) && (
           <div
             style={{
               padding: '1rem',
@@ -186,8 +195,12 @@ export default function Dictionary() {
   async function handleSubmit(text) {
     const { isNew, ...definitions } = wordObj;
     if (isNew) {
-      const wordObject = await registerWord({ word: text, definitions });
-      onSetWordObj(wordObject);
+      await registerWord({ word: text, definitions });
+      onSetWordRegisterSuccess(true);
+      onEnterComment({
+        contentType: 'dictionary',
+        text: ''
+      });
     }
   }
 }

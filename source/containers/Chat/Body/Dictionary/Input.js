@@ -113,9 +113,5 @@ export default function Input({
     innerRef.current.focus();
     if (stringIsEmpty(text)) return;
     onSubmit(finalizeEmoji(text));
-    onEnterComment({
-      contentType: 'dictionary',
-      text: ''
-    });
   }
 }
