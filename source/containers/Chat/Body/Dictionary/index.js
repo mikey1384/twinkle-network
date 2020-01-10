@@ -5,6 +5,7 @@ import EntriesContainer from './EntriesContainer';
 import Definition from './Definition';
 import Icon from 'components/Icon';
 import FilterBar from 'components/FilterBar';
+import WordRegisterStatus from './WordRegisterStatus';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext, useInputContext } from 'contexts';
@@ -14,8 +15,8 @@ export default function Dictionary() {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
-    state: { wordObj, wordRegisterSuccess },
-    actions: { onSetWordRegisterSuccess, onSetWordObj }
+    state: { wordObj, wordRegisterStatus },
+    actions: { onSetWordRegisterStatus, onSetWordObj }
   } = useChatContext();
   const {
     state,
@@ -47,7 +48,7 @@ export default function Dictionary() {
       const word = await lookUpWord(input);
       if (
         (!wordObj.content && word.notFound) ||
-        word.content === text.current
+        word.content.toLowerCase() === text.current.toLowerCase()
       ) {
         onSetWordObj(word);
       }
@@ -57,7 +58,7 @@ export default function Dictionary() {
   }, [inputText]);
 
   const widgetHeight = useMemo(() => {
-    return stringIsEmpty(inputText) || loading ? '15rem' : `20rem`;
+    return stringIsEmpty(inputText) || loading ? '16rem' : `20rem`;
   }, [inputText, loading]);
 
   const entriesContainerHeight = useMemo(() => {
@@ -98,18 +99,19 @@ export default function Dictionary() {
           width: '100%',
           height: widgetHeight,
           boxShadow:
-            !wordRegisterSuccess &&
+            !wordRegisterStatus &&
             stringIsEmpty(inputText) &&
             `0 -5px 6px -3px ${Color.gray()}`,
           borderTop:
-            (wordRegisterSuccess || !stringIsEmpty(inputText)) &&
+            (!!wordRegisterStatus || !stringIsEmpty(inputText)) &&
             `1px solid ${Color.borderGray()}`
         }}
       >
-        {wordRegisterSuccess && stringIsEmpty(inputText) && (
-          <div>Registration Success {wordObj.content}</div>
+        <WordRegisterStatus />
+        {stringIsEmpty(inputText) && !!wordRegisterStatus && (
+          <WordRegisterStatus />
         )}
-        {!wordRegisterSuccess && stringIsEmpty(inputText) && (
+        {!wordRegisterStatus && stringIsEmpty(inputText) && false && (
           <div
             style={{
               padding: '1rem',
@@ -163,7 +165,7 @@ export default function Dictionary() {
         <div
           style={{
             display: 'flex',
-            background: Color.brownOrange(),
+            background: Color.green(),
             color: '#fff',
             width: '100%',
             padding: '1rem',
@@ -173,7 +175,7 @@ export default function Dictionary() {
             height: '7rem'
           }}
         >
-          This word has not been registered yet. Register and earn 100 XP!
+          This word has not been registered yet. Register and earn XP!
         </div>
       )}
       <div
@@ -192,11 +194,11 @@ export default function Dictionary() {
     </div>
   );
 
-  async function handleSubmit(text) {
+  async function handleSubmit() {
     const { isNew, ...definitions } = wordObj;
     if (isNew) {
-      await registerWord({ word: text, definitions });
-      onSetWordRegisterSuccess(true);
+      await registerWord(definitions);
+      onSetWordRegisterStatus(wordObj);
       onEnterComment({
         contentType: 'dictionary',
         text: ''

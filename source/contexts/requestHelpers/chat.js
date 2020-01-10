@@ -234,14 +234,10 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async registerWord({ word, definitions }) {
+    async registerWord(definitions) {
       try {
-        const { data } = await request.post(
-          `${URL}/chat/word`,
-          { word, definitions },
-          auth()
-        );
-        return Promise.resolve(data);
+        await request.post(`${URL}/chat/word`, { definitions }, auth());
+        return Promise.resolve();
       } catch (error) {
         return handleError(error);
       }

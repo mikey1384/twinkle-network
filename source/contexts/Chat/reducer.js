@@ -729,10 +729,10 @@ export default function ChatReducer(state, action) {
         wordObj: action.wordObj
       };
     }
-    case 'SET_WORD_REGISTER_SUCCESS': {
+    case 'SET_WORD_REGISTER_STATUS': {
       return {
         ...state,
-        wordRegisterSuccess: true
+        wordRegisterStatus: action.status
       };
     }
     case 'SUBMIT_MESSAGE':

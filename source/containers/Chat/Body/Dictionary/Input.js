@@ -80,13 +80,11 @@ export default function Input({
           <div style={{ height: '100%', margin: '0.5rem 0 0.2rem 1rem' }}>
             <Button
               filled
-              style={{ width: '9rem' }}
               disabled={loading}
-              color="brownOrange"
+              color="green"
               onClick={handleSendMsg}
             >
-              <Icon icon="plus" />
-              <span style={{ marginLeft: '0.5rem' }}>100 XP</span>
+              <Icon icon="paper-plane" />
             </Button>
           </div>
         )}
