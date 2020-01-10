@@ -333,16 +333,16 @@ export function processedStringWithURL(string) {
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
-  const boldItalicWordRegex = /(\*\*\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*\*\*)/gi;
-  const boldItalicSentenceRegex = /((\*\*\*[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\+~#=\/()])+([0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]\*\*\*){1})/gi;
-  const boldWordRegex = /(\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]+\*)/gi;
-  const boldSentenceRegex = /((\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]\*){1})/gi;
-  const italicWordRegex = /(\*\*[0-9A-Za-z-.,;:?!&@%_\+~#=\/()]+\*\*)/gi;
-  const italicSentenceRegex = /((\*\*[0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!&@%_\+~#=\/()]\*\*){1})/gi;
-  const underlineWordRegex = /(__[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+__)/gi;
-  const underlineSentenceRegex = /((__[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,;:'"?!*&@%_\+~#=\/()]__){1})/gi;
-  const linethroughWordRegex = /(--[0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]+--)/gi;
-  const linethroughSentenceRegex = /((--[0-9A-Za-z-.,;'":?!*&@%_\+~#=\/()]){1}([\s0-9A-Za-z-.,'";:?!*&@%_\-\+~#=\/()])+([0-9A-Za-z-.,'";:?!*&@%_\+~#=\/()]--){1})/gi;
+  const boldItalicWordRegex = /(\*\*\*[^\s]+\*\*\*)/gi;
+  const boldItalicSentenceRegex = /((\*\*\*[^\*\s]){1}([^\*])+([^\*\s]\*\*\*){1})/gi;
+  const boldWordRegex = /(\*[^\s*]+\*)/gi;
+  const boldSentenceRegex = /((\*[^\*\s]){1}([^\*])+([^\*\s]\*){1})/gi;
+  const italicWordRegex = /(\*\*[^\s*]+\*\*)/gi;
+  const italicSentenceRegex = /((\*\*[^\*\s]){1}([^\*])+([^\*\s]\*\*){1})/gi;
+  const underlineWordRegex = /(__[\S]+__)/gi;
+  const underlineSentenceRegex = /((__[\S]){1}([\s\S])+([\S]__){1})/gi;
+  const linethroughWordRegex = /(--[\S]+--)/gi;
+  const linethroughSentenceRegex = /((--[\S]){1}([\s\S])+([\S]--){1})/gi;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
