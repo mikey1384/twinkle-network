@@ -7,7 +7,7 @@ import Banner from 'components/Banner';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Rankings from './Rankings';
 import NotiItem from './NotiItem';
-import MyRank from './MyRank';
+import MyRank from 'components/MyRank';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { notiFeedListItem } from '../Styles';

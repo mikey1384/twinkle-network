@@ -152,6 +152,16 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
+    async loadRankings() {
+      try {
+        const {
+          data: { all, top30s }
+        } = await request.get(`${URL}/user/leaderBoard`, auth());
+        return Promise.resolve({ all, top30s });
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async loadUsers({ orderBy, shownUsersIds } = {}) {
       try {
         const { data } = await request.get(

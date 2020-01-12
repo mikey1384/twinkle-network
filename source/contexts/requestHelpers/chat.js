@@ -236,8 +236,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async registerWord(definitions) {
       try {
-        await request.post(`${URL}/chat/word`, { definitions }, auth());
-        return Promise.resolve();
+        const { data } = await request.post(
+          `${URL}/chat/word`,
+          { definitions },
+          auth()
+        );
+        return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
       }

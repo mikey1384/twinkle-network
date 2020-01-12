@@ -1,14 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Input from './Input';
 import Loading from 'components/Loading';
+import ActivitiesContainer from './ActivitiesContainer';
 import EntriesContainer from './EntriesContainer';
 import Definition from './Definition';
 import Icon from 'components/Icon';
 import FilterBar from 'components/FilterBar';
 import WordRegisterStatus from './WordRegisterStatus';
-import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
-import { useAppContext, useChatContext, useInputContext } from 'contexts';
+import {
+  useAppContext,
+  useChatContext,
+  useContentContext,
+  useInputContext
+} from 'contexts';
+import { stringIsEmpty } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 
 export default function Dictionary() {
   const {
@@ -19,23 +26,20 @@ export default function Dictionary() {
     actions: { onSetWordRegisterStatus, onSetWordObj }
   } = useChatContext();
   const {
+    actions: { onChangeUserXP }
+  } = useContentContext();
+  const {
     state,
     actions: { onEnterComment }
   } = useInputContext();
+  const { userId } = useMyState();
   const inputText = state['dictionary'] || '';
+  const [activitiesTabShown, setActivitiesTabShown] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const text = useRef(null);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
-  const entriesContainerRef = useRef(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      entriesContainerRef.current.scrollTop = 0;
-    }, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     text.current = inputText;
@@ -48,7 +52,8 @@ export default function Dictionary() {
       const word = await lookUpWord(input);
       if (
         (!wordObj.content && word.notFound) ||
-        word.content.toLowerCase() === text.current.toLowerCase()
+        (word.content &&
+          word.content.toLowerCase() === text.current.toLowerCase())
       ) {
         onSetWordObj(word);
       }
@@ -61,7 +66,7 @@ export default function Dictionary() {
     return stringIsEmpty(inputText) || loading ? '16rem' : `20rem`;
   }, [inputText, loading]);
 
-  const entriesContainerHeight = useMemo(() => {
+  const containerHeight = useMemo(() => {
     return `CALC(100% - ${widgetHeight})`;
   }, [widgetHeight]);
 
@@ -80,19 +85,37 @@ export default function Dictionary() {
       }}
     >
       <FilterBar>
-        <nav className="active" onClick={() => console.log('clicked')}>
-          Main
+        <nav
+          className={activitiesTabShown ? 'active' : ''}
+          onClick={() => setActivitiesTabShown(true)}
+        >
+          Activities
         </nav>
-        <nav onClick={() => console.log('clicked')}>Activities & Rankings</nav>
+        <nav
+          className={!activitiesTabShown ? 'active' : ''}
+          onClick={() => setActivitiesTabShown(false)}
+        >
+          My Vocabs
+        </nav>
       </FilterBar>
-      <EntriesContainer
-        innerRef={entriesContainerRef}
-        style={{
-          width: '100%',
-          overflow: 'scroll',
-          height: entriesContainerHeight
-        }}
-      />
+      {activitiesTabShown && (
+        <ActivitiesContainer
+          style={{
+            width: '100%',
+            overflow: 'scroll',
+            height: containerHeight
+          }}
+        />
+      )}
+      {!activitiesTabShown && (
+        <EntriesContainer
+          style={{
+            width: '100%',
+            overflow: 'scroll',
+            height: containerHeight
+          }}
+        />
+      )}
       <div
         style={{
           zIndex: 5,
@@ -107,11 +130,10 @@ export default function Dictionary() {
             `1px solid ${Color.borderGray()}`
         }}
       >
-        <WordRegisterStatus />
         {stringIsEmpty(inputText) && !!wordRegisterStatus && (
           <WordRegisterStatus />
         )}
-        {!wordRegisterStatus && stringIsEmpty(inputText) && false && (
+        {!wordRegisterStatus && stringIsEmpty(inputText) && (
           <div
             style={{
               padding: '1rem',
@@ -121,7 +143,7 @@ export default function Dictionary() {
               justifyContent: 'center',
               alignItems: 'center',
               height: '100%',
-              background: Color.logoBlue(),
+              background: Color.black(),
               color: '#fff'
             }}
           >
@@ -197,7 +219,8 @@ export default function Dictionary() {
   async function handleSubmit() {
     const { isNew, ...definitions } = wordObj;
     if (isNew) {
-      await registerWord(definitions);
+      const { xp, rank } = await registerWord(definitions);
+      onChangeUserXP({ xp, rank, userId });
       onSetWordRegisterStatus(wordObj);
       onEnterComment({
         contentType: 'dictionary',

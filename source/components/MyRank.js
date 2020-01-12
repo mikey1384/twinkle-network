@@ -7,10 +7,11 @@ import { css } from 'emotion';
 MyRank.propTypes = {
   myId: PropTypes.number,
   rank: PropTypes.number,
+  style: PropTypes.object,
   twinkleXP: PropTypes.number
 };
 
-export default function MyRank({ myId, rank, twinkleXP }) {
+export default function MyRank({ myId, rank, style, twinkleXP }) {
   const rankedColor = useMemo(
     () =>
       rank === 1
@@ -33,7 +34,8 @@ export default function MyRank({ myId, rank, twinkleXP }) {
               ? Color.black()
               : '#fff'
             : '#fff'
-          : null
+          : null,
+        ...style
       }}
       className={css`
         width: 100%;
@@ -58,7 +60,7 @@ export default function MyRank({ myId, rank, twinkleXP }) {
           <span
             style={{
               color: rankedColor || Color.logoGreen(),
-              fontSize: '3rem'
+              fontSize: twinkleXP > 1000000 ? '2.8rem' : '3rem'
             }}
           >
             {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
@@ -66,7 +68,7 @@ export default function MyRank({ myId, rank, twinkleXP }) {
           <span
             style={{
               color: rankedColor || Color.gold(),
-              fontSize: '3rem'
+              fontSize: twinkleXP > 1000000 ? '2.8rem' : '3rem'
             }}
           >
             XP
@@ -77,7 +79,7 @@ export default function MyRank({ myId, rank, twinkleXP }) {
               color:
                 rankedColor ||
                 (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray()),
-              fontSize: '2rem'
+              fontSize: twinkleXP > 1000000 ? '1.7rem' : '2rem'
             }}
           >
             {rank ? `Rank #${rank}` : 'Unranked'}

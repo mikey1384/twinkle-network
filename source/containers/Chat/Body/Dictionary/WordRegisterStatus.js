@@ -9,54 +9,44 @@ const rewardHash = {
   1: {
     label: 'basic',
     rewardAmount: 100,
-    color: 'logoBlue',
-    background: 'white'
+    color: 'logoBlue'
   },
   2: {
     label: 'elementary',
     rewardAmount: 200,
-    color: 'pink',
-    background: 'white'
+    color: 'pink'
   },
   3: {
     label: 'intermediate',
-    rewardAmount: 300,
-    color: 'orange',
-    background: 'white'
+    rewardAmount: 500,
+    color: 'orange'
   },
   4: {
     label: 'advanced',
-    rewardAmount: 1000,
-    color: 'brownOrange',
-    background: 'darkBlue'
+    rewardAmount: 5000,
+    color: 'red'
   },
   5: {
-    label: 'super advanced',
-    rewardAmount: 5000,
-    color: 'gold',
-    background: 'white'
-  },
-  6: {
     label: 'epic',
     rewardAmount: 10000,
-    color: 'purple',
-    background: 'white'
+    color: 'gold'
   }
 };
 
 export default function WordRegisterStatus() {
   const {
-    state: { wordRegisterStatus: { frequency = 3, content = 'instigate' } = {} }
+    state: { wordRegisterStatus: { frequency, content } = {} }
   } = useChatContext();
 
   const wordLevel = useMemo(() => {
-    if (frequency > 5) return 1;
-    if (frequency > 4.5) return 2;
-    if (frequency > 4) return 3;
-    if (frequency > 2.5) return 4;
-    if (frequency > 1.5) return 5;
-    return 6;
-  }, [frequency]);
+    if (frequency > 3.7) {
+      if (content.length < 7) return 1;
+      return 2;
+    }
+    if (frequency > 2) return 3;
+    if (frequency > 1.4) return 4;
+    return 5;
+  }, [content.length, frequency]);
 
   return (
     <div
@@ -86,14 +76,18 @@ export default function WordRegisterStatus() {
       <div
         style={{
           padding: '1rem',
-          fontSize: '2rem',
+          fontSize: '2.1rem',
           color: '#fff',
           background: Color.black()
         }}
       >
-        {content} {`is an`}{' '}
-        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>advanced</b>{' '}
-        word. You earn{' '}
+        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>{content}</b>{' '}
+        {`is `}
+        {wordLevel === 1 ? 'a' : 'an'}{' '}
+        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
+          {rewardHash[wordLevel].label}
+        </b>{' '}
+        word. You earned{' '}
         <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
           {addCommasToNumber(rewardHash[wordLevel].rewardAmount)} XP
         </b>
@@ -103,7 +97,7 @@ export default function WordRegisterStatus() {
           padding: '1rem',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-end'
+          justifyContent: 'center'
         }}
       >
         <Button style={{ marginRight: '1rem' }} skeuomorphic>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import Entry from './Entry';
 import { useChatContext } from 'contexts';
 
 EntriesContainer.propTypes = {
@@ -8,10 +7,10 @@ EntriesContainer.propTypes = {
 };
 
 export default function EntriesContainer({ style }) {
-  const entriesContainerRef = useRef(null);
+  const activitiesContainerRef = useRef(null);
   useEffect(() => {
     setTimeout(() => {
-      entriesContainerRef.current.scrollTop = 0;
+      activitiesContainerRef.current.scrollTop = 0;
     }, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -21,13 +20,12 @@ export default function EntriesContainer({ style }) {
 
   return (
     <div
-      ref={entriesContainerRef}
+      ref={activitiesContainerRef}
       style={{ padding: '0 1rem 5rem 1rem', ...style }}
     >
       {dictionaryEntries.map((entry, index) => (
-        <Entry
+        <div
           key={entry.id}
-          entry={entry}
           style={{ marginTop: index === 0 ? '1rem' : '10rem' }}
         />
       ))}

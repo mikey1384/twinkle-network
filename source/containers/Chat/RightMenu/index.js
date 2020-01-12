@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ChatInfo from './ChatInfo';
+import VocabInfo from './VocabInfo';
+import { useMyState } from 'helpers/hooks';
 import { css } from 'emotion';
 import { Color, phoneMaxWidth } from 'constants/css';
-import { useChatContext } from 'contexts';
+import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
@@ -17,12 +19,38 @@ export default function RightMenu({
   currentChannelOnlineMembers
 }) {
   const {
+    requestHelpers: { loadRankings }
+  } = useAppContext();
+  const { userId, twinkleXP } = useMyState();
+  const {
     state: { chatType }
   } = useChatContext();
+  const {
+    state: { allRanks },
+    actions: { onGetRanks }
+  } = useNotiContext();
   const MenuRef = useRef(null);
+  const prevTwinkleXP = useRef(twinkleXP);
+
   useEffect(() => {
     MenuRef.current.scrollTop = 0;
   }, [currentChannel.id]);
+
+  useEffect(() => {
+    handleLoadRankings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  useEffect(() => {
+    if (
+      typeof twinkleXP === 'number' &&
+      twinkleXP > (prevTwinkleXP.current || 0)
+    ) {
+      handleLoadRankings();
+    }
+    prevTwinkleXP.current = twinkleXP;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [twinkleXP]);
 
   return (
     <div
@@ -39,7 +67,7 @@ export default function RightMenu({
         }
       `}
     >
-      {chatType === 'dictionary' && <div>VocabMenu</div>}
+      {chatType === 'dictionary' && <VocabInfo rankings={allRanks} />}
       {!chatType && (
         <ChatInfo
           channelName={channelName}
@@ -49,4 +77,9 @@ export default function RightMenu({
       )}
     </div>
   );
+
+  async function handleLoadRankings() {
+    const { all, top30s } = await loadRankings();
+    onGetRanks({ all, top30s });
+  }
 }

@@ -6,14 +6,10 @@ import { defaultChatSubject } from 'constants/defaultValues';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { container } from './Styles';
 import FilterBar from 'components/FilterBar';
-import request from 'axios';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
-import URL from 'constants/URL';
-
-const API_URL = `${URL}/user`;
 
 Notification.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
@@ -24,7 +20,7 @@ Notification.propTypes = {
 
 function Notification({ children, className, location, style }) {
   const {
-    requestHelpers: { auth, fetchNotifications }
+    requestHelpers: { loadRankings, fetchNotifications }
   } = useAppContext();
   const { userId, twinkleXP } = useMyState();
   const {
@@ -196,9 +192,7 @@ function Notification({ children, className, location, style }) {
     }
   }
   async function fetchRankings() {
-    const {
-      data: { all, top30s }
-    } = await request.get(`${API_URL}/leaderBoard`, auth());
+    const { all, top30s } = await loadRankings();
     if (mounted.current) {
       onGetRanks({ all, top30s });
     }
