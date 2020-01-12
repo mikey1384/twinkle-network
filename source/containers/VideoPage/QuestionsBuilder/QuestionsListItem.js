@@ -37,7 +37,7 @@ export default function QuestionsListItem({
   });
 
   return (
-    <li
+    <nav
       ref={drag(drop(Draggable))}
       style={{
         background: '#fff',
@@ -59,6 +59,6 @@ export default function QuestionsListItem({
       <div>
         <Icon icon="align-justify" style={{ color: Color.gray() }} />
       </div>
-    </li>
+    </nav>
   );
 }

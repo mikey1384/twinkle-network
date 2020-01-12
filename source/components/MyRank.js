@@ -6,12 +6,19 @@ import { css } from 'emotion';
 
 MyRank.propTypes = {
   myId: PropTypes.number,
+  noBorderRadius: PropTypes.bool,
   rank: PropTypes.number,
   style: PropTypes.object,
   twinkleXP: PropTypes.number
 };
 
-export default function MyRank({ myId, rank, style, twinkleXP }) {
+export default function MyRank({
+  myId,
+  noBorderRadius,
+  rank,
+  style,
+  twinkleXP
+}) {
   const rankedColor = useMemo(
     () =>
       rank === 1
@@ -28,6 +35,10 @@ export default function MyRank({ myId, rank, style, twinkleXP }) {
       style={{
         marginTop: '1rem',
         marginBottom: myId ? '1rem' : 0,
+        borderBottom:
+          !(rank > 0 && rank < 4) && noBorderRadius
+            ? `1px solid ${Color.borderGray()}`
+            : '',
         background: myId
           ? rank > 0
             ? rank < 4
@@ -42,10 +53,10 @@ export default function MyRank({ myId, rank, style, twinkleXP }) {
         margin-bottom: 0px;
         text-align: center;
         padding: 1rem;
-        border: ${rank > 0 && rank < 4
+        border: ${(rank > 0 && rank < 4) || noBorderRadius
           ? ''
           : `1px solid ${Color.borderGray()}`};
-        border-radius: ${borderRadius};
+        border-radius: ${!noBorderRadius ? borderRadius : ''};
         p {
           font-weight: bold;
         }

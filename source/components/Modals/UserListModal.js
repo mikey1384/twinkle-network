@@ -56,7 +56,7 @@ export default function UserListModal({
                 ? descriptionShown(user)
                 : user.id === userId;
             return (
-              <li
+              <nav
                 key={user.id}
                 style={{
                   background: '#fff',
@@ -89,7 +89,7 @@ export default function UserListModal({
                     </Button>
                   </div>
                 )}
-              </li>
+              </nav>
             );
           })}
         </RoundList>

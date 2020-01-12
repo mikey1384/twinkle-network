@@ -21,13 +21,22 @@ export default function VocabInfo({ rankings }) {
       ></div>
       <div style={{ height: '50%', overflow: 'scroll' }}>
         <MyRank
+          noBorderRadius
           myId={userId}
           rank={rank}
           twinkleXP={twinkleXP}
-          style={{ marginTop: 0, borderRadius: 0 }}
+          style={{ marginTop: 0 }}
         />
         {rankings.map(user => (
-          <RankingsListItem key={user.id} myId={userId} user={user} />
+          <RankingsListItem
+            key={user.id}
+            small
+            style={{
+              padding: '1rem'
+            }}
+            myId={userId}
+            user={user}
+          />
         ))}
       </div>
     </div>

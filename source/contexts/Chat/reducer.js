@@ -315,7 +315,7 @@ export default function ChatReducer(state, action) {
         action.data.messages.pop();
         messagesLoadMoreButton = true;
       }
-      action.data.messages && action.data.messages.reverse();
+      action.data.messages?.reverse();
       if (action.data.channelIds.length > 20) {
         action.data.channelIds.pop();
         channelLoadMoreButton = true;
@@ -324,6 +324,7 @@ export default function ChatReducer(state, action) {
         action.data.dictionaryEntries.pop();
         dictionaryEntriesLoadMoreButton = true;
       }
+      action.data.dictionaryEntries?.reverse();
       return {
         ...initialChatState,
         chatType: action.data.chatType,

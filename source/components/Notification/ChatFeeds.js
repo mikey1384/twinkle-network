@@ -91,7 +91,7 @@ function ChatFeeds({
         ...style
       }}
     >
-      <li
+      <nav
         style={{
           whiteSpace: 'pre-wrap',
           overflowWrap: 'break-word',
@@ -122,7 +122,7 @@ function ChatFeeds({
           <Icon icon="comments" />
           <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
         </Button>
-      </li>
+      </nav>
     </RoundList>
   );
 

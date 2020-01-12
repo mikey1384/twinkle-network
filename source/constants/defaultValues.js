@@ -35,6 +35,33 @@ export const charLimit = {
     url: 300
   }
 };
+export const rewardHash = {
+  1: {
+    label: 'basic',
+    rewardAmount: 100,
+    color: 'logoBlue'
+  },
+  2: {
+    label: 'elementary',
+    rewardAmount: 200,
+    color: 'pink'
+  },
+  3: {
+    label: 'intermediate',
+    rewardAmount: 500,
+    color: 'orange'
+  },
+  4: {
+    label: 'advanced',
+    rewardAmount: 5000,
+    color: 'red'
+  },
+  5: {
+    label: 'epic',
+    rewardAmount: 10000,
+    color: 'gold'
+  }
+};
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 5000;

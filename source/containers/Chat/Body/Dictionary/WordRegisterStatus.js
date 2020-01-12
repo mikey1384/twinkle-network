@@ -2,36 +2,10 @@ import React, { useMemo } from 'react';
 import { useChatContext } from 'contexts';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { returnWordLevel } from 'helpers';
+import { rewardHash } from 'constants/defaultValues';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-
-const rewardHash = {
-  1: {
-    label: 'basic',
-    rewardAmount: 100,
-    color: 'logoBlue'
-  },
-  2: {
-    label: 'elementary',
-    rewardAmount: 200,
-    color: 'pink'
-  },
-  3: {
-    label: 'intermediate',
-    rewardAmount: 500,
-    color: 'orange'
-  },
-  4: {
-    label: 'advanced',
-    rewardAmount: 5000,
-    color: 'red'
-  },
-  5: {
-    label: 'epic',
-    rewardAmount: 10000,
-    color: 'gold'
-  }
-};
 
 export default function WordRegisterStatus() {
   const {
@@ -39,13 +13,7 @@ export default function WordRegisterStatus() {
   } = useChatContext();
 
   const wordLevel = useMemo(() => {
-    if (frequency > 3.7) {
-      if (content.length < 7) return 1;
-      return 2;
-    }
-    if (frequency > 2) return 3;
-    if (frequency > 1.4) return 4;
-    return 5;
+    return returnWordLevel({ frequency, wordLength: content.length });
   }, [content.length, frequency]);
 
   return (

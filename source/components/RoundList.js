@@ -10,7 +10,7 @@ RoundList.propTypes = {
 
 export default function RoundList({ children, style }) {
   return (
-    <ul
+    <div
       className={css`
         list-style: none;
         padding: 0;
@@ -18,7 +18,7 @@ export default function RoundList({ children, style }) {
         margin-bottom: 0;
         width: 100%;
         font-size: 1.5rem;
-        li {
+        nav {
           width: 100%;
           padding: 1.5rem;
           border: 1px solid ${Color.borderGray()};
@@ -28,14 +28,14 @@ export default function RoundList({ children, style }) {
             border-right: 0;
           }
         }
-        li:first-of-type {
+        nav:first-of-type {
           border-top-left-radius: ${borderRadius};
           border-top-right-radius: ${borderRadius};
           @media (max-width: ${mobileMaxWidth}) {
             border-radius: 0;
           }
         }
-        li:last-child {
+        nav:last-child {
           border-bottom-left-radius: ${borderRadius};
           border-bottom-right-radius: ${borderRadius};
           @media (max-width: ${mobileMaxWidth}) {
@@ -49,6 +49,6 @@ export default function RoundList({ children, style }) {
       style={style}
     >
       {children}
-    </ul>
+    </div>
   );
 }

@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
-import { unix } from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
@@ -13,6 +12,7 @@ import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import { socket } from 'constants/io';
+import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
