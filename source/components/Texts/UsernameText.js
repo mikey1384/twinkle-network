@@ -98,7 +98,7 @@ export default function UsernameText({
       const data = await loadDMChannel({ recepient: user });
       onOpenDirectMessageChannel({
         user: { id: userId, username },
-        recepient: user,
+        recepient: data.partner,
         channelData: data
       });
       history.push('/chat');
