@@ -10,24 +10,62 @@ import { DndProvider } from 'react-dnd';
 import { isMobile } from 'helpers';
 import { capitalize } from 'helpers/stringHelpers';
 import { isEqual } from 'lodash';
+import { useAppContext, useChatContext } from 'contexts';
 
-EditModal.propTypes = {
+WordModal.propTypes = {
   onHide: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  partOfSpeeches: PropTypes.object.isRequired,
-  partOfSpeechOrder: PropTypes.array.isRequired,
   word: PropTypes.string.isRequired
 };
 
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
-export default function EditModal({
-  onHide,
-  onSubmit,
-  partOfSpeeches,
-  partOfSpeechOrder,
-  word
-}) {
+export default function WordModal({ onHide, word }) {
+  const {
+    requestHelpers: { editWord }
+  } = useAppContext();
+  const {
+    state: { wordsObj },
+    actions: { onEditWord }
+  } = useChatContext();
+  const wordObj = useMemo(() => {
+    return wordsObj[word] || {};
+  }, [word, wordsObj]);
+  const {
+    noun = [],
+    verb = [],
+    adjective = [],
+    preposition = [],
+    adverb = [],
+    pronoun = [],
+    conjunction = [],
+    interjection = [],
+    other = [],
+    partOfSpeechOrder = [
+      'noun',
+      'verb',
+      'adjective',
+      'preposition',
+      'adverb',
+      'pronoun',
+      'conjunction',
+      'interjection',
+      'other'
+    ]
+  } = wordObj;
+  const partOfSpeeches = useMemo(() => {
+    return {
+      noun,
+      verb,
+      adjective,
+      preposition,
+      adverb,
+      pronoun,
+      conjunction,
+      interjection,
+      other
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [poses, setPoses] = useState([]);
   const [adjectiveIds, setAdjectiveIds] = useState([]);
   const [adverbIds, setAdverbIds] = useState([]);
@@ -224,7 +262,7 @@ export default function EditModal({
           <Button
             color="blue"
             disabled={disabled}
-            onClick={() => onSubmit({ poses, allDefinitionIds })}
+            onClick={() => handleEditDone({ poses, allDefinitionIds })}
           >
             Done
           </Button>
@@ -240,6 +278,27 @@ export default function EditModal({
     newIds.splice(sourceIndex, 1);
     newIds.splice(targetIndex, 0, sourceId);
     setIds(newIds);
+  }
+
+  async function handleEditDone({ poses, allDefinitionIds }) {
+    const definitions = [];
+    for (let key in posObj) {
+      for (let id of allDefinitionIds[key]) {
+        const definition = posObj[key][id].title;
+        definitions.push({ definition, partOfSpeech: key });
+      }
+    }
+    await editWord({
+      partOfSpeeches: poses,
+      definitions,
+      word
+    });
+    onEditWord({
+      partOfSpeeches: poses,
+      definitions,
+      word
+    });
+    onHide();
   }
 
   function handlePosMove({ sourceId: sourcePos, targetId: targetPos }) {

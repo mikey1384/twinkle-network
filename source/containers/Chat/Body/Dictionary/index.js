@@ -104,7 +104,6 @@ export default function Dictionary() {
       </FilterBar>
       {activitiesTabShown && (
         <ActivitiesContainer
-          onWordClick={handleWordClick}
           style={{
             width: '100%',
             overflow: 'scroll',
@@ -233,9 +232,5 @@ export default function Dictionary() {
         text: ''
       });
     }
-  }
-
-  function handleWordClick(word) {
-    console.log(word, 'got here');
   }
 }

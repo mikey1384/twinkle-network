@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
+import WordModal from './WordModal';
 import { returnWordLevel } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardHash } from 'constants/defaultValues';
@@ -13,17 +14,16 @@ Activity.propTypes = {
   activity: PropTypes.object.isRequired,
   setScrollToBottom: PropTypes.func.isRequired,
   isLastActivity: PropTypes.bool,
-  myId: PropTypes.number,
-  onWordClick: PropTypes.func
+  myId: PropTypes.number
 };
 
 export default function Activity({
   activity: { content, frequency, userId, username, profilePicId, timeStamp },
   setScrollToBottom,
   isLastActivity,
-  myId,
-  onWordClick
+  myId
 }) {
+  const [wordModalShown, setWordModalShown] = useState(false);
   const userIsUploader = myId === userId;
   useEffect(() => {
     if (isLastActivity && userIsUploader) {
@@ -76,7 +76,7 @@ export default function Activity({
               color: Color.blue(),
               cursor: 'pointer'
             }}
-            onClick={() => onWordClick(content)}
+            onClick={() => setWordModalShown(true)}
           >
             {content}
           </span>{' '}
@@ -89,6 +89,9 @@ export default function Activity({
           </b>
         </div>
       </div>
+      {wordModalShown && (
+        <WordModal word={content} onHide={() => setWordModalShown(false)} />
+      )}
     </div>
   );
 }

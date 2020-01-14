@@ -5,11 +5,10 @@ import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
 ActivitiesContainer.propTypes = {
-  style: PropTypes.object,
-  onWordClick: PropTypes.func
+  style: PropTypes.object
 };
 
-export default function ActivitiesContainer({ onWordClick, style }) {
+export default function ActivitiesContainer({ style }) {
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
@@ -56,7 +55,6 @@ export default function ActivitiesContainer({ onWordClick, style }) {
               setScrollToBottom={handleSetScrollToBottom}
               isLastActivity={index === vocabActivities.length - 1}
               myId={userId}
-              onWordClick={onWordClick}
             />
           );
         })}

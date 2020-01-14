@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import EditModal from './EditModal';
+import WordModal from './WordModal';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext } from 'contexts';
 
 Definition.propTypes = {
   style: PropTypes.object,
@@ -15,22 +14,6 @@ Definition.propTypes = {
 export default function Definition({ style, wordObj }) {
   const { canEditDictionary } = useMyState();
   const {
-    requestHelpers: { editWord }
-  } = useAppContext();
-  const {
-    actions: { onEditWord }
-  } = useChatContext();
-  const {
-    content,
-    noun = [],
-    verb = [],
-    adjective = [],
-    preposition = [],
-    adverb = [],
-    pronoun = [],
-    conjunction = [],
-    interjection = [],
-    other = [],
     partOfSpeechOrder = [
       'noun',
       'verb',
@@ -44,18 +27,7 @@ export default function Definition({ style, wordObj }) {
     ],
     notFound
   } = wordObj;
-  const posObj = {
-    noun,
-    verb,
-    adjective,
-    preposition,
-    adverb,
-    pronoun,
-    conjunction,
-    interjection,
-    other
-  };
-  const [editModalShown, setEditModalShown] = useState(false);
+  const [wordModalShown, setWordModalShown] = useState(false);
   return (
     <div
       style={{ padding: '1rem', position: 'relative', ...style }}
@@ -82,7 +54,7 @@ export default function Definition({ style, wordObj }) {
                   }
                 `}
                 skeuomorphic
-                onClick={() => setEditModalShown(true)}
+                onClick={() => setWordModalShown(true)}
               >
                 <Icon icon="pencil-alt" />
                 <span style={{ marginLeft: '0.7rem' }}>Edit</span>
@@ -112,38 +84,12 @@ export default function Definition({ style, wordObj }) {
           )}
         </>
       )}
-      {editModalShown && (
-        <EditModal
-          partOfSpeeches={posObj}
-          partOfSpeechOrder={partOfSpeechOrder}
-          onHide={() => setEditModalShown(false)}
-          onSubmit={handleEditDone}
+      {wordModalShown && (
+        <WordModal
+          onHide={() => setWordModalShown(false)}
           word={wordObj.content}
         />
       )}
     </div>
   );
-
-  async function handleEditDone({ poses, allDefinitionIds }) {
-    const definitions = [];
-    for (let key in posObj) {
-      for (let id of allDefinitionIds[key]) {
-        const [definition] = posObj[key]
-          .filter(obj => obj.id === id)
-          .map(({ definition }) => definition);
-        definitions.push({ definition, partOfSpeech: key });
-      }
-    }
-    await editWord({
-      partOfSpeeches: poses,
-      definitions,
-      word: content
-    });
-    onEditWord({
-      partOfSpeeches: poses,
-      definitions,
-      word: content
-    });
-    setEditModalShown(false);
-  }
 }
