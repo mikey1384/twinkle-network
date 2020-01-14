@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Activity from './Activity';
 import { useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 EntriesContainer.propTypes = {
   style: PropTypes.object
@@ -11,6 +12,7 @@ export default function EntriesContainer({ style }) {
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
+  const { userId } = useMyState();
   useEffect(() => {
     handleSetScrollToBottom();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,8 +46,14 @@ export default function EntriesContainer({ style }) {
         }}
       />
       <div ref={ContentRef}>
-        {dictionaryEntries.map(entry => (
-          <Activity key={entry.id} activity={entry} />
+        {dictionaryEntries.map((entry, index) => (
+          <Activity
+            key={entry.id}
+            activity={entry}
+            setScrollToBottom={handleSetScrollToBottom}
+            isLastActivity={index === dictionaryEntries.length - 1}
+            myId={userId}
+          />
         ))}
       </div>
     </div>

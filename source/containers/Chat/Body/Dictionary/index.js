@@ -23,7 +23,7 @@ export default function Dictionary() {
   } = useAppContext();
   const {
     state: { wordObj, wordRegisterStatus },
-    actions: { onSetWordRegisterStatus, onSetWordObj }
+    actions: { onRegisterWord, onSetWordRegisterStatus, onSetWordObj }
   } = useChatContext();
   const {
     actions: { onChangeUserXP }
@@ -219,8 +219,9 @@ export default function Dictionary() {
   async function handleSubmit() {
     const { isNew, ...definitions } = wordObj;
     if (isNew) {
-      const { xp, rank } = await registerWord(definitions);
+      const { xp, rank, word } = await registerWord(definitions);
       onChangeUserXP({ xp, rank, userId });
+      onRegisterWord(word);
       onSetWordRegisterStatus(wordObj);
       onEnterComment({
         contentType: 'dictionary',

@@ -679,6 +679,11 @@ export default function ChatReducer(state, action) {
           state.channelIds.filter(channelId => channelId !== action.channel.id)
         )
       };
+    case 'REGISTER_WORD':
+      return {
+        ...state,
+        dictionaryEntries: state.dictionaryEntries.concat(action.word)
+      };
     case 'RELOAD_SUBJECT':
       return {
         ...state,

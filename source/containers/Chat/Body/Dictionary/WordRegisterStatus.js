@@ -65,12 +65,13 @@ export default function WordRegisterStatus() {
           padding: '1rem',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          background: Color.targetGray()
         }}
       >
-        <Button style={{ marginRight: '1rem' }} skeuomorphic>
-          <Icon icon="comment-alt" />
-          <span style={{ marginLeft: '0.7rem' }}>Comment</span>
+        <Button color="orange" style={{ marginRight: '1rem' }} skeuomorphic>
+          <Icon icon="star" />
+          <span style={{ marginLeft: '0.7rem' }}>Tap here for Bonus XP</span>
         </Button>
         <Button skeuomorphic>
           <Icon icon="pencil-alt" />

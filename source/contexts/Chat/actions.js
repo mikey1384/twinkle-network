@@ -262,6 +262,12 @@ export default function ChatActions(dispatch) {
         usingChat
       });
     },
+    onRegisterWord(word) {
+      return dispatch({
+        type: 'REGISTER_WORD',
+        word
+      });
+    },
     onReloadChatSubject({ subject, message }) {
       return dispatch({
         type: 'RELOAD_SUBJECT',

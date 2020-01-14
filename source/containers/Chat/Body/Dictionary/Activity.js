@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -10,12 +10,26 @@ import { Color } from 'constants/css';
 import { unix } from 'moment';
 
 Activity.propTypes = {
-  activity: PropTypes.object.isRequired
+  activity: PropTypes.object.isRequired,
+  setScrollToBottom: PropTypes.func.isRequired,
+  isLastActivity: PropTypes.bool,
+  myId: PropTypes.number
 };
 
 export default function Activity({
-  activity: { content, frequency, userId, username, profilePicId, timeStamp }
+  activity: { content, frequency, userId, username, profilePicId, timeStamp },
+  setScrollToBottom,
+  isLastActivity,
+  myId
 }) {
+  const userIsUploader = myId === userId;
+  useEffect(() => {
+    if (isLastActivity && userIsUploader) {
+      setScrollToBottom();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const wordLevel = useMemo(
     () => returnWordLevel({ frequency, wordLength: content.length }),
     [content.length, frequency]
