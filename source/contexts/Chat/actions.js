@@ -101,10 +101,9 @@ export default function ChatActions(dispatch) {
         data: { editedMessage, messageId }
       });
     },
-    onEditWord({ entryId, partOfSpeeches, definitions, word }) {
+    onEditWord({ partOfSpeeches, definitions, word }) {
       return dispatch({
         type: 'EDIT_WORD',
-        entryId,
         partOfSpeeches,
         definitions,
         word
@@ -335,9 +334,9 @@ export default function ChatActions(dispatch) {
         target
       });
     },
-    onSetWordObj(wordObj) {
+    onSetWordsObj(wordObj) {
       return dispatch({
-        type: 'SET_WORD_OBJECT',
+        type: 'SET_WORDS_OBJECT',
         wordObj
       });
     },

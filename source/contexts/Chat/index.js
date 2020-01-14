@@ -14,7 +14,8 @@ export const initialChatState = {
   chessModalShown: false,
   creatingNewDMChannel: false,
   customChannelNames: {},
-  dictionaryEntries: [],
+  vocabActivities: [],
+  vocabActivitiesLoadMoreButton: false,
   filesBeingUploaded: {},
   loaded: false,
   messages: [],
@@ -29,7 +30,7 @@ export const initialChatState = {
   subject: {},
   subjectSearchResults: [],
   wordRegisterStatus: undefined,
-  wordObj: {},
+  wordsObj: {},
   userSearchResults: []
 };
 

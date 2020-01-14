@@ -4,11 +4,12 @@ import Activity from './Activity';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
-EntriesContainer.propTypes = {
-  style: PropTypes.object
+ActivitiesContainer.propTypes = {
+  style: PropTypes.object,
+  onWordClick: PropTypes.func
 };
 
-export default function EntriesContainer({ style }) {
+export default function ActivitiesContainer({ onWordClick, style }) {
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
@@ -18,7 +19,7 @@ export default function EntriesContainer({ style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {
-    state: { dictionaryEntries }
+    state: { vocabActivities, wordsObj }
   } = useChatContext();
 
   const fillerHeight = useMemo(
@@ -46,15 +47,19 @@ export default function EntriesContainer({ style }) {
         }}
       />
       <div ref={ContentRef}>
-        {dictionaryEntries.map((entry, index) => (
-          <Activity
-            key={entry.id}
-            activity={entry}
-            setScrollToBottom={handleSetScrollToBottom}
-            isLastActivity={index === dictionaryEntries.length - 1}
-            myId={userId}
-          />
-        ))}
+        {vocabActivities.map((vocab, index) => {
+          const word = wordsObj[vocab] || {};
+          return (
+            <Activity
+              key={word.id}
+              activity={word}
+              setScrollToBottom={handleSetScrollToBottom}
+              isLastActivity={index === vocabActivities.length - 1}
+              myId={userId}
+              onWordClick={onWordClick}
+            />
+          );
+        })}
       </div>
     </div>
   );

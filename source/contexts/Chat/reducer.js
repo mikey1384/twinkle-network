@@ -30,19 +30,13 @@ export default function ChatReducer(state, action) {
     case 'EDIT_WORD':
       return {
         ...state,
-        dictionaryEntries: state.dictionaryEntries.map(entry =>
-          entry.id === action.entryId
-            ? {
-                ...entry,
-                partOfSpeechOrder: action.partOfSpeeches,
-                ...returnPartOfSpeeches(action.definitions)
-              }
-            : entry
-        ),
-        wordObj: {
-          ...state.wordObj,
-          partOfSpeechOrder: action.partOfSpeeches,
-          ...returnPartOfSpeeches(action.definitions)
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word]: {
+            ...state.wordsObj[action.word],
+            partOfSpeechOrder: action.partOfSpeeches,
+            ...returnPartOfSpeeches(action.definitions)
+          }
         }
       };
     case 'CHANGE_CHANNEL_OWNER': {
@@ -307,7 +301,7 @@ export default function ChatReducer(state, action) {
       let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       let channelLoadMoreButton = false;
-      let dictionaryEntriesLoadMoreButton = false;
+      let vocabActivitiesLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
         action.data.currentChannelId
       ]?.filter(message => !message.uploadComplete);
@@ -320,11 +314,11 @@ export default function ChatReducer(state, action) {
         action.data.channelIds.pop();
         channelLoadMoreButton = true;
       }
-      if (action.data.dictionaryEntries.length > 20) {
-        action.data.dictionaryEntries.pop();
-        dictionaryEntriesLoadMoreButton = true;
+      if (action.data.vocabActivities.length > 20) {
+        action.data.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
       }
-      action.data.dictionaryEntries?.reverse();
+      action.data.vocabActivities?.reverse();
       return {
         ...initialChatState,
         chatType: action.data.chatType,
@@ -339,8 +333,8 @@ export default function ChatReducer(state, action) {
         },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
-        dictionaryEntries: action.data.dictionaryEntries,
-        dictionaryEntriesLoadMoreButton,
+        vocabActivities: action.data.vocabActivities,
+        vocabActivitiesLoadMoreButton,
         messagesLoadMoreButton,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
@@ -350,7 +344,8 @@ export default function ChatReducer(state, action) {
         recentChessMessage: undefined,
         reconnecting: false,
         selectedChannelId: action.data.currentChannelId,
-        subject: action.data.currentChannelId === 2 ? state.subject : {}
+        subject: action.data.currentChannelId === 2 ? state.subject : {},
+        wordsObj: action.data.wordsObj
       };
     }
     case 'INVITE_USERS_TO_CHANNEL':
@@ -682,7 +677,14 @@ export default function ChatReducer(state, action) {
     case 'REGISTER_WORD':
       return {
         ...state,
-        dictionaryEntries: state.dictionaryEntries.concat(action.word)
+        vocabActivities: state.vocabActivities.concat(action.word.content),
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word.content]: {
+            ...state.wordsObj[action.word.content],
+            ...action.word
+          }
+        }
       };
     case 'RELOAD_SUBJECT':
       return {
@@ -729,10 +731,16 @@ export default function ChatReducer(state, action) {
         replyTarget: action.target
       };
     }
-    case 'SET_WORD_OBJECT': {
+    case 'SET_WORDS_OBJECT': {
       return {
         ...state,
-        wordObj: action.wordObj
+        wordsObj: {
+          ...state.wordsObj,
+          [action.wordObj.content]: {
+            ...(state.wordsObj?.[action.wordObj.content] || {}),
+            ...action.wordObj
+          }
+        }
       };
     }
     case 'SET_WORD_REGISTER_STATUS': {

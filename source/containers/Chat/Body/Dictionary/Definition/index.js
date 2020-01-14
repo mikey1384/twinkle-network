@@ -140,7 +140,6 @@ export default function Definition({ style, wordObj }) {
       word: content
     });
     onEditWord({
-      entryId: wordObj.id,
       partOfSpeeches: poses,
       definitions,
       word: content

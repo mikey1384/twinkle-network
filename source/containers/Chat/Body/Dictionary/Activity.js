@@ -13,14 +13,16 @@ Activity.propTypes = {
   activity: PropTypes.object.isRequired,
   setScrollToBottom: PropTypes.func.isRequired,
   isLastActivity: PropTypes.bool,
-  myId: PropTypes.number
+  myId: PropTypes.number,
+  onWordClick: PropTypes.func
 };
 
 export default function Activity({
   activity: { content, frequency, userId, username, profilePicId, timeStamp },
   setScrollToBottom,
   isLastActivity,
-  myId
+  myId,
+  onWordClick
 }) {
   const userIsUploader = myId === userId;
   useEffect(() => {
@@ -71,8 +73,10 @@ export default function Activity({
             style={{
               fontWeight: 'bold',
               fontSize: '3rem',
-              color: Color.blue()
+              color: Color.blue(),
+              cursor: 'pointer'
             }}
+            onClick={() => onWordClick(content)}
           >
             {content}
           </span>{' '}

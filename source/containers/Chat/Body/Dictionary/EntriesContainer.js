@@ -16,7 +16,7 @@ export default function EntriesContainer({ style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {
-    state: { dictionaryEntries }
+    state: { vocabActivities, wordsObj }
   } = useChatContext();
 
   return (
@@ -24,13 +24,16 @@ export default function EntriesContainer({ style }) {
       ref={entriesContainerRef}
       style={{ padding: '0 1rem 5rem 1rem', ...style }}
     >
-      {dictionaryEntries.map((entry, index) => (
-        <Entry
-          key={entry.id}
-          entry={entry}
-          style={{ marginTop: index === 0 ? '1rem' : '10rem' }}
-        />
-      ))}
+      {vocabActivities.map((vocab, index) => {
+        const word = wordsObj[vocab] || {};
+        return (
+          <Entry
+            key={word.id}
+            entry={word}
+            style={{ marginTop: index === 0 ? '1rem' : '10rem' }}
+          />
+        );
+      })}
     </div>
   );
 }

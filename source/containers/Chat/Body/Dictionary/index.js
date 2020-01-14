@@ -22,8 +22,8 @@ export default function Dictionary() {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
-    state: { wordObj, wordRegisterStatus },
-    actions: { onRegisterWord, onSetWordRegisterStatus, onSetWordObj }
+    state: { wordsObj, wordRegisterStatus },
+    actions: { onRegisterWord, onSetWordRegisterStatus, onSetWordsObj }
   } = useChatContext();
   const {
     actions: { onChangeUserXP }
@@ -34,6 +34,10 @@ export default function Dictionary() {
   } = useInputContext();
   const { userId } = useMyState();
   const inputText = state['dictionary'] || '';
+  const wordObj = useMemo(() => wordsObj[inputText] || {}, [
+    inputText,
+    wordsObj
+  ]);
   const [activitiesTabShown, setActivitiesTabShown] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -55,7 +59,7 @@ export default function Dictionary() {
         (word.content &&
           word.content.toLowerCase() === text.current.toLowerCase())
       ) {
-        onSetWordObj(word);
+        onSetWordsObj(word);
       }
       setLoading(false);
     }
@@ -72,7 +76,7 @@ export default function Dictionary() {
 
   const notRegistered = useMemo(
     () => wordObj.isNew && !stringIsEmpty(inputText) && !loading,
-    [inputText, wordObj.isNew, loading]
+    [wordObj.isNew, inputText, loading]
   );
 
   return (
@@ -100,6 +104,7 @@ export default function Dictionary() {
       </FilterBar>
       {activitiesTabShown && (
         <ActivitiesContainer
+          onWordClick={handleWordClick}
           style={{
             width: '100%',
             overflow: 'scroll',
@@ -228,5 +233,9 @@ export default function Dictionary() {
         text: ''
       });
     }
+  }
+
+  function handleWordClick(word) {
+    console.log(word, 'got here');
   }
 }
