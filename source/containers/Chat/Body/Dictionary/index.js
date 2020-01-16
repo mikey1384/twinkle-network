@@ -38,6 +38,7 @@ export default function Dictionary() {
     inputText,
     wordsObj
   ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activitiesTabShown, setActivitiesTabShown] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -215,6 +216,7 @@ export default function Dictionary() {
           onSubmit={handleSubmit}
           innerRef={inputRef}
           registerButtonShown={notRegistered}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>
@@ -222,7 +224,8 @@ export default function Dictionary() {
 
   async function handleSubmit() {
     const { isNew, ...definitions } = wordObj;
-    if (isNew) {
+    if (isNew && !isSubmitting) {
+      setIsSubmitting(true);
       const { xp, rank, word } = await registerWord(definitions);
       onChangeUserXP({ xp, rank, userId });
       onRegisterWord(word);
@@ -231,6 +234,7 @@ export default function Dictionary() {
         contentType: 'dictionary',
         text: ''
       });
+      setIsSubmitting(false);
     }
   }
 }

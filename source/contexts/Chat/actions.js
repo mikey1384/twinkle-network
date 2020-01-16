@@ -116,9 +116,11 @@ export default function ChatActions(dispatch) {
         showOnTop
       });
     },
-    onEnterDictionary() {
+    onEnterVocabulary({ vocabActivities, wordsObj }) {
       return dispatch({
-        type: 'ENTER_DICTIONARY'
+        type: 'ENTER_VOCABULARY',
+        vocabActivities,
+        wordsObj
       });
     },
     onEnterEmptyChat() {

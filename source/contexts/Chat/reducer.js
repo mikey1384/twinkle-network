@@ -254,14 +254,6 @@ export default function ChatReducer(state, action) {
         messagesLoadMoreButton
       };
     }
-    case 'ENTER_DICTIONARY':
-      return {
-        ...state,
-        selectedChannelId: null,
-        chatType: 'dictionary',
-        messages: [],
-        messagesLoadMoreButton: false
-      };
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
@@ -272,6 +264,23 @@ export default function ChatReducer(state, action) {
         messages: [],
         messagesLoadMoreButton: false
       };
+    case 'ENTER_VOCABULARY': {
+      let vocabActivitiesLoadMoreButton = false;
+      if (action.vocabActivities.length > 20) {
+        action.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      return {
+        ...state,
+        selectedChannelId: null,
+        chatType: 'dictionary',
+        messages: [],
+        messagesLoadMoreButton: false,
+        vocabActivities: action.vocabActivities,
+        vocabActivitiesLoadMoreButton,
+        wordsObj: action.wordsObj
+      };
+    }
     case 'GET_NUM_UNREAD_MSGS':
       return {
         ...state,

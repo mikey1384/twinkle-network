@@ -17,14 +17,16 @@ Input.propTypes = {
   innerRef: PropTypes.object,
   loading: PropTypes.bool,
   registerButtonShown: PropTypes.bool,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool
 };
 
 export default function Input({
   innerRef,
   loading,
   onSubmit,
-  registerButtonShown
+  registerButtonShown,
+  isSubmitting
 }) {
   const {
     state,
@@ -80,9 +82,9 @@ export default function Input({
           <div style={{ height: '100%', margin: '0.5rem 0 0.2rem 1rem' }}>
             <Button
               filled
-              disabled={loading}
+              disabled={loading || isSubmitting}
               color="green"
-              onClick={handleSendMsg}
+              onClick={handleSubmit}
             >
               <Icon icon="paper-plane" />
             </Button>
@@ -103,11 +105,11 @@ export default function Input({
     const enterKeyPressed = event.keyCode === 13;
     if (enterKeyPressed && !messageExceedsCharLimit && !loading) {
       event.preventDefault();
-      handleSendMsg();
+      handleSubmit();
     }
   }
 
-  function handleSendMsg() {
+  function handleSubmit() {
     innerRef.current.focus();
     if (stringIsEmpty(text)) return;
     onSubmit(finalizeEmoji(text));

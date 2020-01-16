@@ -4,7 +4,7 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
-import Icon from 'components/Icon';
+import Vocabulary from './Vocabulary';
 import {
   Color,
   desktopMinWidth,
@@ -32,11 +32,11 @@ export default function LeftMenu({
   onNewButtonClick
 }) {
   const {
-    requestHelpers: { enterDictionary }
+    requestHelpers: { enterVocabulary }
   } = useAppContext();
   const {
     state: { chatType, channelIds },
-    actions: { onEnterDictionary }
+    actions: { onEnterVocabulary }
   } = useChatContext();
   const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
@@ -118,40 +118,10 @@ export default function LeftMenu({
       >
         + New Channel
       </div>
-      <div
-        style={{
-          cursor: 'pointer',
-          padding: '1rem',
-          borderBottom: `1px solid ${Color.borderGray()}`,
-          background: chatType === 'dictionary' && Color.highlightGray()
-        }}
-        className={`unselectable ${css`
-          &:hover {
-            background: ${Color.checkboxAreaGray()};
-          }
-        `}`}
-        onClick={handleEnterDictionary}
-      >
-        <div>
-          <div style={{ fontSize: '1.7rem' }}>
-            <Icon icon="book" />
-            <span style={{ fontWeight: 'bold', marginLeft: '0.7rem' }}>
-              Vocabulary
-            </span>
-          </div>
-          <p
-            style={{
-              marginTop: '0.3rem',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              width: '100%'
-            }}
-          >
-            mikey: Impecunious - not having enough money to pay for necessities
-          </p>
-        </div>
-      </div>
+      <Vocabulary
+        selected={chatType === 'dictionary'}
+        onClick={handleEnterVocabulary}
+      />
       <ChatSearchBox
         style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
       />
@@ -193,9 +163,9 @@ export default function LeftMenu({
     </div>
   );
 
-  async function handleEnterDictionary() {
-    await enterDictionary();
-    onEnterDictionary();
+  async function handleEnterVocabulary() {
+    const { vocabActivities, wordsObj } = await enterVocabulary();
+    onEnterVocabulary({ vocabActivities, wordsObj });
   }
 
   async function handleLoadMoreChannels() {

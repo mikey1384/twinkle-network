@@ -72,9 +72,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async enterDictionary() {
+    async enterVocabulary() {
       try {
-        const data = await request.get(`${URL}/chat/dictionary`, auth());
+        const { data } = await request.get(`${URL}/chat/vocabulary`, auth());
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

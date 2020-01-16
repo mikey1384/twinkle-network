@@ -5,7 +5,7 @@ import MemberListItem from './MemberListItem';
 
 Members.propTypes = {
   channelId: PropTypes.number.isRequired,
-  creatorId: PropTypes.number.isRequired,
+  creatorId: PropTypes.number,
   members: PropTypes.array.isRequired,
   onlineMembers: PropTypes.array.isRequired
 };
