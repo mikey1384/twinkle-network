@@ -38,7 +38,7 @@ Comment.propTypes = {
     content: PropTypes.string.isRequired,
     deleted: PropTypes.bool,
     id: PropTypes.number.isRequired,
-    likes: PropTypes.array.isRequired,
+    likes: PropTypes.array,
     profilePicId: PropTypes.number,
     replies: PropTypes.array,
     replyId: PropTypes.number,
@@ -107,6 +107,7 @@ function Comment({
   const mounted = useRef(true);
   const RewardInterfaceRef = useRef(null);
   const rewardLevel = useMemo(() => {
+    if (isPreview) return 0;
     if (parent.contentType === 'subject' && parent.rewardLevel > 0) {
       return parent.rewardLevel;
     }
@@ -133,14 +134,23 @@ function Comment({
       }
     }
     return 0;
-  }, [parent, rootContent, subject]);
+  }, [
+    isPreview,
+    parent.contentType,
+    parent.rewardLevel,
+    rootContent.contentType,
+    rootContent.rewardLevel,
+    subject
+  ]);
 
   useEffect(() => {
-    if (replying && replies.length > prevReplies.length) {
-      setReplying(false);
-      scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
+    if (!isPreview) {
+      if (replying && replies.length > prevReplies.length) {
+        setReplying(false);
+        scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
+      }
+      setPrevReplies(replies);
     }
-    setPrevReplies(replies);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replies]);
 
@@ -200,16 +210,15 @@ function Comment({
     return hasSecretAnswer && !secretShown;
   }, [subject, subjectState.secretShown, userId]);
 
-  const xpButtonDisabled = useMemo(
-    () =>
-      determineXpButtonDisabled({
-        rewardLevel,
-        myId: userId,
-        xpRewardInterfaceShown,
-        stars
-      }),
-    [rewardLevel, stars, userId, xpRewardInterfaceShown]
-  );
+  const xpButtonDisabled = useMemo(() => {
+    if (isPreview) return true;
+    return determineXpButtonDisabled({
+      rewardLevel,
+      myId: userId,
+      xpRewardInterfaceShown,
+      stars
+    });
+  }, [isPreview, rewardLevel, stars, userId, xpRewardInterfaceShown]);
 
   useEffect(() => {
     mounted.current = true;
