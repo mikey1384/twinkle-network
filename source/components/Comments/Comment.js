@@ -145,7 +145,7 @@ function Comment({
 
   useEffect(() => {
     if (!isPreview) {
-      if (replying && replies.length > prevReplies.length) {
+      if (replying && replies?.length > prevReplies?.length) {
         setReplying(false);
         scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
       }
@@ -403,7 +403,7 @@ function Comment({
                 onCommentEdit={onRewardCommentEdit}
                 style={{
                   fontSize: '1.5rem',
-                  marginTop: comment.likes.length > 0 ? '0.5rem' : '1rem'
+                  marginTop: comment.likes?.length > 0 ? '0.5rem' : '1rem'
                 }}
                 stars={stars}
                 uploaderName={uploader.username}
@@ -413,13 +413,13 @@ function Comment({
               <>
                 <ReplyInputArea
                   innerRef={ReplyInputAreaRef}
-                  numReplies={replies.length}
+                  numReplies={replies?.length}
                   onSubmit={submitReply}
                   parent={parent}
                   rootCommentId={comment.commentId}
                   style={{
                     marginTop:
-                      stars.length > 0 || comment.likes.length > 0
+                      stars?.length > 0 || comment.likes?.length > 0
                         ? '0.5rem'
                         : '1rem'
                   }}
