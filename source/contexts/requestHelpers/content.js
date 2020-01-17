@@ -213,12 +213,20 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadComments({ contentId, contentType, lastCommentId, limit }) {
+    async loadComments({
+      contentId,
+      contentType,
+      lastCommentId,
+      limit,
+      isPreview
+    }) {
       try {
         const {
           data: { comments, loadMoreButton }
         } = await request.get(
-          `${URL}/content/comments?contentId=${contentId}&contentType=${contentType}&lastCommentId=${lastCommentId}&limit=${limit}`
+          `${URL}/content/comments?contentId=${contentId}&contentType=${contentType}&lastCommentId=${lastCommentId}&limit=${limit}${
+            isPreview ? '&isPreview=1' : ''
+          }`
         );
         return Promise.resolve({ comments, loadMoreButton });
       } catch (error) {

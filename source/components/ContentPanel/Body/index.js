@@ -205,17 +205,19 @@ function Body({
       if (!numPreviewComments) {
         setLoadingComments(true);
       }
+      const isPreview = !!numPreviewComments;
       const data = await loadComments({
         contentType,
         contentId,
-        limit: numPreviewComments || commentsLoadLimit
+        limit: numPreviewComments || commentsLoadLimit,
+        isPreview
       });
       if (mounted.current) {
         onLoadComments({
           ...data,
           contentId,
           contentType,
-          isPreview: numPreviewComments > 0
+          isPreview
         });
         setLoadingComments(false);
       }
