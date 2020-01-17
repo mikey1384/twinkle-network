@@ -9,6 +9,7 @@ import EditTab from './EditTab';
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'helpers';
 import { useChatContext } from 'contexts';
+import { usePartOfSpeechIds } from 'helpers/hooks';
 
 WordModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -84,10 +85,10 @@ export default function WordModal({ onHide, word }) {
     }
     return result;
   }, [partOfSpeeches]);
-
   const posOrder = partOfSpeechOrder.filter(
     pos => Object.keys(posObj[pos]).length > 0
   );
+  const [definitionIds, setDefinitionIds] = usePartOfSpeechIds(partOfSpeeches);
 
   return (
     <DndProvider backend={Backend}>
@@ -110,15 +111,22 @@ export default function WordModal({ onHide, word }) {
           </nav>
         </FilterBar>
         {!editTabSelected && (
-          <DictionaryTab posObj={posObj} posOrder={posOrder} />
+          <DictionaryTab
+            definitionIds={definitionIds}
+            onHide={onHide}
+            posObj={posObj}
+            posOrder={posOrder}
+          />
         )}
         {editTabSelected && (
           <EditTab
+            definitionIds={definitionIds}
             onEditWord={onEditWord}
             onHide={onHide}
             originalPosOrder={posOrder}
             partOfSpeeches={partOfSpeeches}
             posObj={posObj}
+            onSetDefinitionIds={setDefinitionIds}
             word={word}
           />
         )}

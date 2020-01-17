@@ -2,26 +2,29 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import PartOfSpeechBlock from './PartOfSpeechBlock';
 import PartOfSpeechesList from './PartOfSpeechesList';
-import { capitalize } from 'helpers/stringHelpers';
 import { isEqual } from 'lodash';
 import { useAppContext } from 'contexts';
 import Button from 'components/Button';
 
 EditTab.propTypes = {
+  definitionIds: PropTypes.object.isRequired,
   onEditWord: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   partOfSpeeches: PropTypes.object.isRequired,
   originalPosOrder: PropTypes.array.isRequired,
   posObj: PropTypes.object.isRequired,
+  onSetDefinitionIds: PropTypes.object.isRequired,
   word: PropTypes.string.isRequired
 };
 
 export default function EditTab({
+  definitionIds,
   onEditWord,
   onHide,
   partOfSpeeches,
   originalPosOrder,
   posObj,
+  onSetDefinitionIds,
   word
 }) {
   const {
@@ -29,75 +32,6 @@ export default function EditTab({
   } = useAppContext();
   const [posting, setPosting] = useState(false);
   const [poses, setPoses] = useState([]);
-  const [adjectiveIds, setAdjectiveIds] = useState([]);
-  const [adverbIds, setAdverbIds] = useState([]);
-  const [conjunctionIds, setConjunctionIds] = useState([]);
-  const [interjectionIds, setInterjectionIds] = useState([]);
-  const [nounIds, setNounIds] = useState([]);
-  const [prepositionIds, setPrepositionIds] = useState([]);
-  const [pronounIds, setPronounIds] = useState([]);
-  const [verbIds, setVerbIds] = useState([]);
-  const [otherIds, setOtherIds] = useState([]);
-  const allDefinitionIds = useMemo(
-    () => ({
-      adjective: adjectiveIds,
-      adverb: adverbIds,
-      conjunction: conjunctionIds,
-      interjection: interjectionIds,
-      noun: nounIds,
-      preposition: prepositionIds,
-      pronoun: pronounIds,
-      verb: verbIds,
-      other: otherIds
-    }),
-    [
-      adjectiveIds,
-      adverbIds,
-      conjunctionIds,
-      interjectionIds,
-      nounIds,
-      otherIds,
-      prepositionIds,
-      pronounIds,
-      verbIds
-    ]
-  );
-
-  useEffect(() => {
-    setAdjectiveIds(partOfSpeeches.adjective.map(({ id }) => id));
-  }, [partOfSpeeches.adjective]);
-
-  useEffect(() => {
-    setAdverbIds(partOfSpeeches.adverb.map(({ id }) => id));
-  }, [partOfSpeeches.adverb]);
-
-  useEffect(() => {
-    setConjunctionIds(partOfSpeeches.conjunction.map(({ id }) => id));
-  }, [partOfSpeeches.conjunction]);
-
-  useEffect(() => {
-    setInterjectionIds(partOfSpeeches.interjection.map(({ id }) => id));
-  }, [partOfSpeeches.interjection]);
-
-  useEffect(() => {
-    setNounIds(partOfSpeeches.noun.map(({ id }) => id));
-  }, [partOfSpeeches.noun]);
-
-  useEffect(() => {
-    setPrepositionIds(partOfSpeeches.preposition.map(({ id }) => id));
-  }, [partOfSpeeches.preposition]);
-
-  useEffect(() => {
-    setPronounIds(partOfSpeeches.pronoun.map(({ id }) => id));
-  }, [partOfSpeeches.pronoun]);
-
-  useEffect(() => {
-    setVerbIds(partOfSpeeches.verb.map(({ id }) => id));
-  }, [partOfSpeeches.verb]);
-
-  useEffect(() => {
-    setOtherIds(partOfSpeeches.other.map(({ id }) => id));
-  }, [partOfSpeeches.other]);
 
   const disabled = useMemo(() => {
     const originalIds = {
@@ -112,10 +46,10 @@ export default function EditTab({
       other: partOfSpeeches.other.map(({ id }) => id)
     };
     return (
-      isEqual(originalPosOrder, poses) && isEqual(originalIds, allDefinitionIds)
+      isEqual(originalPosOrder, poses) && isEqual(originalIds, definitionIds)
     );
   }, [
-    allDefinitionIds,
+    definitionIds,
     originalPosOrder,
     partOfSpeeches.adjective,
     partOfSpeeches.adverb,
@@ -128,20 +62,6 @@ export default function EditTab({
     partOfSpeeches.verb,
     poses
   ]);
-
-  const setIds = useMemo(
-    () => ({
-      adjective: setAdjectiveIds,
-      adverb: setAdverbIds,
-      conjunction: setConjunctionIds,
-      interjection: setInterjectionIds,
-      noun: setNounIds,
-      other: setOtherIds,
-      preposition: setPrepositionIds,
-      verb: setVerbIds
-    }),
-    []
-  );
 
   useEffect(() => {
     setPoses(originalPosOrder);
@@ -163,14 +83,14 @@ export default function EditTab({
               <PartOfSpeechBlock
                 key={pos}
                 style={{ marginBottom: '1.5rem' }}
-                type={capitalize(pos)}
-                posIds={allDefinitionIds[pos]}
+                type={pos}
+                posIds={definitionIds[pos]}
                 posObject={posObj[pos]}
                 onListItemMove={params =>
                   handleDefinitionsMove({
                     ...params,
-                    setIds: setIds[pos],
-                    ids: allDefinitionIds[pos]
+                    setIds: onSetDefinitionIds[pos],
+                    ids: definitionIds[pos]
                   })
                 }
               />
@@ -192,12 +112,12 @@ export default function EditTab({
       </main>
       <footer>
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
-          Cancel
+          Close
         </Button>
         <Button
           color="blue"
           disabled={disabled || posting}
-          onClick={() => handleEditDone({ poses, allDefinitionIds })}
+          onClick={() => handleEditDone({ poses, definitionIds })}
         >
           Done
         </Button>
@@ -214,11 +134,11 @@ export default function EditTab({
     setIds(newIds);
   }
 
-  async function handleEditDone({ poses, allDefinitionIds }) {
+  async function handleEditDone({ poses, definitionIds }) {
     setPosting(true);
     const definitions = [];
     for (let key in posObj) {
-      for (let id of allDefinitionIds[key]) {
+      for (let id of definitionIds[key]) {
         const definition = posObj[key][id].title;
         definitions.push({ definition, partOfSpeech: key });
       }
