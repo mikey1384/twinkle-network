@@ -16,12 +16,16 @@ export default function PosBlock({
   return (
     <div style={style}>
       <p
-        style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}
+        style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          marginBottom: '0.5rem'
+        }}
       >
         {partOfSpeech}
       </p>
       {definitionIds.map((definitionId, index) => (
-        <div key={definitionId}>
+        <div key={definitionId} style={{ fontSize: '1.7rem', lineHeight: 2 }}>
           {index + 1}. {contentObj[definitionId].title}
         </div>
       ))}

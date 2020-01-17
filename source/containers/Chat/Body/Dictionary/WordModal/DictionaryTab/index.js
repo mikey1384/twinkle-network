@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import PosBlock from './PosBlock';
 import Button from 'components/Button';
+import { css } from 'emotion';
+import { mobileMaxWidth } from 'constants/css';
 
 DictionaryTab.propTypes = {
   definitionIds: PropTypes.object.isRequired,
@@ -25,18 +27,20 @@ export default function DictionaryTab({
           style={{
             fontWeight: 'bold',
             fontSize: '3rem',
-            marginBottom: '2rem',
-            width: '100%'
+            marginBottom: '1.5rem'
           }}
         >
           {word}
         </p>
         <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%'
-          }}
+          className={css`
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
         >
           {posOrder.map((pos, index) => (
             <PosBlock
@@ -44,7 +48,7 @@ export default function DictionaryTab({
               partOfSpeech={pos}
               contentObj={posObj[pos]}
               definitionIds={definitionIds[pos]}
-              style={{ marginTop: index > 0 ? '1rem' : 0 }}
+              style={{ marginTop: index > 0 ? '1.5rem' : 0 }}
             />
           ))}
         </div>

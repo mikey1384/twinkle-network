@@ -75,7 +75,7 @@ export default function EditTab({
           style={{
             fontWeight: 'bold',
             fontSize: '3rem',
-            marginBottom: '2rem',
+            marginBottom: '1.5rem',
             width: '100%'
           }}
         >

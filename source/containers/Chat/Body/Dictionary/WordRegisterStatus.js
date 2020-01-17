@@ -1,16 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useChatContext } from 'contexts';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { returnWordLevel } from 'helpers';
 import { rewardHash } from 'constants/defaultValues';
 import Button from 'components/Button';
-import Icon from 'components/Icon';
+import WordModal from './WordModal';
 
 export default function WordRegisterStatus() {
   const {
     state: { wordRegisterStatus: { frequency, content } = {} }
   } = useChatContext();
+  const [wordModalShown, setWordModalShown] = useState(false);
 
   const wordLevel = useMemo(() => {
     return returnWordLevel({ frequency, wordLength: content.length });
@@ -69,15 +70,13 @@ export default function WordRegisterStatus() {
           background: Color.targetGray()
         }}
       >
-        <Button color="orange" style={{ marginRight: '1rem' }} skeuomorphic>
-          <Icon icon="star" />
-          <span style={{ marginLeft: '0.7rem' }}>Tap here for Bonus XP</span>
-        </Button>
-        <Button skeuomorphic>
-          <Icon icon="pencil-alt" />
-          <span style={{ marginLeft: '0.7rem' }}>{`Edit "${content}"`}</span>
+        <Button skeuomorphic onClick={() => setWordModalShown(true)}>
+          <span style={{ marginLeft: '0.7rem' }}>{`View "${content}"`}</span>
         </Button>
       </div>
+      {wordModalShown && (
+        <WordModal word={content} onHide={() => setWordModalShown(false)} />
+      )}
     </div>
   );
 }

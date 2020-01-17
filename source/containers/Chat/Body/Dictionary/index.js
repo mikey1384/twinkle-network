@@ -2,10 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Input from './Input';
 import Loading from 'components/Loading';
 import ActivitiesContainer from './ActivitiesContainer';
-import EntriesContainer from './EntriesContainer';
 import Definition from './Definition';
 import Icon from 'components/Icon';
-import FilterBar from 'components/FilterBar';
 import WordRegisterStatus from './WordRegisterStatus';
 import { Color } from 'constants/css';
 import {
@@ -39,7 +37,6 @@ export default function Dictionary() {
     wordsObj
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activitiesTabShown, setActivitiesTabShown] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const text = useRef(null);
@@ -89,38 +86,13 @@ export default function Dictionary() {
         flexDirection: 'column'
       }}
     >
-      <FilterBar>
-        <nav
-          className={activitiesTabShown ? 'active' : ''}
-          onClick={() => setActivitiesTabShown(true)}
-        >
-          Activities
-        </nav>
-        <nav
-          className={!activitiesTabShown ? 'active' : ''}
-          onClick={() => setActivitiesTabShown(false)}
-        >
-          My Vocabs
-        </nav>
-      </FilterBar>
-      {activitiesTabShown && (
-        <ActivitiesContainer
-          style={{
-            width: '100%',
-            overflow: 'scroll',
-            height: containerHeight
-          }}
-        />
-      )}
-      {!activitiesTabShown && (
-        <EntriesContainer
-          style={{
-            width: '100%',
-            overflow: 'scroll',
-            height: containerHeight
-          }}
-        />
-      )}
+      <ActivitiesContainer
+        style={{
+          width: '100%',
+          overflow: 'scroll',
+          height: containerHeight
+        }}
+      />
       <div
         style={{
           zIndex: 5,
