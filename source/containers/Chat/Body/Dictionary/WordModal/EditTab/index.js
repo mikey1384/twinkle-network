@@ -71,6 +71,16 @@ export default function EditTab({
   return (
     <>
       <main>
+        <p
+          style={{
+            fontWeight: 'bold',
+            fontSize: '3rem',
+            marginBottom: '2rem',
+            width: '100%'
+          }}
+        >
+          {`Edit Definitions of "${word}"`}
+        </p>
         <div style={{ display: 'flex', width: '100%' }}>
           <div
             style={{
@@ -119,7 +129,7 @@ export default function EditTab({
           disabled={disabled || posting}
           onClick={() => handleEditDone({ poses, definitionIds })}
         >
-          Done
+          Apply
         </Button>
       </footer>
     </>
@@ -154,7 +164,6 @@ export default function EditTab({
       word
     });
     setPosting(false);
-    onHide();
   }
 
   function handlePosMove({ sourceId: sourcePos, targetId: targetPos }) {

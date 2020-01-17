@@ -7,21 +7,34 @@ DictionaryTab.propTypes = {
   definitionIds: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
   posObj: PropTypes.object.isRequired,
-  posOrder: PropTypes.array.isRequired
+  posOrder: PropTypes.array.isRequired,
+  word: PropTypes.string.isRequired
 };
 
 export default function DictionaryTab({
   definitionIds,
   onHide,
   posObj,
-  posOrder
+  posOrder,
+  word
 }) {
   return (
     <>
       <main>
+        <p
+          style={{
+            fontWeight: 'bold',
+            fontSize: '3rem',
+            marginBottom: '2rem',
+            width: '100%'
+          }}
+        >
+          {word}
+        </p>
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             width: '100%'
           }}
         >

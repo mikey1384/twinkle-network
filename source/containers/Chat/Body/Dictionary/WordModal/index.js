@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 import FilterBar from 'components/FilterBar';
+import BonusTab from './BonusTab';
 import DictionaryTab from './DictionaryTab';
 import EditTab from './EditTab';
 import { DndProvider } from 'react-dnd';
@@ -23,7 +24,7 @@ export default function WordModal({ onHide, word }) {
     state: { wordsObj },
     actions: { onEditWord }
   } = useChatContext();
-  const [editTabSelected, setEditTabSelected] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('dictionary');
   const wordObj = useMemo(() => {
     return wordsObj[word] || {};
   }, [word, wordsObj]);
@@ -62,7 +63,7 @@ export default function WordModal({ onHide, word }) {
       other
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wordObj]);
   const posObj = useMemo(() => {
     const result = {
       adjective: {},
@@ -88,37 +89,42 @@ export default function WordModal({ onHide, word }) {
   const posOrder = partOfSpeechOrder.filter(
     pos => Object.keys(posObj[pos]).length > 0
   );
+  const title = useMemo(() => {
+    if (selectedTab === 'edit') return `Edit Definitions of "${word}"`;
+    if (selectedTab === 'bonus') return 'Win Bonus XP';
+    return `Definitions of "${word}"`;
+  }, [selectedTab, word]);
   const [definitionIds, setDefinitionIds] = usePartOfSpeechIds(partOfSpeeches);
 
   return (
     <DndProvider backend={Backend}>
       <Modal large onHide={onHide}>
-        <header>
-          {editTabSelected ? `Edit Definitions of "${word}"` : word}
-        </header>
+        <header>{title}</header>
         <FilterBar>
           <nav
-            className={!editTabSelected ? 'active' : ''}
-            onClick={() => setEditTabSelected(false)}
+            className={selectedTab === 'dictionary' ? 'active' : ''}
+            onClick={() => setSelectedTab('dictionary')}
           >
             Dictionary
           </nav>
           <nav
-            className={editTabSelected ? 'active' : ''}
-            onClick={() => setEditTabSelected(true)}
+            className={selectedTab === 'edit' ? 'active' : ''}
+            onClick={() => setSelectedTab('edit')}
           >
             Edit
           </nav>
         </FilterBar>
-        {!editTabSelected && (
+        {selectedTab === 'bonus' && <BonusTab word={word} onHide={onHide} />}
+        {selectedTab === 'dictionary' && (
           <DictionaryTab
             definitionIds={definitionIds}
             onHide={onHide}
             posObj={posObj}
             posOrder={posOrder}
+            word={word}
           />
         )}
-        {editTabSelected && (
+        {selectedTab === 'edit' && (
           <EditTab
             definitionIds={definitionIds}
             onEditWord={onEditWord}
