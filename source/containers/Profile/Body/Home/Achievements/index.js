@@ -7,6 +7,7 @@ import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useProfileContext } from 'contexts';
 import { useProfileState } from 'helpers/hooks';
+import XPAchievements from './XPAchievements';
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -86,6 +87,7 @@ export default function Achievements({
         )}
       </SectionPanel>
       <MonthlyXp selectedTheme={selectedTheme} userId={id} />
+      <XPAchievements selectedTheme={selectedTheme} xp={profile.twinkleXP} />
     </ErrorBoundary>
   );
 
