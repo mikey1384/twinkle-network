@@ -56,6 +56,7 @@ import { faThumbsUp } from '@fortawesome/pro-solid-svg-icons/faThumbsUp';
 import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
 import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
+import { faTrophy } from '@fortawesome/pro-solid-svg-icons/faTrophy';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
@@ -109,6 +110,7 @@ library.add(
   faTimes,
   faTrashAlt,
   faTree,
+  faTrophy,
   faUser,
   faUserGraduate,
   faUsers

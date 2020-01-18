@@ -12,6 +12,7 @@ import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import Records from './Records';
 
 Home.propTypes = {
   history: PropTypes.object.isRequired,
@@ -51,6 +52,12 @@ function Home({ history, location }) {
         </div>
         <div className={Center}>
           <Switch>
+            <Route
+              path="/records"
+              render={({ history, location }) => (
+                <Records location={location} history={history} />
+              )}
+            />
             <Route
               path="/users"
               render={({ history, location }) => (

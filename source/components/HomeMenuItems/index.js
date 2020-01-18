@@ -75,6 +75,29 @@ export default function HomeMenuItems({ history, style = {} }) {
             </nav>
           )}
         />
+        <Route
+          exact
+          path="/users"
+          children={({ match }) => (
+            <nav
+              className={match ? 'active' : ''}
+              onClick={() => history.push('/records')}
+            >
+              <a href="/records" onClick={e => e.preventDefault()}>
+                <div
+                  style={{
+                    width: '3rem',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Icon icon="trophy" size="1x" />
+                </div>
+                <span className="homemenu__label">Records</span>
+              </a>
+            </nav>
+          )}
+        />
         {managementLevel > 0 && isMobile(navigator) && (
           <Route
             exact

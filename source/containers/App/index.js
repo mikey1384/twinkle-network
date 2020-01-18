@@ -250,6 +250,13 @@ function App({ location, history }) {
               <Home history={history} location={location} />
             )}
           />
+          <Route
+            exact
+            path="/records/"
+            render={({ history, location }) => (
+              <Home history={history} location={location} />
+            )}
+          />
           <Route path="/:username" component={Redirect} />
         </Switch>
       </div>
