@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Activity from './Activity';
 import { useChatContext } from 'contexts';
@@ -8,7 +8,7 @@ ActivitiesContainer.propTypes = {
   style: PropTypes.object
 };
 
-export default function ActivitiesContainer({ style }) {
+function ActivitiesContainer({ style }) {
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
@@ -74,3 +74,5 @@ export default function ActivitiesContainer({ style }) {
     if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);
   }
 }
+
+export default memo(ActivitiesContainer);

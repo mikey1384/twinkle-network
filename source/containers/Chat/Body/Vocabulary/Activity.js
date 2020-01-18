@@ -9,6 +9,8 @@ import { rewardHash } from 'constants/defaultValues';
 import { MessageStyle } from '../../Styles';
 import { Color } from 'constants/css';
 import { unix } from 'moment';
+import { socket } from 'constants/io';
+import { useChatContext } from 'contexts';
 
 Activity.propTypes = {
   activity: PropTypes.object.isRequired,
@@ -18,16 +20,39 @@ Activity.propTypes = {
 };
 
 export default function Activity({
-  activity: { content, frequency, userId, username, profilePicId, timeStamp },
+  activity,
+  activity: {
+    content,
+    frequency,
+    isNewActivity,
+    userId,
+    username,
+    profilePicId,
+    timeStamp
+  },
   setScrollToBottom,
   isLastActivity,
   myId
 }) {
+  const {
+    actions: { onRemoveNewActivityStatus }
+  } = useChatContext();
   const [wordModalShown, setWordModalShown] = useState(false);
   const userIsUploader = myId === userId;
   useEffect(() => {
     if (isLastActivity && userIsUploader) {
       setScrollToBottom();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (isNewActivity && isLastActivity && userIsUploader) {
+      handleSendActivity();
+    }
+    async function handleSendActivity() {
+      socket.emit('new_vocab_activity', activity);
+      onRemoveNewActivityStatus(content);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

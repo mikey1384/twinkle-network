@@ -697,7 +697,8 @@ export default function ChatReducer(state, action) {
           ...state.wordsObj,
           [action.word.content]: {
             ...state.wordsObj[action.word.content],
-            ...action.word
+            ...action.word,
+            isNewActivity: true
           }
         }
       };
@@ -706,6 +707,17 @@ export default function ChatReducer(state, action) {
         ...state,
         subject: action.subject,
         messages: state.messages.concat([action.message])
+      };
+    case 'REMOVE_NEW_ACTIVITY_STATUS':
+      return {
+        ...state,
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word]: {
+            ...state.wordsObj[action.word],
+            isNewActivity: false
+          }
+        }
       };
     case 'RESET_CHAT':
       return initialChatState;

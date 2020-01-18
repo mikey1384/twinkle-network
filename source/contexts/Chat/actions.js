@@ -282,6 +282,12 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onRemoveNewActivityStatus(word) {
+      return dispatch({
+        type: 'REMOVE_NEW_ACTIVITY_STATUS',
+        word
+      });
+    },
     onResetChat() {
       return dispatch({
         type: 'RESET_CHAT'
