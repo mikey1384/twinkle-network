@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react';
 import { Color } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 export default function TopMenu() {
   const {
     requestHelpers: { loadWordCollectors }
   } = useAppContext();
+  const {
+    state: { wordCollectors },
+    actions: { onLoadWordCollectors }
+  } = useChatContext();
 
   useEffect(() => {
     init();
 
     async function init() {
       const data = await loadWordCollectors();
-      console.log(data);
+      onLoadWordCollectors(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -21,7 +25,8 @@ export default function TopMenu() {
     <div
       style={{
         height: '50%',
-        borderBottom: `1px solid ${Color.borderGray()}`
+        borderBottom: `1px solid ${Color.borderGray()}`,
+        overflow: 'scroll'
       }}
     >
       <div
@@ -35,6 +40,11 @@ export default function TopMenu() {
         }}
       >
         High Level Word Collectors
+      </div>
+      <div>
+        {wordCollectors.map(collector => (
+          <div key={collector.id}>{collector.username}</div>
+        ))}
       </div>
     </div>
   );

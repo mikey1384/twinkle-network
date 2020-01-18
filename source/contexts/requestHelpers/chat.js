@@ -211,7 +211,10 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async loadWordCollectors() {
       try {
-        const { data } = await request.get(`${URL}/chat/wordCollectors`);
+        const { data } = await request.get(
+          `${URL}/chat/word/leaderBoard`,
+          auth()
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

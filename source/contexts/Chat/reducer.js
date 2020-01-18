@@ -423,6 +423,11 @@ export default function ChatReducer(state, action) {
         ...state,
         subject: action.subject
       };
+    case 'LOAD_WORD_COLLECTORS':
+      return {
+        ...state,
+        wordCollectors: action.wordCollectors
+      };
     case 'NEW_SUBJECT':
       return {
         ...state,

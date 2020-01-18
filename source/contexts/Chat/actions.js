@@ -182,6 +182,12 @@ export default function ChatActions(dispatch) {
         data
       });
     },
+    onLoadWordCollectors(wordCollectors) {
+      return dispatch({
+        type: 'LOAD_WORD_COLLECTORS',
+        wordCollectors
+      });
+    },
     onNotifyThatMemberLeftChannel(data) {
       return dispatch({
         type: 'NOTIFY_MEMBER_LEFT',
