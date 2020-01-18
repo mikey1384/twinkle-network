@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
+import Collector from './Collector';
 
 export default function TopMenu() {
   const {
@@ -39,12 +40,18 @@ export default function TopMenu() {
           color: '#fff'
         }}
       >
-        High Level Word Collectors
+        Collectors of High Level Words
       </div>
-      <div>
-        {wordCollectors.map(collector => (
-          <div key={collector.id}>{collector.username}</div>
-        ))}
+      <div style={{ marginTop: '1rem' }}>
+        {wordCollectors
+          .filter(collector => collector.numWordsCollected > 0)
+          .map(collector => (
+            <Collector
+              key={collector.id}
+              style={{ padding: '1rem' }}
+              user={collector}
+            />
+          ))}
       </div>
     </div>
   );

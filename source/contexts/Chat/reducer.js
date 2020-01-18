@@ -270,6 +270,7 @@ export default function ChatReducer(state, action) {
         action.vocabActivities.pop();
         vocabActivitiesLoadMoreButton = true;
       }
+      action.vocabActivities?.reverse();
       return {
         ...state,
         selectedChannelId: null,
