@@ -26,7 +26,6 @@ export default function RightMenu({
     state: { chatType }
   } = useChatContext();
   const {
-    state: { allRanks },
     actions: { onGetRanks }
   } = useNotiContext();
   const MenuRef = useRef(null);
@@ -67,7 +66,7 @@ export default function RightMenu({
         }
       `}
     >
-      {chatType === 'dictionary' && <VocabInfo rankings={allRanks} />}
+      {chatType === 'dictionary' && <VocabInfo />}
       {!chatType && (
         <ChatInfo
           channelName={channelName}
