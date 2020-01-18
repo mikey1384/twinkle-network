@@ -62,13 +62,13 @@ export default function Entry({ entry, style }) {
           Comments
         </nav>
         <nav
-          className={selectedTab === 'dictionary' ? 'active' : ''}
-          onClick={() => setSelectedTab('dictionary')}
+          className={selectedTab === 'vocabulary' ? 'active' : ''}
+          onClick={() => setSelectedTab('vocabulary')}
         >
-          Dictionary
+          Vocabulary
         </nav>
       </FilterBar>
-      {selectedTab === 'dictionary' && <Definition wordObj={entry} />}
+      {selectedTab === 'vocabulary' && <Definition wordObj={entry} />}
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '1rem' }}>
         <Textarea
           autoFocus

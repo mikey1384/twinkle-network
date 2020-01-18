@@ -119,7 +119,7 @@ export default function LeftMenu({
         + New Channel
       </div>
       <Vocabulary
-        selected={chatType === 'dictionary'}
+        selected={chatType === 'vocabulary'}
         onClick={handleEnterVocabulary}
       />
       <ChatSearchBox

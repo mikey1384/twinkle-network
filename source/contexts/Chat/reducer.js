@@ -274,7 +274,7 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         selectedChannelId: null,
-        chatType: 'dictionary',
+        chatType: 'vocabulary',
         messages: [],
         messagesLoadMoreButton: false,
         vocabActivities: action.vocabActivities,

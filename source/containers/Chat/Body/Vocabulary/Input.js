@@ -33,7 +33,7 @@ export default function Input({
     actions: { onEnterComment }
   } = useInputContext();
 
-  const text = state['dictionary'] || '';
+  const text = state['vocabulary'] || '';
 
   useEffect(() => {
     if (!isMobile(navigator)) {
@@ -69,7 +69,7 @@ export default function Input({
           onKeyUp={event => {
             if (event.key === ' ') {
               onEnterComment({
-                contentType: 'dictionary',
+                contentType: 'vocabulary',
                 text: addEmoji(event.target.value)
               });
             }
@@ -96,7 +96,7 @@ export default function Input({
 
   function handleChange(event) {
     onEnterComment({
-      contentType: 'dictionary',
+      contentType: 'vocabulary',
       text: trimWhiteSpaces(event.target.value)
     });
   }

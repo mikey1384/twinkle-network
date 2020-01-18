@@ -15,7 +15,7 @@ import {
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 
-export default function Dictionary() {
+export default function Vocabulary() {
   const {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
@@ -31,7 +31,7 @@ export default function Dictionary() {
     actions: { onEnterComment }
   } = useInputContext();
   const { userId } = useMyState();
-  const inputText = state['dictionary'] || '';
+  const inputText = state['vocabulary'] || '';
   const wordObj = useMemo(() => wordsObj[inputText] || {}, [
     inputText,
     wordsObj
@@ -203,7 +203,7 @@ export default function Dictionary() {
       onRegisterWord(word);
       onSetWordRegisterStatus(wordObj);
       onEnterComment({
-        contentType: 'dictionary',
+        contentType: 'vocabulary',
         text: ''
       });
       setIsSubmitting(false);

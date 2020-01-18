@@ -66,7 +66,7 @@ export default function RightMenu({
         }
       `}
     >
-      {chatType === 'dictionary' && <VocabInfo />}
+      {chatType === 'vocabulary' && <VocabInfo />}
       {!chatType && (
         <ChatInfo
           channelName={channelName}

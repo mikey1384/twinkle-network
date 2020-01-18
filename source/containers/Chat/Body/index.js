@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
-import Dictionary from './Dictionary';
+import Vocabulary from './Vocabulary';
 import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
 import { useChatContext } from 'contexts';
@@ -31,7 +31,7 @@ function Body({ channelName, chessOpponent, currentChannel }) {
         }
       `}
     >
-      {chatType === 'dictionary' && <Dictionary />}
+      {chatType === 'vocabulary' && <Vocabulary />}
       {!chatType && (
         <MessagesContainer
           channelName={channelName}
