@@ -689,6 +689,15 @@ export default function ChatReducer(state, action) {
           state.channelIds.filter(channelId => channelId !== action.channel.id)
         )
       };
+    case 'RECEIVE_VOCAB_ACTIVITY':
+      return {
+        ...state,
+        vocabActivities: state.vocabActivities.concat(action.activity.content),
+        wordsObj: {
+          ...state.wordsObj,
+          [action.activity.content]: action.activity
+        }
+      };
     case 'REGISTER_WORD':
       return {
         ...state,

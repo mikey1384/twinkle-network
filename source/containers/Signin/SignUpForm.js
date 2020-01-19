@@ -252,7 +252,7 @@ function isValidRealname(realName) {
 }
 
 function isValidUsername(username) {
-  const pattern = new RegExp(/^[^0-9_](?!.*__)[a-zA-Z0-9_]+$/);
+  const pattern = new RegExp(/^[a-zA-Z0-9_]+$/);
   return (
     !!username &&
     username.length < 20 &&

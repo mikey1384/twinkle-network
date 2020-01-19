@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import PartOfSpeechBlock from './PartOfSpeechBlock';
-import PartOfSpeechesList from './PartOfSpeechesList';
 import { isEqual } from 'lodash';
 import { useAppContext } from 'contexts';
 import Button from 'components/Button';
+import FilterBar from 'components/FilterBar';
+import Rearrange from './Rearrange';
+import Remove from './Remove';
 
 EditTab.propTypes = {
   definitionIds: PropTypes.object.isRequired,
@@ -30,6 +31,7 @@ export default function EditTab({
   const {
     requestHelpers: { editWord }
   } = useAppContext();
+  const [selectedTab, setSelectedTab] = useState('rearrange');
   const [posting, setPosting] = useState(false);
   const [poses, setPoses] = useState([]);
 
@@ -75,50 +77,37 @@ export default function EditTab({
           style={{
             fontWeight: 'bold',
             fontSize: '3rem',
-            marginBottom: '1.5rem',
             width: '100%'
           }}
         >
           {`Edit Definitions of "${word}"`}
         </p>
-        <div style={{ display: 'flex', width: '100%' }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '60%'
-            }}
+        <FilterBar style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+          <nav
+            className={selectedTab === 'rearrange' ? 'active' : ''}
+            onClick={() => setSelectedTab('rearrange')}
           >
-            {poses.map(pos => (
-              <PartOfSpeechBlock
-                key={pos}
-                style={{ marginBottom: '1.5rem' }}
-                type={pos}
-                posIds={definitionIds[pos]}
-                posObject={posObj[pos]}
-                onListItemMove={params =>
-                  handleDefinitionsMove({
-                    ...params,
-                    setIds: onSetDefinitionIds[pos],
-                    ids: definitionIds[pos]
-                  })
-                }
-              />
-            ))}
-          </div>
-          <div
-            style={{
-              width: '40%',
-              marginLeft: '1rem',
-              marginTop: '3.5rem'
-            }}
+            Rearrange
+          </nav>
+          <nav
+            className={selectedTab === 'remove' ? 'active' : ''}
+            onClick={() => setSelectedTab('remove')}
           >
-            <PartOfSpeechesList
-              partOfSpeeches={poses}
-              onListItemMove={handlePosMove}
-            />
-          </div>
-        </div>
+            Remove
+          </nav>
+        </FilterBar>
+        {selectedTab === 'rearrange' && (
+          <Rearrange
+            definitionIds={definitionIds}
+            onSetDefinitionIds={onSetDefinitionIds}
+            onSetPoses={setPoses}
+            poses={poses}
+            posObj={posObj}
+          />
+        )}
+        {selectedTab === 'remove' && (
+          <Remove definitionIds={definitionIds} poses={poses} posObj={posObj} />
+        )}
       </main>
       <footer>
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
@@ -134,15 +123,6 @@ export default function EditTab({
       </footer>
     </>
   );
-
-  function handleDefinitionsMove({ sourceId, targetId, ids, setIds }) {
-    const newIds = [...ids];
-    const sourceIndex = newIds.indexOf(sourceId);
-    const targetIndex = newIds.indexOf(targetId);
-    newIds.splice(sourceIndex, 1);
-    newIds.splice(targetIndex, 0, sourceId);
-    setIds(newIds);
-  }
 
   async function handleEditDone({ poses, definitionIds }) {
     setPosting(true);
@@ -164,14 +144,5 @@ export default function EditTab({
       word
     });
     setPosting(false);
-  }
-
-  function handlePosMove({ sourceId: sourcePos, targetId: targetPos }) {
-    const newPoses = [...poses];
-    const sourceIndex = newPoses.indexOf(sourcePos);
-    const targetIndex = newPoses.indexOf(targetPos);
-    newPoses.splice(sourceIndex, 1);
-    newPoses.splice(targetIndex, 0, sourcePos);
-    setPoses(newPoses);
   }
 }

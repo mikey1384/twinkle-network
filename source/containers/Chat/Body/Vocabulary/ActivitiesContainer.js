@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Activity from './Activity';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { checkScrollIsAtTheBottom } from 'helpers';
 
 ActivitiesContainer.propTypes = {
   style: PropTypes.object
@@ -36,16 +37,29 @@ function ActivitiesContainer({ style }) {
     ]
   );
 
-  console.log(scrollAtBottom);
-
   return (
-    <div ref={ActivitiesContainerRef} style={{ paddingLeft: '1rem', ...style }}>
+    <div
+      ref={ActivitiesContainerRef}
+      style={{ paddingLeft: '1rem', ...style }}
+      onScroll={() => {
+        if (
+          checkScrollIsAtTheBottom({
+            content: ContentRef.current,
+            container: ActivitiesContainerRef.current
+          })
+        ) {
+          setScrollAtBottom(true);
+        } else {
+          setScrollAtBottom(false);
+        }
+      }}
+    >
       <div
         style={{
           height: fillerHeight + 'px'
         }}
       />
-      <div ref={ContentRef}>
+      <div style={{ position: 'relative' }} ref={ContentRef}>
         {vocabActivities.map((vocab, index) => {
           const word = wordsObj[vocab] || {};
           return (
@@ -55,12 +69,19 @@ function ActivitiesContainer({ style }) {
               setScrollToBottom={handleSetScrollToBottom}
               isLastActivity={index === vocabActivities.length - 1}
               myId={userId}
+              onReceiveNewActivity={handleReceiveNewActivity}
             />
           );
         })}
       </div>
     </div>
   );
+
+  function handleReceiveNewActivity() {
+    if (scrollAtBottom) {
+      handleSetScrollToBottom();
+    }
+  }
 
   function handleSetScrollToBottom() {
     ActivitiesContainerRef.current.scrollTop =

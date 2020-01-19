@@ -23,6 +23,7 @@ import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext, useNotiContext } from 'contexts';
+import { checkScrollIsAtTheBottom } from 'helpers';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -556,10 +557,6 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
       )}
     </ErrorBoundary>
   );
-
-  function checkScrollIsAtTheBottom({ content, container }) {
-    return content.offsetHeight <= container.offsetHeight + container.scrollTop;
-  }
 
   function handleChessModalShown() {
     const channelId = currentChannel?.id;

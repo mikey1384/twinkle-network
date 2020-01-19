@@ -16,7 +16,8 @@ Activity.propTypes = {
   activity: PropTypes.object.isRequired,
   setScrollToBottom: PropTypes.func.isRequired,
   isLastActivity: PropTypes.bool,
-  myId: PropTypes.number
+  myId: PropTypes.number,
+  onReceiveNewActivity: PropTypes.func.isRequired
 };
 
 export default function Activity({
@@ -32,7 +33,8 @@ export default function Activity({
   },
   setScrollToBottom,
   isLastActivity,
-  myId
+  myId,
+  onReceiveNewActivity
 }) {
   const {
     actions: { onRemoveNewActivityStatus }
@@ -53,6 +55,14 @@ export default function Activity({
     async function handleSendActivity() {
       socket.emit('new_vocab_activity', activity);
       onRemoveNewActivityStatus(content);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (isLastActivity && isNewActivity && !userIsUploader) {
+      onRemoveNewActivityStatus(content);
+      onReceiveNewActivity();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -269,6 +269,13 @@ export default function ChatActions(dispatch) {
         usingChat
       });
     },
+    onReceiveVocabActivity({ activity, usingVocabSection }) {
+      return dispatch({
+        type: 'RECEIVE_VOCAB_ACTIVITY',
+        activity,
+        usingVocabSection
+      });
+    },
     onRegisterWord(word) {
       return dispatch({
         type: 'REGISTER_WORD',
