@@ -7,7 +7,7 @@ import { css } from 'emotion';
 PartOfSpeechBlock.propTypes = {
   type: PropTypes.string,
   onListItemMove: PropTypes.func.isRequired,
-  posIds: PropTypes.array.isRequired,
+  defIds: PropTypes.array.isRequired,
   posObject: PropTypes.object.isRequired,
   style: PropTypes.object
 };
@@ -15,11 +15,11 @@ PartOfSpeechBlock.propTypes = {
 export default function PartOfSpeechBlock({
   type,
   onListItemMove,
-  posIds,
+  defIds,
   posObject,
   style
 }) {
-  return posIds.length > 0 ? (
+  return defIds.length > 0 ? (
     <div style={style}>
       <p
         style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}
@@ -50,7 +50,7 @@ export default function PartOfSpeechBlock({
           }
         `}
       >
-        {posIds.map((id, index) => {
+        {defIds.map((id, index) => {
           return (
             <SortableListItem
               numbered

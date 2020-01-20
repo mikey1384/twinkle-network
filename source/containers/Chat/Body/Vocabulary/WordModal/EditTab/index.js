@@ -34,6 +34,7 @@ export default function EditTab({
   const [selectedTab, setSelectedTab] = useState('rearrange');
   const [posting, setPosting] = useState(false);
   const [poses, setPoses] = useState([]);
+  const [deletedDefIds, setDeletedDefIds] = useState([]);
 
   const disabled = useMemo(() => {
     const originalIds = {
@@ -48,10 +49,13 @@ export default function EditTab({
       other: partOfSpeeches.other.map(({ id }) => id)
     };
     return (
-      isEqual(originalPosOrder, poses) && isEqual(originalIds, definitionIds)
+      isEqual(originalPosOrder, poses) &&
+      isEqual(originalIds, definitionIds) &&
+      deletedDefIds.length === 0
     );
   }, [
     definitionIds,
+    deletedDefIds.length,
     originalPosOrder,
     partOfSpeeches.adjective,
     partOfSpeeches.adverb,
@@ -106,7 +110,13 @@ export default function EditTab({
           />
         )}
         {selectedTab === 'remove' && (
-          <Remove definitionIds={definitionIds} poses={poses} posObj={posObj} />
+          <Remove
+            definitionIds={definitionIds}
+            onListItemClick={handleRemoveListItemClick}
+            poses={poses}
+            posObj={posObj}
+            deletedDefIds={deletedDefIds}
+          />
         )}
       </main>
       <footer>
@@ -127,22 +137,28 @@ export default function EditTab({
   async function handleEditDone({ poses, definitionIds }) {
     setPosting(true);
     const definitions = [];
-    for (let key in posObj) {
-      for (let id of definitionIds[key]) {
-        const definition = posObj[key][id].title;
-        definitions.push({ definition, partOfSpeech: key });
-      }
-    }
     await editWord({
+      definitionIds,
+      deletedDefIds,
       partOfSpeeches: poses,
-      definitions,
       word
     });
     onEditWord({
+      deletedDefIds,
       partOfSpeeches: poses,
       definitions,
       word
     });
     setPosting(false);
+  }
+
+  function handleRemoveListItemClick(defId) {
+    setDeletedDefIds(defIds => {
+      if (defIds.includes(defId)) {
+        return defIds.filter(id => id !== defId);
+      } else {
+        return [...defIds, defId];
+      }
+    });
   }
 }

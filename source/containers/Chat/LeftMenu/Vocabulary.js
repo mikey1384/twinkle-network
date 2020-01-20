@@ -36,25 +36,28 @@ export default function Vocabulary({ selected, onClick }) {
       `}`}
       onClick={onClick}
     >
-      <div>
+      <div style={{ height: '5rem', position: 'relative' }}>
         <div style={{ fontSize: '1.7rem' }}>
           <Icon icon="book" />
           <span style={{ fontWeight: 'bold', marginLeft: '0.7rem' }}>
             Vocabulary
           </span>
         </div>
-        <p
-          style={{
-            marginTop: '0.3rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            width: '100%'
-          }}
-        >
-          {lastActivity.userId === myId ? 'You' : lastActivity.username}:{' '}
-          registered <b>{lastActivity.content}</b>
-        </p>
+        {lastActivity && (
+          <div style={{ position: 'absolute' }}>
+            <p
+              style={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                width: '100%'
+              }}
+            >
+              {lastActivity.userId === myId ? 'You' : lastActivity.username}:{' '}
+              registered <b>{lastActivity.content}</b>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

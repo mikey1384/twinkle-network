@@ -5,7 +5,7 @@ import PartOfSpeechesList from './PartOfSpeechesList';
 
 Rearrange.propTypes = {
   definitionIds: PropTypes.object.isRequired,
-  onSetDefinitionIds: PropTypes.func.isRequired,
+  onSetDefinitionIds: PropTypes.object.isRequired,
   onSetPoses: PropTypes.func.isRequired,
   poses: PropTypes.array.isRequired,
   posObj: PropTypes.object.isRequired
@@ -32,7 +32,7 @@ export default function Rearrange({
             key={pos}
             style={{ marginBottom: '1.5rem' }}
             type={pos}
-            posIds={definitionIds[pos]}
+            defIds={definitionIds[pos]}
             posObject={posObj[pos]}
             onListItemMove={params =>
               handleDefinitionsMove({
