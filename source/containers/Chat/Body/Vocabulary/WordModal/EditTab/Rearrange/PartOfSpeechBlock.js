@@ -5,6 +5,7 @@ import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
 
 PartOfSpeechBlock.propTypes = {
+  deletedDefIds: PropTypes.array.isRequired,
   type: PropTypes.string,
   onListItemMove: PropTypes.func.isRequired,
   defIds: PropTypes.array.isRequired,
@@ -13,6 +14,7 @@ PartOfSpeechBlock.propTypes = {
 };
 
 export default function PartOfSpeechBlock({
+  deletedDefIds,
   type,
   onListItemMove,
   defIds,
@@ -50,20 +52,22 @@ export default function PartOfSpeechBlock({
           }
         `}
       >
-        {defIds.map((id, index) => {
-          return (
-            <SortableListItem
-              numbered
-              key={id}
-              id={id}
-              index={index}
-              listItemId={id}
-              listItemLabel={posObject[id]?.title}
-              listItemType={type}
-              onMove={onListItemMove}
-            />
-          );
-        })}
+        {defIds
+          .filter(id => !deletedDefIds.includes(id))
+          .map((id, index) => {
+            return (
+              <SortableListItem
+                numbered
+                key={id}
+                id={id}
+                index={index}
+                listItemId={id}
+                listItemLabel={posObject[id]?.title}
+                listItemType={type}
+                onMove={onListItemMove}
+              />
+            );
+          })}
       </div>
     </div>
   ) : null;

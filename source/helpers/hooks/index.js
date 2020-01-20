@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 import { stringIsEmpty } from '../stringHelpers';
 import { useAppContext, useContentContext, useProfileContext } from 'contexts';
@@ -140,93 +140,6 @@ export function useOutsideClick(ref, callback) {
       removeEvent(document, 'touchend', uPlistener);
     };
   });
-}
-
-export function usePartOfSpeechIds(partOfSpeeches) {
-  const [adjectiveIds, setAdjectiveIds] = useState([]);
-  const [adverbIds, setAdverbIds] = useState([]);
-  const [conjunctionIds, setConjunctionIds] = useState([]);
-  const [interjectionIds, setInterjectionIds] = useState([]);
-  const [nounIds, setNounIds] = useState([]);
-  const [prepositionIds, setPrepositionIds] = useState([]);
-  const [pronounIds, setPronounIds] = useState([]);
-  const [verbIds, setVerbIds] = useState([]);
-  const [otherIds, setOtherIds] = useState([]);
-  const definitionIds = useMemo(
-    () => ({
-      adjective: adjectiveIds,
-      adverb: adverbIds,
-      conjunction: conjunctionIds,
-      interjection: interjectionIds,
-      noun: nounIds,
-      preposition: prepositionIds,
-      pronoun: pronounIds,
-      verb: verbIds,
-      other: otherIds
-    }),
-    [
-      adjectiveIds,
-      adverbIds,
-      conjunctionIds,
-      interjectionIds,
-      nounIds,
-      otherIds,
-      prepositionIds,
-      pronounIds,
-      verbIds
-    ]
-  );
-
-  useEffect(() => {
-    setAdjectiveIds(partOfSpeeches.adjective.map(({ id }) => id));
-  }, [partOfSpeeches.adjective]);
-
-  useEffect(() => {
-    setAdverbIds(partOfSpeeches.adverb.map(({ id }) => id));
-  }, [partOfSpeeches.adverb]);
-
-  useEffect(() => {
-    setConjunctionIds(partOfSpeeches.conjunction.map(({ id }) => id));
-  }, [partOfSpeeches.conjunction]);
-
-  useEffect(() => {
-    setInterjectionIds(partOfSpeeches.interjection.map(({ id }) => id));
-  }, [partOfSpeeches.interjection]);
-
-  useEffect(() => {
-    setNounIds(partOfSpeeches.noun.map(({ id }) => id));
-  }, [partOfSpeeches.noun]);
-
-  useEffect(() => {
-    setPrepositionIds(partOfSpeeches.preposition.map(({ id }) => id));
-  }, [partOfSpeeches.preposition]);
-
-  useEffect(() => {
-    setPronounIds(partOfSpeeches.pronoun.map(({ id }) => id));
-  }, [partOfSpeeches.pronoun]);
-
-  useEffect(() => {
-    setVerbIds(partOfSpeeches.verb.map(({ id }) => id));
-  }, [partOfSpeeches.verb]);
-
-  useEffect(() => {
-    setOtherIds(partOfSpeeches.other.map(({ id }) => id));
-  }, [partOfSpeeches.other]);
-  const setDefinitionIds = useMemo(
-    () => ({
-      adjective: setAdjectiveIds,
-      adverb: setAdverbIds,
-      conjunction: setConjunctionIds,
-      interjection: setInterjectionIds,
-      noun: setNounIds,
-      other: setOtherIds,
-      preposition: setPrepositionIds,
-      verb: setVerbIds
-    }),
-    []
-  );
-
-  return [definitionIds, setDefinitionIds];
 }
 
 export function useProfileState(username) {

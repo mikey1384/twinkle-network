@@ -101,11 +101,12 @@ export default function ChatActions(dispatch) {
         data: { editedMessage, messageId }
       });
     },
-    onEditWord({ partOfSpeeches, definitions, word }) {
+    onEditWord({ deletedDefIds, partOfSpeeches, editedDefinitionOrder, word }) {
       return dispatch({
         type: 'EDIT_WORD',
+        deletedDefIds,
         partOfSpeeches,
-        definitions,
+        editedDefinitionOrder,
         word
       });
     },

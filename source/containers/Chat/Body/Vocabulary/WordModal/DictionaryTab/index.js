@@ -6,7 +6,8 @@ import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 
 DictionaryTab.propTypes = {
-  definitionIds: PropTypes.object.isRequired,
+  deletedDefIds: PropTypes.array.isRequired,
+  definitionOrder: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
   posObj: PropTypes.object.isRequired,
   posOrder: PropTypes.array.isRequired,
@@ -14,7 +15,8 @@ DictionaryTab.propTypes = {
 };
 
 export default function DictionaryTab({
-  definitionIds,
+  deletedDefIds,
+  definitionOrder,
   onHide,
   posObj,
   posOrder,
@@ -47,7 +49,8 @@ export default function DictionaryTab({
               key={pos}
               partOfSpeech={pos}
               contentObj={posObj[pos]}
-              definitionIds={definitionIds[pos]}
+              deletedDefIds={deletedDefIds}
+              definitionIds={definitionOrder[pos]}
               style={{ marginTop: index > 0 ? '1.5rem' : 0 }}
             />
           ))}

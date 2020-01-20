@@ -60,11 +60,16 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editWord({ deletedDefIds, definitionIds, partOfSpeeches, word }) {
+    async editWord({
+      deletedDefIds,
+      editedDefinitionOrder,
+      partOfSpeeches,
+      word
+    }) {
       try {
         const data = await request.put(
           `${URL}/chat/word`,
-          { deletedDefIds, definitionIds, partOfSpeeches, word },
+          { deletedDefIds, editedDefinitionOrder, partOfSpeeches, word },
           auth()
         );
         return Promise.resolve(data);

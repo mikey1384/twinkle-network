@@ -10,7 +10,6 @@ import EditTab from './EditTab';
 import { DndProvider } from 'react-dnd';
 import { isMobile } from 'helpers';
 import { useChatContext } from 'contexts';
-import { usePartOfSpeechIds } from 'helpers/hooks';
 
 WordModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -38,6 +37,8 @@ export default function WordModal({ onHide, word }) {
     conjunction = [],
     interjection = [],
     other = [],
+    deletedDefIds,
+    definitionOrder,
     partOfSpeechOrder = [
       'noun',
       'verb',
@@ -77,10 +78,10 @@ export default function WordModal({ onHide, word }) {
       other: {}
     };
     for (let key in partOfSpeeches) {
-      for (let partOfSpeech of partOfSpeeches[key]) {
-        result[key][partOfSpeech.id] = {
-          id: partOfSpeech.id,
-          title: partOfSpeech.definition
+      for (let { id, definition } of partOfSpeeches[key]) {
+        result[key][id] = {
+          id,
+          title: definition
         };
       }
     }
@@ -94,7 +95,9 @@ export default function WordModal({ onHide, word }) {
     if (selectedTab === 'bonus') return 'Win Bonus XP';
     return `Definitions of "${word}"`;
   }, [selectedTab, word]);
-  const [definitionIds, setDefinitionIds] = usePartOfSpeechIds(partOfSpeeches);
+  const [editedDefinitionOrder, setEditedDefinitionOrder] = useState(
+    definitionOrder
+  );
 
   return (
     <DndProvider backend={Backend}>
@@ -117,7 +120,8 @@ export default function WordModal({ onHide, word }) {
         {selectedTab === 'bonus' && <BonusTab word={word} onHide={onHide} />}
         {selectedTab === 'dictionary' && (
           <DictionaryTab
-            definitionIds={definitionIds}
+            deletedDefIds={deletedDefIds}
+            definitionOrder={editedDefinitionOrder}
             onHide={onHide}
             posObj={posObj}
             posOrder={posOrder}
@@ -126,13 +130,14 @@ export default function WordModal({ onHide, word }) {
         )}
         {selectedTab === 'edit' && (
           <EditTab
-            definitionIds={definitionIds}
+            deletedDefIds={deletedDefIds}
+            originalDefinitionOrder={definitionOrder}
+            editedDefinitionOrder={editedDefinitionOrder}
             onEditWord={onEditWord}
             onHide={onHide}
             originalPosOrder={posOrder}
-            partOfSpeeches={partOfSpeeches}
             posObj={posObj}
-            onSetDefinitionIds={setDefinitionIds}
+            onSetEditedDefinitionOrder={setEditedDefinitionOrder}
             word={word}
           />
         )}

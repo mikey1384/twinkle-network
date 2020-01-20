@@ -1,5 +1,4 @@
 import { initialChatState } from '.';
-import { returnPartOfSpeeches } from 'helpers';
 
 export default function ChatReducer(state, action) {
   switch (action.type) {
@@ -25,18 +24,6 @@ export default function ChatReducer(state, action) {
         customChannelNames: {
           ...state.customChannelNames,
           [action.channelId]: action.channelName
-        }
-      };
-    case 'EDIT_WORD':
-      return {
-        ...state,
-        wordsObj: {
-          ...state.wordsObj,
-          [action.word]: {
-            ...state.wordsObj[action.word],
-            partOfSpeechOrder: action.partOfSpeeches,
-            ...returnPartOfSpeeches(action.definitions)
-          }
         }
       };
     case 'CHANGE_CHANNEL_OWNER': {
@@ -211,6 +198,19 @@ export default function ChatReducer(state, action) {
                 : message.content
           };
         })
+      };
+    case 'EDIT_WORD':
+      return {
+        ...state,
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word]: {
+            ...state.wordsObj[action.word],
+            deletedDefIds: action.deletedDefIds,
+            partOfSpeechOrder: action.partOfSpeeches,
+            definitionOrder: action.editedDefinitionOrder
+          }
+        }
       };
     case 'ENTER_CHANNEL': {
       let messagesLoadMoreButton = false;

@@ -4,16 +4,18 @@ import PartOfSpeechBlock from './PartOfSpeechBlock';
 import PartOfSpeechesList from './PartOfSpeechesList';
 
 Rearrange.propTypes = {
-  definitionIds: PropTypes.object.isRequired,
-  onSetDefinitionIds: PropTypes.object.isRequired,
+  deletedDefIds: PropTypes.array.isRequired,
+  editedDefinitionOrder: PropTypes.object.isRequired,
+  onSetEditedDefinitionOrder: PropTypes.func.isRequired,
   onSetPoses: PropTypes.func.isRequired,
   poses: PropTypes.array.isRequired,
   posObj: PropTypes.object.isRequired
 };
 
 export default function Rearrange({
-  definitionIds,
-  onSetDefinitionIds,
+  deletedDefIds,
+  editedDefinitionOrder,
+  onSetEditedDefinitionOrder,
   onSetPoses,
   poses,
   posObj
@@ -32,13 +34,15 @@ export default function Rearrange({
             key={pos}
             style={{ marginBottom: '1.5rem' }}
             type={pos}
-            defIds={definitionIds[pos]}
+            deletedDefIds={deletedDefIds}
+            defIds={editedDefinitionOrder[pos]}
             posObject={posObj[pos]}
             onListItemMove={params =>
               handleDefinitionsMove({
                 ...params,
-                setIds: onSetDefinitionIds[pos],
-                ids: definitionIds[pos]
+                setIds: onSetEditedDefinitionOrder,
+                ids: editedDefinitionOrder[pos],
+                pos
               })
             }
           />
@@ -59,13 +63,16 @@ export default function Rearrange({
     </div>
   );
 
-  function handleDefinitionsMove({ sourceId, targetId, ids, setIds }) {
+  function handleDefinitionsMove({ sourceId, targetId, ids, pos, setIds }) {
     const newIds = [...ids];
     const sourceIndex = newIds.indexOf(sourceId);
     const targetIndex = newIds.indexOf(targetId);
     newIds.splice(sourceIndex, 1);
     newIds.splice(targetIndex, 0, sourceId);
-    setIds(newIds);
+    setIds(ids => ({
+      ...ids,
+      [pos]: newIds
+    }));
   }
 
   function handlePosMove({ sourceId: sourcePos, targetId: targetPos }) {

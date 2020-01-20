@@ -56,59 +56,6 @@ export function objectify(array, id = 'id') {
   return result;
 }
 
-export function returnPartOfSpeeches(definitions) {
-  const noun = definitions
-    .filter(definition => definition.partOfSpeech === 'noun')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const verb = definitions
-    .filter(definition => definition.partOfSpeech === 'verb')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const adjective = definitions
-    .filter(definition => definition.partOfSpeech === 'adjective')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const preposition = definitions
-    .filter(definition => definition.partOfSpeech === 'preposition')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const adverb = definitions
-    .filter(definition => definition.partOfSpeech === 'adverb')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const pronoun = definitions
-    .filter(definition => definition.partOfSpeech === 'pronoun')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const conjunction = definitions
-    .filter(definition => definition.partOfSpeech === 'conjunctions')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const interjection = definitions
-    .filter(definition => definition.partOfSpeech === 'interjection')
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  const other = definitions
-    .filter(
-      definition =>
-        ![
-          'noun',
-          'pronoun',
-          'verb',
-          'adverb',
-          'adjective',
-          'preposition',
-          'conjunction',
-          'interjection'
-        ].includes(definition.partOfSpeech)
-    )
-    .map(({ id, definition }, index) => ({ id: id || index, definition }));
-  return {
-    noun,
-    verb,
-    adjective,
-    preposition,
-    adverb,
-    pronoun,
-    conjunction,
-    interjection,
-    other
-  };
-}
-
 export function returnWordLevel({ frequency, wordLength }) {
   if (frequency > 3.7) {
     if (wordLength < 7) return 1;

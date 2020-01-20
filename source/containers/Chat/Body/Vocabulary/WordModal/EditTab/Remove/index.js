@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import PartOfSpeechBlock from './PartOfSpeechBlock';
 
 Remove.propTypes = {
-  definitionIds: PropTypes.object.isRequired,
+  editedDefinitionOrder: PropTypes.object.isRequired,
   deletedDefIds: PropTypes.array.isRequired,
   onListItemClick: PropTypes.func.isRequired,
   poses: PropTypes.array.isRequired,
@@ -11,7 +11,7 @@ Remove.propTypes = {
 };
 
 export default function Remove({
-  definitionIds,
+  editedDefinitionOrder,
   deletedDefIds,
   onListItemClick,
   poses,
@@ -27,7 +27,7 @@ export default function Remove({
             style={{ marginBottom: '1.5rem' }}
             type={pos}
             onListItemClick={onListItemClick}
-            defIds={definitionIds[pos]}
+            defIds={editedDefinitionOrder[pos]}
             posObject={posObj[pos]}
           />
         ))}

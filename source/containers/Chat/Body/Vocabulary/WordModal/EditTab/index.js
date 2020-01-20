@@ -8,24 +8,26 @@ import Rearrange from './Rearrange';
 import Remove from './Remove';
 
 EditTab.propTypes = {
-  definitionIds: PropTypes.object.isRequired,
+  deletedDefIds: PropTypes.array.isRequired,
+  editedDefinitionOrder: PropTypes.object.isRequired,
   onEditWord: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
-  partOfSpeeches: PropTypes.object.isRequired,
+  originalDefinitionOrder: PropTypes.object.isRequired,
   originalPosOrder: PropTypes.array.isRequired,
   posObj: PropTypes.object.isRequired,
-  onSetDefinitionIds: PropTypes.object.isRequired,
+  onSetEditedDefinitionOrder: PropTypes.func.isRequired,
   word: PropTypes.string.isRequired
 };
 
 export default function EditTab({
-  definitionIds,
+  deletedDefIds: originalDeletedIds,
+  editedDefinitionOrder,
   onEditWord,
   onHide,
-  partOfSpeeches,
   originalPosOrder,
+  originalDefinitionOrder,
   posObj,
-  onSetDefinitionIds,
+  onSetEditedDefinitionOrder,
   word
 }) {
   const {
@@ -34,38 +36,32 @@ export default function EditTab({
   const [selectedTab, setSelectedTab] = useState('rearrange');
   const [posting, setPosting] = useState(false);
   const [poses, setPoses] = useState([]);
-  const [deletedDefIds, setDeletedDefIds] = useState([]);
+  const [deletedDefIds, setDeletedDefIds] = useState(originalDeletedIds);
 
   const disabled = useMemo(() => {
-    const originalIds = {
-      adjective: partOfSpeeches.adjective.map(({ id }) => id),
-      adverb: partOfSpeeches.adverb.map(({ id }) => id),
-      conjunction: partOfSpeeches.conjunction.map(({ id }) => id),
-      interjection: partOfSpeeches.interjection.map(({ id }) => id),
-      noun: partOfSpeeches.noun.map(({ id }) => id),
-      preposition: partOfSpeeches.preposition.map(({ id }) => id),
-      pronoun: partOfSpeeches.pronoun.map(({ id }) => id),
-      verb: partOfSpeeches.verb.map(({ id }) => id),
-      other: partOfSpeeches.other.map(({ id }) => id)
-    };
+    let deletedDefIdsAreTheSame = false;
+    let deletedDefIdsAreIncludedInTheOriginal = true;
+    for (let deletedId of deletedDefIds) {
+      if (!originalDeletedIds.includes(deletedId)) {
+        deletedDefIdsAreIncludedInTheOriginal = false;
+        break;
+      }
+    }
+    deletedDefIdsAreTheSame =
+      deletedDefIdsAreIncludedInTheOriginal &&
+      deletedDefIds.length === originalDeletedIds.length;
+
     return (
       isEqual(originalPosOrder, poses) &&
-      isEqual(originalIds, definitionIds) &&
-      deletedDefIds.length === 0
+      isEqual(originalDefinitionOrder, editedDefinitionOrder) &&
+      deletedDefIdsAreTheSame
     );
   }, [
-    definitionIds,
-    deletedDefIds.length,
+    deletedDefIds,
+    editedDefinitionOrder,
+    originalDefinitionOrder,
+    originalDeletedIds,
     originalPosOrder,
-    partOfSpeeches.adjective,
-    partOfSpeeches.adverb,
-    partOfSpeeches.conjunction,
-    partOfSpeeches.interjection,
-    partOfSpeeches.noun,
-    partOfSpeeches.other,
-    partOfSpeeches.preposition,
-    partOfSpeeches.pronoun,
-    partOfSpeeches.verb,
     poses
   ]);
 
@@ -102,8 +98,9 @@ export default function EditTab({
         </FilterBar>
         {selectedTab === 'rearrange' && (
           <Rearrange
-            definitionIds={definitionIds}
-            onSetDefinitionIds={onSetDefinitionIds}
+            deletedDefIds={originalDeletedIds}
+            editedDefinitionOrder={editedDefinitionOrder}
+            onSetEditedDefinitionOrder={onSetEditedDefinitionOrder}
             onSetPoses={setPoses}
             poses={poses}
             posObj={posObj}
@@ -111,7 +108,7 @@ export default function EditTab({
         )}
         {selectedTab === 'remove' && (
           <Remove
-            definitionIds={definitionIds}
+            editedDefinitionOrder={editedDefinitionOrder}
             onListItemClick={handleRemoveListItemClick}
             poses={poses}
             posObj={posObj}
@@ -126,7 +123,7 @@ export default function EditTab({
         <Button
           color="blue"
           disabled={disabled || posting}
-          onClick={() => handleEditDone({ poses, definitionIds })}
+          onClick={() => handleEditDone({ poses, editedDefinitionOrder })}
         >
           Apply
         </Button>
@@ -134,11 +131,10 @@ export default function EditTab({
     </>
   );
 
-  async function handleEditDone({ poses, definitionIds }) {
+  async function handleEditDone({ poses, editedDefinitionOrder }) {
     setPosting(true);
-    const definitions = [];
     await editWord({
-      definitionIds,
+      editedDefinitionOrder,
       deletedDefIds,
       partOfSpeeches: poses,
       word
@@ -146,7 +142,7 @@ export default function EditTab({
     onEditWord({
       deletedDefIds,
       partOfSpeeches: poses,
-      definitions,
+      editedDefinitionOrder,
       word
     });
     setPosting(false);

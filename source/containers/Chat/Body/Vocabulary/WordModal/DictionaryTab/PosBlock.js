@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 PosBlock.propTypes = {
   contentObj: PropTypes.object.isRequired,
   definitionIds: PropTypes.array.isRequired,
+  deletedDefIds: PropTypes.array.isRequired,
   partOfSpeech: PropTypes.string.isRequired,
   style: PropTypes.object
 };
 export default function PosBlock({
   contentObj,
   definitionIds,
+  deletedDefIds,
   partOfSpeech,
   style
 }) {
@@ -24,11 +26,13 @@ export default function PosBlock({
       >
         {partOfSpeech}
       </p>
-      {definitionIds.map((definitionId, index) => (
-        <div key={definitionId} style={{ fontSize: '1.7rem', lineHeight: 2 }}>
-          {index + 1}. {contentObj[definitionId].title}
-        </div>
-      ))}
+      {definitionIds
+        .filter(id => !deletedDefIds.includes(id))
+        .map((definitionId, index) => (
+          <div key={definitionId} style={{ fontSize: '1.7rem', lineHeight: 2 }}>
+            {index + 1}. {contentObj[definitionId].title}
+          </div>
+        ))}
     </div>
   );
 }
