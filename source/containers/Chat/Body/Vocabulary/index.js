@@ -5,7 +5,7 @@ import ActivitiesContainer from './ActivitiesContainer';
 import Definition from './Definition';
 import Icon from 'components/Icon';
 import WordRegisterStatus from './WordRegisterStatus';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import {
   useAppContext,
   useChatContext,
@@ -14,6 +14,7 @@ import {
 } from 'contexts';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
+import { css } from 'emotion';
 
 export default function Vocabulary() {
   const {
@@ -70,7 +71,7 @@ export default function Vocabulary() {
   }, [inputText]);
 
   const widgetHeight = useMemo(() => {
-    return stringIsEmpty(inputText) || loading ? '16rem' : `20rem`;
+    return stringIsEmpty(inputText) || loading ? '10rem' : `20rem`;
   }, [inputText, loading]);
 
   const containerHeight = useMemo(() => {
@@ -117,17 +118,20 @@ export default function Vocabulary() {
         )}
         {!wordRegisterStatus && stringIsEmpty(inputText) && (
           <div
-            style={{
-              padding: '1rem',
-              fontSize: '3.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              background: Color.black(),
-              color: '#fff'
-            }}
+            className={css`
+              padding: 1rem;
+              font-size: 3rem;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+              background: ${Color.black()};
+              color: #fff;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 2rem;
+              }
+            `}
           >
             <div>
               <span>Type a word in the text box below</span>
