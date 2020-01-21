@@ -117,13 +117,6 @@ export default function ChatActions(dispatch) {
         showOnTop
       });
     },
-    onEnterVocabulary({ vocabActivities, wordsObj }) {
-      return dispatch({
-        type: 'ENTER_VOCABULARY',
-        vocabActivities,
-        wordsObj
-      });
-    },
     onEnterEmptyChat() {
       return dispatch({
         type: 'ENTER_EMPTY_CHAT'
@@ -181,6 +174,20 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'LOAD_MORE_MESSAGES',
         data
+      });
+    },
+    onLoadVocabulary({ vocabActivities, wordsObj }) {
+      return dispatch({
+        type: 'LOAD_VOCABULARY',
+        vocabActivities,
+        wordsObj
+      });
+    },
+    onLoadMoreVocabulary({ vocabActivities, wordsObj }) {
+      return dispatch({
+        type: 'LOAD_MORE_VOCABULARY',
+        vocabActivities,
+        wordsObj
       });
     },
     onLoadWordCollectors(wordCollectors) {

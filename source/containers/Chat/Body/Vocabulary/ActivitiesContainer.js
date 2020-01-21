@@ -1,8 +1,10 @@
 import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Activity from './Activity';
-import { useChatContext } from 'contexts';
+import Button from 'components/Button';
+import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { queryStringForArray } from 'helpers/stringHelpers';
 import { checkScrollIsAtTheBottom } from 'helpers';
 
 ActivitiesContainer.propTypes = {
@@ -10,6 +12,7 @@ ActivitiesContainer.propTypes = {
 };
 
 function ActivitiesContainer({ style }) {
+  const [loadingMore, setLoadingMore] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
@@ -19,7 +22,11 @@ function ActivitiesContainer({ style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const {
-    state: { vocabActivities, wordsObj }
+    requestHelpers: { loadVocabulary }
+  } = useAppContext();
+  const {
+    state: { vocabActivities, wordsObj, vocabActivitiesLoadMoreButton },
+    actions: { onLoadMoreVocabulary }
   } = useChatContext();
 
   const fillerHeight = useMemo(
@@ -54,11 +61,32 @@ function ActivitiesContainer({ style }) {
         }
       }}
     >
-      <div
-        style={{
-          height: fillerHeight + 'px'
-        }}
-      />
+      {vocabActivitiesLoadMoreButton ? (
+        <div
+          style={{
+            marginTop: '1rem',
+            marginBottom: '1rem',
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%'
+          }}
+        >
+          <Button
+            filled
+            color="lightBlue"
+            disabled={loadingMore}
+            onClick={handleLoadMore}
+          >
+            Load More
+          </Button>
+        </div>
+      ) : (
+        <div
+          style={{
+            height: fillerHeight + 'px'
+          }}
+        />
+      )}
       <div style={{ position: 'relative' }} ref={ContentRef}>
         {vocabActivities.map((vocab, index) => {
           const word = wordsObj[vocab] || {};
@@ -76,6 +104,18 @@ function ActivitiesContainer({ style }) {
       </div>
     </div>
   );
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    const data = await loadVocabulary(
+      queryStringForArray({
+        array: vocabActivities,
+        destinationVar: 'shownWords'
+      })
+    );
+    onLoadMoreVocabulary(data);
+    setLoadingMore(false);
+  }
 
   function handleReceiveNewActivity() {
     if (scrollAtBottom) {

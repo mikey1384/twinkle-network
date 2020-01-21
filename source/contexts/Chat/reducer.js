@@ -264,24 +264,6 @@ export default function ChatReducer(state, action) {
         messages: [],
         messagesLoadMoreButton: false
       };
-    case 'ENTER_VOCABULARY': {
-      let vocabActivitiesLoadMoreButton = false;
-      if (action.vocabActivities.length > 20) {
-        action.vocabActivities.pop();
-        vocabActivitiesLoadMoreButton = true;
-      }
-      action.vocabActivities?.reverse();
-      return {
-        ...state,
-        selectedChannelId: null,
-        chatType: 'vocabulary',
-        messages: [],
-        messagesLoadMoreButton: false,
-        vocabActivities: action.vocabActivities,
-        vocabActivitiesLoadMoreButton,
-        wordsObj: action.wordsObj
-      };
-    }
     case 'GET_NUM_UNREAD_MSGS':
       return {
         ...state,
@@ -424,6 +406,45 @@ export default function ChatReducer(state, action) {
         ...state,
         subject: action.subject
       };
+    case 'LOAD_VOCABULARY': {
+      let vocabActivitiesLoadMoreButton = false;
+      if (action.vocabActivities.length > 20) {
+        action.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      action.vocabActivities?.reverse();
+      return {
+        ...state,
+        selectedChannelId: null,
+        chatType: 'vocabulary',
+        messages: [],
+        messagesLoadMoreButton: false,
+        vocabActivities: action.vocabActivities,
+        vocabActivitiesLoadMoreButton,
+        wordsObj: action.wordsObj
+      };
+    }
+    case 'LOAD_MORE_VOCABULARY': {
+      let vocabActivitiesLoadMoreButton = false;
+      if (action.vocabActivities.length > 20) {
+        action.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      action.vocabActivities?.reverse();
+      return {
+        ...state,
+        selectedChannelId: null,
+        chatType: 'vocabulary',
+        messages: [],
+        messagesLoadMoreButton: false,
+        vocabActivities: action.vocabActivities.concat(state.vocabActivities),
+        vocabActivitiesLoadMoreButton,
+        wordsObj: {
+          ...state.wordsObj,
+          ...action.wordsObj
+        }
+      };
+    }
     case 'LOAD_WORD_COLLECTORS':
       return {
         ...state,

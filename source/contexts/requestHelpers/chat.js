@@ -77,14 +77,6 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async enterVocabulary() {
-      try {
-        const { data } = await request.get(`${URL}/chat/vocabulary`, auth());
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async fetchCurrentChessState({ channelId, recentChessMessage }) {
       try {
         const { data } = await request.put(
@@ -218,6 +210,17 @@ export default function chatRequestHelpers({ auth, handleError }) {
       try {
         const { data } = await request.get(
           `${URL}/chat/word/leaderBoard`,
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadVocabulary(shownWords) {
+      try {
+        const { data } = await request.get(
+          `${URL}/chat/vocabulary${shownWords ? `?${shownWords}` : ''}`,
           auth()
         );
         return Promise.resolve(data);
