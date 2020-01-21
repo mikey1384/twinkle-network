@@ -71,7 +71,7 @@ export default function Vocabulary() {
   }, [inputText]);
 
   const widgetHeight = useMemo(() => {
-    return stringIsEmpty(inputText) || loading ? '10rem' : `20rem`;
+    return stringIsEmpty(inputText) || loading ? '16rem' : `20rem`;
   }, [inputText, loading]);
 
   const containerHeight = useMemo(() => {
