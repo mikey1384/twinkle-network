@@ -93,7 +93,7 @@ export default function Activity({
           </span>
         </div>
         <div>
-          registered {wordLevel === 1 ? 'a' : 'an'}{' '}
+          collected {wordLevel === 1 ? 'a' : 'an'}{' '}
           <b
             style={{
               fontSize: '1.7rem',

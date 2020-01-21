@@ -882,6 +882,14 @@ export default function ChatReducer(state, action) {
           )
         }
       };
+    case 'UPDATE_COLLECTORS_RANKINGS':
+      return {
+        ...state,
+        wordCollectors: updateWordCollectorsRankings({
+          collector: action.collector,
+          currentRankings: state.wordCollectors
+        })
+      };
     case 'UPDATE_RECENT_CHESS_MESSAGE':
       return {
         ...state,
@@ -900,4 +908,18 @@ export default function ChatReducer(state, action) {
     default:
       return state;
   }
+}
+
+function updateWordCollectorsRankings({ collector, currentRankings }) {
+  const newRankings = currentRankings
+    .filter(ranker => ranker.username !== collector.username)
+    .concat([collector]);
+  newRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
+  const result = newRankings
+    .map((ranker, index) => ({
+      ...ranker,
+      rank: index + 1
+    }))
+    .slice(0, 30);
+  return result;
 }

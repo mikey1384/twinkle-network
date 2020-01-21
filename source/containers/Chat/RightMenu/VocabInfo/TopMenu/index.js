@@ -47,7 +47,7 @@ export default function TopMenu() {
           .filter(collector => collector.numWordsCollected > 0)
           .map(collector => (
             <Collector
-              key={collector.id}
+              key={collector.username}
               style={{ padding: '1rem' }}
               user={collector}
             />

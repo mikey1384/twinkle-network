@@ -31,7 +31,7 @@ export default function WordRegisterStatus() {
           background: Color.darkerGray()
         }}
       >
-        <span style={{ color: '#fff' }}>You registered</span>{' '}
+        <span style={{ color: '#fff' }}>You collected</span>{' '}
         <span
           style={{
             color: Color[rewardHash[wordLevel].color](),

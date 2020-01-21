@@ -21,7 +21,12 @@ export default function Vocabulary() {
   } = useAppContext();
   const {
     state: { wordsObj, wordRegisterStatus },
-    actions: { onRegisterWord, onSetWordRegisterStatus, onSetWordsObj }
+    actions: {
+      onRegisterWord,
+      onSetWordRegisterStatus,
+      onSetWordsObj,
+      onUpdateCollectorsRankings
+    }
   } = useChatContext();
   const {
     actions: { onChangeUserXP }
@@ -30,7 +35,7 @@ export default function Vocabulary() {
     state,
     actions: { onEnterComment }
   } = useInputContext();
-  const { userId } = useMyState();
+  const { userId, username, profilePicId } = useMyState();
   const inputText = state['vocabulary'] || '';
   const wordObj = useMemo(() => wordsObj[inputText] || {}, [
     inputText,
@@ -174,7 +179,7 @@ export default function Vocabulary() {
             height: '7rem'
           }}
         >
-          This word has not been registered yet. Register and earn XP!
+          This word has not been collected yet. Collect and earn XP!
         </div>
       )}
       <div
@@ -201,6 +206,12 @@ export default function Vocabulary() {
       const { xp, rank, word } = await registerWord(definitions);
       onChangeUserXP({ xp, rank, userId });
       onRegisterWord(word);
+      onUpdateCollectorsRankings({
+        id: userId,
+        username,
+        profilePicId,
+        numWordsCollected: word.numWordsCollected
+      });
       onSetWordRegisterStatus(wordObj);
       onEnterComment({
         contentType: 'vocabulary',

@@ -61,7 +61,8 @@ export default function Header({
       onReceiveFirstMsg,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
-      onReceiveVocabActivity
+      onReceiveVocabActivity,
+      onUpdateCollectorsRankings
     }
   } = useChatContext();
 
@@ -207,6 +208,12 @@ export default function Header({
         onReceiveVocabActivity({
           activity,
           usingVocabSection: chatType === 'vocabulary'
+        });
+        onUpdateCollectorsRankings({
+          id: activity.userId,
+          username: activity.username,
+          profilePicId: activity.profilePicId,
+          numWordsCollected: activity.numWordsCollected
         });
       }
     }

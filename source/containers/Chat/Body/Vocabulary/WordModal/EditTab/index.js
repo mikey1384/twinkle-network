@@ -2,9 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 import { useAppContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
+import { capitalize } from 'helpers/stringHelpers';
 import Button from 'components/Button';
 import FilterBar from 'components/FilterBar';
-import Rearrange from './Rearrange';
+import Reorder from './Reorder';
 import Remove from './Remove';
 
 EditTab.propTypes = {
@@ -33,7 +35,8 @@ export default function EditTab({
   const {
     requestHelpers: { editWord }
   } = useAppContext();
-  const [selectedTab, setSelectedTab] = useState('rearrange');
+  const { canDelete } = useMyState();
+  const [selectedTab, setSelectedTab] = useState('reorder');
   const [posting, setPosting] = useState(false);
   const [poses, setPoses] = useState([]);
   const [deletedDefIds, setDeletedDefIds] = useState(originalDeletedIds);
@@ -80,24 +83,26 @@ export default function EditTab({
             width: '100%'
           }}
         >
-          {`Edit Definitions of "${word}"`}
+          {`${capitalize(selectedTab)} Definitions of "${word}"`}
         </p>
-        <FilterBar style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
-          <nav
-            className={selectedTab === 'rearrange' ? 'active' : ''}
-            onClick={() => setSelectedTab('rearrange')}
-          >
-            Rearrange
-          </nav>
-          <nav
-            className={selectedTab === 'remove' ? 'active' : ''}
-            onClick={() => setSelectedTab('remove')}
-          >
-            Remove
-          </nav>
-        </FilterBar>
-        {selectedTab === 'rearrange' && (
-          <Rearrange
+        {canDelete && (
+          <FilterBar style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+            <nav
+              className={selectedTab === 'reorder' ? 'active' : ''}
+              onClick={() => setSelectedTab('reorder')}
+            >
+              Reorder
+            </nav>
+            <nav
+              className={selectedTab === 'remove' ? 'active' : ''}
+              onClick={() => setSelectedTab('remove')}
+            >
+              Remove
+            </nav>
+          </FilterBar>
+        )}
+        {selectedTab === 'reorder' && (
+          <Reorder
             deletedDefIds={originalDeletedIds}
             editedDefinitionOrder={editedDefinitionOrder}
             onSetEditedDefinitionOrder={onSetEditedDefinitionOrder}

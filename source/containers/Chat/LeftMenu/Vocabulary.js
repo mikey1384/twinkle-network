@@ -54,7 +54,7 @@ export default function Vocabulary({ selected, onClick }) {
               }}
             >
               {lastActivity.userId === myId ? 'You' : lastActivity.username}:{' '}
-              registered <b>{lastActivity.content}</b>
+              collected <b>{lastActivity.content}</b>
             </p>
           </div>
         )}
