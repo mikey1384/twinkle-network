@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import { Color, borderRadius } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 MyRank.propTypes = {
@@ -64,33 +64,46 @@ export default function MyRank({
           font-size: 1.5rem;
           font-weight: bold;
         }
+        span {
+          font-size: ${twinkleXP > 1000000 ? '2.8rem' : '3rem'};
+        }
+        span.rank {
+          font-size: ${twinkleXP > 1000000 ? '1.7rem' : '2rem'};
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          border-radius: 0;
+          span {
+            font-size: 2rem;
+          }
+          span.rank {
+            font-size: ${twinkleXP > 1000000 ? '1.3rem' : '1.6rem'};
+          }
+        }
       `}
     >
       {
         <p>
           <span
             style={{
-              color: rankedColor || Color.logoGreen(),
-              fontSize: twinkleXP > 1000000 ? '2.8rem' : '3rem'
+              color: rankedColor || Color.logoGreen()
             }}
           >
             {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
           </span>{' '}
           <span
             style={{
-              color: rankedColor || Color.gold(),
-              fontSize: twinkleXP > 1000000 ? '2.8rem' : '3rem'
+              color: rankedColor || Color.gold()
             }}
           >
             XP
           </span>
           &nbsp;&nbsp;
           <span
+            className="rank"
             style={{
               color:
                 rankedColor ||
-                (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray()),
-              fontSize: twinkleXP > 1000000 ? '1.7rem' : '2rem'
+                (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray())
             }}
           >
             {rank ? `Rank #${rank}` : 'Unranked'}

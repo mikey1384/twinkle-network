@@ -6,10 +6,11 @@ import WordModal from './WordModal';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardHash, returnWordLevel } from 'constants/defaultValues';
 import { MessageStyle } from '../../Styles';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { unix } from 'moment';
 import { socket } from 'constants/io';
 import { useChatContext } from 'contexts';
+import { css } from 'emotion';
 
 Activity.propTypes = {
   activity: PropTypes.object.isRequired,
@@ -104,9 +105,14 @@ export default function Activity({
           </b>{' '}
           word,{' '}
           <span
+            className={css`
+              font-size: 3rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 2rem;
+              }
+            `}
             style={{
               fontWeight: 'bold',
-              fontSize: '3rem',
               color: Color.blue(),
               cursor: 'pointer'
             }}
