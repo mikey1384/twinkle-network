@@ -6,6 +6,7 @@ import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { checkScrollIsAtTheBottom } from 'helpers';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
 ActivitiesContainer.propTypes = {
   style: PropTypes.object
@@ -16,11 +17,32 @@ function ActivitiesContainer({ style }) {
   const [scrollAtBottom, setScrollAtBottom] = useState(false);
   const ActivitiesContainerRef = useRef(null);
   const ContentRef = useRef(null);
+  const mounted = useRef(null);
+  const timerRef = useRef(null);
   const { userId } = useMyState();
   useEffect(() => {
     handleSetScrollToBottom();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    const ActivitiesContainer = ActivitiesContainerRef.current;
+    mounted.current = true;
+    addEvent(ActivitiesContainer, 'scroll', handleScroll);
+
+    return function cleanUp() {
+      mounted.current = false;
+      removeEvent(ActivitiesContainer, 'scroll', handleScroll);
+    };
+
+    function handleScroll() {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        if (ActivitiesContainerRef.current.scrollTop === 0) {
+          handleLoadMore();
+        }
+      }, 200);
+    }
+  });
   const {
     requestHelpers: { loadVocabulary }
   } = useAppContext();
@@ -106,15 +128,24 @@ function ActivitiesContainer({ style }) {
   );
 
   async function handleLoadMore() {
-    setLoadingMore(true);
-    const data = await loadVocabulary(
-      queryStringForArray({
-        array: vocabActivities,
-        destinationVar: 'shownWords'
-      })
-    );
-    onLoadMoreVocabulary(data);
-    setLoadingMore(false);
+    if (vocabActivitiesLoadMoreButton) {
+      const prevContentHeight = ContentRef.current?.offsetHeight || 0;
+      if (!loadingMore) {
+        setLoadingMore(true);
+        const data = await loadVocabulary(
+          queryStringForArray({
+            array: vocabActivities,
+            destinationVar: 'shownWords'
+          })
+        );
+        onLoadMoreVocabulary(data);
+        ActivitiesContainerRef.current.scrollTop = Math.max(
+          ActivitiesContainerRef.current.scrollTop,
+          (ContentRef.current?.offsetHeight || 0) - prevContentHeight
+        );
+        setLoadingMore(false);
+      }
+    }
   }
 
   function handleReceiveNewActivity() {
