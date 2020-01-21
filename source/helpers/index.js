@@ -56,16 +56,6 @@ export function objectify(array, id = 'id') {
   return result;
 }
 
-export function returnWordLevel({ frequency, wordLength }) {
-  if (frequency > 3.7) {
-    if (wordLength < 7) return 1;
-    return 2;
-  }
-  if (frequency > 2) return 3;
-  if (frequency > 1.4) return 4;
-  return 5;
-}
-
 export function scrollElementToCenter(element, adjustment = -50) {
   if (!element) return;
   let offsetTop = 0;

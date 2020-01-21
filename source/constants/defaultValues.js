@@ -73,3 +73,17 @@ export const returnMaxStars = ({ rewardLevel }) => {
   }
   return maxStars;
 };
+
+const intermediateWordFrequency = 4.1;
+const advancedWordFrequency = 2.5;
+const epicWordFrequency = 1.4;
+
+export function returnWordLevel({ frequency, wordLength }) {
+  if (frequency > intermediateWordFrequency) {
+    if (wordLength < 7) return 1;
+    return 2;
+  }
+  if (frequency > advancedWordFrequency) return 3;
+  if (frequency > epicWordFrequency) return 4;
+  return 5;
+}

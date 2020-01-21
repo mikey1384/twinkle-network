@@ -6,8 +6,6 @@ import Button from 'components/Button';
 import { isMobile } from 'helpers';
 import {
   stringIsEmpty,
-  addEmoji,
-  finalizeEmoji,
   exceedsCharLimit,
   trimWhiteSpaces
 } from 'helpers/stringHelpers';
@@ -70,7 +68,7 @@ export default function Input({
             if (event.key === ' ') {
               onEnterComment({
                 contentType: 'vocabulary',
-                text: addEmoji(event.target.value)
+                text: event.target.value
               });
             }
           }}
@@ -112,6 +110,6 @@ export default function Input({
   function handleSubmit() {
     innerRef.current.focus();
     if (stringIsEmpty(text)) return;
-    onSubmit(finalizeEmoji(text));
+    onSubmit(text);
   }
 }

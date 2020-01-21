@@ -2,8 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useChatContext } from 'contexts';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import { returnWordLevel } from 'helpers';
-import { rewardHash } from 'constants/defaultValues';
+import { rewardHash, returnWordLevel } from 'constants/defaultValues';
 import Button from 'components/Button';
 import WordModal from './WordModal';
 
