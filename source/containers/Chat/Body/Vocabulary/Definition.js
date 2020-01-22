@@ -4,7 +4,6 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import WordModal from './WordModal';
 import { css } from 'emotion';
-import { useMyState } from 'helpers/hooks';
 
 Definition.propTypes = {
   style: PropTypes.object,
@@ -12,7 +11,6 @@ Definition.propTypes = {
 };
 
 export default function Definition({ style, wordObj }) {
-  const { canEditDictionary } = useMyState();
   const {
     partOfSpeechOrder = [
       'noun',
@@ -44,7 +42,7 @@ export default function Definition({ style, wordObj }) {
         <div>Not Found</div>
       ) : (
         <>
-          {canEditDictionary && wordObj.id && (
+          {wordObj.id && (
             <div style={{ position: 'absolute', top: 0, right: 0 }}>
               <Button
                 className={css`

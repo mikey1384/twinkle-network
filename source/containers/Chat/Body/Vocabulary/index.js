@@ -87,6 +87,11 @@ export default function Vocabulary() {
     [wordObj.isNew, inputText, loading]
   );
 
+  const alreadyRegistered = useMemo(
+    () => !wordObj.isNew && !stringIsEmpty(inputText) && !loading,
+    [wordObj.isNew, inputText, loading]
+  );
+
   return (
     <div
       style={{
@@ -173,11 +178,11 @@ export default function Vocabulary() {
             </div>
           ))}
       </div>
-      {notRegistered && (
+      {(notRegistered || alreadyRegistered) && (
         <div
           style={{
             display: 'flex',
-            background: Color.green(),
+            background: notRegistered ? Color.green() : Color.darkerGray(),
             color: '#fff',
             width: '100%',
             padding: '1rem',
@@ -187,7 +192,9 @@ export default function Vocabulary() {
             height: '7rem'
           }}
         >
-          This word has not been collected yet. Collect and earn XP!
+          {notRegistered
+            ? `This word has not been collected yet. Collect and earn XP!`
+            : `This word has already been collected`}
         </div>
       )}
       <div
