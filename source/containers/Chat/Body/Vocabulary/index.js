@@ -60,8 +60,7 @@ export default function Vocabulary() {
       const word = await lookUpWord(input);
       if (
         (!wordObj.content && word.notFound) ||
-        (word.content &&
-          word.content.toLowerCase() === text.current.toLowerCase())
+        (word.content && word.content === text.current)
       ) {
         onSetWordsObj(word);
       }

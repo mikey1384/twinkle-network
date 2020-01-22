@@ -95,7 +95,9 @@ export default function Input({
   function handleChange(event) {
     onEnterComment({
       contentType: 'vocabulary',
-      text: trimWhiteSpaces(event.target.value.replace(/[^a-zA-Z]/gi, ''))
+      text: trimWhiteSpaces(
+        event.target.value.replace(/[^a-zA-Z]/gi, '').toLowerCase()
+      )
     });
   }
 
