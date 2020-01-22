@@ -4,11 +4,7 @@ import Textarea from 'components/Texts/Textarea';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import { isMobile } from 'helpers';
-import {
-  stringIsEmpty,
-  exceedsCharLimit,
-  trimWhiteSpaces
-} from 'helpers/stringHelpers';
+import { stringIsEmpty, exceedsCharLimit } from 'helpers/stringHelpers';
 import { useChatContext, useInputContext } from 'contexts';
 
 Input.propTypes = {
@@ -89,7 +85,7 @@ export default function Input({
 
   function handleChange(event) {
     const regex = /[^a-zA-Z]/gi;
-    const isInvalid = regex.test(trimWhiteSpaces(event.target.value));
+    const isInvalid = regex.test(event.target.value.trim());
     if (isInvalid) {
       return onSetVocabErrorMessage(
         `"${event.target.value}" is not allowed for vocabulary section. Please enter english letters only.`

@@ -1,5 +1,3 @@
-import { trimWhiteSpaces } from 'helpers/stringHelpers';
-
 export default function InputActions(dispatch) {
   return {
     onEnterComment({ contentId, contentType, text }) {
@@ -10,7 +8,8 @@ export default function InputActions(dispatch) {
         contentType,
         text:
           contentType === 'vocabulary'
-            ? trimWhiteSpaces(text)
+            ? text
+                .trim()
                 .replace(regex, '')
                 .toLowerCase()
             : text
