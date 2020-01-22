@@ -778,6 +778,11 @@ export default function ChatReducer(state, action) {
         ...state,
         creatingNewDMChannel: action.creating
       };
+    case 'SET_LOADING_VOCABULARY':
+      return {
+        ...state,
+        loadingVocabulary: action.loading
+      };
     case 'SET_RECONNECTING': {
       return {
         ...state,

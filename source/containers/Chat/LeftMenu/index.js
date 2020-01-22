@@ -36,7 +36,7 @@ export default function LeftMenu({
   } = useAppContext();
   const {
     state: { chatType, channelIds },
-    actions: { onLoadVocabulary }
+    actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
@@ -164,12 +164,14 @@ export default function LeftMenu({
   );
 
   async function handleEnterVocabulary() {
+    onSetLoadingVocabulary(true);
     const {
       vocabActivities,
       wordsObj,
       wordCollectors
     } = await loadVocabulary();
     onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
+    onSetLoadingVocabulary(false);
   }
 
   async function handleLoadMoreChannels() {

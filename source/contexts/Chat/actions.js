@@ -347,6 +347,12 @@ export default function ChatActions(dispatch) {
         creating
       });
     },
+    onSetLoadingVocabulary(loading) {
+      return dispatch({
+        type: 'SET_LOADING_VOCABULARY',
+        loading
+      });
+    },
     onSetReconnecting() {
       return dispatch({
         type: 'SET_RECONNECTING'

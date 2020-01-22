@@ -17,6 +17,7 @@ export const initialChatState = {
   vocabActivities: [],
   vocabActivitiesLoadMoreButton: false,
   filesBeingUploaded: {},
+  loadingVocabulary: false,
   loaded: false,
   messages: [],
   messagesLoadMoreButton: false,

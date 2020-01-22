@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Vocabulary from './Vocabulary';
+import Loading from 'components/Loading';
 import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
 import { useChatContext } from 'contexts';
@@ -14,7 +15,7 @@ Body.propTypes = {
 
 function Body({ channelName, chessOpponent, currentChannel }) {
   const {
-    state: { chatType }
+    state: { chatType, loadingVocabulary }
   } = useChatContext();
 
   return (
@@ -31,13 +32,19 @@ function Body({ channelName, chessOpponent, currentChannel }) {
         }
       `}
     >
-      {chatType === 'vocabulary' && <Vocabulary />}
-      {!chatType && (
-        <MessagesContainer
-          channelName={channelName}
-          chessOpponent={chessOpponent}
-          currentChannel={currentChannel}
-        />
+      {loadingVocabulary ? (
+        <Loading text="Loading Vocabulary" />
+      ) : (
+        <>
+          {chatType === 'vocabulary' && <Vocabulary />}
+          {!chatType && (
+            <MessagesContainer
+              channelName={channelName}
+              chessOpponent={chessOpponent}
+              currentChannel={currentChannel}
+            />
+          )}
+        </>
       )}
     </div>
   );
