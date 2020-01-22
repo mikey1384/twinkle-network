@@ -167,12 +167,18 @@ export default function Vocabulary() {
               }}
             >
               <div
+                className={css`
+                  font-weight: bold;
+                  font-size: 3rem;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 2rem;
+                  }
+                `}
                 style={{
                   display: 'flex',
                   width: '20%',
                   alignItems: 'center',
-                  padding: '1rem',
-                  fontSize: '3rem'
+                  padding: '1rem'
                 }}
               >
                 {wordObj.content}
@@ -183,6 +189,12 @@ export default function Vocabulary() {
       </div>
       {(notRegistered || alreadyRegistered || vocabErrorMessage) && (
         <div
+          className={css`
+            font-size: 2rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              font-size: 1.5rem;
+            }
+          `}
           style={{
             display: 'flex',
             background: vocabErrorMessage
@@ -193,7 +205,6 @@ export default function Vocabulary() {
             color: '#fff',
             width: '100%',
             padding: '1rem',
-            fontSize: '2rem',
             justifyContent: 'center',
             alignItems: 'center',
             height: '7rem'

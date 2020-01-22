@@ -97,7 +97,7 @@ export default function Input({
 
   function handleChange(event) {
     const regex = /[^a-zA-Z]/gi;
-    const isInvalid = regex.test(event.target.value);
+    const isInvalid = regex.test(trimWhiteSpaces(event.target.value));
     if (isInvalid) {
       return onSetVocabErrorMessage(
         `"${event.target.value}" is not allowed for vocabulary section. Please enter english letters only.`
@@ -106,7 +106,9 @@ export default function Input({
     onSetVocabErrorMessage('');
     onEnterComment({
       contentType: 'vocabulary',
-      text: trimWhiteSpaces(event.target.value.toLowerCase().replace(regex, ''))
+      text: trimWhiteSpaces(event.target.value)
+        .toLowerCase()
+        .replace(regex, '')
     });
   }
 
