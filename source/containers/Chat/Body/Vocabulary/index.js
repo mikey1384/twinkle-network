@@ -88,8 +88,12 @@ export default function Vocabulary() {
   );
 
   const alreadyRegistered = useMemo(
-    () => !wordObj.isNew && !stringIsEmpty(inputText) && !loading,
-    [wordObj.isNew, inputText, loading]
+    () =>
+      !!wordObj.content &&
+      !wordObj.isNew &&
+      !stringIsEmpty(inputText) &&
+      !loading,
+    [wordObj.content, wordObj.isNew, inputText, loading]
   );
 
   return (
