@@ -213,7 +213,8 @@ export default function Header({
           id: activity.userId,
           username: activity.username,
           profilePicId: activity.profilePicId,
-          numWordsCollected: activity.numWordsCollected
+          numWordsCollected: activity.numWordsCollected,
+          rank: activity.rank
         });
       }
     }
