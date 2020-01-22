@@ -21,7 +21,7 @@ export default function Vocabulary() {
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
-    state: { wordsObj, wordRegisterStatus },
+    state: { vocabErrorMessage, wordsObj, wordRegisterStatus },
     actions: {
       onRegisterWord,
       onSetWordRegisterStatus,
@@ -181,11 +181,15 @@ export default function Vocabulary() {
             </div>
           ))}
       </div>
-      {(notRegistered || alreadyRegistered) && (
+      {(notRegistered || alreadyRegistered || vocabErrorMessage) && (
         <div
           style={{
             display: 'flex',
-            background: notRegistered ? Color.green() : Color.darkerGray(),
+            background: vocabErrorMessage
+              ? Color.rose()
+              : notRegistered
+              ? Color.green()
+              : Color.darkerGray(),
             color: '#fff',
             width: '100%',
             padding: '1rem',
@@ -195,9 +199,10 @@ export default function Vocabulary() {
             height: '7rem'
           }}
         >
-          {notRegistered
-            ? `This word has not been collected yet. Collect and earn XP!`
-            : `This word has already been collected`}
+          {vocabErrorMessage ||
+            (notRegistered
+              ? `This word has not been collected yet. Collect and earn XP!`
+              : `This word has already been collected`)}
         </div>
       )}
       <div

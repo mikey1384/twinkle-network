@@ -9,7 +9,7 @@ import {
   exceedsCharLimit,
   trimWhiteSpaces
 } from 'helpers/stringHelpers';
-import { useInputContext } from 'contexts';
+import { useChatContext, useInputContext } from 'contexts';
 
 Input.propTypes = {
   innerRef: PropTypes.object,
@@ -30,6 +30,9 @@ export default function Input({
     state,
     actions: { onEnterComment }
   } = useInputContext();
+  const {
+    actions: { onSetVocabErrorMessage }
+  } = useChatContext();
 
   const text = state['vocabulary'] || '';
 
@@ -93,11 +96,17 @@ export default function Input({
   );
 
   function handleChange(event) {
+    const regex = /[^a-zA-Z]/gi;
+    const isInvalid = regex.test(event.target.value);
+    if (isInvalid) {
+      return onSetVocabErrorMessage(
+        `"${event.target.value}" is not allowed for vocabulary section. Please enter english letters only.`
+      );
+    }
+    onSetVocabErrorMessage('');
     onEnterComment({
       contentType: 'vocabulary',
-      text: trimWhiteSpaces(
-        event.target.value.replace(/[^a-zA-Z]/gi, '').toLowerCase()
-      )
+      text: trimWhiteSpaces(event.target.value.toLowerCase().replace(regex, ''))
     });
   }
 

@@ -364,6 +364,12 @@ export default function ChatActions(dispatch) {
         target
       });
     },
+    onSetVocabErrorMessage(message) {
+      return dispatch({
+        type: 'SET_VOCAB_ERROR_MESSAGE',
+        message
+      });
+    },
     onSetWordsObj(wordObj) {
       return dispatch({
         type: 'SET_WORDS_OBJECT',

@@ -795,6 +795,12 @@ export default function ChatReducer(state, action) {
         replyTarget: action.target
       };
     }
+    case 'SET_VOCAB_ERROR_MESSAGE': {
+      return {
+        ...state,
+        vocabErrorMessage: action.message
+      };
+    }
     case 'SET_WORDS_OBJECT': {
       return {
         ...state,
