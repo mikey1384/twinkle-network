@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useChatContext } from 'contexts';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardHash, returnWordLevel } from 'constants/defaultValues';
+import { css } from 'emotion';
+import { isMobile } from 'helpers';
 import Button from 'components/Button';
 import WordModal from './WordModal';
 
@@ -19,46 +21,77 @@ export default function WordRegisterStatus() {
   return (
     <div
       style={{
+        height: '16rem',
         display: 'flex',
         width: '100%',
         flexDirection: 'column'
       }}
     >
       <div
-        style={{
-          padding: '1rem',
-          fontSize: '2rem',
-          background: Color.darkerGray()
-        }}
+        className={css`
+          padding: 1rem;
+          font-size: 2rem;
+          background: ${Color.darkerGray()};
+          display: flex;
+          align-items: center;
+          height: 6rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            font-size: 1.5rem;
+          }
+        `}
       >
-        <span style={{ color: '#fff' }}>You collected</span>{' '}
-        <span
-          style={{
-            color: Color[rewardHash[wordLevel].color](),
-            fontWeight: 'bold'
-          }}
-        >
-          {content}
-        </span>
+        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <span style={{ color: '#fff' }}>You collected</span>
+          <span> </span>
+          <span
+            style={{
+              color: Color[rewardHash[wordLevel].color](),
+              fontWeight: 'bold'
+            }}
+          >
+            {content}
+          </span>
+        </div>
       </div>
       <div
-        style={{
-          padding: '1rem',
-          fontSize: '2.1rem',
-          color: '#fff',
-          background: Color.black()
-        }}
+        className={css`
+          padding: 1rem;
+          font-size: 2rem;
+          color: #fff;
+          background: ${Color.black()};
+          display: flex;
+          align-items: center;
+          height: 6rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            font-size: 1.5rem;
+          }
+        `}
       >
-        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>{content}</b>{' '}
-        {`is `}
-        {wordLevel === 1 ? 'a' : 'an'}{' '}
-        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
-          {rewardHash[wordLevel].label}
-        </b>{' '}
-        word. You earned{' '}
-        <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
-          {addCommasToNumber(rewardHash[wordLevel].rewardAmount)} XP
-        </b>
+        <div>
+          {!isMobile(navigator) && (
+            <>
+              <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
+                {content}
+              </b>{' '}
+              {`is `}
+              {wordLevel === 1 ? 'a' : 'an'}{' '}
+            </>
+          )}
+          <>
+            <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
+              {rewardHash[wordLevel].label}
+            </b>{' '}
+            word.
+          </>{' '}
+          {isMobile(navigator) ? (
+            <span>Earned </span>
+          ) : (
+            <span>You earned </span>
+          )}
+          <b style={{ color: Color[rewardHash[wordLevel].color]() }}>
+            {addCommasToNumber(rewardHash[wordLevel].rewardAmount)} XP
+          </b>
+        </div>
       </div>
       <div
         style={{

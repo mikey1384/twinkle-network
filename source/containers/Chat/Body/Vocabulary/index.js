@@ -73,13 +73,13 @@ export default function Vocabulary() {
   const widgetHeight = useMemo(() => {
     return stringIsEmpty(inputText) || loading
       ? wordRegisterStatus
-        ? '17rem'
+        ? '16rem'
         : '10rem'
       : `20rem`;
   }, [inputText, loading, wordRegisterStatus]);
 
   const containerHeight = useMemo(() => {
-    return `CALC(100% - ${widgetHeight})`;
+    return `CALC(100% - ${widgetHeight} - 6.5rem)`;
   }, [widgetHeight]);
 
   const notRegistered = useMemo(
@@ -192,6 +192,7 @@ export default function Vocabulary() {
       )}
       <div
         style={{
+          height: '6.5rem',
           background: Color.inputGray(),
           padding: '1rem',
           borderTop: `1px solid ${Color.borderGray()}`
