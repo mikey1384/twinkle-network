@@ -71,11 +71,13 @@ export default function Definition({ style, wordObj }) {
                     overflow: 'scroll'
                   }}
                 >
-                  {wordObj[pos].map(({ id, definition }, index) => (
-                    <div key={id}>
-                      {index + 1}. {definition}
-                    </div>
-                  ))}
+                  {wordObj[pos].map(({ id, definition }, index) =>
+                    wordObj.deletedDefIds.includes(id) ? null : (
+                      <div key={id}>
+                        {index + 1}. {definition}
+                      </div>
+                    )
+                  )}
                 </div>
               </section>
             ) : null
