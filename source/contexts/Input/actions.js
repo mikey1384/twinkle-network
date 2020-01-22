@@ -5,7 +5,7 @@ export default function InputActions(dispatch) {
         type: 'ENTER_COMMENT',
         contentId,
         contentType,
-        text
+        text: contentType === 'vocabulary' ? text.toLowerCase() : text
       });
     },
     onResetContentInput() {

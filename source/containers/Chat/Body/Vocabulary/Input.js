@@ -98,9 +98,7 @@ export default function Input({
     onSetVocabErrorMessage('');
     onEnterComment({
       contentType: 'vocabulary',
-      text: trimWhiteSpaces(event.target.value)
-        .toLowerCase()
-        .replace(regex, '')
+      text: trimWhiteSpaces(event.target.value).replace(regex, '')
     });
   }
 
