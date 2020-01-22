@@ -337,7 +337,8 @@ export default function ChatReducer(state, action) {
         reconnecting: false,
         selectedChannelId: action.data.currentChannelId,
         subject: action.data.currentChannelId === 2 ? state.subject : {},
-        wordsObj: action.data.wordsObj
+        wordsObj: action.data.wordsObj,
+        wordCollectors: action.data.wordCollectors
       };
     }
     case 'INVITE_USERS_TO_CHANNEL':
@@ -421,7 +422,8 @@ export default function ChatReducer(state, action) {
         messagesLoadMoreButton: false,
         vocabActivities: action.vocabActivities,
         vocabActivitiesLoadMoreButton,
-        wordsObj: action.wordsObj
+        wordsObj: action.wordsObj,
+        wordCollectors: action.wordCollectors
       };
     }
     case 'LOAD_MORE_VOCABULARY': {

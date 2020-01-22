@@ -1,26 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Color } from 'constants/css';
-import { useAppContext, useChatContext } from 'contexts';
+import { useChatContext } from 'contexts';
 import Collector from './Collector';
 
 export default function TopMenu() {
   const {
-    requestHelpers: { loadWordCollectors }
-  } = useAppContext();
-  const {
-    state: { wordCollectors },
-    actions: { onLoadWordCollectors }
+    state: { wordCollectors }
   } = useChatContext();
-
-  useEffect(() => {
-    init();
-
-    async function init() {
-      const data = await loadWordCollectors();
-      onLoadWordCollectors(data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div

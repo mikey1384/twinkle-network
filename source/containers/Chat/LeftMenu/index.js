@@ -164,8 +164,12 @@ export default function LeftMenu({
   );
 
   async function handleEnterVocabulary() {
-    const { vocabActivities, wordsObj } = await loadVocabulary();
-    onLoadVocabulary({ vocabActivities, wordsObj });
+    const {
+      vocabActivities,
+      wordsObj,
+      wordCollectors
+    } = await loadVocabulary();
+    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
   }
 
   async function handleLoadMoreChannels() {

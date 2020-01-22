@@ -176,11 +176,12 @@ export default function ChatActions(dispatch) {
         data
       });
     },
-    onLoadVocabulary({ vocabActivities, wordsObj }) {
+    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors }) {
       return dispatch({
         type: 'LOAD_VOCABULARY',
         vocabActivities,
-        wordsObj
+        wordsObj,
+        wordCollectors
       });
     },
     onLoadMoreVocabulary({ vocabActivities, wordsObj }) {
@@ -188,12 +189,6 @@ export default function ChatActions(dispatch) {
         type: 'LOAD_MORE_VOCABULARY',
         vocabActivities,
         wordsObj
-      });
-    },
-    onLoadWordCollectors(wordCollectors) {
-      return dispatch({
-        type: 'LOAD_WORD_COLLECTORS',
-        wordCollectors
       });
     },
     onNotifyThatMemberLeftChannel(data) {

@@ -206,17 +206,6 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadWordCollectors() {
-      try {
-        const { data } = await request.get(
-          `${URL}/chat/word/leaderBoard`,
-          auth()
-        );
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async loadVocabulary(shownWords) {
       try {
         const { data } = await request.get(
