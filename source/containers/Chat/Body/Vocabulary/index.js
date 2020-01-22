@@ -220,6 +220,7 @@ export default function Vocabulary() {
 
   async function handleSubmit() {
     const { isNew, ...definitions } = wordObj;
+    delete definitions.deletedDefIds;
     if (isNew && !isSubmitting) {
       setIsSubmitting(true);
       const { xp, rank, word } = await registerWord(definitions);
