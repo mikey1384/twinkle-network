@@ -230,7 +230,8 @@ export default function Vocabulary() {
         id: userId,
         username,
         profilePicId,
-        numWordsCollected: word.numWordsCollected
+        numWordsCollected: word.numWordsCollected,
+        rank: word.rank
       });
       onSetWordRegisterStatus(wordObj);
       onEnterComment({

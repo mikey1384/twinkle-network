@@ -922,11 +922,21 @@ function updateWordCollectorsRankings({ collector, currentRankings }) {
     .filter(ranker => ranker.username !== collector.username)
     .concat([collector]);
   newRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
+  const topRankerRank = newRankings[0].rank;
   const result = newRankings
-    .map((ranker, index) => ({
-      ...ranker,
-      rank: index + 1
-    }))
+    .map(ranker => {
+      let numberOfHigherRanked = 0;
+      for (let member of newRankings) {
+        if (member.numWordsCollected > ranker.numWordsCollected) {
+          numberOfHigherRanked++;
+        }
+      }
+      const rank = topRankerRank + numberOfHigherRanked;
+      return {
+        ...ranker,
+        rank
+      };
+    })
     .slice(0, 30);
   return result;
 }

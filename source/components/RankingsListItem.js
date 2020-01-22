@@ -4,6 +4,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { css } from 'emotion';
 
 RankingsListItem.propTypes = {
   myId: PropTypes.number,
@@ -55,16 +56,15 @@ export default function RankingsListItem({ myId, small, style, user }) {
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <span
-          style={{
-            fontWeight: 'bold',
-            fontSize: rankFontSize,
-            width: '3rem',
-            marginRight: '1rem',
-            textAlign: 'center',
-            color:
-              rankColor ||
-              (user.rank <= 10 ? Color.logoBlue() : Color.darkGray())
-          }}
+          className={css`
+            font-weight: bold;
+            font-size: ${rankFontSize};
+            width: 3rem;
+            margin-right: 1rem;
+            text-align: center;
+            color: ${rankColor ||
+              (user.rank <= 10 ? Color.logoBlue() : Color.darkGray())};
+          `}
         >
           {user.rank ? `#${user.rank}` : '--'}
         </span>
@@ -87,15 +87,20 @@ export default function RankingsListItem({ myId, small, style, user }) {
             }
             user={{ ...user, username: user.username }}
             userId={myId}
-            style={{
-              marginTop: '0.5rem',
-              textAlign: 'center',
-              fontSize: usernameFontSize
-            }}
+            className={css`
+              margin-top: 0.5rem;
+              text-align: center;
+              font-size: ${usernameFontSize};
+            `}
           />
         </div>
       </div>
-      <div style={{ fontWeight: 'bold', fontSize: xpFontSize }}>
+      <div
+        className={css`
+          font-weight: bold;
+          font-size: ${xpFontSize};
+        `}
+      >
         <span style={{ color: Color.logoGreen() }}>
           {addCommasToNumber(user.twinkleXP || 0)}
         </span>{' '}

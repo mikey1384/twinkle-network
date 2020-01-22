@@ -4,6 +4,8 @@ import UsernameText from 'components/Texts/UsernameText';
 import ProfilePic from 'components/ProfilePic';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { isMobile } from 'helpers';
+import Icon from 'components/Icon';
 
 Collector.propTypes = {
   myId: PropTypes.number,
@@ -77,6 +79,16 @@ export default function Collector({ myId, style, user }) {
         </div>
       </div>
       <div>
+        {isMobile(navigator) && (
+          <Icon
+            style={{
+              color: textColor,
+              marginRight: '0.7rem',
+              fontSize: '1.1rem'
+            }}
+            icon="times"
+          />
+        )}
         <span
           style={{
             color: textColor,
@@ -84,7 +96,8 @@ export default function Collector({ myId, style, user }) {
             fontWeight: 'bold'
           }}
         >
-          {addCommasToNumber(user.numWordsCollected || 0)} collected
+          {addCommasToNumber(user.numWordsCollected || 0)}
+          {!isMobile(navigator) && <span> collected</span>}
         </span>
       </div>
     </nav>
