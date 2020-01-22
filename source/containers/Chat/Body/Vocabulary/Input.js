@@ -67,14 +67,6 @@ export default function Input({
           onKeyDown={handleKeyDown}
           value={text}
           onChange={handleChange}
-          onKeyUp={event => {
-            if (event.key === ' ') {
-              onEnterComment({
-                contentType: 'vocabulary',
-                text: event.target.value
-              });
-            }
-          }}
           style={{
             ...(messageExceedsCharLimit?.style || {})
           }}
