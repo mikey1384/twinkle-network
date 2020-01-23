@@ -21,7 +21,7 @@ export default function PartOfSpeechBlock({
   posObject,
   style
 }) {
-  return defIds.length > 0 ? (
+  return defIds?.length > 0 ? (
     <div style={style}>
       <p
         style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}
