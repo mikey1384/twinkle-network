@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.1.67';
+export const clientVersion = '1.1.68';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -76,7 +76,7 @@ export const returnMaxStars = ({ rewardLevel }) => {
 
 const intermediateWordFrequency = 4.1;
 const advancedWordFrequency = 2.5;
-const epicWordFrequency = 1.2;
+const epicWordFrequency = 1.6;
 
 export function returnWordLevel({ frequency, wordLength }) {
   if (frequency > intermediateWordFrequency) {
@@ -85,5 +85,6 @@ export function returnWordLevel({ frequency, wordLength }) {
   }
   if (frequency > advancedWordFrequency) return 3;
   if (frequency > epicWordFrequency) return 4;
-  return 5;
+  if (frequency <= epicWordFrequency) return 5;
+  return 3;
 }
