@@ -5,6 +5,8 @@ import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { returnWordLevel, rewardHash } from 'constants/defaultValues';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 
 Vocabulary.propTypes = {
   selected: PropTypes.bool.isRequired,
@@ -20,6 +22,19 @@ export default function Vocabulary({ selected, onClick }) {
   const lastActivity = useMemo(() => {
     return wordsObj[vocabActivities[vocabActivities.length - 1]];
   }, [vocabActivities, wordsObj]);
+
+  const lastRewardedXp = useMemo(
+    () =>
+      addCommasToNumber(
+        rewardHash[
+          returnWordLevel({
+            frequency: lastActivity.frequency,
+            wordLength: lastActivity.content.length
+          })
+        ].rewardAmount
+      ),
+    [lastActivity.content.length, lastActivity.frequency]
+  );
 
   return (
     <div
@@ -54,7 +69,9 @@ export default function Vocabulary({ selected, onClick }) {
               }}
             >
               {lastActivity.userId === myId ? 'You' : lastActivity.username}:{' '}
-              collected <b>{lastActivity.content}</b>
+              <b>
+                {lastActivity.content} (+{lastRewardedXp} XP)
+              </b>
             </p>
           </div>
         )}
