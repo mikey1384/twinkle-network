@@ -4,8 +4,7 @@ import CreateNewChannelModal from './Modals/CreateNewChannel';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
 import RightMenu from './RightMenu';
-import MessagesContainer from './MessagesContainer';
-import ChessModal from './Modals/ChessModal';
+import Body from './Body';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
@@ -27,40 +26,23 @@ export default function Chat({ onFileUpload }) {
       loadChatChannel,
       loadDMChannel,
       loadMoreChannels,
-      loadMoreChatMessages,
-      startNewDMChannel,
       updateChatLastRead
     }
   } = useAppContext();
-  const { profilePicId, userId, username } = useMyState();
+  const { userId, username } = useMyState();
   const {
-    state: {
-      channelLoading,
-      loaded,
-      selectedChannelId,
-      channelsObj,
-      messages,
-      channelLoadMoreButton,
-      loadMoreMessages,
-      recepientId,
-      reconnecting,
-      replyTarget,
-      subject
-    },
+    state: { loaded, selectedChannelId, channelsObj, channelLoadMoreButton },
     actions: {
       onClearNumUnreads,
       onCreateNewChannel,
       onEnterChannelWithId,
       onEnterEmptyChat,
       onLoadMoreChannels,
-      onLoadMoreMessages,
       onNotifyThatMemberLeftChannel,
       onOpenDirectMessageChannel,
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
-      onSendFirstDirectMessage,
-      onSetReplyTarget,
-      onSubmitMessage,
+      onSetChessModalShown,
       onUpdateChessMoveViewTimeStamp,
       onUpdateSelectedChannelId
     }
@@ -76,14 +58,10 @@ export default function Chat({ onFileUpload }) {
     false
   );
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [chessModalShown, setChessModalShown] = useState(false);
-  const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [channelName, setChannelName] = useState('');
   const [partner, setPartner] = useState(null);
-  const [creatingNewDMChannel, setCreatingNewDMChannel] = useState(false);
   const memberObj = useRef({});
   const mounted = useRef(true);
-  const loadingRef = useRef(false);
 
   const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
     channelsObj,
@@ -123,31 +101,10 @@ export default function Chat({ onFileUpload }) {
   }, [channelsObj, currentChannel, userId]);
 
   useEffect(() => {
-    loadingRef.current = channelLoading;
-  }, [channelLoading]);
-
-  useEffect(() => {
-    socket.on('new_message_received', handleReceiveMessage);
+    socket.on('chess_move_made', onNotifiedMoveMade);
+    socket.on('chess_move_viewed', onNotifyMoveViewed);
     socket.on('subject_changed', onSubjectChange);
     socket.on('members_online_changed', onChangeMembersOnline);
-    socket.on('chess_move_viewed', onNotifyMoveViewed);
-    socket.on('chess_move_made', onNotifiedMoveMade);
-    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
-
-    function onNotifyMoveViewed(channelId) {
-      if (channelId === selectedChannelId) {
-        onUpdateChessMoveViewTimeStamp();
-      }
-    }
-
-    function handleReceiveMessage(message) {
-      if (message.isChessMsg) {
-        setChessCountdownObj(countdownObj => ({
-          ...countdownObj,
-          [message.channelId]: undefined
-        }));
-      }
-    }
 
     function onChangeMembersOnline(data) {
       let forCurrentChannel = data.channelId === selectedChannelId;
@@ -167,32 +124,21 @@ export default function Chat({ onFileUpload }) {
 
     function onNotifiedMoveMade({ channelId }) {
       if (channelId === selectedChannelId) {
-        setChessModalShown(false);
+        onSetChessModalShown(false);
       }
     }
 
-    function onReceiveCountdownNumber({ channelId, number }) {
+    function onNotifyMoveViewed(channelId) {
       if (channelId === selectedChannelId) {
-        if (number === 0) {
-          setChessModalShown(false);
-        }
-        setChessCountdownObj(countdownObj => ({
-          ...countdownObj,
-          [channelId]: number
-        }));
+        onUpdateChessMoveViewTimeStamp();
       }
     }
 
     return function cleanUp() {
-      socket.removeListener('new_message_received', handleReceiveMessage);
+      socket.removeListener('chess_move_made', onNotifiedMoveMade);
+      socket.removeListener('chess_move_viewed', onNotifyMoveViewed);
       socket.removeListener('subject_changed', onSubjectChange);
       socket.removeListener('members_online_changed', onChangeMembersOnline);
-      socket.removeListener('chess_move_viewed', onNotifyMoveViewed);
-      socket.removeListener('chess_move_made', onNotifiedMoveMade);
-      socket.removeListener(
-        'chess_countdown_number_received',
-        onReceiveCountdownNumber
-      );
     };
   });
 
@@ -248,46 +194,20 @@ export default function Chat({ onFileUpload }) {
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={handleLoadMoreChannels}
-              onChannelEnter={onChannelEnter}
-              onNewButtonClick={onNewButtonClick}
+              onChannelEnter={handleChannelEnter}
+              onNewButtonClick={() => setCreateNewChannelModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
             />
-            <MessagesContainer
+            <Body
               channelName={channelName}
-              chessCountdownObj={chessCountdownObj}
               chessOpponent={partner}
-              loading={channelLoading || creatingNewDMChannel || reconnecting}
               currentChannel={currentChannel}
-              currentChannelId={selectedChannelId}
-              loadMoreButton={loadMoreMessages}
-              messages={messages}
-              loadMoreMessages={handleLoadMoreMessages}
-              onShowChessModal={handleChessModalShown}
-              onChessBoardClick={handleChessModalShown}
-              onChessSpoilerClick={handleChessSpoilerClick}
-              onMessageSubmit={handleMessageSubmit}
-              onSendFileMessage={handleSendFileMessage}
-              recepientId={recepientId}
-              selectedChannelId={selectedChannelId}
-              subjectId={subject.id}
             />
             <RightMenu
               channelName={channelName}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
             />
-            {chessModalShown && (
-              <ChessModal
-                channelId={selectedChannelId}
-                chessCountdownObj={chessCountdownObj}
-                myId={userId}
-                onConfirmChessMove={handleConfirmChessMove}
-                onHide={() => setChessModalShown(false)}
-                onSpoilerClick={handleChessSpoilerClick}
-                opponentId={partner?.id}
-                opponentName={partner?.username}
-              />
-            )}
           </div>
         ) : (
           <Loading text="Loading Twinkle Chat" />
@@ -298,84 +218,9 @@ export default function Chat({ onFileUpload }) {
     </LocalContext.Provider>
   );
 
-  function handleChessModalShown() {
-    const channelId = currentChannel?.id;
-    if (chessCountdownObj[channelId] !== 0) {
-      onSetReplyTarget(null);
-      setChessModalShown(true);
-    }
-  }
-
-  function handleChessSpoilerClick(senderId) {
-    if (
-      selectedChannelId !== currentChannel.id ||
-      senderId === userId ||
-      loadingRef.current ||
-      creatingNewDMChannel
-    ) {
-      return;
-    }
-    socket.emit('viewed_chess_move', selectedChannelId);
-    socket.emit('start_chess_timer', {
-      currentChannel,
-      targetUserId: userId,
-      winnerId: senderId
-    });
-    setChessModalShown(true);
-  }
-
   async function handleLoadMoreChannels(params) {
     const data = await loadMoreChannels(params);
     onLoadMoreChannels(data);
-  }
-
-  async function handleLoadMoreMessages(params) {
-    const data = await loadMoreChatMessages(params);
-    onLoadMoreMessages(data);
-  }
-
-  async function handleMessageSubmit(content) {
-    let isFirstDirectMessage = selectedChannelId === 0;
-    if (isFirstDirectMessage) {
-      if (creatingNewDMChannel) return;
-      setCreatingNewDMChannel(true);
-      const { members, message } = await startNewDMChannel({
-        content,
-        userId,
-        recepientId
-      });
-      onSendFirstDirectMessage({ members, message });
-      socket.emit('join_chat_channel', message.channelId);
-      socket.emit('send_bi_chat_invitation', recepientId, message);
-      setCreatingNewDMChannel(false);
-      return;
-    }
-    const message = {
-      userId,
-      username,
-      profilePicId,
-      content,
-      channelId: selectedChannelId,
-      subjectId: subject.id
-    };
-    onSubmitMessage({ message, replyTarget });
-    onSetReplyTarget(null);
-  }
-
-  function handleSendFileMessage(params) {
-    socket.emit(
-      'new_chat_message',
-      { ...params, isNewMessage: true },
-      {
-        ...currentChannel,
-        numUnreads: 1,
-        lastMessage: {
-          fileName: params.fileName,
-          sender: { id: userId, username }
-        },
-        channelName
-      }
-    );
   }
 
   function userListDescriptionShown(user) {
@@ -389,52 +234,7 @@ export default function Chat({ onFileUpload }) {
     return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
   }
 
-  async function handleConfirmChessMove({ state, isCheckmate, isStalemate }) {
-    const gameWinnerId = isCheckmate ? userId : isStalemate ? 0 : undefined;
-    const params = {
-      userId,
-      chessState: state,
-      isChessMsg: 1,
-      gameWinnerId
-    };
-    const content = 'Made a chess move';
-    try {
-      if (selectedChannelId) {
-        onSubmitMessage({
-          message: {
-            ...params,
-            profilePicId,
-            username,
-            content,
-            channelId: selectedChannelId
-          }
-        });
-        onSetReplyTarget(null);
-        socket.emit('user_made_a_move', {
-          userId,
-          channelId: selectedChannelId
-        });
-      } else {
-        const { members, message } = await startNewDMChannel({
-          ...params,
-          content,
-          recepientId
-        });
-        onSendFirstDirectMessage({ members, message });
-        socket.emit('join_chat_channel', message.channelId);
-        socket.emit('send_bi_chat_invitation', recepientId, message);
-        return;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  function onNewButtonClick() {
-    setCreateNewChannelModalShown(true);
-  }
-
-  async function onChannelEnter(id) {
+  async function handleChannelEnter(id) {
     if (id === 0) {
       setCurrentChannelOnlineMembers([]);
       return onEnterEmptyChat();

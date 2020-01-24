@@ -89,7 +89,7 @@ function VideoPlayer({
   const [alreadyEarned, setAlreadyEarned] = useState(false);
   const [startingPosition, setStartingPosition] = useState(0);
   const [timeAt, setTimeAt] = useState(0);
-  const maxRequiredDuration = 250;
+  const maxRequiredDuration = 150;
   const requiredDurationCap = useRef(maxRequiredDuration);
   const PlayerRef = useRef(null);
   const timerRef = useRef(null);
@@ -132,10 +132,8 @@ function VideoPlayer({
 
   useEffect(() => {
     PlayerRef.current?.getInternalPlayer()?.pauseVideo?.();
-    const userIsLevel2 = twinkleXP >= 2000000;
-    requiredDurationCap.current = userIsLevel2
-      ? Math.min(twinkleXP / 10000, maxRequiredDuration)
-      : 60 + Math.min(twinkleXP / 1000, 120) || maxRequiredDuration;
+    requiredDurationCap.current =
+      60 + Math.min(twinkleXP / 1000, 60) || maxRequiredDuration;
     userIdRef.current = userId;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);

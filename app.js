@@ -11,6 +11,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
 import { faArrowLeft } from '@fortawesome/pro-solid-svg-icons/faArrowLeft';
+import { faArrowDown } from '@fortawesome/pro-solid-svg-icons/faArrowDown';
 import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
 import { faBiohazard } from '@fortawesome/pro-solid-svg-icons/faBiohazard';
 import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
@@ -80,6 +81,7 @@ library.add(
   faBook,
   faBrain,
   faArrowLeft,
+  faArrowDown,
   faCameraAlt,
   faCaretDown,
   faCertificate,

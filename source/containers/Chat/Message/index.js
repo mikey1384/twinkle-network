@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from './FileUploadStatusIndicator';
-import { unix } from 'moment';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
@@ -13,6 +12,7 @@ import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import { socket } from 'constants/io';
+import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
@@ -26,10 +26,10 @@ import SpoilerMessage from './SpoilerMessage';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
+  chessCountdownNumber: PropTypes.number,
   chessOpponent: PropTypes.object,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
-  chessCountdownObj: PropTypes.object,
   currentChannel: PropTypes.object,
   message: PropTypes.object,
   style: PropTypes.object,
@@ -48,11 +48,11 @@ Message.propTypes = {
   setScrollToBottom: PropTypes.func
 };
 
-export default function Message({
+function Message({
   channelId,
   channelName,
   checkScrollIsAtTheBottom,
-  chessCountdownObj,
+  chessCountdownNumber,
   chessOpponent,
   currentChannel,
   index,
@@ -325,7 +325,7 @@ export default function Message({
             {isChessMsg ? (
               <Chess
                 channelId={channelId}
-                chessCountdownObj={chessCountdownObj}
+                countdownNumber={chessCountdownNumber}
                 gameWinnerId={gameWinnerId}
                 loaded
                 spoilerOff={spoilerOff}
@@ -336,6 +336,7 @@ export default function Message({
                 onSpoilerClick={handleSpoilerClick}
                 opponentId={chessOpponent?.id}
                 opponentName={chessOpponent?.username}
+                senderId={userId}
                 style={{ marginTop: '1rem', width: '100%' }}
               />
             ) : fileToUpload && !loading ? (
@@ -461,3 +462,5 @@ export default function Message({
     }
   }
 }
+
+export default memo(Message);

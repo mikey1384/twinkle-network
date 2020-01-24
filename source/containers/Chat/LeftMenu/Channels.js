@@ -7,7 +7,7 @@ import { css } from 'emotion';
 Channels.propTypes = {
   userId: PropTypes.number.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number.isRequired
+  selectedChannelId: PropTypes.number
 };
 
 export default function Channels({
@@ -16,7 +16,7 @@ export default function Channels({
   selectedChannelId
 }) {
   const {
-    state: { channelIds, channelsObj, customChannelNames }
+    state: { chatType, channelIds, channelsObj, customChannelNames }
   } = useChatContext();
 
   return (
@@ -37,6 +37,7 @@ export default function Channels({
             const otherMember = twoPeople
               ? members?.filter(member => Number(member.id) !== userId)?.[0]
               : null;
+            const selected = !chatType && id === selectedChannelId;
             return (
               <div
                 key={id}
@@ -49,14 +50,13 @@ export default function Channels({
                 `}
                 style={{
                   width: '100%',
-                  backgroundColor:
-                    id === selectedChannelId && Color.highlightGray(),
+                  backgroundColor: selected && Color.highlightGray(),
                   cursor: 'pointer',
                   padding: '1rem',
                   height: '6.5rem'
                 }}
                 onClick={() => {
-                  if (id !== selectedChannelId) {
+                  if (!selected) {
                     onChannelEnter(id);
                   }
                 }}

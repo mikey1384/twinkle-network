@@ -101,6 +101,15 @@ export default function ChatActions(dispatch) {
         data: { editedMessage, messageId }
       });
     },
+    onEditWord({ deletedDefIds, partOfSpeeches, editedDefinitionOrder, word }) {
+      return dispatch({
+        type: 'EDIT_WORD',
+        deletedDefIds,
+        partOfSpeeches,
+        editedDefinitionOrder,
+        word
+      });
+    },
     onEnterChannelWithId({ data, showOnTop }) {
       return dispatch({
         type: 'ENTER_CHANNEL',
@@ -165,6 +174,21 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'LOAD_MORE_MESSAGES',
         data
+      });
+    },
+    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors }) {
+      return dispatch({
+        type: 'LOAD_VOCABULARY',
+        vocabActivities,
+        wordsObj,
+        wordCollectors
+      });
+    },
+    onLoadMoreVocabulary({ vocabActivities, wordsObj }) {
+      return dispatch({
+        type: 'LOAD_MORE_VOCABULARY',
+        vocabActivities,
+        wordsObj
       });
     },
     onNotifyThatMemberLeftChannel(data) {
@@ -248,11 +272,30 @@ export default function ChatActions(dispatch) {
         usingChat
       });
     },
+    onReceiveVocabActivity({ activity, usingVocabSection }) {
+      return dispatch({
+        type: 'RECEIVE_VOCAB_ACTIVITY',
+        activity,
+        usingVocabSection
+      });
+    },
+    onRegisterWord(word) {
+      return dispatch({
+        type: 'REGISTER_WORD',
+        word
+      });
+    },
     onReloadChatSubject({ subject, message }) {
       return dispatch({
         type: 'RELOAD_SUBJECT',
         subject,
         message
+      });
+    },
+    onRemoveNewActivityStatus(word) {
+      return dispatch({
+        type: 'REMOVE_NEW_ACTIVITY_STATUS',
+        word
       });
     },
     onResetChat() {
@@ -292,6 +335,24 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onSetChessModalShown(shown) {
+      return dispatch({
+        type: 'SET_CHESS_MODAL_SHOWN',
+        shown
+      });
+    },
+    onSetCreatingNewDMChannel(creating) {
+      return dispatch({
+        type: 'SET_CREATING_NEW_DM_CHANNEL',
+        creating
+      });
+    },
+    onSetLoadingVocabulary(loading) {
+      return dispatch({
+        type: 'SET_LOADING_VOCABULARY',
+        loading
+      });
+    },
     onSetReconnecting() {
       return dispatch({
         type: 'SET_RECONNECTING'
@@ -301,6 +362,24 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'SET_REPLY_TARGET',
         target
+      });
+    },
+    onSetVocabErrorMessage(message) {
+      return dispatch({
+        type: 'SET_VOCAB_ERROR_MESSAGE',
+        message
+      });
+    },
+    onSetWordsObj(wordObj) {
+      return dispatch({
+        type: 'SET_WORDS_OBJECT',
+        wordObj
+      });
+    },
+    onSetWordRegisterStatus(status) {
+      return dispatch({
+        type: 'SET_WORD_REGISTER_STATUS',
+        status
       });
     },
     onSubmitMessage({ message, replyTarget }) {
@@ -316,6 +395,12 @@ export default function ChatActions(dispatch) {
     onUpdateChessMoveViewTimeStamp() {
       return dispatch({
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
+      });
+    },
+    onUpdateCollectorsRankings(collector) {
+      return dispatch({
+        type: 'UPDATE_COLLECTORS_RANKINGS',
+        collector
       });
     },
     onUpdateUploadProgress({ progress, channelId, path }) {

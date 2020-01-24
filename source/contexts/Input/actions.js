@@ -1,11 +1,18 @@
 export default function InputActions(dispatch) {
   return {
     onEnterComment({ contentId, contentType, text }) {
+      const regex = /[^a-zA-Z]/gi;
       return dispatch({
         type: 'ENTER_COMMENT',
         contentId,
         contentType,
-        text
+        text:
+          contentType === 'vocabulary'
+            ? text
+                .trim()
+                .replace(regex, '')
+                .toLowerCase()
+            : text
       });
     },
     onResetContentInput() {

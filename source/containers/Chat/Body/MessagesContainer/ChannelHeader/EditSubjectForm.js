@@ -11,7 +11,7 @@ import SearchDropdown from 'components/SearchDropdown';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
 import { timeSince } from 'helpers/timeStampHelpers';
-import SubjectsModal from '../../Modals/SubjectsModal';
+import SubjectsModal from '../../../Modals/SubjectsModal';
 import Input from 'components/Texts/Input';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { edit } from 'constants/placeholders';
@@ -128,13 +128,12 @@ export default function EditSubjectForm({
             style={{
               marginTop: '1.7rem',
               marginLeft: '1rem',
-              marginRight: '1rem',
               display: 'flex',
               alignItems: 'center'
             }}
           >
             <Button
-              style={{ fontSize: '1.4rem' }}
+              style={{ fontSize: '1.3rem' }}
               filled
               color="green"
               onClick={() => setSubjectsModalShown(true)}

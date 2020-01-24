@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.1.51';
+export const clientVersion = '1.1.69';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -35,6 +35,33 @@ export const charLimit = {
     url: 300
   }
 };
+export const rewardHash = {
+  1: {
+    label: 'basic',
+    rewardAmount: 100,
+    color: 'logoBlue'
+  },
+  2: {
+    label: 'elementary',
+    rewardAmount: 200,
+    color: 'pink'
+  },
+  3: {
+    label: 'intermediate',
+    rewardAmount: 500,
+    color: 'orange'
+  },
+  4: {
+    label: 'advanced',
+    rewardAmount: 1000,
+    color: 'red'
+  },
+  5: {
+    label: 'epic',
+    rewardAmount: 5000,
+    color: 'gold'
+  }
+};
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 5000;
@@ -46,3 +73,19 @@ export const returnMaxStars = ({ rewardLevel }) => {
   }
   return maxStars;
 };
+
+const intermediateWordFrequency = 4;
+const advancedWordFrequency = 2.5;
+const epicWordFrequency = 1.6;
+
+export function returnWordLevel({ frequency, wordLength }) {
+  if (!frequency) return 3;
+  if (frequency > intermediateWordFrequency) {
+    if (wordLength < 7) return 1;
+    return 2;
+  }
+  if (frequency > advancedWordFrequency) return 3;
+  if (frequency > epicWordFrequency) return 4;
+  if (frequency <= epicWordFrequency) return 5;
+  return 3;
+}

@@ -7,7 +7,7 @@ import Banner from 'components/Banner';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Rankings from './Rankings';
 import NotiItem from './NotiItem';
-import MyRank from './MyRank';
+import MyRank from 'components/MyRank';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { notiFeedListItem } from '../Styles';
@@ -61,13 +61,13 @@ function MainFeeds({
   const NotificationsItems = useMemo(() => {
     return notifications.map(notification => {
       return (
-        <li
+        <nav
           style={{ background: '#fff' }}
           className={notiFeedListItem}
           key={notification.id}
         >
           <NotiItem notification={notification} />
-        </li>
+        </nav>
       );
     });
   }, [notifications]);
@@ -83,7 +83,7 @@ function MainFeeds({
         rewarderUsername,
         timeStamp
       }) => (
-        <li
+        <nav
           style={{ background: '#fff' }}
           className={notiFeedListItem}
           key={id}
@@ -123,7 +123,7 @@ function MainFeeds({
             />
           </div>
           <small>{timeSince(timeStamp)}</small>
-        </li>
+        </nav>
       )
     );
   }, [rewards]);

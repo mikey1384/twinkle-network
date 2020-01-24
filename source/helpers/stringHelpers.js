@@ -15,6 +15,16 @@ export function addCommasToNumber(number) {
   return result;
 }
 
+export function addEmoji(string) {
+  let firstPart = string.substring(0, string.length - 3);
+  let lastPart = addTwoLetterEmoji(string.slice(-3));
+  let firstResult = `${firstPart}${lastPart}`;
+
+  firstPart = firstResult.substring(0, firstResult.length - 4);
+  lastPart = addThreeLetterEmoji(firstResult.slice(-4));
+  return `${firstPart}${lastPart}`;
+}
+
 export function addTwoLetterEmoji(string) {
   return string
     .replace(/(:\) )/g, '😊 ')
@@ -143,28 +153,6 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
-export function expandShortcut(string) {
-  return string
-    .replace(/(\(brb\))/gi, 'be right back')
-    .replace(/(\(gtg\))/gi, 'got to go')
-    .replace(/(\(tbh\))/gi, 'to be honest')
-    .replace(/(\(nvm\))/gi, 'never mind')
-    .replace(
-      /(\(verylongword\))/gi,
-      'pneumonoultramicroscopicsilicovolcanoconiosis'
-    );
-}
-
-export function addEmoji(string) {
-  let firstPart = string.substring(0, string.length - 3);
-  let lastPart = addTwoLetterEmoji(string.slice(-3));
-  let firstResult = `${firstPart}${lastPart}`;
-
-  firstPart = firstResult.substring(0, firstResult.length - 4);
-  lastPart = addThreeLetterEmoji(firstResult.slice(-4));
-  return `${firstPart}${lastPart}`;
-}
-
 export function capitalize(string = '') {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -177,6 +165,18 @@ export function cleanString(string) {
         .replace(/&lt;/gi, '<')
         .replace(/&gt;/gi, '>')
     : '';
+}
+
+export function expandShortcut(string) {
+  return string
+    .replace(/(\(brb\))/gi, 'be right back')
+    .replace(/(\(gtg\))/gi, 'got to go')
+    .replace(/(\(tbh\))/gi, 'to be honest')
+    .replace(/(\(nvm\))/gi, 'never mind')
+    .replace(
+      /(\(verylongword\))/gi,
+      'pneumonoultramicroscopicsilicovolcanoconiosis'
+    );
 }
 
 export function exceedsCharLimit({ inputType, contentType, text }) {

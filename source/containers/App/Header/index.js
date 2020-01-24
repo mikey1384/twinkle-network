@@ -47,7 +47,7 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: { channelsObj, selectedChannelId, numUnreads },
+    state: { channelsObj, chatType, selectedChannelId, numUnreads },
     actions: {
       onSetReconnecting,
       onChangeChannelOwner,
@@ -60,7 +60,9 @@ export default function Header({
       onInitChat,
       onReceiveFirstMsg,
       onReceiveMessage,
-      onReceiveMessageOnDifferentChannel
+      onReceiveMessageOnDifferentChannel,
+      onReceiveVocabActivity,
+      onUpdateCollectorsRankings
     }
   } = useChatContext();
 
@@ -106,6 +108,7 @@ export default function Header({
     socket.on('new_notification_received', onIncreaseNumNewNotis);
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('subject_changed', onSubjectChange);
+    socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
     return function cleanUp() {
       socket.removeListener('chat_invitation_received', onChatInvitation);
@@ -123,6 +126,10 @@ export default function Header({
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('subject_changed', onSubjectChange);
+      socket.removeListener(
+        'new_vocab_activity_received',
+        handleReceiveVocabActivity
+      );
     };
 
     function onChatInvitation(data) {
@@ -173,8 +180,9 @@ export default function Header({
       onChangeSocketStatus(false);
     }
     async function handleReceiveMessage(message, channel) {
-      let messageIsForCurrentChannel = message.channelId === selectedChannelId;
-      let senderIsNotTheUser = message.userId !== userId;
+      const messageIsForCurrentChannel =
+        message.channelId === selectedChannelId;
+      const senderIsNotTheUser = message.userId !== userId;
       if (messageIsForCurrentChannel && senderIsNotTheUser) {
         if (usingChat) {
           await updateChatLastRead(message.channelId);
@@ -191,6 +199,22 @@ export default function Header({
           senderIsNotTheUser,
           pageVisible,
           usingChat
+        });
+      }
+    }
+    function handleReceiveVocabActivity(activity) {
+      const senderIsNotTheUser = activity.userId !== userId;
+      if (senderIsNotTheUser) {
+        onReceiveVocabActivity({
+          activity,
+          usingVocabSection: chatType === 'vocabulary'
+        });
+        onUpdateCollectorsRankings({
+          id: activity.userId,
+          username: activity.username,
+          profilePicId: activity.profilePicId,
+          numWordsCollected: activity.numWordsCollected,
+          rank: activity.rank
         });
       }
     }

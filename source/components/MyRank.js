@@ -1,16 +1,24 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
-import { Color, borderRadius } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 
 MyRank.propTypes = {
   myId: PropTypes.number,
+  noBorderRadius: PropTypes.bool,
   rank: PropTypes.number,
+  style: PropTypes.object,
   twinkleXP: PropTypes.number
 };
 
-export default function MyRank({ myId, rank, twinkleXP }) {
+export default function MyRank({
+  myId,
+  noBorderRadius,
+  rank,
+  style,
+  twinkleXP
+}) {
   const rankedColor = useMemo(
     () =>
       rank === 1
@@ -27,23 +35,28 @@ export default function MyRank({ myId, rank, twinkleXP }) {
       style={{
         marginTop: '1rem',
         marginBottom: myId ? '1rem' : 0,
+        borderBottom:
+          !(rank > 0 && rank < 4) && noBorderRadius
+            ? `1px solid ${Color.borderGray()}`
+            : '',
         background: myId
           ? rank > 0
             ? rank < 4
               ? Color.black()
               : '#fff'
             : '#fff'
-          : null
+          : null,
+        ...style
       }}
       className={css`
         width: 100%;
         margin-bottom: 0px;
         text-align: center;
         padding: 1rem;
-        border: ${rank > 0 && rank < 4
+        border: ${(rank > 0 && rank < 4) || noBorderRadius
           ? ''
           : `1px solid ${Color.borderGray()}`};
-        border-radius: ${borderRadius};
+        border-radius: ${!noBorderRadius ? borderRadius : ''};
         p {
           font-weight: bold;
         }
@@ -51,33 +64,46 @@ export default function MyRank({ myId, rank, twinkleXP }) {
           font-size: 1.5rem;
           font-weight: bold;
         }
+        span {
+          font-size: ${twinkleXP > 1000000 ? '2.8rem' : '3rem'};
+        }
+        span.rank {
+          font-size: ${twinkleXP > 1000000 ? '1.7rem' : '2rem'};
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          border-radius: 0;
+          span {
+            font-size: 2rem;
+          }
+          span.rank {
+            font-size: ${twinkleXP > 1000000 ? '1.3rem' : '1.6rem'};
+          }
+        }
       `}
     >
       {
         <p>
           <span
             style={{
-              color: rankedColor || Color.logoGreen(),
-              fontSize: '3rem'
+              color: rankedColor || Color.logoGreen()
             }}
           >
             {twinkleXP ? addCommasToNumber(twinkleXP) : 0}
           </span>{' '}
           <span
             style={{
-              color: rankedColor || Color.gold(),
-              fontSize: '3rem'
+              color: rankedColor || Color.gold()
             }}
           >
             XP
           </span>
           &nbsp;&nbsp;
           <span
+            className="rank"
             style={{
               color:
                 rankedColor ||
-                (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray()),
-              fontSize: '2rem'
+                (rank > 0 && rank <= 10 ? Color.pink() : Color.darkGray())
             }}
           >
             {rank ? `Rank #${rank}` : 'Unranked'}

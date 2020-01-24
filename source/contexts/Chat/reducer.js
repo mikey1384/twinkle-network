@@ -131,7 +131,7 @@ export default function ChatReducer(state, action) {
         },
         selectedChannelId: channelId,
         messages: [action.data.message],
-        loadMoreMessages: false
+        messagesLoadMoreButton: false
       };
     }
     case 'CREATE_NEW_DM_CHANNEL':
@@ -199,8 +199,21 @@ export default function ChatReducer(state, action) {
           };
         })
       };
+    case 'EDIT_WORD':
+      return {
+        ...state,
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word]: {
+            ...state.wordsObj[action.word],
+            deletedDefIds: action.deletedDefIds,
+            partOfSpeechOrder: action.partOfSpeeches,
+            definitionOrder: action.editedDefinitionOrder
+          }
+        }
+      };
     case 'ENTER_CHANNEL': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       const selectedChannel = action.data.channel;
       const uploadStatusMessages = state.filesBeingUploaded[
@@ -208,11 +221,12 @@ export default function ChatReducer(state, action) {
       ]?.filter(message => !message.uploadComplete);
       if (action.data.messages.length === 21) {
         action.data.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       action.data.messages.reverse();
       return {
         ...state,
+        chatType: null,
         replyTarget: null,
         recentChessMessage: undefined,
         channelsObj: {
@@ -237,7 +251,7 @@ export default function ChatReducer(state, action) {
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         selectedChannelId: selectedChannel.id,
         subject: selectedChannel.id === 2 ? state.subject : {},
-        loadMoreMessages
+        messagesLoadMoreButton
       };
     }
     case 'ENTER_EMPTY_CHAT':
@@ -248,7 +262,7 @@ export default function ChatReducer(state, action) {
         subject: {},
         selectedChannelId: 0,
         messages: [],
-        loadMoreMessages: false
+        messagesLoadMoreButton: false
       };
     case 'GET_NUM_UNREAD_MSGS':
       return {
@@ -276,23 +290,30 @@ export default function ChatReducer(state, action) {
         }
       };
     case 'INIT_CHAT': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
       let channelLoadMoreButton = false;
+      let vocabActivitiesLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
         action.data.currentChannelId
       ]?.filter(message => !message.uploadComplete);
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
-      action.data.messages && action.data.messages.reverse();
+      action.data.messages?.reverse();
       if (action.data.channelIds.length > 20) {
         action.data.channelIds.pop();
         channelLoadMoreButton = true;
       }
+      if (action.data.vocabActivities.length > 20) {
+        action.data.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      action.data.vocabActivities?.reverse();
       return {
         ...initialChatState,
+        chatType: action.data.chatType,
         loaded: true,
         channelIds: action.data.channelIds,
         channelsObj: {
@@ -304,7 +325,9 @@ export default function ChatReducer(state, action) {
         },
         channelLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
-        loadMoreMessages,
+        vocabActivities: action.data.vocabActivities,
+        vocabActivitiesLoadMoreButton,
+        messagesLoadMoreButton,
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
@@ -313,7 +336,9 @@ export default function ChatReducer(state, action) {
         recentChessMessage: undefined,
         reconnecting: false,
         selectedChannelId: action.data.currentChannelId,
-        subject: action.data.currentChannelId === 2 ? state.subject : {}
+        subject: action.data.currentChannelId === 2 ? state.subject : {},
+        wordsObj: action.data.wordsObj,
+        wordCollectors: action.data.wordCollectors
       };
     }
     case 'INVITE_USERS_TO_CHANNEL':
@@ -365,15 +390,15 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'LOAD_MORE_MESSAGES': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       if (action.data.length === 21) {
         action.data.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       action.data.reverse();
       return {
         ...state,
-        loadMoreMessages,
+        messagesLoadMoreButton,
         messages: action.data.concat(state.messages)
       };
     }
@@ -381,6 +406,51 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         subject: action.subject
+      };
+    case 'LOAD_VOCABULARY': {
+      let vocabActivitiesLoadMoreButton = false;
+      if (action.vocabActivities.length > 20) {
+        action.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      action.vocabActivities?.reverse();
+      return {
+        ...state,
+        selectedChannelId: null,
+        chatType: 'vocabulary',
+        messages: [],
+        messagesLoadMoreButton: false,
+        vocabActivities: action.vocabActivities,
+        vocabActivitiesLoadMoreButton,
+        wordsObj: action.wordsObj,
+        wordCollectors: action.wordCollectors
+      };
+    }
+    case 'LOAD_MORE_VOCABULARY': {
+      let vocabActivitiesLoadMoreButton = false;
+      if (action.vocabActivities.length > 20) {
+        action.vocabActivities.pop();
+        vocabActivitiesLoadMoreButton = true;
+      }
+      action.vocabActivities?.reverse();
+      return {
+        ...state,
+        selectedChannelId: null,
+        chatType: 'vocabulary',
+        messages: [],
+        messagesLoadMoreButton: false,
+        vocabActivities: action.vocabActivities.concat(state.vocabActivities),
+        vocabActivitiesLoadMoreButton,
+        wordsObj: {
+          ...state.wordsObj,
+          ...action.wordsObj
+        }
+      };
+    }
+    case 'LOAD_WORD_COLLECTORS':
+      return {
+        ...state,
+        wordCollectors: action.wordCollectors
       };
     case 'NEW_SUBJECT':
       return {
@@ -444,10 +514,10 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'OPEN_DM': {
-      let loadMoreMessages = false;
+      let messagesLoadMoreButton = false;
       if (action.messages.length > 20) {
         action.messages.pop();
-        loadMoreMessages = true;
+        messagesLoadMoreButton = true;
       }
       return {
         ...state,
@@ -472,7 +542,7 @@ export default function ChatReducer(state, action) {
         ),
         selectedChannelId: action.channelId,
         messages: action.messages.reverse(),
-        loadMoreMessages,
+        messagesLoadMoreButton,
         recepientId: action.recepient.id
       };
     }
@@ -503,7 +573,7 @@ export default function ChatReducer(state, action) {
           }
         },
         messages: [],
-        loadMoreMessages: false,
+        messagesLoadMoreButton: false,
         recepientId: action.recepient.id
       };
     case 'POST_FILE_UPLOAD_STATUS':
@@ -642,11 +712,44 @@ export default function ChatReducer(state, action) {
           state.channelIds.filter(channelId => channelId !== action.channel.id)
         )
       };
+    case 'RECEIVE_VOCAB_ACTIVITY':
+      return {
+        ...state,
+        vocabActivities: state.vocabActivities.concat(action.activity.content),
+        wordsObj: {
+          ...state.wordsObj,
+          [action.activity.content]: action.activity
+        }
+      };
+    case 'REGISTER_WORD':
+      return {
+        ...state,
+        vocabActivities: state.vocabActivities.concat(action.word.content),
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word.content]: {
+            ...state.wordsObj[action.word.content],
+            ...action.word,
+            isNewActivity: true
+          }
+        }
+      };
     case 'RELOAD_SUBJECT':
       return {
         ...state,
         subject: action.subject,
         messages: state.messages.concat([action.message])
+      };
+    case 'REMOVE_NEW_ACTIVITY_STATUS':
+      return {
+        ...state,
+        wordsObj: {
+          ...state.wordsObj,
+          [action.word]: {
+            ...state.wordsObj[action.word],
+            isNewActivity: false
+          }
+        }
       };
     case 'RESET_CHAT':
       return initialChatState;
@@ -665,6 +768,21 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
+    case 'SET_CHESS_MODAL_SHOWN':
+      return {
+        ...state,
+        chessModalShown: action.shown
+      };
+    case 'SET_CREATING_NEW_DM_CHANNEL':
+      return {
+        ...state,
+        creatingNewDMChannel: action.creating
+      };
+    case 'SET_LOADING_VOCABULARY':
+      return {
+        ...state,
+        loadingVocabulary: action.loading
+      };
     case 'SET_RECONNECTING': {
       return {
         ...state,
@@ -675,6 +793,30 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         replyTarget: action.target
+      };
+    }
+    case 'SET_VOCAB_ERROR_MESSAGE': {
+      return {
+        ...state,
+        vocabErrorMessage: action.message
+      };
+    }
+    case 'SET_WORDS_OBJECT': {
+      return {
+        ...state,
+        wordsObj: {
+          ...state.wordsObj,
+          [action.wordObj.content]: {
+            ...(state.wordsObj?.[action.wordObj.content] || {}),
+            ...action.wordObj
+          }
+        }
+      };
+    }
+    case 'SET_WORD_REGISTER_STATUS': {
+      return {
+        ...state,
+        wordRegisterStatus: action.status
       };
     }
     case 'SUBMIT_MESSAGE':
@@ -753,6 +895,14 @@ export default function ChatReducer(state, action) {
           )
         }
       };
+    case 'UPDATE_COLLECTORS_RANKINGS':
+      return {
+        ...state,
+        wordCollectors: updateWordCollectorsRankings({
+          collector: action.collector,
+          currentRankings: state.wordCollectors
+        })
+      };
     case 'UPDATE_RECENT_CHESS_MESSAGE':
       return {
         ...state,
@@ -761,13 +911,23 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,
+        chatType: null,
         channelLoading: true,
         messages: [],
         messagesLoaded: false,
-        loadMoreMessages: false,
+        messagesLoadMoreButton: false,
         selectedChannelId: action.channelId
       };
     default:
       return state;
   }
+}
+
+function updateWordCollectorsRankings({ collector, currentRankings }) {
+  const newRankings = currentRankings
+    .filter(ranker => ranker.username !== collector.username)
+    .concat([collector]);
+  newRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
+  const result = newRankings.slice(0, 30);
+  return result;
 }

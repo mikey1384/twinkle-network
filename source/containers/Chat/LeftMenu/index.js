@@ -4,6 +4,7 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Context from '../Context';
+import Vocabulary from './Vocabulary';
 import {
   Color,
   desktopMinWidth,
@@ -13,7 +14,7 @@ import {
 import { css } from 'emotion';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useChatContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 LeftMenu.propTypes = {
   channelLoadMoreButtonShown: PropTypes.bool.isRequired,
@@ -31,7 +32,11 @@ export default function LeftMenu({
   onNewButtonClick
 }) {
   const {
-    state: { channelIds }
+    requestHelpers: { loadVocabulary }
+  } = useAppContext();
+  const {
+    state: { chatType, channelIds },
+    actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { userId, profileTheme } = useMyState();
   const { selectedChannelId } = useContext(Context);
@@ -113,6 +118,10 @@ export default function LeftMenu({
       >
         + New Channel
       </div>
+      <Vocabulary
+        selected={chatType === 'vocabulary'}
+        onClick={handleEnterVocabulary}
+      />
       <ChatSearchBox
         style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
       />
@@ -120,7 +129,7 @@ export default function LeftMenu({
         style={{
           overflow: 'scroll',
           position: 'absolute',
-          top: '10.5rem',
+          top: '17.5rem',
           left: 0,
           right: 0,
           bottom: 0
@@ -153,6 +162,17 @@ export default function LeftMenu({
       </div>
     </div>
   );
+
+  async function handleEnterVocabulary() {
+    onSetLoadingVocabulary(true);
+    const {
+      vocabActivities,
+      wordsObj,
+      wordCollectors
+    } = await loadVocabulary();
+    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
+    onSetLoadingVocabulary(false);
+  }
 
   async function handleLoadMoreChannels() {
     if (!loading.current) {
