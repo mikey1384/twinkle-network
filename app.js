@@ -12,6 +12,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faAlignJustify } from '@fortawesome/pro-solid-svg-icons/faAlignJustify';
 import { faArrowLeft } from '@fortawesome/pro-solid-svg-icons/faArrowLeft';
 import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
+import { faBiohazard } from '@fortawesome/pro-solid-svg-icons/faBiohazard';
 import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
 import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
 import { faBrain } from '@fortawesome/pro-solid-svg-icons/faBrain';
@@ -39,8 +40,10 @@ import { faFileVideo } from '@fortawesome/pro-solid-svg-icons/faFileVideo';
 import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
 import { faHeadSideBrain } from '@fortawesome/pro-solid-svg-icons/faHeadSideBrain';
+import { faHatWizard } from '@fortawesome/pro-solid-svg-icons/faHatWizard';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
+import { faMedal } from '@fortawesome/pro-solid-svg-icons/faMedal';
 import { faMinus } from '@fortawesome/pro-solid-svg-icons/faMinus';
 import { faPaperPlane } from '@fortawesome/pro-solid-svg-icons/faPaperPlane';
 import { faPencilAlt } from '@fortawesome/pro-solid-svg-icons/faPencilAlt';
@@ -64,12 +67,15 @@ import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
+import { faUsersClass } from '@fortawesome/pro-solid-svg-icons/faUsersClass';
+import { faUserTie } from '@fortawesome/pro-solid-svg-icons/faUserTie';
 import { faWineBottle } from '@fortawesome/pro-solid-svg-icons/faWineBottle';
 import App from 'containers/App';
 import { AppContextProvider } from 'contexts';
 library.add(
   faAlignJustify,
   faBars,
+  faBiohazard,
   faBolt,
   faBook,
   faBrain,
@@ -97,9 +103,11 @@ library.add(
   faFileWord,
   faFilm,
   faHeadSideBrain,
+  faHatWizard,
   faHome,
   faLink,
   faLock,
+  faMedal,
   faMinus,
   faPaperPlane,
   faPencilAlt,
@@ -123,6 +131,8 @@ library.add(
   faUser,
   faUserGraduate,
   faUsers,
+  faUsersClass,
+  faUserTie,
   faWineBottle
 );
 

@@ -77,6 +77,15 @@ export default function XPAchievements({ selectedTheme, xp }) {
               earnText="Reach 1,000,000 XP"
               icon={['fas', 'disease']}
               iconColor="darkBlue"
+              backgroundColor="lawngreen"
+            />
+          )}
+          {xp >= 5000000 && (
+            <Achievement
+              title="Learning Infection"
+              earnText="Reach 5,000,000 XP"
+              icon={['fas', 'biohazard']}
+              iconColor="orange"
               backgroundColor="green"
             />
           )}

@@ -6,6 +6,7 @@ import Home from './Home';
 import Posts from './Posts';
 import { Switch, Route } from 'react-router-dom';
 import { css } from 'emotion';
+import AchievementTab from './AchievementTab';
 
 Body.propTypes = {
   history: PropTypes.object.isRequired,
@@ -13,7 +14,10 @@ Body.propTypes = {
   match: PropTypes.object.isRequired,
   profile: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    username: PropTypes.string
+    username: PropTypes.string,
+    twinkleXP: PropTypes.number,
+    joinDate: PropTypes.string,
+    userType: PropTypes.string
   }),
   selectedTheme: PropTypes.string
 };
@@ -66,6 +70,17 @@ export default function Body({
           </nav>
           <nav
             className={
+              location.pathname === `/users/${username}/achievements`
+                ? 'active'
+                : ''
+            }
+            style={{ cursor: 'pointer' }}
+            onClick={() => history.push(`${match.url}${`/achievements`}`)}
+          >
+            <a>Achievements</a>
+          </nav>
+          <nav
+            className={
               location.pathname === `/users/${username}/likes` ? 'active' : ''
             }
             style={{ cursor: 'pointer' }}
@@ -76,7 +91,8 @@ export default function Body({
           <nav
             className={
               location.pathname !== `/users/${username}` &&
-              location.pathname !== `/users/${username}/likes`
+              location.pathname !== `/users/${username}/likes` &&
+              location.pathname !== `/users/${username}/achievements`
                 ? 'active'
                 : ''
             }
@@ -118,6 +134,19 @@ export default function Body({
                   location={location}
                   profile={profile}
                   selectedTheme={selectedTheme}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${match.path}/achievements`}
+              render={() => (
+                <AchievementTab
+                  profile={profile}
+                  selectedTheme={selectedTheme}
+                  xp={profile.twinkleXP}
+                  joinDate={profile.joinDate}
+                  userType={profile.userType}
                 />
               )}
             />
