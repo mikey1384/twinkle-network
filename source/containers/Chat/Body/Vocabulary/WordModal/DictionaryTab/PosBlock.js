@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 PosBlock.propTypes = {
@@ -15,7 +15,11 @@ export default function PosBlock({
   partOfSpeech,
   style
 }) {
-  return (
+  const filteredDefinitionIds = useMemo(
+    () => definitionIds.filter(id => !deletedDefIds.includes(id)),
+    [definitionIds, deletedDefIds]
+  );
+  return filteredDefinitionIds.length > 0 ? (
     <div style={style}>
       <p
         style={{
@@ -26,13 +30,11 @@ export default function PosBlock({
       >
         {partOfSpeech}
       </p>
-      {definitionIds
-        .filter(id => !deletedDefIds.includes(id))
-        .map((definitionId, index) => (
-          <div key={definitionId} style={{ fontSize: '1.7rem', lineHeight: 2 }}>
-            {index + 1}. {contentObj[definitionId].title}
-          </div>
-        ))}
+      {filteredDefinitionIds.map((definitionId, index) => (
+        <div key={definitionId} style={{ fontSize: '1.7rem', lineHeight: 2 }}>
+          {index + 1}. {contentObj[definitionId].title}
+        </div>
+      ))}
     </div>
-  );
+  ) : null;
 }
