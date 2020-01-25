@@ -311,6 +311,7 @@ export default function ChatReducer(state, action) {
         vocabActivitiesLoadMoreButton = true;
       }
       action.data.vocabActivities?.reverse();
+
       return {
         ...initialChatState,
         chatType: action.data.chatType,
@@ -898,10 +899,12 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_COLLECTORS_RANKINGS':
       return {
         ...state,
-        wordCollectors: updateWordCollectorsRankings({
-          collector: action.collector,
-          currentRankings: state.wordCollectors
-        })
+        wordCollectors:
+          action.data.rankings ||
+          updateWordCollectorsRankings({
+            collector: action.data,
+            currentRankings: state.wordCollectors
+          })
       };
     case 'UPDATE_RECENT_CHESS_MESSAGE':
       return {
@@ -923,11 +926,20 @@ export default function ChatReducer(state, action) {
   }
 }
 
-function updateWordCollectorsRankings({ collector, currentRankings }) {
-  const newRankings = currentRankings
+function updateWordCollectorsRankings({
+  collector,
+  currentRankings: { all, top30s }
+}) {
+  const newAllRankings = all
     .filter(ranker => ranker.username !== collector.username)
     .concat([collector]);
-  newRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
-  const result = newRankings.slice(0, 30);
-  return result;
+  newAllRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
+  let newTop30s = top30s;
+  if (collector.rank <= 30) {
+    newTop30s = top30s
+      .filter(ranker => ranker.username !== collector.username)
+      .concat([collector]);
+  }
+  newTop30s.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
+  return { all: newAllRankings.slice(0, 30), top30s: newTop30s };
 }

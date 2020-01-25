@@ -85,6 +85,12 @@ export default function UserActions(dispatch) {
         type: 'TOGGLE_HIDE_WATCHED',
         hideWatched
       });
+    },
+    onUpdateNumWordsCollected(numWordsCollected) {
+      return dispatch({
+        type: 'UPDATE_NUM_WORDS_COLLECTED',
+        numWordsCollected
+      });
     }
   };
 }

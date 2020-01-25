@@ -397,10 +397,10 @@ export default function ChatActions(dispatch) {
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
       });
     },
-    onUpdateCollectorsRankings(collector) {
+    onUpdateCollectorsRankings(data) {
       return dispatch({
         type: 'UPDATE_COLLECTORS_RANKINGS',
-        collector
+        data
       });
     },
     onUpdateUploadProgress({ progress, channelId, path }) {

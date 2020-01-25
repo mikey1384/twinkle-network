@@ -31,7 +31,7 @@ export const initialChatState = {
   subject: {},
   subjectSearchResults: [],
   vocabErrorMessage: '',
-  wordCollectors: [],
+  wordCollectors: {},
   wordRegisterStatus: undefined,
   wordsObj: {},
   userSearchResults: []
