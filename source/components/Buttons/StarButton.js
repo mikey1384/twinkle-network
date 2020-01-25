@@ -18,7 +18,6 @@ StarButton.propTypes = {
   onToggleByUser: PropTypes.func,
   style: PropTypes.object,
   contentType: PropTypes.string.isRequired,
-  skeuomorphic: PropTypes.bool,
   uploader: PropTypes.object
 };
 
@@ -32,7 +31,6 @@ export default function StarButton({
   onSetRewardLevel,
   onToggleByUser,
   uploader,
-  skeuomorphic,
   style
 }) {
   const {
@@ -47,7 +45,6 @@ export default function StarButton({
     <ErrorBoundary>
       <div ref={StarButtonRef} style={style}>
         <Button
-          skeuomorphic={!(!!rewardLevel || byUser || filled) && skeuomorphic}
           color={!!rewardLevel && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
           filled={!!rewardLevel || byUser || filled}
           onClick={onClick}

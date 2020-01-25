@@ -205,19 +205,17 @@ function Body({
       if (!numPreviewComments) {
         setLoadingComments(true);
       }
-      const isPreview = !!numPreviewComments;
       const data = await loadComments({
         contentType,
         contentId,
-        limit: numPreviewComments || commentsLoadLimit,
-        isPreview
+        limit: numPreviewComments || commentsLoadLimit
       });
       if (mounted.current) {
         onLoadComments({
           ...data,
           contentId,
           contentType,
-          isPreview
+          isPreview: numPreviewComments > 0
         });
         setLoadingComments(false);
       }
@@ -541,7 +539,10 @@ function Body({
 
   async function onLikeClick() {
     if (!commentsShown) {
-      handleExpandComments();
+      await handleExpandComments();
+      if (Number(numChildComments) === 0 && !isMobile(navigator)) {
+        CommentInputAreaRef.current.focus();
+      }
     }
   }
 

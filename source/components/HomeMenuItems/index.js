@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import { container } from './Styles';
@@ -6,7 +6,6 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { isMobile } from 'helpers';
-import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 
 HomeMenuItems.propTypes = {
@@ -20,15 +19,10 @@ export default function HomeMenuItems({ history, style = {} }) {
       actions: { onSetProfilesLoaded }
     }
   } = useAppContext();
-  const { managementLevel } = useMyState();
-  const year = useMemo(() => {
-    const dt = new Date();
-    return dt.getFullYear();
-  }, []);
 
   return (
-    <ErrorBoundary>
-      <div className={`unselectable ${container}`} style={style}>
+    <div className={`unselectable ${container}`} style={style}>
+      <ErrorBoundary>
         <Route
           path="/"
           exact
@@ -52,6 +46,8 @@ export default function HomeMenuItems({ history, style = {} }) {
             </nav>
           )}
         />
+      </ErrorBoundary>
+      <ErrorBoundary>
         <Route
           exact
           path="/users"
@@ -75,49 +71,24 @@ export default function HomeMenuItems({ history, style = {} }) {
             </nav>
           )}
         />
-        {managementLevel > 0 && isMobile(navigator) && (
-          <Route
-            exact
-            path="/management"
-            children={({ match }) => (
-              <nav
-                className={match ? 'active' : ''}
-                onClick={() => history.push('/management')}
-              >
-                <a href="/management" onClick={e => e.preventDefault()}>
-                  <div
-                    style={{
-                      width: '3rem',
-                      display: 'flex',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <Icon icon="sliders-h" size="1x" />
-                  </div>
-                  <span className="homemenu__label">Manage</span>
-                </a>
-              </nav>
-            )}
-          />
-        )}
-        <div
-          style={{
-            fontSize: '1rem',
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '1.5rem',
-            color: Color.gray()
-          }}
-        >
-          <div>
-            © {year} Twinkle Network ·{' '}
-            <Link to="/privacy" style={{ color: Color.gray() }}>
-              Privacy
-            </Link>
-          </div>
+      </ErrorBoundary>
+      <div
+        style={{
+          fontSize: '1rem',
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '1.5rem',
+          color: Color.gray()
+        }}
+      >
+        <div>
+          © 2019 Twinkle Network ·{' '}
+          <Link to="/privacy" style={{ color: Color.gray() }}>
+            Privacy
+          </Link>
         </div>
       </div>
-    </ErrorBoundary>
+    </div>
   );
 
   function handleOnPeopleClick() {

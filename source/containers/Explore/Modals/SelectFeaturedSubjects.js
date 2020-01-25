@@ -38,7 +38,7 @@ export default function SelectFeaturedSubjectsModal({
   const [searchedSubjects, setSearchedSubjects] = useState([]);
   const [searchText, setSearchText] = useState('');
   const { handleSearch, searching } = useSearch({
-    onSearch: handleSubjectSearch,
+    onSearch: handleChallengeSearch,
     onClear: () => setSearchedSubjects([]),
     onSetSearchText: setSearchText
   });
@@ -187,7 +187,7 @@ export default function SelectFeaturedSubjectsModal({
     </Modal>
   );
 
-  async function handleSubjectSearch(text) {
+  async function handleChallengeSearch(text) {
     const { loadMoreButton: loadMoreShown, results } = await searchContent({
       limit: 10,
       filter: 'subject',

@@ -67,7 +67,7 @@ export default function SignUpForm({ onShowLoginForm }) {
             <label>Username</label>
             <Input
               value={username}
-              placeholder="Enter the username you wish to use. It has to be at least 3 characters long"
+              placeholder="Enter the username you wish to use. It has to be at least 4 characters long"
               onChange={text => {
                 setErrorMessage('');
                 setUsername(trimWhiteSpaces(text));
@@ -199,8 +199,8 @@ export default function SignUpForm({ onShowLoginForm }) {
     if (!isValidUsername(username)) {
       return setErrorMessage(
         `${username} is not a valid username.${
-          username.length < 3
-            ? ' Make sure it is at least 3 characters long.'
+          username.length < 4
+            ? ' Make sure it is at least 4 characters long.'
             : ''
         }`
       );
@@ -234,7 +234,7 @@ export default function SignUpForm({ onShowLoginForm }) {
       onSignup(data);
       onInitContent({ contentType: 'user', contentId: data.id, ...data });
     } catch (error) {
-      setErrorMessage(error?.response?.data);
+      setErrorMessage(error);
     }
   }
 }
@@ -252,11 +252,11 @@ function isValidRealname(realName) {
 }
 
 function isValidUsername(username) {
-  const pattern = new RegExp(/^[a-zA-Z0-9_]+$/);
+  const pattern = new RegExp(/^[^0-9_](?!.*__)[a-zA-Z0-9_]+$/);
   return (
     !!username &&
     username.length < 20 &&
-    username.length > 2 &&
+    username.length > 3 &&
     pattern.test(username)
   );
 }

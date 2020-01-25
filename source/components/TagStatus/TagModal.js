@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -16,7 +16,7 @@ TagModal.propTypes = {
   onSubmit: PropTypes.func.isRequired
 };
 
-function TagModal({
+export default function TagModal({
   currentPlaylists,
   title,
   onAddPlaylist,
@@ -79,7 +79,6 @@ function TagModal({
           renderTagLabel={label => hashify(label)}
           searchPlaceholder="Search for playlists here..."
           selectedItems={selectedPlaylists}
-          style={{ width: '80%' }}
         />
         {addPlaylistModalShown && (
           <AddPlaylistModal
@@ -156,5 +155,3 @@ function TagModal({
     }
   }
 }
-
-export default memo(TagModal);

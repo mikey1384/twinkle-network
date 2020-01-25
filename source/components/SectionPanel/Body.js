@@ -22,10 +22,10 @@ export default function Body({
   loadMoreButtonShown
 }) {
   return (
-    <div style={{ width: '100%' }}>
+    <div>
       {(!stringIsEmpty(searchQuery) && isSearching) ||
       (isEmpty && !loadMoreButtonShown) ? (
-        <div style={{ width: '100%' }} className={statusMsgStyle}>
+        <div className={statusMsgStyle}>
           {searchQuery && isSearching
             ? 'Searching...'
             : searchQuery

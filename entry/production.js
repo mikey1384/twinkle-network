@@ -12,7 +12,7 @@ require('greenlock-express')
   .create({
     version: 'draft-11',
     configDir: '~/.config/acme',
-    renewWithin: 30 * 24 * 60 * 60 * 1000,
+    renewWithin: 15 * 24 * 60 * 60 * 1000,
     server: 'https://acme-v02.api.letsencrypt.org/directory',
     approveDomains: function approveDomains(opts, certs, cb) {
       if (certs) {

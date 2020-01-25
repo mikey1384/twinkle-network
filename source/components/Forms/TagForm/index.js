@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSearch } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import TagInput from './TagInput';
@@ -7,7 +7,6 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 
 TagForm.propTypes = {
-  className: PropTypes.string,
   dropdownFooter: PropTypes.node,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   itemLabel: PropTypes.string.isRequired,
@@ -29,13 +28,11 @@ TagForm.propTypes = {
   renderDropdownLabel: PropTypes.func.isRequired,
   renderTagLabel: PropTypes.func,
   subTitle: PropTypes.node,
-  style: PropTypes.object,
   title: PropTypes.string
 };
 
-function TagForm({
+export default function TagForm({
   children,
-  className,
   dropdownFooter,
   inputRef,
   filter,
@@ -52,7 +49,6 @@ function TagForm({
   renderTagLabel,
   searchPlaceholder,
   subTitle,
-  style,
   title
 }) {
   const [searchText, setSearchText] = useState('');
@@ -91,8 +87,7 @@ function TagForm({
   return (
     <ErrorBoundary>
       <form
-        style={style}
-        className={className}
+        style={{ width: '70%' }}
         onSubmit={event => {
           event.preventDefault();
           onSubmit?.();
@@ -133,5 +128,3 @@ function TagForm({
     onClear();
   }
 }
-
-export default memo(TagForm);

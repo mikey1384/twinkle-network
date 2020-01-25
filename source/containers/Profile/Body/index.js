@@ -6,19 +6,12 @@ import Home from './Home';
 import Posts from './Posts';
 import { Switch, Route } from 'react-router-dom';
 import { css } from 'emotion';
-import AchievementTab from './AchievementTab';
 
 Body.propTypes = {
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  profile: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    username: PropTypes.string,
-    twinkleXP: PropTypes.number,
-    joinDate: PropTypes.string,
-    userType: PropTypes.string
-  }),
+  profile: PropTypes.object,
   selectedTheme: PropTypes.string
 };
 
@@ -33,32 +26,20 @@ export default function Body({
   selectedTheme
 }) {
   return (
-    <div
-      className={css`
-        width: 100%;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 100%;
-        }
-      `}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%'
-        }}
-      >
+    <div style={{ height: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div
           className={css`
-            width: 40%;
+            width: 55rem;
             background: #fff;
+            margin-bottom: 1rem;
             border-bottom: 1px solid ${Color.borderGray()};
             @media (max-width: ${mobileMaxWidth}) {
               width: 25rem;
             }
           `}
         />
-        <FilterBar style={{ margin: 0 }} color={selectedTheme}>
+        <FilterBar color={selectedTheme}>
           <nav
             className={
               location.pathname === `/users/${username}` ? 'active' : ''
@@ -67,17 +48,6 @@ export default function Body({
             onClick={() => history.push(`/users/${username}`)}
           >
             <a>Profile</a>
-          </nav>
-          <nav
-            className={
-              location.pathname === `/users/${username}/achievements`
-                ? 'active'
-                : ''
-            }
-            style={{ cursor: 'pointer' }}
-            onClick={() => history.push(`${match.url}${`/achievements`}`)}
-          >
-            <a>Achievements</a>
           </nav>
           <nav
             className={
@@ -106,6 +76,7 @@ export default function Body({
           className={css`
             width: 35rem;
             background: #fff;
+            margin-bottom: 1rem;
             border-bottom: 1px solid ${Color.borderGray()};
             @media (max-width: ${mobileMaxWidth}) {
               width: 0;
@@ -117,11 +88,11 @@ export default function Body({
         <div
           className={css`
             display: flex;
-            margin: 1rem 1rem 0 1rem;
+            margin: 0 1rem;
             width: 100%;
             justify-content: center;
             @media (max-width: ${mobileMaxWidth}) {
-              margin-top: 1rem;
+              margin: 0;
             }
           `}
         >
@@ -134,19 +105,6 @@ export default function Body({
                   location={location}
                   profile={profile}
                   selectedTheme={selectedTheme}
-                />
-              )}
-            />
-            <Route
-              exact
-              path={`${match.path}/achievements`}
-              render={() => (
-                <AchievementTab
-                  profile={profile}
-                  selectedTheme={selectedTheme}
-                  xp={profile.twinkleXP}
-                  joinDate={profile.joinDate}
-                  userType={profile.userType}
                 />
               )}
             />

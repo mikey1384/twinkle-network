@@ -16,13 +16,13 @@ import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
+import SpoilerMessage from './SpoilerMessage';
 import {
   useAppContext,
   useContentContext,
   useNotiContext,
   useChatContext
 } from 'contexts';
-import SpoilerMessage from './SpoilerMessage';
 
 Message.propTypes = {
   checkScrollIsAtTheBottom: PropTypes.func.isRequired,
@@ -363,7 +363,7 @@ function Message({
                     scrollAtBottom={scrollAtBottom}
                   />
                 )}
-                {content.startsWith('/spoiler ') ? (
+                {content.startsWith('/spoiler') ? (
                   <SpoilerMessage
                     attachmentHidden={!!attachmentHidden}
                     channelId={channelId}

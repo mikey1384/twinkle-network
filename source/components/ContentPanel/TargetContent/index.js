@@ -111,11 +111,11 @@ export default function TargetContent({
     () =>
       determineXpButtonDisabled({
         rewardLevel: finalRewardLevel,
-        stars: comment.stars || [],
+        stars: comment.stars,
         myId: userId,
         xpRewardInterfaceShown
       }),
-    [comment, finalRewardLevel, userId, xpRewardInterfaceShown]
+    [comment.stars, finalRewardLevel, userId, xpRewardInterfaceShown]
   );
 
   useEffect(() => {
@@ -171,7 +171,6 @@ export default function TargetContent({
           background: #fff;
         }
         @media (max-width: ${mobileMaxWidth}) {
-          font-size: 1.7rem;
           border-left: 0;
           border-right: 0;
         }
@@ -341,19 +340,17 @@ export default function TargetContent({
               )}
               {comments.length > 0 && (
                 <div style={{ padding: '0 1rem' }}>
-                  {comments
-                    .filter(comment => !comment.deleted)
-                    .map(comment => (
-                      <Comment
-                        key={comment.id}
-                        comment={comment}
-                        username={username}
-                        userId={userId}
-                        profilePicId={profilePicId}
-                        onDelete={onDeleteComment}
-                        onEditDone={onEditComment}
-                      />
-                    ))}
+                  {comments.map(comment => (
+                    <Comment
+                      key={comment.id}
+                      comment={comment}
+                      username={username}
+                      userId={userId}
+                      profilePicId={profilePicId}
+                      onDelete={onDeleteComment}
+                      onEditDone={onEditComment}
+                    />
+                  ))}
                 </div>
               )}
               {userListModalShown && (
@@ -373,6 +370,9 @@ export default function TargetContent({
   function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
+      if (!isMobile(navigator)) {
+        InputFormRef.current.focus();
+      }
     }
   }
 

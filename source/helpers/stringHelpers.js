@@ -333,10 +333,6 @@ export function processedStringWithURL(string) {
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
-  const redWordRegex = /(r\|[^\s]+\|r)/gi;
-  const redSentenceRegex = /((r\|[^\*\s]){1}([^\*])+([^\*\s]\|r){1})/gi;
-  const blueWordRegex = /(b\|[^\s]+\|b)/gi;
-  const blueSentenceRegex = /((b\|[^\*\s]){1}([^\*])+([^\*\s]\|b){1})/gi;
   const boldItalicWordRegex = /(\*\*\*[^\s]+\*\*\*)/gi;
   const boldItalicSentenceRegex = /((\*\*\*[^\*\s]){1}([^\*])+([^\*\s]\*\*\*){1})/gi;
   const boldWordRegex = /(\*[^\s*]+\*)/gi;
@@ -353,40 +349,8 @@ export function processedStringWithURL(string) {
     .replace(/>/g, '&gt')
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(
-      redWordRegex,
-      string =>
-        `<span style="color: red;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
-      redSentenceRegex,
-      string =>
-        `<span style="color: red;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
-      blueWordRegex,
-      string =>
-        `<span style="color: blue;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
-      blueSentenceRegex,
-      string =>
-        `<span style="color: blue;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
       underlineWordRegex,
-      string => `<u>${string.substring(2, string.length)}</u>`
+      string => `<u>${string.substring(2, string.length - 2)}</u>`
     )
     .replace(
       underlineSentenceRegex,
