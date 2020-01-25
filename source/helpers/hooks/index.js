@@ -90,6 +90,7 @@ export function useMyState() {
       state: {
         hideWatched,
         loaded,
+        numWordsCollected,
         userId,
         searchFilter,
         signinModalShown,
@@ -105,6 +106,7 @@ export function useMyState() {
     ? {
         ...myState,
         loaded,
+        numWordsCollected,
         userId,
         defaultSearchFilter: searchFilter,
         hideWatched,

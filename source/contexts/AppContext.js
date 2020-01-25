@@ -29,6 +29,7 @@ export const initialUserState = {
   loaded: false,
   loadMoreButton: false,
   loggedIn: false,
+  numWordsCollected: 0,
   orderUsersBy: LAST_ONLINE_FILTER_LABEL,
   profileTheme: 'logoBlue',
   profiles: [],

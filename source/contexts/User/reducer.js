@@ -116,6 +116,11 @@ export default function UserReducer(state, action) {
         ...state,
         hideWatched: action.hideWatched
       };
+    case 'UPDATE_NUM_WORDS_COLLECTED':
+      return {
+        ...state,
+        numWordsCollected: action.numWordsCollected
+      };
     default:
       return state;
   }

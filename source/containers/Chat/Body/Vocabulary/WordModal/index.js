@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 import FilterBar from 'components/FilterBar';
-import BonusTab from './BonusTab';
 import DictionaryTab from './DictionaryTab';
 import EditTab from './EditTab';
 import { DndProvider } from 'react-dnd';
@@ -92,7 +91,6 @@ export default function WordModal({ onHide, word }) {
   );
   const title = useMemo(() => {
     if (selectedTab === 'edit') return `Edit Definitions of "${word}"`;
-    if (selectedTab === 'bonus') return 'Win Bonus XP';
     return `Definitions of "${word}"`;
   }, [selectedTab, word]);
   const [editedDefinitionOrder, setEditedDefinitionOrder] = useState(
@@ -117,7 +115,6 @@ export default function WordModal({ onHide, word }) {
             Edit
           </nav>
         </FilterBar>
-        {selectedTab === 'bonus' && <BonusTab word={word} onHide={onHide} />}
         {selectedTab === 'dictionary' && (
           <DictionaryTab
             deletedDefIds={deletedDefIds}

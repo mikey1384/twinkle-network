@@ -18,6 +18,9 @@ import { css } from 'emotion';
 
 export default function Vocabulary() {
   const {
+    user: {
+      actions: { onUpdateNumWordsCollected }
+    },
     requestHelpers: { lookUpWord, registerWord }
   } = useAppContext();
   const {
@@ -36,7 +39,7 @@ export default function Vocabulary() {
     state,
     actions: { onEnterComment }
   } = useInputContext();
-  const { userId, username, profilePicId } = useMyState();
+  const { userId } = useMyState();
   const inputText = state['vocabulary'] || '';
   const wordObj = useMemo(() => wordsObj[inputText] || {}, [
     inputText,
@@ -239,16 +242,11 @@ export default function Vocabulary() {
     delete definitions.deletedDefIds;
     if (isNew && !isSubmitting) {
       setIsSubmitting(true);
-      const { xp, rank, word } = await registerWord(definitions);
+      const { xp, rank, word, rankings } = await registerWord(definitions);
       onChangeUserXP({ xp, rank, userId });
+      onUpdateNumWordsCollected(word.numWordsCollected);
       onRegisterWord(word);
-      onUpdateCollectorsRankings({
-        id: userId,
-        username,
-        profilePicId,
-        numWordsCollected: word.numWordsCollected,
-        rank: word.rank
-      });
+      onUpdateCollectorsRankings({ rankings });
       onSetWordRegisterStatus(wordObj);
       onEnterComment({
         contentType: 'vocabulary',
