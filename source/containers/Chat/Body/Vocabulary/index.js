@@ -228,6 +228,11 @@ export default function Vocabulary() {
         }}
       >
         <Input
+          onInput={() => {
+            if (isSubmitting) {
+              setIsSubmitting(false);
+            }
+          }}
           onSubmit={handleSubmit}
           innerRef={inputRef}
           registerButtonShown={notRegistered}
@@ -242,17 +247,22 @@ export default function Vocabulary() {
     delete definitions.deletedDefIds;
     if (isNew && !isSubmitting) {
       setIsSubmitting(true);
-      const { xp, rank, word, rankings } = await registerWord(definitions);
-      onChangeUserXP({ xp, rank, userId });
-      onUpdateNumWordsCollected(word.numWordsCollected);
-      onRegisterWord(word);
-      onUpdateCollectorsRankings({ rankings });
-      onSetWordRegisterStatus(wordObj);
-      onEnterComment({
-        contentType: 'vocabulary',
-        text: ''
-      });
-      setIsSubmitting(false);
+      try {
+        const { xp, rank, word, rankings } = await registerWord(definitions);
+        onChangeUserXP({ xp, rank, userId });
+        onUpdateNumWordsCollected(word.numWordsCollected);
+        onRegisterWord(word);
+        onUpdateCollectorsRankings({ rankings });
+        onSetWordRegisterStatus(wordObj);
+        onEnterComment({
+          contentType: 'vocabulary',
+          text: ''
+        });
+        setIsSubmitting(false);
+      } catch (error) {
+        console.error(error);
+        setIsSubmitting(false);
+      }
     }
   }
 }
