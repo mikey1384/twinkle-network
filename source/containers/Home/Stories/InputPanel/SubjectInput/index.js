@@ -13,6 +13,7 @@ import {
 } from 'helpers/stringHelpers';
 import SwitchButton from 'components/SwitchButton';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
+import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { PanelStyle } from '../Styles';
 import { charLimit } from 'constants/defaultValues';
@@ -23,7 +24,7 @@ function SubjectInput() {
   const {
     requestHelpers: { uploadContent }
   } = useAppContext();
-  const { canEditRewardLevel } = useMyState();
+  const { canEditRewardLevel, profileTheme } = useMyState();
   const {
     actions: { onLoadNewFeeds }
   } = useHomeContext();
@@ -120,16 +121,11 @@ function SubjectInput() {
             />
           ) : (
             <Button
-              style={{
-                fontSize: '1.1rem',
-                lineHeight: '1.5rem',
-                padding: '0.5rem'
-              }}
               skeuomorphic
-              color="darkerGray"
+              color={profileTheme}
               onClick={() => setAttachContentModalShown(true)}
             >
-              Attach Video or Webpage
+              <Icon size="lg" icon="plus" />
             </Button>
           )}
         </div>

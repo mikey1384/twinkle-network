@@ -7,7 +7,7 @@ import SelectAttachmentScreen from './SelectAttachmentScreen';
 
 const sectionObj = {
   start: {
-    title: 'Which Content Type?'
+    title: 'What do you want to add?'
   },
   selectVideo: {
     title: 'Select a Video'
