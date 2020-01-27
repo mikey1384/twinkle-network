@@ -71,7 +71,12 @@ export default function Selectable({
               src={`https://img.youtube.com/vi/${item.content}/mqdefault.jpg`}
             />
           ) : (
-            <Embedly noLink imageOnly contentId={item.id} />
+            <Embedly
+              noLink
+              imageOnly
+              contentType={contentType}
+              contentId={item.id}
+            />
           )}
         </div>
         <div
