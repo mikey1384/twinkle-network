@@ -122,6 +122,9 @@ export default function SelectAttachmentScreen({
         contentType,
         contentId: allUploads[allUploads.length - 1]
       });
+      for (let result of results) {
+        onInitContent({ contentId: result.id, contentType, ...result });
+      }
       contentObjs.current = {
         ...contentObjs.current,
         ...objectify(results)
