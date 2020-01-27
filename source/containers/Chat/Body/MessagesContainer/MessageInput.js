@@ -113,8 +113,13 @@ export default function MessageInput({
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
-        {isMobile(navigator) && !stringIsEmpty(text) && (
-          <div style={{ height: '100%', margin: '0.2rem 2rem 0.2rem 0' }}>
+        {!stringIsEmpty(text) && (
+          <div
+            style={{
+              height: '100%',
+              margin: `0.2rem ${isMobile(navigator) ? '2rem' : '1rem'} 0.2rem 0`
+            }}
+          >
             <Button
               filled
               disabled={loading}
