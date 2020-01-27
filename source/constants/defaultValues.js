@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.1.71';
+export const clientVersion = '1.1.72';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -78,8 +78,8 @@ const intermediateWordFrequency = 4;
 const advancedWordFrequency = 2.5;
 const epicWordFrequency = 1.6;
 
-export function returnWordLevel({ frequency, wordLength }) {
-  if (!frequency) return 3;
+export function returnWordLevel({ frequency, wordLength, endsWithLy }) {
+  if (!frequency || endsWithLy) return 3;
   if (frequency > intermediateWordFrequency) {
     if (wordLength < 7) return 1;
     return 2;

@@ -190,7 +190,10 @@ export default function Vocabulary() {
             </div>
           ))}
       </div>
-      {(notRegistered || alreadyRegistered || vocabErrorMessage) && (
+      {(notRegistered ||
+        alreadyRegistered ||
+        vocabErrorMessage ||
+        isSubmitting) && (
         <div
           className={css`
             font-size: 2rem;
@@ -215,8 +218,10 @@ export default function Vocabulary() {
         >
           {vocabErrorMessage ||
             (notRegistered
-              ? `This word has not been collected yet. Collect and earn XP!`
-              : `This word has already been collected`)}
+              ? isSubmitting
+                ? 'Collecting...'
+                : 'This word has not been collected yet. Collect and earn XP!'
+              : 'This word has already been collected')}
         </div>
       )}
       <div
