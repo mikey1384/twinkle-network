@@ -79,11 +79,12 @@ const advancedWordFrequency = 2.5;
 const epicWordFrequency = 1.6;
 
 export function returnWordLevel({ frequency, word }) {
-  if (!frequency || word.slice(-2) === 'ly') return 3;
+  if (!frequency) return 3;
   if (frequency > intermediateWordFrequency) {
     if (word.length < 7) return 1;
     return 2;
   }
+  if (word.slice(-2) === 'ly') return 3;
   if (frequency > advancedWordFrequency) return 3;
   if (frequency > epicWordFrequency) return 4;
   if (frequency <= epicWordFrequency) return 5;
