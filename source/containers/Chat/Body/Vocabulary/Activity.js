@@ -71,8 +71,7 @@ export default function Activity({
     () =>
       returnWordLevel({
         frequency,
-        wordLength: content.length,
-        endsWithLy: content.slice(2) === 'ly'
+        word: content
       }),
     [content, frequency]
   );
