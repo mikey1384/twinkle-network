@@ -117,7 +117,7 @@ export default function MessageInput({
           <div
             style={{
               height: '100%',
-              margin: `0.2rem ${isMobile(navigator) ? '2rem' : '1rem'} 0.2rem 0`
+              margin: `0.2rem 1rem 0.2rem 0`
             }}
           >
             <Button
