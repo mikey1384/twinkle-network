@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Image from '../Image';
 import FileIcon from '../FileIcon';
 import ImageModal from '../Modals/ImageModal';
+import UsernameText from 'components/Texts/UsernameText';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -52,7 +53,10 @@ export default function TargetMessage({ message }) {
     >
       <div>
         <p style={{ fontWeight: 'bold' }}>
-          {message.username}{' '}
+          <UsernameText
+            color={Color.black()}
+            user={{ id: message.userId, username: message.username }}
+          />{' '}
           <small
             style={{
               fontWeight: 'normal',
