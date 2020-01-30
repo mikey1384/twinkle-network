@@ -132,11 +132,11 @@ export default function StartScreen({ navigateTo, onHide }) {
   );
 
   function handleUpload(event) {
-    const file = event.target.files[0];
-    if (file.size / mb > maxSize) {
+    const fileObj = event.target.files[0];
+    if (fileObj.size / mb > maxSize) {
       return setAlertModalShown(true);
     }
-    const { fileType } = getFileInfoFromFileName(file.name);
+    const { fileType } = getFileInfoFromFileName(fileObj.name);
     if (fileType === 'image') {
       const reader = new FileReader();
       reader.onload = upload => {
@@ -148,9 +148,9 @@ export default function StartScreen({ navigateTo, onHide }) {
             const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
             const buffer = Buffer.from(dataUri, 'base64');
             // eslint-disable-next-line no-undef
-            const file = new File([buffer], buffer.name);
+            const file = new File([buffer], fileObj.name);
             onSetSubjectAttachment({
-              attachment: file,
+              file,
               contentType: 'file',
               fileType: 'image',
               imageUrl
@@ -159,10 +159,10 @@ export default function StartScreen({ navigateTo, onHide }) {
           { orientation: true }
         );
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(fileObj);
     } else {
       onSetSubjectAttachment({
-        attachment: file,
+        file: fileObj,
         contentType: 'file',
         fileType
       });

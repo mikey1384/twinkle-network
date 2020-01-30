@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import Image from '../../Image';
+import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
 import Textarea from 'components/Texts/Textarea';
 import {

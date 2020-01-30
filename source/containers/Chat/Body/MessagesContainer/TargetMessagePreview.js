@@ -5,7 +5,7 @@ import { useChatContext } from 'contexts';
 import { Color, borderRadius } from 'constants/css';
 import { getFileInfoFromFileName, renderFileSize } from 'helpers/stringHelpers';
 import { cloudFrontURL } from 'constants/defaultValues';
-import Image from '../../Image';
+import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
 
 TargetMessagePreview.propTypes = {

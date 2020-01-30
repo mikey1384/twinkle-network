@@ -11,7 +11,8 @@ Attachment.propTypes = {
 };
 
 export default function Attachment({
-  attachment: { attachment, contentType, fileType },
+  attachment,
+  attachment: { contentType, fileType },
   onClose
 }) {
   return (
@@ -44,7 +45,11 @@ export default function Attachment({
         onClick={onClose}
       />
       {contentType === 'file' ? (
-        <FileContent attachment={attachment} fileType={fileType} />
+        <FileContent
+          file={attachment.file}
+          fileType={fileType}
+          imageUrl={attachment.imageUrl}
+        />
       ) : (
         <WebsiteContent attachment={attachment} />
       )}

@@ -276,6 +276,9 @@ function SubjectInput() {
     }
     setSubmitting(true);
     try {
+      if (attachment.contentType === 'file') {
+        return console.log('file');
+      }
       const data = await uploadContent({
         attachment,
         title,

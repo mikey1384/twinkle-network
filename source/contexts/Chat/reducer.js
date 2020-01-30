@@ -106,6 +106,7 @@ export default function ChatReducer(state, action) {
       const { channelId } = action.data.message;
       return {
         ...state,
+        chatType: null,
         replyTarget: null,
         subject: {},
         channelIds: [channelId].concat(state.channelIds),
@@ -257,6 +258,7 @@ export default function ChatReducer(state, action) {
     case 'ENTER_EMPTY_CHAT':
       return {
         ...state,
+        chatType: null,
         replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
@@ -522,6 +524,7 @@ export default function ChatReducer(state, action) {
       }
       return {
         ...state,
+        chatType: null,
         loaded: true,
         recentChessMessage: undefined,
         replyTarget: null,
@@ -550,6 +553,7 @@ export default function ChatReducer(state, action) {
     case 'OPEN_NEW_TAB':
       return {
         ...state,
+        chatType: null,
         replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
@@ -928,7 +932,7 @@ export default function ChatReducer(state, action) {
 
 function updateWordCollectorsRankings({
   collector,
-  currentRankings: { all, top30s }
+  currentRankings: { all = [], top30s = [] }
 }) {
   const newAllRankings = all
     .filter(ranker => ranker.username !== collector.username)

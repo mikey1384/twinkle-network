@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import Image from '../Image';
+import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
 import ImageModal from '../Modals/ImageModal';
 import UsernameText from 'components/Texts/UsernameText';
