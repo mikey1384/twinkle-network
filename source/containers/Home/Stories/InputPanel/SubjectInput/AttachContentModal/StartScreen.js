@@ -148,7 +148,7 @@ export default function StartScreen({ navigateTo, onHide }) {
             const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
             const buffer = Buffer.from(dataUri, 'base64');
             // eslint-disable-next-line no-undef
-            const file = new File([buffer], file.name);
+            const file = new File([buffer], buffer.name);
             onSetSubjectAttachment({
               attachment: file,
               contentType: 'file',
