@@ -37,42 +37,44 @@ export default function StartScreen({ navigateTo, onHide }) {
 
   return (
     <ErrorBoundary style={{ display: 'flex', width: '100%' }}>
-      <div
-        style={{
-          width: '50%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}
-      >
+      {false && (
         <div
           style={{
-            fontWeight: 'bold',
-            fontSize: '2rem',
-            color: Color.black()
+            width: '50%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}
         >
-          Upload from your {isMobile(navigator) ? 'device' : 'computer'}
-        </div>
-        <div
-          style={{
-            marginTop: '1.5rem',
-            display: 'flex'
-          }}
-        >
-          <Button
-            skeuomorphic
-            style={{ fontSize: '3.5rem', padding: '1.5rem' }}
-            color="blue"
-            onClick={() => FileInputRef.current.click()}
+          <div
+            style={{
+              fontWeight: 'bold',
+              fontSize: '2rem',
+              color: Color.black()
+            }}
           >
-            <Icon icon="upload" />
-          </Button>
+            Upload from your {isMobile(navigator) ? 'device' : 'computer'}
+          </div>
+          <div
+            style={{
+              marginTop: '1.5rem',
+              display: 'flex'
+            }}
+          >
+            <Button
+              skeuomorphic
+              style={{ fontSize: '3.5rem', padding: '1.5rem' }}
+              color="blue"
+              onClick={() => FileInputRef.current.click()}
+            >
+              <Icon icon="upload" />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       <div
         style={{
-          width: '50%',
+          width: '100%',
           flexDirection: 'column',
           alignItems: 'center',
           display: 'flex',
