@@ -10,11 +10,13 @@ Attachment.propTypes = {
   onClose: PropTypes.func.isRequired
 };
 
-export default function Attachment({ attachment, onClose }) {
+export default function Attachment({
+  attachment: { attachment, contentType, fileType },
+  onClose
+}) {
   return (
     <ErrorBoundary
       style={{
-        width: '8rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -41,8 +43,8 @@ export default function Attachment({ attachment, onClose }) {
         }}
         onClick={onClose}
       />
-      {attachment.contentType === 'file' ? (
-        <FileContent attachment={attachment} />
+      {contentType === 'file' ? (
+        <FileContent attachment={attachment} fileType={fileType} />
       ) : (
         <WebsiteContent attachment={attachment} />
       )}

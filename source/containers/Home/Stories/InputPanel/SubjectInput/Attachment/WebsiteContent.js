@@ -21,6 +21,7 @@ export default function WebsiteContent({ attachment }) {
     <ErrorBoundary>
       <div
         style={{
+          width: '8rem',
           cursor: 'pointer',
           textAlign: 'center',
           display: 'flex',

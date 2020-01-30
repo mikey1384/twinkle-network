@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Image from '../Image';
-import FileIcon from '../FileIcon';
+import FileIcon from 'components/FileIcon';
 import ImageModal from '../Modals/ImageModal';
 import UsernameText from 'components/Texts/UsernameText';
 import { unix } from 'moment';
