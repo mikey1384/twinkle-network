@@ -231,7 +231,7 @@ function App({ location, history }) {
           <Route path="/playlists" component={PlaylistPage} />
           <Route
             path="/chat"
-            render={() => <Chat onFileUpload={handleFileUpload} />}
+            render={() => <Chat onFileUpload={handleFileUploadOnChat} />}
           />
           <Route path="/management" component={Management} />
           <Route path="/verify" component={Verify} />
@@ -257,7 +257,7 @@ function App({ location, history }) {
     </div>
   );
 
-  async function handleFileUpload({
+  async function handleFileUploadOnChat({
     channelId,
     content,
     fileName,

@@ -52,7 +52,7 @@ export default function TargetMessage({ message }) {
       `}
     >
       <div>
-        <p style={{ fontWeight: 'bold' }}>
+        <section style={{ fontWeight: 'bold' }}>
           <UsernameText
             color={Color.black()}
             user={{ id: message.userId, username: message.username }}
@@ -66,7 +66,7 @@ export default function TargetMessage({ message }) {
           >
             {unix(message.timeStamp).format('LLL')}
           </small>
-        </p>
+        </section>
         <p
           dangerouslySetInnerHTML={{
             __html: processedStringWithURL(message.content) || message.fileName

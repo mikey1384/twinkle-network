@@ -1,6 +1,6 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import FileUploadStatusIndicator from './FileUploadStatusIndicator';
+import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
@@ -11,6 +11,7 @@ import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
+import LocalContext from '../Context';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
@@ -95,6 +96,7 @@ function Message({
   setScrollToBottom,
   showSubjectMsgsModal
 }) {
+  const { onFileUpload } = useContext(LocalContext);
   const {
     authLevel,
     canDelete,
@@ -119,8 +121,9 @@ function Message({
     }
   } = useContentContext();
   const {
-    state: { reconnecting },
+    state: { filesBeingUploaded, reconnecting, replyTarget },
     actions: {
+      onDisplayAttachedFile,
       onEditMessage,
       onSaveMessage,
       onSetReplyTarget,
@@ -128,6 +131,13 @@ function Message({
       onUpdateRecentChessMessage
     }
   } = useChatContext();
+  const [uploadStatus = {}] = useMemo(
+    () =>
+      filesBeingUploaded[channelId]?.filter(
+        ({ filePath: path }) => path === filePath
+      ) || [],
+    [channelId, filePath, filesBeingUploaded]
+  );
   const {
     state: { socketConnected }
   } = useNotiContext();
@@ -341,14 +351,11 @@ function Message({
             ) : fileToUpload && !loading ? (
               <FileUploadStatusIndicator
                 key={channelId}
-                channelId={channelId}
-                checkScrollIsAtTheBottom={checkScrollIsAtTheBottom}
-                content={content}
                 fileToUpload={fileToUpload}
-                filePath={filePath}
-                onSendFileMessage={onSendFileMessage}
-                recepientId={recepientId}
-                subjectId={subjectId}
+                onFileUpload={handleFileUpload}
+                onUploadComplete={handleUploadComplete}
+                uploadComplete={!!uploadStatus.uploadComplete}
+                uploadProgress={uploadStatus.uploadProgress}
               />
             ) : (
               <>
@@ -426,6 +433,20 @@ function Message({
     setOnEdit(false);
   }
 
+  function handleFileUpload() {
+    onFileUpload({
+      channelId,
+      content,
+      fileName: fileToUpload.name,
+      filePath,
+      fileToUpload,
+      userId,
+      recepientId,
+      targetMessageId: replyTarget?.id,
+      subjectId
+    });
+  }
+
   async function handleSpoilerClick() {
     onSetReplyTarget(null);
     try {
@@ -435,6 +456,26 @@ function Message({
     } catch (error) {
       console.error(error);
     }
+  }
+
+  function handleUploadComplete() {
+    const params = {
+      content,
+      fileName: fileToUpload.name,
+      filePath,
+      id: messageId,
+      uploaderAuthLevel: authLevel,
+      channelId,
+      userId,
+      username,
+      profilePicId,
+      scrollAtBottom: checkScrollIsAtTheBottom()
+    };
+    onDisplayAttachedFile(params);
+    if (channelId) {
+      onSendFileMessage({ ...params, targetMessage: replyTarget });
+    }
+    onSetReplyTarget(null);
   }
 }
 
