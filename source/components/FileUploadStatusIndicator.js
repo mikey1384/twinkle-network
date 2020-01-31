@@ -4,7 +4,7 @@ import ProgressBar from 'components/ProgressBar';
 import { Color } from 'constants/css';
 
 FileUploadStatusIndicator.propTypes = {
-  fileToUpload: PropTypes.object.isRequired,
+  fileName: PropTypes.string,
   uploadComplete: PropTypes.bool,
   uploadProgress: PropTypes.number,
   onFileUpload: PropTypes.func.isRequired,
@@ -12,7 +12,7 @@ FileUploadStatusIndicator.propTypes = {
 };
 
 export default function FileUploadStatusIndicator({
-  fileToUpload,
+  fileName,
   onFileUpload,
   onUploadComplete,
   uploadComplete,
@@ -23,12 +23,12 @@ export default function FileUploadStatusIndicator({
       onFileUpload();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadProgress]);
+  }, []);
 
   const text = useMemo(() => (uploadComplete ? 'Upload Complete!' : ''), [
     uploadComplete
   ]);
-  const color = useMemo(() => (uploadComplete ? Color.green() : Color.blue()), [
+  const color = useMemo(() => (uploadComplete ? Color.green() : undefined), [
     uploadComplete
   ]);
   const progress = useMemo(
@@ -45,7 +45,7 @@ export default function FileUploadStatusIndicator({
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <div>{`Uploading ${fileToUpload.name}...`}</div>
+      <div>{`Uploading ${fileName}...`}</div>
       <ProgressBar text={text} color={color} progress={progress} />
     </div>
   );

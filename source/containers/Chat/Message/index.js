@@ -351,7 +351,7 @@ function Message({
             ) : fileToUpload && !loading ? (
               <FileUploadStatusIndicator
                 key={channelId}
-                fileToUpload={fileToUpload}
+                fileName={fileToUpload.name}
                 onFileUpload={handleFileUpload}
                 onUploadComplete={handleUploadComplete}
                 uploadComplete={!!uploadStatus.uploadComplete}

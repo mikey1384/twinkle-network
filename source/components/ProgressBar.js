@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, innerBorderRadius } from 'constants/css';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 
 ProgressBar.propTypes = {
   noBorderRadius: PropTypes.bool,
@@ -12,12 +13,15 @@ ProgressBar.propTypes = {
 };
 
 export default function ProgressBar({
-  color = Color.blue(),
+  color,
   noBorderRadius,
   progress,
   style = {},
   text
 }) {
+  const { profileTheme } = useMyState();
+  const barColor = color || Color[profileTheme]();
+
   return (
     <div
       className={css`
@@ -50,7 +54,7 @@ export default function ProgressBar({
     >
       <section
         style={{
-          background: color,
+          background: barColor,
           width: `${progress}%`,
           height: '100%',
           display: 'flex',
