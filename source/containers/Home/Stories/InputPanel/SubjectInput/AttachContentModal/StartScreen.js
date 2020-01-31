@@ -37,44 +37,42 @@ export default function StartScreen({ navigateTo, onHide }) {
 
   return (
     <ErrorBoundary style={{ display: 'flex', width: '100%' }}>
-      {false && (
-        <div
-          style={{
-            width: '50%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 'bold',
-              fontSize: '2rem',
-              color: Color.black()
-            }}
-          >
-            Upload from your {isMobile(navigator) ? 'device' : 'computer'}
-          </div>
-          <div
-            style={{
-              marginTop: '1.5rem',
-              display: 'flex'
-            }}
-          >
-            <Button
-              skeuomorphic
-              style={{ fontSize: '3.5rem', padding: '1.5rem' }}
-              color="blue"
-              onClick={() => FileInputRef.current.click()}
-            >
-              <Icon icon="upload" />
-            </Button>
-          </div>
-        </div>
-      )}
       <div
         style={{
-          width: '100%',
+          width: '50%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 'bold',
+            fontSize: '2rem',
+            color: Color.black()
+          }}
+        >
+          Upload from your {isMobile(navigator) ? 'device' : 'computer'}
+        </div>
+        <div
+          style={{
+            marginTop: '1.5rem',
+            display: 'flex'
+          }}
+        >
+          <Button
+            skeuomorphic
+            style={{ fontSize: '3.5rem', padding: '1.5rem' }}
+            color="blue"
+            onClick={() => FileInputRef.current.click()}
+          >
+            <Icon icon="upload" />
+          </Button>
+        </div>
+      </div>
+      <div
+        style={{
+          width: '50%',
           flexDirection: 'column',
           alignItems: 'center',
           display: 'flex',
