@@ -7,7 +7,6 @@ import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
 import Loading from 'components/Loading';
 import { useHistory } from 'react-router-dom';
-import { cleanString } from 'helpers/stringHelpers';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useContentState, useMyState } from 'helpers/hooks';
@@ -154,7 +153,7 @@ function ContentListItem({
                       }}
                       className="label"
                     >
-                      {cleanString(title)}
+                      {title}
                     </p>
                     <p style={{ color: Color.gray() }}>
                       Uploaded by {uploader.username}
@@ -242,7 +241,7 @@ function ContentListItem({
                     }}
                     className="label"
                   >
-                    {cleanString(title)}
+                    {title}
                   </span>
                   <Embedly
                     small

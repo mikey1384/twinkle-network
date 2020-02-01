@@ -557,6 +557,9 @@ export default function contentRequestHelpers({ auth, handleError }) {
       isVideo,
       title,
       description,
+      fileName,
+      filePath,
+      fileSize,
       rewardLevel,
       secretAnswer
     }) {
@@ -569,6 +572,9 @@ export default function contentRequestHelpers({ auth, handleError }) {
             isVideo,
             title,
             description,
+            fileName,
+            filePath,
+            fileSize,
             rewardLevel,
             secretAnswer
           },
@@ -645,6 +651,16 @@ export default function contentRequestHelpers({ auth, handleError }) {
       } catch (error) {
         handleError(error);
       }
+    },
+    async uploadFile({ fileName, filePath, file, onUploadProgress }) {
+      const { data: url } = await request.get(
+        `${URL}/content/sign-s3?fileName=${fileName}&path=${filePath}&context=feed`,
+        auth()
+      );
+      await request.put(url.signedRequest, file, {
+        onUploadProgress
+      });
+      return Promise.resolve();
     },
     async uploadPlaylist({ title, description, selectedVideos }) {
       try {

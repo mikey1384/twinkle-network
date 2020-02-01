@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'components/Link';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { cleanString, queryStringForArray } from 'helpers/stringHelpers';
+import { queryStringForArray } from 'helpers/stringHelpers';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import ErrorBoundary from 'components/ErrorBoundary';
 import VideoThumbImage from 'components/VideoThumbImage';
@@ -203,7 +203,7 @@ export default function NavMenu({ playlistId, videoId }) {
                   }}
                   to={`/playlists/${playlistId}`}
                 >
-                  {cleanString(playlistTitle)}
+                  {playlistTitle}
                 </Link>
               </div>
               {renderVideos({
@@ -311,7 +311,7 @@ export default function NavMenu({ playlistId, videoId }) {
               color: video.byUser ? Color[profileTheme](0.9) : Color.blue()
             }}
           >
-            {cleanString(video.title)}
+            {video.title}
           </Link>
           <small
             style={{

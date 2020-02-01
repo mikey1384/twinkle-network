@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ItemTypes from 'constants/itemTypes';
 import Icon from 'components/Icon';
 import { useDrag, useDrop } from 'react-dnd';
-import { cleanString } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 
 SortableListItem.propTypes = {
@@ -62,7 +61,7 @@ export default function SortableListItem({
     >
       <section>
         {numbered ? `${index + 1}. ` : ''}
-        {cleanString(listItemLabel)}
+        {listItemLabel}
       </section>
       <Icon icon="align-justify" style={{ color: Color.darkerBorderGray() }} />
     </nav>

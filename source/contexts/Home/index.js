@@ -8,6 +8,8 @@ export const initialHomeState = {
   category: 'uploads',
   feeds: [],
   feedsOutdated: false,
+  fileUploadProgress: null,
+  fileUploadComplete: false,
   loadMoreButton: false,
   subFilter: 'all'
 };

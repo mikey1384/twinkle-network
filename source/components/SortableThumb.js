@@ -4,7 +4,6 @@ import ItemTypes from 'constants/itemTypes';
 import { useDrag, useDrop } from 'react-dnd';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import VideoThumbImage from 'components/VideoThumbImage';
-import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -93,12 +92,9 @@ export default function SortableThumb({ id, onMove, video }) {
                 lineHeight: 'normal'
               }}
             >
-              {cleanString(video.title)}
+              {video.title}
             </p>
-            <FullTextReveal
-              show={onTitleHover}
-              text={cleanString(video.title)}
-            />
+            <FullTextReveal show={onTitleHover} text={video.title} />
           </div>
           <p
             style={{

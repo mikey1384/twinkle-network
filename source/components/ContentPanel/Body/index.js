@@ -21,6 +21,7 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/ErrorBoundary';
+import FileViewer from 'components/FileViewer';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
@@ -86,6 +87,9 @@ function Body({
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const {
+    filePath,
+    fileName,
+    fileSize,
     isEditing,
     secretAnswer,
     secretShown,
@@ -255,6 +259,21 @@ function Body({
   return (
     <ErrorBoundary>
       <div>
+        {contentType === 'subject' && filePath && (
+          <FileViewer
+            contextType="feed"
+            autoPlay
+            fileName={fileName}
+            filePath={filePath}
+            fileSize={fileSize}
+            videoHeight="25vw"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '0 1rem 0 1rem'
+            }}
+          />
+        )}
         {contentType === 'comment' && attachedVideoShown && (
           <VideoPlayer
             stretch

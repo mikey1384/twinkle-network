@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { cleanString } from 'helpers/stringHelpers';
 import { Link } from 'react-router-dom';
 import { Color } from 'constants/css';
 
@@ -19,7 +18,7 @@ export default function SubjectLink({ subject }) {
         }}
         to={`/subjects/${subject.id}`}
       >
-        {cleanString(subject.title)}
+        {subject.title}
       </Link>
     </ErrorBoundary>
   );

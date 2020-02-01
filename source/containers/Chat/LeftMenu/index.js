@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
-import Context from '../Context';
 import Vocabulary from './Vocabulary';
 import {
   Color,
@@ -35,11 +34,10 @@ export default function LeftMenu({
     requestHelpers: { loadVocabulary }
   } = useAppContext();
   const {
-    state: { chatType, channelIds },
+    state: { chatType, channelIds, selectedChannelId },
     actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { userId, profileTheme } = useMyState();
-  const { selectedChannelId } = useContext(Context);
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [prevChannelIds, setPrevChannelIds] = useState(channelIds);
   const ChannelListRef = useRef(null);

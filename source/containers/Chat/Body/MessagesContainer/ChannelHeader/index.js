@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { cleanString } from 'helpers/stringHelpers';
 import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
@@ -55,7 +54,6 @@ export default function ChannelHeader() {
   );
   const HeaderLabelRef = useRef(null);
   const mounted = useRef(true);
-  const subjectTitle = useMemo(() => cleanString(content), [content]);
 
   useEffect(() => {
     function onSubjectChange({ subject }) {
@@ -136,9 +134,9 @@ export default function ChannelHeader() {
                     onMouseLeave={() => setOnHover(false)}
                     ref={HeaderLabelRef}
                   >
-                    {subjectTitle}
+                    {content}
                   </span>
-                  <FullTextReveal text={subjectTitle} show={onHover} />
+                  <FullTextReveal text={content} show={onHover} />
                 </div>
                 {renderDetails()}
               </section>
@@ -162,7 +160,7 @@ export default function ChannelHeader() {
               autoFocus
               maxLength={charLimit.chat.subject}
               currentSubjectId={subjectId}
-              title={subjectTitle}
+              title={content}
               onEditSubmit={onSubjectSubmit}
               onChange={handleSearchChatSubject}
               onClickOutSide={() => {

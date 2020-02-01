@@ -8,13 +8,15 @@ FileUploadStatusIndicator.propTypes = {
   uploadComplete: PropTypes.bool,
   uploadProgress: PropTypes.number,
   onFileUpload: PropTypes.func.isRequired,
-  onUploadComplete: PropTypes.func.isRequired
+  onUploadComplete: PropTypes.func.isRequired,
+  style: PropTypes.object
 };
 
 export default function FileUploadStatusIndicator({
   fileName,
   onFileUpload,
   onUploadComplete,
+  style,
   uploadComplete,
   uploadProgress
 }) {
@@ -44,7 +46,7 @@ export default function FileUploadStatusIndicator({
   }, [uploadComplete]);
 
   return (
-    <div style={{ marginTop: '1rem' }}>
+    <div style={{ marginTop: '1rem', ...style }}>
       <div>{`Uploading ${fileName}...`}</div>
       <ProgressBar text={text} color={color} progress={progress} />
     </div>

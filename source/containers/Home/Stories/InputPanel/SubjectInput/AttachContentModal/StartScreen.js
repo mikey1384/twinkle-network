@@ -155,6 +155,7 @@ export default function StartScreen({ navigateTo, onHide }) {
               fileType: 'image',
               imageUrl
             });
+            onHide();
           },
           { orientation: true }
         );
@@ -166,8 +167,8 @@ export default function StartScreen({ navigateTo, onHide }) {
         contentType: 'file',
         fileType
       });
+      onHide();
     }
-    onHide();
     event.target.value = null;
   }
 }

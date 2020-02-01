@@ -4,7 +4,6 @@ import ChoiceListItem from './ChoiceListItem';
 import EditChoiceListItem from './EditChoiceListItem';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
-import { cleanString } from 'helpers/stringHelpers';
 import { borderRadius, innerBorderRadius, Color } from 'constants/css';
 import Banner from 'components/Banner';
 import Icon from 'components/Icon';
@@ -155,7 +154,7 @@ export default function QuestionBlock({
             <Textarea
               autoFocus
               placeholder="Enter Question..."
-              value={cleanString(editedQuestionTitle)}
+              value={editedQuestionTitle}
               onChange={event => {
                 hideErrorMsg(questionId);
                 setEditedQuestionTitle(event.target.value);

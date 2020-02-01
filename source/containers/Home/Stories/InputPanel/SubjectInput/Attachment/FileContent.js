@@ -13,14 +13,14 @@ FileContent.propTypes = {
 export default function FileContent({ imageUrl, file, fileType }) {
   return (
     <div
-      style={{ width: fileType === 'image' ? '8rem' : '5rem', height: '4rem' }}
+      style={{ width: fileType === 'image' ? '8rem' : '7rem', height: '4rem' }}
     >
       {fileType === 'image' ? (
         <Image imageUrl={imageUrl} />
       ) : (
         <FileIcon size="3x" fileType={fileType} />
       )}
-      <div style={{ marginTop: '0.5rem', textAlign: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
         {truncateText({ text: file.name, limit: 10 })}
       </div>
     </div>

@@ -4,7 +4,6 @@ import Input from 'components/Texts/Input';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import { edit } from 'constants/placeholders';
-import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 
 BasicInfos.propTypes = {
@@ -96,10 +95,10 @@ export default function BasicInfos({
               onMouseOver={onMouseOver}
               onMouseLeave={onMouseLeave}
             >
-              {cleanString(title)}
+              {title}
             </span>
           </div>
-          <FullTextReveal show={titleHovered} text={cleanString(title)} />
+          <FullTextReveal show={titleHovered} text={title} />
         </div>
       )}
       {!onEdit && (

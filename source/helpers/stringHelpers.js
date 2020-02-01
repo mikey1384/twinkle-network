@@ -158,16 +158,6 @@ export function capitalize(string = '') {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function cleanString(string) {
-  return string
-    ? string
-        .replace(/<br\s*[\/]?>/gi, '\n')
-        .replace(/&amp;/gi, '&')
-        .replace(/&lt;/gi, '<')
-        .replace(/&gt;/gi, '>')
-    : '';
-}
-
 export function expandShortcut(string) {
   return string
     .replace(/(\(brb\))/gi, 'be right back')

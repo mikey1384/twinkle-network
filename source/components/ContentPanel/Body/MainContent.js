@@ -11,7 +11,7 @@ import TagStatus from 'components/TagStatus';
 import SecretAnswer from 'components/SecretAnswer';
 import Link from 'components/Link';
 import HiddenComment from 'components/HiddenComment';
-import { cleanString, stringIsEmpty } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useContentState } from 'helpers/hooks';
@@ -180,7 +180,7 @@ function MainContent({
                       fontSize: '2.2rem'
                     }}
                   >
-                    {cleanString(title)}
+                    {title}
                   </p>
                 </div>
               )}

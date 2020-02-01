@@ -403,7 +403,7 @@ export default function ChatActions(dispatch) {
         data
       });
     },
-    onUpdateUploadProgress({ progress, channelId, path }) {
+    onUpdateChatUploadProgress({ progress, channelId, path }) {
       return dispatch({
         type: 'UPDATE_UPLOAD_PROGRESS',
         progress,

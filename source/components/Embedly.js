@@ -7,7 +7,7 @@ import ReactPlayer from 'react-player';
 import Icon from 'components/Icon';
 import URL from 'constants/URL';
 import { css } from 'emotion';
-import { cleanString, getFileInfoFromFileName } from 'helpers/stringHelpers';
+import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
@@ -195,10 +195,10 @@ function Embedly({
               ${small ? '' : 'margin-top: 1rem;'}
             `}
           >
-            <h3>{cleanString(actualTitle || title)}</h3>
+            <h3>{actualTitle || title}</h3>
             <div>
               <LongText maxLines={6} noExpand>
-                {cleanString(actualDescription || description)}
+                {actualDescription || description}
               </LongText>
             </div>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>

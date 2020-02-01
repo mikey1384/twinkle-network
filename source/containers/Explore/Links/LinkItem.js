@@ -9,7 +9,6 @@ import Embedly from 'components/Embedly';
 import { useHistory } from 'react-router-dom';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { cleanString } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useExploreContext } from 'contexts';
@@ -160,7 +159,7 @@ export default function LinkItem({
                     fontWeight: 'bold'
                   }}
                 >
-                  {cleanString(title)}
+                  {title}
                 </span>
               )}
               {onEdit && (

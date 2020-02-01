@@ -4,7 +4,6 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import VideoThumbImage from 'components/VideoThumbImage';
 import Embedly from 'components/Embedly';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { cleanString } from 'helpers/stringHelpers';
 import { isMobile, textIsOverflown } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -101,12 +100,9 @@ export default function Selectable({
                 lineHeight: 'normal'
               }}
             >
-              {cleanString(item.title)}
+              {item.title}
             </p>
-            <FullTextReveal
-              show={onTitleHover}
-              text={cleanString(item.title)}
-            />
+            <FullTextReveal show={onTitleHover} text={item.title} />
           </div>
           <p
             style={{

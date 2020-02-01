@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import Chess from '../Chess';
 import ErrorBoundary from 'components/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
-import FileViewer from './FileViewer';
+import FileViewer from 'components/FileViewer';
 import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -362,11 +362,13 @@ function Message({
                 {targetMessage && <TargetMessage message={targetMessage} />}
                 {filePath && (
                   <FileViewer
+                    contextType="chat"
                     content={content}
                     filePath={filePath}
                     fileName={fileName}
                     fileSize={fileSize}
                     scrollAtBottom={scrollAtBottom}
+                    style={{ marginTop: '1rem' }}
                   />
                 )}
                 <TextMessage
