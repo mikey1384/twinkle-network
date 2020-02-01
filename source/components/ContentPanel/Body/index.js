@@ -271,7 +271,7 @@ function Body({
               fileName={fileName}
               filePath={filePath}
               fileSize={fileSize}
-              videoHeight="25vw"
+              videoHeight="100%"
               style={{
                 display: 'flex',
                 justifyContent: 'center',

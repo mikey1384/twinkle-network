@@ -50,8 +50,8 @@ export default function FileViewer({
           fileName={fileName}
         />
       ) : fileType === 'video' || fileType === 'audio' ? (
-        <div>
-          <div>
+        <div style={{ width: '100%' }}>
+          <div style={{ width: '100%' }}>
             <a
               style={{ fontWeight: 'bold' }}
               href={src}
@@ -61,12 +61,28 @@ export default function FileViewer({
               {fileName}
             </a>
           </div>
-          <div style={{ width: '100%' }} onClick={handlePlayerClick}>
+          <div
+            style={{
+              marginTop: '1rem',
+              width: '100%',
+              position: 'relative',
+              paddingTop: '56.25%'
+            }}
+            onClick={handlePlayerClick}
+          >
             <ReactPlayer
               ref={PlayerRef}
               playing={!mobile && autoPlay}
               muted={!mobile && autoPlay && muted}
-              style={{ marginTop: '1rem' }}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0
+              }}
               width="100%"
               height={fileType === 'video' ? videoHeight || '30vw' : '5rem'}
               url={src}
