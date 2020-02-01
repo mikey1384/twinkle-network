@@ -58,6 +58,7 @@ export default function Stories({ location }) {
   const {
     state: {
       category,
+      displayOrder,
       feeds,
       loadMoreButton,
       loaded,
@@ -70,6 +71,7 @@ export default function Stories({ location }) {
       onLoadFeeds,
       onLoadMoreFeeds,
       onLoadNewFeeds,
+      onSetDisplayOrder,
       onSetFeedsOutdated
     }
   } = useHomeContext();
@@ -84,7 +86,6 @@ export default function Stories({ location }) {
     scrollPositions
   });
 
-  const [displayOrder, setDisplayOrder] = useState('desc');
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
@@ -297,7 +298,7 @@ export default function Stories({ location }) {
       mounted.current
     ) {
       onLoadFeeds(data);
-      setDisplayOrder('desc');
+      onSetDisplayOrder('desc');
       setScrollHeight(0);
       setLoadingFeeds(false);
     }
@@ -341,7 +342,7 @@ export default function Stories({ location }) {
         categoryRef.current === newCategory
       ) {
         onLoadFeeds(data);
-        setDisplayOrder('desc');
+        onSetDisplayOrder('desc');
         setScrollHeight(0);
         setLoadingFeeds(false);
       }
@@ -391,7 +392,7 @@ export default function Stories({ location }) {
     });
     if (filter === initialFilter && mounted.current) {
       onLoadFeeds(data);
-      setDisplayOrder(newDisplayOrder);
+      onSetDisplayOrder(newDisplayOrder);
       setScrollHeight(0);
       setLoadingFeeds(false);
     }

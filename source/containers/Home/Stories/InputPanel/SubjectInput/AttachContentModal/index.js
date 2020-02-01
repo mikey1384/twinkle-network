@@ -7,7 +7,7 @@ import SelectAttachmentScreen from './SelectAttachmentScreen';
 
 const sectionObj = {
   start: {
-    title: 'Which Content Type?'
+    title: 'Attach a content to your subject'
   },
   selectVideo: {
     title: 'Select a Video'
@@ -25,7 +25,6 @@ AttachContentModal.propTypes = {
 export default function AttachContentModal({ onConfirm, onHide }) {
   const [section, setSection] = useState('start');
   const [selected, setSelected] = useState();
-
   return (
     <Modal
       large={section === 'selectVideo' || section === 'selectLink'}
@@ -33,7 +32,9 @@ export default function AttachContentModal({ onConfirm, onHide }) {
     >
       <header>{sectionObj[section].title}</header>
       <main>
-        {section === 'start' && <StartScreen navigateTo={setSection} />}
+        {section === 'start' && (
+          <StartScreen navigateTo={setSection} onHide={onHide} />
+        )}
         {section === 'selectVideo' && (
           <SelectAttachmentScreen
             contentType="video"

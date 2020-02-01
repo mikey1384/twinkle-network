@@ -2,20 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { Color } from 'constants/css';
-import { truncateText } from 'helpers/stringHelpers';
-import { css } from 'emotion';
+import WebsiteContent from './WebsiteContent';
+import FileContent from './FileContent';
 
 Attachment.propTypes = {
   attachment: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired
 };
 
-export default function Attachment({ attachment, onClose }) {
+export default function Attachment({
+  attachment,
+  attachment: { contentType, fileType },
+  onClose
+}) {
   return (
     <ErrorBoundary
       style={{
-        width: '8rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -25,6 +27,7 @@ export default function Attachment({ attachment, onClose }) {
       <Icon
         icon="times"
         style={{
+          zIndex: 1,
           display: 'flex',
           background: '#000',
           color: '#fff',
@@ -37,34 +40,19 @@ export default function Attachment({ attachment, onClose }) {
           position: 'absolute',
           cursor: 'pointer',
           right: '-0.5rem',
-          top: '-0.5rem'
+          top: '-1rem'
         }}
         onClick={onClose}
       />
-      <div
-        className={css`
-          &:hover {
-            color: ${Color.blue()};
-          }
-        `}
-        style={{ cursor: 'pointer', textAlign: 'center' }}
-        onClick={() =>
-          window.open(
-            `/${attachment.contentType === 'url' ? 'links' : 'videos'}/${
-              attachment.id
-            }`
-          )
-        }
-      >
-        <div style={{ fontSize: '1.5rem' }}>
-          {attachment.contentType === 'video' ? (
-            <Icon icon="film" />
-          ) : (
-            <Icon icon="link" />
-          )}
-        </div>
-        {truncateText({ text: attachment.title, limit: 20 })}
-      </div>
+      {contentType === 'file' ? (
+        <FileContent
+          file={attachment.file}
+          fileType={fileType}
+          imageUrl={attachment.imageUrl}
+        />
+      ) : (
+        <WebsiteContent attachment={attachment} />
+      )}
     </ErrorBoundary>
   );
 }

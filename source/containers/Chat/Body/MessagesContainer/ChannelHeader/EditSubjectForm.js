@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  cleanString,
   addEmoji,
   finalizeEmoji,
   trimWhiteSpaces
@@ -40,7 +39,7 @@ export default function EditSubjectForm({
   ...props
 }) {
   const [exactMatchExists, setExactMatchExists] = useState(false);
-  const [title, setTitle] = useState(cleanString(props.title));
+  const [title, setTitle] = useState(props.title);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [readyForSubmit, setReadyForSubmit] = useState(false);
   const [subjectsModalShown, setSubjectsModalShown] = useState(false);
@@ -225,7 +224,7 @@ export default function EditSubjectForm({
             fontWeight: 'bold'
           }}
         >
-          {cleanString(item.content)}
+          {item.content}
           <span style={{ color: Color.blue() }}>
             {Number(item.numMsgs) > 0 && ` (${item.numMsgs})`}
           </span>

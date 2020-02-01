@@ -79,7 +79,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   const { authLevel, profilePicId, userId, username } = useMyState();
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
-  const [fileObj, setFileObj] = useState('');
+  const [fileObj, setFileObj] = useState(null);
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [loadMoreButtonLock, setLoadMoreButtonLock] = useState(false);
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);

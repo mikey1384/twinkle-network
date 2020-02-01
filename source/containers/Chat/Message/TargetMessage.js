@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import Image from '../Image';
-import FileIcon from '../FileIcon';
-import ImageModal from '../Modals/ImageModal';
+import Image from 'components/Image';
+import FileIcon from 'components/FileIcon';
+import ImageModal from 'components/Modals/ImageModal';
+import UsernameText from 'components/Texts/UsernameText';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -51,8 +52,11 @@ export default function TargetMessage({ message }) {
       `}
     >
       <div>
-        <p style={{ fontWeight: 'bold' }}>
-          {message.username}{' '}
+        <section style={{ fontWeight: 'bold' }}>
+          <UsernameText
+            color={Color.black()}
+            user={{ id: message.userId, username: message.username }}
+          />{' '}
           <small
             style={{
               fontWeight: 'normal',
@@ -62,7 +66,7 @@ export default function TargetMessage({ message }) {
           >
             {unix(message.timeStamp).format('LLL')}
           </small>
-        </p>
+        </section>
         <p
           dangerouslySetInnerHTML={{
             __html: processedStringWithURL(message.content) || message.fileName

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
-import FileViewer from '../../Message/FileViewer';
+import FileViewer from 'components/FileViewer';
 import { MessageStyle } from '../../Styles';
 import { Color } from 'constants/css';
 import { unix } from 'moment';
@@ -53,10 +53,12 @@ export default function Message({
         {filePath && (
           <FileViewer
             modalOverModal
+            contextType="chat"
             content={content}
             filePath={filePath}
             fileName={fileName}
             fileSize={fileSize}
+            style={{ marginTop: '1rem' }}
           />
         )}
         <div>

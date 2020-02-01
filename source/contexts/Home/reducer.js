@@ -14,6 +14,12 @@ export default function HomeReducer(state, action) {
         ...state,
         subFilter: action.subFilter
       };
+    case 'CLEAR_FILE_UPLOAD_PROGRESS':
+      return {
+        ...state,
+        fileUploadProgress: null,
+        fileUploadComplete: false
+      };
     case 'DELETE_FEED':
       return {
         ...state,
@@ -44,10 +50,25 @@ export default function HomeReducer(state, action) {
         ...state,
         loaded: false
       };
+    case 'SET_DISPLAY_ORDER':
+      return {
+        ...state,
+        displayOrder: action.order
+      };
     case 'SET_FEEDS_OUTDATED':
       return {
         ...state,
         feedsOutdated: action.outdated
+      };
+    case 'SET_FILE_UPLOAD_COMPLETE':
+      return {
+        ...state,
+        fileUploadComplete: true
+      };
+    case 'UPDATE_FILE_UPLOAD_PROGRESS':
+      return {
+        ...state,
+        fileUploadProgress: action.progress
       };
     default:
       return state;

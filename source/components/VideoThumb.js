@@ -8,7 +8,6 @@ import VideoThumbImage from 'components/VideoThumbImage';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
-import { cleanString } from 'helpers/stringHelpers';
 import { textIsOverflown } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 
@@ -103,13 +102,10 @@ export default function VideoThumb({
                 href={`/${to}`}
                 onClick={onLinkClick}
               >
-                {cleanString(video.title)}
+                {video.title}
               </a>
             </p>
-            <FullTextReveal
-              show={onTitleHover}
-              text={cleanString(video.title)}
-            />
+            <FullTextReveal show={onTitleHover} text={video.title} />
           </div>
           <div style={{ width: '100%', fontSize: '1.2rem' }}>
             <div className="username">

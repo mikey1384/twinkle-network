@@ -63,10 +63,12 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async deleteContent({ id, contentType }) {
+    async deleteContent({ id, contentType, filePath, fileName }) {
       try {
         await request.delete(
-          `${URL}/content?contentId=${id}&contentType=${contentType}`,
+          `${URL}/content?contentId=${id}&contentType=${contentType}${
+            filePath ? `&filePath=${filePath}` : ''
+          }${fileName ? `&fileName=${fileName}` : ''}`,
           auth()
         );
         return Promise.resolve({ contentId: id, contentType });
@@ -85,10 +87,12 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async deleteSubject({ subjectId }) {
+    async deleteSubject({ filePath, fileName, subjectId }) {
       try {
         await request.delete(
-          `${URL}/content/subjects?subjectId=${subjectId}`,
+          `${URL}/content/subjects?subjectId=${subjectId}${
+            filePath ? `&filePath=${filePath}` : ''
+          }${fileName ? `&fileName=${fileName}` : ''}`,
           auth()
         );
         return Promise.resolve();
@@ -557,6 +561,9 @@ export default function contentRequestHelpers({ auth, handleError }) {
       isVideo,
       title,
       description,
+      fileName,
+      filePath,
+      fileSize,
       rewardLevel,
       secretAnswer
     }) {
@@ -569,6 +576,9 @@ export default function contentRequestHelpers({ auth, handleError }) {
             isVideo,
             title,
             description,
+            fileName,
+            filePath,
+            fileSize,
             rewardLevel,
             secretAnswer
           },
@@ -645,6 +655,16 @@ export default function contentRequestHelpers({ auth, handleError }) {
       } catch (error) {
         handleError(error);
       }
+    },
+    async uploadFile({ fileName, filePath, file, onUploadProgress }) {
+      const { data: url } = await request.get(
+        `${URL}/content/sign-s3?fileName=${fileName}&path=${filePath}&context=feed`,
+        auth()
+      );
+      await request.put(url.signedRequest, file, {
+        onUploadProgress
+      });
+      return Promise.resolve();
     },
     async uploadPlaylist({ title, description, selectedVideos }) {
       try {

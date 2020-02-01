@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from './Input';
 import { useOutsideClick } from 'helpers/hooks';
-import { cleanString, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
+import { addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 import { edit } from 'constants/placeholders';
 
 EditTitleForm.propTypes = {
@@ -23,7 +23,7 @@ export default function EditTitleForm({
   inputStyle,
   ...props
 }) {
-  const [title, setTitle] = useState(cleanString(props.title));
+  const [title, setTitle] = useState(props.title);
   const FormRef = useRef(null);
   useOutsideClick(FormRef, onClickOutSide);
 

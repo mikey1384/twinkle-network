@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ImageModal from '../Modals/ImageModal';
+import ImageModal from 'components/Modals/ImageModal';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 

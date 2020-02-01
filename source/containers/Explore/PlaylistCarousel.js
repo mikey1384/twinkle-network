@@ -12,7 +12,6 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
-import { cleanString } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
 
@@ -116,7 +115,7 @@ export default function PlaylistCarousel({
         ) : (
           <div>
             <p>
-              <Link to={`/playlists/${playlistId}`}>{cleanString(title)}</Link>
+              <Link to={`/playlists/${playlistId}`}>{title}</Link>
               &nbsp;
               <small>by {uploader}</small>
             </p>
@@ -165,7 +164,7 @@ export default function PlaylistCarousel({
       </Carousel>
       {playlistModalShown && (
         <PlaylistModal
-          title={cleanString(title)}
+          title={title}
           onHide={() => setPlaylistModalShown(false)}
           playlistId={playlistId}
         />

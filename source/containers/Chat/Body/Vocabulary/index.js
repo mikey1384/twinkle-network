@@ -190,7 +190,10 @@ export default function Vocabulary() {
             </div>
           ))}
       </div>
-      {(notRegistered || alreadyRegistered || vocabErrorMessage) && (
+      {(notRegistered ||
+        alreadyRegistered ||
+        vocabErrorMessage ||
+        isSubmitting) && (
         <div
           className={css`
             font-size: 2rem;
@@ -215,8 +218,10 @@ export default function Vocabulary() {
         >
           {vocabErrorMessage ||
             (notRegistered
-              ? `This word has not been collected yet. Collect and earn XP!`
-              : `This word has already been collected`)}
+              ? isSubmitting
+                ? 'Collecting...'
+                : 'This word has not been collected yet. Collect and earn XP!'
+              : 'This word has already been collected')}
         </div>
       )}
       <div
@@ -228,6 +233,11 @@ export default function Vocabulary() {
         }}
       >
         <Input
+          onInput={() => {
+            if (isSubmitting) {
+              setIsSubmitting(false);
+            }
+          }}
           onSubmit={handleSubmit}
           innerRef={inputRef}
           registerButtonShown={notRegistered}
@@ -242,17 +252,22 @@ export default function Vocabulary() {
     delete definitions.deletedDefIds;
     if (isNew && !isSubmitting) {
       setIsSubmitting(true);
-      const { xp, rank, word, rankings } = await registerWord(definitions);
-      onChangeUserXP({ xp, rank, userId });
-      onUpdateNumWordsCollected(word.numWordsCollected);
-      onRegisterWord(word);
-      onUpdateCollectorsRankings({ rankings });
-      onSetWordRegisterStatus(wordObj);
-      onEnterComment({
-        contentType: 'vocabulary',
-        text: ''
-      });
-      setIsSubmitting(false);
+      try {
+        const { xp, rank, word, rankings } = await registerWord(definitions);
+        onChangeUserXP({ xp, rank, userId });
+        onUpdateNumWordsCollected(word.numWordsCollected);
+        onRegisterWord(word);
+        onUpdateCollectorsRankings({ rankings });
+        onSetWordRegisterStatus(wordObj);
+        onEnterComment({
+          contentType: 'vocabulary',
+          text: ''
+        });
+        setIsSubmitting(false);
+      } catch (error) {
+        console.error(error);
+        setIsSubmitting(false);
+      }
     }
   }
 }

@@ -15,12 +15,7 @@ import SecretAnswer from 'components/SecretAnswer';
 import StarButton from 'components/Buttons/StarButton';
 import LocalContext from './Context';
 import { Color } from 'constants/css';
-import {
-  cleanString,
-  stringIsEmpty,
-  addEmoji,
-  finalizeEmoji
-} from 'helpers/stringHelpers';
+import { stringIsEmpty, addEmoji, finalizeEmoji } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
@@ -90,7 +85,7 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
-  const { deleted, secretShown } = useContentState({
+  const { deleted, secretShown, fileName, filePath } = useContentState({
     contentType: 'subject',
     contentId: subjectId
   });
@@ -98,7 +93,7 @@ export default function SubjectPanel({
   const [onEdit, setOnEdit] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(cleanString(title));
+  const [editedTitle, setEditedTitle] = useState(title);
   const [editedDescription, setEditedDescription] = useState(description || '');
   const [editedSecretAnswer, setEditedSecretAnswer] = useState(
     secretAnswer || ''
@@ -155,7 +150,7 @@ export default function SubjectPanel({
                 fontWeight: 'bold'
               }}
             >
-              {cleanString(title)}
+              {title}
             </Link>
           )}
           <div style={{ display: 'flex' }}>
@@ -245,7 +240,7 @@ export default function SubjectPanel({
                 }}
                 onClick={() => {
                   setOnEdit(false);
-                  setEditedTitle(cleanString(title));
+                  setEditedTitle(title);
                   setEditedDescription(description);
                   setEditedSecretAnswer(secretAnswer);
                 }}
@@ -352,7 +347,7 @@ export default function SubjectPanel({
 
   async function deleteThis() {
     try {
-      await deleteSubject({ subjectId });
+      await deleteSubject({ fileName, filePath, subjectId });
       setConfirmModalShown(false);
       onSubjectDelete(subjectId);
     } catch (error) {

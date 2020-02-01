@@ -112,13 +112,13 @@ export default function HomeFilter({
                     color="darkerGray"
                     direction="left"
                     icon="caret-down"
-                    text={categoryObj[category][displayOrder]}
+                    text={categoryObj.uploads[displayOrder]}
                     menuProps={[
                       {
                         label:
                           displayOrder === 'desc'
-                            ? categoryObj[category]['asc']
-                            : categoryObj[category]['desc'],
+                            ? categoryObj.uploads['asc']
+                            : categoryObj.uploads['desc'],
                         onClick: setDisplayOrder
                       }
                     ]}

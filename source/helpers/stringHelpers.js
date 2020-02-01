@@ -126,6 +126,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:pig\:)/gi, '🐷')
     .replace(/(\:pizza\:)/gi, '🍕')
     .replace(/(\:potato\:)/gi, '🥔')
+    .replace(/(\:question\:)/gi, '❓')
     .replace(/(\:rabbit\:)/gi, '🐰')
     .replace(/(\:reindeer\:)/gi, '🦌')
     .replace(/(\:rooster\:)/gi, '🐓')
@@ -155,16 +156,6 @@ export function addAdvancedEmoji(string) {
 
 export function capitalize(string = '') {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function cleanString(string) {
-  return string
-    ? string
-        .replace(/<br\s*[\/]?>/gi, '\n')
-        .replace(/&amp;/gi, '&')
-        .replace(/&lt;/gi, '<')
-        .replace(/&gt;/gi, '>')
-    : '';
 }
 
 export function expandShortcut(string) {

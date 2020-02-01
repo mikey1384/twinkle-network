@@ -15,8 +15,11 @@ export default function WordRegisterStatus() {
   const [wordModalShown, setWordModalShown] = useState(false);
 
   const wordLevel = useMemo(() => {
-    return returnWordLevel({ frequency, wordLength: content.length });
-  }, [content.length, frequency]);
+    return returnWordLevel({
+      frequency,
+      word: content
+    });
+  }, [content, frequency]);
 
   return (
     <div

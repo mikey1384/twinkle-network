@@ -21,9 +21,10 @@ import ConfirmModal from 'components/Modals/ConfirmModal';
 import XPRewardInterface from 'components/XPRewardInterface';
 import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/ErrorBoundary';
+import FileViewer from 'components/FileViewer';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { mobileMaxWidth } from 'constants/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import {
   determineXpButtonDisabled,
   isMobile,
@@ -72,6 +73,9 @@ function Body({
   onChangeSpoilerStatus
 }) {
   const {
+    user: {
+      actions: { onOpenSigninModal }
+    },
     requestHelpers: { deleteContent, loadComments }
   } = useAppContext();
   const {
@@ -86,6 +90,9 @@ function Body({
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const {
+    filePath,
+    fileName,
+    fileSize,
     isEditing,
     secretAnswer,
     secretShown,
@@ -255,6 +262,41 @@ function Body({
   return (
     <ErrorBoundary>
       <div>
+        {contentType === 'subject' &&
+          filePath &&
+          (userId ? (
+            <FileViewer
+              contextType="feed"
+              autoPlay
+              fileName={fileName}
+              filePath={filePath}
+              fileSize={fileSize}
+              videoHeight="25vw"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '0 1rem 0 1rem',
+                marginBottom: rewardLevel ? '1rem' : 0
+              }}
+            />
+          ) : (
+            <div
+              onClick={onOpenSigninModal}
+              className={css`
+                cursor: pointer;
+                text-align: center;
+                margin: 1rem;
+                padding: 1rem;
+                border-radius: ${borderRadius};
+                border: 1px solid ${Color.borderGray()};
+                &:hover {
+                  text-decoration: underline;
+                }
+              `}
+            >
+              You need to log in to view this content
+            </div>
+          ))}
         {contentType === 'comment' && attachedVideoShown && (
           <VideoPlayer
             stretch
@@ -521,7 +563,7 @@ function Body({
   }
 
   async function deleteThisContent() {
-    await deleteContent({ contentType, id });
+    await deleteContent({ contentType, id, filePath, fileName });
     if (contentType === 'comment') {
       onDeleteComment(id);
     } else {

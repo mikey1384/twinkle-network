@@ -6,7 +6,7 @@ import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext } from 'contexts';
+import { useAppContext, useContentContext } from 'contexts';
 
 SelectAttachmentScreen.propTypes = {
   onSelect: PropTypes.func.isRequired,
@@ -22,6 +22,9 @@ export default function SelectAttachmentScreen({
   const {
     requestHelpers: { loadUploads, searchContent }
   } = useAppContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
   const [allUploads, setAllUploads] = useState([]);
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchedUploads, setSearchedUploads] = useState([]);
@@ -47,6 +50,9 @@ export default function SelectAttachmentScreen({
         contentType
       });
       if (mounted.current) {
+        for (let result of results) {
+          onInitContent({ contentId: result.id, contentType, ...result });
+        }
         setAllUploads(results.map(result => result.id));
         contentObjs.current = objectify(results);
         setLoadMoreButton(loadMoreButton);
@@ -116,6 +122,9 @@ export default function SelectAttachmentScreen({
         contentType,
         contentId: allUploads[allUploads.length - 1]
       });
+      for (let result of results) {
+        onInitContent({ contentId: result.id, contentType, ...result });
+      }
       contentObjs.current = {
         ...contentObjs.current,
         ...objectify(results)

@@ -27,6 +27,7 @@ import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
+  useHomeContext,
   useViewContext,
   useNotiContext,
   useChatContext
@@ -42,7 +43,7 @@ function App({ location, history }) {
     user: {
       actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
     },
-    requestHelpers: { auth, initSession, uploadFileOnChat }
+    requestHelpers: { auth, initSession, uploadFile, uploadFileOnChat }
   } = useAppContext();
   const { signinModalShown, username } = useMyState();
   const {
@@ -51,12 +52,15 @@ function App({ location, history }) {
       onPostUploadComplete,
       onResetChat,
       onSendFirstDirectMessage,
-      onUpdateUploadProgress
+      onUpdateChatUploadProgress
     }
   } = useChatContext();
   const {
     actions: { onInitContent }
   } = useContentContext();
+  const {
+    actions: { onSetFileUploadComplete, onUpdateFileUploadProgress }
+  } = useHomeContext();
   const {
     state: { updateDetail, updateNoticeShown }
   } = useNotiContext();
@@ -231,7 +235,7 @@ function App({ location, history }) {
           <Route path="/playlists" component={PlaylistPage} />
           <Route
             path="/chat"
-            render={() => <Chat onFileUpload={handleFileUpload} />}
+            render={() => <Chat onFileUpload={handleFileUploadOnChat} />}
           />
           <Route path="/management" component={Management} />
           <Route path="/verify" component={Verify} />
@@ -240,7 +244,11 @@ function App({ location, history }) {
             exact
             path="/"
             render={({ history, location }) => (
-              <Home history={history} location={location} />
+              <Home
+                history={history}
+                location={location}
+                onFileUpload={handleFileUploadOnHome}
+              />
             )}
           />
           <Route
@@ -257,7 +265,7 @@ function App({ location, history }) {
     </div>
   );
 
-  async function handleFileUpload({
+  async function handleFileUploadOnChat({
     channelId,
     content,
     fileName,
@@ -297,11 +305,24 @@ function App({ location, history }) {
       result: !!messageId
     });
     function handleUploadProgress({ loaded, total }) {
-      onUpdateUploadProgress({
+      onUpdateChatUploadProgress({
         channelId,
         path: filePath,
         progress: loaded / total
       });
+    }
+  }
+
+  async function handleFileUploadOnHome({ fileName, filePath, file }) {
+    await uploadFile({
+      fileName,
+      filePath,
+      file,
+      onUploadProgress: handleUploadProgress
+    });
+    onSetFileUploadComplete();
+    function handleUploadProgress({ loaded, total }) {
+      onUpdateFileUploadProgress(loaded / total);
     }
   }
 }

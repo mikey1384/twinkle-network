@@ -7,7 +7,6 @@ import Link from 'components/Link';
 import NotFound from 'components/NotFound';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
-import { cleanString } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 
@@ -97,7 +96,7 @@ export default function Playlist({
               onClick={onLinkClick}
               to={`/videos/${video.id}?playlist=${playlistId}`}
             >
-              {cleanString(video.title)}
+              {video.title}
             </Link>
             <p style={{ color: Color.gray(), fontSize: '1.5rem' }}>
               Uploaded by {video.uploaderName}

@@ -68,8 +68,12 @@ export default function Activity({
   }, []);
 
   const wordLevel = useMemo(
-    () => returnWordLevel({ frequency, wordLength: content.length }),
-    [content.length, frequency]
+    () =>
+      returnWordLevel({
+        frequency,
+        word: content
+      }),
+    [content, frequency]
   );
   return (
     <div className={MessageStyle.container}>

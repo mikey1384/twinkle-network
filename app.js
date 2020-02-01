@@ -66,6 +66,7 @@ import { faToggleOn } from '@fortawesome/pro-solid-svg-icons/faToggleOn';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
 import { faTree } from '@fortawesome/pro-solid-svg-icons/faTree';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
+import { faUpload } from '@fortawesome/pro-solid-svg-icons/faUpload';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
 import { faUsersClass } from '@fortawesome/pro-solid-svg-icons/faUsersClass';
@@ -130,6 +131,7 @@ library.add(
   faToggleOn,
   faTrashAlt,
   faTree,
+  faUpload,
   faUser,
   faUserGraduate,
   faUsers,

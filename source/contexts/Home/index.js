@@ -6,8 +6,11 @@ import HomeReducer from './reducer';
 export const HomeContext = createContext();
 export const initialHomeState = {
   category: 'uploads',
+  displayOrder: 'desc',
   feeds: [],
   feedsOutdated: false,
+  fileUploadProgress: null,
+  fileUploadComplete: false,
   loadMoreButton: false,
   subFilter: 'all'
 };

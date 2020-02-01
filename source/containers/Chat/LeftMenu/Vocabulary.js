@@ -29,11 +29,11 @@ export default function Vocabulary({ selected, onClick }) {
         rewardHash[
           returnWordLevel({
             frequency: lastActivity.frequency,
-            wordLength: lastActivity.content.length
+            word: lastActivity.content
           })
         ].rewardAmount
       ),
-    [lastActivity.content.length, lastActivity.frequency]
+    [lastActivity.content, lastActivity.frequency]
   );
 
   return (

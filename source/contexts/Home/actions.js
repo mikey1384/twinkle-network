@@ -1,5 +1,11 @@
 export default function HomeActions(dispatch) {
   return {
+    onClearFileUploadProgress(filePath) {
+      return dispatch({
+        type: 'CLEAR_FILE_UPLOAD_PROGRESS',
+        filePath
+      });
+    },
     onChangeCategory(category) {
       return dispatch({
         type: 'CHANGE_CATEGORY',
@@ -37,10 +43,27 @@ export default function HomeActions(dispatch) {
         type: 'RELOAD_FEEDS'
       });
     },
+    onSetDisplayOrder(order) {
+      return dispatch({
+        type: 'SET_DISPLAY_ORDER',
+        order
+      });
+    },
     onSetFeedsOutdated(outdated) {
       return dispatch({
         type: 'SET_FEEDS_OUTDATED',
         outdated
+      });
+    },
+    onSetFileUploadComplete() {
+      return dispatch({
+        type: 'SET_FILE_UPLOAD_COMPLETE'
+      });
+    },
+    onUpdateFileUploadProgress(progress) {
+      return dispatch({
+        type: 'UPDATE_FILE_UPLOAD_PROGRESS',
+        progress
       });
     }
   };

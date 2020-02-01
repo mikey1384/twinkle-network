@@ -11,6 +11,7 @@ Input.propTypes = {
   innerRef: PropTypes.object,
   loading: PropTypes.bool,
   registerButtonShown: PropTypes.bool,
+  onInput: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool
 };
@@ -18,6 +19,7 @@ Input.propTypes = {
 export default function Input({
   innerRef,
   loading,
+  onInput,
   onSubmit,
   registerButtonShown,
   isSubmitting
@@ -91,6 +93,7 @@ export default function Input({
         `"${event.target.value}" is not allowed for vocabulary section. Please enter english letters only.`
       );
     }
+    onInput();
     onSetVocabErrorMessage('');
     onEnterComment({
       contentType: 'vocabulary',

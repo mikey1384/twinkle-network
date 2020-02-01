@@ -154,7 +154,6 @@ export default function Chat({ onFileUpload }) {
   return (
     <LocalContext.Provider
       value={{
-        selectedChannelId,
         onFileUpload
       }}
     >
