@@ -89,7 +89,11 @@ export default function FileViewer({
                 bottom: 0
               }}
               width="100%"
-              height={fileType === 'video' ? videoHeight || '30vw' : '5rem'}
+              height={
+                fileType === 'video'
+                  ? videoHeight || (isMobile(navigator) ? '37vw' : '30vw')
+                  : '5rem'
+              }
               url={src}
               controls={mobile || !muted || !autoPlay}
             />
