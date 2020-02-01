@@ -51,7 +51,12 @@ export default function FileViewer({
         />
       ) : fileType === 'video' || fileType === 'audio' ? (
         <div style={{ width: '100%' }}>
-          <div style={{ width: '100%' }}>
+          <div
+            style={{
+              width: '100%',
+              padding: contextType === 'feed' && '0 1rem 0 1rem'
+            }}
+          >
             <a
               style={{ fontWeight: 'bold' }}
               href={src}

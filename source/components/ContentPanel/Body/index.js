@@ -275,7 +275,7 @@ function Body({
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                padding: '0 1rem 0 1rem',
+                marginTop: '1rem',
                 marginBottom: rewardLevel ? '1rem' : 0
               }}
             />
