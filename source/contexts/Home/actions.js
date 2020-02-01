@@ -43,6 +43,12 @@ export default function HomeActions(dispatch) {
         type: 'RELOAD_FEEDS'
       });
     },
+    onSetDisplayOrder(order) {
+      return dispatch({
+        type: 'SET_DISPLAY_ORDER',
+        order
+      });
+    },
     onSetFeedsOutdated(outdated) {
       return dispatch({
         type: 'SET_FEEDS_OUTDATED',
