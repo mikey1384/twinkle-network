@@ -540,7 +540,7 @@ function Body({
   }
 
   async function deleteThisContent() {
-    await deleteContent({ contentType, id });
+    await deleteContent({ contentType, id, filePath, fileName });
     if (contentType === 'comment') {
       onDeleteComment(id);
     } else {

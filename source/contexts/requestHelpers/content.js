@@ -63,10 +63,12 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async deleteContent({ id, contentType }) {
+    async deleteContent({ id, contentType, filePath, fileName }) {
       try {
         await request.delete(
-          `${URL}/content?contentId=${id}&contentType=${contentType}`,
+          `${URL}/content?contentId=${id}&contentType=${contentType}${
+            filePath ? `&filePath=${filePath}` : ''
+          }${fileName ? `&fileName=${fileName}` : ''}`,
           auth()
         );
         return Promise.resolve({ contentId: id, contentType });
@@ -85,10 +87,12 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async deleteSubject({ subjectId }) {
+    async deleteSubject({ filePath, fileName, subjectId }) {
       try {
         await request.delete(
-          `${URL}/content/subjects?subjectId=${subjectId}`,
+          `${URL}/content/subjects?subjectId=${subjectId}${
+            filePath ? `&filePath=${filePath}` : ''
+          }${fileName ? `&fileName=${fileName}` : ''}`,
           auth()
         );
         return Promise.resolve();

@@ -85,7 +85,7 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
-  const { deleted, secretShown } = useContentState({
+  const { deleted, secretShown, fileName, filePath } = useContentState({
     contentType: 'subject',
     contentId: subjectId
   });
@@ -347,7 +347,7 @@ export default function SubjectPanel({
 
   async function deleteThis() {
     try {
-      await deleteSubject({ subjectId });
+      await deleteSubject({ fileName, filePath, subjectId });
       setConfirmModalShown(false);
       onSubjectDelete(subjectId);
     } catch (error) {

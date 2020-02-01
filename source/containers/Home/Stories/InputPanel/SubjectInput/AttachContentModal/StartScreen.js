@@ -7,7 +7,10 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { isMobile } from 'helpers';
 import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
-import { getFileInfoFromFileName } from 'helpers/stringHelpers';
+import {
+  addCommasToNumber,
+  getFileInfoFromFileName
+} from 'helpers/stringHelpers';
 import { useInputContext } from 'contexts';
 
 StartScreen.propTypes = {
@@ -16,10 +19,11 @@ StartScreen.propTypes = {
 };
 
 export default function StartScreen({ navigateTo, onHide }) {
+  const FILE_UPLOAD_XP_REQUIREMENT = 500000;
   const {
     actions: { onSetSubjectAttachment }
   } = useInputContext();
-  const { authLevel } = useMyState();
+  const { authLevel, twinkleXP } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const FileInputRef = useRef(null);
   const mb = 1000;
@@ -34,6 +38,11 @@ export default function StartScreen({ navigateTo, onHide }) {
         : 300 * mb,
     [authLevel]
   );
+  const disabled = useMemo(() => {
+    if (authLevel > 1) return false;
+    if (twinkleXP >= FILE_UPLOAD_XP_REQUIREMENT) return false;
+    return true;
+  }, [authLevel, twinkleXP]);
 
   return (
     <ErrorBoundary style={{ display: 'flex', width: '100%' }}>
@@ -56,8 +65,11 @@ export default function StartScreen({ navigateTo, onHide }) {
         </div>
         <div
           style={{
-            marginTop: '1.5rem',
-            display: 'flex'
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '1.5rem'
           }}
         >
           <Button
@@ -65,9 +77,20 @@ export default function StartScreen({ navigateTo, onHide }) {
             style={{ fontSize: '3.5rem', padding: '1.5rem' }}
             color="blue"
             onClick={() => FileInputRef.current.click()}
+            disabled={disabled}
           >
             <Icon icon="upload" />
           </Button>
+          {disabled && (
+            <div
+              style={{
+                marginTop: '1rem',
+                fontWeight: 'bold'
+              }}
+            >{`Requires ${addCommasToNumber(
+              FILE_UPLOAD_XP_REQUIREMENT
+            )} XP`}</div>
+          )}
         </div>
       </div>
       <div
