@@ -355,7 +355,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
     }) {
       try {
         const { data: url } = await request.get(
-          `${URL}/content/sign-s3?fileName=${selectedFile.name}&path=${path}&context=chat`,
+          `${URL}/content/sign-s3?fileName=${encodeURIComponent(
+            selectedFile.name
+          )}&path=${path}&context=chat`,
           auth()
         );
         await request.put(url.signedRequest, selectedFile, {
