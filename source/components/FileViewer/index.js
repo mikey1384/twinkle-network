@@ -107,7 +107,7 @@ export default function FileViewer({
   );
 
   function handlePlayerClick() {
-    if (!mobile && muted) {
+    if (!mobile && muted && autoPlay) {
       setMuted(false);
       PlayerRef.current.getInternalPlayer()?.pause();
     }
