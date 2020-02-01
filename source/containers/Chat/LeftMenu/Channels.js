@@ -158,9 +158,7 @@ export default function Channels({
       );
     }
     if (messageSender && content) {
-      const truncatedContent = content.startsWith('/spoiler')
-        ? 'Hidden Message'
-        : content.substr(0, 100);
+      const truncatedContent = content.substr(0, 100);
       return (
         <>
           <span>{`${messageSender}: `}</span>

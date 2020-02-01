@@ -377,7 +377,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       underlineWordRegex,
-      string => `<u>${string.substring(2, string.length)}</u>`
+      string => `<u>${string.substring(2, string.length - 2)}</u>`
     )
     .replace(
       underlineSentenceRegex,
