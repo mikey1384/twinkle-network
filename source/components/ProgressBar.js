@@ -36,7 +36,7 @@ export default function ProgressBar({
         section {
           margin-left: 0;
           transition: width 0.5s;
-          border: 1px solid ${color};
+          border: 1px solid ${barColor};
           border-top-left-radius: ${innerBorderRadius};
           border-bottom-left-radius: ${innerBorderRadius};
           border-top-right-radius: ${progress >= 100 ? innerBorderRadius : 0};
