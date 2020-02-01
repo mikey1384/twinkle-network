@@ -91,7 +91,7 @@ export default function FileViewer({
               width="100%"
               height={fileType === 'video' ? videoHeight || '30vw' : '5rem'}
               url={src}
-              controls={mobile || !muted}
+              controls={mobile || !muted || !autoPlay}
             />
           </div>
         </div>
