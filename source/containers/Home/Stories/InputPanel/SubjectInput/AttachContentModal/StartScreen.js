@@ -19,7 +19,7 @@ StartScreen.propTypes = {
 };
 
 export default function StartScreen({ navigateTo, onHide }) {
-  const FILE_UPLOAD_XP_REQUIREMENT = 500000;
+  const FILE_UPLOAD_XP_REQUIREMENT = 100000;
   const {
     actions: { onSetSubjectAttachment }
   } = useInputContext();
