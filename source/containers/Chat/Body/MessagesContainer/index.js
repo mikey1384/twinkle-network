@@ -399,7 +399,6 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
                   message={message}
                   onChessBoardClick={handleChessModalShown}
                   onChessSpoilerClick={handleChessSpoilerClick}
-                  onSendFileMessage={handleSendFileMessage}
                   onDelete={handleShowDeleteModal}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
@@ -754,22 +753,6 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     } else {
       setNewUnseenMessage(true);
     }
-  }
-
-  function handleSendFileMessage(params) {
-    socket.emit(
-      'new_chat_message',
-      { ...params, isNewMessage: true },
-      {
-        ...currentChannel,
-        numUnreads: 1,
-        lastMessage: {
-          fileName: params.fileName,
-          sender: { id: userId, username }
-        },
-        channelName
-      }
-    );
   }
 
   async function handleSelectNewOwnerAndLeaveChannel(newOwner) {

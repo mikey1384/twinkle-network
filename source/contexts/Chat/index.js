@@ -13,6 +13,7 @@ export const initialChatState = {
   chatType: null,
   chessModalShown: false,
   creatingNewDMChannel: false,
+  currentChannelName: '',
   customChannelNames: {},
   vocabActivities: [],
   vocabActivitiesLoadMoreButton: false,

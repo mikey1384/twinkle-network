@@ -12,7 +12,9 @@ export const initialHomeState = {
   fileUploadProgress: null,
   fileUploadComplete: false,
   loadMoreButton: false,
-  subFilter: 'all'
+  subFilter: 'all',
+  submittingSubject: false,
+  uploadingFile: false
 };
 
 HomeContextProvider.propTypes = {

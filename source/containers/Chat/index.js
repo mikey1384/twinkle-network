@@ -31,7 +31,13 @@ export default function Chat({ onFileUpload }) {
   } = useAppContext();
   const { userId, username } = useMyState();
   const {
-    state: { loaded, selectedChannelId, channelsObj, channelLoadMoreButton },
+    state: {
+      loaded,
+      selectedChannelId,
+      channelsObj,
+      channelLoadMoreButton,
+      currentChannelName
+    },
     actions: {
       onClearNumUnreads,
       onCreateNewChannel,
@@ -43,6 +49,7 @@ export default function Chat({ onFileUpload }) {
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onSetChessModalShown,
+      onSetCurrentChannelName,
       onUpdateChessMoveViewTimeStamp,
       onUpdateSelectedChannelId
     }
@@ -58,7 +65,6 @@ export default function Chat({ onFileUpload }) {
     false
   );
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [channelName, setChannelName] = useState('');
   const [partner, setPartner] = useState(null);
   const memberObj = useRef({});
   const mounted = useRef(true);
@@ -95,9 +101,10 @@ export default function Chat({ onFileUpload }) {
         )?.[0]
       : null;
     setPartner(otherMember);
-    setChannelName(
+    onSetCurrentChannelName(
       otherMember?.username || channelsObj[currentChannel?.id]?.channelName
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelsObj, currentChannel, userId]);
 
   useEffect(() => {
@@ -198,12 +205,12 @@ export default function Chat({ onFileUpload }) {
               showUserListModal={() => setUserListModalShown(true)}
             />
             <Body
-              channelName={channelName}
+              channelName={currentChannelName}
               chessOpponent={partner}
               currentChannel={currentChannel}
             />
             <RightMenu
-              channelName={channelName}
+              channelName={currentChannelName}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
             />

@@ -8,14 +8,12 @@ FileUploadStatusIndicator.propTypes = {
   uploadComplete: PropTypes.bool,
   uploadProgress: PropTypes.number,
   onFileUpload: PropTypes.func.isRequired,
-  onUploadComplete: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
 export default function FileUploadStatusIndicator({
   fileName,
   onFileUpload,
-  onUploadComplete,
   style,
   uploadComplete,
   uploadProgress
@@ -37,13 +35,6 @@ export default function FileUploadStatusIndicator({
     () => (uploadComplete ? 100 : Math.ceil(100 * uploadProgress)),
     [uploadComplete, uploadProgress]
   );
-
-  useEffect(() => {
-    if (uploadComplete) {
-      onUploadComplete();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uploadComplete]);
 
   return (
     <div style={{ marginTop: '1rem', ...style }}>
