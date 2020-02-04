@@ -6,20 +6,25 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Loading from 'components/Loading';
+import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
+import { useAppContext, useContentContext } from 'contexts';
 
 ImageEditModal.propTypes = {
   imageUri: PropTypes.string,
-  onConfirm: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired,
-  processing: PropTypes.bool
+  onHide: PropTypes.func.isRequired
 };
 
-export default function ImageEditModal({
-  onHide,
-  imageUri,
-  onConfirm,
-  processing
-}) {
+export default function ImageEditModal({ onHide, imageUri }) {
+  const {
+    requestHelpers: { uploadFile, uploadProfilePic }
+  } = useAppContext();
+  const {
+    actions: { onUploadProfilePic }
+  } = useContentContext();
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(null);
+  const [uploadComplete, setUploadComplete] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [crop, setCrop] = useState({
     unit: '%',
     width: 90,
@@ -75,6 +80,14 @@ export default function ImageEditModal({
               />
             )}
           </div>
+          {uploading && (
+            <FileUploadStatusIndicator
+              style={{ width: '20rem' }}
+              onFileUpload={handleFileUpload}
+              uploadComplete={uploadComplete}
+              uploadProgress={uploadProgress}
+            />
+          )}
         </main>
         <footer>
           <Button
@@ -86,7 +99,7 @@ export default function ImageEditModal({
           </Button>
           <Button
             color="blue"
-            onClick={() => onConfirm(croppedImageUrl)}
+            onClick={() => setUploading(true)}
             disabled={processing}
           >
             Submit
@@ -126,5 +139,28 @@ export default function ImageEditModal({
       crop.height
     );
     return canvas.toDataURL('image/jpeg');
+  }
+
+  async function handleFileUpload() {
+    setProcessing(true);
+    const { imageId, userId } = await uploadProfilePic();
+    const dataUri = croppedImageUrl.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(dataUri, 'base64');
+    const fileName = `${imageId}.jpg`;
+    const file = new File([buffer], fileName);
+    await uploadFile({
+      context: 'profilePic',
+      filePath: userId,
+      file,
+      onUploadProgress: handleUploadProgress
+    });
+    onUploadProfilePic({ userId, imageId });
+    setUploadComplete(true);
+    setProcessing(false);
+    onHide();
+  }
+
+  function handleUploadProgress({ loaded, total }) {
+    setUploadProgress(loaded / total);
   }
 }

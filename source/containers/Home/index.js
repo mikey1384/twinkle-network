@@ -11,8 +11,6 @@ import Stories from './Stories';
 import LocalContext from './Context';
 import { Route, Switch } from 'react-router-dom';
 import { container, Left, Center, Right } from './Styles';
-import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext } from 'contexts';
 
 Home.propTypes = {
   history: PropTypes.object.isRequired,
@@ -21,17 +19,9 @@ Home.propTypes = {
 };
 
 function Home({ history, location, onFileUpload }) {
-  const {
-    requestHelpers: { uploadProfilePic }
-  } = useAppContext();
-  const {
-    actions: { onUploadProfilePic }
-  } = useContentContext();
-  const { userId } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
-  const [processing, setProcessing] = useState(false);
 
   return (
     <ErrorBoundary>
@@ -80,15 +70,12 @@ function Home({ history, location, onFileUpload }) {
               onHide={() => {
                 setImageUri(null);
                 setImageEditModalShown(false);
-                setProcessing(false);
               }}
-              processing={processing}
-              onConfirm={uploadImage}
             />
           )}
           {alertModalShown && (
             <AlertModal
-              title="Image is too large (limit: 5mb)"
+              title="Image is too large (limit: 10mb)"
               content="Please select a smaller image"
               onHide={() => setAlertModalShown(false)}
             />
@@ -97,15 +84,6 @@ function Home({ history, location, onFileUpload }) {
       </LocalContext.Provider>
     </ErrorBoundary>
   );
-
-  async function uploadImage(image) {
-    setProcessing(true);
-    const data = await uploadProfilePic({ image });
-    onUploadProfilePic({ userId, ...data });
-    setImageUri(null);
-    setProcessing(false);
-    setImageEditModalShown(false);
-  }
 }
 
 export default memo(Home);

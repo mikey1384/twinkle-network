@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext, useContentContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 
 MobileMenu.propTypes = {
   location: PropTypes.object,
@@ -22,16 +22,12 @@ export default function MobileMenu({ location, history, onClose }) {
   const {
     user: {
       actions: { onLogout }
-    },
-    requestHelpers: { uploadProfilePic }
+    }
   } = useAppContext();
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const {
-    actions: { onUploadProfilePic }
-  } = useContentContext();
-  const { userId, username } = useMyState();
+  const { username } = useMyState();
   const [marginLeft, setMarginLeft] = useState('-100%');
 
   useEffect(() => {
@@ -48,10 +44,9 @@ export default function MobileMenu({ location, history, onClose }) {
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditStatus, setImageEditStatus] = useState({
     imageEditModalShown: false,
-    imageUri: null,
-    processing: false
+    imageUri: null
   });
-  const { imageEditModalShown, imageUri, processing } = imageEditStatus;
+  const { imageEditModalShown, imageUri } = imageEditStatus;
 
   return (
     <ErrorBoundary
@@ -132,17 +127,14 @@ export default function MobileMenu({ location, history, onClose }) {
           onHide={() =>
             setImageEditStatus({
               imageUri: null,
-              imageEditModalShown: false,
-              processing: false
+              imageEditModalShown: false
             })
           }
-          processing={processing}
-          onConfirm={uploadImage}
         />
       )}
       {alertModalShown && (
         <AlertModal
-          title="Image is too large (limit: 5mb)"
+          title="Image is too large (limit: 10mb)"
           content="Please select a smaller image"
           onHide={() => setAlertModalShown(false)}
         />
@@ -153,19 +145,5 @@ export default function MobileMenu({ location, history, onClose }) {
   function handleLogout() {
     onLogout();
     onResetChat();
-  }
-
-  async function uploadImage(image) {
-    setImageEditStatus({
-      ...imageEditStatus,
-      processing: true
-    });
-    const data = await uploadProfilePic({ image });
-    onUploadProfilePic({ userId, ...data });
-    setImageEditStatus({
-      imageUri: null,
-      processing: false,
-      imageEditModalShown: false
-    });
   }
 }

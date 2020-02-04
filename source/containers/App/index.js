@@ -305,7 +305,6 @@ function App({ location, history }) {
   async function handleFileUploadOnChat({
     channelId,
     content,
-    fileName,
     filePath,
     fileToUpload,
     recepientId,
@@ -315,7 +314,7 @@ function App({ location, history }) {
     onPostFileUploadStatus({
       channelId,
       content,
-      fileName,
+      fileName: fileToUpload.name,
       filePath,
       fileToUpload,
       recepientId
@@ -379,10 +378,9 @@ function App({ location, history }) {
     }
   }
 
-  async function handleFileUploadOnHome({ fileName, filePath, file }) {
+  async function handleFileUploadOnHome({ filePath, file }) {
     try {
       await uploadFile({
-        fileName,
         filePath,
         file,
         onUploadProgress: handleUploadProgress
@@ -395,7 +393,7 @@ function App({ location, history }) {
         secretAnswer: hasSecretAnswer ? secretAnswer : '',
         rewardLevel,
         filePath,
-        fileName,
+        fileName: file.name,
         fileSize: file.fileSize
       });
       if (data) {

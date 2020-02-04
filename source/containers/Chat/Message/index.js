@@ -43,7 +43,6 @@ Message.propTypes = {
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
-  onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -435,7 +434,6 @@ function Message({
     onFileUpload({
       channelId,
       content,
-      fileName: fileToUpload.name,
       filePath,
       fileToUpload,
       userId,

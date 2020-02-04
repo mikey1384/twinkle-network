@@ -524,12 +524,12 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
-    onUploadProfilePic({ userId, ...data }) {
+    onUploadProfilePic({ userId, imageId }) {
       return dispatch({
         type: 'EDIT_PROFILE_PICTURE',
         contentId: userId,
         contentType: 'user',
-        data
+        imageId
       });
     },
     onUploadReply({ contentId, contentType, ...data }) {

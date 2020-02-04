@@ -311,11 +311,11 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
-    async uploadProfilePic({ image }) {
+    async uploadProfilePic() {
       try {
         const { data } = await request.post(
           `${URL}/user/picture`,
-          { image },
+          null,
           auth()
         );
         return Promise.resolve(data);

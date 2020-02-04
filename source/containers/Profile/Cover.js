@@ -26,7 +26,7 @@ export default function Cover({
   selectedTheme
 }) {
   const {
-    requestHelpers: { checkIfUserOnline, uploadProfilePic }
+    requestHelpers: { checkIfUserOnline }
   } = useAppContext();
   const { userId } = useMyState();
   const {
@@ -40,13 +40,12 @@ export default function Cover({
     userType
   } = profile;
   const {
-    actions: { onSetOnline, onUploadProfilePic }
+    actions: { onSetOnline }
   } = useContentContext();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
-  const [processing, setProcessing] = useState(false);
   const FileInputRef = useRef(null);
 
   useEffect(() => {
@@ -235,15 +234,12 @@ export default function Cover({
           onHide={() => {
             setImageUri(null);
             setImageEditModalShown(false);
-            setProcessing(false);
           }}
-          processing={processing}
-          onConfirm={uploadImage}
         />
       )}
       {alertModalShown && (
         <AlertModal
-          title="Image is too large (limit: 5mb)"
+          title="Image is too large (limit: 10mb)"
           content="Please select a smaller image"
           onHide={() => setAlertModalShown(false)}
         />
@@ -274,14 +270,5 @@ export default function Cover({
 
     reader.readAsDataURL(file);
     event.target.value = null;
-  }
-
-  async function uploadImage(image) {
-    setProcessing(true);
-    const data = await uploadProfilePic({ image });
-    onUploadProfilePic({ userId, ...data });
-    setImageUri(null);
-    setProcessing(false);
-    setImageEditModalShown(false);
   }
 }

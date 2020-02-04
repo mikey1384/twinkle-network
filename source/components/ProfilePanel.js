@@ -39,8 +39,7 @@ function ProfilePanel({ expandable, profileId }) {
       loadDMChannel,
       loadComments,
       loadProfile,
-      uploadBio,
-      uploadProfilePic
+      uploadBio
     }
   } = useAppContext();
   const { isCreator, userId, username } = useMyState();
@@ -64,8 +63,7 @@ function ProfilePanel({ expandable, profileId }) {
       onSetPlaceholderHeight,
       onSetVisible,
       onUpdateStatusMsg,
-      onUpdateBio,
-      onUploadProfilePic
+      onUpdateBio
     }
   } = useContentContext();
   const profile = useContentState({
@@ -119,7 +117,6 @@ function ProfilePanel({ expandable, profileId }) {
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
   const [imageUri, setImageUri] = useState();
-  const [processing, setProcessing] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [mouseEnteredProfile, setMouseEnteredProfile] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
@@ -409,10 +406,7 @@ function ProfilePanel({ expandable, profileId }) {
                     onHide={() => {
                       setImageUri(undefined);
                       setImageEditModalShown(false);
-                      setProcessing(false);
                     }}
-                    processing={processing}
-                    onConfirm={uploadImage}
                   />
                 )}
               </div>
@@ -450,7 +444,7 @@ function ProfilePanel({ expandable, profileId }) {
           {!!twinkleXP && <RankBar profile={profile} />}
           {alertModalShown && (
             <AlertModal
-              title="Image is too large (limit: 5mb)"
+              title="Image is too large (limit: 10mb)"
               content="Please select a smaller image"
               onHide={() => setAlertModalShown(false)}
             />
@@ -560,15 +554,6 @@ function ProfilePanel({ expandable, profileId }) {
     });
     onUpdateBio(data);
     setBioEditModalShown(false);
-  }
-
-  async function uploadImage(image) {
-    setProcessing(true);
-    const data = await uploadProfilePic({ image });
-    onUploadProfilePic({ userId, ...data });
-    setImageUri(undefined);
-    setProcessing(false);
-    setImageEditModalShown(false);
   }
 }
 

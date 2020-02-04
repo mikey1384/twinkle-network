@@ -283,7 +283,6 @@ function SubjectInput() {
   function handleFileUpload() {
     filePathRef.current = uuidv1();
     onFileUpload({
-      fileName: attachment.file.name,
       filePath: filePathRef.current,
       file: attachment.file
     });
