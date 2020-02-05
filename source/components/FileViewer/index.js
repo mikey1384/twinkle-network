@@ -10,6 +10,7 @@ import { isMobile } from 'helpers';
 FileViewer.propTypes = {
   autoPlay: PropTypes.bool,
   contextType: PropTypes.string.isRequired,
+  isThumb: PropTypes.bool,
   filePath: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -21,6 +22,7 @@ FileViewer.propTypes = {
 export default function FileViewer({
   autoPlay,
   contextType,
+  isThumb,
   filePath,
   fileName,
   fileSize,
@@ -40,35 +42,49 @@ export default function FileViewer({
     <div
       style={{
         width: '100%',
+        padding:
+          !isThumb && !['image', 'video', 'audio'].includes(fileType)
+            ? '1rem'
+            : '',
         ...style
       }}
     >
       {fileType === 'image' ? (
         <ImagePreview
+          isThumb={isThumb}
           modalOverModal={modalOverModal}
           src={src}
           fileName={fileName}
         />
       ) : fileType === 'video' || fileType === 'audio' ? (
-        <div style={{ width: '100%' }}>
-          <div
-            style={{
-              width: '100%',
-              padding: contextType === 'feed' && '0 1rem 0 1rem'
-            }}
-          >
-            <a
-              style={{ fontWeight: 'bold' }}
-              href={src}
-              target="_blank"
-              rel="noopener noreferrer"
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column'
+          }}
+        >
+          {!isThumb && (
+            <div
+              style={{
+                width: '100%',
+                padding: contextType === 'feed' && '0 1rem 0 1rem'
+              }}
             >
-              {fileName}
-            </a>
-          </div>
+              <a
+                style={{ fontWeight: 'bold' }}
+                href={src}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {fileName}
+              </a>
+            </div>
+          )}
           <div
             style={{
-              marginTop: '1rem',
+              marginTop: isThumb ? 0 : '1rem',
               width: '100%',
               position: 'relative',
               paddingTop: '56.25%'
@@ -77,8 +93,8 @@ export default function FileViewer({
           >
             <ReactPlayer
               ref={PlayerRef}
-              playing={!mobile && autoPlay}
-              muted={!mobile && autoPlay && muted}
+              playing={autoPlay}
+              muted={autoPlay && muted}
               style={{
                 position: 'absolute',
                 width: '100%',
@@ -95,12 +111,13 @@ export default function FileViewer({
                   : '5rem'
               }
               url={src}
-              controls={mobile || !muted || !autoPlay}
+              controls={!muted || !autoPlay}
             />
           </div>
         </div>
       ) : (
         <FileInfo
+          isThumb={isThumb}
           fileName={fileName}
           fileType={fileType}
           fileSize={fileSize}
