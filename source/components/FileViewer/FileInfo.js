@@ -24,6 +24,7 @@ export default function FileInfo({
     <div
       style={{
         width: '100%',
+        height: '100%',
         background: !isThumb && Color.wellGray(),
         padding: !isThumb && '1rem',
         borderRadius
@@ -39,7 +40,9 @@ export default function FileInfo({
         style={{
           display: 'flex',
           width: '100%',
-          justifyContent: isThumb ? 'flex-end' : 'center'
+          justifyContent: isThumb ? 'flex-end' : 'center',
+          alignItems: 'center',
+          height: '100%'
         }}
       >
         <div
