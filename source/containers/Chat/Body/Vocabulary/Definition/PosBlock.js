@@ -69,7 +69,7 @@ export default function PosBlock({ pos, wordObj }) {
         ));
     }
     return wordObj[pos]
-      .filter(({ id }) => !wordObj.deletedDefIds.includes(id))
+      .filter(({ id }) => !deletedDefIds.includes(id))
       .map(({ id, definition }, index) => (
         <div key={id}>
           {index + 1}. {definition}
