@@ -93,7 +93,7 @@ export default function FileViewer({
           >
             <ReactPlayer
               ref={PlayerRef}
-              playing={(!mobile && autoPlay) || isThumb}
+              playing={!mobile && autoPlay && !isThumb}
               muted={(!mobile && autoPlay && muted) || isThumb}
               style={{
                 position: 'absolute',
