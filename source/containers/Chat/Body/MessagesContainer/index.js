@@ -481,7 +481,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
                 setTextAreaHeight(height > 46 ? height : 0);
               }
             }}
-            onPlusButtonClick={() => FileInputRef.current.click()}
+            onUploadButtonClick={() => FileInputRef.current.click()}
           />
         ) : (
           <div>

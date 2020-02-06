@@ -62,7 +62,7 @@ export default function RightMenu({
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${phoneMaxWidth}) {
-          width: 45vw;
+          width: ${chatType === 'vocabulary' ? '45vw' : '37vw'};
         }
       `}
     >

@@ -5,6 +5,7 @@ import { Color } from 'constants/css';
 import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
+import { isMobile } from 'helpers';
 
 UsernameText.propTypes = {
   className: PropTypes.string,
@@ -85,7 +86,7 @@ export default function UsernameText({
   );
 
   function onMouseEnter() {
-    if (user.username) setMenuShown(true);
+    if (user.username && !isMobile(navigator)) setMenuShown(true);
   }
 
   async function onLinkClick() {
