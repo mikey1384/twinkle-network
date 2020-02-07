@@ -161,6 +161,19 @@ export function capitalize(string = '') {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function containsTwinkleVideoUrl(string) {
+  const regex = /(^((http[s]?:\/\/(www\.)?|www\.)(twin-kle.com|twinkle.network)\/videos\/[0-9]+))/g;
+  return regex.test(string);
+}
+
+export function extractVideoIdFromTwinkleVideoUrl(string) {
+  const regex = /(^((http[s]?:\/\/(www\.)?|www\.)(twin-kle.com|twinkle.network)\/videos\/[0-9]+))/g;
+  if (!regex.test(string)) return null;
+  const urlArray = string.match(regex);
+  const videoId = urlArray?.[0].split('videos/')[1];
+  return videoId;
+}
+
 export function expandShortcut(string) {
   return string
     .replace(/(\(brb\))/gi, 'be right back')
@@ -213,6 +226,16 @@ export function fetchedVideoCodeFromURL(url) {
   return videoCode;
 }
 
+export function finalizeEmoji(string) {
+  let finalizedString = addAdvancedEmoji(
+    addEmoji(expandShortcut(string + ' '))
+  );
+  if (finalizedString[finalizedString.length - 1] === ' ') {
+    finalizedString = finalizedString.slice(0, -1);
+  }
+  return finalizedString;
+}
+
 export function getFileInfoFromFileName(fileName) {
   if (typeof fileName !== 'string') return null;
   const fileNameArray = fileName.split('.');
@@ -246,17 +269,6 @@ export function getFileInfoFromFileName(fileName) {
     }
     return 'other';
   }
-}
-
-export function limitBrs(string) {
-  return string.replace(
-    /(<br ?\/?>){11,}/gi,
-    '<br><br><br><br><br><br><br><br><br><br>'
-  );
-}
-
-export function finalizeEmoji(string) {
-  return addAdvancedEmoji(addEmoji(expandShortcut(string)));
 }
 
 export function hashify(string) {
@@ -299,6 +311,13 @@ export function isValidYoutubeChannelUrl(url = '') {
     url = 'www.' + url;
   }
   return regex.test(url) && typeof trim !== 'undefined';
+}
+
+export function limitBrs(string) {
+  return string.replace(
+    /(<br ?\/?>){11,}/gi,
+    '<br><br><br><br><br><br><br><br><br><br>'
+  );
 }
 
 export function processedQueryString(string) {

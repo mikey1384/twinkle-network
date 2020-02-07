@@ -4,7 +4,7 @@ import ReactPlayer from 'react-player';
 import ProgressBar from 'components/ProgressBar';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { rewardValue } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
@@ -355,39 +355,41 @@ function VideoPlayer({
         >
           Continue Watching...
         </div>
-      ) : (
-        (!userId || xpLoaded) &&
+      ) : (!userId || xpLoaded) &&
         !!rewardLevel &&
-        (!started || alreadyEarned) && (
-          <div
-            style={{
-              background: meterColor,
-              padding: '0.5rem',
-              color: '#fff',
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            {!alreadyEarned && (
-              <div>
-                {[...Array(rewardLevel)].map((elem, index) => (
-                  <Icon key={index} icon="star" />
-                ))}
-              </div>
-            )}
-            <div style={{ marginLeft: '0.7rem' }}>
-              {alreadyEarned
-                ? 'You have earned XP from this video'
-                : `Watch this video and earn ${addCommasToNumber(
-                    rewardLevel * xp
-                  )} XP`}
+        (!started || alreadyEarned) ? (
+        <div
+          className={css`
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              padding: 0.3rem;
+              font-size: 1rem;
+            }
+          `}
+          style={{
+            background: meterColor,
+            color: '#fff',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {!alreadyEarned && (
+            <div>
+              {[...Array(rewardLevel)].map((elem, index) => (
+                <Icon key={index} icon="star" />
+              ))}
             </div>
+          )}
+          <div style={{ marginLeft: '0.7rem' }}>
+            {alreadyEarned
+              ? 'You have earned XP from this video'
+              : `Watch and earn ${addCommasToNumber(rewardLevel * xp)} XP`}
           </div>
-        )
-      )}
+        </div>
+      ) : null}
       {!alreadyEarned && !!rewardLevel && userId && started && (
         <ProgressBar
           progress={progress}
