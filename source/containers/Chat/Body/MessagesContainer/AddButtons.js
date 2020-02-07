@@ -6,10 +6,15 @@ import { useMyState } from 'helpers/hooks';
 
 AddButtons.propTypes = {
   disabled: PropTypes.bool,
-  onUploadButtonClick: PropTypes.func.isRequired
+  onUploadButtonClick: PropTypes.func.isRequired,
+  onSelectVideoButtonClick: PropTypes.func.isRequired
 };
 
-export default function AddButtons({ disabled, onUploadButtonClick }) {
+export default function AddButtons({
+  disabled,
+  onUploadButtonClick,
+  onSelectVideoButtonClick
+}) {
   const { profileTheme } = useMyState();
   return (
     <div
@@ -31,6 +36,7 @@ export default function AddButtons({ disabled, onUploadButtonClick }) {
         skeuomorphic
         disabled={disabled}
         color={profileTheme}
+        onClick={onSelectVideoButtonClick}
         style={{ marginLeft: '1rem' }}
       >
         <Icon size="lg" icon="film" />

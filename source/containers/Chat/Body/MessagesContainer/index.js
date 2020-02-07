@@ -13,6 +13,7 @@ import Icon from 'components/Icon';
 import InviteUsersModal from '../../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import ChessModal from '../../Modals/ChessModal';
+import SelectVideoModal from '../../Modals/SelectVideoModal';
 import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -85,6 +86,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
+  const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',
@@ -482,6 +484,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
               }
             }}
             onUploadButtonClick={() => FileInputRef.current.click()}
+            onSelectVideoButtonClick={() => setSelectVideoModalShown(true)}
           />
         ) : (
           <div>
@@ -545,6 +548,15 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
           title="Leave Channel"
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
+        />
+      )}
+      {selectVideoModalShown && (
+        <SelectVideoModal
+          onHide={() => setSelectVideoModalShown(false)}
+          onSend={videoId => {
+            handleMessageSubmit(`https://www.twin-kle.com/videos/${videoId}`);
+            setSelectVideoModalShown(false);
+          }}
         />
       )}
       {selectNewOwnerModalShown && (

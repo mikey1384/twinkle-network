@@ -23,6 +23,7 @@ MessageInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
+  onSelectVideoButtonClick: PropTypes.func.isRequired,
   onUploadButtonClick: PropTypes.func.isRequired
 };
 
@@ -34,6 +35,7 @@ export default function MessageInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
+  onSelectVideoButtonClick,
   onUploadButtonClick
 }) {
   const { profileTheme } = useMyState();
@@ -136,6 +138,7 @@ export default function MessageInput({
         <AddButtons
           disabled={loading}
           onUploadButtonClick={onUploadButtonClick}
+          onSelectVideoButtonClick={onSelectVideoButtonClick}
         />
       </div>
     </div>
