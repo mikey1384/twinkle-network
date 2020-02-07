@@ -66,7 +66,7 @@ export default function TwinkleVideo({ style, videoId }) {
         <div
           style={{
             width: '100%',
-            marginTop: rewardLevel > 0 ? '-1.5rem' : '-3.5rem'
+            marginTop: rewardLevel > 0 ? '-2rem' : '-4rem'
           }}
         >
           <Link
