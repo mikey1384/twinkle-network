@@ -386,22 +386,6 @@ export function processedStringWithURL(string) {
     .replace(/>/g, '&gt')
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(
-      redSentenceRegex,
-      string =>
-        `<span style="color: red;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
-      redWordRegex,
-      string =>
-        `<span style="color: red;">${string.substring(
-          2,
-          string.length - 2
-        )}</span>`
-    )
-    .replace(
       blueSentenceRegex,
       string =>
         `<span style="color: blue;">${string.substring(
@@ -511,6 +495,22 @@ export function processedStringWithURL(string) {
         `<span style="color: gray;">${string.substring(
           3,
           string.length - 3
+        )}</span>`
+    )
+    .replace(
+      redSentenceRegex,
+      string =>
+        `<span style="color: red;">${string.substring(
+          2,
+          string.length - 2
+        )}</span>`
+    )
+    .replace(
+      redWordRegex,
+      string =>
+        `<span style="color: red;">${string.substring(
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
