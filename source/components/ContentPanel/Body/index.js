@@ -268,6 +268,7 @@ function Body({
             <FileViewer
               contextType="feed"
               autoPlay
+              isMuted={!autoExpand}
               fileName={fileName}
               filePath={filePath}
               fileSize={fileSize}

@@ -61,6 +61,7 @@ import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUpload } from '@fortawesome/pro-solid-svg-icons/faUpload';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
+import { faVolumeMute } from '@fortawesome/pro-solid-svg-icons/faVolumeMute';
 import App from 'containers/App';
 import { AppContextProvider } from 'contexts';
 library.add(
@@ -115,7 +116,8 @@ library.add(
   faUpload,
   faUser,
   faUserGraduate,
-  faUsers
+  faUsers,
+  faVolumeMute
 );
 
 ReactDOM.render(

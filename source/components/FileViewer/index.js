@@ -1,8 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
 import ReactPlayer from 'react-player';
+import Icon from 'components/Icon';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { isMobile } from 'helpers';
@@ -10,6 +11,7 @@ import { isMobile } from 'helpers';
 FileViewer.propTypes = {
   autoPlay: PropTypes.bool,
   contextType: PropTypes.string.isRequired,
+  isMuted: PropTypes.bool,
   isThumb: PropTypes.bool,
   filePath: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
@@ -22,6 +24,7 @@ FileViewer.propTypes = {
 export default function FileViewer({
   autoPlay,
   contextType,
+  isMuted = true,
   isThumb,
   filePath,
   fileName,
@@ -30,8 +33,8 @@ export default function FileViewer({
   style,
   videoHeight
 }) {
-  const mobile = useMemo(() => isMobile(navigator), []);
-  const [muted, setMuted] = useState(true);
+  const mobile = isMobile(navigator);
+  const [muted, setMuted] = useState(isMuted);
   const PlayerRef = useRef(null);
   const { fileType } = getFileInfoFromFileName(fileName);
   const src = `${cloudFrontURL}/attachments/${contextType}/${filePath}/${encodeURIComponent(
@@ -92,10 +95,12 @@ export default function FileViewer({
             onClick={handlePlayerClick}
           >
             <ReactPlayer
+              loop={!mobile && autoPlay && muted}
               ref={PlayerRef}
               playing={!mobile && autoPlay}
               muted={(!mobile && autoPlay && muted) || isThumb}
               style={{
+                cursor: muted ? 'pointer' : 'default',
                 position: 'absolute',
                 width: '100%',
                 height: '100%',
@@ -113,6 +118,25 @@ export default function FileViewer({
               url={src}
               controls={(!isThumb && mobile) || !muted || !autoPlay}
             />
+            {!isThumb && !mobile && autoPlay && muted && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '5rem',
+                  fontWeight: 'bold',
+                  background: '#fff',
+                  color: '#000',
+                  position: 'absolute',
+                  top: '0',
+                  fontSize: '2rem',
+                  padding: '1rem'
+                }}
+              >
+                <Icon size="lg" icon="volume-mute" />
+                <span style={{ marginLeft: '0.7rem' }}>TAP TO UNMUTE</span>
+              </div>
+            )}
           </div>
         </div>
       ) : (
