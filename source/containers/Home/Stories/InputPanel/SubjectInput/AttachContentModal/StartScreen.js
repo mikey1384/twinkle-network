@@ -19,7 +19,7 @@ StartScreen.propTypes = {
 };
 
 export default function StartScreen({ navigateTo, onHide }) {
-  const FILE_UPLOAD_XP_REQUIREMENT = 500000;
+  const FILE_UPLOAD_XP_REQUIREMENT = 100000;
   const {
     actions: { onSetSubjectAttachment }
   } = useInputContext();
@@ -170,7 +170,6 @@ export default function StartScreen({ navigateTo, onHide }) {
             const imageUrl = img.toDataURL('image/jpeg');
             const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
             const buffer = Buffer.from(dataUri, 'base64');
-            // eslint-disable-next-line no-undef
             const file = new File([buffer], fileObj.name);
             onSetSubjectAttachment({
               file,

@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'; // for async await
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Chat from 'containers/Chat';
 import ContentPage from 'containers/ContentPage';
@@ -18,16 +18,18 @@ import Profile from 'containers/Profile';
 import Verify from 'containers/Verify';
 import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { hot } from 'react-hot-loader';
 import { socket } from 'constants/io';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
+import { finalizeEmoji } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useContentContext,
   useHomeContext,
+  useInputContext,
   useViewContext,
   useNotiContext,
   useChatContext
@@ -43,11 +45,26 @@ function App({ location, history }) {
     user: {
       actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
     },
-    requestHelpers: { auth, initSession, uploadFile, uploadFileOnChat }
+    requestHelpers: {
+      auth,
+      initSession,
+      uploadFile,
+      uploadContent,
+      uploadFileOnChat
+    }
   } = useAppContext();
-  const { signinModalShown, username } = useMyState();
   const {
+    authLevel,
+    profilePicId,
+    signinModalShown,
+    userId,
+    username
+  } = useMyState();
+  const {
+    state: { channelsObj, currentChannelName, replyTarget, selectedChannelId },
     actions: {
+      onDisplayAttachedFile,
+      onSetReplyTarget,
       onPostFileUploadStatus,
       onPostUploadComplete,
       onResetChat,
@@ -59,7 +76,14 @@ function App({ location, history }) {
     actions: { onInitContent }
   } = useContentContext();
   const {
-    actions: { onSetFileUploadComplete, onUpdateFileUploadProgress }
+    actions: {
+      onLoadNewFeeds,
+      onSetFileUploadComplete,
+      onSetSubmittingSubject,
+      onUpdateFileUploadProgress,
+      onClearFileUploadProgress,
+      onSetUploadingFile
+    }
   } = useHomeContext();
   const {
     state: { updateDetail, updateNoticeShown }
@@ -68,7 +92,20 @@ function App({ location, history }) {
     state: { pageVisible },
     actions: { onChangePageVisibility }
   } = useViewContext();
+  const {
+    state: { subject },
+    actions: { onResetSubjectInput }
+  } = useInputContext();
+  const {
+    attachment,
+    details: { title, description, secretAnswer, rewardLevel },
+    hasSecretAnswer
+  } = subject;
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
+  const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
+    channelsObj,
+    selectedChannelId
+  ]);
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
   const authRef = useRef(null);
@@ -268,7 +305,6 @@ function App({ location, history }) {
   async function handleFileUploadOnChat({
     channelId,
     content,
-    fileName,
     filePath,
     fileToUpload,
     recepientId,
@@ -278,7 +314,7 @@ function App({ location, history }) {
     onPostFileUploadStatus({
       channelId,
       content,
-      fileName,
+      fileName: fileToUpload.name,
       filePath,
       fileToUpload,
       recepientId
@@ -293,17 +329,46 @@ function App({ location, history }) {
       targetMessageId,
       subjectId
     });
-    if (members) {
-      onSendFirstDirectMessage({ members, message });
-      socket.emit('join_chat_channel', message.channelId);
-      socket.emit('send_bi_chat_invitation', recepientId, message);
-    }
     onPostUploadComplete({
       path: filePath,
       channelId,
       messageId,
       result: !!messageId
     });
+    const params = {
+      content,
+      fileName: fileToUpload.name,
+      filePath,
+      id: messageId,
+      uploaderAuthLevel: authLevel,
+      channelId,
+      userId,
+      username,
+      profilePicId,
+      targetMessage: replyTarget
+    };
+    onDisplayAttachedFile(params);
+    if (channelId) {
+      socket.emit(
+        'new_chat_message',
+        { ...params, isNewMessage: true },
+        {
+          ...currentChannel,
+          numUnreads: 1,
+          lastMessage: {
+            fileName: params.fileName,
+            sender: { id: userId, username }
+          },
+          channelName: currentChannelName
+        }
+      );
+    }
+    onSetReplyTarget(null);
+    if (members) {
+      onSendFirstDirectMessage({ members, message });
+      socket.emit('join_chat_channel', message.channelId);
+      socket.emit('send_bi_chat_invitation', recepientId, message);
+    }
     function handleUploadProgress({ loaded, total }) {
       onUpdateChatUploadProgress({
         channelId,
@@ -313,14 +378,34 @@ function App({ location, history }) {
     }
   }
 
-  async function handleFileUploadOnHome({ fileName, filePath, file }) {
-    await uploadFile({
-      fileName,
-      filePath,
-      file,
-      onUploadProgress: handleUploadProgress
-    });
-    onSetFileUploadComplete();
+  async function handleFileUploadOnHome({ filePath, file }) {
+    try {
+      await uploadFile({
+        filePath,
+        file,
+        onUploadProgress: handleUploadProgress
+      });
+      onSetFileUploadComplete();
+      const data = await uploadContent({
+        attachment,
+        title,
+        description: finalizeEmoji(description),
+        secretAnswer: hasSecretAnswer ? secretAnswer : '',
+        rewardLevel,
+        filePath,
+        fileName: file.name,
+        fileSize: file.fileSize
+      });
+      if (data) {
+        onLoadNewFeeds([data]);
+        onResetSubjectInput();
+      }
+      onSetSubmittingSubject(false);
+      onClearFileUploadProgress();
+      onSetUploadingFile(false);
+    } catch (error) {
+      console.error(error);
+    }
     function handleUploadProgress({ loaded, total }) {
       onUpdateFileUploadProgress(loaded / total);
     }

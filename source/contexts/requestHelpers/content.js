@@ -656,9 +656,13 @@ export default function contentRequestHelpers({ auth, handleError }) {
         handleError(error);
       }
     },
-    async uploadFile({ fileName, filePath, file, onUploadProgress }) {
+    async uploadFile({ context = 'feed', filePath, file, onUploadProgress }) {
       const { data: url } = await request.get(
-        `${URL}/content/sign-s3?fileName=${fileName}&path=${filePath}&context=feed`,
+        `${URL}/content/sign-s3?fileSize=${
+          file.size
+        }&fileName=${encodeURIComponent(
+          file.name
+        )}&path=${filePath}&context=${context}`,
         auth()
       );
       await request.put(url.signedRequest, file, {

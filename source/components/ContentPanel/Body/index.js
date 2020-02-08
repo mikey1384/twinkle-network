@@ -268,14 +268,15 @@ function Body({
             <FileViewer
               contextType="feed"
               autoPlay
+              isMuted={!autoExpand}
               fileName={fileName}
               filePath={filePath}
               fileSize={fileSize}
-              videoHeight="25vw"
+              videoHeight="100%"
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                padding: '0 1rem 0 1rem',
+                marginTop: '1rem',
                 marginBottom: rewardLevel ? '1rem' : 0
               }}
             />

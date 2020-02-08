@@ -23,7 +23,7 @@ export default function Channels({
     <>
       {channelIds
         .map(channelId => channelsObj[channelId])
-        .filter(channel => !channel.isHidden)
+        .filter(channel => !channel?.isHidden)
         .map(
           ({
             lastMessage,

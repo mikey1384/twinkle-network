@@ -60,6 +60,18 @@ export default function HomeActions(dispatch) {
         type: 'SET_FILE_UPLOAD_COMPLETE'
       });
     },
+    onSetSubmittingSubject(submitting) {
+      return dispatch({
+        type: 'SET_SUBMITTING_SUBJECT',
+        submitting
+      });
+    },
+    onSetUploadingFile(uploading) {
+      return dispatch({
+        type: 'SET_UPLOADING_FILE',
+        uploading
+      });
+    },
     onUpdateFileUploadProgress(progress) {
       return dispatch({
         type: 'UPDATE_FILE_UPLOAD_PROGRESS',

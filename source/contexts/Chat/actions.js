@@ -347,6 +347,12 @@ export default function ChatActions(dispatch) {
         creating
       });
     },
+    onSetCurrentChannelName(channelName) {
+      return dispatch({
+        type: 'SET_CURRENT_CHANNEL_NAME',
+        channelName
+      });
+    },
     onSetLoadingVocabulary(loading) {
       return dispatch({
         type: 'SET_LOADING_VOCABULARY',

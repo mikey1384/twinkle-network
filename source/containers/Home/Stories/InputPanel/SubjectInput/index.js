@@ -31,8 +31,13 @@ function SubjectInput() {
   } = useAppContext();
   const { canEditRewardLevel, profileTheme } = useMyState();
   const {
-    state: { fileUploadComplete, fileUploadProgress },
-    actions: { onClearFileUploadProgress, onLoadNewFeeds }
+    state: {
+      fileUploadComplete,
+      fileUploadProgress,
+      submittingSubject,
+      uploadingFile
+    },
+    actions: { onLoadNewFeeds, onSetSubmittingSubject, onSetUploadingFile }
   } = useHomeContext();
   const {
     state: { subject },
@@ -54,8 +59,6 @@ function SubjectInput() {
     hasSecretAnswer
   } = subject;
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [uploadingFile, setUploadingFile] = useState(false);
   const titleExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
@@ -246,7 +249,7 @@ function SubjectInput() {
                   filled
                   color="green"
                   type="submit"
-                  disabled={submitting || buttonDisabled}
+                  disabled={submittingSubject || buttonDisabled}
                   onClick={handleSubmit}
                 >
                   Post!
@@ -261,7 +264,6 @@ function SubjectInput() {
           style={{ fontSize: '1.7rem', fontWeight: 'bold', marginTop: 0 }}
           fileName={attachment?.file?.name}
           onFileUpload={handleFileUpload}
-          onUploadComplete={handleFileUploadComplete}
           uploadComplete={fileUploadComplete}
           uploadProgress={fileUploadProgress}
         />
@@ -281,10 +283,10 @@ function SubjectInput() {
   function handleFileUpload() {
     filePathRef.current = uuidv1();
     onFileUpload({
-      fileName: attachment.file.name,
       filePath: filePathRef.current,
       file: attachment.file
     });
+    filePathRef.current = null;
   }
 
   function handleInputChange(text) {
@@ -304,41 +306,27 @@ function SubjectInput() {
     ) {
       return;
     }
-    setSubmitting(true);
+    onSetSubmittingSubject(true);
     if (attachment?.contentType === 'file') {
-      return setUploadingFile(true);
+      return onSetUploadingFile(true);
     }
     handleUploadSubject();
   }
 
-  async function handleFileUploadComplete() {
-    await handleUploadSubject({
-      filePath: filePathRef.current,
-      fileName: attachment.file.name,
-      fileSize: attachment.file.size
-    });
-    filePathRef.current = null;
-    onClearFileUploadProgress();
-    setUploadingFile(false);
-  }
-
-  async function handleUploadSubject(file = {}) {
+  async function handleUploadSubject() {
     try {
       const data = await uploadContent({
         attachment,
         title,
         description: finalizeEmoji(description),
         secretAnswer: hasSecretAnswer ? secretAnswer : '',
-        rewardLevel,
-        filePath: file.filePath,
-        fileName: file.fileName,
-        fileSize: file.fileSize
+        rewardLevel
       });
       if (data) {
         onLoadNewFeeds([data]);
         onResetSubjectInput();
       }
-      setSubmitting(false);
+      onSetSubmittingSubject(false);
       return Promise.resolve();
     } catch (error) {
       console.error(error);

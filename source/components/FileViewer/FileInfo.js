@@ -9,15 +9,24 @@ FileInfo.propTypes = {
   fileName: PropTypes.string.isRequired,
   fileType: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isThumb: PropTypes.bool,
   src: PropTypes.string.isRequired
 };
 
-export default function FileInfo({ fileName, fileType, fileSize, src }) {
+export default function FileInfo({
+  fileName,
+  fileType,
+  fileSize,
+  isThumb,
+  src
+}) {
   return (
     <div
       style={{
-        background: Color.wellGray(),
-        padding: '1rem',
+        width: '100%',
+        height: '100%',
+        background: !isThumb && Color.wellGray(),
+        padding: !isThumb && '1rem',
         borderRadius
       }}
       className={css`
@@ -27,15 +36,27 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
         }
       `}
     >
-      <div style={{ display: 'flex', width: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: isThumb ? 'flex-end' : 'center',
+          alignItems: 'center',
+          height: '100%'
+        }}
+      >
         <div
-          className={css`
-            color: ${Color.black()};
-            cursor: pointer;
-            &:hover {
-              color: #000;
-            }
-          `}
+          className={
+            isThumb
+              ? ''
+              : css`
+                  color: ${Color.black()};
+                  cursor: pointer;
+                  &:hover {
+                    color: #000;
+                  }
+                `
+          }
           onClick={() => window.open(src)}
         >
           <Icon
@@ -48,71 +69,73 @@ export default function FileInfo({ fileName, fileType, fileSize, src }) {
             icon={fileType === 'other' ? 'file' : `file-${fileType}`}
           />
         </div>
-        <div
-          style={{
-            width: '100%',
-            marginLeft: '1rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between'
-          }}
-        >
+        {!isThumb && (
           <div
             style={{
-              displahy: 'flex',
+              width: '100%',
+              marginLeft: '1rem',
+              display: 'flex',
               flexDirection: 'column',
-              width: '100%'
+              justifyContent: 'space-between'
             }}
           >
-            <div style={{ width: '100%' }}>
-              <a
-                style={{ fontWeight: 'bold' }}
+            <div
+              style={{
+                displahy: 'flex',
+                flexDirection: 'column',
+                width: '100%'
+              }}
+            >
+              <div style={{ width: '100%' }}>
+                <a
+                  style={{ fontWeight: 'bold' }}
+                  className={css`
+                    @media (max-width: ${mobileMaxWidth}) {
+                      font-size: 1.5rem;
+                    }
+                  `}
+                  href={src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {fileName}
+                </a>
+              </div>
+              <div
                 className={css`
+                  font-size: 1.2rem;
                   @media (max-width: ${mobileMaxWidth}) {
-                    font-size: 1.5rem;
+                    font-size: 1rem;
                   }
                 `}
-                href={src}
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                {fileName}
-              </a>
+                {renderFileSize(fileSize)}
+              </div>
             </div>
-            <div
+            <p
+              style={{
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end'
+              }}
               className={css`
-                font-size: 1.2rem;
+                color: ${Color.black()};
+                &:hover {
+                  color: #000;
+                }
+                line-height: 1;
                 @media (max-width: ${mobileMaxWidth}) {
-                  font-size: 1rem;
+                  font-size: 1.3rem;
                 }
               `}
+              onClick={() => window.open(src)}
             >
-              {renderFileSize(fileSize)}
-            </div>
+              Download
+            </p>
           </div>
-          <p
-            style={{
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'flex-end'
-            }}
-            className={css`
-              color: ${Color.black()};
-              &:hover {
-                color: #000;
-              }
-              line-height: 1;
-              @media (max-width: ${mobileMaxWidth}) {
-                font-size: 1.3rem;
-              }
-            `}
-            onClick={() => window.open(src)}
-          >
-            Download
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );

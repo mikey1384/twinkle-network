@@ -69,9 +69,13 @@ import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faUpload } from '@fortawesome/pro-solid-svg-icons/faUpload';
 import { faUserGraduate } from '@fortawesome/pro-solid-svg-icons/faUserGraduate';
 import { faUsers } from '@fortawesome/pro-solid-svg-icons/faUsers';
+<<<<<<< HEAD
 import { faUsersClass } from '@fortawesome/pro-solid-svg-icons/faUsersClass';
 import { faUserTie } from '@fortawesome/pro-solid-svg-icons/faUserTie';
 import { faWineBottle } from '@fortawesome/pro-solid-svg-icons/faWineBottle';
+=======
+import { faVolumeMute } from '@fortawesome/pro-solid-svg-icons/faVolumeMute';
+>>>>>>> 969cda0d26ab81c3fe6d302814f17a87ec260eaf
 import App from 'containers/App';
 import { AppContextProvider } from 'contexts';
 library.add(
@@ -135,9 +139,13 @@ library.add(
   faUser,
   faUserGraduate,
   faUsers,
+<<<<<<< HEAD
   faUsersClass,
   faUserTie,
   faWineBottle
+=======
+  faVolumeMute
+>>>>>>> 969cda0d26ab81c3fe6d302814f17a87ec260eaf
 );
 
 ReactDOM.render(

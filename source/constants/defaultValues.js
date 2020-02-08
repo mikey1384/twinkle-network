@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.1.77';
+export const clientVersion = '1.1.84';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -64,7 +64,7 @@ export const rewardHash = {
 };
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
-export const MAX_PROFILE_PIC_SIZE = 5000;
+export const MAX_PROFILE_PIC_SIZE = 10000;
 
 export const returnMaxStars = ({ rewardLevel }) => {
   let maxStars = 5;

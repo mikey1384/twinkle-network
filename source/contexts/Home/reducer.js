@@ -65,6 +65,16 @@ export default function HomeReducer(state, action) {
         ...state,
         fileUploadComplete: true
       };
+    case 'SET_SUBMITTING_SUBJECT':
+      return {
+        ...state,
+        submittingSubject: action.submitting
+      };
+    case 'SET_UPLOADING_FILE':
+      return {
+        ...state,
+        uploadingFile: action.uploading
+      };
     case 'UPDATE_FILE_UPLOAD_PROGRESS':
       return {
         ...state,

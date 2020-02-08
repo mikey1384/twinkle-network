@@ -4,7 +4,7 @@ import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 
 MemberListItem.propTypes = {
   onlineMembers: PropTypes.array,
@@ -37,7 +37,14 @@ export default function MemberListItem({
         }}
       >
         <ProfilePic
-          style={{ height: '4rem', width: '4rem' }}
+          className={css`
+            height: 4rem;
+            width: 4rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              height: 3.5rem;
+              width: 3.5rem;
+            }
+          `}
           userId={member.id}
           profilePicId={member.profilePicId}
           online={onlineMembers.map(member => member.id).includes(member.id)}

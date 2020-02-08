@@ -6,6 +6,7 @@ import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
 import Loading from 'components/Loading';
+import FileViewer from 'components/FileViewer';
 import { useHistory } from 'react-router-dom';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -35,6 +36,9 @@ function ContentListItem({
   const {
     content,
     description,
+    fileName,
+    filePath,
+    fileSize,
     loaded,
     rewardLevel,
     rootObj,
@@ -272,6 +276,22 @@ function ContentListItem({
                   <Embedly imageOnly noLink contentId={rootObj?.id} />
                 )}
               </div>
+            )}
+            {filePath && (
+              <FileViewer
+                contextType="feed"
+                autoPlay
+                fileName={fileName}
+                filePath={filePath}
+                fileSize={fileSize}
+                videoHeight="100%"
+                isThumb
+                style={{
+                  display: 'flex',
+                  width: '15rem',
+                  maxHeight: '10rem'
+                }}
+              />
             )}
           </div>
           {contentType === 'subject' && secretAnswer && (

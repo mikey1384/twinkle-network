@@ -48,16 +48,16 @@ export default function StatusTag({ large, status }) {
         left: '67%',
         background: '#fff',
         position: 'absolute',
-        border: '3px solid #fff',
-        borderRadius: '50%'
+        border: '2px solid #fff',
+        borderRadius: '47%'
       }}
     >
       <div
         style={{
           background: backgroundColor[status],
           padding: '0.3rem',
-          width: '1.2rem',
-          height: '1.2rem',
+          width: '1rem',
+          height: '1rem',
           textAlign: 'center',
           borderRadius: '50%'
         }}

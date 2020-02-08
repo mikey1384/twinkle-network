@@ -6,12 +6,16 @@ import LongText from 'components/Texts/LongText';
 import ReactPlayer from 'react-player';
 import Icon from 'components/Icon';
 import URL from 'constants/URL';
+import TwinkleVideo from './TwinkleVideo';
 import { css } from 'emotion';
-import { getFileInfoFromFileName } from 'helpers/stringHelpers';
+import {
+  getFileInfoFromFileName,
+  isValidYoutubeUrl,
+  extractVideoIdFromTwinkleVideoUrl
+} from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
-import { isValidYoutubeUrl } from '../helpers/stringHelpers';
 
 const API_URL = `${URL}/content`;
 
@@ -74,6 +78,11 @@ function Embedly({
 
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [twinkleVideoId, setTwinkleVideoId] = useState(false);
+  const { notFound } = useContentState({
+    contentId: Number(twinkleVideoId),
+    contentType: 'video'
+  });
   const isYouTube = useMemo(() => {
     return contentType === 'chat' && isValidYoutubeUrl(url);
   }, [contentType, url]);
@@ -96,6 +105,10 @@ function Embedly({
 
   useEffect(() => {
     mounted.current = true;
+    const extractedVideoId = extractVideoIdFromTwinkleVideoUrl(url);
+    if (extractedVideoId && contentType === 'chat') {
+      return setTwinkleVideoId(extractedVideoId);
+    }
     if (
       !thumbUrl &&
       url &&
@@ -231,7 +244,7 @@ function Embedly({
 
   return (
     <div style={{ position: 'relative', height: '100%', ...style }}>
-      {contentType === 'chat' && userCanEditThis && (
+      {contentType === 'chat' && userCanEditThis && !notFound && (
         <Icon
           style={{
             position: 'absolute',
@@ -240,7 +253,7 @@ function Embedly({
           }}
           onClick={() => onHideAttachment()}
           className={css`
-            right: ${isYouTube ? '1rem' : 'CALC(50% - 1rem)'};
+            right: ${isYouTube || twinkleVideoId ? '1rem' : 'CALC(50% - 1rem)'};
             color: ${Color.darkGray()};
             font-size: 2rem;
             &:hover {
@@ -291,6 +304,11 @@ function Embedly({
         >
           {noLink ? (
             <div className={contentCss}>{InnerContent}</div>
+          ) : twinkleVideoId ? (
+            <TwinkleVideo
+              style={{ width: '50vw', height: 'CALC(30vw + 3rem)' }}
+              videoId={Number(twinkleVideoId)}
+            />
           ) : isYouTube ? (
             <ReactPlayer width="50vw" height="30vw" url={url} controls />
           ) : (

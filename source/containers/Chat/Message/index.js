@@ -43,7 +43,6 @@ Message.propTypes = {
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
-  onSendFileMessage: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -51,7 +50,6 @@ Message.propTypes = {
 function Message({
   channelId,
   channelName,
-  checkScrollIsAtTheBottom,
   chessCountdownNumber,
   chessOpponent,
   currentChannel,
@@ -91,7 +89,6 @@ function Message({
   onChessSpoilerClick,
   onReceiveNewMessage,
   onReplyClick,
-  onSendFileMessage,
   recepientId,
   setScrollToBottom,
   showSubjectMsgsModal
@@ -123,7 +120,6 @@ function Message({
   const {
     state: { filesBeingUploaded, reconnecting, replyTarget },
     actions: {
-      onDisplayAttachedFile,
       onEditMessage,
       onSaveMessage,
       onSetReplyTarget,
@@ -353,7 +349,6 @@ function Message({
                 key={channelId}
                 fileName={fileToUpload.name}
                 onFileUpload={handleFileUpload}
-                onUploadComplete={handleUploadComplete}
                 uploadComplete={!!uploadStatus.uploadComplete}
                 uploadProgress={uploadStatus.uploadProgress}
               />
@@ -439,7 +434,6 @@ function Message({
     onFileUpload({
       channelId,
       content,
-      fileName: fileToUpload.name,
       filePath,
       fileToUpload,
       userId,
@@ -458,26 +452,6 @@ function Message({
     } catch (error) {
       console.error(error);
     }
-  }
-
-  function handleUploadComplete() {
-    const params = {
-      content,
-      fileName: fileToUpload.name,
-      filePath,
-      id: messageId,
-      uploaderAuthLevel: authLevel,
-      channelId,
-      userId,
-      username,
-      profilePicId,
-      scrollAtBottom: checkScrollIsAtTheBottom()
-    };
-    onDisplayAttachedFile(params);
-    if (channelId) {
-      onSendFileMessage({ ...params, targetMessage: replyTarget });
-    }
-    onSetReplyTarget(null);
   }
 }
 

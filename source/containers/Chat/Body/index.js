@@ -28,7 +28,7 @@ function Body({ channelName, chessOpponent, currentChannel }) {
         position: relative;
         background: #fff;
         @media (max-width: ${phoneMaxWidth}) {
-          width: 77vw;
+          width: ${chatType === 'vocabulary' ? '77vw' : '85vw'};
         }
       `}
     >

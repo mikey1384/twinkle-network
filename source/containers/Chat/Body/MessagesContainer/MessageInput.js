@@ -13,6 +13,7 @@ import {
 import { useMyState } from 'helpers/hooks';
 import { useChatContext, useInputContext } from 'contexts';
 import TargetMessagePreview from './TargetMessagePreview';
+import AddButtons from './AddButtons';
 
 MessageInput.propTypes = {
   currentChannelId: PropTypes.number,
@@ -22,7 +23,8 @@ MessageInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
-  onPlusButtonClick: PropTypes.func.isRequired
+  onSelectVideoButtonClick: PropTypes.func.isRequired,
+  onUploadButtonClick: PropTypes.func.isRequired
 };
 
 export default function MessageInput({
@@ -33,7 +35,8 @@ export default function MessageInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
-  onPlusButtonClick
+  onSelectVideoButtonClick,
+  onUploadButtonClick
 }) {
   const { profileTheme } = useMyState();
   const {
@@ -88,7 +91,9 @@ export default function MessageInput({
               color={profileTheme}
             >
               <Icon size="lg" icon={['fas', 'chess']} />
-              <span style={{ marginLeft: '0.7rem' }}>Chess</span>
+              <span className="desktop" style={{ marginLeft: '0.7rem' }}>
+                Chess
+              </span>
             </Button>
           </div>
         )}
@@ -130,21 +135,11 @@ export default function MessageInput({
             </Button>
           </div>
         )}
-        <div
-          style={{
-            margin: '0.2rem 0 0.2rem 0',
-            height: '100%'
-          }}
-        >
-          <Button
-            disabled={loading}
-            skeuomorphic
-            onClick={onPlusButtonClick}
-            color={profileTheme}
-          >
-            <Icon size="lg" icon="plus" />
-          </Button>
-        </div>
+        <AddButtons
+          disabled={loading}
+          onUploadButtonClick={onUploadButtonClick}
+          onSelectVideoButtonClick={onSelectVideoButtonClick}
+        />
       </div>
     </div>
   );
