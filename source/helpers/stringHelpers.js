@@ -352,8 +352,8 @@ export function processedStringWithURL(string) {
   const blueSentenceRegex = /((b\|[^\*\s]){1}([^\*\n])+([^\*\s]\|b){1})/gi;
   const greenWordRegex = /(g\|[^\s]+\|g)/gi;
   const greenSentenceRegex = /((g\|[^\*\s]){1}([^\*\n])+([^\*\s]\|g){1})/gi;
-  const lightGreenWordRegex = /(lg\|[^\s]+\|gl)/gi;
-  const lightGreenSentenceRegex = /((lg\|[^\*\s]){1}([^\*\n])+([^\*\s]\|lg){1})/gi;
+  const limeWordRegex = /(l\|[^\s]+\|l)/gi;
+  const limeSentenceRegex = /((l\|[^\*\s]){1}([^\*\n])+([^\*\s]\|l){1})/gi;
   const orangeWordRegex = /(o\|[^\s]+\|o)/gi;
   const orangeSentenceRegex = /((o\|[^\*\s]){1}([^\*\n])+([^\*\s]\|o){1})/gi;
   const pinkWordRegex = /(p\|[^\s]+\|p)/gi;
@@ -362,10 +362,10 @@ export function processedStringWithURL(string) {
   const purpleSentenceRegex = /((pu\|[^\*\s]){1}([^\*\n])+([^\*\s]\|pu){1})/gi;
   const grayWordRegex = /(gr\|[^\s]+\|gr)/gi;
   const graySentenceRegex = /((gr\|[^\*\s]){1}([^\*\n])+([^\*\s]\|gr){1})/gi;
-  const bigWordRegex = /(big\|[^\s]+\|big)/gi;
-  const bigSentenceRegex = /((big\|[^\*\s]){1}([^\*\n])+([^\*\s]\|big){1})/gi;
-  const tinyWordRegex = /(tiny\|[^\s]+\|tiny)/gi;
-  const tinySentenceRegex = /((tiny\|[^\*\s]){1}([^\*\n])+([^\*\s]\|tiny){1})/gi;
+  const bigWordRegex = /(b\[[^\s]+\]b)/gi;
+  const bigSentenceRegex = /((b\[[^\*\s]){1}([^\*\n])+([^\*\s]\]b){1})/gi;
+  const smallWordRegex = /(s\[[^\s]+\]s)/gi;
+  const smallSentenceRegex = /((s\[[^\*\s]){1}([^\*\n])+([^\*\s]\]s){1})/gi;
   const boldItalicWordRegex = /(\*\*\*[^\s]+\*\*\*)/gi;
   const boldItalicSentenceRegex = /((\*\*\*[^\*\s]){1}([^\*\n])+([^\*\s]\*\*\*){1})/gi;
   const boldWordRegex = /(\*[^\s*]+\*)/gi;
@@ -430,19 +430,19 @@ export function processedStringWithURL(string) {
         )}</span>`
     )
     .replace(
-      lightGreenSentenceRegex,
+      limeSentenceRegex,
       string =>
         `<span style="color: lawngreen;">${string.substring(
-          3,
-          string.length - 3
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
-      lightGreenWordRegex,
+      limeWordRegex,
       string =>
         `<span style="color: lawngreen;">${string.substring(
-          3,
-          string.length - 3
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
@@ -512,33 +512,33 @@ export function processedStringWithURL(string) {
     .replace(
       bigSentenceRegex,
       string =>
-        `<span style="font-size: 2rem;">${string.substring(
-          4,
-          string.length - 4
+        `<span style="font-size: 2.5rem;">${string.substring(
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
       bigWordRegex,
       string =>
-        `<span style="font-size: 2rem;">${string.substring(
-          4,
-          string.length - 4
+        `<span style="font-size: 2.5rem;">${string.substring(
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
-      tinySentenceRegex,
+      smallSentenceRegex,
       string =>
         `<span style="font-size: 1rem;">${string.substring(
-          5,
-          string.length - 5
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
-      tinyWordRegex,
+      smallWordRegex,
       string =>
         `<span style="font-size: 1rem;">${string.substring(
-          5,
-          string.length - 5
+          2,
+          string.length - 2
         )}</span>`
     )
     .replace(
