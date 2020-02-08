@@ -362,10 +362,14 @@ export function processedStringWithURL(string) {
   const purpleSentenceRegex = /((pu\|[^\*\s]){1}([^\*\n])+([^\*\s]\|pu){1})/gi;
   const grayWordRegex = /(gr\|[^\s]+\|gr)/gi;
   const graySentenceRegex = /((gr\|[^\*\s]){1}([^\*\n])+([^\*\s]\|gr){1})/gi;
+  const hugeWordRegex = /(h\[[^\s]+\]h)/gi;
+  const hugeSentenceRegex = /((h\[[^\*\s]){1}([^\*\n])+([^\*\s]\]h){1})/gi;
   const bigWordRegex = /(b\[[^\s]+\]b)/gi;
   const bigSentenceRegex = /((b\[[^\*\s]){1}([^\*\n])+([^\*\s]\]b){1})/gi;
   const smallWordRegex = /(s\[[^\s]+\]s)/gi;
   const smallSentenceRegex = /((s\[[^\*\s]){1}([^\*\n])+([^\*\s]\]s){1})/gi;
+  const tinyWordRegex = /(t\[[^\s]+\]t)/gi;
+  const tinySentenceRegex = /((t\[[^\*\s]){1}([^\*\n])+([^\*\s]\]t){1})/gi;
   const boldItalicWordRegex = /(\*\*\*[^\s]+\*\*\*)/gi;
   const boldItalicSentenceRegex = /((\*\*\*[^\*\s]){1}([^\*\n])+([^\*\s]\*\*\*){1})/gi;
   const boldWordRegex = /(\*[^\s*]+\*)/gi;
@@ -510,9 +514,25 @@ export function processedStringWithURL(string) {
         )}</span>`
     )
     .replace(
-      bigSentenceRegex,
+      hugeSentenceRegex,
       string =>
         `<span style="font-size: 2.5rem;">${string.substring(
+          2,
+          string.length - 2
+        )}</span>`
+    )
+    .replace(
+      hugeWordRegex,
+      string =>
+        `<span style="font-size: 2.5rem;">${string.substring(
+          2,
+          string.length - 2
+        )}</span>`
+    )
+    .replace(
+      bigSentenceRegex,
+      string =>
+        `<span style="font-size: 2rem;">${string.substring(
           2,
           string.length - 2
         )}</span>`
@@ -520,7 +540,7 @@ export function processedStringWithURL(string) {
     .replace(
       bigWordRegex,
       string =>
-        `<span style="font-size: 2.5rem;">${string.substring(
+        `<span style="font-size: 2rem;">${string.substring(
           2,
           string.length - 2
         )}</span>`
@@ -528,7 +548,7 @@ export function processedStringWithURL(string) {
     .replace(
       smallSentenceRegex,
       string =>
-        `<span style="font-size: 1rem;">${string.substring(
+        `<span style="font-size: 1.2rem;">${string.substring(
           2,
           string.length - 2
         )}</span>`
@@ -536,7 +556,23 @@ export function processedStringWithURL(string) {
     .replace(
       smallWordRegex,
       string =>
-        `<span style="font-size: 1rem;">${string.substring(
+        `<span style="font-size: 1.2rem;">${string.substring(
+          2,
+          string.length - 2
+        )}</span>`
+    )
+    .replace(
+      tinySentenceRegex,
+      string =>
+        `<span style="font-size: 0.7rem;">${string.substring(
+          2,
+          string.length - 2
+        )}</span>`
+    )
+    .replace(
+      tinyWordRegex,
+      string =>
+        `<span style="font-size: 0.7rem;">${string.substring(
           2,
           string.length - 2
         )}</span>`
