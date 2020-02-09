@@ -330,16 +330,6 @@ export function processedQueryString(string) {
     : null;
 }
 
-export function processedString(string) {
-  return string
-    ? string
-        .replace(/~/g, '&tilde;')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-    : null;
-}
-
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null;
   const maxChar = 100;
@@ -564,7 +554,7 @@ export function processedStringWithURL(string) {
     .replace(
       tinySentenceRegex,
       string =>
-        `<span style="font-size: 0.7rem;">${string.substring(
+        `<span style="font-size: 0.8rem;">${string.substring(
           2,
           string.length - 2
         )}</span>`
