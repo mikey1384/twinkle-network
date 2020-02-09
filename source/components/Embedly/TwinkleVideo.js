@@ -53,6 +53,7 @@ export default function TwinkleVideo({ style, videoId }) {
         <Loading style={{ height: '100%' }} />
       ) : (
         <VideoPlayer
+          isChat
           style={{ width: '100%', height: '100%' }}
           byUser={!!byUser}
           rewardLevel={rewardLevel}

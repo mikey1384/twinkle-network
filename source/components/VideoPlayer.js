@@ -20,6 +20,7 @@ const intervalLength = 2000;
 const xp = rewardValue.star;
 
 VideoPlayer.propTypes = {
+  isChat: PropTypes.bool,
   byUser: PropTypes.bool,
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
@@ -31,6 +32,7 @@ VideoPlayer.propTypes = {
 };
 
 function VideoPlayer({
+  isChat,
   byUser,
   rewardLevel,
   hasHqThumb,
@@ -364,7 +366,7 @@ function VideoPlayer({
             padding: 0.5rem;
             @media (max-width: ${mobileMaxWidth}) {
               padding: 0.3rem;
-              font-size: 1rem;
+              font-size: ${isChat ? '1rem' : '1.5rem'};
             }
           `}
           style={{
