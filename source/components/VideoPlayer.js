@@ -277,7 +277,7 @@ function VideoPlayer({
                 rel="noopener noreferrer"
                 href={uploader.youtubeUrl}
               >
-                {`Visit ${uploader.username}'s`} YouTube Channel
+                {`Visit ${uploader.username}'s`} YouTube
               </a>
             )}
           </div>
