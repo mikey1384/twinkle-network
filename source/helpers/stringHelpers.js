@@ -91,7 +91,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:curious\:)/gi, '🤔')
     .replace(/(\:cry\:)/gi, '😭')
     .replace(/(\:deer\:)/gi, '🦌')
-    .replace(/(\:degrees\:)/gi, '°')
+    .replace(/(\:degree\:)/gi, '°')
     .replace(/(\:devil\:)/gi, '😈')
     .replace(/(\:diamond\:)/gi, '💎')
     .replace(/(\:dinosaur\:)/gi, '🦖')
