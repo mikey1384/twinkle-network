@@ -80,6 +80,12 @@ export default function FileInfo({
             }}
           >
             <div
+              className={css`
+                height: 7rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  height: 6rem;
+                }
+              `}
               style={{
                 displahy: 'flex',
                 flexDirection: 'column',
