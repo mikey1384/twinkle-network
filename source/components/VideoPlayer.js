@@ -253,22 +253,25 @@ function VideoPlayer({
 
   return (
     <ErrorBoundary style={style}>
-      {byUser && (
+      {byUser && !isChat && (
         <div
-          style={{
-            background: Color[themeColor](0.9),
-            color: '#fff',
-            padding: '0.5rem',
-            fontWeight: 'bold',
-            fontSize: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+          className={css`
+            background: ${Color[themeColor](0.9)};
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #fff;
+            justify-content: center;
+            padding: 0.5rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              padding: 0.3rem;
+              font-size: ${isChat ? '1rem' : '1.5rem'};
+            }
+          `}
         >
           <div>
-            This video was made by {uploader.username}.{' '}
-            {uploader.youtubeUrl && (
+            {uploader.youtubeUrl ? (
               <a
                 style={{
                   color: '#fff',
@@ -279,8 +282,10 @@ function VideoPlayer({
                 rel="noopener noreferrer"
                 href={uploader.youtubeUrl}
               >
-                {`Visit ${uploader.username}'s`} YouTube
+                {`Visit ${uploader.username}'s`} YouTube Channel
               </a>
+            ) : (
+              <span>This video was made by {uploader.username}</span>
             )}
           </div>
         </div>
