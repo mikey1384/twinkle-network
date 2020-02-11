@@ -18,11 +18,23 @@ export default function Main({ onShowLoginForm, onShowSignUpForm }) {
         Yes, I have an account
       </Button>
       <Button
-        color="pink"
-        style={{ marginTop: '1.5rem', fontSize: '2rem', padding: '1rem' }}
+        color="orange"
+        style={{ marginTop: '1.5rem', fontSize: '2.5rem', padding: '1rem' }}
         onClick={onShowSignUpForm}
       >
-        {"No, I'm a new user. Make me a new account, please!"}
+        {"No, I don't have an account"}
+      </Button>
+      <Button
+        color="pink"
+        style={{
+          marginTop: '1.5rem',
+          fontSize: '2.5rem',
+          padding: '1rem',
+          marginBottom: '1rem'
+        }}
+        onClick={onShowSignUpForm}
+      >
+        {'I have an account but I forgot my password'}
       </Button>
     </main>
   );
