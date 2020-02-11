@@ -297,13 +297,17 @@ function Message({
   const dropdownButtonShown =
     !!messageId && !isNotification && !isChessMsg && !onEdit;
 
-  return !chessState && gameWinnerId ? (
-    <GameOverMessage
-      winnerId={gameWinnerId}
-      opponentName={channelName}
-      myId={myId}
-    />
-  ) : (
+  if (!chessState && gameWinnerId) {
+    return (
+      <GameOverMessage
+        winnerId={gameWinnerId}
+        opponentName={channelName}
+        myId={myId}
+      />
+    );
+  }
+
+  return (
     <ErrorBoundary>
       <div className={MessageStyle.container}>
         <div className={MessageStyle.profilePic}>
