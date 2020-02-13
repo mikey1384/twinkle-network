@@ -10,10 +10,16 @@ import Banner from 'components/Banner';
 import { useAppContext, useContentContext } from 'contexts';
 
 SignUpForm.propTypes = {
+  username: PropTypes.string,
+  onSetUsername: PropTypes.func.isRequired,
   onShowLoginForm: PropTypes.func.isRequired
 };
 
-export default function SignUpForm({ onShowLoginForm }) {
+export default function SignUpForm({
+  username,
+  onSetUsername,
+  onShowLoginForm
+}) {
   const {
     user: {
       actions: { onSignup }
@@ -23,7 +29,6 @@ export default function SignUpForm({ onShowLoginForm }) {
   const {
     actions: { onInitContent }
   } = useContentContext();
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -70,7 +75,7 @@ export default function SignUpForm({ onShowLoginForm }) {
               placeholder="Enter the username you wish to use. It has to be at least 3 characters long"
               onChange={text => {
                 setErrorMessage('');
-                setUsername(trimWhiteSpaces(text));
+                onSetUsername(trimWhiteSpaces(text));
               }}
               onKeyPress={event => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -175,6 +180,7 @@ export default function SignUpForm({ onShowLoginForm }) {
       <footer>
         <Button
           transparent
+          color="orange"
           style={{
             fontSize: '1.5rem',
             marginRight: '1rem'

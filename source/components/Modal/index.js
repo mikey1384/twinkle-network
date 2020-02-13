@@ -13,6 +13,7 @@ Modal.propTypes = {
   onHide: PropTypes.func,
   small: PropTypes.bool,
   large: PropTypes.bool,
+  modalStyle: PropTypes.object,
   style: PropTypes.object
 };
 
@@ -23,6 +24,7 @@ export default function Modal({
   onHide,
   small,
   large,
+  modalStyle,
   style
 }) {
   const modalWidth = {
@@ -64,6 +66,7 @@ export default function Modal({
           style={style}
         >
           <Content
+            style={modalStyle}
             eventTypes={['mouseup']}
             className={css`
               position: relative;

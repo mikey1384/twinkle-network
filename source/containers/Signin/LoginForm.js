@@ -4,14 +4,24 @@ import Button from 'components/Button';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
+import { css } from 'emotion';
+import { Color } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 
 LoginForm.propTypes = {
+  username: PropTypes.string,
+  onSetUsername: PropTypes.func.isRequired,
+  onShowForgotPasswordForm: PropTypes.func,
   onShowSignupForm: PropTypes.func
 };
 
-export default function LoginForm({ onShowSignupForm }) {
+export default function LoginForm({
+  username,
+  onSetUsername,
+  onShowForgotPasswordForm,
+  onShowSignupForm
+}) {
   const {
     user: {
       actions: { onLogin }
@@ -21,7 +31,6 @@ export default function LoginForm({ onShowSignupForm }) {
   const {
     actions: { onInitContent }
   } = useContentContext();
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -36,7 +45,7 @@ export default function LoginForm({ onShowSignupForm }) {
               value={username}
               onChange={text => {
                 setErrorMessage('');
-                setUsername(text);
+                onSetUsername(text);
               }}
               placeholder="Enter your username"
               onKeyPress={event => {
@@ -70,6 +79,23 @@ export default function LoginForm({ onShowSignupForm }) {
                 }
               }}
             />
+            <div
+              style={{ marginTop: '1rem', width: '100%', textAlign: 'center' }}
+            >
+              <span
+                style={{
+                  fontWeight: 'bold',
+                  color: Color.blue(),
+                  cursor: 'pointer'
+                }}
+                className={css`
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                `}
+                onClick={onShowForgotPasswordForm}
+              >{`I forgot my password!`}</span>
+            </div>
           </div>
         </div>
       </main>
@@ -79,6 +105,7 @@ export default function LoginForm({ onShowSignupForm }) {
             fontSize: '1.5rem',
             marginRight: '1.5rem'
           }}
+          color="orange"
           transparent
           onClick={onShowSignupForm}
         >

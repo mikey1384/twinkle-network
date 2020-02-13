@@ -44,7 +44,7 @@ function Button({
     const backgroundOpacity = filled ? 1 : skeuomorphic ? 0.5 : opacity || 0;
     const backgroundHoverOpacity = transparent ? 0 : 0.9;
     const backgroundDisabledOpacity = filled || skeuomorphic ? 0.2 : 0;
-    const textOpacity = disabled ? 0.2 : transparent ? 0.5 : 1;
+    const textOpacity = disabled ? 0.2 : transparent ? 0.7 : 1;
     return `${css`
       cursor: ${disabled ? 'default' : 'pointer'};
       display: flex;

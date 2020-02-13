@@ -6,14 +6,15 @@ import { useOutsideClick } from 'helpers/hooks';
 Content.propTypes = {
   onHide: PropTypes.func,
   className: PropTypes.string,
-  children: PropTypes.node
+  children: PropTypes.node,
+  style: PropTypes.object
 };
 
-export default function Content({ children, className, onHide }) {
+export default function Content({ children, className, onHide, style }) {
   const ContentRef = useRef(null);
   useOutsideClick(ContentRef, () => onHide?.());
   return (
-    <div className={className} ref={ContentRef}>
+    <div style={style} className={className} ref={ContentRef}>
       <button className="close" onClick={onHide}>
         <Icon icon="times" />
       </button>
