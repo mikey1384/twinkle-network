@@ -151,6 +151,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:ufo\:)/gi, '🛸')
     .replace(/(\:volcano\:)/gi, '🌋')
     .replace(/(\:wave\:)/gi, '👋')
+    .replace(/(\:wow\:)/gi, '😲')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
     .replace(/(\:zombie\:)/gi, '🧟')
