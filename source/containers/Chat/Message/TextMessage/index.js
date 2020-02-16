@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
@@ -8,8 +8,9 @@ import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { useAppContext, useChatContext } from 'contexts';
 import { socket } from 'constants/io';
+import Spoiler from './Spoiler';
 
-SpoilerMessage.propTypes = {
+TextMessage.propTypes = {
   attachmentHidden: PropTypes.bool,
   channelId: PropTypes.number,
   content: PropTypes.string.isRequired,
@@ -29,7 +30,7 @@ SpoilerMessage.propTypes = {
   userCanEditThis: PropTypes.bool
 };
 
-export default function SpoilerMessage({
+export default function TextMessage({
   attachmentHidden,
   channelId,
   content,
@@ -54,8 +55,7 @@ export default function SpoilerMessage({
   const {
     requestHelpers: { hideAttachment }
   } = useAppContext();
-  let [spoilerShown, setSpoilerShown] = useState(false);
-  let [grayness, setGrayness] = useState(105);
+
   return (
     <ErrorBoundary>
       <div>
@@ -75,32 +75,15 @@ export default function SpoilerMessage({
           <div>
             <div className={MessageStyle.messageWrapper}>
               {renderPrefix()}
-              {spoilerShown ? (
+              {content.startsWith('/spoiler ') ? (
+                <Spoiler isNotification={isNotification} content={content} />
+              ) : (
                 <span
-                  style={{
-                    color: isNotification ? Color.gray() : undefined,
-                    background: Color.lighterGray(),
-                    borderRadius: '2px'
-                  }}
+                  style={{ color: isNotification ? Color.gray() : undefined }}
                   dangerouslySetInnerHTML={{
-                    __html: processedStringWithURL(content.substr(9))
+                    __html: processedStringWithURL(content)
                   }}
                 />
-              ) : (
-                <div
-                  style={{
-                    background: `rgb(${grayness},${grayness},${grayness})`,
-                    height: '2rem',
-                    width:
-                      content.substr(9).length > 100
-                        ? '80rem'
-                        : 0.8 * content.substr(9).length + 'rem',
-                    borderRadius: '5px'
-                  }}
-                  onClick={() => setSpoilerShown(true)}
-                  onMouseEnter={() => setGrayness(128)}
-                  onMouseLeave={() => setGrayness(105)}
-                ></div>
               )}
             </div>
             {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
@@ -116,7 +99,7 @@ export default function SpoilerMessage({
             )}
           </div>
         )}
-        {extractedUrl && spoilerShown && messageId && !attachmentHidden && (
+        {extractedUrl && messageId && !attachmentHidden && (
           <Embedly
             style={{ marginTop: '1rem' }}
             contentId={messageId}

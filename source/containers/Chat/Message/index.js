@@ -7,8 +7,7 @@ import Chess from '../Chess';
 import ErrorBoundary from 'components/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileViewer from 'components/FileViewer';
-import TextMessage from './TextMessage';
-import SpoilerMessage from './SpoilerMessage';
+import TextMessage from 'containers/Chat/Message/TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
@@ -367,51 +366,27 @@ function Message({
                     style={{ marginTop: '1rem' }}
                   />
                 )}
-                {content.startsWith('/spoiler ') ? (
-                  <SpoilerMessage
-                    attachmentHidden={!!attachmentHidden}
-                    channelId={channelId}
-                    content={content}
-                    extractedUrl={extractedUrl}
-                    myId={myId}
-                    messageId={messageId}
-                    numMsgs={numMsgs}
-                    isNotification={isNotification}
-                    isSubject={!!isSubject}
-                    isReloadedSubject={!!isReloadedSubject}
-                    MessageStyle={MessageStyle}
-                    onEdit={onEdit}
-                    onEditCancel={handleEditCancel}
-                    onEditDone={handleEditDone}
-                    showSubjectMsgsModal={showSubjectMsgsModal}
-                    socketConnected={socketConnected}
-                    subjectId={subjectId}
-                    targetMessage={targetMessage}
-                    userCanEditThis={userCanEditThis}
-                  />
-                ) : (
-                  <TextMessage
-                    attachmentHidden={!!attachmentHidden}
-                    channelId={channelId}
-                    content={content}
-                    extractedUrl={extractedUrl}
-                    myId={myId}
-                    messageId={messageId}
-                    numMsgs={numMsgs}
-                    isNotification={isNotification}
-                    isSubject={!!isSubject}
-                    isReloadedSubject={!!isReloadedSubject}
-                    MessageStyle={MessageStyle}
-                    onEdit={onEdit}
-                    onEditCancel={handleEditCancel}
-                    onEditDone={handleEditDone}
-                    showSubjectMsgsModal={showSubjectMsgsModal}
-                    socketConnected={socketConnected}
-                    subjectId={subjectId}
-                    targetMessage={targetMessage}
-                    userCanEditThis={userCanEditThis}
-                  />
-                )}
+                <TextMessage
+                  attachmentHidden={!!attachmentHidden}
+                  channelId={channelId}
+                  content={content}
+                  extractedUrl={extractedUrl}
+                  myId={myId}
+                  messageId={messageId}
+                  numMsgs={numMsgs}
+                  isNotification={isNotification}
+                  isSubject={!!isSubject}
+                  isReloadedSubject={!!isReloadedSubject}
+                  MessageStyle={MessageStyle}
+                  onEdit={onEdit}
+                  onEditCancel={handleEditCancel}
+                  onEditDone={handleEditDone}
+                  showSubjectMsgsModal={showSubjectMsgsModal}
+                  socketConnected={socketConnected}
+                  subjectId={subjectId}
+                  targetMessage={targetMessage}
+                  userCanEditThis={userCanEditThis}
+                />
               </>
             )}
           </div>
