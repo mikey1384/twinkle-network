@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
+import EmailSection from './EmailSection';
 import UsernameSection from './UsernameSection';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -17,6 +18,7 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
       state: { searchedProfiles }
     }
   } = useAppContext();
+  const [section, setSection] = useState('username');
   const [searchText, setSearchText] = useState(username);
 
   const matchingAccount = useMemo(() => {
@@ -29,15 +31,27 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
     return null;
   }, [searchText, searchedProfiles]);
 
+  const disabled = useMemo(() => {
+    switch (section) {
+      case 'username':
+        return !matchingAccount;
+      default:
+        return true;
+    }
+  }, [matchingAccount, section]);
+
   return (
     <ErrorBoundary>
       <main>
-        <UsernameSection
-          matchingAccount={matchingAccount}
-          onNextClick={handleNextClick}
-          onSetSearchText={setSearchText}
-          searchText={searchText}
-        />
+        {section === 'username' && (
+          <UsernameSection
+            matchingAccount={matchingAccount}
+            onNextClick={handleNextClick}
+            onSetSearchText={setSearchText}
+            searchText={searchText}
+          />
+        )}
+        {section === 'email' && <EmailSection account={matchingAccount} />}
       </main>
       <footer>
         <Button
@@ -53,7 +67,7 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
         </Button>
         <Button
           color="blue"
-          disabled={!matchingAccount}
+          disabled={disabled}
           onClick={handleNextClick}
           style={{ fontSize: '2rem' }}
         >
@@ -64,6 +78,13 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
   );
 
   function handleNextClick() {
-    console.log('hit');
+    switch (section) {
+      case 'username': {
+        setSection('email');
+        break;
+      }
+      default:
+        setSection('username');
+    }
   }
 }
