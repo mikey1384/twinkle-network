@@ -7,7 +7,7 @@ import Chess from '../Chess';
 import ErrorBoundary from 'components/ErrorBoundary';
 import GameOverMessage from './GameOverMessage';
 import FileViewer from 'components/FileViewer';
-import TextMessage from 'containers/Chat/Message/TextMessage';
+import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
