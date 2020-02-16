@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import InfoEditForm from './InfoEditForm';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { trimUrl } from 'helpers/stringHelpers';
+import { stringIsEmpty, trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { unix } from 'moment';
 import { useHistory } from 'react-router-dom';
@@ -19,7 +19,7 @@ import {
 BasicInfos.propTypes = {
   className: PropTypes.string,
   email: PropTypes.string,
-  emailVerified: PropTypes.bool,
+  verifiedEmail: PropTypes.string,
   online: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   profilePicId: PropTypes.number,
   profileTheme: PropTypes.string,
@@ -38,7 +38,7 @@ BasicInfos.propTypes = {
 export default function BasicInfos({
   className,
   email,
-  emailVerified,
+  verifiedEmail,
   online,
   joinDate,
   lastActive,
@@ -78,6 +78,10 @@ export default function BasicInfos({
   const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
   const [verificationEmailSent, setVerificationEmailSent] = useState(false);
   const mounted = useRef(true);
+  const emailVerified = useMemo(
+    () => !stringIsEmpty(email) && email === verifiedEmail,
+    [email, verifiedEmail]
+  );
 
   useEffect(() => {
     mounted.current = true;

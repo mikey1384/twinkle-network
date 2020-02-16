@@ -77,7 +77,7 @@ export default function Home({ location, profile, selectedTheme }) {
   const {
     commentsLoaded,
     email,
-    emailVerified,
+    verifiedEmail,
     greeting,
     id,
     joinDate,
@@ -307,7 +307,7 @@ export default function Home({ location, profile, selectedTheme }) {
               marginBottom: '1rem'
             }}
             email={email}
-            emailVerified={emailVerified}
+            verifiedEmail={verifiedEmail}
             joinDate={joinDate}
             online={online}
             lastActive={lastActive}
