@@ -4,11 +4,10 @@ import { processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 
 Spoiler.propTypes = {
-  isNotification: PropTypes.bool,
   content: PropTypes.string
 };
 
-export default function Spoiler({ isNotification, content }) {
+export default function Spoiler({ content }) {
   let [spoilerShown, setSpoilerShown] = useState(false);
   let [grayness, setGrayness] = useState(105);
   return (
@@ -16,7 +15,6 @@ export default function Spoiler({ isNotification, content }) {
       {spoilerShown ? (
         <span
           style={{
-            color: isNotification ? Color.gray() : undefined,
             background: Color.lighterGray(),
             borderRadius: '2px'
           }}
