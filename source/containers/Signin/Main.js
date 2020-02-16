@@ -16,21 +16,21 @@ export default function Main({
   return (
     <main>
       <Button
-        color="limeGreen"
+        color="logoBlue"
         style={{ display: 'block', fontSize: '2.7rem', padding: '1rem' }}
         onClick={onShowLoginForm}
       >
         Yes, I have an account
       </Button>
       <Button
-        color="orange"
+        color="pink"
         style={{ marginTop: '1rem', fontSize: '2.5rem', padding: '1rem' }}
         onClick={onShowSignUpForm}
       >
         {"No, I don't have an account"}
       </Button>
       <Button
-        color="pink"
+        color="purple"
         style={{
           marginTop: '1.5rem',
           fontSize: '2rem',
@@ -39,7 +39,7 @@ export default function Main({
         }}
         onClick={onShowForgotPasswordForm}
       >
-        {'I have an account but I forgot my password'}
+        {'I forgot my password'}
       </Button>
     </main>
   );

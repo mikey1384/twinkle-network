@@ -25,8 +25,7 @@ export default function Signin({ onHide }) {
         <header>
           {currentPage === 'main' &&
             `Welcome to Twinkle. Do you have a Twinkle account?`}
-          {currentPage === 'login' &&
-            `Great! What's your username and password?`}
+          {currentPage === 'login' && `What's your username and password?`}
           {currentPage === 'signUp' &&
             `Welcome to Twinkle! Let's set up your account`}
           {currentPage === 'restore' && `No problem! We are here to help`}

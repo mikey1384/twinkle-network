@@ -8,6 +8,7 @@ AccountConfirm.propTypes = {
   searching: PropTypes.bool.isRequired,
   notExist: PropTypes.bool.isRequired,
   matchingAccount: PropTypes.string,
+  onNextClick: PropTypes.func.isRequired,
   style: PropTypes.object
 };
 
@@ -15,6 +16,7 @@ export default function AccountConfirm({
   notExist,
   searching,
   matchingAccount,
+  onNextClick,
   style
 }) {
   return (
@@ -33,8 +35,12 @@ export default function AccountConfirm({
             color: Color.darkerGray()
           }}
         >
-          Hello {matchingAccount}! Press{' '}
-          <span style={{ color: Color.blue() }}>{`Next`}</span> to continue
+          Hello {matchingAccount.username}! Press{' '}
+          <span
+            style={{ color: Color.blue(), cursor: 'pointer' }}
+            onClick={onNextClick}
+          >{`Next`}</span>{' '}
+          to continue
         </div>
       )}
     </ErrorBoundary>

@@ -187,7 +187,7 @@ export default function SignUpForm({
           }}
           onClick={onShowLoginForm}
         >
-          Wait, I already have an account!
+          I already have an account
         </Button>
         <Button
           color="blue"

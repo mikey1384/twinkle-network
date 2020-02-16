@@ -4,8 +4,6 @@ import Button from 'components/Button';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
-import { css } from 'emotion';
-import { Color } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 
@@ -79,23 +77,6 @@ export default function LoginForm({
                 }
               }}
             />
-            <div
-              style={{ marginTop: '1rem', width: '100%', textAlign: 'center' }}
-            >
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color: Color.blue(),
-                  cursor: 'pointer'
-                }}
-                className={css`
-                  &:hover {
-                    text-decoration: underline;
-                  }
-                `}
-                onClick={onShowForgotPasswordForm}
-              >{`I forgot my password!`}</span>
-            </div>
           </div>
         </div>
       </main>
@@ -103,13 +84,24 @@ export default function LoginForm({
         <Button
           style={{
             fontSize: '1.5rem',
-            marginRight: '1.5rem'
+            marginRight: '1rem'
+          }}
+          color="blue"
+          transparent
+          onClick={onShowForgotPasswordForm}
+        >
+          I forgot my password
+        </Button>
+        <Button
+          style={{
+            fontSize: '1.5rem',
+            marginRight: '1rem'
           }}
           color="orange"
           transparent
           onClick={onShowSignupForm}
         >
-          {"Wait, I don't think I have an account, yet"}
+          {"I don't have an account"}
         </Button>
         <Button
           color="blue"
