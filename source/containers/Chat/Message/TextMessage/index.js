@@ -8,6 +8,7 @@ import { Color } from 'constants/css';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { useAppContext, useChatContext } from 'contexts';
 import { socket } from 'constants/io';
+import Spoiler from './Spoiler';
 
 TextMessage.propTypes = {
   attachmentHidden: PropTypes.bool,
@@ -74,12 +75,16 @@ export default function TextMessage({
           <div>
             <div className={MessageStyle.messageWrapper}>
               {renderPrefix()}
-              <span
-                style={{ color: isNotification ? Color.gray() : undefined }}
-                dangerouslySetInnerHTML={{
-                  __html: processedStringWithURL(content)
-                }}
-              />
+              {content.startsWith('/spoiler ') ? (
+                <Spoiler isNotification={isNotification} content={content} />
+              ) : (
+                <span
+                  style={{ color: isNotification ? Color.gray() : undefined }}
+                  dangerouslySetInnerHTML={{
+                    __html: processedStringWithURL(content)
+                  }}
+                />
+              )}
             </div>
             {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
               <div className={MessageStyle.relatedConversationsButton}>
