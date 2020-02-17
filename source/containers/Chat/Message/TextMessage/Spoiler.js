@@ -25,6 +25,7 @@ export default function Spoiler({ content }) {
       ) : (
         <div
           style={{
+            cursor: 'pointer',
             background: `rgb(${grayness},${grayness},${grayness})`,
             height: '2rem',
             width:
