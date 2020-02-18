@@ -8,7 +8,8 @@ EmailSection.propTypes = {
 export default function EmailSection({ account }) {
   return (
     <div>
-      This is email section {account.username}! your email is {account.email}
+      This is email section {account.username}! your email is {account.email}{' '}
+      your verified Email is {account.verifiedEmail}
     </div>
   );
 }
