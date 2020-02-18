@@ -24,6 +24,7 @@ TextMessage.propTypes = {
   onEdit: PropTypes.bool,
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
+  onScrollToBottom: PropTypes.func.isRequired,
   showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
   subjectId: PropTypes.number,
@@ -44,6 +45,7 @@ export default function TextMessage({
   onEdit,
   onEditCancel,
   onEditDone,
+  onScrollToBottom,
   subjectId,
   showSubjectMsgsModal,
   socketConnected,
@@ -76,7 +78,11 @@ export default function TextMessage({
             <div className={MessageStyle.messageWrapper}>
               {renderPrefix()}
               {content.startsWith('/spoiler ') ? (
-                <Spoiler isNotification={isNotification} content={content} />
+                <Spoiler
+                  isNotification={isNotification}
+                  content={content}
+                  onSpoilerClick={onScrollToBottom}
+                />
               ) : (
                 <span
                   style={{ color: isNotification ? Color.gray() : undefined }}

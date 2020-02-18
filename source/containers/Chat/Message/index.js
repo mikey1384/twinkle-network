@@ -385,6 +385,7 @@ function Message({
                   onEdit={onEdit}
                   onEditCancel={handleEditCancel}
                   onEditDone={handleEditDone}
+                  onScrollToBottom={handleScrollToBottom}
                   showSubjectMsgsModal={showSubjectMsgsModal}
                   socketConnected={socketConnected}
                   subjectId={subjectId}
@@ -445,6 +446,12 @@ function Message({
       targetMessageId: replyTarget?.id,
       subjectId
     });
+  }
+
+  function handleScrollToBottom() {
+    if (isLastMsg) {
+      setScrollToBottom();
+    }
   }
 
   async function handleSpoilerClick() {

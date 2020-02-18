@@ -54,7 +54,7 @@ export default function MemberListItem({
           truncate
           className={css`
             width: auto;
-            max-width: ${creatorId === member.id ? '50%' : 'CALC(45% + 3rem)'};
+            max-width: ${creatorId === member.id ? '45%' : 'CALC(45% + 3rem)'};
           `}
           style={{
             color: Color.darkerGray(),
