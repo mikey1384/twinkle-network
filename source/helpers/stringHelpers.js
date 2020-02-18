@@ -336,7 +336,7 @@ export function processedStringWithURL(string) {
   const maxChar = 100;
   const trimmedString = string =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
-  const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+))/gi;
+  const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/\)])+))/gi;
   const redWordRegex = /(r\|[^\s]+\|r)/gi;
   const redSentenceRegex = /((r\|[^\*\s]){1}([^\*\n])+([^\*\s]\|r){1})/gi;
   const blueWordRegex = /(b\|[^\s]+\|b)/gi;
