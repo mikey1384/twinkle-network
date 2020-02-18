@@ -31,7 +31,7 @@ export default function Spoiler({ content, onSpoilerClick }) {
             height: '2.5rem',
             width:
               content.substr(9).length > 100
-                ? '30rem'
+                ? '80%'
                 : 0.8 * content.substr(9).length + 'rem',
             borderRadius: '5px'
           }}
