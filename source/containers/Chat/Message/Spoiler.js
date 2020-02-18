@@ -35,7 +35,7 @@ export default function Spoiler({ content, onSpoilerClick }) {
             background: `rgb(${grayness},${grayness},${grayness})`,
             height: '2.5rem',
             width:
-              displayedContent.length > 100
+              displayedContent.length > 50
                 ? '80%'
                 : 0.8 * displayedContent.length + 'rem',
             borderRadius: '5px'
