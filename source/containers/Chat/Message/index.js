@@ -358,7 +358,12 @@ function Message({
               />
             ) : (
               <>
-                {targetMessage && <TargetMessage message={targetMessage} />}
+                {targetMessage && (
+                  <TargetMessage
+                    message={targetMessage}
+                    onScrollToBottom={handleScrollToBottom}
+                  />
+                )}
                 {filePath && (
                   <FileViewer
                     contextType="chat"

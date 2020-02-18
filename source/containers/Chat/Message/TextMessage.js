@@ -79,11 +79,7 @@ export default function TextMessage({
               {renderPrefix()}
               {content.startsWith('/spoiler ') ||
               content.startsWith('/secret ') ? (
-                <Spoiler
-                  isNotification={isNotification}
-                  content={content}
-                  onSpoilerClick={onScrollToBottom}
-                />
+                <Spoiler content={content} onSpoilerClick={onScrollToBottom} />
               ) : (
                 <span
                   style={{ color: isNotification ? Color.gray() : undefined }}

@@ -4,6 +4,7 @@ import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
 import ImageModal from 'components/Modals/ImageModal';
 import UsernameText from 'components/Texts/UsernameText';
+import Spoiler from './Spoiler';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -16,10 +17,11 @@ import { cloudFrontURL } from 'constants/defaultValues';
 import { isMobile } from 'helpers';
 
 TargetMessage.propTypes = {
-  message: PropTypes.object.isRequired
+  message: PropTypes.object.isRequired,
+  onScrollToBottom: PropTypes.func.isRequired
 };
 
-export default function TargetMessage({ message }) {
+export default function TargetMessage({ message, onScrollToBottom }) {
   const [imageModalShown, setImageModalShown] = useState(false);
   const fileType = useMemo(() => {
     return message.fileName
@@ -51,7 +53,7 @@ export default function TargetMessage({ message }) {
         }
       `}
     >
-      <div>
+      <div style={{ width: '100%' }}>
         <section style={{ fontWeight: 'bold' }}>
           <UsernameText
             color={Color.black()}
@@ -67,17 +69,26 @@ export default function TargetMessage({ message }) {
             {unix(message.timeStamp).format('LLL')}
           </small>
         </section>
-        <p
-          dangerouslySetInnerHTML={{
-            __html: processedStringWithURL(message.content) || message.fileName
-          }}
-          style={{ marginTop: '0.5rem' }}
-          className={css`
-            @media (max-width: ${mobileMaxWidth}) {
-              font-size: 1.3rem;
-            }
-          `}
-        />
+        {message.content.startsWith('/spoiler ') ||
+        message.content.startsWith('/secret ') ? (
+          <Spoiler
+            content={message.content}
+            onSpoilerClick={onScrollToBottom}
+          />
+        ) : (
+          <p
+            dangerouslySetInnerHTML={{
+              __html:
+                processedStringWithURL(message.content) || message.fileName
+            }}
+            style={{ marginTop: '0.5rem' }}
+            className={css`
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.3rem;
+              }
+            `}
+          />
+        )}
       </div>
       {fileType && message.fileName && (
         <div
