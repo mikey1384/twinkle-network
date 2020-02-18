@@ -28,7 +28,7 @@ export default function Spoiler({ content, onSpoilerClick }) {
           style={{
             cursor: 'pointer',
             background: `rgb(${grayness},${grayness},${grayness})`,
-            height: '2.2rem',
+            height: '2.3rem',
             width:
               content.substr(9).length > 100
                 ? '40rem'
