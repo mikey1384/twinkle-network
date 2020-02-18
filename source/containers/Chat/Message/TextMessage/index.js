@@ -77,7 +77,8 @@ export default function TextMessage({
           <div>
             <div className={MessageStyle.messageWrapper}>
               {renderPrefix()}
-              {content.startsWith('/spoiler ') ? (
+              {content.startsWith('/spoiler ') ||
+              content.startsWith('/secret ') ? (
                 <Spoiler
                   isNotification={isNotification}
                   content={content}
