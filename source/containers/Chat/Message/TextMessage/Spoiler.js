@@ -4,10 +4,11 @@ import { processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 
 Spoiler.propTypes = {
-  content: PropTypes.string
+  content: PropTypes.string,
+  onSpoilerClick: PropTypes.func
 };
 
-export default function Spoiler({ content }) {
+export default function Spoiler({ content, onSpoilerClick }) {
   let [spoilerShown, setSpoilerShown] = useState(false);
   let [grayness, setGrayness] = useState(105);
   return (
@@ -27,18 +28,23 @@ export default function Spoiler({ content }) {
           style={{
             cursor: 'pointer',
             background: `rgb(${grayness},${grayness},${grayness})`,
-            height: '2rem',
+            height: '2.1rem',
             width:
               content.substr(9).length > 100
-                ? '80rem'
+                ? '40rem'
                 : 0.8 * content.substr(9).length + 'rem',
             borderRadius: '5px'
           }}
-          onClick={() => setSpoilerShown(true)}
+          onClick={handleSpoilerClick}
           onMouseEnter={() => setGrayness(128)}
           onMouseLeave={() => setGrayness(105)}
-        ></div>
+        />
       )}
     </div>
   );
+
+  function handleSpoilerClick() {
+    setSpoilerShown(true);
+    onSpoilerClick();
+  }
 }
