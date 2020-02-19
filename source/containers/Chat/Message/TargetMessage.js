@@ -10,7 +10,8 @@ import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
   getFileInfoFromFileName,
   processedStringWithURL,
-  renderFileSize
+  renderFileSize,
+  stringIsEmpty
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { cloudFrontURL } from 'constants/defaultValues';
@@ -69,8 +70,7 @@ export default function TargetMessage({ message, onScrollToBottom }) {
             {unix(message.timeStamp).format('LLL')}
           </small>
         </section>
-        {message.content.startsWith('/spoiler ') ||
-        message.content.startsWith('/secret ') ? (
+        {isValidSpoiler(message.content) ? (
           <Spoiler
             content={message.content}
             onSpoilerClick={onScrollToBottom}
@@ -164,5 +164,16 @@ export default function TargetMessage({ message, onScrollToBottom }) {
       return setImageModalShown(true);
     }
     window.open(src);
+  }
+
+  function isValidSpoiler(content = '') {
+    let displayedContent = '';
+    if (content.startsWith('/secret ')) {
+      displayedContent = content.substr(8);
+    }
+    if (content.startsWith('/spoiler ')) {
+      displayedContent = content.substr(9);
+    }
+    return !stringIsEmpty(displayedContent);
   }
 }

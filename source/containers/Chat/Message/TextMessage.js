@@ -5,7 +5,7 @@ import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
 import { Color } from 'constants/css';
-import { processedStringWithURL } from 'helpers/stringHelpers';
+import { processedStringWithURL, stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useChatContext } from 'contexts';
 import { socket } from 'constants/io';
 import Spoiler from './Spoiler';
@@ -77,8 +77,7 @@ export default function TextMessage({
           <div>
             <div className={MessageStyle.messageWrapper}>
               {renderPrefix()}
-              {content.startsWith('/spoiler ') ||
-              content.startsWith('/secret ') ? (
+              {isValidSpoiler(content) ? (
                 <Spoiler content={content} onSpoilerClick={onScrollToBottom} />
               ) : (
                 <span
@@ -139,4 +138,15 @@ export default function TextMessage({
     }
     return prefix;
   }
+}
+
+function isValidSpoiler(content = '') {
+  let displayedContent = '';
+  if (content.startsWith('/secret ')) {
+    displayedContent = content.substr(8);
+  }
+  if (content.startsWith('/spoiler ')) {
+    displayedContent = content.substr(9);
+  }
+  return !stringIsEmpty(displayedContent);
 }
