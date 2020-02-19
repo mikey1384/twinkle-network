@@ -48,6 +48,7 @@ export default function SignUpForm({
 
   return (
     <ErrorBoundary>
+      <header>{`Welcome to Twinkle! Let's set up your account`}</header>
       {errorMessage && <Banner>{errorMessage}</Banner>}
       <main>
         <div

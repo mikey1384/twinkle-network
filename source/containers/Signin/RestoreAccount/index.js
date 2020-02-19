@@ -40,8 +40,15 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
     }
   }, [matchingAccount, section]);
 
+  const headerTitle = useMemo(() => {
+    if (section === 'username') return 'No problem! We are here to help';
+    if (section === 'email') return 'Please check your email';
+    return 'TBD';
+  }, [section]);
+
   return (
     <ErrorBoundary>
+      <header>{headerTitle}</header>
       <main>
         {section === 'username' && (
           <UsernameSection

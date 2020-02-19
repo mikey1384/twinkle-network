@@ -34,6 +34,7 @@ export default function LoginForm({
 
   return (
     <ErrorBoundary>
+      <header>{`What's your username and password?`}</header>
       {errorMessage && <Banner color="pink">{errorMessage}</Banner>}
       <main>
         <div style={{ width: '100%' }}>
