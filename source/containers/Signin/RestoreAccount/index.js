@@ -20,6 +20,7 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
   } = useAppContext();
   const [section, setSection] = useState('username');
   const [searchText, setSearchText] = useState(username);
+  const [emailSent, setEmailSent] = useState(false);
 
   const matchingAccount = useMemo(() => {
     if (
@@ -32,19 +33,21 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
   }, [searchText, searchedProfiles]);
 
   const disabled = useMemo(() => {
-    switch (section) {
-      case 'username':
-        return !matchingAccount;
-      default:
-        return true;
-    }
-  }, [matchingAccount, section]);
+    if (section === 'username') return !matchingAccount;
+    return !emailSent;
+  }, [emailSent, matchingAccount, section]);
 
   const headerTitle = useMemo(() => {
     if (section === 'username') return 'No problem! We are here to help';
-    if (section === 'email') return 'Please check your email';
+    if (section === 'email') {
+      if (matchingAccount?.email || matchingAccount?.verifiedEmail) {
+        return `Email confirmation`;
+      } else {
+        return `Please enter you or your parent's email address`;
+      }
+    }
     return 'TBD';
-  }, [section]);
+  }, [matchingAccount, section]);
 
   return (
     <ErrorBoundary>
@@ -58,27 +61,37 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
             searchText={searchText}
           />
         )}
-        {section === 'email' && <EmailSection account={matchingAccount} />}
+        {section === 'email' && (
+          <EmailSection account={matchingAccount} onEmailSent={setEmailSent} />
+        )}
       </main>
       <footer>
-        <Button
-          transparent
-          color="orange"
-          style={{
-            fontSize: '1.5rem',
-            marginRight: '1rem'
-          }}
-          onClick={onShowLoginForm}
-        >
-          I remember my password
-        </Button>
+        {section === 'username' && (
+          <Button
+            transparent
+            color="orange"
+            style={{
+              fontSize: '1.5rem',
+              marginRight: '1rem'
+            }}
+            onClick={onShowLoginForm}
+          >
+            I remember my password
+          </Button>
+        )}
         <Button
           color="blue"
           disabled={disabled}
           onClick={handleNextClick}
           style={{ fontSize: '2rem' }}
         >
-          Next <Icon icon="arrow-right" style={{ marginLeft: '0.7rem' }} />
+          {section === 'username' ? (
+            <>
+              Next <Icon icon="arrow-right" style={{ marginLeft: '0.7rem' }} />
+            </>
+          ) : (
+            'Go to my email'
+          )}
         </Button>
       </footer>
     </ErrorBoundary>

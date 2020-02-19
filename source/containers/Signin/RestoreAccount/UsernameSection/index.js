@@ -11,7 +11,7 @@ import request from 'axios';
 import URL from 'constants/URL';
 
 UsernameSection.propTypes = {
-  matchingAccount: PropTypes.string,
+  matchingAccount: PropTypes.object,
   onSetSearchText: PropTypes.func.isRequired,
   onNextClick: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired

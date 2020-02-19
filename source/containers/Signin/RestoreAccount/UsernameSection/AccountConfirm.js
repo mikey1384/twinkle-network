@@ -7,7 +7,7 @@ import { Color } from 'constants/css';
 AccountConfirm.propTypes = {
   searching: PropTypes.bool.isRequired,
   notExist: PropTypes.bool.isRequired,
-  matchingAccount: PropTypes.string,
+  matchingAccount: PropTypes.object,
   onNextClick: PropTypes.func.isRequired,
   style: PropTypes.object
 };

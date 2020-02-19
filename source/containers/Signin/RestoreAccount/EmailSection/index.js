@@ -1,15 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import EmailExists from './EmailExists';
 
 EmailSection.propTypes = {
-  account: PropTypes.object.isRequired
+  account: PropTypes.object.isRequired,
+  onEmailSent: PropTypes.func.isRequired
 };
 
-export default function EmailSection({ account }) {
+export default function EmailSection({ account, onEmailSent }) {
   return (
     <div>
-      This is email section {account.username}! your email is {account.email}{' '}
-      your verified Email is {account.verifiedEmail}
+      {account.email || account.verifiedEmail ? (
+        <EmailExists
+          email={account.email}
+          verifiedEmail={account.verifiedEmail}
+          onEmailSent={onEmailSent}
+        />
+      ) : (
+        <div>You have no email</div>
+      )}
     </div>
   );
 }
