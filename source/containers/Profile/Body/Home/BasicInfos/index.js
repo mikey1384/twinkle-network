@@ -341,7 +341,7 @@ export default function BasicInfos({
   }
 
   function onVerifyEmail() {
-    sendVerificationEmail();
+    sendVerificationEmail({ email, userId });
     setEmailCheckHighlighted(false);
     setVerificationEmailSent(true);
   }

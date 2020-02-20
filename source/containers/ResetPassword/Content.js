@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import Link from 'components/Link';
+import PasswordForm from './PasswordForm';
 import { useAppContext } from 'contexts';
 
-Email.propTypes = {
+Content.propTypes = {
   match: PropTypes.object.isRequired
 };
 
-export default function Email({ match }) {
+export default function Content({ match }) {
   const {
     requestHelpers: { verifyEmail }
   } = useAppContext();
   const [loaded, setLoaded] = useState(false);
-  const [verified, setVerified] = useState(false);
+  const [username, setUsername] = useState('');
   const [expired, setExpired] = useState(false);
-  const [username, setUsername] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
@@ -26,10 +25,8 @@ export default function Email({ match }) {
           token: match?.params?.token.replace(/\+/g, '.')
         });
         setLoaded(true);
-        setVerified(!!username);
-        if (username) {
-          setUsername(username);
-        } else if (errorMsg) {
+        setUsername(username);
+        if (errorMsg) {
           setErrorMessage(errorMsg);
         }
       } catch (error) {
@@ -52,8 +49,8 @@ export default function Email({ match }) {
     >
       {loaded ? (
         <div style={{ textAlign: 'center' }}>
-          {verified ? (
-            <div>Your email address has been successfully verified</div>
+          {!username ? (
+            <PasswordForm username={username} />
           ) : expired ? (
             <div>
               The token is invalid or expired. Please request the verification
@@ -63,13 +60,6 @@ export default function Email({ match }) {
             <div>{errorMessage}</div>
           ) : (
             <div>There was an error</div>
-          )}
-          {username && (
-            <div style={{ marginTop: '1.5rem' }}>
-              <Link to={`/users/${username}`}>
-                Go back to your profile page
-              </Link>
-            </div>
           )}
         </div>
       ) : (

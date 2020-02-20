@@ -11,7 +11,7 @@ import {
   getFileInfoFromFileName,
   processedStringWithURL,
   renderFileSize,
-  stringIsEmpty
+  isValidSpoiler
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { cloudFrontURL } from 'constants/defaultValues';
@@ -164,16 +164,5 @@ export default function TargetMessage({ message, onScrollToBottom }) {
       return setImageModalShown(true);
     }
     window.open(src);
-  }
-
-  function isValidSpoiler(content = '') {
-    let displayedContent = '';
-    if (content.startsWith('/secret ')) {
-      displayedContent = content.substr(8);
-    }
-    if (content.startsWith('/spoiler ')) {
-      displayedContent = content.substr(9);
-    }
-    return !stringIsEmpty(displayedContent);
   }
 }

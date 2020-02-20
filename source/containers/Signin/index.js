@@ -49,6 +49,7 @@ export default function Signin({ onHide }) {
             username={username}
             onSetUsername={setUsername}
             onShowLoginForm={() => setCurrentPage('login')}
+            onHide={onHide}
           />
         )}
       </Modal>

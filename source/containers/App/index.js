@@ -15,6 +15,7 @@ import SigninModal from 'containers/Signin';
 import Management from 'containers/Management';
 import MobileMenu from './MobileMenu';
 import Profile from 'containers/Profile';
+import ResetPassword from 'containers/ResetPassword';
 import Verify from 'containers/Verify';
 import VideoPage from 'containers/VideoPage';
 import { Switch, Route } from 'react-router-dom';
@@ -275,6 +276,7 @@ function App({ location, history }) {
             render={() => <Chat onFileUpload={handleFileUploadOnChat} />}
           />
           <Route path="/management" component={Management} />
+          <Route path="/reset" component={ResetPassword} />
           <Route path="/verify" component={Verify} />
           <Route path="/privacy" component={Privacy} />
           <Route

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
-import { stringIsEmpty, trimWhiteSpaces } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import Input from 'components/Texts/Input';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -76,7 +76,7 @@ export default function SignUpForm({
               placeholder="Enter the username you wish to use. It has to be at least 3 characters long"
               onChange={text => {
                 setErrorMessage('');
-                onSetUsername(trimWhiteSpaces(text));
+                onSetUsername(text.trim());
               }}
               onKeyPress={event => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -92,7 +92,7 @@ export default function SignUpForm({
               placeholder="Password (You MUST remember your password. Write it down somewhere!)"
               onChange={text => {
                 setErrorMessage('');
-                setPassword(text);
+                setPassword(text.trim());
               }}
               onKeyPress={event => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -110,7 +110,7 @@ export default function SignUpForm({
               placeholder="What is your first name? Mine is Mikey"
               onChange={text => {
                 setErrorMessage('');
-                setFirstname(trimWhiteSpaces(text));
+                setFirstname(text.trim());
               }}
               onKeyPress={event => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -127,7 +127,7 @@ export default function SignUpForm({
               placeholder="What is your last name? Mine is Lee"
               onChange={text => {
                 setErrorMessage('');
-                setLastname(trimWhiteSpaces(text));
+                setLastname(text.trim());
               }}
               onKeyPress={event => {
                 if (event.key === 'Enter' && !submitDisabled) {

@@ -8,8 +8,9 @@ const app = express();
 
 const server = require('../webpack/webpack.dev').default(app);
 server.use(express.static(path.resolve(__dirname, '../public')));
-const http = require('http');
-
-http.createServer(server).listen(process.env.PORT, function() {
+server.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
+});
+server.listen(process.env.PORT, function() {
   console.log('Server listening on port:', process.env.PORT);
 });

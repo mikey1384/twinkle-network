@@ -5,10 +5,16 @@ import CheckYourEmail from './CheckYourEmail';
 EmailExists.propTypes = {
   email: PropTypes.string,
   verifiedEmail: PropTypes.string,
-  onEmailSent: PropTypes.func.isRequired
+  onEmailSent: PropTypes.func.isRequired,
+  userId: PropTypes.number.isRequired
 };
 
-export default function EmailExists({ email, onEmailSent, verifiedEmail }) {
+export default function EmailExists({
+  email,
+  onEmailSent,
+  userId,
+  verifiedEmail
+}) {
   const hiddenEmail = useMemo(() => {
     return hideEmail(email);
   }, [email]);
@@ -23,6 +29,7 @@ export default function EmailExists({ email, onEmailSent, verifiedEmail }) {
           email={email}
           hiddenEmail={hiddenEmail}
           onEmailSent={onEmailSent}
+          userId={userId}
         />
       )}
       {email !== verifiedEmail && hiddenVerifiedEmail && (

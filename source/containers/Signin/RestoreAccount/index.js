@@ -9,10 +9,11 @@ import { useAppContext } from 'contexts';
 
 RestoreAccount.propTypes = {
   username: PropTypes.string,
-  onShowLoginForm: PropTypes.func.isRequired
+  onShowLoginForm: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired
 };
 
-export default function RestoreAccount({ username, onShowLoginForm }) {
+export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
   const {
     user: {
       state: { searchedProfiles }
@@ -90,7 +91,7 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
               Next <Icon icon="arrow-right" style={{ marginLeft: '0.7rem' }} />
             </>
           ) : (
-            'Go to my email'
+            'Go to my email inbox'
           )}
         </Button>
       </footer>
@@ -98,13 +99,12 @@ export default function RestoreAccount({ username, onShowLoginForm }) {
   );
 
   function handleNextClick() {
-    switch (section) {
-      case 'username': {
-        setSection('email');
-        break;
-      }
-      default:
-        setSection('username');
+    if (section === 'username') {
+      return setSection('email');
     }
+    if (!matchingAccount.email) return;
+    const emailProvider = 'http://www.' + matchingAccount?.email.split('@')[1];
+    window.open(emailProvider, '_blank');
+    onHide();
   }
 }

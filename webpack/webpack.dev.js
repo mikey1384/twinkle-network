@@ -75,8 +75,8 @@ export default function devConfig(app) {
     ]
   };
 
-  app.use(history());
   const compiler = webpack(config);
+  app.use(history());
   app.use(
     webpackDevMiddleware(compiler, {
       noInfo: true,

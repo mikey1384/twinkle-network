@@ -196,13 +196,13 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
-    async sendVerificationEmail() {
+    async sendVerificationEmail({ email, userId, isPasswordReset }) {
       try {
-        const { data } = await request.put(
-          `${URL}/user/email/verify`,
-          undefined,
-          auth()
-        );
+        const { data } = await request.put(`${URL}/user/email/verify`, {
+          email,
+          userId,
+          isPasswordReset
+        });
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);

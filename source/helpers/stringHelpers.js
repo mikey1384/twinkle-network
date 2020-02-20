@@ -284,6 +284,17 @@ export function isValidEmail(email = '') {
   return regex.test(email);
 }
 
+export function isValidSpoiler(content = '') {
+  let displayedContent = '';
+  if (content.startsWith('/secret ')) {
+    displayedContent = content.substr(8);
+  }
+  if (content.startsWith('/spoiler ')) {
+    displayedContent = content.substr(9);
+  }
+  return !stringIsEmpty(displayedContent);
+}
+
 export function isValidUrl(url = '') {
   const regex = /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   if (!url.includes('://') && !url.includes('www.')) {

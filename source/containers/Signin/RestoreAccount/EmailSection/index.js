@@ -15,6 +15,7 @@ export default function EmailSection({ account, onEmailSent }) {
           email={account.email}
           verifiedEmail={account.verifiedEmail}
           onEmailSent={onEmailSent}
+          userId={account.id}
         />
       ) : (
         <div>You have no email</div>
