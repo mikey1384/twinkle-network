@@ -13,6 +13,8 @@ export default function Content({ match }) {
     requestHelpers: { verifyEmail }
   } = useAppContext();
   const [loaded, setLoaded] = useState(false);
+  const [profilePicId, setProfilePicId] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('');
   const [expired, setExpired] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,10 +23,12 @@ export default function Content({ match }) {
     init();
     async function init() {
       try {
-        const { username, errorMsg } = await verifyEmail({
+        const { profilePicId, userId, username, errorMsg } = await verifyEmail({
           token: match?.params?.token.replace(/\+/g, '.')
         });
         setLoaded(true);
+        setProfilePicId(profilePicId);
+        setUserId(userId);
         setUsername(username);
         if (errorMsg) {
           setErrorMessage(errorMsg);
@@ -49,8 +53,12 @@ export default function Content({ match }) {
     >
       {loaded ? (
         <div style={{ textAlign: 'center' }}>
-          {!username ? (
-            <PasswordForm username={username} />
+          {userId && username ? (
+            <PasswordForm
+              profilePicId={profilePicId}
+              userId={userId}
+              username={username}
+            />
           ) : expired ? (
             <div>
               The token is invalid or expired. Please request the verification

@@ -2,15 +2,30 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
 import Button from 'components/Button';
+import { useAppContext, useContentContext } from 'contexts';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { useHistory } from 'react-router-dom';
 
 PasswordForm.propTypes = {
+  profilePicId: PropTypes.number,
+  userId: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired
 };
 
-export default function PasswordForm({ username }) {
+export default function PasswordForm({ profilePicId, userId, username }) {
+  const history = useHistory();
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const {
+    user: {
+      actions: { onLogin }
+    },
+    requestHelpers: { changePassword }
+  } = useAppContext();
+  const {
+    actions: { onInitContent }
+  } = useContentContext();
+
   return (
     <div>
       <p>Please enter your new password</p>
@@ -59,11 +74,20 @@ export default function PasswordForm({ username }) {
     </div>
   );
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!isValidPassword(password)) {
       return setErrorMsg('Passwords need to be at least 5 characters long');
     }
-    return console.log('it is valid', username);
+    await changePassword({ username, password });
+    onLogin({ userId, username });
+    onInitContent({
+      contentType: 'user',
+      contentId: userId,
+      profilePicId,
+      userId,
+      username
+    });
+    history.push('/');
   }
 
   function isValidPassword(password) {

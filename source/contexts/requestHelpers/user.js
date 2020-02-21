@@ -39,6 +39,20 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
+    async changePassword({ username, password }) {
+      try {
+        const { data } = await request.put(`${URL}/user/password`, {
+          username,
+          password
+        });
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async checkIfUserOnline(userId) {
       try {
         const {
@@ -326,12 +340,12 @@ export default function userRequestHelpers({ auth, handleError, token }) {
     async verifyEmail({ token }) {
       try {
         const {
-          data: { username, errorMsg }
+          data: { profilePicId, userId, username, errorMsg }
         } = await request.get(
           `${URL}/user/email/verify?token=${token}`,
           auth()
         );
-        return Promise.resolve({ username, errorMsg });
+        return Promise.resolve({ profilePicId, userId, username, errorMsg });
       } catch (error) {
         return handleError(error);
       }
