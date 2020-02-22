@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
@@ -23,7 +23,7 @@ LeftMenu.propTypes = {
   onNewButtonClick: PropTypes.func.isRequired
 };
 
-export default function LeftMenu({
+function LeftMenu({
   channelLoadMoreButtonShown,
   currentChannel,
   loadMoreChannels,
@@ -184,3 +184,5 @@ export default function LeftMenu({
     }
   }
 }
+
+export default memo(LeftMenu);
