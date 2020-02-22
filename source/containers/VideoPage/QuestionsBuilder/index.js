@@ -61,7 +61,7 @@ const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 export default function QuestionsBuilder({
   onHide,
   onSubmit,
-  questions: initialQuestions,
+  questions: initialQuestions = [],
   title,
   videoCode
 }) {
