@@ -28,6 +28,7 @@ export function addEmoji(string) {
 export function addTwoLetterEmoji(string) {
   return string
     .replace(/(:\) )/g, '😊 ')
+    .replace(/(\(: )/g, '🙃')
     .replace(/(;\) )/g, '😉 ')
     .replace(/(XD )/g, '😆 ')
     .replace(/(xD )/g, '😆 ')
@@ -41,6 +42,7 @@ export function addTwoLetterEmoji(string) {
 export function addThreeLetterEmoji(string) {
   return string
     .replace(/(:-\) )/g, '😊 ')
+    .replace(/(\(: )/g, '🙃')
     .replace(/(;-\) )/g, '😉 ')
     .replace(/(X-D )/g, '😆 ')
     .replace(/(:-D )/g, '😄 ')
