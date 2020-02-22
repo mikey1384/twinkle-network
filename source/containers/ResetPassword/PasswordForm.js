@@ -78,7 +78,7 @@ export default function PasswordForm({ profilePicId, userId, username }) {
     if (!isValidPassword(password)) {
       return setErrorMsg('Passwords need to be at least 5 characters long');
     }
-    await changePassword({ username, password });
+    await changePassword({ userId, password });
     onLogin({ userId, username });
     onInitContent({
       contentType: 'user',

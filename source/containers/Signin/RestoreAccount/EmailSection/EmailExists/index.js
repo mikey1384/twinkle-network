@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import CheckYourEmail from './CheckYourEmail';
+import SelectEmail from './SelectEmail';
+import Loading from 'components/Loading';
 
 EmailExists.propTypes = {
   email: PropTypes.string,
@@ -19,21 +21,31 @@ export default function EmailExists({
     return hideEmail(email);
   }, [email]);
   const hiddenVerifiedEmail = useMemo(() => {
-    return hideEmail(verifiedEmail);
-  }, [verifiedEmail]);
+    return !email || email !== verifiedEmail ? hideEmail(verifiedEmail) : '';
+  }, [email, verifiedEmail]);
+
+  const viableEmail = email || hiddenEmail;
+  const hiddenViableEmail = hiddenEmail || hiddenVerifiedEmail;
 
   return (
     <div>
-      {hiddenEmail && (
+      {(hiddenEmail && !hiddenVerifiedEmail) ||
+      (!hiddenEmail && hiddenVerifiedEmail) ? (
         <CheckYourEmail
-          email={email}
-          hiddenEmail={hiddenEmail}
+          email={viableEmail}
+          hiddenEmail={hiddenViableEmail}
           onEmailSent={onEmailSent}
           userId={userId}
         />
-      )}
-      {email !== verifiedEmail && hiddenVerifiedEmail && (
-        <div>{hiddenVerifiedEmail}</div>
+      ) : hiddenVerifiedEmail ? (
+        <SelectEmail
+          email={email}
+          hiddenEmail={hiddenEmail}
+          verifiedEmail={verifiedEmail}
+          hiddenVerifiedEmail={hiddenVerifiedEmail}
+        />
+      ) : (
+        <Loading />
       )}
     </div>
   );

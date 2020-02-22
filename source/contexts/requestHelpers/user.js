@@ -39,10 +39,10 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
-    async changePassword({ username, password }) {
+    async changePassword({ userId, password }) {
       try {
         const { data } = await request.put(`${URL}/user/password`, {
-          username,
+          userId,
           password
         });
         if (data.token) {
