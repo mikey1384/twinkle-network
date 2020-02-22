@@ -42,7 +42,9 @@ export default function EmailExists({
           email={email}
           hiddenEmail={hiddenEmail}
           verifiedEmail={verifiedEmail}
+          onEmailSent={onEmailSent}
           hiddenVerifiedEmail={hiddenVerifiedEmail}
+          userId={userId}
         />
       ) : (
         <Loading />
