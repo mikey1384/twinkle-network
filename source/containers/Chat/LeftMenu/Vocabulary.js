@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
@@ -13,7 +13,7 @@ Vocabulary.propTypes = {
   onClick: PropTypes.func.isRequired
 };
 
-export default function Vocabulary({ selected, onClick }) {
+function Vocabulary({ selected, onClick }) {
   const {
     state: { wordsObj, vocabActivities }
   } = useChatContext();
@@ -79,3 +79,5 @@ export default function Vocabulary({ selected, onClick }) {
     </div>
   );
 }
+
+export default memo(Vocabulary);
