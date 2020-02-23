@@ -5,22 +5,15 @@ import { useAppContext } from 'contexts';
 CheckYourEmail.propTypes = {
   email: PropTypes.string.isRequired,
   hiddenEmail: PropTypes.string.isRequired,
-  onEmailSent: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired
 };
 
-export default function CheckYourEmail({
-  email,
-  hiddenEmail,
-  onEmailSent,
-  userId
-}) {
+export default function CheckYourEmail({ email, hiddenEmail, userId }) {
   const {
     requestHelpers: { sendVerificationEmail }
   } = useAppContext();
   useEffect(() => {
     sendVerificationEmail({ email, userId, isPasswordReset: true });
-    onEmailSent(!!email);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

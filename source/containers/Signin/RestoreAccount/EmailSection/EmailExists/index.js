@@ -7,16 +7,10 @@ import Loading from 'components/Loading';
 EmailExists.propTypes = {
   email: PropTypes.string,
   verifiedEmail: PropTypes.string,
-  onEmailSent: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired
 };
 
-export default function EmailExists({
-  email,
-  onEmailSent,
-  userId,
-  verifiedEmail
-}) {
+export default function EmailExists({ email, userId, verifiedEmail }) {
   const hiddenEmail = useMemo(() => {
     return hideEmail(email);
   }, [email]);
@@ -34,7 +28,6 @@ export default function EmailExists({
         <CheckYourEmail
           email={viableEmail}
           hiddenEmail={hiddenViableEmail}
-          onEmailSent={onEmailSent}
           userId={userId}
         />
       ) : hiddenVerifiedEmail ? (
@@ -42,7 +35,6 @@ export default function EmailExists({
           email={email}
           hiddenEmail={hiddenEmail}
           verifiedEmail={verifiedEmail}
-          onEmailSent={onEmailSent}
           hiddenVerifiedEmail={hiddenVerifiedEmail}
           userId={userId}
         />

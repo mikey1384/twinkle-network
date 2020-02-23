@@ -3,18 +3,16 @@ import PropTypes from 'prop-types';
 import EmailExists from './EmailExists';
 
 EmailSection.propTypes = {
-  account: PropTypes.object.isRequired,
-  onEmailSent: PropTypes.func.isRequired
+  account: PropTypes.object.isRequired
 };
 
-export default function EmailSection({ account, onEmailSent }) {
+export default function EmailSection({ account }) {
   return (
     <div>
       {account.email || account.verifiedEmail ? (
         <EmailExists
           email={account.email}
           verifiedEmail={account.verifiedEmail}
-          onEmailSent={onEmailSent}
           userId={account.id}
         />
       ) : (

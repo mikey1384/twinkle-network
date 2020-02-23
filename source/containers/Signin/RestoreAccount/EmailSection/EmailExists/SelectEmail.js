@@ -9,7 +9,6 @@ SelectEmail.propTypes = {
   hiddenEmail: PropTypes.string,
   verifiedEmail: PropTypes.string,
   hiddenVerifiedEmail: PropTypes.string,
-  onEmailSent: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired
 };
 
@@ -18,7 +17,6 @@ export default function SelectEmail({
   hiddenEmail,
   verifiedEmail,
   hiddenVerifiedEmail,
-  onEmailSent,
   userId
 }) {
   const {
@@ -85,6 +83,5 @@ export default function SelectEmail({
   function handleSendEmail(email) {
     sendVerificationEmail({ email, userId, isPasswordReset: true });
     setEmailSent(obj => ({ ...obj, [email]: true }));
-    onEmailSent(!!email);
   }
 }

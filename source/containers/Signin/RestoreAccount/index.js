@@ -21,7 +21,6 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
   } = useAppContext();
   const [section, setSection] = useState('username');
   const [searchText, setSearchText] = useState(username);
-  const [emailSent, setEmailSent] = useState(false);
 
   const matchingAccount = useMemo(() => {
     if (
@@ -35,8 +34,8 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
 
   const disabled = useMemo(() => {
     if (section === 'username') return !matchingAccount;
-    return !emailSent;
-  }, [emailSent, matchingAccount, section]);
+    return false;
+  }, [matchingAccount, section]);
 
   const headerTitle = useMemo(() => {
     if (section === 'username') return 'No problem! We are here to help';
@@ -62,9 +61,7 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
             searchText={searchText}
           />
         )}
-        {section === 'email' && (
-          <EmailSection account={matchingAccount} onEmailSent={setEmailSent} />
-        )}
+        {section === 'email' && <EmailSection account={matchingAccount} />}
       </main>
       <footer>
         {section === 'username' && (
