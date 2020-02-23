@@ -23,9 +23,12 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
   const [searchText, setSearchText] = useState(username);
 
   const matchingAccount = useMemo(() => {
+    console.log(searchedProfiles);
     if (
-      searchedProfiles.filter(profile => profile.username === searchText)
-        .length > 0
+      searchedProfiles.filter(
+        profile =>
+          profile.username?.toLowerCase?.() === searchText?.toLowerCase?.()
+      ).length > 0
     ) {
       return searchedProfiles[0];
     }
