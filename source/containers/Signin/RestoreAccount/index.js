@@ -43,7 +43,7 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
       if (matchingAccount?.email || matchingAccount?.verifiedEmail) {
         return `Email confirmation`;
       } else {
-        return `Please enter you or your parent's email address`;
+        return `No email address found. Ask your teacher for help`;
       }
     }
     return 'TBD';

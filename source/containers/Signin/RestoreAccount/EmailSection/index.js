@@ -16,7 +16,10 @@ export default function EmailSection({ account }) {
           userId={account.id}
         />
       ) : (
-        <div>You have no email</div>
+        <div style={{ fontSize: '1.7rem' }}>
+          <span>{`We need your email address in order for us to make sure you are the owner of this account. `}</span>
+          <b>Ask your Twinkle teacher for help.</b>
+        </div>
       )}
     </div>
   );
