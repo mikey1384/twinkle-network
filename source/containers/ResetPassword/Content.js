@@ -24,7 +24,8 @@ export default function Content({ match }) {
     async function init() {
       try {
         const { profilePicId, userId, username, errorMsg } = await verifyEmail({
-          token: match?.params?.token.replace(/\+/g, '.')
+          token: match?.params?.token.replace(/\+/g, '.'),
+          forPasswordReset: true
         });
         setLoaded(true);
         setProfilePicId(profilePicId);

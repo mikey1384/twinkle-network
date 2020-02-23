@@ -91,7 +91,7 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
               Next <Icon icon="arrow-right" style={{ marginLeft: '0.7rem' }} />
             </>
           ) : (
-            'Go to my email inbox'
+            'Close'
           )}
         </Button>
       </footer>
@@ -102,9 +102,6 @@ export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
     if (section === 'username') {
       return setSection('email');
     }
-    if (!matchingAccount.email) return;
-    const emailProvider = 'http://www.' + matchingAccount?.email.split('@')[1];
-    window.open(emailProvider, '_blank');
     onHide();
   }
 }
