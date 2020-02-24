@@ -95,7 +95,7 @@ function LeftMenu({
       `}
     >
       <div
-        className={css`
+        className={`unselectable ${css`
           padding: 1rem;
           background: ${Color[profileTheme](0.8)};
           color: #fff;
@@ -111,7 +111,7 @@ function LeftMenu({
               background: ${Color[profileTheme]()};
             }
           }
-        `}
+        `}`}
         onClick={onNewButtonClick}
       >
         + New Channel
