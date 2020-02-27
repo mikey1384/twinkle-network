@@ -6,6 +6,7 @@ import Icon from 'components/Icon';
 import { css } from 'emotion';
 import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
+import { useChatContext } from 'contexts';
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
@@ -19,6 +20,9 @@ export default function ChatInfo({
   channelName
 }) {
   const { userId: myId, username, profilePicId, profileTheme } = useMyState();
+  const {
+    actions: { onCall }
+  } = useChatContext();
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
@@ -75,32 +79,34 @@ export default function ChatInfo({
           }}
           className="unselectable"
         >
-          <div
-            className={css`
-              padding: 1rem;
-              margin-bottom: 1rem;
-              background: ${Color[profileTheme](0.8)};
-              color: #fff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-              transition: background 0.2s;
-              @media (max-width: ${mobileMaxWidth}) {
-                background: ${Color[profileTheme](1)};
-              }
-              @media (min-width: ${desktopMinWidth}) {
-                &:hover {
-                  background: ${Color[profileTheme]()};
+          {currentChannel.twoPeople && (
+            <div
+              className={css`
+                padding: 1rem;
+                background: ${Color[profileTheme](0.8)};
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.2s;
+                @media (max-width: ${mobileMaxWidth}) {
+                  background: ${Color[profileTheme](1)};
                 }
-              }
-            `}
-            onClick={handleCall}
-          >
-            <Icon icon="phone-volume" />
-            <span style={{ marginLeft: '1rem' }}>Voice Call</span>
-          </div>
+                @media (min-width: ${desktopMinWidth}) {
+                  &:hover {
+                    background: ${Color[profileTheme]()};
+                  }
+                }
+              `}
+              onClick={() => onCall(currentChannel.id)}
+            >
+              <Icon icon="phone-volume" />
+              <span style={{ marginLeft: '1rem' }}>Call</span>
+            </div>
+          )}
           <ChannelDetails
+            style={{ marginTop: '1rem' }}
             channelId={currentChannel.id}
             channelName={channelName}
           />
@@ -131,8 +137,4 @@ export default function ChatInfo({
       />
     </>
   );
-
-  function handleCall() {
-    console.log('calling');
-  }
 }

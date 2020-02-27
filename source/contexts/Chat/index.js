@@ -9,14 +9,13 @@ export const initialChatState = {
   channelLoadMoreButton: false,
   channelIds: [],
   channelsObj: {},
+  channelOnCall: null,
   chatSearchResults: [],
   chatType: null,
   chessModalShown: false,
   creatingNewDMChannel: false,
   currentChannelName: '',
   customChannelNames: {},
-  vocabActivities: [],
-  vocabActivitiesLoadMoreButton: false,
   filesBeingUploaded: {},
   loadingVocabulary: false,
   loaded: false,
@@ -35,7 +34,9 @@ export const initialChatState = {
   wordCollectors: {},
   wordRegisterStatus: undefined,
   wordsObj: {},
-  userSearchResults: []
+  userSearchResults: [],
+  vocabActivities: [],
+  vocabActivitiesLoadMoreButton: false
 };
 
 ChatContextProvider.propTypes = {

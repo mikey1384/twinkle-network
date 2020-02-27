@@ -4,11 +4,11 @@ import { Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
 
 Channel.propTypes = {
-  chatType: PropTypes.string.isRequired,
+  chatType: PropTypes.string,
   channel: PropTypes.object.isRequired,
   customChannelNames: PropTypes.object.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.func.isRequired,
+  selectedChannelId: PropTypes.number.isRequired,
   userId: PropTypes.number
 };
 

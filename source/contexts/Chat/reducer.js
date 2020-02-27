@@ -291,6 +291,12 @@ export default function ChatReducer(state, action) {
           }
         }
       };
+    case 'INIT_CALL': {
+      return {
+        ...state,
+        channelOnCall: action.channelId
+      };
+    }
     case 'INIT_CHAT': {
       let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;

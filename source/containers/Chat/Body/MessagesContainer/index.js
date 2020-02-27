@@ -25,6 +25,7 @@ import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 import { checkScrollIsAtTheBottom } from 'helpers';
+import CallScreen from './CallScreen';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -50,6 +51,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   } = useNotiContext();
   const {
     state: {
+      channelOnCall,
       channelLoading,
       chessModalShown,
       creatingNewDMChannel,
@@ -163,8 +165,16 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
       socketConnected && textAreaHeight
         ? `${textAreaHeight}px - 1rem`
         : '5.5rem'
-    }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''})`;
-  }, [replyTarget, socketConnected, textAreaHeight]);
+    }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''}${
+      selectedChannelId === channelOnCall ? ' - 50%' : ''
+    })`;
+  }, [
+    channelOnCall,
+    replyTarget,
+    selectedChannelId,
+    socketConnected,
+    textAreaHeight
+  ]);
 
   const fillerHeight = useMemo(
     () =>
@@ -314,6 +324,9 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         type="file"
         onChange={handleUpload}
       />
+      {selectedChannelId === channelOnCall && (
+        <CallScreen style={{ height: '50%' }} />
+      )}
       <div
         className={css`
           display: flex;

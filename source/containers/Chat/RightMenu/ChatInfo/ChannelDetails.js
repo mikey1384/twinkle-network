@@ -8,10 +8,11 @@ import { isMobile, textIsOverflown } from 'helpers';
 
 ChannelDetails.propTypes = {
   channelId: PropTypes.number,
-  channelName: PropTypes.string
+  channelName: PropTypes.string,
+  style: PropTypes.object
 };
 
-export default function ChannelDetails({ channelId, channelName }) {
+export default function ChannelDetails({ channelId, channelName, style }) {
   const {
     state: { customChannelNames }
   } = useChatContext();
@@ -20,6 +21,7 @@ export default function ChannelDetails({ channelId, channelName }) {
   return (
     <div
       onClick={() => setChannelNameHovered(hovered => !hovered)}
+      style={style}
       className={css`
         width: 100%;
         line-height: 1.5;
