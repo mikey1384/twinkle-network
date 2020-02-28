@@ -192,6 +192,12 @@ export default function Header({
       const peerId = data.from;
       if (!currentPeerId && peerId !== userId) {
         peerRef.current = new Peer({
+          config: {
+            iceServers: [
+              { urls: 'stun:stun.l.google.com:19302' },
+              { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+            ]
+          },
           initiator: false,
           enableTrickle: true
         });

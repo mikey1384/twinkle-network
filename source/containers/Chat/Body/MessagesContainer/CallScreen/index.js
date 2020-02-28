@@ -45,6 +45,12 @@ export default function CallScreen({ channelOnCall, style }) {
     console.log(stream);
     if (userId === channelOnCall.callerId && stream && !streamRef.current) {
       peerRef.current = new Peer({
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+          ]
+        },
         initiator: true,
         stream,
         enableTrickle: true
