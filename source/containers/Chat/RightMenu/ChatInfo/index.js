@@ -10,16 +10,20 @@ import { useChatContext } from 'contexts';
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
+  channelOnCall: PropTypes.number,
   currentChannel: PropTypes.object.isRequired,
-  currentChannelOnlineMembers: PropTypes.array.isRequired
+  currentChannelOnlineMembers: PropTypes.array.isRequired,
+  selectedChannelId: PropTypes.number
 };
 
 export default function ChatInfo({
+  selectedChannelId,
+  channelOnCall,
   currentChannel,
   currentChannelOnlineMembers,
   channelName
 }) {
-  const { userId: myId, username, profilePicId, profileTheme } = useMyState();
+  const { userId: myId, username, profilePicId } = useMyState();
   const {
     actions: { onCall }
   } = useChatContext();
@@ -83,7 +87,9 @@ export default function ChatInfo({
             <div
               className={css`
                 padding: 1rem;
-                background: ${Color[profileTheme](0.8)};
+                background: ${selectedChannelId !== channelOnCall
+                  ? Color.darkBlue(0.8)
+                  : Color.rose(0.8)};
                 color: #fff;
                 display: flex;
                 align-items: center;
@@ -91,18 +97,30 @@ export default function ChatInfo({
                 cursor: pointer;
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
-                  background: ${Color[profileTheme](1)};
+                  background: ${selectedChannelId !== channelOnCall
+                    ? Color.darkBlue(1)
+                    : Color.rose(1)};
                 }
                 @media (min-width: ${desktopMinWidth}) {
                   &:hover {
-                    background: ${Color[profileTheme]()};
+                    background: ${selectedChannelId !== channelOnCall
+                      ? Color.darkBlue(1)
+                      : Color.rose(1)};
                   }
                 }
               `}
-              onClick={() => onCall(currentChannel.id)}
+              onClick={() =>
+                onCall(
+                  selectedChannelId !== channelOnCall ? currentChannel.id : null
+                )
+              }
             >
-              <Icon icon="phone-volume" />
-              <span style={{ marginLeft: '1rem' }}>Call</span>
+              {selectedChannelId !== channelOnCall && (
+                <Icon icon="phone-volume" />
+              )}
+              <span style={{ marginLeft: '1rem' }}>
+                {selectedChannelId !== channelOnCall ? 'Call' : 'Hang Up'}
+              </span>
             </div>
           )}
           <ChannelDetails

@@ -4,6 +4,7 @@ import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
 import TwinkleLogo from './TwinkleLogo';
 import ErrorBoundary from 'components/ErrorBoundary';
+import Peer from 'simple-peer';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
@@ -47,7 +48,13 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: { channelsObj, chatType, selectedChannelId, numUnreads },
+    state: {
+      channelsObj,
+      chatType,
+      currentPeerId,
+      selectedChannelId,
+      numUnreads
+    },
     actions: {
       onSetReconnecting,
       onChangeChannelOwner,
@@ -62,6 +69,8 @@ export default function Header({
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onReceiveVocabActivity,
+      onSetCurrentPeerId,
+      onSetPeerStream,
       onUpdateCollectorsRankings
     }
   } = useChatContext();
@@ -81,6 +90,7 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
+  const peerRef = useRef({});
   const prevProfilePicId = useRef(profilePicId);
 
   useEffect(() => {
@@ -96,6 +106,7 @@ export default function Header({
   }, [profilePicId, userId, username]);
 
   useEffect(() => {
+    socket.on('call_signal_received', onSignal);
     socket.on('chat_invitation_received', onChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
@@ -119,6 +130,7 @@ export default function Header({
       );
       socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', onDisconnect);
+      socket.removeListener('call_signal_received', onSignal);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('message_attachment_hid', onHideAttachment);
@@ -173,6 +185,33 @@ export default function Header({
       async function handleGetNumberOfUnreadMessages() {
         const numUnreads = await getNumberOfUnreadMessages();
         onGetNumberOfUnreadMessages(numUnreads);
+      }
+    }
+    function onSignal(data) {
+      const peerId = data.from;
+      if (!currentPeerId && peerId !== userId) {
+        peerRef.current = new Peer({
+          initiator: false
+        });
+        onSetCurrentPeerId(peerId);
+        peerRef.current.signal(data.signal);
+
+        peerRef.current.on('signal', signal => {
+          socket.emit('send_answer_signal', {
+            from: userId,
+            signal,
+            channelId: selectedChannelId
+          });
+        });
+
+        peerRef.current.on('stream', stream => {
+          console.log('Got peer stream!!!');
+          onSetPeerStream(stream);
+        });
+
+        peerRef.current.on('error', e => {
+          console.log('Peer error %s:', peerId, e);
+        });
       }
     }
     function onDisconnect() {

@@ -325,7 +325,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         onChange={handleUpload}
       />
       {selectedChannelId === channelOnCall && (
-        <CallScreen style={{ height: '50%' }} />
+        <CallScreen channelId={selectedChannelId} style={{ height: '50%' }} />
       )}
       <div
         className={css`

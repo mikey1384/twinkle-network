@@ -9,14 +9,18 @@ import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
+  channelOnCall: PropTypes.number,
   currentChannel: PropTypes.object,
-  currentChannelOnlineMembers: PropTypes.array
+  currentChannelOnlineMembers: PropTypes.array,
+  selectedChannelId: PropTypes.number
 };
 
 export default function RightMenu({
   channelName,
+  channelOnCall,
   currentChannel,
-  currentChannelOnlineMembers
+  currentChannelOnlineMembers,
+  selectedChannelId
 }) {
   const {
     requestHelpers: { loadRankings }
@@ -70,8 +74,10 @@ export default function RightMenu({
       {!chatType && (
         <ChatInfo
           channelName={channelName}
+          channelOnCall={channelOnCall}
           currentChannel={currentChannel}
           currentChannelOnlineMembers={currentChannelOnlineMembers}
+          selectedChannelId={selectedChannelId}
         />
       )}
     </div>

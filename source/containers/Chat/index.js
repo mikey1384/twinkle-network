@@ -35,6 +35,7 @@ export default function Chat({ onFileUpload }) {
       loaded,
       selectedChannelId,
       channelsObj,
+      channelOnCall,
       channelLoadMoreButton,
       currentChannelName
     },
@@ -210,9 +211,11 @@ export default function Chat({ onFileUpload }) {
               currentChannel={currentChannel}
             />
             <RightMenu
+              channelOnCall={channelOnCall}
               channelName={currentChannelName}
               currentChannel={currentChannel}
               currentChannelOnlineMembers={currentChannelOnlineMembers}
+              selectedChannelId={selectedChannelId}
             />
           </div>
         ) : (
