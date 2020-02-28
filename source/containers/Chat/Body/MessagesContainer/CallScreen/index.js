@@ -1,18 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Peer from 'simple-peer';
+import Incoming from './Incoming';
 import Outgoing from './Outgoing';
+import Icon from 'components/Icon';
+import Button from 'components/Button';
 import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
 CallScreen.propTypes = {
-  channelId: PropTypes.number.isRequired,
+  channelOnCall: PropTypes.object.isRequired,
   style: PropTypes.object
 };
 
-export default function CallScreen({ channelId, style }) {
+export default function CallScreen({ channelOnCall, style }) {
   const { userId } = useMyState();
-  const [callConnected, setCallConnected] = useState(false);
+  const [incomingShown, setIncomingShown] = useState(false);
+  const [stream, setStream] = useState(null);
+  const isMakingCall = useMemo(() => {
+    return channelOnCall.callerId && channelOnCall.callerId === userId;
+  }, [channelOnCall, userId]);
+  const isReceivingCall = useMemo(() => {
+    return channelOnCall.callerId && channelOnCall.callerId !== userId;
+  }, [channelOnCall, userId]);
   const videoRef = useRef(null);
   const peerRef = useRef({});
   const streamRef = useRef(null);
@@ -23,7 +33,6 @@ export default function CallScreen({ channelId, style }) {
       const peerId = data.from;
       if (peerId !== userId) {
         console.log(data.signal);
-        setCallConnected(true);
         peerRef.current.signal(data.signal);
       }
     }
@@ -33,24 +42,27 @@ export default function CallScreen({ channelId, style }) {
   });
 
   useEffect(() => {
-    peerRef.current = new Peer({
-      initiator: true,
-      stream: streamRef.current
-    });
-
-    peerRef.current.on('signal', signal => {
-      socket.emit('send_call_signal', {
-        from: userId,
-        signal,
-        channelId
+    console.log(stream);
+    if (userId === channelOnCall.callerId && stream && !streamRef.current) {
+      peerRef.current = new Peer({
+        initiator: true,
+        stream
       });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+      peerRef.current.on('signal', signal => {
+        socket.emit('send_call_signal', {
+          from: userId,
+          signal,
+          channelId: channelOnCall.id
+        });
+      });
+    }
+    streamRef.current = stream;
+  }, [channelOnCall.callerId, channelOnCall.id, stream, userId]);
 
   return (
     <div style={{ width: '100%', ...style }}>
-      {!callConnected && (
+      {isReceivingCall && !incomingShown && (
         <div
           style={{
             width: '100%',
@@ -60,15 +72,19 @@ export default function CallScreen({ channelId, style }) {
             alignItems: 'center'
           }}
         >
-          Calling...
+          <Button filled color="green">
+            <Icon icon="phone-volume" />
+            <span
+              style={{ marginLeft: '1rem' }}
+              onClick={() => setIncomingShown(true)}
+            >
+              Answer
+            </span>
+          </Button>
         </div>
       )}
-      {callConnected && (
-        <Outgoing
-          innerRef={videoRef}
-          onSetStream={stream => (streamRef.current = stream)}
-        />
-      )}
+      {incomingShown && <Incoming />}
+      {isMakingCall && <Outgoing innerRef={videoRef} onSetStream={setStream} />}
     </div>
   );
 }

@@ -8,17 +8,25 @@ Outgoing.propTypes = {
 
 export default function Outgoing({ innerRef, onSetStream }) {
   useEffect(() => {
+    const videoRef = innerRef.current;
     init();
     async function init() {
       const options = { video: true, audio: false };
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
         console.log('setting my stream', stream, innerRef.current);
-        innerRef.current.srcObject = stream;
+        videoRef.srcObject = stream;
         onSetStream(stream);
       }
     }
+    return function cleanUp() {
+      videoRef.srcObject.getTracks().forEach(track => {
+        track.stop();
+      });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <video style={{ width: '100%' }} ref={innerRef} controls></video>;
+  return (
+    <video autoPlay style={{ width: '100%' }} ref={innerRef} controls></video>
+  );
 }

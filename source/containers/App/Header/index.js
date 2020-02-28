@@ -56,6 +56,7 @@ export default function Header({
       numUnreads
     },
     actions: {
+      onCall,
       onSetReconnecting,
       onChangeChannelOwner,
       onChangeChannelSettings,
@@ -194,6 +195,8 @@ export default function Header({
           initiator: false
         });
         onSetCurrentPeerId(peerId);
+        onCall({ channelId: selectedChannelId, callerId: peerId });
+        console.log('getting call signal', data);
         peerRef.current.signal(data.signal);
 
         peerRef.current.on('signal', signal => {

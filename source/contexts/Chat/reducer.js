@@ -294,7 +294,10 @@ export default function ChatReducer(state, action) {
     case 'INIT_CALL': {
       return {
         ...state,
-        channelOnCall: action.channelId
+        channelOnCall: {
+          callerId: action.callerId,
+          id: action.channelId
+        }
       };
     }
     case 'INIT_CHAT': {

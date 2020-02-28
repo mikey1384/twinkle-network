@@ -10,7 +10,7 @@ import { useChatContext } from 'contexts';
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
-  channelOnCall: PropTypes.number,
+  channelOnCall: PropTypes.object,
   currentChannel: PropTypes.object.isRequired,
   currentChannelOnlineMembers: PropTypes.array.isRequired,
   selectedChannelId: PropTypes.number
@@ -87,7 +87,7 @@ export default function ChatInfo({
             <div
               className={css`
                 padding: 1rem;
-                background: ${selectedChannelId !== channelOnCall
+                background: ${selectedChannelId !== channelOnCall.id
                   ? Color.darkBlue(0.8)
                   : Color.rose(0.8)};
                 color: #fff;
@@ -97,13 +97,13 @@ export default function ChatInfo({
                 cursor: pointer;
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
-                  background: ${selectedChannelId !== channelOnCall
+                  background: ${selectedChannelId !== channelOnCall.id
                     ? Color.darkBlue(1)
                     : Color.rose(1)};
                 }
                 @media (min-width: ${desktopMinWidth}) {
                   &:hover {
-                    background: ${selectedChannelId !== channelOnCall
+                    background: ${selectedChannelId !== channelOnCall.id
                       ? Color.darkBlue(1)
                       : Color.rose(1)};
                   }
@@ -111,15 +111,20 @@ export default function ChatInfo({
               `}
               onClick={() =>
                 onCall(
-                  selectedChannelId !== channelOnCall ? currentChannel.id : null
+                  selectedChannelId !== channelOnCall.id
+                    ? {
+                        callerId: myId,
+                        channelId: currentChannel.id
+                      }
+                    : {}
                 )
               }
             >
-              {selectedChannelId !== channelOnCall && (
+              {selectedChannelId !== channelOnCall.id && (
                 <Icon icon="phone-volume" />
               )}
               <span style={{ marginLeft: '1rem' }}>
-                {selectedChannelId !== channelOnCall ? 'Call' : 'Hang Up'}
+                {selectedChannelId !== channelOnCall.id ? 'Call' : 'Hang Up'}
               </span>
             </div>
           )}

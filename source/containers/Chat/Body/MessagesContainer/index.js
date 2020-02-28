@@ -166,7 +166,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         ? `${textAreaHeight}px - 1rem`
         : '5.5rem'
     }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''}${
-      selectedChannelId === channelOnCall ? ' - 50%' : ''
+      selectedChannelId === channelOnCall.id ? ' - 50%' : ''
     })`;
   }, [
     channelOnCall,
@@ -324,8 +324,8 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         type="file"
         onChange={handleUpload}
       />
-      {selectedChannelId === channelOnCall && (
-        <CallScreen channelId={selectedChannelId} style={{ height: '50%' }} />
+      {selectedChannelId === channelOnCall.id && (
+        <CallScreen channelOnCall={channelOnCall} style={{ height: '50%' }} />
       )}
       <div
         className={css`

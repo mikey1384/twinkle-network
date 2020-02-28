@@ -1,9 +1,10 @@
 export default function ChatActions(dispatch) {
   return {
-    onCall(channelId) {
+    onCall({ channelId, callerId }) {
       return dispatch({
         type: 'INIT_CALL',
-        channelId
+        channelId,
+        callerId
       });
     },
     onChangeChannelOwner({ channelId, message, newOwner }) {

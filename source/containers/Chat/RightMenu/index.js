@@ -9,7 +9,7 @@ import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
-  channelOnCall: PropTypes.number,
+  channelOnCall: PropTypes.object,
   currentChannel: PropTypes.object,
   currentChannelOnlineMembers: PropTypes.array,
   selectedChannelId: PropTypes.number
