@@ -46,7 +46,8 @@ export default function CallScreen({ channelOnCall, style }) {
     if (userId === channelOnCall.callerId && stream && !streamRef.current) {
       peerRef.current = new Peer({
         initiator: true,
-        stream
+        stream,
+        enableTrickle: true
       });
 
       peerRef.current.on('signal', signal => {

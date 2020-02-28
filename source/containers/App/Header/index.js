@@ -192,7 +192,8 @@ export default function Header({
       const peerId = data.from;
       if (!currentPeerId && peerId !== userId) {
         peerRef.current = new Peer({
-          initiator: false
+          initiator: false,
+          enableTrickle: true
         });
         onSetCurrentPeerId(peerId);
         onCall({ channelId: selectedChannelId, callerId: peerId });
