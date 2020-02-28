@@ -23,7 +23,7 @@ export default function ChatInfo({
   currentChannelOnlineMembers,
   channelName
 }) {
-  const { userId: myId, username, profilePicId } = useMyState();
+  const { authLevel, userId: myId, username, profilePicId } = useMyState();
   const {
     actions: { onCall }
   } = useChatContext();
@@ -83,7 +83,7 @@ export default function ChatInfo({
           }}
           className="unselectable"
         >
-          {currentChannel.twoPeople && (
+          {currentChannel.twoPeople && authLevel > 5 && (
             <div
               className={css`
                 padding: 1rem;

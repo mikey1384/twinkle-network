@@ -11,11 +11,12 @@ export default function Outgoing({ innerRef, onSetStream }) {
     const videoRef = innerRef.current;
     init();
     async function init() {
-      const options = { video: true, audio: false };
+      const options = { video: true, audio: true };
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
         console.log('setting my stream', stream, innerRef.current);
         videoRef.srcObject = stream;
+        videoRef.volume = 0;
         onSetStream(stream);
       }
     }
@@ -26,7 +27,5 @@ export default function Outgoing({ innerRef, onSetStream }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return (
-    <video autoPlay style={{ width: '100%' }} ref={innerRef} controls></video>
-  );
+  return <video autoPlay style={{ width: '100%' }} ref={innerRef}></video>;
 }
