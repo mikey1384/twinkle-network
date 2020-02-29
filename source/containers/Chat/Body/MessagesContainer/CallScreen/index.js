@@ -46,13 +46,18 @@ export default function CallScreen({ channelOnCall, style }) {
     if (userId === channelOnCall.callerId && stream && !streamRef.current) {
       peerRef.current = new Peer({
         config: {
-          iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          iceServers: [
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun2.l.google.com:19302' },
+            { urls: 'stun3.l.google.com:19302' },
+            { urls: 'stun:stun4.l.google.com:19302' },
+            { urls: 'stun:stun.stunprotocol.org:3478' }
+          ]
         },
         initiator: true,
         stream,
         enableTrickle: true
       });
-
       peerRef.current.on('signal', signal => {
         socket.emit('send_call_signal', {
           from: userId,
