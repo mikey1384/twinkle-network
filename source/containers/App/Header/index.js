@@ -48,7 +48,13 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: { channelsObj, chatType, selectedChannelId, numUnreads },
+    state: {
+      channelsObj,
+      chatType,
+      currentPeerId,
+      selectedChannelId,
+      numUnreads
+    },
     actions: {
       onCall,
       onSetReconnecting,
@@ -84,8 +90,6 @@ export default function Header({
   const {
     state: { pageVisible }
   } = useViewContext();
-
-  const peerRef = useRef({});
   const prevProfilePicId = useRef(profilePicId);
 
   useEffect(() => {
@@ -184,48 +188,49 @@ export default function Header({
     }
     function onSignal(data) {
       const peerId = data.from;
-      if (peerId !== userId) {
-        peerRef.current = new Peer({
-          config: {
-            iceServers: [
-              {
-                urls: [
-                  'stun:stun1.l.google.com:19302',
-                  'stun:stun2.l.google.com:19305'
-                ]
-              },
-              {
-                urls: 'turn:13.114.166.221:3478?transport=udp',
-                username: process.env.COTURN_USERNAME,
-                credential: process.env.COTURN_PASSWORD
-              }
-            ]
-          },
-          initiator: false,
-          enableTrickle: true
-        });
-        onSetCurrentPeerId(peerId);
-        onCall({ channelId: selectedChannelId, callerId: peerId });
-        console.log('getting call signal', data);
-        peerRef.current.signal(data.signal);
-
-        peerRef.current.on('signal', signal => {
-          console.log('sending~~~', signal);
-          socket.emit('send_answer_signal', {
-            from: userId,
-            signal,
-            channelId: selectedChannelId
+      if (!currentPeerId && peerId !== userId) {
+        try {
+          const peer = new Peer({
+            config: {
+              iceServers: [
+                {
+                  urls: [
+                    'stun:stun1.l.google.com:19302',
+                    'stun:stun2.l.google.com:19305'
+                  ]
+                },
+                {
+                  urls: 'turn:13.114.166.221:3478?transport=udp',
+                  username: process.env.COTURN_USERNAME,
+                  credential: process.env.COTURN_PASSWORD
+                }
+              ]
+            },
+            initiator: false,
+            enableTrickle: true
           });
-        });
+          onSetCurrentPeerId(peerId);
+          onCall({ channelId: selectedChannelId, callerId: peerId });
+          peer.signal(data.signal);
 
-        peerRef.current.on('stream', stream => {
-          console.log('Got peer stream!!!');
-          onSetPeerStream(stream);
-        });
+          peer.on('signal', signal => {
+            socket.emit('send_answer_signal', {
+              from: userId,
+              signal,
+              channelId: selectedChannelId
+            });
+          });
 
-        peerRef.current.on('error', e => {
-          console.log('Peer error %s:', peerId, e);
-        });
+          peer.on('stream', stream => {
+            onSetPeerStream(stream);
+          });
+
+          peer.on('error', e => {
+            console.log('Peer error %s:', peerId, e);
+          });
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
     function onDisconnect() {

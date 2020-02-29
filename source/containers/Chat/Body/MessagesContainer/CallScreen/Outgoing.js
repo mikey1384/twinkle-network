@@ -14,7 +14,6 @@ export default function Outgoing({ innerRef, onSetStream }) {
       const options = { video: true, audio: true };
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
-        console.log('setting my stream', stream, innerRef.current);
         videoRef.srcObject = stream;
         videoRef.volume = 0;
         onSetStream(stream);

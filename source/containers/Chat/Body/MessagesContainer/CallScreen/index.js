@@ -25,13 +25,13 @@ export default function CallScreen({ channelOnCall, style }) {
   }, [channelOnCall, userId]);
   const videoRef = useRef(null);
   const peerRef = useRef({});
+  const streamRef = useRef(null);
 
   useEffect(() => {
     socket.on('answer_signal_received', onSignal);
     function onSignal(data) {
       const peerId = data.from;
       if (peerId !== userId) {
-        console.log(data.signal);
         peerRef.current.signal(data.signal);
       }
     }
@@ -41,8 +41,8 @@ export default function CallScreen({ channelOnCall, style }) {
   });
 
   useEffect(() => {
-    console.log(stream);
-    if (userId === channelOnCall.callerId && stream) {
+    if (userId === channelOnCall.callerId && stream && !streamRef.current) {
+      streamRef.current = stream;
       try {
         peerRef.current = new Peer({
           config: {
@@ -62,8 +62,7 @@ export default function CallScreen({ channelOnCall, style }) {
           },
           initiator: true,
           stream,
-          enableTrickle: true,
-          reconnectTimer: 100
+          enableTrickle: true
         });
         peerRef.current.on('signal', signal => {
           socket.emit('send_call_signal', {
