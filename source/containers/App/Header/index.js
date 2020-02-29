@@ -204,17 +204,16 @@ export default function Header({
             }
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
-          console.log(data.signal);
-          peerRef.current.signal(data.signal);
+          if (data.signal.type === 'answer') {
+            peerRef.current.signal(data.signal);
+          }
 
           peerRef.current.on('signal', signal => {
-            if (signal.type === 'answer') {
-              socket.emit('send_answer_signal', {
-                from: userId,
-                signal,
-                channelId: selectedChannelId
-              });
-            }
+            socket.emit('send_answer_signal', {
+              from: userId,
+              signal,
+              channelId: selectedChannelId
+            });
           });
 
           peerRef.current.on('stream', stream => {
