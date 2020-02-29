@@ -184,7 +184,7 @@ export default function Header({
     function onSignal(data) {
       const peerId = data.from;
       onSetCurrentPeerId(peerId);
-      if (peerId !== userId && data.signal.type === 'offer') {
+      if (peerId !== userId) {
         try {
           peerRef.current = new Peer({
             config: {
@@ -209,11 +209,13 @@ export default function Header({
 
           peerRef.current.on('signal', signal => {
             console.log('signalling answer', signal);
-            socket.emit('send_answer_signal', {
-              from: userId,
-              signal,
-              channelId: selectedChannelId
-            });
+            if (data.signal.type === 'offer') {
+              socket.emit('send_answer_signal', {
+                from: userId,
+                signal,
+                channelId: selectedChannelId
+              });
+            }
           });
 
           peerRef.current.on('stream', stream => {
