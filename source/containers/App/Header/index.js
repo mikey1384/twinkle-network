@@ -91,6 +91,7 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
+  const processingOffer = useRef(false);
   const peerRef = useRef({});
   const prevProfilePicId = useRef(profilePicId);
 
@@ -190,7 +191,8 @@ export default function Header({
     }
     function onSignal(data) {
       const peerId = data.from;
-      if (!currentPeerId && peerId !== userId) {
+      if (!currentPeerId && peerId !== userId && !processingOffer.current) {
+        processingOffer.current = true;
         peerRef.current = new Peer({
           config: {
             iceServers: [
@@ -230,6 +232,7 @@ export default function Header({
 
         peerRef.current.on('error', e => {
           console.log('Peer error %s:', peerId, e);
+          processingOffer.current = false;
         });
       }
     }
