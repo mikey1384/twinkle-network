@@ -184,7 +184,7 @@ export default function Header({
     function onSignal(data) {
       const peerId = data.from;
       onSetCurrentPeerId(peerId);
-      if (peerId !== userId) {
+      if (peerId !== userId && !peerRef.current) {
         try {
           peerRef.current = new Peer({
             config: {
