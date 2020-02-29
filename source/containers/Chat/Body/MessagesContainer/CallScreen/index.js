@@ -55,8 +55,8 @@ export default function CallScreen({ channelOnCall, style }) {
               },
               {
                 urls: 'turn:13.114.166.221:3478?transport=udp',
-                username: process.env.COTURN_USERNAME,
-                credential: process.env.COTURN_PASSWORD
+                username: 'sender',
+                credential: '12345678'
               }
             ]
           },

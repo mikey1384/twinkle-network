@@ -196,8 +196,8 @@ export default function Header({
                 },
                 {
                   urls: 'turn:13.114.166.221:3478?transport=udp',
-                  username: process.env.COTURN_USERNAME,
-                  credential: process.env.COTURN_PASSWORD
+                  username: 'receiver',
+                  credential: 'abcdefgh'
                 }
               ]
             },
