@@ -9,9 +9,10 @@ export default function Incoming() {
   const streaming = useRef(false);
 
   useEffect(() => {
+    const videoRef = peerVideoRef.current;
     console.log(peerStream, streaming.current, 'please show');
     if (peerStream && !streaming.current) {
-      peerVideoRef.current.srcObject = peerStream;
+      videoRef.srcObject = peerStream;
       streaming.current = true;
     }
   }, [currentPeerId, peerStream]);
