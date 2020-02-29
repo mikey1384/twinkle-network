@@ -153,7 +153,9 @@ function ContentListItem({
                       style={{
                         fontSize: '2rem',
                         fontWeight: 'bold',
-                        lineHeight: 1.5
+                        lineHeight: 1.5,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
                       }}
                       className="label"
                     >
