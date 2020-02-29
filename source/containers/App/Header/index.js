@@ -208,8 +208,7 @@ export default function Header({
           peerRef.current.signal(data.signal);
 
           peerRef.current.on('signal', signal => {
-            console.log('signalling answer', signal);
-            if (data.signal.type === 'offer') {
+            if (signal.type === 'answer') {
               socket.emit('send_answer_signal', {
                 from: userId,
                 signal,
