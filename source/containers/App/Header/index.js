@@ -205,9 +205,11 @@ export default function Header({
             enableTrickle: true
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
+          console.log(data.signal);
           peer.signal(data.signal);
 
           peer.on('signal', signal => {
+            console.log('signalling answer');
             socket.emit('send_answer_signal', {
               from: userId,
               signal,
