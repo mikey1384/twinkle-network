@@ -45,21 +45,6 @@ export default function CallScreen({ channelOnCall, style }) {
       streamRef.current = stream;
       try {
         peerRef.current = new Peer({
-          config: {
-            iceServers: [
-              {
-                urls: [
-                  'stun:stun1.l.google.com:19302',
-                  'stun:stun2.l.google.com:19305'
-                ]
-              },
-              {
-                urls: 'turn:13.114.166.221:3478?transport=udp',
-                username: process.env.COTURN_USERNAME,
-                credential: process.env.COTURN_PASSWORD
-              }
-            ]
-          },
           initiator: true,
           stream,
           enableTrickle: true

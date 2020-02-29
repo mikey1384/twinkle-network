@@ -186,7 +186,23 @@ export default function Header({
       if (peerId !== userId && data.signal.type === 'offer') {
         try {
           const peer = new Peer({
-            initiator: false
+            config: {
+              iceServers: [
+                {
+                  urls: [
+                    'stun:stun1.l.google.com:19302',
+                    'stun:stun2.l.google.com:19305'
+                  ]
+                },
+                {
+                  urls: 'turn:13.114.166.221:3478?transport=udp',
+                  username: process.env.COTURN_USERNAME,
+                  credential: process.env.COTURN_PASSWORD
+                }
+              ]
+            },
+            initiator: false,
+            enableTrickle: true
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
           peer.signal(data.signal);
