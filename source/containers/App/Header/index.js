@@ -182,6 +182,7 @@ export default function Header({
     }
     function onSignal(data) {
       const peerId = data.from;
+      onSetCurrentPeerId(peerId);
       if (peerId !== userId) {
         try {
           const peer = new Peer({
@@ -203,7 +204,6 @@ export default function Header({
             initiator: false,
             enableTrickle: true
           });
-          onSetCurrentPeerId(peerId);
           onCall({ channelId: selectedChannelId, callerId: peerId });
           peer.signal(data.signal);
 
