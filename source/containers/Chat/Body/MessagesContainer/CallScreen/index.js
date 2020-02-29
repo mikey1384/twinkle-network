@@ -31,7 +31,7 @@ export default function CallScreen({ channelOnCall, style }) {
     socket.on('answer_signal_received', onSignal);
     function onSignal(data) {
       const peerId = data.from;
-      if (peerId !== userId) {
+      if (peerId !== userId && data.signal.type === 'answer') {
         peerRef.current.signal(data.signal);
       }
     }
