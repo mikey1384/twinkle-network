@@ -24,7 +24,6 @@ export default function ChatInfo({
   channelName
 }) {
   const { authLevel, userId: myId, username, profilePicId } = useMyState();
-  console.log(authLevel);
   const {
     actions: { onCall }
   } = useChatContext();
