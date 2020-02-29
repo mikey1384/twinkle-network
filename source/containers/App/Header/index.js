@@ -205,7 +205,10 @@ export default function Header({
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
           if (data.signal.type === 'offer') {
+            console.log('offer!!');
             peerRef.current.signal(data.signal);
+          } else {
+            console.log(data.signal, 'candidate!');
           }
 
           peerRef.current.on('signal', signal => {
@@ -217,7 +220,7 @@ export default function Header({
           });
 
           peerRef.current.on('stream', stream => {
-            console.log('streaming....!');
+            console.log('streaming....!', stream);
             onSetPeerStream(stream);
           });
 
