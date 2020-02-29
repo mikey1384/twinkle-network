@@ -197,7 +197,7 @@ export default function Header({
                 {
                   urls: 'turn:13.114.166.221:3478?transport=udp',
                   username: userId,
-                  credential: '12345678'
+                  credential: 'testtesttest'
                 }
               ]
             },
