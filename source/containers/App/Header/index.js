@@ -204,7 +204,7 @@ export default function Header({
             }
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
-          if (data.signal.type === 'answer') {
+          if (data.signal.type === 'offer') {
             peerRef.current.signal(data.signal);
           }
 
