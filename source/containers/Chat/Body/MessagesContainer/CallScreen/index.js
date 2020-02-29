@@ -25,7 +25,6 @@ export default function CallScreen({ channelOnCall, style }) {
   }, [channelOnCall, userId]);
   const videoRef = useRef(null);
   const peerRef = useRef({});
-  const streamRef = useRef(null);
 
   useEffect(() => {
     socket.on('answer_signal_received', onSignal);
@@ -43,36 +42,40 @@ export default function CallScreen({ channelOnCall, style }) {
 
   useEffect(() => {
     console.log(stream);
-    if (userId === channelOnCall.callerId && stream && !streamRef.current) {
-      peerRef.current = new Peer({
-        config: {
-          iceServers: [
-            {
-              urls: [
-                'stun:stun1.l.google.com:19302',
-                'stun:stun2.l.google.com:19305'
-              ]
-            },
-            {
-              urls: 'turn:13.114.166.221:3478?transport=udp',
-              username: process.env.COTURN_USERNAME,
-              credential: process.env.COTURN_PASSWORD
-            }
-          ]
-        },
-        initiator: true,
-        stream,
-        enableTrickle: true
-      });
-      peerRef.current.on('signal', signal => {
-        socket.emit('send_call_signal', {
-          from: userId,
-          signal,
-          channelId: channelOnCall.id
+    if (userId === channelOnCall.callerId && stream) {
+      try {
+        peerRef.current = new Peer({
+          config: {
+            iceServers: [
+              {
+                urls: [
+                  'stun:stun1.l.google.com:19302',
+                  'stun:stun2.l.google.com:19305'
+                ]
+              },
+              {
+                urls: 'turn:13.114.166.221:3478?transport=udp',
+                username: process.env.COTURN_USERNAME,
+                credential: process.env.COTURN_PASSWORD
+              }
+            ]
+          },
+          initiator: true,
+          stream,
+          enableTrickle: true,
+          reconnectTimer: 100
         });
-      });
+        peerRef.current.on('signal', signal => {
+          socket.emit('send_call_signal', {
+            from: userId,
+            signal,
+            channelId: channelOnCall.id
+          });
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
-    streamRef.current = stream;
   }, [channelOnCall.callerId, channelOnCall.id, stream, userId]);
 
   return (
