@@ -17,5 +17,7 @@ export default function Incoming() {
     }
   }, [currentPeerId, peerStream]);
 
-  return <video autoPlay style={{ width: '100%' }} ref={peerVideoRef} />;
+  return (
+    <video autoPlay style={{ width: '100%' }} ref={peerVideoRef} controls />
+  );
 }
