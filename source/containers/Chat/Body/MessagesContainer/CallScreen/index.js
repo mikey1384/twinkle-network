@@ -65,6 +65,7 @@ export default function CallScreen({ channelOnCall, style }) {
           enableTrickle: true
         });
         peerRef.current.on('signal', signal => {
+          console.log('sending', signal);
           socket.emit('send_call_signal', {
             from: userId,
             signal,

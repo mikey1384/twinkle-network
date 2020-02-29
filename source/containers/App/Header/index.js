@@ -183,7 +183,7 @@ export default function Header({
     function onSignal(data) {
       const peerId = data.from;
       onSetCurrentPeerId(peerId);
-      if (peerId !== userId) {
+      if (peerId !== userId && data.signal.type === 'offer') {
         try {
           const peer = new Peer({
             config: {
