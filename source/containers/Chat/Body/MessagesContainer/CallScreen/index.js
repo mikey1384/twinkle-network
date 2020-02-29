@@ -31,7 +31,7 @@ export default function CallScreen({ channelOnCall, style }) {
     socket.on('answer_signal_received', onSignal);
     function onSignal(data) {
       const peerId = data.from;
-      if (peerId !== userId && data.signal.type === 'answer') {
+      if (peerId !== userId) {
         peerRef.current.signal(data.signal);
       }
     }
@@ -64,6 +64,7 @@ export default function CallScreen({ channelOnCall, style }) {
           initiator: true,
           stream
         });
+        console.log(stream);
         peerRef.current.on('signal', signal => {
           console.log('sending', signal);
           socket.emit('send_call_signal', {
