@@ -48,13 +48,7 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: {
-      channelsObj,
-      chatType,
-      currentPeerId,
-      selectedChannelId,
-      numUnreads
-    },
+    state: { channelsObj, chatType, selectedChannelId, numUnreads },
     actions: {
       onCall,
       onSetReconnecting,
@@ -188,7 +182,7 @@ export default function Header({
     }
     function onSignal(data) {
       const peerId = data.from;
-      if (!currentPeerId && peerId !== userId) {
+      if (peerId !== userId) {
         try {
           const peer = new Peer({
             config: {
