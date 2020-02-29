@@ -44,6 +44,7 @@ export default function CallScreen({ channelOnCall, style }) {
     if (userId === channelOnCall.callerId && stream && !streamRef.current) {
       streamRef.current = stream;
       try {
+        console.log('setting up peer');
         peerRef.current = new Peer({
           config: {
             iceServers: [
@@ -61,8 +62,7 @@ export default function CallScreen({ channelOnCall, style }) {
             ]
           },
           initiator: true,
-          stream,
-          enableTrickle: true
+          stream
         });
         peerRef.current.on('signal', signal => {
           console.log('sending', signal);

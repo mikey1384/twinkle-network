@@ -3,7 +3,7 @@ import { useChatContext } from 'contexts';
 
 export default function Incoming() {
   const {
-    state: { currentPeerId, peerStream }
+    state: { peerStream }
   } = useChatContext();
   const peerVideoRef = useRef(null);
   const streaming = useRef(false);
@@ -13,7 +13,7 @@ export default function Incoming() {
       peerVideoRef.current.srcObject = peerStream;
       streaming.current = true;
     }
-  }, [currentPeerId, peerStream]);
+  }, [peerStream]);
 
   return <video autoPlay style={{ width: '100%' }} ref={peerVideoRef} />;
 }

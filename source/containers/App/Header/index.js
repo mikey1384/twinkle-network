@@ -200,9 +200,7 @@ export default function Header({
                   credential: 'test'
                 }
               ]
-            },
-            initiator: false,
-            enableTrickle: true
+            }
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
           console.log(data.signal);
