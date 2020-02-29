@@ -85,6 +85,7 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
   const prevProfilePicId = useRef(profilePicId);
+  const peerRef = useRef(null);
 
   useEffect(() => {
     socket.disconnect();
@@ -185,7 +186,7 @@ export default function Header({
       onSetCurrentPeerId(peerId);
       if (peerId !== userId && data.signal.type === 'offer') {
         try {
-          const peer = new Peer({
+          peerRef.current = new Peer({
             config: {
               iceServers: [
                 {
@@ -204,10 +205,10 @@ export default function Header({
           });
           onCall({ channelId: selectedChannelId, callerId: peerId });
           console.log(data.signal);
-          peer.signal(data.signal);
+          peerRef.current.signal(data.signal);
 
-          peer.on('signal', signal => {
-            console.log('signalling answer');
+          peerRef.current.on('signal', signal => {
+            console.log('signalling answer', signal);
             socket.emit('send_answer_signal', {
               from: userId,
               signal,
@@ -215,11 +216,12 @@ export default function Header({
             });
           });
 
-          peer.on('stream', stream => {
+          peerRef.current.on('stream', stream => {
+            console.log('streaming....!');
             onSetPeerStream(stream);
           });
 
-          peer.on('error', e => {
+          peerRef.current.on('error', e => {
             console.log('Peer error %s:', peerId, e);
           });
         } catch (error) {
