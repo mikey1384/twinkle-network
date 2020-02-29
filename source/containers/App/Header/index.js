@@ -48,13 +48,7 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: {
-      channelsObj,
-      chatType,
-      currentPeerId,
-      selectedChannelId,
-      numUnreads
-    },
+    state: { channelsObj, chatType, selectedChannelId, numUnreads },
     actions: {
       onCall,
       onSetReconnecting,
@@ -91,7 +85,6 @@ export default function Header({
     state: { pageVisible }
   } = useViewContext();
 
-  const processingOffer = useRef(false);
   const peerRef = useRef({});
   const prevProfilePicId = useRef(profilePicId);
 
@@ -191,8 +184,7 @@ export default function Header({
     }
     function onSignal(data) {
       const peerId = data.from;
-      if (!currentPeerId && peerId !== userId && !processingOffer.current) {
-        processingOffer.current = true;
+      if (peerId !== userId) {
         peerRef.current = new Peer({
           config: {
             iceServers: [
@@ -218,6 +210,7 @@ export default function Header({
         peerRef.current.signal(data.signal);
 
         peerRef.current.on('signal', signal => {
+          console.log('sending~~~', signal);
           socket.emit('send_answer_signal', {
             from: userId,
             signal,
@@ -232,7 +225,6 @@ export default function Header({
 
         peerRef.current.on('error', e => {
           console.log('Peer error %s:', peerId, e);
-          processingOffer.current = false;
         });
       }
     }
