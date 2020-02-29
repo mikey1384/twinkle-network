@@ -154,8 +154,8 @@ function ContentListItem({
                         fontSize: '2rem',
                         fontWeight: 'bold',
                         lineHeight: 1.5,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
+                        overflowWrap: 'break-word',
+                        wordBreak: 'break-word'
                       }}
                       className="label"
                     >
