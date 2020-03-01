@@ -24,10 +24,17 @@ export default function ChatInfo({
   currentChannelOnlineMembers,
   channelName
 }) {
-  const { authLevel, userId: myId, username, profilePicId } = useMyState();
+  const { userId: myId, username, profilePicId } = useMyState();
   const {
     actions: { onCall }
   } = useChatContext();
+  const canVideoChat = useMemo(() => {
+    let result = true;
+    for (let member of currentChannel?.members) {
+      if (!member.authLevel) result = false;
+    }
+    return result;
+  }, [currentChannel]);
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
@@ -84,7 +91,7 @@ export default function ChatInfo({
           }}
           className="unselectable"
         >
-          {currentChannel.twoPeople && authLevel > 5 && (
+          {currentChannel.twoPeople && canVideoChat && (
             <div
               className={css`
                 padding: 1rem;
