@@ -52,7 +52,7 @@ export default function CallScreen({ channelOnCall, style }) {
           config: {
             iceServers: [
               {
-                urls: 'turn:13.114.166.221:3478?transport=udp',
+                urls: 'turn:18.177.176.36:3478?transport=udp',
                 username: 'test',
                 credential: 'test'
               }
