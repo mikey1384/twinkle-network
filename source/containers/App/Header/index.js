@@ -184,17 +184,11 @@ export default function Header({
     function onSignal(data) {
       const peerId = data.from;
       onSetCurrentPeerId(peerId);
-      if (peerId !== userId && !peerRef.current) {
+      if (peerId !== userId) {
         try {
           peerRef.current = new Peer({
             config: {
               iceServers: [
-                {
-                  urls: [
-                    'stun:stun1.l.google.com:19302',
-                    'stun:stun2.l.google.com:19305'
-                  ]
-                },
                 {
                   urls: 'turn:13.114.166.221:3478?transport=udp',
                   username: 'test',
@@ -206,10 +200,11 @@ export default function Header({
           onCall({ channelId: selectedChannelId, callerId: peerId });
           if (data.signal.type === 'offer') {
             console.log('offer!!');
-            peerRef.current.signal(data.signal);
           } else {
             console.log(data.signal, 'candidate!');
           }
+          console.log('receiving', data.signal);
+          peerRef.current.signal(data.signal);
 
           peerRef.current.on('signal', signal => {
             socket.emit('send_answer_signal', {
