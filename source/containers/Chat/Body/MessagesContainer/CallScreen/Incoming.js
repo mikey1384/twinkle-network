@@ -3,7 +3,8 @@ import { useChatContext } from 'contexts';
 
 export default function Incoming() {
   const {
-    state: { currentPeerId, peerStream }
+    state: { currentPeerId, peerStream },
+    actions: { onSetPeerStream }
   } = useChatContext();
   const peerVideoRef = useRef(null);
   const streaming = useRef(false);
@@ -11,10 +12,18 @@ export default function Incoming() {
   useEffect(() => {
     const videoRef = peerVideoRef.current;
     if (videoRef && peerStream && !streaming.current && !videoRef.srcObject) {
+      console.log('streaming from peer', videoRef.srcObject, peerStream);
       videoRef.srcObject = peerStream;
       streaming.current = true;
     }
   }, [currentPeerId, peerStream]);
+
+  useEffect(() => {
+    return function cleanUp() {
+      onSetPeerStream(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <video

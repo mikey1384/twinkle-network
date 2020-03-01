@@ -76,6 +76,7 @@ export default function CallScreen({ channelOnCall, style }) {
           });
         });
         peerRef.current.on('stream', stream => {
+          console.log('incoming stream reply', stream);
           onShowIncoming();
           onSetPeerStream(stream);
         });

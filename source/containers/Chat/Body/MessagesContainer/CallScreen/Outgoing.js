@@ -30,6 +30,7 @@ export default function Outgoing({ innerRef }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <video
       autoPlay

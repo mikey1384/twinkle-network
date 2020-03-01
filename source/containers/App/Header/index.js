@@ -96,17 +96,6 @@ export default function Header({
   const prevMyStreamRef = useRef(null);
 
   useEffect(() => {
-    if (
-      !prevMyStreamRef.current &&
-      myStream &&
-      channelOnCall.callerId !== userId
-    ) {
-      peerRef.current.addStream(myStream);
-    }
-    prevMyStreamRef.current = myStream;
-  }, [channelOnCall.callerId, myStream, userId]);
-
-  useEffect(() => {
     socket.disconnect();
     socket.connect();
   }, [userId]);
@@ -205,6 +194,7 @@ export default function Header({
       }
     }
     function handlePeer({ channelId, peerId }) {
+      console.log('new peer');
       peerRef.current = new Peer({
         config: {
           iceServers: [
@@ -246,8 +236,6 @@ export default function Header({
         try {
           if (signal.type === 'offer') {
             console.log('offer arrived');
-          } else {
-            console.log(signal, 'candidate arrived');
           }
 
           try {
@@ -319,6 +307,17 @@ export default function Header({
     onShowUpdateNotice(!versionMatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [versionMatch]);
+
+  useEffect(() => {
+    if (
+      !prevMyStreamRef.current &&
+      myStream &&
+      channelOnCall.callerId !== userId
+    ) {
+      peerRef.current.addStream(myStream);
+    }
+    prevMyStreamRef.current = myStream;
+  }, [channelOnCall.callerId, myStream, userId]);
 
   return (
     <ErrorBoundary>
