@@ -48,7 +48,14 @@ export default function Header({
     profilePicId
   } = useMyState();
   const {
-    state: { channelsObj, chatType, selectedChannelId, numUnreads },
+    state: {
+      channelOnCall,
+      channelsObj,
+      chatType,
+      selectedChannelId,
+      myStream,
+      numUnreads
+    },
     actions: {
       onCall,
       onSetReconnecting,
@@ -86,6 +93,18 @@ export default function Header({
   } = useViewContext();
   const prevProfilePicId = useRef(profilePicId);
   const peerRef = useRef(null);
+  const prevMyStreamRef = useRef(null);
+
+  useEffect(() => {
+    if (
+      !prevMyStreamRef.current &&
+      myStream &&
+      channelOnCall.callerId !== userId
+    ) {
+      peerRef.current.addStream(myStream);
+    }
+    prevMyStreamRef.current = myStream;
+  }, [channelOnCall.callerId, myStream, userId]);
 
   useEffect(() => {
     socket.disconnect();

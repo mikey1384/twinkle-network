@@ -807,6 +807,11 @@ export default function ChatReducer(state, action) {
         ...state,
         loadingVocabulary: action.loading
       };
+    case 'SET_MY_STREAM':
+      return {
+        ...state,
+        myStream: action.stream
+      };
     case 'SET_PEER_STREAM':
       return {
         ...state,

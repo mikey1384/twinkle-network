@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useChatContext } from 'contexts';
 
 Outgoing.propTypes = {
-  innerRef: PropTypes.object.isRequired,
-  onSetStream: PropTypes.func.isRequired
+  innerRef: PropTypes.object.isRequired
 };
 
-export default function Outgoing({ innerRef, onSetStream }) {
+export default function Outgoing({ innerRef }) {
+  const {
+    actions: { onSetMyStream }
+  } = useChatContext();
   useEffect(() => {
     const videoRef = innerRef.current;
     init();
@@ -16,10 +19,11 @@ export default function Outgoing({ innerRef, onSetStream }) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
         videoRef.srcObject = stream;
         videoRef.volume = 0;
-        onSetStream(stream);
+        onSetMyStream(stream);
       }
     }
     return function cleanUp() {
+      onSetMyStream(null);
       videoRef.srcObject.getTracks().forEach(track => {
         track.stop();
       });
@@ -29,7 +33,7 @@ export default function Outgoing({ innerRef, onSetStream }) {
   return (
     <video
       autoPlay
-      style={{ position: 'absolute', bottom: 0, right: 0, width: '30%' }}
+      style={{ position: 'absolute', bottom: 0, right: 0, width: '25%' }}
       ref={innerRef}
     ></video>
   );

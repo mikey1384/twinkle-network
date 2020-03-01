@@ -372,6 +372,12 @@ export default function ChatActions(dispatch) {
         loading
       });
     },
+    onSetMyStream(stream) {
+      return dispatch({
+        type: 'SET_MY_STREAM',
+        stream
+      });
+    },
     onSetPeerStream(stream) {
       return dispatch({
         type: 'SET_PEER_STREAM',

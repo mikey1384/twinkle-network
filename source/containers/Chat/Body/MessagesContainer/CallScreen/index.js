@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Peer from 'simple-peer';
 import Incoming from './Incoming';
@@ -16,10 +16,10 @@ CallScreen.propTypes = {
 
 export default function CallScreen({ channelOnCall, style }) {
   const {
-    actions: { onShowIncoming }
+    state: { myStream },
+    actions: { onSetPeerStream, onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();
-  const [stream, setStream] = useState(null);
   const isMakingCall = useMemo(() => {
     return channelOnCall.callerId && channelOnCall.callerId === userId;
   }, [channelOnCall, userId]);
@@ -48,8 +48,8 @@ export default function CallScreen({ channelOnCall, style }) {
   });
 
   useEffect(() => {
-    if (userId === channelOnCall.callerId && stream && !streamRef.current) {
-      streamRef.current = stream;
+    if (userId === channelOnCall.callerId && myStream && !streamRef.current) {
+      streamRef.current = myStream;
       try {
         peerRef.current = new Peer({
           config: {
@@ -62,7 +62,7 @@ export default function CallScreen({ channelOnCall, style }) {
             ]
           },
           initiator: true,
-          stream
+          stream: myStream
         });
         socket.emit('send_peer', {
           peerId: userId,
@@ -75,14 +75,32 @@ export default function CallScreen({ channelOnCall, style }) {
             channelId: channelOnCall.id
           });
         });
+        peerRef.current.on('stream', stream => {
+          onShowIncoming();
+          onSetPeerStream(stream);
+        });
       } catch (error) {
         console.error(error);
       }
     }
-  }, [channelOnCall.callerId, channelOnCall.id, stream, userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelOnCall.callerId, channelOnCall.id, myStream, userId]);
 
   return (
     <div style={{ width: '100%', position: 'relative', ...style }}>
+      {isMakingCall && !channelOnCall.incomingShown && (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          Calling...
+        </div>
+      )}
       {isReceivingCall && !channelOnCall.incomingShown && (
         <div
           style={{
@@ -105,7 +123,9 @@ export default function CallScreen({ channelOnCall, style }) {
         </div>
       )}
       {channelOnCall.incomingShown && <Incoming />}
-      {isMakingCall && <Outgoing innerRef={videoRef} onSetStream={setStream} />}
+      {(isMakingCall || channelOnCall.incomingShown) && (
+        <Outgoing innerRef={videoRef} />
+      )}
     </div>
   );
 }

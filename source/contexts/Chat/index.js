@@ -29,6 +29,7 @@ export const initialChatState = {
   recepientId: null,
   replyTarget: null,
   channelLoading: true,
+  myStream: null,
   selectedChannelId: null,
   subject: {},
   subjectSearchResults: [],

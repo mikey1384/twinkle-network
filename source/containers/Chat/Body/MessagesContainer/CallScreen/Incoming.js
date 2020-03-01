@@ -22,7 +22,7 @@ export default function Incoming() {
       style={{
         position: 'absolute',
         width: '40%',
-        top: '2rem',
+        top: '1.5rem',
         left: '30%'
       }}
       ref={peerVideoRef}
