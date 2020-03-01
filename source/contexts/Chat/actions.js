@@ -407,6 +407,11 @@ export default function ChatActions(dispatch) {
         status
       });
     },
+    onShowIncoming() {
+      return dispatch({
+        type: 'SHOW_INCOMING'
+      });
+    },
     onSubmitMessage({ message, replyTarget }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',

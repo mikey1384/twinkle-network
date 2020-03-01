@@ -5,6 +5,7 @@ import Incoming from './Incoming';
 import Outgoing from './Outgoing';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
+import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
@@ -14,8 +15,10 @@ CallScreen.propTypes = {
 };
 
 export default function CallScreen({ channelOnCall, style }) {
+  const {
+    actions: { onShowIncoming }
+  } = useChatContext();
   const { userId } = useMyState();
-  const [incomingShown, setIncomingShown] = useState(false);
   const [stream, setStream] = useState(null);
   const isMakingCall = useMemo(() => {
     return channelOnCall.callerId && channelOnCall.callerId === userId;
@@ -81,7 +84,7 @@ export default function CallScreen({ channelOnCall, style }) {
 
   return (
     <div style={{ width: '100%', ...style }}>
-      {isReceivingCall && !incomingShown && (
+      {isReceivingCall && !channelOnCall.incomingShown && (
         <div
           style={{
             width: '100%',
@@ -95,14 +98,14 @@ export default function CallScreen({ channelOnCall, style }) {
             <Icon icon="phone-volume" />
             <span
               style={{ marginLeft: '1rem' }}
-              onClick={() => setIncomingShown(true)}
+              onClick={() => onShowIncoming()}
             >
               Answer
             </span>
           </Button>
         </div>
       )}
-      {incomingShown && <Incoming />}
+      {channelOnCall.incomingShown && <Incoming />}
       {isMakingCall && <Outgoing innerRef={videoRef} onSetStream={setStream} />}
     </div>
   );

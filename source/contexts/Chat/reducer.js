@@ -848,6 +848,15 @@ export default function ChatReducer(state, action) {
         wordRegisterStatus: action.status
       };
     }
+    case 'SHOW_INCOMING': {
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          incomingShown: true
+        }
+      };
+    }
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
