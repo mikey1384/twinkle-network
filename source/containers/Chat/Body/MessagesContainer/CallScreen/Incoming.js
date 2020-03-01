@@ -19,8 +19,12 @@ export default function Incoming() {
   }, [currentPeerId, peerStream]);
 
   useEffect(() => {
+    const videoRef = peerVideoRef.current;
     return function cleanUp() {
       onSetPeerStream(null);
+      videoRef.srcObject.getTracks().forEach(track => {
+        track.stop();
+      });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
