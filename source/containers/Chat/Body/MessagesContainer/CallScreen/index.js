@@ -32,7 +32,11 @@ export default function CallScreen({ channelOnCall, style }) {
     function onSignal(data) {
       const peerId = data.from;
       if (peerId !== userId) {
-        peerRef.current.signal(data.signal);
+        try {
+          peerRef.current.signal(data.signal);
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
     return function cleanUp() {
@@ -44,7 +48,6 @@ export default function CallScreen({ channelOnCall, style }) {
     if (userId === channelOnCall.callerId && stream && !streamRef.current) {
       streamRef.current = stream;
       try {
-        console.log('setting up peer');
         peerRef.current = new Peer({
           config: {
             iceServers: [
@@ -58,11 +61,14 @@ export default function CallScreen({ channelOnCall, style }) {
           initiator: true,
           stream
         });
-        console.log(stream);
+        socket.emit('send_peer', {
+          peerId: userId,
+          channelId: channelOnCall.id
+        });
         peerRef.current.on('signal', signal => {
           console.log('sending', signal);
           socket.emit('send_call_signal', {
-            from: userId,
+            peerId: userId,
             signal,
             channelId: channelOnCall.id
           });

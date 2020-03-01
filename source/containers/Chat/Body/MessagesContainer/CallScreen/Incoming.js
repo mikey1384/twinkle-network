@@ -10,7 +10,7 @@ export default function Incoming() {
 
   useEffect(() => {
     const videoRef = peerVideoRef.current;
-    if (peerStream && !streaming.current && !videoRef.srcObject) {
+    if (videoRef && peerStream && !streaming.current && !videoRef.srcObject) {
       console.log(peerStream, videoRef, videoRef.srcObject);
       videoRef.srcObject = peerStream;
       streaming.current = true;
