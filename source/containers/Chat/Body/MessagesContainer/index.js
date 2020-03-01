@@ -161,10 +161,17 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         : 300 * mb,
     [authLevel]
   );
+
   const selectedChannelIsOnCall = useMemo(
     () => selectedChannelId === channelOnCall.id,
     [channelOnCall.id, selectedChannelId]
   );
+
+  useEffect(() => {
+    if (selectedChannelId === channelOnCall.id) {
+      handleSetScrollToBottom();
+    }
+  }, [channelOnCall.id, selectedChannelId]);
 
   const containerHeight = useMemo(() => {
     return `CALC(100% - 1rem - 2px - ${
