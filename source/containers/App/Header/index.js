@@ -197,7 +197,6 @@ export default function Header({
           ]
         }
       });
-      console.log('creating peer:', peerId);
       onCall({ channelId: channelId, callerId: peerId });
       onSetCurrentPeerId(peerId);
       peerRef.current.on('signal', signal => {
@@ -219,7 +218,7 @@ export default function Header({
     }
 
     function handleCallHungUp({ channelId, peerId }) {
-      console.log(channelId, peerId);
+      console.log('hung up', channelId, peerId);
       onCall({});
     }
 
@@ -227,11 +226,10 @@ export default function Header({
       if (peerId !== userId) {
         try {
           if (signal.type === 'offer') {
-            console.log('offer!!');
+            console.log('offer arrived');
           } else {
-            console.log(signal, 'candidate!');
+            console.log(signal, 'candidate arrived');
           }
-          console.log('receiving', signal);
 
           try {
             peerRef.current.signal(signal);

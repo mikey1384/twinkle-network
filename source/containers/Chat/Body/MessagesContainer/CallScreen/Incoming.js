@@ -11,13 +11,22 @@ export default function Incoming() {
   useEffect(() => {
     const videoRef = peerVideoRef.current;
     if (videoRef && peerStream && !streaming.current && !videoRef.srcObject) {
-      console.log(peerStream, videoRef, videoRef.srcObject);
       videoRef.srcObject = peerStream;
       streaming.current = true;
     }
   }, [currentPeerId, peerStream]);
 
   return (
-    <video autoPlay style={{ width: '100%' }} ref={peerVideoRef} controls />
+    <video
+      autoPlay
+      style={{
+        position: 'absolute',
+        width: '40%',
+        top: '2rem',
+        left: '30%'
+      }}
+      ref={peerVideoRef}
+      controls
+    />
   );
 }

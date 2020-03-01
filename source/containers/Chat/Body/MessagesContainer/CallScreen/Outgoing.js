@@ -26,5 +26,11 @@ export default function Outgoing({ innerRef, onSetStream }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <video autoPlay style={{ width: '100%' }} ref={innerRef}></video>;
+  return (
+    <video
+      autoPlay
+      style={{ position: 'absolute', bottom: 0, right: 0, width: '30%' }}
+      ref={innerRef}
+    ></video>
+  );
 }

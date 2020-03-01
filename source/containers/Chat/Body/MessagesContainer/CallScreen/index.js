@@ -69,7 +69,6 @@ export default function CallScreen({ channelOnCall, style }) {
           channelId: channelOnCall.id
         });
         peerRef.current.on('signal', signal => {
-          console.log('sending', signal);
           socket.emit('send_call_signal', {
             peerId: userId,
             signal,
@@ -83,7 +82,7 @@ export default function CallScreen({ channelOnCall, style }) {
   }, [channelOnCall.callerId, channelOnCall.id, stream, userId]);
 
   return (
-    <div style={{ width: '100%', ...style }}>
+    <div style={{ width: '100%', position: 'relative', ...style }}>
       {isReceivingCall && !channelOnCall.incomingShown && (
         <div
           style={{

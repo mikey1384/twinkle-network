@@ -33,6 +33,8 @@ MessagesContainer.propTypes = {
   currentChannel: PropTypes.object.isRequired
 };
 
+const CALL_SCREEN_HEIGHT = '30%';
+
 function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   const {
     requestHelpers: {
@@ -159,6 +161,10 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         : 300 * mb,
     [authLevel]
   );
+  const selectedChannelIsOnCall = useMemo(
+    () => selectedChannelId === channelOnCall.id,
+    [channelOnCall.id, selectedChannelId]
+  );
 
   const containerHeight = useMemo(() => {
     return `CALC(100% - 1rem - 2px - ${
@@ -166,15 +172,9 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         ? `${textAreaHeight}px - 1rem`
         : '5.5rem'
     }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''}${
-      selectedChannelId === channelOnCall.id ? ' - 50%' : ''
+      selectedChannelIsOnCall ? ` - ${CALL_SCREEN_HEIGHT}` : ''
     })`;
-  }, [
-    channelOnCall,
-    replyTarget,
-    selectedChannelId,
-    socketConnected,
-    textAreaHeight
-  ]);
+  }, [replyTarget, selectedChannelIsOnCall, socketConnected, textAreaHeight]);
 
   const fillerHeight = useMemo(
     () =>
@@ -324,8 +324,11 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         type="file"
         onChange={handleUpload}
       />
-      {selectedChannelId === channelOnCall.id && (
-        <CallScreen channelOnCall={channelOnCall} style={{ height: '50%' }} />
+      {selectedChannelIsOnCall && (
+        <CallScreen
+          channelOnCall={channelOnCall}
+          style={{ height: CALL_SCREEN_HEIGHT }}
+        />
       )}
       <div
         className={css`
