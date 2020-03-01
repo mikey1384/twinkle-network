@@ -100,6 +100,7 @@ export default function Header({
   }, [profilePicId, userId, username]);
 
   useEffect(() => {
+    socket.on('call_hung_up', handleCallHungUp);
     socket.on('call_signal_received', handleSignal);
     socket.on('chat_invitation_received', onChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
@@ -117,13 +118,14 @@ export default function Header({
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
     return function cleanUp() {
+      socket.removeListener('connect', onConnect);
       socket.removeListener('chat_invitation_received', onChatInvitation);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
         'channel_settings_changed',
         onChangeChannelSettings
       );
-      socket.removeListener('connect', onConnect);
+      socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('disconnect', onDisconnect);
       socket.removeListener('call_signal_received', handleSignal);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
@@ -214,6 +216,11 @@ export default function Header({
       peerRef.current.on('error', e => {
         console.log('Peer error %s:', peerId, e);
       });
+    }
+
+    function handleCallHungUp({ channelId, peerId }) {
+      console.log(channelId, peerId);
+      onCall({});
     }
 
     function handleSignal({ peerId, signal }) {

@@ -28,8 +28,8 @@ export default function CallScreen({ channelOnCall, style }) {
   const streamRef = useRef(null);
 
   useEffect(() => {
-    socket.on('answer_signal_received', onSignal);
-    function onSignal(data) {
+    socket.on('answer_signal_received', handleSignal);
+    function handleSignal(data) {
       const peerId = data.from;
       if (peerId !== userId) {
         try {
@@ -40,7 +40,7 @@ export default function CallScreen({ channelOnCall, style }) {
       }
     }
     return function cleanUp() {
-      socket.removeListener('answer_signal_received', onSignal);
+      socket.removeListener('answer_signal_received', handleSignal);
     };
   });
 

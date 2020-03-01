@@ -7,6 +7,7 @@ import { css } from 'emotion';
 import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { useChatContext } from 'contexts';
+import { socket } from 'constants/io';
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
@@ -109,16 +110,7 @@ export default function ChatInfo({
                   }
                 }
               `}
-              onClick={() =>
-                onCall(
-                  selectedChannelId !== channelOnCall.id
-                    ? {
-                        callerId: myId,
-                        channelId: currentChannel.id
-                      }
-                    : {}
-                )
-              }
+              onClick={handleCall}
             >
               {selectedChannelId !== channelOnCall.id && (
                 <Icon icon="phone-volume" />
@@ -160,4 +152,21 @@ export default function ChatInfo({
       />
     </>
   );
+
+  function handleCall() {
+    if (selectedChannelId === channelOnCall.id) {
+      socket.emit('hang_up_call', {
+        channelId: channelOnCall.id,
+        peerId: myId
+      });
+    }
+    onCall(
+      selectedChannelId !== channelOnCall.id
+        ? {
+            callerId: myId,
+            channelId: currentChannel.id
+          }
+        : {}
+    );
+  }
 }
