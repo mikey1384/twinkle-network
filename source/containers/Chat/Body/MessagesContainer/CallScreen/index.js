@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Peer from 'simple-peer';
-import Incoming from './Incoming';
-import Outgoing from './Outgoing';
+import Incoming from 'components/Stream/Incoming';
+import Outgoing from 'components/Stream/Outgoing';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import { useChatContext } from 'contexts';
@@ -10,13 +10,12 @@ import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
 CallScreen.propTypes = {
-  channelOnCall: PropTypes.object.isRequired,
   style: PropTypes.object
 };
 
-export default function CallScreen({ channelOnCall, style }) {
+export default function CallScreen({ style }) {
   const {
-    state: { myStream },
+    state: { channelOnCall, myStream },
     actions: { onSetPeerStream, onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();

@@ -332,10 +332,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         onChange={handleUpload}
       />
       {selectedChannelIsOnCall && (
-        <CallScreen
-          channelOnCall={channelOnCall}
-          style={{ height: CALL_SCREEN_HEIGHT }}
-        />
+        <CallScreen style={{ height: CALL_SCREEN_HEIGHT }} />
       )}
       <div
         className={css`
