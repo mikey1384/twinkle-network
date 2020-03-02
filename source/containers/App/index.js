@@ -18,6 +18,8 @@ import Profile from 'containers/Profile';
 import ResetPassword from 'containers/ResetPassword';
 import Verify from 'containers/Verify';
 import VideoPage from 'containers/VideoPage';
+import Incoming from 'components/Stream/Incoming';
+import Outgoing from 'components/Stream/Outgoing';
 import { Switch, Route } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
@@ -62,7 +64,13 @@ function App({ location, history }) {
     username
   } = useMyState();
   const {
-    state: { channelsObj, currentChannelName, replyTarget, selectedChannelId },
+    state: {
+      channelOnCall,
+      channelsObj,
+      currentChannelName,
+      replyTarget,
+      selectedChannelId
+    },
     actions: {
       onDisplayAttachedFile,
       onSetReplyTarget,
@@ -177,6 +185,10 @@ function App({ location, history }) {
       );
     };
   });
+
+  const isMakingCall = useMemo(() => {
+    return channelOnCall.callerId && channelOnCall.callerId === userId;
+  }, [channelOnCall, userId]);
 
   return (
     <div
@@ -301,6 +313,8 @@ function App({ location, history }) {
         </Switch>
       </div>
       {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
+      {channelOnCall.incomingShown && <Incoming />}
+      {(isMakingCall || channelOnCall.incomingShown) && <Outgoing />}
     </div>
   );
 
