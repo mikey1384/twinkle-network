@@ -30,8 +30,8 @@ export default function ChatInfo({
   } = useChatContext();
   const canVideoChat = useMemo(() => {
     let result = true;
-    for (let member of currentChannel?.members) {
-      if (!member.authLevel) result = false;
+    for (let member of currentChannel.members || []) {
+      if (!member?.authLevel) result = false;
     }
     return result;
   }, [currentChannel]);
