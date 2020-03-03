@@ -47,9 +47,13 @@ export default function CallScreen({ style }) {
     }
   }, [myStream]);
 
+  const calling = useMemo(() => {
+    return !channelOnCall.callReceived && channelOnCall.callerId === userId;
+  }, [channelOnCall.callReceived, channelOnCall.callerId, userId]);
+
   return (
     <div style={{ width: '100%', position: 'relative', ...style }}>
-      {!channelOnCall.callReceived && channelOnCall.callerId === userId && (
+      {calling && (
         <div
           style={{
             width: '100%',

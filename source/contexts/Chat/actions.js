@@ -8,6 +8,7 @@ export default function ChatActions(dispatch) {
       });
     },
     onCallReceptionConfirm({ channelId, peerId }) {
+      console.log('yeah');
       return dispatch({
         type: 'CONFIRM_CALL_RECEPTION',
         channelId,
