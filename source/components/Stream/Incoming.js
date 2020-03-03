@@ -33,7 +33,6 @@ export default function Incoming() {
       autoPlay
       style={{ display: 'none', height: 0, width: 0 }}
       ref={peerVideoRef}
-      controls
     />
   );
 }

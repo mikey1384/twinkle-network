@@ -94,6 +94,7 @@ export default function CallScreen({ style }) {
             left: '30%'
           }}
           autoPlay
+          controls
           ref={peerVideoRef}
         />
       )}
