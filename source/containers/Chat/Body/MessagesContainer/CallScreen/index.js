@@ -34,6 +34,7 @@ export default function CallScreen({ style }) {
       !videoRef?.srcObject
     ) {
       videoRef.srcObject = peerStream;
+      videoRef.volume = 0;
       peerStreaming.current = true;
     }
   }, [peerStream, channelOnCall.incomingShown]);

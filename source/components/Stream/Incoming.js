@@ -13,7 +13,6 @@ export default function Incoming() {
     const videoRef = peerVideoRef.current;
     if (videoRef && peerStream && !streaming.current && !videoRef.srcObject) {
       videoRef.srcObject = peerStream;
-      videoRef.volume = 0;
       streaming.current = true;
     }
   }, [currentPeerId, peerStream]);
