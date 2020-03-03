@@ -102,6 +102,14 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: []
       };
+    case 'CONFIRM_CALL_RECEPTION':
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          callReceived: true
+        }
+      };
     case 'CREATE_NEW_CHANNEL': {
       const { channelId } = action.data.message;
       return {

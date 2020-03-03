@@ -63,6 +63,7 @@ export default function Header({
       onChangeChannelSettings,
       onClearRecentChessMessage,
       onHideAttachment,
+      onCallReceptionConfirm,
       onDeleteMessage,
       onEditMessage,
       onGetNumberOfUnreadMessages,
@@ -111,6 +112,7 @@ export default function Header({
 
   useEffect(() => {
     socket.on('call_hung_up', handleCallHungUp);
+    socket.on('call_reception_confirmed', onCallReceptionConfirm);
     socket.on('call_signal_received', handleSignal);
     socket.on('chat_invitation_received', onChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
@@ -129,15 +131,16 @@ export default function Header({
 
     return function cleanUp() {
       socket.removeListener('connect', onConnect);
+      socket.removeListener('call_hung_up', handleCallHungUp);
+      socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
+      socket.removeListener('call_signal_received', handleSignal);
       socket.removeListener('chat_invitation_received', onChatInvitation);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
         'channel_settings_changed',
         onChangeChannelSettings
       );
-      socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('disconnect', onDisconnect);
-      socket.removeListener('call_signal_received', handleSignal);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('message_attachment_hid', onHideAttachment);
@@ -195,6 +198,7 @@ export default function Header({
         onGetNumberOfUnreadMessages(numUnreads);
       }
     }
+
     function handlePeer({ channelId, peerId }) {
       console.log('new peer');
       incomingPeerRef.current = new Peer({
@@ -369,7 +373,6 @@ export default function Header({
           });
         });
         outgoingPeerRef.current.on('stream', stream => {
-          console.log('incoming stream reply', stream);
           onShowIncoming();
           onSetPeerStream(stream);
         });

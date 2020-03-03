@@ -7,6 +7,13 @@ export default function ChatActions(dispatch) {
         callerId
       });
     },
+    onCallReceptionConfirm({ channelId, peerId }) {
+      return dispatch({
+        type: 'CONFIRM_CALL_RECEPTION',
+        channelId,
+        peerId
+      });
+    },
     onChangeChannelOwner({ channelId, message, newOwner }) {
       return dispatch({
         type: 'CHANGE_CHANNEL_OWNER',

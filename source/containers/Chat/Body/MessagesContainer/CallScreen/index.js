@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Button from 'components/Button';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { socket } from 'constants/io';
 
 CallScreen.propTypes = {
   style: PropTypes.object
@@ -15,9 +16,6 @@ export default function CallScreen({ style }) {
     actions: { onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();
-  const isMakingCall = useMemo(() => {
-    return channelOnCall.callerId && channelOnCall.callerId === userId;
-  }, [channelOnCall, userId]);
   const isReceivingCall = useMemo(() => {
     return channelOnCall.callerId && channelOnCall.callerId !== userId;
   }, [channelOnCall, userId]);
@@ -35,7 +33,6 @@ export default function CallScreen({ style }) {
       !peerStreaming.current &&
       !videoRef?.srcObject
     ) {
-      console.log('show peer stream');
       videoRef.srcObject = peerStream;
       peerStreaming.current = true;
     }
@@ -52,7 +49,7 @@ export default function CallScreen({ style }) {
 
   return (
     <div style={{ width: '100%', position: 'relative', ...style }}>
-      {isMakingCall && !channelOnCall.incomingShown && (
+      {!channelOnCall.callReceived && channelOnCall.callerId === userId && (
         <div
           style={{
             width: '100%',
@@ -77,10 +74,7 @@ export default function CallScreen({ style }) {
         >
           <Button filled color="green">
             <Icon icon="phone-volume" />
-            <span
-              style={{ marginLeft: '1rem' }}
-              onClick={() => onShowIncoming()}
-            >
+            <span style={{ marginLeft: '1rem' }} onClick={handleShowIncoming}>
               Answer
             </span>
           </Button>
@@ -107,4 +101,12 @@ export default function CallScreen({ style }) {
       )}
     </div>
   );
+
+  function handleShowIncoming() {
+    socket.emit('confirm_call_reception', {
+      channelId: channelOnCall.id,
+      peerId: userId
+    });
+    onShowIncoming();
+  }
 }
