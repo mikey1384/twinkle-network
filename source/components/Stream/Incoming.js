@@ -14,6 +14,7 @@ export default function Incoming() {
     if (videoRef && peerStream && !streaming.current && !videoRef.srcObject) {
       console.log('streaming from peer', videoRef.srcObject, peerStream);
       videoRef.srcObject = peerStream;
+      videoRef.volume = 0;
       streaming.current = true;
     }
   }, [currentPeerId, peerStream]);
@@ -32,12 +33,7 @@ export default function Incoming() {
   return (
     <video
       autoPlay
-      style={{
-        position: 'absolute',
-        width: '40%',
-        top: '1.5rem',
-        left: '30%'
-      }}
+      style={{ display: 'none', height: 0, width: 0 }}
       ref={peerVideoRef}
       controls
     />

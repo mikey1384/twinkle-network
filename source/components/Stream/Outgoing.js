@@ -30,7 +30,7 @@ export default function Outgoing() {
   return (
     <video
       autoPlay
-      style={{ position: 'absolute', bottom: 0, right: 0, width: '25%' }}
+      style={{ display: 'none', height: 0, width: 0 }}
       ref={videoRef}
     ></video>
   );
