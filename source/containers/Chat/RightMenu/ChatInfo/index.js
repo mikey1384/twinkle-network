@@ -71,6 +71,15 @@ export default function ChatInfo({
     [currentChannelOnlineMembers]
   );
 
+  const callConnected = useMemo(() => selectedChannelId === channelOnCall.id, [
+    channelOnCall.id,
+    selectedChannelId
+  ]);
+
+  const disabled = useMemo(() => currentChannelOnlineMembers.length <= 1, [
+    currentChannelOnlineMembers.length
+  ]);
+
   return (
     <>
       <div
@@ -95,25 +104,33 @@ export default function ChatInfo({
             <div
               className={css`
                 padding: 1rem;
-                background: ${selectedChannelId !== channelOnCall.id
-                  ? Color.darkBlue(0.8)
-                  : Color.rose(0.8)};
+                background: ${disabled
+                  ? Color.darkBlue(0.4)
+                  : callConnected
+                  ? Color.rose(0.8)
+                  : Color.darkBlue(0.8)};
                 color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                cursor: pointer;
+                cursor: ${currentChannelOnlineMembers.length > 1
+                  ? 'pointer'
+                  : 'default'};
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
-                  background: ${selectedChannelId !== channelOnCall.id
-                    ? Color.darkBlue(1)
-                    : Color.rose(1)};
+                  background: ${disabled
+                    ? Color.darkBlue(0.4)
+                    : callConnected
+                    ? Color.rose(1)
+                    : Color.darkBlue(1)};
                 }
                 @media (min-width: ${desktopMinWidth}) {
                   &:hover {
-                    background: ${selectedChannelId !== channelOnCall.id
-                      ? Color.darkBlue(1)
-                      : Color.rose(1)};
+                    background: ${disabled
+                      ? Color.darkBlue(0.4)
+                      : callConnected
+                      ? Color.rose(1)
+                      : Color.darkBlue(1)};
                   }
                 }
               `}
@@ -161,6 +178,7 @@ export default function ChatInfo({
   );
 
   function handleCall() {
+    if (disabled) return;
     if (selectedChannelId === channelOnCall.id) {
       socket.emit('hang_up_call', {
         channelId: channelOnCall.id,

@@ -27,7 +27,8 @@ export default function RightMenu({
   } = useAppContext();
   const { userId, twinkleXP } = useMyState();
   const {
-    state: { chatType }
+    state: { chatType },
+    actions: { onCall }
   } = useChatContext();
   const {
     actions: { onGetRanks }
@@ -54,6 +55,14 @@ export default function RightMenu({
     prevTwinkleXP.current = twinkleXP;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [twinkleXP]);
+
+  useEffect(() => {
+    console.log(currentChannelOnlineMembers.length);
+    if (currentChannelOnlineMembers.length === 1) {
+      onCall({});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChannelOnlineMembers.length]);
 
   return (
     <div
