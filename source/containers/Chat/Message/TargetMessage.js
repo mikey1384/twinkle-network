@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
@@ -22,7 +22,7 @@ TargetMessage.propTypes = {
   onScrollToBottom: PropTypes.func.isRequired
 };
 
-export default function TargetMessage({ message, onScrollToBottom }) {
+function TargetMessage({ message, onScrollToBottom }) {
   const [imageModalShown, setImageModalShown] = useState(false);
   const fileType = useMemo(() => {
     return message.fileName
@@ -166,3 +166,5 @@ export default function TargetMessage({ message, onScrollToBottom }) {
     window.open(src);
   }
 }
+
+export default memo(TargetMessage);

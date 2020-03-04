@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from 'emotion';
@@ -10,7 +10,7 @@ GameOverMessage.propTypes = {
   winnerId: PropTypes.number.isRequired
 };
 
-export default function GameOverMessage({ myId, opponentName, winnerId }) {
+function GameOverMessage({ myId, opponentName, winnerId }) {
   return (
     <ErrorBoundary>
       <div
@@ -51,3 +51,5 @@ export default function GameOverMessage({ myId, opponentName, winnerId }) {
     </ErrorBoundary>
   );
 }
+
+export default memo(GameOverMessage);
