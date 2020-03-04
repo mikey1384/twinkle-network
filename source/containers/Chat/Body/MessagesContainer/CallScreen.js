@@ -87,29 +87,53 @@ export default function CallScreen({ style }) {
         </div>
       )}
       {channelOnCall.incomingShown && peerStream && (
-        <video
-          className={css`
-            &::-webkit-media-controls-volume-control-container {
-              display: none;
-            }
-            &::-webkit-media-controls-volume-slider {
-              display: none;
-            }
-            &::-webkit-media-controls-mute-button {
-              display: none;
-            }
-          `}
+        <div
           style={{
-            position: 'absolute',
-            width: '40%',
-            top: '1.5rem',
-            left: '30%',
-            maxHeight: 'CALC(100% - 2.5rem)'
+            position: 'relative',
+            width: '100%',
+            height: '100%'
           }}
-          autoPlay
-          controls
-          ref={peerVideoRef}
-        />
+        >
+          <div
+            style={{
+              width: '100%',
+              height: 'CALC(100% - 2rem)',
+              top: '1rem',
+              position: 'absolute',
+              display: 'flex',
+              justifyContent: 'center'
+            }}
+          >
+            <video
+              className={css`
+                &::-webkit-media-controls-volume-control-container {
+                  display: none;
+                }
+                &::-webkit-media-controls-volume-slider {
+                  display: none;
+                }
+                &::-webkit-media-controls-mute-button {
+                  display: none;
+                }
+                &::-webkit-media-controls-play-button {
+                  display: none;
+                }
+                &::-webkit-media-controls-timeline {
+                  display: none;
+                }
+              `}
+              style={{
+                minWidth: '40%',
+                maxWidth: '65%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+              autoPlay
+              controls
+              ref={peerVideoRef}
+            />
+          </div>
+        </div>
       )}
       {myStream && (
         <video
