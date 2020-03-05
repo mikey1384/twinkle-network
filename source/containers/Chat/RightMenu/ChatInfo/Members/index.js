@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { css } from 'emotion';
 import MemberListItem from './MemberListItem';
+import { css } from 'emotion';
 
 Members.propTypes = {
   channelId: PropTypes.number.isRequired,

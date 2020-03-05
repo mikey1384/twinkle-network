@@ -1,8 +1,9 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
+import { useChatContext } from 'contexts';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
@@ -14,6 +15,18 @@ MemberListItem.propTypes = {
 };
 
 function MemberListItem({ onlineMembers, creatorId, member, style }) {
+  const {
+    state: {
+      ['user' + member.id]: { isAway, id: userId, profilePicId, username } = {}
+    },
+    actions: { onSetUserData }
+  } = useChatContext();
+
+  useEffect(() => {
+    onSetUserData(member);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member]);
+
   return (
     <div
       style={{
@@ -40,25 +53,25 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
               width: 3.5rem;
             }
           `}
-          userId={member.id}
-          profilePicId={member.profilePicId}
-          online={onlineMembers.map(member => member.id).includes(member.id)}
-          isAway={member.isAway}
+          userId={userId}
+          profilePicId={profilePicId}
+          online={onlineMembers.map(member => member.id).includes(userId)}
+          isAway={isAway}
           statusShown
         />
         <UsernameText
           truncate
           className={css`
             width: auto;
-            max-width: ${creatorId === member.id ? '45%' : 'CALC(45% + 3rem)'};
+            max-width: ${creatorId === userId ? '45%' : 'CALC(45% + 3rem)'};
           `}
           style={{
             color: Color.darkerGray(),
             marginLeft: '2rem'
           }}
-          user={member}
+          user={{ id: userId, username }}
         />
-        {creatorId === member.id ? (
+        {creatorId === userId ? (
           <div
             style={{
               marginLeft: '1rem'

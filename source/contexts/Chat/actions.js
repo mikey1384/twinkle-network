@@ -386,6 +386,12 @@ export default function ChatActions(dispatch) {
         loading
       });
     },
+    onSetUserData(profile) {
+      return dispatch({
+        type: 'SET_USER_DATA',
+        profile
+      });
+    },
     onSetMyStream(stream) {
       return dispatch({
         type: 'SET_MY_STREAM',

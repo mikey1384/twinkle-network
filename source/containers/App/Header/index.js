@@ -54,7 +54,8 @@ export default function Header({
       chatType,
       selectedChannelId,
       myStream,
-      numUnreads
+      numUnreads,
+      ...chatState
     },
     actions: {
       onCall,
@@ -203,7 +204,9 @@ export default function Header({
     }
 
     function handleAwayStatusChange({ userId, isAway }) {
-      onChangeAwayStatus({ userId, isAway });
+      if (chatState['user' + userId].isAway !== isAway) {
+        onChangeAwayStatus({ userId, isAway });
+      }
     }
 
     function handlePeer({ channelId, peerId }) {

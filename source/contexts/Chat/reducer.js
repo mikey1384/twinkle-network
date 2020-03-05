@@ -27,23 +27,14 @@ export default function ChatReducer(state, action) {
         }
       };
     case 'CHANGE_AWAY_STATUS': {
-      const newChannelsObj = { ...state.channelsObj };
-      for (let key of Object.keys(newChannelsObj)) {
-        newChannelsObj[key] = {
-          ...newChannelsObj[key],
-          members: newChannelsObj[key].members.map(member =>
-            member.id === action.userId
-              ? {
-                  ...member,
-                  isAway: action.isAway
-                }
-              : member
-          )
-        };
-      }
       return {
         ...state,
-        channelsObj: newChannelsObj
+        ['user' + action.userId]: state['user' + action.userId]
+          ? {
+              ...state['user' + action.userId],
+              isAway: action.isAway
+            }
+          : undefined
       };
     }
     case 'CHANGE_CHANNEL_OWNER': {
@@ -834,6 +825,11 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         loadingVocabulary: action.loading
+      };
+    case 'SET_USER_DATA':
+      return {
+        ...state,
+        ['user' + action.profile.id]: action.profile
       };
     case 'SET_MY_STREAM':
       return {
