@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import CreateNewChannelModal from './Modals/CreateNewChannel';
+import CreateNewChatModal from './Modals/CreateNewChat';
 import UserListModal from 'components/Modals/UserListModal';
 import LeftMenu from './LeftMenu';
 import RightMenu from './RightMenu';
@@ -62,9 +62,7 @@ export default function Chat({ onFileUpload }) {
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
   ] = useState([]);
-  const [createNewChannelModalShown, setCreateNewChannelModalShown] = useState(
-    false
-  );
+  const [createNewChatModalShown, setCreateNewChatModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [partner, setPartner] = useState(null);
   const memberObj = useRef({});
@@ -180,10 +178,10 @@ export default function Chat({ onFileUpload }) {
               }
             `}
           >
-            {createNewChannelModalShown && (
-              <CreateNewChannelModal
+            {createNewChatModalShown && (
+              <CreateNewChatModal
                 userId={userId}
-                onHide={() => setCreateNewChannelModalShown(false)}
+                onHide={() => setCreateNewChatModalShown(false)}
                 onDone={handleCreateNewChannel}
               />
             )}
@@ -202,7 +200,7 @@ export default function Chat({ onFileUpload }) {
               currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={handleLoadMoreChannels}
               onChannelEnter={handleChannelEnter}
-              onNewButtonClick={() => setCreateNewChannelModalShown(true)}
+              onNewButtonClick={() => setCreateNewChatModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
             />
             <Body
@@ -262,7 +260,7 @@ export default function Chat({ onFileUpload }) {
         recepient,
         channelData: data
       });
-      return setCreateNewChannelModalShown(false);
+      return setCreateNewChatModalShown(false);
     }
 
     const data = await createNewChat(params);
@@ -271,7 +269,7 @@ export default function Chat({ onFileUpload }) {
     const users = params.selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', data.message.channelId);
     socket.emit('send_group_chat_invitation', users, data);
-    setCreateNewChannelModalShown(false);
+    setCreateNewChatModalShown(false);
   }
 
   function onSubjectChange({ message }) {

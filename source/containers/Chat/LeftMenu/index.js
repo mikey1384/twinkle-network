@@ -4,6 +4,7 @@ import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Vocabulary from './Vocabulary';
+import Icon from 'components/Icon';
 import {
   Color,
   desktopMinWidth,
@@ -101,6 +102,7 @@ function LeftMenu({
           color: #fff;
           display: flex;
           justify-content: center;
+          align-items: center;
           cursor: pointer;
           transition: background 0.2s;
           @media (max-width: ${mobileMaxWidth}) {
@@ -114,7 +116,14 @@ function LeftMenu({
         `}`}
         onClick={onNewButtonClick}
       >
-        + New Channel
+        <Icon icon="plus" />
+        <div
+          style={{
+            marginLeft: '0.7rem'
+          }}
+        >
+          New Chat
+        </div>
       </div>
       <Vocabulary
         selected={chatType === 'vocabulary'}
