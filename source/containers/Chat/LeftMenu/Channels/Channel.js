@@ -8,7 +8,7 @@ Channel.propTypes = {
   channel: PropTypes.object.isRequired,
   customChannelNames: PropTypes.object.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number.isRequired,
+  selectedChannelId: PropTypes.number,
   userId: PropTypes.number
 };
 

@@ -8,11 +8,17 @@ export default function ChatActions(dispatch) {
       });
     },
     onCallReceptionConfirm({ channelId, peerId }) {
-      console.log('yeah');
       return dispatch({
         type: 'CONFIRM_CALL_RECEPTION',
         channelId,
         peerId
+      });
+    },
+    onChangeAwayStatus({ userId, isAway }) {
+      return dispatch({
+        type: 'CHANGE_AWAY_STATUS',
+        userId,
+        isAway
       });
     },
     onChangeChannelOwner({ channelId, message, newOwner }) {

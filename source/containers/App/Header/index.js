@@ -58,6 +58,7 @@ export default function Header({
     },
     actions: {
       onCall,
+      onChangeAwayStatus,
       onSetReconnecting,
       onChangeChannelOwner,
       onChangeChannelSettings,
@@ -111,6 +112,7 @@ export default function Header({
   }, [profilePicId, userId, username]);
 
   useEffect(() => {
+    socket.on('away_status_changed', handleAwayStatusChange);
     socket.on('call_hung_up', handleCallHungUp);
     socket.on('call_reception_confirmed', onCallReceptionConfirm);
     socket.on('call_signal_received', handleSignal);
@@ -130,6 +132,7 @@ export default function Header({
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
     return function cleanUp() {
+      socket.removeListener('away_status_changed', handleAwayStatusChange);
       socket.removeListener('connect', onConnect);
       socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
@@ -199,8 +202,11 @@ export default function Header({
       }
     }
 
+    function handleAwayStatusChange({ userId, isAway }) {
+      onChangeAwayStatus({ userId, isAway });
+    }
+
     function handlePeer({ channelId, peerId }) {
-      console.log('new peer');
       incomingPeerRef.current = new Peer({
         config: {
           iceServers: [
@@ -223,12 +229,11 @@ export default function Header({
       });
 
       incomingPeerRef.current.on('stream', stream => {
-        console.log('streaming....!', stream);
         onSetPeerStream(stream);
       });
 
       incomingPeerRef.current.on('error', e => {
-        console.log('Peer error %s:', peerId, e);
+        console.error('Peer error %s:', peerId, e);
       });
     }
 
@@ -240,10 +245,6 @@ export default function Header({
     function handleSignal({ peerId, signal }) {
       if (peerId !== userId) {
         try {
-          if (signal.type === 'offer') {
-            console.log('offer arrived');
-          }
-
           try {
             incomingPeerRef.current.signal(signal);
           } catch (error) {

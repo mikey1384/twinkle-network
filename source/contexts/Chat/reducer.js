@@ -26,6 +26,26 @@ export default function ChatReducer(state, action) {
           [action.channelId]: action.channelName
         }
       };
+    case 'CHANGE_AWAY_STATUS': {
+      const newChannelsObj = { ...state.channelsObj };
+      for (let key of Object.keys(newChannelsObj)) {
+        newChannelsObj[key] = {
+          ...newChannelsObj[key],
+          members: newChannelsObj[key].members.map(member =>
+            member.id === action.userId
+              ? {
+                  ...member,
+                  isAway: action.isAway
+                }
+              : member
+          )
+        };
+      }
+      return {
+        ...state,
+        channelsObj: newChannelsObj
+      };
+    }
     case 'CHANGE_CHANNEL_OWNER': {
       return {
         ...state,

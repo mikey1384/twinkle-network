@@ -48,6 +48,7 @@ export default function MemberListItem({
           userId={member.id}
           profilePicId={member.profilePicId}
           online={onlineMembers.map(member => member.id).includes(member.id)}
+          isAway={member.isAway}
           statusShown
         />
         <UsernameText

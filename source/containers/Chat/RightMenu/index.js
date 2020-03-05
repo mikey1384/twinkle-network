@@ -57,7 +57,6 @@ export default function RightMenu({
   }, [twinkleXP]);
 
   useEffect(() => {
-    console.log(currentChannelOnlineMembers.length);
     if (currentChannelOnlineMembers.length === 1) {
       onCall({});
     }

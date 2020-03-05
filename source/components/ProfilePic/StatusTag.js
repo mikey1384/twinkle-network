@@ -7,12 +7,11 @@ StatusTag.propTypes = {
   status: PropTypes.string
 };
 
-export default function StatusTag({ large, status }) {
+export default function StatusTag({ large, status = 'online' }) {
   const backgroundColor = {
     online: Color.green(),
-    offline: Color.gray(),
-    busy: Color.gold(),
-    away: Color.red()
+    busy: Color.red(),
+    away: Color.orange()
   };
 
   return large ? (

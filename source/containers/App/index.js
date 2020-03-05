@@ -175,7 +175,9 @@ function App({ location, history }) {
     }
     addEvent(document, visibilityChangeRef.current, handleVisibilityChange);
     function handleVisibilityChange() {
-      onChangePageVisibility(!document[hiddenRef.current]);
+      const visible = !document[hiddenRef.current];
+      socket.emit('change_away_status', visible);
+      onChangePageVisibility(visible);
     }
     return function cleanUp() {
       removeEvent(
