@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { memo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ChatInfo from './ChatInfo';
 import VocabInfo from './VocabInfo';
@@ -15,7 +15,7 @@ RightMenu.propTypes = {
   selectedChannelId: PropTypes.number
 };
 
-export default function RightMenu({
+function RightMenu({
   channelName,
   channelOnCall,
   currentChannel,
@@ -96,3 +96,5 @@ export default function RightMenu({
     onGetRanks({ all, top30s });
   }
 }
+
+export default memo(RightMenu);

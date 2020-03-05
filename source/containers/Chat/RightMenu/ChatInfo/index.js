@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Members from './Members';
 import ChannelDetails from './ChannelDetails';
@@ -17,7 +17,7 @@ ChatInfo.propTypes = {
   selectedChannelId: PropTypes.number
 };
 
-export default function ChatInfo({
+function ChatInfo({
   selectedChannelId,
   channelOnCall,
   currentChannel,
@@ -195,3 +195,5 @@ export default function ChatInfo({
     );
   }
 }
+
+export default memo(ChatInfo);

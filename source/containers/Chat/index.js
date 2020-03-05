@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import CreateNewChatModal from './Modals/CreateNewChat';
 import UserListModal from 'components/Modals/UserListModal';
@@ -19,7 +19,7 @@ Chat.propTypes = {
   onFileUpload: PropTypes.func
 };
 
-export default function Chat({ onFileUpload }) {
+function Chat({ onFileUpload }) {
   const {
     requestHelpers: {
       createNewChat,
@@ -300,3 +300,5 @@ export default function Chat({ onFileUpload }) {
     }
   }
 }
+
+export default memo(Chat);

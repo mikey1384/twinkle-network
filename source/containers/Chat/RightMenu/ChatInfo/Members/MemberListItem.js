@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
@@ -13,12 +13,7 @@ MemberListItem.propTypes = {
   style: PropTypes.object
 };
 
-export default function MemberListItem({
-  onlineMembers,
-  creatorId,
-  member,
-  style
-}) {
+function MemberListItem({ onlineMembers, creatorId, member, style }) {
   return (
     <div
       style={{
@@ -76,3 +71,5 @@ export default function MemberListItem({
     </div>
   );
 }
+
+export default memo(MemberListItem);

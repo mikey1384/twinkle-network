@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import MemberListItem from './MemberListItem';
@@ -9,12 +9,8 @@ Members.propTypes = {
   members: PropTypes.array.isRequired,
   onlineMembers: PropTypes.array.isRequired
 };
-export default function Members({
-  channelId,
-  creatorId,
-  members,
-  onlineMembers
-}) {
+
+function Members({ channelId, creatorId, members, onlineMembers }) {
   return (
     <div
       className={css`
@@ -37,3 +33,5 @@ export default function Members({
     </div>
   );
 }
+
+export default memo(Members);
