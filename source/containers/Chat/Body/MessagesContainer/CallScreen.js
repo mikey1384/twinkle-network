@@ -97,7 +97,7 @@ export default function CallScreen({ style }) {
           <div
             style={{
               width: '100%',
-              height: 'CALC(100% - 2rem)',
+              height: 'CALC(100% - 1rem)',
               top: '1rem',
               position: 'absolute',
               display: 'flex',
