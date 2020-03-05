@@ -8,6 +8,7 @@ import StatusTag from './StatusTag';
 ProfilePic.propTypes = {
   className: PropTypes.string,
   isAway: PropTypes.bool,
+  isBusy: PropTypes.bool,
   isProfilePage: PropTypes.bool,
   large: PropTypes.bool,
   onClick: PropTypes.func,
@@ -21,6 +22,7 @@ ProfilePic.propTypes = {
 export default function ProfilePic({
   className,
   isAway,
+  isBusy,
   isProfilePage,
   large,
   onClick = () => {},
@@ -68,7 +70,10 @@ export default function ProfilePic({
         shown={myId === userId && isProfilePage && changePictureShown}
       />
       {statusTagShown && (
-        <StatusTag status={isAway ? 'away' : 'online'} large={large} />
+        <StatusTag
+          status={isAway ? 'away' : isBusy ? 'busy' : 'online'}
+          large={large}
+        />
       )}
     </div>
   );

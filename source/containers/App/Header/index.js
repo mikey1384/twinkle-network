@@ -60,6 +60,7 @@ export default function Header({
     actions: {
       onCall,
       onChangeAwayStatus,
+      onChangeBusyStatus,
       onSetReconnecting,
       onChangeChannelOwner,
       onChangeChannelSettings,
@@ -114,6 +115,7 @@ export default function Header({
 
   useEffect(() => {
     socket.on('away_status_changed', handleAwayStatusChange);
+    socket.on('busy_status_changed', handleBusyStatusChange);
     socket.on('call_hung_up', handleCallHungUp);
     socket.on('call_reception_confirmed', onCallReceptionConfirm);
     socket.on('call_signal_received', handleSignal);
@@ -134,6 +136,7 @@ export default function Header({
 
     return function cleanUp() {
       socket.removeListener('away_status_changed', handleAwayStatusChange);
+      socket.removeListener('busy_status_changed', handleBusyStatusChange);
       socket.removeListener('connect', onConnect);
       socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
@@ -206,6 +209,12 @@ export default function Header({
     function handleAwayStatusChange({ userId, isAway }) {
       if (chatState['user' + userId].isAway !== isAway) {
         onChangeAwayStatus({ userId, isAway });
+      }
+    }
+
+    function handleBusyStatusChange({ userId, isBusy }) {
+      if (chatState['user' + userId].isBusy !== isBusy) {
+        onChangeBusyStatus({ userId, isBusy });
       }
     }
 

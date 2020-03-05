@@ -37,6 +37,17 @@ export default function ChatReducer(state, action) {
           : undefined
       };
     }
+    case 'CHANGE_BUSY_STATUS': {
+      return {
+        ...state,
+        ['user' + action.userId]: state['user' + action.userId]
+          ? {
+              ...state['user' + action.userId],
+              isBusy: action.isBusy
+            }
+          : undefined
+      };
+    }
     case 'CHANGE_CHANNEL_OWNER': {
       return {
         ...state,

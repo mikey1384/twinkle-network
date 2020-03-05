@@ -17,7 +17,13 @@ MemberListItem.propTypes = {
 function MemberListItem({ onlineMembers, creatorId, member, style }) {
   const {
     state: {
-      ['user' + member.id]: { isAway, id: userId, profilePicId, username } = {}
+      ['user' + member.id]: {
+        isAway,
+        isBusy,
+        id: userId,
+        profilePicId,
+        username
+      } = {}
     },
     actions: { onSetUserData }
   } = useChatContext();
@@ -57,6 +63,7 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
           profilePicId={profilePicId}
           online={onlineMembers.map(member => member.id).includes(userId)}
           isAway={isAway}
+          isBusy={isBusy}
           statusShown
         />
         <UsernameText

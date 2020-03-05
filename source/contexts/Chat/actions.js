@@ -21,6 +21,13 @@ export default function ChatActions(dispatch) {
         isAway
       });
     },
+    onChangeBusyStatus({ userId, isBusy }) {
+      return dispatch({
+        type: 'CHANGE_BUSY_STATUS',
+        userId,
+        isBusy
+      });
+    },
     onChangeChannelOwner({ channelId, message, newOwner }) {
       return dispatch({
         type: 'CHANGE_CHANNEL_OWNER',

@@ -7,6 +7,7 @@ import { css } from 'emotion';
 import { getSectionFromPathname } from 'helpers';
 import { truncateText } from 'helpers/stringHelpers';
 import { useHomeContext, useViewContext } from 'contexts';
+import { socket } from 'constants/io';
 
 MainNavs.propTypes = {
   loggedIn: PropTypes.bool,
@@ -157,6 +158,10 @@ export default function MainNavs({
     }
     return result;
   }, [profileNav]);
+
+  useEffect(() => {
+    socket.emit('change_busy_status', !chatMatch);
+  }, [chatMatch]);
 
   return (
     <div
