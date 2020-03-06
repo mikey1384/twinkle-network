@@ -2,14 +2,14 @@ import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
 
 Channel.propTypes = {
   chatType: PropTypes.string,
   channel: PropTypes.object.isRequired,
   customChannelNames: PropTypes.object.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number,
-  userId: PropTypes.number
+  selectedChannelId: PropTypes.number
 };
 
 function Channel({
@@ -24,18 +24,33 @@ function Channel({
     twoPeople
   } = {},
   onChannelEnter,
-  selectedChannelId,
-  userId
+  selectedChannelId
 }) {
-  const effectiveChannelName = customChannelNames[id] || channelName;
-  const otherMember = twoPeople
-    ? members?.filter(member => Number(member.id) !== userId)?.[0]
-    : null;
-  const selected = !chatType && id === selectedChannelId;
+  const { userId } = useMyState();
+  const effectiveChannelName = useMemo(
+    () => customChannelNames[id] || channelName,
+    [channelName, customChannelNames, id]
+  );
+  const otherMember = useMemo(
+    () =>
+      twoPeople
+        ? members?.filter(member => Number(member.id) !== Number(userId))?.[0]
+        : null,
+    [members, twoPeople, userId]
+  );
+  const selected = useMemo(() => !chatType && id === selectedChannelId, [
+    chatType,
+    id,
+    selectedChannelId
+  ]);
   const PreviewMessage = useMemo(
     () => renderPreviewMessage(lastMessage || {}),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [lastMessage]
+  );
+  const ChannelName = useMemo(
+    () => otherMember?.username || effectiveChannelName || '(Deleted)',
+    [effectiveChannelName, otherMember]
   );
 
   return (
@@ -91,7 +106,7 @@ function Channel({
                 lineHeight: 'normal'
               }}
             >
-              {otherMember?.username || effectiveChannelName || '(Deleted)'}
+              {ChannelName}
             </p>
           </div>
           <div

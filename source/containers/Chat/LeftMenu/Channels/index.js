@@ -4,12 +4,11 @@ import Channel from './Channel';
 import { useChatContext } from 'contexts';
 
 Channels.propTypes = {
-  userId: PropTypes.number.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number
 };
 
-function Channels({ userId, onChannelEnter, selectedChannelId }) {
+function Channels({ onChannelEnter, selectedChannelId }) {
   const {
     state: { chatType, channelIds, channelsObj, customChannelNames }
   } = useChatContext();
@@ -24,7 +23,6 @@ function Channels({ userId, onChannelEnter, selectedChannelId }) {
             key={channel.id}
             channel={channel}
             customChannelNames={customChannelNames}
-            userId={userId}
             chatType={chatType}
             onChannelEnter={onChannelEnter}
             selectedChannelId={selectedChannelId}

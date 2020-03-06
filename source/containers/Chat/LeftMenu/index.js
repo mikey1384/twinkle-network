@@ -38,7 +38,7 @@ function LeftMenu({
     state: { chatType, channelIds, selectedChannelId },
     actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
-  const { userId, profileTheme } = useMyState();
+  const { profileTheme } = useMyState();
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [prevChannelIds, setPrevChannelIds] = useState(channelIds);
   const ChannelListRef = useRef(null);
@@ -146,7 +146,6 @@ function LeftMenu({
         <div style={{ display: 'flex', width: '100%' }}>
           <div style={{ width: '100%' }}>
             <Channels
-              userId={userId}
               currentChannel={currentChannel}
               selectedChannelId={selectedChannelId}
               onChannelEnter={onChannelEnter}
