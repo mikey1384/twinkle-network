@@ -109,39 +109,6 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     false
   );
 
-  useEffect(() => {
-    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
-    socket.on('new_message_received', handleReceiveMessage);
-
-    function onReceiveCountdownNumber({ channelId, number }) {
-      if (channelId === selectedChannelId) {
-        if (number === 0) {
-          onSetChessModalShown(false);
-        }
-        setChessCountdownObj(chessCountdownObj => ({
-          ...chessCountdownObj,
-          [channelId]: number
-        }));
-      }
-    }
-    function handleReceiveMessage(message) {
-      if (message.isChessMsg) {
-        setChessCountdownObj(chessCountdownObj => ({
-          ...chessCountdownObj,
-          [message.channelId]: undefined
-        }));
-      }
-    }
-
-    return function cleanUp() {
-      socket.removeListener(
-        'chess_countdown_number_received',
-        onReceiveCountdownNumber
-      );
-      socket.removeListener('new_message_received', handleReceiveMessage);
-    };
-  });
-
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
   const mounted = useRef(null);
@@ -150,17 +117,6 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
   const ChatInputRef = useRef(null);
   const timerRef = useRef(null);
   const mb = 1000;
-  const maxSize = useMemo(
-    () =>
-      authLevel > 3
-        ? 5000 * mb
-        : authLevel > 1
-        ? 3000 * mb
-        : authLevel === 1
-        ? 1000 * mb
-        : 300 * mb,
-    [authLevel]
-  );
 
   const selectedChannelIsOnCall = useMemo(
     () => selectedChannelId === channelOnCall.id,
@@ -266,6 +222,56 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     selectedChannelId
   ]);
 
+  const loading = useMemo(
+    () => channelLoading || creatingNewDMChannel || reconnecting,
+    [channelLoading, creatingNewDMChannel, reconnecting]
+  );
+
+  const maxSize = useMemo(
+    () =>
+      authLevel > 3
+        ? 5000 * mb
+        : authLevel > 1
+        ? 3000 * mb
+        : authLevel === 1
+        ? 1000 * mb
+        : 300 * mb,
+    [authLevel]
+  );
+
+  useEffect(() => {
+    socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
+    socket.on('new_message_received', handleReceiveMessage);
+
+    function onReceiveCountdownNumber({ channelId, number }) {
+      if (channelId === selectedChannelId) {
+        if (number === 0) {
+          onSetChessModalShown(false);
+        }
+        setChessCountdownObj(chessCountdownObj => ({
+          ...chessCountdownObj,
+          [channelId]: number
+        }));
+      }
+    }
+    function handleReceiveMessage(message) {
+      if (message.isChessMsg) {
+        setChessCountdownObj(chessCountdownObj => ({
+          ...chessCountdownObj,
+          [message.channelId]: undefined
+        }));
+      }
+    }
+
+    return function cleanUp() {
+      socket.removeListener(
+        'chess_countdown_number_received',
+        onReceiveCountdownNumber
+      );
+      socket.removeListener('new_message_received', handleReceiveMessage);
+    };
+  });
+
   useEffect(() => {
     const MessagesContainer = MessagesContainerRef.current;
     mounted.current = true;
@@ -298,10 +304,9 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagesLoaded, reconnecting]);
 
-  const loading = useMemo(
-    () => channelLoading || creatingNewDMChannel || reconnecting,
-    [channelLoading, creatingNewDMChannel, reconnecting]
-  );
+  useEffect(() => {
+    setLoadMoreButtonLock(false);
+  }, [selectedChannelId]);
 
   return (
     <ErrorBoundary>
@@ -735,17 +740,22 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
       const prevContentHeight = ContentRef.current?.offsetHeight || 0;
       if (!loadMoreButtonLock) {
         setLoadMoreButtonLock(true);
-        const data = await loadMoreChatMessages({
-          userId,
-          messageId,
-          channelId: selectedChannelId
-        });
-        onLoadMoreMessages(data);
-        MessagesContainerRef.current.scrollTop = Math.max(
-          MessagesContainerRef.current.scrollTop,
-          (ContentRef.current?.offsetHeight || 0) - prevContentHeight
-        );
-        setLoadMoreButtonLock(false);
+        try {
+          const data = await loadMoreChatMessages({
+            userId,
+            messageId,
+            channelId: selectedChannelId
+          });
+          onLoadMoreMessages(data);
+          MessagesContainerRef.current.scrollTop = Math.max(
+            MessagesContainerRef.current.scrollTop,
+            (ContentRef.current?.offsetHeight || 0) - prevContentHeight
+          );
+          setLoadMoreButtonLock(false);
+        } catch (error) {
+          console.error(error);
+          setLoadMoreButtonLock(false);
+        }
       }
     }
   }
