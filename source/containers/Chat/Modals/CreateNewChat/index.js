@@ -11,13 +11,13 @@ CreateNewChatModal.propTypes = {
 };
 
 export default function CreateNewChatModal({ onHide, onDone }) {
-  const { userId, authLevel } = useMyState();
+  const { authLevel } = useMyState();
   return (
     <Modal onHide={onHide}>
       {authLevel > 2 ? (
-        <TeacherMenu userId={userId} onHide={onHide} />
+        <TeacherMenu onCreateRegularChat={onDone} onHide={onHide} />
       ) : (
-        <RegularMenu userId={userId} onHide={onHide} onDone={onDone} />
+        <RegularMenu onHide={onHide} onDone={onDone} />
       )}
     </Modal>
   );

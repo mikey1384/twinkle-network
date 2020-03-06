@@ -8,14 +8,15 @@ import SwitchButton from 'components/SwitchButton';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 
 RegularMenu.propTypes = {
+  onBackClick: PropTypes.func,
   onDone: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired
+  onHide: PropTypes.func.isRequired
 };
 
-export default function RegularMenu({ userId, onHide, onDone }) {
+export default function RegularMenu({ onBackClick, onHide, onDone }) {
   const {
     requestHelpers: { searchUserToInvite }
   } = useAppContext();
@@ -23,6 +24,7 @@ export default function RegularMenu({ userId, onHide, onDone }) {
     state: { userSearchResults },
     actions: { onClearUserSearchResults, onSearchUserToInvite }
   } = useChatContext();
+  const { userId } = useMyState();
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [isClosed, setIsClosed] = useState(false);
@@ -86,8 +88,12 @@ export default function RegularMenu({ userId, onHide, onDone }) {
         </TagForm>
       </main>
       <footer>
-        <Button style={{ marginRight: '0.7rem' }} transparent onClick={onHide}>
-          Cancel
+        <Button
+          style={{ marginRight: '0.7rem' }}
+          transparent
+          onClick={onBackClick || onHide}
+        >
+          {onBackClick ? 'Back' : 'Cancel'}
         </Button>
         <Button
           color="blue"
