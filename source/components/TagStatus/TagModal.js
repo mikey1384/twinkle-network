@@ -56,6 +56,7 @@ function TagModal({
       <header>{title}</header>
       <main>
         <TagForm
+          autoFocus
           title="Search Playlists"
           subTitle="(e.g., crash course, story of the world)"
           dropdownFooter={dropdownFooter}

@@ -1,40 +1,64 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
 import TagForm from 'components/Forms/TagForm';
 import Input from 'components/Texts/Input';
-import SwitchButton from 'components/SwitchButton';
-import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { css } from 'emotion';
+import { socket } from 'constants/io';
+import { mobileMaxWidth } from 'constants/css';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 
 ClassroomChat.propTypes = {
   onBackClick: PropTypes.func,
-  onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
-export default function ClassroomChat({ onBackClick, onHide, onDone }) {
+export default function ClassroomChat({ onBackClick, onHide }) {
   const {
-    requestHelpers: { searchUserToInvite }
+    requestHelpers: { createNewChat, searchUserToInvite }
   } = useAppContext();
   const {
     state: { userSearchResults },
-    actions: { onClearUserSearchResults, onSearchUserToInvite }
+    actions: {
+      onClearUserSearchResults,
+      onCreateNewChannel,
+      onSearchUserToInvite
+    }
   } = useChatContext();
   const { userId } = useMyState();
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [isClosed, setIsClosed] = useState(false);
+  const disabled = useMemo(
+    () => stringIsEmpty(channelName) || selectedUsers.length === 0,
+    [channelName, selectedUsers.length]
+  );
 
   return (
     <ErrorBoundary>
-      <header>Start a New Chat</header>
+      <header>New Classroom</header>
       <main>
+        <div
+          className={css`
+            width: 80%;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 100%;
+            }
+          `}
+        >
+          <h3>Name</h3>
+          <Input
+            autoFocus
+            style={{ marginTop: '1rem' }}
+            placeholder="Enter the name of your class"
+            value={channelName}
+            onChange={setChannelName}
+          />
+        </div>
         <TagForm
-          title="Who are the members?"
+          title="Members"
           itemLabel="username"
           searchResults={userSearchResults}
           filter={result => result.id !== userId}
@@ -49,43 +73,16 @@ export default function ClassroomChat({ onBackClick, onHide, onDone }) {
               {item.realName && <small>{`(${item.realName})`}</small>}
             </span>
           )}
-          searchPlaceholder="Search for people you want to chat with"
+          searchPlaceholder="Add the members of your class"
           selectedItems={selectedUsers}
+          style={{ marginTop: '1.5rem' }}
           className={css`
             width: 80%;
             @media (max-width: ${mobileMaxWidth}) {
               width: 100%;
             }
           `}
-        >
-          {selectedUsers.length > 1 && (
-            <div style={{ width: '100%' }}>
-              <div style={{ marginTop: '1.5rem' }}>
-                <h3>Channel name</h3>
-                <Input
-                  style={{ marginTop: '1rem' }}
-                  placeholder="Enter channel name"
-                  value={channelName}
-                  onChange={setChannelName}
-                />
-              </div>
-              <div style={{ marginTop: '1.5rem' }}>
-                <SwitchButton
-                  labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
-                  label={
-                    <>
-                      <span style={{ color: Color.logoBlue() }}>Anyone</span>{' '}
-                      can invite new members:
-                    </>
-                  }
-                  checked={!isClosed}
-                  onChange={() => setIsClosed(isClosed => !isClosed)}
-                />
-                <p>(You can change this setting later)</p>
-              </div>
-            </div>
-          )}
-        </TagForm>
+        />
       </main>
       <footer>
         <Button
@@ -95,14 +92,7 @@ export default function ClassroomChat({ onBackClick, onHide, onDone }) {
         >
           {onBackClick ? 'Back' : 'Cancel'}
         </Button>
-        <Button
-          color="blue"
-          onClick={handleDone}
-          disabled={
-            (selectedUsers.length > 1 && !channelName) ||
-            selectedUsers.length === 0
-          }
-        >
+        <Button color="blue" onClick={handleDone} disabled={disabled}>
           Create
         </Button>
       </footer>
@@ -122,7 +112,18 @@ export default function ClassroomChat({ onBackClick, onHide, onDone }) {
     setSelectedUsers(selectedUsers.filter(user => user.id !== userId));
   }
 
-  function handleDone() {
-    onDone({ userId, channelName, selectedUsers, isClosed });
+  async function handleDone() {
+    const data = await createNewChat({
+      userId,
+      channelName,
+      isClass: true,
+      isClosed: true,
+      selectedUsers
+    });
+    onCreateNewChannel(data);
+    const users = selectedUsers.map(user => user.id);
+    socket.emit('join_chat_channel', data.message.channelId);
+    socket.emit('send_group_chat_invitation', users, data);
+    onHide();
   }
 }

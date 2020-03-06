@@ -37,6 +37,7 @@ export default function InviteUsersModal({
       <header>Invite people to this channel</header>
       <main>
         <TagForm
+          autoFocus
           title="Invite People"
           itemLabel="username"
           searchResults={userSearchResults}

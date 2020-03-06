@@ -31,9 +31,10 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
 
   return (
     <ErrorBoundary>
-      <header>Start a New Chat</header>
+      <header>New Chat</header>
       <main>
         <TagForm
+          autoFocus
           title="Who are the members?"
           itemLabel="username"
           searchResults={userSearchResults}

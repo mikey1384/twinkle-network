@@ -27,7 +27,6 @@ export default function TeacherMenu({ onCreateRegularChat, onHide }) {
       {section === 'classroom' && (
         <ClassroomChatForm
           onBackClick={() => setSection('select')}
-          onDone={onCreateRegularChat}
           onHide={onHide}
         />
       )}
