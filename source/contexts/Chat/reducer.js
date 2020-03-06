@@ -153,6 +153,7 @@ export default function ChatReducer(state, action) {
               }
             },
             lastUpdate: action.data.message.timeStamp,
+            isClass: action.data.isClass,
             isClosed: action.data.isClosed,
             numUnreads: 0,
             twoPeople: false,

@@ -24,17 +24,25 @@ function ChatInfo({
   currentChannelOnlineMembers,
   channelName
 }) {
-  const { userId: myId, username, profilePicId } = useMyState();
+  const { userId: myId, username, profilePicId, authLevel } = useMyState();
   const {
     actions: { onCall }
   } = useChatContext();
   const canVideoChat = useMemo(() => {
-    let result = true;
-    for (let member of currentChannel.members || []) {
-      if (!member?.authLevel) result = false;
+    if (currentChannel.twoPeople) {
+      let result = true;
+      for (let member of currentChannel.members || []) {
+        if (!member?.authLevel) result = false;
+      }
+      return result;
     }
-    return result;
-  }, [currentChannel]);
+    return currentChannel.isClass && authLevel > 0;
+  }, [
+    authLevel,
+    currentChannel.isClass,
+    currentChannel.members,
+    currentChannel.twoPeople
+  ]);
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
@@ -100,7 +108,7 @@ function ChatInfo({
           }}
           className="unselectable"
         >
-          {currentChannel.twoPeople && canVideoChat && (
+          {canVideoChat && (
             <div
               className={css`
                 padding: 1rem;

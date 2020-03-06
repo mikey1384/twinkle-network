@@ -560,7 +560,8 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
       )}
       {settingsModalShown && (
         <SettingsModal
-          isClosed={!!currentChannel.isClosed}
+          isClass={currentChannel.isClass}
+          isClosed={currentChannel.isClosed}
           userIsChannelOwner={currentChannel.creatorId === userId}
           channelName={channelName}
           onHide={() => setSettingsModalShown(false)}

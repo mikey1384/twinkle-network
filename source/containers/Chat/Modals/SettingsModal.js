@@ -14,12 +14,14 @@ SettingsModal.propTypes = {
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   channelName: PropTypes.string,
+  isClass: PropTypes.bool,
   isClosed: PropTypes.bool,
   userIsChannelOwner: PropTypes.bool
 };
 
 export default function SettingsModal({
   channelId,
+  isClass,
   isClosed,
   onDone,
   onHide,
@@ -75,7 +77,7 @@ export default function SettingsModal({
               onChange={setEditedChannelName}
             />
           </div>
-          {userIsChannelOwner && (
+          {userIsChannelOwner && !isClass && (
             <div
               style={{
                 display: 'flex',
