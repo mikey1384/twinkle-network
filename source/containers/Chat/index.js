@@ -180,7 +180,6 @@ function Chat({ onFileUpload }) {
           >
             {createNewChatModalShown && (
               <CreateNewChatModal
-                userId={userId}
                 onHide={() => setCreateNewChatModalShown(false)}
                 onDone={handleCreateNewChannel}
               />

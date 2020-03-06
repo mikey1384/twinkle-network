@@ -9,13 +9,13 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
 
-RegularChat.propTypes = {
+RegularMenu.propTypes = {
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired
 };
 
-export default function RegularChat({ userId, onHide, onDone }) {
+export default function RegularMenu({ userId, onHide, onDone }) {
   const {
     requestHelpers: { searchUserToInvite }
   } = useAppContext();
