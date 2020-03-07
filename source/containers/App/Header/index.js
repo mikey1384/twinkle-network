@@ -229,6 +229,7 @@ export default function Header({
 
     function handlePeer({ channelId, peerId, to }) {
       if (to === userId) {
+        console.log('handling new peer:', peerId);
         incomingPeersRef.current[peerId] = new Peer({
           config: {
             iceServers: [
@@ -253,6 +254,11 @@ export default function Header({
           onSetPeerStreams({ peerId, stream });
         });
 
+        incomingPeersRef.current[peerId].on('close', () => {
+          console.log(peerId, ' closed');
+          delete incomingPeersRef.current[peerId];
+        });
+
         incomingPeersRef.current[peerId].on('error', e => {
           console.error('Peer error %s:', peerId, e);
         });
@@ -266,8 +272,13 @@ export default function Header({
 
     function handleAnswer(data) {
       const peerId = data.from;
-      if (channelOnCall.callerId === userId && peerId !== userId) {
+      if (
+        channelOnCall.callerId === userId &&
+        peerId !== userId &&
+        outgoingRef.current[peerId]
+      ) {
         try {
+          console.log('handling answer from:', peerId);
           outgoingRef.current[peerId].signal(data.signal);
         } catch (error) {
           console.error(error);
@@ -276,9 +287,10 @@ export default function Header({
     }
 
     function handleCall({ peerId, signal, to }) {
-      if (to === userId) {
+      if (to === userId && incomingPeersRef.current[peerId]) {
         try {
           try {
+            console.log('handling call from:', peerId);
             incomingPeersRef.current[peerId].signal(signal);
           } catch (error) {
             console.error(error);
@@ -354,8 +366,12 @@ export default function Header({
       myStream &&
       channelOnCall.callerId !== userId
     ) {
-      for (let [, peer] of Object.entries(incomingPeersRef.current)) {
-        peer.addStream(myStream);
+      try {
+        for (let [, peer] of Object.entries(incomingPeersRef.current)) {
+          peer.addStream(myStream);
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
   }, [channelOnCall.callerId, myStream, userId]);
@@ -368,6 +384,7 @@ export default function Header({
     ) {
       try {
         for (let peerId of currentChannelMembers) {
+          console.log('peering', peerId);
           outgoingRef.current[peerId] = new Peer({
             config: {
               iceServers: [
@@ -387,12 +404,17 @@ export default function Header({
             channelId: channelOnCall.id
           });
           outgoingRef.current[peerId].on('signal', signal => {
+            console.log('sending call signal to:', peerId, signal);
             socket.emit('send_call_signal', {
               peerId: userId,
               to: peerId,
               signal,
               channelId: channelOnCall.id
             });
+          });
+          outgoingRef.current[peerId].on('close', () => {
+            console.log(peerId, ' closed');
+            delete outgoingRef.current[peerId];
           });
           outgoingRef.current[peerId].on('stream', stream => {
             onShowIncoming();
