@@ -36,7 +36,7 @@ function ChatInfo({
       }
       return result;
     }
-    return currentChannel.isClass && authLevel > 0;
+    return currentChannel.isClass && authLevel > 5;
   }, [
     authLevel,
     currentChannel.isClass,
