@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
+import Video from './Video';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
-import { css } from 'emotion';
 
 CallScreen.propTypes = {
   style: PropTypes.object
@@ -13,32 +13,15 @@ CallScreen.propTypes = {
 
 export default function CallScreen({ style }) {
   const {
-    state: { channelOnCall, myStream, peerStream },
+    state: { channelOnCall, myStream, peerStreams },
     actions: { onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();
   const isReceivingCall = useMemo(() => {
     return channelOnCall.callerId && channelOnCall.callerId !== userId;
   }, [channelOnCall, userId]);
-  const peerVideoRef = useRef(null);
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
-  const peerStreaming = useRef(false);
-
-  useEffect(() => {
-    const videoRef = peerVideoRef.current;
-    if (
-      channelOnCall.incomingShown &&
-      videoRef &&
-      peerStream &&
-      !peerStreaming.current &&
-      !videoRef?.srcObject
-    ) {
-      videoRef.srcObject = peerStream;
-      videoRef.volume = 0;
-      peerStreaming.current = true;
-    }
-  }, [peerStream, channelOnCall.incomingShown]);
 
   useEffect(() => {
     const videoRef = myVideoRef.current;
@@ -86,7 +69,7 @@ export default function CallScreen({ style }) {
           </Button>
         </div>
       )}
-      {channelOnCall.incomingShown && peerStream && (
+      {channelOnCall.incomingShown && Object.keys(peerStreams).length > 0 && (
         <div
           style={{
             position: 'relative',
@@ -94,45 +77,10 @@ export default function CallScreen({ style }) {
             height: '100%'
           }}
         >
-          <div
-            style={{
-              width: '100%',
-              height: 'CALC(100% - 1rem)',
-              top: '1rem',
-              position: 'absolute',
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <video
-              className={css`
-                &::-webkit-media-controls-volume-control-container {
-                  display: none;
-                }
-                &::-webkit-media-controls-volume-slider {
-                  display: none;
-                }
-                &::-webkit-media-controls-mute-button {
-                  display: none;
-                }
-                &::-webkit-media-controls-play-button {
-                  display: none;
-                }
-                &::-webkit-media-controls-timeline {
-                  display: none;
-                }
-              `}
-              style={{
-                minWidth: '40%',
-                maxWidth: '65%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-              autoPlay
-              controls
-              ref={peerVideoRef}
-            />
-          </div>
+          {channelOnCall.incomingShown &&
+            Object.entries(peerStreams).map(([peerId, stream]) => (
+              <Video key={peerId} stream={stream} />
+            ))}
         </div>
       )}
       {myStream && (

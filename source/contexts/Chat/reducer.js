@@ -843,10 +843,15 @@ export default function ChatReducer(state, action) {
         ...state,
         myStream: action.stream
       };
-    case 'SET_PEER_STREAM':
+    case 'SET_PEER_STREAMS':
       return {
         ...state,
-        peerStream: action.stream
+        peerStreams: action.peerId
+          ? {
+              ...state.peerStreams,
+              [action.peerId]: action.stream
+            }
+          : {}
       };
     case 'SET_RECONNECTING': {
       return {

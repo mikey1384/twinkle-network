@@ -399,9 +399,10 @@ export default function ChatActions(dispatch) {
         stream
       });
     },
-    onSetPeerStream(stream) {
+    onSetPeerStreams({ peerId, stream }) {
       return dispatch({
-        type: 'SET_PEER_STREAM',
+        type: 'SET_PEER_STREAMS',
+        peerId,
         stream
       });
     },
