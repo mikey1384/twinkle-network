@@ -828,11 +828,6 @@ export default function ChatReducer(state, action) {
         ...state,
         currentChannelName: action.channelName
       };
-    case 'SET_CURRENT_PEER_ID':
-      return {
-        ...state,
-        currentPeerId: action.peerId
-      };
     case 'SET_LOADING_VOCABULARY':
       return {
         ...state,

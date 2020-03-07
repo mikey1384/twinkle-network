@@ -3,7 +3,7 @@ import { useChatContext } from 'contexts';
 
 export default function Incoming() {
   const {
-    state: { currentPeerId, peerStream },
+    state: { peerStream },
     actions: { onSetPeerStream }
   } = useChatContext();
   const peerVideoRef = useRef(null);
@@ -15,7 +15,7 @@ export default function Incoming() {
       videoRef.srcObject = peerStream;
       streaming.current = true;
     }
-  }, [currentPeerId, peerStream]);
+  }, [peerStream]);
 
   useEffect(() => {
     const videoRef = peerVideoRef.current;

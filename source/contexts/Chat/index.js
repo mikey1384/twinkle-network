@@ -16,7 +16,6 @@ export const initialChatState = {
   creatingNewDMChannel: false,
   currentChannelName: '',
   customChannelNames: {},
-  currentPeerId: null,
   filesBeingUploaded: {},
   loadingVocabulary: false,
   loaded: false,

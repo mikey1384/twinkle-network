@@ -381,12 +381,6 @@ export default function ChatActions(dispatch) {
         channelName
       });
     },
-    onSetCurrentPeerId(peerId) {
-      return dispatch({
-        type: 'SET_CURRENT_PEER_ID',
-        peerId
-      });
-    },
     onSetLoadingVocabulary(loading) {
       return dispatch({
         type: 'SET_LOADING_VOCABULARY',

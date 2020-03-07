@@ -75,7 +75,6 @@ export default function Header({
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onReceiveVocabActivity,
-      onSetCurrentPeerId,
       onSetPeerStream,
       onShowIncoming,
       onUpdateCollectorsRankings
@@ -231,7 +230,6 @@ export default function Header({
         }
       });
       onCall({ channelId: channelId, callerId: peerId });
-      onSetCurrentPeerId(peerId);
       incomingPeerRef.current.on('signal', signal => {
         socket.emit('send_answer_signal', {
           from: userId,
