@@ -7,11 +7,10 @@ export default function ChatActions(dispatch) {
         callerId
       });
     },
-    onCallReceptionConfirm({ channelId, peerId }) {
+    onCallReceptionConfirm(channelId) {
       return dispatch({
         type: 'CONFIRM_CALL_RECEPTION',
-        channelId,
-        peerId
+        channelId
       });
     },
     onChangeAwayStatus({ userId, isAway }) {

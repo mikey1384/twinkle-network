@@ -94,10 +94,7 @@ export default function CallScreen({ style }) {
   );
 
   function handleShowIncoming() {
-    socket.emit('confirm_call_reception', {
-      channelId: channelOnCall.id,
-      peerId: userId
-    });
+    socket.emit('confirm_call_reception', channelOnCall.id);
     onShowIncoming();
   }
 }
