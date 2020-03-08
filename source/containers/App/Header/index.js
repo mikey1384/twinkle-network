@@ -100,6 +100,7 @@ export default function Header({
   const outgoingRef = useRef({});
   const prevMyStreamRef = useRef(null);
   const prevIncomingShown = useRef(false);
+  const callerSocketId = useRef(null);
 
   useEffect(() => {
     socket.disconnect();
@@ -139,7 +140,7 @@ export default function Header({
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', onIncreaseNumNewNotis);
     socket.on('new_message_received', handleReceiveMessage);
-    socket.on('peer_accepted', handlePeerAccept);
+    socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_received', handlePeer);
     socket.on('subject_changed', onSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
@@ -165,7 +166,7 @@ export default function Header({
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
       socket.removeListener('new_message_received', handleReceiveMessage);
-      socket.removeListener('peer_accepted', handlePeerAccept);
+      socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_received', handlePeer);
       socket.removeListener('subject_changed', onSubjectChange);
       socket.removeListener(
@@ -232,14 +233,16 @@ export default function Header({
 
     function handlePeer({ channelId, peerId, to }) {
       if (to === userId) {
+        callerSocketId.current = peerId;
         incomingPeersRef.current[peerId] = {};
         socket.emit('inform_peer_signal_accepted', { peerId, channelId });
         onCall({ channelId: channelId, callerId: peerId });
       }
     }
 
-    function handlePeerAccept({ channelId, to, peerId }) {
+    function handlePeerAccepted({ channelId, to, peerId }) {
       if (to === userId) {
+        console.log('accepted by', peerId);
         try {
           outgoingRef.current[peerId] = new Peer({
             config: {
@@ -250,12 +253,14 @@ export default function Header({
                   credential: 'test'
                 }
               ]
-            }
+            },
+            initiator: true
           });
 
           outgoingRef.current[peerId].on('signal', signal => {
-            socket.emit('send_answer_signal', {
-              peerId,
+            console.log('sending call signal', peerId);
+            socket.emit('send_call_signal', {
+              socketId: peerId,
               signal,
               channelId
             });
@@ -281,16 +286,18 @@ export default function Header({
     function handleCallHungUp({ channelId, peerId }) {
       console.log('hung up', channelId, peerId);
       onCall({});
+      callerSocketId.current = null;
     }
 
-    function handleAnswer(data) {
-      const peerId = data.from;
+    function handleAnswer({ peerId, signal, to }) {
       if (
-        incomingPeersRef.current[peerId] &&
-        incomingPeersRef.current[peerId].signal
+        to === userId &&
+        outgoingRef.current[peerId] &&
+        outgoingRef.current[peerId].signal
       ) {
+        console.log('received answer signal from:', peerId);
         try {
-          incomingPeersRef.current[peerId].signal(data.signal);
+          outgoingRef.current[peerId].signal(signal);
         } catch (error) {
           console.error(error);
         }
@@ -298,10 +305,15 @@ export default function Header({
     }
 
     function handleCall({ peerId, signal, to }) {
-      if (to === userId && outgoingRef.current[peerId]) {
+      if (
+        to === userId &&
+        incomingPeersRef.current[peerId] &&
+        incomingPeersRef.current[peerId].signal
+      ) {
+        console.log('received call signal from', peerId);
         try {
           try {
-            outgoingRef.current[peerId].signal(signal);
+            incomingPeersRef.current[peerId].signal(signal);
           } catch (error) {
             console.error(error);
           }
@@ -377,9 +389,7 @@ export default function Header({
       channelOnCall.callerId !== userId
     ) {
       try {
-        for (let [, peer] of Object.entries(incomingPeersRef.current)) {
-          peer.addStream(myStream);
-        }
+        incomingPeersRef.current[callerSocketId.current].addStream(myStream);
       } catch (error) {
         console.error(error);
       }
@@ -403,41 +413,44 @@ export default function Header({
   }, [channelOnCall.callerId, channelOnCall.id, myStream, userId]);
 
   useEffect(() => {
-    if (channelOnCall.incomingShown && !prevIncomingShown.current) {
-      for (let peerId of Object.keys(incomingPeersRef.current)) {
-        incomingPeersRef.current[peerId] = new Peer({
-          config: {
-            iceServers: [
-              {
-                urls: 'turn:18.177.176.36:3478?transport=udp',
-                username: 'test',
-                credential: 'test'
-              }
-            ]
-          },
-          initiator: true
-        });
+    if (
+      channelOnCall.incomingShown &&
+      !prevIncomingShown.current &&
+      channelOnCall.callerId !== userId
+    ) {
+      console.log(callerSocketId.current, 'connecting...');
+      incomingPeersRef.current[callerSocketId.current] = new Peer({
+        config: {
+          iceServers: [
+            {
+              urls: 'turn:18.177.176.36:3478?transport=udp',
+              username: 'test',
+              credential: 'test'
+            }
+          ]
+        }
+      });
 
-        incomingPeersRef.current[peerId].on('signal', signal => {
-          socket.emit('send_call_signal', {
-            socketId: peerId,
-            signal,
-            channelId: channelOnCall.id
-          });
+      incomingPeersRef.current[callerSocketId.current].on('signal', signal => {
+        console.log('sending answer signal to:', callerSocketId.current);
+        socket.emit('send_answer_signal', {
+          socketId: callerSocketId.current,
+          signal,
+          channelId: channelOnCall.id
         });
+      });
 
-        incomingPeersRef.current[peerId].on('stream', stream => {
-          onSetPeerStreams({ peerId, stream });
-        });
+      incomingPeersRef.current[callerSocketId.current].on('stream', stream => {
+        onSetPeerStreams({ peerId: callerSocketId.current, stream });
+      });
 
-        incomingPeersRef.current[peerId].on('close', () => {
-          delete incomingPeersRef.current[peerId];
-        });
+      incomingPeersRef.current[callerSocketId.current].on('close', () => {
+        delete incomingPeersRef.current[callerSocketId.current];
+      });
 
-        incomingPeersRef.current[peerId].on('error', e => {
-          console.error('Peer error %s:', peerId, e);
-        });
-      }
+      incomingPeersRef.current[callerSocketId.current].on('error', e => {
+        console.error('Peer error %s:', callerSocketId.current, e);
+      });
     }
     prevIncomingShown.current = channelOnCall.incomingShown;
     // eslint-disable-next-line react-hooks/exhaustive-deps
