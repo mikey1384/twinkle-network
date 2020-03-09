@@ -188,8 +188,10 @@ function App({ location, history }) {
     };
   });
 
-  const isMakingCall = useMemo(() => {
-    return channelOnCall.callerId && channelOnCall.callerId === userId;
+  const outgoingShown = useMemo(() => {
+    const isMakingCall =
+      channelOnCall.callerId && channelOnCall.callerId === userId;
+    return isMakingCall || channelOnCall.outgoingShown;
   }, [channelOnCall, userId]);
 
   return (
@@ -316,7 +318,7 @@ function App({ location, history }) {
       </div>
       {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
       {channelOnCall.incomingShown && <Incoming />}
-      {(isMakingCall || channelOnCall.incomingShown) && <Outgoing />}
+      {outgoingShown && <Outgoing />}
     </div>
   );
 

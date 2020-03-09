@@ -84,10 +84,6 @@ function ChatInfo({
     selectedChannelId
   ]);
 
-  const disabled = useMemo(() => currentChannelOnlineMembers.length <= 1, [
-    currentChannelOnlineMembers.length
-  ]);
-
   return (
     <>
       <div
@@ -112,9 +108,7 @@ function ChatInfo({
             <div
               className={css`
                 padding: 1rem;
-                background: ${disabled
-                  ? Color.darkBlue(0.4)
-                  : callConnected
+                background: ${callConnected
                   ? Color.rose(0.8)
                   : Color.darkBlue(0.8)};
                 color: #fff;
@@ -126,17 +120,13 @@ function ChatInfo({
                   : 'default'};
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
-                  background: ${disabled
-                    ? Color.darkBlue(0.4)
-                    : callConnected
+                  background: ${callConnected
                     ? Color.rose(1)
                     : Color.darkBlue(1)};
                 }
                 @media (min-width: ${desktopMinWidth}) {
                   &:hover {
-                    background: ${disabled
-                      ? Color.darkBlue(0.4)
-                      : callConnected
+                    background: ${callConnected
                       ? Color.rose(1)
                       : Color.darkBlue(1)};
                   }
@@ -186,21 +176,18 @@ function ChatInfo({
   );
 
   function handleCall() {
-    if (disabled) return;
-    if (selectedChannelId === channelOnCall.id) {
+    if (selectedChannelId !== channelOnCall.id) {
+      onCall({
+        callerId: myId,
+        channelId: currentChannel.id
+      });
+    } else {
       socket.emit('hang_up_call', {
         channelId: channelOnCall.id,
         peerId: myId
       });
+      onCall({});
     }
-    onCall(
-      selectedChannelId !== channelOnCall.id
-        ? {
-            callerId: myId,
-            channelId: currentChannel.id
-          }
-        : {}
-    );
   }
 }
 

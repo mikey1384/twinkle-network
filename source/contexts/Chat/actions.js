@@ -2,7 +2,7 @@ export default function ChatActions(dispatch) {
   return {
     onCall({ channelId, callerId }) {
       return dispatch({
-        type: 'INIT_CALL',
+        type: 'SET_CALL',
         channelId,
         callerId
       });
@@ -437,6 +437,11 @@ export default function ChatActions(dispatch) {
     onShowIncoming() {
       return dispatch({
         type: 'SHOW_INCOMING'
+      });
+    },
+    onShowOutgoing() {
+      return dispatch({
+        type: 'SHOW_OUTGOING'
       });
     },
     onSubmitMessage({ message, replyTarget }) {

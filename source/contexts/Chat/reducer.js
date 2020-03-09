@@ -322,13 +322,15 @@ export default function ChatReducer(state, action) {
           }
         }
       };
-    case 'INIT_CALL': {
+    case 'SET_CALL': {
       return {
         ...state,
-        channelOnCall: {
-          callerId: action.callerId,
-          id: action.channelId
-        }
+        channelOnCall: action.callerId
+          ? {
+              callerId: action.callerId,
+              id: action.channelId
+            }
+          : {}
       };
     }
     case 'INIT_CHAT': {
@@ -895,6 +897,15 @@ export default function ChatReducer(state, action) {
         channelOnCall: {
           ...state.channelOnCall,
           incomingShown: true
+        }
+      };
+    }
+    case 'SHOW_OUTGOING': {
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          outgoingShown: true
         }
       };
     }

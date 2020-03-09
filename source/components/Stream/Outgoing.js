@@ -10,6 +10,7 @@ export default function Outgoing() {
     const currentVideo = videoRef.current;
     init();
     async function init() {
+      console.log('initializing outgoing cam');
       const options = { video: true, audio: true };
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
