@@ -361,6 +361,26 @@ function Body({
                     </span>
                   )}
                 </Button>
+                {!(
+                  contentType === 'video' ||
+                  contentType === 'url' ||
+                  contentType === 'subject'
+                ) || (
+                  <Button
+                    transparent
+                    key="copyButton"
+                    style={{ marginLeft: '1rem' }}
+                    onClick={copyToClipboard(
+                      'https://www.twinkle.network/' +
+                        (contentType === 'url' ? 'link' : contentType) +
+                        's/' +
+                        contentId
+                    )}
+                  >
+                    <Icon icon="copy" />
+                    <span style={{ marginLeft: '0.7rem' }}>Copy Link</span>
+                  </Button>
+                )}
                 {editButtonShown && (
                   <DropdownButton
                     transparent
@@ -586,6 +606,15 @@ function Body({
     if (!commentsShown) {
       handleExpandComments();
     }
+  }
+
+  async function copyToClipboard(code) {
+    var textField = document.createElement('textarea');
+    textField.innerText = code;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand('copy');
+    textField.remove();
   }
 
   function onToggleByUser(byUser) {
