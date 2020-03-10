@@ -178,7 +178,8 @@ function ChatInfo({
   function handleCall() {
     if (selectedChannelId !== channelOnCall.id) {
       onCall({
-        callerId: myId,
+        imCalling: true,
+        memberId: myId,
         channelId: currentChannel.id
       });
     } else {

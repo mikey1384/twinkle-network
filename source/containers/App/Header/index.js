@@ -101,7 +101,7 @@ export default function Header({
   const peersRef = useRef({});
   const prevMyStreamRef = useRef(null);
   const prevIncomingShown = useRef(false);
-  const callerSocketId = useRef(null);
+  const membersOnCall = useRef([]);
   const receivedCallSignals = useRef([]);
 
   useEffect(() => {
@@ -206,7 +206,7 @@ export default function Header({
       onCall({});
       onSetMyStream(null);
       onSetPeerStreams({});
-      callerSocketId.current = null;
+      membersOnCall.current = [];
       peersRef.current = {};
       prevMyStreamRef.current = null;
       prevIncomingShown.current = false;
@@ -246,14 +246,14 @@ export default function Header({
       onChangeSocketStatus(false);
     }
 
-    function handlePeer({ callerId, channelId, callerSID }) {
-      if (callerId !== userId) {
-        callerSocketId.current = callerSID;
+    function handlePeer({ memberId, channelId, peerId }) {
+      if (memberId !== userId && !membersOnCall.current.includes?.(memberId)) {
+        membersOnCall.current.push(peerId);
         socket.emit('inform_peer_signal_accepted', {
-          peerId: callerSID,
+          peerId,
           channelId
         });
-        onCall({ channelId, callerId });
+        onCall({ channelId, memberId, peerId });
       }
     }
 
@@ -322,19 +322,26 @@ export default function Header({
 
   useEffect(() => {
     if (
-      channelOnCall.incomingShown &&
       !prevIncomingShown.current &&
-      channelOnCall.callerId !== userId
+      channelOnCall.incomingShown &&
+      !channelOnCall.imCalling
     ) {
+      console.log('im initiating');
       handleNewPeer({
-        peerId: callerSocketId.current,
+        peerId: membersOnCall.current[0],
         channelId: channelOnCall.id,
         initiator: true
       });
     }
     prevIncomingShown.current = channelOnCall.incomingShown;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelOnCall.incomingShown]);
+  }, [
+    channelOnCall.id,
+    channelOnCall.incomingShown,
+    channelOnCall.members,
+    channelOnCall.imCalling,
+    userId
+  ]);
 
   useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + numUnreads;
@@ -348,17 +355,17 @@ export default function Header({
 
   useEffect(() => {
     if (myStream && !prevMyStreamRef.current) {
-      if (channelOnCall.callerId === userId) {
+      if (channelOnCall.imCalling) {
         socket.emit('start_new_call', channelOnCall.id);
       } else {
         try {
-          peersRef.current[callerSocketId.current].addStream(myStream);
+          peersRef.current[membersOnCall.current[0]].addStream(myStream);
         } catch (error) {
           console.error(error);
         }
       }
     }
-  }, [channelOnCall.callerId, channelOnCall.id, myStream, userId]);
+  }, [channelOnCall.id, channelOnCall.imCalling, myStream, userId]);
 
   useEffect(() => {
     prevMyStreamRef.current = myStream;

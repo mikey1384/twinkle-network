@@ -189,10 +189,8 @@ function App({ location, history }) {
   });
 
   const outgoingShown = useMemo(() => {
-    const isMakingCall =
-      channelOnCall.callerId && channelOnCall.callerId === userId;
-    return isMakingCall || channelOnCall.outgoingShown;
-  }, [channelOnCall, userId]);
+    return channelOnCall.imCalling || channelOnCall.outgoingShown;
+  }, [channelOnCall.imCalling, channelOnCall.outgoingShown]);
 
   return (
     <div

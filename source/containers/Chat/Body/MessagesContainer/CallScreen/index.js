@@ -4,7 +4,6 @@ import Icon from 'components/Icon';
 import Button from 'components/Button';
 import Video from './Video';
 import { useChatContext } from 'contexts';
-import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
 CallScreen.propTypes = {
@@ -16,10 +15,6 @@ export default function CallScreen({ style }) {
     state: { channelOnCall, myStream, peerStreams },
     actions: { onShowIncoming }
   } = useChatContext();
-  const { userId } = useMyState();
-  const isReceivingCall = useMemo(() => {
-    return channelOnCall.callerId && channelOnCall.callerId !== userId;
-  }, [channelOnCall, userId]);
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
 
@@ -33,8 +28,12 @@ export default function CallScreen({ style }) {
   }, [myStream]);
 
   const calling = useMemo(() => {
-    return !channelOnCall.callReceived && channelOnCall.callerId === userId;
-  }, [channelOnCall.callReceived, channelOnCall.callerId, userId]);
+    return !channelOnCall.callReceived && channelOnCall.imCalling;
+  }, [channelOnCall.callReceived, channelOnCall.imCalling]);
+  const answerButtonShown = useMemo(
+    () => !channelOnCall.imCalling && !channelOnCall.incomingShown,
+    [channelOnCall.imCalling, channelOnCall.incomingShown]
+  );
 
   return (
     <div style={{ width: '100%', position: 'relative', ...style }}>
@@ -51,7 +50,7 @@ export default function CallScreen({ style }) {
           Calling...
         </div>
       )}
-      {isReceivingCall && !channelOnCall.incomingShown && (
+      {answerButtonShown && (
         <div
           style={{
             width: '100%',

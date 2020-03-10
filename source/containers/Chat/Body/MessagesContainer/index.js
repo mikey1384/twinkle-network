@@ -127,7 +127,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     if (selectedChannelId === channelOnCall.id) {
       handleSetScrollToBottom();
     }
-  }, [channelOnCall.id, selectedChannelId]);
+  }, [channelOnCall, selectedChannelId]);
 
   const containerHeight = useMemo(() => {
     return `CALC(100% - 1rem - 2px - ${
