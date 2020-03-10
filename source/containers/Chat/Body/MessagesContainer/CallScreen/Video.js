@@ -8,7 +8,6 @@ Video.propTypes = {
 export default function Video({ stream }) {
   const videoRef = useRef(stream);
   useEffect(() => {
-    console.log(stream);
     if (videoRef.current && !videoRef.current.srcObject) {
       const video = videoRef.current;
       video.srcObject = stream;
