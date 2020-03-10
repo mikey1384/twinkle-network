@@ -390,7 +390,7 @@ function Body({
                     onClick={() => {
                       setCopiedShown(true);
                       copyToClipboard();
-                      setTimeout(() => setCopiedShown(false), 1000);
+                      setTimeout(() => setCopiedShown(false), 700);
                     }}
                   >
                     <Icon icon="copy" />
