@@ -29,8 +29,8 @@ export default function Video({ stream }) {
     <div
       style={{
         width: '100%',
-        marginTop: '1rem',
         height: '100%',
+        paddingTop: '1rem',
         display: 'flex',
         justifyContent: 'center'
       }}

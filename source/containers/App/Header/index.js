@@ -110,41 +110,41 @@ export default function Header({
   }, [userId]);
 
   useEffect(() => {
-    socket.on('signal_received', handleSignal);
+    socket.on('signal_received', handleCallSignal);
     socket.on('away_status_changed', handleAwayStatusChange);
     socket.on('busy_status_changed', handleBusyStatusChange);
     socket.on('call_hung_up', handleCallHungUp);
     socket.on('call_reception_confirmed', onCallReceptionConfirm);
-    socket.on('chat_invitation_received', onChatInvitation);
+    socket.on('chat_invitation_received', handleChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
     socket.on('channel_owner_changed', onChangeChannelOwner);
     socket.on('channel_settings_changed', onChangeChannelSettings);
     socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
+    socket.on('disconnect', handleDisconnect);
     socket.on('message_attachment_hid', onHideAttachment);
     socket.on('new_call_started', handlePeer);
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', onIncreaseNumNewNotis);
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('peer_accepted', handlePeerAccepted);
-    socket.on('subject_changed', onSubjectChange);
+    socket.on('subject_changed', handleSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
     return function cleanUp() {
-      socket.removeListener('signal_received', handleSignal);
+      socket.removeListener('signal_received', handleCallSignal);
       socket.removeListener('away_status_changed', handleAwayStatusChange);
       socket.removeListener('busy_status_changed', handleBusyStatusChange);
       socket.removeListener('connect', onConnect);
       socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
-      socket.removeListener('chat_invitation_received', onChatInvitation);
+      socket.removeListener('chat_invitation_received', handleChatInvitation);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
         'channel_settings_changed',
         onChangeChannelSettings
       );
-      socket.removeListener('disconnect', onDisconnect);
+      socket.removeListener('disconnect', handleDisconnect);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('message_attachment_hid', onHideAttachment);
@@ -153,28 +153,12 @@ export default function Header({
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('peer_accepted', handlePeerAccepted);
-      socket.removeListener('subject_changed', onSubjectChange);
+      socket.removeListener('subject_changed', handleSubjectChange);
       socket.removeListener(
         'new_vocab_activity_received',
         handleReceiveVocabActivity
       );
     };
-
-    function onChatInvitation(data) {
-      let duplicate = false;
-      if (selectedChannelId === 0) {
-        if (
-          data.members.filter(member => member.userId !== userId)[0].userId ===
-          channelsObj[selectedChannelId].members.filter(
-            member => member.userId !== userId
-          )[0].userId
-        ) {
-          duplicate = true;
-        }
-      }
-      onReceiveFirstMsg({ data, duplicate, pageVisible });
-      socket.emit('join_chat_channel', data.channelId);
-    }
 
     async function onConnect() {
       console.log('connected to socket');
@@ -217,6 +201,51 @@ export default function Header({
       }
     }
 
+    function handleCallHungUp({ channelId, peerId }) {
+      console.log('hung up', channelId, peerId);
+      onCall({});
+      onSetMyStream(null);
+      onSetPeerStreams({});
+      callerSocketId.current = null;
+      peersRef.current = {};
+      prevMyStreamRef.current = null;
+      prevIncomingShown.current = false;
+      receivedCallSignals.current = [];
+    }
+
+    function handleCallSignal({ peerId, signal, to }) {
+      if (to === userId && peersRef.current[peerId]) {
+        if (peersRef.current[peerId].signal) {
+          try {
+            peersRef.current[peerId].signal(signal);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    }
+
+    function handleChatInvitation(data) {
+      let duplicate = false;
+      if (selectedChannelId === 0) {
+        if (
+          data.members.filter(member => member.userId !== userId)[0].userId ===
+          channelsObj[selectedChannelId].members.filter(
+            member => member.userId !== userId
+          )[0].userId
+        ) {
+          duplicate = true;
+        }
+      }
+      onReceiveFirstMsg({ data, duplicate, pageVisible });
+      socket.emit('join_chat_channel', data.channelId);
+    }
+
+    function handleDisconnect() {
+      console.log('disconnected from socket');
+      onChangeSocketStatus(false);
+    }
+
     function handlePeer({ callerId, channelId, callerSID }) {
       if (callerId !== userId) {
         callerSocketId.current = callerSID;
@@ -231,69 +260,11 @@ export default function Header({
     function handlePeerAccepted({ channelId, to, peerId }) {
       if (to === userId) {
         try {
-          peersRef.current[peerId] = new Peer({
-            config: {
-              iceServers: [
-                {
-                  urls: 'turn:18.177.176.36:3478?transport=udp',
-                  username: 'test',
-                  credential: 'test'
-                }
-              ]
-            },
-            stream: myStream
-          });
-          peersRef.current[peerId].on('signal', signal => {
-            socket.emit('send_signal', {
-              socketId: peerId,
-              signal,
-              channelId
-            });
-          });
-          peersRef.current[peerId].on('close', () => {
-            delete peersRef.current[peerId];
-          });
-          peersRef.current[peerId].on('stream', stream => {
-            console.log('streaming peer!!', peerId);
-            onShowIncoming();
-            onSetPeerStreams({ peerId, stream });
-          });
-          peersRef.current[peerId].on('error', e => {
-            console.error('Peer error %s:', peerId, e);
-          });
+          handleNewPeer({ peerId, channelId, stream: myStream });
         } catch (error) {
           console.error(error);
         }
       }
-    }
-
-    function handleCallHungUp({ channelId, peerId }) {
-      console.log('hung up', channelId, peerId);
-      onCall({});
-      onSetMyStream(null);
-      onSetPeerStreams({});
-      callerSocketId.current = null;
-      peersRef.current = {};
-      prevMyStreamRef.current = null;
-      prevIncomingShown.current = false;
-      receivedCallSignals.current = [];
-    }
-
-    function handleSignal({ peerId, signal, to }) {
-      if (to === userId && peersRef.current[peerId]) {
-        if (peersRef.current[peerId].signal) {
-          try {
-            peersRef.current[peerId].signal(signal);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-    }
-
-    function onDisconnect() {
-      console.log('disconnected from socket');
-      onChangeSocketStatus(false);
     }
 
     async function handleReceiveMessage(message, channel) {
@@ -319,6 +290,7 @@ export default function Header({
         });
       }
     }
+
     function handleReceiveVocabActivity(activity) {
       const senderIsNotTheUser = activity.userId !== userId;
       if (senderIsNotTheUser) {
@@ -335,7 +307,8 @@ export default function Header({
         });
       }
     }
-    function onSubjectChange({ subject }) {
+
+    function handleSubjectChange({ subject }) {
       onNotifyChatSubjectChange(subject);
     }
   });
@@ -353,40 +326,10 @@ export default function Header({
       !prevIncomingShown.current &&
       channelOnCall.callerId !== userId
     ) {
-      peersRef.current[callerSocketId.current] = new Peer({
-        config: {
-          iceServers: [
-            {
-              urls: 'turn:18.177.176.36:3478?transport=udp',
-              username: 'test',
-              credential: 'test'
-            }
-          ]
-        },
+      handleNewPeer({
+        peerId: callerSocketId.current,
+        channelId: channelOnCall.id,
         initiator: true
-      });
-
-      peersRef.current[callerSocketId.current].on('signal', signal => {
-        console.log('sending call signal to:', callerSocketId.current);
-        socket.emit('send_signal', {
-          socketId: callerSocketId.current,
-          signal,
-          channelId: channelOnCall.id
-        });
-      });
-
-      peersRef.current[callerSocketId.current].on('stream', stream => {
-        console.log('getting stream from the caller');
-        onSetPeerStreams({ peerId: callerSocketId.current, stream });
-      });
-
-      peersRef.current[callerSocketId.current].on('connect', () => {
-        console.log('connected with peer!!!');
-        onShowOutgoing();
-      });
-
-      peersRef.current[callerSocketId.current].on('error', e => {
-        console.error('Peer error %s:', callerSocketId.current, e);
       });
     }
     prevIncomingShown.current = channelOnCall.incomingShown;
@@ -484,4 +427,45 @@ export default function Header({
       </nav>
     </ErrorBoundary>
   );
+
+  function handleNewPeer({ peerId, channelId, initiator, stream }) {
+    peersRef.current[peerId] = new Peer({
+      config: {
+        iceServers: [
+          {
+            urls: 'turn:18.177.176.36:3478?transport=udp',
+            username: 'test',
+            credential: 'test'
+          }
+        ]
+      },
+      initiator,
+      stream
+    });
+
+    peersRef.current[peerId].on('signal', signal => {
+      socket.emit('send_signal', {
+        socketId: peerId,
+        signal,
+        channelId
+      });
+    });
+
+    peersRef.current[peerId].on('stream', stream => {
+      onShowIncoming();
+      onSetPeerStreams({ peerId, stream });
+    });
+
+    peersRef.current[peerId].on('connect', () => {
+      onShowOutgoing();
+    });
+
+    peersRef.current[peerId].on('close', () => {
+      delete peersRef.current[peerId];
+    });
+
+    peersRef.current[peerId].on('error', e => {
+      console.error('Peer error %s:', peerId, e);
+    });
+  }
 }
