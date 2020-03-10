@@ -110,12 +110,11 @@ export default function Header({
   }, [userId]);
 
   useEffect(() => {
-    socket.on('answer_signal_received', handleAnswer);
+    socket.on('signal_received', handleSignal);
     socket.on('away_status_changed', handleAwayStatusChange);
     socket.on('busy_status_changed', handleBusyStatusChange);
     socket.on('call_hung_up', handleCallHungUp);
     socket.on('call_reception_confirmed', onCallReceptionConfirm);
-    socket.on('call_signal_received', handleCallSignalReceived);
     socket.on('chat_invitation_received', onChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
@@ -133,13 +132,12 @@ export default function Header({
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
     return function cleanUp() {
-      socket.removeListener('answer_signal_received', handleAnswer);
+      socket.removeListener('signal_received', handleSignal);
       socket.removeListener('away_status_changed', handleAwayStatusChange);
       socket.removeListener('busy_status_changed', handleBusyStatusChange);
       socket.removeListener('connect', onConnect);
       socket.removeListener('call_hung_up', handleCallHungUp);
       socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
-      socket.removeListener('call_signal_received', handleCallSignalReceived);
       socket.removeListener('chat_invitation_received', onChatInvitation);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
@@ -245,30 +243,24 @@ export default function Header({
             },
             stream: myStream
           });
-
           peersRef.current[peerId].on('signal', signal => {
-            console.log('sending answer signal', peerId, signal, channelId);
-            socket.emit('send_answer_signal', {
+            socket.emit('send_signal', {
               socketId: peerId,
               signal,
               channelId
             });
           });
-
           peersRef.current[peerId].on('close', () => {
             delete peersRef.current[peerId];
           });
-
           peersRef.current[peerId].on('stream', stream => {
             console.log('streaming peer!!', peerId);
             onShowIncoming();
             onSetPeerStreams({ peerId, stream });
           });
-
           peersRef.current[peerId].on('error', e => {
             console.error('Peer error %s:', peerId, e);
           });
-          console.log(callerSocketId.current, 'connecting...');
         } catch (error) {
           console.error(error);
         }
@@ -287,26 +279,14 @@ export default function Header({
       receivedCallSignals.current = [];
     }
 
-    function handleAnswer({ peerId, signal, to }) {
+    function handleSignal({ peerId, signal, to }) {
       if (to === userId && peersRef.current[peerId]) {
         if (peersRef.current[peerId].signal) {
-          console.log('received answer signal from:', peerId);
           try {
             peersRef.current[peerId].signal(signal);
           } catch (error) {
             console.error(error);
           }
-        } else {
-          console.log('no listener');
-        }
-      }
-    }
-
-    function handleCallSignalReceived({ peerId, signal, to }) {
-      if (to === userId) {
-        if (peersRef.current?.[peerId]?.signal) {
-          console.log('signalling');
-          peersRef.current[peerId].signal(signal);
         }
       }
     }
@@ -388,7 +368,7 @@ export default function Header({
 
       peersRef.current[callerSocketId.current].on('signal', signal => {
         console.log('sending call signal to:', callerSocketId.current);
-        socket.emit('send_call_signal', {
+        socket.emit('send_signal', {
           socketId: callerSocketId.current,
           signal,
           channelId: channelOnCall.id
