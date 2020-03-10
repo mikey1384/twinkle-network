@@ -183,10 +183,7 @@ function ChatInfo({
         channelId: currentChannel.id
       });
     } else {
-      socket.emit('hang_up_call', {
-        channelId: channelOnCall.id,
-        peerId: myId
-      });
+      socket.emit('hang_up_call', channelOnCall.id);
       onCall({});
     }
   }

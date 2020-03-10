@@ -113,8 +113,8 @@ export default function Header({
     socket.on('signal_received', handleCallSignal);
     socket.on('away_status_changed', handleAwayStatusChange);
     socket.on('busy_status_changed', handleBusyStatusChange);
-    socket.on('call_hung_up', handleCallHungUp);
-    socket.on('call_reception_confirmed', onCallReceptionConfirm);
+    socket.on('call_terminated', handleCallTerminated);
+    socket.on('call_reception_confirmed', handleCallReceptionConfirm);
     socket.on('chat_invitation_received', handleChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
@@ -123,6 +123,7 @@ export default function Header({
     socket.on('connect', onConnect);
     socket.on('disconnect', handleDisconnect);
     socket.on('message_attachment_hid', onHideAttachment);
+    socket.on('new_call_member', handleNewCallMember);
     socket.on('new_call_started', handlePeer);
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', onIncreaseNumNewNotis);
@@ -136,8 +137,11 @@ export default function Header({
       socket.removeListener('away_status_changed', handleAwayStatusChange);
       socket.removeListener('busy_status_changed', handleBusyStatusChange);
       socket.removeListener('connect', onConnect);
-      socket.removeListener('call_hung_up', handleCallHungUp);
-      socket.removeListener('call_reception_confirmed', onCallReceptionConfirm);
+      socket.removeListener('call_terminated', handleCallTerminated);
+      socket.removeListener(
+        'call_reception_confirmed',
+        handleCallReceptionConfirm
+      );
       socket.removeListener('chat_invitation_received', handleChatInvitation);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
@@ -148,6 +152,7 @@ export default function Header({
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('message_attachment_hid', onHideAttachment);
+      socket.removeListener('new_call_member', handleNewCallMember);
       socket.removeListener('new_call_started', handlePeer);
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
@@ -201,8 +206,7 @@ export default function Header({
       }
     }
 
-    function handleCallHungUp({ channelId, peerId }) {
-      console.log('hung up', channelId, peerId);
+    function handleCallTerminated() {
       onCall({});
       onSetMyStream(null);
       onSetPeerStreams({});
@@ -211,6 +215,10 @@ export default function Header({
       prevMyStreamRef.current = null;
       prevIncomingShown.current = false;
       receivedCallSignals.current = [];
+    }
+
+    function handleCallReceptionConfirm(channelId) {
+      onCallReceptionConfirm(channelId);
     }
 
     function handleCallSignal({ peerId, signal, to }) {
@@ -246,13 +254,14 @@ export default function Header({
       onChangeSocketStatus(false);
     }
 
+    function handleNewCallMember(peerId) {
+      membersOnCall.current.push(peerId);
+      console.log(membersOnCall.current);
+    }
+
     function handlePeer({ memberId, channelId, peerId }) {
       if (memberId !== userId && !membersOnCall.current.includes?.(memberId)) {
         membersOnCall.current.push(peerId);
-        socket.emit('inform_peer_signal_accepted', {
-          peerId,
-          channelId
-        });
         onCall({ channelId, memberId, peerId });
       }
     }
@@ -326,12 +335,18 @@ export default function Header({
       channelOnCall.incomingShown &&
       !channelOnCall.imCalling
     ) {
-      console.log('im initiating');
-      handleNewPeer({
-        peerId: membersOnCall.current[0],
-        channelId: channelOnCall.id,
-        initiator: true
-      });
+      for (let peerId of membersOnCall.current) {
+        socket.emit('inform_peer_signal_accepted', {
+          peerId,
+          channelId: channelOnCall.id
+        });
+        socket.emit('join_call', channelOnCall.id);
+        handleNewPeer({
+          peerId: peerId,
+          channelId: channelOnCall.id,
+          initiator: true
+        });
+      }
     }
     prevIncomingShown.current = channelOnCall.incomingShown;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -358,10 +373,14 @@ export default function Header({
       if (channelOnCall.imCalling) {
         socket.emit('start_new_call', channelOnCall.id);
       } else {
-        try {
-          peersRef.current[membersOnCall.current[0]].addStream(myStream);
-        } catch (error) {
-          console.error(error);
+        for (let peerId of membersOnCall.current) {
+          try {
+            if (peersRef.current[peerId]) {
+              peersRef.current[peerId].addStream(myStream);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         }
       }
     }
@@ -436,6 +455,7 @@ export default function Header({
   );
 
   function handleNewPeer({ peerId, channelId, initiator, stream }) {
+    console.log('creating peer:', peerId);
     peersRef.current[peerId] = new Peer({
       config: {
         iceServers: [

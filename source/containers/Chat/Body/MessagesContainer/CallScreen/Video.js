@@ -8,21 +8,13 @@ Video.propTypes = {
 export default function Video({ stream }) {
   const videoRef = useRef(stream);
   useEffect(() => {
+    console.log(stream);
     if (videoRef.current && !videoRef.current.srcObject) {
       const video = videoRef.current;
       video.srcObject = stream;
       video.volume = 0;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    return function cleanUp() {
-      video.srcObject.getTracks().forEach(track => {
-        track.stop();
-      });
-    };
   }, []);
 
   return (
