@@ -1,8 +1,8 @@
 export function timeSince(dateText) {
-  var date = Number(dateText);
-  var seconds = Math.floor((new Date() - date * 1000) / 1000);
-  var interval = Math.floor(seconds / 31536000);
-  var s = 's';
+  const date = Number(dateText);
+  const seconds = Math.floor((new Date() - date * 1000) / 1000);
+  let interval = Math.floor(seconds / 31536000);
+  let s = 's';
   if (interval >= 1) {
     if (interval === 1) {
       interval = 'a';
@@ -43,7 +43,7 @@ export function timeSince(dateText) {
     return interval + ' minute' + s + ' ago';
   }
   s = Math.floor(seconds) > 1 ? 's' : '';
-  var string =
+  const string =
     seconds <= 0 ? 'Just now' : Math.floor(seconds) + ` second${s} ago`;
   return string;
 }

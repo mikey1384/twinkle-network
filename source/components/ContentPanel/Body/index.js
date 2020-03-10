@@ -127,6 +127,7 @@ function Body({
     onSetCommentsShown,
     onSetRewardLevel
   } = useContext(LocalContext);
+  const [copiedShown, setCopiedShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
@@ -361,36 +362,6 @@ function Body({
                     </span>
                   )}
                 </Button>
-                {!(
-                  contentType === 'video' ||
-                  contentType === 'url' ||
-                  contentType === 'subject'
-                ) || (
-                  <Button
-                    transparent
-                    key="copyButton"
-                    style={{ marginLeft: '1rem' }}
-                    onClick={copyToClipboard(
-                      'https://www.twinkle.network/' +
-                        (contentType === 'url' ? 'link' : contentType) +
-                        's/' +
-                        contentId
-                    )}
-                  >
-                    <Icon icon="copy" />
-                    <span style={{ marginLeft: '0.7rem' }}>Copy Link</span>
-                  </Button>
-                )}
-                {editButtonShown && (
-                  <DropdownButton
-                    transparent
-                    direction="right"
-                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
-                    size={contentType !== 'subject' ? 'sm' : null}
-                    text="Edit"
-                    menuProps={editMenuItems}
-                  />
-                )}
                 {userCanRewardThis && (
                   <Button
                     color="pink"
@@ -404,6 +375,46 @@ function Body({
                     </span>
                   </Button>
                 )}
+                {editButtonShown && (
+                  <DropdownButton
+                    transparent
+                    direction="right"
+                    style={{ marginLeft: '0.5rem', display: 'inline-block' }}
+                    size={contentType !== 'subject' ? 'sm' : null}
+                    menuProps={editMenuItems}
+                  />
+                )}
+                <div style={{ position: 'relative', marginLeft: '1rem' }}>
+                  <Button
+                    transparent
+                    onClick={() => {
+                      setCopiedShown(true);
+                      copyToClipboard(
+                        'https://www.twin-kle.com/' +
+                          (contentType === 'url' ? 'link' : contentType) +
+                          's/' +
+                          contentId
+                      );
+                      setTimeout(() => setCopiedShown(false), 1000);
+                    }}
+                  >
+                    <Icon icon="copy" />
+                  </Button>
+                  <div
+                    style={{
+                      zIndex: 300,
+                      display: copiedShown ? 'block' : 'none',
+                      marginTop: '0.2rem',
+                      position: 'absolute',
+                      background: '#fff',
+                      fontSize: '1.2rem',
+                      padding: '1rem',
+                      border: `1px solid ${Color.borderGray()}`
+                    }}
+                  >
+                    Copied!
+                  </div>
+                </div>
               </div>
               <div
                 className="right"
@@ -608,8 +619,8 @@ function Body({
     }
   }
 
-  async function copyToClipboard(code) {
-    var textField = document.createElement('textarea');
+  function copyToClipboard(code) {
+    const textField = document.createElement('textarea');
     textField.innerText = code;
     document.body.appendChild(textField);
     textField.select();
