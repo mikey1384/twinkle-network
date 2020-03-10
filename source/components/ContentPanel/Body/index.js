@@ -389,12 +389,7 @@ function Body({
                     transparent
                     onClick={() => {
                       setCopiedShown(true);
-                      copyToClipboard(
-                        'https://www.twin-kle.com/' +
-                          (contentType === 'url' ? 'link' : contentType) +
-                          's/' +
-                          contentId
-                      );
+                      copyToClipboard();
                       setTimeout(() => setCopiedShown(false), 1000);
                     }}
                   >
@@ -619,9 +614,11 @@ function Body({
     }
   }
 
-  function copyToClipboard(code) {
+  function copyToClipboard() {
     const textField = document.createElement('textarea');
-    textField.innerText = code;
+    textField.innerText = `https://www.twin-kle.com/${
+      contentType === 'url' ? 'link' : contentType
+    }s/${contentId}`;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand('copy');
