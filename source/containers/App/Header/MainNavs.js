@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import HeaderNav from './HeaderNav';
 import { matchPath } from 'react-router';
@@ -20,7 +20,7 @@ MainNavs.propTypes = {
   totalRewardAmount: PropTypes.number
 };
 
-export default function MainNavs({
+function MainNavs({
   loggedIn,
   numChatUnreads,
   numNewNotis,
@@ -279,3 +279,5 @@ export default function MainNavs({
     </div>
   );
 }
+
+export default memo(MainNavs);

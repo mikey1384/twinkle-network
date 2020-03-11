@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -12,7 +12,7 @@ AccountMenu.propTypes = {
   style: PropTypes.object
 };
 
-export default function AccountMenu({ className, history, style = {} }) {
+function AccountMenu({ className, history, style = {} }) {
   const {
     user: {
       actions: { onLogout, onOpenSigninModal }
@@ -102,3 +102,5 @@ export default function AccountMenu({ className, history, style = {} }) {
     onResetChat();
   }
 }
+
+export default memo(AccountMenu);

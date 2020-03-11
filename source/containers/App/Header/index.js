@@ -136,21 +136,21 @@ export default function Header({
       socket.removeListener('signal_received', handleCallSignal);
       socket.removeListener('away_status_changed', handleAwayStatusChange);
       socket.removeListener('busy_status_changed', handleBusyStatusChange);
-      socket.removeListener('connect', onConnect);
       socket.removeListener('call_terminated', handleCallTerminated);
       socket.removeListener(
         'call_reception_confirmed',
         handleCallReceptionConfirm
       );
       socket.removeListener('chat_invitation_received', handleChatInvitation);
+      socket.removeListener('chat_message_deleted', onDeleteMessage);
+      socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('channel_owner_changed', onChangeChannelOwner);
       socket.removeListener(
         'channel_settings_changed',
         onChangeChannelSettings
       );
+      socket.removeListener('connect', onConnect);
       socket.removeListener('disconnect', handleDisconnect);
-      socket.removeListener('chat_message_deleted', onDeleteMessage);
-      socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('message_attachment_hid', onHideAttachment);
       socket.removeListener('new_call_member', handleNewCallMember);
       socket.removeListener('new_call_started', handlePeer);

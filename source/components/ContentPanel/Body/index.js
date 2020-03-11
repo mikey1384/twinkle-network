@@ -339,14 +339,14 @@ function Body({
                   contentId={contentId}
                   likes={likes}
                   key="likeButton"
-                  onClick={onLikeClick}
+                  onClick={handleLikeClick}
                   small
                 />
                 <Button
                   transparent
                   key="commentButton"
                   style={{ marginLeft: '1rem' }}
-                  onClick={onCommentButtonClick}
+                  onClick={handleCommentButtonClick}
                 >
                   <Icon icon="comment-alt" />
                   <span style={{ marginLeft: '0.7rem' }}>
@@ -389,7 +389,7 @@ function Body({
                     transparent
                     onClick={() => {
                       setCopiedShown(true);
-                      copyToClipboard();
+                      handleCopyToClipboard();
                       setTimeout(() => setCopiedShown(false), 700);
                     }}
                   >
@@ -575,7 +575,7 @@ function Body({
     });
   }
 
-  async function onCommentButtonClick() {
+  async function handleCommentButtonClick() {
     if (!commentsShown) {
       await handleExpandComments();
     }
@@ -608,13 +608,13 @@ function Body({
     onSetCommentsShown({ contentId, contentType });
   }
 
-  async function onLikeClick() {
+  async function handleLikeClick() {
     if (!commentsShown) {
       handleExpandComments();
     }
   }
 
-  function copyToClipboard() {
+  function handleCopyToClipboard() {
     const textField = document.createElement('textarea');
     textField.innerText = `https://www.twin-kle.com/${
       contentType === 'url' ? 'link' : contentType

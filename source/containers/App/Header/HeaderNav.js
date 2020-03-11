@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Route, useHistory } from 'react-router-dom';
@@ -27,7 +27,7 @@ HeaderNav.propTypes = {
   to: PropTypes.string
 };
 
-export default function HeaderNav({
+function HeaderNav({
   active,
   alert,
   alertColor,
@@ -220,3 +220,5 @@ export default function HeaderNav({
     BodyRef.current.scrollTop = 0;
   }
 }
+
+export default memo(HeaderNav);
