@@ -6,6 +6,7 @@ import { css } from 'emotion';
 TwinkleLogo.propTypes = {
   style: PropTypes.object
 };
+
 export default function TwinkleLogo({ style }) {
   return (
     <div

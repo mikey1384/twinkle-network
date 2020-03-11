@@ -195,13 +195,19 @@ export default function Header({
     }
 
     function handleAwayStatusChange({ userId, isAway }) {
-      if (chatState['user' + userId]?.isAway !== isAway) {
+      if (
+        chatState['user' + userId] &&
+        chatState['user' + userId].isAway !== isAway
+      ) {
         onChangeAwayStatus({ userId, isAway });
       }
     }
 
     function handleBusyStatusChange({ userId, isBusy }) {
-      if (chatState['user' + userId]?.isBusy !== isBusy) {
+      if (
+        chatState['user' + userId] &&
+        chatState['user' + userId].isBusy !== isBusy
+      ) {
         onChangeBusyStatus({ userId, isBusy });
       }
     }
