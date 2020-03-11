@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
@@ -12,20 +12,9 @@ CallScreen.propTypes = {
 
 export default function CallScreen({ style }) {
   const {
-    state: { channelOnCall, myStream, peerStreams },
+    state: { channelOnCall, peerStreams },
     actions: { onShowIncoming }
   } = useChatContext();
-  const myVideoRef = useRef(null);
-  const myStreaming = useRef(false);
-
-  useEffect(() => {
-    const videoRef = myVideoRef.current;
-    if (videoRef && myStream && !myStreaming.current && !videoRef?.srcObject) {
-      videoRef.srcObject = myStream;
-      videoRef.volume = 0;
-      myStreaming.current = true;
-    }
-  }, [myStream]);
 
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
@@ -74,25 +63,15 @@ export default function CallScreen({ style }) {
             position: 'relative',
             width: '100%',
             height: '100%',
-            display: 'flex'
+            display: 'flex',
+            justifyContent: 'center'
           }}
         >
           {channelOnCall.incomingShown &&
             Object.entries(peerStreams).map(([peerId, stream]) => (
-              <Video
-                key={peerId}
-                stream={stream}
-                numVideos={Object.entries(peerStreams).length}
-              />
+              <Video key={peerId} stream={stream} />
             ))}
         </div>
-      )}
-      {myStream && (
-        <video
-          style={{ position: 'absolute', right: 0, bottom: 0, width: '25%' }}
-          autoPlay
-          ref={myVideoRef}
-        />
       )}
     </div>
   );

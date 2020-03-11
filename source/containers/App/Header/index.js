@@ -333,7 +333,7 @@ export default function Header({
       selectedChannelId,
       (err, { callData }) => {
         if (err) console.error(err);
-        if (callData) {
+        if (callData && Object.keys(membersOnCall.current).length === 0) {
           membersOnCall.current = callData.peers;
           onCall({ channelId: selectedChannelId });
         }

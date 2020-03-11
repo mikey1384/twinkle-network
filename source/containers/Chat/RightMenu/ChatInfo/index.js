@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Members from './Members';
 import ChannelDetails from './ChannelDetails';
@@ -26,8 +26,24 @@ function ChatInfo({
 }) {
   const { userId: myId, username, profilePicId, authLevel } = useMyState();
   const {
+    state: { myStream },
     actions: { onCall }
   } = useChatContext();
+  const myVideoRef = useRef(null);
+  const myStreaming = useRef(false);
+
+  useEffect(() => {
+    const videoRef = myVideoRef.current;
+    if (videoRef && myStream && !myStreaming.current && !videoRef?.srcObject) {
+      videoRef.srcObject = myStream;
+      videoRef.volume = 0;
+      myStreaming.current = true;
+    }
+    return function cleanUp() {
+      myStreaming.current = false;
+    };
+  }, [myStream]);
+
   const canVideoChat = useMemo(() => {
     if (currentChannel.twoPeople) {
       let result = true;
@@ -43,6 +59,7 @@ function ChatInfo({
     currentChannel.members,
     currentChannel.twoPeople
   ]);
+
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
@@ -142,6 +159,17 @@ function ChatInfo({
               </span>
             </div>
           )}
+          {myStream && (
+            <video
+              style={{
+                width: '100%',
+                maxHeight: '20rem'
+              }}
+              autoPlay
+              playsInline
+              ref={myVideoRef}
+            />
+          )}
           <ChannelDetails
             style={{ marginTop: '1rem' }}
             channelId={currentChannel.id}
@@ -176,14 +204,21 @@ function ChatInfo({
   );
 
   function handleCall() {
-    if (selectedChannelId !== channelOnCall.id) {
+    if (!channelOnCall.id) {
       onCall({
         imCalling: true,
         channelId: currentChannel.id
       });
     } else {
-      socket.emit('hang_up_call', channelOnCall.id);
       onCall({});
+      socket.emit('hang_up_call', channelOnCall.id, () => {
+        if (selectedChannelId !== channelOnCall.id) {
+          onCall({
+            imCalling: true,
+            channelId: selectedChannelId
+          });
+        }
+      });
     }
   }
 }
