@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { css } from 'emotion';
 
 Video.propTypes = {
+  numVideos: PropTypes.number,
   stream: PropTypes.object.isRequired
 };
-export default function Video({ stream }) {
+export default function Video({ numVideos, stream }) {
   const videoRef = useRef(stream);
   useEffect(() => {
     if (videoRef.current && !videoRef.current.srcObject) {
@@ -19,7 +20,7 @@ export default function Video({ stream }) {
   return (
     <div
       style={{
-        width: '100%',
+        width: `${100 / numVideos}%`,
         height: '100%',
         paddingTop: '1rem',
         display: 'flex',
@@ -46,7 +47,7 @@ export default function Video({ stream }) {
         `}
         style={{
           minWidth: '40%',
-          maxWidth: '65%',
+          maxWidth: '100%',
           height: '100%',
           objectFit: 'cover'
         }}

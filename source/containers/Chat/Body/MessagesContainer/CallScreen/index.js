@@ -73,12 +73,17 @@ export default function CallScreen({ style }) {
           style={{
             position: 'relative',
             width: '100%',
-            height: '100%'
+            height: '100%',
+            display: 'flex'
           }}
         >
           {channelOnCall.incomingShown &&
             Object.entries(peerStreams).map(([peerId, stream]) => (
-              <Video key={peerId} stream={stream} />
+              <Video
+                key={peerId}
+                stream={stream}
+                numVideos={Object.entries(peerStreams).length}
+              />
             ))}
         </div>
       )}

@@ -3,6 +3,7 @@ import { useChatContext } from 'contexts';
 
 export default function Outgoing() {
   const videoRef = useRef(null);
+  const mounted = useRef(true);
   const {
     actions: { onSetMyStream }
   } = useChatContext();
@@ -14,14 +15,17 @@ export default function Outgoing() {
       const options = { video: true, audio: true };
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia(options);
-        currentVideo.srcObject = stream;
-        currentVideo.volume = 0;
-        onSetMyStream(stream);
+        if (mounted.current) {
+          currentVideo.srcObject = stream;
+          currentVideo.volume = 0;
+          onSetMyStream(stream);
+        }
       }
     }
     return function cleanUp() {
+      mounted.current = false;
       onSetMyStream(null);
-      currentVideo.srcObject.getTracks().forEach(track => {
+      currentVideo.srcObject?.getTracks()?.forEach(track => {
         track.stop();
       });
     };
