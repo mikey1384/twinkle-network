@@ -325,9 +325,8 @@ export default function ChatReducer(state, action) {
     case 'SET_CALL': {
       return {
         ...state,
-        channelOnCall: action.memberId
+        channelOnCall: action.channelId
           ? {
-              members: [action.memberId],
               imCalling: action.imCalling,
               id: action.channelId
             }

@@ -130,7 +130,12 @@ function LeftMenu({
         onClick={handleEnterVocabulary}
       />
       <ChatSearchBox
-        style={{ marginTop: '1rem', padding: '0 1rem', zIndex: 5 }}
+        style={{
+          marginTop: '1rem',
+          padding: '0 1rem',
+          zIndex: 5,
+          width: '100%'
+        }}
       />
       <div
         style={{

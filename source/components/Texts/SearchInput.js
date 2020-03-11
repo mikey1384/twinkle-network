@@ -82,6 +82,9 @@ export default function SearchInput({
         className="addon"
         style={{
           height: inputHeight,
+          width: '3.5rem',
+          display: 'flex',
+          justifyContent: 'center',
           backgroundColor: addonColor
             ? Color[addonColor]()
             : Color.borderGray(),
@@ -91,7 +94,7 @@ export default function SearchInput({
         <Icon icon="search" />
       </div>
       <Input
-        style={{ height: inputHeight }}
+        style={{ height: inputHeight, width: 'CALC(100% - 3.5rem)' }}
         autoFocus={autoFocus}
         inputRef={innerRef}
         onFocus={onFocus && onFocus}

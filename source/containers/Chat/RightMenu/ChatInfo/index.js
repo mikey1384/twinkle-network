@@ -179,7 +179,6 @@ function ChatInfo({
     if (selectedChannelId !== channelOnCall.id) {
       onCall({
         imCalling: true,
-        memberId: myId,
         channelId: currentChannel.id
       });
     } else {

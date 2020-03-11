@@ -262,13 +262,12 @@ export default function Header({
 
     function handleNewCallMember(peerId) {
       membersOnCall.current[peerId] = true;
-      console.log(membersOnCall.current);
     }
 
     function handlePeer({ memberId, channelId, peerId }) {
       if (memberId !== userId && !membersOnCall.current[peerId]) {
         membersOnCall.current[peerId] = true;
-        onCall({ channelId, memberId, peerId });
+        onCall({ channelId });
       }
     }
 
@@ -327,6 +326,21 @@ export default function Header({
       onNotifyChatSubjectChange(subject);
     }
   });
+
+  useEffect(() => {
+    socket.emit(
+      'check_online_members',
+      selectedChannelId,
+      (err, { callData }) => {
+        if (err) console.error(err);
+        if (callData) {
+          membersOnCall.current = callData.peers;
+          onCall({ channelId: selectedChannelId });
+        }
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChannelId]);
 
   useEffect(() => {
     if (userId && profilePicId !== prevProfilePicId.current) {

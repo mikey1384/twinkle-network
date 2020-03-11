@@ -152,12 +152,17 @@ function Chat({ onFileUpload }) {
   });
 
   useEffect(() => {
-    socket.emit('check_online_members', selectedChannelId, (err, data) => {
-      if (err) console.error(err);
-      if (mounted.current) {
-        setCurrentChannelOnlineMembers(data.membersOnline);
+    socket.emit(
+      'check_online_members',
+      selectedChannelId,
+      (err, { membersOnline }) => {
+        if (err) console.error(err);
+        if (mounted.current) {
+          setCurrentChannelOnlineMembers(membersOnline);
+        }
       }
-    });
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChannel, selectedChannelId]);
 
   return (
