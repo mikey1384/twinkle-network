@@ -101,7 +101,7 @@ export default function Header({
   const peersRef = useRef({});
   const prevMyStreamRef = useRef(null);
   const prevIncomingShown = useRef(false);
-  const membersOnCall = useRef([]);
+  const membersOnCall = useRef({});
   const receivedCallSignals = useRef([]);
 
   useEffect(() => {
@@ -216,7 +216,7 @@ export default function Header({
       onCall({});
       onSetMyStream(null);
       onSetPeerStreams({});
-      membersOnCall.current = [];
+      membersOnCall.current = {};
       peersRef.current = {};
       prevMyStreamRef.current = null;
       prevIncomingShown.current = false;
@@ -261,13 +261,13 @@ export default function Header({
     }
 
     function handleNewCallMember(peerId) {
-      membersOnCall.current.push(peerId);
+      membersOnCall.current[peerId] = true;
       console.log(membersOnCall.current);
     }
 
     function handlePeer({ memberId, channelId, peerId }) {
-      if (memberId !== userId && !membersOnCall.current.includes?.(memberId)) {
-        membersOnCall.current.push(peerId);
+      if (memberId !== userId && !membersOnCall.current[peerId]) {
+        membersOnCall.current[peerId] = true;
         onCall({ channelId, memberId, peerId });
       }
     }
@@ -341,7 +341,7 @@ export default function Header({
       channelOnCall.incomingShown &&
       !channelOnCall.imCalling
     ) {
-      for (let peerId of membersOnCall.current) {
+      for (let peerId in membersOnCall.current) {
         socket.emit('inform_peer_signal_accepted', {
           peerId,
           channelId: channelOnCall.id
@@ -379,7 +379,7 @@ export default function Header({
       if (channelOnCall.imCalling) {
         socket.emit('start_new_call', channelOnCall.id);
       } else {
-        for (let peerId of membersOnCall.current) {
+        for (let peerId in membersOnCall.current) {
           try {
             if (peersRef.current[peerId]) {
               peersRef.current[peerId].addStream(myStream);
