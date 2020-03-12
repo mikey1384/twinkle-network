@@ -13,7 +13,7 @@ ChatInfo.propTypes = {
   channelName: PropTypes.string,
   channelOnCall: PropTypes.object,
   currentChannel: PropTypes.object.isRequired,
-  currentChannelOnlineMembers: PropTypes.array.isRequired,
+  currentChannelOnlineMembers: PropTypes.object.isRequired,
   selectedChannelId: PropTypes.number
 };
 
@@ -63,15 +63,17 @@ function ChatInfo({
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
-    const currentChannelOnlineMembersOtherThanMe = currentChannelOnlineMembers.filter(
-      member => !!member.id && member.id !== myId
-    );
+    const currentChannelOnlineMembersOtherThanMe = Object.entries(
+      currentChannelOnlineMembers
+    )
+      .map(([, member]) => member)
+      .filter(member => !!member.id && member.id !== myId);
     const totalValidChannelMembers = totalChannelMembers.filter(
       member => !!member.id
     );
-    const currentlyOnlineIds = currentChannelOnlineMembers.map(
-      member => member.id
-    );
+    const currentlyOnlineIds = Object.keys(
+      currentChannelOnlineMembers
+    ).map(memberId => Number(memberId));
     if (totalValidChannelMembers.length > 0) {
       const offlineChannelMembers = totalValidChannelMembers.filter(
         member => !currentlyOnlineIds.includes(member.id) && member.id !== myId
@@ -90,11 +92,6 @@ function ChatInfo({
     profilePicId,
     currentChannelOnlineMembers
   ]);
-
-  const currentlyOnlineValidMembers = useMemo(
-    () => currentChannelOnlineMembers.filter(member => !!member.id),
-    [currentChannelOnlineMembers]
-  );
 
   const callConnected = useMemo(() => selectedChannelId === channelOnCall.id, [
     channelOnCall.id,
@@ -186,7 +183,7 @@ function ChatInfo({
                 }
               `}
             >
-              {currentlyOnlineValidMembers.length}
+              {Object.keys(currentChannelOnlineMembers).length}
               {currentChannel.id !== 2 &&
                 '/' + displayedChannelMembers.length}{' '}
               online

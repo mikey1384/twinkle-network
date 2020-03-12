@@ -11,7 +11,6 @@ import LocalContext from './Context';
 import { phoneMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from 'emotion';
-import { objectify } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useViewContext, useChatContext } from 'contexts';
 
@@ -61,11 +60,10 @@ function Chat({ onFileUpload }) {
   const [
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
-  ] = useState([]);
+  ] = useState({});
   const [createNewChatModalShown, setCreateNewChatModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [partner, setPartner] = useState(null);
-  const memberObj = useRef({});
   const mounted = useRef(true);
 
   const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
@@ -86,12 +84,6 @@ function Chat({ onFileUpload }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, pageVisible, userId, selectedChannelId]);
-
-  useEffect(() => {
-    if (mounted.current) {
-      memberObj.current = objectify(currentChannelOnlineMembers);
-    }
-  }, [currentChannelOnlineMembers]);
 
   useEffect(() => {
     const otherMember = currentChannel.twoPeople
@@ -168,6 +160,7 @@ function Chat({ onFileUpload }) {
   return (
     <LocalContext.Provider
       value={{
+        currentChannelOnlineMembers,
         onFileUpload
       }}
     >
@@ -196,7 +189,9 @@ function Chat({ onFileUpload }) {
               <UserListModal
                 onHide={() => setUserListModalShown(false)}
                 users={returnUsers(currentChannel, currentChannelOnlineMembers)}
-                descriptionShown={userListDescriptionShown}
+                descriptionShown={user =>
+                  !!currentChannelOnlineMembers[user.id]
+                }
                 description="(online)"
                 title="Online Status"
               />
@@ -204,7 +199,6 @@ function Chat({ onFileUpload }) {
             <LeftMenu
               channelLoadMoreButtonShown={channelLoadMoreButton}
               currentChannel={currentChannel}
-              currentChannelOnlineMembers={currentChannelOnlineMembers}
               loadMoreChannels={handleLoadMoreChannels}
               onChannelEnter={handleChannelEnter}
               onNewButtonClick={() => setCreateNewChatModalShown(true)}
@@ -237,20 +231,15 @@ function Chat({ onFileUpload }) {
     onLoadMoreChannels(data);
   }
 
-  function userListDescriptionShown(user) {
-    for (let i = 0; i < currentChannelOnlineMembers.length; i++) {
-      if (user.id === currentChannelOnlineMembers[i].id) return true;
-    }
-    return false;
-  }
-
   function returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
-    return allMembers.length > 0 ? allMembers : currentChannelOnlineMembers;
+    return allMembers.length > 0
+      ? allMembers
+      : Object.entries(currentChannelOnlineMembers).map(([, member]) => member);
   }
 
   async function handleChannelEnter(id) {
     if (id === 0) {
-      setCurrentChannelOnlineMembers([]);
+      setCurrentChannelOnlineMembers({});
       return onEnterEmptyChat();
     }
     onUpdateSelectedChannelId(id);

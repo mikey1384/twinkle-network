@@ -7,7 +7,7 @@ Members.propTypes = {
   channelId: PropTypes.number.isRequired,
   creatorId: PropTypes.number,
   members: PropTypes.array.isRequired,
-  onlineMembers: PropTypes.array.isRequired
+  onlineMembers: PropTypes.object.isRequired
 };
 
 function Members({ channelId, creatorId, members, onlineMembers }) {

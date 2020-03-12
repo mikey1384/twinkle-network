@@ -8,7 +8,7 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 
 MemberListItem.propTypes = {
-  onlineMembers: PropTypes.array,
+  onlineMembers: PropTypes.object,
   creatorId: PropTypes.number,
   member: PropTypes.object,
   style: PropTypes.object
@@ -61,7 +61,7 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
           `}
           userId={userId}
           profilePicId={profilePicId}
-          online={onlineMembers.map(member => member.id).includes(userId)}
+          online={!!onlineMembers[userId]}
           isAway={isAway}
           isBusy={isBusy}
           statusShown

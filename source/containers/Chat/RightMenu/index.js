@@ -11,7 +11,7 @@ RightMenu.propTypes = {
   channelName: PropTypes.string,
   channelOnCall: PropTypes.object,
   currentChannel: PropTypes.object,
-  currentChannelOnlineMembers: PropTypes.array,
+  currentChannelOnlineMembers: PropTypes.object,
   selectedChannelId: PropTypes.number
 };
 
