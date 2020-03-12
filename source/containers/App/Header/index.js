@@ -263,7 +263,9 @@ export default function Header({
     }
 
     function handleNewCallMember({ socketId, memberId }) {
-      onSetMembersOnCall({ [memberId]: true });
+      if (!channelOnCall.members[memberId]) {
+        onSetMembersOnCall({ [memberId]: true });
+      }
       membersOnCall.current[socketId] = true;
     }
 
@@ -271,7 +273,9 @@ export default function Header({
       if (memberId !== userId && !membersOnCall.current[peerId]) {
         onCall({ channelId });
       }
-      onSetMembersOnCall({ [memberId]: true });
+      if (!channelOnCall.members[memberId]) {
+        onSetMembersOnCall({ [memberId]: true });
+      }
       membersOnCall.current[peerId] = true;
     }
 
