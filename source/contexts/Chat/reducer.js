@@ -328,7 +328,8 @@ export default function ChatReducer(state, action) {
         channelOnCall: action.channelId
           ? {
               imCalling: action.imCalling,
-              id: action.channelId
+              id: action.channelId,
+              members: {}
             }
           : {}
       };
@@ -834,6 +835,20 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         loadingVocabulary: action.loading
+      };
+    case 'SET_MEMBERS_ON_CALL':
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          members:
+            Object.keys(action.members).length > 0
+              ? {
+                  ...state.channelOnCall.members,
+                  ...action.members
+                }
+              : {}
+        }
       };
     case 'SET_USER_DATA':
       return {

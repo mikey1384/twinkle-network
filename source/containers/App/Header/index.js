@@ -75,6 +75,7 @@ export default function Header({
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onReceiveVocabActivity,
+      onSetMembersOnCall,
       onSetMyStream,
       onSetPeerStreams,
       onShowIncoming,
@@ -216,6 +217,7 @@ export default function Header({
       onCall({});
       onSetMyStream(null);
       onSetPeerStreams({});
+      onSetMembersOnCall({});
       membersOnCall.current = {};
       peersRef.current = {};
       prevMyStreamRef.current = null;
@@ -260,15 +262,17 @@ export default function Header({
       onChangeSocketStatus(false);
     }
 
-    function handleNewCallMember(peerId) {
-      membersOnCall.current[peerId] = true;
+    function handleNewCallMember({ socketId, memberId }) {
+      onSetMembersOnCall({ [memberId]: true });
+      membersOnCall.current[socketId] = true;
     }
 
     function handlePeer({ memberId, channelId, peerId }) {
       if (memberId !== userId && !membersOnCall.current[peerId]) {
-        membersOnCall.current[peerId] = true;
         onCall({ channelId });
       }
+      onSetMembersOnCall({ [memberId]: true });
+      membersOnCall.current[peerId] = true;
     }
 
     function handlePeerAccepted({ channelId, to, peerId }) {
@@ -331,11 +335,18 @@ export default function Header({
     socket.emit(
       'check_online_members',
       selectedChannelId,
-      (err, { callData }) => {
+      (err, { callData, membersOnline }) => {
         if (err) console.error(err);
         if (callData && Object.keys(membersOnCall.current).length === 0) {
-          membersOnCall.current = callData.peers;
+          const membersHash = {};
+          for (let member of Object.entries(membersOnline)
+            .map(([, member]) => member)
+            .filter(member => !!callData.peers[member.socketId])) {
+            membersHash[member.id] = true;
+          }
           onCall({ channelId: selectedChannelId });
+          onSetMembersOnCall(membersHash);
+          membersOnCall.current = callData.peers;
         }
       }
     );
@@ -360,7 +371,7 @@ export default function Header({
           peerId,
           channelId: channelOnCall.id
         });
-        socket.emit('join_call', channelOnCall.id);
+        socket.emit('join_call', { channelId: channelOnCall.id, userId });
         handleNewPeer({
           peerId: peerId,
           channelId: channelOnCall.id,

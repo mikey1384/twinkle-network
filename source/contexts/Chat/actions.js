@@ -386,6 +386,12 @@ export default function ChatActions(dispatch) {
         loading
       });
     },
+    onSetMembersOnCall(members) {
+      return dispatch({
+        type: 'SET_MEMBERS_ON_CALL',
+        members
+      });
+    },
     onSetMyStream(stream) {
       return dispatch({
         type: 'SET_MY_STREAM',
