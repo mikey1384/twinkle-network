@@ -166,15 +166,14 @@ function Message({
         targetMessageId: targetMessage?.id
       });
       onSaveMessage({ messageId, index });
-      socket.emit(
-        'new_chat_message',
-        {
+      socket.emit('new_chat_message', {
+        message: {
           ...message,
           uploaderAuthLevel: authLevel,
           isNewMessage: true,
           id: messageId
         },
-        {
+        channel: {
           ...currentChannel,
           numUnreads: 1,
           lastMessage: {
@@ -183,7 +182,7 @@ function Message({
           },
           channelName
         }
-      );
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

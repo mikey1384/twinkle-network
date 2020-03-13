@@ -254,7 +254,7 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
         }));
       }
     }
-    function handleReceiveMessage(message) {
+    function handleReceiveMessage({ message }) {
       if (message.isChessMsg) {
         setChessCountdownObj(chessCountdownObj => ({
           ...chessCountdownObj,
@@ -689,14 +689,13 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
     setSettingsModalShown(false);
   }
 
-  function handleInviteUsersDone(users, message) {
-    socket.emit(
-      'new_chat_message',
-      {
+  function handleInviteUsersDone({ users, message }) {
+    socket.emit('new_chat_message', {
+      message: {
         ...message,
         channelId: message.channelId
       },
-      {
+      channel: {
         ...currentChannel,
         numUnreads: 1,
         lastMessage: {
@@ -704,11 +703,16 @@ function MessagesContainer({ channelName, chessOpponent, currentChannel }) {
           sender: { id: userId, username }
         },
         channelName
+      },
+      newMembers: users
+    });
+    socket.emit(
+      'send_group_chat_invitation',
+      users.map(user => user.id),
+      {
+        message: { ...message, messageId: message.id }
       }
     );
-    socket.emit('send_group_chat_invitation', users, {
-      message: { ...message, messageId: message.id }
-    });
     setInviteUsersModalShown(false);
   }
 

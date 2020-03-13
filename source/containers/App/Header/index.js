@@ -289,7 +289,7 @@ export default function Header({
       }
     }
 
-    async function handleReceiveMessage(message, channel) {
+    async function handleReceiveMessage({ message, channel, newMembers }) {
       const messageIsForCurrentChannel =
         message.channelId === selectedChannelId;
       const senderIsNotTheUser = message.userId !== userId;
@@ -300,7 +300,8 @@ export default function Header({
         onReceiveMessage({
           message,
           pageVisible,
-          usingChat
+          usingChat,
+          newMembers
         });
       }
       if (!messageIsForCurrentChannel) {

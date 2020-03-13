@@ -266,7 +266,7 @@ export default function ChatActions(dispatch) {
         result
       });
     },
-    onReceiveMessage({ pageVisible, message, usingChat }) {
+    onReceiveMessage({ pageVisible, message, newMembers, usingChat }) {
       return dispatch({
         type: 'RECEIVE_MESSAGE',
         usingChat,
@@ -274,7 +274,8 @@ export default function ChatActions(dispatch) {
         message: {
           ...message,
           timeStamp: Math.floor(Date.now() / 1000)
-        }
+        },
+        newMembers
       });
     },
     onReceiveFirstMsg({ data, duplicate, pageVisible }) {

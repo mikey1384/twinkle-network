@@ -367,10 +367,9 @@ function App({ location, history }) {
     };
     onDisplayAttachedFile(params);
     if (channelId) {
-      socket.emit(
-        'new_chat_message',
-        { ...params, isNewMessage: true },
-        {
+      socket.emit('new_chat_message', {
+        message: { ...params, isNewMessage: true },
+        channel: {
           ...currentChannel,
           numUnreads: 1,
           lastMessage: {
@@ -379,7 +378,7 @@ function App({ location, history }) {
           },
           channelName: currentChannelName
         }
-      );
+      });
     }
     onSetReplyTarget(null);
     if (members) {

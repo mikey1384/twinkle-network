@@ -87,10 +87,10 @@ export default function InviteUsersModal({
       channelId: selectedChannelId
     });
     onInviteUsersToChannel(data);
-    onDone(
-      selectedUsers.map(user => user.id),
-      data.message
-    );
+    onDone({
+      users: selectedUsers,
+      message: data.message
+    });
   }
 
   async function handleSearchUserToInvite(text) {

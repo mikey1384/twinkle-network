@@ -676,6 +676,10 @@ export default function ChatReducer(state, action) {
               }
             },
             lastUpdate: action.message.timeStamp,
+            members: [
+              ...state.channelsObj[action.message.channelId].members,
+              ...action.newMembers
+            ],
             numUnreads: 0,
             isHidden: false
           }
