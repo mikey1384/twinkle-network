@@ -64,7 +64,7 @@ function Members({ channelId, creatorId, members, onlineMembers }) {
           ))}
         </div>
       )}
-      {(callIsOnGoing && membersNotOnCall.length > 0)(
+      {callIsOnGoing && membersNotOnCall.length > 0 && (
         <div
           style={{
             textAlign: 'center',
