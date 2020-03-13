@@ -302,6 +302,21 @@ export default function ChatReducer(state, action) {
         ...state,
         numUnreads: action.numUnreads
       };
+    case 'HANG_UP': {
+      const newChannelOnCallMembers = { ...state.channelOnCall.members };
+      delete newChannelOnCallMembers[action.memberId];
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          callReceived: false,
+          outgoingShown: false,
+          imCalling: false,
+          incomingShown: !action.iHungUp,
+          members: newChannelOnCallMembers
+        }
+      };
+    }
     case 'HIDE_ATTACHMENT':
       return {
         ...state,

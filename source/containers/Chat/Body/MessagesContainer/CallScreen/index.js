@@ -19,6 +19,7 @@ export default function CallScreen({ style }) {
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
   }, [channelOnCall.callReceived, channelOnCall.imCalling]);
+
   const answerButtonShown = useMemo(
     () => !channelOnCall.imCalling && !channelOnCall.incomingShown,
     [channelOnCall.imCalling, channelOnCall.incomingShown]

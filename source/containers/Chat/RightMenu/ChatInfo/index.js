@@ -27,7 +27,7 @@ function ChatInfo({
   const { userId: myId, username, profilePicId, authLevel } = useMyState();
   const {
     state: { myStream },
-    actions: { onCall }
+    actions: { onCall, onHangUp }
   } = useChatContext();
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
@@ -204,10 +204,10 @@ function ChatInfo({
     if (!channelOnCall.id) {
       onCall({
         imCalling: true,
-        channelId: currentChannel.id
+        channelId: selectedChannelId
       });
     } else {
-      onCall({});
+      onHangUp({ memberId: myId, iHungUp: true });
       socket.emit('hang_up_call', channelOnCall.id, () => {
         if (selectedChannelId !== channelOnCall.id) {
           onCall({

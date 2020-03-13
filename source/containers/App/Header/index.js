@@ -70,6 +70,7 @@ export default function Header({
       onDeleteMessage,
       onEditMessage,
       onGetNumberOfUnreadMessages,
+      onHangUp,
       onInitChat,
       onReceiveFirstMsg,
       onReceiveMessage,
@@ -130,6 +131,7 @@ export default function Header({
     socket.on('new_notification_received', onIncreaseNumNewNotis);
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('peer_accepted', handlePeerAccepted);
+    socket.on('peer_hung_up', handlePeerHungUp);
     socket.on('subject_changed', handleSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
@@ -159,6 +161,7 @@ export default function Header({
       socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('peer_accepted', handlePeerAccepted);
+      socket.removeListener('peer_hung_up', handlePeerHungUp);
       socket.removeListener('subject_changed', handleSubjectChange);
       socket.removeListener(
         'new_vocab_activity_received',
@@ -273,7 +276,7 @@ export default function Header({
       if (memberId !== userId && !membersOnCall.current[peerId]) {
         onCall({ channelId });
       }
-      if (!channelOnCall.members[memberId]) {
+      if (!channelOnCall.members?.[memberId]) {
         onSetMembersOnCall({ [memberId]: true });
       }
       membersOnCall.current[peerId] = true;
@@ -286,6 +289,13 @@ export default function Header({
         } catch (error) {
           console.error(error);
         }
+      }
+    }
+
+    function handlePeerHungUp({ channelId, memberId, peerId }) {
+      if (channelId === channelOnCall.id) {
+        delete membersOnCall.current[peerId];
+        onHangUp({ memberId, iHungUp: memberId === userId });
       }
     }
 

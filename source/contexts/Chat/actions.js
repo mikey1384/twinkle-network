@@ -155,6 +155,13 @@ export default function ChatActions(dispatch) {
         numUnreads
       });
     },
+    onHangUp({ iHungUp, memberId }) {
+      return dispatch({
+        type: 'HANG_UP',
+        memberId,
+        iHungUp
+      });
+    },
     onHideAttachment(messageId) {
       return dispatch({
         type: 'HIDE_ATTACHMENT',
