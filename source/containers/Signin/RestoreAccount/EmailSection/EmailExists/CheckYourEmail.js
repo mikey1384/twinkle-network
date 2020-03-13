@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useAppContext } from 'contexts';
 
 CheckYourEmail.propTypes = {
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string,
   hiddenEmail: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired
 };
@@ -13,7 +13,12 @@ export default function CheckYourEmail({ email, hiddenEmail, userId }) {
     requestHelpers: { sendVerificationEmail }
   } = useAppContext();
   useEffect(() => {
-    sendVerificationEmail({ email, userId, isPasswordReset: true });
+    console.log(email);
+    sendVerificationEmail({
+      email: email,
+      userId,
+      isPasswordReset: true
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

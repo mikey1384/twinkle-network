@@ -18,7 +18,7 @@ export default function EmailExists({ email, userId, verifiedEmail }) {
     return !email || email !== verifiedEmail ? hideEmail(verifiedEmail) : '';
   }, [email, verifiedEmail]);
 
-  const viableEmail = email || hiddenEmail;
+  const viableEmail = email || verifiedEmail;
   const hiddenViableEmail = hiddenEmail || hiddenVerifiedEmail;
 
   return (
