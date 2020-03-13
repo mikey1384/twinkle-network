@@ -14,7 +14,7 @@ export default function CheckYourEmail({ email, hiddenEmail, userId }) {
   } = useAppContext();
   useEffect(() => {
     sendVerificationEmail({
-      email: email,
+      email,
       userId,
       isPasswordReset: true
     });
