@@ -266,7 +266,7 @@ export default function ChatActions(dispatch) {
         result
       });
     },
-    onReceiveMessage({ pageVisible, message, newMembers, usingChat }) {
+    onReceiveMessage({ pageVisible, message, newMembers = [], usingChat }) {
       return dispatch({
         type: 'RECEIVE_MESSAGE',
         usingChat,
