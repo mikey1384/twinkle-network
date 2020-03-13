@@ -13,7 +13,6 @@ export default function CheckYourEmail({ email, hiddenEmail, userId }) {
     requestHelpers: { sendVerificationEmail }
   } = useAppContext();
   useEffect(() => {
-    console.log(email);
     sendVerificationEmail({
       email: email,
       userId,
