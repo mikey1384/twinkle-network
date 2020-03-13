@@ -295,7 +295,7 @@ export default function Header({
     function handlePeerHungUp({ channelId, memberId, peerId }) {
       if (channelId === channelOnCall.id) {
         delete membersOnCall.current[peerId];
-        onHangUp({ memberId, iHungUp: memberId === userId });
+        onHangUp({ peerId, memberId, iHungUp: memberId === userId });
       }
     }
 

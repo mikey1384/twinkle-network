@@ -305,8 +305,14 @@ export default function ChatReducer(state, action) {
     case 'HANG_UP': {
       const newChannelOnCallMembers = { ...state.channelOnCall.members };
       delete newChannelOnCallMembers[action.memberId];
+      const newPeerStreams = { ...state.peerStreams };
+      if (!action.iHungUp) {
+        delete newPeerStreams[action.peerId];
+      }
       return {
         ...state,
+        myStream: null,
+        peerStreams: action.iHungUp ? {} : newPeerStreams,
         channelOnCall: {
           ...state.channelOnCall,
           callReceived: false,
