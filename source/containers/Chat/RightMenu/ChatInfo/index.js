@@ -192,7 +192,7 @@ function ChatInfo({
         </div>
       </div>
       <Members
-        channelId={currentChannel.id}
+        channelId={selectedChannelId}
         creatorId={currentChannel.creatorId}
         members={displayedChannelMembers}
         onlineMembers={currentChannelOnlineMembers}
