@@ -47,12 +47,12 @@ export function AppContextProvider({ children }) {
   const [userState, userDispatch] = useReducer(UserReducer, initialUserState);
   return (
     <ManagementContextProvider>
-      <ChatContextProvider>
-        <ProfileContextProvider>
-          <ExploreContextProvider>
-            <ViewContextProvider>
-              <NotiContextProvider>
-                <HomeContextProvider>
+      <ProfileContextProvider>
+        <ExploreContextProvider>
+          <ViewContextProvider>
+            <NotiContextProvider>
+              <HomeContextProvider>
+                <ChatContextProvider>
                   <InputContextProvider>
                     <ContentContextProvider>
                       <AppContext.Provider
@@ -68,12 +68,12 @@ export function AppContextProvider({ children }) {
                       </AppContext.Provider>
                     </ContentContextProvider>
                   </InputContextProvider>
-                </HomeContextProvider>
-              </NotiContextProvider>
-            </ViewContextProvider>
-          </ExploreContextProvider>
-        </ProfileContextProvider>
-      </ChatContextProvider>
+                </ChatContextProvider>
+              </HomeContextProvider>
+            </NotiContextProvider>
+          </ViewContextProvider>
+        </ExploreContextProvider>
+      </ProfileContextProvider>
     </ManagementContextProvider>
   );
 
