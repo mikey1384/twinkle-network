@@ -1,20 +1,25 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
+import Button from 'components/Button';
 import { useChatContext } from 'contexts';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { useMyState } from 'helpers/hooks';
+import { socket } from 'constants/io';
 
 MemberListItem.propTypes = {
   onlineMembers: PropTypes.object,
   creatorId: PropTypes.number,
+  isClass: PropTypes.bool,
   member: PropTypes.object,
   style: PropTypes.object
 };
 
-function MemberListItem({ onlineMembers, creatorId, member, style }) {
+function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
+  const { profileTheme } = useMyState();
   const {
     state: {
       ['user' + member.id]: {
@@ -32,6 +37,8 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
     onSetUserData(member);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member]);
+
+  const usernameWidth = useMemo(() => (isClass ? '20%' : '45%'), [isClass]);
 
   return (
     <div
@@ -70,7 +77,9 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
           truncate
           className={css`
             width: auto;
-            max-width: ${creatorId === userId ? '45%' : 'CALC(45% + 3rem)'};
+            max-width: ${creatorId === userId
+              ? usernameWidth
+              : `CALC(${usernameWidth} + 3rem)`};
           `}
           style={{
             color: Color.darkerGray(),
@@ -87,9 +96,23 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
             <Icon icon="crown" style={{ color: Color.brownOrange() }} />
           </div>
         ) : null}
+        {isClass && (
+          <Button
+            style={{ fontSize: '1rem', marginLeft: '1rem' }}
+            filled
+            color={profileTheme}
+            onClick={handleShowPeer}
+          >
+            Show
+          </Button>
+        )}
       </div>
     </div>
   );
+
+  function handleShowPeer() {
+    socket.emit('request_peer_stream', userId);
+  }
 }
 
 export default memo(MemberListItem);

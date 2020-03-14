@@ -7,11 +7,12 @@ import { Color } from 'constants/css';
 Members.propTypes = {
   channelId: PropTypes.number.isRequired,
   creatorId: PropTypes.number,
+  isClass: PropTypes.bool,
   members: PropTypes.array.isRequired,
   onlineMembers: PropTypes.object.isRequired
 };
 
-function Members({ channelId, creatorId, members, onlineMembers }) {
+function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
   const {
     state: {
       channelOnCall: { id: channelOnCallId, members: membersOnCallObj }
@@ -56,8 +57,9 @@ function Members({ channelId, creatorId, members, onlineMembers }) {
         <div style={{ marginBottom: '2rem' }}>
           {membersOnCall.map(member => (
             <MemberListItem
-              key={`channel${channelId}oncall-member${member.id}`}
+              key={`channel${channelId}-oncall-member${member.id}`}
               creatorId={creatorId}
+              isClass={isClass}
               onlineMembers={onlineMembers}
               member={member}
             />

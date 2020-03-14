@@ -1,10 +1,11 @@
 export default function ChatActions(dispatch) {
   return {
-    onCall({ channelId, imCalling }) {
+    onSetCall({ channelId, imCalling, isClass }) {
       return dispatch({
         type: 'SET_CALL',
         channelId,
-        imCalling
+        imCalling,
+        isClass
       });
     },
     onCallReceptionConfirm(channelId) {

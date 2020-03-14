@@ -58,7 +58,7 @@ export default function Header({
       ...chatState
     },
     actions: {
-      onCall,
+      onSetCall,
       onChangeAwayStatus,
       onChangeBusyStatus,
       onSetReconnecting,
@@ -132,6 +132,7 @@ export default function Header({
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_hung_up', handlePeerHungUp);
+    socket.on('peer_stream_requested', handlePeerStreamRequest);
     socket.on('subject_changed', handleSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
@@ -162,6 +163,7 @@ export default function Header({
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_hung_up', handlePeerHungUp);
+      socket.removeListener('peer_stream_requested', handlePeerStreamRequest);
       socket.removeListener('subject_changed', handleSubjectChange);
       socket.removeListener(
         'new_vocab_activity_received',
@@ -217,7 +219,7 @@ export default function Header({
     }
 
     function handleCallTerminated() {
-      onCall({});
+      onSetCall({});
       onSetMyStream(null);
       onSetPeerStreams({});
       onSetMembersOnCall({});
@@ -274,7 +276,10 @@ export default function Header({
 
     function handlePeer({ memberId, channelId, peerId }) {
       if (memberId !== userId && !membersOnCall.current[peerId]) {
-        onCall({ channelId });
+        onSetCall({
+          channelId,
+          isClass: channelsObj[selectedChannelId]?.isClass
+        });
       }
       if (!channelOnCall.members?.[memberId]) {
         onSetMembersOnCall({ [memberId]: true });
@@ -296,6 +301,20 @@ export default function Header({
       if (channelId === channelOnCall.id) {
         delete membersOnCall.current[peerId];
         onHangUp({ peerId, memberId, iHungUp: memberId === userId });
+      }
+    }
+
+    function handlePeerStreamRequest() {
+      if (myStream) {
+        for (let peerId in membersOnCall.current) {
+          try {
+            if (peersRef.current[peerId]) {
+              peersRef.current[peerId].addStream(myStream);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
       }
     }
 
@@ -359,7 +378,10 @@ export default function Header({
             .filter(member => !!callData.peers[member.socketId])) {
             membersHash[member.id] = true;
           }
-          onCall({ channelId: selectedChannelId });
+          onSetCall({
+            channelId: selectedChannelId,
+            isClass: channelsObj[selectedChannelId]?.isClass
+          });
           onSetMembersOnCall(membersHash);
           membersOnCall.current = callData.peers;
         }
@@ -418,7 +440,7 @@ export default function Header({
     if (myStream && !prevMyStreamRef.current) {
       if (channelOnCall.imCalling) {
         socket.emit('start_new_call', channelOnCall.id);
-      } else {
+      } else if (!channelOnCall.isClass) {
         for (let peerId in membersOnCall.current) {
           try {
             if (peersRef.current[peerId]) {
@@ -430,7 +452,13 @@ export default function Header({
         }
       }
     }
-  }, [channelOnCall.id, channelOnCall.imCalling, myStream, userId]);
+  }, [
+    channelOnCall.id,
+    channelOnCall.imCalling,
+    channelOnCall.isClass,
+    myStream,
+    userId
+  ]);
 
   useEffect(() => {
     prevMyStreamRef.current = myStream;
