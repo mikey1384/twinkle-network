@@ -5,6 +5,8 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import { edit } from 'constants/placeholders';
 import { timeSince } from 'helpers/timeStampHelpers';
+import { mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
@@ -86,8 +88,13 @@ export default function BasicInfos({
             }}
           >
             <span
+              className={css`
+                font-size: 2.5rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  font-size: 2rem;
+                }
+              `}
               style={{
-                fontSize: '3rem',
                 fontWeight: 'bold',
                 cursor: 'default'
               }}
