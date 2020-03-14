@@ -66,6 +66,7 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
                 <Input
                   style={{ marginTop: '1rem' }}
                   placeholder="Enter channel name"
+                  maxLength="150"
                   value={channelName}
                   onChange={setChannelName}
                 />

@@ -53,6 +53,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
             autoFocus
             style={{ marginTop: '1rem' }}
             placeholder="Enter the name of your class"
+            maxLength="150"
             value={channelName}
             onChange={setChannelName}
           />
