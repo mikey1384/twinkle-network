@@ -343,19 +343,6 @@ export default function ChatReducer(state, action) {
           }
         }
       };
-    case 'SET_CALL': {
-      return {
-        ...state,
-        channelOnCall: action.channelId
-          ? {
-              imCalling: action.imCalling,
-              id: action.channelId,
-              isClass: action.isClass,
-              members: {}
-            }
-          : {}
-      };
-    }
     case 'INIT_CHAT': {
       let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
@@ -842,6 +829,19 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
+    case 'SET_CALL': {
+      return {
+        ...state,
+        channelOnCall: action.channelId
+          ? {
+              imCalling: action.imCalling,
+              id: action.channelId,
+              isClass: action.isClass,
+              members: {}
+            }
+          : {}
+      };
+    }
     case 'SET_CHESS_MODAL_SHOWN':
       return {
         ...state,
@@ -857,6 +857,17 @@ export default function ChatReducer(state, action) {
         ...state,
         currentChannelName: action.channelName
       };
+    case 'SET_INVISIBLE': {
+      const messageKey = 'message' + action.contentId;
+      const prevMessageState = state[messageKey] || {};
+      return {
+        ...state,
+        [messageKey]: {
+          ...prevMessageState,
+          invisible: action.visible
+        }
+      };
+    }
     case 'SET_LOADING_VOCABULARY':
       return {
         ...state,

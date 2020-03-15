@@ -432,6 +432,14 @@ export default function ChatActions(dispatch) {
         profile
       });
     },
+    onSetInvisible({ visible, messageId, visibilityTimeStamp }) {
+      return dispatch({
+        type: 'SET_INVISIBLE',
+        messageId,
+        visible,
+        visibilityTimeStamp
+      });
+    },
     onSetVocabErrorMessage(message) {
       return dispatch({
         type: 'SET_VOCAB_ERROR_MESSAGE',
