@@ -129,9 +129,7 @@ function ChatInfo({
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                cursor: ${currentChannelOnlineMembers.length > 1
-                  ? 'pointer'
-                  : 'default'};
+                cursor: pointer;
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
                   background: ${callConnected
