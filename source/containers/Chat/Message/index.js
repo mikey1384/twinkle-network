@@ -339,7 +339,7 @@ function Message({
   return (
     <ErrorBoundary>
       <div ref={ComponentRef}>
-        {!messageId || inView || visible ? (
+        {inView || typeof visible === 'undefined' || visible ? (
           <div ref={PanelRef} className={MessageStyle.container}>
             <div className={MessageStyle.profilePic}>
               <ProfilePic
