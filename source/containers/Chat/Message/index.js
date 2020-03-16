@@ -461,7 +461,9 @@ function Message({
             style={{
               width: '100%',
               padding: '1rem 0',
-              height: placeholderHeight || '10rem'
+              height:
+                placeholderHeight ||
+                (isChessMsg ? '40rem' : filePath ? '30rem' : '6rem')
             }}
           />
         )}
