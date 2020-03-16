@@ -32,10 +32,14 @@ function ChatInfo({
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
 
-  const callConnected = useMemo(() => selectedChannelId === channelOnCall.id, [
+  const callOngoing = useMemo(() => selectedChannelId === channelOnCall.id, [
     channelOnCall.id,
     selectedChannelId
   ]);
+
+  const calling = useMemo(() => {
+    return !channelOnCall.callReceived && channelOnCall.imCalling;
+  }, [channelOnCall.callReceived, channelOnCall.imCalling]);
 
   useEffect(() => {
     const videoRef = myVideoRef.current;
@@ -50,8 +54,7 @@ function ChatInfo({
   }, [myStream]);
 
   const videoChatButtonShown = useMemo(() => {
-    const selectedChannelIsOnCall =
-      selectedChannelId === channelOnCall.id && channelOnCall.incomingShown;
+    const selectedChannelIsOnCall = callOngoing && channelOnCall.incomingShown;
     if (currentChannel.twoPeople) {
       if (currentChannel.members?.length !== 2) return false;
       return selectedChannelIsOnCall || authLevel > 0;
@@ -59,12 +62,11 @@ function ChatInfo({
     return currentChannel.isClass && (selectedChannelIsOnCall || authLevel > 0);
   }, [
     authLevel,
-    channelOnCall.id,
+    callOngoing,
     channelOnCall.incomingShown,
     currentChannel.isClass,
     currentChannel.members,
-    currentChannel.twoPeople,
-    selectedChannelId
+    currentChannel.twoPeople
   ]);
 
   const displayedChannelMembers = useMemo(() => {
@@ -124,7 +126,7 @@ function ChatInfo({
             <div
               className={css`
                 padding: 1rem;
-                background: ${callConnected
+                background: ${callOngoing
                   ? Color.rose(0.8)
                   : Color.darkBlue(0.8)};
                 color: #fff;
@@ -134,13 +136,13 @@ function ChatInfo({
                 cursor: pointer;
                 transition: background 0.2s;
                 @media (max-width: ${mobileMaxWidth}) {
-                  background: ${callConnected
+                  background: ${callOngoing
                     ? Color.rose(1)
                     : Color.darkBlue(1)};
                 }
                 @media (min-width: ${desktopMinWidth}) {
                   &:hover {
-                    background: ${callConnected
+                    background: ${callOngoing
                       ? Color.rose(1)
                       : Color.darkBlue(1)};
                   }
@@ -148,11 +150,9 @@ function ChatInfo({
               `}
               onClick={handleCall}
             >
-              {selectedChannelId !== channelOnCall.id && (
-                <Icon icon="phone-volume" />
-              )}
+              {!callOngoing && <Icon icon="phone-volume" />}
               <span style={{ marginLeft: '1rem' }}>
-                {selectedChannelId !== channelOnCall.id ? 'Call' : 'Hang Up'}
+                {!callOngoing ? 'Call' : 'Hang Up'}
               </span>
             </div>
           )}
@@ -209,6 +209,9 @@ function ChatInfo({
         isClass: currentChannel.isClass
       });
     } else {
+      if (calling) {
+        return onSetCall({});
+      }
       onHangUp({ memberId: myId, iHungUp: true });
       socket.emit('hang_up_call', channelOnCall.id, () => {
         if (selectedChannelId !== channelOnCall.id) {
