@@ -17,6 +17,7 @@ const auth = () => ({
 export default class ErrorBoundary extends Component {
   static propTypes = {
     children: PropTypes.node,
+    innerRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     userId: PropTypes.number,
     username: PropTypes.string
   };
@@ -36,8 +37,9 @@ export default class ErrorBoundary extends Component {
   }
 
   render() {
-    const { children, ...props } = this.props;
+    const { children, innerRef, ...props } = this.props;
     const { hasError } = this.state;
+
     if (hasError) {
       return (
         <div
@@ -57,7 +59,9 @@ export default class ErrorBoundary extends Component {
       );
     }
     return Object.keys(props).length > 0 ? (
-      <div {...props}>{children}</div>
+      <div ref={innerRef} {...props}>
+        {children}
+      </div>
     ) : (
       <>{children}</>
     );

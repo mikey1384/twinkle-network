@@ -75,18 +75,17 @@ function ProfilePanel({ expandable, profileId }) {
   });
   const PanelRef = useRef(null);
   useLazyLoad({
-    contentType: 'user',
-    contentId: profileId,
     PanelRef,
     inView,
-    onSetPlaceholderHeight,
-    onSetVisible
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible
   });
   const {
     childComments = [],
     commentsLoaded,
     commentsLoadMoreButton,
     commentsShown,
+    visible,
     lastActive,
     loaded,
     numMessages,
@@ -102,8 +101,7 @@ function ProfilePanel({ expandable, profileId }) {
     username: profileName,
     userType,
     website,
-    youtubeUrl,
-    visible
+    youtubeUrl
   } = profile;
 
   const {
@@ -482,6 +480,22 @@ function ProfilePanel({ expandable, profileId }) {
       contentType: 'user'
     });
     onResetProfile(username);
+  }
+
+  function handleSetPlaceholderHeight(height) {
+    onSetPlaceholderHeight({
+      contentType: 'user',
+      contentId: profileId,
+      height
+    });
+  }
+
+  function handleSetVisible(visible) {
+    onSetVisible({
+      contentType: 'user',
+      contentId: profileId,
+      visible
+    });
   }
 
   async function handleTalkClick() {

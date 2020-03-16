@@ -415,6 +415,13 @@ export default function ChatActions(dispatch) {
         stream
       });
     },
+    onSetPlaceholderHeight({ messageId, height }) {
+      return dispatch({
+        type: 'SET_PLACEHOLDER_HEIGHT',
+        messageId,
+        height
+      });
+    },
     onSetReconnecting() {
       return dispatch({
         type: 'SET_RECONNECTING'
@@ -432,12 +439,11 @@ export default function ChatActions(dispatch) {
         profile
       });
     },
-    onSetInvisible({ visible, messageId, visibilityTimeStamp }) {
+    onSetVisible({ visible, messageId }) {
       return dispatch({
-        type: 'SET_INVISIBLE',
+        type: 'SET_VISIBLE',
         messageId,
-        visible,
-        visibilityTimeStamp
+        visible
       });
     },
     onSetVocabErrorMessage(message) {

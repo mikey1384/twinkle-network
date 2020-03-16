@@ -858,13 +858,13 @@ export default function ChatReducer(state, action) {
         currentChannelName: action.channelName
       };
     case 'SET_INVISIBLE': {
-      const messageKey = 'message' + action.contentId;
+      const messageKey = 'message' + action.messageId;
       const prevMessageState = state[messageKey] || {};
       return {
         ...state,
         [messageKey]: {
           ...prevMessageState,
-          invisible: action.visible
+          invisible: action.invisible
         }
       };
     }
@@ -887,6 +887,17 @@ export default function ChatReducer(state, action) {
               : {}
         }
       };
+    case 'SET_PLACEHOLDER_HEIGHT': {
+      const messageKey = 'message' + action.messageId;
+      const prevMessageState = state[messageKey] || {};
+      return {
+        ...state,
+        [messageKey]: {
+          ...prevMessageState,
+          placeholderHeight: action.height
+        }
+      };
+    }
     case 'SET_USER_DATA':
       return {
         ...state,

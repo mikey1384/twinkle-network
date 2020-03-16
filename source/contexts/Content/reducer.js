@@ -18,8 +18,7 @@ export default function ContentReducer(state, action) {
     commentsLoadMoreButton: false,
     subjectsLoadMoreButton: false,
     rootObj: {},
-    profileTheme: 'logoBlue',
-    visibilityTimeStamp: 0
+    profileTheme: 'logoBlue'
   };
   const prevContentState = state[contentKey] || defaultState;
   switch (action.type) {
@@ -1107,12 +1106,12 @@ export default function ContentReducer(state, action) {
           progress: action.progress
         }
       };
-    case 'SET_VISIBLE':
+    case 'SET_INVISIBLE':
       return {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          visible: action.visible
+          invisible: action.invisible
         }
       };
     case 'SET_XP_REWARD_INTERFACE_SHOWN':

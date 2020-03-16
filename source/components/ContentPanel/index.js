@@ -90,12 +90,10 @@ function ContentPanel({
   });
   const PanelRef = useRef(null);
   useLazyLoad({
-    contentType,
-    contentId,
     PanelRef,
     inView,
-    onSetPlaceholderHeight,
-    onSetVisible
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible
   });
 
   const { started: rootStarted } = useContentState({
@@ -322,6 +320,22 @@ function ContentPanel({
       </Context.Provider>
     </ErrorBoundary>
   );
+
+  function handleSetPlaceholderHeight(height) {
+    onSetPlaceholderHeight({
+      contentType,
+      contentId,
+      height
+    });
+  }
+
+  function handleSetVisible(visible) {
+    onSetVisible({
+      contentId,
+      contentType,
+      visible
+    });
+  }
 }
 
 export default memo(ContentPanel);

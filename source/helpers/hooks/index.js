@@ -21,8 +21,6 @@ export function useInterval(callback, interval) {
 }
 
 export function useLazyLoad({
-  contentType,
-  contentId,
   PanelRef,
   inView,
   onSetPlaceholderHeight,
@@ -36,36 +34,20 @@ export function useLazyLoad({
     const clientHeight = PanelRef.current?.clientHeight;
     if (!prevInView.current && inView) {
       if (PanelRef.current?.clientHeight) {
-        onSetPlaceholderHeight({
-          contentType,
-          contentId,
-          height: PanelRef.current.clientHeight
-        });
+        onSetPlaceholderHeight(PanelRef.current.clientHeight);
       }
     }
     if (inView) {
-      onSetVisible({
-        contentId,
-        contentType,
-        visible: true
-      });
+      onSetVisible(true);
     } else {
       timerRef.current = setTimeout(() => {
-        onSetVisible({
-          contentId,
-          contentType,
-          visible: false
-        });
+        onSetVisible(false);
       }, 5000);
     }
     prevInView.current = inView;
     return function onRefresh() {
       if (clientHeight) {
-        onSetPlaceholderHeight({
-          contentType,
-          contentId,
-          height: clientHeight
-        });
+        onSetPlaceholderHeight(clientHeight);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,11 +55,7 @@ export function useLazyLoad({
 
   useEffect(() => {
     return function cleanUp() {
-      onSetVisible({
-        contentId,
-        contentType,
-        visible: false
-      });
+      onSetVisible(false);
       clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

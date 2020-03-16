@@ -451,13 +451,12 @@ export default function ContentActions(dispatch) {
         progress
       });
     },
-    onSetVisible({ visible, contentId, contentType, visibilityTimeStamp }) {
+    onSetVisible({ visible, contentId, contentType }) {
       return dispatch({
         type: 'SET_VISIBLE',
         contentType,
         contentId,
-        visible,
-        visibilityTimeStamp
+        visible
       });
     },
     onSetXpRewardInterfaceShown({ contentId, contentType, shown }) {
