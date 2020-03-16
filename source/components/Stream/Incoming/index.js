@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useChatContext } from 'contexts';
-import Video from './Video';
+import Audio from './Audio';
 
 export default function Incoming() {
   const {
@@ -16,6 +16,6 @@ export default function Incoming() {
   }, []);
 
   return Object.keys(peerStreams).map(peerId => (
-    <Video key={peerId} stream={peerStreams[peerId]} />
+    <Audio key={peerId} stream={peerStreams[peerId]} />
   ));
 }

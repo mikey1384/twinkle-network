@@ -1,33 +1,33 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-Video.propTypes = {
+Audio.propTypes = {
   stream: PropTypes.object.isRequired
 };
 
-export default function Video({ stream }) {
-  const videoRef = useRef(stream);
+export default function Audio({ stream }) {
+  const audioRef = useRef(stream);
   useEffect(() => {
-    if (videoRef.current && !videoRef.current.srcObject) {
-      videoRef.current.srcObject = stream;
+    if (audioRef.current && !audioRef.current.srcObject) {
+      audioRef.current.srcObject = stream;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const audio = audioRef.current;
     return function cleanUp() {
-      video.srcObject.getTracks().forEach(track => {
+      audio.srcObject.getTracks().forEach(track => {
         track.stop();
       });
     };
   }, []);
 
   return (
-    <video
+    <audio
       autoPlay
       style={{ display: 'none', height: 0, width: 0 }}
-      ref={videoRef}
+      ref={audioRef}
     />
   );
 }
