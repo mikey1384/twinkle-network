@@ -32,6 +32,9 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ expandable, profileId }) {
   const history = useHistory();
+  const [ComponentRef, inView] = useInView({
+    threshold: 0
+  });
   const {
     requestHelpers: {
       checkIfUserOnline,
@@ -69,9 +72,6 @@ function ProfilePanel({ expandable, profileId }) {
   const profile = useContentState({
     contentType: 'user',
     contentId: profileId
-  });
-  const [ComponentRef, inView] = useInView({
-    threshold: 0
   });
   const PanelRef = useRef(null);
   useLazyLoad({

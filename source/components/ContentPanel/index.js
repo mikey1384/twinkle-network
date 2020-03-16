@@ -35,6 +35,9 @@ function ContentPanel({
   style = {}
 }) {
   const history = useHistory();
+  const [ComponentRef, inView] = useInView({
+    threshold: 0
+  });
   const {
     requestHelpers: { loadContent }
   } = useAppContext();
@@ -85,9 +88,6 @@ function ContentPanel({
     rootId
   } = contentState;
 
-  const [ComponentRef, inView] = useInView({
-    threshold: 0
-  });
   const PanelRef = useRef(null);
   useLazyLoad({
     PanelRef,
