@@ -50,8 +50,9 @@ export function useLazyLoad({
         onSetPlaceholderHeight(clientHeight);
       }
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView, PanelRef.current?.clientHeight]);
+  }, [PanelRef, inView]);
 
   useEffect(() => {
     return function cleanUp() {
