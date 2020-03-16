@@ -32,6 +32,11 @@ function ChatInfo({
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
 
+  const callConnected = useMemo(() => selectedChannelId === channelOnCall.id, [
+    channelOnCall.id,
+    selectedChannelId
+  ]);
+
   useEffect(() => {
     const videoRef = myVideoRef.current;
     if (videoRef && myStream && !myStreaming.current && !videoRef?.srcObject) {
@@ -44,7 +49,7 @@ function ChatInfo({
     };
   }, [myStream]);
 
-  const canVideoChat = useMemo(() => {
+  const videoChatButtonShown = useMemo(() => {
     if (currentChannel.twoPeople) {
       if (currentChannel.members?.length !== 2) return false;
       let result = true;
@@ -53,9 +58,12 @@ function ChatInfo({
       }
       return result;
     }
-    return currentChannel.isClass && authLevel > 5;
+    return (
+      currentChannel.isClass && (channelOnCall.incomingShown || authLevel > 5)
+    );
   }, [
     authLevel,
+    channelOnCall.incomingShown,
     currentChannel.isClass,
     currentChannel.members,
     currentChannel.twoPeople
@@ -94,11 +102,6 @@ function ChatInfo({
     currentChannelOnlineMembers
   ]);
 
-  const callConnected = useMemo(() => selectedChannelId === channelOnCall.id, [
-    channelOnCall.id,
-    selectedChannelId
-  ]);
-
   return (
     <>
       <div
@@ -119,7 +122,7 @@ function ChatInfo({
           }}
           className="unselectable"
         >
-          {canVideoChat && (
+          {videoChatButtonShown && (
             <div
               className={css`
                 padding: 1rem;
