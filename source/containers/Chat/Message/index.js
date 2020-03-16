@@ -462,7 +462,7 @@ function Message({
         <div
           style={{
             width: '100%',
-            margin: '1rem 0 1rem 0',
+            padding: '1rem 0',
             height: placeholderHeight || '10rem'
           }}
         />
