@@ -54,9 +54,9 @@ function ChatInfo({
       selectedChannelId === channelOnCall.id && channelOnCall.incomingShown;
     if (currentChannel.twoPeople) {
       if (currentChannel.members?.length !== 2) return false;
-      return selectedChannelIsOnCall || authLevel > 5;
+      return selectedChannelIsOnCall || authLevel > 0;
     }
-    return currentChannel.isClass && (selectedChannelIsOnCall || authLevel > 5);
+    return currentChannel.isClass && (selectedChannelIsOnCall || authLevel > 0);
   }, [
     authLevel,
     channelOnCall.id,
