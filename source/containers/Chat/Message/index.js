@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
 import ProfilePic from 'components/ProfilePic';
@@ -55,7 +48,7 @@ Message.propTypes = {
   setScrollToBottom: PropTypes.func
 };
 
-function Message({
+export default function Message({
   channelId,
   channelName,
   chessCountdownNumber,
@@ -533,5 +526,3 @@ function Message({
     }
   }
 }
-
-export default memo(Message);
