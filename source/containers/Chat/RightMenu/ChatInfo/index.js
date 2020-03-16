@@ -50,23 +50,21 @@ function ChatInfo({
   }, [myStream]);
 
   const videoChatButtonShown = useMemo(() => {
+    const selectedChannelIsOnCall =
+      selectedChannelId === channelOnCall.id && channelOnCall.incomingShown;
     if (currentChannel.twoPeople) {
       if (currentChannel.members?.length !== 2) return false;
-      let result = true;
-      for (let member of currentChannel.members) {
-        if (!member?.authLevel) result = false;
-      }
-      return result;
+      return selectedChannelIsOnCall || authLevel > 5;
     }
-    return (
-      currentChannel.isClass && (channelOnCall.incomingShown || authLevel > 5)
-    );
+    return currentChannel.isClass && (selectedChannelIsOnCall || authLevel > 5);
   }, [
     authLevel,
+    channelOnCall.id,
     channelOnCall.incomingShown,
     currentChannel.isClass,
     currentChannel.members,
-    currentChannel.twoPeople
+    currentChannel.twoPeople,
+    selectedChannelId
   ]);
 
   const displayedChannelMembers = useMemo(() => {
