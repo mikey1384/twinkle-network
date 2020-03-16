@@ -463,7 +463,7 @@ function Message({
               padding: '1rem 0',
               height:
                 placeholderHeight ||
-                (isChessMsg ? '40rem' : filePath ? '30rem' : '6rem')
+                (isChessMsg ? '50rem' : filePath ? '35rem' : '10rem')
             }}
           />
         )}
