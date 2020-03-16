@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
@@ -8,7 +8,7 @@ Spoiler.propTypes = {
   onSpoilerClick: PropTypes.func
 };
 
-function Spoiler({ content, onSpoilerClick }) {
+export default function Spoiler({ content, onSpoilerClick }) {
   const [spoilerShown, setSpoilerShown] = useState(false);
   const [grayness, setGrayness] = useState(105);
   const displayedContent = useMemo(() => {
@@ -53,5 +53,3 @@ function Spoiler({ content, onSpoilerClick }) {
     onSpoilerClick();
   }
 }
-
-export default memo(Spoiler);
