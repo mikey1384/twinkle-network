@@ -100,6 +100,9 @@ function Message({
   setScrollToBottom,
   showSubjectMsgsModal
 }) {
+  const [ComponentRef, inView] = useInView({
+    threshold: 0
+  });
   const { onFileUpload } = useContext(LocalContext);
   const {
     authLevel,
@@ -158,10 +161,6 @@ function Message({
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
-
-  const [ComponentRef, inView] = useInView({
-    threshold: 0
-  });
   const PanelRef = useRef(null);
 
   useLazyLoad({
