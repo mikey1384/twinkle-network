@@ -46,8 +46,9 @@ function ChatInfo({
 
   const canVideoChat = useMemo(() => {
     if (currentChannel.twoPeople) {
+      if (currentChannel.members.length !== 2) return false;
       let result = true;
-      for (let member of currentChannel.members || []) {
+      for (let member of currentChannel.members) {
         if (!member?.authLevel) result = false;
       }
       return result;
