@@ -1111,7 +1111,7 @@ export default function ContentReducer(state, action) {
         ...state,
         [contentKey]: {
           ...prevContentState,
-          invisible: action.invisible
+          visible: action.visible
         }
       };
     case 'SET_XP_REWARD_INTERFACE_SHOWN':

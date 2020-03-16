@@ -857,14 +857,14 @@ export default function ChatReducer(state, action) {
         ...state,
         currentChannelName: action.channelName
       };
-    case 'SET_INVISIBLE': {
+    case 'SET_VISIBLE': {
       const messageKey = 'message' + action.messageId;
       const prevMessageState = state[messageKey] || {};
       return {
         ...state,
         [messageKey]: {
           ...prevMessageState,
-          invisible: action.invisible
+          visible: action.visible
         }
       };
     }
