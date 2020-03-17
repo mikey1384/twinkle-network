@@ -35,7 +35,7 @@ export default function PleaseLogIn() {
           </span>{' '}
           and play{' '}
           <span style={{ color: Color.vantaBlack(), fontWeight: 'bold' }}>
-            chess
+            vocabulary games & chess
           </span>{' '}
           with{' '}
           <span style={{ color: Color.logoBlue(), fontWeight: 'bold' }}>
