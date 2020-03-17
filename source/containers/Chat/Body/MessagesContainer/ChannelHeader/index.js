@@ -224,7 +224,8 @@ export default function ChannelHeader() {
       content,
       isSubject: true,
       channelId: 2,
-      timeStamp
+      timeStamp,
+      isNewMessage: true
     };
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
