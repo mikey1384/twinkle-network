@@ -1106,7 +1106,7 @@ export default function ContentReducer(state, action) {
           progress: action.progress
         }
       };
-    case 'SET_INVISIBLE':
+    case 'SET_VISIBLE':
       return {
         ...state,
         [contentKey]: {
