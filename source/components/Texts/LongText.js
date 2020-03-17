@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
+import { Color } from 'constants/css';
 
 LongText.propTypes = {
   children: PropTypes.string,
@@ -8,7 +9,8 @@ LongText.propTypes = {
   cleanString: PropTypes.bool,
   maxLines: PropTypes.number,
   style: PropTypes.object,
-  noExpand: PropTypes.bool
+  noExpand: PropTypes.bool,
+  readMoreColor: PropTypes.string
 };
 
 export default function LongText({
@@ -17,7 +19,8 @@ export default function LongText({
   cleanString,
   children,
   maxLines = 10,
-  noExpand
+  noExpand,
+  readMoreColor = Color.blue()
 }) {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState(children || '');
@@ -117,7 +120,7 @@ export default function LongText({
                   {'... '}
                   {!noExpand && (
                     <a
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: 'pointer', color: readMoreColor }}
                       onClick={() => setFullText(true)}
                     >
                       Read More

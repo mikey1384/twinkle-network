@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { processedStringWithURL } from 'helpers/stringHelpers';
+import LongText from 'components/Texts/LongText';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 
@@ -34,10 +34,9 @@ export default function StatusMsg({
             : Color.gold()};
         }
       `}
-      dangerouslySetInnerHTML={{
-        __html: processedStringWithURL(statusMsg)
-      }}
       style={style}
-    />
+    >
+      <LongText readMoreColor="#fff">{statusMsg}</LongText>
+    </div>
   );
 }
