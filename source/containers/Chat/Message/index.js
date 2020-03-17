@@ -335,7 +335,7 @@ function Message({
 
   return (
     <div ref={ComponentRef}>
-      {inView || typeof visible === 'undefined' || visible ? (
+      {inView || typeof visible === 'undefined' || visible || isLastMsg ? (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
