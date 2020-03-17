@@ -459,8 +459,12 @@ export default function MessagesContainer({
               color="orange"
               onClick={() => {
                 setNewUnseenMessage(false);
-                MessagesContainerRef.current.scrollTop =
-                  ContentRef.current.offsetHeight;
+                setTimeout(
+                  () =>
+                    (MessagesContainerRef.current.scrollTop =
+                      ContentRef.current?.offsetHeight || 0),
+                  100
+                );
               }}
             >
               New Message
