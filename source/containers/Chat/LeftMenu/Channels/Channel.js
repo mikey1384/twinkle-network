@@ -26,7 +26,7 @@ function Channel({
   onChannelEnter,
   selectedChannelId
 }) {
-  const { userId } = useMyState();
+  const { userId, username } = useMyState();
   const effectiveChannelName = useMemo(
     () => customChannelNames[id] || channelName,
     [channelName, customChannelNames, id]
@@ -34,9 +34,9 @@ function Channel({
   const otherMember = useMemo(
     () =>
       twoPeople
-        ? members?.filter(member => Number(member.id) !== Number(userId))?.[0]
+        ? members?.filter(member => member.username !== username)?.[0]
         : null,
-    [members, twoPeople, userId]
+    [members, twoPeople, username]
   );
   const selected = useMemo(() => !chatType && id === selectedChannelId, [
     chatType,
