@@ -23,7 +23,7 @@ export default function ChannelHeader() {
       uploadChatSubject
     }
   } = useAppContext();
-  const { profilePicId, userId, username } = useMyState();
+  const { authLevel, profilePicId, userId, username } = useMyState();
   const {
     state: {
       subject: {
@@ -140,19 +140,21 @@ export default function ChannelHeader() {
                 </div>
                 {renderDetails()}
               </section>
-              <Button
-                color="logoBlue"
-                filled
-                style={{
-                  position: 'absolute',
-                  fontSize: '1.3rem',
-                  top: '1.3rem',
-                  right: '1rem'
-                }}
-                onClick={() => setOnEdit(true)}
-              >
-                Change
-              </Button>
+              {authLevel > 0 && (
+                <Button
+                  color="logoBlue"
+                  filled
+                  style={{
+                    position: 'absolute',
+                    fontSize: '1.3rem',
+                    top: '1.3rem',
+                    right: '1rem'
+                  }}
+                  onClick={() => setOnEdit(true)}
+                >
+                  Change
+                </Button>
+              )}
             </>
           )}
           {onEdit && (
