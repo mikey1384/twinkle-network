@@ -31,10 +31,47 @@ ProfilePanel.propTypes = {
 };
 
 function ProfilePanel({ expandable, profileId }) {
-  const history = useHistory();
   const [ComponentRef, inView] = useInView({
     threshold: 0
   });
+  const PanelRef = useRef(null);
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible
+  });
+
+  const history = useHistory();
+  const profile = useContentState({
+    contentType: 'user',
+    contentId: profileId
+  });
+
+  const {
+    childComments = [],
+    commentsLoaded,
+    commentsLoadMoreButton,
+    commentsShown,
+    visible,
+    lastActive,
+    loaded,
+    numMessages,
+    online,
+    placeholderHeight,
+    previewLoaded,
+    profileFirstRow,
+    profileSecondRow,
+    profileThirdRow,
+    profilePicId,
+    profileTheme,
+    twinkleXP,
+    username: profileName,
+    userType,
+    website,
+    youtubeUrl
+  } = profile;
+
   const {
     requestHelpers: {
       checkIfUserOnline,
@@ -69,40 +106,6 @@ function ProfilePanel({ expandable, profileId }) {
       onUpdateBio
     }
   } = useContentContext();
-  const profile = useContentState({
-    contentType: 'user',
-    contentId: profileId
-  });
-  const PanelRef = useRef(null);
-  useLazyLoad({
-    PanelRef,
-    inView,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible
-  });
-  const {
-    childComments = [],
-    commentsLoaded,
-    commentsLoadMoreButton,
-    commentsShown,
-    visible,
-    lastActive,
-    loaded,
-    numMessages,
-    online,
-    placeholderHeight,
-    previewLoaded,
-    profileFirstRow,
-    profileSecondRow,
-    profileThirdRow,
-    profilePicId,
-    profileTheme,
-    twinkleXP,
-    username: profileName,
-    userType,
-    website,
-    youtubeUrl
-  } = profile;
 
   const {
     state: { loaded: chatLoaded },

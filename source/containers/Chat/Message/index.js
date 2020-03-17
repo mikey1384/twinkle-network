@@ -103,6 +103,13 @@ function Message({
   const [ComponentRef, inView] = useInView({
     threshold: 0
   });
+  const PanelRef = useRef(null);
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible
+  });
   const { onFileUpload } = useContext(LocalContext);
   const {
     authLevel,
@@ -161,14 +168,6 @@ function Message({
   const [onEdit, setOnEdit] = useState(false);
   const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
-  const PanelRef = useRef(null);
-
-  useLazyLoad({
-    PanelRef,
-    inView,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible
-  });
 
   if (fileToUpload && !userId) {
     userId = myId;

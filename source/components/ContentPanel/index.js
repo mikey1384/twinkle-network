@@ -34,10 +34,18 @@ function ContentPanel({
   numPreviewComments = 0,
   style = {}
 }) {
-  const history = useHistory();
   const [ComponentRef, inView] = useInView({
     threshold: 0
   });
+  const PanelRef = useRef(null);
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible
+  });
+
+  const history = useHistory();
   const {
     requestHelpers: { loadContent }
   } = useAppContext();
@@ -70,6 +78,7 @@ function ContentPanel({
       onUploadReply
     }
   } = useContentContext();
+
   const contentState = useContentState({ contentType, contentId });
   const [videoShown, setVideoShown] = useState(false);
   const mounted = useRef(true);
@@ -87,14 +96,6 @@ function ContentPanel({
     visible,
     rootId
   } = contentState;
-
-  const PanelRef = useRef(null);
-  useLazyLoad({
-    PanelRef,
-    inView,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible
-  });
 
   const { started: rootStarted } = useContentState({
     contentType: rootType,

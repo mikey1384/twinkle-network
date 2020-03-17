@@ -37,6 +37,6 @@ export default function Outgoing() {
       autoPlay
       style={{ display: 'none', height: 0, width: 0 }}
       ref={videoRef}
-    ></video>
+    />
   );
 }
