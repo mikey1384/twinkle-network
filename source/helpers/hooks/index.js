@@ -27,7 +27,7 @@ export function useLazyLoad({
   onSetVisible
 }) {
   const timerRef = useRef(null);
-  const currentHeight = useRef(false);
+  const currentHeight = useRef(PanelRef.current?.clientHeight);
 
   useEffect(() => {
     clearTimeout(timerRef.current);
