@@ -31,6 +31,7 @@ export function useLazyLoad({
 
   useEffect(() => {
     clearTimeout(timerRef.current);
+    const clientHeight = PanelRef.current?.clientHeight;
     if (inView) {
       onSetVisible(true);
       if (
@@ -45,6 +46,12 @@ export function useLazyLoad({
         onSetVisible(false);
       }, 5000);
     }
+
+    return function onRefresh() {
+      if (clientHeight) {
+        onSetPlaceholderHeight(clientHeight);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PanelRef, inView]);
 
