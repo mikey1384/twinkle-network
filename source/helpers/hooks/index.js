@@ -48,7 +48,7 @@ export function useLazyLoad({
     }
 
     return function onRefresh() {
-      if (clientHeight) {
+      if (clientHeight && clientHeight !== currentHeight.current) {
         onSetPlaceholderHeight(clientHeight);
       }
     };
