@@ -365,6 +365,12 @@ export default function ChatActions(dispatch) {
         data
       });
     },
+    onSelectChatTab(selectedChatTab) {
+      return dispatch({
+        type: 'SELECT_CHAT_TAB',
+        selectedChatTab
+      });
+    },
     onSendFirstDirectMessage({ members, message }) {
       return dispatch({
         type: 'CREATE_NEW_DM_CHANNEL',

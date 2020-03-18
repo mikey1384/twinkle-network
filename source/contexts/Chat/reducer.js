@@ -829,6 +829,11 @@ export default function ChatReducer(state, action) {
         ...state,
         userSearchResults: action.data
       };
+    case 'SELECT_CHAT_TAB':
+      return {
+        ...state,
+        selectedChatTab: action.selectedChatTab
+      };
     case 'SET_CALL': {
       return {
         ...state,

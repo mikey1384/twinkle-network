@@ -5,6 +5,7 @@ import Channels from './Channels';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Vocabulary from './Vocabulary';
 import Icon from 'components/Icon';
+import Tabs from './Tabs';
 import {
   Color,
   desktopMinWidth,
@@ -91,7 +92,7 @@ function LeftMenu({
         background: #fff;
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${phoneMaxWidth}) {
-          width: 30vw;
+          width: 35vw;
         }
       `}
     >
@@ -149,7 +150,8 @@ function LeftMenu({
         ref={ChannelListRef}
       >
         <div style={{ display: 'flex', width: '100%' }}>
-          <div style={{ width: '100%' }}>
+          <Tabs />
+          <div style={{ width: '80%' }}>
             <Channels
               currentChannel={currentChannel}
               selectedChannelId={selectedChannelId}

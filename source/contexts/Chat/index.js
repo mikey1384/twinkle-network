@@ -30,6 +30,7 @@ export const initialChatState = {
   channelLoading: true,
   myStream: null,
   selectedChannelId: null,
+  selectedChatTab: 'home',
   subject: {},
   subjectSearchResults: [],
   vocabErrorMessage: '',
