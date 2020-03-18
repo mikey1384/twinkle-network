@@ -27,13 +27,18 @@ export function useLazyLoad({
   onSetVisible
 }) {
   const timerRef = useRef(null);
+  const currentHeight = useRef(false);
 
   useEffect(() => {
     clearTimeout(timerRef.current);
     if (inView) {
       onSetVisible(true);
-      if (PanelRef.current?.clientHeight) {
+      if (
+        PanelRef.current?.clientHeight &&
+        currentHeight.current !== PanelRef.current.clientHeight
+      ) {
         onSetPlaceholderHeight(PanelRef.current.clientHeight);
+        currentHeight.current = PanelRef.current.clientHeight;
       }
     } else {
       timerRef.current = setTimeout(() => {
