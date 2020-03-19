@@ -200,10 +200,11 @@ export default function ChatActions(dispatch) {
         subject: data
       });
     },
-    onLoadMoreChannels(data) {
+    onLoadMoreChannels({ type, channels }) {
       return dispatch({
         type: 'LOAD_MORE_CHANNELS',
-        data
+        channelType: type,
+        channels
       });
     },
     onLoadMoreMessages(data) {

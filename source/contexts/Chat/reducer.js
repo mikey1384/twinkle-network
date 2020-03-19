@@ -349,7 +349,8 @@ export default function ChatReducer(state, action) {
     case 'INIT_CHAT': {
       let messagesLoadMoreButton = false;
       let originalNumUnreads = 0;
-      let channelLoadMoreButton = false;
+      let classLoadMoreButton = false;
+      let homeLoadMoreButton = false;
       let vocabActivitiesLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
         action.data.currentChannelId
@@ -361,7 +362,11 @@ export default function ChatReducer(state, action) {
       action.data.messages?.reverse();
       if (action.data.homeChannelIds?.length > 20) {
         action.data.homeChannelIds.pop();
-        channelLoadMoreButton = true;
+        homeLoadMoreButton = true;
+      }
+      if (action.data.classChannelIds?.length > 20) {
+        action.data.classChannelIds.pop();
+        classLoadMoreButton = true;
       }
       if (action.data.vocabActivities.length > 20) {
         action.data.vocabActivities.pop();
@@ -373,6 +378,7 @@ export default function ChatReducer(state, action) {
         ...initialChatState,
         chatType: action.data.chatType,
         loaded: true,
+        classChannelIds: action.data.classChannelIds,
         homeChannelIds: action.data.homeChannelIds,
         channelsObj: {
           ...action.data.channelsObj,
@@ -381,7 +387,8 @@ export default function ChatReducer(state, action) {
             numUnreads: 0
           }
         },
-        channelLoadMoreButton,
+        classLoadMoreButton,
+        homeLoadMoreButton,
         customChannelNames: action.data.customChannelNames,
         vocabActivities: action.data.vocabActivities,
         vocabActivitiesLoadMoreButton,
@@ -426,21 +433,29 @@ export default function ChatReducer(state, action) {
         )
       };
     case 'LOAD_MORE_CHANNELS': {
-      let channelLoadMoreButton = false;
-      if (action.data.length > 20) {
-        action.data.pop();
-        channelLoadMoreButton = true;
+      let homeLoadMoreButton = false;
+      let classLoadMoreButton = false;
+      if (action.channelType === 'home' && action.channels.length > 20) {
+        action.channels.pop();
+        homeLoadMoreButton = true;
+      }
+      if (action.channelType === 'class' && action.channels.length > 20) {
+        action.channels.pop();
+        classLoadMoreButton = true;
       }
       const channels = {};
-      for (let channel of action.data) {
+      for (let channel of action.channels) {
         channels[channel.id] = channel;
       }
       return {
         ...state,
-        channelLoadMoreButton,
-        homeChannelIds: state.homeChannelIds.concat(
-          action.data.map(channel => channel.id)
-        ),
+        classLoadMoreButton,
+        homeLoadMoreButton,
+        [action.channelType === 'home'
+          ? 'homeChannelIds'
+          : 'classChannelIds']: state[
+          action.channelType === 'home' ? 'homeChannelIds' : 'classChannelIds'
+        ].concat(action.channels.map(channel => channel.id)),
         channelsObj: {
           ...state.channelsObj,
           ...channels

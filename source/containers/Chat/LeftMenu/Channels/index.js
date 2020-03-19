@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Channel from './Channel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -7,11 +7,10 @@ import { useAppContext, useChatContext } from 'contexts';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
 Channels.propTypes = {
-  channelLoadMoreButton: PropTypes.bool,
   onChannelEnter: PropTypes.func.isRequired
 };
 
-function Channels({ channelLoadMoreButton, onChannelEnter }) {
+function Channels({ onChannelEnter }) {
   const {
     requestHelpers: { loadMoreChannels }
   } = useAppContext();
@@ -19,9 +18,13 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
     state: {
       chatType,
       channelsObj,
+      classChannelIds,
       customChannelNames,
       homeChannelIds,
-      selectedChannelId
+      classLoadMoreButton,
+      homeLoadMoreButton,
+      selectedChannelId,
+      selectedChatTab
     },
     actions: { onLoadMoreChannels }
   } = useChatContext();
@@ -29,6 +32,15 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
   const [prevChannelIds, setPrevChannelIds] = useState(homeChannelIds);
   const ChannelListRef = useRef(null);
   const loading = useRef(false);
+  const channelIds = useMemo(
+    () => (selectedChatTab === 'home' ? homeChannelIds : classChannelIds),
+    [classChannelIds, homeChannelIds, selectedChatTab]
+  );
+  const loadMoreButtonShown = useMemo(
+    () =>
+      selectedChatTab === 'home' ? homeLoadMoreButton : classLoadMoreButton,
+    [classLoadMoreButton, homeLoadMoreButton, selectedChatTab]
+  );
 
   useEffect(() => {
     const ChannelList = ChannelListRef.current;
@@ -36,7 +48,7 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
 
     function onListScroll() {
       if (
-        channelLoadMoreButton &&
+        loadMoreButtonShown &&
         ChannelListRef.current.scrollTop >=
           (ChannelListRef.current.scrollHeight -
             ChannelListRef.current.offsetHeight) *
@@ -53,18 +65,13 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
 
   useEffect(() => {
     if (
-      selectedChannelId === homeChannelIds &&
+      selectedChannelId === homeChannelIds[0] &&
       homeChannelIds[0] !== prevChannelIds[0]
     ) {
       ChannelListRef.current.scrollTop = 0;
     }
     setPrevChannelIds(homeChannelIds);
-  }, [
-    channelLoadMoreButton,
-    homeChannelIds,
-    selectedChannelId,
-    prevChannelIds
-  ]);
+  }, [homeChannelIds, selectedChannelId, prevChannelIds]);
 
   return (
     <ErrorBoundary
@@ -76,7 +83,7 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
         height: '100%'
       }}
     >
-      {homeChannelIds
+      {channelIds
         ?.map(channelId => channelsObj[channelId])
         .filter(channel => !channel?.isHidden)
         .map(channel => (
@@ -89,7 +96,7 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
             selectedChannelId={selectedChannelId}
           />
         ))}
-      {channelLoadMoreButton && (
+      {homeLoadMoreButton && (
         <LoadMoreButton
           color="green"
           filled
@@ -109,10 +116,11 @@ function Channels({ channelLoadMoreButton, onChannelEnter }) {
     if (!loading.current) {
       setChannelsLoading(true);
       loading.current = true;
-      const data = await loadMoreChannels({
+      const channels = await loadMoreChannels({
+        type: selectedChatTab,
         shownIds: homeChannelIds
       });
-      onLoadMoreChannels(data);
+      onLoadMoreChannels({ type: selectedChatTab, channels });
       setChannelsLoading(false);
       loading.current = false;
     }

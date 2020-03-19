@@ -6,7 +6,9 @@ import ChatReducer from './reducer';
 export const ChatContext = createContext();
 
 export const initialChatState = {
-  channelLoadMoreButton: false,
+  classLoadMoreButton: false,
+  homeLoadMoreButton: false,
+  classChannelIds: [],
   homeChannelIds: [],
   channelsObj: {},
   channelOnCall: {},

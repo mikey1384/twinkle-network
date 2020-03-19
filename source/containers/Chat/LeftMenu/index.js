@@ -25,7 +25,7 @@ export default function LeftMenu({ onChannelEnter, onNewButtonClick }) {
     requestHelpers: { loadVocabulary }
   } = useAppContext();
   const {
-    state: { channelLoadMoreButton, chatType },
+    state: { chatType },
     actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { profileTheme } = useMyState();
@@ -99,10 +99,7 @@ export default function LeftMenu({ onChannelEnter, onNewButtonClick }) {
         >
           <div style={{ width: '100%', height: '100%', display: 'flex' }}>
             <Tabs />
-            <Channels
-              channelLoadMoreButton={channelLoadMoreButton}
-              onChannelEnter={onChannelEnter}
-            />
+            <Channels onChannelEnter={onChannelEnter} />
           </div>
         </div>
       </div>
