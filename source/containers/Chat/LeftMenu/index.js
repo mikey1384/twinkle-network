@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
-import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Vocabulary from './Vocabulary';
 import Icon from 'components/Icon';
 import Tabs from './Tabs';
@@ -18,26 +17,18 @@ import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 LeftMenu.propTypes = {
-  channelLoadMoreButtonShown: PropTypes.bool.isRequired,
   currentChannel: PropTypes.object.isRequired,
-  loadMoreChannels: PropTypes.func.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired
 };
 
-function LeftMenu({
-  channelLoadMoreButtonShown,
-  currentChannel,
-  loadMoreChannels,
-  onChannelEnter,
-  onNewButtonClick
-}) {
+function LeftMenu({ currentChannel, onChannelEnter, onNewButtonClick }) {
   const {
-    requestHelpers: { loadVocabulary }
+    requestHelpers: { loadMoreChannels, loadVocabulary }
   } = useAppContext();
   const {
-    state: { chatType, channelIds, selectedChannelId },
-    actions: { onLoadVocabulary, onSetLoadingVocabulary }
+    state: { channelLoadMoreButton, chatType, channelIds, selectedChannelId },
+    actions: { onLoadMoreChannels, onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { profileTheme } = useMyState();
   const [channelsLoading, setChannelsLoading] = useState(false);
@@ -51,7 +42,7 @@ function LeftMenu({
 
     function onListScroll() {
       if (
-        channelLoadMoreButtonShown &&
+        channelLoadMoreButton &&
         ChannelListRef.current.scrollTop >=
           (ChannelListRef.current.scrollHeight -
             ChannelListRef.current.offsetHeight) *
@@ -74,12 +65,7 @@ function LeftMenu({
       ChannelListRef.current.scrollTop = 0;
     }
     setPrevChannelIds(channelIds);
-  }, [
-    channelLoadMoreButtonShown,
-    channelIds,
-    selectedChannelId,
-    prevChannelIds
-  ]);
+  }, [channelLoadMoreButton, channelIds, selectedChannelId, prevChannelIds]);
 
   return (
     <div
@@ -153,23 +139,13 @@ function LeftMenu({
           <Tabs />
           <div style={{ width: '80%' }}>
             <Channels
+              channelLoadMoreButton={channelLoadMoreButton}
               currentChannel={currentChannel}
               selectedChannelId={selectedChannelId}
               onChannelEnter={onChannelEnter}
+              channelsLoading={channelsLoading}
+              onLoadMoreChannels={handleLoadMoreChannels}
             />
-            {channelLoadMoreButtonShown && (
-              <LoadMoreButton
-                color="green"
-                filled
-                loading={channelsLoading}
-                onClick={handleLoadMoreChannels}
-                style={{
-                  width: '100%',
-                  borderRadius: 0,
-                  border: 0
-                }}
-              />
-            )}
           </div>
         </div>
       </div>
@@ -191,9 +167,10 @@ function LeftMenu({
     if (!loading.current) {
       setChannelsLoading(true);
       loading.current = true;
-      await loadMoreChannels({
+      const data = await loadMoreChannels({
         shownIds: channelIds
       });
+      onLoadMoreChannels(data);
       setChannelsLoading(false);
       loading.current = false;
     }

@@ -1,14 +1,24 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Channel from './Channel';
+import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { useChatContext } from 'contexts';
 
 Channels.propTypes = {
+  channelLoadMoreButton: PropTypes.bool,
+  channelsLoading: PropTypes.bool,
   onChannelEnter: PropTypes.func.isRequired,
+  onLoadMoreChannels: PropTypes.func.isRequired,
   selectedChannelId: PropTypes.number
 };
 
-function Channels({ onChannelEnter, selectedChannelId }) {
+function Channels({
+  channelLoadMoreButton,
+  channelsLoading,
+  onChannelEnter,
+  onLoadMoreChannels,
+  selectedChannelId
+}) {
   const {
     state: { chatType, channelIds, channelsObj, customChannelNames }
   } = useChatContext();
@@ -28,6 +38,19 @@ function Channels({ onChannelEnter, selectedChannelId }) {
             selectedChannelId={selectedChannelId}
           />
         ))}
+      {channelLoadMoreButton && (
+        <LoadMoreButton
+          color="green"
+          filled
+          loading={channelsLoading}
+          onClick={onLoadMoreChannels}
+          style={{
+            width: '100%',
+            borderRadius: 0,
+            border: 0
+          }}
+        />
+      )}
     </>
   );
 }

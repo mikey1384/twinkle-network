@@ -24,7 +24,6 @@ function Chat({ onFileUpload }) {
       createNewChat,
       loadChatChannel,
       loadDMChannel,
-      loadMoreChannels,
       updateChatLastRead
     }
   } = useAppContext();
@@ -35,7 +34,6 @@ function Chat({ onFileUpload }) {
       selectedChannelId,
       channelsObj,
       channelOnCall,
-      channelLoadMoreButton,
       currentChannelName
     },
     actions: {
@@ -43,7 +41,6 @@ function Chat({ onFileUpload }) {
       onCreateNewChannel,
       onEnterChannelWithId,
       onEnterEmptyChat,
-      onLoadMoreChannels,
       onNotifyThatMemberLeftChannel,
       onOpenDirectMessageChannel,
       onReceiveMessage,
@@ -197,9 +194,7 @@ function Chat({ onFileUpload }) {
               />
             )}
             <LeftMenu
-              channelLoadMoreButtonShown={channelLoadMoreButton}
               currentChannel={currentChannel}
-              loadMoreChannels={handleLoadMoreChannels}
               onChannelEnter={handleChannelEnter}
               onNewButtonClick={() => setCreateNewChatModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}
@@ -225,11 +220,6 @@ function Chat({ onFileUpload }) {
       )}
     </LocalContext.Provider>
   );
-
-  async function handleLoadMoreChannels(params) {
-    const data = await loadMoreChannels(params);
-    onLoadMoreChannels(data);
-  }
 
   function returnUsers({ members: allMembers }, currentChannelOnlineMembers) {
     return allMembers.length > 0
