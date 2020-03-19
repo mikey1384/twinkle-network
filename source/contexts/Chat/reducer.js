@@ -139,7 +139,7 @@ export default function ChatReducer(state, action) {
         chatType: null,
         replyTarget: null,
         subject: {},
-        channelIds: [channelId].concat(state.channelIds),
+        homeChannelIds: [channelId].concat(state.homeChannelIds),
         channelsObj: {
           ...state.channelsObj,
           [channelId]: {
@@ -170,9 +170,9 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         subject: {},
-        channelIds: [
+        homeChannelIds: [
           action.message.channelId,
-          ...state.channelIds.filter(channelId => channelId !== 0)
+          ...state.homeChannelIds.filter(channelId => channelId !== 0)
         ],
         channelsObj: {
           ...state.channelsObj,
@@ -265,17 +265,20 @@ export default function ChatReducer(state, action) {
           ...state.channelsObj,
           [selectedChannel.id]: selectedChannel
         },
-        channelIds: state.channelIds.reduce((prev, channelId, index) => {
-          if (action.showOnTop && index === state.channelIds.length - 1) {
-            return [selectedChannel.id].concat(
-              prev.concat(channelId === selectedChannel.id ? [] : [channelId])
-            );
-          }
-          if (action.showOnTop && selectedChannel.id === channelId) {
-            return prev;
-          }
-          return prev.concat([channelId]);
-        }, []),
+        homeChannelIds: state.homeChannelIds.reduce(
+          (prev, channelId, index) => {
+            if (action.showOnTop && index === state.homeChannelIds.length - 1) {
+              return [selectedChannel.id].concat(
+                prev.concat(channelId === selectedChannel.id ? [] : [channelId])
+              );
+            }
+            if (action.showOnTop && selectedChannel.id === channelId) {
+              return prev;
+            }
+            return prev.concat([channelId]);
+          },
+          []
+        ),
         messages: uploadStatusMessages
           ? [...action.data.messages, ...uploadStatusMessages]
           : action.data.messages,
@@ -356,8 +359,8 @@ export default function ChatReducer(state, action) {
         messagesLoadMoreButton = true;
       }
       action.data.messages?.reverse();
-      if (action.data.channelIds.length > 20) {
-        action.data.channelIds.pop();
+      if (action.data.homeChannelIds?.length > 20) {
+        action.data.homeChannelIds.pop();
         channelLoadMoreButton = true;
       }
       if (action.data.vocabActivities.length > 20) {
@@ -370,7 +373,7 @@ export default function ChatReducer(state, action) {
         ...initialChatState,
         chatType: action.data.chatType,
         loaded: true,
-        channelIds: action.data.channelIds,
+        homeChannelIds: action.data.homeChannelIds,
         channelsObj: {
           ...action.data.channelsObj,
           [action.data.currentChannelId]: {
@@ -418,7 +421,7 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         messages: [],
-        channelIds: state.channelIds.filter(
+        homeChannelIds: state.homeChannelIds.filter(
           channelId => channelId !== action.channelId
         )
       };
@@ -435,7 +438,7 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         channelLoadMoreButton,
-        channelIds: state.channelIds.concat(
+        homeChannelIds: state.homeChannelIds.concat(
           action.data.map(channel => channel.id)
         ),
         channelsObj: {
@@ -593,8 +596,10 @@ export default function ChatReducer(state, action) {
             numUnreads: 0
           }
         },
-        channelIds: [action.channelId].concat(
-          state.channelIds.filter(channelId => channelId !== action.channelId)
+        homeChannelIds: [action.channelId].concat(
+          state.homeChannelIds.filter(
+            channelId => channelId !== action.channelId
+          )
         ),
         selectedChannelId: action.channelId,
         messages: action.messages.reverse(),
@@ -609,9 +614,9 @@ export default function ChatReducer(state, action) {
         replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
-        channelIds: [
+        homeChannelIds: [
           0,
-          ...state.channelIds.filter(channelId => channelId !== 0)
+          ...state.homeChannelIds.filter(channelId => channelId !== 0)
         ],
         selectedChannelId: 0,
         channelsObj: {
@@ -740,8 +745,8 @@ export default function ChatReducer(state, action) {
               }
             ]
           : state.messages,
-        channelIds: [action.data.channelId].concat(
-          state.channelIds.filter((channelId, index) =>
+        homeChannelIds: [action.data.channelId].concat(
+          state.homeChannelIds.filter((channelId, index) =>
             action.duplicate ? index !== 0 : true
           )
         )
@@ -769,8 +774,10 @@ export default function ChatReducer(state, action) {
         msgsWhileInvisible: action.pageVisible
           ? 0
           : state.msgsWhileInvisible + 1,
-        channelIds: [action.channel.id].concat(
-          state.channelIds.filter(channelId => channelId !== action.channel.id)
+        homeChannelIds: [action.channel.id].concat(
+          state.homeChannelIds.filter(
+            channelId => channelId !== action.channel.id
+          )
         )
       };
     case 'RECEIVE_VOCAB_ACTIVITY':
@@ -980,7 +987,7 @@ export default function ChatReducer(state, action) {
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
-        channelIds: state.channelIds.reduce((prev, channelId) => {
+        homeChannelIds: state.homeChannelIds.reduce((prev, channelId) => {
           const next =
             channelId === action.message.channelId
               ? [channelId].concat(prev)

@@ -194,7 +194,6 @@ function Chat({ onFileUpload }) {
               />
             )}
             <LeftMenu
-              currentChannel={currentChannel}
               onChannelEnter={handleChannelEnter}
               onNewButtonClick={() => setCreateNewChatModalShown(true)}
               showUserListModal={() => setUserListModalShown(true)}

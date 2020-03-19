@@ -529,7 +529,6 @@ export default function Header({
   );
 
   function handleNewPeer({ peerId, channelId, initiator, stream }) {
-    console.log('creating peer:', peerId);
     peersRef.current[peerId] = new Peer({
       config: {
         iceServers: [

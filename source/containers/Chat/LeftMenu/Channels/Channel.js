@@ -78,6 +78,7 @@ function Channel({
     >
       <div
         style={{
+          width: '100%',
           display: 'flex',
           height: '100%',
           justifyContent: 'space-between',

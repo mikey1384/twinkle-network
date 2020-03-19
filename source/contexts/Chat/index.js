@@ -7,7 +7,7 @@ export const ChatContext = createContext();
 
 export const initialChatState = {
   channelLoadMoreButton: false,
-  channelIds: [],
+  homeChannelIds: [],
   channelsObj: {},
   channelOnCall: {},
   chatSearchResults: [],

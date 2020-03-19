@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
@@ -12,60 +12,23 @@ import {
   phoneMaxWidth
 } from 'constants/css';
 import { css } from 'emotion';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 LeftMenu.propTypes = {
-  currentChannel: PropTypes.object.isRequired,
   onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired
 };
 
-function LeftMenu({ currentChannel, onChannelEnter, onNewButtonClick }) {
+export default function LeftMenu({ onChannelEnter, onNewButtonClick }) {
   const {
-    requestHelpers: { loadMoreChannels, loadVocabulary }
+    requestHelpers: { loadVocabulary }
   } = useAppContext();
   const {
-    state: { channelLoadMoreButton, chatType, channelIds, selectedChannelId },
-    actions: { onLoadMoreChannels, onLoadVocabulary, onSetLoadingVocabulary }
+    state: { channelLoadMoreButton, chatType },
+    actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { profileTheme } = useMyState();
-  const [channelsLoading, setChannelsLoading] = useState(false);
-  const [prevChannelIds, setPrevChannelIds] = useState(channelIds);
-  const ChannelListRef = useRef(null);
-  const loading = useRef(false);
-
-  useEffect(() => {
-    const ChannelList = ChannelListRef.current;
-    addEvent(ChannelList, 'scroll', onListScroll);
-
-    function onListScroll() {
-      if (
-        channelLoadMoreButton &&
-        ChannelListRef.current.scrollTop >=
-          (ChannelListRef.current.scrollHeight -
-            ChannelListRef.current.offsetHeight) *
-            0.7
-      ) {
-        handleLoadMoreChannels();
-      }
-    }
-
-    return function cleanUp() {
-      removeEvent(ChannelList, 'scroll', onListScroll);
-    };
-  });
-
-  useEffect(() => {
-    if (
-      selectedChannelId === channelIds &&
-      channelIds[0] !== prevChannelIds[0]
-    ) {
-      ChannelListRef.current.scrollTop = 0;
-    }
-    setPrevChannelIds(channelIds);
-  }, [channelLoadMoreButton, channelIds, selectedChannelId, prevChannelIds]);
 
   return (
     <div
@@ -124,27 +87,21 @@ function LeftMenu({ currentChannel, onChannelEnter, onNewButtonClick }) {
           width: '100%'
         }}
       />
-      <div
-        style={{
-          overflow: 'scroll',
-          position: 'absolute',
-          top: '17.5rem',
-          left: 0,
-          right: 0,
-          bottom: 0
-        }}
-        ref={ChannelListRef}
-      >
-        <div style={{ display: 'flex', width: '100%' }}>
-          <Tabs />
-          <div style={{ width: '80%' }}>
+      <div style={{ width: '100%', position: 'relative', height: '100%' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+          }}
+        >
+          <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+            <Tabs />
             <Channels
               channelLoadMoreButton={channelLoadMoreButton}
-              currentChannel={currentChannel}
-              selectedChannelId={selectedChannelId}
               onChannelEnter={onChannelEnter}
-              channelsLoading={channelsLoading}
-              onLoadMoreChannels={handleLoadMoreChannels}
             />
           </div>
         </div>
@@ -162,19 +119,4 @@ function LeftMenu({ currentChannel, onChannelEnter, onNewButtonClick }) {
     onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
     onSetLoadingVocabulary(false);
   }
-
-  async function handleLoadMoreChannels() {
-    if (!loading.current) {
-      setChannelsLoading(true);
-      loading.current = true;
-      const data = await loadMoreChannels({
-        shownIds: channelIds
-      });
-      onLoadMoreChannels(data);
-      setChannelsLoading(false);
-      loading.current = false;
-    }
-  }
 }
-
-export default memo(LeftMenu);

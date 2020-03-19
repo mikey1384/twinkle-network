@@ -1,32 +1,83 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Channel from './Channel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
-import { useChatContext } from 'contexts';
+import ErrorBoundary from 'components/ErrorBoundary';
+import { useAppContext, useChatContext } from 'contexts';
+import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
 Channels.propTypes = {
   channelLoadMoreButton: PropTypes.bool,
-  channelsLoading: PropTypes.bool,
-  onChannelEnter: PropTypes.func.isRequired,
-  onLoadMoreChannels: PropTypes.func.isRequired,
-  selectedChannelId: PropTypes.number
+  onChannelEnter: PropTypes.func.isRequired
 };
 
-function Channels({
-  channelLoadMoreButton,
-  channelsLoading,
-  onChannelEnter,
-  onLoadMoreChannels,
-  selectedChannelId
-}) {
+function Channels({ channelLoadMoreButton, onChannelEnter }) {
   const {
-    state: { chatType, channelIds, channelsObj, customChannelNames }
+    requestHelpers: { loadMoreChannels }
+  } = useAppContext();
+  const {
+    state: {
+      chatType,
+      channelsObj,
+      customChannelNames,
+      homeChannelIds,
+      selectedChannelId
+    },
+    actions: { onLoadMoreChannels }
   } = useChatContext();
+  const [channelsLoading, setChannelsLoading] = useState(false);
+  const [prevChannelIds, setPrevChannelIds] = useState(homeChannelIds);
+  const ChannelListRef = useRef(null);
+  const loading = useRef(false);
+
+  useEffect(() => {
+    const ChannelList = ChannelListRef.current;
+    addEvent(ChannelList, 'scroll', onListScroll);
+
+    function onListScroll() {
+      if (
+        channelLoadMoreButton &&
+        ChannelListRef.current.scrollTop >=
+          (ChannelListRef.current.scrollHeight -
+            ChannelListRef.current.offsetHeight) *
+            0.7
+      ) {
+        handleLoadMoreChannels();
+      }
+    }
+
+    return function cleanUp() {
+      removeEvent(ChannelList, 'scroll', onListScroll);
+    };
+  });
+
+  useEffect(() => {
+    if (
+      selectedChannelId === homeChannelIds &&
+      homeChannelIds[0] !== prevChannelIds[0]
+    ) {
+      ChannelListRef.current.scrollTop = 0;
+    }
+    setPrevChannelIds(homeChannelIds);
+  }, [
+    channelLoadMoreButton,
+    homeChannelIds,
+    selectedChannelId,
+    prevChannelIds
+  ]);
 
   return (
-    <>
-      {channelIds
-        .map(channelId => channelsObj[channelId])
+    <ErrorBoundary
+      innerRef={ChannelListRef}
+      style={{
+        overflow: 'scroll',
+        top: '17.5rem',
+        width: '80%',
+        height: '100%'
+      }}
+    >
+      {homeChannelIds
+        ?.map(channelId => channelsObj[channelId])
         .filter(channel => !channel?.isHidden)
         .map(channel => (
           <Channel
@@ -43,7 +94,7 @@ function Channels({
           color="green"
           filled
           loading={channelsLoading}
-          onClick={onLoadMoreChannels}
+          onClick={handleLoadMoreChannels}
           style={{
             width: '100%',
             borderRadius: 0,
@@ -51,8 +102,21 @@ function Channels({
           }}
         />
       )}
-    </>
+    </ErrorBoundary>
   );
+
+  async function handleLoadMoreChannels() {
+    if (!loading.current) {
+      setChannelsLoading(true);
+      loading.current = true;
+      const data = await loadMoreChannels({
+        shownIds: homeChannelIds
+      });
+      onLoadMoreChannels(data);
+      setChannelsLoading(false);
+      loading.current = false;
+    }
+  }
 }
 
 export default memo(Channels);
