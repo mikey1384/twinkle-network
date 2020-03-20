@@ -51,11 +51,6 @@ export default function useInfiniteScroll({
   function onScroll() {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      console.log(
-        document.getElementById('App').scrollHeight,
-        BodyRef.current.scrollTop,
-        scrollHeight
-      );
       if (
         (document.getElementById('App').scrollHeight > scrollHeight ||
           BodyRef.current.scrollTop > scrollHeight) &&
