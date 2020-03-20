@@ -94,6 +94,7 @@ export default function Stories({ location }) {
   const ContainerRef = useRef(null);
   const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
+
   const { setScrollHeight } = useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,
