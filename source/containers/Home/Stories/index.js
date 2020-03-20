@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import InputPanel from './InputPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -46,7 +46,7 @@ Stories.propTypes = {
   location: PropTypes.object
 };
 
-export default function Stories({ location }) {
+function Stories({ location }) {
   const {
     requestHelpers: { loadFeeds, loadNewFeeds }
   } = useAppContext();
@@ -398,3 +398,5 @@ export default function Stories({ location }) {
     }
   }
 }
+
+export default memo(Stories);
