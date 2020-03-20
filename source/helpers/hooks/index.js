@@ -41,8 +41,11 @@ export function useLazyLoad({
         onSetPlaceholderHeight(PanelRef.current.clientHeight);
         currentHeight.current = PanelRef.current.clientHeight;
       }
-    } else {
+    }
+
+    if (inView) {
       onSetVisible(true);
+    } else {
       timerRef.current = setTimeout(() => {
         onSetVisible(false);
       }, 5000);
