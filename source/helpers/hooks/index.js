@@ -38,7 +38,7 @@ export function useLazyLoad({
       currentHeight.current = PanelRef.current.clientHeight;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [PanelRef]);
 
   useEffect(() => {
     clearTimeout(timerRef.current);
@@ -55,7 +55,7 @@ export function useLazyLoad({
     } else {
       timerRef.current = setTimeout(() => {
         onSetVisible(false);
-      }, 5000);
+      }, 3000);
     }
 
     return function onRefresh() {
