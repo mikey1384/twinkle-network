@@ -27,7 +27,7 @@ export default function useInfiniteScroll({
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollable]);
+  }, [scrollHeight, scrollable]);
 
   useEffect(() => {
     if (feedsLength < prevFeedsLength.current) {
