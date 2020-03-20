@@ -30,6 +30,7 @@ export function useLazyLoad({
   const currentHeight = useRef(PanelRef.current?.clientHeight);
 
   useEffect(() => {
+    onSetVisible(true);
     if (
       PanelRef.current?.clientHeight &&
       currentHeight.current !== PanelRef.current.clientHeight
@@ -38,7 +39,7 @@ export function useLazyLoad({
       currentHeight.current = PanelRef.current.clientHeight;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef]);
+  }, []);
 
   useEffect(() => {
     clearTimeout(timerRef.current);
