@@ -58,7 +58,7 @@ export function useLazyLoad({
       clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef, inView]);
+  }, [PanelRef.current?.clientHeight, inView]);
 }
 
 export function useMyState() {
