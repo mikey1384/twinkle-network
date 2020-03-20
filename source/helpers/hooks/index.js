@@ -54,7 +54,6 @@ export function useLazyLoad({
       if (clientHeight && clientHeight !== currentHeight.current) {
         onSetPlaceholderHeight(clientHeight);
       }
-      onSetVisible(false);
       clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
