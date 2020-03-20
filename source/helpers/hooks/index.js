@@ -55,17 +55,11 @@ export function useLazyLoad({
       if (clientHeight && clientHeight !== currentHeight.current) {
         onSetPlaceholderHeight(clientHeight);
       }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef, inView]);
-
-  useEffect(() => {
-    return function cleanUp() {
       onSetVisible(false);
       clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [PanelRef, inView]);
 }
 
 export function useMyState() {
