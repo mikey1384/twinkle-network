@@ -168,7 +168,11 @@ function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            {inView || visible || started || rootStarted ? (
+            {inView ||
+            typeof visible === 'undefined' ||
+            visible ||
+            started ||
+            rootStarted ? (
               <div
                 ref={PanelRef}
                 style={{
