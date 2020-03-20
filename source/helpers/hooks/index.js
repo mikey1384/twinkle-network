@@ -56,10 +56,17 @@ export function useLazyLoad({
       if (clientHeight && clientHeight !== currentHeight.current) {
         onSetPlaceholderHeight(clientHeight);
       }
-      clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PanelRef.current?.clientHeight, inView]);
+
+  useEffect(() => {
+    return function cleanUp() {
+      onSetVisible(false);
+      clearTimeout(timerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 }
 
 export function useMyState() {
