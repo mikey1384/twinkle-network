@@ -17,7 +17,7 @@ export default function AboutClass() {
       >
         <p>
           <b>Class groups</b> are special chat groups where teachers can
-          organize <b style={{ color: Color.orange() }}>video chat enabled</b>
+          organize <b style={{ color: Color.orange() }}>video chat enabled</b>{' '}
           online classes with their students.
         </p>
         <p>
