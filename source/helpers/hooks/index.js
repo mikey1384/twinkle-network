@@ -37,8 +37,8 @@ export function useLazyLoad({
       }
     }
 
+    clearTimeout(timerRef.current);
     if (inView) {
-      clearTimeout(timerRef.current);
       onSetVisible(true);
     } else {
       timerRef.current = setTimeout(() => onSetVisible(false), 5000);
@@ -55,8 +55,8 @@ export function useLazyLoad({
 
   useEffect(() => {
     return function cleanUp() {
-      onSetVisible(false);
       clearTimeout(timerRef.current);
+      onSetVisible(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
