@@ -68,11 +68,6 @@ export default function useInfiniteScroll({
           desktop: document.getElementById('App').scrollTop,
           mobile: BodyRef.current.scrollTop
         };
-        console.log(
-          loadable,
-          scrollPositionRef.current.desktop,
-          scrollHeight - window.innerHeight - 1500
-        );
         if (
           loadable &&
           (scrollPositionRef.current.desktop >=
