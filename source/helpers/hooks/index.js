@@ -33,7 +33,6 @@ export function useLazyLoad({
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
     if (inView || firstRun.current) {
-      onSetVisible(true);
       if (
         PanelRef.current?.clientHeight &&
         currentHeight.current !== PanelRef.current.clientHeight
@@ -45,9 +44,10 @@ export function useLazyLoad({
         firstRun.current = false;
       }
     } else {
+      onSetVisible(true);
       timerRef.current = setTimeout(() => {
         onSetVisible(false);
-      }, 3000);
+      }, 5000);
     }
 
     return function onRefresh() {
