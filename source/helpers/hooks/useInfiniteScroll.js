@@ -17,6 +17,18 @@ export default function useInfiniteScroll({
   const timerRef = useRef(null);
 
   useEffect(() => {
+    if (feedsLength < prevFeedsLength.current) {
+      setScrollHeight(
+        Math.max(
+          document.getElementById('App').scrollHeight,
+          BodyRef.current.scrollTop
+        )
+      );
+    }
+    prevFeedsLength.current = feedsLength;
+  }, [feedsLength]);
+
+  useEffect(() => {
     mounted.current = true;
     addEvent(window, 'scroll', onScroll);
     addEvent(document.getElementById('App'), 'scroll', onScroll);
@@ -28,18 +40,6 @@ export default function useInfiniteScroll({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollHeight, scrollable]);
-
-  useEffect(() => {
-    if (feedsLength < prevFeedsLength.current) {
-      setScrollHeight(
-        Math.max(
-          document.getElementById('App').scrollHeight,
-          BodyRef.current.scrollTop
-        )
-      );
-    }
-    prevFeedsLength.current = feedsLength;
-  }, [feedsLength]);
 
   useEffect(() => {
     if (loading) {
