@@ -96,7 +96,7 @@ function Channels({ onChannelEnter }) {
             selectedChannelId={selectedChannelId}
           />
         ))}
-      {homeLoadMoreButton && (
+      {loadMoreButtonShown && (
         <LoadMoreButton
           color="green"
           filled
