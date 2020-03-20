@@ -31,7 +31,6 @@ export function useLazyLoad({
   const firstRun = useRef(true);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
     const clientHeight = PanelRef.current?.clientHeight;
     if (inView || firstRun.current) {
       onSetVisible(true);
