@@ -27,42 +27,36 @@ export function useLazyLoad({
   onSetVisible
 }) {
   const timerRef = useRef(null);
-  const currentHeight = useRef(PanelRef.current?.clientHeight);
-  const firstRun = useRef(true);
+  const prevInView = useRef(false);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
     const clientHeight = PanelRef.current?.clientHeight;
-    if (inView || firstRun.current) {
-      onSetVisible(true);
-      if (
-        PanelRef.current?.clientHeight &&
-        currentHeight.current !== PanelRef.current.clientHeight
-      ) {
-        onSetPlaceholderHeight(PanelRef.current.clientHeight);
-        currentHeight.current = PanelRef.current.clientHeight;
+    if (!prevInView.current && inView) {
+      if (clientHeight) {
+        onSetPlaceholderHeight(clientHeight);
       }
-      if (firstRun.current) {
-        firstRun.current = false;
-      }
-    } else {
-      timerRef.current = setTimeout(() => {
-        onSetVisible(false);
-      }, 3000);
     }
 
+    clearTimeout(timerRef.current);
+    if (inView) {
+      onSetVisible(true);
+    } else {
+      timerRef.current = setTimeout(() => onSetVisible(false), 5000);
+    }
+
+    prevInView.current = inView;
     return function onRefresh() {
-      if (clientHeight && clientHeight !== currentHeight.current) {
+      if (clientHeight) {
         onSetPlaceholderHeight(clientHeight);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef, inView]);
+  }, [PanelRef.current?.clientHeight, inView]);
 
   useEffect(() => {
     return function cleanUp() {
-      onSetVisible(false);
       clearTimeout(timerRef.current);
+      onSetVisible(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

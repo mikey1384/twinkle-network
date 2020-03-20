@@ -27,7 +27,7 @@ export default function useInfiniteScroll({
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollHeight]);
+  }, [scrollHeight, scrollable]);
 
   useEffect(() => {
     if (feedsLength < prevFeedsLength.current) {
@@ -63,7 +63,7 @@ export default function useInfiniteScroll({
           )
         );
       }
-      if (scrollable && scrollHeight !== 0) {
+      if (scrollable && document.getElementById('App').scrollHeight !== 0) {
         scrollPositionRef.current = {
           desktop: document.getElementById('App').scrollTop,
           mobile: BodyRef.current.scrollTop
