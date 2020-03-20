@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Vocabulary from './Vocabulary';
 import Loading from 'components/Loading';
+import AboutClass from './AboutClass';
 import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from 'emotion';
 import { useChatContext } from 'contexts';
@@ -54,7 +55,7 @@ function Body({ channelName, chessOpponent, currentChannel }) {
           {chatType === 'vocabulary' ? (
             <Vocabulary />
           ) : isViewingAboutClassPage ? (
-            <div>Viewing about class</div>
+            <AboutClass />
           ) : (
             <MessagesContainer
               channelName={channelName}
