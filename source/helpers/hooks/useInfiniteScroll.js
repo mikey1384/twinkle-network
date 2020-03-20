@@ -63,6 +63,7 @@ export default function useInfiniteScroll({
           )
         );
       }
+      console.log(scrollable, scrollHeight);
       if (scrollable && scrollHeight !== 0) {
         scrollPositionRef.current = {
           desktop: document.getElementById('App').scrollTop,
