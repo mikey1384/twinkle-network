@@ -23,12 +23,13 @@ export default function AboutClass() {
         <p>
           At the end of each online class session, student participants earn XP
           based on on how well they behaved and participated during class.
-          Students who participated excellently can earn up to 50,000 XP, while
-          those who participated poorly may not earn any XP at all.
+          Students who demonstrate outstanding class participation can earn up
+          to 50,000 XP, while those who participated poorly may not earn any XP
+          at all.
         </p>
         <p>
           Class group feature is still being tested by teachers and moderators
-          right now. I will be available to everyone in a few weeks
+          right now. It will be available to everyone in a few weeks
         </p>
       </div>
     </div>
