@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Vocabulary from './Vocabulary';
@@ -15,20 +15,35 @@ Body.propTypes = {
 
 function Body({ channelName, chessOpponent, currentChannel }) {
   const {
-    state: { chatType, loadingVocabulary }
+    state: {
+      chatType,
+      loadingVocabulary,
+      selectedChatTab,
+      selectedChannelId,
+      channelsObj
+    }
   } = useChatContext();
+  const isViewingAboutClassPage = useMemo(
+    () =>
+      selectedChatTab === 'class' && !channelsObj[selectedChannelId].isClass,
+    [channelsObj, selectedChannelId, selectedChatTab]
+  );
 
   return (
     <div
       className={css`
         height: 100%;
-        width: 60vw;
+        width: ${isViewingAboutClassPage ? '80vw' : '60vw'};
         border-left: 1px solid ${Color.borderGray()};
         padding: 0;
         position: relative;
         background: #fff;
         @media (max-width: ${phoneMaxWidth}) {
-          width: ${chatType === 'vocabulary' ? '77vw' : '85vw'};
+          width: ${chatType === 'vocabulary'
+            ? '77vw'
+            : isViewingAboutClassPage
+            ? '120vw'
+            : '85vw'};
         }
       `}
     >
@@ -36,8 +51,11 @@ function Body({ channelName, chessOpponent, currentChannel }) {
         <Loading text="Loading Vocabulary" />
       ) : (
         <>
-          {chatType === 'vocabulary' && <Vocabulary />}
-          {!chatType && (
+          {chatType === 'vocabulary' ? (
+            <Vocabulary />
+          ) : isViewingAboutClassPage ? (
+            <div>Viewing about class</div>
+          ) : (
             <MessagesContainer
               channelName={channelName}
               chessOpponent={chessOpponent}

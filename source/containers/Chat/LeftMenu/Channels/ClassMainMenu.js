@@ -32,7 +32,13 @@ export default function ClassMainMenu({ onChannelEnter }) {
         }
       }}
     >
-      This is main menu for class
+      <p
+        style={{
+          fontWeight: 'bold'
+        }}
+      >
+        About class groups
+      </p>
     </div>
   );
 }
