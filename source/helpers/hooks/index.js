@@ -28,35 +28,44 @@ export function useLazyLoad({
 }) {
   const timerRef = useRef(null);
   const prevInView = useRef(false);
+  const currentInView = useRef(inView);
+  currentInView.current = inView;
 
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
-    if (!prevInView.current && inView) {
+    if (!prevInView.current && currentInView.current) {
       if (clientHeight) {
         onSetPlaceholderHeight(clientHeight);
       }
     }
 
-    clearTimeout(timerRef.current);
-    if (inView !== false) {
-      onSetVisible(true);
-    } else {
-      timerRef.current = setTimeout(() => onSetVisible(false), 500);
-    }
-
-    prevInView.current = inView;
     return function onRefresh() {
       if (clientHeight) {
         onSetPlaceholderHeight(clientHeight);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [PanelRef.current?.clientHeight, inView]);
+  }, [PanelRef.current?.clientHeight]);
+
+  useEffect(() => {
+    clearTimeout(timerRef.current);
+    if (currentInView.current !== false) {
+      onSetVisible(true);
+    } else {
+      timerRef.current = setTimeout(() => {
+        if (currentInView.current === false) {
+          onSetVisible(false);
+        }
+      }, 1000);
+    }
+
+    prevInView.current = inView;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   useEffect(() => {
     return function cleanUp() {
       clearTimeout(timerRef.current);
-      onSetVisible(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
