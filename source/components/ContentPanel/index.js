@@ -43,7 +43,7 @@ function ContentPanel({
     inView,
     onSetPlaceholderHeight: handleSetPlaceholderHeight,
     onSetVisible: handleSetVisible,
-    delay: 5000
+    delay: 2000
   });
 
   const history = useHistory();
