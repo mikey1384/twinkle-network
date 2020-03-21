@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useChatContext } from 'contexts';
-import { Color } from 'constants/css';
+import { Color, desktopMinWidth } from 'constants/css';
+import { css } from 'emotion';
 
 ClassMainMenu.propTypes = {
   onChannelEnter: PropTypes.func.isRequired
@@ -9,16 +10,24 @@ ClassMainMenu.propTypes = {
 
 export default function ClassMainMenu({ onChannelEnter }) {
   const {
-    state: { classChannelIds, selectedChannelId }
+    state: { chatType, classChannelIds, selectedChannelId }
   } = useChatContext();
 
-  const selected = useMemo(() => !classChannelIds.includes(selectedChannelId), [
-    classChannelIds,
-    selectedChannelId
-  ]);
+  const selected = useMemo(
+    () =>
+      chatType !== 'vocabulary' && !classChannelIds.includes(selectedChannelId),
+    [chatType, classChannelIds, selectedChannelId]
+  );
 
   return (
     <div
+      className={css`
+        @media (min-width: ${desktopMinWidth}) {
+          &:hover {
+            background: ${Color.checkboxAreaGray()};
+          }
+        }
+      `}
       style={{
         width: '100%',
         cursor: 'pointer',
