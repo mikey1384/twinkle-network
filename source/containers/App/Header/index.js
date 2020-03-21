@@ -268,7 +268,7 @@ export default function Header({
     }
 
     function handleNewCallMember({ socketId, memberId }) {
-      if (!channelOnCall.members[memberId]) {
+      if (!channelOnCall.members?.[memberId]) {
         onSetMembersOnCall({ [memberId]: true });
       }
       membersOnCall.current[socketId] = true;
