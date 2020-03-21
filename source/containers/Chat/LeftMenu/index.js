@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
@@ -20,7 +20,7 @@ LeftMenu.propTypes = {
   onNewButtonClick: PropTypes.func.isRequired
 };
 
-export default function LeftMenu({ onChannelEnter, onNewButtonClick }) {
+function LeftMenu({ onChannelEnter, onNewButtonClick }) {
   const {
     requestHelpers: { loadVocabulary }
   } = useAppContext();
@@ -117,3 +117,5 @@ export default function LeftMenu({ onChannelEnter, onNewButtonClick }) {
     onSetLoadingVocabulary(false);
   }
 }
+
+export default memo(LeftMenu);

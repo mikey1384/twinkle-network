@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
@@ -31,7 +31,7 @@ TextMessage.propTypes = {
   userCanEditThis: PropTypes.bool
 };
 
-export default function TextMessage({
+function TextMessage({
   attachmentHidden,
   channelId,
   content,
@@ -139,3 +139,5 @@ export default function TextMessage({
     return prefix;
   }
 }
+
+export default memo(TextMessage);

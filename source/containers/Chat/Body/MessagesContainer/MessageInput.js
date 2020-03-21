@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -27,7 +27,7 @@ MessageInput.propTypes = {
   onUploadButtonClick: PropTypes.func.isRequired
 };
 
-export default function MessageInput({
+function MessageInput({
   currentChannelId = 0,
   innerRef,
   isTwoPeopleChannel,
@@ -184,3 +184,5 @@ export default function MessageInput({
     });
   }
 }
+
+export default memo(MessageInput);
