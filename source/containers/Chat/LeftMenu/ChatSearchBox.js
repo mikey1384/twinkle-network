@@ -62,7 +62,9 @@ export default function ChatSearchBox({ style }) {
         }}
         onSelect={onSelect}
       />
-      {searching && <Loading style={{ height: '7rem' }} />}
+      {searching && (
+        <Loading style={{ height: '7rem', position: 'absolute' }} />
+      )}
     </div>
   );
 
