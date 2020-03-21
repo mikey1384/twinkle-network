@@ -66,7 +66,7 @@ function Chat({ onFileUpload }) {
 
   const isViewingAboutClassPage = useMemo(
     () =>
-      selectedChatTab === 'class' && !channelsObj[selectedChannelId].isClass,
+      selectedChatTab === 'class' && !channelsObj[selectedChannelId]?.isClass,
     [channelsObj, selectedChannelId, selectedChatTab]
   );
   const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [

@@ -26,11 +26,7 @@ export default function ClassMainMenu({ onChannelEnter }) {
         height: '6.5rem',
         backgroundColor: selected && Color.highlightGray()
       }}
-      onClick={() => {
-        if (!selected) {
-          onChannelEnter(2);
-        }
-      }}
+      onClick={() => onChannelEnter(2)}
     >
       <p
         style={{
