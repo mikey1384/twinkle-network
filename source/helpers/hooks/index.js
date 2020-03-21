@@ -38,7 +38,7 @@ export function useLazyLoad({
     }
 
     clearTimeout(timerRef.current);
-    if (inView) {
+    if (inView !== false) {
       onSetVisible(true);
     } else {
       timerRef.current = setTimeout(() => onSetVisible(false), 1000);
