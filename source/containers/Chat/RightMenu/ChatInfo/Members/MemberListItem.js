@@ -38,7 +38,7 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member]);
 
-  const usernameWidth = useMemo(() => (isClass ? '20%' : '45%'), [isClass]);
+  const usernameWidth = useMemo(() => (isClass ? '15%' : '40%'), [isClass]);
 
   return (
     <div
