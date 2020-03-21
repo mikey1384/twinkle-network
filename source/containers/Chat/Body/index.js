@@ -26,7 +26,7 @@ function Body({ channelName, chessOpponent, currentChannel }) {
   } = useChatContext();
   const isViewingAboutClassPage = useMemo(
     () =>
-      selectedChatTab === 'class' && !channelsObj[selectedChannelId].isClass,
+      selectedChatTab === 'class' && !channelsObj[selectedChannelId]?.isClass,
     [channelsObj, selectedChannelId, selectedChatTab]
   );
 
