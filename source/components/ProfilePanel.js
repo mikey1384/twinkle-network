@@ -177,7 +177,7 @@ function ProfilePanel({ expandable, profileId }) {
 
   return (
     <div ref={ComponentRef} key={profileId}>
-      {visible !== false || inView !== false ? (
+      {visible !== false || inView ? (
         <div
           ref={PanelRef}
           className={css`
