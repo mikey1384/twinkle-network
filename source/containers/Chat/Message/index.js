@@ -104,27 +104,9 @@ function Message({
     threshold: 0
   });
   const PanelRef = useRef(null);
-  const {
-    state: {
-      filesBeingUploaded,
-      reconnecting,
-      replyTarget,
-      [`message${messageId}`]: { placeholderHeight, visible } = {}
-    },
-    actions: {
-      onEditMessage,
-      onSaveMessage,
-      onSetPlaceholderHeight,
-      onSetReplyTarget,
-      onSetVisible,
-      onUpdateChessMoveViewTimeStamp,
-      onUpdateRecentChessMessage
-    }
-  } = useChatContext();
   useLazyLoad({
     PanelRef,
     inView,
-    visible,
     onSetPlaceholderHeight: handleSetPlaceholderHeight,
     onSetVisible: handleSetVisible,
     delay: 1000
@@ -153,6 +135,24 @@ function Message({
       onSetThumbUrl
     }
   } = useContentContext();
+
+  const {
+    state: {
+      filesBeingUploaded,
+      reconnecting,
+      replyTarget,
+      [`message${messageId}`]: { placeholderHeight, visible } = {}
+    },
+    actions: {
+      onEditMessage,
+      onSaveMessage,
+      onSetPlaceholderHeight,
+      onSetReplyTarget,
+      onSetVisible,
+      onUpdateChessMoveViewTimeStamp,
+      onUpdateRecentChessMessage
+    }
+  } = useChatContext();
 
   const [uploadStatus = {}] = useMemo(
     () =>

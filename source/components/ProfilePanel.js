@@ -35,6 +35,14 @@ function ProfilePanel({ expandable, profileId }) {
     threshold: 0
   });
   const PanelRef = useRef(null);
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: handleSetPlaceholderHeight,
+    onSetVisible: handleSetVisible,
+    delay: 5000
+  });
+
   const history = useHistory();
   const profile = useContentState({
     contentType: 'user',
@@ -64,15 +72,6 @@ function ProfilePanel({ expandable, profileId }) {
     website,
     youtubeUrl
   } = profile;
-
-  useLazyLoad({
-    PanelRef,
-    inView,
-    visible,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible,
-    delay: 5000
-  });
 
   const {
     requestHelpers: {
