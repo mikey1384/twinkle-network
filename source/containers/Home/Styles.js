@@ -36,7 +36,7 @@ export const Right = css`
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   top: 4.5rem;
-  max-height: CALC(100% - 5rem);
+  max-height: CALC(100% - 4.5rem);
   position: fixed;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;

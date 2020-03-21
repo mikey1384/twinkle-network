@@ -101,7 +101,7 @@ function Notification({ children, className, location, style }) {
   return (
     <ErrorBoundary>
       <div style={style} className={`${container} ${className}`}>
-        <section style={{ marginBottom: '0.5rem' }}>
+        <section style={{ marginBottom: '1rem' }}>
           <div
             className={css`
               display: flex;
