@@ -29,7 +29,23 @@ export function useLazyLoad({
   const timerRef = useRef(null);
   const prevInView = useRef(false);
   const currentInView = useRef(inView);
-  currentInView.current = inView;
+
+  useEffect(() => {
+    currentInView.current = inView;
+    clearTimeout(timerRef.current);
+    if (currentInView.current !== false) {
+      onSetVisible(true);
+    } else {
+      timerRef.current = setTimeout(() => {
+        if (!currentInView.current) {
+          onSetVisible(false);
+        }
+      }, 1000);
+    }
+
+    prevInView.current = inView;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
@@ -46,22 +62,6 @@ export function useLazyLoad({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [PanelRef.current?.clientHeight]);
-
-  useEffect(() => {
-    clearTimeout(timerRef.current);
-    if (currentInView.current !== false) {
-      onSetVisible(true);
-    } else {
-      timerRef.current = setTimeout(() => {
-        if (!currentInView.current) {
-          onSetVisible(false);
-        }
-      }, 1000);
-    }
-
-    prevInView.current = inView;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView]);
 
   useEffect(() => {
     return function cleanUp() {
