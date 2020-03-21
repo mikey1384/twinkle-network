@@ -108,7 +108,8 @@ function Message({
     PanelRef,
     inView,
     onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible
+    onSetVisible: handleSetVisible,
+    delay: 1000
   });
   const { onFileUpload } = useContext(LocalContext);
   const {

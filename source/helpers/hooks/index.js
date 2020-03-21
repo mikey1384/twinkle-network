@@ -24,7 +24,8 @@ export function useLazyLoad({
   PanelRef,
   inView,
   onSetPlaceholderHeight,
-  onSetVisible
+  onSetVisible,
+  delay
 }) {
   const timerRef = useRef(null);
   const prevInView = useRef(false);
@@ -40,7 +41,7 @@ export function useLazyLoad({
         if (!currentInView.current) {
           onSetVisible(false);
         }
-      }, 1000);
+      }, delay);
     }
 
     prevInView.current = inView;

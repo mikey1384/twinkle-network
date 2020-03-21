@@ -39,7 +39,8 @@ function ProfilePanel({ expandable, profileId }) {
     PanelRef,
     inView,
     onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible
+    onSetVisible: handleSetVisible,
+    delay: 5000
   });
 
   const history = useHistory();
