@@ -95,7 +95,7 @@ function Stories({ location }) {
   const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
 
-  const { setScrollHeight } = useInfiniteScroll({
+  useInfiniteScroll({
     scrollable: feeds.length > 0,
     feedsLength: feeds.length,
     loadable: loadMoreButton,
@@ -300,7 +300,6 @@ function Stories({ location }) {
     ) {
       onLoadFeeds(data);
       onSetDisplayOrder('desc');
-      setScrollHeight(0);
       setLoadingFeeds(false);
     }
   }
@@ -344,7 +343,6 @@ function Stories({ location }) {
       ) {
         onLoadFeeds(data);
         onSetDisplayOrder('desc');
-        setScrollHeight(0);
         setLoadingFeeds(false);
       }
     }
@@ -394,7 +392,6 @@ function Stories({ location }) {
     if (filter === initialFilter && mounted.current) {
       onLoadFeeds(data);
       onSetDisplayOrder(newDisplayOrder);
-      setScrollHeight(0);
       setLoadingFeeds(false);
     }
   }

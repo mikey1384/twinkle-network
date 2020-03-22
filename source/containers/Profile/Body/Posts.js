@@ -65,8 +65,7 @@ export default function Posts({
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const mounted = useRef(true);
   const selectedFilter = useRef('all');
-
-  const { setScrollHeight } = useInfiniteScroll({
+  useInfiniteScroll({
     feedsLength: profileFeeds.length,
     scrollable: profileFeeds.length > 0,
     loadable: loadMoreButton,
@@ -236,7 +235,6 @@ export default function Posts({
     });
     if (loadedFilter === selectedFilter.current) {
       onLoadPosts({ ...data, section: tabName, username });
-      setScrollHeight(0);
       setLoadingFeeds(false);
     }
   }

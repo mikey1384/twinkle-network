@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 
 export default function useInfiniteScroll({
@@ -9,33 +9,27 @@ export default function useInfiniteScroll({
   onLoad,
   onScrollToBottom
 }) {
-  const mounted = useRef(true);
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const prevFeedsLength = useRef(0);
-  const [scrollHeight, setScrollHeight] = useState(0);
+  const scrollHeightRef = useRef(0);
   const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
   const timerRef = useRef(null);
 
   useEffect(() => {
-    mounted.current = true;
     addEvent(window, 'scroll', onScroll);
     addEvent(document.getElementById('App'), 'scroll', onScroll);
 
     return function cleanUp() {
-      mounted.current = false;
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollHeight]);
+  });
 
   useEffect(() => {
     if (feedsLength < prevFeedsLength.current) {
-      setScrollHeight(
-        Math.max(
-          document.getElementById('App').scrollHeight,
-          BodyRef.current.scrollTop
-        )
+      scrollHeightRef.current = Math.max(
+        document.getElementById('App').scrollHeight,
+        BodyRef.current.scrollTop
       );
     }
     prevFeedsLength.current = feedsLength;
@@ -52,18 +46,15 @@ export default function useInfiniteScroll({
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       if (
-        (document.getElementById('App').scrollHeight > scrollHeight ||
-          BodyRef.current.scrollTop > scrollHeight) &&
-        mounted.current
+        document.getElementById('App').scrollHeight > scrollHeightRef.current ||
+        BodyRef.current.scrollTop > scrollHeightRef.current
       ) {
-        setScrollHeight(
-          Math.max(
-            document.getElementById('App').scrollHeight,
-            BodyRef.current.scrollTop
-          )
+        scrollHeightRef.current = Math.max(
+          document.getElementById('App').scrollHeight,
+          BodyRef.current.scrollTop
         );
       }
-      if (scrollable && document.getElementById('App').scrollHeight !== 0) {
+      if (scrollable && scrollHeightRef.current !== 0) {
         scrollPositionRef.current = {
           desktop: document.getElementById('App').scrollTop,
           mobile: BodyRef.current.scrollTop
@@ -71,14 +62,13 @@ export default function useInfiniteScroll({
         if (
           loadable &&
           (scrollPositionRef.current.desktop >=
-            scrollHeight - window.innerHeight - 1500 ||
+            scrollHeightRef.current - window.innerHeight - 1500 ||
             scrollPositionRef.current.mobile >=
-              scrollHeight - window.innerHeight - 1500)
+              scrollHeightRef.current - window.innerHeight - 1500)
         ) {
           onScrollToBottom();
         }
       }
     }, 200);
   }
-  return { setScrollHeight, scrollHeight };
 }
