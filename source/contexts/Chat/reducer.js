@@ -854,6 +854,7 @@ export default function ChatReducer(state, action) {
     case 'SELECT_CHAT_TAB':
       return {
         ...state,
+        chatType: action.selectedChatTab === 'class' ? null : state.chatType,
         selectedChatTab: action.selectedChatTab
       };
     case 'SET_CALL': {

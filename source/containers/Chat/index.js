@@ -30,6 +30,7 @@ function Chat({ onFileUpload }) {
   const { userId, username } = useMyState();
   const {
     state: {
+      chatType,
       loaded,
       selectedChannelId,
       channelsObj,
@@ -66,8 +67,10 @@ function Chat({ onFileUpload }) {
 
   const isViewingAboutClassPage = useMemo(
     () =>
-      selectedChatTab === 'class' && !channelsObj[selectedChannelId]?.isClass,
-    [channelsObj, selectedChannelId, selectedChatTab]
+      !chatType &&
+      selectedChatTab === 'class' &&
+      !channelsObj[selectedChannelId]?.isClass,
+    [channelsObj, chatType, selectedChannelId, selectedChatTab]
   );
   const currentChannel = useMemo(() => channelsObj[selectedChannelId] || {}, [
     channelsObj,
