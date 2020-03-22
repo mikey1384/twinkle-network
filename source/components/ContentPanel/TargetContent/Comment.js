@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import ProfilePic from 'components/ProfilePic';
@@ -25,7 +25,7 @@ Comment.propTypes = {
   username: PropTypes.string.isRequired
 };
 
-export default function Comment({
+function Comment({
   comment,
   comment: { id, content, timeStamp },
   onDelete,
@@ -168,3 +168,5 @@ export default function Comment({
     });
   }
 }
+
+export default memo(Comment);

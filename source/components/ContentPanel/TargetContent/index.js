@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useContext, useState } from 'react';
+import React, {
+  memo,
+  useEffect,
+  useMemo,
+  useRef,
+  useContext,
+  useState
+} from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import UsernameText from 'components/Texts/UsernameText';
@@ -34,7 +41,7 @@ TargetContent.propTypes = {
   targetObj: PropTypes.object
 };
 
-export default function TargetContent({
+function TargetContent({
   className,
   contentId,
   contentType,
@@ -403,3 +410,5 @@ export default function TargetContent({
     onUploadTargetComment({ ...data, contentId, contentType });
   }
 }
+
+export default memo(TargetContent);
