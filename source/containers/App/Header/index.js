@@ -122,7 +122,7 @@ export default function Header({
     socket.on('chat_message_edited', onEditMessage);
     socket.on('channel_owner_changed', onChangeChannelOwner);
     socket.on('channel_settings_changed', onChangeChannelSettings);
-    socket.on('connect', onConnect);
+    socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
     socket.on('message_attachment_hid', onHideAttachment);
     socket.on('new_call_member', handleNewCallMember);
@@ -153,7 +153,7 @@ export default function Header({
         'channel_settings_changed',
         onChangeChannelSettings
       );
-      socket.removeListener('connect', onConnect);
+      socket.removeListener('connect', handleConnect);
       socket.removeListener('disconnect', handleDisconnect);
       socket.removeListener('message_attachment_hid', onHideAttachment);
       socket.removeListener('new_call_member', handleNewCallMember);
@@ -171,7 +171,7 @@ export default function Header({
       );
     };
 
-    async function onConnect() {
+    async function handleConnect() {
       console.log('connected to socket');
       onClearRecentChessMessage();
       onChangeSocketStatus(true);

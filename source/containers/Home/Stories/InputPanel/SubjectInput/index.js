@@ -12,7 +12,7 @@ import {
   stringIsEmpty,
   finalizeEmoji
 } from 'helpers/stringHelpers';
-import uuidv1 from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 import SwitchButton from 'components/SwitchButton';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import Icon from 'components/Icon';

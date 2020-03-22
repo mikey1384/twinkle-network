@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FileInfo from './FileInfo';
-import uuidv1 from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 import {
   exceedsCharLimit,
   finalizeEmoji,
