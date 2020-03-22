@@ -22,7 +22,6 @@ export default function useInfiniteScroll({
     addEvent(document.getElementById('App'), 'scroll', onScroll);
 
     return function cleanUp() {
-      clearTimeout(timerRef.current);
       mounted.current = false;
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
