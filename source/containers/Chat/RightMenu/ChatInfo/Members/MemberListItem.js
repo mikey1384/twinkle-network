@@ -38,7 +38,7 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member]);
 
-  const usernameWidth = useMemo(() => (isClass ? '15%' : '40%'), [isClass]);
+  const usernameWidth = useMemo(() => (isClass ? '20%' : '45%'), [isClass]);
 
   return (
     <div
@@ -62,8 +62,8 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
             height: 4rem;
             width: 4rem;
             @media (max-width: ${mobileMaxWidth}) {
-              height: 3.5rem;
-              width: 3.5rem;
+              height: 3rem;
+              width: 3rem;
             }
           `}
           userId={userId}
