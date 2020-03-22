@@ -19,7 +19,7 @@ MemberListItem.propTypes = {
 };
 
 function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
-  const { profileTheme } = useMyState();
+  const { profileTheme, userId: myId } = useMyState();
   const {
     state: {
       ['user' + member.id]: {
@@ -96,7 +96,7 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
             <Icon icon="crown" style={{ color: Color.brownOrange() }} />
           </div>
         ) : null}
-        {isClass && (
+        {isClass && (userId === myId || creatorId === myId) && (
           <Button
             style={{ fontSize: '1rem', marginLeft: '1rem' }}
             filled
