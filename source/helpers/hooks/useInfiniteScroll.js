@@ -22,12 +22,13 @@ export default function useInfiniteScroll({
     addEvent(document.getElementById('App'), 'scroll', onScroll);
 
     return function cleanUp() {
+      clearTimeout(timerRef.current);
       mounted.current = false;
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollHeight, scrollable]);
+  }, [scrollHeight]);
 
   useEffect(() => {
     if (feedsLength < prevFeedsLength.current) {
@@ -78,7 +79,7 @@ export default function useInfiniteScroll({
           onScrollToBottom();
         }
       }
-    }, 100);
+    }, 200);
   }
   return { setScrollHeight, scrollHeight };
 }
