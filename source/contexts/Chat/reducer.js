@@ -319,9 +319,9 @@ export default function ChatReducer(state, action) {
         peerStreams: action.iHungUp ? {} : newPeerStreams,
         channelOnCall: {
           ...state.channelOnCall,
-          callReceived: false,
-          outgoingShown: false,
-          imCalling: false,
+          callReceived: action.iHungUp ? false : state.incomingShown,
+          outgoingShown: action.iHungUp ? false : state.incomingShown,
+          imCalling: action.iHungUp ? false : state.incomingShown,
           incomingShown: action.iHungUp ? false : state.incomingShown,
           members: newChannelOnCallMembers
         }
