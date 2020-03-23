@@ -32,10 +32,10 @@ function ChatInfo({
   const myVideoRef = useRef(null);
   const myStreaming = useRef(false);
 
-  const callOngoing = useMemo(() => selectedChannelId === channelOnCall.id, [
-    channelOnCall.id,
-    selectedChannelId
-  ]);
+  const callOngoing = useMemo(
+    () => selectedChannelId === channelOnCall.id && channelOnCall.members[myId],
+    [channelOnCall.id, channelOnCall.members, myId, selectedChannelId]
+  );
 
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
@@ -54,19 +54,22 @@ function ChatInfo({
   }, [myStream]);
 
   const videoChatButtonShown = useMemo(() => {
-    const selectedChannelIsOnCall = callOngoing && channelOnCall.incomingShown;
     if (currentChannel.twoPeople) {
       if (currentChannel.members?.length !== 2) return false;
-      return selectedChannelIsOnCall || authLevel > 0;
+      return callOngoing || authLevel > 0;
     }
-    return currentChannel.isClass && (selectedChannelIsOnCall || authLevel > 0);
+    return (
+      currentChannel.isClass &&
+      (callOngoing || currentChannel.creatorId === myId)
+    );
   }, [
     authLevel,
     callOngoing,
-    channelOnCall.incomingShown,
+    currentChannel.creatorId,
     currentChannel.isClass,
     currentChannel.members,
-    currentChannel.twoPeople
+    currentChannel.twoPeople,
+    myId
   ]);
 
   const displayedChannelMembers = useMemo(() => {
