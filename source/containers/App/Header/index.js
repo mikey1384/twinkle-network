@@ -288,7 +288,6 @@ export default function Header({
     }
 
     function handlePeerAccepted({ channelId, to, peerId }) {
-      console.log('accepting new peer');
       if (to === userId) {
         try {
           handleNewPeer({ peerId, channelId, stream: myStream });
@@ -300,7 +299,6 @@ export default function Header({
 
     function handlePeerHungUp({ channelId, memberId, peerId }) {
       if (channelId === channelOnCall.id) {
-        console.log('a peer hung up', peerId, memberId);
         delete membersOnCall.current[peerId];
         onHangUp({ peerId, memberId, iHungUp: memberId === userId });
       }
@@ -405,7 +403,6 @@ export default function Header({
       channelOnCall.incomingShown &&
       !channelOnCall.imCalling
     ) {
-      console.log('informing');
       for (let peerId in membersOnCall.current) {
         socket.emit('inform_peer_signal_accepted', {
           peerId,
@@ -555,7 +552,6 @@ export default function Header({
       });
 
       peersRef.current[peerId].on('connect', () => {
-        console.log('showing outgoing');
         onShowOutgoing();
       });
 
