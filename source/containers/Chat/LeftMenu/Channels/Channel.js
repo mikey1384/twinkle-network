@@ -133,7 +133,10 @@ function Channel({
                 height: '2rem',
                 borderRadius: '50%',
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                position: 'relative',
+                right: '1.5rem',
+                bottom: '1.2rem'
               }}
             >
               {numUnreads}
