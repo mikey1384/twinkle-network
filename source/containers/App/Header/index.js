@@ -288,6 +288,7 @@ export default function Header({
     }
 
     function handlePeerAccepted({ channelId, to, peerId }) {
+      console.log('accepting new peer');
       if (to === userId) {
         try {
           handleNewPeer({ peerId, channelId, stream: myStream });
@@ -299,6 +300,7 @@ export default function Header({
 
     function handlePeerHungUp({ channelId, memberId, peerId }) {
       if (channelId === channelOnCall.id) {
+        console.log('a peer hung up', peerId, memberId);
         delete membersOnCall.current[peerId];
         onHangUp({ peerId, memberId, iHungUp: memberId === userId });
       }
@@ -418,13 +420,7 @@ export default function Header({
     }
     prevIncomingShown.current = channelOnCall.incomingShown;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    channelOnCall.id,
-    channelOnCall.incomingShown,
-    channelOnCall.members,
-    channelOnCall.imCalling,
-    userId
-  ]);
+  }, [channelOnCall.id, channelOnCall.incomingShown, channelOnCall.imCalling]);
 
   useEffect(() => {
     const newNotiNum = numNewPosts + numNewNotis + numUnreads;
@@ -529,43 +525,46 @@ export default function Header({
   );
 
   function handleNewPeer({ peerId, channelId, initiator, stream }) {
-    peersRef.current[peerId] = new Peer({
-      config: {
-        iceServers: [
-          {
-            urls: 'turn:18.177.176.36:3478?transport=udp',
-            username: 'test',
-            credential: 'test'
-          }
-        ]
-      },
-      initiator,
-      stream
-    });
-
-    peersRef.current[peerId].on('signal', signal => {
-      socket.emit('send_signal', {
-        socketId: peerId,
-        signal,
-        channelId
+    if (channelOnCall.members[userId]) {
+      peersRef.current[peerId] = new Peer({
+        config: {
+          iceServers: [
+            {
+              urls: 'turn:18.177.176.36:3478?transport=udp',
+              username: 'test',
+              credential: 'test'
+            }
+          ]
+        },
+        initiator,
+        stream
       });
-    });
 
-    peersRef.current[peerId].on('stream', stream => {
-      onShowIncoming();
-      onSetPeerStreams({ peerId, stream });
-    });
+      peersRef.current[peerId].on('signal', signal => {
+        socket.emit('send_signal', {
+          socketId: peerId,
+          signal,
+          channelId
+        });
+      });
 
-    peersRef.current[peerId].on('connect', () => {
-      onShowOutgoing();
-    });
+      peersRef.current[peerId].on('stream', stream => {
+        onShowIncoming();
+        onSetPeerStreams({ peerId, stream });
+      });
 
-    peersRef.current[peerId].on('close', () => {
-      delete peersRef.current[peerId];
-    });
+      peersRef.current[peerId].on('connect', () => {
+        console.log('showing outgoing');
+        onShowOutgoing();
+      });
 
-    peersRef.current[peerId].on('error', e => {
-      console.error('Peer error %s:', peerId, e);
-    });
+      peersRef.current[peerId].on('close', () => {
+        delete peersRef.current[peerId];
+      });
+
+      peersRef.current[peerId].on('error', e => {
+        console.error('Peer error %s:', peerId, e);
+      });
+    }
   }
 }

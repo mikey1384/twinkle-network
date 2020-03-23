@@ -312,9 +312,10 @@ export default function ChatReducer(state, action) {
       if (!action.iHungUp) {
         delete newPeerStreams[action.peerId];
       }
+      console.log(state.channelOnCall, state.myStream);
       return {
         ...state,
-        myStream: null,
+        myStream: action.iHungUp ? null : state.myStream,
         peerStreams: action.iHungUp ? {} : newPeerStreams,
         channelOnCall: {
           ...state.channelOnCall,
