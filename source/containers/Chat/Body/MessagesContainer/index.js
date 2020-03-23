@@ -112,6 +112,9 @@ export default function MessagesContainer({
   const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] = useState(
     false
   );
+  const [selectNewOwnerWLModalShown, setSelectNewOwnerWLModalShown] = useState(
+    false
+  );
 
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
@@ -575,6 +578,7 @@ export default function MessagesContainer({
           onHide={() => setSettingsModalShown(false)}
           onDone={handleEditSettings}
           channelId={selectedChannelId}
+          onChangeOwner={() => setSelectNewOwnerWLModalShown(true)}
         />
       )}
       {leaveConfirmModalShown && (
@@ -598,6 +602,13 @@ export default function MessagesContainer({
           onHide={() => setSelectNewOwnerModalShown(false)}
           members={currentChannel.members}
           onSubmit={handleSelectNewOwnerAndLeaveChannel}
+        />
+      )}
+      {selectNewOwnerWLModalShown && (
+        <SelectNewOwnerModal
+          onHide={() => setSelectNewOwnerWLModalShown(false)}
+          members={currentChannel.members}
+          onSubmit={handleSelectNewOwner}
         />
       )}
     </ErrorBoundary>
@@ -825,6 +836,21 @@ export default function MessagesContainer({
     });
     handleLeaveChannel();
     setSelectNewOwnerModalShown(false);
+  }
+  async function handleSelectNewOwner(newOwner) {
+    const notificationMsg = await changeChannelOwner({
+      channelId: selectedChannelId,
+      newOwner
+    });
+    socket.emit('new_channel_owner', {
+      channelId: selectedChannelId,
+      userId,
+      username,
+      profilePicId,
+      newOwner,
+      notificationMsg
+    });
+    setSelectNewOwnerWLModalShown(false);
   }
 
   function handleSetScrollToBottom() {
