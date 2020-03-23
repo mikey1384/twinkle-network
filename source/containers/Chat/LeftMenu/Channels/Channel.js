@@ -31,13 +31,6 @@ function Channel({
     () => customChannelNames[id] || channelName,
     [channelName, customChannelNames, id]
   );
-  const otherMember = useMemo(
-    () =>
-      twoPeople
-        ? members?.filter(member => member.username !== username)?.[0]
-        : null,
-    [members, twoPeople, username]
-  );
   const selected = useMemo(() => !chatType && id === selectedChannelId, [
     chatType,
     id,
@@ -48,10 +41,24 @@ function Channel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [lastMessage]
   );
+  const otherMember = twoPeople
+    ? members
+        ?.map(({ username }) => username)
+        ?.filter(memberUsername => memberUsername !== username)?.[0]
+    : undefined;
   const ChannelName = useMemo(
-    () => otherMember?.username || effectiveChannelName || '(Deleted)',
+    () => otherMember || effectiveChannelName || '(Deleted)',
     [effectiveChannelName, otherMember]
   );
+
+  if (ChannelName === username) {
+    console.log(
+      'members: ' + members,
+      'effective channel name: ' + effectiveChannelName,
+      'other member: ' + otherMember,
+      'two people: ' + twoPeople
+    );
+  }
 
   return (
     <div
