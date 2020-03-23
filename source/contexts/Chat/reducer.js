@@ -322,7 +322,7 @@ export default function ChatReducer(state, action) {
           callReceived: false,
           outgoingShown: false,
           imCalling: false,
-          incomingShown: !action.iHungUp,
+          incomingShown: action.iHungUp ? false : state.incomingShown,
           members: newChannelOnCallMembers
         }
       };

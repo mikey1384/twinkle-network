@@ -405,6 +405,7 @@ export default function Header({
       channelOnCall.incomingShown &&
       !channelOnCall.imCalling
     ) {
+      console.log('informing');
       for (let peerId in membersOnCall.current) {
         socket.emit('inform_peer_signal_accepted', {
           peerId,
