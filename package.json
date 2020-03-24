@@ -36,7 +36,6 @@
     "babel-jest": "^25.1.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
-    "brotli-webpack-plugin": "^1.1.0",
     "connect-history-api-fallback": "^1.6.0",
     "core-js": "^3.3.2",
     "cross-env": "^7.0.0",
