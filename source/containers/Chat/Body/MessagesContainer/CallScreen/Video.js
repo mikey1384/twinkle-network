@@ -50,8 +50,8 @@ export default function Video({ stream }) {
           objectFit: 'contain'
         }}
         autoPlay
-        controls
         playsInline
+        controls
         ref={videoRef}
       />
     </div>
