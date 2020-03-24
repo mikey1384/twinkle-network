@@ -339,7 +339,10 @@ export default function MessagesContainer({
         onChange={handleUpload}
       />
       {selectedChannelIsOnCall && (
-        <CallScreen style={{ height: CALL_SCREEN_HEIGHT }} />
+        <CallScreen
+          creatorId={currentChannel.creatorId}
+          style={{ height: CALL_SCREEN_HEIGHT }}
+        />
       )}
       <div
         className={css`

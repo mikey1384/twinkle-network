@@ -4,17 +4,20 @@ import Icon from 'components/Icon';
 import Button from 'components/Button';
 import Video from './Video';
 import { useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
 CallScreen.propTypes = {
+  creatorId: PropTypes.number,
   style: PropTypes.object
 };
 
-export default function CallScreen({ style }) {
+export default function CallScreen({ creatorId, style }) {
   const {
     state: { channelOnCall, peerStreams },
     actions: { onShowIncoming }
   } = useChatContext();
+  const { userId } = useMyState();
 
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
@@ -58,6 +61,21 @@ export default function CallScreen({ style }) {
           </Button>
         </div>
       )}
+      {channelOnCall.isClass &&
+        !calling &&
+        !answerButtonShown &&
+        Object.keys(peerStreams).length === 0 &&
+        creatorId === userId && (
+          <div
+            style={{
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >{`Show or hide your students using the right-side menu buttons next to their usernames`}</div>
+        )}
       {channelOnCall.incomingShown && Object.keys(peerStreams).length > 0 && (
         <div
           style={{
