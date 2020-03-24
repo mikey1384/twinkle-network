@@ -16,7 +16,7 @@ export default function AboutClass() {
         `}
       >
         <p>
-          <b>Class groups</b> are special chat groups where teachers can
+          <b>Class Groups</b> are special chat groups where teachers can
           organize <b style={{ color: Color.orange() }}>video chat enabled</b>{' '}
           online classes with their students.
         </p>
@@ -27,8 +27,14 @@ export default function AboutClass() {
           while those who participated poorly may not earn any XP at all.
         </p>
         <p>
-          Class group feature is still being tested by teachers and moderators
-          right now. It will be available to everyone in a few weeks
+          <b style={{ color: Color.orange() }}>
+            As of March 25th, teachers can create class groups and start group
+            video calls.
+          </b>
+        </p>
+        <p>
+          However, XP rewarding feature for class chat is still under
+          development.
         </p>
       </div>
     </div>
