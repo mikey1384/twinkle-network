@@ -69,9 +69,13 @@ export default function CallScreen({ style }) {
           }}
         >
           {channelOnCall.incomingShown &&
-            Object.entries(peerStreams).map(([peerId, stream]) => (
-              <Video key={peerId} stream={stream} />
-            ))}
+            Object.entries(peerStreams)
+              .filter(
+                ([peerId]) => !channelOnCall?.members[peerId]?.streamHidden
+              )
+              .map(([peerId, stream]) => (
+                <Video key={peerId} stream={stream} />
+              ))}
         </div>
       )}
     </div>

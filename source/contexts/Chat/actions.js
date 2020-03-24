@@ -491,6 +491,13 @@ export default function ChatActions(dispatch) {
         replyTarget
       });
     },
+    onTogglePeerStream({ peerId, hidden }) {
+      return dispatch({
+        type: 'TOGGLE_PEER_STREAM',
+        peerId,
+        hidden
+      });
+    },
     onUpdateChessMoveViewTimeStamp() {
       return dispatch({
         type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'

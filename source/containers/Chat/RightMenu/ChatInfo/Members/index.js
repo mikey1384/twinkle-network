@@ -15,6 +15,7 @@ Members.propTypes = {
 function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
   const {
     state: {
+      peerStreams,
       channelOnCall: { id: channelOnCallId, members: membersOnCallObj }
     }
   } = useChatContext();
@@ -58,10 +59,13 @@ function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
           {membersOnCall.map(member => (
             <MemberListItem
               key={`channel${channelId}-oncall-member${member.id}`}
+              channelId={channelId}
               creatorId={creatorId}
-              isClass={isClass}
               onlineMembers={onlineMembers}
               member={member}
+              isClass={isClass}
+              membersOnCallObj={membersOnCallObj}
+              peerStreams={peerStreams}
             />
           ))}
         </div>
@@ -83,7 +87,6 @@ function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
           key={`channel${channelId}member${member.id}`}
           creatorId={creatorId}
           onlineMembers={onlineMembers}
-          membersOnCall={membersOnCall}
           member={member}
           style={{
             paddingBottom: index === members.length - 1 ? '15rem' : '1rem'

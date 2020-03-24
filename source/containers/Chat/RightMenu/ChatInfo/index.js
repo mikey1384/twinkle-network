@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Members from './Members';
 import ChannelDetails from './ChannelDetails';
 import Icon from 'components/Icon';
+import Video from './Video';
 import { css } from 'emotion';
 import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
@@ -44,7 +45,8 @@ function ChatInfo({
   useEffect(() => {
     const videoRef = myVideoRef.current;
     if (videoRef && myStream && !myStreaming.current && !videoRef?.srcObject) {
-      videoRef.srcObject = myStream;
+      const clonedStream = myStream.clone();
+      videoRef.srcObject = clonedStream;
       videoRef.volume = 0;
       myStreaming.current = true;
     }
@@ -159,17 +161,7 @@ function ChatInfo({
               </span>
             </div>
           )}
-          {myStream && (
-            <video
-              style={{
-                width: '100%',
-                maxHeight: '20rem'
-              }}
-              autoPlay
-              playsInline
-              ref={myVideoRef}
-            />
-          )}
+          {myStream && <Video myVideoRef={myVideoRef} />}
           <ChannelDetails
             style={{ marginTop: '1rem' }}
             channelId={currentChannel.id}

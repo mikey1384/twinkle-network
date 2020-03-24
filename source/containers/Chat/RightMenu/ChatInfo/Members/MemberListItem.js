@@ -11,21 +11,34 @@ import { useMyState } from 'helpers/hooks';
 import { socket } from 'constants/io';
 
 MemberListItem.propTypes = {
+  channelId: PropTypes.number,
   onlineMembers: PropTypes.object,
   creatorId: PropTypes.number,
   isClass: PropTypes.bool,
   member: PropTypes.object,
+  membersOnCallObj: PropTypes.object,
+  peerStreams: PropTypes.object,
   style: PropTypes.object
 };
 
-function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
-  const { profileTheme, userId: myId } = useMyState();
+function MemberListItem({
+  channelId,
+  onlineMembers,
+  creatorId,
+  isClass,
+  membersOnCallObj,
+  member,
+  peerStreams,
+  style
+}) {
+  const { userId: myId } = useMyState();
   const {
     state: {
+      channelOnCall,
       ['user' + member.id]: {
         isAway,
         isBusy,
-        id: userId,
+        id: memberId,
         profilePicId,
         username
       } = {}
@@ -39,6 +52,12 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
   }, [member]);
 
   const usernameWidth = useMemo(() => (isClass ? '20%' : '45%'), [isClass]);
+  const peerIsStreaming = useMemo(
+    () =>
+      peerStreams?.[membersOnCallObj?.[memberId]] &&
+      !channelOnCall.members[membersOnCallObj?.[memberId]]?.streamHidden,
+    [peerStreams, membersOnCallObj, memberId, channelOnCall.members]
+  );
 
   return (
     <div
@@ -66,9 +85,9 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
               width: 3rem;
             }
           `}
-          userId={userId}
+          userId={memberId}
           profilePicId={profilePicId}
-          online={!!onlineMembers[userId]}
+          online={!!onlineMembers[memberId]}
           isAway={isAway}
           isBusy={isBusy}
           statusShown
@@ -77,7 +96,7 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
           truncate
           className={css`
             width: auto;
-            max-width: ${creatorId === userId
+            max-width: ${creatorId === memberId
               ? usernameWidth
               : `CALC(${usernameWidth} + 3rem)`};
           `}
@@ -85,9 +104,9 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
             color: Color.darkerGray(),
             marginLeft: '2rem'
           }}
-          user={{ id: userId, username }}
+          user={{ id: memberId, username }}
         />
-        {creatorId === userId ? (
+        {creatorId === memberId ? (
           <div
             style={{
               marginLeft: '1rem'
@@ -96,14 +115,14 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
             <Icon icon="crown" style={{ color: Color.brownOrange() }} />
           </div>
         ) : null}
-        {isClass && (userId === myId || creatorId === myId) && (
+        {isClass && creatorId === myId && memberId !== myId && (
           <Button
             style={{ fontSize: '1rem', marginLeft: '1rem' }}
             filled
-            color={profileTheme}
+            color={peerIsStreaming ? 'rose' : 'darkBlue'}
             onClick={handleShowPeer}
           >
-            Show
+            {peerIsStreaming ? 'Hide' : 'Show'}
           </Button>
         )}
       </div>
@@ -111,7 +130,14 @@ function MemberListItem({ onlineMembers, creatorId, isClass, member, style }) {
   );
 
   function handleShowPeer() {
-    socket.emit('request_peer_stream', userId);
+    if (peerIsStreaming) {
+      socket.emit('close_peer_stream', {
+        memberId,
+        channelId
+      });
+    } else {
+      socket.emit('request_peer_stream', memberId);
+    }
   }
 }
 

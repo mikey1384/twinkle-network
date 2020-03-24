@@ -81,6 +81,7 @@ export default function Header({
       onSetPeerStreams,
       onShowIncoming,
       onShowOutgoing,
+      onTogglePeerStream,
       onUpdateCollectorsRankings
     }
   } = useChatContext();
@@ -133,6 +134,8 @@ export default function Header({
     socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_hung_up', handlePeerHungUp);
     socket.on('peer_stream_requested', handlePeerStreamRequest);
+    socket.on('peer_stream_closed', handlePeerStreamClose);
+    socket.on('peer_stream_enabled', handlePeerStreamEnable);
     socket.on('subject_changed', handleSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
 
@@ -164,6 +167,8 @@ export default function Header({
       socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_hung_up', handlePeerHungUp);
       socket.removeListener('peer_stream_requested', handlePeerStreamRequest);
+      socket.removeListener('peer_stream_closed', handlePeerStreamClose);
+      socket.removeListener('peer_stream_enabled', handlePeerStreamEnable);
       socket.removeListener('subject_changed', handleSubjectChange);
       socket.removeListener(
         'new_vocab_activity_received',
@@ -269,7 +274,7 @@ export default function Header({
 
     function handleNewCallMember({ socketId, memberId }) {
       if (!channelOnCall.members?.[memberId]) {
-        onSetMembersOnCall({ [memberId]: true });
+        onSetMembersOnCall({ [memberId]: socketId });
       }
       membersOnCall.current[socketId] = true;
     }
@@ -282,7 +287,7 @@ export default function Header({
         });
       }
       if (!channelOnCall.members?.[memberId]) {
-        onSetMembersOnCall({ [memberId]: true });
+        onSetMembersOnCall({ [memberId]: peerId });
       }
       membersOnCall.current[peerId] = true;
     }
@@ -290,7 +295,15 @@ export default function Header({
     function handlePeerAccepted({ channelId, to, peerId }) {
       if (to === userId) {
         try {
-          handleNewPeer({ peerId, channelId, stream: myStream });
+          handleNewPeer({
+            peerId,
+            channelId,
+            stream: channelOnCall.isClass
+              ? channelsObj[channelOnCall.id].creatorId === userId
+                ? myStream
+                : null
+              : myStream
+          });
         } catch (error) {
           console.error(error);
         }
@@ -306,15 +319,48 @@ export default function Header({
 
     function handlePeerStreamRequest() {
       if (myStream) {
-        for (let peerId in membersOnCall.current) {
-          try {
-            if (peersRef.current[peerId]) {
-              peersRef.current[peerId].addStream(myStream);
+        if (
+          myStream.getVideoTracks()[0].enabled &&
+          myStream.getAudioTracks()[0].enabled
+        ) {
+          for (let peerId in membersOnCall.current) {
+            try {
+              if (peersRef.current[peerId]) {
+                peersRef.current[peerId].addStream(myStream);
+              }
+            } catch (error) {
+              console.error(error);
             }
-          } catch (error) {
-            console.error(error);
           }
+        } else {
+          myStream.getVideoTracks()[0].enabled = true;
+          myStream.getAudioTracks()[0].enabled = true;
+          socket.emit('notify_stream_enabled', {
+            channelId: channelOnCall.id,
+            memberId: userId
+          });
         }
+      }
+    }
+
+    async function handlePeerStreamClose(memberId) {
+      if (memberId === userId) {
+        myStream.getVideoTracks()[0].enabled = false;
+        myStream.getAudioTracks()[0].enabled = false;
+      } else {
+        onTogglePeerStream({
+          peerId: channelOnCall.members[memberId],
+          hidden: true
+        });
+      }
+    }
+
+    async function handlePeerStreamEnable(memberId) {
+      if (memberId !== userId) {
+        onTogglePeerStream({
+          peerId: channelOnCall.members[memberId],
+          hidden: false
+        });
       }
     }
 
@@ -376,7 +422,7 @@ export default function Header({
           for (let member of Object.entries(membersOnline)
             .map(([, member]) => member)
             .filter(member => !!callData.peers[member.socketId])) {
-            membersHash[member.id] = true;
+            membersHash[member.id] = member.socketId;
           }
           onSetCall({
             channelId: selectedChannelId,
@@ -446,17 +492,9 @@ export default function Header({
         }
       }
     }
-  }, [
-    channelOnCall.id,
-    channelOnCall.imCalling,
-    channelOnCall.isClass,
-    myStream,
-    userId
-  ]);
-
-  useEffect(() => {
     prevMyStreamRef.current = myStream;
-  }, [myStream]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelOnCall.isClass, myStream]);
 
   return (
     <ErrorBoundary>

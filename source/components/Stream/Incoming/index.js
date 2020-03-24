@@ -4,7 +4,7 @@ import Audio from './Audio';
 
 export default function Incoming() {
   const {
-    state: { peerStreams },
+    state: { channelOnCall, peerStreams },
     actions: { onSetPeerStreams }
   } = useChatContext();
 
@@ -15,7 +15,7 @@ export default function Incoming() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return Object.keys(peerStreams).map(peerId => (
-    <Audio key={peerId} stream={peerStreams[peerId]} />
-  ));
+  return Object.entries(peerStreams)
+    .filter(([peerId]) => !channelOnCall?.members[peerId]?.streamHidden)
+    .map(([peerId, stream]) => <Audio key={peerId} stream={stream} />);
 }

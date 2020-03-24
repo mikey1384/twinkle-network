@@ -140,6 +140,9 @@ export default function ChatReducer(state, action) {
         replyTarget: null,
         subject: {},
         homeChannelIds: [channelId].concat(state.homeChannelIds),
+        classChannelIds: action.data.isClass
+          ? [channelId].concat(state.classChannelIds)
+          : state.classChannelIds,
         channelsObj: {
           ...state.channelsObj,
           [channelId]: {
@@ -840,6 +843,21 @@ export default function ChatReducer(state, action) {
           }
         }
       };
+    case 'TOGGLE_PEER_STREAM': {
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          members: {
+            ...state.channelOnCall.members,
+            [action.peerId]: {
+              ...state.channelOnCall.members[action.peerId],
+              streamHidden: action.hidden
+            }
+          }
+        }
+      };
+    }
     case 'RESET_CHAT':
       return initialChatState;
     case 'SEARCH':

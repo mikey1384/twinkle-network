@@ -21,6 +21,7 @@ export default function Outgoing() {
         }
       }
     }
+
     return function cleanUp() {
       mounted.current = false;
       onSetMyStream(null);

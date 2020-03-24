@@ -17,9 +17,7 @@ export default function Audio({ stream }) {
   useEffect(() => {
     const audio = audioRef.current;
     return function cleanUp() {
-      audio.srcObject.getTracks().forEach(track => {
-        track.stop();
-      });
+      audio.srcObject.getAudioTracks()[0].stop();
     };
   }, []);
 
