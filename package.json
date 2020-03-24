@@ -89,7 +89,6 @@
     "webpack-hot-middleware": "^2.25.0"
   },
   "devDependencies": {
-    "jest": "^25.1.0",
     "react-hot-loader": "^4.12.17",
     "regenerator-runtime": "^0.13.3",
     "webpack-dev-middleware": "^3.7.2"
