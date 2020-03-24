@@ -109,7 +109,7 @@ export default function SettingsModal({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  marginTop: '1.5rem'
+                  marginTop: '2rem'
                 }}
               >
                 <Button onClick={changeOwnerButton} default filled>
