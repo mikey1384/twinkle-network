@@ -5,6 +5,7 @@ import LongText from 'components/Texts/LongText';
 import { borderRadius, Color } from 'constants/css';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { css } from 'emotion';
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string.isRequired,
@@ -70,17 +71,21 @@ function SecretAnswer({ answer, onClick, style, subjectId, uploaderId }) {
         style={{
           cursor: spoilerShown ? '' : 'pointer',
           fontSize: '1.7rem',
-          background: spoilerShown ? Color.ivory() : Color.darkerGray(),
+          background: spoilerShown ? Color.ivory() : Color.white(),
           border: `1px solid ${
             spoilerShown ? Color.borderGray() : Color.black()
           }`,
           borderRadius,
-          color: spoilerShown ? Color.black() : '#fff',
           wordBreak: 'break-word',
           textAlign: spoilerShown ? '' : 'center',
           padding: '1rem',
           ...style
         }}
+        className={css`
+          &:hover {
+            text-decoration: underline;
+          }
+        `}
       >
         {spoilerShown && <LongText>{answer}</LongText>}
         {!spoilerShown && (

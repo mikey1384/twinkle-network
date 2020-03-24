@@ -290,7 +290,7 @@ function Body({
                 margin: 1rem;
                 padding: 1rem;
                 border-radius: ${borderRadius};
-                border: 1px solid ${Color.borderGray()};
+                border: 1px solid ${Color.black()};
                 &:hover {
                   text-decoration: underline;
                 }
