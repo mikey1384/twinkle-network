@@ -78,7 +78,7 @@ export default function EditSubjectForm({
           }}
         />
       )}
-      <div ref={EditSubjectFormRef} style={{ width: '100%' }}>
+      <div ref={EditSubjectFormRef} style={{ width: '100%', zIndex: 1 }}>
         <div
           style={{
             width: '100%',
