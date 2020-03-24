@@ -51,6 +51,7 @@ export default function Video({ stream }) {
         }}
         autoPlay
         controls
+        playsInline
         ref={videoRef}
       />
     </div>
