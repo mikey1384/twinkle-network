@@ -16,7 +16,8 @@ SettingsModal.propTypes = {
   channelName: PropTypes.string,
   isClass: PropTypes.bool,
   isClosed: PropTypes.bool,
-  userIsChannelOwner: PropTypes.bool
+  userIsChannelOwner: PropTypes.bool,
+  onChangeOwner: PropTypes.func.isRequired
 };
 
 export default function SettingsModal({
@@ -26,7 +27,8 @@ export default function SettingsModal({
   onDone,
   onHide,
   channelName,
-  userIsChannelOwner
+  userIsChannelOwner,
+  onChangeOwner
 }) {
   const {
     state: { customChannelNames }
@@ -96,6 +98,26 @@ export default function SettingsModal({
               />
             </div>
           )}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row'
+            }}
+          >
+            {userIsChannelOwner && !isClass && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginTop: '1.5rem'
+                }}
+              >
+                <Button onClick={changeOwnerButton} default filled>
+                  Change Owner
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </main>
       <footer>
@@ -112,4 +134,9 @@ export default function SettingsModal({
       </footer>
     </Modal>
   );
+
+  function changeOwnerButton() {
+    onHide();
+    onChangeOwner();
+  }
 }
