@@ -23,9 +23,17 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext, useNotiContext } from 'contexts';
+import {
+  useAppContext,
+  useContentContext,
+  useChatContext,
+  useNotiContext
+} from 'contexts';
 import { checkScrollIsAtTheBottom } from 'helpers';
 import CallScreen from './CallScreen';
+import RewardMessagesModal from '../../Modals/RewardMessagesModal/';
+import { rewardChat } from 'constants/defaultValues';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -49,12 +57,16 @@ export default function MessagesContainer({
       leaveChannel,
       loadChatChannel,
       loadMoreChatMessages,
-      startNewDMChannel
+      startNewDMChannel,
+      updateUserXP
     }
   } = useAppContext();
   const {
     state: { socketConnected }
   } = useNotiContext();
+  const {
+    actions: { onChangeUserXP }
+  } = useContentContext();
   const {
     state: {
       channelOnCall,
@@ -95,6 +107,10 @@ export default function MessagesContainer({
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
+  const [rewardModalShown, setRewardModalShown] = useState(false);
+  const [rewardTarget, setRewardTarget] = useState(null);
+  const [selection, setSelection] = useState('');
+  const [rewardMessage, setRewardMessage] = useState({});
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',
@@ -434,6 +450,7 @@ export default function MessagesContainer({
                   onDelete={handleShowDeleteModal}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
+                  onRewardClick={handleOpenRewardModal}
                   recepientId={recepientId}
                   setScrollToBottom={handleSetScrollToBottom}
                   showSubjectMsgsModal={({ subjectId, content }) =>
@@ -584,6 +601,15 @@ export default function MessagesContainer({
           title="Leave Channel"
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
+        />
+      )}
+      {rewardModalShown && (
+        <RewardMessagesModal
+          rewardTargetUser={rewardTarget}
+          onHide={() => setRewardModalShown(false)}
+          onSubmit={handleRewardMessage}
+          selection={selection}
+          setSelection={setSelection}
         />
       )}
       {selectVideoModalShown && (
@@ -860,5 +886,35 @@ export default function MessagesContainer({
     setFileObj(file);
     setUploadModalShown(true);
     event.target.value = null;
+  }
+
+  function handleOpenRewardModal(rewardTargetUser, message) {
+    onSetReplyTarget(message);
+    setRewardModalShown(true);
+    setRewardTarget(rewardTargetUser);
+    setSelection('');
+    setRewardMessage(message);
+  }
+
+  async function handleRewardMessage() {
+    setRewardModalShown(false);
+    setSelection('');
+    handleMessageSubmit(
+      'Reward: ' +
+        selection +
+        ' (+' +
+        addCommasToNumber(rewardChat[selection]) +
+        ' XP)'
+    );
+    const { alreadyDone, xp, rank } = await updateUserXP({
+      action: 'reward',
+      target: 'chat',
+      amount: addCommasToNumber(rewardChat[selection]),
+      targetId: rewardMessage.id,
+      type: 'increase'
+    });
+    if (alreadyDone) return;
+    const userId = rewardMessage.username;
+    onChangeUserXP({ xp, rank, userId });
   }
 }

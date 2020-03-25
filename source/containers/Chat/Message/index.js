@@ -50,6 +50,7 @@ Message.propTypes = {
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
+  onRewardClick: PropTypes.func,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -71,6 +72,7 @@ function Message({
     fileToUpload,
     fileName,
     userId,
+    username: uploaderName,
     timeStamp,
     content,
     filePath,
@@ -96,6 +98,7 @@ function Message({
   onChessSpoilerClick,
   onReceiveNewMessage,
   onReplyClick,
+  onRewardClick,
   recepientId,
   setScrollToBottom,
   showSubjectMsgsModal
@@ -116,6 +119,7 @@ function Message({
     authLevel,
     canDelete,
     canEdit,
+    canStar,
     userId: myId,
     username: myUsername,
     profilePicId: myProfilePicId
@@ -123,6 +127,10 @@ function Message({
   const userIsUploader = myId === userId;
   const userCanEditThis =
     ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+  const userCanRewardThis = useMemo(
+    () => canStar && authLevel > uploaderAuthLevel && myId !== userId,
+    [authLevel, canStar, uploaderAuthLevel, userId, myId]
+  );
   const {
     requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
   } = useAppContext();
@@ -318,6 +326,19 @@ function Message({
       onClick: () => {
         setEditPadding(false);
         onDelete({ messageId });
+      }
+    });
+  }
+  if (userCanRewardThis) {
+    editMenuItems.push({
+      label: (
+        <>
+          <Icon icon="star"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Reward</span>
+        </>
+      ),
+      onClick: () => {
+        onRewardClick(uploaderName, message);
       }
     });
   }
