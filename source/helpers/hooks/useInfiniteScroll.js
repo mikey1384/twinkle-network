@@ -69,6 +69,6 @@ export default function useInfiniteScroll({
           onScrollToBottom();
         }
       }
-    }, 200);
+    }, 100);
   }
 }
