@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, desktopMinWidth } from 'constants/css';
 import { css } from 'emotion';
 
 HiddenComment.propTypes = {
@@ -19,8 +19,10 @@ export default function HiddenComment({ onClick }) {
         cursor: 'pointer'
       }}
       className={css`
-        &:hover {
-          text-decoration: underline;
+        @media (min-width: ${desktopMinWidth}) {
+          &:hover {
+            text-decoration: underline;
+          }
         }
       `}
       onClick={onClick}

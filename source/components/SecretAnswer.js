@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LongText from 'components/Texts/LongText';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, desktopMinWidth } from 'constants/css';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { css } from 'emotion';
@@ -81,15 +81,20 @@ function SecretAnswer({ answer, onClick, style, subjectId, uploaderId }) {
           padding: '1rem',
           ...style
         }}
-        className={css`
-          &:hover {
-            text-decoration: underline;
-          }
-        `}
       >
         {spoilerShown && <LongText>{answer}</LongText>}
         {!spoilerShown && (
-          <span>Submit your response to view the secret message. Tap here</span>
+          <span
+            className={css`
+              @media (min-width: ${desktopMinWidth}) {
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            `}
+          >
+            Submit your response to view the secret message. Tap here
+          </span>
         )}
       </div>
     </ErrorBoundary>
