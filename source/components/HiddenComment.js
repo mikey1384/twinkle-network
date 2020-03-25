@@ -14,6 +14,7 @@ export default function HiddenComment({ onClick }) {
         textAlign: 'center',
         padding: '1rem',
         borderRadius,
+        background: Color.white(),
         border: `1px solid ${Color.black()}`,
         fontSize: '1.7rem',
         cursor: 'pointer'

@@ -36,7 +36,9 @@ export default function StatusMsg({
       `}
       style={style}
     >
-      <LongText readMoreColor="#fff">{statusMsg}</LongText>
+      <LongText readMoreColor={statusColor === 'ivory' ? 'black' : '#fff'}>
+        {statusMsg}
+      </LongText>
     </div>
   );
 }
