@@ -193,16 +193,21 @@ function People({ location }) {
   }
 
   async function loadMoreProfiles() {
-    const data = await loadUsers({
-      shownUsersIds: queryStringForArray({
-        array: profiles,
-        originVar: 'id',
-        destinationVar: 'shownUsers'
-      }),
-      orderBy: orderUsersBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
-    });
-    onLoadMoreUsers(data);
-    if (mounted.current) {
+    try {
+      const data = await loadUsers({
+        shownUsersIds: queryStringForArray({
+          array: profiles,
+          originVar: 'id',
+          destinationVar: 'shownUsers'
+        }),
+        orderBy: orderUsersBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
+      });
+      onLoadMoreUsers(data);
+      if (mounted.current) {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
       setLoading(false);
     }
   }

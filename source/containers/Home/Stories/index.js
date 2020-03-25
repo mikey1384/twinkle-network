@@ -323,6 +323,7 @@ function Stories({ location }) {
       }
     } catch (error) {
       console.error(error);
+      setLoadingMore(false);
     }
   }
 
