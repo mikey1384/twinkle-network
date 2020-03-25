@@ -62,9 +62,9 @@ export default function useInfiniteScroll({
         if (
           loadable &&
           (scrollPositionRef.current.desktop >=
-            scrollHeightRef.current - window.innerHeight - 2000 ||
+            scrollHeightRef.current - window.innerHeight - 3000 ||
             scrollPositionRef.current.mobile >=
-              scrollHeightRef.current - window.innerHeight - 2000)
+              scrollHeightRef.current - window.innerHeight - 3000)
         ) {
           onScrollToBottom();
         }
