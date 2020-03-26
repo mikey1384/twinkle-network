@@ -267,8 +267,8 @@ export default function Header({
       socket.emit('join_chat_channel', data.channelId);
     }
 
-    function handleDisconnect() {
-      console.log('disconnected from socket');
+    function handleDisconnect(reason) {
+      console.log('disconnected from socket. reason: ', reason);
       onChangeSocketStatus(false);
     }
 
