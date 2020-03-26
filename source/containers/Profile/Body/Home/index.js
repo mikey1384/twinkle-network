@@ -311,7 +311,6 @@ export default function Home({ location, profile, selectedTheme }) {
             joinDate={joinDate}
             online={online}
             lastActive={lastActive}
-            myId={userId}
             profilePicId={profilePicId}
             userId={id}
             username={username}
