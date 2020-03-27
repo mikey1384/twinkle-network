@@ -161,7 +161,7 @@ function ChatInfo({
               </span>
             </div>
           )}
-          {myStream && !currentChannel.isClass && !channelOnCall.isClass && (
+          {myStream && channelOnCall.imLive && !channelOnCall.isClass && (
             <Video myVideoRef={myVideoRef} />
           )}
           <ChannelDetails
