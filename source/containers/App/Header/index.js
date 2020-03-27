@@ -87,7 +87,13 @@ export default function Header({
   } = useChatContext();
 
   const {
-    state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
+    state: {
+      socketConnected,
+      numNewNotis,
+      numNewPosts,
+      totalRewardAmount,
+      versionMatch
+    },
     actions: {
       onChangeSocketStatus,
       onCheckVersion,
@@ -177,15 +183,17 @@ export default function Header({
     };
 
     async function handleConnect() {
-      console.log('connected to socket');
-      onClearRecentChessMessage();
-      onChangeSocketStatus(true);
-      handleCheckVersion();
-      if (userId) {
-        handleGetNumberOfUnreadMessages();
-        socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
-        socket.emit('enter_my_notification_channel', userId);
-        handleLoadChat();
+      if (!socketConnected) {
+        console.log('connected to socket');
+        onClearRecentChessMessage();
+        onChangeSocketStatus(true);
+        handleCheckVersion();
+        if (userId) {
+          handleGetNumberOfUnreadMessages();
+          socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+          socket.emit('enter_my_notification_channel', userId);
+          handleLoadChat();
+        }
       }
 
       async function handleLoadChat() {
