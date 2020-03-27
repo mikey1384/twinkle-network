@@ -269,9 +269,6 @@ export default function Header({
 
     function handleDisconnect(reason) {
       console.log('disconnected from socket. reason: ', reason);
-      if (reason === 'transport close' && channelOnCall.members?.[userId]) {
-        return;
-      }
       onChangeSocketStatus(false);
     }
 
