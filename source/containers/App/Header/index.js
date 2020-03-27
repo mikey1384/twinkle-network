@@ -87,13 +87,7 @@ export default function Header({
   } = useChatContext();
 
   const {
-    state: {
-      socketConnected,
-      numNewNotis,
-      numNewPosts,
-      totalRewardAmount,
-      versionMatch
-    },
+    state: { numNewNotis, numNewPosts, totalRewardAmount, versionMatch },
     actions: {
       onChangeSocketStatus,
       onCheckVersion,
@@ -183,17 +177,15 @@ export default function Header({
     };
 
     async function handleConnect() {
-      if (!socketConnected) {
-        console.log('connected to socket');
-        onClearRecentChessMessage();
-        onChangeSocketStatus(true);
-        handleCheckVersion();
-        if (userId) {
-          handleGetNumberOfUnreadMessages();
-          socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
-          socket.emit('enter_my_notification_channel', userId);
-          handleLoadChat();
-        }
+      console.log('connected to socket');
+      onClearRecentChessMessage();
+      onChangeSocketStatus(true);
+      handleCheckVersion();
+      if (userId) {
+        handleGetNumberOfUnreadMessages();
+        socket.emit('bind_uid_to_socket', { userId, username, profilePicId });
+        socket.emit('enter_my_notification_channel', userId);
+        handleLoadChat();
       }
 
       async function handleLoadChat() {
@@ -277,7 +269,7 @@ export default function Header({
 
     function handleDisconnect(reason) {
       console.log('disconnected from socket. reason: ', reason);
-      if (reason === 'transport closed' && channelOnCall.members?.[userId]) {
+      if (reason === 'transport close' && channelOnCall.members?.[userId]) {
         return;
       }
       onChangeSocketStatus(false);
