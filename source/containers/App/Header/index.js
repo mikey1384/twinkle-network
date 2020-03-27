@@ -61,6 +61,7 @@ export default function Header({
       onSetCall,
       onChangeAwayStatus,
       onChangeBusyStatus,
+      onSetImLive,
       onSetReconnecting,
       onChangeChannelOwner,
       onChangeChannelSettings,
@@ -299,7 +300,8 @@ export default function Header({
             peerId,
             channelId,
             stream: channelOnCall.isClass
-              ? channelsObj[channelOnCall.id].creatorId === userId
+              ? channelsObj[channelOnCall.id].creatorId === userId ||
+                channelOnCall.imLive
                 ? myStream
                 : null
               : myStream
@@ -311,7 +313,7 @@ export default function Header({
     }
 
     function handlePeerHungUp({ channelId, memberId, peerId }) {
-      if (channelId === channelOnCall.id) {
+      if (Number(channelId) === Number(channelOnCall.id)) {
         delete membersOnCall.current[peerId];
         onHangUp({ peerId, memberId, iHungUp: memberId === userId });
       }
@@ -332,6 +334,7 @@ export default function Header({
               console.error(error);
             }
           }
+          onSetImLive(true);
         } else {
           myStream.getVideoTracks()[0].enabled = true;
           myStream.getAudioTracks()[0].enabled = true;
@@ -347,6 +350,7 @@ export default function Header({
       if (memberId === userId) {
         myStream.getVideoTracks()[0].enabled = false;
         myStream.getAudioTracks()[0].enabled = false;
+        onSetImLive(false);
       } else {
         onTogglePeerStream({
           peerId: channelOnCall.members[memberId],

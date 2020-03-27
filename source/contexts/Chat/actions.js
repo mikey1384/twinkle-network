@@ -397,6 +397,12 @@ export default function ChatActions(dispatch) {
         channelName
       });
     },
+    onSetImLive(imLive) {
+      return dispatch({
+        type: 'SET_IM_LIVE',
+        imLive
+      });
+    },
     onSetLoadingVocabulary(loading) {
       return dispatch({
         type: 'SET_LOADING_VOCABULARY',
