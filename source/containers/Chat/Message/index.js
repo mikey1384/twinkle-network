@@ -50,6 +50,7 @@ Message.propTypes = {
   loading: PropTypes.bool,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
+  onDropdownButtonClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
   onRewardClick: PropTypes.func,
@@ -98,6 +99,7 @@ function Message({
   onChessBoardClick,
   onDelete,
   onChessSpoilerClick,
+  onDropdownButtonClick,
   onReceiveNewMessage,
   onReplyClick,
   onRewardClick,
@@ -177,7 +179,6 @@ function Message({
   let { username, profilePicId, targetMessage, ...post } = message;
   const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
-  const [editPadding, setEditPadding] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
 
   if (fileToUpload && !userId) {
@@ -241,7 +242,7 @@ function Message({
       setScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onEdit, editPadding, reconnecting]);
+  }, [onEdit, reconnecting]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
@@ -298,7 +299,6 @@ function Message({
       onClick: () => {
         onSetReplyTarget(message);
         onReplyClick();
-        setEditPadding(false);
       }
     }
   ];
@@ -312,7 +312,6 @@ function Message({
       ),
       onClick: () => {
         setOnEdit(true);
-        setEditPadding(false);
       }
     });
   }
@@ -325,7 +324,6 @@ function Message({
         </>
       ),
       onClick: () => {
-        setEditPadding(false);
         onDelete({ messageId });
       }
     });
@@ -465,21 +463,10 @@ function Message({
                 style={{ position: 'absolute', top: 0, right: '5px' }}
                 direction="left"
                 opacity={0.8}
-                onButtonClick={menuDisplayed => {
-                  if (isLastMsg) {
-                    if (!filePath && !extractedUrl) {
-                      setEditPadding(!menuDisplayed);
-                    }
-                    setScrollToBottom();
-                  }
-                }}
-                onOutsideClick={() => {
-                  setEditPadding(false);
-                }}
+                onButtonClick={onDropdownButtonClick}
                 menuProps={editMenuItems}
               />
             )}
-            {editPadding && <div style={{ height: 100 }} />}
           </div>
         </div>
       ) : (
@@ -496,7 +483,6 @@ function Message({
 
   function handleEditCancel() {
     setOnEdit(false);
-    setEditPadding(false);
   }
 
   async function handleEditDone(editedMessage) {

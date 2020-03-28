@@ -453,6 +453,7 @@ export default function MessagesContainer({
                   onChessBoardClick={handleChessModalShown}
                   onChessSpoilerClick={handleChessSpoilerClick}
                   onDelete={handleShowDeleteModal}
+                  onDropdownButtonClick={handleDropdownButtonClick}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
                   onRewardClick={handleOpenRewardModal}
@@ -765,6 +766,12 @@ export default function MessagesContainer({
       setSelectNewOwnerModal({ andLeave: true });
     } else {
       handleLeaveChannel();
+    }
+  }
+
+  function handleDropdownButtonClick() {
+    if (scrollAtBottom) {
+      handleSetScrollToBottom();
     }
   }
 
