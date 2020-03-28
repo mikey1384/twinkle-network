@@ -891,7 +891,6 @@ export default function MessagesContainer({
   }
 
   function handleOpenRewardModal(rewardTargetUser, message) {
-    onSetReplyTarget(message);
     setRewardModalShown(true);
     setRewardTarget(rewardTargetUser);
     setSelection('');
@@ -901,6 +900,7 @@ export default function MessagesContainer({
   async function handleRewardMessage() {
     setRewardModalShown(false);
     setSelection('');
+    onSetReplyTarget(rewardMessage);
     handleMessageSubmit(
       'Reward: ' +
         selection +
