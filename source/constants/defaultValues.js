@@ -38,22 +38,22 @@ export const charLimit = {
 export const rewardHash = {
   1: {
     label: 'basic',
-    rewardAmount: 50,
+    rewardAmount: 10,
     color: 'logoBlue'
   },
   2: {
     label: 'elementary',
-    rewardAmount: 100,
+    rewardAmount: 50,
     color: 'pink'
   },
   3: {
     label: 'intermediate',
-    rewardAmount: 150,
+    rewardAmount: 100,
     color: 'orange'
   },
   4: {
     label: 'advanced',
-    rewardAmount: 200,
+    rewardAmount: 250,
     color: 'red'
   },
   5: {
