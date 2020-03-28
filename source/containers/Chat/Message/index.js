@@ -470,7 +470,7 @@ function Message({
                 menuProps={editMenuItems}
               />
             )}
-            {editPadding && <div style={{ height: '10rem' }} />}
+            {editPadding && <div style={{ height: 100 }} />}
           </div>
         </div>
       ) : (
