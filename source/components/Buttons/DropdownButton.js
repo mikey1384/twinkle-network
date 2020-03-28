@@ -45,7 +45,6 @@ export default function DropdownButton({
   ...props
 }) {
   const [menuDisplayed, setMenuDisplayed] = useState(false);
-  const [mouseEntered, setMouseEntered] = useState(false);
   const ButtonRef = useRef(null);
   useOutsideClick(ButtonRef, () => {
     if (menuDisplayed && typeof onOutsideClick === 'function') {
@@ -59,13 +58,16 @@ export default function DropdownButton({
       <div ref={ButtonRef}>
         <Button
           {...props}
-          onMouseEnter={() => setMouseEntered(true)}
-          onMouseLeave={() => setMouseEntered(false)}
+          className={css`
+            opacity: ${menuDisplayed ? 1 : opacity};
+            &:hover {
+              opacity: 1;
+            }
+          `}
           style={{
             borderRadius: noBorderRadius && 0,
             border: noBorderRadius && 0,
             margin: noBorderRadius && 0,
-            opacity: menuDisplayed || mouseEntered ? 1 : opacity,
             ...(stretch ? { width: '100%' } : {}),
             ...buttonStyle
           }}
@@ -105,19 +107,15 @@ export default function DropdownButton({
       }
       return (
         <li
-          style={{
-            opacity: prop.disabled && 0.3,
-            cursor: prop.disabled ? 'default' : 'pointer'
-          }}
-          className={
-            prop.disabled
-              ? css`
-                  &:hover {
-                    background: #fff !important;
-                  }
-                `
-              : ''
-          }
+          style={prop.style}
+          className={`${css`
+            opacity: ${prop.disabled && 0.3};
+            cursor: ${prop.disabled ? 'default' : 'pointer'};
+            &:hover {
+              background: ${prop.disabled ? '#fff !important' : ''};
+            }
+          `} ${prop.className}
+          `}
           onClick={
             prop.disabled ? () => {} : () => handleMenuClick(prop.onClick)
           }

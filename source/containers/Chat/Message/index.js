@@ -23,6 +23,8 @@ import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useLazyLoad, useMyState } from 'helpers/hooks';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 import { useInView } from 'react-intersection-observer';
 import {
   useAppContext,
@@ -336,6 +338,13 @@ function Message({
           <span style={{ marginLeft: '1rem' }}>Reward</span>
         </>
       ),
+      style: { color: '#fff', background: Color.pink() },
+      className: css`
+        opacity: 0.9;
+        &:hover {
+          opacity: 1 !important;
+        }
+      `,
       onClick: () => {
         onRewardClick(uploaderName, message);
       }
