@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.2.43';
+export const clientVersion = '1.2.44';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -38,27 +38,27 @@ export const charLimit = {
 export const rewardHash = {
   1: {
     label: 'basic',
-    rewardAmount: 100,
+    rewardAmount: 50,
     color: 'logoBlue'
   },
   2: {
     label: 'elementary',
-    rewardAmount: 200,
+    rewardAmount: 100,
     color: 'pink'
   },
   3: {
     label: 'intermediate',
-    rewardAmount: 300,
+    rewardAmount: 150,
     color: 'orange'
   },
   4: {
     label: 'advanced',
-    rewardAmount: 500,
+    rewardAmount: 200,
     color: 'red'
   },
   5: {
     label: 'epic',
-    rewardAmount: 1000,
+    rewardAmount: 500,
     color: 'gold'
   }
 };
