@@ -34,6 +34,8 @@ import CallScreen from './CallScreen';
 import RewardMessagesModal from '../../Modals/RewardMessagesModal/';
 import { rewardChat } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import request from 'axios';
+import URL from 'constants/URL';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -57,8 +59,7 @@ export default function MessagesContainer({
       leaveChannel,
       loadChatChannel,
       loadMoreChatMessages,
-      startNewDMChannel,
-      updateUserXP
+      startNewDMChannel
     }
   } = useAppContext();
   const {
@@ -902,21 +903,18 @@ export default function MessagesContainer({
     setSelection('');
     onSetReplyTarget(rewardMessage);
     handleMessageSubmit(
-      'Reward: ' +
+      'l|*Reward:*|l ' +
         selection +
         ' (+' +
         addCommasToNumber(rewardChat[selection]) +
         ' XP)'
     );
-    const { alreadyDone, xp, rank } = await updateUserXP({
-      action: 'reward',
-      target: 'chat',
-      amount: addCommasToNumber(rewardChat[selection]),
-      targetId: rewardMessage.id,
-      type: 'increase'
+    const { alreadyDone, xp, rank } = await request.post(`${URL}/chat/reward`, {
+      amount: rewardChat[selection],
+      userId: rewardMessage.userId,
+      messageId: rewardMessage.id
     });
     if (alreadyDone) return;
-    const userId = rewardMessage.username;
-    onChangeUserXP({ xp, rank, userId });
+    onChangeUserXP({ xp, rank, userId: rewardMessage.userId });
   }
 }
