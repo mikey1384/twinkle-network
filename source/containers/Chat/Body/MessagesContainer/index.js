@@ -717,11 +717,13 @@ export default function MessagesContainer({
       isClosed: editedIsClosed,
       channelId: selectedChannelId
     });
-    socket.emit('new_channel_settings', {
-      channelName: editedChannelName,
-      isClosed: editedIsClosed,
-      channelId: selectedChannelId
-    });
+    if (userId === currentChannel.creatorId) {
+      socket.emit('new_channel_settings', {
+        channelName: editedChannelName,
+        isClosed: editedIsClosed,
+        channelId: selectedChannelId
+      });
+    }
     setSettingsModalShown(false);
   }
 

@@ -9,6 +9,7 @@ import { stringIsEmpty, trimUrl } from 'helpers/stringHelpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { unix } from 'moment';
 import { useHistory } from 'react-router-dom';
+import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
   useChatContext,
@@ -25,7 +26,6 @@ BasicInfos.propTypes = {
   profileTheme: PropTypes.string,
   joinDate: PropTypes.string,
   lastActive: PropTypes.string,
-  myId: PropTypes.number,
   selectedTheme: PropTypes.string.isRequired,
   userId: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
@@ -42,7 +42,6 @@ export default function BasicInfos({
   online,
   joinDate,
   lastActive,
-  myId,
   profilePicId,
   profileTheme,
   selectedTheme,
@@ -54,6 +53,7 @@ export default function BasicInfos({
   style
 }) {
   const history = useHistory();
+  const { userId: myId, username: myUsername } = useMyState();
   const {
     requestHelpers: {
       loadChat,
@@ -310,7 +310,7 @@ export default function BasicInfos({
       recepient: { id: userId, username }
     });
     onOpenDirectMessageChannel({
-      user: { id: myId },
+      user: { id: myId, username: myUsername },
       recepient: { id: userId, username, profilePicId },
       channelData: data
     });

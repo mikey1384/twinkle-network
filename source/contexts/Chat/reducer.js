@@ -886,6 +886,7 @@ export default function ChatReducer(state, action) {
         ...state,
         channelOnCall: action.channelId
           ? {
+              imLive: action.imCalling,
               imCalling: action.imCalling,
               id: action.channelId,
               isClass: action.isClass,
@@ -908,6 +909,14 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         currentChannelName: action.channelName
+      };
+    case 'SET_IM_LIVE':
+      return {
+        ...state,
+        channelOnCall: {
+          ...state.channelOnCall,
+          imLive: true
+        }
       };
     case 'SET_VISIBLE': {
       const messageKey = 'message' + action.messageId;

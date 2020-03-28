@@ -161,7 +161,9 @@ function ChatInfo({
               </span>
             </div>
           )}
-          {myStream && <Video myVideoRef={myVideoRef} />}
+          {myStream && channelOnCall.imLive && !channelOnCall.isClass && (
+            <Video myVideoRef={myVideoRef} />
+          )}
           <ChannelDetails
             style={{ marginTop: '1rem' }}
             channelId={currentChannel.id}
@@ -205,6 +207,7 @@ function ChatInfo({
       });
     } else {
       if (calling) {
+        socket.emit('hang_up_call', channelOnCall.id);
         return onSetCall({});
       }
       onHangUp({ memberId: myId, iHungUp: true });

@@ -215,8 +215,7 @@ function Message({
           lastMessage: {
             content,
             sender: { id: userId, username }
-          },
-          channelName
+          }
         }
       });
     }

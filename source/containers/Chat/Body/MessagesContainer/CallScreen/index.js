@@ -14,10 +14,17 @@ CallScreen.propTypes = {
 
 export default function CallScreen({ creatorId, style }) {
   const {
-    state: { channelOnCall, peerStreams },
+    state: { channelOnCall, myStream, peerStreams },
     actions: { onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();
+
+  const streamShown = useMemo(
+    () =>
+      (channelOnCall.isClass && channelOnCall.imLive) ||
+      channelOnCall.incomingShown,
+    [channelOnCall.imLive, channelOnCall.incomingShown, channelOnCall.isClass]
+  );
 
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
@@ -30,19 +37,6 @@ export default function CallScreen({ creatorId, style }) {
 
   return (
     <div style={{ width: '100%', position: 'relative', ...style }}>
-      {calling && (
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          Calling...
-        </div>
-      )}
       {answerButtonShown && (
         <div
           style={{
@@ -61,22 +55,7 @@ export default function CallScreen({ creatorId, style }) {
           </Button>
         </div>
       )}
-      {channelOnCall.isClass &&
-        !calling &&
-        !answerButtonShown &&
-        Object.keys(peerStreams).length === 0 &&
-        creatorId === userId && (
-          <div
-            style={{
-              height: '100%',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >{`Show or hide your students using the right-side menu buttons next to their usernames`}</div>
-        )}
-      {channelOnCall.incomingShown && Object.keys(peerStreams).length > 0 && (
+      {streamShown && (
         <div
           style={{
             position: 'relative',
@@ -86,6 +65,9 @@ export default function CallScreen({ creatorId, style }) {
             justifyContent: 'center'
           }}
         >
+          {channelOnCall.isClass && channelOnCall.imLive && myStream && (
+            <Video key={userId} stream={myStream} />
+          )}
           {channelOnCall.incomingShown &&
             Object.entries(peerStreams)
               .filter(
@@ -96,6 +78,33 @@ export default function CallScreen({ creatorId, style }) {
               ))}
         </div>
       )}
+      {calling && (
+        <div
+          style={{
+            width: '100%',
+            height: !channelOnCall.isClass && '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          Calling...
+        </div>
+      )}
+      {channelOnCall.isClass &&
+        !calling &&
+        !answerButtonShown &&
+        Object.keys(peerStreams).length === 0 &&
+        creatorId === userId && (
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >{`Show or hide your students using the right-side menu buttons next to their usernames`}</div>
+        )}
     </div>
   );
 
