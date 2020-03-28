@@ -110,6 +110,7 @@ export default function MessagesContainer({
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const [selectNewOwnerModal, setSelectNewOwnerModal] = useState(null);
+  const [fillerHeight, setFillerHeight] = useState(0);
 
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
@@ -141,16 +142,23 @@ export default function MessagesContainer({
     })`;
   }, [replyTarget, selectedChannelIsOnCall, socketConnected, textAreaHeight]);
 
-  const fillerHeight = useMemo(
-    () =>
-      MessagesContainerRef.current?.offsetHeight >
-      MessagesRef.current?.offsetHeight
-        ? MessagesContainerRef.current?.offsetHeight -
+  useEffect(() => {
+    setTimeout(() =>
+      setFillerHeight(
+        MessagesContainerRef.current?.offsetHeight >
           MessagesRef.current?.offsetHeight
-        : 20,
+          ? MessagesContainerRef.current?.offsetHeight -
+              MessagesRef.current?.offsetHeight
+          : 20,
+        0
+      )
+    );
+  }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [MessagesContainerRef.current, MessagesRef.current]
-  );
+    (MessagesContainerRef.current?.offsetHeight,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    MessagesRef.current?.offsetHeight)
+  ]);
 
   const menuProps = useMemo(() => {
     if (currentChannel.twoPeople) {
@@ -401,7 +409,7 @@ export default function MessagesContainer({
             ) : (
               <div
                 style={{
-                  height: fillerHeight + 'px'
+                  height: fillerHeight
                 }}
               />
             )}
