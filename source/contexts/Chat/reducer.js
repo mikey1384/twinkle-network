@@ -17,7 +17,6 @@ export default function ChatReducer(state, action) {
           ...state.channelsObj,
           [action.channelId]: {
             ...state.channelsObj[action.channelId],
-            channelName: action.channelName,
             isClosed: action.isClosed
           }
         },
