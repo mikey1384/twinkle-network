@@ -207,6 +207,7 @@ function ChatInfo({
       });
     } else {
       if (calling) {
+        socket.emit('hang_up_call', channelOnCall.id);
         return onSetCall({});
       }
       onHangUp({ memberId: myId, iHungUp: true });
