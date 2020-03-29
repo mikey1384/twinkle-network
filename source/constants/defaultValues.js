@@ -43,17 +43,17 @@ export const rewardHash = {
   },
   2: {
     label: 'elementary',
-    rewardAmount: 50,
+    rewardAmount: 25,
     color: 'pink'
   },
   3: {
     label: 'intermediate',
-    rewardAmount: 100,
+    rewardAmount: 50,
     color: 'orange'
   },
   4: {
     label: 'advanced',
-    rewardAmount: 250,
+    rewardAmount: 100,
     color: 'red'
   },
   5: {
