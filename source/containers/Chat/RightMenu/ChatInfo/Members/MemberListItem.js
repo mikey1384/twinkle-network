@@ -1,9 +1,10 @@
-import React, { memo, useMemo, useEffect } from 'react';
+import React, { memo, useMemo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 import { useChatContext } from 'contexts';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -31,6 +32,7 @@ function MemberListItem({
   peerStreams,
   style
 }) {
+  const [confirmModalShown, setConfirmModalShown] = useState(false);
   const { userId: myId } = useMyState();
   const {
     state: {
@@ -126,8 +128,20 @@ function MemberListItem({
           </Button>
         )}
       </div>
+      {confirmModalShown && (
+        <ConfirmModal
+          onHide={() => setConfirmModalShown(false)}
+          title="Showing over 2 students at a time may slow down the performance or cause errors"
+          onConfirm={handleConfirmShowPeer}
+        />
+      )}
     </div>
   );
+
+  function handleConfirmShowPeer() {
+    socket.emit('request_peer_stream', memberId);
+    setConfirmModalShown(false);
+  }
 
   function handleShowPeer() {
     if (peerIsStreaming) {
@@ -136,6 +150,12 @@ function MemberListItem({
         channelId
       });
     } else {
+      const numLivePeers = Object.keys(peerStreams)?.filter(
+        peerId => !channelOnCall.members[peerId]?.streamHidden
+      ).length;
+      if (numLivePeers >= 2) {
+        return setConfirmModalShown(true);
+      }
       socket.emit('request_peer_stream', memberId);
     }
   }

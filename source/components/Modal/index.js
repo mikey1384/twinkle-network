@@ -103,7 +103,7 @@ export default function Modal({
               > header {
                 display: flex;
                 align-items: center;
-                line-height: 2rem;
+                line-height: 1.5;
                 color: ${Color.black()};
                 font-weight: bold;
                 font-size: 2rem;
