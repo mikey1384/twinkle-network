@@ -7,12 +7,20 @@ import { Color } from 'constants/css';
 Members.propTypes = {
   channelId: PropTypes.number.isRequired,
   creatorId: PropTypes.number,
+  imLive: PropTypes.bool,
   isClass: PropTypes.bool,
   members: PropTypes.array.isRequired,
   onlineMembers: PropTypes.object.isRequired
 };
 
-function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
+function Members({
+  channelId,
+  creatorId,
+  imLive,
+  isClass,
+  members,
+  onlineMembers
+}) {
   const {
     state: {
       peerStreams,
@@ -63,6 +71,7 @@ function Members({ channelId, creatorId, isClass, members, onlineMembers }) {
               creatorId={creatorId}
               onlineMembers={onlineMembers}
               member={member}
+              imLive={imLive}
               isClass={isClass}
               membersOnCallObj={membersOnCallObj}
               peerStreams={peerStreams}

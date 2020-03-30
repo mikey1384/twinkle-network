@@ -15,6 +15,7 @@ MemberListItem.propTypes = {
   channelId: PropTypes.number,
   onlineMembers: PropTypes.object,
   creatorId: PropTypes.number,
+  imLive: PropTypes.bool,
   isClass: PropTypes.bool,
   member: PropTypes.object,
   membersOnCallObj: PropTypes.object,
@@ -26,6 +27,7 @@ function MemberListItem({
   channelId,
   onlineMembers,
   creatorId,
+  imLive,
   isClass,
   membersOnCallObj,
   member,
@@ -117,7 +119,7 @@ function MemberListItem({
             <Icon icon="crown" style={{ color: Color.brownOrange() }} />
           </div>
         ) : null}
-        {isClass && creatorId === myId && memberId !== myId && (
+        {isClass && imLive && creatorId === myId && memberId !== myId && (
           <Button
             style={{ fontSize: '1rem', marginLeft: '1rem' }}
             filled

@@ -327,6 +327,7 @@ export default function ChatReducer(state, action) {
             ? false
             : state.channelOnCall?.outgoingShown,
           imCalling: action.iHungUp ? false : state.channelOnCall?.imCalling,
+          imLive: action.iHungUp ? false : state.channelOnCall?.imLive,
           incomingShown: action.iHungUp
             ? false
             : state.channelOnCall?.incomingShown,
