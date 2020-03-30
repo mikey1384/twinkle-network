@@ -2,10 +2,9 @@ import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import FullTextReveal from 'components/Texts/FullTextReveal';
 import { css } from 'emotion';
-import { Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import { useChatContext } from 'contexts';
 import { isMobile, textIsOverflown } from 'helpers';
-import { useMyState } from 'helpers/hooks';
 
 ChannelDetails.propTypes = {
   channelId: PropTypes.number,
@@ -17,10 +16,8 @@ export default function ChannelDetails({ channelId, channelName, style }) {
   const {
     state: { customChannelNames }
   } = useChatContext();
-  const { profileTheme } = useMyState();
   const [channelNameHovered, setChannelNameHovered] = useState(false);
   const ChannelNameRef = useRef(null);
-  console.log(channelId);
   return (
     <div
       onClick={() => setChannelNameHovered(hovered => !hovered)}
@@ -42,17 +39,7 @@ export default function ChannelDetails({ channelId, channelName, style }) {
           width: '100%',
           textOverflow: 'ellipsis',
           overflow: 'hidden',
-          cursor: 'default',
-          color:
-            channelId === 2
-              ? Color[
-                  profileTheme === 'black'
-                    ? 'logoBlue'
-                    : profileTheme === 'vantablack'
-                    ? 'darkBlue'
-                    : profileTheme
-                ]()
-              : ''
+          cursor: 'default'
         }}
         onMouseEnter={handleMouseOver}
         onMouseLeave={() => setChannelNameHovered(false)}
