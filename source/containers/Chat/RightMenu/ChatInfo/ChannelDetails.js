@@ -45,7 +45,13 @@ export default function ChannelDetails({ channelId, channelName, style }) {
           cursor: 'default',
           color:
             channelId === 2
-              ? Color[profileTheme === 'black' ? 'darkBlue' : profileTheme]()
+              ? Color[
+                  profileTheme === 'black'
+                    ? 'logoBlue'
+                    : profileTheme === 'vantablack'
+                    ? 'darkBlue'
+                    : profileTheme
+                ]()
               : ''
         }}
         onMouseEnter={handleMouseOver}

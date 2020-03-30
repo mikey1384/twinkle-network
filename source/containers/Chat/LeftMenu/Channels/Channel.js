@@ -111,7 +111,11 @@ function Channel({
                 color:
                   id === 2
                     ? Color[
-                        profileTheme === 'black' ? 'darkBlue' : profileTheme
+                        profileTheme === 'black'
+                          ? 'logoBlue'
+                          : profileTheme === 'vantablack'
+                          ? 'darkBlue'
+                          : profileTheme
                       ]()
                     : !effectiveChannelName && !otherMember && '#7c7c7c',
                 fontWeight: 'bold',
