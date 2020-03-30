@@ -278,18 +278,18 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         }
       }
     },
-    async updateUserXP({ amount, action, target, targetId, type, dispatch }) {
+    async updateUserXP({ amount, action, target, targetId, type, userId }) {
       try {
         const {
           data: { xp, alreadyDone, rank }
         } = await request.post(
           `${URL}/user/xp`,
-          { amount, action, target, targetId, type },
+          { amount, action, target, targetId, type, userId },
           auth()
         );
         return Promise.resolve({ xp, alreadyDone, rank });
       } catch (error) {
-        return handleError(error, dispatch);
+        return handleError(error);
       }
     },
     async uploadBio(params) {

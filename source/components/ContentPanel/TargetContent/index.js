@@ -54,7 +54,7 @@ function TargetContent({
     comment: { comments = [] } = {},
     replyInputShown,
     subject,
-    type
+    contentType: type
   }
 }) {
   const history = useHistory();
@@ -213,7 +213,9 @@ function TargetContent({
                             type === 'reply'
                               ? 'replied'
                               : type === 'comment'
-                              ? 'commented'
+                              ? rootType === 'user'
+                                ? 'left a message'
+                                : 'commented'
                               : 'responded'
                           }:`
                         }}

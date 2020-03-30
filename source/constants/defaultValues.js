@@ -63,14 +63,6 @@ export const rewardHash = {
   }
 };
 
-export const rewardChat = {
-  'Good Job': 200,
-  'Good Work': 500,
-  'Amazing Work': 1000,
-  'Great Work': 5000,
-  'Perfect Work': 10000
-};
-
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 10000;

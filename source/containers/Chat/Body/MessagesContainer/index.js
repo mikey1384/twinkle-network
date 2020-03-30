@@ -23,19 +23,9 @@ import { css } from 'emotion';
 import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
-import {
-  useAppContext,
-  useContentContext,
-  useChatContext,
-  useNotiContext
-} from 'contexts';
+import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 import { checkScrollIsAtTheBottom } from 'helpers';
 import CallScreen from './CallScreen';
-import RewardMessagesModal from '../../Modals/RewardMessagesModal/';
-import { rewardChat } from 'constants/defaultValues';
-import { addCommasToNumber } from 'helpers/stringHelpers';
-import request from 'axios';
-import URL from 'constants/URL';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -59,15 +49,13 @@ export default function MessagesContainer({
       leaveChannel,
       loadChatChannel,
       loadMoreChatMessages,
-      startNewDMChannel
+      startNewDMChannel,
+      updateUserXP
     }
   } = useAppContext();
   const {
     state: { socketConnected }
   } = useNotiContext();
-  const {
-    actions: { onChangeUserXP }
-  } = useContentContext();
   const {
     state: {
       channelOnCall,
@@ -108,10 +96,6 @@ export default function MessagesContainer({
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
-  const [rewardModalShown, setRewardModalShown] = useState(false);
-  const [rewardTarget, setRewardTarget] = useState(null);
-  const [selection, setSelection] = useState('');
-  const [rewardMessage, setRewardMessage] = useState({});
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',
@@ -456,7 +440,7 @@ export default function MessagesContainer({
                   onDropdownButtonClick={handleDropdownButtonClick}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
-                  onRewardClick={handleOpenRewardModal}
+                  onRewardMessageSubmit={handleRewardMessageSubmit}
                   recepientId={recepientId}
                   setScrollToBottom={handleSetScrollToBottom}
                   showSubjectMsgsModal={({ subjectId, content }) =>
@@ -607,15 +591,6 @@ export default function MessagesContainer({
           title="Leave Channel"
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
-        />
-      )}
-      {rewardModalShown && (
-        <RewardMessagesModal
-          rewardTargetUser={rewardTarget}
-          onHide={() => setRewardModalShown(false)}
-          onSubmit={handleRewardMessage}
-          selection={selection}
-          setSelection={setSelection}
         />
       )}
       {selectVideoModalShown && (
@@ -844,6 +819,18 @@ export default function MessagesContainer({
     onSetReplyTarget(null);
   }
 
+  async function handleRewardMessageSubmit({ feedback, message }) {
+    handleMessageSubmit(feedback);
+    await updateUserXP({
+      amount: 100,
+      action: 'reward',
+      target: 'chat',
+      targetId: message.id,
+      type: 'increase',
+      userId: message.userId
+    });
+  }
+
   function handleReceiveNewMessage() {
     if (scrollAtBottom) {
       handleSetScrollToBottom();
@@ -900,32 +887,5 @@ export default function MessagesContainer({
     setFileObj(file);
     setUploadModalShown(true);
     event.target.value = null;
-  }
-
-  function handleOpenRewardModal(rewardTargetUser, message) {
-    setRewardModalShown(true);
-    setRewardTarget(rewardTargetUser);
-    setSelection('');
-    setRewardMessage(message);
-  }
-
-  async function handleRewardMessage() {
-    setRewardModalShown(false);
-    setSelection('');
-    onSetReplyTarget(rewardMessage);
-    handleMessageSubmit(
-      'l|*Reward:*|l ' +
-        selection +
-        ' (+' +
-        addCommasToNumber(rewardChat[selection]) +
-        ' XP)'
-    );
-    const { alreadyDone, xp, rank } = await request.post(`${URL}/chat/reward`, {
-      amount: rewardChat[selection],
-      userId: rewardMessage.userId,
-      messageId: rewardMessage.id
-    });
-    if (alreadyDone) return;
-    onChangeUserXP({ xp, rank, userId: rewardMessage.userId });
   }
 }

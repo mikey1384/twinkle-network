@@ -18,6 +18,7 @@ import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import LocalContext from '../Context';
+import MessagesRewardModal from './MessageRewardModal';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
@@ -54,6 +55,7 @@ Message.propTypes = {
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
   onRewardClick: PropTypes.func,
+  onRewardMessageSubmit: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -75,7 +77,6 @@ function Message({
     fileToUpload,
     fileName,
     userId,
-    username: uploaderName,
     timeStamp,
     content,
     filePath,
@@ -102,7 +103,7 @@ function Message({
   onDropdownButtonClick,
   onReceiveNewMessage,
   onReplyClick,
-  onRewardClick,
+  onRewardMessageSubmit,
   recepientId,
   setScrollToBottom,
   showSubjectMsgsModal
@@ -177,6 +178,7 @@ function Message({
     state: { socketConnected }
   } = useNotiContext();
   let { username, profilePicId, targetMessage, ...post } = message;
+  const [messageRewardModalShown, setMessageRewardModalShown] = useState(false);
   const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
@@ -288,7 +290,7 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const editMenuItems = [
+  const messageMenuItems = [
     {
       label: (
         <>
@@ -303,7 +305,7 @@ function Message({
     }
   ];
   if (userCanEditThis) {
-    editMenuItems.push({
+    messageMenuItems.push({
       label: (
         <>
           <Icon icon="pencil-alt"></Icon>
@@ -316,7 +318,7 @@ function Message({
     });
   }
   if (userIsUploader || canDelete) {
-    editMenuItems.push({
+    messageMenuItems.push({
       label: (
         <>
           <Icon icon="trash-alt"></Icon>
@@ -329,7 +331,7 @@ function Message({
     });
   }
   if (userCanRewardThis) {
-    editMenuItems.push({
+    messageMenuItems.push({
       label: (
         <>
           <Icon icon="star"></Icon>
@@ -343,9 +345,7 @@ function Message({
           opacity: 1 !important;
         }
       `,
-      onClick: () => {
-        onRewardClick(uploaderName, message);
-      }
+      onClick: () => setMessageRewardModalShown(true)
     });
   }
   const dropdownButtonShown =
@@ -397,7 +397,7 @@ function Message({
                   initialState={chessState}
                   moveViewed={!!moveViewTimeStamp}
                   onBoardClick={onChessBoardClick}
-                  onSpoilerClick={handleSpoilerClick}
+                  onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
                   senderId={userId}
@@ -464,10 +464,20 @@ function Message({
                 direction="left"
                 opacity={0.8}
                 onButtonClick={onDropdownButtonClick}
-                menuProps={editMenuItems}
+                menuProps={messageMenuItems}
               />
             )}
           </div>
+          {messageRewardModalShown && (
+            <MessagesRewardModal
+              userToReward={{
+                username,
+                id: userId
+              }}
+              onSubmit={handleRewardMessageSubmit}
+              onHide={() => setMessageRewardModalShown(false)}
+            />
+          )}
         </div>
       ) : (
         <div
@@ -505,6 +515,10 @@ function Message({
     });
   }
 
+  function handleRewardMessageSubmit(feedback) {
+    onRewardMessageSubmit({ feedback, message });
+  }
+
   function handleScrollToBottom() {
     if (isLastMsg) {
       setScrollToBottom();
@@ -525,7 +539,7 @@ function Message({
     });
   }
 
-  async function handleSpoilerClick() {
+  async function handleChessSpoilerClick() {
     onSetReplyTarget(null);
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
