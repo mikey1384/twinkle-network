@@ -190,6 +190,7 @@ function ChatInfo({
       </div>
       <Members
         isClass={!!currentChannel.isClass}
+        imLive={channelOnCall.id === currentChannel.id && channelOnCall.imLive}
         channelId={selectedChannelId}
         creatorId={currentChannel.creatorId}
         members={displayedChannelMembers}

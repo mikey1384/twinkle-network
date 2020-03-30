@@ -14,13 +14,6 @@ export default function Audio({ stream }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    return function cleanUp() {
-      audio.srcObject.getAudioTracks()[0].stop();
-    };
-  }, []);
-
   return (
     <audio
       autoPlay

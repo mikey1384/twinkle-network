@@ -26,7 +26,7 @@ function Channel({
   onChannelEnter,
   selectedChannelId
 }) {
-  const { userId, username } = useMyState();
+  const { profileTheme, userId, username } = useMyState();
   const effectiveChannelName = useMemo(
     () => customChannelNames[id] || channelName,
     [channelName, customChannelNames, id]
@@ -108,7 +108,16 @@ function Channel({
           <div>
             <p
               style={{
-                color: !effectiveChannelName && !otherMember && '#7c7c7c',
+                color:
+                  id === 2
+                    ? Color[
+                        profileTheme === 'black'
+                          ? 'logoBlue'
+                          : profileTheme === 'vantablack'
+                          ? 'darkBlue'
+                          : profileTheme
+                      ]()
+                    : !effectiveChannelName && !otherMember && '#7c7c7c',
                 fontWeight: 'bold',
                 margin: 0,
                 padding: 0,
