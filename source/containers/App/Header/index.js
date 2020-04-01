@@ -369,6 +369,7 @@ export default function Header({
     }
 
     async function handleReceiveMessage({ message, channel, newMembers }) {
+      console.log(message);
       const messageIsForCurrentChannel =
         message.channelId === selectedChannelId;
       const senderIsNotTheUser = message.userId !== userId;

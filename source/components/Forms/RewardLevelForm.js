@@ -5,6 +5,7 @@ import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 
 RewardLevelForm.propTypes = {
+  icon: PropTypes.string,
   rewardLevel: PropTypes.number.isRequired,
   onSetRewardLevel: PropTypes.func.isRequired,
   style: PropTypes.object,
@@ -12,6 +13,7 @@ RewardLevelForm.propTypes = {
 };
 
 export default function RewardLevelForm({
+  icon = 'star',
   themed,
   rewardLevel,
   onSetRewardLevel,
@@ -26,35 +28,43 @@ export default function RewardLevelForm({
         color: themed ? '#fff' : ''
       }}
     >
-      <div style={{ display: 'flex' }}>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          height: '1.5rem',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <Icon
           key={0}
-          icon={rewardLevel > 0 ? 'star' : ['far', 'star']}
+          icon={rewardLevel > 0 ? icon : ['far', icon]}
           style={{ cursor: 'pointer' }}
           onClick={() => onSetRewardLevel(1)}
         />
         <Icon
           key={1}
-          icon={rewardLevel > 1 ? 'star' : ['far', 'star']}
-          style={{ cursor: 'pointer' }}
+          icon={rewardLevel > 1 ? icon : ['far', icon]}
+          style={{ cursor: 'pointer', marginLeft: 2 }}
           onClick={() => onSetRewardLevel(2)}
         />
         <Icon
           key={2}
-          icon={rewardLevel > 2 ? 'star' : ['far', 'star']}
-          style={{ cursor: 'pointer' }}
+          icon={rewardLevel > 2 ? icon : ['far', icon]}
+          style={{ cursor: 'pointer', marginLeft: 2 }}
           onClick={() => onSetRewardLevel(3)}
         />
         <Icon
           key={3}
-          icon={rewardLevel > 3 ? 'star' : ['far', 'star']}
-          style={{ cursor: 'pointer' }}
+          icon={rewardLevel > 3 ? icon : ['far', icon]}
+          style={{ cursor: 'pointer', marginLeft: 2 }}
           onClick={() => onSetRewardLevel(4)}
         />
         <Icon
           key={4}
-          icon={rewardLevel > 4 ? 'star' : ['far', 'star']}
-          style={{ cursor: 'pointer' }}
+          icon={rewardLevel > 4 ? icon : ['far', icon]}
+          style={{ cursor: 'pointer', marginLeft: 2 }}
           onClick={() => onSetRewardLevel(5)}
         />
       </div>
@@ -63,8 +73,7 @@ export default function RewardLevelForm({
           color: themed ? '#fff' : '',
           cursor: 'pointer',
           fontSize: '1.5rem',
-          userSelect: 'none',
-          marginTop: '0.5rem'
+          userSelect: 'none'
         }}
         onClick={() => onSetRewardLevel(0)}
       >

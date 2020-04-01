@@ -518,7 +518,9 @@ export default function MessagesContainer({
             currentChannelId={selectedChannelId}
             currentChannel={currentChannel}
             onChessButtonClick={handleChessModalShown}
-            onMessageSubmit={handleMessageSubmit}
+            onMessageSubmit={content =>
+              handleMessageSubmit({ content, target: replyTarget })
+            }
             onHeightChange={height => {
               if (height !== textAreaHeight) {
                 setTextAreaHeight(height > 46 ? height : 0);
@@ -597,7 +599,10 @@ export default function MessagesContainer({
         <SelectVideoModal
           onHide={() => setSelectVideoModalShown(false)}
           onSend={videoId => {
-            handleMessageSubmit(`https://www.twin-kle.com/videos/${videoId}`);
+            handleMessageSubmit({
+              content: `https://www.twin-kle.com/videos/${videoId}`,
+              target: replyTarget
+            });
             setSelectVideoModalShown(false);
           }}
         />
@@ -790,7 +795,7 @@ export default function MessagesContainer({
     }
   }
 
-  async function handleMessageSubmit(content) {
+  async function handleMessageSubmit({ content, rewardAmount, target }) {
     setTextAreaHeight(0);
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
@@ -815,14 +820,23 @@ export default function MessagesContainer({
       channelId: selectedChannelId,
       subjectId: subject.id
     };
-    onSubmitMessage({ message, replyTarget });
+    onSubmitMessage({
+      message,
+      replyTarget: target,
+      rewardReason: 'considerate',
+      rewardAmount
+    });
     onSetReplyTarget(null);
   }
 
-  async function handleRewardMessageSubmit({ feedback, message }) {
-    handleMessageSubmit(feedback);
+  async function handleRewardMessageSubmit({ amount, feedback, message }) {
+    handleMessageSubmit({
+      content: feedback,
+      rewardAmount: amount,
+      target: message
+    });
     await updateUserXP({
-      amount: 100,
+      amount,
       action: 'reward',
       target: 'chat',
       targetId: message.id,

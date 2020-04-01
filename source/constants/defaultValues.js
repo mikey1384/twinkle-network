@@ -35,6 +35,7 @@ export const charLimit = {
     url: 300
   }
 };
+
 export const rewardHash = {
   1: {
     label: 'basic',
@@ -60,6 +61,24 @@ export const rewardHash = {
     label: 'epic',
     rewardAmount: 500,
     color: 'gold'
+  }
+};
+
+export const rewardReasons = {
+  1: {
+    color: 'pink',
+    icon: 'heart',
+    message: 'For being considerate'
+  },
+  2: {
+    color: 'logoBlue',
+    icon: 'briefcase',
+    message: 'For putting in a lot of effort'
+  },
+  3: {
+    color: 'orange',
+    icon: 'surprise',
+    message: 'For being creative'
   }
 };
 

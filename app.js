@@ -20,6 +20,7 @@ import { faBriefcase } from '@fortawesome/pro-solid-svg-icons/faBriefcase';
 import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
+import { faCertificate as farCertificate } from '@fortawesome/pro-regular-svg-icons/faCertificate';
 import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboardTeacher';
 import { faCheck } from '@fortawesome/pro-solid-svg-icons/faCheck';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
@@ -83,6 +84,7 @@ library.add(
   faCameraAlt,
   faCaretDown,
   faCertificate,
+  farCertificate,
   faChalkboardTeacher,
   faCheck,
   faCheckCircle,

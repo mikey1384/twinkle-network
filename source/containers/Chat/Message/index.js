@@ -515,8 +515,8 @@ function Message({
     });
   }
 
-  function handleRewardMessageSubmit(feedback) {
-    onRewardMessageSubmit({ feedback, message });
+  function handleRewardMessageSubmit({ amount, feedback }) {
+    onRewardMessageSubmit({ amount, feedback, message });
   }
 
   function handleScrollToBottom() {
