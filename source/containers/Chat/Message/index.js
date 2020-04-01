@@ -17,6 +17,7 @@ import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
+import RewardMessage from './RewardMessage';
 import LocalContext from '../Context';
 import MessageRewardModal from './MessageRewardModal';
 import { socket } from 'constants/io';
@@ -87,6 +88,8 @@ function Message({
     isReloadedSubject,
     isSubject,
     numMsgs,
+    rewardAmount,
+    rewardReason,
     uploaderAuthLevel,
     moveViewTimeStamp,
     isChessMsg,
@@ -330,7 +333,7 @@ function Message({
       }
     });
   }
-  if (userCanRewardThis) {
+  if (userCanRewardThis && channelId === 2) {
     messageMenuItems.push({
       label: (
         <>
@@ -430,28 +433,35 @@ function Message({
                       style={{ marginTop: '1rem' }}
                     />
                   )}
-                  <TextMessage
-                    attachmentHidden={!!attachmentHidden}
-                    channelId={channelId}
-                    content={content}
-                    extractedUrl={extractedUrl}
-                    myId={myId}
-                    messageId={messageId}
-                    numMsgs={numMsgs}
-                    isNotification={isNotification}
-                    isSubject={!!isSubject}
-                    isReloadedSubject={!!isReloadedSubject}
-                    MessageStyle={MessageStyle}
-                    onEdit={onEdit}
-                    onEditCancel={handleEditCancel}
-                    onEditDone={handleEditDone}
-                    onScrollToBottom={handleScrollToBottom}
-                    showSubjectMsgsModal={showSubjectMsgsModal}
-                    socketConnected={socketConnected}
-                    subjectId={subjectId}
-                    targetMessage={targetMessage}
-                    userCanEditThis={userCanEditThis}
-                  />
+                  {rewardAmount ? (
+                    <RewardMessage
+                      rewardAmount={rewardAmount}
+                      rewardReason={rewardReason}
+                    />
+                  ) : (
+                    <TextMessage
+                      attachmentHidden={!!attachmentHidden}
+                      channelId={channelId}
+                      content={content}
+                      extractedUrl={extractedUrl}
+                      myId={myId}
+                      messageId={messageId}
+                      numMsgs={numMsgs}
+                      isNotification={isNotification}
+                      isSubject={!!isSubject}
+                      isReloadedSubject={!!isReloadedSubject}
+                      MessageStyle={MessageStyle}
+                      onEdit={onEdit}
+                      onEditCancel={handleEditCancel}
+                      onEditDone={handleEditDone}
+                      onScrollToBottom={handleScrollToBottom}
+                      showSubjectMsgsModal={showSubjectMsgsModal}
+                      socketConnected={socketConnected}
+                      subjectId={subjectId}
+                      targetMessage={targetMessage}
+                      userCanEditThis={userCanEditThis}
+                    />
+                  )}
                 </>
               )}
             </div>

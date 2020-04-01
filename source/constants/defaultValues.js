@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.2.50';
+export const clientVersion = '1.2.51';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -68,17 +68,17 @@ export const rewardReasons = {
   1: {
     color: 'pink',
     icon: 'heart',
-    message: 'For being considerate'
+    message: 'for being considerate'
   },
   2: {
     color: 'logoBlue',
     icon: 'briefcase',
-    message: 'For putting in a lot of effort'
+    message: 'for putting in a lot of effort'
   },
   3: {
     color: 'orange',
     icon: 'surprise',
-    message: 'For being creative'
+    message: 'for being creative'
   }
 };
 

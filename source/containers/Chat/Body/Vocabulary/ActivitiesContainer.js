@@ -37,7 +37,7 @@ function ActivitiesContainer({ style }) {
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        if (ActivitiesContainerRef.current.scrollTop === 0) {
+        if (ActivitiesContainerRef.current?.scrollTop === 0) {
           handleLoadMore();
         }
       }, 200);

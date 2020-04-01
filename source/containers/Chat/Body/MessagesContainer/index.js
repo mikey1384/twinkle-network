@@ -293,7 +293,7 @@ export default function MessagesContainer({
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        if (MessagesContainerRef.current.scrollTop === 0) {
+        if (MessagesContainerRef.current?.scrollTop === 0) {
           handleLoadMore();
         }
       }, 200);
@@ -801,7 +801,12 @@ export default function MessagesContainer({
     }
   }
 
-  async function handleMessageSubmit({ content, rewardAmount, target }) {
+  async function handleMessageSubmit({
+    content,
+    rewardAmount,
+    rewardReason,
+    target
+  }) {
     setTextAreaHeight(0);
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
@@ -829,7 +834,7 @@ export default function MessagesContainer({
     onSubmitMessage({
       message,
       replyTarget: target,
-      rewardReason: 'considerate',
+      rewardReason,
       rewardAmount
     });
     onSetReplyTarget(null);
@@ -839,6 +844,7 @@ export default function MessagesContainer({
     handleMessageSubmit({
       content: rewardReasons[reasonId].message,
       rewardAmount: amount,
+      rewardReason: reasonId,
       target: message
     });
     await updateUserXP({
