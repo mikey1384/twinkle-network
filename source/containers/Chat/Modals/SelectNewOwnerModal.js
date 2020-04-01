@@ -55,8 +55,8 @@ export default function SelectNewOwnerModal({
           </>
         ) : isClass ? (
           <div style={{ fontSize: '1.7rem' }}>
-            You are the only teacher in this class group. Bring in a new teacher
-            first.
+            You are the only teacher in this class group. Bring in another
+            teacher first.
           </div>
         ) : (
           <div style={{ fontSize: '1.7rem' }}>
