@@ -915,7 +915,7 @@ export default function ChatReducer(state, action) {
         ...state,
         channelOnCall: {
           ...state.channelOnCall,
-          imLive: true
+          imLive: action.imLive
         }
       };
     case 'SET_VISIBLE': {
