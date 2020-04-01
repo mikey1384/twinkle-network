@@ -439,6 +439,9 @@ export default function ChatReducer(state, action) {
         messages: [],
         homeChannelIds: state.homeChannelIds.filter(
           channelId => channelId !== action.channelId
+        ),
+        classChannelIds: state.classChannelIds.filter(
+          channelId => channelId !== action.channelId
         )
       };
     case 'LOAD_MORE_CHANNELS': {
