@@ -570,12 +570,12 @@ export default function Header({
             totalRewardAmount={totalRewardAmount}
           />
           <AccountMenu
-            className={`desktop ${css`
+            className={css`
               margin-right: 3rem;
               @media (max-width: ${mobileMaxWidth}) {
                 margin-right: 0;
               }
-            `}`}
+            `}
             history={history}
           />
         </div>

@@ -44,7 +44,7 @@ function AccountMenu({ className, history, style = {} }) {
   }, [managementLevel, username]);
 
   return (
-    <div style={style}>
+    <div className="desktop" style={style}>
       {loggedIn ? (
         <DropdownButton
           className={className}
