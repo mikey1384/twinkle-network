@@ -18,7 +18,7 @@ import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import LocalContext from '../Context';
-import MessagesRewardModal from './MessageRewardModal';
+import MessageRewardModal from './MessageRewardModal';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
@@ -469,7 +469,7 @@ function Message({
             )}
           </div>
           {messageRewardModalShown && (
-            <MessagesRewardModal
+            <MessageRewardModal
               userToReward={{
                 username,
                 id: userId
@@ -515,8 +515,8 @@ function Message({
     });
   }
 
-  function handleRewardMessageSubmit({ amount, feedback }) {
-    onRewardMessageSubmit({ amount, feedback, message });
+  function handleRewardMessageSubmit({ reasonId, amount }) {
+    onRewardMessageSubmit({ amount, reasonId, message });
   }
 
   function handleScrollToBottom() {

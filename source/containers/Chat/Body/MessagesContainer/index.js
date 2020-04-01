@@ -18,6 +18,7 @@ import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { GENERAL_CHAT_ID } from 'constants/database';
+import { rewardReasons } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -834,9 +835,9 @@ export default function MessagesContainer({
     onSetReplyTarget(null);
   }
 
-  async function handleRewardMessageSubmit({ amount, feedback, message }) {
+  async function handleRewardMessageSubmit({ amount, reasonId, message }) {
     handleMessageSubmit({
-      content: feedback,
+      content: rewardReasons[reasonId].message,
       rewardAmount: amount,
       target: message
     });

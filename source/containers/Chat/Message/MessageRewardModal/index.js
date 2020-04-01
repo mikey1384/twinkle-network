@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import RewardFeedback from './RewardFeedback';
+import RewardReason from './RewardReason';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { rewardReasons } from 'constants/defaultValues';
-import { addCommasToNumber, stringIsEmpty } from 'helpers/stringHelpers';
+import { addCommasToNumber } from 'helpers/stringHelpers';
 
 MessageRewardModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -14,12 +14,12 @@ MessageRewardModal.propTypes = {
 };
 
 export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
-  const [feedback, setFeedback] = useState('');
+  const [selectedReasonId, setSelectedReasonId] = useState(0);
   const [rewardAmount, setRewardAmount] = useState(0);
-  const submitDisabled = useMemo(
-    () => !rewardAmount || stringIsEmpty(feedback),
-    [feedback, rewardAmount]
-  );
+  const submitDisabled = useMemo(() => !rewardAmount || !selectedReasonId, [
+    rewardAmount,
+    selectedReasonId
+  ]);
 
   return (
     <Modal onHide={onHide}>
@@ -52,18 +52,15 @@ export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
             alignItems: 'center'
           }}
         >
-          {Object.entries(rewardReasons).map(
-            ([key, { message, color, icon }]) => (
-              <RewardFeedback
-                key={key}
-                color={color}
-                rewardIcon={icon}
-                phrase={message}
-                feedback={feedback}
-                onSetFeedback={setFeedback}
-              />
-            )
-          )}
+          {Object.keys(rewardReasons).map(key => (
+            <RewardReason
+              key={key}
+              reasonId={Number(key)}
+              selectedReasonId={selectedReasonId}
+              onSelectReasonId={setSelectedReasonId}
+              style={{ marginTop: '1rem' }}
+            />
+          ))}
         </div>
       </main>
       <footer>
@@ -83,7 +80,10 @@ export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
   );
 
   function handleSubmit() {
-    onSubmit({ feedback, amount: rewardAmount * 200 });
+    onSubmit({
+      reasonId: selectedReasonId,
+      amount: rewardAmount * 200
+    });
     onHide();
   }
 }
