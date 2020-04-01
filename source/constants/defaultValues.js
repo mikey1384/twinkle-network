@@ -78,7 +78,7 @@ export const rewardReasons = {
   3: {
     color: 'orange',
     icon: 'surprise',
-    message: 'for sharing something interesting'
+    message: 'for posting something interesting'
   }
 };
 
