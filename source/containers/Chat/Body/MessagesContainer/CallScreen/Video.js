@@ -13,8 +13,7 @@ export default function Video({ stream }) {
       video.srcObject = stream;
       video.volume = 0;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [stream]);
 
   return (
     <div

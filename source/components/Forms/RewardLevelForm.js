@@ -32,7 +32,7 @@ export default function RewardLevelForm({
         style={{
           display: 'flex',
           width: '100%',
-          height: '1.5rem',
+          minHeight: '1.5rem',
           justifyContent: 'center',
           alignItems: 'center'
         }}
@@ -72,8 +72,9 @@ export default function RewardLevelForm({
         style={{
           color: themed ? '#fff' : '',
           cursor: 'pointer',
-          fontSize: '1.5rem',
-          userSelect: 'none'
+          userSelect: 'none',
+          marginTop: 5,
+          fontSize: '1.5rem'
         }}
         onClick={() => onSetRewardLevel(0)}
       >
