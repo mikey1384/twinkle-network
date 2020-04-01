@@ -134,8 +134,8 @@ export default function Header({
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_hung_up', handlePeerHungUp);
-    socket.on('peer_stream_requested', handlePeerStreamRequest);
-    socket.on('peer_stream_closed', handlePeerStreamClose);
+    socket.on('peer_stream_show_requested', handlePeerStreamShowRequest);
+    socket.on('peer_stream_close_requested', handlePeerStreamCloseRequest);
     socket.on('peer_stream_enabled', handlePeerStreamEnable);
     socket.on('subject_changed', handleSubjectChange);
     socket.on('new_vocab_activity_received', handleReceiveVocabActivity);
@@ -167,8 +167,14 @@ export default function Header({
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_hung_up', handlePeerHungUp);
-      socket.removeListener('peer_stream_requested', handlePeerStreamRequest);
-      socket.removeListener('peer_stream_closed', handlePeerStreamClose);
+      socket.removeListener(
+        'peer_stream_show_requested',
+        handlePeerStreamShowRequest
+      );
+      socket.removeListener(
+        'peer_stream_close_requested',
+        handlePeerStreamCloseRequest
+      );
       socket.removeListener('peer_stream_enabled', handlePeerStreamEnable);
       socket.removeListener('subject_changed', handleSubjectChange);
       socket.removeListener(
@@ -319,7 +325,7 @@ export default function Header({
       }
     }
 
-    function handlePeerStreamRequest() {
+    function handlePeerStreamShowRequest() {
       if (myStream) {
         if (
           myStream.getVideoTracks()[0].enabled &&
@@ -342,11 +348,12 @@ export default function Header({
             channelId: channelOnCall.id,
             memberId: userId
           });
+          onSetImLive(true);
         }
       }
     }
 
-    async function handlePeerStreamClose(memberId) {
+    async function handlePeerStreamCloseRequest(memberId) {
       if (memberId === userId) {
         myStream.getVideoTracks()[0].enabled = false;
         myStream.getAudioTracks()[0].enabled = false;

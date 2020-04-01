@@ -141,7 +141,7 @@ function MemberListItem({
   );
 
   function handleConfirmShowPeer() {
-    socket.emit('request_peer_stream', memberId);
+    socket.emit('show_peer_stream', memberId);
     setConfirmModalShown(false);
   }
 
@@ -158,7 +158,7 @@ function MemberListItem({
       if (numLivePeers >= 2) {
         return setConfirmModalShown(true);
       }
-      socket.emit('request_peer_stream', memberId);
+      socket.emit('show_peer_stream', memberId);
     }
   }
 }
