@@ -605,6 +605,7 @@ export default function MessagesContainer({
           onHide={() => setSelectNewOwnerModal(null)}
           members={currentChannel.members}
           onSubmit={handleSelectNewOwner}
+          isClass={currentChannel.isClass}
         />
       )}
     </ErrorBoundary>
@@ -736,7 +737,11 @@ export default function MessagesContainer({
   function handleLeaveConfirm() {
     if (currentChannel.creatorId === userId) {
       setLeaveConfirmModalShown(false);
-      setSelectNewOwnerModal({ andLeave: true });
+      if (currentChannel.members.length === 1) {
+        handleLeaveChannel();
+      } else {
+        setSelectNewOwnerModal({ andLeave: true });
+      }
     } else {
       handleLeaveChannel();
     }
