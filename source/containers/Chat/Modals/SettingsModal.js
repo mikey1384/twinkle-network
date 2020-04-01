@@ -104,7 +104,7 @@ export default function SettingsModal({
               flexDirection: 'row'
             }}
           >
-            {userIsChannelOwner && !isClass && (
+            {userIsChannelOwner && (
               <div
                 style={{
                   display: 'flex',
