@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.2.50';
+export const clientVersion = '1.2.51';
 export const charLimit = {
   chat: {
     subject: 200,
@@ -35,6 +35,7 @@ export const charLimit = {
     url: 300
   }
 };
+
 export const rewardHash = {
   1: {
     label: 'basic',
@@ -62,6 +63,25 @@ export const rewardHash = {
     color: 'gold'
   }
 };
+
+export const rewardReasons = {
+  1: {
+    color: 'pink',
+    icon: 'heart',
+    message: 'for being considerate'
+  },
+  2: {
+    color: 'logoBlue',
+    icon: 'briefcase',
+    message: 'for putting in a lot of effort'
+  },
+  3: {
+    color: 'orange',
+    icon: 'surprise',
+    message: 'for being creative'
+  }
+};
+
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 10000;

@@ -18,6 +18,7 @@ import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { GENERAL_CHAT_ID } from 'constants/database';
+import { rewardReasons } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -49,7 +50,8 @@ export default function MessagesContainer({
       leaveChannel,
       loadChatChannel,
       loadMoreChatMessages,
-      startNewDMChannel
+      startNewDMChannel,
+      updateUserXP
     }
   } = useAppContext();
   const {
@@ -291,7 +293,7 @@ export default function MessagesContainer({
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        if (MessagesContainerRef.current.scrollTop === 0) {
+        if (MessagesContainerRef.current?.scrollTop === 0) {
           handleLoadMore();
         }
       }, 200);
@@ -439,6 +441,7 @@ export default function MessagesContainer({
                   onDropdownButtonClick={handleDropdownButtonClick}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
+                  onRewardMessageSubmit={handleRewardMessageSubmit}
                   recepientId={recepientId}
                   setScrollToBottom={handleSetScrollToBottom}
                   showSubjectMsgsModal={({ subjectId, content }) =>
@@ -516,7 +519,9 @@ export default function MessagesContainer({
             currentChannelId={selectedChannelId}
             currentChannel={currentChannel}
             onChessButtonClick={handleChessModalShown}
-            onMessageSubmit={handleMessageSubmit}
+            onMessageSubmit={content =>
+              handleMessageSubmit({ content, target: replyTarget })
+            }
             onHeightChange={height => {
               if (height !== textAreaHeight) {
                 setTextAreaHeight(height > 46 ? height : 0);
@@ -595,7 +600,10 @@ export default function MessagesContainer({
         <SelectVideoModal
           onHide={() => setSelectVideoModalShown(false)}
           onSend={videoId => {
-            handleMessageSubmit(`https://www.twin-kle.com/videos/${videoId}`);
+            handleMessageSubmit({
+              content: `https://www.twin-kle.com/videos/${videoId}`,
+              target: replyTarget
+            });
             setSelectVideoModalShown(false);
           }}
         />
@@ -793,7 +801,12 @@ export default function MessagesContainer({
     }
   }
 
-  async function handleMessageSubmit(content) {
+  async function handleMessageSubmit({
+    content,
+    rewardAmount,
+    rewardReason,
+    target
+  }) {
     setTextAreaHeight(0);
     let isFirstDirectMessage = selectedChannelId === 0;
     if (isFirstDirectMessage) {
@@ -818,8 +831,30 @@ export default function MessagesContainer({
       channelId: selectedChannelId,
       subjectId: subject.id
     };
-    onSubmitMessage({ message, replyTarget });
+    onSubmitMessage({
+      message,
+      replyTarget: target,
+      rewardReason,
+      rewardAmount
+    });
     onSetReplyTarget(null);
+  }
+
+  async function handleRewardMessageSubmit({ amount, reasonId, message }) {
+    handleMessageSubmit({
+      content: rewardReasons[reasonId].message,
+      rewardAmount: amount,
+      rewardReason: reasonId,
+      target: message
+    });
+    await updateUserXP({
+      amount,
+      action: 'reward',
+      target: 'chat',
+      targetId: message.id,
+      type: 'increase',
+      userId: message.userId
+    });
   }
 
   function handleReceiveNewMessage() {

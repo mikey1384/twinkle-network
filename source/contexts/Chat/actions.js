@@ -487,11 +487,13 @@ export default function ChatActions(dispatch) {
         type: 'SHOW_OUTGOING'
       });
     },
-    onSubmitMessage({ message, replyTarget }) {
+    onSubmitMessage({ message, replyTarget, rewardReason, rewardAmount }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
         message: {
           ...message,
+          rewardReason,
+          rewardAmount,
           timeStamp: Math.floor(Date.now() / 1000)
         },
         replyTarget

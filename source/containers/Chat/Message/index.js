@@ -17,12 +17,16 @@ import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
+import RewardMessage from './RewardMessage';
 import LocalContext from '../Context';
+import MessageRewardModal from './MessageRewardModal';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useLazyLoad, useMyState } from 'helpers/hooks';
+import { Color } from 'constants/css';
+import { css } from 'emotion';
 import { useInView } from 'react-intersection-observer';
 import {
   useAppContext,
@@ -51,6 +55,8 @@ Message.propTypes = {
   onDropdownButtonClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
+  onRewardClick: PropTypes.func,
+  onRewardMessageSubmit: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   setScrollToBottom: PropTypes.func
 };
@@ -82,6 +88,8 @@ function Message({
     isReloadedSubject,
     isSubject,
     numMsgs,
+    rewardAmount,
+    rewardReason,
     uploaderAuthLevel,
     moveViewTimeStamp,
     isChessMsg,
@@ -98,6 +106,7 @@ function Message({
   onDropdownButtonClick,
   onReceiveNewMessage,
   onReplyClick,
+  onRewardMessageSubmit,
   recepientId,
   setScrollToBottom,
   showSubjectMsgsModal
@@ -118,6 +127,7 @@ function Message({
     authLevel,
     canDelete,
     canEdit,
+    canStar,
     userId: myId,
     username: myUsername,
     profilePicId: myProfilePicId
@@ -125,6 +135,10 @@ function Message({
   const userIsUploader = myId === userId;
   const userCanEditThis =
     ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+  const userCanRewardThis = useMemo(
+    () => canStar && authLevel > uploaderAuthLevel && myId !== userId,
+    [authLevel, canStar, uploaderAuthLevel, userId, myId]
+  );
   const {
     requestHelpers: { editMessage, saveMessage, setChessMoveViewTimeStamp }
   } = useAppContext();
@@ -167,6 +181,7 @@ function Message({
     state: { socketConnected }
   } = useNotiContext();
   let { username, profilePicId, targetMessage, ...post } = message;
+  const [messageRewardModalShown, setMessageRewardModalShown] = useState(false);
   const [extractedUrl, setExtractedUrl] = useState('');
   const [onEdit, setOnEdit] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
@@ -278,7 +293,7 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const editMenuItems = [
+  const messageMenuItems = [
     {
       label: (
         <>
@@ -293,7 +308,7 @@ function Message({
     }
   ];
   if (userCanEditThis) {
-    editMenuItems.push({
+    messageMenuItems.push({
       label: (
         <>
           <Icon icon="pencil-alt"></Icon>
@@ -306,7 +321,7 @@ function Message({
     });
   }
   if (userIsUploader || canDelete) {
-    editMenuItems.push({
+    messageMenuItems.push({
       label: (
         <>
           <Icon icon="trash-alt"></Icon>
@@ -316,6 +331,24 @@ function Message({
       onClick: () => {
         onDelete({ messageId });
       }
+    });
+  }
+  if (userCanRewardThis && channelId === 2) {
+    messageMenuItems.push({
+      label: (
+        <>
+          <Icon icon="star"></Icon>
+          <span style={{ marginLeft: '1rem' }}>Reward</span>
+        </>
+      ),
+      style: { color: '#fff', background: Color.pink() },
+      className: css`
+        opacity: 0.9;
+        &:hover {
+          opacity: 1 !important;
+        }
+      `,
+      onClick: () => setMessageRewardModalShown(true)
     });
   }
   const dropdownButtonShown =
@@ -367,7 +400,7 @@ function Message({
                   initialState={chessState}
                   moveViewed={!!moveViewTimeStamp}
                   onBoardClick={onChessBoardClick}
-                  onSpoilerClick={handleSpoilerClick}
+                  onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
                   senderId={userId}
@@ -400,28 +433,35 @@ function Message({
                       style={{ marginTop: '1rem' }}
                     />
                   )}
-                  <TextMessage
-                    attachmentHidden={!!attachmentHidden}
-                    channelId={channelId}
-                    content={content}
-                    extractedUrl={extractedUrl}
-                    myId={myId}
-                    messageId={messageId}
-                    numMsgs={numMsgs}
-                    isNotification={isNotification}
-                    isSubject={!!isSubject}
-                    isReloadedSubject={!!isReloadedSubject}
-                    MessageStyle={MessageStyle}
-                    onEdit={onEdit}
-                    onEditCancel={handleEditCancel}
-                    onEditDone={handleEditDone}
-                    onScrollToBottom={handleScrollToBottom}
-                    showSubjectMsgsModal={showSubjectMsgsModal}
-                    socketConnected={socketConnected}
-                    subjectId={subjectId}
-                    targetMessage={targetMessage}
-                    userCanEditThis={userCanEditThis}
-                  />
+                  {rewardAmount ? (
+                    <RewardMessage
+                      rewardAmount={rewardAmount}
+                      rewardReason={rewardReason}
+                    />
+                  ) : (
+                    <TextMessage
+                      attachmentHidden={!!attachmentHidden}
+                      channelId={channelId}
+                      content={content}
+                      extractedUrl={extractedUrl}
+                      myId={myId}
+                      messageId={messageId}
+                      numMsgs={numMsgs}
+                      isNotification={isNotification}
+                      isSubject={!!isSubject}
+                      isReloadedSubject={!!isReloadedSubject}
+                      MessageStyle={MessageStyle}
+                      onEdit={onEdit}
+                      onEditCancel={handleEditCancel}
+                      onEditDone={handleEditDone}
+                      onScrollToBottom={handleScrollToBottom}
+                      showSubjectMsgsModal={showSubjectMsgsModal}
+                      socketConnected={socketConnected}
+                      subjectId={subjectId}
+                      targetMessage={targetMessage}
+                      userCanEditThis={userCanEditThis}
+                    />
+                  )}
                 </>
               )}
             </div>
@@ -434,10 +474,20 @@ function Message({
                 direction="left"
                 opacity={0.8}
                 onButtonClick={onDropdownButtonClick}
-                menuProps={editMenuItems}
+                menuProps={messageMenuItems}
               />
             )}
           </div>
+          {messageRewardModalShown && (
+            <MessageRewardModal
+              userToReward={{
+                username,
+                id: userId
+              }}
+              onSubmit={handleRewardMessageSubmit}
+              onHide={() => setMessageRewardModalShown(false)}
+            />
+          )}
         </div>
       ) : (
         <div
@@ -475,6 +525,10 @@ function Message({
     });
   }
 
+  function handleRewardMessageSubmit({ reasonId, amount }) {
+    onRewardMessageSubmit({ amount, reasonId, message });
+  }
+
   function handleScrollToBottom() {
     if (isLastMsg) {
       setScrollToBottom();
@@ -495,7 +549,7 @@ function Message({
     });
   }
 
-  async function handleSpoilerClick() {
+  async function handleChessSpoilerClick() {
     onSetReplyTarget(null);
     try {
       await setChessMoveViewTimeStamp({ channelId, message });

@@ -44,6 +44,6 @@ export function timeSince(dateText) {
   }
   s = Math.floor(seconds) > 1 ? 's' : '';
   const string =
-    seconds <= 0 ? 'Just now' : Math.floor(seconds) + ` second${s} ago`;
+    seconds <= 0 ? 'just now' : Math.floor(seconds) + ` second${s} ago`;
   return string;
 }

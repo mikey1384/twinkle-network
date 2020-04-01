@@ -37,6 +37,7 @@ export default function Header({
       checkVersion,
       getNumberOfUnreadMessages,
       loadChat,
+      loadRankings,
       updateChatLastRead
     }
   } = useAppContext();
@@ -92,6 +93,7 @@ export default function Header({
     actions: {
       onChangeSocketStatus,
       onCheckVersion,
+      onGetRanks,
       onIncreaseNumNewPosts,
       onIncreaseNumNewNotis,
       onNotifyChatSubjectChange,
@@ -397,6 +399,13 @@ export default function Header({
           pageVisible,
           usingChat
         });
+      }
+      if (message.targetMessage?.userId === userId && message.rewardAmount) {
+        fetchRankings();
+      }
+      async function fetchRankings() {
+        const { all, top30s } = await loadRankings();
+        onGetRanks({ all, top30s });
       }
     }
 

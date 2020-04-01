@@ -16,9 +16,11 @@ import { faArrowDown } from '@fortawesome/pro-solid-svg-icons/faArrowDown';
 import { faBars } from '@fortawesome/pro-solid-svg-icons/faBars';
 import { faBolt } from '@fortawesome/pro-solid-svg-icons/faBolt';
 import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
+import { faBriefcase } from '@fortawesome/pro-solid-svg-icons/faBriefcase';
 import { faCameraAlt } from '@fortawesome/pro-solid-svg-icons/faCameraAlt';
 import { faCaretDown } from '@fortawesome/pro-solid-svg-icons/faCaretDown';
 import { faCertificate } from '@fortawesome/pro-solid-svg-icons/faCertificate';
+import { faCertificate as farCertificate } from '@fortawesome/pro-regular-svg-icons/faCertificate';
 import { faChalkboardTeacher } from '@fortawesome/pro-solid-svg-icons/faChalkboardTeacher';
 import { faCheck } from '@fortawesome/pro-solid-svg-icons/faCheck';
 import { faCheckCircle } from '@fortawesome/pro-solid-svg-icons/faCheckCircle';
@@ -39,6 +41,8 @@ import { faFilePdf } from '@fortawesome/pro-solid-svg-icons/faFilePdf';
 import { faFileVideo } from '@fortawesome/pro-solid-svg-icons/faFileVideo';
 import { faFileWord } from '@fortawesome/pro-solid-svg-icons/faFileWord';
 import { faLink } from '@fortawesome/pro-solid-svg-icons/faLink';
+import { faHeart } from '@fortawesome/pro-solid-svg-icons/faHeart';
+import { faHeartSquare } from '@fortawesome/pro-solid-svg-icons/faHeartSquare';
 import { faHome } from '@fortawesome/pro-solid-svg-icons/faHome';
 import { faLock } from '@fortawesome/pro-solid-svg-icons/faLock';
 import { faMinus } from '@fortawesome/pro-solid-svg-icons/faMinus';
@@ -56,6 +60,7 @@ import { faStar } from '@fortawesome/pro-solid-svg-icons/faStar';
 import { faStarHalfAlt } from '@fortawesome/pro-solid-svg-icons/faStarHalfAlt';
 import { faStar as farStar } from '@fortawesome/pro-regular-svg-icons/faStar';
 import { faStarHalfAlt as farStarHalfAlt } from '@fortawesome/pro-regular-svg-icons/faStarHalfAlt';
+import { faSurprise } from '@fortawesome/pro-solid-svg-icons/faSurprise';
 import { faThumbsUp } from '@fortawesome/pro-solid-svg-icons/faThumbsUp';
 import { faTimes } from '@fortawesome/pro-solid-svg-icons/faTimes';
 import { faTrashAlt } from '@fortawesome/pro-solid-svg-icons/faTrashAlt';
@@ -72,12 +77,14 @@ library.add(
   faBars,
   faBolt,
   faBook,
+  faBriefcase,
   faArrowLeft,
   faArrowRight,
   faArrowDown,
   faCameraAlt,
   faCaretDown,
   faCertificate,
+  farCertificate,
   faChalkboardTeacher,
   faCheck,
   faCheckCircle,
@@ -97,6 +104,8 @@ library.add(
   faFileVideo,
   faFileWord,
   faFilm,
+  faHeart,
+  faHeartSquare,
   faHome,
   faLink,
   faLock,
@@ -115,6 +124,7 @@ library.add(
   faStarHalfAlt,
   farStar,
   farStarHalfAlt,
+  faSurprise,
   faThumbsUp,
   faTimes,
   faTrashAlt,
