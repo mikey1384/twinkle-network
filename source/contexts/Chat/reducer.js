@@ -738,24 +738,24 @@ export default function ChatReducer(state, action) {
           ? 0
           : state.msgsWhileInvisible + 1,
         selectedChannelId: action.duplicate
-          ? action.data.channelId
+          ? action.message.channelId
           : state.selectedChannelId,
         channelsObj: {
           ...state.channelsObj,
-          [action.data.channelId]: {
-            id: action.data.channelId,
-            members: action.data.members,
-            twoPeople: true,
-            channelName: action.data.channelName || action.data.username,
+          [action.message.channelId]: {
+            id: action.message.channelId,
+            isClass: action.isClass,
+            members: action.message.members,
+            channelName: action.message.channelName || action.message.username,
             lastMessage: {
-              fileName: action.data.fileName || '',
-              content: action.data.content,
+              fileName: action.message.fileName || '',
+              content: action.message.content,
               sender: {
-                id: action.data.userId,
-                username: action.data.username
+                id: action.message.userId,
+                username: action.message.username
               }
             },
-            lastUpdate: action.data.timeStamp,
+            lastUpdate: action.message.timeStamp,
             numUnreads: 1
           }
         },
@@ -763,16 +763,16 @@ export default function ChatReducer(state, action) {
           ? [
               {
                 id: null,
-                channelId: action.data.channelId,
-                content: action.data.content,
-                timeStamp: action.datatimeStamp,
-                username: action.data.username,
-                userId: action.data.userId,
-                profilePicId: action.data.profilePicId
+                channelId: action.message.channelId,
+                content: action.message.content,
+                timeStamp: action.message.timeStamp,
+                username: action.message.username,
+                userId: action.message.userId,
+                profilePicId: action.message.profilePicId
               }
             ]
           : state.messages,
-        homeChannelIds: [action.data.channelId].concat(
+        homeChannelIds: [action.message.channelId].concat(
           state.homeChannelIds.filter((channelId, index) =>
             action.duplicate ? index !== 0 : true
           )

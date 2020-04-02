@@ -288,11 +288,12 @@ export default function ChatActions(dispatch) {
         newMembers
       });
     },
-    onReceiveFirstMsg({ data, duplicate, pageVisible }) {
+    onReceiveFirstMsg({ message, isClass, duplicate, pageVisible }) {
       return dispatch({
         type: 'RECEIVE_FIRST_MSG',
-        data,
+        message,
         duplicate,
+        isClass,
         pageVisible
       });
     },

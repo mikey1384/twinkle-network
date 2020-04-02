@@ -36,7 +36,9 @@ export default function CallScreen({ creatorId, style }) {
   );
 
   return (
-    <div style={{ width: '100%', position: 'relative', ...style }}>
+    <div
+      style={{ width: '100%', position: 'relative', zIndex: 1000, ...style }}
+    >
       {answerButtonShown && (
         <div
           style={{
@@ -101,9 +103,10 @@ export default function CallScreen({ creatorId, style }) {
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              fontWeight: 'bold'
             }}
-          >{`Show or hide your students using the right-side menu buttons next to their usernames`}</div>
+          >{`Show or hide your students using the right menu buttons next to their usernames`}</div>
         )}
     </div>
   );

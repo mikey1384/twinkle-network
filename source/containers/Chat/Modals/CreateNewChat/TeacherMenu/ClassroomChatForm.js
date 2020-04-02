@@ -114,17 +114,22 @@ export default function ClassroomChat({ onBackClick, onHide }) {
   }
 
   async function handleDone() {
-    const data = await createNewChat({
+    const { message, isClass, isClosed, members } = await createNewChat({
       userId,
       channelName,
       isClass: true,
       isClosed: true,
       selectedUsers
     });
-    onCreateNewChannel(data);
+    onCreateNewChannel({ message, isClass, isClosed, members });
     const users = selectedUsers.map(user => user.id);
-    socket.emit('join_chat_channel', data.message.channelId);
-    socket.emit('send_group_chat_invitation', users, data);
+    socket.emit('join_chat_channel', message.channelId);
+    socket.emit('send_group_chat_invitation', users, {
+      message,
+      isClass,
+      isClosed,
+      members
+    });
     onHide();
   }
 }

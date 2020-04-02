@@ -260,11 +260,11 @@ export default function Header({
       }
     }
 
-    function handleChatInvitation(data) {
+    function handleChatInvitation({ message, members, isClass }) {
       let duplicate = false;
       if (selectedChannelId === 0) {
         if (
-          data.members.filter(member => member.userId !== userId)[0].userId ===
+          members.filter(member => member.userId !== userId)[0].userId ===
           channelsObj[selectedChannelId].members.filter(
             member => member.userId !== userId
           )[0].userId
@@ -272,8 +272,8 @@ export default function Header({
           duplicate = true;
         }
       }
-      onReceiveFirstMsg({ data, duplicate, pageVisible });
-      socket.emit('join_chat_channel', data.channelId);
+      onReceiveFirstMsg({ message, duplicate, isClass, pageVisible });
+      socket.emit('join_chat_channel', message.channelId);
     }
 
     function handleDisconnect(reason) {

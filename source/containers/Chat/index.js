@@ -259,12 +259,16 @@ function Chat({ onFileUpload }) {
       return setCreateNewChatModalShown(false);
     }
 
-    const data = await createNewChat(params);
-    onCreateNewChannel(data);
+    const { message, isClosed, members } = await createNewChat(params);
+    onCreateNewChannel({ message, isClosed, members });
 
     const users = params.selectedUsers.map(user => user.id);
-    socket.emit('join_chat_channel', data.message.channelId);
-    socket.emit('send_group_chat_invitation', users, data);
+    socket.emit('join_chat_channel', message.channelId);
+    socket.emit('send_group_chat_invitation', users, {
+      message,
+      isClosed,
+      members
+    });
     setCreateNewChatModalShown(false);
   }
 
