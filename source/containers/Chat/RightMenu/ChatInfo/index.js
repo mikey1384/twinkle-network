@@ -31,7 +31,7 @@ function ChatInfo({
     actions: { onSetCall, onHangUp }
   } = useChatContext();
   const myVideoRef = useRef(null);
-  const myStreaming = useRef(false);
+  const myStreamRef = useRef(false);
 
   const callOngoing = useMemo(
     () => selectedChannelId === channelOnCall.id && channelOnCall.members[myId],
@@ -44,14 +44,14 @@ function ChatInfo({
 
   useEffect(() => {
     const videoRef = myVideoRef.current;
-    if (videoRef && myStream && !myStreaming.current && !videoRef?.srcObject) {
+    if (videoRef && myStream && !myStreamRef.current && !videoRef?.srcObject) {
       const clonedStream = myStream.clone();
       videoRef.srcObject = clonedStream;
       videoRef.volume = 0;
-      myStreaming.current = true;
+      myStreamRef.current = true;
     }
     return function cleanUp() {
-      myStreaming.current = false;
+      myStreamRef.current = false;
     };
   }, [myStream]);
 
