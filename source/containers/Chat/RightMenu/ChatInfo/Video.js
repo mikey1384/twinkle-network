@@ -9,7 +9,9 @@ export default function Video({ myVideoRef }) {
   useEffect(() => {
     const video = myVideoRef.current;
     return function cleanUp() {
-      video.srcObject.getVideoTracks()[0].stop();
+      video.srcObject.getTracks()?.forEach(track => {
+        track.stop();
+      });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
