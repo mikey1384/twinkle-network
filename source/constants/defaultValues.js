@@ -72,7 +72,7 @@ export const rewardReasons = {
   },
   2: {
     color: 'logoBlue',
-    icon: 'bolt',
+    icon: 'comments',
     message: 'for posting something related to the subject'
   },
   3: {
@@ -82,7 +82,7 @@ export const rewardReasons = {
   },
   4: {
     color: 'gold',
-    icon: 'briefcase',
+    icon: 'bolt',
     message: 'for putting in a lot of effort'
   }
 };
