@@ -5,6 +5,7 @@ import { css } from 'emotion';
 Video.propTypes = {
   stream: PropTypes.object.isRequired
 };
+
 export default function Video({ stream }) {
   const videoRef = useRef(stream);
   useEffect(() => {
