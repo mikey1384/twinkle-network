@@ -71,9 +71,9 @@ export const rewardReasons = {
     message: 'for being considerate'
   },
   2: {
-    color: 'gold',
-    icon: 'briefcase',
-    message: 'for putting in a lot of effort'
+    color: 'logoBlue',
+    icon: 'bolt',
+    message: 'for posting something related to the subject'
   },
   3: {
     color: 'orange',
@@ -81,9 +81,9 @@ export const rewardReasons = {
     message: 'for posting something interesting'
   },
   4: {
-    color: 'logoBlue',
-    icon: 'bolt',
-    message: 'for posting something related to the subject'
+    color: 'gold',
+    icon: 'briefcase',
+    message: 'for putting in a lot of effort'
   }
 };
 
