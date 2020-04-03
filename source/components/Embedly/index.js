@@ -22,6 +22,7 @@ const API_URL = `${URL}/content`;
 Embedly.propTypes = {
   contentId: PropTypes.number,
   contentType: PropTypes.string,
+  imageWidth: PropTypes.string,
   imageHeight: PropTypes.string,
   imageMobileHeight: PropTypes.string,
   imageOnly: PropTypes.bool,
@@ -31,12 +32,15 @@ Embedly.propTypes = {
   onHideAttachment: PropTypes.func,
   small: PropTypes.bool,
   style: PropTypes.object,
-  userCanEditThis: PropTypes.bool
+  userCanEditThis: PropTypes.bool,
+  videoWidth: PropTypes.string,
+  videoHeight: PropTypes.string
 };
 
 function Embedly({
   contentId,
   contentType = 'url',
+  imageWidth,
   imageHeight = '100%',
   imageMobileHeight = '100%',
   imageOnly,
@@ -46,7 +50,9 @@ function Embedly({
   onHideAttachment = () => {},
   small,
   style,
-  userCanEditThis
+  userCanEditThis,
+  videoWidth,
+  videoHeight
 }) {
   const translator = {
     actualDescription:
@@ -269,8 +275,9 @@ function Embedly({
       <div
         style={{ height: '100%' }}
         className={css`
-          width: ${contentType === 'chat' ? '50%' : '100%'};
+          width: ${imageWidth || (contentType === 'chat' ? '50%' : '100%')};
           position: relative;
+          justify-content: ${contentType === 'chat' && imageOnly && 'flex-end'};
           display: flex;
           @media (max-width: ${mobileMaxWidth}) {
             width: 100%;
@@ -306,11 +313,19 @@ function Embedly({
             <div className={contentCss}>{InnerContent}</div>
           ) : twinkleVideoId ? (
             <TwinkleVideo
-              style={{ width: '50vw', height: 'CALC(30vw + 3rem)' }}
+              style={{
+                width: videoWidth || '50vw',
+                height: videoHeight || 'CALC(30vw + 3rem)'
+              }}
               videoId={Number(twinkleVideoId)}
             />
           ) : isYouTube ? (
-            <ReactPlayer width="50vw" height="30vw" url={url} controls />
+            <ReactPlayer
+              width={videoWidth || '50vw'}
+              height={videoHeight || '30vw'}
+              url={url}
+              controls
+            />
           ) : (
             <a
               className={contentCss}

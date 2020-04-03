@@ -5,6 +5,7 @@ import FileIcon from 'components/FileIcon';
 import ImageModal from 'components/Modals/ImageModal';
 import UsernameText from 'components/Texts/UsernameText';
 import Spoiler from './Spoiler';
+import Embedly from 'components/Embedly';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -90,6 +91,24 @@ export default function TargetMessage({ message, onScrollToBottom }) {
           />
         )}
       </div>
+      {message.thumbUrl && !message.attachmentHidden && (
+        <Embedly
+          imageOnly
+          contentId={message.id}
+          contentType="chat"
+          imageWidth="100%"
+          imageHeight="20vw"
+          imageMobileHeight="25vw"
+          videoWidth="100%"
+          videoHeight="10rem"
+          loadingHeight="10rem"
+          mobileLoadingHeight="10rem"
+          style={{
+            width: '30rem',
+            height: '10rem'
+          }}
+        />
+      )}
       {fileType && message.fileName && (
         <div
           className={css`
