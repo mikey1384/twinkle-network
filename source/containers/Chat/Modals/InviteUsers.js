@@ -89,7 +89,8 @@ export default function InviteUsersModal({
     onInviteUsersToChannel(data);
     onDone({
       users: selectedUsers,
-      message: data.message
+      message: data.message,
+      isClass: currentChannel.isClass
     });
   }
 

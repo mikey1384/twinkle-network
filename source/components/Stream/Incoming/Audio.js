@@ -8,9 +8,17 @@ Audio.propTypes = {
 export default function Audio({ stream }) {
   const audioRef = useRef(stream);
   useEffect(() => {
+    const currentAudio = audioRef.current;
     if (audioRef.current && !audioRef.current.srcObject) {
-      audioRef.current.srcObject = stream;
+      const clonedStream = stream.clone();
+      audioRef.current.srcObject = clonedStream;
     }
+
+    return function cleanUp() {
+      currentAudio.srcObject?.getTracks()?.forEach(track => {
+        track.stop();
+      });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -62,6 +62,9 @@ function MemberListItem({
       !channelOnCall.members[membersOnCallObj?.[memberId]]?.streamHidden,
     [peerStreams, membersOnCallObj, memberId, channelOnCall.members]
   );
+  const showButtonShown = useMemo(() => {
+    return isClass && imLive && creatorId === myId && memberId !== myId;
+  }, [creatorId, imLive, isClass, memberId, myId]);
 
   return (
     <div
@@ -119,7 +122,7 @@ function MemberListItem({
             <Icon icon="crown" style={{ color: Color.brownOrange() }} />
           </div>
         ) : null}
-        {isClass && imLive && creatorId === myId && memberId !== myId && (
+        {showButtonShown && (
           <Button
             style={{ fontSize: '1rem', marginLeft: '1rem' }}
             filled

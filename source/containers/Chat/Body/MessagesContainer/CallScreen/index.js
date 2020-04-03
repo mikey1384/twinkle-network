@@ -15,7 +15,7 @@ CallScreen.propTypes = {
 export default function CallScreen({ creatorId, style }) {
   const {
     state: { channelOnCall, myStream, peerStreams },
-    actions: { onShowIncoming }
+    actions: { onSetImLive, onShowIncoming }
   } = useChatContext();
   const { userId } = useMyState();
 
@@ -36,9 +36,7 @@ export default function CallScreen({ creatorId, style }) {
   );
 
   return (
-    <div
-      style={{ width: '100%', position: 'relative', zIndex: 1000, ...style }}
-    >
+    <div style={{ width: '100%', position: 'relative', zIndex: 5, ...style }}>
       {answerButtonShown && (
         <div
           style={{
@@ -113,6 +111,9 @@ export default function CallScreen({ creatorId, style }) {
 
   function handleShowIncoming() {
     socket.emit('confirm_call_reception', channelOnCall.id);
+    if (creatorId === userId && channelOnCall.isClass) {
+      onSetImLive(true);
+    }
     onShowIncoming();
   }
 }

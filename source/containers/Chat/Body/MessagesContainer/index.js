@@ -715,7 +715,7 @@ export default function MessagesContainer({
     setSettingsModalShown(false);
   }
 
-  function handleInviteUsersDone({ users, message }) {
+  function handleInviteUsersDone({ users, message, isClass }) {
     socket.emit('new_chat_message', {
       message: {
         ...message,
@@ -736,7 +736,8 @@ export default function MessagesContainer({
       'send_group_chat_invitation',
       users.map(user => user.id),
       {
-        message: { ...message, messageId: message.id }
+        message: { ...message, messageId: message.id },
+        isClass
       }
     );
     setInviteUsersModalShown(false);

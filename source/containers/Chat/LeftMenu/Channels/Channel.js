@@ -51,18 +51,6 @@ function Channel({
     [effectiveChannelName, otherMember]
   );
 
-  if (ChannelName === username) {
-    console.log(
-      'members: ' +
-        Object.entries(members[0]) +
-        ' ' +
-        Object.entries(members[1] || {}),
-      'effective channel name: ' + effectiveChannelName,
-      'other member: ' + otherMember,
-      'two people: ' + twoPeople
-    );
-  }
-
   return (
     <div
       key={id}
