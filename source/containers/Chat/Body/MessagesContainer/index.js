@@ -325,7 +325,7 @@ export default function MessagesContainer({
           opacity={0.7}
           style={{
             position: 'absolute',
-            zIndex: 10,
+            zIndex: 15,
             top: '1rem',
             right: '1rem'
           }}
