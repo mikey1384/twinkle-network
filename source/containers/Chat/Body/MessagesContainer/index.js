@@ -442,8 +442,8 @@ export default function MessagesContainer({
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
                   onRewardMessageSubmit={handleRewardMessageSubmit}
+                  onSetScrollToBottom={handleSetScrollToBottom}
                   recepientId={recepientId}
-                  setScrollToBottom={handleSetScrollToBottom}
                   showSubjectMsgsModal={({ subjectId, content }) =>
                     setSubjectMsgsModal({ shown: true, subjectId, content })
                   }

@@ -57,8 +57,8 @@ Message.propTypes = {
   onReplyClick: PropTypes.func,
   onRewardClick: PropTypes.func,
   onRewardMessageSubmit: PropTypes.func.isRequired,
-  recepientId: PropTypes.number,
-  setScrollToBottom: PropTypes.func
+  onSetScrollToBottom: PropTypes.func,
+  recepientId: PropTypes.number
 };
 
 function Message({
@@ -107,8 +107,8 @@ function Message({
   onReceiveNewMessage,
   onReplyClick,
   onRewardMessageSubmit,
+  onSetScrollToBottom,
   recepientId,
-  setScrollToBottom,
   showSubjectMsgsModal
 }) {
   const [ComponentRef, inView] = useInView({
@@ -244,7 +244,7 @@ function Message({
 
   useEffect(() => {
     if (isLastMsg && (!isNewMessage || userIsUploader)) {
-      setScrollToBottom();
+      onSetScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onEdit, reconnecting]);
@@ -531,7 +531,7 @@ function Message({
 
   function handleScrollToBottom() {
     if (isLastMsg) {
-      setScrollToBottom();
+      onSetScrollToBottom();
     }
   }
 
