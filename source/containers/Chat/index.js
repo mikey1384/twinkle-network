@@ -247,9 +247,14 @@ function Chat({ onFileUpload }) {
     onEnterChannelWithId({ data });
   }
 
-  async function handleCreateNewChannel(params) {
-    if (params.selectedUsers.length === 1) {
-      const recepient = params.selectedUsers[0];
+  async function handleCreateNewChannel({
+    userId,
+    channelName,
+    isClosed,
+    selectedUsers
+  }) {
+    if (selectedUsers.length === 1) {
+      const recepient = selectedUsers[0];
       const data = await loadDMChannel({ recepient });
       onOpenDirectMessageChannel({
         user: { id: userId, username },
@@ -259,10 +264,15 @@ function Chat({ onFileUpload }) {
       return setCreateNewChatModalShown(false);
     }
 
-    const { message, isClosed, members } = await createNewChat(params);
+    const { message, members } = await createNewChat({
+      userId,
+      channelName,
+      isClosed,
+      selectedUsers
+    });
     onCreateNewChannel({ message, isClosed, members });
 
-    const users = params.selectedUsers.map(user => user.id);
+    const users = selectedUsers.map(user => user.id);
     socket.emit('join_chat_channel', message.channelId);
     socket.emit('send_group_chat_invitation', users, {
       message,
