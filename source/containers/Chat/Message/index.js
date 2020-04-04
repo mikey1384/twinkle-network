@@ -24,7 +24,7 @@ import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
-import { useLazyLoad, useMyState } from 'helpers/hooks';
+import { useLazyLoad, useMyState, useContentState } from 'helpers/hooks';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useInView } from 'react-intersection-observer';
@@ -151,6 +151,10 @@ function Message({
       onSetThumbUrl
     }
   } = useContentContext();
+  const { thumbUrl: recentThumbUrl } = useContentState({
+    contentType: 'chat',
+    contentId: messageId
+  });
 
   const {
     state: {
@@ -302,7 +306,7 @@ function Message({
         </>
       ),
       onClick: () => {
-        onSetReplyTarget(message);
+        onSetReplyTarget({ ...message, thumbUrl: thumbUrl || recentThumbUrl });
         onReplyClick();
       }
     }
