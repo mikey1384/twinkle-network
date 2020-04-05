@@ -35,7 +35,7 @@ export default function LoginToViewContent() {
           }
         `}
       >
-        You need to log in to view this content
+        You must log in to view this content
       </span>
     </div>
   );

@@ -107,7 +107,7 @@ export default function SignUpForm({
             <Input
               maxLength={30}
               value={firstname}
-              placeholder="What is your first name? Mine is Mikey"
+              placeholder="What is your first name?"
               onChange={text => {
                 setErrorMessage('');
                 setFirstname(text.trim());
@@ -124,7 +124,7 @@ export default function SignUpForm({
             <Input
               maxLength={30}
               value={lastname}
-              placeholder="What is your last name? Mine is Lee"
+              placeholder="What is your last name?"
               onChange={text => {
                 setErrorMessage('');
                 setLastname(text.trim());
