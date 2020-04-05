@@ -112,7 +112,6 @@ export default function MessagesContainer({
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const [selectNewOwnerModal, setSelectNewOwnerModal] = useState(null);
-  const [fillerHeight, setFillerHeight] = useState(0);
 
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
@@ -143,24 +142,6 @@ export default function MessagesContainer({
       selectedChannelIsOnCall ? ` - ${CALL_SCREEN_HEIGHT}` : ''
     })`;
   }, [replyTarget, selectedChannelIsOnCall, socketConnected, textAreaHeight]);
-
-  useEffect(() => {
-    setTimeout(() =>
-      setFillerHeight(
-        MessagesContainerRef.current?.offsetHeight >
-          MessagesRef.current?.offsetHeight
-          ? MessagesContainerRef.current?.offsetHeight -
-              MessagesRef.current?.offsetHeight
-          : 20,
-        0
-      )
-    );
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    (MessagesContainerRef.current?.offsetHeight,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    MessagesRef.current?.offsetHeight)
-  ]);
 
   const menuProps = useMemo(() => {
     if (currentChannel.twoPeople) {
@@ -411,7 +392,8 @@ export default function MessagesContainer({
             ) : (
               <div
                 style={{
-                  height: fillerHeight
+                  height: `CALC(100vh - ${MessagesRef.current?.offsetHeight ||
+                    0}px)`
                 }}
               />
             )}
