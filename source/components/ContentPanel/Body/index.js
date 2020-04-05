@@ -23,8 +23,9 @@ import RewardStatus from 'components/RewardStatus';
 import ErrorBoundary from 'components/ErrorBoundary';
 import FileViewer from 'components/FileViewer';
 import Icon from 'components/Icon';
+import LoginToViewContent from 'components/LoginToViewContent';
 import { css } from 'emotion';
-import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import {
   determineXpButtonDisabled,
   isMobile,
@@ -73,9 +74,6 @@ function Body({
   onChangeSpoilerStatus
 }) {
   const {
-    user: {
-      actions: { onOpenSigninModal }
-    },
     requestHelpers: { deleteContent, loadComments }
   } = useAppContext();
   const {
@@ -282,22 +280,7 @@ function Body({
               }}
             />
           ) : (
-            <div
-              onClick={onOpenSigninModal}
-              className={css`
-                cursor: pointer;
-                text-align: center;
-                margin: 1rem;
-                padding: 1rem;
-                border-radius: ${borderRadius};
-                border: 1px solid ${Color.black()};
-                &:hover {
-                  text-decoration: underline;
-                }
-              `}
-            >
-              You need to log in to view this content
-            </div>
+            <LoginToViewContent />
           ))}
         {contentType === 'comment' && attachedVideoShown && (
           <VideoPlayer

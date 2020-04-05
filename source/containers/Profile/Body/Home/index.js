@@ -11,6 +11,7 @@ import Icon from 'components/Icon';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import BioEditModal from 'components/Modals/BioEditModal';
 import DropDownButton from 'components/Buttons/DropdownButton';
+import LoginToViewContent from 'components/LoginToViewContent';
 import { css } from 'emotion';
 import {
   addEmoji,
@@ -280,45 +281,49 @@ export default function Home({ location, profile, selectedTheme }) {
               )}
             </div>
           </div>
-          <BasicInfos
-            profileTheme={profileTheme}
-            className={css`
-              margin-top: ${(!greeting || greeting.length) < 50
-                ? userId === profile.id
-                  ? '-7rem'
-                  : '-4rem'
-                : 0};
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: ${(!greeting || greeting.length) < 20
+          {userId ? (
+            <BasicInfos
+              profileTheme={profileTheme}
+              className={css`
+                margin-top: ${(!greeting || greeting.length) < 50
                   ? userId === profile.id
                     ? '-7rem'
                     : '-4rem'
                   : 0};
-              }
-            `}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              width: 'CALC(50% - 1rem)',
-              fontSize: '1.7rem',
-              marginLeft: '1rem',
-              marginBottom: '1rem'
-            }}
-            email={email}
-            verifiedEmail={verifiedEmail}
-            joinDate={joinDate}
-            online={online}
-            lastActive={lastActive}
-            profilePicId={profilePicId}
-            userId={id}
-            username={username}
-            selectedTheme={selectedTheme}
-            website={website}
-            youtubeName={youtubeName}
-            youtubeUrl={youtubeUrl}
-          />
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-top: ${(!greeting || greeting.length) < 20
+                    ? userId === profile.id
+                      ? '-7rem'
+                      : '-4rem'
+                    : 0};
+                }
+              `}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                width: 'CALC(50% - 1rem)',
+                fontSize: '1.7rem',
+                marginLeft: '1rem',
+                marginBottom: '1rem'
+              }}
+              email={email}
+              verifiedEmail={verifiedEmail}
+              joinDate={joinDate}
+              online={online}
+              lastActive={lastActive}
+              profilePicId={profilePicId}
+              userId={id}
+              username={username}
+              selectedTheme={selectedTheme}
+              website={website}
+              youtubeName={youtubeName}
+              youtubeUrl={youtubeUrl}
+            />
+          ) : (
+            <LoginToViewContent />
+          )}
         </div>
         {profile.twinkleXP > 0 && (
           <RankBar
