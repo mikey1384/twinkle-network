@@ -26,6 +26,7 @@ import Icon from 'components/Icon';
 import LoginToViewContent from 'components/LoginToViewContent';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { descriptionLengthForExtraRewardLevel } from 'constants/defaultValues';
 import {
   determineXpButtonDisabled,
   isMobile,
@@ -88,6 +89,7 @@ function Body({
     actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
   } = useContentContext();
   const {
+    description,
     filePath,
     fileName,
     fileSize,
@@ -166,10 +168,19 @@ function Body({
           ? 1
           : 0
         : rootObj.rewardLevel;
-    return contentObj.byUser
+    return (contentType === 'subject' &&
+      description?.length > descriptionLengthForExtraRewardLevel) ||
+      contentObj.byUser
       ? 5
       : targetObj.subject?.rewardLevel || rootRewardLevel;
-  }, [contentObj.byUser, rootObj.rewardLevel, rootType, targetObj.subject]);
+  }, [
+    contentObj.byUser,
+    contentType,
+    description,
+    rootObj.rewardLevel,
+    rootType,
+    targetObj.subject
+  ]);
 
   const xpButtonDisabled = useMemo(
     () =>
@@ -449,7 +460,7 @@ function Body({
             rewardLevel={finalRewardLevel}
             uploaderId={uploader.id}
             stars={stars}
-            onRewardSubmit={data => {
+            onRewardSubmit={(data) => {
               onSetXpRewardInterfaceShown({
                 contentType,
                 contentId,
@@ -531,8 +542,9 @@ function Body({
         <ConfirmModal
           onConfirm={deleteThisContent}
           onHide={() => setConfirmModalShown(false)}
-          title={`Remove ${contentType.charAt(0).toUpperCase() +
-            contentType.slice(1)}`}
+          title={`Remove ${
+            contentType.charAt(0).toUpperCase() + contentType.slice(1)
+          }`}
         />
       )}
     </ErrorBoundary>

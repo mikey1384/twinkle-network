@@ -320,7 +320,7 @@ export default function LinkPage({
               contentId={linkId}
               noPadding
               uploaderId={uploader.id}
-              onRewardSubmit={data => {
+              onRewardSubmit={(data) => {
                 onSetXpRewardInterfaceShown({
                   contentType: 'url',
                   contentId: linkId,
@@ -349,7 +349,7 @@ export default function LinkPage({
         onLoadMoreSubjects={onLoadMoreSubjects}
         onLoadSubjectComments={onLoadSubjectComments}
         onSubjectEditDone={onEditSubject}
-        onSubjectDelete={subjectId =>
+        onSubjectDelete={(subjectId) =>
           onDeleteContent({ contentType: 'subject', contentId: subjectId })
         }
         onSetRewardLevel={onSetRewardLevel}
