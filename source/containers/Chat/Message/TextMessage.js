@@ -21,7 +21,7 @@ TextMessage.propTypes = {
   messageId: PropTypes.number,
   MessageStyle: PropTypes.object,
   numMsgs: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  onEdit: PropTypes.bool,
+  isEditing: PropTypes.bool,
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
   onScrollToBottom: PropTypes.func.isRequired,
@@ -42,7 +42,7 @@ function TextMessage({
   messageId,
   MessageStyle,
   numMsgs,
-  onEdit,
+  isEditing,
   onEditCancel,
   onEditDone,
   onScrollToBottom,
@@ -61,7 +61,7 @@ function TextMessage({
   return (
     <ErrorBoundary>
       <div>
-        {onEdit ? (
+        {isEditing ? (
           <EditTextArea
             allowEmptyText
             contentId={messageId}

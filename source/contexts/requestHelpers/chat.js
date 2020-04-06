@@ -48,11 +48,11 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editMessage({ editedMessage, messageId }) {
+    async editMessage({ editedMessage, messageId, isSubject, subjectId }) {
       try {
         await request.put(
           `${URL}/chat/message`,
-          { editedMessage, messageId },
+          { editedMessage, messageId, isSubject, subjectId },
           auth()
         );
         return Promise.resolve();
@@ -186,7 +186,7 @@ export default function chatRequestHelpers({ auth, handleError }) {
       try {
         const { data } = await request.get(
           `${URL}/chat/more/channels?type=${type}&currentChannelId=${currentChannelId}&${shownIds
-            .map(shownId => `shownIds[]=${shownId}`)
+            .map((shownId) => `shownIds[]=${shownId}`)
             .join('&')}`,
           auth()
         );

@@ -147,11 +147,12 @@ function Message({
       onSetEmbeddedUrl,
       onSetActualDescription,
       onSetActualTitle,
+      onSetIsEditing,
       onSetSiteUrl,
       onSetThumbUrl
     }
   } = useContentContext();
-  const { thumbUrl: recentThumbUrl } = useContentState({
+  const { thumbUrl: recentThumbUrl, isEditing } = useContentState({
     contentType: 'chat',
     contentId: messageId
   });
@@ -187,7 +188,6 @@ function Message({
   let { username, profilePicId, targetMessage, ...post } = message;
   const [messageRewardModalShown, setMessageRewardModalShown] = useState(false);
   const [extractedUrl, setExtractedUrl] = useState('');
-  const [onEdit, setOnEdit] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
 
   if (fileToUpload && !userId) {
@@ -251,7 +251,7 @@ function Message({
       onSetScrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onEdit, reconnecting]);
+  }, [isEditing, reconnecting]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
@@ -320,7 +320,11 @@ function Message({
         </>
       ),
       onClick: () => {
-        setOnEdit(true);
+        onSetIsEditing({
+          contentId: messageId,
+          contentType: 'chat',
+          isEditing: true
+        });
       }
     });
   }
@@ -356,7 +360,7 @@ function Message({
     });
   }
   const dropdownButtonShown =
-    !!messageId && !isNotification && !isChessMsg && !onEdit;
+    !!messageId && !isNotification && !isChessMsg && !isEditing;
 
   if (!chessState && gameWinnerId) {
     return (
@@ -455,7 +459,7 @@ function Message({
                       isSubject={!!isSubject}
                       isReloadedSubject={!!isReloadedSubject}
                       MessageStyle={MessageStyle}
-                      onEdit={onEdit}
+                      isEditing={isEditing}
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
                       onScrollToBottom={handleScrollToBottom}
@@ -506,14 +510,37 @@ function Message({
   );
 
   function handleEditCancel() {
-    setOnEdit(false);
+    onSetIsEditing({
+      contentId: messageId,
+      contentType: 'chat',
+      isEditing: false
+    });
   }
 
   async function handleEditDone(editedMessage) {
-    await editMessage({ editedMessage, messageId });
-    onEditMessage({ editedMessage, messageId });
-    socket.emit('edit_chat_message', { channelId, editedMessage, messageId });
-    setOnEdit(false);
+    const messageIsSubject = !!isSubject || !!isReloadedSubject;
+    await editMessage({
+      editedMessage,
+      messageId,
+      isSubject: messageIsSubject,
+      subjectId
+    });
+    onEditMessage({
+      editedMessage,
+      messageId,
+      isSubject: messageIsSubject
+    });
+    socket.emit('edit_chat_message', {
+      channelId,
+      editedMessage,
+      messageId,
+      isSubject: messageIsSubject
+    });
+    onSetIsEditing({
+      contentId: messageId,
+      contentType: 'chat',
+      isEditing: false
+    });
   }
 
   function handleFileUpload() {

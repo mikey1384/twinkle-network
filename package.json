@@ -122,6 +122,7 @@
   },
   "prettier": {
     "bracketSpacing": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "none"
   }
 }

@@ -123,10 +123,10 @@ export default function ChatActions(dispatch) {
         channelId
       });
     },
-    onEditMessage({ editedMessage, messageId }) {
+    onEditMessage({ editedMessage, messageId, isSubject }) {
       return dispatch({
         type: 'EDIT_MESSAGE',
-        data: { editedMessage, messageId }
+        data: { editedMessage, messageId, isSubject }
       });
     },
     onEditWord({ deletedDefIds, partOfSpeeches, editedDefinitionOrder, word }) {

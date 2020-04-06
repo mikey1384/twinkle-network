@@ -174,7 +174,7 @@ export default function ChatReducer(state, action) {
         subject: {},
         homeChannelIds: [
           action.message.channelId,
-          ...state.homeChannelIds.filter(channelId => channelId !== 0)
+          ...state.homeChannelIds.filter((channelId) => channelId !== 0)
         ],
         channelsObj: {
           ...state.channelsObj,
@@ -201,19 +201,19 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         messages: state.messages.filter(
-          message => message.id !== action.messageId
+          (message) => message.id !== action.messageId
         )
       };
     case 'DISPLAY_ATTACHED_FILE':
       return {
         ...state,
-        messages: state.messages.map(message => {
+        messages: state.messages.map((message) => {
           return message.filePath === action.filePath
             ? {
                 ...message,
                 ...action.fileInfo,
                 id: state.filesBeingUploaded[action.channelId]?.filter(
-                  file => file.filePath === action.filePath
+                  (file) => file.filePath === action.filePath
                 )?.[0]?.id,
                 fileToUpload: undefined
               }
@@ -223,7 +223,7 @@ export default function ChatReducer(state, action) {
     case 'EDIT_MESSAGE':
       return {
         ...state,
-        messages: state.messages.map(message => {
+        messages: state.messages.map((message) => {
           return {
             ...message,
             content:
@@ -231,7 +231,11 @@ export default function ChatReducer(state, action) {
                 ? action.data.editedMessage
                 : message.content
           };
-        })
+        }),
+        subject: {
+          ...state.subject,
+          content: action.data.editedMessage
+        }
       };
     case 'EDIT_WORD':
       return {
@@ -252,7 +256,7 @@ export default function ChatReducer(state, action) {
       const selectedChannel = action.data.channel;
       const uploadStatusMessages = state.filesBeingUploaded[
         selectedChannel.id
-      ]?.filter(message => !message.uploadComplete);
+      ]?.filter((message) => !message.uploadComplete);
       if (action.data.messages.length === 21) {
         action.data.messages.pop();
         messagesLoadMoreButton = true;
@@ -338,7 +342,7 @@ export default function ChatReducer(state, action) {
     case 'HIDE_ATTACHMENT':
       return {
         ...state,
-        messages: state.messages.map(message =>
+        messages: state.messages.map((message) =>
           message.id === action.messageId
             ? { ...message, attachmentHidden: true }
             : message
@@ -363,7 +367,7 @@ export default function ChatReducer(state, action) {
       let vocabActivitiesLoadMoreButton = false;
       const uploadStatusMessages = state.filesBeingUploaded[
         action.data.currentChannelId
-      ]?.filter(message => !message.uploadComplete);
+      ]?.filter((message) => !message.uploadComplete);
       if (action.data.messages && action.data.messages.length === 21) {
         action.data.messages.pop();
         messagesLoadMoreButton = true;
@@ -423,7 +427,7 @@ export default function ChatReducer(state, action) {
           [state.selectedChannelId]: {
             ...state.channelsObj[state.selectedChannelId],
             members: state.channelsObj[state.selectedChannelId].members.concat(
-              action.data.selectedUsers.map(user => ({
+              action.data.selectedUsers.map((user) => ({
                 id: user.id,
                 username: user.username,
                 profilePicId: user.profilePicId
@@ -438,10 +442,10 @@ export default function ChatReducer(state, action) {
         ...state,
         messages: [],
         homeChannelIds: state.homeChannelIds.filter(
-          channelId => channelId !== action.channelId
+          (channelId) => channelId !== action.channelId
         ),
         classChannelIds: state.classChannelIds.filter(
-          channelId => channelId !== action.channelId
+          (channelId) => channelId !== action.channelId
         )
       };
     case 'LOAD_MORE_CHANNELS': {
@@ -467,7 +471,7 @@ export default function ChatReducer(state, action) {
           ? 'homeChannelIds'
           : 'classChannelIds']: state[
           action.channelType === 'home' ? 'homeChannelIds' : 'classChannelIds'
-        ].concat(action.channels.map(channel => channel.id)),
+        ].concat(action.channels.map((channel) => channel.id)),
         channelsObj: {
           ...state.channelsObj,
           ...channels
@@ -580,7 +584,7 @@ export default function ChatReducer(state, action) {
             },
             numUnreads: 0,
             members: state.channelsObj[action.data.channelId].members.filter(
-              member => member.id !== action.data.userId
+              (member) => member.id !== action.data.userId
             )
           }
         },
@@ -625,7 +629,7 @@ export default function ChatReducer(state, action) {
         },
         homeChannelIds: [action.channelId].concat(
           state.homeChannelIds.filter(
-            channelId => channelId !== action.channelId
+            (channelId) => channelId !== action.channelId
           )
         ),
         selectedChannelId: action.channelId,
@@ -643,7 +647,7 @@ export default function ChatReducer(state, action) {
         subject: {},
         homeChannelIds: [
           0,
-          ...state.homeChannelIds.filter(channelId => channelId !== 0)
+          ...state.homeChannelIds.filter((channelId) => channelId !== 0)
         ],
         selectedChannelId: 0,
         channelsObj: {
@@ -681,7 +685,7 @@ export default function ChatReducer(state, action) {
         filesBeingUploaded: {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
-            file =>
+            (file) =>
               file.filePath === action.path
                 ? {
                     ...file,
@@ -803,7 +807,7 @@ export default function ChatReducer(state, action) {
           : state.msgsWhileInvisible + 1,
         homeChannelIds: [action.channel.id].concat(
           state.homeChannelIds.filter(
-            channelId => channelId !== action.channel.id
+            (channelId) => channelId !== action.channel.id
           )
         )
       };
@@ -1077,7 +1081,7 @@ export default function ChatReducer(state, action) {
         filesBeingUploaded: {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
-            file =>
+            (file) =>
               file.filePath === action.path
                 ? {
                     ...file,
@@ -1090,7 +1094,7 @@ export default function ChatReducer(state, action) {
     case 'UPDATE_CHESS_MOVE_VIEW_STAMP':
       return {
         ...state,
-        messages: state.messages.map(message =>
+        messages: state.messages.map((message) =>
           !message.moveViewTimeStamp
             ? { ...message, moveViewTimeStamp: Math.floor(Date.now() / 1000) }
             : message
@@ -1102,7 +1106,7 @@ export default function ChatReducer(state, action) {
         filesBeingUploaded: {
           ...state.filesBeingUploaded,
           [action.channelId]: state.filesBeingUploaded[action.channelId]?.map(
-            file =>
+            (file) =>
               file.filePath === action.path
                 ? {
                     ...file,
@@ -1147,13 +1151,13 @@ function updateWordCollectorsRankings({
   currentRankings: { all = [], top30s = [] }
 }) {
   const newAllRankings = all
-    .filter(ranker => ranker.username !== collector.username)
+    .filter((ranker) => ranker.username !== collector.username)
     .concat([collector]);
   newAllRankings.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
   let newTop30s = top30s;
   if (collector.rank <= 30) {
     newTop30s = top30s
-      .filter(ranker => ranker.username !== collector.username)
+      .filter((ranker) => ranker.username !== collector.username)
       .concat([collector]);
   }
   newTop30s.sort((a, b) => b.numWordsCollected - a.numWordsCollected);
