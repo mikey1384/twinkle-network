@@ -52,6 +52,10 @@ function MessageInput({
   const text = state['chat' + currentChannelId] || '';
 
   useEffect(() => {
+    setSending(false);
+  }, [currentChannelId]);
+
+  useEffect(() => {
     if (!isMobile(navigator)) {
       innerRef.current.focus();
     }
