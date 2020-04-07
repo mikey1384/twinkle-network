@@ -188,15 +188,15 @@ export default function SubjectPanel({
           />
         )}
         {onEdit && (
-          <form onSubmit={event => event.preventDefault()}>
+          <form onSubmit={(event) => event.preventDefault()}>
             <Input
               autoFocus
               placeholder="Enter Title..."
               value={editedTitle}
-              onChange={text => {
+              onChange={(text) => {
                 setEditedTitle(text);
               }}
-              onKeyUp={event => setEditedTitle(addEmoji(event.target.value))}
+              onKeyUp={(event) => setEditedTitle(addEmoji(event.target.value))}
             />
           </form>
         )}
@@ -207,7 +207,7 @@ export default function SubjectPanel({
               style={{ marginTop: '1rem' }}
               minRows={5}
               value={editedDescription}
-              onChange={event => {
+              onChange={(event) => {
                 setEditedDescription(event.target.value);
               }}
             />
@@ -220,7 +220,7 @@ export default function SubjectPanel({
                 placeholder="Enter Secret Message (Optional)"
                 minRows={5}
                 value={editedSecretAnswer}
-                onChange={event => {
+                onChange={(event) => {
                   setEditedSecretAnswer(event.target.value);
                 }}
               />
@@ -310,14 +310,24 @@ export default function SubjectPanel({
               parent={{
                 contentId,
                 contentType,
-                rewardLevel: rootRewardLevel
+                rewardLevel: rootRewardLevel,
+                secretAnswer,
+                uploader: {
+                  id: userId,
+                  authLevel: uploaderAuthLevel
+                }
               }}
               rootContent={{
                 contentType
               }}
               subject={{
                 id: subjectId,
-                rewardLevel
+                rewardLevel,
+                secretAnswer,
+                uploader: {
+                  id: userId,
+                  authLevel: uploaderAuthLevel
+                }
               }}
             />
           </div>

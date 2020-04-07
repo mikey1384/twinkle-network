@@ -250,10 +250,30 @@ function Body({
   }, [contentObj.content]);
 
   const editButtonShown = useMemo(() => {
+    const isForSecretSubject =
+      (!!rootObj?.secretAnswer &&
+        !(
+          rootObj?.uploader?.id === userId ||
+          authLevel > rootObj?.uploader?.authLevel
+        )) ||
+      (!!targetObj?.subject?.secretAnswer &&
+        !(
+          targetObj?.subject?.uploader?.id === userId ||
+          authLevel > targetObj?.subject?.uploader?.authLevel
+        ));
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploader.authLevel;
-    return userId === uploader.id || userCanEditThis;
-  }, [authLevel, canDelete, canEdit, uploader.authLevel, uploader.id, userId]);
+    return (userId === uploader.id && !isForSecretSubject) || userCanEditThis;
+  }, [
+    authLevel,
+    canDelete,
+    canEdit,
+    rootObj,
+    targetObj,
+    uploader.authLevel,
+    uploader.id,
+    userId
+  ]);
 
   const userCanRewardThis = useMemo(
     () => canStar && authLevel > uploader.authLevel && userId !== uploader.id,

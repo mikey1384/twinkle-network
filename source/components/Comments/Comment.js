@@ -163,9 +163,35 @@ function Comment({
     uploader.authLevel
   ]);
   const editButtonShown = useMemo(() => {
+    const isForSecretSubject =
+      (rootContent?.secretAnswer &&
+        !(
+          rootContent?.uploader?.id === userId ||
+          authLevel > rootContent?.uploader?.authLevel
+        )) ||
+      (parent?.secretAnswer &&
+        !(
+          parent?.uploader?.id === userId ||
+          authLevel > parent?.uploader?.authLevel
+        )) ||
+      (subject?.secretAnswer &&
+        !(
+          subject?.uploader?.id === userId ||
+          authLevel > subject?.uploader?.authLevel
+        ));
     const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
-    return userIsUploader || userCanEditThis;
-  }, [canDelete, canEdit, userIsHigherAuth, userIsUploader]);
+    return (userIsUploader && !isForSecretSubject) || userCanEditThis;
+  }, [
+    authLevel,
+    canDelete,
+    canEdit,
+    parent,
+    rootContent,
+    subject,
+    userId,
+    userIsHigherAuth,
+    userIsUploader
+  ]);
   const editMenuItems = useMemo(() => {
     const items = [];
     if (userIsUploader || canEdit) {
@@ -382,7 +408,7 @@ function Comment({
                 contentType="comment"
                 contentId={comment.id}
                 uploaderId={uploader.id}
-                onRewardSubmit={data => {
+                onRewardSubmit={(data) => {
                   onSetXpRewardInterfaceShown({
                     contentId: comment.id,
                     contentType: 'comment',

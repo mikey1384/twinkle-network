@@ -59,7 +59,7 @@ function MainFeeds({
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
   const NotificationsItems = useMemo(() => {
-    return notifications.map(notification => {
+    return notifications.map((notification) => {
       return (
         <nav
           style={{ background: '#fff' }}
@@ -157,7 +157,10 @@ function MainFeeds({
           )}
           {totalRewardAmount === 0 && (
             <>
-              <p>{originalTotalReward * rewardValue.star} XP Collected!</p>
+              <p>
+                {addCommasToNumber(originalTotalReward * rewardValue.star)} XP
+                Collected!
+              </p>
               <p>
                 Your XP: {addCommasToNumber(originalTwinkleXP)} {'=>'}{' '}
                 {addCommasToNumber(
