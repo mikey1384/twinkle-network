@@ -237,7 +237,7 @@ export default function MessagesContainer({
         if (number === 0) {
           onSetChessModalShown(false);
         }
-        setChessCountdownObj(chessCountdownObj => ({
+        setChessCountdownObj((chessCountdownObj) => ({
           ...chessCountdownObj,
           [channelId]: number
         }));
@@ -245,7 +245,7 @@ export default function MessagesContainer({
     }
     function handleReceiveMessage({ message }) {
       if (message.isChessMsg) {
-        setChessCountdownObj(chessCountdownObj => ({
+        setChessCountdownObj((chessCountdownObj) => ({
           ...chessCountdownObj,
           [message.channelId]: undefined
         }));
@@ -392,8 +392,9 @@ export default function MessagesContainer({
             ) : (
               <div
                 style={{
-                  height: `CALC(100vh - ${MessagesRef.current?.offsetHeight ||
-                    0}px)`
+                  height: `CALC(100vh - ${
+                    MessagesRef.current?.offsetHeight || 0
+                  }px)`
                 }}
               />
             )}
@@ -501,10 +502,10 @@ export default function MessagesContainer({
             currentChannelId={selectedChannelId}
             currentChannel={currentChannel}
             onChessButtonClick={handleChessModalShown}
-            onMessageSubmit={content =>
+            onMessageSubmit={(content) =>
               handleMessageSubmit({ content, target: replyTarget })
             }
-            onHeightChange={height => {
+            onHeightChange={(height) => {
               if (height !== textAreaHeight) {
                 setTextAreaHeight(height > 46 ? height : 0);
               }
@@ -525,8 +526,9 @@ export default function MessagesContainer({
       {alertModalShown && (
         <AlertModal
           title="File is too large"
-          content={`The file size is larger than your limit of ${maxSize /
-            mb} MB`}
+          content={`The file size is larger than your limit of ${
+            maxSize / mb
+          } MB`}
           onHide={() => setAlertModalShown(false)}
         />
       )}
@@ -581,7 +583,7 @@ export default function MessagesContainer({
       {selectVideoModalShown && (
         <SelectVideoModal
           onHide={() => setSelectVideoModalShown(false)}
-          onSend={videoId => {
+          onSend={(videoId) => {
             handleMessageSubmit({
               content: `https://www.twin-kle.com/videos/${videoId}`,
               target: replyTarget
@@ -716,7 +718,7 @@ export default function MessagesContainer({
     });
     socket.emit(
       'send_group_chat_invitation',
-      users.map(user => user.id),
+      users.map((user) => user.id),
       {
         message: { ...message, messageId: message.id },
         isClass
@@ -821,6 +823,7 @@ export default function MessagesContainer({
       rewardAmount
     });
     onSetReplyTarget(null);
+    return Promise.resolve();
   }
 
   async function handleRewardMessageSubmit({ amount, reasonId, message }) {
