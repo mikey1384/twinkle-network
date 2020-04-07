@@ -179,13 +179,18 @@ function MessageInput({
       setSending(true);
       innerRef.current.focus();
       if (stringIsEmpty(text)) return;
-      await onMessageSubmit(finalizeEmoji(text));
-      onEnterComment({
-        contentType: 'chat',
-        contentId: currentChannelId,
-        text: ''
-      });
-      setSending(false);
+      try {
+        await onMessageSubmit(finalizeEmoji(text));
+        onEnterComment({
+          contentType: 'chat',
+          contentId: currentChannelId,
+          text: ''
+        });
+        setSending(false);
+      } catch (error) {
+        console.error(error);
+        setSending(false);
+      }
     }
   }
 }
