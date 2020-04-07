@@ -264,9 +264,9 @@ export default function Header({
       let duplicate = false;
       if (selectedChannelId === 0) {
         if (
-          members.filter(member => member.userId !== userId)[0].userId ===
+          members.filter((member) => member.userId !== userId)[0].userId ===
           channelsObj[selectedChannelId].members.filter(
-            member => member.userId !== userId
+            (member) => member.userId !== userId
           )[0].userId
         ) {
           duplicate = true;
@@ -441,7 +441,7 @@ export default function Header({
           const membersHash = {};
           for (let member of Object.entries(membersOnline)
             .map(([, member]) => member)
-            .filter(member => !!callData.peers[member.socketId])) {
+            .filter((member) => !!callData.peers[member.socketId])) {
             membersHash[member.id] = member.socketId;
           }
           onSetCall({
@@ -593,6 +593,9 @@ export default function Header({
         config: {
           iceServers: [
             {
+              urls: 'stun:stun.l.google.com:19302'
+            },
+            {
               urls: 'turn:18.177.176.36:3478?transport=udp',
               username: 'test',
               credential: 'test'
@@ -603,7 +606,7 @@ export default function Header({
         stream
       });
 
-      peersRef.current[peerId].on('signal', signal => {
+      peersRef.current[peerId].on('signal', (signal) => {
         socket.emit('send_signal', {
           socketId: peerId,
           signal,
@@ -611,7 +614,7 @@ export default function Header({
         });
       });
 
-      peersRef.current[peerId].on('stream', stream => {
+      peersRef.current[peerId].on('stream', (stream) => {
         onShowIncoming();
         onSetPeerStreams({ peerId, stream });
       });
@@ -624,7 +627,7 @@ export default function Header({
         delete peersRef.current[peerId];
       });
 
-      peersRef.current[peerId].on('error', e => {
+      peersRef.current[peerId].on('error', (e) => {
         console.error('Peer error %s:', peerId, e);
       });
     }
