@@ -169,7 +169,8 @@ function Body({
           : 0
         : rootObj.rewardLevel;
     return (contentType === 'subject' &&
-      description?.length > descriptionLengthForExtraRewardLevel) ||
+      (description?.length > descriptionLengthForExtraRewardLevel ||
+        filePath)) ||
       contentObj.byUser
       ? 5
       : targetObj.subject?.rewardLevel || rootRewardLevel;
@@ -177,6 +178,7 @@ function Body({
     contentObj.byUser,
     contentType,
     description,
+    filePath,
     rootObj.rewardLevel,
     rootType,
     targetObj.subject
