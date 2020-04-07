@@ -10,7 +10,8 @@ export default function Audio({ stream }) {
   useEffect(() => {
     const currentAudio = audioRef.current;
     if (audioRef.current && !audioRef.current.srcObject) {
-      audioRef.current.srcObject = stream;
+      const clonedStream = stream.clone();
+      audioRef.current.srcObject = clonedStream;
     }
 
     return function cleanUp() {
