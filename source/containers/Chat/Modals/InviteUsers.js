@@ -30,7 +30,8 @@ export default function InviteUsersModal({
     }
   } = useChatContext();
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const currentMembersUID = currentChannel.members.map(member => member.id);
+  const [inviting, setInviting] = useState(false);
+  const currentMembersUID = currentChannel.members.map((member) => member.id);
 
   return (
     <Modal onHide={onHide}>
@@ -41,13 +42,13 @@ export default function InviteUsersModal({
           title="Invite People"
           itemLabel="username"
           searchResults={userSearchResults}
-          filter={result => !currentMembersUID.includes(result.id)}
+          filter={(result) => !currentMembersUID.includes(result.id)}
           onSearch={handleSearchUserToInvite}
           onClear={onClearUserSearchResults}
           onAddItem={onAddUser}
           onRemoveItem={onRemoveUser}
           onSubmit={selectedUsers.length > 0 && handleDone}
-          renderDropdownLabel={item => (
+          renderDropdownLabel={(item) => (
             <span>
               {item.username}{' '}
               {item.realName && <small>{`(${item.realName})`}</small>}
@@ -65,7 +66,7 @@ export default function InviteUsersModal({
         <Button
           color="blue"
           onClick={handleDone}
-          disabled={selectedUsers.length === 0}
+          disabled={selectedUsers.length === 0 || inviting}
         >
           Invite
         </Button>
@@ -78,20 +79,23 @@ export default function InviteUsersModal({
   }
 
   function onRemoveUser(userId) {
-    setSelectedUsers(selectedUsers.filter(user => user.id !== userId));
+    setSelectedUsers(selectedUsers.filter((user) => user.id !== userId));
   }
 
   async function handleDone() {
-    const data = await inviteUsersToChannel({
-      selectedUsers,
-      channelId: selectedChannelId
-    });
-    onInviteUsersToChannel(data);
-    onDone({
-      users: selectedUsers,
-      message: data.message,
-      isClass: currentChannel.isClass
-    });
+    if (!inviting) {
+      setInviting(true);
+      const data = await inviteUsersToChannel({
+        selectedUsers,
+        channelId: selectedChannelId
+      });
+      onInviteUsersToChannel(data);
+      onDone({
+        users: selectedUsers,
+        message: data.message,
+        isClass: currentChannel.isClass
+      });
+    }
   }
 
   async function handleSearchUserToInvite(text) {
