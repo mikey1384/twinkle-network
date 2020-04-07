@@ -223,19 +223,19 @@ export default function ChatReducer(state, action) {
     case 'EDIT_MESSAGE':
       return {
         ...state,
-        messages: state.messages.map((message) => {
-          return {
-            ...message,
-            content:
-              message.id === action.data.messageId
-                ? action.data.editedMessage
-                : message.content
-          };
-        }),
-        subject: {
-          ...state.subject,
-          content: action.data.editedMessage
-        }
+        messages: state.messages.map((message) => ({
+          ...message,
+          content:
+            message.id === action.data.messageId
+              ? action.data.editedMessage
+              : message.content
+        })),
+        subject: action.isSubject
+          ? {
+              ...state.subject,
+              content: action.data.editedMessage
+            }
+          : state.subject
       };
     case 'EDIT_WORD':
       return {

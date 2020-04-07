@@ -126,7 +126,8 @@ export default function ChatActions(dispatch) {
     onEditMessage({ editedMessage, messageId, isSubject }) {
       return dispatch({
         type: 'EDIT_MESSAGE',
-        data: { editedMessage, messageId, isSubject }
+        data: { editedMessage, messageId },
+        isSubject
       });
     },
     onEditWord({ deletedDefIds, partOfSpeeches, editedDefinitionOrder, word }) {
