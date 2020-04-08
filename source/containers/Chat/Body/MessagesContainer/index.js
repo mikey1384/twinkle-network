@@ -797,16 +797,20 @@ export default function MessagesContainer({
     if (isFirstDirectMessage) {
       if (creatingNewDMChannel) return;
       onSetCreatingNewDMChannel(true);
-      const { members, message } = await startNewDMChannel({
-        content,
-        userId,
-        recepientId
-      });
-      onSendFirstDirectMessage({ members, message });
-      socket.emit('join_chat_channel', message.channelId);
-      socket.emit('send_bi_chat_invitation', recepientId, message);
-      onSetCreatingNewDMChannel(false);
-      return;
+      try {
+        const { members, message } = await startNewDMChannel({
+          content,
+          userId,
+          recepientId
+        });
+        onSendFirstDirectMessage({ members, message });
+        socket.emit('join_chat_channel', message.channelId);
+        socket.emit('send_bi_chat_invitation', recepientId, message);
+        onSetCreatingNewDMChannel(false);
+        return Promise.resolve();
+      } catch (error) {
+        return Promise.reject(error);
+      }
     }
     const message = {
       userId,
