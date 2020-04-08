@@ -4,6 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 
 ConfirmModal.propTypes = {
+  disabled: PropTypes.bool,
   modalOverModal: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
@@ -11,6 +12,7 @@ ConfirmModal.propTypes = {
 };
 
 export default function ConfirmModal({
+  disabled = false,
   modalOverModal,
   onHide,
   title,
@@ -24,7 +26,7 @@ export default function ConfirmModal({
         <Button transparent style={{ marginRight: '0.7rem' }} onClick={onHide}>
           Cancel
         </Button>
-        <Button color="blue" onClick={onConfirm}>
+        <Button disabled={disabled} color="blue" onClick={onConfirm}>
           Confirm
         </Button>
       </footer>

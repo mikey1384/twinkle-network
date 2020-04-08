@@ -97,6 +97,7 @@ export default function MessagesContainer({
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
     fileName: '',
@@ -578,6 +579,7 @@ export default function MessagesContainer({
           title="Leave Channel"
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
+          disabled={leaving}
         />
       )}
       {selectVideoModalShown && (
@@ -747,17 +749,26 @@ export default function MessagesContainer({
   }
 
   async function handleLeaveChannel() {
-    await leaveChannel(selectedChannelId);
-    onLeaveChannel(selectedChannelId);
-    socket.emit('leave_chat_channel', {
-      channelId: selectedChannelId,
-      userId,
-      username,
-      profilePicId
-    });
-    const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-    onEnterChannelWithId({ data, showOnTop: true });
-    setLeaveConfirmModalShown(false);
+    if (!leaving) {
+      try {
+        setLeaving(true);
+        await leaveChannel(selectedChannelId);
+        onLeaveChannel(selectedChannelId);
+        socket.emit('leave_chat_channel', {
+          channelId: selectedChannelId,
+          userId,
+          username,
+          profilePicId
+        });
+        const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
+        onEnterChannelWithId({ data, showOnTop: true });
+        setLeaveConfirmModalShown(false);
+        setLeaving(false);
+      } catch (error) {
+        console.error(error);
+        setLeaving(false);
+      }
+    }
   }
 
   async function handleLoadMore() {
