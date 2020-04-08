@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -47,13 +47,7 @@ function MessageInput({
     state,
     actions: { onEnterComment }
   } = useInputContext();
-  const [sending, setSending] = useState(false);
-
   const text = state['chat' + currentChannelId] || '';
-
-  useEffect(() => {
-    setSending(false);
-  }, [currentChannelId]);
 
   useEffect(() => {
     if (!isMobile(navigator)) {
@@ -132,7 +126,7 @@ function MessageInput({
           >
             <Button
               filled
-              disabled={loading || sending}
+              disabled={loading}
               color={profileTheme}
               onClick={handleSendMsg}
             >
@@ -179,22 +173,17 @@ function MessageInput({
   }
 
   async function handleSendMsg() {
-    if (!sending) {
-      setSending(true);
-      innerRef.current.focus();
-      if (stringIsEmpty(text)) return;
-      try {
-        await onMessageSubmit(finalizeEmoji(text));
-        onEnterComment({
-          contentType: 'chat',
-          contentId: currentChannelId,
-          text: ''
-        });
-        setSending(false);
-      } catch (error) {
-        console.error(error);
-        setSending(false);
-      }
+    innerRef.current.focus();
+    if (stringIsEmpty(text)) return;
+    try {
+      await onMessageSubmit(finalizeEmoji(text));
+      onEnterComment({
+        contentType: 'chat',
+        contentId: currentChannelId,
+        text: ''
+      });
+    } catch (error) {
+      console.error(error);
     }
   }
 }

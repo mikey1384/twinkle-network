@@ -85,6 +85,7 @@ export default function SubjectPanel({
     onUploadComment,
     onUploadReply
   } = useContext(LocalContext);
+
   const { deleted, secretShown, fileName, filePath } = useContentState({
     contentType: 'subject',
     contentId: subjectId

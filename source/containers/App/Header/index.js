@@ -132,7 +132,7 @@ export default function Header({
     socket.on('new_call_member', handleNewCallMember);
     socket.on('new_call_started', handlePeer);
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
-    socket.on('new_notification_received', onIncreaseNumNewNotis);
+    socket.on('new_notification_received', handleNewNotification);
     socket.on('new_message_received', handleReceiveMessage);
     socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_hung_up', handlePeerHungUp);
@@ -165,7 +165,7 @@ export default function Header({
       socket.removeListener('new_call_member', handleNewCallMember);
       socket.removeListener('new_call_started', handlePeer);
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
-      socket.removeListener('new_notification_received', onIncreaseNumNewNotis);
+      socket.removeListener('new_notification_received', handleNewNotification);
       socket.removeListener('new_message_received', handleReceiveMessage);
       socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_hung_up', handlePeerHungUp);
@@ -279,6 +279,10 @@ export default function Header({
     function handleDisconnect(reason) {
       console.log('disconnected from socket. reason: ', reason);
       onChangeSocketStatus(false);
+    }
+
+    function handleNewNotification(data) {
+      onIncreaseNumNewNotis(data);
     }
 
     function handleNewCallMember({ socketId, memberId }) {

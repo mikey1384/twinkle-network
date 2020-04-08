@@ -364,7 +364,7 @@ function Comment({
                         <LikeButton
                           contentType="comment"
                           contentId={comment.id}
-                          onClick={likeClick}
+                          onClick={handleLikeClick}
                           likes={likes}
                         />
                         <Button
@@ -507,7 +507,7 @@ function Comment({
     });
   }
 
-  function likeClick(likes) {
+  function handleLikeClick(likes) {
     onLikeClick({ commentId: comment.id, likes });
   }
 

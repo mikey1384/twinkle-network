@@ -3,7 +3,7 @@ export const rewardValue = {
   star: 200
 };
 export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.2.67';
+export const clientVersion = '1.2.69';
 export const descriptionLengthForExtraRewardLevel = 1000;
 export const charLimit = {
   chat: {

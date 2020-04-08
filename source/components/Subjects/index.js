@@ -88,7 +88,7 @@ export default function Subjects({
         />
         <div style={{ margin: '1rem 0' }}>
           {subjects &&
-            subjects.map(subject => (
+            subjects.map((subject) => (
               <SubjectPanel
                 key={subject.id}
                 contentId={Number(contentId)}
