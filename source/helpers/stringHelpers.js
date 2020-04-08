@@ -77,6 +77,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:angry\:)/gi, '😡')
     .replace(/(\:ant\:)/gi, '🐜')
     .replace(/(\:bee\:)/gi, '🐝')
+    .replace(/(\:bird\:)/gi, '🐦')
     .replace(/(\:bunny\:)/gi, '🐰')
     .replace(/(\:burger\:)/gi, '🍔')
     .replace(/(\:bye\:)/gi, '👋')
@@ -277,7 +278,7 @@ export function getFileInfoFromFileName(fileName) {
 export function hashify(string) {
   const stringArray = string.split(' ');
   const hashedString =
-    '#' + stringArray.map(string => capitalize(string)).join('');
+    '#' + stringArray.map((string) => capitalize(string)).join('');
   return hashedString;
 }
 
@@ -347,7 +348,7 @@ export function processedQueryString(string) {
 export function processedStringWithURL(string) {
   if (typeof string !== 'string') return string || null;
   const maxChar = 100;
-  const trimmedString = string =>
+  const trimmedString = (string) =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
   const urlRegex = /(((http[s]?:\/\/|ftp:\/\/)?(www\.){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/])+)|((?!.*www)(http[s]?:\/\/|ftp:\/\/){1}([0-9A-Za-z/])+([0-9A-Za-z-.,;:?!&@%_\+~#=\/()])+([0-9A-Za-z/\)])+))/gi;
   const redWordRegex = /(r\|[^\s]+\|r)/gi;
@@ -391,7 +392,7 @@ export function processedStringWithURL(string) {
     .replace(urlRegex, `<a href=\"$1\" target=\"_blank\">$1</a>`)
     .replace(
       blueWordRegex,
-      string =>
+      (string) =>
         `<span style="color: blue;">${string.substring(
           2,
           string.length - 2
@@ -399,7 +400,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       blueSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: blue;">${string.substring(
           2,
           string.length - 2
@@ -407,7 +408,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       greenWordRegex,
-      string =>
+      (string) =>
         `<span style="color: green;">${string.substring(
           2,
           string.length - 2
@@ -415,7 +416,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       greenSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: green;">${string.substring(
           2,
           string.length - 2
@@ -423,7 +424,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       limeWordRegex,
-      string =>
+      (string) =>
         `<span style="color: lawngreen;">${string.substring(
           2,
           string.length - 2
@@ -431,7 +432,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       limeSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: lawngreen;">${string.substring(
           2,
           string.length - 2
@@ -439,7 +440,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       orangeWordRegex,
-      string =>
+      (string) =>
         `<span style="color: orange;">${string.substring(
           2,
           string.length - 2
@@ -447,7 +448,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       orangeSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: orange;">${string.substring(
           2,
           string.length - 2
@@ -455,7 +456,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       pinkWordRegex,
-      string =>
+      (string) =>
         `<span style="color: pink;">${string.substring(
           2,
           string.length - 2
@@ -463,7 +464,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       pinkSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: pink;">${string.substring(
           2,
           string.length - 2
@@ -471,7 +472,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       purpleWordRegex,
-      string =>
+      (string) =>
         `<span style="color: purple;">${string.substring(
           3,
           string.length - 3
@@ -479,7 +480,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       purpleSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: purple;">${string.substring(
           3,
           string.length - 3
@@ -487,7 +488,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       grayWordRegex,
-      string =>
+      (string) =>
         `<span style="color: gray;">${string.substring(
           3,
           string.length - 3
@@ -495,7 +496,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       graySentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: gray;">${string.substring(
           3,
           string.length - 3
@@ -503,7 +504,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       redWordRegex,
-      string =>
+      (string) =>
         `<span style="color: red;">${string.substring(
           2,
           string.length - 2
@@ -511,7 +512,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       redSentenceRegex,
-      string =>
+      (string) =>
         `<span style="color: red;">${string.substring(
           2,
           string.length - 2
@@ -519,7 +520,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       hugeWordRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 2.5rem;">${string.substring(
           2,
           string.length - 2
@@ -527,7 +528,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       hugeSentenceRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 2.5rem;">${string.substring(
           2,
           string.length - 2
@@ -535,7 +536,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       bigWordRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 2rem;">${string.substring(
           2,
           string.length - 2
@@ -543,7 +544,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       bigSentenceRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 2rem;">${string.substring(
           2,
           string.length - 2
@@ -551,7 +552,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       smallWordRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 1.2rem;">${string.substring(
           2,
           string.length - 2
@@ -559,7 +560,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       smallSentenceRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 1.2rem;">${string.substring(
           2,
           string.length - 2
@@ -567,7 +568,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       tinyWordRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 0.7rem;">${string.substring(
           2,
           string.length - 2
@@ -575,7 +576,7 @@ export function processedStringWithURL(string) {
     )
     .replace(
       tinySentenceRegex,
-      string =>
+      (string) =>
         `<span style="font-size: 0.8rem;">${string.substring(
           2,
           string.length - 2
@@ -583,43 +584,43 @@ export function processedStringWithURL(string) {
     )
     .replace(
       underlineWordRegex,
-      string => `<u>${string.substring(2, string.length - 2)}</u>`
+      (string) => `<u>${string.substring(2, string.length - 2)}</u>`
     )
     .replace(
       underlineSentenceRegex,
-      string => `<u>${string.substring(2, string.length - 2)}</u>`
+      (string) => `<u>${string.substring(2, string.length - 2)}</u>`
     )
     .replace(
       linethroughWordRegex,
-      string => `<strike>${string.substring(2, string.length - 2)}</strike>`
+      (string) => `<strike>${string.substring(2, string.length - 2)}</strike>`
     )
     .replace(
       linethroughSentenceRegex,
-      string => `<strike>${string.substring(2, string.length - 2)}</strike>`
+      (string) => `<strike>${string.substring(2, string.length - 2)}</strike>`
     )
     .replace(
       boldItalicWordRegex,
-      string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
+      (string) => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
     )
     .replace(
       boldItalicSentenceRegex,
-      string => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
+      (string) => `<b><i>${string.substring(3, string.length - 3)}</i></b>`
     )
     .replace(
       italicWordRegex,
-      string => `<i>${string.substring(2, string.length - 2)}</i>`
+      (string) => `<i>${string.substring(2, string.length - 2)}</i>`
     )
     .replace(
       italicSentenceRegex,
-      string => `<i>${string.substring(2, string.length - 2)}</i>`
+      (string) => `<i>${string.substring(2, string.length - 2)}</i>`
     )
     .replace(
       boldWordRegex,
-      string => `<b>${string.substring(1, string.length - 1)}</b>`
+      (string) => `<b>${string.substring(1, string.length - 1)}</b>`
     )
     .replace(
       boldSentenceRegex,
-      string => `<b>${string.substring(1, string.length - 1)}</b>`
+      (string) => `<b>${string.substring(1, string.length - 1)}</b>`
     )
     .replace(/\r?\n/g, '<br>');
   let newString = '';
@@ -660,7 +661,7 @@ export function processedURL(url) {
 
 export function queryStringForArray({ array, originVar, destinationVar }) {
   return `${array
-    .map(elem => `${destinationVar}[]=${originVar ? elem[originVar] : elem}`)
+    .map((elem) => `${destinationVar}[]=${originVar ? elem[originVar] : elem}`)
     .join('&')}`;
 }
 
