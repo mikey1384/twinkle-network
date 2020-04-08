@@ -28,7 +28,7 @@ export default function SideButtons({
   changeByUserStatus,
   className,
   rewardLevel,
-  likes,
+  likes = [],
   onLikeVideo,
   onSetRewardLevel,
   style,
