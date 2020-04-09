@@ -299,6 +299,18 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async sendInteractiveMessage({ type, recepients }) {
+      try {
+        await request.post(
+          `${URL}/chat/interactive`,
+          { type, recepients },
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async setChessMoveViewTimeStamp({ channelId, message }) {
       try {
         await request.put(

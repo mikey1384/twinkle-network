@@ -50,6 +50,7 @@ export default function MessagesContainer({
       leaveChannel,
       loadChatChannel,
       loadMoreChatMessages,
+      sendInteractiveMessage,
       startNewDMChannel,
       updateUserXP
     }
@@ -726,6 +727,10 @@ export default function MessagesContainer({
         isClass
       }
     );
+    sendInteractiveMessage({
+      type: 'CHANNEL_INVITATION',
+      recepients: users.map(user => user.id)
+    });
     setInviteUsersModalShown(false);
   }
 
