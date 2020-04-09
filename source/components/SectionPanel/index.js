@@ -128,8 +128,8 @@ export default function SectionPanel({
                 maxLength={100}
                 placeholder={placeholder}
                 autoFocus
-                onChange={text => setEditedTitle(addEmoji(text))}
-                onKeyPress={event => {
+                onChange={(text) => setEditedTitle(addEmoji(text))}
+                onKeyPress={(event) => {
                   if (!stringIsEmpty(editedTitle) && event.key === 'Enter') {
                     onChangeTitle(editedTitle);
                   }
@@ -137,7 +137,16 @@ export default function SectionPanel({
                 value={editedTitle}
               />
             ) : (
-              <div style={{ lineHeight: '3rem' }}>{title}</div>
+              <div
+                style={{
+                  lineHeight: 1.5,
+                  width: '100%',
+                  overflowWrap: 'break-word',
+                  wordBreak: 'break-word'
+                }}
+              >
+                {title}
+              </div>
             )}
             {canEdit && onEditTitle && !onEdit ? (
               <div
