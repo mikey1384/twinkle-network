@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import ChannelDetail from './ChannelDetail';
 import { useContentState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
@@ -32,7 +33,12 @@ export default function Invitation({ inviteFrom, messageId }) {
 
   return (
     <div>
-      {invitationDetail && <div>{invitationDetail.channelName}</div>}
+      {invitationDetail && (
+        <ChannelDetail
+          channelName={invitationDetail.channelName}
+          members={invitationDetail.members}
+        />
+      )}
       <div>{inviteFrom}</div>
     </div>
   );
