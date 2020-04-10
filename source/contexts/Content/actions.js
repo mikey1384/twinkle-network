@@ -292,6 +292,14 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onSetChatInvitationDetail({ messageId, detail }) {
+      return dispatch({
+        type: 'SET_CHAT_INVITATION_DETAIL',
+        contentId: messageId,
+        contentType: 'chat',
+        detail
+      });
+    },
     onSetCommentsShown({ contentId, contentType }) {
       return dispatch({
         type: 'SET_COMMENTS_SHOWN',

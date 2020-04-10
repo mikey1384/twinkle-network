@@ -19,6 +19,7 @@ import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
 import RewardMessage from './RewardMessage';
 import LocalContext from '../Context';
+import Invitation from './Invitation';
 import MessageRewardModal from './MessageRewardModal';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
@@ -90,6 +91,7 @@ function Message({
     numMsgs,
     rewardAmount,
     rewardReason,
+    inviteFrom,
     uploaderAuthLevel,
     moveViewTimeStamp,
     isChessMsg,
@@ -397,7 +399,9 @@ function Message({
               </span>
             </div>
             <div>
-              {isChessMsg ? (
+              {inviteFrom ? (
+                <Invitation inviteFrom={inviteFrom} messageId={messageId} />
+              ) : isChessMsg ? (
                 <Chess
                   channelId={channelId}
                   countdownNumber={chessCountdownNumber}

@@ -299,11 +299,11 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async sendInteractiveMessage({ type, recepients }) {
+    async sendInvitationMessage({ origin, recepients }) {
       try {
         await request.post(
-          `${URL}/chat/interactive`,
-          { type, recepients },
+          `${URL}/chat/invitation`,
+          { origin, recepients },
           auth()
         );
         return Promise.resolve();
