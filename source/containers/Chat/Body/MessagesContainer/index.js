@@ -703,34 +703,37 @@ export default function MessagesContainer({
   }
 
   function handleInviteUsersDone({ users, message, isClass }) {
-    socket.emit('new_chat_message', {
-      message: {
-        ...message,
-        channelId: message.channelId
-      },
-      channel: {
-        ...currentChannel,
-        numUnreads: 1,
-        lastMessage: {
-          content: message.content,
-          sender: { id: userId, username }
+    if (isClass) {
+      socket.emit('new_chat_message', {
+        message: {
+          ...message,
+          channelId: message.channelId
         },
-        channelName
-      },
-      newMembers: users
-    });
-    socket.emit(
-      'send_group_chat_invitation',
-      users.map((user) => user.id),
-      {
-        message: { ...message, messageId: message.id },
-        isClass
-      }
-    );
-    sendInvitationMessage({
-      recepients: users.map((user) => user.id),
-      origin: currentChannel.id
-    });
+        channel: {
+          ...currentChannel,
+          numUnreads: 1,
+          lastMessage: {
+            content: message.content,
+            sender: { id: userId, username }
+          },
+          channelName
+        },
+        newMembers: users
+      });
+      socket.emit(
+        'send_group_chat_invitation',
+        users.map((user) => user.id),
+        {
+          message: { ...message, messageId: message.id },
+          isClass
+        }
+      );
+    } else {
+      sendInvitationMessage({
+        recepients: users.map((user) => user.id),
+        origin: currentChannel.id
+      });
+    }
     setInviteUsersModalShown(false);
   }
 

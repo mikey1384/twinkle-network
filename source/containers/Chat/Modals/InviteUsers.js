@@ -85,16 +85,22 @@ export default function InviteUsersModal({
   async function handleDone() {
     if (!inviting) {
       setInviting(true);
-      const data = await inviteUsersToChannel({
-        selectedUsers,
-        channelId: selectedChannelId
-      });
-      onInviteUsersToChannel(data);
-      onDone({
-        users: selectedUsers,
-        message: data.message,
-        isClass: currentChannel.isClass
-      });
+      if (currentChannel.isClass) {
+        const data = await inviteUsersToChannel({
+          selectedUsers,
+          channelId: selectedChannelId
+        });
+        onInviteUsersToChannel(data);
+        onDone({
+          users: selectedUsers,
+          message: data.message,
+          isClass: true
+        });
+      } else {
+        onDone({
+          users: selectedUsers
+        });
+      }
     }
   }
 
