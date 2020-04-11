@@ -3,6 +3,18 @@ import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
   return {
+    async acceptInvitation(channelId) {
+      try {
+        const { data } = await request.post(
+          `${URL}/chat/invitation/accept`,
+          { channelId },
+          auth()
+        );
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async changeChannelOwner({ channelId, newOwner }) {
       try {
         const {

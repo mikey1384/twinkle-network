@@ -49,7 +49,7 @@ export default function UserListModal({
   return (
     <Modal small onHide={onHide}>
       <header>{title}</header>
-      <main>
+      <main style={{ paddingTop: 0 }}>
         <RoundList>
           {allUsers.map((user) => {
             let userStatusDisplayed =

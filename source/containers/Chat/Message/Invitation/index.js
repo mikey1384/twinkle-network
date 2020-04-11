@@ -1,21 +1,24 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ChannelDetail from './ChannelDetail';
-import { useContentState } from 'helpers/hooks';
+import Button from 'components/Button';
+import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
 Invitation.propTypes = {
   inviteFrom: PropTypes.number.isRequired,
-  messageId: PropTypes.number.isRequired
+  messageId: PropTypes.number.isRequired,
+  sender: PropTypes.object.isRequired
 };
 
-export default function Invitation({ inviteFrom, messageId }) {
+export default function Invitation({ inviteFrom, messageId, sender }) {
+  const { userId, profileTheme } = useMyState();
   const { invitationDetail } = useContentState({
     contentType: 'chat',
     contentId: messageId
   });
   const {
-    requestHelpers: { loadChatChannel }
+    requestHelpers: { acceptInvitation, loadChatChannel }
   } = useAppContext();
   const {
     actions: { onSetChatInvitationDetail }
@@ -39,7 +42,16 @@ export default function Invitation({ inviteFrom, messageId }) {
           members={invitationDetail.members}
         />
       )}
-      <div>{inviteFrom}</div>
+      {userId !== sender.id && (
+        <Button filled color={profileTheme} onClick={handleAccept}>
+          {`Accept ${sender.username}'s Invitation`}
+        </Button>
+      )}
     </div>
   );
+
+  async function handleAccept() {
+    const { channel, message } = await acceptInvitation(inviteFrom);
+    console.log(channel, message);
+  }
 }

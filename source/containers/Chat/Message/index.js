@@ -400,7 +400,11 @@ function Message({
             </div>
             <div>
               {inviteFrom ? (
-                <Invitation inviteFrom={inviteFrom} messageId={messageId} />
+                <Invitation
+                  sender={{ id: userId, username }}
+                  inviteFrom={inviteFrom}
+                  messageId={messageId}
+                />
               ) : isChessMsg ? (
                 <Chess
                   channelId={channelId}

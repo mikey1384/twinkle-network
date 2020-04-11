@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color } from 'constants/css';
 import { css } from 'emotion';
+import { useMyState } from 'helpers/hooks';
+import UserListModal from 'components/Modals/UserListModal';
 
 ChannelDetail.propTypes = {
   channelName: PropTypes.string.isRequired,
@@ -9,7 +11,9 @@ ChannelDetail.propTypes = {
 };
 
 export default function ChannelDetail({ channelName, members }) {
+  const { profileTheme } = useMyState();
   const [shownMembers, setShownMembers] = useState([]);
+  const [userListModalShown, setUserListModalShown] = useState(false);
   const [more, setMore] = useState(null);
   useEffect(() => {
     if (members.length > 5) {
@@ -33,11 +37,11 @@ export default function ChannelDetail({ channelName, members }) {
       <p
         style={{
           fontWeight: 'bold',
-          fontSize: '2rem',
-          color: Color.logoBlue()
+          fontSize: '2.2rem',
+          color: Color[profileTheme]()
         }}
       >
-        Invitation to join chat group:
+        Invitation to chat group:
       </p>
       <div
         style={{ fontWeight: 'bold', fontSize: '2rem', marginTop: '0.5rem' }}
@@ -61,7 +65,7 @@ export default function ChannelDetail({ channelName, members }) {
                     text-decoration: underline;
                   }
                 `}
-                onClick={handleMoreClick}
+                onClick={() => setUserListModalShown(true)}
               >
                 ...and {more} more
               </span>
@@ -69,10 +73,13 @@ export default function ChannelDetail({ channelName, members }) {
           )}
         </div>
       </div>
+      {userListModalShown && (
+        <UserListModal
+          onHide={() => setUserListModalShown(false)}
+          title="Members"
+          users={members}
+        />
+      )}
     </div>
   );
-
-  function handleMoreClick() {
-    console.log(members);
-  }
 }
