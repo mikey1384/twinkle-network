@@ -88,6 +88,7 @@ export const rewardReasons = {
   }
 };
 
+export const FILE_UPLOAD_XP_REQUIREMENT = 100000;
 export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 10000;

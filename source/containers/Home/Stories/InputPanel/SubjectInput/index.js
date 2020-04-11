@@ -119,7 +119,7 @@ function SubjectInput() {
                 placeholder="A subject Twinkle users can talk about"
                 value={title}
                 onChange={handleInputChange}
-                onKeyUp={event => {
+                onKeyUp={(event) => {
                   onSetSubjectTitle(addEmoji(event.target.value));
                 }}
                 style={titleExceedsCharLimit?.style}
@@ -165,10 +165,10 @@ function SubjectInput() {
                 value={description}
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event =>
+                onChange={(event) =>
                   onSetSubjectDescription(addEmoji(event.target.value))
                 }
-                onKeyUp={event => {
+                onKeyUp={(event) => {
                   if (event.key === ' ') {
                     onSetSubjectDescription(addEmoji(event.target.value));
                   }
@@ -199,10 +199,10 @@ function SubjectInput() {
                     value={secretAnswer}
                     minRows={4}
                     placeholder="Enter the Secret Message"
-                    onChange={event =>
+                    onChange={(event) =>
                       onSetSecretAnswer(addEmoji(event.target.value))
                     }
-                    onKeyUp={event => {
+                    onKeyUp={(event) => {
                       if (event.key === ' ') {
                         onSetSecretAnswer(addEmoji(event.target.value));
                       }
@@ -271,7 +271,7 @@ function SubjectInput() {
       {attachContentModalShown && (
         <AttachContentModal
           onHide={() => setAttachContentModalShown(false)}
-          onConfirm={content => {
+          onConfirm={(content) => {
             onSetSubjectAttachment(content);
             setAttachContentModalShown(false);
           }}

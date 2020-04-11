@@ -12,6 +12,7 @@ import {
   getFileInfoFromFileName
 } from 'helpers/stringHelpers';
 import { useInputContext } from 'contexts';
+import { FILE_UPLOAD_XP_REQUIREMENT } from 'constants/defaultValues';
 
 StartScreen.propTypes = {
   navigateTo: PropTypes.func.isRequired,
@@ -19,7 +20,6 @@ StartScreen.propTypes = {
 };
 
 export default function StartScreen({ navigateTo, onHide }) {
-  const FILE_UPLOAD_XP_REQUIREMENT = 100000;
   const {
     actions: { onSetSubjectAttachment }
   } = useInputContext();
@@ -146,8 +146,9 @@ export default function StartScreen({ navigateTo, onHide }) {
       {alertModalShown && (
         <AlertModal
           title="File is too large"
-          content={`The file size is larger than your limit of ${maxSize /
-            mb} MB`}
+          content={`The file size is larger than your limit of ${
+            maxSize / mb
+          } MB`}
           onHide={() => setAlertModalShown(false)}
         />
       )}
@@ -162,11 +163,11 @@ export default function StartScreen({ navigateTo, onHide }) {
     const { fileType } = getFileInfoFromFileName(fileObj.name);
     if (fileType === 'image') {
       const reader = new FileReader();
-      reader.onload = upload => {
+      reader.onload = (upload) => {
         const payload = upload.target.result;
         window.loadImage(
           payload,
-          function(img) {
+          function (img) {
             const imageUrl = img.toDataURL('image/jpeg');
             const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
             const buffer = Buffer.from(dataUri, 'base64');
