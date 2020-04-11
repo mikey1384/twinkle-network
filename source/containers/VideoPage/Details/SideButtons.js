@@ -109,7 +109,6 @@ export default function SideButtons({
           onHide={() => setUserListModalShown(false)}
           title="People who liked this video"
           users={likes}
-          description="(You)"
         />
       )}
     </div>

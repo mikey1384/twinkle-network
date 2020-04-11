@@ -556,7 +556,6 @@ function Body({
             onHide={() => setUserListModalShown(false)}
             title={`People who liked this ${contentType}`}
             users={likes}
-            description="(You)"
           />
         )}
       </div>

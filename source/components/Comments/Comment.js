@@ -471,7 +471,6 @@ function Comment({
             onHide={() => setUserListModalShown(false)}
             title="People who liked this comment"
             users={comment.likes}
-            description="(You)"
           />
         )}
       </div>

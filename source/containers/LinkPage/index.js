@@ -409,7 +409,6 @@ export default function LinkPage({
           users={likes}
           userId={userId}
           title="People who liked this"
-          description="(You)"
           onHide={() => setLikesModalShown(false)}
         />
       )}

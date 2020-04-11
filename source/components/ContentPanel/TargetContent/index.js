@@ -301,7 +301,7 @@ function TargetContent({
                   rewardLevel={finalRewardLevel}
                   uploaderId={comment.uploader.id}
                   stars={comment.stars}
-                  onRewardSubmit={data => {
+                  onRewardSubmit={(data) => {
                     onSetXpRewardInterfaceShown({
                       contentType: 'comment',
                       contentId: comment.id,
@@ -351,8 +351,8 @@ function TargetContent({
               {comments.length > 0 && (
                 <div style={{ padding: '0 1rem' }}>
                   {comments
-                    .filter(comment => !comment.deleted)
-                    .map(comment => (
+                    .filter((comment) => !comment.deleted)
+                    .map((comment) => (
                       <Comment
                         key={comment.id}
                         comment={comment}
@@ -370,7 +370,6 @@ function TargetContent({
                   onHide={() => setUserListModalShown(false)}
                   title="People who liked this comment"
                   users={comment.likes}
-                  description="(You)"
                 />
               )}
             </div>

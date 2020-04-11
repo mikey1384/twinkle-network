@@ -232,7 +232,6 @@ export default function LinkItem({
       {userListModalShown && (
         <UserListModal
           users={likes}
-          description="(You)"
           onHide={() => setUserListModalShown(false)}
           title="People who liked this link"
         />

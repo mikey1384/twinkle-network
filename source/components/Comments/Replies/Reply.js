@@ -297,7 +297,7 @@ function Reply({
                 contentType="comment"
                 contentId={reply.id}
                 uploaderId={uploader.id}
-                onRewardSubmit={data => {
+                onRewardSubmit={(data) => {
                   onSetXpRewardInterfaceShown({
                     contentId: reply.id,
                     contentType: 'comment',
@@ -340,7 +340,6 @@ function Reply({
             onHide={() => setUserListModalShown(false)}
             title="People who liked this reply"
             users={reply.likes}
-            description="(You)"
           />
         )}
         {confirmModalShown && (

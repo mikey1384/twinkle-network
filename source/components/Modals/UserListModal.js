@@ -4,6 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
+import ProfilePic from 'components/ProfilePic';
 import { Color } from 'constants/css';
 import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
@@ -37,7 +38,7 @@ export default function UserListModal({
     actions: { onInitChat, onOpenDirectMessageChannel }
   } = useChatContext();
   const allUsers = useMemo(() => {
-    const otherUsers = users.filter(user => user.id !== userId);
+    const otherUsers = users.filter((user) => user.id !== userId);
     let userArray = [];
     for (let i = 0; i < users.length; i++) {
       if (users[i].id === userId) userArray.push(users[i]);
@@ -50,7 +51,7 @@ export default function UserListModal({
       <header>{title}</header>
       <main>
         <RoundList>
-          {allUsers.map(user => {
+          {allUsers.map((user) => {
             let userStatusDisplayed =
               typeof descriptionShown === 'function'
                 ? descriptionShown(user)
@@ -61,31 +62,43 @@ export default function UserListModal({
                 style={{
                   background: '#fff',
                   display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
                 }}
               >
-                <div>
-                  {user.username}{' '}
-                  <span
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <ProfilePic
                     style={{
-                      color: descriptionColor,
-                      fontWeight: 'bold'
+                      width: '3rem',
+                      height: '3rem',
+                      cursor: 'pointer'
                     }}
-                  >
-                    {userStatusDisplayed && description}
-                  </span>
+                    userId={user.id}
+                    profilePicId={user.profilePicId}
+                    online={!!user.online}
+                    statusShown
+                  />
+                  <div style={{ marginLeft: '1rem' }}>
+                    <b>{user.username}</b>{' '}
+                    <span
+                      style={{
+                        color: descriptionColor,
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {userStatusDisplayed && description}
+                    </span>
+                  </div>
                 </div>
                 {userId && user.id !== userId && (
                   <div>
                     <Button
                       color="logoBlue"
                       filled
-                      style={{ fontSize: '1.3rem' }}
+                      style={{ fontSize: '1.5rem' }}
                       onClick={() => handleTalkClick(user)}
                     >
                       <Icon icon="comments" />
-                      &nbsp;&nbsp;Talk
                     </Button>
                   </div>
                 )}
