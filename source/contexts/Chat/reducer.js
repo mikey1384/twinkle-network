@@ -576,7 +576,7 @@ export default function ChatReducer(state, action) {
             ...state.channelsObj[action.data.channelId],
             lastUpdate: timeStamp,
             lastMessage: {
-              content: 'Left this channel',
+              content: 'left the chat group',
               sender: {
                 id: action.data.userId,
                 username: action.data.username
@@ -592,7 +592,7 @@ export default function ChatReducer(state, action) {
           {
             id: null,
             channelId: action.data.channelId,
-            content: 'Left this channel',
+            content: 'left the chat group',
             timeStamp: timeStamp,
             isNotification: true,
             username: action.data.username,
