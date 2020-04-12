@@ -282,7 +282,7 @@ export default function Header({
         }
       }
       onReceiveFirstMsg({ message, duplicate, isClass, pageVisible });
-      socket.emit('join_chat_channel', message.channelId);
+      socket.emit('join_chat_group', message.channelId);
     }
 
     function handleDisconnect(reason) {

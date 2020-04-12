@@ -2,16 +2,23 @@ import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ChannelDetail from './ChannelDetail';
 import Button from 'components/Button';
+import { socket } from 'constants/io';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
 Invitation.propTypes = {
   inviteFrom: PropTypes.number.isRequired,
   messageId: PropTypes.number.isRequired,
+  onAcceptGroupInvitation: PropTypes.func.isRequired,
   sender: PropTypes.object.isRequired
 };
 
-export default function Invitation({ inviteFrom, messageId, sender }) {
+export default function Invitation({
+  inviteFrom,
+  messageId,
+  onAcceptGroupInvitation,
+  sender
+}) {
   const { userId, profileTheme } = useMyState();
   const { invitationDetail } = useContentState({
     contentType: 'chat',
@@ -31,6 +38,9 @@ export default function Invitation({ inviteFrom, messageId, sender }) {
       const { channel } = await loadChatChannel({ channelId: inviteFrom });
       onSetChatInvitationDetail({ messageId, detail: channel });
     }
+    return function cleanUp() {
+      onSetChatInvitationDetail({ messageId, detail: null });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const alreadyJoined = useMemo(() => {
@@ -62,7 +72,10 @@ export default function Invitation({ inviteFrom, messageId, sender }) {
   );
 
   async function handleAccept() {
-    const { channel, message } = await acceptInvitation(inviteFrom);
-    console.log(channel, message);
+    const { channel, messages, joinMessage } = await acceptInvitation(
+      inviteFrom
+    );
+    socket.emit('join_chat_group', channel.id);
+    onAcceptGroupInvitation({ channel, messages, joinMessage });
   }
 }

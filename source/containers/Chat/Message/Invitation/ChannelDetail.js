@@ -16,9 +16,9 @@ export default function ChannelDetail({ channelName, members }) {
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [more, setMore] = useState(null);
   useEffect(() => {
-    if (members.length > 5) {
-      setShownMembers(members.filter((member, index) => index < 5));
-      setMore(members.length - 5);
+    if (members.length > 3) {
+      setShownMembers(members.filter((member, index) => index < 3));
+      setMore(members.length - 3);
     } else {
       setShownMembers(members);
     }

@@ -51,6 +51,7 @@ Message.propTypes = {
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
   loading: PropTypes.bool,
+  onAcceptGroupInvitation: PropTypes.func.isRequired,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onDropdownButtonClick: PropTypes.func,
@@ -102,6 +103,7 @@ function Message({
     linkUrl,
     thumbUrl
   },
+  onAcceptGroupInvitation,
   onChessBoardClick,
   onDelete,
   onChessSpoilerClick,
@@ -404,6 +406,7 @@ function Message({
                   sender={{ id: userId, username }}
                   inviteFrom={inviteFrom}
                   messageId={messageId}
+                  onAcceptGroupInvitation={onAcceptGroupInvitation}
                 />
               ) : isChessMsg ? (
                 <Chess

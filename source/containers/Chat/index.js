@@ -94,7 +94,7 @@ function Chat({ onFileUpload }) {
   useEffect(() => {
     const otherMember = currentChannel.twoPeople
       ? currentChannel?.members?.filter(
-          member => Number(member.id) !== userId
+          (member) => Number(member.id) !== userId
         )?.[0]
       : null;
     setPartner(otherMember);
@@ -110,19 +110,23 @@ function Chat({ onFileUpload }) {
     socket.on('subject_changed', onSubjectChange);
     socket.on('members_online_changed', handleChangeMembersOnline);
 
-    function handleChangeMembersOnline(data) {
-      const forCurrentChannel = data.channelId === selectedChannelId;
+    function handleChangeMembersOnline({
+      channelId,
+      leftChannel,
+      membersOnline
+    }) {
+      const forCurrentChannel = channelId === selectedChannelId;
       if (forCurrentChannel) {
-        if (data.leftChannel) {
-          const { userId, username, profilePicId } = data.leftChannel;
+        if (leftChannel) {
+          const { userId, username, profilePicId } = leftChannel;
           onNotifyThatMemberLeftChannel({
-            channelId: data.channelId,
+            channelId,
             userId,
             username,
             profilePicId
           });
         }
-        setCurrentChannelOnlineMembers(data.membersOnline);
+        setCurrentChannelOnlineMembers(membersOnline);
       }
     }
 
@@ -195,7 +199,7 @@ function Chat({ onFileUpload }) {
               <UserListModal
                 onHide={() => setUserListModalShown(false)}
                 users={returnUsers(currentChannel, currentChannelOnlineMembers)}
-                descriptionShown={user =>
+                descriptionShown={(user) =>
                   !!currentChannelOnlineMembers[user.id]
                 }
                 description="(online)"
@@ -272,8 +276,8 @@ function Chat({ onFileUpload }) {
     });
     onCreateNewChannel({ message, isClosed, members });
 
-    const users = selectedUsers.map(user => user.id);
-    socket.emit('join_chat_channel', message.channelId);
+    const users = selectedUsers.map((user) => user.id);
+    socket.emit('join_chat_group', message.channelId);
     socket.emit('send_group_chat_invitation', users, {
       message,
       isClosed,

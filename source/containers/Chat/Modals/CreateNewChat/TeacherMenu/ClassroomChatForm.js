@@ -62,13 +62,13 @@ export default function ClassroomChat({ onBackClick, onHide }) {
           title="Members"
           itemLabel="username"
           searchResults={userSearchResults}
-          filter={result => result.id !== userId}
+          filter={(result) => result.id !== userId}
           onSearch={handleSearchUserToInvite}
           onClear={onClearUserSearchResults}
           channelName={channelName}
           onAddItem={onAddUser}
           onRemoveItem={onRemoveUser}
-          renderDropdownLabel={item => (
+          renderDropdownLabel={(item) => (
             <span>
               {item.username}{' '}
               {item.realName && <small>{`(${item.realName})`}</small>}
@@ -110,7 +110,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
   }
 
   function onRemoveUser(userId) {
-    setSelectedUsers(selectedUsers.filter(user => user.id !== userId));
+    setSelectedUsers(selectedUsers.filter((user) => user.id !== userId));
   }
 
   async function handleDone() {
@@ -122,8 +122,8 @@ export default function ClassroomChat({ onBackClick, onHide }) {
       selectedUsers
     });
     onCreateNewChannel({ message, isClass: true, isClosed: true, members });
-    const users = selectedUsers.map(user => user.id);
-    socket.emit('join_chat_channel', message.channelId);
+    const users = selectedUsers.map((user) => user.id);
+    socket.emit('join_chat_group', message.channelId);
     socket.emit('send_group_chat_invitation', users, {
       message,
       isClass: true,

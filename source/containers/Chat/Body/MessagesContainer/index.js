@@ -420,6 +420,7 @@ export default function MessagesContainer({
                   isNotification={!!message.isNotification}
                   loading={loading}
                   message={message}
+                  onAcceptGroupInvitation={handleAcceptGroupInvitation}
                   onChessBoardClick={handleChessModalShown}
                   onChessSpoilerClick={handleChessSpoilerClick}
                   onDelete={handleShowDeleteModal}
@@ -656,7 +657,7 @@ export default function MessagesContainer({
           recepientId
         });
         onSendFirstDirectMessage({ members, message });
-        socket.emit('join_chat_channel', message.channelId);
+        socket.emit('join_chat_group', message.channelId);
         socket.emit('send_bi_chat_invitation', recepientId, message);
         return;
       }
@@ -805,6 +806,16 @@ export default function MessagesContainer({
     }
   }
 
+  function handleAcceptGroupInvitation({ channel, messages, joinMessage }) {
+    onEnterChannelWithId({ data: { channel, messages }, showOnTop: true });
+    socket.emit('new_chat_message', {
+      message: joinMessage,
+      channel,
+      newMembers: [{ id: userId, username, profilePicId }]
+    });
+    onSubmitMessage({ message: joinMessage });
+  }
+
   async function handleMessageSubmit({
     content,
     rewardAmount,
@@ -823,7 +834,7 @@ export default function MessagesContainer({
           recepientId
         });
         onSendFirstDirectMessage({ members, message });
-        socket.emit('join_chat_channel', message.channelId);
+        socket.emit('join_chat_group', message.channelId);
         socket.emit('send_bi_chat_invitation', recepientId, message);
         onSetCreatingNewDMChannel(false);
         return Promise.resolve();

@@ -156,7 +156,7 @@ function App({ location, history }) {
 
   useEffect(() => {
     window.ga('send', 'pageview', location.pathname);
-    history.listen(location => {
+    history.listen((location) => {
       window.ga('send', 'pageview', location.pathname);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -383,7 +383,7 @@ function App({ location, history }) {
     onSetReplyTarget(null);
     if (members) {
       onSendFirstDirectMessage({ members, message });
-      socket.emit('join_chat_channel', message.channelId);
+      socket.emit('join_chat_group', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
     }
     function handleUploadProgress({ loaded, total }) {
