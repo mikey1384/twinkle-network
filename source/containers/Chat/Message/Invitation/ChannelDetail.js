@@ -41,37 +41,31 @@ export default function ChannelDetail({ channelName, members }) {
           color: Color[profileTheme]()
         }}
       >
-        Invitation to chat group:
+        Invitation to {channelName}
       </p>
-      <div
-        style={{ fontWeight: 'bold', fontSize: '2rem', marginTop: '0.5rem' }}
-      >
-        {channelName}
-      </div>
       <div style={{ marginTop: '0.5rem' }}>
-        <p style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>members:</p>
-        <div style={{ marginTop: '0.5rem' }}>
-          {shownMembers.map((member) => (
-            <div key={member.id}>{member.username}</div>
-          ))}
-          {more && (
-            <div style={{ marginTop: '0.5rem' }}>
-              <span
-                className={css`
-                  font-size: 1.5rem;
-                  cursor: pointer;
-                  color: ${Color.blue()};
-                  &:hover {
-                    text-decoration: underline;
-                  }
-                `}
-                onClick={() => setUserListModalShown(true)}
-              >
-                ...and {more} more
-              </span>
-            </div>
-          )}
-        </div>
+        <span style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>members:</span>{' '}
+        {shownMembers.map((member, index) => (
+          <span key={member.id}>
+            {member.username}
+            {index === members.length - 1 ? '' : ', '}
+          </span>
+        ))}
+        {more && (
+          <span
+            className={css`
+              font-size: 1.5rem;
+              cursor: pointer;
+              color: ${Color.blue()};
+              &:hover {
+                text-decoration: underline;
+              }
+            `}
+            onClick={() => setUserListModalShown(true)}
+          >
+            ...and {more} more
+          </span>
+        )}
       </div>
       {userListModalShown && (
         <UserListModal

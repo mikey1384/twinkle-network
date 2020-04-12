@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ChannelDetail from './ChannelDetail';
 import Button from 'components/Button';
@@ -33,9 +33,13 @@ export default function Invitation({ inviteFrom, messageId, sender }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const alreadyJoined = useMemo(() => {
+    const memberIds = invitationDetail?.members.map((member) => member.id);
+    return memberIds?.includes(userId);
+  }, [invitationDetail, userId]);
 
   return (
-    <div>
+    <div style={{ height: userId === sender.id ? '8rem' : '13rem' }}>
       {invitationDetail && (
         <ChannelDetail
           channelName={invitationDetail.channelName}
@@ -43,8 +47,15 @@ export default function Invitation({ inviteFrom, messageId, sender }) {
         />
       )}
       {userId !== sender.id && (
-        <Button filled color={profileTheme} onClick={handleAccept}>
-          {`Accept ${sender.username}'s Invitation`}
+        <Button
+          filled
+          color={profileTheme}
+          onClick={handleAccept}
+          disabled={alreadyJoined}
+        >
+          {alreadyJoined
+            ? 'Already Joined'
+            : `Accept ${sender.username}'s Invitation`}
         </Button>
       )}
     </div>
