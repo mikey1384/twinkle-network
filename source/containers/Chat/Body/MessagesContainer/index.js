@@ -827,7 +827,6 @@ export default function MessagesContainer({
       channel,
       newMembers: [{ id: userId, username, profilePicId }]
     });
-    onSubmitMessage({ message: joinMessage });
   }
 
   async function handleMessageSubmit({
