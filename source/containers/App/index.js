@@ -337,7 +337,7 @@ function App({ location, history }) {
       fileToUpload,
       recepientId
     });
-    const { channel, message } = await uploadFileOnChat({
+    const { channel, message, messageId } = await uploadFileOnChat({
       channelId,
       content,
       selectedFile: fileToUpload,
@@ -350,14 +350,14 @@ function App({ location, history }) {
     onPostUploadComplete({
       path: filePath,
       channelId,
-      messageId: message.id,
+      messageId: messageId,
       result: !!message
     });
     const params = {
       content,
       fileName: fileToUpload.name,
       filePath,
-      id: message.id,
+      id: messageId,
       uploaderAuthLevel: authLevel,
       channelId,
       userId,
