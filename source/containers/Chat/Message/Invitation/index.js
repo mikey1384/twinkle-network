@@ -72,8 +72,10 @@ export default function Invitation({
   );
 
   async function handleAccept() {
-    const { channel, messages } = await acceptInvitation(inviteFrom);
+    const { channel, messages, joinMessage } = await acceptInvitation(
+      inviteFrom
+    );
     socket.emit('join_chat_group', channel.id);
-    onAcceptGroupInvitation({ channel, messages });
+    onAcceptGroupInvitation({ channel, messages, joinMessage });
   }
 }
