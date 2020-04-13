@@ -173,13 +173,14 @@ export default function ChatReducer(state, action) {
         ...state,
         subject: {},
         homeChannelIds: [
-          action.message.channelId,
+          action.channel.id,
           ...state.homeChannelIds.filter((channelId) => channelId !== 0)
         ],
         channelsObj: {
           ...state.channelsObj,
-          [action.message.channelId]: {
-            id: action.message.channelId,
+          [action.channel.id]: {
+            ...action.channel,
+            numUnreads: 0,
             lastMessage: {
               fileName: action.message.fileName || '',
               content: action.message.content,
@@ -187,15 +188,11 @@ export default function ChatReducer(state, action) {
                 id: action.message.userId,
                 username: action.message.username
               }
-            },
-            lastUpdate: action.message.timeStamp,
-            numUnreads: 0,
-            twoPeople: true,
-            members: action.members
+            }
           }
         },
-        selectedChannelId: action.message.channelId,
-        messages: [{ ...action.message }]
+        selectedChannelId: action.channel.id,
+        messages: [action.message]
       };
     case 'DELETE_MESSAGE':
       return {
@@ -787,16 +784,12 @@ export default function ChatReducer(state, action) {
         ...state,
         channelsObj: {
           ...state.channelsObj,
-          [action.channel.id]: action.senderIsNotTheUser
-            ? {
-                ...state.channelsObj[action.channel.id],
-                ...action.channel,
-                numUnreads:
-                  Number(
-                    state.channelsObj[action.channel.id]?.numUnreads || 0
-                  ) + 1
-              }
-            : state.channelsObj[action.channel.id]
+          [action.channel.id]: {
+            ...state.channelsObj[action.channel.id],
+            ...action.channel,
+            numUnreads:
+              Number(state.channelsObj[action.channel.id]?.numUnreads || 0) + 1
+          }
         },
         numUnreads:
           action.pageVisible && action.usingChat
@@ -1075,6 +1068,24 @@ export default function ChatReducer(state, action) {
           }
         ])
       };
+    case 'UPDATE_LAST_MESSAGE': {
+      const newChannelsObj = { ...state.channelsObj };
+      for (let channelId of action.channelIds) {
+        if (newChannelsObj[channelId]) {
+          newChannelsObj[channelId] = {
+            ...newChannelsObj[channelId],
+            lastMessage: {
+              ...newChannelsObj[channelId].lastMessage,
+              content: action.message
+            }
+          };
+        }
+      }
+      return {
+        ...state,
+        channelsObj: newChannelsObj
+      };
+    }
     case 'UPDATE_UPLOAD_PROGRESS':
       return {
         ...state,

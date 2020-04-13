@@ -313,12 +313,14 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async sendInvitationMessage({ origin, recepients }) {
       try {
-        await request.post(
+        const {
+          data: { invitationMessage, channelIds }
+        } = await request.post(
           `${URL}/chat/invitation`,
           { origin, recepients },
           auth()
         );
-        return Promise.resolve();
+        return Promise.resolve({ invitationMessage, channelIds });
       } catch (error) {
         return handleError(error);
       }
@@ -389,7 +391,9 @@ export default function chatRequestHelpers({ auth, handleError }) {
         await request.put(url.signedRequest, selectedFile, {
           onUploadProgress
         });
-        const { data } = await request.post(
+        const {
+          data: { channel, message }
+        } = await request.post(
           `${URL}/chat/file`,
           {
             fileName: selectedFile.name,
@@ -403,7 +407,7 @@ export default function chatRequestHelpers({ auth, handleError }) {
           },
           auth()
         );
-        return Promise.resolve(data);
+        return Promise.resolve({ channel, message });
       } catch (error) {
         return handleError(error);
       }

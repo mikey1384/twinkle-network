@@ -85,7 +85,8 @@ export default function MessagesContainer({
       onSetChessModalShown,
       onSetCreatingNewDMChannel,
       onSetReplyTarget,
-      onSubmitMessage
+      onSubmitMessage,
+      onUpdateLastMessages
     }
   } = useChatContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
@@ -651,14 +652,14 @@ export default function MessagesContainer({
           channelId: selectedChannelId
         });
       } else {
-        const { members, message } = await startNewDMChannel({
+        const { channel, message } = await startNewDMChannel({
           ...params,
           content,
           recepientId
         });
-        onSendFirstDirectMessage({ members, message });
         socket.emit('join_chat_group', message.channelId);
         socket.emit('send_bi_chat_invitation', recepientId, message);
+        onSendFirstDirectMessage({ channel, message });
         return;
       }
     } catch (error) {
@@ -703,7 +704,7 @@ export default function MessagesContainer({
     setSettingsModalShown(false);
   }
 
-  function handleInviteUsersDone({ users, message, isClass }) {
+  async function handleInviteUsersDone({ users, message, isClass }) {
     if (isClass) {
       socket.emit('new_chat_message', {
         message: {
@@ -730,12 +731,25 @@ export default function MessagesContainer({
         }
       );
     } else {
-      sendInvitationMessage({
-        recepients: users.map((user) => user.id),
+      const recepientIds = users.map((user) => user.id);
+      const { invitationMessage, channelIds } = await sendInvitationMessage({
+        recepients: recepientIds,
         origin: currentChannel.id
       });
+      onUpdateLastMessages({ channelIds, message: invitationMessage });
     }
     setInviteUsersModalShown(false);
+    onSubmitMessage({
+      message: {
+        userId,
+        username,
+        profilePicId,
+        content: `sent ${users.length === 1 ? 'an ' : ''}invitation message${
+          users.length > 1 ? 's' : ''
+        } to ${users.length > 1 ? `${users.length} users` : users[0].username}`,
+        isNotification: true
+      }
+    });
   }
 
   function handleLeaveConfirm() {
@@ -828,14 +842,14 @@ export default function MessagesContainer({
       if (creatingNewDMChannel) return;
       onSetCreatingNewDMChannel(true);
       try {
-        const { members, message } = await startNewDMChannel({
+        const { channel, message } = await startNewDMChannel({
           content,
           userId,
           recepientId
         });
-        onSendFirstDirectMessage({ members, message });
         socket.emit('join_chat_group', message.channelId);
         socket.emit('send_bi_chat_invitation', recepientId, message);
+        onSendFirstDirectMessage({ channel, message });
         onSetCreatingNewDMChannel(false);
         return Promise.resolve();
       } catch (error) {

@@ -337,7 +337,7 @@ function App({ location, history }) {
       fileToUpload,
       recepientId
     });
-    const { messageId, members, message } = await uploadFileOnChat({
+    const { channel, message } = await uploadFileOnChat({
       channelId,
       content,
       selectedFile: fileToUpload,
@@ -350,14 +350,14 @@ function App({ location, history }) {
     onPostUploadComplete({
       path: filePath,
       channelId,
-      messageId,
-      result: !!messageId
+      messageId: message.id,
+      result: !!message
     });
     const params = {
       content,
       fileName: fileToUpload.name,
       filePath,
-      id: messageId,
+      id: message.id,
       uploaderAuthLevel: authLevel,
       channelId,
       userId,
@@ -381,8 +381,8 @@ function App({ location, history }) {
       });
     }
     onSetReplyTarget(null);
-    if (members) {
-      onSendFirstDirectMessage({ members, message });
+    if (channel) {
+      onSendFirstDirectMessage({ channel, message });
       socket.emit('join_chat_group', message.channelId);
       socket.emit('send_bi_chat_invitation', recepientId, message);
     }

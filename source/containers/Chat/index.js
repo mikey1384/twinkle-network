@@ -288,13 +288,13 @@ function Chat({ onFileUpload }) {
 
   function onSubjectChange({ message }) {
     let messageIsForCurrentChannel = message.channelId === selectedChannelId;
-    let senderIsNotTheUser = message.userId !== userId;
-    if (messageIsForCurrentChannel && senderIsNotTheUser) {
+    let senderIsUser = message.userId === userId;
+    if (senderIsUser) return;
+    if (messageIsForCurrentChannel) {
       onReceiveMessage({ message, pageVisible });
     }
     if (!messageIsForCurrentChannel) {
       onReceiveMessageOnDifferentChannel({
-        senderIsNotTheUser,
         pageVisible,
         channel: {
           id: 2,

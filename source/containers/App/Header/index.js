@@ -281,8 +281,8 @@ export default function Header({
           duplicate = true;
         }
       }
-      onReceiveFirstMsg({ message, duplicate, isClass, pageVisible });
       socket.emit('join_chat_group', message.channelId);
+      onReceiveFirstMsg({ message, duplicate, isClass, pageVisible });
     }
 
     function handleDisconnect(reason) {
@@ -415,8 +415,9 @@ export default function Header({
     async function handleReceiveMessage({ message, channel, newMembers }) {
       const messageIsForCurrentChannel =
         message.channelId === selectedChannelId;
-      const senderIsNotTheUser = message.userId !== userId;
-      if (messageIsForCurrentChannel && senderIsNotTheUser) {
+      const senderIsUser = message.userId === userId;
+      if (senderIsUser) return;
+      if (messageIsForCurrentChannel) {
         if (usingChat) {
           await updateChatLastRead(message.channelId);
         }
@@ -430,7 +431,6 @@ export default function Header({
       if (!messageIsForCurrentChannel) {
         onReceiveMessageOnDifferentChannel({
           channel,
-          senderIsNotTheUser,
           pageVisible,
           usingChat
         });

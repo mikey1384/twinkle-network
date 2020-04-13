@@ -298,16 +298,10 @@ export default function ChatActions(dispatch) {
         pageVisible
       });
     },
-    onReceiveMessageOnDifferentChannel({
-      channel,
-      senderIsNotTheUser,
-      pageVisible,
-      usingChat
-    }) {
+    onReceiveMessageOnDifferentChannel({ channel, pageVisible, usingChat }) {
       return dispatch({
         type: 'RECEIVE_MSG_ON_DIFF_CHANNEL',
         channel,
-        senderIsNotTheUser,
         pageVisible,
         usingChat
       });
@@ -374,10 +368,10 @@ export default function ChatActions(dispatch) {
         selectedChatTab
       });
     },
-    onSendFirstDirectMessage({ members, message }) {
+    onSendFirstDirectMessage({ channel, message }) {
       return dispatch({
         type: 'CREATE_NEW_DM_CHANNEL',
-        members,
+        channel,
         message
       });
     },
@@ -525,6 +519,13 @@ export default function ChatActions(dispatch) {
         progress,
         channelId,
         path
+      });
+    },
+    onUpdateLastMessages({ channelIds, message }) {
+      return dispatch({
+        type: 'UPDATE_LAST_MESSAGE',
+        channelIds,
+        message
       });
     },
     onUpdateRecentChessMessage(message) {
