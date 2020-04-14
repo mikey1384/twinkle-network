@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { borderRadius, Color } from 'constants/css';
+import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 import UserListModal from 'components/Modals/UserListModal';
@@ -36,6 +36,7 @@ export default function ChannelDetail({ channelName, members }) {
     >
       <p
         style={{
+          lineHeight: 1,
           fontWeight: 'bold',
           fontSize: '2.2rem',
           color: Color[profileTheme]()
@@ -43,8 +44,16 @@ export default function ChannelDetail({ channelName, members }) {
       >
         Invitation to {channelName}
       </p>
-      <div style={{ marginTop: '0.5rem' }}>
-        <span style={{ fontWeight: 'bold', fontSize: '1.7rem' }}>members:</span>{' '}
+      <div
+        style={{ marginTop: '0.5rem' }}
+        className={css`
+          font-size: 1.5rem;
+          @media (max-width: ${mobileMaxWidth}) {
+            font-size: 1rem;
+          }
+        `}
+      >
+        <span style={{ fontWeight: 'bold' }}>members:</span>{' '}
         {shownMembers.map((member, index) => (
           <span key={member.id}>
             {member.username}
@@ -52,9 +61,8 @@ export default function ChannelDetail({ channelName, members }) {
           </span>
         ))}
         {more && (
-          <span
+          <p
             className={css`
-              font-size: 1.5rem;
               cursor: pointer;
               color: ${Color.blue()};
               &:hover {
@@ -64,7 +72,7 @@ export default function ChannelDetail({ channelName, members }) {
             onClick={() => setUserListModalShown(true)}
           >
             ...and {more} more
-          </span>
+          </p>
         )}
       </div>
       {userListModalShown && (

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import ChannelDetail from './ChannelDetail';
 import Button from 'components/Button';
 import { socket } from 'constants/io';
+import { mobileMaxWidth } from 'constants/css';
+import { css } from 'emotion';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
@@ -49,7 +51,14 @@ export default function Invitation({
   }, [invitationDetail, userId]);
 
   return (
-    <div style={{ height: userId === sender.id ? '8rem' : '13rem' }}>
+    <div
+      className={css`
+        height: ${userId === sender.id ? '8rem' : '14rem'};
+        @media (max-width: ${mobileMaxWidth}) {
+          height: ${userId === sender.id ? '6rem' : '12rem'};
+        }
+      `}
+    >
       {invitationDetail && (
         <ChannelDetail
           channelName={invitationDetail.channelName}
