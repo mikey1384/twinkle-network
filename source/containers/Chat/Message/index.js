@@ -138,7 +138,9 @@ function Message({
   } = useMyState();
   const userIsUploader = myId === userId;
   const userCanEditThis =
-    ((canEdit || canDelete) && authLevel > uploaderAuthLevel) || userIsUploader;
+    !inviteFrom &&
+    (((canEdit || canDelete) && authLevel > uploaderAuthLevel) ||
+      userIsUploader);
   const userCanRewardThis = useMemo(
     () => canStar && authLevel > uploaderAuthLevel && myId !== userId,
     [authLevel, canStar, uploaderAuthLevel, userId, myId]

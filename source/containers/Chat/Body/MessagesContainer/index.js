@@ -115,6 +115,7 @@ export default function MessagesContainer({
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const [selectNewOwnerModal, setSelectNewOwnerModal] = useState(null);
+  const [placeholderHeight, setPlaceholderHeight] = useState(0);
 
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
@@ -230,6 +231,13 @@ export default function MessagesContainer({
         : 300 * mb,
     [authLevel]
   );
+
+  useEffect(() => {
+    setPlaceholderHeight(
+      `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
+    );
+    handleSetScrollToBottom();
+  }, [loading]);
 
   useEffect(() => {
     socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
@@ -395,9 +403,7 @@ export default function MessagesContainer({
             ) : (
               <div
                 style={{
-                  height: `CALC(100vh - ${
-                    MessagesRef.current?.offsetHeight || 0
-                  }px)`
+                  height: placeholderHeight
                 }}
               />
             )}
