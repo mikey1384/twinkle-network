@@ -356,7 +356,10 @@ export default function Header({
     }
 
     function handlePeerHungUp({ channelId, memberId, peerId }) {
-      if (Number(channelId) === Number(channelOnCall.id)) {
+      if (
+        Number(channelId) === Number(channelOnCall.id) &&
+        membersOnCall.current[peerId]
+      ) {
         delete membersOnCall.current[peerId];
         onHangUp({ peerId, memberId, iHungUp: memberId === userId });
       }
