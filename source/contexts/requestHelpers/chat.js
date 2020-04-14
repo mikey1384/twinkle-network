@@ -164,10 +164,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadChatChannel({ channelId }) {
+    async loadChatChannel({ channelId, skipUpdateChannelId }) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/channel?channelId=${channelId}`,
+          `${URL}/chat/channel?channelId=${channelId}${
+            skipUpdateChannelId ? '&skipUpdateChannelId=1' : ''
+          }`,
           auth()
         );
         return Promise.resolve(data);

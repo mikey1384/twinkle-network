@@ -236,8 +236,13 @@ export default function MessagesContainer({
     setPlaceholderHeight(
       `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
     );
-    handleSetScrollToBottom();
-  }, [loading]);
+    if (
+      MessagesRef.current?.offsetHeight <
+      MessagesContainerRef.current?.offsetHeight + 30
+    ) {
+      handleSetScrollToBottom();
+    }
+  }, [loading, messages.length]);
 
   useEffect(() => {
     socket.on('chess_countdown_number_received', onReceiveCountdownNumber);

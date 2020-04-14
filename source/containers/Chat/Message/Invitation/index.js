@@ -37,7 +37,10 @@ export default function Invitation({
       init();
     }
     async function init() {
-      const { channel } = await loadChatChannel({ channelId: inviteFrom });
+      const { channel } = await loadChatChannel({
+        channelId: inviteFrom,
+        skipUpdateChannelId: true
+      });
       onSetChatInvitationDetail({ messageId, detail: channel });
     }
     return function cleanUp() {
