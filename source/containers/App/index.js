@@ -351,7 +351,7 @@ function App({ location, history }) {
       path: filePath,
       channelId,
       messageId: messageId,
-      result: !!message
+      result: !!messageId
     });
     const params = {
       content,
