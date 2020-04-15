@@ -41,7 +41,7 @@ export default function ChannelDetail({ channelName, members }) {
           font-size: 2.2rem;
           color: ${Color[profileTheme]()};
           @media (max-width: ${mobileMaxWidth}) {
-            font-size: 1.7rem;
+            font-size: 1.5rem;
           }
         `}
       >
