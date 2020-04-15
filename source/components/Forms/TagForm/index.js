@@ -12,6 +12,7 @@ TagForm.propTypes = {
   dropdownFooter: PropTypes.node,
   inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   itemLabel: PropTypes.string.isRequired,
+  maxItems: PropTypes.number,
   searchPlaceholder: PropTypes.string.isRequired,
   searchResults: PropTypes.array.isRequired,
   selectedItems: PropTypes.array.isRequired,
@@ -42,6 +43,7 @@ function TagForm({
   inputRef,
   filter,
   itemLabel,
+  maxItems,
   onAddItem,
   onClear,
   searchResults,
@@ -95,7 +97,7 @@ function TagForm({
       <form
         style={style}
         className={className}
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
           onSubmit?.();
         }}
@@ -104,25 +106,27 @@ function TagForm({
           {title && <h3>{title}</h3>}
           {subTitle && <span>{subTitle}</span>}
           {tags}
-          <TagInput
-            dropdownFooter={dropdownFooter}
-            style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
-            autoFocus={autoFocus}
-            inputRef={inputRef}
-            loading={searching}
-            value={searchText}
-            onChange={handleSearch}
-            onClickOutSide={() => {
-              setSearchText('');
-              onClear();
-            }}
-            onNotFound={onNotFound}
-            placeholder={searchPlaceholder}
-            renderDropdownLabel={renderDropdownLabel}
-            searchResults={filteredResults}
-            selectedItems={objectify(selectedItems)}
-            onAddItem={handleAddItem}
-          />
+          {(!maxItems || selectedItems.length < maxItems) && (
+            <TagInput
+              dropdownFooter={dropdownFooter}
+              style={{ marginTop: selectedItems.length === 0 ? '1rem' : 0 }}
+              autoFocus={autoFocus}
+              inputRef={inputRef}
+              loading={searching}
+              value={searchText}
+              onChange={handleSearch}
+              onClickOutSide={() => {
+                setSearchText('');
+                onClear();
+              }}
+              onNotFound={onNotFound}
+              placeholder={searchPlaceholder}
+              renderDropdownLabel={renderDropdownLabel}
+              searchResults={filteredResults}
+              selectedItems={objectify(selectedItems)}
+              onAddItem={handleAddItem}
+            />
+          )}
         </div>
         {children}
       </form>

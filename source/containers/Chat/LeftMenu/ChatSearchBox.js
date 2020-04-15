@@ -39,7 +39,7 @@ export default function ChatSearchBox({ style }) {
         onChange={handleSearch}
         value={searchText}
         searchResults={chatSearchResults}
-        renderItemLabel={item =>
+        renderItemLabel={(item) =>
           !item.primary || (item.primary && item.twoPeople) ? (
             <span>
               {item.label}{' '}
@@ -48,11 +48,11 @@ export default function ChatSearchBox({ style }) {
           ) : (
             <span
               style={{
-                color: Color.green(),
+                color: item.channelId === 2 ? Color.green() : Color.logoBlue(),
                 fontWeight: 'bold'
               }}
             >
-              {item.label} (Group)
+              {item.label}
             </span>
           )
         }

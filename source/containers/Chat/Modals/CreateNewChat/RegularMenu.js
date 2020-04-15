@@ -35,16 +35,17 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
       <main>
         <TagForm
           autoFocus
+          maxItems={5}
           title="Who are the members?"
           itemLabel="username"
           searchResults={userSearchResults}
-          filter={result => result.id !== userId}
+          filter={(result) => result.id !== userId}
           onSearch={handleSearchUserToInvite}
           onClear={onClearUserSearchResults}
           channelName={channelName}
           onAddItem={onAddUser}
           onRemoveItem={onRemoveUser}
-          renderDropdownLabel={item => (
+          renderDropdownLabel={(item) => (
             <span>
               {item.username}{' '}
               {item.realName && <small>{`(${item.realName})`}</small>}
@@ -81,7 +82,7 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
                     </>
                   }
                   checked={!isClosed}
-                  onChange={() => setIsClosed(isClosed => !isClosed)}
+                  onChange={() => setIsClosed((isClosed) => !isClosed)}
                 />
                 <p>(You can change this setting later)</p>
               </div>
@@ -102,7 +103,8 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
           onClick={handleDone}
           disabled={
             (selectedUsers.length > 1 && !channelName) ||
-            selectedUsers.length === 0
+            selectedUsers.length === 0 ||
+            selectedUsers.length > 5
           }
         >
           Create
@@ -121,7 +123,7 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
   }
 
   function onRemoveUser(userId) {
-    setSelectedUsers(selectedUsers.filter(user => user.id !== userId));
+    setSelectedUsers(selectedUsers.filter((user) => user.id !== userId));
   }
 
   function handleDone() {
