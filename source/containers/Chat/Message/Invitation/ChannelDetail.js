@@ -35,12 +35,15 @@ export default function ChannelDetail({ channelName, members }) {
       }}
     >
       <p
-        style={{
-          lineHeight: 1,
-          fontWeight: 'bold',
-          fontSize: '2.2rem',
-          color: Color[profileTheme]()
-        }}
+        className={css`
+          line-height: 1;
+          font-weight: bold;
+          font-size: 2.2rem;
+          color: ${Color[profileTheme]()};
+          @media (max-width: ${mobileMaxWidth}) {
+            font-size: 1.7rem;
+          }
+        `}
       >
         Invitation to {channelName}
       </p>
