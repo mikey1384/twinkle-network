@@ -47,6 +47,12 @@ export default function ChatReducer(state, action) {
           : undefined
       };
     }
+    case 'CHANGE_CALL_MUTED': {
+      return {
+        ...state,
+        callMuted: action.muted
+      };
+    }
     case 'CHANGE_CHANNEL_OWNER': {
       return {
         ...state,

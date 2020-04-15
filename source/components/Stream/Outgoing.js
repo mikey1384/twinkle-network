@@ -25,7 +25,7 @@ export default function Outgoing() {
     return function cleanUp() {
       mounted.current = false;
       onSetMyStream(null);
-      currentVideo.srcObject?.getTracks()?.forEach(track => {
+      currentVideo.srcObject?.getTracks()?.forEach((track) => {
         track.stop();
       });
     };

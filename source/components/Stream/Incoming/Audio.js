@@ -11,6 +11,7 @@ export default function Audio({ stream }) {
   const { pathname } = useLocation();
   const audioRef = useRef(stream);
   const {
+    state: { callMuted },
     state: { channelOnCall, selectedChannelId }
   } = useChatContext();
   useEffect(() => {
@@ -30,11 +31,11 @@ export default function Audio({ stream }) {
 
   useEffect(() => {
     if (pathname === '/chat' && channelOnCall.id === selectedChannelId) {
-      audioRef.current.volume = 0;
+      audioRef.current.muted = true;
     } else {
-      audioRef.current.volume = 1;
+      audioRef.current.muted = callMuted;
     }
-  }, [channelOnCall.id, pathname, selectedChannelId]);
+  }, [callMuted, channelOnCall.id, pathname, selectedChannelId]);
 
   return (
     <audio

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
+import { useChatContext } from 'contexts';
 
 Video.propTypes = {
   stream: PropTypes.object.isRequired
@@ -8,11 +9,19 @@ Video.propTypes = {
 
 export default function Video({ stream }) {
   const videoRef = useRef(stream);
+  const {
+    state: { callMuted },
+    actions: { onChangeMuted }
+  } = useChatContext();
   useEffect(() => {
     const video = videoRef.current;
     if (videoRef.current && !videoRef.current.srcObject) {
       const clonedStream = stream.clone();
       video.srcObject = clonedStream;
+      video.muted = callMuted;
+      video.onvolumechange = (event) => {
+        onChangeMuted(event.target.muted);
+      };
     }
     return function cleanUp() {
       video.srcObject?.getTracks()?.forEach((track) => {
