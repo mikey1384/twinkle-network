@@ -36,6 +36,8 @@ export default function ChannelDetail({ channelName, members }) {
     >
       <p
         className={css`
+          overflow: hidden;
+          text-overflow: ellipsis;
           line-height: 1;
           font-weight: bold;
           font-size: 2.2rem;
