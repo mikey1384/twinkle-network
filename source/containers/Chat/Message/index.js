@@ -409,6 +409,7 @@ function Message({
                   inviteFrom={inviteFrom}
                   messageId={messageId}
                   onAcceptGroupInvitation={onAcceptGroupInvitation}
+                  onSetScrollToBottom={handleScrollToBottom}
                 />
               ) : isChessMsg ? (
                 <Chess
