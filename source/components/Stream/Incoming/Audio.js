@@ -1,12 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
+import { useChatContext } from 'contexts';
 
 Audio.propTypes = {
   stream: PropTypes.object.isRequired
 };
 
 export default function Audio({ stream }) {
+  const { pathname } = useLocation();
   const audioRef = useRef(stream);
+  const {
+    state: { channelOnCall, selectedChannelId }
+  } = useChatContext();
   useEffect(() => {
     const currentAudio = audioRef.current;
     if (audioRef.current && !audioRef.current.srcObject) {
@@ -21,6 +27,14 @@ export default function Audio({ stream }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (pathname === '/chat' && channelOnCall.id === selectedChannelId) {
+      audioRef.current.volume = 0;
+    } else {
+      audioRef.current.volume = 1;
+    }
+  }, [channelOnCall.id, pathname, selectedChannelId]);
 
   return (
     <audio

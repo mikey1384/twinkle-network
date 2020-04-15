@@ -13,10 +13,9 @@ export default function Video({ stream }) {
     if (videoRef.current && !videoRef.current.srcObject) {
       const clonedStream = stream.clone();
       video.srcObject = clonedStream;
-      video.volume = 0;
     }
     return function cleanUp() {
-      video.srcObject?.getTracks()?.forEach(track => {
+      video.srcObject?.getTracks()?.forEach((track) => {
         track.stop();
       });
     };
@@ -35,13 +34,7 @@ export default function Video({ stream }) {
     >
       <video
         className={css`
-          &::-webkit-media-controls-volume-control-container {
-            display: none;
-          }
           &::-webkit-media-controls-volume-slider {
-            display: none;
-          }
-          &::-webkit-media-controls-mute-button {
             display: none;
           }
           &::-webkit-media-controls-play-button {
