@@ -409,7 +409,7 @@ function Message({
                   inviteFrom={inviteFrom}
                   messageId={messageId}
                   onAcceptGroupInvitation={onAcceptGroupInvitation}
-                  onSetScrollToBottom={handleScrollToBottom}
+                  onSetScrollToBottom={handleSetScrollToBottom}
                 />
               ) : isChessMsg ? (
                 <Chess
@@ -425,7 +425,7 @@ function Message({
                   onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
-                  onSetScrollToBottom={handleScrollToBottom}
+                  onSetScrollToBottom={handleSetScrollToBottom}
                   senderId={userId}
                   style={{ marginTop: '1rem', width: '100%' }}
                 />
@@ -442,7 +442,7 @@ function Message({
                   {targetMessage && (
                     <TargetMessage
                       message={targetMessage}
-                      onScrollToBottom={handleScrollToBottom}
+                      onSetScrollToBottom={handleSetScrollToBottom}
                     />
                   )}
                   {filePath && (
@@ -477,7 +477,7 @@ function Message({
                       isEditing={isEditing}
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
-                      onSetScrollToBottom={handleScrollToBottom}
+                      onSetScrollToBottom={handleSetScrollToBottom}
                       showSubjectMsgsModal={showSubjectMsgsModal}
                       socketConnected={socketConnected}
                       subjectId={subjectId}
@@ -575,7 +575,7 @@ function Message({
     onRewardMessageSubmit({ amount, reasonId, message });
   }
 
-  function handleScrollToBottom() {
+  function handleSetScrollToBottom() {
     if (isLastMsg) {
       onSetScrollToBottom();
     }

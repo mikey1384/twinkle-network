@@ -20,10 +20,10 @@ import { isMobile } from 'helpers';
 
 TargetMessage.propTypes = {
   message: PropTypes.object.isRequired,
-  onScrollToBottom: PropTypes.func.isRequired
+  onSetScrollToBottom: PropTypes.func.isRequired
 };
 
-export default function TargetMessage({ message, onScrollToBottom }) {
+export default function TargetMessage({ message, onSetScrollToBottom }) {
   const [imageModalShown, setImageModalShown] = useState(false);
   const fileType = useMemo(() => {
     return message.fileName
@@ -74,7 +74,7 @@ export default function TargetMessage({ message, onScrollToBottom }) {
         {isValidSpoiler(message.content) ? (
           <Spoiler
             content={message.content}
-            onSpoilerClick={onScrollToBottom}
+            onSpoilerClick={onSetScrollToBottom}
           />
         ) : (
           <p
