@@ -6,8 +6,10 @@ import request from 'axios';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import SubjectItem from './SubjectItem';
 import Loading from 'components/Loading';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import URL from 'constants/URL';
 
@@ -24,7 +26,11 @@ export default function SubjectsModal({
   onHide,
   selectSubject
 }) {
+  const {
+    requestHelpers: { deleteChatSubject }
+  } = useAppContext();
   const { userId } = useMyState();
+  const [deleteTarget, setDeleteTarget] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [mySubjects, setMySubjects] = useState({
     subjects: [],
@@ -80,7 +86,8 @@ export default function SubjectsModal({
               <SubjectItem
                 key={subject.id}
                 currentSubjectId={currentSubjectId}
-                selectSubject={() => selectSubject(subject.id)}
+                onDeleteSubject={() => setDeleteTarget(subject.id)}
+                onSelectSubject={() => selectSubject(subject.id)}
                 {...subject}
               />
             ))}
@@ -115,7 +122,8 @@ export default function SubjectsModal({
           <SubjectItem
             key={subject.id}
             currentSubjectId={currentSubjectId}
-            selectSubject={() => selectSubject(subject.id)}
+            onDeleteSubject={() => setDeleteTarget(subject.id)}
+            onSelectSubject={() => selectSubject(subject.id)}
             {...subject}
           />
         ))}
@@ -133,8 +141,33 @@ export default function SubjectsModal({
           Close
         </Button>
       </footer>
+      {deleteTarget && (
+        <ConfirmModal
+          modalOverModal
+          onHide={() => setDeleteTarget(0)}
+          onConfirm={() => handleDeleteSubject(deleteTarget)}
+          title="Remove Subject"
+        />
+      )}
     </Modal>
   );
+
+  async function handleDeleteSubject(subjectId) {
+    await deleteChatSubject(subjectId);
+    setMySubjects({
+      ...mySubjects,
+      subjects: mySubjects.subjects.filter(
+        (subject) => subject.id !== subjectId
+      )
+    });
+    setAllSubjects({
+      ...allSubjects,
+      subjects: allSubjects.subjects.filter(
+        (subject) => subject.id !== subjectId
+      )
+    });
+    setDeleteTarget(0);
+  }
 
   async function loadMoreSubjects(mineOnly) {
     if (mineOnly) {

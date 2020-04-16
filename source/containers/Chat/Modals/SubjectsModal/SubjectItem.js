@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { unix } from 'moment';
 import UsernameText from 'components/Texts/UsernameText';
-import { Color } from 'constants/css';
 import ButtonGroup from 'components/Buttons/ButtonGroup';
+import { unix } from 'moment';
+import { Color } from 'constants/css';
+import { useMyState } from 'helpers/hooks';
 
 const marginHeight = 1;
 const subjectTitleHeight = 24;
@@ -14,13 +15,15 @@ SubjectItem.propTypes = {
   content: PropTypes.string,
   userId: PropTypes.number,
   username: PropTypes.string,
-  selectSubject: PropTypes.func,
+  onDeleteSubject: PropTypes.func,
+  onSelectSubject: PropTypes.func,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default function SubjectItem({
   currentSubjectId,
-  selectSubject,
+  onDeleteSubject,
+  onSelectSubject,
   id,
   content,
   userId,
@@ -29,22 +32,35 @@ export default function SubjectItem({
 }) {
   const [marginBottom, setMarginBottom] = useState(`${marginHeight}rem`);
   const SubjectTitleRef = useRef(null);
+  const { authLevel, canDelete } = useMyState();
 
   useEffect(() => {
     const numLines = SubjectTitleRef.current.clientHeight / subjectTitleHeight;
     setMarginBottom(`${numLines * marginHeight}rem`);
   }, []);
 
-  let buttons = [];
-  if (currentSubjectId !== id) {
-    buttons.push({
-      color: 'green',
-      opacity: 0.5,
-      onClick: selectSubject,
-      label: 'Select',
-      onHover: false
-    });
-  }
+  const buttons = useMemo(() => {
+    const result = [];
+    if (currentSubjectId !== id && authLevel > 3 && canDelete) {
+      result.push({
+        color: 'rose',
+        opacity: 0.5,
+        onClick: onDeleteSubject,
+        label: 'Remove'
+      });
+    }
+    if (currentSubjectId !== id) {
+      result.push({
+        color: 'green',
+        opacity: 0.5,
+        onClick: onSelectSubject,
+        label: 'Select'
+      });
+    }
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLevel, canDelete, currentSubjectId, id]);
+
   return (
     <div
       style={{

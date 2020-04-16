@@ -41,6 +41,17 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async deleteChatSubject(subjectId) {
+      try {
+        await request.delete(
+          `${URL}/chat/chatSubject?subjectId=${subjectId}`,
+          auth()
+        );
+        return Promise.resolve();
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async deleteMessage({ fileName = '', filePath = '', messageId }) {
       try {
         await request.delete(
