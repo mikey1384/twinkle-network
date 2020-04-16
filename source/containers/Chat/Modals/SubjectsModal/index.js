@@ -6,7 +6,6 @@ import request from 'axios';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import SubjectItem from './SubjectItem';
 import Loading from 'components/Loading';
-import SubjectMsgsModal from '../SubjectMsgsModal';
 import { Color } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
@@ -37,11 +36,6 @@ export default function SubjectsModal({
     loadMoreButton: false,
     loading: false
   });
-  const [msgsModal, setMsgsModal] = useState({
-    shown: false,
-    subjectId: null,
-    title: ''
-  });
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -68,19 +62,10 @@ export default function SubjectsModal({
   }, []);
 
   return (
-    <Modal onHide={onHide} style={{ overflow: msgsModal.shown && 'hidden' }}>
+    <Modal onHide={onHide}>
       <header>View Subjects</header>
       <main>
         {!loaded && <Loading />}
-        {msgsModal.shown && (
-          <SubjectMsgsModal
-            subjectId={msgsModal.subjectId}
-            subjectTitle={msgsModal.title}
-            onHide={() =>
-              setMsgsModal({ shown: false, subjectId: null, title: '' })
-            }
-          />
-        )}
         {mySubjects.subjects.length > 0 && (
           <div style={{ width: '100%' }}>
             <h3
@@ -91,18 +76,11 @@ export default function SubjectsModal({
             >
               My Subjects
             </h3>
-            {mySubjects.subjects.map(subject => (
+            {mySubjects.subjects.map((subject) => (
               <SubjectItem
                 key={subject.id}
                 currentSubjectId={currentSubjectId}
                 selectSubject={() => selectSubject(subject.id)}
-                showMsgsModal={() =>
-                  setMsgsModal({
-                    shown: true,
-                    subjectId: subject.id,
-                    title: subject.content
-                  })
-                }
                 {...subject}
               />
             ))}
@@ -133,18 +111,11 @@ export default function SubjectsModal({
             </h3>
           </div>
         )}
-        {allSubjects.subjects.map(subject => (
+        {allSubjects.subjects.map((subject) => (
           <SubjectItem
             key={subject.id}
             currentSubjectId={currentSubjectId}
             selectSubject={() => selectSubject(subject.id)}
-            showMsgsModal={() =>
-              setMsgsModal({
-                shown: true,
-                subjectId: subject.id,
-                title: subject.content
-              })
-            }
             {...subject}
           />
         ))}

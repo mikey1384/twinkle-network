@@ -12,11 +12,9 @@ SubjectItem.propTypes = {
   id: PropTypes.number,
   currentSubjectId: PropTypes.number,
   content: PropTypes.string,
-  numMsgs: PropTypes.string,
   userId: PropTypes.number,
   username: PropTypes.string,
   selectSubject: PropTypes.func,
-  showMsgsModal: PropTypes.func,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
@@ -27,9 +25,7 @@ export default function SubjectItem({
   content,
   userId,
   username,
-  timeStamp,
-  numMsgs,
-  showMsgsModal
+  timeStamp
 }) {
   const [marginBottom, setMarginBottom] = useState(`${marginHeight}rem`);
   const SubjectTitleRef = useRef(null);
@@ -40,15 +36,6 @@ export default function SubjectItem({
   }, []);
 
   let buttons = [];
-  if (numMsgs > 0) {
-    buttons.push({
-      color: 'logoBlue',
-      opacity: 0.5,
-      onClick: showMsgsModal,
-      label: 'View',
-      onHover: false
-    });
-  }
   if (currentSubjectId !== id) {
     buttons.push({
       color: 'green',
@@ -90,10 +77,7 @@ export default function SubjectItem({
               fontWeight: 'bold'
             }}
             dangerouslySetInnerHTML={{ __html: content }}
-          />{' '}
-          {numMsgs && numMsgs > 0 && (
-            <b style={{ color: Color.blue() }}>{`(${numMsgs})`}</b>
-          )}
+          />
           <div>
             <UsernameText
               color={Color.darkerGray()}
