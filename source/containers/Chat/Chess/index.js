@@ -33,6 +33,7 @@ Chess.propTypes = {
   newChessState: PropTypes.object,
   onBoardClick: PropTypes.func,
   onChessMove: PropTypes.func,
+  onSetScrollToBottom: PropTypes.func,
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
@@ -54,6 +55,7 @@ export default function Chess({
   newChessState,
   onBoardClick,
   onChessMove,
+  onSetScrollToBottom,
   onSpoilerClick,
   opponentId,
   opponentName,
@@ -119,8 +121,8 @@ export default function Chess({
     if (interactable && !userMadeLastMove) {
       setGameOverMsg('');
       setStatus('');
-      setSquares(squares =>
-        squares.map(square =>
+      setSquares((squares) =>
+        squares.map((square) =>
           square.color === playerColors[myId]
             ? {
                 ...square,
@@ -135,6 +137,11 @@ export default function Chess({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, loaded, newChessState]);
+
+  useEffect(() => {
+    onSetScrollToBottom?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const move = parsedState?.move;
   const myColor = parsedState?.playerColors[myId] || 'white';
@@ -517,7 +524,9 @@ export default function Chess({
   );
 
   function handleCastling(direction) {
-    const actualSquares = squares.map(square => (square.isPiece ? square : {}));
+    const actualSquares = squares.map((square) =>
+      square.isPiece ? square : {}
+    );
     const { playerPieces } = getPlayerPieces({
       color: getOpponentPlayerColor(myColor),
       squares: actualSquares
@@ -610,7 +619,7 @@ export default function Chess({
       if (!squares[i] || squares[i].color !== myColor) {
         return;
       }
-      setSquares(squares =>
+      setSquares((squares) =>
         highlightPossiblePathsFromSrc({
           color: myColor,
           squares,
@@ -625,7 +634,7 @@ export default function Chess({
       if (squares[i] && squares[i].color === myColor) {
         setSelectedIndex(i);
         setStatus('');
-        setSquares(squares =>
+        setSquares((squares) =>
           highlightPossiblePathsFromSrc({
             color: myColor,
             squares,
@@ -720,7 +729,7 @@ export default function Chess({
             (square, index) => newSquares[newSquares.length - 1 - index]
           )
         : newSquares
-      ).map(square =>
+      ).map((square) =>
         square.state === 'highlighted'
           ? { ...square, state: '' }
           : square.state === 'check' && isCheckmate
@@ -747,7 +756,7 @@ export default function Chess({
       squares: newSquares
     });
     if (potentialCapturers.length > 0) {
-      setSquares(squares =>
+      setSquares((squares) =>
         squares.map((square, index) => {
           if (potentialCapturers.includes(index)) {
             return {
@@ -829,7 +838,7 @@ export default function Chess({
     });
     if (gameOver) {
       if (gameOver === 'Checkmate') {
-        setSquares(squares =>
+        setSquares((squares) =>
           squares.map((square, index) =>
             index === theirKingIndex
               ? { ...square, state: 'checkmate' }

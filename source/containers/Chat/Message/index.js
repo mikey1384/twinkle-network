@@ -425,6 +425,7 @@ function Message({
                   onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
+                  onSetScrollToBottom={handleScrollToBottom}
                   senderId={userId}
                   style={{ marginTop: '1rem', width: '100%' }}
                 />
@@ -476,7 +477,7 @@ function Message({
                       isEditing={isEditing}
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
-                      onScrollToBottom={handleScrollToBottom}
+                      onSetScrollToBottom={handleScrollToBottom}
                       showSubjectMsgsModal={showSubjectMsgsModal}
                       socketConnected={socketConnected}
                       subjectId={subjectId}
