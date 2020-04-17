@@ -113,7 +113,8 @@ export default function FileViewer({
                 right: 0,
                 left: 0,
                 bottom: 0,
-                paddingBottom: fileType === 'audio' ? '1rem' : 0
+                paddingBottom:
+                  fileType === 'audio' || fileType === 'video' ? '1rem' : 0
               }}
               width="100%"
               height={
