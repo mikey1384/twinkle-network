@@ -26,7 +26,7 @@ export default function StatusMsg({
         box-shadow: 0 5px 5px ${Color.lighterGray()};
         overflow-wrap: break-word;
         word-break: break-word;
-        > a {
+        a {
           color: ${statusColor === 'ivory'
             ? Color.blue()
             : statusColor === 'orange' || statusColor === 'red'
