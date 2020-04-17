@@ -25,7 +25,7 @@ export const Color = {
   borderGray: (opacity = 1) => `rgba(204,204,204,${opacity})`,
   checkboxAreaGray: (opacity = 1) => `rgba(229,229,229,${opacity})`,
   targetGray: (opacity = 1) => `rgba(218,218,230,${opacity})`,
-  wellGray: (opacity = 1) => `rgba(222,222,222,${opacity})`,
+  wellGray: (opacity = 1) => `rgba(235,235,235,${opacity})`,
   inputGray: (opacity = 1) => `rgba(238,238,245,${opacity})`,
   highlightGray: (opacity = 1) => `rgba(242,242,242,${opacity})`,
   whiteGray: (opacity = 1) => `rgba(250,250,250,${opacity})`,
