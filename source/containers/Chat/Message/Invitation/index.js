@@ -56,12 +56,44 @@ export default function Invitation({
     return memberIds?.includes(userId);
   }, [invitationDetail, userId]);
 
+  const desktopHeight = useMemo(() => {
+    if (userId === sender.id) {
+      if (invitationDetail?.members?.length > 3) {
+        return '9rem';
+      } else {
+        return '7rem';
+      }
+    } else {
+      if (invitationDetail?.members?.length > 3) {
+        return '14rem';
+      } else {
+        return '12rem';
+      }
+    }
+  }, [invitationDetail, sender.id, userId]);
+
+  const mobileHeight = useMemo(() => {
+    if (userId === sender.id) {
+      if (invitationDetail?.members?.length > 3) {
+        return '7rem';
+      } else {
+        return '5rem';
+      }
+    } else {
+      if (invitationDetail?.members?.length > 3) {
+        return '12rem';
+      } else {
+        return '10rem';
+      }
+    }
+  }, [invitationDetail, sender.id, userId]);
+
   return (
     <div
       className={css`
-        height: ${userId === sender.id ? '8rem' : '14rem'};
+        height: ${desktopHeight};
         @media (max-width: ${mobileMaxWidth}) {
-          height: ${userId === sender.id ? '6rem' : '12rem'};
+          height: ${mobileHeight};
         }
       `}
     >
