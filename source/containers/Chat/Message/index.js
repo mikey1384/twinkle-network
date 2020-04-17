@@ -17,6 +17,7 @@ import TextMessage from './TextMessage';
 import Icon from 'components/Icon';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import TargetMessage from './TargetMessage';
+import TargetSubject from './TargetSubject';
 import RewardMessage from './RewardMessage';
 import LocalContext from '../Context';
 import Invitation from './Invitation';
@@ -191,7 +192,13 @@ function Message({
   const {
     state: { socketConnected }
   } = useNotiContext();
-  let { username, profilePicId, targetMessage, ...post } = message;
+  let {
+    username,
+    profilePicId,
+    targetMessage,
+    targetSubject,
+    ...post
+  } = message;
   const [messageRewardModalShown, setMessageRewardModalShown] = useState(false);
   const [extractedUrl, setExtractedUrl] = useState('');
   const [spoilerOff, setSpoilerOff] = useState(false);
@@ -439,6 +446,7 @@ function Message({
                 />
               ) : (
                 <>
+                  {targetSubject && <TargetSubject subject={targetSubject} />}
                   {targetMessage && (
                     <TargetMessage
                       message={targetMessage}
