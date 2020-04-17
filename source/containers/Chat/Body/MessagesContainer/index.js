@@ -70,8 +70,7 @@ export default function MessagesContainer({
       recepientId,
       reconnecting,
       replyTarget,
-      selectedChannelId,
-      subject
+      selectedChannelId
     },
     actions: {
       onDeleteMessage,
@@ -565,7 +564,6 @@ export default function MessagesContainer({
           channelId={selectedChannelId}
           fileObj={fileObj}
           onHide={() => setUploadModalShown(false)}
-          subjectId={subject.id}
         />
       )}
       {inviteUsersModalShown && (
@@ -871,8 +869,7 @@ export default function MessagesContainer({
       username,
       profilePicId,
       content,
-      channelId: selectedChannelId,
-      subjectId: subject.id
+      channelId: selectedChannelId
     };
     onSubmitMessage({
       message,

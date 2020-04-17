@@ -5,6 +5,7 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
+import Icon from 'components/Icon';
 import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
@@ -140,21 +141,30 @@ export default function ChannelHeader() {
                 </div>
                 {renderDetails()}
               </section>
-              {authLevel > 0 && (
-                <Button
-                  color="logoBlue"
-                  filled
-                  style={{
-                    position: 'absolute',
-                    fontSize: '1.3rem',
-                    top: '1.3rem',
-                    right: '1rem'
-                  }}
-                  onClick={() => setOnEdit(true)}
-                >
-                  Change
+              <div
+                style={{
+                  position: 'absolute',
+                  fontSize: '1.3rem',
+                  top: '1.3rem',
+                  right: '1rem',
+                  display: 'flex'
+                }}
+              >
+                <Button color="green" filled>
+                  <Icon flip="both" icon="reply" />
+                  <span style={{ marginLeft: '0.5rem' }}>Respond</span>
                 </Button>
-              )}
+                {authLevel > 0 && (
+                  <Button
+                    style={{ marginLeft: '1rem' }}
+                    color="logoBlue"
+                    filled
+                    onClick={() => setOnEdit(true)}
+                  >
+                    Change
+                  </Button>
+                )}
+              </div>
             </>
           )}
           {onEdit && (

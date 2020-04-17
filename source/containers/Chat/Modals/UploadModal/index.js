@@ -16,11 +16,10 @@ import { useChatContext } from 'contexts';
 UploadModal.propTypes = {
   channelId: PropTypes.number,
   fileObj: PropTypes.object,
-  onHide: PropTypes.func.isRequired,
-  subjectId: PropTypes.number
+  onHide: PropTypes.func.isRequired
 };
 
-export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
+export default function UploadModal({ channelId, fileObj, onHide }) {
   const { profilePicId, userId, username } = useMyState();
   const {
     state: { replyTarget },
@@ -36,11 +35,11 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
   useEffect(() => {
     if (fileType === 'image') {
       const reader = new FileReader();
-      reader.onload = upload => {
+      reader.onload = (upload) => {
         const payload = upload.target.result;
         window.loadImage(
           payload,
-          function(img) {
+          function (img) {
             const image = img.toDataURL('image/jpeg');
             setImageUrl(image);
             const dataUri = image.replace(/^data:image\/\w+;base64,/, '');
@@ -111,7 +110,6 @@ export default function UploadModal({ channelId, fileObj, onHide, subjectId }) {
           filePath: uuidv1(),
           fileName: selectedFile.name,
           profilePicId,
-          subjectId,
           userId,
           username
         },
