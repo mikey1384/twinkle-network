@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
+import { socket } from 'constants/io';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -31,7 +32,7 @@ export default function ChessModal({
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
   const {
-    state: { recentChessMessage },
+    state: { recentChessMessage, channelsObj },
     actions: { onUpdateChessMoveViewTimeStamp }
   } = useChatContext();
   const [initialState, setInitialState] = useState();
@@ -44,7 +45,6 @@ export default function ChessModal({
   const [spoilerOff, setSpoilerOff] = useState(false);
   const prevChannelId = useRef(channelId);
   const loading = useRef(null);
-
   useEffect(() => {
     init();
     async function init() {
@@ -143,6 +143,20 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
+        {!!parsedState?.move?.number > 0 &&
+          !(
+            parsedState?.isCheckmate ||
+            parsedState?.isStalemate ||
+            parsedState?.isDraw
+          ) && (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              color="red"
+              onClick={handleResign}
+            >
+              Resign
+            </Button>
+          )}
         {parsedState?.isCheckmate ||
         parsedState?.isStalemate ||
         parsedState?.isDraw ? (
@@ -171,6 +185,16 @@ export default function ChessModal({
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async function handleResign() {
+    socket.emit('submit_chess_resign', {
+      currentChannel: channelsObj[channelId],
+      channelId: channelId,
+      targetUserId: myId,
+      winnerId: opponentId
+    });
+    onHide();
   }
 
   async function submitChessMove() {

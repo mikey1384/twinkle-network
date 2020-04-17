@@ -7,10 +7,11 @@ import { Color, mobileMaxWidth } from 'constants/css';
 GameOverMessage.propTypes = {
   opponentName: PropTypes.string,
   myId: PropTypes.number.isRequired,
-  winnerId: PropTypes.number.isRequired
+  winnerId: PropTypes.number.isRequired,
+  isResign: PropTypes.bool.isRequired
 };
 
-function GameOverMessage({ myId, opponentName, winnerId }) {
+function GameOverMessage({ myId, opponentName, winnerId, isResign }) {
   return (
     <ErrorBoundary>
       <div
@@ -35,7 +36,19 @@ function GameOverMessage({ myId, opponentName, winnerId }) {
             }
           `}
         >
-          {myId === winnerId ? (
+          {isResign ? (
+            myId === winnerId ? (
+              <div style={{ textAlign: 'center' }}>
+                <p>{opponentName} resigned the chess match...</p>
+                <p style={{ fontWeight: 'bold' }}>You win!</p>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center' }}>
+                <p>You resigned the chess match...</p>
+                <p>{opponentName} wins</p>
+              </div>
+            )
+          ) : myId === winnerId ? (
             <div style={{ textAlign: 'center' }}>
               <p>{opponentName} failed to make a move in time...</p>
               <p style={{ fontWeight: 'bold' }}>You win!</p>

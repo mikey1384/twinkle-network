@@ -101,7 +101,8 @@ function Message({
     linkDescription,
     linkTitle,
     linkUrl,
-    thumbUrl
+    thumbUrl,
+    isResign
   },
   onAcceptGroupInvitation,
   onChessBoardClick,
@@ -374,6 +375,7 @@ function Message({
         winnerId={gameWinnerId}
         opponentName={channelName}
         myId={myId}
+        isResign={isResign}
       />
     );
   }
