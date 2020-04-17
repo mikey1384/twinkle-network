@@ -90,7 +90,12 @@ export default function FileViewer({
               marginTop: isThumb ? 0 : '1rem',
               width: '100%',
               position: 'relative',
-              paddingTop: fileType === 'video' ? '56.25%' : ''
+              paddingTop:
+                fileType === 'video'
+                  ? '56.25%'
+                  : fileType === 'audio'
+                  ? '3rem'
+                  : ''
             }}
             onClick={handlePlayerClick}
           >
