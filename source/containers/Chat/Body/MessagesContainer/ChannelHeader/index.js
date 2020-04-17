@@ -150,10 +150,12 @@ export default function ChannelHeader() {
                   display: 'flex'
                 }}
               >
-                <Button color="green" filled>
-                  <Icon flip="both" icon="reply" />
-                  <span style={{ marginLeft: '0.5rem' }}>Respond</span>
-                </Button>
+                {false && (
+                  <Button color="green" filled>
+                    <Icon flip="both" icon="reply" />
+                    <span style={{ marginLeft: '0.5rem' }}>Respond</span>
+                  </Button>
+                )}
                 {authLevel > 0 && (
                   <Button
                     style={{ marginLeft: '1rem' }}
