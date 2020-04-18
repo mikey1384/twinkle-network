@@ -71,7 +71,8 @@ export default function MessagesContainer({
       recepientId,
       reconnecting,
       replyTarget,
-      selectedChannelId
+      selectedChannelId,
+      subject
     },
     actions: {
       onDeleteMessage,
@@ -883,13 +884,15 @@ export default function MessagesContainer({
       username,
       profilePicId,
       content,
-      channelId: selectedChannelId
+      channelId: selectedChannelId,
+      subjectId: isRespondingToSubject ? subject?.id : null
     };
     onSubmitMessage({
       message,
       replyTarget: target,
       rewardReason,
-      rewardAmount
+      rewardAmount,
+      isRespondingToSubject
     });
     onSetReplyTarget(null);
     return Promise.resolve();

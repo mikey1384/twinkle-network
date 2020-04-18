@@ -496,9 +496,16 @@ export default function ChatActions(dispatch) {
         type: 'SHOW_OUTGOING'
       });
     },
-    onSubmitMessage({ message, replyTarget, rewardReason, rewardAmount }) {
+    onSubmitMessage({
+      isRespondingToSubject,
+      message,
+      replyTarget,
+      rewardReason,
+      rewardAmount
+    }) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
+        isRespondingToSubject,
         message: {
           ...message,
           rewardReason,

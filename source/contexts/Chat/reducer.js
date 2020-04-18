@@ -1073,6 +1073,7 @@ export default function ChatReducer(state, action) {
     case 'SUBMIT_MESSAGE':
       return {
         ...state,
+        isRespondingToSubject: false,
         homeChannelIds: state.homeChannelIds.reduce((prev, channelId) => {
           const next =
             channelId === action.message.channelId
@@ -1101,7 +1102,8 @@ export default function ChatReducer(state, action) {
           {
             ...action.message,
             content: action.message.content,
-            targetMessage: action.replyTarget
+            targetMessage: action.replyTarget,
+            targetSubject: action.isRespondingToSubject ? state.subject : null
           }
         ])
       };
