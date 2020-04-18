@@ -855,8 +855,8 @@ export default function ChatReducer(state, action) {
             lastMessage: {
               content: action.subject.content,
               sender: {
-                id: action.subject.userId,
-                username: action.subject.username
+                id: action.message.userId,
+                username: action.message.username
               }
             }
           }
