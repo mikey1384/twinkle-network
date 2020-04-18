@@ -92,7 +92,7 @@ export default function ChannelHeader({ onInputFocus }) {
         height: 7rem;
         > section {
           position: relative;
-          width: CALC(100% - 9rem);
+          width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
         }
       `}
     >
