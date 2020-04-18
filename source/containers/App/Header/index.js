@@ -60,9 +60,9 @@ export default function Header({
       ...chatState
     },
     actions: {
-      onSetCall,
       onChangeAwayStatus,
       onChangeBusyStatus,
+      onChangeChatSubject,
       onSetImLive,
       onSetReconnecting,
       onChangeChannelOwner,
@@ -79,6 +79,7 @@ export default function Header({
       onReceiveMessage,
       onReceiveMessageOnDifferentChannel,
       onReceiveVocabActivity,
+      onSetCall,
       onSetMembersOnCall,
       onSetMyStream,
       onSetPeerStreams,
@@ -466,6 +467,7 @@ export default function Header({
 
     function handleSubjectChange({ subject }) {
       onNotifyChatSubjectChange(subject);
+      onChangeChatSubject(subject);
     }
   });
 

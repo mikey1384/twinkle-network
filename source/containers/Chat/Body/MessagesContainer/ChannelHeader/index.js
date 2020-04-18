@@ -43,7 +43,6 @@ export default function ChannelHeader({ onInputFocus }) {
       subjectSearchResults
     },
     actions: {
-      onChangeChatSubject,
       onClearSubjectSearchResults,
       onLoadChatSubject,
       onReloadChatSubject,
@@ -51,7 +50,6 @@ export default function ChannelHeader({ onInputFocus }) {
       onUploadChatSubject
     }
   } = useChatContext();
-  const [loaded, setLoaded] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
@@ -59,28 +57,14 @@ export default function ChannelHeader({ onInputFocus }) {
     timeSince(reloadTimeStamp)
   );
   const HeaderLabelRef = useRef(null);
-  const mounted = useRef(true);
 
   useEffect(() => {
-    function onSubjectChange({ subject }) {
-      onChangeChatSubject(subject);
+    if (!subjectId) {
+      initialLoad();
     }
-    mounted.current = true;
-    socket.on('subject_changed', onSubjectChange);
-    return function cleanUp() {
-      socket.removeListener('subject_changed', onSubjectChange);
-      mounted.current = false;
-    };
-  });
-
-  useEffect(() => {
-    initialLoad();
     async function initialLoad() {
       const data = await loadChatSubject();
       onLoadChatSubject(data);
-      if (mounted.current) {
-        setLoaded(true);
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -111,7 +95,7 @@ export default function ChannelHeader({ onInputFocus }) {
         }
       `}
     >
-      {loaded ? (
+      {subjectId ? (
         <>
           {!onEdit && (
             <>

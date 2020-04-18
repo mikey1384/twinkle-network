@@ -294,7 +294,6 @@ export default function ChatReducer(state, action) {
         messagesLoaded: true,
         numUnreads: Math.max(state.numUnreads - originalNumUnreads, 0),
         selectedChannelId: selectedChannel.id,
-        subject: selectedChannel.id === 2 ? state.subject : {},
         messagesLoadMoreButton
       };
     }
