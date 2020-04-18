@@ -103,6 +103,7 @@ export default function FileViewer({
               loop={!mobile && autoPlay && muted}
               ref={PlayerRef}
               playing={!mobile && autoPlay}
+              playsInline
               muted={(!mobile && autoPlay && muted) || isThumb}
               style={{
                 cursor: muted ? 'pointer' : 'default',
@@ -117,11 +118,7 @@ export default function FileViewer({
                   fileType === 'audio' || fileType === 'video' ? '1rem' : 0
               }}
               width="100%"
-              height={
-                fileType === 'video'
-                  ? videoHeight || (isMobile(navigator) ? '37vw' : '30vw')
-                  : '5rem'
-              }
+              height={fileType === 'video' ? videoHeight || '100%' : '5rem'}
               url={src}
               controls={(!isThumb && mobile) || !muted || !autoPlay}
             />
