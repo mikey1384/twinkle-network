@@ -47,6 +47,7 @@ export default function ChannelHeader({ onInputFocus }) {
       onLoadChatSubject,
       onReloadChatSubject,
       onSearchChatSubject,
+      onSetIsRespondingToSubject,
       onUploadChatSubject
     }
   } = useChatContext();
@@ -139,12 +140,17 @@ export default function ChannelHeader({ onInputFocus }) {
                   display: 'flex'
                 }}
               >
-                {false && (
-                  <Button color="green" filled>
-                    <Icon flip="both" icon="reply" />
-                    <span style={{ marginLeft: '0.5rem' }}>Respond</span>
-                  </Button>
-                )}
+                <Button
+                  color="green"
+                  filled
+                  onClick={() => {
+                    onSetIsRespondingToSubject(true);
+                    onInputFocus();
+                  }}
+                >
+                  <Icon flip="both" icon="reply" />
+                  <span style={{ marginLeft: '0.5rem' }}>Respond</span>
+                </Button>
                 {authLevel > 0 && (
                   <Button
                     style={{ marginLeft: '1rem' }}

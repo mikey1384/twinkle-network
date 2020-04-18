@@ -406,6 +406,12 @@ export default function ChatActions(dispatch) {
         imLive
       });
     },
+    onSetIsRespondingToSubject(isResponding) {
+      return dispatch({
+        type: 'SET_IS_RESPONDING_TO_SUBJECT',
+        isResponding
+      });
+    },
     onSetLoadingVocabulary(loading) {
       return dispatch({
         type: 'SET_LOADING_VOCABULARY',

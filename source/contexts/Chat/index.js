@@ -20,6 +20,7 @@ export const initialChatState = {
   currentChannelName: '',
   customChannelNames: {},
   filesBeingUploaded: {},
+  isRespondingToSubject: false,
   loadingVocabulary: false,
   loaded: false,
   messages: [],

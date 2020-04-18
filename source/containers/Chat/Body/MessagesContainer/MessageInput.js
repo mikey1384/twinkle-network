@@ -13,6 +13,7 @@ import {
 import { useMyState } from 'helpers/hooks';
 import { useChatContext, useInputContext } from 'contexts';
 import TargetMessagePreview from './TargetMessagePreview';
+import TargetSubjectPreview from './TargetSubjectPreview';
 import AddButtons from './AddButtons';
 
 MessageInput.propTypes = {
@@ -40,8 +41,8 @@ function MessageInput({
 }) {
   const { profileTheme } = useMyState();
   const {
-    state: { replyTarget },
-    actions: { onSetReplyTarget }
+    state: { isRespondingToSubject, replyTarget },
+    actions: { onSetIsRespondingToSubject, onSetReplyTarget }
   } = useChatContext();
   const {
     state,
@@ -72,9 +73,13 @@ function MessageInput({
         flexDirection: 'column'
       }}
     >
-      {replyTarget && (
+      {isRespondingToSubject ? (
+        <TargetSubjectPreview
+          onClose={() => onSetIsRespondingToSubject(false)}
+        />
+      ) : replyTarget ? (
         <TargetMessagePreview onClose={() => onSetReplyTarget(null)} />
-      )}
+      ) : null}
       <div style={{ display: 'flex' }}>
         {!!isTwoPeopleChannel && (
           <div

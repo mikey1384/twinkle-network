@@ -948,6 +948,12 @@ export default function ChatReducer(state, action) {
           imLive: action.imLive
         }
       };
+    case 'SET_IS_RESPONDING_TO_SUBJECT':
+      return {
+        ...state,
+        isRespondingToSubject: action.isResponding,
+        replyTarget: null
+      };
     case 'SET_VISIBLE': {
       const messageKey = 'message' + action.messageId;
       const prevMessageState = state[messageKey] || {};
@@ -1018,7 +1024,8 @@ export default function ChatReducer(state, action) {
     case 'SET_REPLY_TARGET': {
       return {
         ...state,
-        replyTarget: action.target
+        replyTarget: action.target,
+        isRespondingToSubject: false
       };
     }
     case 'SET_VOCAB_ERROR_MESSAGE': {

@@ -64,6 +64,7 @@ export default function MessagesContainer({
       channelLoading,
       chessModalShown,
       creatingNewDMChannel,
+      isRespondingToSubject,
       messagesLoadMoreButton,
       messages,
       messagesLoaded,
@@ -141,10 +142,21 @@ export default function MessagesContainer({
       socketConnected && textAreaHeight
         ? `${textAreaHeight}px - 1rem`
         : '5.5rem'
-    }${socketConnected && replyTarget ? ' - 12rem - 2px' : ''}${
-      selectedChannelIsOnCall ? ` - ${CALL_SCREEN_HEIGHT}` : ''
-    })`;
-  }, [replyTarget, selectedChannelIsOnCall, socketConnected, textAreaHeight]);
+    }${
+      socketConnected && isRespondingToSubject
+        ? ' - 8rem - 2px'
+        : replyTarget
+        ? ' - 12rem - 2px'
+        : ''
+    }
+    ${selectedChannelIsOnCall ? ` - ${CALL_SCREEN_HEIGHT}` : ''})`;
+  }, [
+    isRespondingToSubject,
+    replyTarget,
+    selectedChannelIsOnCall,
+    socketConnected,
+    textAreaHeight
+  ]);
 
   const menuProps = useMemo(() => {
     if (currentChannel.twoPeople) {
