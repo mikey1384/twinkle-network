@@ -449,7 +449,9 @@ export default function MessagesContainer({
             </div>
           </div>
         </div>
-        {!loading && selectedChannelId === GENERAL_CHAT_ID && <ChannelHeader />}
+        {!loading && selectedChannelId === GENERAL_CHAT_ID && (
+          <ChannelHeader onInputFocus={() => ChatInputRef.current.focus()} />
+        )}
         <div
           style={{
             position: 'absolute',

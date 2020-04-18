@@ -325,9 +325,10 @@ export default function ChatActions(dispatch) {
         word
       });
     },
-    onReloadChatSubject({ subject, message }) {
+    onReloadChatSubject({ channelId, subject, message }) {
       return dispatch({
         type: 'RELOAD_SUBJECT',
+        channelId,
         subject,
         message
       });

@@ -547,6 +547,12 @@ export default function ChatReducer(state, action) {
     case 'NEW_SUBJECT':
       return {
         ...state,
+        homeChannelIds: [
+          action.data.channelId,
+          ...state.homeChannelIds.filter(
+            (channelId) => channelId !== action.data.channelId
+          )
+        ],
         subject: action.data.subject,
         channelsObj: {
           ...state.channelsObj,
@@ -836,7 +842,26 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         subject: action.subject,
-        messages: state.messages.concat([action.message])
+        messages: state.messages.concat([action.message]),
+        homeChannelIds: [
+          action.channelId,
+          ...state.homeChannelIds.filter(
+            (channelId) => channelId !== action.channelId
+          )
+        ],
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            lastMessage: {
+              content: action.subject.content,
+              sender: {
+                id: action.subject.userId,
+                username: action.subject.username
+              }
+            }
+          }
+        }
       };
     case 'REMOVE_NEW_ACTIVITY_STATUS':
       return {

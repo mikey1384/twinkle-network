@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FullTextReveal from 'components/Texts/FullTextReveal';
@@ -15,7 +16,11 @@ import { css } from 'emotion';
 import { useInterval, useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
-export default function ChannelHeader() {
+ChannelHeader.propTypes = {
+  onInputFocus: PropTypes.func.isRequired
+};
+
+export default function ChannelHeader({ onInputFocus }) {
   const {
     requestHelpers: {
       loadChatSubject,
@@ -205,10 +210,13 @@ export default function ChannelHeader() {
 
   async function handleReloadChatSubject(subjectId) {
     const { message, subject } = await reloadChatSubject(subjectId);
-    onReloadChatSubject({ message, subject });
+    onReloadChatSubject({ channelId: 2, message, subject });
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
     onClearSubjectSearchResults();
+    if (!isMobile(navigator)) {
+      onInputFocus();
+    }
   }
 
   async function handleSearchChatSubject(text) {
@@ -243,6 +251,9 @@ export default function ChannelHeader() {
     };
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
+    if (!isMobile(navigator)) {
+      onInputFocus();
+    }
   }
 
   function renderDetails() {
