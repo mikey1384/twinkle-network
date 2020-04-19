@@ -641,6 +641,7 @@ export default function ChatReducer(state, action) {
           )
         ),
         selectedChannelId: action.channelId,
+        selectedChatTab: 'home',
         messages: action.messages.reverse(),
         messagesLoadMoreButton,
         recepientId: action.recepient.id
