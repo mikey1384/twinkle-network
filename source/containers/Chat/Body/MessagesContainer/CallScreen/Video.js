@@ -63,7 +63,7 @@ export default function Video({ stream, userId }) {
         }}
         autoPlay
         playsInline
-        controls
+        controls={userId !== myId}
         ref={videoRef}
       />
     </div>
