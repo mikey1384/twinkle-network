@@ -16,6 +16,7 @@ import ChessModal from '../../Modals/ChessModal';
 import SelectVideoModal from '../../Modals/SelectVideoModal';
 import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
+import CallScreen from './CallScreen';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { rewardReasons } from 'constants/defaultValues';
@@ -26,7 +27,6 @@ import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext, useNotiContext } from 'contexts';
 import { checkScrollIsAtTheBottom } from 'helpers';
-import CallScreen from './CallScreen';
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,

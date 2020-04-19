@@ -433,6 +433,7 @@ function Message({
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
                   onSetScrollToBottom={handleSetScrollToBottom}
+                  scrollAtBottom={scrollAtBottom}
                   senderId={userId}
                   style={{ marginTop: '1rem', width: '100%' }}
                 />

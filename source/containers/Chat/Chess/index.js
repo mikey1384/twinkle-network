@@ -37,6 +37,7 @@ Chess.propTypes = {
   onSpoilerClick: PropTypes.func,
   opponentId: PropTypes.number,
   opponentName: PropTypes.string,
+  scrollAtBottom: PropTypes.bool,
   senderId: PropTypes.number,
   spoilerOff: PropTypes.bool,
   style: PropTypes.object
@@ -59,6 +60,7 @@ export default function Chess({
   onSpoilerClick,
   opponentId,
   opponentName,
+  scrollAtBottom,
   senderId,
   spoilerOff,
   style
@@ -139,7 +141,9 @@ export default function Chess({
   }, [initialState, loaded, newChessState]);
 
   useEffect(() => {
-    onSetScrollToBottom?.();
+    if (scrollAtBottom) {
+      onSetScrollToBottom?.();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
