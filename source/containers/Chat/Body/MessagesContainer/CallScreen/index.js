@@ -66,7 +66,7 @@ export default function CallScreen({ creatorId, style }) {
           }}
         >
           {channelOnCall.isClass && channelOnCall.imLive && myStream && (
-            <Video key={userId} userId={userId} stream={myStream} />
+            <Video key={userId} isMyStream stream={myStream} />
           )}
           {channelOnCall.incomingShown &&
             Object.entries(peerStreams)

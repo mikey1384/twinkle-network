@@ -2,15 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'emotion';
 import { useChatContext } from 'contexts';
-import { useMyState } from 'helpers/hooks';
 
 Video.propTypes = {
   stream: PropTypes.object.isRequired,
-  userId: PropTypes.number.isRequired
+  isMyStream: PropTypes.bool
 };
 
-export default function Video({ stream, userId }) {
-  const { userId: myId } = useMyState();
+export default function Video({ stream, isMyStream }) {
   const videoRef = useRef(stream);
   const {
     state: { callMuted },
@@ -21,9 +19,11 @@ export default function Video({ stream, userId }) {
     if (videoRef.current && !videoRef.current.srcObject) {
       const clonedStream = stream.clone();
       video.srcObject = clonedStream;
-      video.muted = callMuted || userId === myId;
+      video.muted = callMuted || isMyStream;
       video.onvolumechange = (event) => {
-        onChangeMuted(event.target.muted);
+        if (!isMyStream) {
+          onChangeMuted(event.target.muted);
+        }
       };
     }
     return function cleanUp() {
@@ -63,7 +63,7 @@ export default function Video({ stream, userId }) {
         }}
         autoPlay
         playsInline
-        controls={userId !== myId}
+        controls={!isMyStream}
         ref={videoRef}
       />
     </div>
