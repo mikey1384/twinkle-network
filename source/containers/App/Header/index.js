@@ -138,7 +138,7 @@ export default function Header({
     socket.on('disconnect', handleDisconnect);
     socket.on('message_attachment_hid', onHideAttachment);
     socket.on('new_call_member', handleNewCallMember);
-    socket.on('new_call_started', handlePeer);
+    socket.on('new_call_started', handleNewCall);
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', handleNewNotification);
     socket.on('new_message_received', handleReceiveMessage);
@@ -172,7 +172,7 @@ export default function Header({
       socket.removeListener('disconnect', handleDisconnect);
       socket.removeListener('message_attachment_hid', onHideAttachment);
       socket.removeListener('new_call_member', handleNewCallMember);
-      socket.removeListener('new_call_started', handlePeer);
+      socket.removeListener('new_call_started', handleNewCall);
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
       socket.removeListener('new_notification_received', handleNewNotification);
       socket.removeListener('new_message_received', handleReceiveMessage);
@@ -324,17 +324,24 @@ export default function Header({
       membersOnCall.current[socketId] = true;
     }
 
-    function handlePeer({ memberId, channelId, peerId }) {
-      if (memberId !== userId && !membersOnCall.current[peerId]) {
-        onSetCall({
-          channelId,
-          isClass: channelsObj[selectedChannelId]?.isClass
-        });
+    function handleNewCall({ memberId, channelId, peerId }) {
+      if (!channelOnCall.id) {
+        if (memberId !== userId && !membersOnCall.current[peerId]) {
+          onSetCall({
+            channelId,
+            isClass: channelsObj[selectedChannelId]?.isClass
+          });
+        }
       }
-      if (!channelOnCall.members?.[memberId]) {
-        onSetMembersOnCall({ [memberId]: peerId });
+      if (
+        !channelOnCall.id ||
+        (channelOnCall.id === channelId && channelOnCall.imCalling)
+      ) {
+        if (!channelOnCall.members?.[memberId]) {
+          onSetMembersOnCall({ [memberId]: peerId });
+        }
+        membersOnCall.current[peerId] = true;
       }
-      membersOnCall.current[peerId] = true;
     }
 
     function handlePeerAccepted({ channelId, to, peerId }) {
