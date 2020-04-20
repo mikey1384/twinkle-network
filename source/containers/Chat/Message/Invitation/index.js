@@ -58,13 +58,13 @@ export default function Invitation({
 
   const desktopHeight = useMemo(() => {
     if (userId === sender.id) {
-      if (invitationDetail?.members?.length > 3) {
+      if (!invitationDetail || invitationDetail.members?.length > 3) {
         return '9rem';
       } else {
         return '7rem';
       }
     } else {
-      if (invitationDetail?.members?.length > 3) {
+      if (!invitationDetail || invitationDetail.members?.length > 3) {
         return '14rem';
       } else {
         return '12rem';
@@ -74,13 +74,13 @@ export default function Invitation({
 
   const mobileHeight = useMemo(() => {
     if (userId === sender.id) {
-      if (invitationDetail?.members?.length > 3) {
+      if (!invitationDetail || invitationDetail.members?.length > 3) {
         return '7rem';
       } else {
         return '5rem';
       }
     } else {
-      if (invitationDetail?.members?.length > 3) {
+      if (!invitationDetail || invitationDetail.members?.length > 3) {
         return '12rem';
       } else {
         return '10rem';
@@ -91,7 +91,6 @@ export default function Invitation({
   return (
     <div
       className={css`
-        width: 100%;
         height: ${desktopHeight};
         @media (max-width: ${mobileMaxWidth}) {
           height: ${mobileHeight};
