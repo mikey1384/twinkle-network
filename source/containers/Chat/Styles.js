@@ -18,9 +18,11 @@ export const MessageStyle = {
     }
   `,
   contentWrapper: css`
+    width: CALC(100% - 5vw - 3rem);
+    display: flex;
+    flex-direction: column;
     margin-left: 2rem;
     margin-right: 1rem;
-    width: CALC(100% - 5vw - 1rem);
     position: relative;
     white-space: pre-wrap;
     overflow-wrap: break-word;

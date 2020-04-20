@@ -91,6 +91,7 @@ export default function Invitation({
   return (
     <div
       className={css`
+        width: 100%;
         height: ${desktopHeight};
         @media (max-width: ${mobileMaxWidth}) {
           height: ${mobileHeight};

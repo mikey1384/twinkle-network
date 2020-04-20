@@ -27,6 +27,7 @@ export default function ChannelDetail({ channelName, members }) {
   return (
     <div
       style={{
+        width: '100%',
         marginBottom: '1rem',
         padding: '1rem',
         background: Color.highlightGray(),
@@ -36,7 +37,9 @@ export default function ChannelDetail({ channelName, members }) {
     >
       <p
         className={css`
+          width: 100%;
           overflow: hidden;
+          white-space: nowrap;
           text-overflow: ellipsis;
           line-height: 1;
           font-weight: bold;

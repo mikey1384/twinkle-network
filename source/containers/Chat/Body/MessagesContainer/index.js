@@ -245,15 +245,17 @@ export default function MessagesContainer({
   );
 
   useEffect(() => {
-    setPlaceholderHeight(
-      `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
-    );
-    if (
-      MessagesRef.current?.offsetHeight <
-      MessagesContainerRef.current?.offsetHeight + 30
-    ) {
-      handleSetScrollToBottom();
-    }
+    setTimeout(() => {
+      setPlaceholderHeight(
+        `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
+      );
+      if (
+        MessagesRef.current?.offsetHeight <
+        MessagesContainerRef.current?.offsetHeight + 30
+      ) {
+        handleSetScrollToBottom();
+      }
+    }, 0);
   }, [loading, messages.length]);
 
   useEffect(() => {

@@ -409,7 +409,7 @@ function Message({
                 {unix(timeStamp).format('LLL')}
               </span>
             </div>
-            <div>
+            <div style={{ width: '100%' }}>
               {inviteFrom ? (
                 <Invitation
                   sender={{ id: userId, username }}
