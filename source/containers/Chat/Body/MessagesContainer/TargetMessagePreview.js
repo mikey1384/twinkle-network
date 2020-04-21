@@ -86,8 +86,6 @@ export default function TargetMessagePreview({ onClose }) {
               <Image imageUrl={src} />
             ) : fileType === 'video' ? (
               <ExtractedThumb
-                width={640}
-                height={360}
                 src={src}
                 style={{ width: '100%', height: '7rem' }}
               />

@@ -3,21 +3,13 @@ import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
 import { css } from 'emotion';
 
-VideoThumbnail.propTypes = {
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+ExtractedThumb.propTypes = {
   thumbnailHandler: PropTypes.func,
   src: PropTypes.string.isRequired,
   style: PropTypes.object
 };
 
-export default function VideoThumbnail({
-  src,
-  thumbnailHandler,
-  width,
-  height,
-  style
-}) {
+export default function ExtractedThumb({ src, thumbnailHandler, style }) {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [seeked, setSeeked] = useState(false);
@@ -40,13 +32,7 @@ export default function VideoThumbnail({
         canvasRef.current.height = videoRef.current.videoHeight;
         canvasRef.current.width = videoRef.current.videoWidth;
 
-        if (!width || !height) {
-          canvasRef.current.getContext('2d').drawImage(videoRef.current, 0, 0);
-        } else {
-          canvasRef.current
-            .getContext('2d')
-            .drawImage(videoRef.current, 0, 0, width, height);
-        }
+        canvasRef.current.getContext('2d').drawImage(videoRef.current, 0, 0);
         const thumbnail = canvasRef.current.toDataURL('image/png');
 
         videoRef.current.src = '';
@@ -63,13 +49,11 @@ export default function VideoThumbnail({
     }
   }, [
     dataLoaded,
-    height,
     metadataLoaded,
     seeked,
     snapshot,
     suspended,
-    thumbnailHandler,
-    width
+    thumbnailHandler
   ]);
 
   return snapshot ? (
