@@ -74,7 +74,7 @@ export default function VideoThumbnail({
 
   return snapshot ? (
     <img
-      style={{ objectFit: 'contain', ...style }}
+      style={{ objectFit: 'cover', ...style }}
       src={snapshot}
       alt="my video thumbnail"
     />
