@@ -76,6 +76,7 @@ export default function UserListModal({
                     userId={user.id}
                     profilePicId={user.profilePicId}
                     online={!!user.online}
+                    onClick={() => history.push(`/users/${user.username}`)}
                     statusShown
                   />
                   <div style={{ marginLeft: '1rem' }}>
