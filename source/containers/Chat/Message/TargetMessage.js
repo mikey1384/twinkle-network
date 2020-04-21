@@ -6,6 +6,7 @@ import ImageModal from 'components/Modals/ImageModal';
 import UsernameText from 'components/Texts/UsernameText';
 import Spoiler from './Spoiler';
 import Embedly from 'components/Embedly';
+import ExtractedThumb from 'components/ExtractedThumb';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -132,6 +133,13 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
         >
           {fileType === 'image' ? (
             <Image imageUrl={src} />
+          ) : fileType === 'video' ? (
+            <ExtractedThumb
+              width={640}
+              height={360}
+              src={src}
+              style={{ width: '100%', height: '7rem' }}
+            />
           ) : (
             <FileIcon size="5x" fileType={fileType} />
           )}
