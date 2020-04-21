@@ -39,7 +39,7 @@ export default function ImageEditModal({ onHide, imageUri }) {
     setLoading(true);
     window.loadImage(
       imageUri,
-      function(img) {
+      function (img) {
         const image = img.toDataURL('image/jpeg');
         setOriginalImageUrl(image);
         setLoading(false);
@@ -69,8 +69,8 @@ export default function ImageEditModal({ onHide, imageUri }) {
                 minHeight={250}
                 keepSelection
                 ruleOfThirds
-                onImageLoaded={image => (ImageRef.current = image)}
-                onChange={newCrop => setCrop(newCrop)}
+                onImageLoaded={(image) => (ImageRef.current = image)}
+                onChange={(newCrop) => setCrop(newCrop)}
                 onComplete={handleCropComplete}
                 imageStyle={{
                   objectFit: 'contain',

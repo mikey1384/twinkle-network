@@ -319,7 +319,11 @@ function Message({
         </>
       ),
       onClick: () => {
-        onSetReplyTarget({ ...message, thumbUrl: thumbUrl || recentThumbUrl });
+        onSetReplyTarget(
+          rewardAmount
+            ? targetMessage
+            : { ...message, thumbUrl: thumbUrl || recentThumbUrl }
+        );
         onReplyClick();
       }
     }

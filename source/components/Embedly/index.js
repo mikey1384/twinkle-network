@@ -198,7 +198,7 @@ function Embedly({
                 object-fit: ${contentType === 'chat' ? 'contain' : 'cover'};
               `}
               src={imageUrl}
-              onError={onImageLoadError}
+              onError={handleImageLoadError}
               alt={title}
             />
           </section>
@@ -225,7 +225,7 @@ function Embedly({
         )}
       </>
     );
-    function onImageLoadError() {
+    function handleImageLoadError() {
       setImageUrl(
         !thumbUrl || imageUrl === thumbUrl ? fallbackImage : thumbUrl
       );
