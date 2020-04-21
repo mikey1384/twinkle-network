@@ -79,8 +79,8 @@ export default function VideoThumbnail({
       alt="my video thumbnail"
     />
   ) : (
-    <div>
-      <Loading style={style} />
+    <div style={style}>
+      <Loading style={{ width: '100%', height: '100%' }} />
       <canvas
         className={css`
           display: block;

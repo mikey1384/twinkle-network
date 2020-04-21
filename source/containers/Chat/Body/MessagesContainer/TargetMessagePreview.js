@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+import ExtractedThumb from 'components/ExtractedThumb';
+import Image from 'components/Image';
+import FileIcon from 'components/FileIcon';
 import { useChatContext } from 'contexts';
 import { Color, borderRadius } from 'constants/css';
 import { getFileInfoFromFileName, renderFileSize } from 'helpers/stringHelpers';
 import { cloudFrontURL } from 'constants/defaultValues';
-import Image from 'components/Image';
-import FileIcon from 'components/FileIcon';
 
 TargetMessagePreview.propTypes = {
   onClose: PropTypes.func.isRequired
@@ -21,8 +22,13 @@ export default function TargetMessagePreview({ onClose }) {
       ? getFileInfoFromFileName(replyTarget.fileName)?.fileType
       : null;
   }, [replyTarget.fileName]);
-  const imageSrc = useMemo(() => {
-    if (!replyTarget.filePath || fileType !== 'image') return '';
+  const src = useMemo(() => {
+    if (
+      !replyTarget.filePath ||
+      (fileType !== 'image' && fileType !== 'video')
+    ) {
+      return '';
+    }
     return `${cloudFrontURL}/attachments/chat/${
       replyTarget.filePath
     }/${encodeURIComponent(replyTarget.fileName)}`;
@@ -75,19 +81,33 @@ export default function TargetMessagePreview({ onClose }) {
           </div>
         </div>
         {fileType && replyTarget.fileName && (
-          <div
-            style={{ display: 'flex', maxWidth: imageSrc ? '12rem' : '30rem' }}
-          >
-            {imageSrc ? (
-              <Image imageUrl={imageSrc} />
+          <div style={{ display: 'flex', width: src ? '12rem' : '30rem' }}>
+            {fileType === 'image' ? (
+              <Image imageUrl={src} />
+            ) : fileType === 'video' ? (
+              <ExtractedThumb
+                width={640}
+                height={360}
+                src={src}
+                style={{ width: '100%', height: '7rem' }}
+              />
             ) : (
               <FileIcon size="5x" fileType={fileType} />
             )}
-            {!imageSrc && (
-              <div style={{ marginLeft: '1rem', fontSize: '1.3rem' }}>
-                <p>{replyTarget.fileName}</p>
+            {fileType !== 'image' && fileType !== 'video' && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  marginLeft: '1rem',
+                  fontSize: '1.3rem'
+                }}
+              >
+                <div>{fileType}</div>
                 {replyTarget.fileSize && (
-                  <p>{renderFileSize(replyTarget.fileSize)}</p>
+                  <div>{renderFileSize(replyTarget.fileSize)}</div>
                 )}
               </div>
             )}
