@@ -386,17 +386,19 @@ export default function MessagesContainer({
             overflowY: 'scroll'
           }}
           onScroll={() => {
-            if (
-              checkScrollIsAtTheBottom({
-                content: ContentRef.current,
-                container: MessagesContainerRef.current
-              })
-            ) {
-              setScrollAtBottom(true);
-              setNewUnseenMessage(false);
-            } else {
-              setScrollAtBottom(false);
-            }
+            setTimeout(() => {
+              if (
+                checkScrollIsAtTheBottom({
+                  content: ContentRef.current,
+                  container: MessagesContainerRef.current
+                })
+              ) {
+                setScrollAtBottom(true);
+                setNewUnseenMessage(false);
+              } else {
+                setScrollAtBottom(false);
+              }
+            }, 10);
           }}
         >
           <div ref={ContentRef} style={{ width: '100%' }}>
