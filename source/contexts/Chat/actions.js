@@ -214,10 +214,11 @@ export default function ChatActions(dispatch) {
         channels
       });
     },
-    onLoadMoreMessages(data) {
+    onLoadMoreMessages({ messages, loadedChannelId }) {
       return dispatch({
         type: 'LOAD_MORE_MESSAGES',
-        data
+        messages,
+        loadedChannelId
       });
     },
     onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors }) {
@@ -541,10 +542,10 @@ export default function ChatActions(dispatch) {
         path
       });
     },
-    onUpdateLastMessages({ channelIds, message, sender }) {
+    onUpdateLastMessages({ channels, message, sender }) {
       return dispatch({
         type: 'UPDATE_LAST_MESSAGE',
-        channelIds,
+        channels,
         message,
         sender
       });

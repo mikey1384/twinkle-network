@@ -758,13 +758,13 @@ export default function MessagesContainer({
       );
     } else {
       const recepientIds = users.map((user) => user.id);
-      const { invitationMessage, channelIds } = await sendInvitationMessage({
+      const { invitationMessage, channels } = await sendInvitationMessage({
         recepients: recepientIds,
         origin: currentChannel.id
       });
 
       onUpdateLastMessages({
-        channelIds,
+        channels,
         message: invitationMessage,
         sender: { id: userId, username }
       });
@@ -832,12 +832,12 @@ export default function MessagesContainer({
       if (!loadMoreButtonLock) {
         setLoadMoreButtonLock(true);
         try {
-          const data = await loadMoreChatMessages({
+          const { messages, loadedChannelId } = await loadMoreChatMessages({
             userId,
             messageId,
             channelId: selectedChannelId
           });
-          onLoadMoreMessages(data);
+          onLoadMoreMessages({ messages, loadedChannelId });
           MessagesContainerRef.current.scrollTop = Math.max(
             MessagesContainerRef.current.scrollTop,
             (ContentRef.current?.offsetHeight || 0) - prevContentHeight

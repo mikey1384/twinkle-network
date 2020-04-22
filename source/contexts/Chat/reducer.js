@@ -481,16 +481,17 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'LOAD_MORE_MESSAGES': {
+      if (state.selectedChannelId !== action.loadedChannelId) return state;
       let messagesLoadMoreButton = false;
-      if (action.data.length === 21) {
-        action.data.pop();
+      if (action.messages === 21) {
+        action.messages.pop();
         messagesLoadMoreButton = true;
       }
-      action.data.reverse();
+      action.messages.reverse();
       return {
         ...state,
         messagesLoadMoreButton,
-        messages: action.data.concat(state.messages)
+        messages: action.messages.concat(state.messages)
       };
     }
     case 'LOAD_SUBJECT':
@@ -1110,12 +1111,26 @@ export default function ChatReducer(state, action) {
       };
     case 'UPDATE_LAST_MESSAGE': {
       const newChannelsObj = { ...state.channelsObj };
-      for (let channelId of action.channelIds) {
-        if (newChannelsObj[channelId]) {
+      let newHomeChannelIds = [...state.homeChannelIds];
+      const newTab = newChannelsObj[0];
+      const newTabIsOpen = state.homeChannelIds.includes(0);
+      for (let { id: channelId, isNew, channel } of action.channels) {
+        if (isNew && newTabIsOpen) {
+          const newTabMembers = newTab.members.map((member) => member.id);
+          if (
+            newTabMembers.includes(channel.members[0].id) &&
+            newTabMembers.includes(channel.members[1].id)
+          ) {
+            newHomeChannelIds = [channelId, ...state.homeChannelIds].filter(
+              (id) => id !== 0
+            );
+          }
+        }
+        if (newHomeChannelIds.includes(channelId)) {
           newChannelsObj[channelId] = {
-            ...newChannelsObj[channelId],
+            ...(isNew ? channel : newChannelsObj[channelId]),
             lastMessage: {
-              ...newChannelsObj[channelId].lastMessage,
+              ...(isNew ? {} : newChannelsObj[channelId].lastMessage),
               sender: action.sender,
               content: action.message
             }
@@ -1124,6 +1139,7 @@ export default function ChatReducer(state, action) {
       }
       return {
         ...state,
+        homeChannelIds: newHomeChannelIds,
         channelsObj: newChannelsObj
       };
     }

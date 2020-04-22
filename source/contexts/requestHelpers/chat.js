@@ -222,11 +222,13 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async loadMoreChatMessages({ userId, messageId, channelId }) {
       try {
-        const { data } = await request.get(
+        const {
+          data: { messages, loadedChannelId }
+        } = await request.get(
           `${URL}/chat/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
           auth()
         );
-        return Promise.resolve(data);
+        return Promise.resolve({ messages, loadedChannelId });
       } catch (error) {
         return handleError(error);
       }
@@ -327,13 +329,13 @@ export default function chatRequestHelpers({ auth, handleError }) {
     async sendInvitationMessage({ origin, recepients }) {
       try {
         const {
-          data: { invitationMessage, channelIds }
+          data: { invitationMessage, channels }
         } = await request.post(
           `${URL}/chat/invitation`,
           { origin, recepients },
           auth()
         );
-        return Promise.resolve({ invitationMessage, channelIds });
+        return Promise.resolve({ invitationMessage, channels });
       } catch (error) {
         return handleError(error);
       }
