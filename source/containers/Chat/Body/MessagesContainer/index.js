@@ -762,7 +762,12 @@ export default function MessagesContainer({
         recepients: recepientIds,
         origin: currentChannel.id
       });
-      onUpdateLastMessages({ channelIds, message: invitationMessage });
+
+      onUpdateLastMessages({
+        channelIds,
+        message: invitationMessage,
+        sender: { id: userId, username }
+      });
     }
     setInviteUsersModalShown(false);
     onSubmitMessage({

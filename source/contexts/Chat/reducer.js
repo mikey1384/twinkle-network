@@ -1116,6 +1116,7 @@ export default function ChatReducer(state, action) {
             ...newChannelsObj[channelId],
             lastMessage: {
               ...newChannelsObj[channelId].lastMessage,
+              sender: action.sender,
               content: action.message
             }
           };

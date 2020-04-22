@@ -541,11 +541,12 @@ export default function ChatActions(dispatch) {
         path
       });
     },
-    onUpdateLastMessages({ channelIds, message }) {
+    onUpdateLastMessages({ channelIds, message, sender }) {
       return dispatch({
         type: 'UPDATE_LAST_MESSAGE',
         channelIds,
-        message
+        message,
+        sender
       });
     },
     onUpdateRecentChessMessage(message) {
