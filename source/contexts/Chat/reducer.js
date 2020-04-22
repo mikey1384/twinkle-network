@@ -483,7 +483,7 @@ export default function ChatReducer(state, action) {
     case 'LOAD_MORE_MESSAGES': {
       if (state.selectedChannelId !== action.loadedChannelId) return state;
       let messagesLoadMoreButton = false;
-      if (action.messages === 21) {
+      if (action.messages.length === 21) {
         action.messages.pop();
         messagesLoadMoreButton = true;
       }
