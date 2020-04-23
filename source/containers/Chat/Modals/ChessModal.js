@@ -4,7 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
-import { useAppContext, useChatContext } from 'contexts';
+import { useAppContext, useChatContext, useMemo } from 'contexts';
 import { socket } from 'constants/io';
 
 ChessModal.propTypes = {
@@ -96,6 +96,13 @@ export default function ChessModal({
   }, [channelId, countdownNumber]);
 
   const parsedState = initialState ? JSON.parse(initialState) : {};
+  const gameFinished = useMemo(
+    () =>
+      parsedState?.isCheckmate ||
+      parsedState?.isStalemate ||
+      parsedState?.isDraw,
+    [parsedState]
+  );
 
   return (
     <Modal large onHide={onHide}>
@@ -144,23 +151,16 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
-        {!!parsedState?.move?.number > 0 &&
-          !(
-            parsedState?.isCheckmate ||
-            parsedState?.isStalemate ||
-            parsedState?.isDraw
-          ) && (
-            <Button
-              style={{ marginRight: '0.7rem' }}
-              color="red"
-              onClick={handleResign}
-            >
-              Resign
-            </Button>
-          )}
-        {parsedState?.isCheckmate ||
-        parsedState?.isStalemate ||
-        parsedState?.isDraw ? (
+        {!!parsedState?.move?.number > 0 && !gameFinished && (
+          <Button
+            style={{ marginRight: '0.7rem' }}
+            color="red"
+            onClick={handleResign}
+          >
+            Resign
+          </Button>
+        )}
+        {gameFinished ? (
           <Button color="orange" onClick={() => setInitialState(undefined)}>
             Start a new game
           </Button>
@@ -193,7 +193,7 @@ export default function ChessModal({
     onHide();
   }
 
-  async function handleResign() {
+  function handleResign() {
     socket.emit('submit_chess_resign', {
       currentChannel: channelsObj[channelId],
       channelId: channelId,
