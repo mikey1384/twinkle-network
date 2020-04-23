@@ -61,7 +61,8 @@ Message.propTypes = {
   onRewardClick: PropTypes.func,
   onRewardMessageSubmit: PropTypes.func.isRequired,
   onSetScrollToBottom: PropTypes.func,
-  recepientId: PropTypes.number
+  recepientId: PropTypes.number,
+  isResign: PropTypes.bool
 };
 
 function Message({
@@ -114,7 +115,8 @@ function Message({
   onRewardMessageSubmit,
   onSetScrollToBottom,
   recepientId,
-  showSubjectMsgsModal
+  showSubjectMsgsModal,
+  isResign
 }) {
   const [ComponentRef, inView] = useInView({
     threshold: 0
@@ -385,6 +387,7 @@ function Message({
         winnerId={gameWinnerId}
         opponentName={channelName}
         myId={myId}
+        isResign={isResign}
       />
     );
   }
