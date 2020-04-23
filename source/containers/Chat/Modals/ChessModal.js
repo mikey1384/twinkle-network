@@ -151,7 +151,7 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
-        {!!parsedState?.move?.number > 0 && !gameFinished && (
+        {false && !!parsedState?.move?.number > 0 && !gameFinished && (
           <Button
             style={{ marginRight: '0.7rem' }}
             color="red"
@@ -194,11 +194,10 @@ export default function ChessModal({
   }
 
   function handleResign() {
-    socket.emit('start_chess_timer', {
+    socket.emit('resign_chess_game', {
       currentChannel: channelsObj[channelId],
       targetUserId: myId,
-      winnerId: opponentId,
-      isResign: true
+      winnerId: opponentId
     });
     onHide();
   }

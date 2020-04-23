@@ -55,7 +55,6 @@ Message.propTypes = {
   onAcceptGroupInvitation: PropTypes.func.isRequired,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
-  onDropdownButtonClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
   onRewardClick: PropTypes.func,
@@ -109,7 +108,6 @@ function Message({
   onChessBoardClick,
   onDelete,
   onChessSpoilerClick,
-  onDropdownButtonClick,
   onReceiveNewMessage,
   onReplyClick,
   onRewardMessageSubmit,
@@ -511,7 +509,11 @@ function Message({
                 style={{ position: 'absolute', top: 0, right: '5px' }}
                 direction="left"
                 opacity={0.8}
-                onButtonClick={onDropdownButtonClick}
+                onButtonClick={() => {
+                  if (isLastMsg) {
+                    onSetScrollToBottom();
+                  }
+                }}
                 menuProps={messageMenuItems}
               />
             )}

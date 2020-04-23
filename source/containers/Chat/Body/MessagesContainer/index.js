@@ -386,19 +386,17 @@ export default function MessagesContainer({
             overflowY: 'scroll'
           }}
           onScroll={() => {
-            setTimeout(() => {
-              if (
-                checkScrollIsAtTheBottom({
-                  content: ContentRef.current,
-                  container: MessagesContainerRef.current
-                })
-              ) {
-                setScrollAtBottom(true);
-                setNewUnseenMessage(false);
-              } else {
-                setScrollAtBottom(false);
-              }
-            }, 10);
+            if (
+              checkScrollIsAtTheBottom({
+                content: ContentRef.current,
+                container: MessagesContainerRef.current
+              })
+            ) {
+              setScrollAtBottom(true);
+              setNewUnseenMessage(false);
+            } else {
+              setScrollAtBottom(false);
+            }
           }}
         >
           <div ref={ContentRef} style={{ width: '100%' }}>
@@ -452,7 +450,6 @@ export default function MessagesContainer({
                   onChessBoardClick={handleChessModalShown}
                   onChessSpoilerClick={handleChessSpoilerClick}
                   onDelete={handleShowDeleteModal}
-                  onDropdownButtonClick={handleDropdownButtonClick}
                   onReceiveNewMessage={handleReceiveNewMessage}
                   onReplyClick={() => ChatInputRef.current.focus()}
                   onRewardMessageSubmit={handleRewardMessageSubmit}
@@ -796,12 +793,6 @@ export default function MessagesContainer({
       }
     } else {
       handleLeaveChannel();
-    }
-  }
-
-  function handleDropdownButtonClick() {
-    if (scrollAtBottom) {
-      handleSetScrollToBottom();
     }
   }
 
