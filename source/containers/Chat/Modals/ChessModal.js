@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
-import { useAppContext, useChatContext, useMemo } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 import { socket } from 'constants/io';
 
 ChessModal.propTypes = {
@@ -194,11 +194,11 @@ export default function ChessModal({
   }
 
   function handleResign() {
-    socket.emit('submit_chess_resign', {
+    socket.emit('start_chess_timer', {
       currentChannel: channelsObj[channelId],
-      channelId: channelId,
       targetUserId: myId,
-      winnerId: opponentId
+      winnerId: opponentId,
+      isResign: true
     });
     onHide();
   }

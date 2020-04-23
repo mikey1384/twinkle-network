@@ -649,7 +649,8 @@ export default function MessagesContainer({
     socket.emit('start_chess_timer', {
       currentChannel,
       targetUserId: userId,
-      winnerId: senderId
+      winnerId: senderId,
+      isResign: false
     });
     onSetChessModalShown(true);
   }

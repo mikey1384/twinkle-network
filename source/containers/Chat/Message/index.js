@@ -61,8 +61,7 @@ Message.propTypes = {
   onRewardClick: PropTypes.func,
   onRewardMessageSubmit: PropTypes.func.isRequired,
   onSetScrollToBottom: PropTypes.func,
-  recepientId: PropTypes.number,
-  isResign: PropTypes.bool
+  recepientId: PropTypes.number
 };
 
 function Message({
@@ -103,7 +102,8 @@ function Message({
     thumbUrl,
     timeStamp,
     uploaderAuthLevel,
-    userId
+    userId,
+    isResign
   },
   onAcceptGroupInvitation,
   onChessBoardClick,
@@ -115,8 +115,7 @@ function Message({
   onRewardMessageSubmit,
   onSetScrollToBottom,
   recepientId,
-  showSubjectMsgsModal,
-  isResign
+  showSubjectMsgsModal
 }) {
   const [ComponentRef, inView] = useInView({
     threshold: 0

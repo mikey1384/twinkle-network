@@ -8,7 +8,7 @@ GameOverMessage.propTypes = {
   opponentName: PropTypes.string,
   myId: PropTypes.number.isRequired,
   winnerId: PropTypes.number.isRequired,
-  isResign: PropTypes.bool.isRequired
+  isResign: PropTypes.number.isRequired
 };
 
 function GameOverMessage({ myId, opponentName, winnerId, isResign }) {
