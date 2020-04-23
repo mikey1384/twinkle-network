@@ -39,12 +39,12 @@ function GameOverMessage({ myId, opponentName, winnerId, isResign }) {
           {isResign ? (
             myId === winnerId ? (
               <div style={{ textAlign: 'center' }}>
-                <p>{opponentName} resigned the chess match...</p>
+                <p>{opponentName} resigned!</p>
                 <p style={{ fontWeight: 'bold' }}>You win!</p>
               </div>
             ) : (
               <div style={{ textAlign: 'center' }}>
-                <p>You resigned the chess match...</p>
+                <p>You resigned...</p>
                 <p>{opponentName} wins</p>
               </div>
             )
