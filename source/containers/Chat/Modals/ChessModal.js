@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
+import { socket } from 'constants/io';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -31,7 +32,7 @@ export default function ChessModal({
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
   const {
-    state: { recentChessMessage },
+    state: { recentChessMessage, channelsObj },
     actions: { onUpdateChessMoveViewTimeStamp }
   } = useChatContext();
   const [initialState, setInitialState] = useState();
@@ -95,6 +96,13 @@ export default function ChessModal({
   }, [channelId, countdownNumber]);
 
   const parsedState = initialState ? JSON.parse(initialState) : {};
+  const gameFinished = useMemo(
+    () =>
+      parsedState?.isCheckmate ||
+      parsedState?.isStalemate ||
+      parsedState?.isDraw,
+    [parsedState]
+  );
 
   return (
     <Modal large onHide={onHide}>
@@ -143,9 +151,16 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
-        {parsedState?.isCheckmate ||
-        parsedState?.isStalemate ||
-        parsedState?.isDraw ? (
+        {!!parsedState?.move?.number > 0 && !gameFinished && (
+          <Button
+            style={{ marginRight: '0.7rem' }}
+            color="red"
+            onClick={handleResign}
+          >
+            Resign
+          </Button>
+        )}
+        {gameFinished ? (
           <Button color="orange" onClick={() => setInitialState(undefined)}>
             Start a new game
           </Button>
@@ -175,6 +190,16 @@ export default function ChessModal({
 
   async function submitChessMove() {
     await onConfirmChessMove(newChessState);
+    onHide();
+  }
+
+  function handleResign() {
+    socket.emit('start_chess_timer', {
+      currentChannel: channelsObj[channelId],
+      targetUserId: myId,
+      winnerId: opponentId,
+      isResign: true
+    });
     onHide();
   }
 }

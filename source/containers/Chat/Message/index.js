@@ -102,7 +102,8 @@ function Message({
     thumbUrl,
     timeStamp,
     uploaderAuthLevel,
-    userId
+    userId,
+    isResign
   },
   onAcceptGroupInvitation,
   onChessBoardClick,
@@ -385,6 +386,7 @@ function Message({
         winnerId={gameWinnerId}
         opponentName={channelName}
         myId={myId}
+        isResign={isResign}
       />
     );
   }
