@@ -7,6 +7,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import Spoiler from './Spoiler';
 import Embedly from 'components/Embedly';
 import ExtractedThumb from 'components/ExtractedThumb';
+import { v1 as uuidv1 } from 'uuid';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
@@ -18,6 +19,7 @@ import {
 import { css } from 'emotion';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { isMobile } from 'helpers';
+import { useAppContext } from 'contexts';
 
 TargetMessage.propTypes = {
   message: PropTypes.object.isRequired,
@@ -25,6 +27,9 @@ TargetMessage.propTypes = {
 };
 
 export default function TargetMessage({ message, onSetScrollToBottom }) {
+  const {
+    requestHelpers: { uploadThumb }
+  } = useAppContext();
   const [imageModalShown, setImageModalShown] = useState(false);
   const fileType = useMemo(() => {
     return message.fileName
@@ -92,7 +97,7 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
           />
         )}
       </div>
-      {message.thumbUrl && !message.attachmentHidden && (
+      {!fileType === 'video' && message.thumbUrl && !message.attachmentHidden && (
         <Embedly
           imageOnly
           contentId={message.id}
@@ -137,6 +142,8 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
             <ExtractedThumb
               src={src}
               style={{ width: '100%', height: '7rem' }}
+              thumbUrl={message.thumbUrl}
+              onThumbnailLoad={handleThumbnailLoad}
             />
           ) : (
             <FileIcon size="5x" fileType={fileType} />
@@ -189,5 +196,17 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
       return setImageModalShown(true);
     }
     window.open(src);
+  }
+
+  function handleThumbnailLoad(thumb) {
+    const dataUri = thumb.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(dataUri, 'base64');
+    const file = new File([buffer], 'thumb.png');
+    uploadThumb({
+      contentType: 'chat',
+      contentId: message.id,
+      file,
+      path: uuidv1()
+    });
   }
 }

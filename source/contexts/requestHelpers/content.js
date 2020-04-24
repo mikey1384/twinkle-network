@@ -618,16 +618,17 @@ export default function contentRequestHelpers({ auth, handleError }) {
     async uploadQuestions({ questions, videoId }) {
       const data = {
         videoId,
-        questions: questions.map(question => {
+        questions: questions.map((question) => {
           const choices = question.choiceIds
-            .map(id => ({ id, label: question.choicesObj[id] }))
-            .filter(choice => choice.label && !stringIsEmpty(choice.label));
+            .map((id) => ({ id, label: question.choicesObj[id] }))
+            .filter((choice) => choice.label && !stringIsEmpty(choice.label));
           return {
             videoId,
             title: question.title,
             correctChoice:
-              choices.map(choice => choice.id).indexOf(question.correctChoice) +
-              1,
+              choices
+                .map((choice) => choice.id)
+                .indexOf(question.correctChoice) + 1,
             choice1: choices[0].label,
             choice2: choices[1].label,
             choice3: choices[2]?.label,
@@ -638,7 +639,7 @@ export default function contentRequestHelpers({ auth, handleError }) {
       };
       try {
         await request.post(`${URL}/video/questions`, data, auth());
-        const questions = data.questions.map(question => {
+        const questions = data.questions.map((question) => {
           return {
             title: question.title,
             choices: [
@@ -709,6 +710,21 @@ export default function contentRequestHelpers({ auth, handleError }) {
       } catch (error) {
         return handleError(error);
       }
+    },
+    async uploadThumb({ contentId, contentType, file, path }) {
+      const { data: url } = await request.post(`${URL}/content/thumb`, {
+        fileSize: file.size,
+        contentId,
+        contentType,
+        path
+      });
+      await request.put(url.signedRequest, file);
+      await request.put(`${URL}/content/thumb`, {
+        path,
+        contentId,
+        contentType
+      });
+      return Promise.resolve();
     }
   };
 }

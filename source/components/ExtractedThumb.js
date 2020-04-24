@@ -4,30 +4,39 @@ import Loading from 'components/Loading';
 import { css } from 'emotion';
 
 ExtractedThumb.propTypes = {
-  thumbnailHandler: PropTypes.func,
+  onThumbnailLoad: PropTypes.func,
   src: PropTypes.string.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  thumbUrl: PropTypes.string
 };
 
-export default function ExtractedThumb({ src, thumbnailHandler, style }) {
+export default function ExtractedThumb({
+  src,
+  onThumbnailLoad,
+  style,
+  thumbUrl
+}) {
   const [dataLoaded, setDataLoaded] = useState(false);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
   const [seeked, setSeeked] = useState(false);
-  const [snapshot, setSnapshot] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [suspended, setSuspended] = useState(false);
   const videoRef = useRef({});
   const canvasRef = useRef(null);
   useEffect(() => {
-    if (videoRef.current && metadataLoaded && dataLoaded && suspended) {
-      if (!videoRef.current?.currentTime) {
-        videoRef.current.currentTime = videoRef.current.duration / 2;
-      }
-
-      if (seeked && !snapshot) {
-        handleLoadSnapShot();
+    if (thumbUrl) {
+      setThumbnail(thumbUrl);
+    } else {
+      if (videoRef.current && metadataLoaded && dataLoaded && suspended) {
+        if (!videoRef.current?.currentTime) {
+          videoRef.current.currentTime = videoRef.current.duration / 2;
+        }
+        if (seeked && !thumbnail) {
+          handleLoadThumbnail();
+        }
       }
     }
-    function handleLoadSnapShot() {
+    function handleLoadThumbnail() {
       try {
         canvasRef.current.height = videoRef.current.videoHeight;
         canvasRef.current.width = videoRef.current.videoWidth;
@@ -38,10 +47,10 @@ export default function ExtractedThumb({ src, thumbnailHandler, style }) {
         videoRef.current.src = '';
         videoRef.current.remove();
         videoRef.current.remove();
-        setSnapshot(thumbnail);
+        setThumbnail(thumbnail);
 
-        if (thumbnailHandler) {
-          thumbnailHandler(thumbnail);
+        if (onThumbnailLoad) {
+          onThumbnailLoad(thumbnail);
         }
       } catch (error) {
         console.error(error);
@@ -50,17 +59,18 @@ export default function ExtractedThumb({ src, thumbnailHandler, style }) {
   }, [
     dataLoaded,
     metadataLoaded,
+    onThumbnailLoad,
     seeked,
-    snapshot,
     suspended,
-    thumbnailHandler
+    thumbUrl,
+    thumbnail
   ]);
 
-  return snapshot ? (
+  return thumbnail ? (
     <img
       style={{ objectFit: 'cover', ...style }}
-      src={snapshot}
-      alt="my video thumbnail"
+      src={thumbnail}
+      alt="video thumbnail"
     />
   ) : (
     <div style={style}>
