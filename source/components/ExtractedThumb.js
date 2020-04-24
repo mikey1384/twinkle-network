@@ -4,6 +4,7 @@ import Loading from 'components/Loading';
 import { css } from 'emotion';
 
 ExtractedThumb.propTypes = {
+  isHidden: PropTypes.bool,
   onThumbnailLoad: PropTypes.func,
   src: PropTypes.string.isRequired,
   style: PropTypes.object,
@@ -11,6 +12,7 @@ ExtractedThumb.propTypes = {
 };
 
 export default function ExtractedThumb({
+  isHidden,
   src,
   onThumbnailLoad,
   style,
@@ -67,14 +69,16 @@ export default function ExtractedThumb({
   ]);
 
   return thumbnail ? (
-    <img
-      style={{ objectFit: 'cover', ...style }}
-      src={thumbnail}
-      alt="video thumbnail"
-    />
+    isHidden ? null : (
+      <img
+        style={{ objectFit: 'cover', ...style }}
+        src={thumbnail}
+        alt="video thumbnail"
+      />
+    )
   ) : (
     <div style={style}>
-      <Loading style={{ width: '100%', height: '100%' }} />
+      {!isHidden && <Loading style={{ width: '100%', height: '100%' }} />}
       <canvas
         className={css`
           display: block;

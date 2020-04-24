@@ -8,6 +8,7 @@ import { Color } from 'constants/css';
 import { unix } from 'moment';
 
 Message.propTypes = {
+  id: PropTypes.number,
   content: PropTypes.string,
   fileName: PropTypes.string,
   filePath: PropTypes.string,
@@ -15,18 +16,21 @@ Message.propTypes = {
   isReloadedSubject: PropTypes.number,
   profilePicId: PropTypes.number,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  thumbUrl: PropTypes.string,
   userId: PropTypes.number,
   username: PropTypes.string
 };
 
 export default function Message({
   content,
+  id: messageId,
   fileName,
   filePath,
   fileSize,
   userId,
   username,
   profilePicId,
+  thumbUrl,
   timeStamp,
   isReloadedSubject
 }) {
@@ -53,11 +57,13 @@ export default function Message({
         {filePath && (
           <FileViewer
             modalOverModal
+            contentId={messageId}
             contextType="chat"
             content={content}
             filePath={filePath}
             fileName={fileName}
             fileSize={fileSize}
+            thumbUrl={thumbUrl}
             style={{ marginTop: '1rem' }}
           />
         )}

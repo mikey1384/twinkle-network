@@ -3,13 +3,17 @@ import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
 import ReactPlayer from 'react-player';
+import ExtractedThumb from 'components/ExtractedThumb';
 import Icon from 'components/Icon';
+import { v1 as uuidv1 } from 'uuid';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { isMobile } from 'helpers';
+import { useAppContext, useContentContext } from 'contexts';
 
 FileViewer.propTypes = {
   autoPlay: PropTypes.bool,
+  contentId: PropTypes.number,
   contextType: PropTypes.string.isRequired,
   isMuted: PropTypes.bool,
   isThumb: PropTypes.bool,
@@ -18,11 +22,13 @@ FileViewer.propTypes = {
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   modalOverModal: PropTypes.bool,
   style: PropTypes.object,
+  thumbUrl: PropTypes.string,
   videoHeight: PropTypes.string
 };
 
 export default function FileViewer({
   autoPlay,
+  contentId,
   contextType,
   isMuted = true,
   isThumb,
@@ -31,8 +37,15 @@ export default function FileViewer({
   fileSize,
   modalOverModal,
   style,
+  thumbUrl,
   videoHeight
 }) {
+  const {
+    requestHelpers: { uploadThumb }
+  } = useAppContext();
+  const {
+    actions: { onSetThumbUrl }
+  } = useContentContext();
   const mobile = isMobile(navigator);
   const [muted, setMuted] = useState(isMuted);
   const PlayerRef = useRef(null);
@@ -99,6 +112,14 @@ export default function FileViewer({
             }}
             onClick={handlePlayerClick}
           >
+            {contextType === 'chat' && (
+              <ExtractedThumb
+                src={src}
+                isHidden
+                onThumbnailLoad={handleThumbnailLoad}
+                thumbUrl={thumbUrl}
+              />
+            )}
             <ReactPlayer
               loop={!mobile && autoPlay && muted}
               ref={PlayerRef}
@@ -159,6 +180,27 @@ export default function FileViewer({
     if (!mobile && muted && autoPlay) {
       setMuted(false);
       PlayerRef.current.getInternalPlayer()?.pause();
+    }
+  }
+
+  function handleThumbnailLoad(thumb) {
+    const dataUri = thumb.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(dataUri, 'base64');
+    const file = new File([buffer], 'thumb.png');
+    handleUploadThumb();
+
+    async function handleUploadThumb() {
+      const thumbUrl = await uploadThumb({
+        contentType: 'chat',
+        contentId,
+        file,
+        path: uuidv1()
+      });
+      onSetThumbUrl({
+        contentId,
+        contentType: 'chat',
+        thumbUrl
+      });
     }
   }
 }

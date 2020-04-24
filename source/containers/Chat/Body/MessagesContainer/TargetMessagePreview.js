@@ -88,6 +88,7 @@ export default function TargetMessagePreview({ onClose }) {
               <ExtractedThumb
                 src={src}
                 style={{ width: '100%', height: '7rem' }}
+                thumbUrl={replyTarget.thumbUrl}
               />
             ) : (
               <FileIcon size="5x" fileType={fileType} />

@@ -719,12 +719,14 @@ export default function contentRequestHelpers({ auth, handleError }) {
         path
       });
       await request.put(url.signedRequest, file);
-      await request.put(`${URL}/content/thumb`, {
+      const {
+        data: { thumbUrl }
+      } = await request.put(`${URL}/content/thumb`, {
         path,
         contentId,
         contentType
       });
-      return Promise.resolve();
+      return Promise.resolve(thumbUrl);
     }
   };
 }

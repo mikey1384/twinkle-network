@@ -460,12 +460,14 @@ function Message({
                   )}
                   {filePath && (
                     <FileViewer
+                      contentId={messageId}
                       contextType="chat"
                       content={content}
                       filePath={filePath}
                       fileName={fileName}
                       fileSize={fileSize}
                       scrollAtBottom={scrollAtBottom}
+                      thumbUrl={thumbUrl || recentThumbUrl}
                       style={{ marginTop: '1rem' }}
                     />
                   )}

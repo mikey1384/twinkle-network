@@ -62,7 +62,7 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
           />
         )}
         {messages.length === 0 && <Loading />}
-        {messages.map(message => (
+        {messages.map((message) => (
           <Message key={message.id} {...message} />
         ))}
       </main>
