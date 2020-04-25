@@ -19,7 +19,7 @@ import {
 const intervalLength = 2000;
 const xp = rewardValue.star;
 
-VideoPlayer.propTypes = {
+XPVideoPlayer.propTypes = {
   isChat: PropTypes.bool,
   byUser: PropTypes.bool,
   hasHqThumb: PropTypes.number,
@@ -31,7 +31,7 @@ VideoPlayer.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
-function VideoPlayer({
+function XPVideoPlayer({
   isChat,
   byUser,
   rewardLevel,
@@ -530,4 +530,4 @@ function VideoPlayer({
   }
 }
 
-export default memo(VideoPlayer);
+export default memo(XPVideoPlayer);

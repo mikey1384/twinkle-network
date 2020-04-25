@@ -13,7 +13,7 @@ import StarButton from 'components/Buttons/StarButton';
 import Button from 'components/Button';
 import Likers from 'components/Likers';
 import UserListModal from 'components/Modals/UserListModal';
-import VideoPlayer from 'components/VideoPlayer';
+import XPVideoPlayer from 'components/XPVideoPlayer';
 import Comments from 'components/Comments';
 import MainContent from './MainContent';
 import DropdownButton from 'components/Buttons/DropdownButton';
@@ -316,7 +316,7 @@ function Body({
             <LoginToViewContent />
           ))}
         {contentType === 'comment' && attachedVideoShown && (
-          <VideoPlayer
+          <XPVideoPlayer
             stretch
             autoplay
             rewardLevel={rootObj.rewardLevel}

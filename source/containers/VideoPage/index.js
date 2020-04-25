@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from 'components/Carousel';
 import Button from 'components/Button';
-import VideoPlayer from 'components/VideoPlayer';
+import XPVideoPlayer from 'components/XPVideoPlayer';
 import NotFound from 'components/NotFound';
 import CheckListGroup from 'components/CheckListGroup';
 import Comments from 'components/Comments';
@@ -290,7 +290,7 @@ export default function VideoPage({
               />
               <div style={{ marginTop: '2rem' }}>
                 {!questionsBuilderShown && (
-                  <VideoPlayer
+                  <XPVideoPlayer
                     autoplay
                     rewardLevel={rewardLevel}
                     byUser={!!byUser}
@@ -396,7 +396,7 @@ export default function VideoPage({
               onLoadMoreSubjects={onLoadMoreSubjects}
               onLoadSubjectComments={onLoadSubjectComments}
               onSubjectEditDone={onEditSubject}
-              onSubjectDelete={subjectId =>
+              onSubjectDelete={(subjectId) =>
                 onDeleteContent({
                   contentType: 'subject',
                   contentId: subjectId
@@ -526,7 +526,7 @@ export default function VideoPage({
   }
 
   function numberCorrect() {
-    const correctAnswers = questions.map(question => question.correctChoice);
+    const correctAnswers = questions.map((question) => question.correctChoice);
     let numberCorrect = 0;
     for (let i = 0; i < correctAnswers.length; i++) {
       if (userAnswers[i] + 1 === correctAnswers[i]) numberCorrect++;
@@ -536,7 +536,7 @@ export default function VideoPage({
 
   function handleRenderSlides() {
     return questions.map((question, questionIndex) => {
-      const filteredChoices = question.choices.filter(choice => !!choice);
+      const filteredChoices = question.choices.filter((choice) => !!choice);
       const isCurrentSlide = currentSlide === questionIndex;
       const listItems = filteredChoices.map((choice, choiceIndex) => ({
         label: choice,
@@ -563,7 +563,7 @@ export default function VideoPage({
   }
 
   function handleSelectChoice(newAnswer) {
-    setUserAnswers(userAnswers => ({
+    setUserAnswers((userAnswers) => ({
       ...userAnswers,
       [currentSlide]: newAnswer
     }));

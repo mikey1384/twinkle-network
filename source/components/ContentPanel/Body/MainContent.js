@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
-import VideoPlayer from 'components/VideoPlayer';
+import XPVideoPlayer from 'components/XPVideoPlayer';
 import ContentEditor from './ContentEditor';
 import ErrorBoundary from 'components/ErrorBoundary';
 import RewardLevelBar from 'components/RewardLevelBar';
@@ -67,7 +67,7 @@ function MainContent({
       <div>
         {(contentType === 'video' ||
           (contentType === 'subject' && rootType === 'video' && rootObj)) && (
-          <VideoPlayer
+          <XPVideoPlayer
             stretch
             rewardLevel={
               contentType === 'subject' ? rootObj.rewardLevel : rewardLevel

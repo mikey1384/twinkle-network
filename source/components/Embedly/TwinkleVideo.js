@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/Loading';
-import VideoPlayer from 'components/VideoPlayer';
+import XPVideoPlayer from 'components/XPVideoPlayer';
 import Link from 'components/Link';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
@@ -52,7 +52,7 @@ export default function TwinkleVideo({ style, videoId }) {
       {!loaded ? (
         <Loading style={{ height: '100%' }} />
       ) : (
-        <VideoPlayer
+        <XPVideoPlayer
           isChat
           style={{ width: '100%', height: '100%' }}
           byUser={!!byUser}
