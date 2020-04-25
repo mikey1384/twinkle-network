@@ -158,7 +158,7 @@ function Message({
       onSetThumbUrl
     }
   } = useContentContext();
-  const { thumbUrl: recentThumbUrl, isEditing } = useContentState({
+  const { thumbUrl: recentThumbUrl, isEditing, started } = useContentState({
     contentType: 'chat',
     contentId: messageId
   });
@@ -391,7 +391,7 @@ function Message({
 
   return (
     <div ref={ComponentRef}>
-      {inView || visible !== false ? (
+      {inView || started || visible !== false ? (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
@@ -461,7 +461,7 @@ function Message({
                   {filePath && (
                     <FileViewer
                       contentId={messageId}
-                      contextType="chat"
+                      contentType="chat"
                       content={content}
                       filePath={filePath}
                       fileName={fileName}

@@ -109,7 +109,11 @@ function XPVideoPlayer({
     setStartingPosition(currentTime);
     return function cleanUp() {
       handleVideoStop();
-      onSetVideoStarted({ videoId, started: false });
+      onSetVideoStarted({
+        contentType: 'video',
+        contentId: videoId,
+        started: false
+      });
       clearInterval(timerRef.current);
       mounted.current = false;
     };
@@ -124,7 +128,8 @@ function XPVideoPlayer({
     return function setCurrentTimeBeforeUnmount() {
       if (timeAt > 0) {
         onSetVideoCurrentTime({
-          videoId,
+          contentType: 'video',
+          contentId: videoId,
           currentTime: timeAt
         });
       }
@@ -419,7 +424,11 @@ function XPVideoPlayer({
   }
 
   function onVideoPlay({ requiredDurationCap, userId, watchTime }) {
-    onSetVideoStarted({ videoId, started: true });
+    onSetVideoStarted({
+      contentType: 'video',
+      contentId: videoId,
+      started: true
+    });
     if (!playing) {
       setPlaying(true);
       const time = PlayerRef.current.getCurrentTime();

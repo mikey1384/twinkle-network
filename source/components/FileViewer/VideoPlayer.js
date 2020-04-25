@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ExtractedThumb from 'components/ExtractedThumb';
 import Icon from 'components/Icon';
@@ -6,11 +6,12 @@ import ReactPlayer from 'react-player';
 import { v1 as uuidv1 } from 'uuid';
 import { isMobile } from 'helpers';
 import { useAppContext, useContentContext } from 'contexts';
+import { useContentState } from 'helpers/hooks';
 
 VideoPlayer.propTypes = {
   autoPlay: PropTypes.bool,
   contentId: PropTypes.number,
-  contextType: PropTypes.string,
+  contentType: PropTypes.string,
   fileType: PropTypes.string,
   isMuted: PropTypes.bool,
   isThumb: PropTypes.bool,
@@ -22,7 +23,7 @@ VideoPlayer.propTypes = {
 export default function VideoPlayer({
   autoPlay,
   contentId,
-  contextType,
+  contentType,
   fileType,
   isMuted,
   isThumb,
@@ -34,11 +35,50 @@ export default function VideoPlayer({
     requestHelpers: { uploadThumb }
   } = useAppContext();
   const {
-    actions: { onSetThumbUrl }
+    actions: { onSetThumbUrl, onSetVideoCurrentTime, onSetVideoStarted }
   } = useContentContext();
+  const { currentTime = 0 } = useContentState({ contentType, contentId });
   const [muted, setMuted] = useState(isMuted);
+  const [paused, setPaused] = useState(false);
+  const [timeAt, setTimeAt] = useState(0);
   const mobile = isMobile(navigator);
   const PlayerRef = useRef(null);
+  const looping = useMemo(() => !mobile && autoPlay && muted && !currentTime, [
+    autoPlay,
+    currentTime,
+    mobile,
+    muted
+  ]);
+
+  useEffect(() => {
+    if (currentTime > 0) {
+      PlayerRef.current.seekTo(currentTime);
+      setPaused(true);
+    }
+
+    return function cleanUp() {
+      onSetVideoStarted({
+        contentType,
+        contentId,
+        started: false
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return function setCurrentTimeBeforeUnmount() {
+      if (timeAt > 0 && !looping) {
+        onSetVideoCurrentTime({
+          contentType,
+          contentId,
+          currentTime: timeAt
+        });
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeAt, looping]);
+
   return (
     <div
       style={{
@@ -50,7 +90,7 @@ export default function VideoPlayer({
       }}
       onClick={handlePlayerClick}
     >
-      {contextType === 'chat' && (
+      {contentType === 'chat' && (
         <ExtractedThumb
           src={src}
           isHidden
@@ -59,11 +99,12 @@ export default function VideoPlayer({
         />
       )}
       <ReactPlayer
-        loop={!mobile && autoPlay && muted}
+        loop={looping}
         ref={PlayerRef}
-        playing={!mobile && autoPlay}
+        playing={!mobile && autoPlay && !paused}
         playsInline
-        muted={(!mobile && autoPlay && muted) || isThumb}
+        muted={isThumb || looping}
+        onProgress={handleVideoProgress}
         style={{
           cursor: muted ? 'pointer' : 'default',
           position: 'absolute',
@@ -79,9 +120,9 @@ export default function VideoPlayer({
         width="100%"
         height={fileType === 'video' ? videoHeight || '100%' : '5rem'}
         url={src}
-        controls={(!isThumb && mobile) || !muted || !autoPlay}
+        controls={!isThumb && !looping}
       />
-      {!isThumb && !mobile && autoPlay && muted && (
+      {!isThumb && looping && (
         <div
           style={{
             display: 'flex',
@@ -104,10 +145,15 @@ export default function VideoPlayer({
   );
 
   function handlePlayerClick() {
-    if (!mobile && muted && autoPlay) {
+    if (looping) {
       setMuted(false);
       PlayerRef.current.getInternalPlayer()?.pause();
     }
+    onSetVideoStarted({
+      contentType,
+      contentId,
+      started: true
+    });
   }
 
   function handleThumbnailLoad(thumb) {
@@ -129,5 +175,9 @@ export default function VideoPlayer({
         thumbUrl
       });
     }
+  }
+
+  function handleVideoProgress() {
+    setTimeAt(PlayerRef.current.getCurrentTime());
   }
 }

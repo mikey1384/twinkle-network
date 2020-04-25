@@ -281,8 +281,9 @@ function ContentListItem({
             )}
             {filePath && (
               <FileViewer
-                contextType="feed"
                 autoPlay
+                contentId={contentId}
+                contentType={contentType}
                 fileName={fileName}
                 filePath={filePath}
                 fileSize={fileSize}

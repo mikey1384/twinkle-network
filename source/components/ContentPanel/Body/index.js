@@ -298,8 +298,9 @@ function Body({
           filePath &&
           (userId ? (
             <FileViewer
-              contextType="feed"
               autoPlay
+              contentId={contentId}
+              contentType={contentType}
               isMuted={!autoExpand}
               fileName={fileName}
               filePath={filePath}

@@ -58,7 +58,7 @@ export default function Message({
           <FileViewer
             modalOverModal
             contentId={messageId}
-            contextType="chat"
+            contentType="chat"
             content={content}
             filePath={filePath}
             fileName={fileName}

@@ -9,7 +9,7 @@ import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 FileViewer.propTypes = {
   autoPlay: PropTypes.bool,
   contentId: PropTypes.number,
-  contextType: PropTypes.string.isRequired,
+  contentType: PropTypes.string.isRequired,
   isMuted: PropTypes.bool,
   isThumb: PropTypes.bool,
   filePath: PropTypes.string.isRequired,
@@ -24,7 +24,7 @@ FileViewer.propTypes = {
 export default function FileViewer({
   autoPlay,
   contentId,
-  contextType,
+  contentType,
   isMuted = true,
   isThumb,
   filePath,
@@ -36,9 +36,9 @@ export default function FileViewer({
   videoHeight
 }) {
   const { fileType } = getFileInfoFromFileName(fileName);
-  const src = `${cloudFrontURL}/attachments/${contextType}/${filePath}/${encodeURIComponent(
-    fileName
-  )}`;
+  const src = `${cloudFrontURL}/attachments/${
+    contentType === 'subject' ? 'feed' : contentType
+  }/${filePath}/${encodeURIComponent(fileName)}`;
 
   return (
     <div
@@ -71,7 +71,7 @@ export default function FileViewer({
             <div
               style={{
                 width: '100%',
-                padding: contextType === 'feed' && '0 1rem 0 1rem'
+                padding: contentType === 'subject' && '0 1rem 0 1rem'
               }}
             >
               <a
@@ -87,7 +87,7 @@ export default function FileViewer({
           <VideoPlayer
             autoPlay={autoPlay}
             contentId={contentId}
-            contextType={contextType}
+            contentType={contentType}
             fileType={fileType}
             isMuted={isMuted}
             isThumb={isThumb}

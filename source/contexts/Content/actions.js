@@ -395,11 +395,11 @@ export default function ContentActions(dispatch) {
         thumbUrl
       });
     },
-    onSetVideoCurrentTime({ videoId, currentTime }) {
+    onSetVideoCurrentTime({ contentType, contentId, currentTime }) {
       return dispatch({
         type: 'SET_VIDEO_CURRENT_TIME',
-        contentType: 'video',
-        contentId: videoId,
+        contentType,
+        contentId,
         currentTime
       });
     },
@@ -435,11 +435,11 @@ export default function ContentActions(dispatch) {
         justEarned
       });
     },
-    onSetVideoStarted({ videoId, started }) {
+    onSetVideoStarted({ contentType, contentId, started }) {
       return dispatch({
         type: 'SET_VIDEO_STARTED',
-        contentType: 'video',
-        contentId: videoId,
+        contentType,
+        contentId,
         started
       });
     },
