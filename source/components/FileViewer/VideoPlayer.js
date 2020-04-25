@@ -104,6 +104,7 @@ export default function VideoPlayer({
         playing={!mobile && autoPlay && !paused}
         playsInline
         muted={isThumb || looping}
+        onPlay={handlePlay}
         onProgress={handleVideoProgress}
         style={{
           cursor: muted ? 'pointer' : 'default',
@@ -144,16 +145,21 @@ export default function VideoPlayer({
     </div>
   );
 
+  function handlePlay() {
+    if (!looping) {
+      onSetVideoStarted({
+        contentType,
+        contentId,
+        started: true
+      });
+    }
+  }
+
   function handlePlayerClick() {
     if (looping) {
       setMuted(false);
       PlayerRef.current.getInternalPlayer()?.pause();
     }
-    onSetVideoStarted({
-      contentType,
-      contentId,
-      started: true
-    });
   }
 
   function handleThumbnailLoad(thumb) {
