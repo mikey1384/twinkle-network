@@ -97,8 +97,9 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
           />
         )}
       </div>
-      {!fileType === 'video' && message.thumbUrl && !message.attachmentHidden && (
+      {fileType !== 'video' && message.thumbUrl && !message.attachmentHidden && (
         <Embedly
+          test="true"
           imageOnly
           contentId={message.id}
           contentType="chat"
