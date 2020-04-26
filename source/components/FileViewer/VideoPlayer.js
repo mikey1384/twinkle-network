@@ -79,6 +79,13 @@ export default function VideoPlayer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeAt, looping]);
 
+  const light = useMemo(() => {
+    if (autoPlay || currentTime || paused) {
+      return false;
+    }
+    return thumbUrl;
+  }, [autoPlay, currentTime, paused, thumbUrl]);
+
   return (
     <div
       style={{
@@ -100,12 +107,14 @@ export default function VideoPlayer({
       )}
       <ReactPlayer
         loop={looping}
+        light={light}
         ref={PlayerRef}
         playing={!mobile && autoPlay && !paused}
         playsInline
         muted={isThumb || looping}
         onPlay={handlePlay}
         onProgress={handleVideoProgress}
+        onReady={handleReady}
         style={{
           cursor: muted ? 'pointer' : 'default',
           position: 'absolute',
@@ -159,6 +168,12 @@ export default function VideoPlayer({
     if (looping) {
       setMuted(false);
       PlayerRef.current.getInternalPlayer()?.pause();
+    }
+  }
+
+  function handleReady() {
+    if (light) {
+      PlayerRef.current.getInternalPlayer()?.play();
     }
   }
 
