@@ -110,7 +110,7 @@ export default function VideoPlayer({
         light={light}
         ref={PlayerRef}
         playing={!mobile && autoPlay && !paused}
-        playsInline
+        playsinline
         muted={isThumb || looping}
         onPlay={handlePlay}
         onProgress={handleVideoProgress}
