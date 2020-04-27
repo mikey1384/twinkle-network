@@ -8,7 +8,7 @@ import { isMobile } from 'helpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 
-VideoPlayer.propTypes = {
+MediaPlayer.propTypes = {
   autoPlay: PropTypes.bool,
   contentId: PropTypes.number,
   contentType: PropTypes.string,
@@ -20,7 +20,7 @@ VideoPlayer.propTypes = {
   videoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-export default function VideoPlayer({
+export default function MediaPlayer({
   autoPlay,
   contentId,
   contentType,
@@ -80,11 +80,11 @@ export default function VideoPlayer({
   }, [timeAt, looping]);
 
   const light = useMemo(() => {
-    if (autoPlay || currentTime || paused) {
+    if (autoPlay || currentTime || paused || fileType === 'audio') {
       return false;
     }
     return thumbUrl;
-  }, [autoPlay, currentTime, paused, thumbUrl]);
+  }, [autoPlay, currentTime, fileType, paused, thumbUrl]);
 
   return (
     <div

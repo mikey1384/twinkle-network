@@ -11,6 +11,8 @@ import { v1 as uuidv1 } from 'uuid';
 import { unix } from 'moment';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import {
+  extractVideoIdFromTwinkleVideoUrl,
+  fetchURLFromText,
   getFileInfoFromFileName,
   processedStringWithURL,
   renderFileSize,
@@ -31,17 +33,30 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
     requestHelpers: { uploadThumb }
   } = useAppContext();
   const [imageModalShown, setImageModalShown] = useState(false);
+
   const fileType = useMemo(() => {
     return message.fileName
       ? getFileInfoFromFileName(message.fileName)?.fileType
       : null;
   }, [message.fileName]);
+
   const src = useMemo(() => {
     if (!message.filePath) return '';
     return `${cloudFrontURL}/attachments/chat/${
       message.filePath
     }/${encodeURIComponent(message.fileName)}`;
   }, [message.fileName, message.filePath]);
+
+  const embedlyShown = useMemo(() => {
+    const extractedVideoId = extractVideoIdFromTwinkleVideoUrl(
+      fetchURLFromText(message.content)
+    );
+    return (
+      fileType !== 'video' &&
+      (message.thumbUrl || extractedVideoId) &&
+      !message.attachmentHidden
+    );
+  }, [fileType, message.attachmentHidden, message.content, message.thumbUrl]);
 
   return (
     <div
@@ -97,7 +112,7 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
           />
         )}
       </div>
-      {fileType !== 'video' && message.thumbUrl && !message.attachmentHidden && (
+      {embedlyShown && (
         <Embedly
           test="true"
           imageOnly

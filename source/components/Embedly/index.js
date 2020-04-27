@@ -67,10 +67,13 @@ function Embedly({
       onSetActualTitle,
       onSetPrevUrl,
       onSetSiteUrl,
-      onSetThumbUrl
+      onSetThumbUrl,
+      onSetVideoCurrentTime,
+      onSetVideoStarted
     }
   } = useContentContext();
   const {
+    currentTime = 0,
     description,
     prevUrl,
     thumbUrl,
@@ -85,6 +88,8 @@ function Embedly({
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [twinkleVideoId, setTwinkleVideoId] = useState(false);
+  const [timeAt, setTimeAt] = useState(0);
+  const [startingPosition, setStartingPosition] = useState(0);
   const { notFound } = useContentState({
     contentId: Number(twinkleVideoId),
     contentType: 'video'
@@ -92,6 +97,7 @@ function Embedly({
   const isYouTube = useMemo(() => {
     return contentType === 'chat' && isValidYoutubeUrl(url);
   }, [contentType, url]);
+  const YTPlayerRef = useRef(null);
   const mounted = useRef(true);
   const fallbackImage = '/img/link.png';
   const contentCss = useMemo(
@@ -111,6 +117,9 @@ function Embedly({
 
   useEffect(() => {
     mounted.current = true;
+    if (isYouTube) {
+      setStartingPosition(currentTime);
+    }
     const extractedVideoId = extractVideoIdFromTwinkleVideoUrl(url);
     if (extractedVideoId && contentType === 'chat') {
       return setTwinkleVideoId(extractedVideoId);
@@ -148,11 +157,13 @@ function Embedly({
         console.error(error.response || error);
       }
     }
-    return function cleanUp() {
-      mounted.current = false;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevUrl, url, thumbLoaded, thumbUrl]);
+
+  const videoUrl = useMemo(
+    () => `${url}${startingPosition > 0 ? `?t=${startingPosition}` : ''}`,
+    [startingPosition, url]
+  );
 
   useEffect(() => {
     setImageUrl(
@@ -161,6 +172,31 @@ function Embedly({
         : thumbUrl || fallbackImage
     );
   }, [thumbUrl, url]);
+
+  useEffect(() => {
+    return function setCurrentTimeBeforeUnmount() {
+      if (timeAt > 0) {
+        onSetVideoCurrentTime({
+          contentType,
+          contentId,
+          currentTime: timeAt
+        });
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeAt]);
+
+  useEffect(() => {
+    return function cleanUp() {
+      mounted.current = false;
+      onSetVideoStarted({
+        contentType,
+        contentId,
+        started: false
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const InnerContent = useMemo(() => {
     return (
@@ -313,6 +349,7 @@ function Embedly({
             <div className={contentCss}>{InnerContent}</div>
           ) : twinkleVideoId ? (
             <TwinkleVideo
+              imageOnly={imageOnly}
               style={{
                 width: videoWidth || '50vw',
                 height: videoHeight || 'CALC(30vw + 3rem)'
@@ -321,10 +358,19 @@ function Embedly({
             />
           ) : isYouTube ? (
             <ReactPlayer
+              ref={YTPlayerRef}
               width={videoWidth || '50vw'}
               height={videoHeight || '30vw'}
-              url={url}
+              url={videoUrl}
               controls
+              onPlay={() =>
+                onSetVideoStarted({
+                  contentType,
+                  contentId,
+                  started: true
+                })
+              }
+              onProgress={handleVideoProgress}
             />
           ) : (
             <a
@@ -340,6 +386,10 @@ function Embedly({
       </div>
     </div>
   );
+
+  function handleVideoProgress() {
+    setTimeAt(YTPlayerRef.current.getCurrentTime());
+  }
 }
 
 export default memo(Embedly);

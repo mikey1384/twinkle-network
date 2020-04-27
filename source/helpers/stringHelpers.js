@@ -147,6 +147,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:rooster\:)/gi, '🐓')
     .replace(/(\:sad\:)/gi, '😢')
     .replace(/(\:santa\:)/gi, '🎅')
+    .replace(/(\:shock\:)/gi, '😱')
+    .replace(/(\:shocked\:)/gi, '😱')
     .replace(/(\:swan\:)/gi, '🦢')
     .replace(/(\:shrug\:)/gi, '🤷')
     .replace(/(\:smile\:)/gi, '😊')

@@ -15,16 +15,20 @@ const xp = rewardValue.star;
 VideoThumbImage.propTypes = {
   height: PropTypes.string,
   rewardLevel: PropTypes.number,
+  onClick: PropTypes.func,
   playIcon: PropTypes.bool,
   src: PropTypes.string.isRequired,
+  style: PropTypes.object,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export default function VideoThumbImage({
   rewardLevel,
   height = '55%',
+  onClick,
   playIcon,
   src,
+  style,
   videoId
 }) {
   const {
@@ -83,8 +87,11 @@ export default function VideoThumbImage({
         height: 'auto',
         overFlow: 'hidden',
         paddingBottom: height,
-        position: 'relative'
+        position: 'relative',
+        cursor: onClick ? 'pointer' : 'default',
+        ...style
       }}
+      onClick={onClick}
     >
       <img
         alt="Thumbnail"

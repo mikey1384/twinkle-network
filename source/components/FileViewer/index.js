@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
-import VideoPlayer from './VideoPlayer';
+import MediaPlayer from './MediaPlayer';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
@@ -84,7 +84,7 @@ export default function FileViewer({
               </a>
             </div>
           )}
-          <VideoPlayer
+          <MediaPlayer
             autoPlay={autoPlay}
             contentId={contentId}
             contentType={contentType}
