@@ -24,6 +24,7 @@ XPVideoPlayer.propTypes = {
   byUser: PropTypes.bool,
   hasHqThumb: PropTypes.number,
   minimized: PropTypes.bool,
+  onPlay: PropTypes.func,
   rewardLevel: PropTypes.number,
   style: PropTypes.object,
   uploader: PropTypes.object.isRequired,
@@ -37,6 +38,7 @@ function XPVideoPlayer({
   rewardLevel,
   hasHqThumb,
   minimized,
+  onPlay,
   style = {},
   uploader,
   videoCode,
@@ -339,13 +341,14 @@ function XPVideoPlayer({
           playing={playing}
           controls
           onReady={onVideoReady}
-          onPlay={() =>
+          onPlay={() => {
+            onPlay?.();
             onVideoPlay({
               requiredDurationCap: requiredDurationCap.current,
               userId: userIdRef.current,
               watchTime
-            })
-          }
+            });
+          }}
           onPause={handleVideoStop}
           onEnded={handleVideoStop}
         />

@@ -189,11 +189,6 @@ function Embedly({
   useEffect(() => {
     return function cleanUp() {
       mounted.current = false;
-      onSetVideoStarted({
-        contentType,
-        contentId,
-        started: false
-      });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -350,6 +345,7 @@ function Embedly({
           ) : twinkleVideoId ? (
             <TwinkleVideo
               imageOnly={imageOnly}
+              onPlay={handlePlay}
               style={{
                 width: videoWidth || '50vw',
                 height: videoHeight || 'CALC(30vw + 3rem)'
@@ -363,13 +359,7 @@ function Embedly({
               height={videoHeight || '30vw'}
               url={videoUrl}
               controls
-              onPlay={() =>
-                onSetVideoStarted({
-                  contentType,
-                  contentId,
-                  started: true
-                })
-              }
+              onPlay={handlePlay}
               onProgress={handleVideoProgress}
             />
           ) : (
@@ -386,6 +376,14 @@ function Embedly({
       </div>
     </div>
   );
+
+  function handlePlay() {
+    onSetVideoStarted({
+      contentType,
+      contentId,
+      started: true
+    });
+  }
 
   function handleVideoProgress() {
     setTimeAt(YTPlayerRef.current.getCurrentTime());

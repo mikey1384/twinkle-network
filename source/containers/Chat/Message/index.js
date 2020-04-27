@@ -155,7 +155,8 @@ function Message({
       onSetActualTitle,
       onSetIsEditing,
       onSetSiteUrl,
-      onSetThumbUrl
+      onSetThumbUrl,
+      onSetVideoStarted
     }
   } = useContentContext();
   const { thumbUrl: recentThumbUrl, isEditing, started } = useContentState({
@@ -243,6 +244,14 @@ function Message({
         }
       });
     }
+
+    return function cleanUp() {
+      onSetVideoStarted({
+        contentType: 'chat',
+        contentId: messageId,
+        started: false
+      });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

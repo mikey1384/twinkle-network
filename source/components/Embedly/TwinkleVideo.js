@@ -12,11 +12,12 @@ import { useContentState } from 'helpers/hooks';
 
 TwinkleVideo.propTypes = {
   imageOnly: PropTypes.bool,
+  onPlay: PropTypes.func,
   style: PropTypes.object,
   videoId: PropTypes.number.isRequired
 };
 
-export default function TwinkleVideo({ imageOnly, style, videoId }) {
+export default function TwinkleVideo({ imageOnly, onPlay, style, videoId }) {
   const history = useHistory();
   const {
     requestHelpers: { loadContent }
@@ -72,6 +73,7 @@ export default function TwinkleVideo({ imageOnly, style, videoId }) {
           uploader={uploader}
           videoCode={content}
           videoId={videoId}
+          onPlay={onPlay}
         />
       )}
       {loaded && !imageOnly && (
