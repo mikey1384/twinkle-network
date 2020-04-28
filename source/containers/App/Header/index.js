@@ -641,11 +641,6 @@ export default function Header({
           iceServers: [
             {
               urls: 'stun:stun.l.google.com:19302'
-            },
-            {
-              urls: 'turn:18.177.176.36:3478?transport=udp',
-              username: 'test',
-              credential: 'test'
             }
           ]
         },
