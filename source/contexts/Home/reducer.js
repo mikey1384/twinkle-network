@@ -24,12 +24,13 @@ export default function HomeReducer(state, action) {
       return {
         ...state,
         feeds: state.feeds.filter(
-          feed => feed.contentType + feed.contentId !== contentKey
+          (feed) => feed.contentType + feed.contentId !== contentKey
         )
       };
     case 'LOAD_FEEDS':
       return {
         ...state,
+        displayOrder: 'desc',
         feeds: action.feeds,
         loadMoreButton: action.loadMoreButton,
         loaded: true

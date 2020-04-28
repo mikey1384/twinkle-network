@@ -125,7 +125,16 @@ export default function Activity({
             {content}
           </span>{' '}
           and earned{' '}
-          <b style={{ fontSize: '1.7rem' }}>
+          <b
+            style={{
+              fontSize:
+                wordLevel === 5
+                  ? '2.5rem'
+                  : wordLevel === 4
+                  ? '2.3rem'
+                  : '1.7rem'
+            }}
+          >
             <span style={{ color: Color.logoGreen() }}>
               {addCommasToNumber(rewardHash[wordLevel].rewardAmount)}
             </span>{' '}

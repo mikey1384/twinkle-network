@@ -354,6 +354,7 @@ function Stories({ location }) {
       onResetNumNewPosts();
       categoryRef.current = 'uploads';
       onChangeCategory('uploads');
+      onChangeSubFilter('all');
       const { data, filter } = await loadFeeds();
       if (
         filter === categoryObj.uploads.filter &&
