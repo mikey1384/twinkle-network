@@ -810,7 +810,14 @@ export default function ContentReducer(state, action) {
               return {
                 ...comment,
                 replies: [
-                  ...replies,
+                  ...replies.map((reply) =>
+                    reply.id === action.replyId
+                      ? {
+                          ...reply,
+                          numReplies: 0
+                        }
+                      : reply
+                  ),
                   ...action.replies,
                   ...comment.replies.filter(
                     (reply) => reply.id > action.replyId

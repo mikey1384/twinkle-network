@@ -93,13 +93,13 @@ function Replies({
         return (
           <Reply
             index={index}
-            innerRef={ref => (ReplyRefs[reply.id] = ref)}
+            innerRef={(ref) => (ReplyRefs[reply.id] = ref)}
             key={reply.id}
             comment={comment}
             reply={reply}
             userId={userId}
             deleteReply={handleDeleteReply}
-            loadRepliesOfReply={onLoadRepliesOfReply}
+            onLoadRepliesOfReply={onLoadRepliesOfReply}
             parent={parent}
             rootContent={rootContent}
             subject={subject}

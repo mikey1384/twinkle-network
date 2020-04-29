@@ -36,7 +36,7 @@ Reply.propTypes = {
   }),
   innerRef: PropTypes.func,
   deleteReply: PropTypes.func.isRequired,
-  loadRepliesOfReply: PropTypes.func,
+  onLoadRepliesOfReply: PropTypes.func,
   parent: PropTypes.object.isRequired,
   reply: PropTypes.shape({
     commentId: PropTypes.number.isRequired,
@@ -65,7 +65,7 @@ function Reply({
   comment,
   innerRef = () => {},
   deleteReply,
-  loadRepliesOfReply,
+  onLoadRepliesOfReply,
   parent,
   reply,
   reply: { likes = [], stars = [], uploader },
@@ -90,6 +90,7 @@ function Reply({
     onLikeClick,
     onRewardCommentEdit
   } = useContext(LocalContext);
+  const [loadingReplies, setLoadingReplies] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const ReplyInputAreaRef = useRef(null);
@@ -250,7 +251,8 @@ function Reply({
                     <Button
                       transparent
                       style={{ marginLeft: '1rem' }}
-                      onClick={replyButtonClick}
+                      onClick={handleReplyClick}
+                      disabled={loadingReplies}
                     >
                       <Icon icon="comment-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>
@@ -379,14 +381,15 @@ function Reply({
     onLikeClick({ commentId: reply.id, likes });
   }
 
-  async function replyButtonClick() {
+  async function handleReplyClick() {
     ReplyInputAreaRef.current.focus();
+    setLoadingReplies(true);
     if (reply.numReplies > 0 && parent.contentType === 'comment') {
       const { replies } = await loadReplies({
         commentId: reply.id
       });
       if (replies.length > 0) {
-        loadRepliesOfReply({
+        onLoadRepliesOfReply({
           replies,
           commentId: reply.commentId,
           replyId: reply.id,
@@ -395,6 +398,7 @@ function Reply({
         });
       }
     }
+    setLoadingReplies(false);
   }
 }
 
