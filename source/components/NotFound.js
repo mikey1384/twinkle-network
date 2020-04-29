@@ -3,13 +3,15 @@ import React from 'react';
 import { css } from 'emotion';
 
 NotFound.propTypes = {
+  style: PropTypes.object,
   text: PropTypes.string,
   title: PropTypes.string
 };
 
-export default function NotFound({ title, text }) {
+export default function NotFound({ title, text, style }) {
   return (
     <div
+      style={style}
       className={css`
         padding-top: 25rem;
         display: flex;

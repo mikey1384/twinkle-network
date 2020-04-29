@@ -5,6 +5,7 @@ import FilterBar from 'components/FilterBar';
 import ContentPanel from 'components/ContentPanel';
 import Loading from 'components/Loading';
 import SideMenu from './SideMenu';
+import NotFound from 'components/NotFound';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { queryStringForArray } from 'helpers/stringHelpers';
@@ -52,6 +53,8 @@ export default function Posts({
       [`${section}Loaded`]: loaded
     }
   } = useProfileState(username);
+  if (!profileFeeds) return <NotFound style={{ paddingTop: '13rem' }} />;
+
   const {
     actions: { onRecordScrollPosition },
     state: { scrollPositions }
@@ -102,7 +105,7 @@ export default function Posts({
           { key: 'subject', label: 'Subjects' },
           { key: 'video', label: 'Videos' },
           { key: 'url', label: 'Links' }
-        ].map(type => {
+        ].map((type) => {
           return (
             <nav
               key={type.key}
