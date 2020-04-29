@@ -74,7 +74,7 @@ export default function Posts({
     loadable: loadMoreButton,
     loading,
     onScrollToBottom: () => setLoading(true),
-    onLoad: loadMoreFeeds
+    onLoad: handleLoadMoreFeeds
   });
 
   useEffect(() => {
@@ -179,7 +179,7 @@ export default function Posts({
             {loadMoreButton && (
               <LoadMoreButton
                 style={{ marginBottom: '1rem' }}
-                onClick={loadMoreFeeds}
+                onClick={handleLoadMoreFeeds}
                 loading={loading}
                 color="lightBlue"
                 filled
@@ -209,16 +209,17 @@ export default function Posts({
     </div>
   );
 
-  async function loadMoreFeeds() {
+  async function handleLoadMoreFeeds() {
+    const queryString = queryStringForArray({
+      array: profileFeeds,
+      originVar: section === 'likes' ? 'likeId' : 'feedId',
+      destinationVar: 'shownFeeds'
+    });
     try {
       const { data } = await loadFeeds({
         username,
         filter: filterTable[section],
-        shownFeeds: queryStringForArray({
-          array: profileFeeds,
-          originVar: section === 'likes' ? 'likeId' : 'feedId',
-          destinationVar: 'shownFeeds'
-        })
+        shownFeeds: queryString
       });
       onLoadMorePosts({ ...data, section, username });
       if (mounted.current) {

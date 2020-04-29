@@ -272,7 +272,7 @@ export default function contentRequestHelpers({ auth, handleError }) {
     } = {}) {
       try {
         const { data } = await request.get(
-          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&${
+          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}${
             shownFeeds ? `&${shownFeeds}` : ''
           }`,
           auth()
