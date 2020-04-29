@@ -2,8 +2,9 @@ export const defaultChatSubject = 'Introduce yourself!';
 export const rewardValue = {
   star: 200
 };
-export const cloudFrontURL = 'https://d3jvoamd2k4p0s.cloudfront.net';
-export const clientVersion = '1.2.99';
+export const cloudFrontURL = `https://${process.env.CLOUDFRONT_KEY}.cloudfront.net`;
+export const S3URL = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com`;
+export const clientVersion = '1.3.0';
 export const descriptionLengthForExtraRewardLevel = 1000;
 export const charLimit = {
   chat: {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
 import MediaPlayer from './MediaPlayer';
-import { cloudFrontURL } from 'constants/defaultValues';
+import { cloudFrontURL, S3URL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
 FileViewer.propTypes = {
@@ -36,7 +36,7 @@ export default function FileViewer({
   videoHeight
 }) {
   const { fileType } = getFileInfoFromFileName(fileName);
-  const src = `${cloudFrontURL}/attachments/${
+  const src = `${fileType === 'video' ? S3URL : cloudFrontURL}/attachments/${
     contentType === 'subject' ? 'feed' : contentType
   }/${filePath}/${encodeURIComponent(fileName)}`;
 
