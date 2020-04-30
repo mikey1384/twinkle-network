@@ -264,16 +264,19 @@ export default function contentRequestHelpers({ auth, handleError }) {
       }
     },
     async loadFeeds({
+      lastFeedId,
+      lastTimeStamp,
       filter = 'all',
       order = 'desc',
       orderBy = 'lastInteraction',
-      username,
-      shownFeeds
+      username
     } = {}) {
       try {
         const { data } = await request.get(
-          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}${
-            shownFeeds ? `&${shownFeeds}` : ''
+          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&${
+            lastFeedId
+              ? `lastFeedId=${lastFeedId}&lastTimeStamp=${lastTimeStamp}`
+              : ''
           }`,
           auth()
         );

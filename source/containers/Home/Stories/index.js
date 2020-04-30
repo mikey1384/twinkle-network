@@ -311,11 +311,9 @@ function Stories({ location }) {
           category === 'uploads' ? subFilter : categoryObj[category].filter,
         order: displayOrder,
         orderBy: categoryObj[category].orderBy,
-        shownFeeds: queryStringForArray({
-          array: feeds,
-          originVar: 'feedId',
-          destinationVar: 'shownFeeds'
-        })
+        lastFeedId: feeds.length > 0 ? feeds[feeds.length - 1].feedId : null,
+        lastTimeStamp:
+          feeds.length > 0 ? feeds[feeds.length - 1].lastInteraction : null
       });
       if (mounted.current) {
         onLoadMoreFeeds(data);

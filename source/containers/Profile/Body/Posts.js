@@ -8,7 +8,6 @@ import SideMenu from './SideMenu';
 import NotFound from 'components/NotFound';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import {
   useInfiniteScroll,
   useProfileState,
@@ -210,16 +209,18 @@ export default function Posts({
   );
 
   async function handleLoadMoreFeeds() {
-    const queryString = queryStringForArray({
-      array: profileFeeds,
-      originVar: section === 'likes' ? 'likeId' : 'feedId',
-      destinationVar: 'shownFeeds'
-    });
     try {
       const { data } = await loadFeeds({
         username,
         filter: filterTable[section],
-        shownFeeds: queryString
+        lastFeedId:
+          profileFeeds.length > 0
+            ? profileFeeds[profileFeeds.length - 1].feedId
+            : null,
+        lastTimeStamp:
+          profileFeeds.length > 0
+            ? profileFeeds[profileFeeds.length - 1].lastInteraction
+            : null
       });
       onLoadMorePosts({ ...data, section, username });
       if (mounted.current) {
