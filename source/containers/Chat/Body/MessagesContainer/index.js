@@ -256,7 +256,7 @@ export default function MessagesContainer({
         handleSetScrollToBottom();
       }
     }, 0);
-  }, [loading, messages.length]);
+  }, [loading, messages]);
 
   useEffect(() => {
     socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
