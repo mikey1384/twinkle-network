@@ -25,7 +25,7 @@ function LeftMenu({ onChannelEnter, onNewButtonClick }) {
     requestHelpers: { loadVocabulary }
   } = useAppContext();
   const {
-    state: { chatType },
+    state: { loadingVocabulary, chatType },
     actions: { onLoadVocabulary, onSetLoadingVocabulary }
   } = useChatContext();
   const { profileTheme } = useMyState();
@@ -76,7 +76,7 @@ function LeftMenu({ onChannelEnter, onNewButtonClick }) {
         </div>
       </div>
       <Vocabulary
-        selected={chatType === 'vocabulary'}
+        selected={chatType === 'vocabulary' || loadingVocabulary}
         onClick={handleEnterVocabulary}
       />
       <ChatSearchBox

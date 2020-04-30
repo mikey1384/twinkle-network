@@ -4,7 +4,6 @@ import request from 'axios';
 import { Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { rewardValue } from 'constants/defaultValues';
-import { css } from 'emotion';
 import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import URL from 'constants/URL';
@@ -16,7 +15,6 @@ VideoThumbImage.propTypes = {
   height: PropTypes.string,
   rewardLevel: PropTypes.number,
   onClick: PropTypes.func,
-  playIcon: PropTypes.bool,
   src: PropTypes.string.isRequired,
   style: PropTypes.object,
   videoId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -26,7 +24,6 @@ export default function VideoThumbImage({
   rewardLevel,
   height = '55%',
   onClick,
-  playIcon,
   src,
   style,
   videoId
@@ -88,7 +85,7 @@ export default function VideoThumbImage({
         overFlow: 'hidden',
         paddingBottom: height,
         position: 'relative',
-        cursor: onClick ? 'pointer' : 'default',
+        cursor: onClick && 'pointer',
         ...style
       }}
       onClick={onClick}
@@ -109,21 +106,6 @@ export default function VideoThumbImage({
           borderBottom: !!xpEarned && `0.8rem solid ${Color.green()}`
         }}
       />
-      {playIcon && (
-        <a
-          className={css`
-            position: absolute;
-            display: block;
-            background: url('/img/play-button-image.png');
-            background-size: contain;
-            height: 3rem;
-            width: 3rem;
-            top: 50%;
-            left: 50%;
-            margin: -1.5rem 0 0 -1.5rem;
-          `}
-        />
-      )}
       {!!rewardLevel && (
         <div
           style={{
