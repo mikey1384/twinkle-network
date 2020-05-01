@@ -93,6 +93,9 @@ export default function ChannelHeader({ onInputFocus }) {
         > section {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
+          @media (max-width: ${mobileMaxWidth}) {
+            width: CALC(100% - ${authLevel > 0 ? '13rem' : '3rem'});
+          }
         }
       `}
     >
@@ -266,8 +269,11 @@ export default function ChannelHeader({ onInputFocus }) {
     if (isReloaded) {
       posterString = (
         <span>
-          Brought back by <UsernameText user={reloader} /> {timeSinceReload}{' '}
-          (started by {<UsernameText user={uploader} />})
+          Brought back by <UsernameText user={reloader} />{' '}
+          <span className="desktop">{timeSinceReload}</span>
+          <span className="desktop">
+            (started by {<UsernameText user={uploader} />})
+          </span>
         </span>
       );
     }
