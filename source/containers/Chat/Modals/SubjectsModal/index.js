@@ -8,7 +8,6 @@ import SubjectItem from './SubjectItem';
 import Loading from 'components/Loading';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Color } from 'constants/css';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import URL from 'constants/URL';
@@ -27,7 +26,7 @@ export default function SubjectsModal({
   selectSubject
 }) {
   const {
-    requestHelpers: { deleteChatSubject }
+    requestHelpers: { deleteChatSubject, loadMoreSubjects }
   } = useAppContext();
   const { userId } = useMyState();
   const [deleteTarget, setDeleteTarget] = useState(0);
@@ -96,7 +95,7 @@ export default function SubjectsModal({
                 filled
                 color="lightBlue"
                 loading={mySubjects.loading}
-                onClick={() => loadMoreSubjects(true)}
+                onClick={() => handleLoadMoreSubjects(true)}
               />
             )}
           </div>
@@ -132,7 +131,7 @@ export default function SubjectsModal({
             filled
             color="lightBlue"
             loading={allSubjects.loading}
-            onClick={() => loadMoreSubjects(false)}
+            onClick={() => handleLoadMoreSubjects(false)}
           />
         )}
       </main>
@@ -169,44 +168,34 @@ export default function SubjectsModal({
     setDeleteTarget(0);
   }
 
-  async function loadMoreSubjects(mineOnly) {
+  async function handleLoadMoreSubjects(mineOnly) {
     if (mineOnly) {
       setMySubjects({ ...mySubjects, loading: true });
     } else {
       setAllSubjects({ ...allSubjects, loading: true });
     }
-
-    const queryString = queryStringForArray({
-      array: mineOnly ? mySubjects.subjects : allSubjects.subjects,
-      originVar: 'id',
-      destinationVar: 'subjectIds'
+    const targetSubjects = mineOnly
+      ? mySubjects.subjects
+      : allSubjects.subjects;
+    const lastSubject = targetSubjects[targetSubjects.length - 1];
+    const { subjects, loadMoreButton } = await loadMoreSubjects({
+      mineOnly,
+      lastSubject
     });
-
-    try {
-      const {
-        data: { subjects, loadMoreButton }
-      } = await request.get(
-        `${API_URL}/chatSubject/modal/more?${
-          mineOnly ? `mineOnly=${mineOnly}&` : ''
-        }userId=${userId}&${queryString}`
-      );
-      if (mineOnly) {
-        setMySubjects({
-          ...mySubjects,
-          subjects: mySubjects.subjects.concat(subjects),
-          loadMoreButton,
-          loading: false
-        });
-      } else {
-        setAllSubjects({
-          ...allSubjects,
-          subjects: allSubjects.subjects.concat(subjects),
-          loadMoreButton,
-          loading: false
-        });
-      }
-    } catch (error) {
-      console.error(error.response || error);
+    if (mineOnly) {
+      setMySubjects({
+        ...mySubjects,
+        subjects: mySubjects.subjects.concat(subjects),
+        loadMoreButton,
+        loading: false
+      });
+    } else {
+      setAllSubjects({
+        ...allSubjects,
+        subjects: allSubjects.subjects.concat(subjects),
+        loadMoreButton,
+        loading: false
+      });
     }
   }
 }

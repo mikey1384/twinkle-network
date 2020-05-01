@@ -233,10 +233,27 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadVocabulary(shownWords) {
+    async loadMoreSubjects({ mineOnly, lastSubject }) {
+      try {
+        const {
+          data: { subjects, loadMoreButton }
+        } = await request.get(
+          `${URL}/chat/chatSubject/modal/more?lastTimeStamp=${
+            lastSubject.reloadTimeStamp || lastSubject.timeStamp
+          }&lastId=${lastSubject.id}${mineOnly ? `&mineOnly=1` : ''}`,
+          auth()
+        );
+        return Promise.resolve({ subjects, loadMoreButton });
+      } catch (error) {
+        console.error(error.response || error);
+      }
+    },
+    async loadVocabulary(lastWordId) {
       try {
         const { data } = await request.get(
-          `${URL}/chat/vocabulary${shownWords ? `?${shownWords}` : ''}`,
+          `${URL}/chat/vocabulary${
+            lastWordId ? `?lastWordId=${lastWordId}` : ''
+          }`,
           auth()
         );
         return Promise.resolve(data);

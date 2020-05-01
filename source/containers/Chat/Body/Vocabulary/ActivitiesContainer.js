@@ -4,7 +4,6 @@ import Activity from './Activity';
 import Button from 'components/Button';
 import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import { checkScrollIsAtTheBottom } from 'helpers';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
@@ -132,12 +131,7 @@ function ActivitiesContainer({ style }) {
       const prevContentHeight = ContentRef.current?.offsetHeight || 0;
       if (!loadingMore) {
         setLoadingMore(true);
-        const data = await loadVocabulary(
-          queryStringForArray({
-            array: vocabActivities,
-            destinationVar: 'shownWords'
-          })
-        );
+        const data = await loadVocabulary(wordsObj[vocabActivities[0]]?.id);
         onLoadMoreVocabulary(data);
         ActivitiesContainerRef.current.scrollTop = Math.max(
           ActivitiesContainerRef.current.scrollTop,

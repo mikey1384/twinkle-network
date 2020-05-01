@@ -11,7 +11,7 @@ import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
 import { charLimit, defaultChatSubject } from 'constants/defaultValues';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useInterval, useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
@@ -103,17 +103,20 @@ export default function ChannelHeader({ onInputFocus }) {
               <section>
                 <div style={{ width: '100%' }}>
                   <span
-                    style={{
-                      cursor: 'default',
-                      color: Color.green(),
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      lineHeight: 'normal',
-                      fontSize: '2.2rem',
-                      fontWeight: 'bold',
-                      display: 'block'
-                    }}
+                    className={css`
+                      cursor: default;
+                      color: ${Color.green()};
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      line-height: normal;
+                      font-size: 2.2rem;
+                      font-weight: bold;
+                      display: block;
+                      @media (max-width: ${mobileMaxWidth}) {
+                        font-size: 1.6rem;
+                      }
+                    `}
                     onClick={() =>
                       setOnHover(
                         textIsOverflown(HeaderLabelRef.current)
@@ -149,7 +152,9 @@ export default function ChannelHeader({ onInputFocus }) {
                   }}
                 >
                   <Icon flip="both" icon="reply" />
-                  <span style={{ marginLeft: '0.5rem' }}>Respond</span>
+                  <span className="desktop" style={{ marginLeft: '0.5rem' }}>
+                    Respond
+                  </span>
                 </Button>
                 {authLevel > 0 && (
                   <Button
@@ -253,7 +258,8 @@ export default function ChannelHeader({ onInputFocus }) {
     if (uploader.id) {
       posterString = (
         <span>
-          Started by <UsernameText user={uploader} /> {timeSincePost}
+          Started by <UsernameText user={uploader} />
+          <span className="desktop"> {timeSincePost}</span>
         </span>
       );
     }
