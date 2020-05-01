@@ -270,7 +270,7 @@ export default function ChannelHeader({ onInputFocus }) {
       posterString = (
         <span>
           Brought back by <UsernameText user={reloader} />{' '}
-          <span className="desktop">{timeSinceReload}</span>
+          <span className="desktop">{timeSinceReload}</span>{' '}
           <span className="desktop">
             (started by {<UsernameText user={uploader} />})
           </span>
