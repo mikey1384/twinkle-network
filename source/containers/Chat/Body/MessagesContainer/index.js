@@ -531,6 +531,7 @@ export default function MessagesContainer({
             isTwoPeopleChannel={currentChannel.twoPeople}
             currentChannelId={selectedChannelId}
             currentChannel={currentChannel}
+            onImagePaste={handleImagePaste}
             onChessButtonClick={handleChessModalShown}
             onMessageSubmit={(content) =>
               handleMessageSubmit({ content, target: replyTarget })
@@ -962,6 +963,14 @@ export default function MessagesContainer({
       filePath,
       messageId
     });
+  }
+
+  function handleImagePaste(file) {
+    if (file.size / mb > maxSize) {
+      return setAlertModalShown(true);
+    }
+    setFileObj(file);
+    setUploadModalShown(true);
   }
 
   function handleUpload(event) {

@@ -23,6 +23,7 @@ MessageInput.propTypes = {
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
+  onImagePaste: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
   onUploadButtonClick: PropTypes.func.isRequired
@@ -34,6 +35,7 @@ function MessageInput({
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
+  onImagePaste,
   onHeightChange,
   onMessageSubmit,
   onSelectVideoButtonClick,
@@ -117,6 +119,7 @@ function MessageInput({
               });
             }
           }}
+          onPaste={handlePaste}
           style={{
             marginRight: '1rem',
             ...(messageExceedsCharLimit?.style || {})
@@ -174,6 +177,14 @@ function MessageInput({
     }
     if (enterKeyPressed && shiftKeyPressed) {
       onHeightChange(innerRef.current?.clientHeight + 20);
+    }
+  }
+
+  function handlePaste(event) {
+    const { items } = event.clipboardData;
+    for (let i = 0; i < items.length; i++) {
+      if (!items[i].type.includes('image')) continue;
+      onImagePaste(items[i].getAsFile());
     }
   }
 
