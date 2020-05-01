@@ -261,8 +261,8 @@ export default function ChannelHeader({ onInputFocus }) {
     if (uploader.id) {
       posterString = (
         <span>
-          Started by <UsernameText user={uploader} />
-          <span className="desktop"> {timeSincePost}</span>
+          Started by <UsernameText user={uploader} />{' '}
+          <span className="desktop">{timeSincePost}</span>
         </span>
       );
     }
