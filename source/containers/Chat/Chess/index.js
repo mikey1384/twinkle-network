@@ -245,8 +245,10 @@ export default function Chess({
                   </p>
                   {parsedState?.capturedPiece && (
                     <>
-                      <p>and captured</p>
-                      <p>{userMadeLastMove ? `${opponentName}'s` : 'your'}</p>
+                      <p>capturing</p>
+                      <p>
+                        {parsedState?.capturedPiece === 'queen' ? 'the' : 'a'}
+                      </p>
                       <p>
                         <b>{parsedState?.capturedPiece}</b>
                       </p>
