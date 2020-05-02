@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
@@ -25,7 +25,7 @@ MainContent.propTypes = {
   secretHidden: PropTypes.bool
 };
 
-function MainContent({
+export default function MainContent({
   contentId,
   contentType,
   onClickSecretAnswer,
@@ -268,5 +268,3 @@ function MainContent({
     onEditContent({ data, contentType, contentId });
   }
 }
-
-export default memo(MainContent);

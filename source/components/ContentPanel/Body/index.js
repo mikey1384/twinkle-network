@@ -132,7 +132,6 @@ function Body({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
   const mounted = useRef(true);
-  const prevContent = useRef('');
   const CommentInputAreaRef = useRef(null);
   const RewardInterfaceRef = useRef(null);
 
@@ -246,10 +245,6 @@ function Body({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    prevContent.current = contentObj.content;
-  }, [contentObj.content]);
 
   const editButtonShown = useMemo(() => {
     const isForSecretSubject =
