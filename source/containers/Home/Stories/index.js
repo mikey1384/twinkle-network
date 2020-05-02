@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import InputPanel from './InputPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -191,23 +191,6 @@ export default function Stories({ location }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
-  const ContentPanels = useMemo(() => {
-    return feeds.map((feed, index) => (
-      <ContentPanel
-        key={category + subFilter + feed.contentId + feed.contentType}
-        style={{
-          marginBottom: '1rem',
-          zIndex: feeds.length - index
-        }}
-        contentId={feed.contentId}
-        contentType={feed.contentType}
-        commentsLoadLimit={5}
-        numPreviewComments={1}
-        userId={userId}
-      />
-    ));
-  }, [category, feeds, subFilter, userId]);
-
   return (
     <ErrorBoundary>
       <div style={{ width: '100%' }} ref={ContainerRef}>
@@ -260,7 +243,20 @@ export default function Stories({ location }) {
                   {numNewPosts > 1 ? 's' : ''}
                 </Banner>
               )}
-              {ContentPanels}
+              {feeds.map((feed, index) => (
+                <ContentPanel
+                  key={category + subFilter + feed.contentId + feed.contentType}
+                  style={{
+                    marginBottom: '1rem',
+                    zIndex: feeds.length - index
+                  }}
+                  contentId={feed.contentId}
+                  contentType={feed.contentType}
+                  commentsLoadLimit={5}
+                  numPreviewComments={1}
+                  userId={userId}
+                />
+              ))}
               {loadMoreButton && (
                 <LoadMoreButton
                   style={{ marginBottom: '1rem' }}
