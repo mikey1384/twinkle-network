@@ -11,11 +11,7 @@ import { css } from 'emotion';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import {
-  useInfiniteScroll,
-  useMyState,
-  useScrollPosition
-} from 'helpers/hooks';
+import { useMyState, useScrollPosition } from 'helpers/hooks';
 import {
   useAppContext,
   useHomeContext,
@@ -69,7 +65,6 @@ export default function Stories({ location }) {
       onChangeCategory,
       onChangeSubFilter,
       onLoadFeeds,
-      onLoadMoreFeeds,
       onLoadNewFeeds,
       onSetDisplayOrder,
       onSetFeedsOutdated
@@ -94,15 +89,6 @@ export default function Stories({ location }) {
   const ContainerRef = useRef(null);
   const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
-
-  useInfiniteScroll({
-    scrollable: feeds.length > 0,
-    feedsLength: feeds.length,
-    loadable: loadMoreButton,
-    loading: loadingMore,
-    onScrollToBottom: () => setLoadingMore(true),
-    onLoad: loadMoreFeeds
-  });
 
   useEffect(() => {
     mounted.current = true;
@@ -297,27 +283,6 @@ export default function Stories({ location }) {
       onLoadFeeds(data);
       onSetDisplayOrder('desc');
       setLoadingFeeds(false);
-    }
-  }
-
-  async function loadMoreFeeds() {
-    try {
-      const { data } = await loadFeeds({
-        filter:
-          category === 'uploads' ? subFilter : categoryObj[category].filter,
-        order: displayOrder,
-        orderBy: categoryObj[category].orderBy,
-        lastFeedId: feeds.length > 0 ? feeds[feeds.length - 1].feedId : null,
-        lastTimeStamp:
-          feeds.length > 0 ? feeds[feeds.length - 1].lastInteraction : null
-      });
-      if (mounted.current) {
-        onLoadMoreFeeds(data);
-        setLoadingMore(false);
-      }
-    } catch (error) {
-      console.error(error);
-      setLoadingMore(false);
     }
   }
 
