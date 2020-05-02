@@ -94,7 +94,7 @@ export default function ChannelHeader({ onInputFocus }) {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
           @media (max-width: ${mobileMaxWidth}) {
-            width: CALC(100% - ${authLevel > 0 ? '13rem' : '3rem'});
+            width: CALC(100% - ${authLevel > 0 ? '14rem' : '4rem'});
           }
         }
       `}
