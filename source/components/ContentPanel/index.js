@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -26,7 +26,7 @@ ContentPanel.propTypes = {
   style: PropTypes.object
 };
 
-function ContentPanel({
+export default function ContentPanel({
   autoExpand,
   commentsLoadLimit,
   contentId,
@@ -346,5 +346,3 @@ function ContentPanel({
     });
   }
 }
-
-export default memo(ContentPanel);
