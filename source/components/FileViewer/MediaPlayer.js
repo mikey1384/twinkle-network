@@ -4,11 +4,10 @@ import ExtractedThumb from 'components/ExtractedThumb';
 import Icon from 'components/Icon';
 import ReactPlayer from 'react-player';
 import { v1 as uuidv1 } from 'uuid';
-import { isMobile } from 'helpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 
-MediaPlayer.propTypes = {
+VideoPlayer.propTypes = {
   autoPlay: PropTypes.bool,
   contentId: PropTypes.number,
   contentType: PropTypes.string,
@@ -20,7 +19,7 @@ MediaPlayer.propTypes = {
   videoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-export default function MediaPlayer({
+export default function VideoPlayer({
   autoPlay,
   contentId,
   contentType,
@@ -41,12 +40,10 @@ export default function MediaPlayer({
   const [muted, setMuted] = useState(isMuted);
   const [paused, setPaused] = useState(false);
   const [timeAt, setTimeAt] = useState(0);
-  const mobile = isMobile(navigator);
   const PlayerRef = useRef(null);
-  const looping = useMemo(() => !mobile && autoPlay && muted && !currentTime, [
+  const looping = useMemo(() => autoPlay && muted && !currentTime, [
     autoPlay,
     currentTime,
-    mobile,
     muted
   ]);
 
@@ -80,11 +77,11 @@ export default function MediaPlayer({
   }, [timeAt, looping]);
 
   const light = useMemo(() => {
-    if (autoPlay || currentTime || paused || fileType === 'audio') {
+    if (autoPlay || currentTime || paused) {
       return false;
     }
     return thumbUrl;
-  }, [autoPlay, currentTime, fileType, paused, thumbUrl]);
+  }, [autoPlay, currentTime, paused, thumbUrl]);
 
   return (
     <div
@@ -109,7 +106,7 @@ export default function MediaPlayer({
         loop={looping}
         light={light}
         ref={PlayerRef}
-        playing={!mobile && autoPlay && !paused}
+        playing={autoPlay && !paused}
         playsinline
         muted={isThumb || looping}
         onPlay={handlePlay}
