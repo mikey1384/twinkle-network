@@ -254,7 +254,9 @@ export default function Chess({
                     margin-top: 2rem;
                     font-weight: bold;
                     @media (max-width: ${mobileMaxWidth}) {
-                      margin-top: 1rem;
+                      margin-top: 0;
+                      margin-left: 0.3rem;
+                      display: inline-block;
                     }
                   `}
                 >
