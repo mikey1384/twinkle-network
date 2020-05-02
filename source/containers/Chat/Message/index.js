@@ -449,7 +449,7 @@ function Message({
                   onSetScrollToBottom={handleSetScrollToBottom}
                   scrollAtBottom={scrollAtBottom}
                   senderId={userId}
-                  style={{ marginTop: '1rem', width: '100%' }}
+                  style={{ width: '100%' }}
                 />
               ) : fileToUpload && !loading ? (
                 <FileUploadStatusIndicator
