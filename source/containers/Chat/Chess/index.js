@@ -169,7 +169,7 @@ export default function Chess({
       className={css`
         height: 515px;
         @media (max-width: ${mobileMaxWidth}) {
-          height: ${statusText ? '325px' : '315px'};
+          height: ${statusText ? '335px' : '315px'};
         }
       `}
       style={{
