@@ -32,6 +32,7 @@ export default function useScrollToBottom(containerRef, threshold = 0) {
         setScrollTop(document.getElementById('App').scrollTop);
       }, 50);
     }
+
     return function cleanUp() {
       mounted.current = false;
       removeEvent(window, 'scroll', onScroll);
