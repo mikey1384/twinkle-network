@@ -333,7 +333,7 @@ function ContentPanel({
                   style={{
                     width: '100%',
                     margin: '1rem 0 1rem 0',
-                    height: placeholderHeight || '20rem'
+                    height: placeholderHeight
                   }}
                 />
               )}
