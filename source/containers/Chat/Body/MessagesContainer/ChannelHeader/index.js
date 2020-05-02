@@ -84,15 +84,12 @@ export default function ChannelHeader({ onInputFocus }) {
     <ErrorBoundary
       className={css`
         display: flex;
-        margin-left: 1rem;
         position: relative;
         align-items: center;
         justify-content: space-between;
-        width: CALC(100% - 1rem);
+        width: 100%;
+        padding: 1rem;
         height: 7rem;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: CALC(100% - 4rem);
-        }
         > section {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
@@ -110,6 +107,7 @@ export default function ChannelHeader({ onInputFocus }) {
                 <div style={{ width: '100%' }}>
                   <span
                     className={css`
+                      width: 100%;
                       cursor: default;
                       color: ${Color.green()};
                       white-space: nowrap;
