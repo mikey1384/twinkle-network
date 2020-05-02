@@ -35,7 +35,7 @@ function ContentPanel({
   style = {}
 }) {
   const [ComponentRef, inView] = useInView({
-    rootMargin: '100px 0px 0px 0px',
+    rootMargin: '50px 0px 0px 0px',
     threshold: 0
   });
   const PanelRef = useRef(null);
