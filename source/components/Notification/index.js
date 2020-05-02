@@ -131,8 +131,9 @@ function Notification({ children, className, location, style }) {
               }}
             >
               <nav
-                className={`${activeTab === 'notification' &&
-                  'active'} ${numNewNotis > 0 && 'alert'}`}
+                className={`${activeTab === 'notification' && 'active'} ${
+                  numNewNotis > 0 && 'alert'
+                }`}
                 onClick={() => {
                   userChangedTab.current = true;
                   setActiveTab('notification');
@@ -151,8 +152,9 @@ function Notification({ children, className, location, style }) {
               </nav>
               {rewardTabShown && (
                 <nav
-                  className={`${activeTab === 'reward' &&
-                    'active'} ${totalRewardAmount > 0 && 'alert'}`}
+                  className={`${activeTab === 'reward' && 'active'} ${
+                    totalRewardAmount > 0 && 'alert'
+                  }`}
                   onClick={() => {
                     userChangedTab.current = true;
                     setActiveTab('reward');

@@ -19,6 +19,37 @@ export default function useInfiniteScroll({
     addEvent(window, 'scroll', onScroll);
     addEvent(document.getElementById('App'), 'scroll', onScroll);
 
+    function onScroll() {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        if (
+          document.getElementById('App').scrollHeight >
+            scrollHeightRef.current ||
+          BodyRef.current.scrollTop > scrollHeightRef.current
+        ) {
+          scrollHeightRef.current = Math.max(
+            document.getElementById('App').scrollHeight,
+            BodyRef.current.scrollTop
+          );
+        }
+        if (scrollable && scrollHeightRef.current !== 0) {
+          scrollPositionRef.current = {
+            desktop: document.getElementById('App').scrollTop,
+            mobile: BodyRef.current.scrollTop
+          };
+          if (
+            loadable &&
+            (scrollPositionRef.current.desktop >=
+              scrollHeightRef.current - window.innerHeight - 3000 ||
+              scrollPositionRef.current.mobile >=
+                scrollHeightRef.current - window.innerHeight - 3000)
+          ) {
+            onScrollToBottom();
+          }
+        }
+      }, 100);
+    }
+
     return function cleanUp() {
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
@@ -41,34 +72,4 @@ export default function useInfiniteScroll({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
-
-  function onScroll() {
-    clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      if (
-        document.getElementById('App').scrollHeight > scrollHeightRef.current ||
-        BodyRef.current.scrollTop > scrollHeightRef.current
-      ) {
-        scrollHeightRef.current = Math.max(
-          document.getElementById('App').scrollHeight,
-          BodyRef.current.scrollTop
-        );
-      }
-      if (scrollable && scrollHeightRef.current !== 0) {
-        scrollPositionRef.current = {
-          desktop: document.getElementById('App').scrollTop,
-          mobile: BodyRef.current.scrollTop
-        };
-        if (
-          loadable &&
-          (scrollPositionRef.current.desktop >=
-            scrollHeightRef.current - window.innerHeight - 3000 ||
-            scrollPositionRef.current.mobile >=
-              scrollHeightRef.current - window.innerHeight - 3000)
-        ) {
-          onScrollToBottom();
-        }
-      }
-    }, 100);
-  }
 }

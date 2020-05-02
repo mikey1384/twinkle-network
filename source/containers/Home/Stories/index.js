@@ -189,7 +189,7 @@ export default function Stories({ location }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded]);
+  }, []);
 
   const ContentPanels = useMemo(() => {
     return feeds.map((feed, index) => (
