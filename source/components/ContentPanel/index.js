@@ -154,7 +154,8 @@ export default function ContentPanel({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contentId, contentState.feedId, contentType, loadContent, loaded]);
+  }, [contentId, loaded]);
+
   const contentShown = useMemo(
     () => visible !== false || inView || started || rootStarted,
     [inView, rootStarted, started, visible]
