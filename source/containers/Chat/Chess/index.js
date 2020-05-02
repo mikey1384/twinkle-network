@@ -193,7 +193,7 @@ export default function Chess({
               left: 0.5rem;
               width: CALC(100% - 1rem);
               position: relative;
-              font-size: 1.3rem;
+              font-size: 1.2rem;
               p {
                 display: inline-block;
                 margin-left: 0.5rem;
@@ -247,9 +247,9 @@ export default function Chess({
                     <>
                       <p>capturing</p>
                       <p>
-                        {parsedState?.capturedPiece === 'queen' ? 'the' : 'a'}
-                      </p>
-                      <p>
+                        <span>
+                          {parsedState?.capturedPiece === 'queen' ? 'the' : 'a'}{' '}
+                        </span>
                         <b>{parsedState?.capturedPiece}</b>
                       </p>
                     </>
