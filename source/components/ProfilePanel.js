@@ -32,6 +32,7 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ expandable, profileId }) {
   const [ComponentRef, inView] = useInView({
+    rootMargin: '100px',
     threshold: 0
   });
   const PanelRef = useRef(null);
@@ -470,7 +471,7 @@ function ProfilePanel({ expandable, profileId }) {
     if (file.size / 1000 > MAX_PROFILE_PIC_SIZE) {
       return setAlertModalShown(true);
     }
-    reader.onload = upload => {
+    reader.onload = (upload) => {
       setImageEditModalShown(true);
       setImageUri(upload.target.result);
     };
