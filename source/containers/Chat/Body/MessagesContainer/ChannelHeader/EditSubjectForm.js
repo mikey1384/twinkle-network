@@ -63,6 +63,10 @@ export default function EditSubjectForm({
       }
       setReadyForSubmit(true);
     }
+
+    return function cleanUp() {
+      clearTimeout(timerRef.current);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
 
@@ -72,7 +76,7 @@ export default function EditSubjectForm({
         <SubjectsModal
           currentSubjectId={currentSubjectId}
           onHide={() => setSubjectsModalShown(false)}
-          selectSubject={subjectId => {
+          selectSubject={(subjectId) => {
             reloadChatSubject(subjectId);
             setSubjectsModalShown(false);
           }}
@@ -107,7 +111,7 @@ export default function EditSubjectForm({
                 placeholder={edit.subject}
                 value={title}
                 onChange={onInputChange}
-                onKeyUp={event => setTitle(addEmoji(event.target.value))}
+                onKeyUp={(event) => setTitle(addEmoji(event.target.value))}
                 onKeyDown={onKeyDown}
               />
               {searchResults.length > 0 && (

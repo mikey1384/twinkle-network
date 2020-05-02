@@ -297,8 +297,9 @@ export default function MessagesContainer({
     addEvent(MessagesContainer, 'scroll', handleScroll);
 
     return function cleanUp() {
-      mounted.current = false;
+      clearTimeout(timerRef.current);
       removeEvent(MessagesContainer, 'scroll', handleScroll);
+      mounted.current = false;
     };
 
     function handleScroll() {
