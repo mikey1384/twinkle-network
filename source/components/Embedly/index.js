@@ -30,6 +30,7 @@ Embedly.propTypes = {
   mobileLoadingHeight: PropTypes.string,
   noLink: PropTypes.bool,
   onHideAttachment: PropTypes.func,
+  onLoad: PropTypes.func,
   small: PropTypes.bool,
   style: PropTypes.object,
   userCanEditThis: PropTypes.bool,
@@ -47,6 +48,7 @@ function Embedly({
   loadingHeight = '100%',
   mobileLoadingHeight = '100%',
   noLink,
+  onLoad,
   onHideAttachment = () => {},
   small,
   style,
@@ -132,6 +134,7 @@ function Embedly({
       fetchUrlData();
     }
     onSetPrevUrl({ contentId, contentType, prevUrl: url, thumbUrl });
+    onLoad?.();
     async function fetchUrlData() {
       try {
         setLoading(true);

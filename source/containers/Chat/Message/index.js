@@ -501,6 +501,7 @@ function Message({
                       isEditing={isEditing}
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
+                      onSetPlaceholderHeight={handleSetPlaceholderHeight}
                       onSetScrollToBottom={handleSetScrollToBottom}
                       showSubjectMsgsModal={showSubjectMsgsModal}
                       socketConnected={socketConnected}
@@ -612,7 +613,7 @@ function Message({
   function handleSetPlaceholderHeight(height) {
     onSetPlaceholderHeight({
       messageId,
-      height
+      height: height || PanelRef.current.clientHeight
     });
   }
 

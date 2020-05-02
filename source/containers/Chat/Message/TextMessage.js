@@ -24,6 +24,7 @@ TextMessage.propTypes = {
   isEditing: PropTypes.bool,
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
+  onSetPlaceholderHeight: PropTypes.func,
   onSetScrollToBottom: PropTypes.func.isRequired,
   showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
@@ -49,7 +50,8 @@ function TextMessage({
   subjectId,
   showSubjectMsgsModal,
   socketConnected,
-  userCanEditThis
+  userCanEditThis,
+  onSetPlaceholderHeight
 }) {
   const {
     actions: { onHideAttachment }
@@ -115,6 +117,7 @@ function TextMessage({
             mobileLoadingHeight="70vw"
             onHideAttachment={handleHideAttachment}
             userCanEditThis={userCanEditThis}
+            onLoad={onSetPlaceholderHeight}
           />
         )}
       </div>
