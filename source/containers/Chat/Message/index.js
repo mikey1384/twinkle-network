@@ -612,7 +612,7 @@ function Message({
   function handleSetPlaceholderHeight(height) {
     onSetPlaceholderHeight({
       messageId,
-      height: height - 10
+      height
     });
   }
 
