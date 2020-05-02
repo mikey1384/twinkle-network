@@ -39,14 +39,6 @@ function ContentPanel({
     threshold: 0
   });
   const PanelRef = useRef(null);
-  useLazyLoad({
-    PanelRef,
-    inView,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible,
-    delay: 1000
-  });
-
   const history = useHistory();
   const {
     requestHelpers: { loadContent }
@@ -82,15 +74,11 @@ function ContentPanel({
   } = useContentContext();
 
   const contentState = useContentState({ contentType, contentId });
-  const [videoShown, setVideoShown] = useState(false);
-  const mounted = useRef(true);
-  const loading = useRef(false);
-  const inputAtBottom = contentType === 'comment';
   const {
     commentId,
     commentsShown,
     loaded,
-    placeholderHeight,
+    placeholderHeight: previousPlaceholderHeight,
     rootObj,
     rootType,
     started,
@@ -98,6 +86,20 @@ function ContentPanel({
     visible,
     rootId
   } = contentState;
+  const [placeholderHeight, setPlaceholderHeight] = useState(
+    previousPlaceholderHeight || 0
+  );
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: (height) => setPlaceholderHeight(height),
+    onSetVisible: handleSetVisible,
+    delay: 1000
+  });
+  const [videoShown, setVideoShown] = useState(false);
+  const mounted = useRef(true);
+  const loading = useRef(false);
+  const inputAtBottom = contentType === 'comment';
 
   const { started: rootStarted } = useContentState({
     contentType: rootType,
@@ -106,10 +108,18 @@ function ContentPanel({
 
   useEffect(() => {
     mounted.current = true;
+    const panel = PanelRef.current;
     return function cleanUp() {
+      onSetPlaceholderHeight({
+        contentType,
+        contentId,
+        height: panel.clientHeight
+      });
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
     if (!loaded && !loading.current && contentId) {
       onMount();
@@ -174,167 +184,163 @@ function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            {contentShown ? (
-              <div
-                ref={PanelRef}
-                style={{
-                  height: !loaded && '15rem',
-                  position: 'relative',
-                  ...style
-                }}
-              >
+            <div ref={PanelRef}>
+              {contentShown ? (
                 <div
                   style={{
+                    height: !loaded && '15rem',
                     position: 'relative',
-                    zIndex: 3
+                    ...style
                   }}
-                  className={container}
                 >
-                  {!loaded && <Loading />}
-                  {loaded && (
-                    <>
-                      <Heading
-                        contentObj={contentState}
-                        action={
-                          commentId
-                            ? targetObj.comment.notFound
-                              ? 'replied on'
-                              : 'replied to'
-                            : rootType === 'subject'
-                            ? 'responded to'
-                            : rootType === 'user'
-                            ? 'left a message to'
-                            : 'commented on'
-                        }
-                        onPlayVideoClick={() => setVideoShown(true)}
-                        attachedVideoShown={videoShown}
-                      />
-                      <div className="body">
-                        <Body
-                          autoExpand={autoExpand}
-                          commentsShown={commentsShown}
-                          contentObj={contentState}
-                          inputAtBottom={inputAtBottom}
-                          attachedVideoShown={videoShown}
-                          numPreviewComments={numPreviewComments}
-                          onChangeSpoilerStatus={onChangeSpoilerStatus}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-                {loaded && targetObj?.comment && (
-                  <TargetContent
+                  <div
                     style={{
                       position: 'relative',
-                      zIndex: 2
+                      zIndex: 3
                     }}
-                    targetObj={targetObj}
-                    rootObj={rootObj}
-                    rootType={contentState.rootType}
-                    contentId={contentId}
-                    contentType={contentType}
-                    onShowTCReplyInput={onShowTCReplyInput}
-                  />
-                )}
-                {contentState.loaded && targetObj?.subject && (
-                  <div>
-                    <ContentListItem
-                      comments={contentState.childComments}
-                      style={{
-                        zIndex: 1,
-                        position: 'relative'
-                      }}
-                      expandable
-                      onClick={() =>
-                        history.push(`/subjects/${targetObj.subject.id}`)
-                      }
-                      contentObj={targetObj.subject}
-                      onChangeSpoilerStatus={onChangeSpoilerStatus}
-                    />
+                    className={container}
+                  >
+                    {!loaded && <Loading />}
+                    {loaded && (
+                      <>
+                        <Heading
+                          contentObj={contentState}
+                          action={
+                            commentId
+                              ? targetObj.comment.notFound
+                                ? 'replied on'
+                                : 'replied to'
+                              : rootType === 'subject'
+                              ? 'responded to'
+                              : rootType === 'user'
+                              ? 'left a message to'
+                              : 'commented on'
+                          }
+                          onPlayVideoClick={() => setVideoShown(true)}
+                          attachedVideoShown={videoShown}
+                        />
+                        <div className="body">
+                          <Body
+                            autoExpand={autoExpand}
+                            commentsShown={commentsShown}
+                            contentObj={contentState}
+                            inputAtBottom={inputAtBottom}
+                            attachedVideoShown={videoShown}
+                            numPreviewComments={numPreviewComments}
+                            onChangeSpoilerStatus={onChangeSpoilerStatus}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
-                {contentType === 'comment' &&
-                  contentState.rootType === 'video' && (
-                    <ContentListItem
+                  {loaded && targetObj?.comment && (
+                    <TargetContent
                       style={{
-                        position: 'relative'
+                        position: 'relative',
+                        zIndex: 2
                       }}
-                      expandable
-                      onClick={() => history.push(`/videos/${rootObj.id}`)}
-                      contentObj={rootObj}
+                      targetObj={targetObj}
+                      rootObj={rootObj}
+                      rootType={contentState.rootType}
+                      contentId={contentId}
+                      contentType={contentType}
+                      onShowTCReplyInput={onShowTCReplyInput}
                     />
                   )}
-                {(contentType === 'comment' || contentType === 'subject') &&
-                  rootType === 'url' && (
-                    <div
-                      className={css`
-                        padding: 1rem;
-                        background: ${Color.whiteGray()};
-                        border: 1px solid ${Color.borderGray()};
-                        border-radius: ${borderRadius};
-                        margin-top: -1rem;
-                        transition: background 0.5s;
-                        &:hover {
-                          background: #fff;
+                  {contentState.loaded && targetObj?.subject && (
+                    <div>
+                      <ContentListItem
+                        comments={contentState.childComments}
+                        style={{
+                          zIndex: 1,
+                          position: 'relative'
+                        }}
+                        expandable
+                        onClick={() =>
+                          history.push(`/subjects/${targetObj.subject.id}`)
                         }
-                        @media (max-width: ${mobileMaxWidth}) {
-                          margin-top: -0.5rem;
-                          border-left: 0;
-                          border-right: 0;
-                        }
-                      `}
-                    >
-                      <Embedly small contentId={contentState.rootId} />
+                        contentObj={targetObj.subject}
+                        onChangeSpoilerStatus={onChangeSpoilerStatus}
+                      />
                     </div>
                   )}
-                {contentType === 'comment' && contentState.rootType === 'user' && (
-                  <div
-                    className={css`
-                      cursor: pointer;
-                      background: ${Color.whiteGray()};
-                      border: 1px solid ${Color.borderGray()};
-                      border-radius: ${borderRadius};
-                      margin-top: -1rem;
-                      transition: background 0.5s;
-                      padding-bottom: 1rem;
-                      &:hover {
-                        background: #fff;
-                      }
-                      @media (max-width: ${mobileMaxWidth}) {
-                        border-left: 0;
-                        border-right: 0;
-                        margin-top: -0.5rem;
-                      }
-                    `}
-                    onClick={() => history.push(`/users/${rootObj.username}`)}
-                  >
-                    <Profile profile={rootObj} />
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div
-                style={{
-                  width: '100%',
-                  margin: '1rem 0 1rem 0',
-                  height: placeholderHeight || '20rem'
-                }}
-              />
-            )}
+                  {contentType === 'comment' &&
+                    contentState.rootType === 'video' && (
+                      <ContentListItem
+                        style={{
+                          position: 'relative'
+                        }}
+                        expandable
+                        onClick={() => history.push(`/videos/${rootObj.id}`)}
+                        contentObj={rootObj}
+                      />
+                    )}
+                  {(contentType === 'comment' || contentType === 'subject') &&
+                    rootType === 'url' && (
+                      <div
+                        className={css`
+                          padding: 1rem;
+                          background: ${Color.whiteGray()};
+                          border: 1px solid ${Color.borderGray()};
+                          border-radius: ${borderRadius};
+                          margin-top: -1rem;
+                          transition: background 0.5s;
+                          &:hover {
+                            background: #fff;
+                          }
+                          @media (max-width: ${mobileMaxWidth}) {
+                            margin-top: -0.5rem;
+                            border-left: 0;
+                            border-right: 0;
+                          }
+                        `}
+                      >
+                        <Embedly small contentId={contentState.rootId} />
+                      </div>
+                    )}
+                  {contentType === 'comment' &&
+                    contentState.rootType === 'user' && (
+                      <div
+                        className={css`
+                          cursor: pointer;
+                          background: ${Color.whiteGray()};
+                          border: 1px solid ${Color.borderGray()};
+                          border-radius: ${borderRadius};
+                          margin-top: -1rem;
+                          transition: background 0.5s;
+                          padding-bottom: 1rem;
+                          &:hover {
+                            background: #fff;
+                          }
+                          @media (max-width: ${mobileMaxWidth}) {
+                            border-left: 0;
+                            border-right: 0;
+                            margin-top: -0.5rem;
+                          }
+                        `}
+                        onClick={() =>
+                          history.push(`/users/${rootObj.username}`)
+                        }
+                      >
+                        <Profile profile={rootObj} />
+                      </div>
+                    )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    width: '100%',
+                    margin: '1rem 0 1rem 0',
+                    height: placeholderHeight || '20rem'
+                  }}
+                />
+              )}
+            </div>
           </div>
         ) : null}
       </Context.Provider>
     </ErrorBoundary>
   );
-
-  function handleSetPlaceholderHeight(height) {
-    onSetPlaceholderHeight({
-      contentType,
-      contentId,
-      height
-    });
-  }
 
   function handleSetVisible(visible) {
     onSetVisible({
