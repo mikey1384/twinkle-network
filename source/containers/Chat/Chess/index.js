@@ -213,15 +213,7 @@ export default function Chess({
             isDraw ||
             userMadeLastMove ? (
               move?.piece ? (
-                <span>
-                  {move?.piece?.type === 'king' ? (
-                    `${userMadeLastMove ? 'your' : 'their'} king`
-                  ) : (
-                    <span>
-                      <b>{move?.piece?.type}</b>
-                    </span>
-                  )}
-                </span>
+                <b>{move?.piece?.type}</b>
               ) : (
                 <b>castled</b>
               )
