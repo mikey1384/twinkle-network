@@ -545,7 +545,6 @@ function Message({
         <div
           style={{
             width: '100%',
-            padding: '1rem 0',
             height: placeholderHeight
           }}
         />
