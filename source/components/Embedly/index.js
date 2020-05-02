@@ -134,7 +134,7 @@ function Embedly({
       fetchUrlData();
     }
     onSetPrevUrl({ contentId, contentType, prevUrl: url, thumbUrl });
-    onLoad?.();
+
     async function fetchUrlData() {
       try {
         setLoading(true);
@@ -347,6 +347,7 @@ function Embedly({
             <div className={contentCss}>{InnerContent}</div>
           ) : twinkleVideoId ? (
             <TwinkleVideo
+              onLoad={onLoad}
               imageOnly={imageOnly}
               onPlay={handlePlay}
               style={{
