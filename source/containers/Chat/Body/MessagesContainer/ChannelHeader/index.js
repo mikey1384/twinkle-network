@@ -138,13 +138,16 @@ export default function ChannelHeader({ onInputFocus }) {
                 {renderDetails()}
               </section>
               <div
-                style={{
-                  position: 'absolute',
-                  fontSize: '1.3rem',
-                  top: '1.3rem',
-                  right: '1rem',
-                  display: 'flex'
-                }}
+                className={css`
+                  position: absolute;
+                  font-size: 1.3rem;
+                  top: 1.3rem;
+                  right: 1rem;
+                  display: flex;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.2rem;
+                  }
+                `}
               >
                 <Button
                   color="green"
