@@ -258,7 +258,6 @@ export default function Chess({
                     }
                   `}
                 >
-                  <span className="mobile">- </span>
                   {statusText}
                 </div>
               )}
