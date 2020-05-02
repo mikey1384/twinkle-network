@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -140,6 +140,10 @@ function ContentPanel({
     loaded,
     onInitContent
   ]);
+  const contentShown = useMemo(
+    () => visible !== false || inView || started || rootStarted || !loaded,
+    [inView, loaded, rootStarted, started, visible]
+  );
 
   return (
     <ErrorBoundary>
@@ -170,11 +174,7 @@ function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            {visible !== false ||
-            inView ||
-            started ||
-            rootStarted ||
-            !loaded ? (
+            {contentShown ? (
               <div
                 ref={PanelRef}
                 style={{
