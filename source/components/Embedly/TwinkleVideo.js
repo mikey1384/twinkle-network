@@ -12,19 +12,12 @@ import { useContentState } from 'helpers/hooks';
 
 TwinkleVideo.propTypes = {
   imageOnly: PropTypes.bool,
-  onLoad: PropTypes.func,
   onPlay: PropTypes.func,
   style: PropTypes.object,
   videoId: PropTypes.number.isRequired
 };
 
-export default function TwinkleVideo({
-  imageOnly,
-  onLoad,
-  onPlay,
-  style,
-  videoId
-}) {
+export default function TwinkleVideo({ imageOnly, onPlay, style, videoId }) {
   const history = useHistory();
   const {
     requestHelpers: { loadContent }
@@ -55,7 +48,6 @@ export default function TwinkleVideo({
         contentType: 'video'
       });
       onInitContent({ ...data, contentType: 'video' });
-      onLoad?.();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -116,6 +116,7 @@ function Message({
   showSubjectMsgsModal
 }) {
   const [ComponentRef, inView] = useInView({
+    rootMargin: '100px',
     threshold: 0
   });
   const PanelRef = useRef(null);
@@ -501,7 +502,6 @@ function Message({
                       isEditing={isEditing}
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
-                      onSetPlaceholderHeight={handleSetPlaceholderHeight}
                       onSetScrollToBottom={handleSetScrollToBottom}
                       showSubjectMsgsModal={showSubjectMsgsModal}
                       socketConnected={socketConnected}
@@ -613,7 +613,7 @@ function Message({
   function handleSetPlaceholderHeight(height) {
     onSetPlaceholderHeight({
       messageId,
-      height: height || PanelRef.current.clientHeight
+      height
     });
   }
 
