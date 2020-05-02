@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import InputPanel from './InputPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
@@ -65,6 +65,7 @@ export default function Stories({ location }) {
       onChangeCategory,
       onChangeSubFilter,
       onLoadFeeds,
+      onLoadMoreFeeds,
       onLoadNewFeeds,
       onSetDisplayOrder,
       onSetFeedsOutdated
@@ -177,6 +178,23 @@ export default function Stories({ location }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
+  const ContentPanels = useMemo(() => {
+    return feeds.map((feed, index) => (
+      <ContentPanel
+        key={category + subFilter + feed.contentId + feed.contentType}
+        style={{
+          marginBottom: '1rem',
+          zIndex: feeds.length - index
+        }}
+        contentId={feed.contentId}
+        contentType={feed.contentType}
+        commentsLoadLimit={5}
+        numPreviewComments={1}
+        userId={userId}
+      />
+    ));
+  }, [category, feeds, subFilter, userId]);
+
   return (
     <ErrorBoundary>
       <div style={{ width: '100%' }} ref={ContainerRef}>
@@ -229,24 +247,11 @@ export default function Stories({ location }) {
                   {numNewPosts > 1 ? 's' : ''}
                 </Banner>
               )}
-              {feeds.map((feed, index) => (
-                <ContentPanel
-                  key={category + subFilter + feed.contentId + feed.contentType}
-                  style={{
-                    marginBottom: '1rem',
-                    zIndex: feeds.length - index
-                  }}
-                  contentId={feed.contentId}
-                  contentType={feed.contentType}
-                  commentsLoadLimit={5}
-                  numPreviewComments={1}
-                  userId={userId}
-                />
-              ))}
+              {ContentPanels}
               {loadMoreButton && (
                 <LoadMoreButton
                   style={{ marginBottom: '1rem' }}
-                  onClick={() => setLoadingMore(true)}
+                  onClick={handleLoadMoreFeeds}
                   loading={loadingMore}
                   color="lightBlue"
                   filled
@@ -283,6 +288,27 @@ export default function Stories({ location }) {
       onLoadFeeds(data);
       onSetDisplayOrder('desc');
       setLoadingFeeds(false);
+    }
+  }
+
+  async function handleLoadMoreFeeds() {
+    try {
+      const { data } = await loadFeeds({
+        filter:
+          category === 'uploads' ? subFilter : categoryObj[category].filter,
+        order: displayOrder,
+        orderBy: categoryObj[category].orderBy,
+        lastFeedId: feeds.length > 0 ? feeds[feeds.length - 1].feedId : null,
+        lastTimeStamp:
+          feeds.length > 0 ? feeds[feeds.length - 1].lastInteraction : null
+      });
+      if (mounted.current) {
+        onLoadMoreFeeds(data);
+        setLoadingMore(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setLoadingMore(false);
     }
   }
 
