@@ -169,7 +169,7 @@ export default function Chess({
       className={css`
         height: 515px;
         @media (max-width: ${mobileMaxWidth}) {
-          height: 315px;
+          height: ${statusText ? '325px' : '315px'};
         }
       `}
       style={{
@@ -254,9 +254,7 @@ export default function Chess({
                     margin-top: 2rem;
                     font-weight: bold;
                     @media (max-width: ${mobileMaxWidth}) {
-                      margin-top: 0;
-                      margin-left: 0.3rem;
-                      display: inline-block;
+                      margin-top: 0.5rem;
                     }
                   `}
                 >
