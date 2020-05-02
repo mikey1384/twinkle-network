@@ -87,7 +87,7 @@ function ContentPanel({
     rootId
   } = contentState;
   const [placeholderHeight, setPlaceholderHeight] = useState(
-    previousPlaceholderHeight || 0
+    previousPlaceholderHeight || '20rem'
   );
   useLazyLoad({
     PanelRef,
