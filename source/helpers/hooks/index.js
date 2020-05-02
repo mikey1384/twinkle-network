@@ -32,12 +32,10 @@ export function useLazyLoad({
   const currentInView = useRef(inView);
 
   useEffect(() => {
-    const clientHeight = PanelRef.current?.clientHeight;
-    if (inView) {
+    currentInView.current = inView;
+    clearTimeout(timerRef.current);
+    if (currentInView.current !== false) {
       onSetVisible(true);
-      if (clientHeight) {
-        onSetPlaceholderHeight(clientHeight);
-      }
     } else {
       timerRef.current = setTimeout(() => {
         if (!currentInView.current) {
@@ -45,9 +43,26 @@ export function useLazyLoad({
         }
       }, delay);
     }
+
     prevInView.current = inView;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
+
+  useEffect(() => {
+    const clientHeight = PanelRef.current?.clientHeight;
+    if (!prevInView.current && currentInView.current) {
+      if (clientHeight) {
+        onSetPlaceholderHeight(clientHeight);
+      }
+    }
+
+    return function onRefresh() {
+      if (clientHeight) {
+        onSetPlaceholderHeight(clientHeight);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [PanelRef.current?.clientHeight]);
 
   useEffect(() => {
     return function cleanUp() {

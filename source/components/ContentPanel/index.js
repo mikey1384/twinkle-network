@@ -84,17 +84,22 @@ export default function ContentPanel({
     rootType,
     started,
     targetObj,
-    visible,
+    visible: previousVisible,
     rootId
   } = contentState;
   const [placeholderHeight, setPlaceholderHeight] = useState(
     previousPlaceholderHeight || '20rem'
   );
+  const [visible, setVisible] = useState(previousVisible);
+  const visibleRef = useRef(false);
   useLazyLoad({
     PanelRef,
     inView,
     onSetPlaceholderHeight: (height) => setPlaceholderHeight(height),
-    onSetVisible: handleSetVisible,
+    onSetVisible: (visible) => {
+      setVisible(visible);
+      visibleRef.current = visible;
+    },
     delay: 1000
   });
   const [videoShown, setVideoShown] = useState(false);
@@ -115,6 +120,11 @@ export default function ContentPanel({
         contentType,
         contentId,
         height: container.clientHeight
+      });
+      onSetVisible({
+        contentId,
+        contentType,
+        visible: visibleRef.current
       });
       mounted.current = false;
     };
@@ -337,12 +347,4 @@ export default function ContentPanel({
       </Context.Provider>
     </ErrorBoundary>
   );
-
-  function handleSetVisible(visible) {
-    onSetVisible({
-      contentId,
-      contentType,
-      visible
-    });
-  }
 }
