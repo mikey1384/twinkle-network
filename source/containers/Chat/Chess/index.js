@@ -193,7 +193,7 @@ export default function Chess({
               left: 0.5rem;
               width: CALC(100% - 1rem);
               position: relative;
-              font-size: 1.5rem;
+              font-size: 1.3rem;
               p {
                 display: inline-block;
                 margin-left: 0.5rem;
@@ -207,9 +207,6 @@ export default function Chess({
           {(spoilerOff || isCheckmate || isStalemate || isDraw) &&
             move?.number && <p>Move {move?.number}:</p>}
           <p>
-            <b>{userMadeLastMove ? 'You' : opponentName}</b>
-          </p>
-          <p>
             {spoilerOff ||
             isCheckmate ||
             isStalemate ||
@@ -217,12 +214,11 @@ export default function Chess({
             userMadeLastMove ? (
               move?.piece ? (
                 <span>
-                  moved{' '}
                   {move?.piece?.type === 'king' ? (
                     `${userMadeLastMove ? 'your' : 'their'} king`
                   ) : (
                     <span>
-                      a <b>{move?.piece?.type}</b>
+                      <b>{move?.piece?.type}</b>
                     </span>
                   )}
                 </span>
@@ -230,7 +226,7 @@ export default function Chess({
                 <b>castled</b>
               )
             ) : (
-              'made a move'
+              'Made a move'
             )}
           </p>
           {(spoilerOff ||
