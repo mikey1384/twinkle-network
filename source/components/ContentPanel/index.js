@@ -143,14 +143,8 @@ function ContentPanel({
         loading.current = false;
       }
     }
-  }, [
-    contentId,
-    contentState.feedId,
-    contentType,
-    loadContent,
-    loaded,
-    onInitContent
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentId, contentState.feedId, contentType, loadContent, loaded]);
   const contentShown = useMemo(
     () => visible !== false || inView || started || rootStarted,
     [inView, rootStarted, started, visible]
