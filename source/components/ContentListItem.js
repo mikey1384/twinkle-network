@@ -61,7 +61,7 @@ function ContentListItem({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rootObj, loaded]);
+  }, [loaded]);
 
   return (
     <div
