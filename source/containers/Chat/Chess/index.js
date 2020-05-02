@@ -196,7 +196,7 @@ export default function Chess({
               font-size: 1.2rem;
               p {
                 display: inline-block;
-                margin-left: 0.5rem;
+                margin-left: 0.3rem;
               }
               p:first-of-type {
                 margin-left: 0;
