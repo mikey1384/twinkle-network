@@ -545,7 +545,6 @@ function Message({
         <div
           style={{
             width: '100%',
-            marginTop: '-1rem',
             height: placeholderHeight
           }}
         />
@@ -613,7 +612,7 @@ function Message({
   function handleSetPlaceholderHeight(height) {
     onSetPlaceholderHeight({
       messageId,
-      height
+      height: height - 10
     });
   }
 
