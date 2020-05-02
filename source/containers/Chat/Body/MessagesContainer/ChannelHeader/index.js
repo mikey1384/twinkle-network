@@ -90,6 +90,9 @@ export default function ChannelHeader({ onInputFocus }) {
         justify-content: space-between;
         width: CALC(100% - 1rem);
         height: 7rem;
+        @media (max-width: ${mobileMaxWidth}) {
+          width: CALC(100% - 4rem);
+        }
         > section {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
