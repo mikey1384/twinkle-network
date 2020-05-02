@@ -32,7 +32,7 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ expandable, profileId }) {
   const [ComponentRef, inView] = useInView({
-    rootMargin: '100px',
+    rootMargin: '100px 0px 0px 0px',
     threshold: 0
   });
   const PanelRef = useRef(null);
