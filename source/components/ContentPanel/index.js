@@ -141,8 +141,8 @@ function ContentPanel({
     onInitContent
   ]);
   const contentShown = useMemo(
-    () => visible !== false || inView || started || rootStarted || !loaded,
-    [inView, loaded, rootStarted, started, visible]
+    () => visible !== false || inView || started || rootStarted,
+    [inView, rootStarted, started, visible]
   );
 
   return (
