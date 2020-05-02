@@ -63,10 +63,6 @@ export default function EditSubjectForm({
       }
       setReadyForSubmit(true);
     }
-
-    return function cleanUp() {
-      clearTimeout(timerRef.current);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
 

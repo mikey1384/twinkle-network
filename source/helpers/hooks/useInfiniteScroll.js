@@ -53,7 +53,6 @@ export default function useInfiniteScroll({
     return function cleanUp() {
       removeEvent(window, 'scroll', onScroll);
       removeEvent(document.getElementById('App'), 'scroll', onScroll);
-      clearTimeout(timerRef.current);
     };
   });
 
