@@ -11,7 +11,11 @@ import { css } from 'emotion';
 import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { useMyState, useScrollPosition } from 'helpers/hooks';
+import {
+  useInfiniteScroll,
+  useMyState,
+  useScrollPosition
+} from 'helpers/hooks';
 import {
   useAppContext,
   useHomeContext,
@@ -90,6 +94,15 @@ export default function Stories({ location }) {
   const ContainerRef = useRef(null);
   const hideWatchedRef = useRef(null);
   const disconnected = useRef(false);
+
+  useInfiniteScroll({
+    scrollable: feeds.length > 0,
+    feedsLength: feeds.length,
+    loadable: loadMoreButton,
+    loading: loadingMore,
+    onScrollToBottom: () => setLoadingMore(true),
+    onLoad: handleLoadMoreFeeds
+  });
 
   useEffect(() => {
     mounted.current = true;
@@ -251,7 +264,7 @@ export default function Stories({ location }) {
               {loadMoreButton && (
                 <LoadMoreButton
                   style={{ marginBottom: '1rem' }}
-                  onClick={handleLoadMoreFeeds}
+                  onClick={() => setLoadingMore(true)}
                   loading={loadingMore}
                   color="lightBlue"
                   filled
