@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -156,11 +156,6 @@ export default function ContentPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
-  const contentShown = useMemo(
-    () => visible !== false || inView || started || rootStarted,
-    [inView, rootStarted, started, visible]
-  );
-
   return (
     <ErrorBoundary>
       <Context.Provider
@@ -191,7 +186,7 @@ export default function ContentPanel({
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
             <div ref={ContainerRef}>
-              {contentShown ? (
+              {visible !== false || inView || started || rootStarted ? (
                 <div
                   ref={PanelRef}
                   style={{
