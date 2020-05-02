@@ -38,6 +38,7 @@ function ContentPanel({
     rootMargin: '50px 0px 0px 0px',
     threshold: 0
   });
+  const ContainerRef = useRef(null);
   const PanelRef = useRef(null);
   const history = useHistory();
   const {
@@ -108,12 +109,12 @@ function ContentPanel({
 
   useEffect(() => {
     mounted.current = true;
-    const panel = PanelRef.current;
+    const container = ContainerRef.current;
     return function cleanUp() {
       onSetPlaceholderHeight({
         contentType,
         contentId,
-        height: panel.clientHeight
+        height: container.clientHeight
       });
       mounted.current = false;
     };
@@ -184,9 +185,10 @@ function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            <div ref={PanelRef}>
+            <div ref={ContainerRef}>
               {contentShown ? (
                 <div
+                  ref={PanelRef}
                   style={{
                     height: !loaded && '15rem',
                     position: 'relative',
