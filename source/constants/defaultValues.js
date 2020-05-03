@@ -4,7 +4,7 @@ export const rewardValue = {
 };
 export const cloudFrontURL = `https://${process.env.CLOUDFRONT_KEY}.cloudfront.net`;
 export const S3URL = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com`;
-export const clientVersion = '1.3.7';
+export const clientVersion = '1.3.8';
 export const descriptionLengthForExtraRewardLevel = 1000;
 export const charLimit = {
   chat: {
