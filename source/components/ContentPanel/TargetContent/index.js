@@ -143,11 +143,6 @@ function TargetContent({
     return hasSecretAnswer && !secretShown;
   }, [subject, subjectState.secretShown, userId]);
 
-  useEffect(() => onSetPlaceholderHeight(), [
-    contentHidden,
-    onSetPlaceholderHeight
-  ]);
-
   return (
     <ErrorBoundary
       className={`${className} ${css`
@@ -389,6 +384,7 @@ function TargetContent({
   function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
+      onSetPlaceholderHeight();
     }
   }
 

@@ -625,6 +625,7 @@ export default function Body({
   async function handleLikeClick() {
     if (!commentsShown) {
       handleExpandComments();
+      onSetPlaceholderHeight();
     }
   }
 
