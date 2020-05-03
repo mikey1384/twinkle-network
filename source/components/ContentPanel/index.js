@@ -35,7 +35,6 @@ export default function ContentPanel({
   style = {}
 }) {
   const [ComponentRef, inView] = useInView({
-    rootMargin: '60px 0px 0px 0px',
     threshold: 0
   });
   const ContainerRef = useRef(null);
