@@ -25,6 +25,7 @@ export default function ExtractedThumb({
   const [suspended, setSuspended] = useState(false);
   const videoRef = useRef({});
   const canvasRef = useRef(null);
+
   useEffect(() => {
     if (thumbUrl) {
       setThumbnail(thumbUrl);
@@ -58,15 +59,8 @@ export default function ExtractedThumb({
         console.error(error);
       }
     }
-  }, [
-    dataLoaded,
-    metadataLoaded,
-    onThumbnailLoad,
-    seeked,
-    suspended,
-    thumbUrl,
-    thumbnail
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataLoaded, metadataLoaded, seeked, suspended, thumbUrl, thumbnail]);
 
   return thumbnail ? (
     isHidden ? null : (
@@ -111,7 +105,7 @@ export default function ExtractedThumb({
         onLoadedData={() => setDataLoaded(true)}
         onSuspend={() => setSuspended(true)}
         onSeeked={() => setSeeked(true)}
-      ></video>
+      />
     </div>
   );
 }
