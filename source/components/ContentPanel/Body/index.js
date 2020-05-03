@@ -1,11 +1,4 @@
-import React, {
-  memo,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocalContext from '../Context';
 import LikeButton from 'components/Buttons/LikeButton';
@@ -47,7 +40,7 @@ Body.propTypes = {
   onSetPlaceholderHeight: PropTypes.func.isRequired
 };
 
-function Body({
+export default function Body({
   attachedVideoShown,
   autoExpand,
   commentsShown,
@@ -632,7 +625,6 @@ function Body({
   async function handleLikeClick() {
     if (!commentsShown) {
       handleExpandComments();
-      onSetPlaceholderHeight();
     }
   }
 
@@ -651,5 +643,3 @@ function Body({
     onByUserStatusChange({ byUser, contentId, contentType });
   }
 }
-
-export default memo(Body);
