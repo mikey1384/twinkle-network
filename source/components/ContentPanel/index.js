@@ -136,6 +136,7 @@ export default function ContentPanel({
     }
     async function onMount() {
       loading.current = true;
+      const container = ContainerRef.current;
       const data = await loadContent({ contentId, contentType });
       if (mounted.current) {
         onInitContent({
@@ -149,6 +150,11 @@ export default function ContentPanel({
             ...data.rootObj
           });
         }
+        onSetPlaceholderHeight({
+          contentType,
+          contentId,
+          height: container.clientHeight
+        });
         loading.current = false;
       }
     }
