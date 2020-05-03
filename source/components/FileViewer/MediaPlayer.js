@@ -111,7 +111,7 @@ export default function MediaPlayer({
           loop={looping}
           light={light}
           ref={PlayerRef}
-          playing={autoPlay && !paused}
+          playing={autoPlay && !paused && !mobile}
           playsinline
           muted={isThumb || looping}
           onPlay={handlePlay}
