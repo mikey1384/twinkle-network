@@ -80,11 +80,11 @@ export default function VideoPlayer({
   }, [timeAt, looping]);
 
   const light = useMemo(() => {
-    if (looping || paused) {
+    if (looping || currentTime) {
       return false;
     }
     return thumbUrl;
-  }, [looping, paused, thumbUrl]);
+  }, [currentTime, looping, thumbUrl]);
 
   return (
     <div
