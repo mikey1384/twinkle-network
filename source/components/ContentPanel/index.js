@@ -332,7 +332,7 @@ export default function ContentPanel({
                   style={{
                     width: '100%',
                     margin: '1rem 0 1rem 0',
-                    minHeight: '50px',
+                    minHeight: '15rem',
                     height: placeholderHeight
                   }}
                 />
