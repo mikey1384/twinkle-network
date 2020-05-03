@@ -150,11 +150,13 @@ export default function ContentPanel({
             ...data.rootObj
           });
         }
-        onSetPlaceholderHeight({
-          contentType,
-          contentId,
-          height: container.clientHeight
-        });
+        if (inView) {
+          onSetPlaceholderHeight({
+            contentType,
+            contentId,
+            height: container.clientHeight
+          });
+        }
         loading.current = false;
       }
     }
@@ -235,13 +237,15 @@ export default function ContentPanel({
                             attachedVideoShown={videoShown}
                             numPreviewComments={numPreviewComments}
                             onChangeSpoilerStatus={onChangeSpoilerStatus}
-                            onSetPlaceholderHeight={() =>
-                              onSetPlaceholderHeight({
-                                contentType,
-                                contentId,
-                                height: ContainerRef.current.clientHeight
-                              })
-                            }
+                            onSetPlaceholderHeight={() => {
+                              if (inView) {
+                                onSetPlaceholderHeight({
+                                  contentType,
+                                  contentId,
+                                  height: ContainerRef.current.clientHeight
+                                });
+                              }
+                            }}
                           />
                         </div>
                       </>
