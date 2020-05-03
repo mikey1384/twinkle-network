@@ -94,14 +94,12 @@ export default function VideoPlayer({
       }}
       onClick={handlePlayerClick}
     >
-      {contentType === 'chat' && (
-        <ExtractedThumb
-          src={src}
-          isHidden
-          onThumbnailLoad={handleThumbnailLoad}
-          thumbUrl={thumbUrl}
-        />
-      )}
+      <ExtractedThumb
+        src={src}
+        isHidden
+        onThumbnailLoad={handleThumbnailLoad}
+        thumbUrl={thumbUrl}
+      />
       <ReactPlayer
         loop={looping}
         light={light}
@@ -182,14 +180,14 @@ export default function VideoPlayer({
 
     async function handleUploadThumb() {
       const thumbUrl = await uploadThumb({
-        contentType: 'chat',
+        contentType,
         contentId,
         file,
         path: uuidv1()
       });
       onSetThumbUrl({
         contentId,
-        contentType: 'chat',
+        contentType,
         thumbUrl
       });
     }
