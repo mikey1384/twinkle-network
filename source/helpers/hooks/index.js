@@ -50,17 +50,10 @@ export function useLazyLoad({
 
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
-    if (!prevInView.current && currentInView.current) {
-      if (clientHeight) {
-        onSetPlaceholderHeight(clientHeight);
-      }
-    }
 
     return function onRefresh() {
       if (clientHeight) {
-        onSetPlaceholderHeight((height) =>
-          clientHeight > height ? clientHeight : height
-        );
+        onSetPlaceholderHeight(clientHeight);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
