@@ -58,7 +58,9 @@ export function useLazyLoad({
 
     return function onRefresh() {
       if (clientHeight) {
-        onSetPlaceholderHeight(clientHeight);
+        onSetPlaceholderHeight((height) =>
+          clientHeight > height ? clientHeight : height
+        );
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

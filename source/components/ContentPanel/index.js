@@ -94,7 +94,7 @@ export default function ContentPanel({
   useLazyLoad({
     PanelRef,
     inView,
-    onSetPlaceholderHeight: (height) => setPlaceholderHeight(height),
+    onSetPlaceholderHeight: setPlaceholderHeight,
     onSetVisible: (visible) => {
       setVisible(visible);
       visibleRef.current = visible;
