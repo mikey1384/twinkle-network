@@ -87,7 +87,7 @@ export default function ContentPanel({
     rootId
   } = contentState;
   const [placeholderHeight, setPlaceholderHeight] = useState(
-    previousPlaceholderHeight || '20rem'
+    previousPlaceholderHeight
   );
   const [visible, setVisible] = useState(previousVisible);
   const visibleRef = useRef(false);
@@ -332,7 +332,8 @@ export default function ContentPanel({
                   style={{
                     width: '100%',
                     margin: '1rem 0 1rem 0',
-                    height: placeholderHeight || '20rem'
+                    minHeight: '50px',
+                    height: placeholderHeight
                   }}
                 />
               )}
