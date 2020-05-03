@@ -6,6 +6,7 @@ import ReactPlayer from 'react-player';
 import { v1 as uuidv1 } from 'uuid';
 import { useAppContext, useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
+import { isMobile } from 'helpers';
 
 VideoPlayer.propTypes = {
   autoPlay: PropTypes.bool,
@@ -41,9 +42,11 @@ export default function VideoPlayer({
   const [paused, setPaused] = useState(false);
   const [timeAt, setTimeAt] = useState(0);
   const PlayerRef = useRef(null);
-  const looping = useMemo(() => autoPlay && muted && !currentTime, [
+  const mobile = isMobile(navigator);
+  const looping = useMemo(() => !mobile && !currentTime && autoPlay && muted, [
     autoPlay,
     currentTime,
+    mobile,
     muted
   ]);
 
@@ -77,11 +80,11 @@ export default function VideoPlayer({
   }, [timeAt, looping]);
 
   const light = useMemo(() => {
-    if (autoPlay || currentTime || paused) {
+    if (looping || paused) {
       return false;
     }
     return thumbUrl;
-  }, [autoPlay, currentTime, paused, thumbUrl]);
+  }, [looping, paused, thumbUrl]);
 
   return (
     <div
