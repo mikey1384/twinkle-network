@@ -8,7 +8,7 @@ import { useAppContext, useContentContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 import { isMobile } from 'helpers';
 
-VideoPlayer.propTypes = {
+MediaPlayer.propTypes = {
   autoPlay: PropTypes.bool,
   contentId: PropTypes.number,
   contentType: PropTypes.string,
@@ -20,7 +20,7 @@ VideoPlayer.propTypes = {
   videoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
-export default function VideoPlayer({
+export default function MediaPlayer({
   autoPlay,
   contentId,
   contentType,

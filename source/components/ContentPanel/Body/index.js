@@ -93,6 +93,7 @@ function Body({
     filePath,
     fileName,
     fileSize,
+    thumbUrl,
     isEditing,
     secretAnswer,
     secretShown,
@@ -300,6 +301,7 @@ function Body({
               fileName={fileName}
               filePath={filePath}
               fileSize={fileSize}
+              thumbUrl={thumbUrl}
               videoHeight="100%"
               style={{
                 display: 'flex',
