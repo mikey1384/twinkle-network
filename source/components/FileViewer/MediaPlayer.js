@@ -86,6 +86,8 @@ export default function MediaPlayer({
     return thumbUrl;
   }, [currentTime, looping, thumbUrl]);
 
+  const isMobileThumb = isThumb && mobile;
+
   return (
     <div
       style={{
@@ -99,37 +101,40 @@ export default function MediaPlayer({
     >
       <ExtractedThumb
         src={src}
-        isHidden
+        isHidden={!isMobileThumb}
+        style={{ width: '100%', height: '7rem' }}
         onThumbnailLoad={handleThumbnailLoad}
         thumbUrl={thumbUrl}
       />
-      <ReactPlayer
-        loop={looping}
-        light={light}
-        ref={PlayerRef}
-        playing={autoPlay && !paused}
-        playsinline
-        muted={isThumb || looping}
-        onPlay={handlePlay}
-        onProgress={handleVideoProgress}
-        onReady={handleReady}
-        style={{
-          cursor: muted ? 'pointer' : 'default',
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0,
-          paddingBottom:
-            fileType === 'audio' || fileType === 'video' ? '1rem' : 0
-        }}
-        width="100%"
-        height={fileType === 'video' ? videoHeight || '100%' : '5rem'}
-        url={src}
-        controls={!isThumb && !looping}
-      />
+      {!isMobileThumb && (
+        <ReactPlayer
+          loop={looping}
+          light={light}
+          ref={PlayerRef}
+          playing={autoPlay && !paused}
+          playsinline
+          muted={isThumb || looping}
+          onPlay={handlePlay}
+          onProgress={handleVideoProgress}
+          onReady={handleReady}
+          style={{
+            cursor: muted ? 'pointer' : 'default',
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            paddingBottom:
+              fileType === 'audio' || fileType === 'video' ? '1rem' : 0
+          }}
+          width="100%"
+          height={fileType === 'video' ? videoHeight || '100%' : '5rem'}
+          url={src}
+          controls={!isThumb && !looping}
+        />
+      )}
       {!isThumb && looping && (
         <div
           style={{

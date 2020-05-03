@@ -44,6 +44,7 @@ function ContentListItem({
     rootObj,
     secretAnswer,
     title,
+    thumbUrl,
     uploader = {}
   } = useContentState({ contentId, contentType });
   const {
@@ -287,6 +288,7 @@ function ContentListItem({
                 fileName={fileName}
                 filePath={filePath}
                 fileSize={fileSize}
+                thumbUrl={thumbUrl}
                 videoHeight="100%"
                 isThumb
                 style={{
