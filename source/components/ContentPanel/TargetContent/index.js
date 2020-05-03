@@ -389,7 +389,6 @@ function TargetContent({
   function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
-      onSetPlaceholderHeight();
     }
   }
 
