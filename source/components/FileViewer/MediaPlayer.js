@@ -80,11 +80,11 @@ export default function MediaPlayer({
   }, [timeAt, looping]);
 
   const light = useMemo(() => {
-    if (looping || currentTime) {
+    if (looping || currentTime || paused) {
       return false;
     }
     return thumbUrl;
-  }, [currentTime, looping, thumbUrl]);
+  }, [currentTime, looping, paused, thumbUrl]);
 
   const isMobileThumb = isThumb && mobile;
 
