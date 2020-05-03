@@ -36,8 +36,7 @@ Body.propTypes = {
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
   numPreviewComments: PropTypes.number,
-  onChangeSpoilerStatus: PropTypes.func.isRequired,
-  onSetPlaceholderHeight: PropTypes.func.isRequired
+  onChangeSpoilerStatus: PropTypes.func.isRequired
 };
 
 export default function Body({
@@ -66,8 +65,7 @@ export default function Body({
   },
   inputAtBottom,
   numPreviewComments,
-  onChangeSpoilerStatus,
-  onSetPlaceholderHeight
+  onChangeSpoilerStatus
 }) {
   const {
     requestHelpers: { deleteContent, loadComments }
@@ -233,7 +231,6 @@ export default function Body({
           contentType,
           isPreview
         });
-        onSetPlaceholderHeight();
         setLoadingComments(false);
       }
     }
@@ -575,7 +572,6 @@ export default function Body({
         onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
       }
     }
-    onSetPlaceholderHeight();
   }
 
   function handleSetXpRewardInterfaceShown() {
@@ -584,7 +580,6 @@ export default function Body({
       contentId,
       shown: true
     });
-    onSetPlaceholderHeight();
   }
 
   async function handleCommentButtonClick() {
@@ -595,7 +590,6 @@ export default function Body({
       CommentInputAreaRef.current.focus();
     }
     scrollElementToCenter(CommentInputAreaRef.current);
-    onSetPlaceholderHeight();
   }
 
   function onSecretAnswerClick() {
@@ -619,13 +613,11 @@ export default function Body({
     });
     onLoadComments({ ...data, contentId, contentType });
     onSetCommentsShown({ contentId, contentType });
-    onSetPlaceholderHeight();
   }
 
   async function handleLikeClick() {
     if (!commentsShown) {
       handleExpandComments();
-      onSetPlaceholderHeight();
     }
   }
 

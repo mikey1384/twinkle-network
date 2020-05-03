@@ -149,7 +149,6 @@ export default function ContentPanel({
             ...data.rootObj
           });
         }
-        handleSetPlaceholderHeight();
         loading.current = false;
       }
     }
@@ -230,7 +229,6 @@ export default function ContentPanel({
                             attachedVideoShown={videoShown}
                             numPreviewComments={numPreviewComments}
                             onChangeSpoilerStatus={onChangeSpoilerStatus}
-                            onSetPlaceholderHeight={handleSetPlaceholderHeight}
                           />
                         </div>
                       </>
@@ -247,7 +245,6 @@ export default function ContentPanel({
                       rootType={contentState.rootType}
                       contentId={contentId}
                       contentType={contentType}
-                      onSetPlaceholderHeight={handleSetPlaceholderHeight}
                       onShowTCReplyInput={onShowTCReplyInput}
                     />
                   )}
@@ -346,14 +343,4 @@ export default function ContentPanel({
       </Context.Provider>
     </ErrorBoundary>
   );
-
-  function handleSetPlaceholderHeight() {
-    if (visibleRef.current) {
-      onSetPlaceholderHeight({
-        contentType,
-        contentId,
-        height: ContainerRef.current.clientHeight
-      });
-    }
-  }
 }
