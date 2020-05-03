@@ -582,6 +582,7 @@ function Body({
         onChangeSpoilerStatus({ shown: true, subjectId: contentObj.id });
       }
     }
+    onSetPlaceholderHeight();
   }
 
   function handleSetXpRewardInterfaceShown() {
@@ -590,6 +591,7 @@ function Body({
       contentId,
       shown: true
     });
+    onSetPlaceholderHeight();
   }
 
   async function handleCommentButtonClick() {
@@ -600,6 +602,7 @@ function Body({
       CommentInputAreaRef.current.focus();
     }
     scrollElementToCenter(CommentInputAreaRef.current);
+    onSetPlaceholderHeight();
   }
 
   function onSecretAnswerClick() {
@@ -623,11 +626,13 @@ function Body({
     });
     onLoadComments({ ...data, contentId, contentType });
     onSetCommentsShown({ contentId, contentType });
+    onSetPlaceholderHeight();
   }
 
   async function handleLikeClick() {
     if (!commentsShown) {
       handleExpandComments();
+      onSetPlaceholderHeight();
     }
   }
 

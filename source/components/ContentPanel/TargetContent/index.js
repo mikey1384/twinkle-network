@@ -36,6 +36,7 @@ TargetContent.propTypes = {
   contentType: PropTypes.string,
   rootObj: PropTypes.object,
   rootType: PropTypes.string.isRequired,
+  onSetPlaceholderHeight: PropTypes.func.isRequired,
   onShowTCReplyInput: PropTypes.func.isRequired,
   style: PropTypes.object,
   targetObj: PropTypes.object
@@ -47,6 +48,7 @@ function TargetContent({
   contentType,
   rootObj,
   rootType,
+  onSetPlaceholderHeight,
   onShowTCReplyInput,
   style,
   targetObj: {
@@ -131,6 +133,7 @@ function TargetContent({
       contentId: comment.id,
       shown: xpRewardInterfaceShown && userCanRewardThis
     });
+    onSetPlaceholderHeight();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
   const contentHidden = useMemo(() => {
@@ -139,6 +142,11 @@ function TargetContent({
       subjectState.secretShown || subject?.uploader?.id === userId;
     return hasSecretAnswer && !secretShown;
   }, [subject, subjectState.secretShown, userId]);
+
+  useEffect(() => onSetPlaceholderHeight(), [
+    contentHidden,
+    onSetPlaceholderHeight
+  ]);
 
   return (
     <ErrorBoundary
@@ -381,6 +389,7 @@ function TargetContent({
   function handleLikeClick() {
     if (comments.length === 0) {
       onShowTCReplyInput({ contentId, contentType });
+      onSetPlaceholderHeight();
     }
   }
 
@@ -390,6 +399,7 @@ function TargetContent({
       contentId: comment.id,
       shown: true
     });
+    onSetPlaceholderHeight();
   }
 
   function onReplyClick() {
@@ -397,6 +407,7 @@ function TargetContent({
     if (!isMobile(navigator)) {
       setTimeout(() => InputFormRef.current.focus(), 0);
     }
+    onSetPlaceholderHeight();
   }
 
   async function onSubmit(content) {

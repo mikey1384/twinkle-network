@@ -136,7 +136,6 @@ export default function ContentPanel({
     }
     async function onMount() {
       loading.current = true;
-      const container = ContainerRef.current;
       const data = await loadContent({ contentId, contentType });
       if (mounted.current) {
         onInitContent({
@@ -150,13 +149,7 @@ export default function ContentPanel({
             ...data.rootObj
           });
         }
-        if (visible) {
-          onSetPlaceholderHeight({
-            contentType,
-            contentId,
-            height: container.clientHeight
-          });
-        }
+        handleSetPlaceholderHeight();
         loading.current = false;
       }
     }
@@ -237,15 +230,7 @@ export default function ContentPanel({
                             attachedVideoShown={videoShown}
                             numPreviewComments={numPreviewComments}
                             onChangeSpoilerStatus={onChangeSpoilerStatus}
-                            onSetPlaceholderHeight={() => {
-                              if (visible) {
-                                onSetPlaceholderHeight({
-                                  contentType,
-                                  contentId,
-                                  height: ContainerRef.current.clientHeight
-                                });
-                              }
-                            }}
+                            onSetPlaceholderHeight={handleSetPlaceholderHeight}
                           />
                         </div>
                       </>
@@ -262,6 +247,7 @@ export default function ContentPanel({
                       rootType={contentState.rootType}
                       contentId={contentId}
                       contentType={contentType}
+                      onSetPlaceholderHeight={handleSetPlaceholderHeight}
                       onShowTCReplyInput={onShowTCReplyInput}
                     />
                   )}
@@ -360,4 +346,14 @@ export default function ContentPanel({
       </Context.Provider>
     </ErrorBoundary>
   );
+
+  function handleSetPlaceholderHeight() {
+    if (visible) {
+      onSetPlaceholderHeight({
+        contentType,
+        contentId,
+        height: ContainerRef.current.clientHeight
+      });
+    }
+  }
 }
