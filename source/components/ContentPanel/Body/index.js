@@ -43,7 +43,8 @@ Body.propTypes = {
   commentsShown: PropTypes.bool,
   inputAtBottom: PropTypes.bool,
   numPreviewComments: PropTypes.number,
-  onChangeSpoilerStatus: PropTypes.func.isRequired
+  onChangeSpoilerStatus: PropTypes.func.isRequired,
+  onSetPlaceholderHeight: PropTypes.func.isRequired
 };
 
 function Body({
@@ -72,7 +73,8 @@ function Body({
   },
   inputAtBottom,
   numPreviewComments,
-  onChangeSpoilerStatus
+  onChangeSpoilerStatus,
+  onSetPlaceholderHeight
 }) {
   const {
     requestHelpers: { deleteContent, loadComments }
@@ -238,6 +240,7 @@ function Body({
           contentType,
           isPreview
         });
+        onSetPlaceholderHeight();
         setLoadingComments(false);
       }
     }

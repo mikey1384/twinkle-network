@@ -235,6 +235,13 @@ export default function ContentPanel({
                             attachedVideoShown={videoShown}
                             numPreviewComments={numPreviewComments}
                             onChangeSpoilerStatus={onChangeSpoilerStatus}
+                            onSetPlaceholderHeight={() =>
+                              onSetPlaceholderHeight({
+                                contentType,
+                                contentId,
+                                height: ContainerRef.current.clientHeight
+                              })
+                            }
                           />
                         </div>
                       </>
