@@ -28,7 +28,6 @@ export function useLazyLoad({
   delay
 }) {
   const timerRef = useRef(null);
-  const prevInView = useRef(false);
   const currentInView = useRef(inView);
 
   useEffect(() => {
@@ -43,14 +42,11 @@ export function useLazyLoad({
         }
       }, delay);
     }
-
-    prevInView.current = inView;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
-
     return function onRefresh() {
       if (clientHeight) {
         onSetPlaceholderHeight(clientHeight);

@@ -90,7 +90,7 @@ export default function ContentPanel({
     previousPlaceholderHeight
   );
   const [visible, setVisible] = useState(previousVisible);
-  const visibleRef = useRef(false);
+  const visibleRef = useRef(null);
   useLazyLoad({
     PanelRef,
     inView,
