@@ -348,7 +348,7 @@ export default function ContentPanel({
   );
 
   function handleSetPlaceholderHeight() {
-    if (inView) {
+    if (visibleRef.current) {
       onSetPlaceholderHeight({
         contentType,
         contentId,
