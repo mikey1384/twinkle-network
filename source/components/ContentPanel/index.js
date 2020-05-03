@@ -150,7 +150,7 @@ export default function ContentPanel({
             ...data.rootObj
           });
         }
-        if (inView) {
+        if (visible) {
           onSetPlaceholderHeight({
             contentType,
             contentId,
@@ -238,7 +238,7 @@ export default function ContentPanel({
                             numPreviewComments={numPreviewComments}
                             onChangeSpoilerStatus={onChangeSpoilerStatus}
                             onSetPlaceholderHeight={() => {
-                              if (inView) {
+                              if (visible) {
                                 onSetPlaceholderHeight({
                                   contentType,
                                   contentId,
