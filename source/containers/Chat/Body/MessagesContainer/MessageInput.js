@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
@@ -50,26 +50,7 @@ function MessageInput({
     state,
     actions: { onEnterComment }
   } = useInputContext();
-  const prevChannelId = useRef(currentChannelId);
-  const textForCurrentChannel = state['chat' + currentChannelId] || '';
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    if (prevChannelId.current !== currentChannelId) {
-      onEnterComment({
-        contentType: 'chat',
-        contentId: prevChannelId.current,
-        text
-      });
-      setText('');
-    }
-    prevChannelId.current = currentChannelId;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentChannelId, text]);
-
-  useEffect(() => {
-    setText(textForCurrentChannel);
-  }, [textForCurrentChannel]);
+  const text = state['chat' + currentChannelId] || '';
 
   useEffect(() => {
     if (!isMobile(navigator)) {
@@ -131,7 +112,11 @@ function MessageInput({
           onChange={handleChange}
           onKeyUp={(event) => {
             if (event.key === ' ') {
-              setText(addEmoji(event.target.value));
+              onEnterComment({
+                contentType: 'chat',
+                contentId: currentChannelId,
+                text: addEmoji(event.target.value)
+              });
             }
           }}
           onPaste={handlePaste}
@@ -170,7 +155,11 @@ function MessageInput({
     setTimeout(() => {
       onHeightChange(innerRef.current?.clientHeight);
     }, 0);
-    setText(event.target.value);
+    onEnterComment({
+      contentType: 'chat',
+      contentId: currentChannelId,
+      text: event.target.value
+    });
   }
 
   function handleKeyDown(event) {
@@ -204,7 +193,11 @@ function MessageInput({
     if (stringIsEmpty(text)) return;
     try {
       await onMessageSubmit(finalizeEmoji(text));
-      setText('');
+      onEnterComment({
+        contentType: 'chat',
+        contentId: currentChannelId,
+        text: ''
+      });
     } catch (error) {
       console.error(error);
     }
