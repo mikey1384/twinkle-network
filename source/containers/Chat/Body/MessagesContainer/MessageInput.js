@@ -57,19 +57,19 @@ function MessageInput({
 
   useEffect(() => {
     if (prevChannelId !== currentChannelId) {
-      setText('');
       onEnterComment({
         contentType: 'chat',
         contentId: prevChannelId.current,
         text: textRef.current
       });
+      handleSetText('');
     }
     prevChannelId.current = currentChannelId;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChannelId]);
 
   useEffect(() => {
-    setText(textForThisChannel);
+    handleSetText(textForThisChannel);
   }, [textForThisChannel]);
 
   useEffect(() => {
