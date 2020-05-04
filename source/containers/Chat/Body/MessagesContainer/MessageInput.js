@@ -1,5 +1,5 @@
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useMemo } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -50,7 +50,26 @@ function MessageInput({
     state,
     actions: { onEnterComment }
   } = useInputContext();
-  const text = state['chat' + currentChannelId] || '';
+  const prevChannelId = useRef(currentChannelId);
+  const textForCurrentChannel = state['chat' + currentChannelId] || '';
+  const [text, setText] = useState('');
+
+  useEffect(() => {
+    if (prevChannelId.current !== currentChannelId) {
+      onEnterComment({
+        contentType: 'chat',
+        contentId: prevChannelId.current,
+        text
+      });
+      setText('');
+    }
+    prevChannelId.current = currentChannelId;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChannelId, text]);
+
+  useEffect(() => {
+    setText(textForCurrentChannel);
+  }, [textForCurrentChannel]);
 
   useEffect(() => {
     if (!isMobile(navigator)) {
@@ -112,11 +131,7 @@ function MessageInput({
           onChange={handleChange}
           onKeyUp={(event) => {
             if (event.key === ' ') {
-              onEnterComment({
-                contentType: 'chat',
-                contentId: currentChannelId,
-                text: addEmoji(event.target.value)
-              });
+              setText(addEmoji(event.target.value));
             }
           }}
           onPaste={handlePaste}
@@ -155,11 +170,7 @@ function MessageInput({
     setTimeout(() => {
       onHeightChange(innerRef.current?.clientHeight);
     }, 0);
-    onEnterComment({
-      contentType: 'chat',
-      contentId: currentChannelId,
-      text: event.target.value
-    });
+    setText(event.target.value);
   }
 
   function handleKeyDown(event) {
@@ -193,11 +204,7 @@ function MessageInput({
     if (stringIsEmpty(text)) return;
     try {
       await onMessageSubmit(finalizeEmoji(text));
-      onEnterComment({
-        contentType: 'chat',
-        contentId: currentChannelId,
-        text: ''
-      });
+      setText('');
     } catch (error) {
       console.error(error);
     }
