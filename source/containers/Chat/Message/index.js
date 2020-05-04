@@ -119,12 +119,14 @@ function Message({
     rootMargin: '60px 0px 0px 0px',
     threshold: 0
   });
+  const [visible, setVisible] = useState();
+  const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const PanelRef = useRef(null);
   useLazyLoad({
     PanelRef,
     inView,
-    onSetPlaceholderHeight: handleSetPlaceholderHeight,
-    onSetVisible: handleSetVisible,
+    onSetPlaceholderHeight: setPlaceholderHeight,
+    onSetVisible: setVisible,
     delay: 1000
   });
   const { onFileUpload } = useContext(LocalContext);
@@ -166,18 +168,11 @@ function Message({
   });
 
   const {
-    state: {
-      filesBeingUploaded,
-      reconnecting,
-      replyTarget,
-      [`message${messageId}`]: { placeholderHeight, visible } = {}
-    },
+    state: { filesBeingUploaded, reconnecting, replyTarget },
     actions: {
       onEditMessage,
       onSaveMessage,
-      onSetPlaceholderHeight,
       onSetReplyTarget,
-      onSetVisible,
       onUpdateChessMoveViewTimeStamp,
       onUpdateRecentChessMessage
     }
@@ -607,20 +602,6 @@ function Message({
     if (isLastMsg) {
       onSetScrollToBottom();
     }
-  }
-
-  function handleSetPlaceholderHeight(height) {
-    onSetPlaceholderHeight({
-      messageId,
-      height
-    });
-  }
-
-  function handleSetVisible(visible) {
-    onSetVisible({
-      messageId,
-      visible
-    });
   }
 
   async function handleChessSpoilerClick() {

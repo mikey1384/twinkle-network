@@ -956,17 +956,6 @@ export default function ChatReducer(state, action) {
         isRespondingToSubject: action.isResponding,
         replyTarget: null
       };
-    case 'SET_VISIBLE': {
-      const messageKey = 'message' + action.messageId;
-      const prevMessageState = state[messageKey] || {};
-      return {
-        ...state,
-        [messageKey]: {
-          ...prevMessageState,
-          visible: action.visible
-        }
-      };
-    }
     case 'SET_LOADING_VOCABULARY':
       return {
         ...state,
@@ -986,17 +975,6 @@ export default function ChatReducer(state, action) {
               : {}
         }
       };
-    case 'SET_PLACEHOLDER_HEIGHT': {
-      const messageKey = 'message' + action.messageId;
-      const prevMessageState = state[messageKey] || {};
-      return {
-        ...state,
-        [messageKey]: {
-          ...prevMessageState,
-          placeholderHeight: action.height
-        }
-      };
-    }
     case 'SET_USER_DATA':
       return {
         ...state,
