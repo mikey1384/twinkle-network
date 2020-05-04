@@ -52,7 +52,7 @@ export default function MediaPlayer({
 
   useEffect(() => {
     if (currentTime > 0) {
-      PlayerRef.current.seekTo(currentTime);
+      PlayerRef.current?.seekTo(currentTime);
       setPaused(true);
     }
 
