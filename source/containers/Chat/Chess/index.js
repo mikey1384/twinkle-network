@@ -17,6 +17,7 @@ import {
   getOpponentPlayerColor,
   getPlayerPieces
 } from './helpers/model';
+import { isMobile } from 'helpers';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
@@ -169,7 +170,11 @@ export default function Chess({
       className={css`
         height: 515px;
         @media (max-width: ${mobileMaxWidth}) {
-          height: ${isFromModal ? 'auto' : statusText ? '335px' : '315px'};
+          height: ${isFromModal || !isMobile(navigator)
+            ? 'auto'
+            : statusText
+            ? '335px'
+            : '315px'};
         }
       `}
       style={{
