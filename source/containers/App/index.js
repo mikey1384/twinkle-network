@@ -411,7 +411,7 @@ function App({ location, history }) {
         rewardLevel,
         filePath,
         fileName: file.name,
-        fileSize: file.fileSize
+        fileSize: file.size
       });
       if (data) {
         onLoadNewFeeds([data]);
