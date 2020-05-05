@@ -49,6 +49,10 @@ export default function EditTextArea({
   const [editText, setEditText] = useState(prevEditState?.editedComment || '');
 
   useEffect(() => {
+    handleSetEditText(prevEditState?.editedComment || '');
+  }, [prevEditState]);
+
+  useEffect(() => {
     if (!editText) {
       handleSetEditText(text);
     }
@@ -77,7 +81,7 @@ export default function EditTextArea({
       });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contentId, contentType]);
+  }, []);
 
   return (
     <div style={{ lineHeight: 1 }}>

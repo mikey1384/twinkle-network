@@ -49,19 +49,33 @@ export default function XPRewardInterface({
   } = useInputContext();
   const rewardForm = state['reward' + contentType + contentId] || {};
   const {
-    comment = '',
+    comment: prevComment = '',
     selectedAmount = 0,
     starTabActive = false,
     prevRewardLevel
   } = rewardForm;
   const [rewarding, setRewarding] = useState(false);
   const mounted = useRef(true);
+  const commentRef = useRef(prevComment);
+  const [comment, setComment] = useState(prevComment);
+
+  useEffect(() => {
+    handleSetComment(prevComment);
+  }, [prevComment]);
 
   useEffect(() => {
     mounted.current = true;
     return function cleanUp() {
+      onSetRewardForm({
+        contentType,
+        contentId,
+        form: {
+          comment: commentRef.current
+        }
+      });
       mounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -141,7 +155,7 @@ export default function XPRewardInterface({
           selectedAmount={selectedAmount}
           stars={stars}
           starTabActive={starTabActive}
-          onSetRewardForm={form =>
+          onSetRewardForm={(form) =>
             onSetRewardForm({ contentType, contentId, form })
           }
           userId={userId}
@@ -153,14 +167,8 @@ export default function XPRewardInterface({
         `}
         minRows={3}
         value={comment}
-        onChange={event => {
-          onSetRewardForm({
-            contentType,
-            contentId,
-            form: {
-              comment: addEmoji(event.target.value)
-            }
-          });
+        onChange={(event) => {
+          handleSetComment(addEmoji(event.target.value));
         }}
         placeholder={`Let the recipient know why you are rewarding XP for this ${
           contentType === 'url' ? 'link' : contentType
@@ -208,15 +216,16 @@ export default function XPRewardInterface({
       if (mounted.current) {
         setRewarding(false);
         onRewardSubmit(data);
-        onSetRewardForm({
-          contentId,
-          contentType,
-          form: undefined
-        });
+        handleSetComment('');
       }
     } catch (error) {
       console.error({ error });
       setRewarding(false);
     }
+  }
+
+  function handleSetComment(text) {
+    setComment(text);
+    commentRef.current = text;
   }
 }

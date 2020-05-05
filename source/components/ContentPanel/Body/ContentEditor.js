@@ -63,6 +63,11 @@ export default function ContentEditor({
   const [inputState, setInputState] = useState(
     prevInputState || defaultInputState
   );
+  useEffect(() => {
+    handleSetInputState(prevInputState || defaultInputState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevInputState]);
+
   const editForm = inputState || {};
   const {
     editedContent = '',
@@ -72,6 +77,7 @@ export default function ContentEditor({
     editedTitle = '',
     editedUrl = ''
   } = editForm;
+
   const urlError = useMemo(
     () =>
       !stringIsEmpty(editedUrl) &&
