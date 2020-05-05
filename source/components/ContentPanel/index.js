@@ -118,7 +118,7 @@ export default function ContentPanel({
       onSetPlaceholderHeight({
         contentType,
         contentId,
-        height: container.clientHeight
+        height: container?.clientHeight
       });
       onSetVisible({
         contentId,
