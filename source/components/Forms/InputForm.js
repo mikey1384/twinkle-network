@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
@@ -43,11 +43,16 @@ export default function InputForm({
   } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.contentId;
-  const text = useMemo(() => state[contentType + contentId] || '', [
+  const prevText = useMemo(() => state[contentType + contentId] || '', [
     contentId,
     contentType,
     state
   ]);
+  const textRef = useRef(prevText);
+  const [text, setText] = useState(prevText);
+  useEffect(() => {
+    handleSetText(prevText);
+  }, [prevText]);
   const commentExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
@@ -56,6 +61,16 @@ export default function InputForm({
       }),
     [text]
   );
+  useEffect(() => {
+    return function saveTextBeforeUnmount() {
+      onEnterComment({
+        contentType,
+        contentId,
+        text: textRef.current
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div style={style} className={className}>
@@ -107,29 +122,26 @@ export default function InputForm({
     </div>
   );
 
-  function handleEnterText(text) {
-    onEnterComment({
-      contentType,
-      contentId,
-      text
-    });
-  }
-
   function handleKeyUp(event) {
     if (event.key === ' ') {
-      handleEnterText(addEmoji(event.target.value));
+      handleSetText(addEmoji(event.target.value));
     }
   }
 
   function handleOnChange(event) {
-    handleEnterText(event.target.value);
+    handleSetText(event.target.value);
+  }
+
+  function handleSetText(text) {
+    setText(text);
+    textRef.current = text;
   }
 
   async function handleSubmit() {
     setSubmitting(true);
     try {
       await onSubmit(finalizeEmoji(text));
-      handleEnterText('');
+      handleSetText('');
       setSubmitting(false);
     } catch (error) {
       setSubmitting(false);
