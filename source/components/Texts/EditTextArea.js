@@ -65,7 +65,7 @@ export default function EditTextArea({
   );
 
   useEffect(() => {
-    return function onSaveTextBeforeUnmount() {
+    return function saveTextBeforeUnmount() {
       onSetEditForm({
         contentId,
         contentType,

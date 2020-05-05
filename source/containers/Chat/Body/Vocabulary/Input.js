@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Icon from 'components/Icon';
 import Button from 'components/Button';

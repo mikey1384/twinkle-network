@@ -141,7 +141,7 @@ export default function ContentEditor({
       return true;
     }
     if (
-      (contentType === 'vidoe' || contentType === 'url') &&
+      (contentType === 'video' || contentType === 'url') &&
       urlExceedsCharLimit
     ) {
       return true;
@@ -220,7 +220,7 @@ export default function ContentEditor({
           >
             <Input
               hasError={urlError}
-              onChange={text =>
+              onChange={(text) =>
                 onSetEditForm({
                   contentId,
                   contentType,
@@ -244,7 +244,7 @@ export default function ContentEditor({
         {contentType !== 'comment' && (
           <>
             <Input
-              onChange={text =>
+              onChange={(text) =>
                 onSetEditForm({
                   contentId,
                   contentType,
@@ -254,7 +254,7 @@ export default function ContentEditor({
                   }
                 })
               }
-              onKeyUp={event =>
+              onKeyUp={(event) =>
                 onSetEditForm({
                   contentId,
                   contentType,
@@ -276,7 +276,7 @@ export default function ContentEditor({
         <div style={{ position: 'relative', marginTop: '1rem' }}>
           <Textarea
             minRows={4}
-            onChange={event => {
+            onChange={(event) => {
               const { value } = event.target;
               onSetEditForm({
                 contentId,
@@ -308,7 +308,7 @@ export default function ContentEditor({
             <span style={{ fontWeight: 'bold' }}>Secret Message</span>
             <Textarea
               minRows={4}
-              onChange={event => {
+              onChange={(event) => {
                 const { value } = event.target;
                 onSetEditForm({
                   contentId,
