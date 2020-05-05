@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'components/Texts/Textarea';
 import Input from 'components/Texts/Input';
@@ -40,35 +40,29 @@ export default function ContentEditor({
   style,
   title
 }) {
+  const defaultInputState = {
+    editedContent: content || '',
+    editedComment: comment || '',
+    editedDescription: description || '',
+    editedSecretAnswer: secretAnswer || '',
+    editedTitle: title || '',
+    editedUrl:
+      contentType === 'video'
+        ? `https://www.youtube.com/watch?v=${content}`
+        : content || ''
+  };
   const {
     state,
     actions: { onSetEditForm }
   } = useInputContext();
-  const inputState = useMemo(() => state['edit' + contentType + contentId], [
-    contentId,
-    contentType,
-    state
-  ]);
-  useEffect(() => {
-    if (!inputState) {
-      onSetEditForm({
-        contentId,
-        contentType,
-        form: {
-          editedContent: content || '',
-          editedComment: comment || '',
-          editedDescription: description || '',
-          editedSecretAnswer: secretAnswer || '',
-          editedTitle: title || '',
-          editedUrl:
-            contentType === 'video'
-              ? `https://www.youtube.com/watch?v=${content}`
-              : content || ''
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const prevInputState = useMemo(
+    () => state['edit' + contentType + contentId],
+    [contentId, contentType, state]
+  );
+  const inputStateRef = useRef(prevInputState || defaultInputState);
+  const [inputState, setInputState] = useState(
+    prevInputState || defaultInputState
+  );
   const editForm = inputState || {};
   const {
     editedContent = '',
@@ -201,6 +195,17 @@ export default function ContentEditor({
     urlExceedsCharLimit
   ]);
 
+  useEffect(() => {
+    return function saveInputStateBeforeUnmount() {
+      onSetEditForm({
+        contentId,
+        contentType,
+        form: inputStateRef.current
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentId, contentType]);
+
   return (
     <div
       style={style}
@@ -211,7 +216,7 @@ export default function ContentEditor({
         }
       `}
     >
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         {(contentType === 'video' || contentType === 'url') && (
           <div
             className={css`
@@ -221,13 +226,9 @@ export default function ContentEditor({
             <Input
               hasError={urlError}
               onChange={(text) =>
-                onSetEditForm({
-                  contentId,
-                  contentType,
-                  form: {
-                    ...editForm,
-                    editedUrl: text
-                  }
+                handleSetInputState({
+                  ...editForm,
+                  editedUrl: text
                 })
               }
               placeholder={edit[contentType]}
@@ -245,23 +246,15 @@ export default function ContentEditor({
           <>
             <Input
               onChange={(text) =>
-                onSetEditForm({
-                  contentId,
-                  contentType,
-                  form: {
-                    ...editForm,
-                    editedTitle: text
-                  }
+                handleSetInputState({
+                  ...editForm,
+                  editedTitle: text
                 })
               }
               onKeyUp={(event) =>
-                onSetEditForm({
-                  contentId,
-                  contentType,
-                  form: {
-                    ...editForm,
-                    editedTitle: addEmoji(event.target.value)
-                  }
+                handleSetInputState({
+                  ...editForm,
+                  editedTitle: addEmoji(event.target.value)
                 })
               }
               placeholder={edit.title}
@@ -278,15 +271,11 @@ export default function ContentEditor({
             minRows={4}
             onChange={(event) => {
               const { value } = event.target;
-              onSetEditForm({
-                contentId,
-                contentType,
-                form: {
-                  ...editForm,
-                  [contentType === 'comment'
-                    ? 'editedComment'
-                    : 'editedDescription']: value
-                }
+              handleSetInputState({
+                ...editForm,
+                [contentType === 'comment'
+                  ? 'editedComment'
+                  : 'editedDescription']: value
               });
             }}
             placeholder={
@@ -310,13 +299,9 @@ export default function ContentEditor({
               minRows={4}
               onChange={(event) => {
                 const { value } = event.target;
-                onSetEditForm({
-                  contentId,
-                  contentType,
-                  form: {
-                    ...editForm,
-                    editedSecretAnswer: value
-                  }
+                handleSetInputState({
+                  ...editForm,
+                  editedSecretAnswer: value
                 });
               }}
               placeholder="Enter Secret Message... (Optional)"
@@ -356,15 +341,16 @@ export default function ContentEditor({
   );
 
   function handleDismiss() {
-    onSetEditForm({
-      contentId,
-      contentType,
-      form: undefined
-    });
+    handleSetInputState(null);
     onDismiss();
   }
 
-  async function onSubmit(event) {
+  function handleSetInputState(newState) {
+    setInputState(newState);
+    inputStateRef.current = newState;
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
     const post = {
       ...editForm,

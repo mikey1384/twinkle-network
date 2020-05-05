@@ -282,7 +282,7 @@ export default function Body({
 
   return (
     <ErrorBoundary>
-      <div>
+      <div style={{ width: '100%' }}>
         {contentType === 'subject' &&
           filePath &&
           (userId ? (

@@ -14,7 +14,7 @@ export default function LoginToViewContent() {
     <div
       onClick={onOpenSigninModal}
       className={css`
-        width: 100%;
+        width: CALC(100% - 2rem);
         cursor: pointer;
         display: flex;
         align-items: center;
