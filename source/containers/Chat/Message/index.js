@@ -235,7 +235,7 @@ function Message({
           numUnreads: 1,
           lastMessage: {
             content,
-            sender: { id: userId, username }
+            sender: { id: myId, username: myUsername }
           }
         }
       });
@@ -411,7 +411,7 @@ function Message({
                 style={MessageStyle.usernameText}
                 user={{
                   id: userId,
-                  username: username
+                  username
                 }}
               />{' '}
               <span className={MessageStyle.timeStamp}>
