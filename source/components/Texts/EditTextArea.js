@@ -49,7 +49,9 @@ export default function EditTextArea({
   const [editText, setEditText] = useState(prevEditState?.editedComment || '');
 
   useEffect(() => {
-    handleSetEditText(prevEditState?.editedComment || '');
+    handleSetEditText(
+      prevEditState?.editedComment || editTextRef.current || ''
+    );
   }, [prevEditState]);
 
   useEffect(() => {
