@@ -215,12 +215,13 @@ export default function XPRewardInterface({
       );
       if (mounted.current) {
         setRewarding(false);
-        onRewardSubmit(data);
+        handleSetComment('');
         onSetRewardForm({
           contentType,
           contentId,
           form: undefined
         });
+        onRewardSubmit(data);
       }
     } catch (error) {
       console.error({ error });
