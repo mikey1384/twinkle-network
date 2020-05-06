@@ -91,8 +91,6 @@ export default function MediaPlayer({
     return thumbUrl;
   }, [autoPlay, currentTime, fileType, looping, mobile, thumbUrl]);
 
-  const isMobileThumb = isThumb && mobile;
-
   return (
     <div
       style={{
@@ -100,18 +98,22 @@ export default function MediaPlayer({
         width: '100%',
         position: 'relative',
         paddingTop:
-          fileType === 'video' ? '56.25%' : fileType === 'audio' ? '3rem' : ''
+          fileType === 'video' && !isThumb
+            ? '56.25%'
+            : fileType === 'audio'
+            ? '3rem'
+            : ''
       }}
       onClick={handlePlayerClick}
     >
       <ExtractedThumb
         src={src}
-        isHidden={!isMobileThumb}
+        isHidden={!isThumb}
         style={{ width: '100%', height: '7rem' }}
         onThumbnailLoad={handleThumbnailLoad}
         thumbUrl={thumbUrl}
       />
-      {!isMobileThumb && (
+      {!isThumb && (
         <ReactPlayer
           loop={looping}
           light={light}
