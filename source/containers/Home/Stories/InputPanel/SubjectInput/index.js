@@ -1,4 +1,11 @@
-import React, { useContext, memo, useMemo, useRef, useState } from 'react';
+import React, {
+  useContext,
+  memo,
+  useMemo,
+  useRef,
+  useState,
+  useEffect
+} from 'react';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Textarea from 'components/Texts/Textarea';
@@ -54,11 +61,25 @@ function SubjectInput() {
   } = useInputContext();
   const {
     attachment,
-    descriptionFieldShown,
-    details: { title, description, secretAnswer, rewardLevel },
-    hasSecretAnswer
+    details,
+    details: { rewardLevel }
   } = subject;
   const [attachContentModalShown, setAttachContentModalShown] = useState(false);
+  const titleRef = useRef(details.title);
+  const [title, setTitle] = useState(details.title);
+  const descriptionRef = useRef(details.description);
+  const [description, setDescription] = useState(details.description);
+  const descriptionFieldShownRef = useRef(subject.descriptionFieldShown);
+  const [descriptionFieldShown, setDescriptionFieldShown] = useState(
+    subject.descriptionFieldShown
+  );
+  const secretAnswerRef = useRef(details.secretAnswer);
+  const [secretAnswer, setSecretAnswer] = useState(details.secretAnswer);
+  const hasSecretAnswerRef = useRef(subject.hasSecretAnswer);
+  const [hasSecretAnswer, setHasSecretAnswer] = useState(
+    subject.hasSecretAnswer
+  );
+
   const titleExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
@@ -101,6 +122,17 @@ function SubjectInput() {
     return false;
   }, [description.length, hasSecretAnswer, secretAnswer, title.length]);
 
+  useEffect(() => {
+    return function setTextsBeforeUnmount() {
+      onSetSubjectDescriptionFieldShown(descriptionFieldShownRef.current);
+      onSetSubjectTitle(titleRef.current);
+      onSetSubjectDescription(descriptionRef.current);
+      onSetHasSecretAnswer(hasSecretAnswerRef.current);
+      onSetSecretAnswer(secretAnswerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <ErrorBoundary className={PanelStyle}>
       {!uploadingFile && (
@@ -120,7 +152,7 @@ function SubjectInput() {
                 value={title}
                 onChange={handleInputChange}
                 onKeyUp={(event) => {
-                  onSetSubjectTitle(addEmoji(event.target.value));
+                  handleSetTitle(addEmoji(event.target.value));
                 }}
                 style={titleExceedsCharLimit?.style}
               />
@@ -166,11 +198,11 @@ function SubjectInput() {
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
                 onChange={(event) =>
-                  onSetSubjectDescription(addEmoji(event.target.value))
+                  handleSetDescription(addEmoji(event.target.value))
                 }
                 onKeyUp={(event) => {
                   if (event.key === ' ') {
-                    onSetSubjectDescription(addEmoji(event.target.value));
+                    handleSetDescription(addEmoji(event.target.value));
                   }
                 }}
               />
@@ -200,11 +232,11 @@ function SubjectInput() {
                     minRows={4}
                     placeholder="Enter the Secret Message"
                     onChange={(event) =>
-                      onSetSecretAnswer(addEmoji(event.target.value))
+                      handleSetSecretAnswer(addEmoji(event.target.value))
                     }
                     onKeyUp={(event) => {
                       if (event.key === ' ') {
-                        onSetSecretAnswer(addEmoji(event.target.value));
+                        handleSetSecretAnswer(addEmoji(event.target.value));
                       }
                     }}
                   />
@@ -242,7 +274,7 @@ function SubjectInput() {
                 <SwitchButton
                   checked={hasSecretAnswer}
                   label="Secret Message"
-                  onChange={() => onSetHasSecretAnswer(!hasSecretAnswer)}
+                  onChange={() => handleSetHasSecretAnswer(!hasSecretAnswer)}
                   style={{ marginRight: '1rem' }}
                 />
                 <Button
@@ -290,10 +322,10 @@ function SubjectInput() {
   }
 
   function handleInputChange(text) {
-    onSetSubjectTitle(text);
-    onSetSubjectDescriptionFieldShown(!!text.length);
+    handleSetTitle(text);
+    handleSetDescriptionFieldShown(!!text.length);
     if (!text.length) {
-      onSetHasSecretAnswer(false);
+      handleSetHasSecretAnswer(false);
     }
   }
 
@@ -313,6 +345,31 @@ function SubjectInput() {
     handleUploadSubject();
   }
 
+  function handleSetTitle(text) {
+    setTitle(text);
+    titleRef.current = text;
+  }
+
+  function handleSetDescription(text) {
+    setDescription(text);
+    descriptionRef.current = text;
+  }
+
+  function handleSetDescriptionFieldShown(shown) {
+    setDescriptionFieldShown(shown);
+    descriptionFieldShownRef.current = shown;
+  }
+
+  function handleSetHasSecretAnswer(has) {
+    setHasSecretAnswer(has);
+    hasSecretAnswerRef.current = has;
+  }
+
+  function handleSetSecretAnswer(text) {
+    setSecretAnswer(text);
+    secretAnswerRef.current = text;
+  }
+
   async function handleUploadSubject() {
     try {
       const data = await uploadContent({
@@ -324,6 +381,11 @@ function SubjectInput() {
       });
       if (data) {
         onLoadNewFeeds([data]);
+        handleSetTitle('');
+        handleSetDescription('');
+        handleSetSecretAnswer('');
+        handleSetDescriptionFieldShown(false);
+        handleSetHasSecretAnswer(false);
         onResetSubjectInput();
       }
       onSetSubmittingSubject(false);
