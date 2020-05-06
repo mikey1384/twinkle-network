@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import Textarea from 'components/Texts/Textarea';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
@@ -53,6 +53,12 @@ function ContentInput() {
     urlHelper,
     urlError
   } = content;
+  const titleRef = useRef(form.title);
+  const [title, setTitle] = useState(form.title);
+  const descriptionRef = useRef(form.description);
+  const [description, setDescription] = useState(form.description);
+  const urlRef = useRef(form.url);
+  const [url, setUrl] = useState(form.url);
   const [submitting, setSubmitting] = useState(false);
   const UrlFieldRef = useRef(null);
   const checkContentExistsTimerRef = useRef(null);
@@ -63,9 +69,9 @@ function ContentInput() {
       exceedsCharLimit({
         inputType: 'description',
         contentType: form.isVideo ? 'video' : 'url',
-        text: form.description
+        text: description
       }),
-    [form.description, form.isVideo]
+    [description, form.isVideo]
   );
 
   const titleExceedsCharLimit = useMemo(
@@ -73,23 +79,21 @@ function ContentInput() {
       exceedsCharLimit({
         inputType: 'title',
         contentType: form.isVideo ? 'video' : 'url',
-        text: form.title
+        text: title
       }),
-    [form.isVideo, form.title]
+    [form.isVideo, title]
   );
 
   const errorInUrlField = useMemo(() => {
-    const { isVideo, url } = form;
     if (urlError) return { borderColor: 'red', color: 'red' };
     return exceedsCharLimit({
       inputType: 'url',
-      contentType: isVideo ? 'video' : 'url',
+      contentType: form.isVideo ? 'video' : 'url',
       text: url
     })?.style;
-  }, [form, urlError]);
+  }, [form.isVideo, url, urlError]);
 
   const buttonDisabled = useMemo(() => {
-    const { url, title } = form;
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
     if (errorInUrlField) return true;
     if (titleExceedsCharLimit) return true;
@@ -98,9 +102,19 @@ function ContentInput() {
   }, [
     descriptionExceedsCharLimit,
     errorInUrlField,
-    form,
-    titleExceedsCharLimit
+    title,
+    titleExceedsCharLimit,
+    url
   ]);
+
+  useEffect(() => {
+    return function saveFormBeforeUnmount() {
+      onSetContentDescription(descriptionRef.current);
+      onSetContentTitle(titleRef.current);
+      onSetContentUrl(urlRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ErrorBoundary className={PanelStyle}>
@@ -113,7 +127,7 @@ function ContentInput() {
       <Input
         inputRef={UrlFieldRef}
         style={errorInUrlField}
-        value={form.url}
+        value={url}
         onChange={onUrlFieldChange}
         placeholder="Copy and paste a URL address here"
       />
@@ -169,12 +183,12 @@ function ContentInput() {
                 Title:
               </span>
               <Input
-                value={form.title}
-                onChange={onSetContentTitle}
+                value={title}
+                onChange={handleSetTitle}
                 placeholder="Enter Title Here"
-                onKeyUp={event => {
+                onKeyUp={(event) => {
                   if (event.key === ' ') {
-                    onSetContentTitle(addEmoji(event.target.value));
+                    handleSetTitle(addEmoji(event.target.value));
                   }
                 }}
                 style={{
@@ -191,13 +205,13 @@ function ContentInput() {
           {descriptionFieldShown && (
             <>
               <Textarea
-                value={form.description}
+                value={description}
                 minRows={4}
                 placeholder="Enter Description (Optional, you don't need to write this)"
-                onChange={event => onSetContentDescription(event.target.value)}
-                onKeyUp={event => {
+                onChange={(event) => handleSetDescription(event.target.value)}
+                onKeyUp={(event) => {
                   if (event.key === ' ') {
-                    onSetContentDescription(addEmoji(event.target.value));
+                    handleSetDescription(addEmoji(event.target.value));
                   }
                 }}
                 style={{
@@ -256,11 +270,10 @@ function ContentInput() {
   );
 
   async function onSubmit(event) {
-    const { url, isVideo } = form;
     let urlError;
     event.preventDefault();
     if (!isValidUrl(url)) urlError = 'That is not a valid url';
-    if (isVideo && !isValidYoutubeUrl(url)) {
+    if (form.isVideo && !isValidYoutubeUrl(url)) {
       urlError = 'That is not a valid YouTube url';
     }
     if (urlError) {
@@ -272,11 +285,15 @@ function ContentInput() {
     try {
       const data = await uploadContent({
         ...form,
-        title: finalizeEmoji(form.title),
-        description: finalizeEmoji(form.description)
+        url,
+        title: finalizeEmoji(title),
+        description: finalizeEmoji(description)
       });
       if (data) {
         onResetContentInput();
+        handleSetTitle('');
+        handleSetDescription('');
+        handleSetUrl('');
         onLoadNewFeeds([data]);
         document.getElementById('App').scrollTop = 0;
       }
@@ -286,36 +303,39 @@ function ContentInput() {
     }
   }
 
-  function onUrlFieldChange(url) {
+  function onUrlFieldChange(text) {
     clearTimeout(checkContentExistsTimerRef.current);
     clearTimeout(showHelperMessageTimerRef.current);
-    const urlIsValid = isValidUrl(url);
+    const urlIsValid = isValidUrl(text);
     onSetContentAlreadyPosted(false);
-    onSetContentUrl(url);
-    onSetContentIsVideo(isValidYoutubeUrl(url));
+    handleSetUrl(text);
+    onSetContentIsVideo(isValidYoutubeUrl(text));
     onSetContentTitleFieldShown(urlIsValid);
     onSetContentDescriptionFieldShown(urlIsValid);
     onSetContentUrlError('');
     onSetContentUrlHelper('');
     if (urlIsValid) {
       checkContentExistsTimerRef.current = setTimeout(
-        () => handleCheckIfContentExists(url),
+        () => handleCheckIfContentExists(text),
         300
       );
     }
     showHelperMessageTimerRef.current = setTimeout(() => {
       onSetContentUrlHelper(
-        urlIsValid || stringIsEmpty(url)
+        urlIsValid || stringIsEmpty(text)
           ? ''
           : `A URL is a website's internet address. Twinkle Network's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a> and <a href="https://www.twinkle.network" target="_blank">www.twinkle.network</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
       );
       const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
-      onSetContentTitle(
-        !urlIsValid && !stringIsEmpty(url) && url.length > 3 && !regex.test(url)
-          ? url
-          : form.title
+      handleSetTitle(
+        !urlIsValid &&
+          !stringIsEmpty(text) &&
+          text.length > 3 &&
+          !regex.test(text)
+          ? text
+          : title
       );
-      onSetContentTitleFieldShown(!stringIsEmpty(url));
+      onSetContentTitleFieldShown(!stringIsEmpty(text));
     }, 300);
   }
 
@@ -326,6 +346,21 @@ function ContentInput() {
       contentType: isVideo ? 'video' : 'url'
     });
     return onSetContentAlreadyPosted(exists ? content : false);
+  }
+
+  function handleSetTitle(text) {
+    setTitle(text);
+    titleRef.current = text;
+  }
+
+  function handleSetDescription(text) {
+    setDescription(text);
+    descriptionRef.current = text;
+  }
+
+  function handleSetUrl(text) {
+    setUrl(text);
+    urlRef.current = text;
   }
 }
 
