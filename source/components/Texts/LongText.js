@@ -38,7 +38,6 @@ export default function LongText({
 
   useEffect(() => {
     if (ContainerRef.current?.clientWidth) {
-      setLoading(false);
       if (!truncated.current) {
         truncateText({
           container: ContainerRef.current,
@@ -46,6 +45,7 @@ export default function LongText({
           maxWidth: ContainerRef.current.clientWidth
         });
       }
+      setLoading(false);
     } else {
       setLoading(true);
     }
