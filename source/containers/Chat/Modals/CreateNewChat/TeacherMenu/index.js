@@ -6,11 +6,16 @@ import ClassroomChatForm from './ClassroomChatForm';
 import RegularMenu from '../RegularMenu';
 
 TeacherMenu.propTypes = {
+  creatingChat: PropTypes.bool,
   onCreateRegularChat: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
-export default function TeacherMenu({ onCreateRegularChat, onHide }) {
+export default function TeacherMenu({
+  creatingChat,
+  onCreateRegularChat,
+  onHide
+}) {
   const [section, setSection] = useState('select');
   return (
     <ErrorBoundary>
@@ -19,6 +24,7 @@ export default function TeacherMenu({ onCreateRegularChat, onHide }) {
       )}
       {section === 'regular' && (
         <RegularMenu
+          creatingChat={creatingChat}
           onBackClick={() => setSection('select')}
           onDone={onCreateRegularChat}
           onHide={onHide}

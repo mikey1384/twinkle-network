@@ -29,11 +29,13 @@ export default function ClassroomChat({ onBackClick, onHide }) {
     }
   } = useChatContext();
   const { userId } = useMyState();
+  const [creatingChat, setCreatingChat] = useState(false);
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const disabled = useMemo(
-    () => stringIsEmpty(channelName) || selectedUsers.length === 0,
-    [channelName, selectedUsers.length]
+    () =>
+      creatingChat || stringIsEmpty(channelName) || selectedUsers.length === 0,
+    [channelName, creatingChat, selectedUsers.length]
   );
 
   return (
@@ -114,6 +116,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
   }
 
   async function handleDone() {
+    setCreatingChat(true);
     const { message, members } = await createNewChat({
       userId,
       channelName,

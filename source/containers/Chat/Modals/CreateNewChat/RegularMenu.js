@@ -11,12 +11,18 @@ import { useAppContext, useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
 RegularMenu.propTypes = {
+  creatingChat: PropTypes.bool,
   onBackClick: PropTypes.func,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
-export default function RegularMenu({ onBackClick, onHide, onDone }) {
+export default function RegularMenu({
+  creatingChat,
+  onBackClick,
+  onHide,
+  onDone
+}) {
   const {
     requestHelpers: { searchUserToInvite }
   } = useAppContext();
@@ -102,6 +108,7 @@ export default function RegularMenu({ onBackClick, onHide, onDone }) {
           color="blue"
           onClick={handleDone}
           disabled={
+            creatingChat ||
             (selectedUsers.length > 1 && !channelName) ||
             selectedUsers.length === 0 ||
             selectedUsers.length > 5

@@ -60,6 +60,7 @@ function Chat({ onFileUpload }) {
     currentChannelOnlineMembers,
     setCurrentChannelOnlineMembers
   ] = useState({});
+  const [creatingChat, setCreatingChat] = useState(false);
   const [createNewChatModalShown, setCreateNewChatModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [partner, setPartner] = useState(null);
@@ -191,6 +192,7 @@ function Chat({ onFileUpload }) {
           >
             {createNewChatModalShown && (
               <CreateNewChatModal
+                creatingChat={creatingChat}
                 onHide={() => setCreateNewChatModalShown(false)}
                 onDone={handleCreateNewChannel}
               />
@@ -257,6 +259,7 @@ function Chat({ onFileUpload }) {
     isClosed,
     selectedUsers
   }) {
+    setCreatingChat(true);
     if (selectedUsers.length === 1) {
       const recepient = selectedUsers[0];
       const data = await loadDMChannel({ recepient });
@@ -265,7 +268,8 @@ function Chat({ onFileUpload }) {
         recepient,
         channelData: data
       });
-      return setCreateNewChatModalShown(false);
+      setCreateNewChatModalShown(false);
+      return setCreatingChat(false);
     }
 
     const { message, members } = await createNewChat({
@@ -284,6 +288,7 @@ function Chat({ onFileUpload }) {
       members
     });
     setCreateNewChatModalShown(false);
+    setCreatingChat(false);
   }
 
   function onSubjectChange({ message }) {

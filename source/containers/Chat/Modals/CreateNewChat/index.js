@@ -6,18 +6,27 @@ import TeacherMenu from './TeacherMenu';
 import { useMyState } from 'helpers/hooks';
 
 CreateNewChatModal.propTypes = {
+  creatingChat: PropTypes.bool,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
 
-export default function CreateNewChatModal({ onHide, onDone }) {
+export default function CreateNewChatModal({ creatingChat, onHide, onDone }) {
   const { authLevel } = useMyState();
   return (
     <Modal onHide={onHide}>
       {authLevel > 2 ? (
-        <TeacherMenu onCreateRegularChat={onDone} onHide={onHide} />
+        <TeacherMenu
+          creatingChat={creatingChat}
+          onCreateRegularChat={onDone}
+          onHide={onHide}
+        />
       ) : (
-        <RegularMenu onHide={onHide} onDone={onDone} />
+        <RegularMenu
+          creatingChat={creatingChat}
+          onHide={onHide}
+          onDone={onDone}
+        />
       )}
     </Modal>
   );
