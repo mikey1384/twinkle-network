@@ -22,7 +22,7 @@ export default function LongText({
   noExpand,
   readMoreColor = Color.blue()
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [text, setText] = useState(children || '');
   const [fullText, setFullText] = useState(false);
   const [more, setMore] = useState(false);
