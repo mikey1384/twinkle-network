@@ -72,7 +72,7 @@ export default function LongText({
           const remainingText = originalText.slice(i + 1);
           let more = true;
           if (
-            remainingText[0] !== '\n' &&
+            !remainingText.includes('\n') &&
             canvas.measureText(remainingText).width < maxWidth
           ) {
             trimmedText += remainingText;
