@@ -37,19 +37,24 @@ export default function UploadModal({ channelId, fileObj, onHide }) {
       const reader = new FileReader();
       reader.onload = (upload) => {
         const payload = upload.target.result;
-        window.loadImage(
-          payload,
-          function (img) {
-            const image = img.toDataURL('image/jpeg');
-            setImageUrl(image);
-            const dataUri = image.replace(/^data:image\/\w+;base64,/, '');
-            const buffer = Buffer.from(dataUri, 'base64');
-            // eslint-disable-next-line no-undef
-            const file = new File([buffer], fileObj.name);
-            setSelectedFile(file);
-          },
-          { orientation: true }
-        );
+        if (fileObj.name.split('.')[1] === 'gif') {
+          setImageUrl(payload);
+          setSelectedFile(fileObj);
+        } else {
+          window.loadImage(
+            payload,
+            function (img) {
+              const image = img.toDataURL('image/jpeg');
+              setImageUrl(image);
+              const dataUri = image.replace(/^data:image\/\w+;base64,/, '');
+              const buffer = Buffer.from(dataUri, 'base64');
+              // eslint-disable-next-line no-undef
+              const file = new File([buffer], fileObj.name);
+              setSelectedFile(file);
+            },
+            { orientation: true }
+          );
+        }
       };
       reader.readAsDataURL(fileObj);
     } else {

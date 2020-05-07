@@ -340,6 +340,16 @@ function SubjectInput() {
     }
     onSetSubmittingSubject(true);
     if (attachment?.contentType === 'file') {
+      onSetSubjectDescriptionFieldShown(descriptionFieldShownRef.current);
+      onSetSubjectTitle(titleRef.current);
+      onSetSubjectDescription(descriptionRef.current);
+      onSetHasSecretAnswer(hasSecretAnswerRef.current);
+      onSetSecretAnswer(secretAnswerRef.current);
+      handleSetTitle('');
+      handleSetDescription('');
+      handleSetSecretAnswer('');
+      handleSetDescriptionFieldShown(false);
+      handleSetHasSecretAnswer(false);
       return onSetUploadingFile(true);
     }
     handleUploadSubject();

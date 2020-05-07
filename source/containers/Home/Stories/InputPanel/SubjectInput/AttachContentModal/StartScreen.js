@@ -165,23 +165,33 @@ export default function StartScreen({ navigateTo, onHide }) {
       const reader = new FileReader();
       reader.onload = (upload) => {
         const payload = upload.target.result;
-        window.loadImage(
-          payload,
-          function (img) {
-            const imageUrl = img.toDataURL('image/jpeg');
-            const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
-            const buffer = Buffer.from(dataUri, 'base64');
-            const file = new File([buffer], fileObj.name);
-            onSetSubjectAttachment({
-              file,
-              contentType: 'file',
-              fileType: 'image',
-              imageUrl
-            });
-            onHide();
-          },
-          { orientation: true }
-        );
+        if (fileObj.name.split('.')[1] === 'gif') {
+          onSetSubjectAttachment({
+            file: fileObj,
+            contentType: 'file',
+            fileType,
+            imageUrl: payload
+          });
+          onHide();
+        } else {
+          window.loadImage(
+            payload,
+            function (img) {
+              const imageUrl = img.toDataURL('image/jpeg');
+              const dataUri = imageUrl.replace(/^data:image\/\w+;base64,/, '');
+              const buffer = Buffer.from(dataUri, 'base64');
+              const file = new File([buffer], fileObj.name);
+              onSetSubjectAttachment({
+                file,
+                contentType: 'file',
+                fileType,
+                imageUrl
+              });
+              onHide();
+            },
+            { orientation: true }
+          );
+        }
       };
       reader.readAsDataURL(fileObj);
     } else {
