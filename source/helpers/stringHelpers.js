@@ -177,6 +177,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:yes\:)/gi, '👌')
     .replace(/(\:yummy\:)/gi, '😋')
     .replace(/(\:zombie\:)/gi, '🧟')
+    .replace(/(\:zipper\:)/gi, '🤐')
     .replace(/(\:zzz\:)/gi, '💤');
 }
 
