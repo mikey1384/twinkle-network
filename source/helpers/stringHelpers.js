@@ -161,6 +161,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:star\:)/gi, '⭐')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:taco\:)/gi, '🌮')
+    .replace(/(\:tasty\:)/gi, '😋')
     .replace(/(\:thank you\:)/gi, '🙏')
     .replace(/(\:theta\:)/gi, '⍬')
     .replace(/(\:thumbs\:)/gi, '👍')
@@ -174,6 +175,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:wow\:)/gi, '😲')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
+    .replace(/(\:yummy\:)/gi, '😋')
     .replace(/(\:zombie\:)/gi, '🧟')
     .replace(/(\:zzz\:)/gi, '💤');
 }

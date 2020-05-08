@@ -576,6 +576,7 @@ export default function ChatReducer(state, action) {
         ])
       };
     case 'NOTIFY_MEMBER_LEFT': {
+      const leaveMessage = 'left the chat group';
       let timeStamp = Math.floor(Date.now() / 1000);
       return {
         ...state,
@@ -585,7 +586,7 @@ export default function ChatReducer(state, action) {
             ...state.channelsObj[action.data.channelId],
             lastUpdate: timeStamp,
             lastMessage: {
-              content: 'left the chat group',
+              content: leaveMessage,
               sender: {
                 id: action.data.userId,
                 username: action.data.username
@@ -601,7 +602,7 @@ export default function ChatReducer(state, action) {
           {
             id: null,
             channelId: action.data.channelId,
-            content: 'left the chat group',
+            content: leaveMessage,
             timeStamp: timeStamp,
             isNotification: true,
             username: action.data.username,
@@ -733,7 +734,12 @@ export default function ChatReducer(state, action) {
             lastUpdate: action.message.timeStamp,
             members: [
               ...state.channelsObj[action.message.channelId].members,
-              ...action.newMembers
+              ...action.newMembers.filter(
+                (newMember) =>
+                  !state.channelsObj[action.message.channelId].members
+                    .map((member) => member.id)
+                    .includes(newMember.id)
+              )
             ],
             numUnreads: 0,
             isHidden: false
