@@ -1,7 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import VideoThumbImage from 'components/VideoThumbImage';
-import LongText from 'components/Texts/LongText';
 import Embedly from 'components/Embedly';
 import RewardLevelBar from 'components/RewardLevelBar';
 import SecretAnswer from 'components/SecretAnswer';
@@ -170,22 +169,14 @@ function ContentListItem({
                     style={{
                       marginTop: '1rem',
                       marginLeft: '1rem',
-                      color: Color.darkerGray()
+                      color: Color.darkerGray(),
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 4,
+                      WebkitBoxOrient: 'vertical'
                     }}
                   >
-                    <LongText
-                      className={css`
-                        p {
-                          text-overflow: ellipsis;
-                          overflow: hidden;
-                        }
-                      `}
-                      cleanString
-                      noExpand
-                      maxLines={4}
-                    >
-                      {description}
-                    </LongText>
+                    {description}
                   </div>
                 </>
               )}
@@ -204,16 +195,7 @@ function ContentListItem({
                       wordBreak: 'break-word'
                     }}
                   >
-                    <LongText
-                      noExpand
-                      cleanString
-                      maxLines={4}
-                      style={{
-                        fontSize: '2.5rem'
-                      }}
-                    >
-                      {title}
-                    </LongText>
+                    <p style={{ lineClamp: 2, fontSize: '2.5rem' }}>{title}</p>
                     {uploader.username && (
                       <p style={{ color: Color.gray() }}>
                         Posted by {uploader.username}
@@ -228,12 +210,14 @@ function ContentListItem({
                           color: Color.darkerGray(),
                           whiteSpace: 'pre-wrap',
                           overflowWrap: 'break-word',
-                          wordBreak: 'break-word'
+                          wordBreak: 'break-word',
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: 'vertical'
                         }}
                       >
-                        <LongText noExpand cleanString maxLines={4}>
-                          {description}
-                        </LongText>
+                        {description}
                       </div>
                     )}
                   </div>
