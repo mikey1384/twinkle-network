@@ -351,7 +351,7 @@ export function isValidYoutubeChannelUrl(url = '') {
 }
 
 export function limitBrs(string) {
-  return string.replace(
+  return (string || '').replace(
     /(<br ?\/?>){11,}/gi,
     '<br><br><br><br><br><br><br><br><br><br>'
   );

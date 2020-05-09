@@ -17,121 +17,72 @@ export default function LongText({
   style,
   className,
   cleanString,
-  children,
+  children: text,
   maxLines = 10,
   noExpand,
   readMoreColor = Color.blue()
 }) {
-  const [loading, setLoading] = useState(true);
-  const [text, setText] = useState(children || '');
-  const [fullText, setFullText] = useState(false);
-  const [more, setMore] = useState(false);
-  const truncated = useRef(false);
-  const lengthRef = useRef(0);
   const ContainerRef = useRef(null);
-  const TextRef = useRef(null);
+  const [fullText, setFullText] = useState(false);
+  const [isOverflown, setIsOverflown] = useState(false);
 
   useEffect(() => {
-    setFullText(false);
-    setMore(false);
-  }, [children]);
-
-  useEffect(() => {
-    if (ContainerRef.current?.clientWidth) {
-      if (!truncated.current) {
-        truncateText({
-          container: ContainerRef.current,
-          originalText: children || '',
-          maxWidth: ContainerRef.current.clientWidth
-        });
-      }
-      setLoading(false);
-    } else {
-      setLoading(true);
+    if (
+      ContainerRef.current?.scrollHeight > ContainerRef.current?.clientHeight
+    ) {
+      setIsOverflown(true);
     }
-
-    function truncateText({ container, originalText, maxWidth }) {
-      const canvas = document.createElement('canvas').getContext('2d');
-      const computedStyle = window.getComputedStyle(container);
-      const font = `${computedStyle['font-weight']} ${computedStyle['font-style']} ${computedStyle['font-size']} ${computedStyle['font-family']}`;
-      canvas.font = font;
-      let line = '';
-      let numLines = 0;
-      let trimmedText = '';
-      for (let i = 0; i < originalText.length; i++) {
-        line += originalText[i];
-        if (
-          originalText[i] === '\n' ||
-          canvas.measureText(line).width > maxWidth
-        ) {
-          numLines++;
-          trimmedText += line;
-          line = '';
-        }
-        if (numLines === maxLines && i < originalText.length - 1) {
-          const remainingText = originalText.slice(i + 1);
-          let more = true;
-          if (
-            !remainingText.includes('\n') &&
-            canvas.measureText(remainingText).width < maxWidth
-          ) {
-            trimmedText += remainingText;
-            more = false;
-          }
-          setText(trimmedText);
-          setMore(more);
-          if (trimmedText.length < lengthRef.current) {
-            truncated.current = true;
-          }
-          lengthRef.current = trimmedText.length;
-          return;
-        }
-      }
-      setText(trimmedText + line || line);
-      setMore(!fullText && (trimmedText + line).length < originalText.length);
-    }
-  }, [children, fullText, maxLines, more]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ContainerRef.current]);
 
   return (
-    <div ref={ContainerRef} style={style} className={className}>
-      {loading ? null : (
-        <p ref={TextRef}>
-          {fullText ? (
+    <div style={style} className={className}>
+      <p>
+        {fullText ? (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: limitBrs(
+                cleanString ? text : processedStringWithURL(text || '')
+              )
+            }}
+          />
+        ) : (
+          <>
             <span
+              ref={ContainerRef}
+              style={{
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: maxLines,
+                WebkitBoxOrient: 'vertical'
+              }}
               dangerouslySetInnerHTML={{
                 __html: limitBrs(
-                  cleanString
-                    ? children
-                    : processedStringWithURL(children || '')
+                  cleanString ? text : processedStringWithURL(text)
                 )
               }}
             />
-          ) : (
             <>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: limitBrs(
-                    cleanString ? text : processedStringWithURL(text)
-                  )
-                }}
-              />
-              {more && (
+              {!noExpand && isOverflown && (
                 <>
-                  {'... '}
-                  {!noExpand && (
-                    <a
-                      style={{ cursor: 'pointer', color: readMoreColor }}
-                      onClick={() => setFullText(true)}
-                    >
-                      Read More
-                    </a>
-                  )}
+                  <a
+                    style={{
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      color: readMoreColor,
+                      display: 'inline-block',
+                      paddingTop: '1.5rem'
+                    }}
+                    onClick={() => setFullText(true)}
+                  >
+                    Read More
+                  </a>
                 </>
               )}
             </>
-          )}
-        </p>
-      )}
+          </>
+        )}
+      </p>
     </div>
   );
 }
