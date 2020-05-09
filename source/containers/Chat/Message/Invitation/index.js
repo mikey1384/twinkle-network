@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ChannelDetail from './ChannelDetail';
 import Button from 'components/Button';
-import { socket } from 'constants/io';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useContentState, useMyState } from 'helpers/hooks';
@@ -29,7 +28,7 @@ export default function Invitation({
     contentId: messageId
   });
   const {
-    requestHelpers: { acceptInvitation, loadChatChannel }
+    requestHelpers: { loadChatChannel }
   } = useAppContext();
   const {
     actions: { onSetChatInvitationDetail }
@@ -107,7 +106,7 @@ export default function Invitation({
         <Button
           filled
           color={profileTheme}
-          onClick={handleAccept}
+          onClick={() => onAcceptGroupInvitation(inviteFrom)}
           disabled={alreadyJoined}
         >
           {alreadyJoined
@@ -117,12 +116,4 @@ export default function Invitation({
       )}
     </div>
   );
-
-  async function handleAccept() {
-    const { channel, messages, joinMessage } = await acceptInvitation(
-      inviteFrom
-    );
-    socket.emit('join_chat_group', channel.id);
-    onAcceptGroupInvitation({ channel, messages, joinMessage });
-  }
 }

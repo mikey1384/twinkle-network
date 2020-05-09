@@ -43,6 +43,7 @@ export default function MessagesContainer({
 }) {
   const {
     requestHelpers: {
+      acceptInvitation,
       changeChannelOwner,
       deleteMessage,
       editChannelSettings,
@@ -87,6 +88,7 @@ export default function MessagesContainer({
       onSetCreatingNewDMChannel,
       onSetReplyTarget,
       onSubmitMessage,
+      onUpdateSelectedChannelId,
       onUpdateLastMessages
     }
   } = useChatContext();
@@ -779,7 +781,9 @@ export default function MessagesContainer({
           profilePicId,
           content: `sent ${users.length === 1 ? 'an ' : ''}invitation message${
             users.length > 1 ? 's' : ''
-          } to ${users.length > 1 ? `${users.length} users` : users[0].username}`,
+          } to ${
+            users.length > 1 ? `${users.length} users` : users[0].username
+          }`,
           isNotification: true
         }
       });
@@ -848,13 +852,20 @@ export default function MessagesContainer({
     }
   }
 
-  function handleAcceptGroupInvitation({ channel, messages, joinMessage }) {
-    onEnterChannelWithId({ data: { channel, messages }, showOnTop: true });
-    socket.emit('new_chat_message', {
-      message: joinMessage,
-      channel,
-      newMembers: [{ id: userId, username, profilePicId }]
-    });
+  async function handleAcceptGroupInvitation(invitationChannelId) {
+    onUpdateSelectedChannelId(invitationChannelId);
+    const { channel, messages, joinMessage } = await acceptInvitation(
+      invitationChannelId
+    );
+    if (channel.id === invitationChannelId) {
+      socket.emit('join_chat_group', channel.id);
+      onEnterChannelWithId({ data: { channel, messages }, showOnTop: true });
+      socket.emit('new_chat_message', {
+        message: joinMessage,
+        channel,
+        newMembers: [{ id: userId, username, profilePicId }]
+      });
+    }
   }
 
   async function handleMessageSubmit({
