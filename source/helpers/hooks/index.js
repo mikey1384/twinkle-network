@@ -47,7 +47,6 @@ export function useLazyLoad({
 
   useEffect(() => {
     const clientHeight = PanelRef.current?.clientHeight;
-    onSetPlaceholderHeight(clientHeight);
     return function onRefresh() {
       if (clientHeight) {
         onSetPlaceholderHeight(clientHeight);
