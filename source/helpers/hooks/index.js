@@ -49,7 +49,8 @@ export function useLazyLoad({
     const clientHeight = PanelRef.current?.clientHeight;
     return function onRefresh() {
       if (clientHeight) {
-        onSetPlaceholderHeight(clientHeight);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        onSetPlaceholderHeight(PanelRef.current?.clientHeight);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
