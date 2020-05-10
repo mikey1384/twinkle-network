@@ -10,7 +10,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext } from 'contexts';
+import { useAppContext, useChatContext, useContentContext } from 'contexts';
 
 MobileMenu.propTypes = {
   location: PropTypes.object,
@@ -27,7 +27,10 @@ export default function MobileMenu({ location, history, onClose }) {
   const {
     actions: { onResetChat }
   } = useChatContext();
-  const { username } = useMyState();
+  const {
+    actions: {onSetOnline}
+  } = useContentContext();
+  const { username, userId } = useMyState();
   const [marginLeft, setMarginLeft] = useState('-100%');
 
   useEffect(() => {
@@ -144,6 +147,7 @@ export default function MobileMenu({ location, history, onClose }) {
 
   function handleLogout() {
     onLogout();
+    onSetOnline({ contentId: userId, contentType: 'user', online: false });
     onResetChat();
   }
 }
