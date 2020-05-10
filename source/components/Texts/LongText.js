@@ -9,7 +9,6 @@ LongText.propTypes = {
   cleanString: PropTypes.bool,
   maxLines: PropTypes.number,
   style: PropTypes.object,
-  noExpand: PropTypes.bool,
   readMoreColor: PropTypes.string
 };
 
@@ -19,7 +18,6 @@ export default function LongText({
   cleanString,
   children: text,
   maxLines = 10,
-  noExpand,
   readMoreColor = Color.blue()
 }) {
   const ContainerRef = useRef(null);
@@ -63,7 +61,7 @@ export default function LongText({
               }}
             />
             <>
-              {!noExpand && isOverflown && (
+              {isOverflown && (
                 <>
                   <a
                     style={{

@@ -97,6 +97,37 @@ export default function Chess({
   }, [channelLoading]);
 
   useEffect(() => {
+    if (scrollAtBottom) {
+      onSetScrollToBottom?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const move = useMemo(() => {
+    if (parsedState) {
+      return parsedState.move;
+    } else {
+      return {};
+    }
+  }, [parsedState]);
+
+  const myColor = parsedState?.playerColors[myId] || 'white';
+  const userMadeLastMove = move?.by === myId;
+  const isCheck = parsedState?.isCheck;
+  const isCheckmate = parsedState?.isCheckmate;
+  const isStalemate = parsedState?.isStalemate;
+  const isDraw = parsedState?.isDraw;
+  const statusText = isCheckmate
+    ? 'Checkmate!'
+    : isStalemate
+    ? 'Stalemate!'
+    : isDraw
+    ? `It's a draw...`
+    : isCheck
+    ? 'Check!'
+    : '';
+
+  useEffect(() => {
     if (newChessState) return;
     const playerColors = parsedState
       ? parsedState.playerColors
@@ -141,30 +172,6 @@ export default function Chess({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, loaded, newChessState]);
 
-  useEffect(() => {
-    if (scrollAtBottom) {
-      onSetScrollToBottom?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const move = parsedState?.move;
-  const myColor = parsedState?.playerColors[myId] || 'white';
-  const userMadeLastMove = move?.by === myId;
-  const isCheck = parsedState?.isCheck;
-  const isCheckmate = parsedState?.isCheckmate;
-  const isStalemate = parsedState?.isStalemate;
-  const isDraw = parsedState?.isDraw;
-  const statusText = isCheckmate
-    ? 'Checkmate!'
-    : isStalemate
-    ? 'Stalemate!'
-    : isDraw
-    ? `It's a draw...`
-    : isCheck
-    ? 'Check!'
-    : '';
-
   return (
     <div
       className={css`
@@ -183,93 +190,97 @@ export default function Chess({
         ...style
       }}
     >
-      {loaded && parsedState && (
-        <div
-          className={css`
-            top: 1rem;
-            left: 1rem;
-            padding: 0.5rem 1rem;
-            background: ${Color.white(0.9)};
-            border: 1px solid ${Color.darkGray()};
-            position: absolute;
-            font-size: 1.7rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              top: 0;
-              left: 0.5rem;
-              width: CALC(100% - 1rem);
-              position: relative;
-              font-size: 1.2rem;
-              p {
-                display: inline-block;
-                margin-left: 0.3rem;
+      {loaded &&
+        parsedState &&
+        (userMadeLastMove ||
+          spoilerOff ||
+          isCheckmate ||
+          isStalemate ||
+          isDraw) && (
+          <div
+            className={css`
+              top: 1rem;
+              left: 1rem;
+              padding: 0.5rem 1rem;
+              background: ${Color.white(0.9)};
+              border: 1px solid ${Color.darkGray()};
+              position: absolute;
+              font-size: 1.5rem;
+              z-index: 10;
+              @media (max-width: ${mobileMaxWidth}) {
+                top: 0;
+                left: 0.5rem;
+                width: CALC(100% - 1rem);
+                position: relative;
+                font-size: 1.2rem;
               }
-              p:first-of-type {
-                margin-left: 0;
-              }
-            }
-          `}
-        >
-          {(spoilerOff || isCheckmate || isStalemate || isDraw) &&
-            move?.number && <p>Move {move?.number}:</p>}
-          <p>
-            {spoilerOff ||
-            isCheckmate ||
-            isStalemate ||
-            isDraw ||
-            userMadeLastMove ? (
-              move?.piece ? (
-                <b>{move?.piece?.type}</b>
-              ) : (
-                <b>castled</b>
-              )
-            ) : (
-              'Made a move'
-            )}
-          </p>
-          {(spoilerOff ||
-            isCheckmate ||
-            isStalemate ||
-            isDraw ||
-            userMadeLastMove) && (
-            <>
-              {move?.piece?.type && (
+            `}
+          >
+            {move.number && <span>Move {move.number}: </span>}
+            <span>
+              {isFromModal && (
                 <>
-                  <p>
-                    from <b>{move?.from}</b>
-                  </p>
-                  <p>
-                    to <b>{move?.to}</b>
-                  </p>
-                  {parsedState?.capturedPiece && (
+                  {userMadeLastMove ? 'You' : opponentName}
+                  {' moved '}
+                </>
+              )}
+            </span>
+            <p>
+              {isFromModal && (
+                <>
+                  {move?.piece === 'queen' || move?.piece === 'king'
+                    ? 'the '
+                    : 'a '}
+                </>
+              )}
+              {move?.piece ? <b>{move?.piece?.type}</b> : <b>castled</b>}
+              {(spoilerOff ||
+                isCheckmate ||
+                isStalemate ||
+                isDraw ||
+                userMadeLastMove) && (
+                <>
+                  {move?.piece?.type && (
                     <>
-                      <p>capturing</p>
-                      <p>
-                        <span>
-                          {parsedState?.capturedPiece === 'queen' ? 'the' : 'a'}{' '}
-                        </span>
-                        <b>{parsedState?.capturedPiece}</b>
-                      </p>
+                      {' '}
+                      <span>
+                        from <b>{move?.from}</b>
+                      </span>{' '}
+                      <span>
+                        to <b>{move?.to}</b>
+                      </span>
+                      {parsedState?.capturedPiece && (
+                        <>
+                          {' '}
+                          <span>capturing</span>{' '}
+                          <span>
+                            {parsedState?.capturedPiece === 'queen'
+                              ? 'the'
+                              : 'a'}{' '}
+                          </span>
+                          <b>{parsedState?.capturedPiece}</b>
+                        </>
+                      )}
                     </>
+                  )}
+                  {(isCheck || isCheckmate || isStalemate || isDraw) && (
+                    <div
+                      className={css`
+                        font-weight: bold;
+                        margin-top: 1rem;
+                        @media (max-width: ${mobileMaxWidth}) {
+                          margin-top: 1rem;
+                        }
+                      `}
+                    >
+                      {statusText}
+                    </div>
                   )}
                 </>
               )}
-              {(isCheck || isCheckmate || isStalemate || isDraw) && (
-                <div
-                  className={css`
-                    margin-top: 2rem;
-                    font-weight: bold;
-                    @media (max-width: ${mobileMaxWidth}) {
-                      margin-top: 0.5rem;
-                    }
-                  `}
-                >
-                  {statusText}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
+            </p>
+          </div>
+        )}
       <div
         className={css`
           user-select: none;
@@ -345,7 +356,7 @@ export default function Chess({
               height: 4.5rem;
               display: flex;
               flex-direction: column;
-              margin: 1rem 0;
+              margin: 1.5rem 0;
               @media (max-width: ${mobileMaxWidth}) {
                 height: 3rem;
               }

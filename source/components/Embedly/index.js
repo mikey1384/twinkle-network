@@ -2,7 +2,6 @@ import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import request from 'axios';
 import Loading from 'components/Loading';
-import LongText from 'components/Texts/LongText';
 import ReactPlayer from 'react-player';
 import Icon from 'components/Icon';
 import URL from 'constants/URL';
@@ -245,11 +244,25 @@ function Embedly({
               ${small ? '' : 'margin-top: 1rem;'}
             `}
           >
-            <h3>{actualTitle || title}</h3>
-            <div>
-              <LongText maxLines={6} noExpand>
-                {actualDescription || description}
-              </LongText>
+            <h3
+              style={{
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: 'vertical'
+              }}
+            >
+              {actualTitle || title}
+            </h3>
+            <div
+              style={{
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: 'vertical'
+              }}
+            >
+              {actualDescription || description}
             </div>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
