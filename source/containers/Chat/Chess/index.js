@@ -213,6 +213,9 @@ export default function Chess({
                 width: CALC(100% - 1rem);
                 position: relative;
                 font-size: 1.2rem;
+                p {
+                  display: inline;
+                }
               }
             `}
           >
