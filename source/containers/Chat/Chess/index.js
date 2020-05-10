@@ -112,7 +112,7 @@ export default function Chess({
   }, [parsedState]);
 
   const myColor = parsedState?.playerColors[myId] || 'white';
-  const userMadeLastMove = move?.by === myId;
+  const userMadeLastMove = move.by === myId;
   const isCheck = parsedState?.isCheck;
   const isCheckmate = parsedState?.isCheckmate;
   const isStalemate = parsedState?.isStalemate;
@@ -231,26 +231,26 @@ export default function Chess({
             <p>
               {isFromModal && (
                 <>
-                  {move?.piece === 'queen' || move?.piece === 'king'
+                  {move.piece === 'queen' || move.piece === 'king'
                     ? 'the '
                     : 'a '}
                 </>
               )}
-              {move?.piece ? <b>{move?.piece?.type}</b> : <b>castled</b>}
+              {move.piece ? <b>{move.piece?.type}</b> : <b>castled</b>}
               {(spoilerOff ||
                 isCheckmate ||
                 isStalemate ||
                 isDraw ||
                 userMadeLastMove) && (
                 <>
-                  {move?.piece?.type && (
+                  {move.piece?.type && (
                     <>
                       {' '}
                       <span>
-                        from <b>{move?.from}</b>
+                        from <b>{move.from}</b>
                       </span>{' '}
                       <span>
-                        to <b>{move?.to}</b>
+                        to <b>{move.to}</b>
                       </span>
                       {parsedState?.capturedPiece && (
                         <>
@@ -728,7 +728,7 @@ export default function Chess({
         : {};
     const json = JSON.stringify({
       move: {
-        number: parsedState?.move?.number ? parsedState?.move?.number + 1 : 1,
+        number: move.number ? move.number + 1 : 1,
         by: myId,
         ...moveDetail
       },
