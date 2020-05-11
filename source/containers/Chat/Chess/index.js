@@ -215,7 +215,7 @@ export default function Chess({
               border: 1px solid ${Color.darkGray()};
               position: absolute;
               font-size: 1.5rem;
-              z-index: 10;
+              z-index: 5;
               @media (max-width: ${mobileMaxWidth}) {
                 top: 0;
                 left: 0.5rem;
