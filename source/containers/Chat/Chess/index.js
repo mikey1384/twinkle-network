@@ -153,8 +153,6 @@ export default function Chess({
       };
     }
     if (interactable && !userMadeLastMove) {
-      setGameOverMsg('');
-      setStatus('');
       setSquares((squares) =>
         squares.map((square) =>
           square.color === playerColors[myId]
@@ -168,9 +166,11 @@ export default function Chess({
             : square
         )
       );
+      setGameOverMsg('');
+      setStatus('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    gameOverMsg,
     initialState,
     interactable,
     loaded,
