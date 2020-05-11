@@ -25,7 +25,7 @@ export default function Banner({
   const [spinnerShown, setSpinnerShown] = useState(false);
   useEffect(() => {
     if (loading) {
-      timerRef.current = setTimeout(() => setSpinnerShown(true), 1000);
+      timerRef.current = setTimeout(() => setSpinnerShown(true), 500);
     } else {
       clearTimeout(timerRef.current);
       setSpinnerShown(false);
