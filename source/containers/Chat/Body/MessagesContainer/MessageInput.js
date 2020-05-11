@@ -73,6 +73,14 @@ function MessageInput({
   }, [textForThisChannel]);
 
   useEffect(() => {
+    const inputHeight = innerRef.current?.clientHeight;
+    if (!loading) {
+      onHeightChange(inputHeight);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [innerRef, loading]);
+
+  useEffect(() => {
     if (!isMobile(navigator)) {
       innerRef.current.focus();
     }
