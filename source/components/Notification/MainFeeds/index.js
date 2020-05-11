@@ -56,6 +56,7 @@ function MainFeeds({
     actions: { onChangeUserXP }
   } = useContentContext();
   const [loading, setLoading] = useState(false);
+  const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
   const NotificationsItems = useMemo(() => {
@@ -132,9 +133,10 @@ function MainFeeds({
     <ErrorBoundary style={style}>
       {numNewNotis > 0 && (
         <Banner
+          loading={loadingNewFeeds}
           color="gold"
           style={{ marginBottom: '1rem' }}
-          onClick={onNewNotiAlertClick}
+          onClick={handleNewNotiAlertClick}
         >
           Tap to See {numNewNotis} New Notification
           {numNewNotis > 1 ? 's' : ''}
@@ -149,7 +151,7 @@ function MainFeeds({
           {totalRewardAmount > 0 && (
             <>
               <p>Tap to collect all your rewards</p>
-              <p>
+              <p style={{ fontSize: '1.5rem' }}>
                 ({totalRewardAmount} Twinkles x {rewardValue.star} XP/Twinkle ={' '}
                 {addCommasToNumber(totalRewardAmount * rewardValue.star)} XP)
               </p>
@@ -161,7 +163,7 @@ function MainFeeds({
                 {addCommasToNumber(originalTotalReward * rewardValue.star)} XP
                 Collected!
               </p>
-              <p>
+              <p style={{ fontSize: '1.5rem' }}>
                 Your XP: {addCommasToNumber(originalTwinkleXP)} {'=>'}{' '}
                 {addCommasToNumber(
                   originalTwinkleXP + originalTotalReward * rewardValue.star
@@ -207,10 +209,12 @@ function MainFeeds({
     onClearRewards();
   }
 
-  async function onNewNotiAlertClick() {
+  async function handleNewNotiAlertClick() {
+    setLoadingNewFeeds(true);
     const data = await fetchNotifications();
     onFetchNotifications(data);
     selectNotiTab();
+    setLoadingNewFeeds(false);
   }
 
   async function onLoadMore() {
