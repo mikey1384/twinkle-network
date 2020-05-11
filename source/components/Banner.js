@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
@@ -21,6 +21,17 @@ export default function Banner({
   onClick,
   style = {}
 }) {
+  const timerRef = useRef(null);
+  const [spinnerShown, setSpinnerShown] = useState(false);
+  useEffect(() => {
+    if (loading) {
+      timerRef.current = setTimeout(() => setSpinnerShown(true), 1000);
+    } else {
+      clearTimeout(timerRef.current);
+      setSpinnerShown(false);
+    }
+  }, [loading]);
+
   return (
     <div
       ref={innerRef}
@@ -44,7 +55,9 @@ export default function Banner({
       onClick={onClick}
     >
       {children}
-      {loading && <Icon style={{ marginLeft: '1rem' }} icon="spinner" pulse />}
+      {loading && spinnerShown && (
+        <Icon style={{ marginLeft: '1rem' }} icon="spinner" pulse />
+      )}
     </div>
   );
 }

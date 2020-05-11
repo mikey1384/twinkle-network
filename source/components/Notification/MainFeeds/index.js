@@ -57,6 +57,7 @@ function MainFeeds({
   } = useContentContext();
   const [loading, setLoading] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
+  const [collectingReward, setCollectingReward] = useState(false);
   const [originalTotalReward, setOriginalTotalReward] = useState(0);
   const [originalTwinkleXP, setOriginalTwinkleXP] = useState(0);
   const NotificationsItems = useMemo(() => {
@@ -144,6 +145,7 @@ function MainFeeds({
       )}
       {activeTab === 'reward' && (
         <Banner
+          loading={collectingReward}
           color={totalRewardAmount > 0 ? 'gold' : 'green'}
           style={{ marginBottom: '1rem' }}
           onClick={totalRewardAmount > 0 ? onCollectReward : null}
@@ -201,12 +203,14 @@ function MainFeeds({
   async function onCollectReward() {
     setOriginalTotalReward(totalRewardAmount);
     setOriginalTwinkleXP(twinkleXP);
+    setCollectingReward(true);
     const { xp, alreadyDone, rank } = await updateUserXP({
       action: 'collect'
     });
-    if (alreadyDone) return;
+    if (alreadyDone) return setCollectingReward(false);
     onChangeUserXP({ xp, rank, userId });
     onClearRewards();
+    setCollectingReward(false);
   }
 
   async function handleNewNotiAlertClick() {
