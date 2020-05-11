@@ -170,7 +170,16 @@ export default function Chess({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialState, loaded, newChessState]);
+  }, [
+    initialState,
+    interactable,
+    loaded,
+    myId,
+    newChessState,
+    opponentId,
+    parsedState,
+    userMadeLastMove
+  ]);
 
   return (
     <div
