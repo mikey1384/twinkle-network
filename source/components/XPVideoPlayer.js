@@ -469,7 +469,7 @@ function XPVideoPlayer({
       if (PlayerRef.current.getInternalPlayer()?.isMuted()) {
         PlayerRef.current.getInternalPlayer()?.unMute();
       }
-      let requiredViewDuration =
+      const requiredViewDuration =
         totalDurationRef.current < requiredDurationCap + 10
           ? Math.floor(totalDurationRef.current / 2) * 2 - 20
           : requiredDurationCap;
