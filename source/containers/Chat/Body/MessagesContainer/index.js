@@ -18,6 +18,7 @@ import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
 import CallScreen from './CallScreen';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { v1 as uuidv1 } from 'uuid';
 import { GENERAL_CHAT_ID } from 'constants/database';
 import { rewardReasons } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
@@ -778,6 +779,7 @@ export default function MessagesContainer({
         message: {
           userId,
           username,
+          id: uuidv1(),
           profilePicId,
           content: `sent ${users.length === 1 ? 'an ' : ''}invitation message${
             users.length > 1 ? 's' : ''
@@ -966,7 +968,9 @@ export default function MessagesContainer({
           ContentRef.current?.offsetHeight || 0),
       100
     );
-    if (ContentRef.current?.offsetHeight) setScrollAtBottom(true);
+    if (ContentRef.current?.offsetHeight) {
+      setScrollAtBottom(true);
+    }
   }
 
   function handleShowDeleteModal({ fileName, filePath, messageId }) {

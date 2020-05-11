@@ -18,7 +18,7 @@ TextMessage.propTypes = {
   isNotification: PropTypes.bool,
   isReloadedSubject: PropTypes.bool,
   isSubject: PropTypes.bool,
-  messageId: PropTypes.number,
+  messageId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   MessageStyle: PropTypes.object,
   numMsgs: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isEditing: PropTypes.bool,
