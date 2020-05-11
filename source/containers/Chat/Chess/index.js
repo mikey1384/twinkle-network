@@ -228,7 +228,7 @@ export default function Chess({
                 </>
               )}
             </span>
-            <p>
+            <div>
               {isFromModal && (
                 <>
                   {move.piece === 'queen' || move.piece === 'king'
@@ -281,7 +281,7 @@ export default function Chess({
                   )}
                 </>
               )}
-            </p>
+            </div>
           </div>
         )}
       <div

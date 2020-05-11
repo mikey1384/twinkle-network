@@ -254,7 +254,7 @@ function Embedly({
             >
               {actualTitle || title}
             </h3>
-            <div
+            <p
               style={{
                 overflow: 'hidden',
                 display: '-webkit-box',
@@ -263,7 +263,7 @@ function Embedly({
               }}
             >
               {actualDescription || description}
-            </div>
+            </p>
             <p style={{ fontWeight: 'bold' }}>{siteUrl}</p>
           </section>
         )}
