@@ -1,4 +1,11 @@
-import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import PropTypes from 'prop-types';
 import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
 import ProfilePic from 'components/ProfilePic';
@@ -15,11 +22,12 @@ import RewardMessage from './RewardMessage';
 import LocalContext from '../Context';
 import Invitation from './Invitation';
 import MessageRewardModal from './MessageRewardModal';
+import { useInView } from 'react-intersection-observer';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
-import { useMyState, useContentState } from 'helpers/hooks';
+import { useMyState, useContentState, useLazyLoad } from 'helpers/hooks';
 import { Color } from 'constants/css';
 import { css } from 'emotion';
 import {
@@ -107,6 +115,20 @@ function Message({
   recepientId,
   showSubjectMsgsModal
 }) {
+  const [ComponentRef, inView] = useInView({
+    rootMargin: '1500px 0px 0px 0px',
+    threshold: 0
+  });
+  const PanelRef = useRef(null);
+  const [placeholderHeight, setPlaceholderHeight] = useState(0);
+  const [visible, setVisible] = useState(true);
+  useLazyLoad({
+    PanelRef,
+    inView,
+    onSetPlaceholderHeight: setPlaceholderHeight,
+    onSetVisible: setVisible,
+    delay: 1000
+  });
   const { onFileUpload } = useContext(LocalContext);
   const {
     authLevel,
@@ -140,7 +162,7 @@ function Message({
       onSetVideoStarted
     }
   } = useContentContext();
-  const { thumbUrl: recentThumbUrl, isEditing } = useContentState({
+  const { thumbUrl: recentThumbUrl, isEditing, started } = useContentState({
     contentType: 'chat',
     contentId: messageId
   });
@@ -373,142 +395,153 @@ function Message({
   }
 
   return (
-    <div className={MessageStyle.container}>
-      <div className={MessageStyle.profilePic}>
-        <ProfilePic
-          style={{ width: '100%', height: '100%' }}
-          userId={userId}
-          profilePicId={profilePicId}
-        />
-      </div>
-      <div className={MessageStyle.contentWrapper}>
-        <div>
-          <UsernameText
-            style={MessageStyle.usernameText}
-            user={{
-              id: userId,
-              username
-            }}
-          />{' '}
-          <span className={MessageStyle.timeStamp}>
-            {unix(timeStamp).format('LLL')}
-          </span>
-        </div>
-        <div style={{ width: '100%' }}>
-          {inviteFrom ? (
-            <Invitation
-              sender={{ id: userId, username }}
-              inviteFrom={inviteFrom}
-              messageId={messageId}
-              onAcceptGroupInvitation={onAcceptGroupInvitation}
-              onSetScrollToBottom={handleSetScrollToBottom}
+    <div ref={ComponentRef} className={MessageStyle.container}>
+      {inView || started || visible !== false ? (
+        <div ref={PanelRef} className={MessageStyle.container}>
+          <div className={MessageStyle.profilePic}>
+            <ProfilePic
+              style={{ width: '100%', height: '100%' }}
+              userId={userId}
+              profilePicId={profilePicId}
             />
-          ) : isChessMsg ? (
-            <Chess
-              channelId={channelId}
-              countdownNumber={chessCountdownNumber}
-              gameWinnerId={gameWinnerId}
-              loaded
-              spoilerOff={spoilerOff}
-              myId={myId}
-              initialState={chessState}
-              moveViewed={!!moveViewTimeStamp}
-              onBoardClick={onChessBoardClick}
-              onSpoilerClick={handleChessSpoilerClick}
-              opponentId={chessOpponent?.id}
-              opponentName={chessOpponent?.username}
-              onSetScrollToBottom={handleSetScrollToBottom}
-              scrollAtBottom={scrollAtBottom}
-              senderId={userId}
-              style={{ marginTop: '1rem', width: '100%' }}
-            />
-          ) : fileToUpload && !loading ? (
-            <FileUploadStatusIndicator
-              key={channelId}
-              fileName={fileToUpload.name}
-              onFileUpload={handleFileUpload}
-              uploadComplete={!!uploadStatus.uploadComplete}
-              uploadProgress={uploadStatus.uploadProgress}
-            />
-          ) : (
-            <>
-              {targetSubject && <TargetSubject subject={targetSubject} />}
-              {targetMessage && (
-                <TargetMessage
-                  message={targetMessage}
+          </div>
+          <div className={MessageStyle.contentWrapper}>
+            <div>
+              <UsernameText
+                style={MessageStyle.usernameText}
+                user={{
+                  id: userId,
+                  username
+                }}
+              />{' '}
+              <span className={MessageStyle.timeStamp}>
+                {unix(timeStamp).format('LLL')}
+              </span>
+            </div>
+            <div style={{ width: '100%' }}>
+              {inviteFrom ? (
+                <Invitation
+                  sender={{ id: userId, username }}
+                  inviteFrom={inviteFrom}
+                  messageId={messageId}
+                  onAcceptGroupInvitation={onAcceptGroupInvitation}
                   onSetScrollToBottom={handleSetScrollToBottom}
                 />
-              )}
-              {filePath && (
-                <FileViewer
-                  contentId={messageId}
-                  contentType="chat"
-                  content={content}
-                  filePath={filePath}
-                  fileName={fileName}
-                  fileSize={fileSize}
+              ) : isChessMsg ? (
+                <Chess
+                  channelId={channelId}
+                  countdownNumber={chessCountdownNumber}
+                  gameWinnerId={gameWinnerId}
+                  loaded
+                  spoilerOff={spoilerOff}
+                  myId={myId}
+                  initialState={chessState}
+                  moveViewed={!!moveViewTimeStamp}
+                  onBoardClick={onChessBoardClick}
+                  onSpoilerClick={handleChessSpoilerClick}
+                  opponentId={chessOpponent?.id}
+                  opponentName={chessOpponent?.username}
+                  onSetScrollToBottom={handleSetScrollToBottom}
                   scrollAtBottom={scrollAtBottom}
-                  thumbUrl={thumbUrl || recentThumbUrl}
-                  style={{ marginTop: '1rem' }}
+                  senderId={userId}
+                  style={{ marginTop: '1rem', width: '100%' }}
                 />
-              )}
-              {rewardAmount ? (
-                <RewardMessage
-                  rewardAmount={rewardAmount}
-                  rewardReason={rewardReason}
+              ) : fileToUpload && !loading ? (
+                <FileUploadStatusIndicator
+                  key={channelId}
+                  fileName={fileToUpload.name}
+                  onFileUpload={handleFileUpload}
+                  uploadComplete={!!uploadStatus.uploadComplete}
+                  uploadProgress={uploadStatus.uploadProgress}
                 />
               ) : (
-                <TextMessage
-                  attachmentHidden={!!attachmentHidden}
-                  channelId={channelId}
-                  content={content}
-                  extractedUrl={extractedUrl}
-                  myId={myId}
-                  messageId={messageId}
-                  numMsgs={numMsgs}
-                  isNotification={isNotification}
-                  isSubject={!!isSubject}
-                  isReloadedSubject={!!isReloadedSubject}
-                  MessageStyle={MessageStyle}
-                  isEditing={isEditing}
-                  onEditCancel={handleEditCancel}
-                  onEditDone={handleEditDone}
-                  onSetScrollToBottom={handleSetScrollToBottom}
-                  showSubjectMsgsModal={showSubjectMsgsModal}
-                  socketConnected={socketConnected}
-                  subjectId={subjectId}
-                  targetMessage={targetMessage}
-                  userCanEditThis={userCanEditThis}
-                />
+                <>
+                  {targetSubject && <TargetSubject subject={targetSubject} />}
+                  {targetMessage && (
+                    <TargetMessage
+                      message={targetMessage}
+                      onSetScrollToBottom={handleSetScrollToBottom}
+                    />
+                  )}
+                  {filePath && (
+                    <FileViewer
+                      contentId={messageId}
+                      contentType="chat"
+                      content={content}
+                      filePath={filePath}
+                      fileName={fileName}
+                      fileSize={fileSize}
+                      scrollAtBottom={scrollAtBottom}
+                      thumbUrl={thumbUrl || recentThumbUrl}
+                      style={{ marginTop: '1rem' }}
+                    />
+                  )}
+                  {rewardAmount ? (
+                    <RewardMessage
+                      rewardAmount={rewardAmount}
+                      rewardReason={rewardReason}
+                    />
+                  ) : (
+                    <TextMessage
+                      attachmentHidden={!!attachmentHidden}
+                      channelId={channelId}
+                      content={content}
+                      extractedUrl={extractedUrl}
+                      myId={myId}
+                      messageId={messageId}
+                      numMsgs={numMsgs}
+                      isNotification={isNotification}
+                      isSubject={!!isSubject}
+                      isReloadedSubject={!!isReloadedSubject}
+                      MessageStyle={MessageStyle}
+                      isEditing={isEditing}
+                      onEditCancel={handleEditCancel}
+                      onEditDone={handleEditDone}
+                      onSetScrollToBottom={handleSetScrollToBottom}
+                      showSubjectMsgsModal={showSubjectMsgsModal}
+                      socketConnected={socketConnected}
+                      subjectId={subjectId}
+                      targetMessage={targetMessage}
+                      userCanEditThis={userCanEditThis}
+                    />
+                  )}
+                </>
               )}
-            </>
+            </div>
+            {dropdownButtonShown && (
+              <DropdownButton
+                skeuomorphic
+                color="darkerGray"
+                icon="chevron-down"
+                style={{ position: 'absolute', top: 0, right: '5px' }}
+                direction="left"
+                opacity={0.8}
+                onButtonClick={() => {
+                  if (isLastMsg) {
+                    onSetScrollToBottom();
+                  }
+                }}
+                menuProps={messageMenuItems}
+              />
+            )}
+          </div>
+          {messageRewardModalShown && (
+            <MessageRewardModal
+              userToReward={{
+                username,
+                id: userId
+              }}
+              onSubmit={handleRewardMessageSubmit}
+              onHide={() => setMessageRewardModalShown(false)}
+            />
           )}
         </div>
-        {dropdownButtonShown && (
-          <DropdownButton
-            skeuomorphic
-            color="darkerGray"
-            icon="chevron-down"
-            style={{ position: 'absolute', top: 0, right: '5px' }}
-            direction="left"
-            opacity={0.8}
-            onButtonClick={() => {
-              if (isLastMsg) {
-                onSetScrollToBottom();
-              }
-            }}
-            menuProps={messageMenuItems}
-          />
-        )}
-      </div>
-      {messageRewardModalShown && (
-        <MessageRewardModal
-          userToReward={{
-            username,
-            id: userId
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            height: placeholderHeight
           }}
-          onSubmit={handleRewardMessageSubmit}
-          onHide={() => setMessageRewardModalShown(false)}
         />
       )}
     </div>
