@@ -135,6 +135,7 @@ function Message({
     canDelete,
     canEdit,
     canStar,
+    isCreator,
     userId: myId,
     username: myUsername,
     profilePicId: myProfilePicId
@@ -362,7 +363,7 @@ function Message({
       }
     });
   }
-  if (userCanRewardThis && channelId === 2) {
+  if ((userCanRewardThis && channelId === 2) || isCreator) {
     messageMenuItems.push({
       label: (
         <>

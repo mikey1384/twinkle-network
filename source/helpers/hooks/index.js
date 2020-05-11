@@ -89,7 +89,7 @@ export function useMyState() {
         userId,
         defaultSearchFilter: searchFilter,
         hideWatched,
-        isCreator: myState.userType === 'creator',
+        isCreator: myState.userType === 'admin',
         loggedIn: true,
         signinModalShown,
         xpThisMonth
