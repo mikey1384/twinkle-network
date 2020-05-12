@@ -237,7 +237,13 @@ export default function Chess({
                 </>
               )}
             </span>
-            <div>
+            <div
+              className={css`
+                @media (max-width: ${mobileMaxWidth}) {
+                  display: inline;
+                }
+              `}
+            >
               {isFromModal && (
                 <>
                   {move.piece === 'queen' || move.piece === 'king'
