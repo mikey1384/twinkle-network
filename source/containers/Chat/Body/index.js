@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Vocabulary from './Vocabulary';
@@ -22,7 +22,8 @@ function Body({ channelName, chessOpponent, currentChannel }) {
       selectedChatTab,
       selectedChannelId,
       channelsObj
-    }
+    },
+    actions: { onSetReplyTarget, onSetIsRespondingToSubject }
   } = useChatContext();
   const isViewingAboutClassPage = useMemo(
     () =>
@@ -31,6 +32,12 @@ function Body({ channelName, chessOpponent, currentChannel }) {
       !channelsObj[selectedChannelId]?.isClass,
     [channelsObj, chatType, selectedChannelId, selectedChatTab]
   );
+
+  useEffect(() => {
+    onSetReplyTarget(null);
+    onSetIsRespondingToSubject(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChannelId]);
 
   return (
     <div

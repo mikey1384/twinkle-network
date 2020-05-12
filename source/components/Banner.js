@@ -10,7 +10,8 @@ Banner.propTypes = {
   innerRef: PropTypes.func,
   loading: PropTypes.bool,
   style: PropTypes.object,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  spinnerDelay: PropTypes.number
 };
 
 export default function Banner({
@@ -19,18 +20,19 @@ export default function Banner({
   innerRef,
   loading,
   onClick,
+  spinnerDelay = 1000,
   style = {}
 }) {
   const timerRef = useRef(null);
   const [spinnerShown, setSpinnerShown] = useState(false);
   useEffect(() => {
     if (loading) {
-      timerRef.current = setTimeout(() => setSpinnerShown(true), 1000);
+      timerRef.current = setTimeout(() => setSpinnerShown(true), spinnerDelay);
     } else {
       clearTimeout(timerRef.current);
       setSpinnerShown(false);
     }
-  }, [loading]);
+  }, [loading, spinnerDelay]);
 
   return (
     <div

@@ -138,6 +138,7 @@ function MainFeeds({
           color="gold"
           style={{ marginBottom: '1rem' }}
           onClick={handleNewNotiAlertClick}
+          spinnerDelay={100}
         >
           Tap to See {numNewNotis} New Notification
           {numNewNotis > 1 ? 's' : ''}
