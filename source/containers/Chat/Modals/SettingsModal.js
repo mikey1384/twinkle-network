@@ -55,7 +55,7 @@ export default function SettingsModal({
   ]);
   return (
     <Modal onHide={onHide}>
-      <header>{userIsChannelOwner ? 'Settings' : 'Edit Channel Name'}</header>
+      <header>{userIsChannelOwner ? 'Settings' : 'Edit Group Name'}</header>
       <main>
         <div
           className={css`
@@ -94,7 +94,7 @@ export default function SettingsModal({
               <SwitchButton
                 style={{ marginLeft: '1rem' }}
                 checked={!editedIsClosed}
-                onChange={() => setEditedIsClosed(isClosed => !isClosed)}
+                onChange={() => setEditedIsClosed((isClosed) => !isClosed)}
               />
             </div>
           )}

@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Color, desktopMinWidth } from 'constants/css';
+import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useMyState } from 'helpers/hooks';
 
@@ -44,7 +44,7 @@ function Channel({
   const otherMember = twoPeople
     ? members
         ?.map(({ username }) => username)
-        ?.filter(memberUsername => memberUsername !== username)?.[0]
+        ?.filter((memberUsername) => memberUsername !== username)?.[0]
     : undefined;
   const ChannelName = useMemo(
     () => otherMember || effectiveChannelName || '(Deleted)',
@@ -118,6 +118,11 @@ function Channel({
             </p>
           </div>
           <div
+            className={css`
+              @media (max-width: ${mobileMaxWidth}) {
+                font-size: 1.5rem;
+              }
+            `}
             style={{
               width: '100%',
               textOverflow: 'ellipsis',

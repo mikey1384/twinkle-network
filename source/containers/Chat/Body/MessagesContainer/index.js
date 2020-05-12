@@ -194,7 +194,7 @@ export default function MessagesContainer({
           ) : (
             <>
               <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '1rem' }}>Edit Channel Name</span>
+              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
             </>
           ),
         onClick: () => setSettingsModalShown(true)
