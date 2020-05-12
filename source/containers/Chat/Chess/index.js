@@ -153,8 +153,6 @@ export default function Chess({
       };
     }
     if (interactable && !userMadeLastMove) {
-      setGameOverMsg('');
-      setStatus('');
       setSquares((squares) =>
         squares.map((square) =>
           square.color === playerColors[myId]
@@ -168,9 +166,20 @@ export default function Chess({
             : square
         )
       );
+      setGameOverMsg('');
+      setStatus('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialState, loaded, newChessState]);
+  }, [
+    gameOverMsg,
+    initialState,
+    interactable,
+    loaded,
+    myId,
+    newChessState,
+    opponentId,
+    parsedState,
+    userMadeLastMove
+  ]);
 
   return (
     <div
@@ -206,7 +215,7 @@ export default function Chess({
               border: 1px solid ${Color.darkGray()};
               position: absolute;
               font-size: 1.5rem;
-              z-index: 10;
+              z-index: 5;
               @media (max-width: ${mobileMaxWidth}) {
                 top: 0;
                 left: 0.5rem;

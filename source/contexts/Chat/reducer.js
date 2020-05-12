@@ -142,7 +142,6 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         chatType: null,
-        replyTarget: null,
         subject: {},
         homeChannelIds: [channelId].concat(state.homeChannelIds),
         classChannelIds: action.data.isClass
@@ -268,7 +267,6 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         chatType: null,
-        replyTarget: null,
         recentChessMessage: undefined,
         channelsObj: {
           ...state.channelsObj,
@@ -301,7 +299,6 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         chatType: null,
-        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         selectedChannelId: 0,
@@ -623,7 +620,6 @@ export default function ChatReducer(state, action) {
         chatType: null,
         loaded: true,
         recentChessMessage: undefined,
-        replyTarget: null,
         subject: {},
         channelsObj: {
           ...state.channelsObj,
@@ -653,7 +649,6 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         chatType: null,
-        replyTarget: null,
         recentChessMessage: undefined,
         subject: {},
         homeChannelIds: [
