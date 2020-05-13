@@ -39,7 +39,6 @@ export default function ChessModal({
     actions: { onUpdateChessMoveViewTimeStamp }
   } = useChatContext();
   const [initialState, setInitialState] = useState();
-  const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [message, setMessage] = useState();
   const [uploaderId, setUploaderId] = useState();
@@ -47,6 +46,7 @@ export default function ChessModal({
   const [newChessState, setNewChessState] = useState();
   const [resignModalShown, setResignModalShown] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
+  const [userMadeLastMove, setUserMadeLastMove] = useState(false);
   const prevChannelId = useRef(channelId);
   const loading = useRef(null);
 
@@ -58,6 +58,7 @@ export default function ChessModal({
         channelId,
         recentChessMessage
       });
+      setUserMadeLastMove(chessMessage?.userId === myId);
       setMessage(chessMessage);
       setUploaderId(chessMessage?.userId);
       setInitialState(chessMessage?.chessState);
@@ -82,16 +83,6 @@ export default function ChessModal({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId]);
-
-  useEffect(() => {
-    if (!loading.current) {
-      if (initialState) {
-        const { move } = JSON.parse(initialState);
-        const userMadeLastMove = move?.by === myId || uploaderId === myId;
-        setUserMadeLastMove(!!userMadeLastMove);
-      }
-    }
-  }, [initialState, myId, spoilerOff, uploaderId]);
 
   useEffect(() => {
     if (typeof countdownNumber === 'number') {
@@ -143,6 +134,18 @@ export default function ChessModal({
         </div>
       </main>
       <footer style={{ border: 0 }}>
+        {!!parsedState?.move?.number > 0 &&
+          !newChessState &&
+          !gameFinished &&
+          !userMadeLastMove && (
+            <Button
+              style={{ marginRight: '0.7rem' }}
+              color="red"
+              onClick={() => setResignModalShown(true)}
+            >
+              Resign
+            </Button>
+          )}
         <Button transparent onClick={onHide} style={{ marginRight: '0.7rem' }}>
           Close
         </Button>
@@ -153,15 +156,6 @@ export default function ChessModal({
             onClick={() => setNewChessState(undefined)}
           >
             Cancel Move
-          </Button>
-        )}
-        {!!parsedState?.move?.number > 0 && !gameFinished && (
-          <Button
-            style={{ marginRight: '0.7rem' }}
-            color="red"
-            onClick={() => setResignModalShown(true)}
-          >
-            Resign
           </Button>
         )}
         {gameFinished ? (
