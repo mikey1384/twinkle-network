@@ -120,7 +120,7 @@ function Channel({
           <div
             className={css`
               @media (max-width: ${mobileMaxWidth}) {
-                font-size: 1.3rem;
+                font-size: 1.5rem;
               }
             `}
             style={{
