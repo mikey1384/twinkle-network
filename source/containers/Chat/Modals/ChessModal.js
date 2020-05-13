@@ -3,22 +3,25 @@ import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Chess from '../Chess';
+import ConfirmModal from 'components/Modals/ConfirmModal';
 import { Color } from 'constants/css';
+import { socket } from 'constants/io';
 import { useAppContext, useChatContext } from 'contexts';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
+  currentChannel: PropTypes.object,
   myId: PropTypes.number,
   onConfirmChessMove: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   countdownNumber: PropTypes.number,
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
-  opponentName: PropTypes.string,
-  onResign: PropTypes.func
+  opponentName: PropTypes.string
 };
 
 export default function ChessModal({
+  currentChannel,
   channelId,
   myId,
   onConfirmChessMove,
@@ -26,8 +29,7 @@ export default function ChessModal({
   countdownNumber,
   onSpoilerClick,
   opponentId,
-  opponentName,
-  onResign
+  opponentName
 }) {
   const {
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
@@ -41,8 +43,9 @@ export default function ChessModal({
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [message, setMessage] = useState();
   const [uploaderId, setUploaderId] = useState();
-  const [newChessState, setNewChessState] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [newChessState, setNewChessState] = useState();
+  const [resignModalShown, setResignModalShown] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
   const prevChannelId = useRef(channelId);
   const loading = useRef(null);
@@ -156,7 +159,7 @@ export default function ChessModal({
           <Button
             style={{ marginRight: '0.7rem' }}
             color="red"
-            onClick={handleResign}
+            onClick={() => setResignModalShown(true)}
           >
             Resign
           </Button>
@@ -175,6 +178,14 @@ export default function ChessModal({
           </Button>
         )}
       </footer>
+      {resignModalShown && (
+        <ConfirmModal
+          modalOverModal
+          title="Resign Chess Match"
+          onConfirm={handleResign}
+          onHide={() => setResignModalShown(false)}
+        />
+      )}
     </Modal>
   );
 
@@ -194,8 +205,13 @@ export default function ChessModal({
     onHide();
   }
 
-  async function handleResign() {
+  function handleResign() {
+    socket.emit('resign_chess_game', {
+      channel: currentChannel,
+      channelId,
+      targetUserId: myId,
+      winnerId: opponentId
+    });
     onHide();
-    onResign(true);
   }
 }

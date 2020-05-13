@@ -103,7 +103,6 @@ export default function MessagesContainer({
   const [uploadModalShown, setUploadModalShown] = useState(false);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
-  const [resignModalShown, setResignModalShown] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [deleteModal, setDeleteModal] = useState({
     shown: false,
@@ -569,6 +568,7 @@ export default function MessagesContainer({
       )}
       {chessModalShown && (
         <ChessModal
+          currentChannel={currentChannel}
           channelId={selectedChannelId}
           countdownNumber={chessCountdownObj[selectedChannelId]}
           myId={userId}
@@ -578,7 +578,6 @@ export default function MessagesContainer({
           onSpoilerClick={handleChessSpoilerClick}
           opponentId={chessOpponent?.id}
           opponentName={chessOpponent?.username}
-          onResign={setResignModalShown}
         />
       )}
       {uploadModalShown && (
@@ -634,13 +633,6 @@ export default function MessagesContainer({
           members={currentChannel.members}
           onSubmit={handleSelectNewOwner}
           isClass={currentChannel.isClass}
-        />
-      )}
-      {resignModalShown && (
-        <ConfirmModal
-          title="Resign Chess Match"
-          onConfirm={handleResign}
-          onHide={() => setResignModalShown(false)}
         />
       )}
     </ErrorBoundary>
@@ -1007,14 +999,5 @@ export default function MessagesContainer({
     setFileObj(file);
     setUploadModalShown(true);
     event.target.value = null;
-  }
-
-  function handleResign() {
-    socket.emit('resign_chess_game', {
-      channel: currentChannel,
-      targetUserId: userId,
-      winnerId: chessOpponent?.id
-    });
-    setResignModalShown(false);
   }
 }
