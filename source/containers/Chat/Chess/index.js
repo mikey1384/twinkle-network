@@ -70,9 +70,9 @@ export default function Chess({
   const {
     state: { channelLoading, creatingNewDMChannel, selectedChannelId }
   } = useChatContext();
-  const [playerColors, setPlayerColors] = useState({
+  const playerColors = useRef({
     [myId]: 'white',
-    [opponentId]: 'black'
+    [opponentName]: 'black'
   });
   const [squares, setSquares] = useState([]);
   const [whiteFallenPieces, setWhiteFallenPieces] = useState([]);
@@ -111,7 +111,10 @@ export default function Chess({
     }
   }, [parsedState]);
 
-  const myColor = parsedState?.playerColors[myId] || 'white';
+  const myColor = useMemo(() => parsedState?.playerColors[myId] || 'white', [
+    myId,
+    parsedState
+  ]);
   const userMadeLastMove = move.by === myId;
   const isCheck = parsedState?.isCheck;
   const isCheckmate = parsedState?.isCheckmate;
@@ -129,13 +132,12 @@ export default function Chess({
 
   useEffect(() => {
     if (newChessState) return;
-    const playerColors = parsedState
+    playerColors.current = parsedState
       ? parsedState.playerColors
       : {
           [myId]: 'white',
           [opponentId]: 'black'
         };
-    setPlayerColors(playerColors);
     setSquares(initialiseChessBoard({ initialState, loading: !loaded, myId }));
     capturedPiece.current = null;
     if (parsedState) {
@@ -155,7 +157,7 @@ export default function Chess({
     if (interactable && !userMadeLastMove) {
       setSquares((squares) =>
         squares.map((square) =>
-          square.color === playerColors[myId]
+          square.color === playerColors.current[myId]
             ? {
                 ...square,
                 state:
@@ -748,7 +750,7 @@ export default function Chess({
         ...moveDetail
       },
       capturedPiece: capturedPiece.current?.type,
-      playerColors: playerColors || {
+      playerColors: playerColors.current || {
         [myId]: 'white',
         [opponentId]: 'black'
       },
