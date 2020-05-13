@@ -390,7 +390,7 @@ function Message({
         winnerId={gameWinnerId}
         opponentName={channelName}
         myId={myId}
-        isResign={isResign}
+        isResign={!!isResign}
       />
     );
   }

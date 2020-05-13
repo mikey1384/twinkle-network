@@ -5,7 +5,6 @@ import Button from 'components/Button';
 import Chess from '../Chess';
 import { Color } from 'constants/css';
 import { useAppContext, useChatContext } from 'contexts';
-import { socket } from 'constants/io';
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -15,7 +14,8 @@ ChessModal.propTypes = {
   countdownNumber: PropTypes.number,
   onSpoilerClick: PropTypes.func.isRequired,
   opponentId: PropTypes.number,
-  opponentName: PropTypes.string
+  opponentName: PropTypes.string,
+  onResign: PropTypes.func
 };
 
 export default function ChessModal({
@@ -26,13 +26,14 @@ export default function ChessModal({
   countdownNumber,
   onSpoilerClick,
   opponentId,
-  opponentName
+  opponentName,
+  onResign
 }) {
   const {
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
   const {
-    state: { recentChessMessage, channelsObj },
+    state: { recentChessMessage },
     actions: { onUpdateChessMoveViewTimeStamp }
   } = useChatContext();
   const [initialState, setInitialState] = useState();
@@ -151,7 +152,7 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
-        {false && !!parsedState?.move?.number > 0 && !gameFinished && (
+        {!!parsedState?.move?.number > 0 && !gameFinished && (
           <Button
             style={{ marginRight: '0.7rem' }}
             color="red"
@@ -193,12 +194,8 @@ export default function ChessModal({
     onHide();
   }
 
-  function handleResign() {
-    socket.emit('resign_chess_game', {
-      currentChannel: channelsObj[channelId],
-      targetUserId: myId,
-      winnerId: opponentId
-    });
+  async function handleResign() {
     onHide();
+    onResign(true);
   }
 }
