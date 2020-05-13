@@ -43,12 +43,10 @@ export default function MediaPlayer({
   const [timeAt, setTimeAt] = useState(0);
   const PlayerRef = useRef(null);
   const mobile = isMobile(navigator);
-  const looping = useMemo(() => !mobile && !currentTime && autoPlay && muted, [
-    autoPlay,
-    currentTime,
-    mobile,
-    muted
-  ]);
+  const looping = useMemo(
+    () => !thumbUrl && !mobile && !currentTime && autoPlay && muted,
+    [autoPlay, currentTime, mobile, muted, thumbUrl]
+  );
 
   useEffect(() => {
     if (currentTime > 0) {
@@ -84,7 +82,7 @@ export default function MediaPlayer({
       fileType === 'audio' ||
       looping ||
       currentTime ||
-      (!mobile && autoPlay)
+      (!mobile && autoPlay && !thumbUrl)
     ) {
       return false;
     }
