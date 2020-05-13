@@ -152,17 +152,15 @@ export default function ChessModal({
             Cancel Move
           </Button>
         )}
-        {!!parsedState?.move?.by !== myId &&
-          !!parsedState?.move?.number > 0 &&
-          !gameFinished && (
-            <Button
-              style={{ marginRight: '0.7rem' }}
-              color="red"
-              onClick={handleResign}
-            >
-              Resign
-            </Button>
-          )}
+        {!!parsedState?.move?.number > 0 && !gameFinished && (
+          <Button
+            style={{ marginRight: '0.7rem' }}
+            color="red"
+            onClick={handleResign}
+          >
+            Resign
+          </Button>
+        )}
         {gameFinished ? (
           <Button color="orange" onClick={() => setInitialState(undefined)}>
             Start a new game
