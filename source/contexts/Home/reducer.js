@@ -44,6 +44,7 @@ export default function HomeReducer(state, action) {
     case 'LOAD_NEW_FEEDS':
       return {
         ...state,
+        feedsOutdated: false,
         feeds: action.data.concat(state.feeds)
       };
     case 'RELOAD_FEEDS':
