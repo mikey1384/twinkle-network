@@ -5,7 +5,7 @@ import ProfilePanel from 'components/ProfilePanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Loading from 'components/Loading';
 import PeopleFilterBar from './PeopleFilterBar';
-import { stringIsEmpty, queryStringForArray } from 'helpers/stringHelpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { mobileMaxWidth } from 'constants/css';
 import { useAppContext, useInputContext, useViewContext } from 'contexts';
@@ -63,7 +63,7 @@ function People({ location }) {
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching } = useSearch({
     onSearch: handleSearchUsers,
-    onSetSearchText: searchText =>
+    onSetSearchText: (searchText) =>
       onSetSearchText({ category: 'user', searchText }),
     onClear: onClearUserSearch
   });
@@ -140,12 +140,12 @@ function People({ location }) {
         )}
         {profilesLoaded &&
           stringIsEmpty(userSearchText) &&
-          profiles.map(profile => (
+          profiles.map((profile) => (
             <ProfilePanel expandable key={profile.id} profileId={profile.id} />
           ))}
         {!stringIsEmpty(userSearchText) &&
           !searching &&
-          searchedProfiles.map(profile => (
+          searchedProfiles.map((profile) => (
             <ProfilePanel expandable key={profile.id} profileId={profile.id} />
           ))}
         {!stringIsEmpty(userSearchText) &&
@@ -195,11 +195,12 @@ function People({ location }) {
   async function loadMoreProfiles() {
     try {
       const data = await loadUsers({
-        shownUsersIds: queryStringForArray({
-          array: profiles,
-          originVar: 'id',
-          destinationVar: 'shownUsers'
-        }),
+        lastActive:
+          profiles.length > 0 ? profiles[profiles.length - 1].lastActive : null,
+        lastUserId:
+          profiles.length > 0 ? profiles[profiles.length - 1].id : null,
+        lastTwinkleXP:
+          profiles.length > 0 ? profiles[profiles.length - 1].twinkleXP : null,
         orderBy: orderUsersBy === RANKING_FILTER_LABEL ? 'twinkleXP' : ''
       });
       onLoadMoreUsers(data);

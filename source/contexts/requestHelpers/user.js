@@ -176,11 +176,15 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
-    async loadUsers({ orderBy, shownUsersIds } = {}) {
+    async loadUsers({ orderBy, lastUserId, lastActive, lastTwinkleXP } = {}) {
       try {
         const { data } = await request.get(
           `${URL}/user/users${orderBy ? `?orderBy=${orderBy}` : ''}${
-            shownUsersIds ? `${orderBy ? '&' : '?'}${shownUsersIds}` : ''
+            lastUserId
+              ? `${
+                  orderBy ? '&' : '?'
+                }lastUserId=${lastUserId}&lastActive=${lastActive}&lastTwinkleXP=${lastTwinkleXP}`
+              : ''
           }`
         );
         return Promise.resolve(data);
