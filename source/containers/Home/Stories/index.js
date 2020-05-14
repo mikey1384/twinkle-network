@@ -244,7 +244,7 @@ export default function Stories({ location }) {
               {feedsOutdated && (
                 <Banner
                   color="gold"
-                  onClick={() => window.location.reload()}
+                  onClick={handleFetchNewFeeds}
                   style={{ marginBottom: '1rem' }}
                 >
                   Tap to See New Posts!
@@ -367,12 +367,7 @@ export default function Stories({ location }) {
       setLoadingNewFeeds(true);
       onResetNumNewPosts();
       const data = await loadNewFeeds({
-        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
-        shownFeeds: queryStringForArray({
-          array: feeds,
-          originVar: 'feedId',
-          destinationVar: 'shownFeeds'
-        })
+        lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0
       });
       if (data && mounted.current) onLoadNewFeeds(data);
       setLoadingNewFeeds(false);

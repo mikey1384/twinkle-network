@@ -8,7 +8,6 @@ import {
   useAppContext,
   useContentContext,
   useExploreContext,
-  useHomeContext,
   useProfileContext
 } from 'contexts';
 
@@ -67,10 +66,6 @@ function HeaderNav({
     () => (alert ? alertColor : Color.darkGray()),
     [alert, alertColor]
   );
-  const {
-    state: { feedsOutdated },
-    actions: { onReloadFeeds }
-  } = useHomeContext();
   const {
     user: {
       actions: { onSetProfilesLoaded }
@@ -190,10 +185,8 @@ function HeaderNav({
 
   function handleMatch(match) {
     if (match.path === '/') {
-      if (feedsOutdated) {
-        return window.location.reload();
-      }
-      onReloadFeeds();
+      document.getElementById('App').scrollTop = 0;
+      BodyRef.current.scrollTop = 0;
     }
     if (match.path.includes('/users/')) {
       const username = match.path.split('/users/')[1].split('/')[0];
