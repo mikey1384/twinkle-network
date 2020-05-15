@@ -312,8 +312,12 @@ export default function Stories({ location }) {
         order: displayOrder,
         orderBy: categoryObj[category].orderBy,
         lastFeedId: feeds.length > 0 ? feeds[feeds.length - 1].feedId : null,
+        lastRewardLevel:
+          feeds.length > 0 ? feeds[feeds.length - 1].rewardLevel : null,
         lastTimeStamp:
-          feeds.length > 0 ? feeds[feeds.length - 1].lastInteraction : null
+          feeds.length > 0 ? feeds[feeds.length - 1].lastInteraction : null,
+        lastViewDuration:
+          feeds.length > 0 ? feeds[feeds.length - 1].totalViewDuration : null
       });
       if (mounted.current) {
         onLoadMoreFeeds(data);

@@ -266,6 +266,8 @@ export default function contentRequestHelpers({ auth, handleError }) {
     async loadFeeds({
       lastFeedId,
       lastTimeStamp,
+      lastRewardLevel,
+      lastViewDuration,
       filter = 'all',
       order = 'desc',
       orderBy = 'lastInteraction',
@@ -273,9 +275,9 @@ export default function contentRequestHelpers({ auth, handleError }) {
     } = {}) {
       try {
         const { data } = await request.get(
-          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderBy=${orderBy}&${
+          `${URL}/content/feeds?filter=${filter}&username=${username}&order=${order}&orderByLabel=${orderBy}&${
             lastFeedId
-              ? `lastFeedId=${lastFeedId}&lastTimeStamp=${lastTimeStamp}`
+              ? `lastFeedId=${lastFeedId}&lastTimeStamp=${lastTimeStamp}&lastRewardLevel=${lastRewardLevel}&lastViewDuration=${lastViewDuration}`
               : ''
           }`,
           auth()
