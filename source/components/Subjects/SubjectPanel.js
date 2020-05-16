@@ -380,20 +380,23 @@ export default function SubjectPanel({
     return menuProps;
   }
 
-  function handleCommentSubmit(params) {
+  async function handleCommentSubmit(params) {
     onChangeSpoilerStatus({
       shown: true,
       subjectId,
       checked: true
     });
+    if (secretHidden) {
+      return handleExpand(true);
+    }
     onUploadComment({ ...params, subjectId, contentId, contentType });
   }
 
-  async function handleExpand() {
+  async function handleExpand(revealingSecret) {
     setExpanded(true);
     try {
       setLoadingComments(true);
-      if (!secretHidden) {
+      if (!secretHidden || revealingSecret) {
         const data = await loadComments({
           contentType: 'subject',
           contentId: subjectId,
