@@ -142,7 +142,7 @@ export default function Header({
     socket.on('new_post_uploaded', onIncreaseNumNewPosts);
     socket.on('new_notification_received', handleNewNotification);
     socket.on('new_message_received', handleReceiveMessage);
-    socket.on('new_reward_received', handleNewReward);
+    socket.on('new_reward_posted', handleNewReward);
     socket.on('peer_accepted', handlePeerAccepted);
     socket.on('peer_hung_up', handlePeerHungUp);
     socket.on('peer_stream_show_requested', handlePeerStreamShowRequest);
@@ -176,7 +176,7 @@ export default function Header({
       socket.removeListener('new_post_uploaded', onIncreaseNumNewPosts);
       socket.removeListener('new_notification_received', handleNewNotification);
       socket.removeListener('new_message_received', handleReceiveMessage);
-      socket.removeListener('new_reward_received', handleNewReward);
+      socket.removeListener('new_reward_posted', handleNewReward);
       socket.removeListener('peer_accepted', handlePeerAccepted);
       socket.removeListener('peer_hung_up', handlePeerHungUp);
       socket.removeListener(
@@ -310,11 +310,13 @@ export default function Header({
     }
 
     function handleNewReward({ target, reward }) {
-      onAttachStar({
-        data: reward,
-        contentId: target.contentId,
-        contentType: target.contentType
-      });
+      if (reward.rewarderId !== userId) {
+        onAttachStar({
+          data: reward,
+          contentId: target.contentId,
+          contentType: target.contentType
+        });
+      }
     }
 
     function handleNewCallMember({ socketId, memberId }) {

@@ -63,8 +63,14 @@ export default function NavMenu({ playlistId, videoId }) {
 
   useEffect(() => {
     mounted.current = true;
-    socket.on('new_reward_received', handleFetchNotifications);
+    socket.on('new_reward_posted', handleNewReward);
     loadRightMenuVideos();
+
+    function handleNewReward({ receiverId }) {
+      if (receiverId === userId) {
+        handleFetchNotifications();
+      }
+    }
     async function loadRightMenuVideos() {
       try {
         setLoading(true);
@@ -102,7 +108,7 @@ export default function NavMenu({ playlistId, videoId }) {
     }
 
     return function cleanUp() {
-      socket.removeListener('new_reward_received', handleFetchNotifications);
+      socket.removeListener('new_reward_posted', handleNewReward);
       mounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

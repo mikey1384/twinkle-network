@@ -92,9 +92,14 @@ function Notification({ children, className, location, style }) {
   }, [twinkleXP]);
 
   useEffect(() => {
-    socket.on('new_reward_received', handleFetchNotifications);
+    socket.on('new_reward_posted', handleNewReward);
+    function handleNewReward({ receiverId }) {
+      if (receiverId === userId) {
+        handleFetchNotifications();
+      }
+    }
     return function cleanUp() {
-      socket.removeListener('new_reward_received', handleFetchNotifications);
+      socket.removeListener('new_reward_posted', handleNewReward);
     };
   });
 
