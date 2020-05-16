@@ -90,7 +90,7 @@ export const rewardReasons = {
   5: {
     color: 'green',
     icon: 'check-circle',
-    message: 'for participating in a project or event'
+    message: 'for participating in a group project or event'
   }
 };
 
