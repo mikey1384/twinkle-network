@@ -5,6 +5,7 @@ import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 
 RewardLevelForm.propTypes = {
+  extendedRewardLevels: PropTypes.bool,
   icon: PropTypes.string,
   rewardLevel: PropTypes.number.isRequired,
   onSetRewardLevel: PropTypes.func.isRequired,
@@ -13,6 +14,7 @@ RewardLevelForm.propTypes = {
 };
 
 export default function RewardLevelForm({
+  extendedRewardLevels,
   icon = 'star',
   themed,
   rewardLevel,
@@ -67,6 +69,22 @@ export default function RewardLevelForm({
           style={{ cursor: 'pointer', marginLeft: 2 }}
           onClick={() => onSetRewardLevel(5)}
         />
+        {extendedRewardLevels && (
+          <Icon
+            key={5}
+            icon={rewardLevel > 24 ? icon : ['far', icon]}
+            style={{ cursor: 'pointer', marginLeft: 2 }}
+            onClick={() => onSetRewardLevel(25)}
+          />
+        )}
+        {extendedRewardLevels && (
+          <Icon
+            key={6}
+            icon={rewardLevel > 49 ? icon : ['far', icon]}
+            style={{ cursor: 'pointer', marginLeft: 2 }}
+            onClick={() => onSetRewardLevel(50)}
+          />
+        )}
       </div>
       <a
         style={{

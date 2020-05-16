@@ -6,6 +6,7 @@ import RewardReason from './RewardReason';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import { rewardReasons } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { useMyState } from 'helpers/hooks';
 
 MessageRewardModal.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -14,6 +15,7 @@ MessageRewardModal.propTypes = {
 };
 
 export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
+  const { isCreator } = useMyState();
   const [selectedReasonId, setSelectedReasonId] = useState(0);
   const [rewardAmount, setRewardAmount] = useState(0);
   const submitDisabled = useMemo(() => !rewardAmount || !selectedReasonId, [
@@ -39,6 +41,7 @@ export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
           </div>
           <RewardLevelForm
             icon="certificate"
+            extendedRewardLevels={!!isCreator}
             rewardLevel={rewardAmount}
             onSetRewardLevel={setRewardAmount}
             style={{ width: '100%', textAlign: 'center', fontSize: '3rem' }}
@@ -52,7 +55,7 @@ export default function MessageRewardModal({ onHide, userToReward, onSubmit }) {
             alignItems: 'center'
           }}
         >
-          {Object.keys(rewardReasons).map(key => (
+          {Object.keys(rewardReasons).map((key) => (
             <RewardReason
               key={key}
               reasonId={Number(key)}
