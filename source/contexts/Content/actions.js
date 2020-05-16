@@ -323,6 +323,15 @@ export default function ContentActions(dispatch) {
         content
       });
     },
+    onSetFullTextState({ contentId, contentType, section, fullTextShown }) {
+      return dispatch({
+        type: 'SET_FULL_TEXT_STATE',
+        contentId,
+        contentType,
+        section,
+        fullTextShown
+      });
+    },
     onSetIsEditing({ contentId, contentType, isEditing }) {
       return dispatch({
         type: 'SET_IS_EDITING',

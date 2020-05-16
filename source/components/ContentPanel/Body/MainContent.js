@@ -150,7 +150,13 @@ export default function MainContent({
                       wordBreak: 'break-word'
                     }}
                   >
-                    <LongText>{content}</LongText>
+                    <LongText
+                      contentId={contentId}
+                      contentType={contentType}
+                      section="hidden message"
+                    >
+                      {content}
+                    </LongText>
                   </div>
                 ))}
               {contentType === 'subject' && (
@@ -196,7 +202,11 @@ export default function MainContent({
                       : '0.5rem'
                 }}
               >
-                <LongText>
+                <LongText
+                  contentId={contentId}
+                  contentType={contentType}
+                  section="description"
+                >
                   {!stringIsEmpty(description)
                     ? description
                     : contentType === 'video' || contentType === 'url'

@@ -2,12 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
+import { useContentState } from 'helpers/hooks';
+import { useContentContext } from 'contexts';
 
 LongText.propTypes = {
   children: PropTypes.string,
   className: PropTypes.string,
   cleanString: PropTypes.bool,
+  contentId: PropTypes.number,
+  contentType: PropTypes.string,
   maxLines: PropTypes.number,
+  section: PropTypes.string,
   style: PropTypes.object,
   readMoreColor: PropTypes.string
 };
@@ -17,11 +22,21 @@ export default function LongText({
   className,
   cleanString,
   children: text,
+  contentId,
+  contentType,
+  section,
   maxLines = 10,
   readMoreColor = Color.blue()
 }) {
+  const {
+    actions: { onSetFullTextState }
+  } = useContentContext();
   const ContainerRef = useRef(null);
-  const [fullText, setFullText] = useState(false);
+  const contentState =
+    contentType && section ? useContentState({ contentType, contentId }) : {};
+  const { fullTextState = {} } = contentState;
+  const fullTextRef = useRef(fullTextState[section]);
+  const [fullText, setFullText] = useState(fullTextState[section]);
   const [isOverflown, setIsOverflown] = useState(false);
 
   useEffect(() => {
@@ -32,6 +47,27 @@ export default function LongText({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ContainerRef.current]);
+
+  useEffect(() => {
+    if (fullTextState[section]) {
+      fullTextRef.current = true;
+      setFullText(true);
+    }
+  }, [fullTextState, section]);
+
+  useEffect(() => {
+    return function saveFullTextStateBeforeUnmount() {
+      if (contentType && section) {
+        onSetFullTextState({
+          contentId,
+          contentType,
+          section,
+          fullTextShown: fullTextRef.current
+        });
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div style={style} className={className}>
@@ -71,7 +107,10 @@ export default function LongText({
                       display: 'inline-block',
                       paddingTop: '1.5rem'
                     }}
-                    onClick={() => setFullText(true)}
+                    onClick={() => {
+                      setFullText(true);
+                      fullTextRef.current = true;
+                    }}
                   >
                     Read More
                   </a>

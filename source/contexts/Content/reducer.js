@@ -550,8 +550,12 @@ export default function ContentReducer(state, action) {
       const contentKeys = Object.keys(newState);
       for (let contentKey of contentKeys) {
         const prevContentState = newState[contentKey];
+        const contentMatches =
+          prevContentState.contentId === action.subjectId &&
+          prevContentState.contentType === 'subject';
         newState[contentKey] = {
           ...prevContentState,
+          ...(contentMatches ? action.editedSubject : {}),
           subjects: prevContentState.subjects?.map((subject) =>
             subject.id === action.subjectId
               ? {
@@ -901,14 +905,6 @@ export default function ContentReducer(state, action) {
           invitationDetail: action.detail
         }
       };
-    case 'SET_EMBEDDED_URL':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          embeddedUrl: action.url
-        }
-      };
     case 'SET_BY_USER_STATUS':
       return {
         ...state,
@@ -928,12 +924,31 @@ export default function ContentReducer(state, action) {
           commentsShown: true
         }
       };
+    case 'SET_EMBEDDED_URL':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          embeddedUrl: action.url
+        }
+      };
     case 'SET_EXISTING_CONTENT':
       return {
         ...state,
         [contentKey]: {
           ...prevContentState,
           existingContent: action.content
+        }
+      };
+    case 'SET_FULL_TEXT_STATE':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          fullTextState: {
+            ...(prevContentState.fullTextState || {}),
+            [action.section]: action.fullTextShown
+          }
         }
       };
     case 'SET_IS_EDITING':
