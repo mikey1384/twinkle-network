@@ -249,7 +249,7 @@ export default function contentRequestHelpers({ auth, handleError }) {
     },
     async loadFeaturedPlaylists() {
       try {
-        const { data } = await request.get(`${URL}/content/featured/playlists`);
+        const { data } = await request.get(`${URL}/content/featured/playlists`, auth());
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
@@ -360,7 +360,8 @@ export default function contentRequestHelpers({ auth, handleError }) {
                   destinationVar: 'shownPlaylists'
                 })}`
               : ''
-          }`
+          }`,
+          auth()
         );
         return Promise.resolve({ results, loadMoreButton });
       } catch (error) {
