@@ -169,13 +169,13 @@ export default function Carousel({
             transform: 'translate3d(0, 0, 0)',
             boxSizing: 'border-box'
           }}
-          onTouchStart={e => {
+          onTouchStart={(e) => {
             setTouchObject({
               startX: e.touches[0].pageX,
               startY: e.touches[0].pageY
             });
           }}
-          onTouchMove={e => {
+          onTouchMove={(e) => {
             if (!scrollYRef.current) {
               scrollYRef.current = (
                 document.scrollingElement || document.documentElement
@@ -206,7 +206,7 @@ export default function Carousel({
           }}
           onTouchEnd={handleSwipe}
           onTouchCancel={handleSwipe}
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             if (allowDrag) {
               setTouchObject({
                 startX: e.clientX,
@@ -215,7 +215,7 @@ export default function Carousel({
               setDragging(true);
             }
           }}
-          onMouseMove={e => {
+          onMouseMove={(e) => {
             if (dragging) {
               const direction = swipeDirection(
                 touchObject.startX,
@@ -238,12 +238,12 @@ export default function Carousel({
               });
             }
           }}
-          onMouseUp={e => {
+          onMouseUp={(e) => {
             if (dragging) {
               handleSwipe(e);
             }
           }}
-          onMouseLeave={e => {
+          onMouseLeave={(e) => {
             if (dragging) {
               handleSwipe(e);
             }
@@ -306,9 +306,7 @@ export default function Carousel({
             nextSlide={previousSlide}
           />,
           <div key={1}>
-            {slideCount > 5 &&
-            currentSlide + slidesToScroll >= slideCount &&
-            showAllButton ? (
+            {showAllButton ? (
               <Button
                 skeuomorphic
                 color="darkerGray"

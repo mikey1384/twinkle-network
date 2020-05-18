@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Carousel from 'components/Carousel';
 import VideoThumb from 'components/VideoThumb';
@@ -11,7 +11,6 @@ import Link from 'components/Link';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
-import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
 
@@ -55,18 +54,7 @@ export default function PlaylistCarousel({
   );
   const [deleteConfirmModalShown, setDeleteConfirmModalShown] = useState(false);
   const [playlistModalShown, setPlaylistModalShown] = useState(false);
-  const [numSlides, setNumSlides] = useState(4);
-
-  useEffect(() => {
-    addEvent(window, 'resize', onResize);
-    function onResize() {
-      setNumSlides(4);
-    }
-
-    return function cleanUp() {
-      removeEvent(window, 'resize', onResize);
-    };
-  });
+  const numSlides = 4;
 
   return (
     <div
