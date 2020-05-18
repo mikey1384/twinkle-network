@@ -21,11 +21,14 @@ import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { descriptionLengthForExtraRewardLevel } from 'constants/defaultValues';
 import {
+  addCommasToNumber,
+  getFileInfoFromFileName
+} from 'helpers/stringHelpers';
+import {
   determineXpButtonDisabled,
   isMobile,
   scrollElementToCenter
 } from 'helpers';
-import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 
@@ -95,6 +98,7 @@ export default function Body({
     contentType,
     contentId
   });
+  const { fileType } = fileName ? getFileInfoFromFileName(fileName) : '';
   const { secretShown: rootSecretShown } = useContentState({
     contentId: rootId,
     contentType: rootType
@@ -300,6 +304,11 @@ export default function Body({
                 display: 'flex',
                 justifyContent: 'center',
                 marginTop: '1rem',
+                ...(fileType === 'audio'
+                  ? {
+                      padding: '1rem'
+                    }
+                  : {}),
                 marginBottom: rewardLevel ? '1rem' : 0
               }}
             />

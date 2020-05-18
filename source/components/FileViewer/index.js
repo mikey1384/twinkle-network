@@ -58,7 +58,7 @@ export default function FileViewer({
           src={src}
           fileName={fileName}
         />
-      ) : fileType === 'video' || fileType === 'audio' ? (
+      ) : fileType === 'video' || (fileType === 'audio' && !isThumb) ? (
         <div
           style={{
             width: '100%',
@@ -85,7 +85,7 @@ export default function FileViewer({
             </div>
           )}
           <MediaPlayer
-            autoPlay={autoPlay}
+            autoPlay={autoPlay && fileType === 'video'}
             contentId={contentId}
             contentType={contentType}
             fileType={fileType}

@@ -141,6 +141,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:perfect\:)/gi, '💯')
     .replace(/(\:pi\:)/gi, 'π')
     .replace(/(\:pig\:)/gi, '🐷')
+    .replace(/(\:pineapple\:)/gi, '🍍')
     .replace(/(\:pizza\:)/gi, '🍕')
     .replace(/(\:poo\:)/gi, '💩')
     .replace(/(\:poop\:)/gi, '💩')
