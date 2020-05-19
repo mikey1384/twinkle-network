@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
@@ -20,14 +19,11 @@ TextMessage.propTypes = {
   isSubject: PropTypes.bool,
   messageId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   MessageStyle: PropTypes.object,
-  numMsgs: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isEditing: PropTypes.bool,
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
   onSetScrollToBottom: PropTypes.func.isRequired,
-  showSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
-  subjectId: PropTypes.number,
   userCanEditThis: PropTypes.bool
 };
 
@@ -41,13 +37,10 @@ function TextMessage({
   isSubject,
   messageId,
   MessageStyle,
-  numMsgs,
   isEditing,
   onEditCancel,
   onEditDone,
   onSetScrollToBottom,
-  subjectId,
-  showSubjectMsgsModal,
   socketConnected,
   userCanEditThis
 }) {
@@ -91,17 +84,6 @@ function TextMessage({
                 />
               )}
             </div>
-            {!!isReloadedSubject && !!numMsgs && numMsgs > 0 && (
-              <div className={MessageStyle.relatedConversationsButton}>
-                <Button
-                  filled
-                  color="logoBlue"
-                  onClick={() => showSubjectMsgsModal({ subjectId, content })}
-                >
-                  Show related conversations
-                </Button>
-              </div>
-            )}
           </div>
         )}
         {extractedUrl && messageId && !attachmentHidden && (

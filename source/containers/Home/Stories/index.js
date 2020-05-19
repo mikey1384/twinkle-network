@@ -8,7 +8,6 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import HomeFilter from './HomeFilter';
 import ContentPanel from 'components/ContentPanel';
 import { css } from 'emotion';
-import { queryStringForArray } from 'helpers/stringHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import {
@@ -125,12 +124,7 @@ export default function Stories({ location }) {
         if (disconnected.current) {
           disconnected.current = false;
           const outdated = await loadNewFeeds({
-            lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0,
-            shownFeeds: queryStringForArray({
-              array: feeds,
-              originVar: 'feedId',
-              destinationVar: 'shownFeeds'
-            })
+            lastInteraction: feeds[0] ? feeds[0].lastInteraction : 0
           });
           if (mounted.current) {
             onSetFeedsOutdated(outdated.length > 0);
