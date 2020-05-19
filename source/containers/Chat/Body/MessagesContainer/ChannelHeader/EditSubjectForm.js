@@ -225,6 +225,9 @@ export default function EditSubjectForm({
           }}
         >
           {item.content}
+          <span style={{ color: Color.blue() }}>
+            {Number(item.numMsgs) > 0 && ` (${item.numMsgs})`}
+          </span>
         </div>
         <div>
           <small>

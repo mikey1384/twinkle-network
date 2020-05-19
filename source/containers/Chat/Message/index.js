@@ -93,6 +93,7 @@ function Message({
     linkTitle,
     linkUrl,
     moveViewTimeStamp,
+    numMsgs,
     rewardAmount,
     rewardReason,
     scrollAtBottom,
@@ -489,6 +490,7 @@ function Message({
                       extractedUrl={extractedUrl}
                       myId={myId}
                       messageId={messageId}
+                      numMsgs={numMsgs}
                       isNotification={isNotification}
                       isSubject={!!isSubject}
                       isReloadedSubject={!!isReloadedSubject}
