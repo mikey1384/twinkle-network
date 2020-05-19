@@ -235,18 +235,20 @@ export default function Chess({
               {isFromModal && (
                 <>
                   {userMadeLastMove ? 'You' : opponentName}
-                  {' moved '}
+                  {move.piece && <span>{' moved '}</span>}
                 </>
               )}
             </span>
+            {isFromModal && !move.piece && <span> </span>}
             <div
+              style={{ display: move.piece ? 'block' : 'inline' }}
               className={css`
                 @media (max-width: ${mobileMaxWidth}) {
                   display: inline;
                 }
               `}
             >
-              {isFromModal && (
+              {isFromModal && move.piece && (
                 <>
                   {move.piece === 'queen' || move.piece === 'king'
                     ? 'the '
