@@ -77,20 +77,29 @@ function ChatInfo({
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
     const me = { id: myId, username, profilePicId };
-    const currentChannelOnlineMembersOtherThanMe = Object.entries(
+    let currentChannelOnlineMembersOtherThanMe = Object.entries(
       currentChannelOnlineMembers
     )
       .map(([, member]) => member)
-      .filter(member => !!member.id && member.id !== myId);
+      .filter((member) => !!member.id && member.id !== myId);
+    if (selectedChannelId !== 2) {
+      const totalChannelMemberIds = totalChannelMembers.map(
+        (member) => member.id
+      );
+      currentChannelOnlineMembersOtherThanMe = currentChannelOnlineMembersOtherThanMe.filter(
+        (member) => totalChannelMemberIds.includes(member.id)
+      );
+    }
     const totalValidChannelMembers = totalChannelMembers.filter(
-      member => !!member.id
+      (member) => !!member.id
     );
     const currentlyOnlineIds = Object.keys(
       currentChannelOnlineMembers
-    ).map(memberId => Number(memberId));
+    ).map((memberId) => Number(memberId));
     if (totalValidChannelMembers.length > 0) {
       const offlineChannelMembers = totalValidChannelMembers.filter(
-        member => !currentlyOnlineIds.includes(member.id) && member.id !== myId
+        (member) =>
+          !currentlyOnlineIds.includes(member.id) && member.id !== myId
       );
       return [
         me,
@@ -104,7 +113,8 @@ function ChatInfo({
     myId,
     username,
     profilePicId,
-    currentChannelOnlineMembers
+    currentChannelOnlineMembers,
+    selectedChannelId
   ]);
 
   return (

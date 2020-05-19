@@ -185,7 +185,7 @@ export default function ContentPanel({
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
             <div ref={ContainerRef}>
-              {visible !== false || inView || started || rootStarted ? (
+              {visible || inView || started || rootStarted ? (
                 <div
                   ref={PanelRef}
                   style={{

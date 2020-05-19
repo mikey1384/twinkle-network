@@ -397,7 +397,7 @@ function Message({
 
   return (
     <div ref={ComponentRef} className={MessageStyle.container}>
-      {inView || started || visible !== false ? (
+      {inView || started || visible ? (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
