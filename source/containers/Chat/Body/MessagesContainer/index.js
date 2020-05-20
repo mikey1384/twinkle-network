@@ -385,7 +385,7 @@ export default function MessagesContainer({
             right: '0',
             bottom: '0',
             opacity: loading ? 0 : 1,
-            top: selectedChannelId === GENERAL_CHAT_ID ? '7rem' : 0,
+            top: currentChannel.twoPeople ? 0 : '7rem',
             overflowY: 'scroll'
           }}
           onScroll={() => {
@@ -466,7 +466,7 @@ export default function MessagesContainer({
             </div>
           </div>
         </div>
-        {!loading && selectedChannelId === GENERAL_CHAT_ID && (
+        {!loading && !currentChannel.twoPeople && (
           <ChannelHeader onInputFocus={() => ChatInputRef.current.focus()} />
         )}
         <div
