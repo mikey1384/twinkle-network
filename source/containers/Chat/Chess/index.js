@@ -241,8 +241,8 @@ export default function Chess({
             </span>
             {isFromModal && !move.piece && <span> </span>}
             <div
-              style={{ display: move.piece ? 'block' : 'inline' }}
               className={css`
+                display: ${move.piece ? 'block' : 'inline'};
                 @media (max-width: ${mobileMaxWidth}) {
                   display: inline;
                 }
