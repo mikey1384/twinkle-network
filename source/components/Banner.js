@@ -54,7 +54,7 @@ export default function Banner({
         ...style,
         cursor: onClick && !loading ? 'pointer' : 'default'
       }}
-      onClick={onClick}
+      onClick={loading || !onClick ? () => {} : onClick}
     >
       {children}
       {loading && spinnerShown && (
