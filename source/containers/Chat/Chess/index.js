@@ -250,7 +250,7 @@ export default function Chess({
             >
               {isFromModal && move.piece && (
                 <>
-                  {move.piece === 'queen' || move.piece === 'king'
+                  {move.piece?.type === 'queen' || move.piece?.type === 'king'
                     ? 'the '
                     : 'a '}
                 </>
