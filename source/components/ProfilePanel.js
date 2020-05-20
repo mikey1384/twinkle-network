@@ -209,7 +209,7 @@ function ProfilePanel({ expandable, profileId }) {
   return (
     <div ref={ComponentRef} key={profileId}>
       <div ref={ContainerRef}>
-        {visible || inView ? (
+        {!loaded || visible || inView ? (
           <div
             ref={PanelRef}
             className={css`
