@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
@@ -6,7 +6,9 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import UsernameText from 'components/Texts/UsernameText';
 import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
+import DropdownButton from 'components/Buttons/DropdownButton';
 import Icon from 'components/Icon';
+import { GENERAL_CHAT_ID } from 'constants/database';
 import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
@@ -17,10 +19,20 @@ import { useInterval, useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 
 ChannelHeader.propTypes = {
-  onInputFocus: PropTypes.func.isRequired
+  currentChannel: PropTypes.object.isRequired,
+  onInputFocus: PropTypes.func.isRequired,
+  onSetInviteUsersModalShown: PropTypes.func,
+  onSetLeaveConfirmModalShown: PropTypes.func,
+  onSetSettingsModalShown: PropTypes.func
 };
 
-export default function ChannelHeader({ onInputFocus }) {
+export default function ChannelHeader({
+  currentChannel,
+  onInputFocus,
+  onSetInviteUsersModalShown,
+  onSetLeaveConfirmModalShown,
+  onSetSettingsModalShown
+}) {
   const {
     requestHelpers: {
       loadChatSubject,
@@ -79,6 +91,67 @@ export default function ChannelHeader({ onInputFocus }) {
     setTimeSincePost(timeSince(timeStamp));
     setTimeSinceReload(timeSince(reloadTimeStamp));
   }, 1000);
+
+  const menuProps = useMemo(() => {
+    let result = [];
+    if (currentChannel.id === GENERAL_CHAT_ID) {
+      result.push({
+        label: (
+          <>
+            <Icon icon="exchange-alt" />
+            <span style={{ marginLeft: '1rem' }}>Change Subject</span>
+          </>
+        ),
+        onClick: () => setOnEdit(true)
+      });
+    } else {
+      if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
+        result.push({
+          label: (
+            <>
+              <Icon icon="users" />
+              <span style={{ marginLeft: '1rem' }}>Invite People</span>
+            </>
+          ),
+          onClick: () => onSetInviteUsersModalShown(true)
+        });
+      }
+      result.push({
+        label:
+          currentChannel.creatorId === userId ? (
+            <>
+              <Icon icon="sliders-h" />
+              <span style={{ marginLeft: '1rem' }}>Settings</span>
+            </>
+          ) : (
+            <>
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
+            </>
+          ),
+        onClick: () => onSetSettingsModalShown(true)
+      });
+      result.push({
+        separator: true
+      });
+      result.push({
+        label: (
+          <>
+            <Icon icon="sign-out-alt" />
+            <span style={{ marginLeft: '1rem' }}>Leave</span>
+          </>
+        ),
+        onClick: () => onSetLeaveConfirmModalShown(true)
+      });
+    }
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentChannel.twoPeople,
+    currentChannel.isClosed,
+    currentChannel.creatorId,
+    userId
+  ]);
 
   return (
     <ErrorBoundary
@@ -163,16 +236,21 @@ export default function ChannelHeader({ onInputFocus }) {
                     Respond
                   </span>
                 </Button>
-                {authLevel > 0 && (
-                  <Button
-                    style={{ marginLeft: '1rem' }}
-                    color="logoBlue"
-                    filled
-                    onClick={() => setOnEdit(true)}
-                  >
-                    Change
-                  </Button>
-                )}
+                <DropdownButton
+                  skeuomorphic
+                  color="darkerGray"
+                  opacity={0.7}
+                  style={{
+                    marginLeft: '1rem'
+                  }}
+                  listStyle={{
+                    width: '15rem'
+                  }}
+                  direction="left"
+                  icon="bars"
+                  text="Menu"
+                  menuProps={menuProps}
+                />
               </div>
             </>
           )}

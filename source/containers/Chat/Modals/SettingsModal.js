@@ -4,6 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import SwitchButton from 'components/SwitchButton';
+import SelectNewOwnerModal from './SelectNewOwnerModal';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useChatContext } from 'contexts';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -11,28 +12,33 @@ import { css } from 'emotion';
 
 SettingsModal.propTypes = {
   channelId: PropTypes.number,
+  members: PropTypes.array,
   onDone: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,
   channelName: PropTypes.string,
   isClass: PropTypes.bool,
   isClosed: PropTypes.bool,
   userIsChannelOwner: PropTypes.bool,
-  onChangeOwner: PropTypes.func.isRequired
+  onSelectNewOwner: PropTypes.func
 };
 
 export default function SettingsModal({
   channelId,
+  channelName,
   isClass,
   isClosed,
+  members,
   onDone,
   onHide,
-  channelName,
-  userIsChannelOwner,
-  onChangeOwner
+  onSelectNewOwner,
+  userIsChannelOwner
 }) {
   const {
     state: { customChannelNames }
   } = useChatContext();
+  const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] = useState(
+    false
+  );
   const [editedChannelName, setEditedChannelName] = useState(channelName);
   const [editedIsClosed, setEditedIsClosed] = useState(isClosed);
   const disabled = useMemo(() => {
@@ -112,7 +118,11 @@ export default function SettingsModal({
                   marginTop: '2rem'
                 }}
               >
-                <Button onClick={changeOwnerButton} default filled>
+                <Button
+                  onClick={() => setSelectNewOwnerModalShown(true)}
+                  default
+                  filled
+                >
                   Change Owner
                 </Button>
               </div>
@@ -132,11 +142,18 @@ export default function SettingsModal({
           Done
         </Button>
       </footer>
+      {selectNewOwnerModalShown && (
+        <SelectNewOwnerModal
+          modalOverModal
+          onHide={() => setSelectNewOwnerModalShown(false)}
+          members={members}
+          onSubmit={({ newOwner }) => {
+            onSelectNewOwner({ newOwner });
+            onHide();
+          }}
+          isClass={isClass}
+        />
+      )}
     </Modal>
   );
-
-  function changeOwnerButton() {
-    onHide();
-    onChangeOwner();
-  }
 }

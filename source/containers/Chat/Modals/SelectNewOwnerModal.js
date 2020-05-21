@@ -8,15 +8,19 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import CheckListGroup from 'components/CheckListGroup';
 
 SelectNewOwnerModal.propTypes = {
+  andLeave: PropTypes.bool,
   isClass: PropTypes.bool,
   members: PropTypes.array.isRequired,
+  modalOverModal: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 
 export default function SelectNewOwnerModal({
+  andLeave,
   isClass,
   members,
+  modalOverModal,
   onHide,
   onSubmit
 }) {
@@ -24,7 +28,7 @@ export default function SelectNewOwnerModal({
   const [searchText, setSearchText] = useState('');
   const shownMembers = useMemo(() => {
     return members.filter(
-      member =>
+      (member) =>
         member.id !== userId &&
         (stringIsEmpty(searchText) || member.username.includes(searchText)) &&
         (!isClass || member.authLevel > 2)
@@ -33,21 +37,21 @@ export default function SelectNewOwnerModal({
   const [selectedUser, setSelectedUser] = useState(null);
 
   return (
-    <Modal onHide={onHide}>
+    <Modal modalOverModal={modalOverModal} onHide={onHide}>
       <header>Select New Channel Owner</header>
       <main>
         {!stringIsEmpty(searchText) || shownMembers.length > 0 ? (
           <>
             <SearchInput
               autoFocus
-              onChange={text => setSearchText(text)}
+              onChange={(text) => setSearchText(text)}
               placeholder="Search users..."
               value={searchText}
             />
             <CheckListGroup
               style={{ marginTop: '1.5rem' }}
-              onSelect={index => setSelectedUser(shownMembers[index])}
-              listItems={shownMembers.map(member => ({
+              onSelect={(index) => setSelectedUser(shownMembers[index])}
+              listItems={shownMembers.map((member) => ({
                 label: member.username,
                 checked: member.id === selectedUser?.id
               }))}
@@ -71,7 +75,7 @@ export default function SelectNewOwnerModal({
         <Button
           color="blue"
           disabled={!selectedUser}
-          onClick={() => onSubmit(selectedUser)}
+          onClick={() => onSubmit({ newOwner: selectedUser, andLeave })}
         >
           Done
         </Button>

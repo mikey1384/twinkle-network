@@ -33,6 +33,7 @@ import { faCommentAlt } from '@fortawesome/pro-solid-svg-icons/faCommentAlt';
 import { faComments } from '@fortawesome/pro-solid-svg-icons/faComments';
 import { faCopy } from '@fortawesome/pro-solid-svg-icons/faCopy';
 import { faCrown } from '@fortawesome/pro-solid-svg-icons/faCrown';
+import { faExchangeAlt } from '@fortawesome/pro-solid-svg-icons/faExchangeAlt';
 import { faFilm } from '@fortawesome/pro-solid-svg-icons/faFilm';
 import { faFile } from '@fortawesome/pro-solid-svg-icons/faFile';
 import { faFileArchive } from '@fortawesome/pro-solid-svg-icons/faFileArchive';
@@ -97,6 +98,7 @@ library.add(
   faComments,
   faCopy,
   faCrown,
+  faExchangeAlt,
   faFile,
   faFileArchive,
   faFileAudio,

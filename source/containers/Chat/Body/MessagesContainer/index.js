@@ -9,7 +9,6 @@ import Message from '../../Message';
 import ChannelHeader from './ChannelHeader';
 import SubjectMsgsModal from '../../Modals/SubjectMsgsModal';
 import UploadModal from '../../Modals/UploadModal';
-import Icon from 'components/Icon';
 import InviteUsersModal from '../../Modals/InviteUsers';
 import AlertModal from 'components/Modals/AlertModal';
 import ChessModal from '../../Modals/ChessModal';
@@ -118,7 +117,9 @@ export default function MessagesContainer({
   const [settingsModalShown, setSettingsModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
-  const [selectNewOwnerModal, setSelectNewOwnerModal] = useState(null);
+  const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] = useState(
+    false
+  );
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
 
   const ContentRef = useRef(null);
@@ -160,74 +161,6 @@ export default function MessagesContainer({
     selectedChannelIsOnCall,
     socketConnected,
     textAreaHeight
-  ]);
-
-  const menuProps = useMemo(() => {
-    if (currentChannel.twoPeople) {
-      return [
-        {
-          label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
-          onClick: handleHideChat
-        }
-      ];
-    }
-    let result = [];
-    if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
-      result.push({
-        label: (
-          <>
-            <Icon icon="users" />
-            <span style={{ marginLeft: '1rem' }}>Invite People</span>
-          </>
-        ),
-        onClick: () => setInviteUsersModalShown(true)
-      });
-    }
-    result = result.concat([
-      {
-        label:
-          currentChannel.creatorId === userId ? (
-            <>
-              <Icon icon="sliders-h" />
-              <span style={{ marginLeft: '1rem' }}>Settings</span>
-            </>
-          ) : (
-            <>
-              <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
-            </>
-          ),
-        onClick: () => setSettingsModalShown(true)
-      },
-      {
-        separator: true
-      },
-      {
-        label: (
-          <>
-            <Icon icon="sign-out-alt" />
-            <span style={{ marginLeft: '1rem' }}>Leave</span>
-          </>
-        ),
-        onClick: () => setLeaveConfirmModalShown(true)
-      }
-    ]);
-    return result;
-    async function handleHideChat() {
-      await hideChat(selectedChannelId);
-      onHideChat(selectedChannelId);
-      const data = await loadChatChannel({
-        channelId: GENERAL_CHAT_ID
-      });
-      onEnterChannelWithId({ data, showOnTop: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    currentChannel.twoPeople,
-    currentChannel.isClosed,
-    currentChannel.creatorId,
-    userId,
-    selectedChannelId
   ]);
 
   const loading = useMemo(
@@ -332,7 +265,7 @@ export default function MessagesContainer({
 
   return (
     <ErrorBoundary>
-      {selectedChannelId !== GENERAL_CHAT_ID && (
+      {currentChannel.twoPeople && (
         <DropdownButton
           skeuomorphic
           color="darkerGray"
@@ -349,7 +282,12 @@ export default function MessagesContainer({
           direction="left"
           icon="bars"
           text="Menu"
-          menuProps={menuProps}
+          menuProps={[
+            {
+              label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
+              onClick: handleHideChat
+            }
+          ]}
         />
       )}
       <input
@@ -467,7 +405,13 @@ export default function MessagesContainer({
           </div>
         </div>
         {!loading && !currentChannel.twoPeople && (
-          <ChannelHeader onInputFocus={() => ChatInputRef.current.focus()} />
+          <ChannelHeader
+            currentChannel={currentChannel}
+            onInputFocus={() => ChatInputRef.current.focus()}
+            onSetInviteUsersModalShown={setInviteUsersModalShown}
+            onSetLeaveConfirmModalShown={setLeaveConfirmModalShown}
+            onSetSettingsModalShown={setSettingsModalShown}
+          />
         )}
         <div
           style={{
@@ -597,6 +541,7 @@ export default function MessagesContainer({
       )}
       {settingsModalShown && (
         <SettingsModal
+          members={currentChannel.members}
           isClass={currentChannel.isClass}
           isClosed={currentChannel.isClosed}
           userIsChannelOwner={currentChannel.creatorId === userId}
@@ -604,7 +549,7 @@ export default function MessagesContainer({
           onHide={() => setSettingsModalShown(false)}
           onDone={handleEditSettings}
           channelId={selectedChannelId}
-          onChangeOwner={() => setSelectNewOwnerModal({ andLeave: false })}
+          onSelectNewOwner={handleSelectNewOwner}
         />
       )}
       {leaveConfirmModalShown && (
@@ -627,12 +572,13 @@ export default function MessagesContainer({
           }}
         />
       )}
-      {!!selectNewOwnerModal && (
+      {!!selectNewOwnerModalShown && (
         <SelectNewOwnerModal
-          onHide={() => setSelectNewOwnerModal(null)}
+          onHide={() => setSelectNewOwnerModalShown(false)}
           members={currentChannel.members}
           onSubmit={handleSelectNewOwner}
           isClass={currentChannel.isClass}
+          andLeave
         />
       )}
     </ErrorBoundary>
@@ -735,6 +681,15 @@ export default function MessagesContainer({
     setSettingsModalShown(false);
   }
 
+  async function handleHideChat() {
+    await hideChat(selectedChannelId);
+    onHideChat(selectedChannelId);
+    const data = await loadChatChannel({
+      channelId: GENERAL_CHAT_ID
+    });
+    onEnterChannelWithId({ data, showOnTop: true });
+  }
+
   async function handleInviteUsersDone({ users, message, isClass }) {
     if (isClass) {
       socket.emit('new_chat_message', {
@@ -799,7 +754,7 @@ export default function MessagesContainer({
       if (currentChannel.members.length === 1) {
         handleLeaveChannel();
       } else {
-        setSelectNewOwnerModal({ andLeave: true });
+        setSelectNewOwnerModalShown(true);
       }
     } else {
       handleLeaveChannel();
@@ -941,7 +896,7 @@ export default function MessagesContainer({
     }
   }
 
-  async function handleSelectNewOwner(newOwner) {
+  async function handleSelectNewOwner({ newOwner, andLeave }) {
     const notificationMsg = await changeChannelOwner({
       channelId: selectedChannelId,
       newOwner
@@ -954,10 +909,10 @@ export default function MessagesContainer({
       newOwner,
       notificationMsg
     });
-    if (selectNewOwnerModal.andLeave) {
+    if (andLeave) {
       handleLeaveChannel();
     }
-    setSelectNewOwnerModal(null);
+    setSelectNewOwnerModalShown(false);
   }
 
   function handleSetScrollToBottom() {

@@ -15,12 +15,10 @@ import {
   fetchURLFromText,
   getFileInfoFromFileName,
   processedStringWithURL,
-  renderFileSize,
   isValidSpoiler
 } from 'helpers/stringHelpers';
 import { css } from 'emotion';
 import { cloudFrontURL } from 'constants/defaultValues';
-import { isMobile } from 'helpers';
 import { useAppContext } from 'contexts';
 
 TargetMessage.propTypes = {
@@ -190,9 +188,6 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
               <span>
                 <b>Download</b>
               </span>
-              {message.fileSize && !isMobile(navigator) && (
-                <span> {renderFileSize(message.fileSize)}</span>
-              )}
             </div>
           )}
         </div>
