@@ -208,7 +208,10 @@ function MainFeeds({
     const { xp, alreadyDone, rank } = await updateUserXP({
       action: 'collect'
     });
-    if (alreadyDone) return setCollectingReward(false);
+    if (alreadyDone) {
+      onClearRewards();
+      return setCollectingReward(false);
+    }
     onChangeUserXP({ xp, rank, userId });
     onClearRewards();
     setCollectingReward(false);
