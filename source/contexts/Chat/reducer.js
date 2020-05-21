@@ -494,7 +494,10 @@ export default function ChatReducer(state, action) {
     case 'LOAD_SUBJECT':
       return {
         ...state,
-        subject: action.subject
+        subjectObj: {
+          ...state.subjectObj,
+          [action.data.channelId]: action.data
+        }
       };
     case 'LOAD_VOCABULARY': {
       let vocabActivitiesLoadMoreButton = false;
@@ -550,7 +553,10 @@ export default function ChatReducer(state, action) {
             (channelId) => channelId !== action.data.channelId
           )
         ],
-        subject: action.data.subject,
+        subjectObj: {
+          ...state.subjectObj,
+          [action.data.subject.channelId]: action.data.subject
+        },
         channelsObj: {
           ...state.channelsObj,
           [action.data.channelId]: {

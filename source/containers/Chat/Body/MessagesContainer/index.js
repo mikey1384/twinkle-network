@@ -411,6 +411,7 @@ export default function MessagesContainer({
             onSetInviteUsersModalShown={setInviteUsersModalShown}
             onSetLeaveConfirmModalShown={setLeaveConfirmModalShown}
             onSetSettingsModalShown={setSettingsModalShown}
+            selectedChannelId={selectedChannelId}
           />
         )}
         <div

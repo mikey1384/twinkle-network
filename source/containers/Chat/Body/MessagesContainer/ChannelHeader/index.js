@@ -23,7 +23,8 @@ ChannelHeader.propTypes = {
   onInputFocus: PropTypes.func.isRequired,
   onSetInviteUsersModalShown: PropTypes.func,
   onSetLeaveConfirmModalShown: PropTypes.func,
-  onSetSettingsModalShown: PropTypes.func
+  onSetSettingsModalShown: PropTypes.func,
+  selectedChannelId: PropTypes.number
 };
 
 export default function ChannelHeader({
@@ -31,7 +32,8 @@ export default function ChannelHeader({
   onInputFocus,
   onSetInviteUsersModalShown,
   onSetLeaveConfirmModalShown,
-  onSetSettingsModalShown
+  onSetSettingsModalShown,
+  selectedChannelId
 }) {
   const {
     requestHelpers: {
@@ -43,17 +45,7 @@ export default function ChannelHeader({
   } = useAppContext();
   const { authLevel, profilePicId, userId, username } = useMyState();
   const {
-    state: {
-      subject: {
-        content = defaultChatSubject,
-        id: subjectId,
-        uploader = {},
-        reloader = {},
-        timeStamp,
-        reloadTimeStamp
-      },
-      subjectSearchResults
-    },
+    state: { subjectObj, subjectSearchResults },
     actions: {
       onClearSubjectSearchResults,
       onLoadChatSubject,
@@ -65,6 +57,16 @@ export default function ChannelHeader({
   } = useChatContext();
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
+
+  const {
+    content = defaultChatSubject,
+    id: subjectId,
+    uploader = {},
+    reloader = {},
+    timeStamp,
+    reloadTimeStamp
+  } = subjectObj[selectedChannelId] || {};
+
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
@@ -76,7 +78,7 @@ export default function ChannelHeader({
       initialLoad();
     }
     async function initialLoad() {
-      const data = await loadChatSubject();
+      const data = await loadChatSubject(selectedChannelId);
       onLoadChatSubject(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

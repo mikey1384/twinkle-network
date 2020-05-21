@@ -35,7 +35,7 @@ export const initialChatState = {
   myStream: null,
   selectedChannelId: null,
   selectedChatTab: 'home',
-  subject: {},
+  subjectObj: {},
   subjectSearchResults: [],
   vocabErrorMessage: '',
   wordCollectors: {},

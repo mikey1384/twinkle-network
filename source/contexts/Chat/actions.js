@@ -201,10 +201,10 @@ export default function ChatActions(dispatch) {
         channelId
       });
     },
-    onLoadChatSubject(subject) {
+    onLoadChatSubject(data) {
       return dispatch({
         type: 'LOAD_SUBJECT',
-        subject
+        data
       });
     },
     onLoadMoreChannels({ type, channels }) {

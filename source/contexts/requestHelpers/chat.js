@@ -188,9 +188,11 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadChatSubject() {
+    async loadChatSubject(channelId) {
       try {
-        const { data } = await request.get(`${URL}/chat/chatSubject`);
+        const { data } = await request.get(
+          `${URL}/chat/chatSubject?channelId=${channelId}`
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
