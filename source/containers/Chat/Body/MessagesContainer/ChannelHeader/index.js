@@ -94,17 +94,16 @@ export default function ChannelHeader({
 
   const menuProps = useMemo(() => {
     let result = [];
-    if (currentChannel.id === GENERAL_CHAT_ID) {
-      result.push({
-        label: (
-          <>
-            <Icon icon="exchange-alt" />
-            <span style={{ marginLeft: '1rem' }}>Change Subject</span>
-          </>
-        ),
-        onClick: () => setOnEdit(true)
-      });
-    } else {
+    result.push({
+      label: (
+        <>
+          <Icon icon="exchange-alt" />
+          <span style={{ marginLeft: '1rem' }}>Change Subject</span>
+        </>
+      ),
+      onClick: () => setOnEdit(true)
+    });
+    if (currentChannel.id !== GENERAL_CHAT_ID) {
       if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
         result.push({
           label: (
@@ -152,6 +151,10 @@ export default function ChannelHeader({
     currentChannel.creatorId,
     userId
   ]);
+
+  const menuButtonShown = useMemo(() => {
+    return currentChannel.id !== GENERAL_CHAT_ID || authLevel > 0;
+  }, [authLevel, currentChannel.id]);
 
   return (
     <ErrorBoundary
@@ -236,21 +239,23 @@ export default function ChannelHeader({
                     Respond
                   </span>
                 </Button>
-                <DropdownButton
-                  skeuomorphic
-                  color="darkerGray"
-                  opacity={0.7}
-                  style={{
-                    marginLeft: '1rem'
-                  }}
-                  listStyle={{
-                    width: '15rem'
-                  }}
-                  direction="left"
-                  icon="bars"
-                  text="Menu"
-                  menuProps={menuProps}
-                />
+                {menuButtonShown && (
+                  <DropdownButton
+                    skeuomorphic
+                    color="darkerGray"
+                    opacity={0.7}
+                    style={{
+                      marginLeft: '1rem'
+                    }}
+                    listStyle={{
+                      width: '15rem'
+                    }}
+                    direction="left"
+                    icon="bars"
+                    text="Menu"
+                    menuProps={menuProps}
+                  />
+                )}
               </div>
             </>
           )}
