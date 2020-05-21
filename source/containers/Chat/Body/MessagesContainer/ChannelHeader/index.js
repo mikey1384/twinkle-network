@@ -61,6 +61,7 @@ export default function ChannelHeader({
   const {
     content = defaultChatSubject,
     id: subjectId,
+    loaded,
     uploader = {},
     reloader = {},
     timeStamp,
@@ -177,7 +178,7 @@ export default function ChannelHeader({
         }
       `}
     >
-      {subjectId ? (
+      {loaded ? (
         <>
           {!onEdit && (
             <>

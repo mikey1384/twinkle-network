@@ -496,7 +496,10 @@ export default function ChatReducer(state, action) {
         ...state,
         subjectObj: {
           ...state.subjectObj,
-          [action.data.channelId]: action.data
+          [action.data.channelId]: {
+            ...action.data,
+            loaded: true
+          }
         }
       };
     case 'LOAD_VOCABULARY': {
