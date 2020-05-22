@@ -265,6 +265,7 @@ export default function ChannelHeader({
           {onEdit && (
             <EditSubjectForm
               autoFocus
+              channelId={selectedChannelId}
               maxLength={charLimit.chat.subject}
               currentSubjectId={subjectId}
               title={content}
@@ -274,7 +275,7 @@ export default function ChannelHeader({
                 setOnEdit(false);
                 onClearSubjectSearchResults();
               }}
-              reloadChatSubject={handleReloadChatSubject}
+              onReloadChatSubject={handleReloadChatSubject}
               searchResults={subjectSearchResults}
             />
           )}
@@ -297,8 +298,11 @@ export default function ChannelHeader({
   }
 
   async function handleReloadChatSubject(subjectId) {
-    const { message, subject } = await reloadChatSubject(subjectId);
-    onReloadChatSubject({ channelId: 2, message, subject });
+    const { message, subject } = await reloadChatSubject({
+      channelId: selectedChannelId,
+      subjectId
+    });
+    onReloadChatSubject({ channelId: selectedChannelId, message, subject });
     socket.emit('new_subject', { subject, message });
     setOnEdit(false);
     onClearSubjectSearchResults();
@@ -314,8 +318,11 @@ export default function ChannelHeader({
 
   async function onSubjectSubmit(text) {
     const content = `${text[0].toUpperCase()}${text.slice(1)}`;
-    const data = await uploadChatSubject({ content: text, channelId: 2 });
-    onUploadChatSubject({ ...data, channelId: 2 });
+    const data = await uploadChatSubject({
+      content: text,
+      channelId: selectedChannelId
+    });
+    onUploadChatSubject({ ...data, channelId: selectedChannelId });
     const timeStamp = Math.floor(Date.now() / 1000);
     const subject = {
       id: data.subjectId,

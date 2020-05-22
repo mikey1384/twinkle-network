@@ -263,13 +263,13 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async reloadChatSubject(subjectId) {
+    async reloadChatSubject({ subjectId, channelId }) {
       try {
         const {
           data: { subject, message }
         } = await request.put(
           `${URL}/chat/chatSubject/reload`,
-          { subjectId },
+          { channelId, subjectId },
           auth()
         );
         return Promise.resolve({ subject, message });

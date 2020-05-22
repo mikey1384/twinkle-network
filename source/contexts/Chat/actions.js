@@ -548,10 +548,12 @@ export default function ChatActions(dispatch) {
         channelId
       });
     },
-    onUploadChatSubject(data) {
+    onUploadChatSubject({ subjectId, subject, channelId }) {
       return dispatch({
         type: 'NEW_SUBJECT',
-        data
+        subjectId,
+        subject,
+        channelId
       });
     }
   };

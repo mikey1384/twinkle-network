@@ -551,33 +551,36 @@ export default function ChatReducer(state, action) {
       return {
         ...state,
         homeChannelIds: [
-          action.data.channelId,
+          action.channelId,
           ...state.homeChannelIds.filter(
-            (channelId) => channelId !== action.data.channelId
+            (channelId) => channelId !== action.channelId
           )
         ],
         subjectObj: {
           ...state.subjectObj,
-          [action.data.subject.channelId]: action.data.subject
+          [action.channelId]: {
+            ...state.subjectObj[action.channelId],
+            ...action.subject
+          }
         },
         channelsObj: {
           ...state.channelsObj,
-          [action.data.channelId]: {
-            ...state.channelsObj[action.data.channelId],
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
             lastMessage: {
-              content: action.data.subject.content,
+              content: action.subject.content,
               sender: {
-                id: action.data.subject.userId,
-                username: action.data.subject.username
+                id: action.subject.userId,
+                username: action.subject.username
               }
             }
           }
         },
         messages: state.messages.concat([
           {
-            id: action.data.subject.id,
-            channelId: action.data.channelId,
-            ...action.data.subject
+            id: action.subject.id,
+            channelId: action.channelId,
+            ...action.subject
           }
         ])
       };
@@ -852,7 +855,13 @@ export default function ChatReducer(state, action) {
     case 'RELOAD_SUBJECT':
       return {
         ...state,
-        subject: action.subject,
+        subjectObj: {
+          ...state.subjectObj,
+          [action.channelId]: {
+            ...state.subjectObj[action.channelId],
+            ...action.subject
+          }
+        },
         messages: state.messages.concat([action.message]),
         homeChannelIds: [
           action.channelId,

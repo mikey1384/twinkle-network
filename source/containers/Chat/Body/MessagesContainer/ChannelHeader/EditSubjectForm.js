@@ -18,20 +18,22 @@ import { css } from 'emotion';
 
 EditSubjectForm.propTypes = {
   autoFocus: PropTypes.bool,
+  channelId: PropTypes.number,
   currentSubjectId: PropTypes.number,
   maxLength: PropTypes.number,
   onChange: PropTypes.func.isRequired,
   onClickOutSide: PropTypes.func.isRequired,
   onEditSubmit: PropTypes.func.isRequired,
-  reloadChatSubject: PropTypes.func,
+  onReloadChatSubject: PropTypes.func,
   searchResults: PropTypes.array,
   title: PropTypes.string.isRequired
 };
 
 export default function EditSubjectForm({
   autoFocus,
+  channelId,
   currentSubjectId,
-  reloadChatSubject,
+  onReloadChatSubject,
   maxLength = 100,
   searchResults,
   onChange,
@@ -73,7 +75,7 @@ export default function EditSubjectForm({
           currentSubjectId={currentSubjectId}
           onHide={() => setSubjectsModalShown(false)}
           selectSubject={(subjectId) => {
-            reloadChatSubject(subjectId);
+            onReloadChatSubject(subjectId);
             setSubjectsModalShown(false);
           }}
         />
@@ -194,7 +196,7 @@ export default function EditSubjectForm({
     if (highlightedIndex > -1) {
       const { id: subjectId } = searchResults[highlightedIndex];
       if (subjectId === currentSubjectId) return onClickOutSide();
-      return reloadChatSubject(subjectId);
+      return onReloadChatSubject({ subjectId, channelId });
     }
 
     if (title && title.length > maxLength) return;
@@ -212,7 +214,7 @@ export default function EditSubjectForm({
   function onItemClick(item) {
     const { id: subjectId } = item;
     if (subjectId === currentSubjectId) return onClickOutSide();
-    return reloadChatSubject(subjectId);
+    onReloadChatSubject(subjectId);
   }
 
   function renderItemLabel(item) {
