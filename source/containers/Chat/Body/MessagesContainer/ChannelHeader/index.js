@@ -374,18 +374,6 @@ export default function ChannelHeader({
         </span>
       );
     }
-    return (
-      <>
-        {uploader ? (
-          <small>{posterString}</small>
-        ) : (
-          <small>
-            {
-              'You can change the subject by clicking the "Change" button to the right'
-            }
-          </small>
-        )}
-      </>
-    );
+    return <small>{posterString}</small>;
   }
 }

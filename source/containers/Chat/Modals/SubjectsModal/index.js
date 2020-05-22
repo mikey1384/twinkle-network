@@ -15,12 +15,14 @@ import URL from 'constants/URL';
 const API_URL = `${URL}/chat`;
 
 SubjectsModal.propTypes = {
+  channelId: PropTypes.number.isRequired,
   currentSubjectId: PropTypes.number,
   onHide: PropTypes.func,
   selectSubject: PropTypes.func
 };
 
 export default function SubjectsModal({
+  channelId,
   currentSubjectId,
   onHide,
   selectSubject
@@ -29,7 +31,7 @@ export default function SubjectsModal({
     requestHelpers: { deleteChatSubject, loadMoreSubjects }
   } = useAppContext();
   const { userId } = useMyState();
-  const [deleteTarget, setDeleteTarget] = useState(0);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [mySubjects, setMySubjects] = useState({
     subjects: [],
@@ -50,7 +52,9 @@ export default function SubjectsModal({
       try {
         const {
           data: { mySubjects, allSubjects }
-        } = await request.get(`${API_URL}/chatSubject/modal?userId=${userId}`);
+        } = await request.get(
+          `${API_URL}/chatSubject/modal?userId=${userId}&channelId=${channelId}`
+        );
         if (mounted.current) {
           setMySubjects(mySubjects);
           setAllSubjects(allSubjects);
@@ -143,7 +147,7 @@ export default function SubjectsModal({
       {deleteTarget && (
         <ConfirmModal
           modalOverModal
-          onHide={() => setDeleteTarget(0)}
+          onHide={() => setDeleteTarget(null)}
           onConfirm={() => handleDeleteSubject(deleteTarget)}
           title="Remove Subject"
         />

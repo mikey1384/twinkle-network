@@ -72,6 +72,7 @@ export default function EditSubjectForm({
     <ErrorBoundary>
       {subjectsModalShown && (
         <SubjectsModal
+          channelId={channelId}
           currentSubjectId={currentSubjectId}
           onHide={() => setSubjectsModalShown(false)}
           selectSubject={(subjectId) => {

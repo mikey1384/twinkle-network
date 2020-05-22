@@ -1,4 +1,4 @@
-export const defaultChatSubject = 'Introduce yourself!';
+export const defaultChatSubject = 'Welcome!';
 export const rewardValue = {
   star: 200
 };
