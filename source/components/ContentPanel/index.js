@@ -191,8 +191,15 @@ export default function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            <div ref={ContainerRef}>
-              {contentShown ? (
+            <div
+              ref={ContainerRef}
+              style={{
+                width: '100%',
+                margin: '1rem 0 1rem 0',
+                height: contentShown ? 'auto' : placeholderHeight || '15rem'
+              }}
+            >
+              {contentShown && (
                 <div
                   ref={PanelRef}
                   style={{
@@ -334,15 +341,6 @@ export default function ContentPanel({
                       </div>
                     )}
                 </div>
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    margin: '1rem 0 1rem 0',
-                    minHeight: '15rem',
-                    height: placeholderHeight
-                  }}
-                />
               )}
             </div>
           </div>

@@ -315,6 +315,12 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const contentShown = useMemo(() => inView || started || visible, [
+    inView,
+    started,
+    visible
+  ]);
+
   const messageMenuItems = [
     {
       label: (
@@ -396,8 +402,15 @@ function Message({
   }
 
   return (
-    <div ref={ComponentRef} className={MessageStyle.container}>
-      {inView || started || visible ? (
+    <div
+      ref={ComponentRef}
+      className={MessageStyle.container}
+      style={{
+        width: '100%',
+        height: contentShown ? 'auto' : placeholderHeight
+      }}
+    >
+      {contentShown && (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
@@ -537,13 +550,6 @@ function Message({
             />
           )}
         </div>
-      ) : (
-        <div
-          style={{
-            width: '100%',
-            height: placeholderHeight
-          }}
-        />
       )}
     </div>
   );

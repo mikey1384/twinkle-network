@@ -213,8 +213,15 @@ function ProfilePanel({ expandable, profileId }) {
 
   return (
     <div ref={ComponentRef} key={profileId}>
-      <div ref={ContainerRef}>
-        {contentShown ? (
+      <div
+        ref={ContainerRef}
+        style={{
+          width: '100%',
+          margin: '1rem 0 1rem 0',
+          height: contentShown ? 'auto' : placeholderHeight || '20rem'
+        }}
+      >
+        {contentShown && (
           <div
             ref={PanelRef}
             className={css`
@@ -488,14 +495,6 @@ function ProfilePanel({ expandable, profileId }) {
               />
             )}
           </div>
-        ) : (
-          <div
-            style={{
-              width: '100%',
-              margin: '1rem 0 1rem 0',
-              height: placeholderHeight || '20rem'
-            }}
-          />
         )}
       </div>
     </div>
