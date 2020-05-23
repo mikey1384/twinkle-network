@@ -205,11 +205,12 @@ function ProfilePanel({ expandable, profileId }) {
 
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
+  const heightNotSet = !placeholderHeight && !previousPlaceholderHeight;
 
   return (
     <div ref={ComponentRef} key={profileId}>
       <div ref={ContainerRef}>
-        {!loaded || visible || inView ? (
+        {!loaded || heightNotSet || visible || inView ? (
           <div
             ref={PanelRef}
             className={css`
