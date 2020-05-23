@@ -315,11 +315,10 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const contentShown = useMemo(() => inView || started || visible, [
-    inView,
-    started,
-    visible
-  ]);
+  const contentShown = useMemo(
+    () => inView || started || visible || !placeholderHeight,
+    [inView, placeholderHeight, started, visible]
+  );
 
   const messageMenuItems = [
     {
