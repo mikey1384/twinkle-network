@@ -8,6 +8,7 @@ DropdownList.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   direction: PropTypes.string,
+  innerRef: PropTypes.object,
   style: PropTypes.object
 };
 
@@ -15,11 +16,13 @@ export default function DropdownList({
   children,
   className,
   direction = 'right',
+  innerRef,
   style = {}
 }) {
   return (
     <ErrorBoundary>
       <ul
+        ref={innerRef}
         style={style}
         className={`${css`
           float: left;
