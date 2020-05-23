@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import Button from 'components/Button';
@@ -206,11 +206,15 @@ function ProfilePanel({ expandable, profileId }) {
   const canEdit = userId === profileId || isCreator;
   const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
   const heightNotSet = !placeholderHeight && !previousPlaceholderHeight;
+  const contentShown = useMemo(
+    () => !loaded || heightNotSet || visible || inView,
+    [heightNotSet, inView, loaded, visible]
+  );
 
   return (
     <div ref={ComponentRef} key={profileId}>
       <div ref={ContainerRef}>
-        {!loaded || heightNotSet || visible || inView ? (
+        {contentShown ? (
           <div
             ref={PanelRef}
             className={css`
