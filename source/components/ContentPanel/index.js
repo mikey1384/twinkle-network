@@ -105,6 +105,7 @@ export default function ContentPanel({
   const mounted = useRef(true);
   const loading = useRef(false);
   const inputAtBottom = contentType === 'comment';
+  const heightNotSet = !previousPlaceholderHeight && !placeholderHeight;
 
   const { started: rootStarted } = useContentState({
     contentType: rootType,
@@ -185,7 +186,12 @@ export default function ContentPanel({
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
             <div ref={ContainerRef}>
-              {!loaded || visible || inView || started || rootStarted ? (
+              {!loaded ||
+              heightNotSet ||
+              visible ||
+              inView ||
+              started ||
+              rootStarted ? (
                 <div
                   ref={PanelRef}
                   style={{
