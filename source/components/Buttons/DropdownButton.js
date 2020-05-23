@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
@@ -22,8 +22,6 @@ DropdownButton.propTypes = {
     })
   ),
   noBorderRadius: PropTypes.bool,
-  onDropdownShow: PropTypes.func,
-  onDropdownHide: PropTypes.func,
   opacity: PropTypes.number,
   stretch: PropTypes.bool,
   style: PropTypes.object,
@@ -41,43 +39,19 @@ export default function DropdownButton({
   menuProps,
   noBorderRadius,
   onButtonClick,
-  onDropdownShow,
-  onDropdownHide,
   onOutsideClick,
   text = '',
   stretch,
   ...props
 }) {
   const [menuDisplayed, setMenuDisplayed] = useState(false);
-  const prevMenuDisplayed = useRef();
   const ButtonRef = useRef(null);
-  const DropdownListRef = useRef(null);
   useOutsideClick(ButtonRef, () => {
     if (menuDisplayed && typeof onOutsideClick === 'function') {
       onOutsideClick();
     }
     setMenuDisplayed(false);
   });
-
-  useEffect(() => {
-    if (!prevMenuDisplayed.current && menuDisplayed) {
-      onDropdownShow?.(DropdownListRef.current);
-      prevMenuDisplayed.current = true;
-      return;
-    }
-    if (prevMenuDisplayed.current && !menuDisplayed) {
-      onDropdownHide?.();
-      prevMenuDisplayed.current = false;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [menuDisplayed]);
-
-  useEffect(() => {
-    return function onDismount() {
-      onDropdownHide?.();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <ErrorBoundary style={{ position: 'relative', ...style }}>
@@ -105,7 +79,6 @@ export default function DropdownButton({
         </Button>
         {menuDisplayed && (
           <DropdownList
-            innerRef={DropdownListRef}
             style={{
               textTransform: 'none',
               minWidth: '12rem',

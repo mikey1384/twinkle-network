@@ -11,6 +11,7 @@ Invitation.propTypes = {
   inviteFrom: PropTypes.number.isRequired,
   messageId: PropTypes.number.isRequired,
   onAcceptGroupInvitation: PropTypes.func.isRequired,
+  onSetScrollToBottom: PropTypes.func.isRequired,
   sender: PropTypes.object.isRequired
 };
 
@@ -18,7 +19,8 @@ export default function Invitation({
   inviteFrom,
   messageId,
   onAcceptGroupInvitation,
-  sender
+  sender,
+  onSetScrollToBottom
 }) {
   const { userId, profileTheme } = useMyState();
   const { invitationDetail } = useContentState({
@@ -41,6 +43,7 @@ export default function Invitation({
         skipUpdateChannelId: true
       });
       onSetChatInvitationDetail({ messageId, detail: channel });
+      onSetScrollToBottom();
     }
     return function cleanUp() {
       onSetChatInvitationDetail({ messageId, detail: null });
