@@ -120,7 +120,6 @@ function Message({
     threshold: 0
   });
   const PanelRef = useRef(null);
-  const [tempHeight, setTempHeight] = useState(null);
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [visible, setVisible] = useState(true);
   useLazyLoad({
@@ -170,7 +169,7 @@ function Message({
   });
 
   const {
-    state: { filesBeingUploaded, replyTarget },
+    state: { filesBeingUploaded, reconnecting, replyTarget },
     actions: {
       onEditMessage,
       onSaveMessage,
@@ -264,6 +263,13 @@ function Message({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId, moveViewTimeStamp]);
+
+  useEffect(() => {
+    if (isLastMsg && (!isNewMessage || userIsUploader)) {
+      onSetScrollToBottom();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditing, reconnecting]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
@@ -404,11 +410,7 @@ function Message({
       }}
     >
       {contentShown && (
-        <div
-          ref={PanelRef}
-          className={MessageStyle.container}
-          style={tempHeight ? { height: tempHeight } : {}}
-        >
+        <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
               style={{ width: '100%', height: '100%' }}
@@ -436,6 +438,7 @@ function Message({
                   inviteFrom={inviteFrom}
                   messageId={messageId}
                   onAcceptGroupInvitation={onAcceptGroupInvitation}
+                  onSetScrollToBottom={handleSetScrollToBottom}
                 />
               ) : isChessMsg ? (
                 <Chess
@@ -451,6 +454,8 @@ function Message({
                   onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
+                  onSetScrollToBottom={handleSetScrollToBottom}
+                  scrollAtBottom={scrollAtBottom}
                   senderId={userId}
                   style={{ marginTop: '1rem', width: '100%' }}
                 />
@@ -524,9 +529,12 @@ function Message({
                 style={{ position: 'absolute', top: 0, right: '5px' }}
                 direction="left"
                 opacity={0.8}
+                onButtonClick={() => {
+                  if (isLastMsg) {
+                    onSetScrollToBottom();
+                  }
+                }}
                 menuProps={messageMenuItems}
-                onDropdownShow={handleDrowdownShow}
-                onDropdownHide={() => setTempHeight(null)}
               />
             )}
           </div>
@@ -544,12 +552,6 @@ function Message({
       )}
     </div>
   );
-
-  function handleDrowdownShow(dropdown) {
-    if (dropdown.clientHeight + 50 > PanelRef.current.clientHeight) {
-      setTempHeight(dropdown.clientHeight + 50);
-    }
-  }
 
   function handleEditCancel() {
     onSetIsEditing({

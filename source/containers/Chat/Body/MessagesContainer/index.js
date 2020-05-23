@@ -119,6 +119,7 @@ export default function MessagesContainer({
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const [selectNewOwnerModal, setSelectNewOwnerModal] = useState(null);
+  const [placeholderHeight, setPlaceholderHeight] = useState(0);
 
   const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
@@ -247,6 +248,20 @@ export default function MessagesContainer({
   );
 
   useEffect(() => {
+    setTimeout(() => {
+      setPlaceholderHeight(
+        `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
+      );
+      if (
+        MessagesRef.current?.offsetHeight <
+        MessagesContainerRef.current?.offsetHeight + 30
+      ) {
+        handleSetScrollToBottom();
+      }
+    }, 0);
+  }, [loading, messages]);
+
+  useEffect(() => {
     socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
     socket.on('new_message_received', handleReceiveMessage);
 
@@ -280,19 +295,19 @@ export default function MessagesContainer({
   });
 
   useEffect(() => {
-    const ContentContainer = ContentRef.current;
+    const MessagesContainer = MessagesContainerRef.current;
     mounted.current = true;
-    addEvent(ContentContainer, 'scroll', handleScroll);
+    addEvent(MessagesContainer, 'scroll', handleScroll);
 
     return function cleanUp() {
-      removeEvent(ContentContainer, 'scroll', handleScroll);
+      removeEvent(MessagesContainer, 'scroll', handleScroll);
       mounted.current = false;
     };
 
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        if (ContentRef.current?.scrollTop === 0) {
+        if (MessagesContainerRef.current?.scrollTop === 0) {
           handleLoadMore();
         }
       }, 200);
@@ -301,7 +316,12 @@ export default function MessagesContainer({
 
   useEffect(() => {
     if (messagesLoaded) {
-      onChannelLoadingDone();
+      setTimeout(() => {
+        MessagesContainerRef.current.scrollTop =
+          ContentRef.current?.offsetHeight || 0;
+        onChannelLoadingDone();
+      }, 0);
+      setScrollAtBottom(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messagesLoaded, reconnecting]);
@@ -365,27 +385,50 @@ export default function MessagesContainer({
             right: '0',
             bottom: '0',
             opacity: loading ? 0 : 1,
-            top: selectedChannelId === GENERAL_CHAT_ID ? '7rem' : 0
+            top: selectedChannelId === GENERAL_CHAT_ID ? '7rem' : 0,
+            overflowY: 'scroll'
+          }}
+          onScroll={() => {
+            if (
+              checkScrollIsAtTheBottom({
+                content: ContentRef.current,
+                container: MessagesContainerRef.current
+              })
+            ) {
+              setScrollAtBottom(true);
+              setNewUnseenMessage(false);
+            } else {
+              setScrollAtBottom(false);
+            }
           }}
         >
-          <div
-            ref={ContentRef}
-            style={{
-              overflow: 'auto',
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column-reverse'
-            }}
-            onScroll={() => {
-              if (checkScrollIsAtTheBottom(ContentRef.current)) {
-                setScrollAtBottom(true);
-                setNewUnseenMessage(false);
-              } else {
-                setScrollAtBottom(false);
-              }
-            }}
-          >
+          <div ref={ContentRef} style={{ width: '100%' }}>
+            {!loading && messagesLoadMoreButton ? (
+              <div
+                style={{
+                  marginTop: '1rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%'
+                }}
+              >
+                <Button
+                  filled
+                  color="lightBlue"
+                  disabled={loadMoreButtonLock}
+                  onClick={handleLoadMore}
+                >
+                  Load More
+                </Button>
+              </div>
+            ) : (
+              <div
+                style={{
+                  height: placeholderHeight
+                }}
+              />
+            )}
             <div ref={MessagesRef}>
               {messages.map((message, index) => (
                 <Message
@@ -395,7 +438,10 @@ export default function MessagesContainer({
                   chessCountdownNumber={chessCountdownObj[selectedChannelId]}
                   chessOpponent={chessOpponent}
                   checkScrollIsAtTheBottom={() =>
-                    checkScrollIsAtTheBottom(ContentRef.current)
+                    checkScrollIsAtTheBottom({
+                      content: ContentRef.current,
+                      container: MessagesContainerRef.current
+                    })
                   }
                   currentChannel={currentChannel}
                   index={index}
@@ -418,25 +464,6 @@ export default function MessagesContainer({
                 />
               ))}
             </div>
-            {!loading && messagesLoadMoreButton && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '100%',
-                  paddingTop: '1rem'
-                }}
-              >
-                <Button
-                  filled
-                  color="lightBlue"
-                  disabled={loadMoreButtonLock}
-                  onClick={handleLoadMore}
-                >
-                  Load More
-                </Button>
-              </div>
-            )}
           </div>
         </div>
         {!loading && selectedChannelId === GENERAL_CHAT_ID && (
@@ -457,9 +484,12 @@ export default function MessagesContainer({
               color="orange"
               onClick={() => {
                 setNewUnseenMessage(false);
-                ContentRef.current.scrollTop =
-                  ContentRef.current.scrollHeight +
-                  MessagesContainerRef.current.clientHeight;
+                setTimeout(
+                  () =>
+                    (MessagesContainerRef.current.scrollTop =
+                      ContentRef.current?.offsetHeight || 0),
+                  100
+                );
               }}
             >
               New Message
@@ -802,6 +832,7 @@ export default function MessagesContainer({
   async function handleLoadMore() {
     if (messagesLoadMoreButton) {
       const messageId = messages[0].id;
+      const prevContentHeight = ContentRef.current?.offsetHeight || 0;
       if (!loadMoreButtonLock) {
         setLoadMoreButtonLock(true);
         try {
@@ -811,6 +842,10 @@ export default function MessagesContainer({
             channelId: selectedChannelId
           });
           onLoadMoreMessages({ messages, loadedChannelId });
+          MessagesContainerRef.current.scrollTop = Math.max(
+            MessagesContainerRef.current.scrollTop,
+            (ContentRef.current?.offsetHeight || 0) - prevContentHeight
+          );
           setLoadMoreButtonLock(false);
         } catch (error) {
           console.error(error);
@@ -926,12 +961,17 @@ export default function MessagesContainer({
   }
 
   function handleSetScrollToBottom() {
-    setTimeout(() => {
-      ContentRef.current.scrollTop =
-        ContentRef.current.scrollHeight +
-        MessagesContainerRef.current.clientHeight;
+    MessagesContainerRef.current.scrollTop =
+      ContentRef.current?.offsetHeight || 0;
+    setTimeout(
+      () =>
+        (MessagesContainerRef.current.scrollTop =
+          ContentRef.current?.offsetHeight || 0),
+      100
+    );
+    if (ContentRef.current?.offsetHeight) {
       setScrollAtBottom(true);
-    }, 10);
+    }
   }
 
   function handleShowDeleteModal({ fileName, filePath, messageId }) {

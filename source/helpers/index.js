@@ -1,7 +1,7 @@
 import { returnMaxStars } from 'constants/defaultValues';
 
-export function checkScrollIsAtTheBottom(container) {
-  return container.scrollHeight <= container.offsetHeight + container.scrollTop;
+export function checkScrollIsAtTheBottom({ content, container }) {
+  return content.offsetHeight <= container.offsetHeight + container.scrollTop;
 }
 
 export function determineXpButtonDisabled({
