@@ -57,11 +57,9 @@ export default function Chess({
   newChessState,
   onBoardClick,
   onChessMove,
-  onSetScrollToBottom,
   onSpoilerClick,
   opponentId,
   opponentName,
-  scrollAtBottom,
   senderId,
   spoilerOff,
   style
@@ -95,13 +93,6 @@ export default function Chess({
   useEffect(() => {
     loadingRef.current = channelLoading;
   }, [channelLoading]);
-
-  useEffect(() => {
-    if (scrollAtBottom) {
-      onSetScrollToBottom?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const move = useMemo(() => {
     if (parsedState) {
