@@ -28,7 +28,7 @@ import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState, useContentState, useLazyLoad } from 'helpers/hooks';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
   useAppContext,
@@ -117,7 +117,6 @@ function Message({
   showSubjectMsgsModal
 }) {
   const [ComponentRef, inView] = useInView({
-    rootMargin: '1500px 0px 0px 0px',
     threshold: 0
   });
   const PanelRef = useRef(null);
@@ -406,11 +405,10 @@ function Message({
       ref={ComponentRef}
       className={MessageStyle.container}
       style={{
-        width: '100%',
-        height: contentShown ? 'auto' : placeholderHeight + 20
+        width: '100%'
       }}
     >
-      {contentShown && (
+      {contentShown ? (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
@@ -422,7 +420,13 @@ function Message({
           <div className={MessageStyle.contentWrapper}>
             <div>
               <UsernameText
-                style={MessageStyle.usernameText}
+                className={css`
+                  font-size: 1.8rem;
+                  line-height: 1;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.7rem;
+                  }
+                `}
                 user={{
                   id: userId,
                   username
@@ -550,6 +554,13 @@ function Message({
             />
           )}
         </div>
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            height: placeholderHeight
+          }}
+        />
       )}
     </div>
   );
