@@ -49,6 +49,7 @@ Message.propTypes = {
   onDelete: PropTypes.func,
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
+  innerRef: PropTypes.func,
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
   loading: PropTypes.bool,
@@ -316,8 +317,8 @@ function Message({
   }, []);
 
   const contentShown = useMemo(
-    () => inView || started || visible || !placeholderHeight,
-    [inView, placeholderHeight, started, visible]
+    () => inView || isLastMsg || started || visible || !placeholderHeight,
+    [inView, isLastMsg, placeholderHeight, started, visible]
   );
 
   const messageMenuItems = [
@@ -406,7 +407,7 @@ function Message({
       className={MessageStyle.container}
       style={{
         width: '100%',
-        height: contentShown ? 'auto' : placeholderHeight
+        height: contentShown ? 'auto' : placeholderHeight + 20
       }}
     >
       {contentShown && (

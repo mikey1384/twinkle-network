@@ -967,7 +967,7 @@ export default function MessagesContainer({
       () =>
         (MessagesContainerRef.current.scrollTop =
           ContentRef.current?.offsetHeight || 0),
-      100
+      10
     );
     if (ContentRef.current?.offsetHeight) {
       setScrollAtBottom(true);
