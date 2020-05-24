@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -105,6 +105,7 @@ export default function ContentPanel({
   const mounted = useRef(true);
   const loading = useRef(false);
   const inputAtBottom = contentType === 'comment';
+  const heightNotSet = !previousPlaceholderHeight && !placeholderHeight;
 
   const { started: rootStarted } = useContentState({
     contentType: rootType,
@@ -155,6 +156,12 @@ export default function ContentPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded]);
 
+  const contentShown = useMemo(
+    () =>
+      !loaded || heightNotSet || visible || inView || started || rootStarted,
+    [heightNotSet, inView, loaded, rootStarted, started, visible]
+  );
+
   return (
     <ErrorBoundary>
       <Context.Provider
@@ -184,8 +191,15 @@ export default function ContentPanel({
       >
         {!contentState.deleted ? (
           <div ref={ComponentRef}>
-            <div ref={ContainerRef}>
-              {!loaded || visible || inView || started || rootStarted ? (
+            <div
+              ref={ContainerRef}
+              style={{
+                width: '100%',
+                margin: '1rem 0 1rem 0',
+                height: contentShown ? 'auto' : placeholderHeight || '15rem'
+              }}
+            >
+              {contentShown && (
                 <div
                   ref={PanelRef}
                   style={{
@@ -327,15 +341,6 @@ export default function ContentPanel({
                       </div>
                     )}
                 </div>
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    margin: '1rem 0 1rem 0',
-                    minHeight: '15rem',
-                    height: placeholderHeight
-                  }}
-                />
               )}
             </div>
           </div>

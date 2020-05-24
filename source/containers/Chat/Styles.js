@@ -39,6 +39,9 @@ export const MessageStyle = {
   timeStamp: css`
     font-size: 1rem;
     color: ${Color.gray()};
+    @media (max-width: ${mobileMaxWidth}) {
+      font-size: 0.8rem;
+    }
   `,
   relatedConversationsButton: css`
     margin-top: 1rem;

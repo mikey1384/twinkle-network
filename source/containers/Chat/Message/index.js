@@ -28,7 +28,7 @@ import { unix } from 'moment';
 import { MessageStyle } from '../Styles';
 import { fetchURLFromText } from 'helpers/stringHelpers';
 import { useMyState, useContentState, useLazyLoad } from 'helpers/hooks';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import {
   useAppContext,
@@ -49,6 +49,7 @@ Message.propTypes = {
   onDelete: PropTypes.func,
   showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
+  innerRef: PropTypes.func,
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
   loading: PropTypes.bool,
@@ -116,7 +117,6 @@ function Message({
   showSubjectMsgsModal
 }) {
   const [ComponentRef, inView] = useInView({
-    rootMargin: '1500px 0px 0px 0px',
     threshold: 0
   });
   const PanelRef = useRef(null);
@@ -315,6 +315,11 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const contentShown = useMemo(
+    () => inView || isLastMsg || started || visible || !placeholderHeight,
+    [inView, isLastMsg, placeholderHeight, started, visible]
+  );
+
   const messageMenuItems = [
     {
       label: (
@@ -396,8 +401,14 @@ function Message({
   }
 
   return (
-    <div ref={ComponentRef} className={MessageStyle.container}>
-      {inView || started || visible ? (
+    <div
+      ref={ComponentRef}
+      className={MessageStyle.container}
+      style={{
+        width: '100%'
+      }}
+    >
+      {contentShown ? (
         <div ref={PanelRef} className={MessageStyle.container}>
           <div className={MessageStyle.profilePic}>
             <ProfilePic
@@ -409,7 +420,13 @@ function Message({
           <div className={MessageStyle.contentWrapper}>
             <div>
               <UsernameText
-                style={MessageStyle.usernameText}
+                className={css`
+                  font-size: 1.8rem;
+                  line-height: 1;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.7rem;
+                  }
+                `}
                 user={{
                   id: userId,
                   username
