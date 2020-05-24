@@ -368,7 +368,10 @@ function Message({
       }
     });
   }
-  if ((userCanRewardThis && channelId === 2) || isCreator) {
+  if (
+    (userCanRewardThis && channelId === 2) ||
+    (isCreator && !userIsUploader)
+  ) {
     messageMenuItems.push({
       label: (
         <>
