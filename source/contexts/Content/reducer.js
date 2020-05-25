@@ -776,6 +776,24 @@ export default function ContentReducer(state, action) {
           subjectsLoadMoreButton: action.loadMoreButton
         }
       };
+    case 'LOAD_REPLIES':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          childComments: prevContentState.childComments.map((comment) => {
+            if (comment.id === action.commentId) {
+              return {
+                ...comment,
+                numReplies: 0,
+                replies: action.replies,
+                loadMoreButton: action.loadMoreButton
+              };
+            }
+            return comment;
+          })
+        }
+      };
     case 'LOAD_REPLIES_OF_REPLY':
       return {
         ...state,
@@ -797,7 +815,7 @@ export default function ContentReducer(state, action) {
               };
             }
             let containsRootReply = false;
-            for (let reply of comment.replies) {
+            for (let reply of comment.replies || []) {
               if (reply.id === action.replyId) {
                 containsRootReply = true;
                 break;
@@ -1245,7 +1263,7 @@ export default function ContentReducer(state, action) {
             return {
               ...comment,
               replies: match
-                ? comment.replies?.concat([action.data])
+                ? (comment.replies || []).concat([action.data])
                 : comment.replies
             };
           }),
@@ -1257,7 +1275,7 @@ export default function ContentReducer(state, action) {
                 comment.id === action.data.replyId
                   ? {
                       ...comment,
-                      replies: comment.replies?.concat([action.data])
+                      replies: (comment.replies || []).concat([action.data])
                     }
                   : comment
               )

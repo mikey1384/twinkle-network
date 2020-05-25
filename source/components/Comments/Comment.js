@@ -39,6 +39,7 @@ Comment.propTypes = {
     deleted: PropTypes.bool,
     id: PropTypes.number.isRequired,
     likes: PropTypes.array,
+    numReplies: PropTypes.number,
     profilePicId: PropTypes.number,
     replies: PropTypes.array,
     replyId: PropTypes.number,
@@ -66,17 +67,25 @@ function Comment({
   parent,
   rootContent = {},
   subject,
-  comment: { replies = [], likes = [], stars = [], uploader }
+  comment: {
+    id: commentId,
+    replies = [],
+    likes = [],
+    stars = [],
+    uploader,
+    numReplies
+  }
 }) {
   subject = subject || comment.targetObj?.subject || {};
   const history = useHistory();
   const {
-    requestHelpers: { checkIfUserResponded, editContent }
+    requestHelpers: { checkIfUserResponded, editContent, loadReplies }
   } = useAppContext();
   const { authLevel, canDelete, canEdit, canStar, userId } = useMyState();
   const {
     actions: {
       onChangeSpoilerStatus,
+      onLoadReplies,
       onSetIsEditing,
       onSetXpRewardInterfaceShown
     }
@@ -100,7 +109,7 @@ function Comment({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const [prevReplies, setPrevReplies] = useState(replies);
+  const prevReplies = useRef(replies);
   const [replying, setReplying] = useState(false);
   const ReplyInputAreaRef = useRef(null);
   const ReplyRefs = {};
@@ -145,11 +154,11 @@ function Comment({
 
   useEffect(() => {
     if (!isPreview) {
-      if (replying && replies?.length > prevReplies?.length) {
+      if (replying && replies?.length > prevReplies.current?.length) {
         setReplying(false);
         scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
       }
-      setPrevReplies(replies);
+      prevReplies.current = replies;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replies]);
@@ -370,10 +379,17 @@ function Comment({
                         <Button
                           transparent
                           style={{ marginLeft: '1rem' }}
-                          onClick={onReplyButtonClick}
+                          onClick={handleReplyButtonClick}
                         >
                           <Icon icon="comment-alt" />
-                          <span style={{ marginLeft: '1rem' }}>Reply</span>
+                          <span style={{ marginLeft: '1rem' }}>
+                            {numReplies > 1 && parent.contentType === 'comment'
+                              ? 'Replies'
+                              : 'Reply'}{' '}
+                            {numReplies > 0 && parent.contentType === 'comment'
+                              ? ` (${numReplies})`
+                              : ''}
+                          </span>
                         </Button>
                         {canStar && userIsHigherAuth && !userIsUploader && (
                           <Button
@@ -510,7 +526,17 @@ function Comment({
     onLikeClick({ commentId: comment.id, likes });
   }
 
-  function onReplyButtonClick() {
+  async function handleReplyButtonClick() {
+    if (numReplies > 0 && parent.contentType === 'comment') {
+      const { loadMoreButton, replies } = await loadReplies({ commentId });
+      onLoadReplies({
+        commentId,
+        loadMoreButton,
+        replies,
+        contentType: 'comment',
+        contentId: parent.contentId
+      });
+    }
     ReplyInputAreaRef.current.focus();
   }
 

@@ -198,6 +198,22 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
+    onLoadReplies({
+      commentId,
+      loadMoreButton,
+      replies,
+      contentType,
+      contentId
+    }) {
+      return dispatch({
+        type: 'LOAD_REPLIES',
+        replies,
+        commentId,
+        loadMoreButton,
+        contentType,
+        contentId
+      });
+    },
     onLoadRepliesOfReply({
       replies,
       commentId,
