@@ -52,7 +52,7 @@ export default function UploadModal({ channelId, fileObj, onHide }) {
               const file = new File([buffer], fileObj.name);
               setSelectedFile(file);
             },
-            { orientation: true }
+            { orientation: true, canvas: true }
           );
         }
       };
