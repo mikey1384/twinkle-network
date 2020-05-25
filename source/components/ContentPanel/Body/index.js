@@ -592,7 +592,7 @@ export default function Body({
   }
 
   async function handleCommentButtonClick() {
-    if (!commentsShown) {
+    if (!commentsShown && !(autoExpand && !secretHidden)) {
       await handleExpandComments();
     }
     if (!isMobile(navigator)) {
