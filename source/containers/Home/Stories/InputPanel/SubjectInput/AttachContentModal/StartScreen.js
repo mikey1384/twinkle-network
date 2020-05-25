@@ -189,7 +189,7 @@ export default function StartScreen({ navigateTo, onHide }) {
               });
               onHide();
             },
-            { orientation: true }
+            { orientation: true, canvas: true }
           );
         }
       };
