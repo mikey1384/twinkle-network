@@ -642,7 +642,7 @@ export default function ContentReducer(state, action) {
                       reply.id === action.contentId
                         ? action.likes
                         : reply.likes,
-                    replies: reply.replies.map((reply) => ({
+                    replies: (reply.replies || []).map((reply) => ({
                       ...reply,
                       likes:
                         reply.id === action.contentId
@@ -822,7 +822,7 @@ export default function ContentReducer(state, action) {
               }
             }
             if (containsRootReply) {
-              const replies = comment.replies?.filter(
+              const replies = (comment.replies || []).filter(
                 (reply) => reply.id <= action.replyId
               );
               replies[replies.length - 1] = {
@@ -841,7 +841,7 @@ export default function ContentReducer(state, action) {
                       : reply
                   ),
                   ...action.replies,
-                  ...comment.replies.filter(
+                  ...(comment.replies || []).filter(
                     (reply) => reply.id > action.replyId
                   )
                 ]
