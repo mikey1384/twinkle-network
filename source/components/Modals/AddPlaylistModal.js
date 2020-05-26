@@ -6,8 +6,8 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import SortableThumb from 'components/SortableThumb';
 import { DndProvider } from 'react-dnd';
-import TouchBackend from 'react-dnd-touch-backend';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import Input from 'components/Texts/Input';
 import SearchInput from 'components/Texts/SearchInput';
@@ -76,7 +76,7 @@ export default function AddPlaylistModal({
       });
       if (mounted.current) {
         playlistVideoObjects.current = objectify(loadedVideos);
-        setAllVideos(loadedVideos.map(video => video.id));
+        setAllVideos(loadedVideos.map((video) => video.id));
         setLoadMoreButton(loadMoreButton);
         setLoaded(true);
       }
@@ -134,15 +134,15 @@ export default function AddPlaylistModal({
               className={css`
                 width: 100%;
               `}
-              onSubmit={event => event.preventDefault()}
+              onSubmit={(event) => event.preventDefault()}
             >
               <section>
                 <Input
                   autoFocus
                   placeholder="Enter Playlist Title"
                   value={title}
-                  onChange={text => setTitle(text)}
-                  onKeyUp={event => {
+                  onChange={(text) => setTitle(text)}
+                  onKeyUp={(event) => {
                     if (event.key === ' ') {
                       setTitle(addEmoji(event.target.value));
                     }
@@ -161,8 +161,8 @@ export default function AddPlaylistModal({
                   placeholder="Enter Description (Optional)"
                   minRows={4}
                   value={description}
-                  onChange={event => setDescription(event.target.value)}
-                  onKeyUp={event => {
+                  onChange={(event) => setDescription(event.target.value)}
+                  onKeyUp={(event) => {
                     if (event.key === ' ') {
                       setDescription(addEmoji(event.target.value));
                     }
@@ -203,15 +203,15 @@ export default function AddPlaylistModal({
                     ? searchLoadMoreButton
                     : loadMoreButton
                 }
-                onSelect={selectedVideoId =>
-                  setSelectedVideos(selectedVideos =>
+                onSelect={(selectedVideoId) =>
+                  setSelectedVideos((selectedVideos) =>
                     selectedVideos.concat(selectedVideoId)
                   )
                 }
-                onDeselect={deselectedVideoId =>
-                  setSelectedVideos(selectedVideos =>
+                onDeselect={(deselectedVideoId) =>
+                  setSelectedVideos((selectedVideos) =>
                     selectedVideos.filter(
-                      videoId => videoId !== deselectedVideoId
+                      (videoId) => videoId !== deselectedVideoId
                     )
                   )
                 }
@@ -228,7 +228,7 @@ export default function AddPlaylistModal({
                 width: '100%'
               }}
             >
-              {selectedVideos.map(videoId => (
+              {selectedVideos.map((videoId) => (
                 <SortableThumb
                   key={videoId}
                   id={videoId}
@@ -322,7 +322,7 @@ export default function AddPlaylistModal({
         filter: 'video',
         searchText,
         shownResults: searchedVideos.map(
-          videoId => playlistVideoObjects.current[videoId]
+          (videoId) => playlistVideoObjects.current[videoId]
         )
       });
       playlistVideoObjects.current = {
@@ -330,7 +330,7 @@ export default function AddPlaylistModal({
         ...objectify(loadedVideos)
       };
       setSearchedVideos(
-        searchedVideos.concat(loadedVideos.map(video => video.id))
+        searchedVideos.concat(loadedVideos.map((video) => video.id))
       );
       setLoadingMore(false);
       setSearchLoadMoreButton(loadMoreButton);
@@ -344,7 +344,7 @@ export default function AddPlaylistModal({
         ...playlistVideoObjects.current,
         ...objectify(loadedVideos)
       };
-      setAllVideos(allVideos.concat(loadedVideos.map(video => video.id)));
+      setAllVideos(allVideos.concat(loadedVideos.map((video) => video.id)));
       setLoadingMore(false);
       setLoadMoreButton(loadMoreButton);
     }
@@ -359,7 +359,7 @@ export default function AddPlaylistModal({
       ...playlistVideoObjects.current,
       ...objectify(searchResults)
     };
-    setSearchedVideos(searchResults.map(video => video.id));
+    setSearchedVideos(searchResults.map((video) => video.id));
     setSearchLoadMoreButton(loadMoreButton);
   }
 }

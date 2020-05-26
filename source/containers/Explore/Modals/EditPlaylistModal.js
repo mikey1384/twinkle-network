@@ -7,8 +7,8 @@ import Loading from 'components/Loading';
 import SelectUploadsForm from 'components/Forms/SelectUploadsForm';
 import SortableThumb from 'components/SortableThumb';
 import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import TouchBackend from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
 import FilterBar from 'components/FilterBar';
 import SearchInput from 'components/Texts/SearchInput';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -88,11 +88,11 @@ export default function EditPlaylistModal({
           playlistId,
           targetVideos: modalVids
         });
-        initialSelectedVideos.current = results.map(video => video.id);
+        initialSelectedVideos.current = results.map((video) => video.id);
       } else {
-        initialSelectedVideos.current = modalVids.map(video => video.id);
+        initialSelectedVideos.current = modalVids.map((video) => video.id);
       }
-      setModalVideos(modalVids.map(video => video.id));
+      setModalVideos(modalVids.map((video) => video.id));
       setSelectedVideos(initialSelectedVideos.current);
       setLoadMoreButton(loadMoreShown);
       setIsLoading(false);
@@ -103,7 +103,7 @@ export default function EditPlaylistModal({
   const videosToRearrange = useMemo(
     () =>
       modalVideos.filter(
-        videoId => !removedVideoIds[videoId] || addedVideos.includes(videoId)
+        (videoId) => !removedVideoIds[videoId] || addedVideos.includes(videoId)
       ),
     [addedVideos, modalVideos, removedVideoIds]
   );
@@ -166,40 +166,42 @@ export default function EditPlaylistModal({
                         ? searchLoadMoreButton
                         : loadMoreButton
                     }
-                    onSelect={selectedVideoId => {
-                      setAddedVideos(addedVideos =>
+                    onSelect={(selectedVideoId) => {
+                      setAddedVideos((addedVideos) =>
                         [selectedVideoId].concat(addedVideos)
                       );
-                      setSelectedVideos(selectedVideos =>
+                      setSelectedVideos((selectedVideos) =>
                         [selectedVideoId].concat(selectedVideos)
                       );
-                      setLoadedOrSearchedVideos(loadedOrSearchedVideo =>
+                      setLoadedOrSearchedVideos((loadedOrSearchedVideo) =>
                         [selectedVideoId].concat(
                           loadedOrSearchedVideo.filter(
-                            videoId => videoId !== selectedVideoId
+                            (videoId) => videoId !== selectedVideoId
                           )
                         )
                       );
                       if (!stringIsEmpty(searchText)) {
-                        setModalVideos(modalVideos =>
+                        setModalVideos((modalVideos) =>
                           [selectedVideoId].concat(
                             modalVideos.filter(
-                              videoId => videoId !== selectedVideoId
+                              (videoId) => videoId !== selectedVideoId
                             )
                           )
                         );
                       }
                     }}
-                    onDeselect={deselectedId => {
-                      setAddedVideos(addedVideos =>
-                        addedVideos.filter(videoId => videoId !== deselectedId)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        selectedVideos.filter(
-                          videoId => videoId !== deselectedId
+                    onDeselect={(deselectedId) => {
+                      setAddedVideos((addedVideos) =>
+                        addedVideos.filter(
+                          (videoId) => videoId !== deselectedId
                         )
                       );
-                      setRemovedVideoIds(removedVideoIds => ({
+                      setSelectedVideos((selectedVideos) =>
+                        selectedVideos.filter(
+                          (videoId) => videoId !== deselectedId
+                        )
+                      );
+                      setRemovedVideoIds((removedVideoIds) => ({
                         ...removedVideoIds,
                         [deselectedId]: true
                       }));
@@ -216,7 +218,7 @@ export default function EditPlaylistModal({
                       width: '100%'
                     }}
                   >
-                    {videosToRearrange.map(videoId => (
+                    {videosToRearrange.map((videoId) => (
                       <SortableThumb
                         key={videoId}
                         id={videoId}
@@ -258,31 +260,33 @@ export default function EditPlaylistModal({
                     uploads={loadedOrSearchedVideos}
                     loadMoreButton={removeVideosLoadMoreButton}
                     selectedUploads={selectedVideos}
-                    onSelect={selectedVideoId => {
-                      setAddedVideos(addedVideos =>
+                    onSelect={(selectedVideoId) => {
+                      setAddedVideos((addedVideos) =>
                         [selectedVideoId].concat(addedVideos)
                       );
-                      setSelectedVideos(selectedVideos =>
+                      setSelectedVideos((selectedVideos) =>
                         [selectedVideoId].concat(selectedVideos)
                       );
-                      setModalVideos(modalVideos =>
+                      setModalVideos((modalVideos) =>
                         [selectedVideoId].concat(
                           modalVideos.filter(
-                            modalVideoId => modalVideoId !== selectedVideoId
+                            (modalVideoId) => modalVideoId !== selectedVideoId
                           )
                         )
                       );
                     }}
-                    onDeselect={deselectedId => {
-                      setAddedVideos(addedVideos =>
-                        addedVideos.filter(videoId => videoId !== deselectedId)
-                      );
-                      setSelectedVideos(selectedVideos =>
-                        selectedVideos.filter(
-                          videoId => videoId !== deselectedId
+                    onDeselect={(deselectedId) => {
+                      setAddedVideos((addedVideos) =>
+                        addedVideos.filter(
+                          (videoId) => videoId !== deselectedId
                         )
                       );
-                      setRemovedVideoIds(removedVideoIds => ({
+                      setSelectedVideos((selectedVideos) =>
+                        selectedVideos.filter(
+                          (videoId) => videoId !== deselectedId
+                        )
+                      );
+                      setRemovedVideoIds((removedVideoIds) => ({
                         ...removedVideoIds,
                         [deselectedId]: true
                       }));
@@ -330,7 +334,7 @@ export default function EditPlaylistModal({
         : await reorderPlaylistVideos({
             originalVideoIds: initialSelectedVideos.current,
             reorderedVideoIds: modalVideos.filter(
-              videoId =>
+              (videoId) =>
                 !removedVideoIds[videoId] || addedVideos.includes(videoId)
             ),
             playlistId
@@ -349,7 +353,7 @@ export default function EditPlaylistModal({
         playlistId,
         limit: 18,
         shownVideos: loadedOrSearchedVideos.map(
-          videoId => playlistVideoObjects.current[videoId]
+          (videoId) => playlistVideoObjects.current[videoId]
         )
       });
       playlistVideoObjects.current = {
@@ -358,17 +362,19 @@ export default function EditPlaylistModal({
       };
       for (let video of loadedVideos) {
         initialSelectedVideos.current = initialSelectedVideos.current
-          .filter(videoId => videoId !== video.id)
+          .filter((videoId) => videoId !== video.id)
           .concat(video.id);
         if (!selectedVideos.includes(video.id) && !removedVideoIds[video.id]) {
-          setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
+          setSelectedVideos((selectedVideos) =>
+            selectedVideos.concat(video.id)
+          );
         }
       }
-      setLoadedOrSearchedVideos(loadedOrSearchedVideos =>
+      setLoadedOrSearchedVideos((loadedOrSearchedVideos) =>
         loadedOrSearchedVideos.concat(
           loadedVideos
-            .map(video => video.id)
-            .filter(videoId => !loadedOrSearchedVideos.includes(videoId))
+            .map((video) => video.id)
+            .filter((videoId) => !loadedOrSearchedVideos.includes(videoId))
         )
       );
       setRemoveVideosLoadMoreButton(removeVidsLoadMoreButton);
@@ -384,7 +390,7 @@ export default function EditPlaylistModal({
         filter: 'video',
         searchText,
         shownResults: searchedVideos.map(
-          videoId => playlistVideoObjects.current[videoId]
+          (videoId) => playlistVideoObjects.current[videoId]
         )
       });
       const { results: playlistVideos } = await loadPlaylistVideos({
@@ -395,15 +401,15 @@ export default function EditPlaylistModal({
         ...playlistVideoObjects.current,
         ...objectify(loadedVideos)
       };
-      setSearchedVideos(searchedVideos =>
-        searchedVideos.concat(loadedVideos.map(video => video.id))
+      setSearchedVideos((searchedVideos) =>
+        searchedVideos.concat(loadedVideos.map((video) => video.id))
       );
-      setSelectedVideos(selectedVideos =>
+      setSelectedVideos((selectedVideos) =>
         selectedVideos.concat(
           playlistVideos
-            .map(video => video.id)
+            .map((video) => video.id)
             .filter(
-              videoId =>
+              (videoId) =>
                 !selectedVideos.includes(videoId) && !removedVideoIds[videoId]
             )
         )
@@ -433,16 +439,16 @@ export default function EditPlaylistModal({
       setModalVideos(
         modalVideos.concat(
           loadedVideos
-            .map(video => video.id)
-            .filter(videoId => !modalVideos.includes(videoId))
+            .map((video) => video.id)
+            .filter((videoId) => !modalVideos.includes(videoId))
         )
       );
-      setSelectedVideos(selectedVideos =>
+      setSelectedVideos((selectedVideos) =>
         selectedVideos.concat(
           playlistVideos
-            .map(video => video.id)
+            .map((video) => video.id)
             .filter(
-              videoId =>
+              (videoId) =>
                 !selectedVideos.includes(videoId) && !removedVideoIds[videoId]
             )
         )
@@ -458,7 +464,7 @@ export default function EditPlaylistModal({
     } = await loadPlaylistVideos({
       playlistId,
       shownVideos: modalVideos.map(
-        videoId => playlistVideoObjects.current[videoId]
+        (videoId) => playlistVideoObjects.current[videoId]
       ),
       limit: 18
     });
@@ -468,12 +474,12 @@ export default function EditPlaylistModal({
     };
     for (let video of loadedVideos) {
       initialSelectedVideos.current = initialSelectedVideos.current
-        .filter(videoId => videoId !== video.id)
+        .filter((videoId) => videoId !== video.id)
         .concat(video.id);
       if (!removedVideoIds[video.id]) {
-        setSelectedVideos(selectedVideos =>
+        setSelectedVideos((selectedVideos) =>
           selectedVideos
-            .filter(videoId => videoId !== video.id)
+            .filter((videoId) => videoId !== video.id)
             .concat(video.id)
         );
       }
@@ -481,8 +487,8 @@ export default function EditPlaylistModal({
     setModalVideos(
       modalVideos.concat(
         loadedVideos
-          .map(video => video.id)
-          .filter(videoId => !modalVideos.includes(videoId))
+          .map((video) => video.id)
+          .filter((videoId) => !modalVideos.includes(videoId))
       )
     );
     setLoadingMore(false);
@@ -509,14 +515,14 @@ export default function EditPlaylistModal({
     };
     for (let video of loadedVideos) {
       if (!selectedVideos.includes(video.id) && !removedVideoIds[video.id]) {
-        setSelectedVideos(selectedVideos => selectedVideos.concat(video.id));
+        setSelectedVideos((selectedVideos) => selectedVideos.concat(video.id));
       }
     }
-    setLoadedOrSearchedVideos(loadedOrSearchedVideos =>
+    setLoadedOrSearchedVideos((loadedOrSearchedVideos) =>
       loadedOrSearchedVideos.concat(
         loadedVideos
-          .map(video => video.id)
-          .filter(videoId => !loadedOrSearchedVideos.includes(videoId))
+          .map((video) => video.id)
+          .filter((videoId) => !loadedOrSearchedVideos.includes(videoId))
       )
     );
     setRemoveVideosLoadMoreButton(loadMoreButton);
@@ -536,13 +542,13 @@ export default function EditPlaylistModal({
       ...playlistVideoObjects.current,
       ...objectify(searchResults)
     };
-    setSearchedVideos(searchResults.map(video => video.id));
+    setSearchedVideos(searchResults.map((video) => video.id));
     setSearchLoadMoreButton(loadMoreButton);
-    setSelectedVideos(selectedVideos =>
+    setSelectedVideos((selectedVideos) =>
       selectedVideos.concat(
         playlistVideos
-          .map(video => video.id)
-          .filter(id => !selectedVideos.includes(id))
+          .map((video) => video.id)
+          .filter((id) => !selectedVideos.includes(id))
       )
     );
     setIsLoading(false);
