@@ -109,6 +109,7 @@ function Comment({
   } = useContext(LocalContext);
   const [userListModalShown, setUserListModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
+  const [loadingReplies, setLoadingReplies] = useState(false);
   const prevReplies = useRef(replies);
   const [replying, setReplying] = useState(false);
   const ReplyInputAreaRef = useRef(null);
@@ -377,6 +378,7 @@ function Comment({
                           likes={likes}
                         />
                         <Button
+                          disabled={loadingReplies}
                           transparent
                           style={{ marginLeft: '1rem' }}
                           onClick={handleReplyButtonClick}
@@ -528,6 +530,7 @@ function Comment({
 
   async function handleReplyButtonClick() {
     if (numReplies > 0 && parent.contentType === 'comment') {
+      setLoadingReplies(true);
       const { loadMoreButton, replies } = await loadReplies({ commentId });
       onLoadReplies({
         commentId,
@@ -536,6 +539,7 @@ function Comment({
         contentType: 'comment',
         contentId: parent.contentId
       });
+      setLoadingReplies(false);
     }
     ReplyInputAreaRef.current.focus();
   }
