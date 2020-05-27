@@ -10,8 +10,8 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import ReactPlayer from 'react-player';
 import { css } from 'emotion';
 import { DndProvider } from 'react-dnd';
-import TouchBackend from 'react-dnd-touch-backend';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const Styles = {
   Player: css`
@@ -111,7 +111,7 @@ export default function QuestionsBuilder({
                 questions={questions}
                 questionIds={questionIds}
                 onMove={onQuestionsRearrange}
-                onReorderDone={questionIds => {
+                onReorderDone={(questionIds) => {
                   setQuestionIds(questionIds);
                   setReorderModeOn(false);
                 }}
@@ -126,7 +126,7 @@ export default function QuestionsBuilder({
                       {...question}
                       key={index}
                       questionId={Number(questionId)}
-                      hideErrorMsg={id => {
+                      hideErrorMsg={(id) => {
                         setQuestions({
                           ...questions,
                           [id]: {
@@ -137,14 +137,14 @@ export default function QuestionsBuilder({
                       }}
                       questionIndex={index}
                       errorMessage={question.errorMessage}
-                      innerRef={ref => {
+                      innerRef={(ref) => {
                         QuestionsRef.current[questionId] = ref;
                       }}
                       onSelectChoice={onSelectChoice}
                       onRearrange={onChoicesRearrange}
                       onRemove={onRemoveQuestion}
                       onUndoRemove={onUndoRemove}
-                      onEditStart={questionId => {
+                      onEditStart={(questionId) => {
                         setQuestions({
                           ...questions,
                           [questionId]: {
@@ -153,7 +153,7 @@ export default function QuestionsBuilder({
                           }
                         });
                       }}
-                      onEditCancel={questionId => {
+                      onEditCancel={(questionId) => {
                         setQuestions({
                           ...questions,
                           [questionId]: {
@@ -287,7 +287,7 @@ export default function QuestionsBuilder({
   }
 
   function onSelectChoice({ questionId, choiceId }) {
-    setQuestions(questions => ({
+    setQuestions((questions) => ({
       ...questions,
       [questionId]: {
         ...questions[questionId],
@@ -303,7 +303,7 @@ export default function QuestionsBuilder({
     const targetIndex = newIndices.indexOf(targetId);
     newIndices.splice(sourceIndex, 1);
     newIndices.splice(targetIndex, 0, sourceId);
-    setQuestions(questions => ({
+    setQuestions((questions) => ({
       ...questions,
       [questionIds[questionIndex]]: {
         ...questions[questionIds[questionIndex]],
@@ -380,8 +380,8 @@ export default function QuestionsBuilder({
     }
 
     const finishedQuestions = questionIds
-      .filter(questionId => !questions[questionId].deleted)
-      .map(questionId => questions[questionId]);
+      .filter((questionId) => !questions[questionId].deleted)
+      .map((questionId) => questions[questionId]);
 
     onSubmit(finishedQuestions);
 
@@ -391,8 +391,8 @@ export default function QuestionsBuilder({
         return 'missingTitle';
       }
       const validChoices = Object.keys(question.choicesObj)
-        .map(id => question.choicesObj[id])
-        .filter(choice => !!choice);
+        .map((id) => question.choicesObj[id])
+        .filter((choice) => !!choice);
       if (validChoices.length < 2) {
         return 'notEnoughChoices';
       }

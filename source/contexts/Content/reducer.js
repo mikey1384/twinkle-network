@@ -83,7 +83,7 @@ export default function ContentReducer(state, action) {
                     stars: commentMatches
                       ? (comment.stars || []).concat(action.data)
                       : comment.stars,
-                    replies: comment.replies?.map((reply) => {
+                    replies: (comment.replies || []).map((reply) => {
                       const replyMatches = reply.id === action.contentId;
                       return {
                         ...reply,
@@ -113,7 +113,7 @@ export default function ContentReducer(state, action) {
                         stars: commentMatches
                           ? (comment.stars || []).concat(action.data)
                           : comment.stars,
-                        replies: comment.replies?.map((reply) => {
+                        replies: (comment.replies || []).map((reply) => {
                           const replyMatches = reply.id === action.contentId;
                           return {
                             ...reply,
@@ -237,7 +237,7 @@ export default function ContentReducer(state, action) {
               ? { ...comment, deleted: true }
               : {
                   ...comment,
-                  replies: comment.replies?.map((reply) =>
+                  replies: (comment.replies || []).map((reply) =>
                     reply.id === action.commentId
                       ? { ...reply, deleted: true }
                       : reply
@@ -251,7 +251,7 @@ export default function ContentReducer(state, action) {
                 ? { ...comment, deleted: true }
                 : {
                     ...comment,
-                    replies: comment.replies?.map((reply) =>
+                    replies: (comment.replies || []).map((reply) =>
                       reply.id === action.commentId
                         ? { ...reply, deleted: true }
                         : reply
@@ -331,7 +331,7 @@ export default function ContentReducer(state, action) {
               comment.id === action.commentId
                 ? action.editedComment
                 : comment.content,
-            replies: comment.replies?.map((reply) =>
+            replies: (comment.replies || []).map((reply) =>
               reply.id === action.commentId
                 ? {
                     ...reply,
@@ -367,7 +367,7 @@ export default function ContentReducer(state, action) {
                 comment.id === action.commentId
                   ? action.editedComment
                   : comment.content,
-              replies: comment.replies?.map((reply) =>
+              replies: (comment.replies || []).map((reply) =>
                 reply.id === action.commentId
                   ? {
                       ...reply,
@@ -399,7 +399,7 @@ export default function ContentReducer(state, action) {
                   return {
                     ...comment,
                     ...(commentMatches ? action.data : {}),
-                    replies: comment.replies?.map((reply) => {
+                    replies: (comment.replies || []).map((reply) => {
                       const replyMatches = reply.id === action.contentId;
                       return {
                         ...reply,
@@ -423,7 +423,7 @@ export default function ContentReducer(state, action) {
                       return {
                         ...comment,
                         ...(commentMatches ? action.data : {}),
-                        replies: comment.replies?.map((reply) => {
+                        replies: (comment.replies || []).map((reply) => {
                           const replyMatches = reply.id === action.contentId;
                           return {
                             ...reply,
@@ -490,7 +490,7 @@ export default function ContentReducer(state, action) {
               rewardComment:
                 star.id === action.id ? action.text : star.rewardComment
             })),
-            replies: comment.replies?.map((reply) => ({
+            replies: (comment.replies || []).map((reply) => ({
               ...reply,
               stars: reply.stars?.map((star) => ({
                 ...star,
@@ -510,7 +510,7 @@ export default function ContentReducer(state, action) {
                       star.id === action.id ? action.text : star.rewardComment
                   }))
                 : [],
-              replies: comment.replies?.map((reply) => ({
+              replies: (comment.replies || []).map((reply) => ({
                 ...reply,
                 stars: reply.stars
                   ? reply.stars.map((star) => ({
@@ -580,7 +580,7 @@ export default function ContentReducer(state, action) {
               ...comment,
               likes:
                 comment.id === action.commentId ? action.likes : comment.likes,
-              replies: comment.replies?.map((reply) => {
+              replies: (comment.replies || []).map((reply) => {
                 return {
                   ...reply,
                   likes:
@@ -599,7 +599,7 @@ export default function ContentReducer(state, action) {
                     comment.id === action.commentId
                       ? action.likes
                       : comment.likes,
-                  replies: comment.replies?.map((reply) => {
+                  replies: (comment.replies || []).map((reply) => {
                     return {
                       ...reply,
                       likes:
@@ -636,13 +636,13 @@ export default function ContentReducer(state, action) {
                     comment.id === action.contentId
                       ? action.likes
                       : comment.likes,
-                  replies: comment.replies?.map((reply) => ({
+                  replies: (comment.replies || []).map((reply) => ({
                     ...reply,
                     likes:
                       reply.id === action.contentId
                         ? action.likes
                         : reply.likes,
-                    replies: reply.replies.map((reply) => ({
+                    replies: (reply.replies || []).map((reply) => ({
                       ...reply,
                       likes:
                         reply.id === action.contentId
@@ -776,6 +776,24 @@ export default function ContentReducer(state, action) {
           subjectsLoadMoreButton: action.loadMoreButton
         }
       };
+    case 'LOAD_REPLIES':
+      return {
+        ...state,
+        [contentKey]: {
+          ...prevContentState,
+          childComments: prevContentState.childComments.map((comment) => {
+            if (comment.id === action.commentId) {
+              return {
+                ...comment,
+                numReplies: 0,
+                replies: action.replies,
+                loadMoreButton: action.loadMoreButton
+              };
+            }
+            return comment;
+          })
+        }
+      };
     case 'LOAD_REPLIES_OF_REPLY':
       return {
         ...state,
@@ -786,25 +804,25 @@ export default function ContentReducer(state, action) {
               return {
                 ...comment,
                 replies: [
-                  ...comment.replies?.filter(
+                  ...(comment.replies || []).filter(
                     (reply) => reply.id <= action.replyId
                   ),
                   ...action.replies,
-                  ...comment.replies?.filter(
+                  ...(comment.replies || []).filter(
                     (reply) => reply.id > action.replyId
                   )
                 ]
               };
             }
             let containsRootReply = false;
-            for (let reply of comment.replies) {
+            for (let reply of comment.replies || []) {
               if (reply.id === action.replyId) {
                 containsRootReply = true;
                 break;
               }
             }
             if (containsRootReply) {
-              const replies = comment.replies?.filter(
+              const replies = (comment.replies || []).filter(
                 (reply) => reply.id <= action.replyId
               );
               replies[replies.length - 1] = {
@@ -823,7 +841,7 @@ export default function ContentReducer(state, action) {
                       : reply
                   ),
                   ...action.replies,
-                  ...comment.replies.filter(
+                  ...(comment.replies || []).filter(
                     (reply) => reply.id > action.replyId
                   )
                 ]
@@ -1245,7 +1263,7 @@ export default function ContentReducer(state, action) {
             return {
               ...comment,
               replies: match
-                ? comment.replies?.concat([action.data])
+                ? (comment.replies || []).concat([action.data])
                 : comment.replies
             };
           }),
@@ -1257,7 +1275,7 @@ export default function ContentReducer(state, action) {
                 comment.id === action.data.replyId
                   ? {
                       ...comment,
-                      replies: comment.replies?.concat([action.data])
+                      replies: (comment.replies || []).concat([action.data])
                     }
                   : comment
               )

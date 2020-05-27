@@ -45,11 +45,11 @@ function Replies({
   const [deleting, setDeleting] = useState(false);
   const [replying, setReplying] = useState(false);
   const [loadingMoreReplies, setLoadingMoreReplies] = useState(false);
-  const [prevReplies, setPrevReplies] = useState(replies);
+  const prevReplies = useRef(replies);
   const ContainerRef = useRef(null);
 
   useEffect(() => {
-    if (replies.length < prevReplies.length) {
+    if (replies.length < prevReplies.current.length) {
       if (deleting) {
         setDeleting(false);
         if (replies.length === 0) {
@@ -57,19 +57,19 @@ function Replies({
         }
         if (
           replies[replies.length - 1].id !==
-          prevReplies[prevReplies.length - 1].id
+          prevReplies.current[prevReplies.current.length - 1].id
         ) {
           scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
         }
       }
     }
-    if (replies.length > prevReplies.length) {
+    if (replies.length > prevReplies.current.length) {
       if (replying) {
         setReplying(false);
         scrollElementToCenter(ReplyRefs[replies[replies.length - 1].id]);
       }
     }
-    setPrevReplies(replies);
+    prevReplies.current = replies;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replies]);
 
@@ -103,7 +103,7 @@ function Replies({
             parent={parent}
             rootContent={rootContent}
             subject={subject}
-            submitReply={submitReply}
+            onSubmitReply={handleSubmitReply}
           />
         );
       })}
@@ -131,7 +131,7 @@ function Replies({
     onDelete(replyId);
   }
 
-  function submitReply(params) {
+  function handleSubmitReply(params) {
     setReplying(true);
     onReplySubmit(params);
   }

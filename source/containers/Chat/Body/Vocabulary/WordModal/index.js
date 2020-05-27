@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import Modal from 'components/Modal';
 import PropTypes from 'prop-types';
-import TouchBackend from 'react-dnd-touch-backend';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import FilterBar from 'components/FilterBar';
 import DictionaryTab from './DictionaryTab';
 import EditTab from './EditTab';
@@ -87,7 +87,7 @@ export default function WordModal({ onHide, word }) {
     return result;
   }, [partOfSpeeches]);
   const posOrder = partOfSpeechOrder.filter(
-    pos => Object.keys(posObj[pos]).length > 0
+    (pos) => Object.keys(posObj[pos]).length > 0
   );
   const title = useMemo(() => {
     if (selectedTab === 'edit') return `Edit Definitions of "${word}"`;

@@ -22,6 +22,7 @@
   "globals": {
     "beforeEach": true,
     "document": false,
+    "Image": true,
     "spyOn": true,
     "navigator": false,
     "window": false,

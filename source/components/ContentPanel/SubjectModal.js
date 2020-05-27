@@ -42,7 +42,7 @@ export default function SubjectModal({ onHide, subject, uploadResponse }) {
         <Textarea
           autoFocus
           value={response}
-          onChange={event => setResponse(event.target.value)}
+          onChange={(event) => setResponse(event.target.value)}
           onKeyUp={handleKeyUp}
           style={{ marginTop: '3rem' }}
           minRows={4}

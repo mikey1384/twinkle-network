@@ -72,7 +72,11 @@ export default function devConfig(app) {
         template: './public/index.html',
         favicon: './public/favicon.png'
       })
-    ]
+    ],
+    watchOptions: {
+      poll: 1000,
+      ignored: ['node_modules']
+    }
   };
 
   const compiler = webpack(config);

@@ -41,7 +41,7 @@ function LeftMenu({ onChannelEnter, onNewButtonClick }) {
         background: #fff;
         -webkit-overflow-scrolling: touch;
         @media (max-width: ${phoneMaxWidth}) {
-          width: 35vw;
+          width: 32vw;
         }
       `}
     >

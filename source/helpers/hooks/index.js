@@ -185,6 +185,11 @@ export function useScrollPosition({
       document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
       BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
     }, 0);
+    // prevents bug on mobile devices where tapping stops working after user swipes left to go to previous page
+    setTimeout(() => {
+      document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
+      BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
+    }, 500);
 
     return function recordScrollPositionAndCleanUp() {
       const position = Math.max(

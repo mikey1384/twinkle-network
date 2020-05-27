@@ -58,7 +58,7 @@ Reply.propTypes = {
   }),
   rootContent: PropTypes.object,
   subject: PropTypes.object,
-  submitReply: PropTypes.func.isRequired
+  onSubmitReply: PropTypes.func.isRequired
 };
 
 function Reply({
@@ -70,7 +70,7 @@ function Reply({
   reply,
   reply: { likes = [], stars = [], uploader },
   rootContent,
-  submitReply,
+  onSubmitReply,
   subject
 }) {
   const {
@@ -326,7 +326,7 @@ function Reply({
             />
             <ReplyInputArea
               innerRef={ReplyInputAreaRef}
-              onSubmit={submitReply}
+              onSubmit={onSubmitReply}
               parent={parent}
               rootCommentId={reply.commentId}
               style={{

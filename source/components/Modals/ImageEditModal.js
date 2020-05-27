@@ -44,7 +44,7 @@ export default function ImageEditModal({ onHide, imageUri }) {
         setOriginalImageUrl(image);
         setLoading(false);
       },
-      { orientation: true }
+      { orientation: true, canvas: true }
     );
   }, [imageUri]);
 

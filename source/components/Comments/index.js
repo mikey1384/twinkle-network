@@ -188,23 +188,22 @@ function Comments({
             {isLoading && <Loading />}
             {inputAtBottom && loadMoreButton && renderLoadMoreButton()}
             {!isLoading &&
-              (previewComments.length > 0 ? previewComments : comments).map(
-                (comment, index) => (
-                  <Comment
-                    isPreview={previewComments.length > 0}
-                    index={index}
-                    innerRef={ref => {
-                      CommentRefs[comment.id] = ref;
-                    }}
-                    parent={parent}
-                    rootContent={rootContent}
-                    subject={subject}
-                    comment={comment}
-                    key={comment.id}
-                    userId={userId}
-                  />
-                )
-              )}
+              (previewComments.length > 0
+                ? previewComments
+                : comments
+              ).map((comment, index) => (
+                <Comment
+                  isPreview={previewComments.length > 0}
+                  index={index}
+                  innerRef={(ref) => (CommentRefs[comment.id] = ref)}
+                  parent={parent}
+                  rootContent={rootContent}
+                  subject={subject}
+                  comment={comment}
+                  key={comment.id}
+                  userId={userId}
+                />
+              ))}
             {!inputAtBottom && loadMoreButton && renderLoadMoreButton()}
           </div>
         )}

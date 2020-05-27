@@ -20,7 +20,7 @@ export default function Textarea({
     <TextareaAutosize
       {...props}
       type={type}
-      inputRef={innerRef}
+      ref={innerRef}
       className={`${className} ${css`
         width: 100%;
         line-height: 1.5;

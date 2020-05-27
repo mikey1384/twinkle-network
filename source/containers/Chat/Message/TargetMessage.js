@@ -112,7 +112,6 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
       </div>
       {embedlyShown && (
         <Embedly
-          test="true"
           imageOnly
           contentId={message.id}
           contentType="chat"

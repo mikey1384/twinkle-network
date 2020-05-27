@@ -162,13 +162,11 @@ export default function ChannelHeader({
   return (
     <ErrorBoundary
       className={css`
-        display: flex;
         position: relative;
-        align-items: center;
-        justify-content: space-between;
         width: 100%;
         padding: 1rem;
         height: 7rem;
+        display: flex;
         > section {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});

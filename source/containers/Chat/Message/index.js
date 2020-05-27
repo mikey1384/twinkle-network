@@ -368,7 +368,10 @@ function Message({
       }
     });
   }
-  if ((userCanRewardThis && channelId === 2) || isCreator) {
+  if (
+    (userCanRewardThis && channelId === 2) ||
+    (isCreator && !userIsUploader)
+  ) {
     messageMenuItems.push({
       label: (
         <>
@@ -443,7 +446,6 @@ function Message({
                   inviteFrom={inviteFrom}
                   messageId={messageId}
                   onAcceptGroupInvitation={onAcceptGroupInvitation}
-                  onSetScrollToBottom={handleSetScrollToBottom}
                 />
               ) : isChessMsg ? (
                 <Chess
@@ -459,8 +461,6 @@ function Message({
                   onSpoilerClick={handleChessSpoilerClick}
                   opponentId={chessOpponent?.id}
                   opponentName={chessOpponent?.username}
-                  onSetScrollToBottom={handleSetScrollToBottom}
-                  scrollAtBottom={scrollAtBottom}
                   senderId={userId}
                   style={{ marginTop: '1rem', width: '100%' }}
                 />
