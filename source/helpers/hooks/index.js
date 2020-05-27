@@ -181,10 +181,12 @@ export function useScrollPosition({
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
 
   useEffect(() => {
+    document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
+    BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
     setTimeout(() => {
       document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
       BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
-    }, 0);
+    }, 200);
 
     return function recordScrollPositionAndCleanUp() {
       const position = Math.max(
