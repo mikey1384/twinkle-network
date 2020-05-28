@@ -73,7 +73,7 @@ export default function MessagesContainer({
       reconnecting,
       replyTarget,
       selectedChannelId,
-      subject
+      subjectObj
     },
     actions: {
       onDeleteMessage,
@@ -859,7 +859,9 @@ export default function MessagesContainer({
       profilePicId,
       content,
       channelId: selectedChannelId,
-      subjectId: isRespondingToSubject ? subject?.id : null
+      subjectId: isRespondingToSubject
+        ? subjectObj[selectedChannelId]?.id
+        : null
     };
     onSubmitMessage({
       message,

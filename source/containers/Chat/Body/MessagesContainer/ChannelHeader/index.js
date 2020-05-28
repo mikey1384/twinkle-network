@@ -75,15 +75,15 @@ export default function ChannelHeader({
   const HeaderLabelRef = useRef(null);
 
   useEffect(() => {
-    if (!subjectId) {
-      initialLoad();
+    if (!loaded) {
+      handleInitialLoad();
     }
-    async function initialLoad() {
+    async function handleInitialLoad() {
       const data = await loadChatSubject(selectedChannelId);
       onLoadChatSubject(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedChannelId]);
 
   useEffect(() => {
     setTimeSincePost(timeSince(timeStamp));
@@ -94,6 +94,31 @@ export default function ChannelHeader({
     setTimeSincePost(timeSince(timeStamp));
     setTimeSinceReload(timeSince(reloadTimeStamp));
   }, 1000);
+
+  const subjectDetails = useMemo(() => {
+    const isReloaded = reloader && reloader.id;
+    let posterString = '';
+    if (uploader.id && timeSincePost) {
+      posterString = (
+        <span>
+          Started by <UsernameText user={uploader} />{' '}
+          <span className="desktop">{timeSincePost}</span>
+        </span>
+      );
+    }
+    if (isReloaded && timeSinceReload) {
+      posterString = (
+        <span>
+          Brought back by <UsernameText user={reloader} />{' '}
+          <span className="desktop">{timeSinceReload}</span>{' '}
+          <span className="desktop">
+            (started by {<UsernameText user={uploader} />})
+          </span>
+        </span>
+      );
+    }
+    return <small>{posterString}</small>;
+  }, [reloader, timeSincePost, timeSinceReload, uploader]);
 
   const menuProps = useMemo(() => {
     let result = [];
@@ -164,11 +189,16 @@ export default function ChannelHeader({
       className={css`
         position: relative;
         width: 100%;
+        height: 100%;
         padding: 1rem;
         height: 7rem;
+        align-items: center;
         display: flex;
         > section {
           position: relative;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
           @media (max-width: ${mobileMaxWidth}) {
             width: CALC(100% - ${authLevel > 0 ? '13rem' : '3rem'});
@@ -213,15 +243,16 @@ export default function ChannelHeader({
                   </span>
                   <FullTextReveal text={content} show={onHover} />
                 </div>
-                {renderDetails()}
+                <div style={{ width: '100%' }}>{subjectDetails}</div>
               </section>
               <div
                 className={css`
                   position: absolute;
+                  height: 100%;
                   font-size: 1.3rem;
-                  top: 1.3rem;
                   right: 1rem;
                   display: flex;
+                  align-items: center;
                   @media (max-width: ${mobileMaxWidth}) {
                     font-size: 1.2rem;
                   }
@@ -347,31 +378,5 @@ export default function ChannelHeader({
     if (!isMobile(navigator)) {
       onInputFocus();
     }
-  }
-
-  function renderDetails() {
-    const isReloaded = reloader && reloader.id;
-    let posterString =
-      'You can change this subject by clicking the "Change" button';
-    if (uploader.id) {
-      posterString = (
-        <span>
-          Started by <UsernameText user={uploader} />{' '}
-          <span className="desktop">{timeSincePost}</span>
-        </span>
-      );
-    }
-    if (isReloaded) {
-      posterString = (
-        <span>
-          Brought back by <UsernameText user={reloader} />{' '}
-          <span className="desktop">{timeSinceReload}</span>{' '}
-          <span className="desktop">
-            (started by {<UsernameText user={uploader} />})
-          </span>
-        </span>
-      );
-    }
-    return <small>{posterString}</small>;
   }
 }

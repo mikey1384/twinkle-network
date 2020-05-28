@@ -232,10 +232,13 @@ export default function ChatReducer(state, action) {
               ? action.data.editedMessage
               : message.content
         })),
-        subject: action.isSubject
+        subjectObj: action.isSubject
           ? {
-              ...state.subject,
-              content: action.data.editedMessage
+              ...state.subjectObj,
+              [state.selectedChannelId]: {
+                ...state.subjectObj[state.selectedChannelId],
+                content: action.data.editedMessage
+              }
             }
           : state.subject
       };
@@ -1102,7 +1105,9 @@ export default function ChatReducer(state, action) {
             ...action.message,
             content: action.message.content,
             targetMessage: action.replyTarget,
-            targetSubject: action.isRespondingToSubject ? state.subject : null
+            targetSubject: action.isRespondingToSubject
+              ? state.subjectObj[action.message.channelId]
+              : null
           }
         ])
       };
