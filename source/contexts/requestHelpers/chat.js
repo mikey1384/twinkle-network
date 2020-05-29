@@ -300,13 +300,13 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async saveMessage({ message, targetMessageId }) {
+    async saveMessage({ message, targetMessageId, targetSubject }) {
       try {
         const {
           data: { messageId }
         } = await request.post(
           `${URL}/chat`,
-          { message, targetMessageId },
+          { message, targetMessageId, targetSubject },
           auth()
         );
         return Promise.resolve(messageId);

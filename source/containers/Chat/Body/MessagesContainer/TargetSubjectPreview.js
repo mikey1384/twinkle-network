@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
+import { defaultChatSubject } from 'constants/defaultValues';
 import { Color, borderRadius } from 'constants/css';
 import { useChatContext } from 'contexts';
 
@@ -14,7 +15,7 @@ export default function TargetSubjectPreview({ channelId, onClose }) {
     state: { subjectObj }
   } = useChatContext();
 
-  const { content } = subjectObj[channelId] || {};
+  const { content = defaultChatSubject } = subjectObj[channelId] || {};
 
   return (
     <div

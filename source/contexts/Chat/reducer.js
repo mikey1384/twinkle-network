@@ -1,4 +1,5 @@
 import { initialChatState } from '.';
+import { defaultChatSubject } from 'constants/defaultValues';
 
 export default function ChatReducer(state, action) {
   switch (action.type) {
@@ -1072,7 +1073,15 @@ export default function ChatReducer(state, action) {
         }
       };
     }
-    case 'SUBMIT_MESSAGE':
+    case 'SUBMIT_MESSAGE': {
+      const targetSubject = action.isRespondingToSubject
+        ? {
+            ...state.subjectObj[action.message.channelId],
+            content:
+              state.subjectObj[action.message.channelId].content ||
+              defaultChatSubject
+          }
+        : null;
       return {
         ...state,
         isRespondingToSubject: false,
@@ -1105,12 +1114,11 @@ export default function ChatReducer(state, action) {
             ...action.message,
             content: action.message.content,
             targetMessage: action.replyTarget,
-            targetSubject: action.isRespondingToSubject
-              ? state.subjectObj[action.message.channelId]
-              : null
+            targetSubject
           }
         ])
       };
+    }
     case 'UPDATE_LAST_MESSAGE': {
       const newChannelsObj = { ...state.channelsObj };
       let newHomeChannelIds = [...state.homeChannelIds];

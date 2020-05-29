@@ -221,7 +221,8 @@ function Message({
     async function handleSaveMessage() {
       const messageId = await saveMessage({
         message: post,
-        targetMessageId: targetMessage?.id
+        targetMessageId: targetMessage?.id,
+        targetSubject
       });
       onSaveMessage({ messageId, index });
       socket.emit('new_chat_message', {
