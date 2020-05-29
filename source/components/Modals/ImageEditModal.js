@@ -157,7 +157,7 @@ export default function ImageEditModal({ onHide, imageUri }) {
     onUploadProfilePic({ userId, imageId });
     setUploadComplete(true);
     setProcessing(false);
-    onHide();
+    setTimeout(() => onHide(), 500);
   }
 
   function handleUploadProgress({ loaded, total }) {
