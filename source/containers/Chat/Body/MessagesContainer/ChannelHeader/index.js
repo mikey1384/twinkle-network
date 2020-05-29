@@ -194,6 +194,7 @@ export default function ChannelHeader({
         height: 7rem;
         align-items: center;
         display: flex;
+        align-items: center;
         > section {
           position: relative;
           display: flex;
