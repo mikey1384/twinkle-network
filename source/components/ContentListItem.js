@@ -31,7 +31,7 @@ function ContentListItem({
   style
 }) {
   const history = useHistory();
-  const { profileTheme } = useMyState();
+  const { profileTheme, userId } = useMyState();
   const {
     content,
     description,
@@ -264,7 +264,7 @@ function ContentListItem({
                 )}
               </div>
             )}
-            {filePath && (
+            {filePath && userId && (
               <FileViewer
                 contentId={contentId}
                 contentType={contentType}

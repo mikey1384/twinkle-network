@@ -88,6 +88,7 @@ export default function ChannelHeader({ onInputFocus }) {
         padding: 1rem;
         height: 7rem;
         display: flex;
+        align-items: center;
         > section {
           position: relative;
           width: CALC(100% - ${authLevel > 0 ? '22rem' : '12rem'});
