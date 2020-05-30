@@ -45,7 +45,9 @@ export default function FileViewer({
       style={{
         width: '100%',
         padding:
-          !isThumb && !['image', 'video', 'audio'].includes(fileType)
+          contentType !== 'chat' &&
+          !isThumb &&
+          !['image', 'video', 'audio'].includes(fileType)
             ? '1rem'
             : '',
         ...style

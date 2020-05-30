@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from 'emotion';
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import {
+  borderRadius,
+  Color,
+  desktopMinWidth,
+  mobileMaxWidth
+} from 'constants/css';
 import { renderFileSize } from 'helpers/stringHelpers';
 
 FileInfo.propTypes = {
@@ -29,12 +34,6 @@ export default function FileInfo({
         padding: !isThumb && '1rem',
         borderRadius
       }}
-      className={css`
-        width: 70%;
-        @media (max-width: ${mobileMaxWidth}) {
-          width: 100%;
-        }
-      `}
     >
       <div
         style={{
@@ -121,24 +120,30 @@ export default function FileInfo({
             <p
               style={{
                 fontWeight: 'bold',
-                cursor: 'pointer',
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'flex-end'
               }}
-              className={css`
-                color: ${Color.black()};
-                &:hover {
-                  color: #000;
-                }
-                line-height: 1;
-                @media (max-width: ${mobileMaxWidth}) {
-                  font-size: 1.3rem;
-                }
-              `}
               onClick={() => window.open(src)}
             >
-              Download
+              <span
+                className={css`
+                  cursor: pointer;
+                  color: ${Color.black()};
+                  &:hover {
+                    color: #000;
+                    @media (min-width: ${desktopMinWidth}) {
+                      text-decoration: underline;
+                    }
+                  }
+                  line-height: 1;
+                  @media (max-width: ${mobileMaxWidth}) {
+                    font-size: 1.3rem;
+                  }
+                `}
+              >
+                Download
+              </span>
             </p>
           </div>
         )}

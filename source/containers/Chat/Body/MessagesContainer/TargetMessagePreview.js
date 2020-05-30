@@ -6,7 +6,7 @@ import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
 import { useChatContext } from 'contexts';
 import { Color, borderRadius } from 'constants/css';
-import { getFileInfoFromFileName, renderFileSize } from 'helpers/stringHelpers';
+import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { cloudFrontURL } from 'constants/defaultValues';
 
 TargetMessagePreview.propTypes = {
@@ -81,7 +81,7 @@ export default function TargetMessagePreview({ onClose }) {
           </div>
         </div>
         {fileType && replyTarget.fileName && (
-          <div style={{ display: 'flex', width: src ? '12rem' : '30rem' }}>
+          <div style={{ display: 'flex', width: src ? '12rem' : 'auto' }}>
             {fileType === 'image' ? (
               <Image imageUrl={src} />
             ) : fileType === 'video' ? (
@@ -92,23 +92,6 @@ export default function TargetMessagePreview({ onClose }) {
               />
             ) : (
               <FileIcon size="5x" fileType={fileType} />
-            )}
-            {fileType !== 'image' && fileType !== 'video' && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  marginLeft: '1rem',
-                  fontSize: '1.3rem'
-                }}
-              >
-                <div>{fileType}</div>
-                {replyTarget.fileSize && (
-                  <div>{renderFileSize(replyTarget.fileSize)}</div>
-                )}
-              </div>
             )}
           </div>
         )}
