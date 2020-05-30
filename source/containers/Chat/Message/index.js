@@ -97,7 +97,6 @@ function Message({
     numMsgs,
     rewardAmount,
     rewardReason,
-    scrollAtBottom,
     subjectId,
     thumbUrl,
     timeStamp,
@@ -490,7 +489,6 @@ function Message({
                       filePath={filePath}
                       fileName={fileName}
                       fileSize={fileSize}
-                      scrollAtBottom={scrollAtBottom}
                       thumbUrl={thumbUrl || recentThumbUrl}
                       style={{ marginTop: '1rem' }}
                     />

@@ -102,10 +102,10 @@ export default function ChatActions(dispatch) {
     onDisplayAttachedFile({
       channelId,
       filePath,
+      fileSize,
       userId,
       username,
       profilePicId,
-      scrollAtBottom,
       uploaderAuthLevel
     }) {
       return dispatch({
@@ -116,8 +116,8 @@ export default function ChatActions(dispatch) {
           userId,
           username,
           profilePicId,
-          scrollAtBottom,
-          uploaderAuthLevel
+          uploaderAuthLevel,
+          fileSize
         }
       });
     },

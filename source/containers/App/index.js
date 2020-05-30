@@ -357,6 +357,7 @@ function App({ location, history }) {
       content,
       fileName: fileToUpload.name,
       filePath,
+      fileSize: fileToUpload.size,
       id: messageId,
       uploaderAuthLevel: authLevel,
       channelId,
