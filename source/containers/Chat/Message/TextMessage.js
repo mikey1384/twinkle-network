@@ -25,7 +25,7 @@ TextMessage.propTypes = {
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
   onSetScrollToBottom: PropTypes.func.isRequired,
-  showSubjectMsgsModal: PropTypes.func.isRequired,
+  onShowSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
   subjectId: PropTypes.number,
   userCanEditThis: PropTypes.bool
@@ -47,7 +47,7 @@ function TextMessage({
   onEditDone,
   onSetScrollToBottom,
   subjectId,
-  showSubjectMsgsModal,
+  onShowSubjectMsgsModal,
   socketConnected,
   userCanEditThis
 }) {
@@ -96,7 +96,7 @@ function TextMessage({
                 <Button
                   filled
                   color="logoBlue"
-                  onClick={() => showSubjectMsgsModal({ subjectId, content })}
+                  onClick={() => onShowSubjectMsgsModal({ subjectId, content })}
                 >
                   Show related conversations
                 </Button>

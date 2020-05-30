@@ -342,7 +342,10 @@ export default function ChannelHeader({
   }
 
   async function handleSearchChatSubject(text) {
-    const data = await searchChatSubject(text);
+    const data = await searchChatSubject({
+      text,
+      channelId: selectedChannelId
+    });
     onSearchChatSubject(data);
   }
 

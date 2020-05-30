@@ -396,7 +396,7 @@ export default function MessagesContainer({
                   onRewardMessageSubmit={handleRewardMessageSubmit}
                   onSetScrollToBottom={handleSetScrollToBottom}
                   recepientId={recepientId}
-                  showSubjectMsgsModal={({ subjectId, content }) =>
+                  onShowSubjectMsgsModal={({ subjectId, content }) =>
                     setSubjectMsgsModal({ shown: true, subjectId, content })
                   }
                 />

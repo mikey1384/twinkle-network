@@ -47,7 +47,6 @@ Message.propTypes = {
   message: PropTypes.object,
   style: PropTypes.object,
   onDelete: PropTypes.func,
-  showSubjectMsgsModal: PropTypes.func,
   index: PropTypes.number,
   innerRef: PropTypes.func,
   isLastMsg: PropTypes.bool,
@@ -61,6 +60,7 @@ Message.propTypes = {
   onRewardClick: PropTypes.func,
   onRewardMessageSubmit: PropTypes.func.isRequired,
   onSetScrollToBottom: PropTypes.func,
+  onShowSubjectMsgsModal: PropTypes.func,
   recepientId: PropTypes.number
 };
 
@@ -112,8 +112,8 @@ function Message({
   onReplyClick,
   onRewardMessageSubmit,
   onSetScrollToBottom,
-  recepientId,
-  showSubjectMsgsModal
+  onShowSubjectMsgsModal,
+  recepientId
 }) {
   const [ComponentRef, inView] = useInView({
     threshold: 0
@@ -515,7 +515,7 @@ function Message({
                       onEditCancel={handleEditCancel}
                       onEditDone={handleEditDone}
                       onSetScrollToBottom={handleSetScrollToBottom}
-                      showSubjectMsgsModal={showSubjectMsgsModal}
+                      onShowSubjectMsgsModal={onShowSubjectMsgsModal}
                       socketConnected={socketConnected}
                       subjectId={subjectId}
                       targetMessage={targetMessage}

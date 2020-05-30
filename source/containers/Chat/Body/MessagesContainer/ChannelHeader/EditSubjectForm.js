@@ -53,8 +53,8 @@ export default function EditSubjectForm({
 
   useEffect(() => {
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => changeInput(title), 300);
-    async function changeInput(input) {
+    timerRef.current = setTimeout(() => handleChangeInput(title), 300);
+    async function handleChangeInput(input) {
       await onChange(input);
       const content = input ? `${input[0].toUpperCase()}${input.slice(1)}` : '';
       for (let i = 0; i < searchResults.length; i++) {
@@ -103,7 +103,7 @@ export default function EditSubjectForm({
                 position: 'relative',
                 marginTop: '1.5rem'
               }}
-              onSubmit={onEditSubmit}
+              onSubmit={handleEditSubmit}
             >
               <Input
                 autoFocus={autoFocus}
@@ -191,7 +191,7 @@ export default function EditSubjectForm({
     setHighlightedIndex(-1);
   }
 
-  function onEditSubmit(event) {
+  function handleEditSubmit(event) {
     event.preventDefault();
     if (!readyForSubmit) return;
     if (highlightedIndex > -1) {
