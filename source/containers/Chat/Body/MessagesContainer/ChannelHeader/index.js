@@ -122,15 +122,21 @@ export default function ChannelHeader({
 
   const menuProps = useMemo(() => {
     let result = [];
-    result.push({
-      label: (
-        <>
-          <Icon icon="exchange-alt" />
-          <span style={{ marginLeft: '1rem' }}>Change Subject</span>
-        </>
-      ),
-      onClick: () => setOnEdit(true)
-    });
+    if (
+      currentChannel.canChangeSubject === 'all' ||
+      (currentChannel.canChangeSubject === 'owner' &&
+        currentChannel.creatorId === userId)
+    ) {
+      result.push({
+        label: (
+          <>
+            <Icon icon="exchange-alt" />
+            <span style={{ marginLeft: '1rem' }}>Change Subject</span>
+          </>
+        ),
+        onClick: () => setOnEdit(true)
+      });
+    }
     if (currentChannel.id !== GENERAL_CHAT_ID) {
       if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
         result.push({
