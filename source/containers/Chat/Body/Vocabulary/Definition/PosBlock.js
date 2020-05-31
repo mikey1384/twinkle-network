@@ -17,7 +17,7 @@ export default function PosBlock({ pos, wordObj }) {
     conjunction = [],
     interjection = [],
     other = [],
-    deletedDefIds,
+    deletedDefIds = [],
     definitionOrder
   } = wordObj;
   const partOfSpeeches = useMemo(() => {
@@ -61,7 +61,7 @@ export default function PosBlock({ pos, wordObj }) {
     const definitionIds = definitionOrder?.[pos];
     if (definitionIds) {
       return definitionIds
-        .filter(id => !deletedDefIds.includes(id))
+        .filter((id) => !deletedDefIds.includes(id))
         .map((id, index) => (
           <div key={id}>
             {index + 1}. {posObj[pos][id].title}

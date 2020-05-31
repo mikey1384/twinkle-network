@@ -22,7 +22,7 @@ EditTab.propTypes = {
 };
 
 export default function EditTab({
-  deletedDefIds: originalDeletedIds,
+  deletedDefIds: originalDeletedIds = [],
   editedDefinitionOrder,
   onEditWord,
   onHide,
@@ -154,9 +154,9 @@ export default function EditTab({
   }
 
   function handleRemoveListItemClick(defId) {
-    setDeletedDefIds(defIds => {
+    setDeletedDefIds((defIds) => {
       if (defIds.includes(defId)) {
-        return defIds.filter(id => id !== defId);
+        return defIds.filter((id) => id !== defId);
       } else {
         return [...defIds, defId];
       }

@@ -36,7 +36,7 @@ export default function WordModal({ onHide, word }) {
     conjunction = [],
     interjection = [],
     other = [],
-    deletedDefIds,
+    deletedDefIds = [],
     definitionOrder,
     partOfSpeechOrder = [
       'noun',
