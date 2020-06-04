@@ -189,7 +189,7 @@ export default function MessagesContainer({
         }
       ];
     }
-    let result = [];
+    const result = [];
     if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
       result.push({
         label: (
@@ -201,7 +201,7 @@ export default function MessagesContainer({
         onClick: () => setInviteUsersModalShown(true)
       });
     }
-    result = result.concat([
+    result.push(
       {
         label:
           currentChannel.creatorId === userId ? (
@@ -229,7 +229,7 @@ export default function MessagesContainer({
         ),
         onClick: () => setLeaveConfirmModalShown(true)
       }
-    ]);
+    );
     return result;
     async function handleHideChat() {
       await hideChat(selectedChannelId);
