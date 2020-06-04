@@ -146,6 +146,7 @@ export default function Body({
       : targetObj.subject?.secretAnswer
       ? targetSubjectSecretHidden
       : !!rootObj?.secretAnswer && rootObjSecretHidden;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     contentType,
     rootObj,
@@ -171,6 +172,7 @@ export default function Body({
       contentObj.byUser
       ? 5
       : targetObj.subject?.rewardLevel || rootRewardLevel;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     contentObj.byUser,
     contentType,
@@ -259,6 +261,7 @@ export default function Body({
     const userCanEditThis =
       (canEdit || canDelete) && authLevel > uploader.authLevel;
     return (userId === uploader.id && !isForSecretSubject) || userCanEditThis;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     authLevel,
     canDelete,
