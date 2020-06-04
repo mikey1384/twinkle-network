@@ -270,7 +270,7 @@ export default function MessagesContainer({
 
   return (
     <ErrorBoundary>
-      {currentChannel.twoPeople && (
+      {!channelHeaderShown && (
         <DropdownButton
           skeuomorphic
           color="darkerGray"
