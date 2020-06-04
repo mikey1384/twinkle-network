@@ -144,6 +144,7 @@ function Comment({
       }
     }
     return 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isPreview,
     parent.contentType,
@@ -191,6 +192,7 @@ function Comment({
         ));
     const userCanEditThis = (canEdit || canDelete) && userIsHigherAuth;
     return (userIsUploader && !isForSecretSubject) || userCanEditThis;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     authLevel,
     canDelete,
@@ -244,6 +246,7 @@ function Comment({
     const secretShown =
       subjectState.secretShown || subject?.uploader?.id === userId;
     return hasSecretAnswer && !secretShown;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject, subjectState.secretShown, userId]);
 
   const xpButtonDisabled = useMemo(() => {

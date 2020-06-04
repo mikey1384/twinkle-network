@@ -129,6 +129,7 @@ function Reply({
       }
     }
     return 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     parent.contentType,
     parent.rewardLevel,
