@@ -129,6 +129,7 @@ function Reply({
       }
     }
     return 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     parent.contentType,
     parent.rewardLevel,
@@ -256,14 +257,8 @@ function Reply({
                     >
                       <Icon icon="comment-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>
-                        {reply.numReplies > 1 &&
-                        parent.contentType === 'comment'
-                          ? 'Replies'
-                          : 'Reply'}
-                        {reply.numReplies > 0 &&
-                        parent.contentType === 'comment'
-                          ? ` (${reply.numReplies})`
-                          : ''}
+                        {reply.numReplies > 1 ? 'Replies' : 'Reply'}
+                        {reply.numReplies > 0 ? ` (${reply.numReplies})` : ''}
                       </span>
                     </Button>
                     {rewardButtonShown && (
@@ -384,7 +379,7 @@ function Reply({
   async function handleReplyClick() {
     ReplyInputAreaRef.current.focus();
     setLoadingReplies(true);
-    if (reply.numReplies > 0 && parent.contentType === 'comment') {
+    if (reply.numReplies > 0) {
       const { replies } = await loadReplies({
         commentId: reply.id
       });

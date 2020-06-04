@@ -249,7 +249,10 @@ export default function contentRequestHelpers({ auth, handleError }) {
     },
     async loadFeaturedPlaylists() {
       try {
-        const { data } = await request.get(`${URL}/content/featured/playlists`, auth());
+        const { data } = await request.get(
+          `${URL}/content/featured/playlists`,
+          auth()
+        );
         return Promise.resolve(data);
       } catch (error) {
         return handleError(error);
@@ -403,7 +406,7 @@ export default function contentRequestHelpers({ auth, handleError }) {
         const { data } = await request.get(
           `${URL}/content/replies?${
             lastReplyId ? `lastReplyId=${lastReplyId}&` : ''
-          }commentId=${commentId}&includeAll=true`
+          }commentId=${commentId}`
         );
         return Promise.resolve(data);
       } catch (error) {
