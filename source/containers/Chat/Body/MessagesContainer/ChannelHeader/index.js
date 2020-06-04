@@ -8,11 +8,14 @@ import EditSubjectForm from './EditSubjectForm';
 import ErrorBoundary from 'components/ErrorBoundary';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import Icon from 'components/Icon';
-import { GENERAL_CHAT_ID } from 'constants/database';
 import { isMobile, textIsOverflown } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { socket } from 'constants/io';
-import { charLimit, defaultChatSubject } from 'constants/defaultValues';
+import {
+  charLimit,
+  defaultChatSubject,
+  GENERAL_CHAT_ID
+} from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from 'emotion';
 import { useInterval, useMyState } from 'helpers/hooks';

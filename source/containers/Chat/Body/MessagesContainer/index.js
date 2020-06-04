@@ -18,8 +18,7 @@ import SettingsModal from '../../Modals/SettingsModal';
 import CallScreen from './CallScreen';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { v1 as uuidv1 } from 'uuid';
-import { GENERAL_CHAT_ID } from 'constants/database';
-import { rewardReasons } from 'constants/defaultValues';
+import { GENERAL_CHAT_ID, rewardReasons } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { css } from 'emotion';
 import { Color } from 'constants/css';
@@ -180,6 +179,12 @@ export default function MessagesContainer({
     [authLevel]
   );
 
+  const channelHeaderShown = useMemo(() => {
+    return (
+      currentChannel.id === GENERAL_CHAT_ID || !!currentChannel.canChangeSubject
+    );
+  }, [currentChannel.canChangeSubject, currentChannel.id]);
+
   useEffect(() => {
     setTimeout(() => {
       setPlaceholderHeight(
@@ -323,7 +328,7 @@ export default function MessagesContainer({
             right: '0',
             bottom: '0',
             opacity: loading ? 0 : 1,
-            top: currentChannel.twoPeople ? 0 : '7rem',
+            top: channelHeaderShown ? '7rem' : 0,
             overflowY: 'scroll'
           }}
           onScroll={() => {
@@ -404,7 +409,7 @@ export default function MessagesContainer({
             </div>
           </div>
         </div>
-        {!loading && !currentChannel.twoPeople && (
+        {!loading && channelHeaderShown && (
           <ChannelHeader
             currentChannel={currentChannel}
             onInputFocus={() => ChatInputRef.current.focus()}
