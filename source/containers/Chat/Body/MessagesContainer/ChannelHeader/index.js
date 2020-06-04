@@ -190,8 +190,11 @@ export default function ChannelHeader({
   ]);
 
   const menuButtonShown = useMemo(() => {
-    return currentChannel.id !== GENERAL_CHAT_ID || authLevel > 0;
-  }, [authLevel, currentChannel.id]);
+    return (
+      (currentChannel.id !== GENERAL_CHAT_ID || authLevel > 0) &&
+      menuProps.length > 0
+    );
+  }, [authLevel, currentChannel.id, menuProps.length]);
 
   return (
     <ErrorBoundary

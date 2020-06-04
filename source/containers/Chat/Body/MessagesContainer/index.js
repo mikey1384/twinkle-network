@@ -17,6 +17,7 @@ import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
 import CallScreen from './CallScreen';
 import ErrorBoundary from 'components/ErrorBoundary';
+import Icon from 'components/Icon';
 import { v1 as uuidv1 } from 'uuid';
 import { GENERAL_CHAT_ID, rewardReasons } from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
@@ -179,6 +180,74 @@ export default function MessagesContainer({
     [authLevel]
   );
 
+  const menuProps = useMemo(() => {
+    if (currentChannel.twoPeople) {
+      return [
+        {
+          label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
+          onClick: handleHideChat
+        }
+      ];
+    }
+    let result = [];
+    if (!currentChannel.isClosed || currentChannel.creatorId === userId) {
+      result.push({
+        label: (
+          <>
+            <Icon icon="users" />
+            <span style={{ marginLeft: '1rem' }}>Invite People</span>
+          </>
+        ),
+        onClick: () => setInviteUsersModalShown(true)
+      });
+    }
+    result = result.concat([
+      {
+        label:
+          currentChannel.creatorId === userId ? (
+            <>
+              <Icon icon="sliders-h" />
+              <span style={{ marginLeft: '1rem' }}>Settings</span>
+            </>
+          ) : (
+            <>
+              <Icon icon="pencil-alt" />
+              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
+            </>
+          ),
+        onClick: () => setSettingsModalShown(true)
+      },
+      {
+        separator: true
+      },
+      {
+        label: (
+          <>
+            <Icon icon="sign-out-alt" />
+            <span style={{ marginLeft: '1rem' }}>Leave</span>
+          </>
+        ),
+        onClick: () => setLeaveConfirmModalShown(true)
+      }
+    ]);
+    return result;
+    async function handleHideChat() {
+      await hideChat(selectedChannelId);
+      onHideChat(selectedChannelId);
+      const data = await loadChatChannel({
+        channelId: GENERAL_CHAT_ID
+      });
+      onEnterChannelWithId({ data, showOnTop: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentChannel.twoPeople,
+    currentChannel.isClosed,
+    currentChannel.creatorId,
+    userId,
+    selectedChannelId
+  ]);
+
   const channelHeaderShown = useMemo(() => {
     return (
       currentChannel.id === GENERAL_CHAT_ID || !!currentChannel.canChangeSubject
@@ -287,12 +356,7 @@ export default function MessagesContainer({
           direction="left"
           icon="bars"
           text="Menu"
-          menuProps={[
-            {
-              label: <span style={{ fontWeight: 'bold' }}>Hide Chat</span>,
-              onClick: handleHideChat
-            }
-          ]}
+          menuProps={menuProps}
         />
       )}
       <input
@@ -685,15 +749,6 @@ export default function MessagesContainer({
       });
     }
     setSettingsModalShown(false);
-  }
-
-  async function handleHideChat() {
-    await hideChat(selectedChannelId);
-    onHideChat(selectedChannelId);
-    const data = await loadChatChannel({
-      channelId: GENERAL_CHAT_ID
-    });
-    onEnterChannelWithId({ data, showOnTop: true });
   }
 
   async function handleInviteUsersDone({ users, message, isClass }) {
