@@ -45,6 +45,10 @@ a {
   color: #158cba;
 }
 
+video {
+  outline: none !important;
+}
+
 a:hover {
   text-decoration: underline;
 }
