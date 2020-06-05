@@ -182,10 +182,12 @@ export default function LinkPage({
 
   const userCanEditThis = useMemo(
     () => (canEdit || canDelete) && authLevel > uploader?.authLevel,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [authLevel, canDelete, canEdit, uploader]
   );
   const userCanRewardThis = useMemo(
     () => canStar && authLevel > uploader?.authLevel && !userIsUploader,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [authLevel, canStar, uploader, userIsUploader]
   );
 
