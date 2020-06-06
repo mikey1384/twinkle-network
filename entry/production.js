@@ -9,17 +9,21 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
 });
 require('greenlock-express')
-  .init({
-    packageRoot: path.resolve(__dirname, '../'),
-    configDir: path.resolve(__dirname, './greenlock.d'),
+  .create({
+    version: 'draft-11',
+    configDir: '~/.config/acme',
+    renewWithin: 30 * 24 * 60 * 60 * 1000,
+    server: 'https://acme-v02.api.letsencrypt.org/directory',
+    approveDomains: function approveDomains(opts, certs, cb) {
+      if (certs) {
+        opts.domains = certs.altnames;
+      } else {
+        opts.email = 'mikey1384@gmail.com';
+        opts.agreeTos = true;
+      }
 
-    // contact for security and critical bug notices
-    maintainerEmail: 'mikey1384@gmail.com',
-    skipDryRun: true,
-
-    // whether or not to run at cloudscale
-    cluster: false
+      cb(null, { options: opts, certs });
+    },
+    app
   })
-  // Serves on 80 and 443
-  // Get's SSL certificates magically!
-  .serve(app);
+  .listen(80, 443);
