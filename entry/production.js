@@ -10,7 +10,7 @@ app.get('*', (req, res) => {
 });
 require('greenlock-express')
   .init({
-    packageRoot: '../',
+    packageRoot: path.resolve(__dirname, '../'),
     configDir: './greenlock.d',
 
     // contact for security and critical bug notices
