@@ -19,4 +19,5 @@ require('greenlock-express')
     // whether or not to run at cloudscale
     cluster: false
   })
-  .serve(app);
+  .serve(app)
+  .listen(80, 443);
