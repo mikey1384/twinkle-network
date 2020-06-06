@@ -15,6 +15,7 @@ require('greenlock-express')
 
     // contact for security and critical bug notices
     maintainerEmail: 'mikey1384@gmail.com',
+    skipDryRun: true,
 
     // whether or not to run at cloudscale
     cluster: false
