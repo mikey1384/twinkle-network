@@ -55,7 +55,7 @@
     "exenv": "^1.2.2",
     "express": "^4.17.1",
     "file-loader": "^6.0.0",
-    "greenlock-express": "^2.7.18",
+    "greenlock-express": "^4.0.3",
     "html-webpack-plugin": "^4.0.1",
     "intersection-observer": "^0.10.0",
     "lodash-es": "^4.17.15",
