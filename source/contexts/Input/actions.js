@@ -166,10 +166,11 @@ export default function InputActions(dispatch) {
         secretAnswer
       });
     },
-    onSetSubjectAttachment(attachment) {
+    onSetSubjectAttachment({ attachment, attachContentType }) {
       return dispatch({
         type: 'SET_SUBJECT_ATTACHMENT',
-        attachment
+        attachment,
+        attachContentType
       });
     },
     onSetSubjectDescription(description) {

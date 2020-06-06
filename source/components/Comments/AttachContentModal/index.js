@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
-import StartScreen from './StartScreen';
-import SelectAttachmentScreen from './SelectAttachmentScreen';
+import StartScreen from 'containers/Home/Stories/InputPanel/SubjectInput/AttachContentModal/StartScreen';
+import SelectAttachmentScreen from 'containers/Home/Stories/InputPanel/SubjectInput/AttachContentModal/SelectAttachmentScreen';
 
 const sectionObj = {
   start: {
-    title: 'Attach a content to your subject'
+    title: 'Attach a content to your comment'
   },
   selectVideo: {
     title: 'Select a Video'
@@ -19,10 +19,17 @@ const sectionObj = {
 
 AttachContentModal.propTypes = {
   onConfirm: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired
+  onHide: PropTypes.func.isRequired,
+  contentType: PropTypes.string.isRequired,
+  contentId: PropTypes.number.isRequired
 };
 
-export default function AttachContentModal({ onConfirm, onHide }) {
+export default function AttachContentModal({
+  onConfirm,
+  onHide,
+  contentType,
+  contentId
+}) {
   const [section, setSection] = useState('start');
   const [selected, setSelected] = useState();
   return (
@@ -36,7 +43,7 @@ export default function AttachContentModal({ onConfirm, onHide }) {
           <StartScreen
             navigateTo={setSection}
             onHide={onHide}
-            attachContentType="subject"
+            attachContentType={contentType + contentId}
           />
         )}
         {section === 'selectVideo' && (
@@ -46,7 +53,7 @@ export default function AttachContentModal({ onConfirm, onHide }) {
               setSelected({
                 contentType: 'video',
                 id: video.id,
-                title: video?.title
+                title: video.title
               })
             }
             onDeselect={() => setSelected(undefined)}
@@ -59,7 +66,7 @@ export default function AttachContentModal({ onConfirm, onHide }) {
               setSelected({
                 contentType: 'url',
                 id: link.id,
-                title: link?.title
+                title: link.title
               })
             }
             onDeselect={() => setSelected(undefined)}
@@ -85,7 +92,7 @@ export default function AttachContentModal({ onConfirm, onHide }) {
             disabled={!selected}
             color="blue"
             style={{ marginLeft: '0.7rem' }}
-            onClick={() => onConfirm(selected, 'subject')}
+            onClick={() => onConfirm(selected)}
           >
             Confirm
           </Button>

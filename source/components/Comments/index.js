@@ -8,7 +8,7 @@ import Loading from 'components/Loading';
 import { scrollElementToCenter } from 'helpers';
 import { css } from 'emotion';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext } from 'contexts';
+import { useAppContext, useInputContext } from 'contexts';
 
 Comments.propTypes = {
   autoExpand: PropTypes.bool,
@@ -84,6 +84,7 @@ function Comments({
   const {
     requestHelpers: { deleteContent, loadComments, uploadComment }
   } = useAppContext();
+  const { state } = useInputContext();
   const [deleting, setDeleting] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [commentSubmitted, setCommentSubmitted] = useState(false);
@@ -91,6 +92,11 @@ function Comments({
   const ContainerRef = useRef(null);
   const CommentInputAreaRef = useRef(null);
   const CommentRefs = {};
+  const targetCommentId =
+    parent.contentType === 'comment' ? parent.contentId : null;
+  const contentType = targetCommentId ? 'comment' : parent.contentType;
+  const contentId = targetCommentId || parent.contentId;
+  const attachment = state[contentType + contentId]?.attachment;
 
   useEffect(() => {
     if (comments.length < prevComments.length && deleting) {
@@ -193,7 +199,7 @@ function Comments({
                   <Comment
                     isPreview={previewComments.length > 0}
                     index={index}
-                    innerRef={ref => {
+                    innerRef={(ref) => {
                       CommentRefs[comment.id] = ref;
                     }}
                     parent={parent}
@@ -231,7 +237,8 @@ function Comments({
         parent,
         rootCommentId,
         subjectId,
-        targetCommentId
+        targetCommentId,
+        attachment
       });
       onCommentSubmit({
         ...data,
@@ -309,9 +316,7 @@ function Comments({
         }
         subjectId={subject?.id}
         style={style}
-        targetCommentId={
-          parent.contentType === 'comment' ? parent.contentId : null
-        }
+        targetCommentId={targetCommentId}
       />
     );
   }

@@ -51,7 +51,7 @@ function MessageInput({
     actions: { onEnterComment }
   } = useInputContext();
   const prevChannelId = useRef(currentChannelId);
-  const textForThisChannel = state['chat' + currentChannelId] || '';
+  const textForThisChannel = state['chat' + currentChannelId]?.text || '';
   const textRef = useRef(textForThisChannel);
   const [text, setText] = useState(textForThisChannel);
 

@@ -43,7 +43,7 @@ export default function InputForm({
   } = useInputContext();
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.contentId;
-  const prevText = useMemo(() => state[contentType + contentId] || '', [
+  const prevText = useMemo(() => state[contentType + contentId]?.text || '', [
     contentId,
     contentType,
     state

@@ -727,7 +727,9 @@ export function renderText(text) {
 
 export function stringIsEmpty(string) {
   const checkedString = string
-    ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
+    ? typeof string === 'string'
+      ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
+      : ''
     : '';
   return checkedString === '';
 }

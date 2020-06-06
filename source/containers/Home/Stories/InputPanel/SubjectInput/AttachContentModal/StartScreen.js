@@ -16,10 +16,11 @@ import { FILE_UPLOAD_XP_REQUIREMENT } from 'constants/defaultValues';
 
 StartScreen.propTypes = {
   navigateTo: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired
+  onHide: PropTypes.func.isRequired,
+  attachContentType: PropTypes.string.isRequired
 };
 
-export default function StartScreen({ navigateTo, onHide }) {
+export default function StartScreen({ navigateTo, onHide, attachContentType }) {
   const {
     actions: { onSetSubjectAttachment }
   } = useInputContext();
@@ -167,10 +168,13 @@ export default function StartScreen({ navigateTo, onHide }) {
         const payload = upload.target.result;
         if (fileObj.name.split('.')[1] === 'gif') {
           onSetSubjectAttachment({
-            file: fileObj,
-            contentType: 'file',
-            fileType,
-            imageUrl: payload
+            attachment: {
+              file: fileObj,
+              contentType: 'file',
+              fileType,
+              imageUrl: payload
+            },
+            attachContentType
           });
           onHide();
         } else {
@@ -182,10 +186,13 @@ export default function StartScreen({ navigateTo, onHide }) {
               const buffer = Buffer.from(dataUri, 'base64');
               const file = new File([buffer], fileObj.name);
               onSetSubjectAttachment({
-                file,
-                contentType: 'file',
-                fileType,
-                imageUrl
+                attachment: {
+                  file,
+                  contentType: 'file',
+                  fileType,
+                  imageUrl
+                },
+                attachContentType
               });
               onHide();
             },
@@ -196,9 +203,12 @@ export default function StartScreen({ navigateTo, onHide }) {
       reader.readAsDataURL(fileObj);
     } else {
       onSetSubjectAttachment({
-        file: fileObj,
-        contentType: 'file',
-        fileType
+        attachment: {
+          file: fileObj,
+          contentType: 'file',
+          fileType
+        },
+        attachContentType
       });
       onHide();
     }
