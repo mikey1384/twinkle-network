@@ -1,12 +1,5 @@
 {
   "sites": [
-    {
-      "subject": "www.twinkle.network",
-      "altnames": ["www.twinkle.network"]
-    },
-    {
-      "subject": "www.twin-kle.com",
-      "altnames": ["www.twin-kle.com"]
-    }
+    { "subject": "twinkle.network", "altnames": ["www.twinkle.network"] }
   ]
 }
