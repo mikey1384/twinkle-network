@@ -2,11 +2,11 @@
   "sites": [
     {
       "subject": "twinkle.network",
-      "altnames": ["twinkle.network", "www.twinkle.network"]
+      "altnames": ["www.twinkle.network"]
     },
     {
       "subject": "twin-kle.com",
-      "altnames": ["twin-kle.com", "www.twin-kle.com"]
+      "altnames": ["www.twin-kle.com"]
     }
   ]
 }
