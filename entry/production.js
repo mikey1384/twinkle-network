@@ -8,6 +8,7 @@ app.use(express.static(path.resolve(__dirname, '../public'), { maxAge: '1y' }));
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
 });
+app.listen(80, 443);
 require('greenlock-express')
   .init({
     packageRoot: __dirname,
@@ -19,5 +20,4 @@ require('greenlock-express')
     // whether or not to run at cloudscale
     cluster: false
   })
-  .serve(app)
-  .listen(80, 443);
+  .serve(app);
