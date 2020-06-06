@@ -9,9 +9,16 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
 });
 require('greenlock-express')
-  .create({
+  .init({
+    packageRoot: __dirname,
     configDir: './greenlock.d',
-    maintainerEmail: 'jon@example.com',
-    app
+
+    // contact for security and critical bug notices
+    maintainerEmail: 'mikey1384@gmail.com',
+
+    // whether or not to run at cloudscale
+    cluster: false
   })
-  .listen(80, 443);
+  // Serves on 80 and 443
+  // Get's SSL certificates magically!
+  .serve(app);
