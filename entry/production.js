@@ -8,16 +8,10 @@ app.use(express.static(path.resolve(__dirname, '../public'), { maxAge: '1y' }));
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../public', 'index.html'));
 });
-app.listen(80, 443);
 require('greenlock-express')
-  .init({
-    packageRoot: __dirname,
+  .create({
     configDir: './greenlock.d',
-
-    // contact for security and critical bug notices
-    maintainerEmail: 'mikey1384@gmail.com',
-
-    // whether or not to run at cloudscale
-    cluster: false
+    maintainerEmail: 'jon@example.com',
+    app
   })
-  .serve(app);
+  .listen(80, 443);
