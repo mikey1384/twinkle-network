@@ -53,7 +53,7 @@
     "eslint-plugin-react-hooks": "^4.0.2",
     "eslint-plugin-standard": "^4.0.1",
     "exenv": "^1.2.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "file-loader": "^6.0.0",
     "greenlock-express": "^2.7.18",
     "html-webpack-plugin": "^4.0.1",
